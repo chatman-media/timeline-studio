@@ -116,7 +116,7 @@ export const WhatYouCanDo: React.FC = () => {
               <div className="absolute inset-0 bg-white/2" />
 
               {/* Border gradient */}
-              <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+              <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-px">
                 <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
               </div>
 

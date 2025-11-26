@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
 import {
@@ -25,7 +24,7 @@ export function useFramePreview(options: UseFramePreviewOptions = {}) {
   const [isExtracting, setIsExtracting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { getPreviewData, generateThumbnail, clearPreviewData } = useMediaPreview()
+  const { getPreviewData, generateThumbnail, clearPreviewData, saveTimelineFrames } = useMediaPreview()
   const frameExtraction = FrameExtractionService.getInstance()
 
   /**
@@ -83,14 +82,14 @@ export function useFramePreview(options: UseFramePreviewOptions = {}) {
         }))
 
         // Сохраняем кадры в Preview Manager
-        await invoke("save_timeline_frames", {
-          file_id: fileId,
-          frames: frames.map((frame) => ({
+        await saveTimelineFrames(
+          fileId,
+          frames.map((frame) => ({
             timestamp: frame.timestamp,
             base64_data: frame.frameData,
             is_keyframe: frame.isKeyframe,
           })),
-        })
+        )
 
         options.onFramesExtracted?.(frames)
         return frames
@@ -103,7 +102,7 @@ export function useFramePreview(options: UseFramePreviewOptions = {}) {
         setIsExtracting(false)
       }
     },
-    [getPreviewData, generateThumbnail, frameExtraction, options],
+    [getPreviewData, generateThumbnail, saveTimelineFrames, frameExtraction, options],
   )
 
   /**

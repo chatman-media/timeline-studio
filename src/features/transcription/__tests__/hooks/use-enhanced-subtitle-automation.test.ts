@@ -15,10 +15,14 @@ vi.mock("@/domains/ai-tools/tools/automation/enhanced-subtitle-automation", () =
 }))
 
 // Mock logger
-vi.mock("@/lib/tauri-logger", () => ({
-  logInfo: vi.fn(),
-  logError: vi.fn(),
-}))
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    logInfo: vi.fn(),
+    logError: vi.fn(),
+  }
+})
 
 // Mock react-i18next
 vi.mock("react-i18next", () => ({
@@ -27,13 +31,14 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-// Mock sonner
-vi.mock("sonner", () => ({
-  toast: {
-    success: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-  },
+// Mock useNotifications
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+    showInfo: vi.fn(),
+    showWarning: vi.fn(),
+  }),
 }))
 
 describe("useEnhancedSubtitleAutomation", () => {

@@ -1,9 +1,11 @@
 /**
  * Hook для применения montage планов к timeline
+ *
+ * Uses domain services instead of direct invoke() calls.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
+import { fileSystemService } from "@/domains/media-management/services/file-system-service"
 
 import type { MontagePlan } from "../types/montage-plan"
 import { validateMontagePlan } from "../utils/montage-plan-parser"
@@ -153,8 +155,8 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
 
     for (const clip of plan.clips) {
       try {
-        // Проверяем существование файла через Tauri
-        const exists = await invoke<boolean>("file_exists", { path: clip.filePath })
+        // Проверяем существование файла через domain service
+        const exists = await fileSystemService.fileExists(clip.filePath)
         if (!exists) {
           missingFiles.push(clip.filePath)
         }

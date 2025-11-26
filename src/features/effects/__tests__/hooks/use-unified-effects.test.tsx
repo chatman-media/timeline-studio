@@ -395,7 +395,7 @@ describe("useUnifiedEffects", () => {
 
       // Apply an effect first so rendering actually happens
       await act(async () => {
-        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+        result.current.applyEffect("color_correct_basic")
       })
 
       // Wait for the effect to be applied
@@ -429,7 +429,7 @@ describe("useUnifiedEffects", () => {
 
       // Apply an effect first so rendering actually happens
       await act(async () => {
-        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+        result.current.applyEffect("color_correct_basic")
       })
 
       // Wait for the effect to be applied
@@ -512,7 +512,7 @@ describe("useUnifiedEffects", () => {
 
       // Apply an effect first so rendering actually happens
       await act(async () => {
-        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+        result.current.applyEffect("color_correct_basic")
       })
 
       // Wait for the effect to be applied
@@ -531,7 +531,7 @@ describe("useUnifiedEffects", () => {
 
       // Apply an effect first so rendering actually happens
       await act(async () => {
-        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+        result.current.applyEffect("color_correct_basic")
       })
 
       // Wait for the effect to be applied

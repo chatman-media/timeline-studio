@@ -28,8 +28,6 @@ src/domains/ai-services/
 ├── mappers/
 │   ├── index.ts
 │   └── ai-director-mapper.ts      # Maps AI Director results to unified format
-├── providers/
-│   └── ai-services-domain-provider.tsx # React context providers
 ├── services/
 │   ├── ai-director/               # AI Director integration
 │   ├── content/                   # Content classification
@@ -91,17 +89,9 @@ src/domains/ai-services/
 │  │useUnifiedAnalysis │  │useAnalysisStorage │  │useAIDirector│ │
 │  │                   │  │                   │  │   Events    │ │
 │  └───────────────────┘  └───────────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   AIServicesDomainProvider                       │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │                  Context & State Machines                │   │
-│  │  • chatMachine                                           │   │
-│  │  • aiIntelligenceMachine                                 │   │
-│  │  • montagePlannerMachine                                 │   │
-│  └─────────────────────────────────────────────────────────┘   │
+│                                                                   │
+│  Все хуки работают напрямую с singleton UnifiedOrchestrator      │
+│  без дополнительных провайдеров                                  │
 └─────────────────────────────────────────────────────────────────┘
                                 │
                                 ▼
@@ -114,6 +104,8 @@ src/domains/ai-services/
 │  │  • Progress tracking                                     │   │
 │  │  • Error recovery                                        │   │
 │  │  • Domain Event publishing                               │   │
+│  │  • State Machines: chatMachine, aiIntelligenceMachine,  │   │
+│  │    montagePlannerMachine                                 │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                                 │
@@ -251,7 +243,12 @@ src/domains/ai-services/
 User Request
     │
     ▼
+React Component
+    │
+    ▼
 React Hook (useUnifiedAnalysis)
+    │ - использует singleton UnifiedOrchestrator
+    │ - не требует провайдера
     │
     ▼
 UnifiedOrchestrator.analyzeComprehensive()
@@ -350,7 +347,19 @@ Persisted to Disk
 - Rate limiting для предотвращения перегрузки AI систем
 - Централизованный event dispatching
 
-### 2. Multi-stage Analysis Pipeline
+### 2. No Domain Provider Pattern
+
+**Решение:** Не использовать React Context Provider для домена AI Services. Хуки работают напрямую с singleton UnifiedOrchestrator.
+
+**Причина:**
+- **Упрощение архитектуры:** Устранение лишнего слоя абстракции
+- **Прямой доступ:** Хуки используют singleton напрямую, без оборачивания в провайдер
+- **Меньше бойлерплейта:** Не нужно оборачивать приложение в провайдер
+- **Статическая инициализация:** UnifiedOrchestrator создается один раз при первом импорте
+- **Простота тестирования:** Легче мокировать singleton, чем провайдер
+- **Производительность:** Нет overhead от React Context
+
+### 3. Multi-stage Analysis Pipeline
 
 **Решение:** Разделить анализ на независимые стадии (AI Director → Montage → Integration).
 
@@ -360,7 +369,7 @@ Persisted to Disk
 - Flexibility в конфигурации анализа
 - Параллельное выполнение где возможно
 
-### 3. Event Bridge Architecture
+### 4. Event Bridge Architecture
 
 **Решение:** Использовать AIEventBridge для синхронизации событий между Tauri и React.
 
@@ -370,7 +379,7 @@ Persisted to Disk
 - Consistent event model across the application
 - Легкая подписка через React hooks
 
-### 4. Rate Limiting с p-limit
+### 5. Rate Limiting с p-limit
 
 **Решение:** Использовать p-limit для контроля конкурентности AI запросов.
 
@@ -380,7 +389,7 @@ Persisted to Disk
 - Предсказуемое поведение при batch операциях
 - Default: 5 concurrent requests
 
-### 5. Unified Analysis Result
+### 6. Unified Analysis Result
 
 **Решение:** Маппить все результаты в единый `UnifiedContentAnalysis` формат.
 

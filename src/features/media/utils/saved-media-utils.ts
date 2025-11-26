@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api/core"
 import { basename, dirname, join } from "@tauri-apps/api/path"
 
+import { fileSystemService } from "@/domains/media-management/services/file-system-service"
 import type { MediaFile } from "@/features/media/types/media"
 import type { FileStatus, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import { createLogger } from "@/lib/tauri-logger"
@@ -53,7 +53,7 @@ export async function calculateRelativePath(filePath: string, projectPath: strin
  */
 export async function fileExists(filePath: string): Promise<boolean> {
   try {
-    const result = await invoke<boolean>("file_exists", { path: filePath })
+    const result = await fileSystemService.fileExists(filePath)
     return result
   } catch (error) {
     logger.warnSync("Error checking file existence", { filePath, error })
@@ -69,9 +69,7 @@ export async function getFileStats(filePath: string): Promise<{
   lastModified: number
 } | null> {
   try {
-    const stats = await invoke<{ size: number; lastModified: number }>("get_file_stats", {
-      path: filePath,
-    })
+    const stats = await fileSystemService.getFileStats(filePath)
     return stats
   } catch (error) {
     logger.warnSync("Error getting file stats", { filePath, error })
@@ -84,7 +82,7 @@ export async function getFileStats(filePath: string): Promise<{
  */
 export async function getPlatform(): Promise<string> {
   try {
-    const platform = await invoke<string>("get_platform")
+    const platform = await fileSystemService.getPlatform()
     return platform
   } catch (error) {
     logger.warnSync("Error getting platform", { error })
@@ -241,11 +239,7 @@ export async function generateAlternativePaths(originalPath: string, projectDir:
  */
 export async function searchFilesByName(directory: string, filename: string, maxDepth = 3): Promise<string[]> {
   try {
-    const result = await invoke<string[]>("search_files_by_name", {
-      directory,
-      filename,
-      maxDepth,
-    })
+    const result = await fileSystemService.searchFilesByName(directory, filename, maxDepth)
     return result
   } catch (error) {
     logger.warnSync("Error searching for files", { filename, error })
@@ -258,7 +252,7 @@ export async function searchFilesByName(directory: string, filename: string, max
  */
 export async function getAbsolutePath(path: string): Promise<string | null> {
   try {
-    const result = await invoke<string>("get_absolute_path", { path })
+    const result = await fileSystemService.getAbsolutePath(path)
     return result
   } catch (error) {
     logger.warnSync("Error getting absolute path", { path, error })

@@ -1,16 +1,18 @@
 /**
  * Hook для управления AI Director анализом с real-time событиями
+ *
+ * Uses domain services instead of direct invoke() calls.
  */
 
-import { invoke } from "@tauri-apps/api/core"
-import { listen, UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useState } from "react"
-import type { AnalysisError, AnalysisProgress } from "@/domains/ai-services/types/ai-director-events"
+import type {
+  AIDirectorConfig,
+  AnalysisError,
+  AnalysisProgress,
+  ComprehensiveAnalysisResult,
+} from "@/domains/ai-director"
+import { aiDirectorAnalyzeComprehensive, aiDirectorAnalyzeQuick, useAIDirectorEvents } from "@/domains/ai-director"
 import { logError, logInfo } from "@/lib/tauri-logger"
-
-// AI Director types are not in tauri-bindings yet, using placeholder types
-type AIDirectorConfig = any
-type ComprehensiveAnalysisResult = any
 
 export interface UseAIDirectorAnalysisReturn {
   // State
@@ -45,81 +47,38 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
       hasResult: !!result,
       hasScenes: !!result?.scene_analysis?.scenes,
       scenesCount: result?.scene_analysis?.scenes?.length || 0,
-      hasMoments: !!result?.moment_analysis?.moments,
-      momentsCount: result?.moment_analysis?.moments?.length || 0,
     } as Record<string, unknown>)
   }, [result])
 
-  // Event listeners
-  useEffect(() => {
-    const unlistenFunctions: UnlistenFn[] = []
-    let isMounted = true
+  // Use domain hook for event listeners (replaces direct listen() calls)
+  useAIDirectorEvents({
+    onAnalysisStarted: () => {
+      logInfo("[useAIDirectorAnalysis] Analysis started")
+      setIsAnalyzing(true)
+      setCurrentProgress(null)
+      setResult(null)
+      setErrors([])
+    },
+    onAnalysisProgress: (progress) => {
+      logInfo("[useAIDirectorAnalysis] Analysis progress", progress as unknown as Record<string, unknown>)
+      setCurrentProgress(progress)
+    },
+    onAnalysisCompleted: () => {
+      logInfo("[useAIDirectorAnalysis] Analysis completed")
+      setIsAnalyzing(false)
+      setCurrentProgress(null)
+      // result будет установлен из возвращаемого значения команды
+    },
+    onAnalysisError: (error) => {
+      logError("[useAIDirectorAnalysis] Analysis error", error as unknown as Record<string, unknown>)
+      setErrors((prev) => [...prev, error])
+    },
+    onAnalysisStageCompleted: (stage) => {
+      logInfo("[useAIDirectorAnalysis] Analysis stage completed", stage as unknown as Record<string, unknown>)
+    },
+  })
 
-    const setupEventListeners = async () => {
-      try {
-        // Listen to analysis started
-        const unlistenStarted = await listen("analysis-started", (event) => {
-          logInfo("[useAIDirectorAnalysis] Analysis started", event.payload as Record<string, unknown>)
-          setIsAnalyzing(true)
-          setCurrentProgress(null)
-          setResult(null)
-          setErrors([])
-        })
-        if (isMounted) unlistenFunctions.push(unlistenStarted)
-
-        // Listen to analysis progress
-        const unlistenProgress = await listen("analysis-progress", (event) => {
-          const progress = event.payload as unknown as AnalysisProgress
-          logInfo("[useAIDirectorAnalysis] Analysis progress", progress as unknown as Record<string, unknown>)
-          setCurrentProgress(progress)
-        })
-        if (isMounted) unlistenFunctions.push(unlistenProgress)
-
-        // Listen to analysis completed
-        const unlistenCompleted = await listen("analysis-completed", (event) => {
-          logInfo("[useAIDirectorAnalysis] Analysis completed", event.payload as Record<string, unknown>)
-          setIsAnalyzing(false)
-          setCurrentProgress(null)
-          // result будет установлен из возвращаемого значения команды
-        })
-        if (isMounted) unlistenFunctions.push(unlistenCompleted)
-
-        // Listen to analysis errors
-        const unlistenError = await listen("analysis-error", (event) => {
-          const error = event.payload as unknown as AnalysisError
-          logError("[useAIDirectorAnalysis] Analysis error", error as unknown as Record<string, unknown>)
-          setErrors((prev) => [...prev, error])
-        })
-        if (isMounted) unlistenFunctions.push(unlistenError)
-
-        // Listen to stage completed
-        const unlistenStageCompleted = await listen("analysis-stage-completed", (event) => {
-          logInfo("[useAIDirectorAnalysis] Analysis stage completed", event.payload as Record<string, unknown>)
-          // Можно добавить дополнительную логику для отслеживания завершенных этапов
-        })
-        if (isMounted) unlistenFunctions.push(unlistenStageCompleted)
-      } catch (error) {
-        logError("[useAIDirectorAnalysis] Ошибка настройки event listeners", error as Record<string, unknown>)
-      }
-    }
-
-    void setupEventListeners()
-
-    // Cleanup on unmount
-    return () => {
-      isMounted = false
-      unlistenFunctions.forEach((unlisten) => {
-        try {
-          unlisten()
-        } catch (error) {
-          // Игнорируем ошибки при cleanup
-          logError("[useAIDirectorAnalysis] Ошибка при cleanup event listener", error as Record<string, unknown>)
-        }
-      })
-    }
-  }, [])
-
-  // Start comprehensive analysis
+  // Start comprehensive analysis - using domain tauri command
   const startAnalysis = useCallback(async (videoPath: string, config?: AIDirectorConfig) => {
     try {
       logInfo("[useAIDirectorAnalysis] Запуск комплексного AI Director анализа", { videoPath } as Record<
@@ -127,51 +86,26 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
         unknown
       >)
 
-      const analysisResult = await invoke<ComprehensiveAnalysisResult>("ai_director_analyze_comprehensive", {
+      // Use domain function instead of direct invoke()
+      const analysisResult = await aiDirectorAnalyzeComprehensive(
         videoPath,
-        config: config || {
-          performance_mode: "Balanced",
+        config || {
+          performance_mode: "balanced",
           enable_audio_analysis: true,
           enable_video_analysis: true,
-          enable_vision_analysis: true,
-          enable_face_detection: true,
-          enable_face_analysis: true,
-          enable_object_detection: true,
-          enable_object_analysis: true,
-          enable_emotion_analysis: false,
-          enable_moment_detection: true,
-          enable_content_classification: true,
-          enable_composition_analysis: false,
-          enable_mood_analysis: true,
-          enable_quality_analysis: true,
           enable_scene_detection: true,
-          enable_mcp_agents: false,
-          generate_editing_recommendations: true,
-          max_processing_time: null,
-          quality_threshold: 0.7,
-          max_key_moments: null,
-          enable_caching: true,
-          ai_provider: null,
-          ai_model: null,
-          ai_api_key: null,
-          enable_ai_enhanced_analysis: false,
-          enable_ai_descriptions: false,
-          enable_ai_mood_analysis: false,
-          enable_vision_language_model: false,
-          vlm_model: null,
-          vlm_num_frames: 5,
-          vlm_temperature: 0.7,
-          vlm_max_tokens: 1024,
+          enable_object_detection: true,
+          enable_face_recognition: true,
+          enable_transcription: false,
         },
-      })
+      )
 
       logInfo("[useAIDirectorAnalysis] AI Director анализ завершен", { analysisResult } as Record<string, unknown>)
       setResult(analysisResult)
-      setIsAnalyzing(false) // Важно: устанавливаем после setResult, чтобы избежать race condition с событием
+      setIsAnalyzing(false)
       logInfo("[useAIDirectorAnalysis] setResult вызван, устанавливаем результат", {
         hasResult: !!analysisResult,
         hasScenes: !!analysisResult?.scene_analysis?.scenes,
-        hasMoments: !!analysisResult?.moment_analysis?.moments,
       } as Record<string, unknown>)
     } catch (error) {
       logError("[useAIDirectorAnalysis] Ошибка запуска AI Director анализа", error as Record<string, unknown>)
@@ -187,25 +121,23 @@ export function useAIDirectorAnalysis(): UseAIDirectorAnalysisReturn {
     }
   }, [])
 
-  // Start quick analysis
+  // Start quick analysis - using domain tauri command
   const startQuickAnalysis = useCallback(async (videoPath: string) => {
     try {
       logInfo("[useAIDirectorAnalysis] Запуск быстрого AI Director анализа", { videoPath } as Record<string, unknown>)
 
-      const analysisResult = await invoke<ComprehensiveAnalysisResult>("ai_director_analyze_quick", {
-        videoPath,
-      })
+      // Use domain function instead of direct invoke()
+      const analysisResult = await aiDirectorAnalyzeQuick(videoPath)
 
       logInfo("[useAIDirectorAnalysis] Быстрый AI Director анализ завершен", { analysisResult } as Record<
         string,
         unknown
       >)
       setResult(analysisResult)
-      setIsAnalyzing(false) // Важно: устанавливаем после setResult, чтобы избежать race condition с событием
+      setIsAnalyzing(false)
       logInfo("[useAIDirectorAnalysis] setResult вызван для быстрого анализа", {
         hasResult: !!analysisResult,
         hasScenes: !!analysisResult?.scene_analysis?.scenes,
-        hasMoments: !!analysisResult?.moment_analysis?.moments,
       } as Record<string, unknown>)
     } catch (error) {
       logError("[useAIDirectorAnalysis] Ошибка запуска быстрого AI Director анализа", error as Record<string, unknown>)

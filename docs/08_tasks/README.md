@@ -26,6 +26,36 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-27] Active Tasks Cleanup
+- **Status:** Завершено
+- **Action:** Очистка папки active/ от завершённых задач и документов
+- **Moved to completed/:**
+  - ai-analysis-collaborative-editing-system.md (95-100%)
+  - person-identification-advanced.md (завершён)
+  - ai-director-v2-complete-summary.md
+  - ai-director-v2-frontend-integration-plan.md
+  - ai-director-v2-phase1-implementation.md
+  - ai-director-v2-phase2-implementation.md
+  - ai-director-v2-phase2-summary.md
+  - ai-director-v2-quick-test.md
+  - ai-director-v2-README.md
+- **Moved to planned/:**
+  - ai-director-v2-phase3-plan.md (optional future work)
+- **Deleted:**
+  - TASKS_STATUS_2025-11-25.md (устаревший snapshot)
+- **Active tasks remaining:** 6
+
+### [2025-11-27] Architecture Refactor: Remove Direct Tauri Calls from Features - STARTED
+- **Status:** В работе (Критический приоритет)
+- **File:** architecture-refactor-remove-direct-tauri-calls.md
+- **Action:** planned/ → active/
+- **Notes:**
+  - Обнаружено 24 файла нарушающих архитектуру
+  - Features напрямую вызывают Tauri команды вместо использования domain layer
+  - План рефакторинга в 3 фазы: Media & Video Compiler (2 дня), AI Features (1.5 дня), остальное (1.5 дня)
+  - Начинаем с Фазы 1: Media (5 файлов) + Video Compiler (4 файла)
+  - После завершения добавить ESLint rule для предотвращения нарушений
+
 ### [2025-11-25] Audio Analysis Architecture Refactoring - COMPLETED ✅
 - **Status:** Завершено (100%)
 - **File:** audio-analysis-architecture-refactoring-plan.md
@@ -70,4 +100,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-25*
+*Last updated: 2025-11-27*

@@ -7,17 +7,14 @@
 import { type RenderOptions, render } from "@testing-library/react"
 import type { ReactElement } from "react"
 import { vi } from "vitest"
-import { AIServicesDomainProvider } from "../providers/ai-services-domain-provider"
 
 /**
  * Custom render для компонентов, использующих AI Services Domain
+ * Note: AIServicesDomainProvider was removed during migration
  */
 export function renderWithAIServices(ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) {
-  const Wrapper = ({ children }: { children: React.ReactNode }) => {
-    return <AIServicesDomainProvider>{children}</AIServicesDomainProvider>
-  }
-
-  return render(ui, { wrapper: Wrapper, ...options })
+  // Simple render without provider wrapper since provider was removed
+  return render(ui, options)
 }
 
 /**

@@ -72,7 +72,7 @@ export const About: React.FC = () => {
                 >
                   <div className="absolute inset-0 bg-linear-to-br from-blue-500/15 via-purple-500/15 to-pink-500/15 backdrop-blur-xl" />
                   <div className="absolute inset-0 bg-white/2" />
-                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 p-[1px]">
+                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 p-px">
                     <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
@@ -103,7 +103,7 @@ export const About: React.FC = () => {
                 >
                   <div className="absolute inset-0 bg-linear-to-br from-green-500/15 via-teal-500/15 to-blue-500/15 backdrop-blur-xl" />
                   <div className="absolute inset-0 bg-white/2" />
-                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-green-500/30 via-teal-500/30 to-blue-500/30 p-[1px]">
+                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-green-500/30 via-teal-500/30 to-blue-500/30 p-px">
                     <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
@@ -134,7 +134,7 @@ export const About: React.FC = () => {
                 >
                   <div className="absolute inset-0 bg-linear-to-br from-amber-500/15 via-orange-500/15 to-red-500/15 backdrop-blur-xl" />
                   <div className="absolute inset-0 bg-white/2" />
-                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-amber-500/30 via-orange-500/30 to-red-500/30 p-[1px]">
+                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-amber-500/30 via-orange-500/30 to-red-500/30 p-px">
                     <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
@@ -177,7 +177,7 @@ export const About: React.FC = () => {
               <div className="relative overflow-hidden rounded-2xl">
                 <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
                 <div className="absolute inset-0 bg-white/2" />
-                <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-px">
                   <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
@@ -246,7 +246,7 @@ export const About: React.FC = () => {
                   >
                     <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
                     <div className="absolute inset-0 bg-white/2" />
-                    <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                    <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-px">
                       <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                     </div>
 
@@ -287,7 +287,7 @@ export const About: React.FC = () => {
               <div className="relative overflow-hidden rounded-2xl inline-block">
                 <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
                 <div className="absolute inset-0 bg-white/2" />
-                <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-px">
                   <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 

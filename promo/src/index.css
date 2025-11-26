@@ -530,15 +530,15 @@ body {
 }
 
 .glass-card-border {
-    @apply absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px];
+    @apply absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-px;
 }
 
 .glass-card-border-yellow {
-    @apply absolute inset-0 rounded-2xl bg-linear-to-br from-yellow-500/20 via-transparent to-orange-500/20 p-[1px];
+    @apply absolute inset-0 rounded-2xl bg-linear-to-br from-yellow-500/20 via-transparent to-orange-500/20 p-px;
 }
 
 .glass-card-border-green {
-    @apply absolute inset-0 rounded-2xl bg-linear-to-br from-green-500/20 via-transparent to-teal-500/20 p-[1px];
+    @apply absolute inset-0 rounded-2xl bg-linear-to-br from-green-500/20 via-transparent to-teal-500/20 p-px;
 }
 
 .glass-card-inner {

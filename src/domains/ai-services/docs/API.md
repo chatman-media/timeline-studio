@@ -3,7 +3,6 @@
 ## Table of Contents
 
 - [React Hooks](#react-hooks)
-- [Providers](#providers)
 - [Services](#services)
 - [State Machines](#state-machines)
 - [Backend Commands](#backend-commands)
@@ -13,6 +12,8 @@
 
 ## React Hooks
 
+AI Services предоставляет хуки для работы с AI сервисами. Все хуки используют singleton UnifiedOrchestrator и не требуют дополнительных провайдеров.
+
 ### useUnifiedAnalysis()
 
 Унифицированный анализ медиа через AI Director.
@@ -20,17 +21,31 @@
 ```typescript
 import { useUnifiedAnalysis } from "@/domains/ai-services"
 
-const {
-  startAnalysis,
-  cancelAnalysis,
-  analysisResult,
-  isAnalyzing,
-  progress,
-  error
-} = useUnifiedAnalysis()
+function MyComponent() {
+  const {
+    startAnalysis,
+    cancelAnalysis,
+    analysisResult,
+    isAnalyzing,
+    progress,
+    error
+  } = useUnifiedAnalysis()
 
-// Запуск анализа
-await startAnalysis(videoPath, config)
+  // Запуск анализа
+  const handleAnalyze = async () => {
+    await startAnalysis(videoPath, {
+      aiDirectorConfig: { mode: "balanced" },
+      skipMontageAnalysis: false
+    })
+  }
+
+  return (
+    <div>
+      {isAnalyzing && <ProgressBar value={progress} />}
+      {analysisResult && <AnalysisViewer data={analysisResult} />}
+    </div>
+  )
+}
 ```
 
 **Returns:**
@@ -52,12 +67,28 @@ await startAnalysis(videoPath, config)
 ```typescript
 import { useAnalysisStorage } from "@/domains/ai-services"
 
-const {
-  saveAnalysis,
-  loadAnalysis,
-  deleteAnalysis,
-  listAnalyses
-} = useAnalysisStorage()
+function AnalysisManager() {
+  const {
+    saveAnalysis,
+    loadAnalysis,
+    deleteAnalysis,
+    listAnalyses
+  } = useAnalysisStorage()
+
+  // Сохранение анализа
+  const handleSave = async (analysis: UnifiedContentAnalysis) => {
+    await saveAnalysis(analysis, { projectId: currentProjectId })
+  }
+
+  // Загрузка анализа
+  const handleLoad = async (analysisId: string) => {
+    const analysis = await loadAnalysis(analysisId)
+    return analysis
+  }
+
+  // Получение списка анализов
+  const analyses = await listAnalyses(currentProjectId)
+}
 ```
 
 **Returns:**
@@ -77,12 +108,24 @@ const {
 ```typescript
 import { useAIDirectorEvents } from "@/domains/ai-services"
 
-useAIDirectorEvents({
-  onAnalysisStarted: (event) => {},
-  onAnalysisProgress: (event) => {},
-  onAnalysisCompleted: (event) => {},
-  onAnalysisError: (event) => {}
-})
+function AnalysisMonitor() {
+  useAIDirectorEvents({
+    onAnalysisStarted: (event) => {
+      console.log("Analysis started:", event.analysisId)
+    },
+    onAnalysisProgress: (event) => {
+      console.log("Progress:", event.progress, "%")
+    },
+    onAnalysisCompleted: (event) => {
+      console.log("Completed:", event.result)
+    },
+    onAnalysisError: (event) => {
+      console.error("Error:", event.error)
+    }
+  })
+
+  return <div>Monitoring analysis...</div>
+}
 ```
 
 ---
@@ -94,7 +137,17 @@ useAIDirectorEvents({
 ```typescript
 import { useAIDirectorAnalysisProgress } from "@/domains/ai-services"
 
-const { progress, stage, timeRemaining } = useAIDirectorAnalysisProgress(analysisId)
+function AnalysisProgressBar({ analysisId }: { analysisId: string }) {
+  const { progress, stage, timeRemaining } = useAIDirectorAnalysisProgress(analysisId)
+
+  return (
+    <div>
+      <ProgressBar value={progress} />
+      <p>Stage: {stage}</p>
+      <p>Time remaining: {timeRemaining}s</p>
+    </div>
+  )
+}
 ```
 
 ---
@@ -106,51 +159,14 @@ const { progress, stage, timeRemaining } = useAIDirectorAnalysisProgress(analysi
 ```typescript
 import { useAIDirectorAnalysisCompleted } from "@/domains/ai-services"
 
-useAIDirectorAnalysisCompleted((result) => {
-  console.log("Analysis completed:", result)
-})
-```
+function AnalysisNotifier() {
+  useAIDirectorAnalysisCompleted((result) => {
+    console.log("Analysis completed:", result)
+    showNotification("Analysis complete!")
+  })
 
----
-
-## Providers
-
-### AIServicesDomainProvider
-
-Главный провайдер домена AI Services.
-
-```tsx
-import { AIServicesDomainProvider } from "@/domains/ai-services"
-
-function App() {
-  return (
-    <AIServicesDomainProvider>
-      <YourApp />
-    </AIServicesDomainProvider>
-  )
+  return null
 }
-```
-
-### Provider Hooks
-
-```typescript
-// Основной доступ к домену
-const domain = useAIServicesDomain()
-
-// Статус системы
-const status = useAIServicesDomainStatus()
-
-// AI Chat функционал
-const chat = useAIServicesChat()
-
-// AI Intelligence
-const intelligence = useAIServicesIntelligence()
-
-// Montage Planner
-const montage = useAIServicesMontage()
-
-// Мониторинг использования
-const usage = useAIUsageMonitor()
 ```
 
 ---

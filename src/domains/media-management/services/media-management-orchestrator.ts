@@ -1,0 +1,612 @@
+/**
+ * Media Management Orchestrator Service
+ *
+ * Координирует управление медиафайлами, импорт, операции с файлами
+ * Интегрирован с BackendSync для синхронизации с Rust backend
+ */
+
+import { type ActorRefFrom, createActor } from "xstate"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
+import {
+  handleMediaBackendEvent,
+  type MediaManagementContext as MediaContext,
+} from "../machines/backend-event-handlers"
+import { fileOperationsMachine } from "../machines/file-operations-machine"
+import { mediaImportMachine } from "../machines/media-import-machine"
+import type {
+  MediaFileOperation,
+  MediaImportOptions,
+  MediaInfo,
+  MediaManagementService,
+  MediaMetadata,
+  MediaType,
+} from "../types"
+import { type CameraDevice, type CameraImportOptions, type CameraImportResult, getCameraImport } from "./camera-import"
+import { ErrorTrackerService } from "./error-tracker"
+import { indexedDBCacheService } from "./indexeddb-cache-service"
+import { getMediaFiles, restorePreviewCache, selectAudioFile, selectMediaDirectory, selectMediaFile } from "./media-api"
+import { getMediaMetadataService } from "./media-metadata-service"
+import {
+  getProxyGenerator,
+  type ProxyGenerationOptions,
+  type ProxyGenerationResult,
+  type ProxyResolution,
+} from "./proxy-generator"
+import {
+  getSmartOrganization,
+  type MediaGroup,
+  type OrganizeByCameraOptions,
+  type OrganizeByDateOptions,
+} from "./smart-organization"
+import {
+  getWaveformGenerator,
+  type WaveformData,
+  type WaveformOptions,
+  type WaveformResult,
+} from "./waveform-generator"
+
+const logger = createLogger("MediaManagementOrchestrator")
+
+export class MediaManagementOrchestrator implements MediaManagementService {
+  private fileOperationsActor: ActorRefFrom<typeof fileOperationsMachine>
+  private mediaImportActor: ActorRefFrom<typeof mediaImportMachine>
+  private backendSync = getBackendSync()
+  private backendUnsubscribe: (() => void) | null = null
+
+  // Сервисы
+  private metadataService = getMediaMetadataService()
+  private cameraImportService = getCameraImport()
+  private proxyGeneratorService = getProxyGenerator()
+  private smartOrganizationService = getSmartOrganization()
+  private waveformGeneratorService = getWaveformGenerator()
+  private errorTrackerService = new ErrorTrackerService()
+  private cacheService = indexedDBCacheService
+
+  // Внутреннее состояние
+  private mediaPool = new Map<string, MediaInfo>()
+  private isLoading = false
+  private error: string | null = null
+
+  constructor() {
+    logger.info("[Media Management Orchestrator] Initializing...")
+
+    // Создаем акторы для машин состояния
+    this.fileOperationsActor = createActor(fileOperationsMachine)
+    this.mediaImportActor = createActor(mediaImportMachine)
+
+    // Запускаем акторы
+    this.fileOperationsActor.start()
+    this.mediaImportActor.start()
+
+    // Настраиваем синхронизацию
+    this.setupSynchronization()
+    this.setupBackendSync()
+
+    // Инициализируем кэш превью
+    this.initPreviewCache()
+
+    logger.info("[Media Management Orchestrator] Initialized successfully")
+  }
+
+  /**
+   * Настройка синхронизации между машинами
+   */
+  private setupSynchronization() {
+    // Подписываемся на события операций с файлами
+    this.fileOperationsActor.subscribe((state) => {
+      logger.debug("[Media Management] File operations state changed", {
+        activeCount: state.context.activeOperations.length,
+        completedCount: state.context.completedOperations.length,
+        failedCount: state.context.failedOperations.length,
+      })
+    })
+
+    // Подписываемся на события импорта медиа
+    this.mediaImportActor.subscribe((state) => {
+      if (state.matches("completed")) {
+        logger.info("[Media Management] Media import completed")
+      } else if (state.matches("failed")) {
+        logger.error("[Media Management] Media import failed", { errors: state.context.errors })
+      }
+    })
+  }
+
+  /**
+   * Настройка синхронизации с backend через BackendSync
+   */
+  private setupBackendSync() {
+    // Подписываемся на backend события
+    this.backendUnsubscribe = this.backendSync.onEvent((event: ProjectEvent) => {
+      logger.debug("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
+
+      // Создаем контекст для event handler
+      const context: MediaContext = {
+        mediaPool: this.mediaPool,
+        isLoading: this.isLoading,
+        error: this.error,
+      }
+
+      // Обрабатываем событие
+      const updates = handleMediaBackendEvent(context, event)
+
+      // Применяем обновления
+      if (updates.mediaPool !== undefined) {
+        this.mediaPool = updates.mediaPool
+        logger.info("[Media Management] Media pool updated via event", {
+          eventType: event.type,
+          poolSize: this.mediaPool.size,
+        })
+      }
+
+      if (updates.isLoading !== undefined) {
+        this.isLoading = updates.isLoading
+      }
+
+      if (updates.error !== undefined) {
+        this.error = updates.error
+      }
+    })
+
+    // Подписываемся на изменения состояния для начальной загрузки
+    this.backendSync.onStateChange((state: any) => {
+      this.loadInitialState(state)
+    })
+  }
+
+  /**
+   * Загрузка начального состояния из backend
+   */
+  private loadInitialState(state: any) {
+    logger.info("[Media Management] Loading initial state from backend")
+
+    const initialMediaPool = new Map<string, MediaInfo>()
+
+    // Загружаем из project.media_pool
+    if (state.project?.media_pool?.items) {
+      const mediaPoolItems = state.project.media_pool.items
+      Object.entries(mediaPoolItems).forEach(([mediaId, mediaItem]: [string, any]) => {
+        initialMediaPool.set(mediaId, {
+          id: mediaId,
+          path: mediaItem.path,
+          name: mediaItem.name,
+          type: mediaItem.media_type as MediaType,
+          duration: mediaItem.duration ?? undefined,
+          thumbnailPath: mediaItem.thumbnail ?? undefined,
+          metadata: mediaItem.metadata?.codec
+            ? {
+                type: mediaItem.media_type as "Video" | "Audio" | "Image",
+                codec: mediaItem.metadata.codec,
+              }
+            : undefined,
+        })
+      })
+    }
+
+    // Загружаем из imported_media (временное хранилище)
+    if (state.imported_media) {
+      Object.entries(state.imported_media).forEach(([mediaId, mediaItem]: [string, any]) => {
+        if (!initialMediaPool.has(mediaId)) {
+          initialMediaPool.set(mediaId, {
+            id: mediaId,
+            path: mediaItem.path,
+            name: mediaItem.name,
+            type: mediaItem.media_type as MediaType,
+            duration: mediaItem.duration ?? undefined,
+            thumbnailPath: mediaItem.thumbnail ?? undefined,
+            metadata: mediaItem.metadata?.codec
+              ? {
+                  type: mediaItem.media_type as "Video" | "Audio" | "Image",
+                  codec: mediaItem.metadata.codec,
+                }
+              : undefined,
+          })
+        }
+      })
+    }
+
+    this.mediaPool = initialMediaPool
+    logger.info("[Media Management] Initial media pool loaded", { count: this.mediaPool.size })
+  }
+
+  /**
+   * Инициализация кэша превью
+   */
+  private async initPreviewCache() {
+    try {
+      const restoredCount = await restorePreviewCache()
+      if (restoredCount > 0) {
+        logger.info("[Media Management] Preview cache restored", { count: restoredCount })
+      }
+    } catch (error) {
+      logger.error("[Media Management] Failed to restore preview cache", { error })
+    }
+  }
+
+  /**
+   * Вспомогательная функция для определения типа медиа по пути файла
+   */
+  private getMediaTypeFromPath(filePath: string): MediaType {
+    const ext = filePath.split(".").pop()?.toLowerCase() || ""
+
+    const videoExts = ["mp4", "avi", "mkv", "mov", "webm", "m4v", "3gp", "flv"]
+    const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a", "wma"]
+    const imageExts = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff"]
+
+    if (videoExts.includes(ext)) return "Video"
+    if (audioExts.includes(ext)) return "Audio"
+    if (imageExts.includes(ext)) return "Image"
+
+    return "Unknown"
+  }
+
+  /**
+   * Импорт медиафайлов в проект
+   */
+  async importFiles(files: string[], options: MediaImportOptions = {}): Promise<any[]> {
+    logger.info("[Media Management Orchestrator] Importing files", { filesCount: files.length })
+
+    try {
+      this.isLoading = true
+      this.error = null
+
+      // Добавляем файлы в машину импорта
+      this.mediaImportActor.send({
+        type: "ADD_FILES",
+        files,
+      })
+
+      // Обновляем опции если указаны
+      if (Object.keys(options).length > 0) {
+        this.mediaImportActor.send({
+          type: "UPDATE_OPTIONS",
+          options,
+        })
+      }
+
+      // Запускаем импорт
+      this.mediaImportActor.send({ type: "START_IMPORT" })
+
+      // Импортируем каждый файл через BackendSync
+      const importResults: any[] = []
+
+      for (const filePath of files) {
+        try {
+          const mediaType = this.getMediaTypeFromPath(filePath)
+          const result = await this.backendSync.executeCommand({
+            type: "AddMedia",
+            params: { path: filePath, media_type: mediaType },
+          } as any)
+
+          if (result) {
+            importResults.push(result)
+          }
+        } catch (importError) {
+          logger.error("[Media Management] Failed to import file", { filePath, importError })
+          this.errorTrackerService.recordError("media-import", importError as Error, { filePath })
+        }
+      }
+
+      this.isLoading = false
+      return importResults
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Import failed"
+      logger.error("[Media Management Orchestrator] Import failed", { error: errorMessage })
+      this.error = errorMessage
+      this.isLoading = false
+      throw error
+    }
+  }
+
+  /**
+   * Выбор медиафайлов через диалог
+   */
+  async selectMediaFiles(): Promise<string[] | null> {
+    try {
+      return await selectMediaFile()
+    } catch (error) {
+      logger.error("[Media Management] Failed to select media files", { error })
+      throw error
+    }
+  }
+
+  /**
+   * Выбор аудиофайлов через диалог
+   */
+  async selectAudioFiles(): Promise<string[] | null> {
+    try {
+      return await selectAudioFile()
+    } catch (error) {
+      logger.error("[Media Management] Failed to select audio files", { error })
+      throw error
+    }
+  }
+
+  /**
+   * Выбор директории и автоматический импорт файлов
+   */
+  async selectMediaDirectory(): Promise<string | null> {
+    try {
+      const directory = await selectMediaDirectory()
+      if (!directory) {
+        return null
+      }
+
+      // Получаем все медиафайлы из директории
+      const files = await getMediaFiles(directory)
+
+      // Автоматически импортируем файлы
+      if (files.length > 0) {
+        await this.importFiles(files, {})
+      }
+
+      return directory
+    } catch (error) {
+      logger.error("[Media Management] Failed to select directory", { error })
+      throw error
+    }
+  }
+
+  /**
+   * Получение информации о медиафайле
+   */
+  async getMediaInfo(path: string): Promise<MediaInfo> {
+    try {
+      // Ищем в локальном media pool
+      const mediaEntry = Array.from(this.mediaPool.entries()).find(([, media]) => media.path === path)
+
+      if (mediaEntry) {
+        const [mediaId, mediaInfo] = mediaEntry
+        return mediaInfo.id ? mediaInfo : { ...mediaInfo, id: mediaId }
+      }
+
+      // Если не найдено локально, возвращаем базовую информацию
+      const name = path.split("/").pop() || path
+      const mediaType = this.getMediaTypeFromPath(path)
+
+      return {
+        path,
+        name,
+        type: mediaType,
+      }
+    } catch (error) {
+      logger.error("[Media Management] Failed to get media info", { error })
+      const name = path.split("/").pop() || path
+      const mediaType = this.getMediaTypeFromPath(path)
+
+      return {
+        path,
+        name,
+        type: mediaType,
+      }
+    }
+  }
+
+  /**
+   * Извлечение метаданных медиафайла
+   */
+  async extractMetadata(path: string): Promise<MediaMetadata> {
+    try {
+      this.isLoading = true
+      this.error = null
+
+      const metadata = await this.metadataService.extractMetadata(path)
+
+      // Обновляем метаданные в backend через UpdateMedia команду
+      if (metadata) {
+        const mediaId = Array.from(this.mediaPool.entries()).find(([, media]) => media.path === path)?.[0]
+
+        if (mediaId) {
+          await this.backendSync.executeCommand({
+            type: "UpdateMedia",
+            params: { media_id: mediaId, updates: {} },
+          } as any)
+        }
+      }
+
+      this.isLoading = false
+      return metadata
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Metadata extraction failed"
+      logger.error("[Media Management Orchestrator] Metadata extraction failed", { error: errorMessage })
+      this.error = errorMessage
+      this.isLoading = false
+      throw error
+    }
+  }
+
+  /**
+   * Camera Import API
+   */
+  async detectCameras(): Promise<CameraDevice[]> {
+    return this.cameraImportService.detectCameras()
+  }
+
+  async importFromCamera(deviceId: string, options: CameraImportOptions = {}): Promise<CameraImportResult> {
+    return this.cameraImportService.importFromCamera(deviceId, options)
+  }
+
+  /**
+   * Proxy Generator API
+   */
+  async generateProxy(
+    mediaPath: string,
+    resolution: ProxyResolution = "720p",
+    options: ProxyGenerationOptions = {},
+  ): Promise<ProxyGenerationResult> {
+    return this.proxyGeneratorService.generateProxy(mediaPath, resolution, options)
+  }
+
+  async generateProxies(mediaPaths: string[], options: ProxyGenerationOptions = {}): Promise<ProxyGenerationResult[]> {
+    return this.proxyGeneratorService.generateBatch(mediaPaths, options)
+  }
+
+  /**
+   * Smart Organization API
+   */
+  async organizeByDate(files: string[], options: OrganizeByDateOptions = {}): Promise<MediaGroup[]> {
+    return this.smartOrganizationService.organizeByDate(files, options)
+  }
+
+  async organizeByCamera(files: string[], options: OrganizeByCameraOptions = {}): Promise<MediaGroup[]> {
+    return this.smartOrganizationService.organizeByCamera(files, options)
+  }
+
+  /**
+   * Waveform Generator API
+   */
+  async generateWaveform(audioPath: string, options: WaveformOptions = {}): Promise<WaveformResult> {
+    return this.waveformGeneratorService.generateWaveform(audioPath, options)
+  }
+
+  async getWaveformData(audioPath: string): Promise<WaveformData | null> {
+    try {
+      const result = await this.waveformGeneratorService.generateWaveform(audioPath)
+      return result.data
+    } catch (error) {
+      logger.error("[Media Management] Failed to get waveform data", { error })
+      return null
+    }
+  }
+
+  /**
+   * Cache Management API
+   */
+  async clearCache(): Promise<void> {
+    await this.cacheService.clear()
+  }
+
+  async getCacheStatistics() {
+    return this.cacheService.getStatistics()
+  }
+
+  /**
+   * File Operations API
+   */
+  startFileOperation(operation: MediaFileOperation): void {
+    this.fileOperationsActor.send({
+      type: "START_OPERATION",
+      operation,
+    })
+  }
+
+  updateOperationProgress(operationId: string, progress: number): void {
+    this.fileOperationsActor.send({
+      type: "UPDATE_PROGRESS",
+      operationId,
+      progress,
+    })
+  }
+
+  completeOperation(operationId: string, result: any): void {
+    this.fileOperationsActor.send({
+      type: "COMPLETE_OPERATION",
+      operationId,
+      result,
+    })
+  }
+
+  failOperation(operationId: string, error: string): void {
+    this.fileOperationsActor.send({
+      type: "FAIL_OPERATION",
+      operationId,
+      error,
+    })
+  }
+
+  cancelOperation(operationId: string): void {
+    this.fileOperationsActor.send({
+      type: "CANCEL_OPERATION",
+      operationId,
+    })
+  }
+
+  /**
+   * Получение состояния
+   */
+  getMediaPool(): Map<string, MediaInfo> {
+    return new Map(this.mediaPool)
+  }
+
+  getFileOperationsState() {
+    return this.fileOperationsActor.getSnapshot().context
+  }
+
+  getMediaImportState() {
+    return this.mediaImportActor.getSnapshot().context
+  }
+
+  isMediaLoading(): boolean {
+    return this.isLoading
+  }
+
+  getError(): string | null {
+    return this.error
+  }
+
+  /**
+   * Подписка на изменения
+   */
+  subscribeToFileOperations(callback: (state: any) => void) {
+    return this.fileOperationsActor.subscribe(callback)
+  }
+
+  subscribeToMediaImport(callback: (state: any) => void) {
+    return this.mediaImportActor.subscribe(callback)
+  }
+
+  /**
+   * Error Tracker API
+   */
+  getErrorStatistics() {
+    return this.errorTrackerService.getStatistics()
+  }
+
+  clearErrors() {
+    this.errorTrackerService.clearErrors()
+  }
+
+  /**
+   * Очистка ресурсов
+   */
+  dispose() {
+    logger.info("[Media Management Orchestrator] Disposing...")
+
+    // Отписываемся от backend событий
+    if (this.backendUnsubscribe) {
+      this.backendUnsubscribe()
+      this.backendUnsubscribe = null
+    }
+
+    // Останавливаем акторы
+    this.fileOperationsActor.stop()
+    this.mediaImportActor.stop()
+
+    // Очищаем состояние
+    this.mediaPool.clear()
+  }
+}
+
+// Singleton экземпляр
+let orchestratorInstance: MediaManagementOrchestrator | null = null
+
+/**
+ * Получить экземпляр Media Management Orchestrator
+ */
+export function getMediaManagementOrchestrator(): MediaManagementOrchestrator {
+  if (!orchestratorInstance) {
+    orchestratorInstance = new MediaManagementOrchestrator()
+  }
+  return orchestratorInstance
+}
+
+/**
+ * Сбросить экземпляр orchestrator (для тестов)
+ */
+export function resetMediaManagementOrchestrator() {
+  if (orchestratorInstance) {
+    orchestratorInstance.dispose()
+    orchestratorInstance = null
+  }
+}

@@ -1,7 +1,7 @@
-import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 
+import { readSubtitleFile } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
@@ -112,10 +112,8 @@ export function useSubtitlesImport() {
 
         for (const filePath of files) {
           try {
-            // Читаем файл через Tauri
-            const result = await invoke<SubtitleImportResult>("read_subtitle_file", {
-              file_path: filePath,
-            })
+            // Читаем файл через domain service
+            const result = await readSubtitleFile(filePath)
 
             // Парсим субтитры
             const subtitles = parseSubtitleFile(result.content, result.format as any)
@@ -177,10 +175,8 @@ export function useSubtitlesImport() {
 
       if (selected && typeof selected === "string") {
         try {
-          // Читаем файл через Tauri
-          const result = await invoke<SubtitleImportResult>("read_subtitle_file", {
-            file_path: selected,
-          })
+          // Читаем файл через domain service
+          const result = await readSubtitleFile(selected)
 
           // Парсим субтитры
           const subtitles = parseSubtitleFile(result.content, result.format as any)

@@ -25,7 +25,15 @@ vi.mock("@tauri-apps/plugin-fs", () => ({
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     error: mockLoggerError,
+    errorSync: vi.fn(),
     info: mockLoggerInfo,
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    trace: vi.fn(),
+    traceSync: vi.fn(),
   })),
 }))
 

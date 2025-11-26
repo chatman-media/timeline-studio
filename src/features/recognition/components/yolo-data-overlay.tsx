@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
+import { useNotifications } from "@/domains/system-integration"
 import type { YoloDetection } from "@/features/recognition/types/yolo"
 import { createLogger } from "@/lib/tauri-logger"
 import { useYoloData } from "../hooks/use-yolo-data"
@@ -24,6 +24,7 @@ interface YoloDataOverlayProps {
  */
 export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
   const { t } = useTranslation()
+  const { showInfo } = useNotifications()
   const [detections, setDetections] = useState<YoloDetection[]>([])
   const { getYoloDataAtTimestamp } = useYoloData()
 
@@ -102,10 +103,7 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
             ),
           )
 
-          toast(t("Контекст сцены скопирован"), {
-            description: t("Данные о распознанных объектах скопированы в буфер обмена"),
-            duration: 2000,
-          })
+          showInfo(t("Контекст сцены скопирован"), t("Данные о распознанных объектах скопированы в буфер обмена"))
         }}
       >
         {t("Скопировать контекст сцены")}

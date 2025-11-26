@@ -4,6 +4,28 @@
 
 ---
 
+## [2025-11-27] Remove AIServicesDomainProvider
+
+**Статус:** Completed
+
+### Изменения
+- Удален AIServicesDomainProvider из архитектуры
+- Обновлена документация API.md - удалена секция "Providers"
+- Обновлена документация ARCHITECTURE.md:
+  - Удален Provider слой из Component Diagram
+  - Добавлена секция "No Domain Provider Pattern" в Key Design Decisions
+  - Обновлен Data Flow - показано прямое использование singleton
+- React хуки теперь работают напрямую с singleton UnifiedOrchestrator
+- Упрощена архитектура - меньше слоев абстракции
+
+### Причины
+- Устранение лишнего слоя абстракции
+- Упрощение API для пользователей домена
+- Улучшение производительности (нет overhead от React Context)
+- Упрощение тестирования
+
+---
+
 ## [2025-11-26] Initial Documentation Structure
 
 **Статус:** Completed

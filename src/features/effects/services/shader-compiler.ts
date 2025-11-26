@@ -270,7 +270,9 @@ export class ShaderCompiler {
         const varName = varUsage[1]
 
         // Skip function declarations (e.g., "void main()" or "float foo()")
-        const isFunctionDeclaration = /\b(?:void|float|int|bool|vec[234]|mat[234]|sampler2D|samplerCube)\s+\w+\s*\(/.test(line) && line.includes(varName)
+        const isFunctionDeclaration =
+          /\b(?:void|float|int|bool|vec[234]|mat[234]|sampler2D|samplerCube)\s+\w+\s*\(/.test(line) &&
+          line.includes(varName)
 
         if (!isFunctionDeclaration) {
           const isDeclared =

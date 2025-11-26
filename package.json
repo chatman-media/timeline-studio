@@ -182,6 +182,7 @@
     "@vitest/ui": "^4.0.14",
     "@xstate/graph": "^3.0.4",
     "concurrently": "^9.2.1",
+    "fake-indexeddb": "^6.2.5",
     "happy-dom": "20.0.10",
     "js-yaml": "^4.1.1",
     "jsdom": "27.2.0",

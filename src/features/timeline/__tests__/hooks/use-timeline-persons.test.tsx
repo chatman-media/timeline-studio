@@ -13,9 +13,15 @@ import { MockTimelineProvider } from "../test-providers"
 vi.mock("@/lib/tauri-logger", () => {
   const mockLogger = {
     error: vi.fn().mockResolvedValue(undefined),
+    errorSync: vi.fn(),
     warn: vi.fn().mockResolvedValue(undefined),
+    warnSync: vi.fn(),
     info: vi.fn().mockResolvedValue(undefined),
+    infoSync: vi.fn(),
     debug: vi.fn().mockResolvedValue(undefined),
+    debugSync: vi.fn(),
+    trace: vi.fn().mockResolvedValue(undefined),
+    traceSync: vi.fn(),
   }
 
   return {

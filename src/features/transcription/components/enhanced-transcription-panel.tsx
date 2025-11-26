@@ -22,7 +22,6 @@ import {
 } from "lucide-react"
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -34,6 +33,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useNotifications } from "@/domains/system-integration"
 import { type EnhancedSubtitleOptions, useEnhancedSubtitleAutomation } from "../hooks/use-enhanced-subtitle-automation"
 // Импортируем существующие компоненты и хуки
 import { useTranscription } from "../hooks/use-transcription"
@@ -49,6 +49,7 @@ interface EnhancedTranscriptionPanelProps {
 
 export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscriptionPanelProps) {
   const { t } = useTranslation()
+  const { showError } = useNotifications()
 
   // Базовая транскрипция
   const {
@@ -143,7 +144,7 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
         setSelectedClipId(clipId)
       }
     } catch (error) {
-      toast.error(t("transcription.fileSelect.error", "Ошибка выбора файла"))
+      showError(t("transcription.fileSelect.error", "Ошибка выбора файла"))
     }
   }
 
@@ -152,48 +153,48 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
    */
   const handleBasicTranscription = useCallback(async () => {
     if (!selectedFile) {
-      toast.error(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await transcribe(selectedFile, transcriptionOptions)
-  }, [selectedFile, transcriptionOptions, transcribe])
+  }, [selectedFile, transcriptionOptions, transcribe, showError])
 
   /**
    * Запуск расширенной автоматизации
    */
   const handleEnhancedGeneration = useCallback(async () => {
     if (!selectedFile || !selectedClipId) {
-      toast.error(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await generateEnhancedSubtitles(selectedFile, selectedClipId, enhancedOptions)
-  }, [selectedFile, selectedClipId, enhancedOptions, generateEnhancedSubtitles])
+  }, [selectedFile, selectedClipId, enhancedOptions, generateEnhancedSubtitles, showError])
 
   /**
    * Быстрая генерация субтитров
    */
   const handleQuickGeneration = useCallback(async () => {
     if (!selectedClipId) {
-      toast.error(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await quickGenerateFromVideo(selectedClipId, enhancedOptions.language)
-  }, [selectedClipId, enhancedOptions.language, quickGenerateFromVideo])
+  }, [selectedClipId, enhancedOptions.language, quickGenerateFromVideo, showError])
 
   /**
    * Извлечение из визуального текста
    */
   const handleOCRExtraction = useCallback(async () => {
     if (!selectedClipId) {
-      toast.error(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await extractFromScreenText(selectedClipId, enhancedOptions.language)
-  }, [selectedClipId, enhancedOptions.language, extractFromScreenText])
+  }, [selectedClipId, enhancedOptions.language, extractFromScreenText, showError])
 
   /**
    * Сохранение субтитров
@@ -217,11 +218,11 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
           mode === "basic" ? await generateBasicSubtitles(format) : await generateBasicSubtitles(format) // Пока используем базовую генерацию
 
         if (subtitleContent) {
-          toast.success(t("transcription.save.success", "Субтитры сохранены"))
+          showError(t("transcription.save.success", "Субтитры сохранены"))
         }
       }
     } catch (error) {
-      toast.error(t("transcription.save.error", "Ошибка сохранения"))
+      showError(t("transcription.save.error", "Ошибка сохранения"))
     }
   }
 

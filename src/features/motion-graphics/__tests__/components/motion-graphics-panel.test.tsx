@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest"
 import { fireEvent, screen } from "@testing-library/react"
+import { describe, expect, it, vi } from "vitest"
 import { renderWithBase } from "@/test/test-utils"
 import { MotionGraphicsPanel } from "../../components/motion-graphics-panel"
 import { createAnimationLayer } from "../../services/animation-layers"

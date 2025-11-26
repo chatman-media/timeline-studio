@@ -20,25 +20,45 @@ vi.mock("@/lib/tauri-logger", () => ({
       console.info(formattedMessage)
       return Promise.resolve()
     },
+    infoSync: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.info(formattedMessage)
+    },
     error: (message: string, context?: unknown) => {
       const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
       console.error(formattedMessage)
       return Promise.resolve()
+    },
+    errorSync: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.error(formattedMessage)
     },
     warn: (message: string, context?: unknown) => {
       const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
       console.warn(formattedMessage)
       return Promise.resolve()
     },
+    warnSync: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.warn(formattedMessage)
+    },
     debug: (message: string, context?: unknown) => {
       const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
       console.debug(formattedMessage)
       return Promise.resolve()
     },
+    debugSync: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.debug(formattedMessage)
+    },
     trace: (message: string, context?: unknown) => {
       const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
       console.debug(formattedMessage)
       return Promise.resolve()
+    },
+    traceSync: (message: string, context?: unknown) => {
+      const formattedMessage = `[GeneralSettingsTab] ${message}${context ? ` ${JSON.stringify(context, null, 2)}` : ""}`
+      console.debug(formattedMessage)
     },
   }),
 }))

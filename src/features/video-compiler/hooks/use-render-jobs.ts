@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { videoCompilerRenderService } from "@/domains/video-editing/services/video-compiler-render-service"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -36,8 +36,8 @@ export function useRenderJobs(): UseRenderJobsReturn {
     try {
       setIsLoading(true)
       setError(null)
-      const activeJobs = await invoke<RenderJob[]>("get_active_jobs")
-      setJobs(activeJobs)
+      const activeJobs = await videoCompilerRenderService.getActiveJobs()
+      setJobs(activeJobs as RenderJob[])
       void logger.info("Список активных задач получен успешно", { jobsCount: activeJobs.length })
     } catch (err) {
       void logger.error("Ошибка получения списка активных задач", { error: err })
@@ -53,7 +53,7 @@ export function useRenderJobs(): UseRenderJobsReturn {
     void logger.info("Запрос задачи по ID", { jobId })
 
     try {
-      const job = await invoke<RenderJob | null>("get_render_job", { jobId })
+      const job = await videoCompilerRenderService.getRenderJob(jobId)
       if (job) {
         void logger.info("Задача получена успешно", { jobId, status: job.status })
       } else {
@@ -72,7 +72,7 @@ export function useRenderJobs(): UseRenderJobsReturn {
       void logger.info("Отмена задачи", { jobId })
 
       try {
-        const success = await invoke<boolean>("cancel_render", { jobId })
+        const success = await videoCompilerRenderService.cancelRender(jobId)
         if (success) {
           void logger.info("Задача отменена успешно", { jobId })
           // Обновляем список после отмены

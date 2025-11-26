@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 
+import { videoCompilerCacheService } from "@/domains/video-editing/services/video-compiler-cache-service"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { VideoCompilerCacheStats } from "../types/cache"
@@ -36,8 +36,8 @@ export function useCacheStats(): UseCacheStatsReturn {
       setIsLoading(true)
       setError(null)
       // Теперь бэкенд возвращает CacheStatsWithRatios с уже вычисленными значениями
-      const cacheStats = await invoke<CacheStatsWithRatios>("get_cache_stats")
-      setStats(cacheStats)
+      const cacheStats = await videoCompilerCacheService.getCacheStats()
+      setStats(cacheStats as CacheStatsWithRatios)
       void logger.info("Статистика кеша получена успешно", {
         totalEntries: cacheStats.total_entries,
         cacheHits: cacheStats.cache_hits,
@@ -57,7 +57,7 @@ export function useCacheStats(): UseCacheStatsReturn {
     void logger.info("Очистка кеша превью")
 
     try {
-      await invoke("clear_preview_cache")
+      await videoCompilerCacheService.clearPreviewCache()
       void logger.info("Кеш превью очищен успешно")
       await refreshStats() // Обновляем статистику после очистки
       return true
@@ -73,7 +73,7 @@ export function useCacheStats(): UseCacheStatsReturn {
     void logger.info("Очистка всего кеша")
 
     try {
-      await invoke("clear_all_cache")
+      await videoCompilerCacheService.clearAllCache()
       void logger.info("Весь кеш очищен успешно")
       await refreshStats() // Обновляем статистику после очистки
       return true

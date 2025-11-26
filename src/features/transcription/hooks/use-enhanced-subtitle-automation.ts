@@ -5,7 +5,6 @@
 
 import { useCallback, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 // Импортируем новый enhanced инструмент
 import {
   autoGenerateSubtitlesFromVideo,
@@ -15,6 +14,7 @@ import {
   extractSubtitlesFromScreenText,
   generateMultilingualSubtitles,
 } from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
+import { useNotifications } from "@/domains/system-integration"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Базовые типы из транскрипции
@@ -82,6 +82,7 @@ export interface EnhancedSubtitleProgress {
 
 export function useEnhancedSubtitleAutomation() {
   const { t } = useTranslation()
+  const { showSuccess, showError, showInfo } = useNotifications()
   const [isProcessing, setIsProcessing] = useState(false)
   const [progress, setProgress] = useState<EnhancedSubtitleProgress>({
     stage: "initializing",
@@ -209,16 +210,13 @@ export function useEnhancedSubtitleAutomation() {
           confidence: enhancedResult.quality.overallConfidence,
         })
 
-        toast.success(t("subtitles.enhanced.success", "Субтитры созданы"), {
-          description: t(
-            "subtitles.enhanced.successDesc",
-            "Обработано {{count}} субтитров с уверенностью {{confidence}}%",
-            {
-              count: enhancedResult.subtitles.length,
-              confidence: Math.round(enhancedResult.quality.overallConfidence * 100),
-            },
-          ),
-        })
+        showSuccess(
+          t("subtitles.enhanced.success", "Субтитры созданы"),
+          t("subtitles.enhanced.successDesc", "Обработано {{count}} субтитров с уверенностью {{confidence}}%", {
+            count: enhancedResult.subtitles.length,
+            confidence: Math.round(enhancedResult.quality.overallConfidence * 100),
+          }),
+        )
 
         return enhancedResult
       } catch (err) {
@@ -227,9 +225,7 @@ export function useEnhancedSubtitleAutomation() {
         setError(errorMessage)
         setProgress({ stage: "error", progress: 0, message: errorMessage })
 
-        toast.error(t("subtitles.enhanced.error", "Ошибка создания субтитров"), {
-          description: errorMessage,
-        })
+        showError(t("subtitles.enhanced.error", "Ошибка создания субтитров"), errorMessage)
 
         return null
       } finally {
@@ -238,7 +234,7 @@ export function useEnhancedSubtitleAutomation() {
         logInfo("[useEnhancedSubtitleAutomation] Обработка завершена")
       }
     },
-    [t],
+    [t, showSuccess, showError],
   )
 
   /**
@@ -359,9 +355,9 @@ export function useEnhancedSubtitleAutomation() {
       setIsProcessing(false)
       setProgress({ stage: "initializing", progress: 0 })
       logInfo("[useEnhancedSubtitleAutomation] Операция отменена пользователем")
-      toast.info(t("subtitles.enhanced.cancelled", "Операция отменена"))
+      showInfo(t("subtitles.enhanced.cancelled", "Операция отменена"))
     }
-  }, [t])
+  }, [t, showInfo])
 
   /**
    * Сброс состояния

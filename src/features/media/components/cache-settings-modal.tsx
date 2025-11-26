@@ -1,7 +1,6 @@
 import { AlertCircle, Database, HardDrive, RefreshCw, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +10,7 @@ import {
   type CacheStatistics,
   indexedDBCacheService,
 } from "@/domains/media-management/services/indexeddb-cache-service"
+import { useNotifications } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { formatFileSize } from "@/lib/utils"
 
@@ -21,6 +21,7 @@ const logger = createLogger("CacheSettings")
  */
 export function CacheSettingsModal() {
   const { t } = useTranslation()
+  const { showSuccess, showError } = useNotifications()
   const [isLoading, setIsLoading] = useState(false)
   const [cacheStats, setCacheStats] = useState<CacheStatistics | null>(null)
   const [clearingProgress, setClearingProgress] = useState(0)
@@ -36,11 +37,11 @@ export function CacheSettingsModal() {
       setCacheStats(stats)
     } catch (error) {
       logger.errorSync("Failed to load cache statistics", { error })
-      toast.error(t("browser.media.cache.errors.loadStats"))
+      showError(t("browser.media.cache.errors.loadStats"))
     } finally {
       setIsLoading(false)
     }
-  }, [t])
+  }, [t, showError])
 
   // Очистка кэша превью
   const clearPreviewCache = useCallback(async () => {
@@ -60,11 +61,11 @@ export function CacheSettingsModal() {
       }
       setClearingProgress(100)
 
-      toast.success(t("browser.media.cache.success.clearPreview"))
+      showSuccess(t("browser.media.cache.success.clearPreview"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear preview cache", { error })
-      toast.error(t("browser.media.cache.errors.clearPreview"))
+      showError(t("browser.media.cache.errors.clearPreview"))
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
         intervalRef.current = null
@@ -76,7 +77,7 @@ export function CacheSettingsModal() {
         timeoutRef.current = null
       }, 500)
     }
-  }, [loadCacheStats, t])
+  }, [loadCacheStats, t, showSuccess, showError])
 
   // Очистка кэша кадров
   const clearFrameCache = useCallback(async () => {
@@ -92,18 +93,18 @@ export function CacheSettingsModal() {
       clearInterval(progressInterval)
       setClearingProgress(100)
 
-      toast.success(t("browser.media.cache.success.clearFrames"))
+      showSuccess(t("browser.media.cache.success.clearFrames"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear frame cache", { error })
-      toast.error(t("browser.media.cache.errors.clearFrames"))
+      showError(t("browser.media.cache.errors.clearFrames"))
     } finally {
       setTimeout(() => {
         setClearingProgress(0)
         setIsClearing(false)
       }, 500)
     }
-  }, [loadCacheStats, t])
+  }, [loadCacheStats, t, showSuccess, showError])
 
   // Очистка кэша распознавания
   const clearRecognitionCache = useCallback(async () => {
@@ -119,18 +120,18 @@ export function CacheSettingsModal() {
       clearInterval(progressInterval)
       setClearingProgress(100)
 
-      toast.success(t("browser.media.cache.success.clearRecognition"))
+      showSuccess(t("browser.media.cache.success.clearRecognition"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear recognition cache", { error })
-      toast.error(t("browser.media.cache.errors.clearRecognition"))
+      showError(t("browser.media.cache.errors.clearRecognition"))
     } finally {
       setTimeout(() => {
         setClearingProgress(0)
         setIsClearing(false)
       }, 500)
     }
-  }, [loadCacheStats, t])
+  }, [loadCacheStats, t, showSuccess, showError])
 
   // Очистка всего кэша
   const clearAllCache = useCallback(async () => {
@@ -146,30 +147,30 @@ export function CacheSettingsModal() {
       clearInterval(progressInterval)
       setClearingProgress(100)
 
-      toast.success(t("browser.media.cache.success.clearAll"))
+      showSuccess(t("browser.media.cache.success.clearAll"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear all cache", { error })
-      toast.error(t("browser.media.cache.errors.clearAll"))
+      showError(t("browser.media.cache.errors.clearAll"))
     } finally {
       setTimeout(() => {
         setClearingProgress(0)
         setIsClearing(false)
       }, 500)
     }
-  }, [loadCacheStats, t])
+  }, [loadCacheStats, t, showSuccess, showError])
 
   // Очистка устаревшего кэша
   const cleanupExpiredCache = useCallback(async () => {
     try {
       await indexedDBCacheService.cleanupExpiredCache()
-      toast.success(t("browser.media.cache.success.cleanupExpired"))
+      showSuccess(t("browser.media.cache.success.cleanupExpired"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to cleanup expired cache", { error })
-      toast.error(t("browser.media.cache.errors.cleanupExpired"))
+      showError(t("browser.media.cache.errors.cleanupExpired"))
     }
-  }, [loadCacheStats, t])
+  }, [loadCacheStats, t, showSuccess, showError])
 
   // Загрузка статистики при монтировании
   useEffect(() => {
@@ -311,11 +312,11 @@ export function CacheSettingsModal() {
                     clearInterval(progressInterval)
                     setClearingProgress(100)
 
-                    toast.success(t("browser.media.cache.success.clearSubtitles"))
+                    showSuccess(t("browser.media.cache.success.clearSubtitles"))
                     await loadCacheStats()
                   } catch (error) {
                     logger.errorSync("Failed to clear subtitle cache", { error })
-                    toast.error(t("browser.media.cache.errors.clearSubtitles"))
+                    showError(t("browser.media.cache.errors.clearSubtitles"))
                   } finally {
                     setTimeout(() => {
                       setClearingProgress(0)

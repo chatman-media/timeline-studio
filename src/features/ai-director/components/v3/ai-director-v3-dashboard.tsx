@@ -7,12 +7,12 @@
 
 import { Settings, Zap } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useMediaManagement } from "@/domains/media-management"
+import { useNotifications } from "@/domains/system-integration"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisSettings as AnalysisSettingsType } from "./analysis-settings"
@@ -39,6 +39,7 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
 
   // Hooks
   const { mediaPool } = useMediaManagement()
+  const { showInfo, showSuccess, showWarning, showError } = useNotifications()
   const { isAnalyzing, filesProgress, batchProgress, startBatchAnalysis, cancelAnalysis, reset } =
     useAIDirectorAnalysisV2()
 
@@ -75,11 +76,8 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
   // Handlers
   const handleOpenMediaPool = useCallback(() => {
     logger.infoSync("[Dashboard v3] Opening Browser for import")
-    toast.info("Импортируйте файлы через Browser", {
-      description: "Используйте вкладку Media в Browser для импорта файлов",
-      duration: 5000,
-    })
-  }, [])
+    showInfo("Импортируйте файлы через Browser", "Используйте вкладку Media в Browser для импорта файлов")
+  }, [showInfo])
 
   const handleSelectionChange = useCallback((newSelection: Set<string>) => {
     setSelectedFileIds(newSelection)
@@ -97,16 +95,12 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
       })
 
       if (paths.length === 0) {
-        toast.warning("Файлы не выбраны", {
-          description: "Выберите файлы из медиапула",
-        })
+        showWarning("Файлы не выбраны", "Выберите файлы из медиапула")
         return
       }
 
       if (analysisSettings.analyzers.length === 0) {
-        toast.warning("Анализаторы не выбраны", {
-          description: "Выберите хотя бы один анализатор в настройках",
-        })
+        showWarning("Анализаторы не выбраны", "Выберите хотя бы один анализатор в настройках")
         return
       }
 
@@ -116,28 +110,22 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
           analyzers: analysisSettings.analyzers,
         })
 
-        toast.success("Анализ запущен", {
-          description: `Обработка ${paths.length} файл${paths.length > 1 ? "ов" : "а"}`,
-        })
+        showSuccess("Анализ запущен", `Обработка ${paths.length} файл${paths.length > 1 ? "ов" : "а"}`)
 
         await startBatchAnalysis(paths, selectedAnalyzers)
         logger.infoSync("[Dashboard v3] Analysis started successfully")
       } catch (error) {
         logger.errorSync("[Dashboard v3] Error starting analysis", error as Record<string, unknown>)
-        toast.error("Ошибка запуска анализа", {
-          description: error instanceof Error ? error.message : "Неизвестная ошибка",
-        })
+        showError("Ошибка запуска анализа", error instanceof Error ? error.message : "Неизвестная ошибка")
       }
     },
-    [mediaPool, analysisSettings.analyzers, selectedAnalyzers, startBatchAnalysis],
+    [mediaPool, analysisSettings.analyzers, selectedAnalyzers, startBatchAnalysis, showSuccess, showError, showWarning],
   )
 
   const handleReset = () => {
     logger.infoSync("[Dashboard v3] Resetting dashboard")
     reset()
-    toast.info("Dashboard reset", {
-      description: "Ready for new analysis",
-    })
+    showInfo("Dashboard reset", "Ready for new analysis")
   }
 
   const handleCancel = () => {
@@ -146,9 +134,7 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
     // Cancel ongoing analysis
     cancelAnalysis()
 
-    toast.info("Analysis cancelled", {
-      description: "You can start a new analysis",
-    })
+    showInfo("Analysis cancelled", "You can start a new analysis")
   }
 
   // UI State

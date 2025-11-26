@@ -5,12 +5,20 @@
  * - Выбор конкретных анализаторов через checkbox
  * - Детальный прогресс по каждому файлу и анализатору
  * - Пакетный анализ нескольких файлов
+ *
+ * Uses domain services for invoke() calls. Events use direct listen()
+ * due to specialized event types not covered by useAIDirectorEvents.
  */
 
-import { invoke } from "@tauri-apps/api/core"
-import { listen, UnlistenFn } from "@tauri-apps/api/event"
+import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useState } from "react"
-import type { AnalysisError, AnalysisProgress } from "@/domains/ai-services/types/ai-director-events"
+import type {
+  AIDirectorConfig,
+  AnalysisError,
+  AnalysisProgress,
+  ComprehensiveAnalysisResult,
+} from "@/domains/ai-director"
+import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type {
@@ -21,10 +29,6 @@ import type {
 import { createInitialFileProgress, updateAnalyzerProgress } from "../types/analysis-progress"
 
 const logger = createLogger("useAIDirectorAnalysisV2")
-
-// AI Director types (будут в tauri-bindings после генерации)
-type AIDirectorConfig = any
-type ComprehensiveAnalysisResult = any
 
 export interface UseAIDirectorAnalysisV2Return {
   // State
@@ -67,7 +71,7 @@ function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): Partial<AIDirectorC
     enable_vision_language_model: analyzers.has("vlm_analysis"),
 
     // Базовые настройки
-    performance_mode: "Balanced",
+    performance_mode: "balanced",
     generate_editing_recommendations: false,
     enable_mcp_agents: false,
   }
@@ -515,12 +519,9 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
       const config = mapAnalyzersToConfig(analyzers)
       logger.infoSync("[useAIDirectorAnalysisV2] Config", config)
 
-      // Call backend command (v2 with events)
+      // Call backend command (v2 with events) - using domain function
       // NOTE: Бэкенд анализирует файлы последовательно и отправляет real-time события
-      const results = await invoke<ComprehensiveAnalysisResult[]>("ai_director_v2_analyze_batch", {
-        filePaths,
-        config,
-      })
+      const results = await aiDirectorAnalyzeBatch(filePaths, config as AIDirectorConfig)
 
       logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis completed", {
         resultsCount: results.length,

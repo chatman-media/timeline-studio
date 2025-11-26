@@ -539,7 +539,13 @@ describe("useMediaProcessor", () => {
 
   describe("cancelProcessing", () => {
     it("should cancel processing successfully", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      // Mock invoke to return empty array for scan_media_folder and undefined for cancel
+      mockInvoke.mockImplementation((command: string) => {
+        if (command === "scan_media_folder") {
+          return Promise.resolve([])
+        }
+        return Promise.resolve(undefined)
+      })
 
       const { result } = renderHook(() => useMediaProcessor())
 

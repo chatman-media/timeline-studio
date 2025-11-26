@@ -2,25 +2,41 @@
  * AI Director Feature - Export Module
  * Comprehensive media analysis orchestrator
  *
- * MIGRATION NOTE: Core types (AIDirectorConfig, ComprehensiveAnalysisResult) moved to @/types/generated/tauri-bindings
- * Event types (AnalysisProgress, AnalysisError) moved to @/domains/ai-services/types/ai-director-events
+ * Domain types and services are now in @/domains/ai-director
  */
 
 export type {
   AIDirectorConfig,
-  AIDirectorHealthCheckResult,
+  AIDirectorEvent,
+  AIDirectorEventCallbacks,
   AIDirectorVideoAnalysisOptions,
-  ComprehensiveAnalysisResult,
-  ConfigValidationResult,
-  SystemCapabilities,
-  UnifiedAudioConfig,
-} from "@/domains/ai-services"
-// AI Director Service and types are now re-exported from domain
-export { AIDirectorService, aiDirectorService } from "@/domains/ai-services"
-export type {
+  AnalysisCompleted,
   AnalysisError,
   AnalysisProgress,
-} from "@/domains/ai-services/types/ai-director-events"
+  AnalysisStageCompleted,
+  AnalysisStatus,
+  ComprehensiveAnalysisResult,
+  ConfigValidationResult,
+  FaceRecognitionResult,
+  HealthCheckResult,
+  ObjectDetectionResult,
+  PerformanceMode,
+  SceneAnalysisResult,
+  SystemCapabilities,
+  UnifiedAudioAnalysisResult,
+  UnifiedAudioConfig,
+  UseAIDirectorEventsReturn,
+  VideoAnalysisResult,
+} from "@/domains/ai-director"
+// Re-export from AI Director domain
+export {
+  AI_DIRECTOR_EVENTS,
+  AIDirectorService,
+  aiDirectorMachine,
+  aiDirectorService,
+  useAIDirectorEvents,
+} from "@/domains/ai-director"
+
 // Components
 export * from "./components/ai-director-chat"
 export * from "./components/ai-director-dashboard"
@@ -32,11 +48,11 @@ export * from "./components/file-analysis-progress"
 export * from "./components/montage-plan-editor"
 export * from "./components/montage-plan-preview"
 export * from "./components/montage-template-selector"
-// Hooks
+
+// Hooks (feature-specific hooks, not domain hooks)
 export * from "./hooks"
-// Services
-export * from "./services/ai-director-machine"
-// New progress types
+
+// Progress types
 export type {
   AnalysisConfig,
   AnalysisProgressEvent,
@@ -50,6 +66,7 @@ export type {
   FileAnalysisProgress,
   FileAnalysisStatus,
 } from "./types/analysis-progress"
+
 // Progress utilities
 export {
   ANALYZER_METADATA,
@@ -60,6 +77,7 @@ export {
   getAnalyzersByCategory,
   updateAnalyzerProgress,
 } from "./types/analysis-progress"
+
 // Preset types
 export type { AnalyzerPreset } from "./types/analyzer-presets"
 export {
@@ -69,6 +87,7 @@ export {
   getPresetById,
   validatePreset,
 } from "./types/analyzer-presets"
+
 // Dashboard types
 export type {
   AgentStatus,
@@ -85,6 +104,7 @@ export {
   AGENT_TYPE_NAMES,
   BUILT_IN_WORKFLOWS,
 } from "./types/dashboard"
+
 // Montage plan types
 export type {
   MontageClip,
@@ -98,6 +118,7 @@ export type {
   MontageTransition,
   TransitionType,
 } from "./types/montage-plan"
+
 // Montage template types
 export type {
   ClipSelectionRules,
@@ -112,6 +133,7 @@ export {
   getTemplatesByCategory,
   searchTemplatesByTags,
 } from "./types/montage-templates"
+
 // Montage plan utilities
 export {
   exportMontagePlan,

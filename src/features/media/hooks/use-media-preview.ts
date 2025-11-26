@@ -1,8 +1,11 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
+import {
+  type MediaPreviewData,
+  mediaPreviewService,
+  type ThumbnailData,
+} from "@/domains/media-management/services/media-preview-service"
 import { createLogger } from "@/lib/tauri-logger"
-import type { MediaPreviewData, ThumbnailData } from "../types/preview"
 
 const logger = createLogger("MediaPreview")
 
@@ -40,7 +43,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
         }
 
         // Если нет в кэше, запрашиваем с бэкенда
-        const data = await invoke<MediaPreviewData | null>("get_media_preview_data", { fileId })
+        const data = await mediaPreviewService.getPreviewData(fileId)
 
         // Сохраняем в кэш, если есть данные превью
         if (data?.browser_thumbnail?.base64_data) {
@@ -71,13 +74,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
         setIsGenerating(true)
         setError(null)
 
-        const thumbnail = await invoke<ThumbnailData>("generate_media_thumbnail", {
-          fileId,
-          filePath,
-          width,
-          height,
-          timestamp,
-        })
+        const thumbnail = await mediaPreviewService.generateThumbnail(fileId, filePath, width, height, timestamp)
 
         // Сохраняем в кэш, если есть base64 данные
         if (thumbnail?.base64_data) {
@@ -107,7 +104,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
     async (fileId: string): Promise<boolean> => {
       try {
         // Очищаем данные на бэкенде
-        await invoke("clear_media_preview_data", { fileId })
+        await mediaPreviewService.clearPreviewData(fileId)
 
         // Очищаем конкретное превью из IndexedDB кэша
         await indexedDBCacheService.deletePreview(fileId)
@@ -126,7 +123,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
 
   const getFilesWithPreviews = useCallback(async (): Promise<string[]> => {
     try {
-      const files = await invoke<string[]>("get_files_with_previews")
+      const files = await mediaPreviewService.getFilesWithPreviews()
       return files
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "Failed to get files with previews"
@@ -139,7 +136,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
   const savePreviewData = useCallback(
     async (path: string): Promise<boolean> => {
       try {
-        await invoke("save_preview_data", { path })
+        await mediaPreviewService.savePreviewData(path)
         return true
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to save preview data"
@@ -154,7 +151,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
   const loadPreviewData = useCallback(
     async (path: string): Promise<boolean> => {
       try {
-        await invoke("load_preview_data", { path })
+        await mediaPreviewService.loadPreviewData(path)
         return true
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to load preview data"
@@ -173,7 +170,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
    */
   const restorePreviewCache = useCallback(async (): Promise<number> => {
     try {
-      const restoredCount = await invoke<number>("restore_preview_cache")
+      const restoredCount = await mediaPreviewService.restorePreviewCache()
       logger.debugSync(`Preview cache restored: ${restoredCount} thumbnails`)
       return restoredCount
     } catch (err) {
@@ -189,7 +186,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
    */
   const hasCachedThumbnail = useCallback(async (fileId: string, width: number, height: number): Promise<boolean> => {
     try {
-      return await invoke<boolean>("has_cached_thumbnail", { fileId, width, height })
+      return await mediaPreviewService.hasCachedThumbnail(fileId, width, height)
     } catch {
       return false
     }
@@ -200,7 +197,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
    */
   const getCachedThumbnailPath = useCallback(async (fileId: string, width: number, height: number): Promise<string> => {
     try {
-      return await invoke<string>("get_cached_thumbnail_path", { fileId, width, height })
+      return await mediaPreviewService.getCachedThumbnailPath(fileId, width, height)
     } catch {
       return ""
     }
@@ -216,7 +213,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
       frames: Array<{ timestamp: number; base64_data: string; is_keyframe: boolean }>,
     ): Promise<boolean> => {
       try {
-        await invoke("save_timeline_frames", { fileId, frames })
+        await mediaPreviewService.saveTimelineFrames(fileId, frames)
         return true
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to save timeline frames"
@@ -231,10 +228,7 @@ export function useMediaPreview(options: UseMediaPreviewOptions = {}) {
   const getTimelineFrames = useCallback(
     async (fileId: string): Promise<Array<{ timestamp: number; base64_data: string; is_keyframe: boolean }>> => {
       try {
-        const frames = await invoke<Array<{ timestamp: number; base64_data: string; is_keyframe: boolean }>>(
-          "get_timeline_frames",
-          { fileId },
-        )
+        const frames = await mediaPreviewService.getTimelineFrames(fileId)
         return frames
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to get timeline frames"

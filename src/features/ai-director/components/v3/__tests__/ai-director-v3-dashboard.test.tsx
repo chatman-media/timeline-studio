@@ -16,32 +16,44 @@ vi.mock("@/features/ai-director/hooks/use-ai-director-analysis-v2", () => ({
   useAIDirectorAnalysisV2: vi.fn(),
 }))
 
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => ({
-    infoSync: vi.fn(),
-    warnSync: vi.fn(),
-    errorSync: vi.fn(),
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    createLogger: vi.fn(() => ({
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+      infoSync: vi.fn(),
+      warnSync: vi.fn(),
+      errorSync: vi.fn(),
+    })),
+  }
+})
+
+const mockShowInfo = vi.fn()
+const mockShowSuccess = vi.fn()
+const mockShowWarning = vi.fn()
+const mockShowError = vi.fn()
+
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: vi.fn(() => ({
+    showInfo: mockShowInfo,
+    showSuccess: mockShowSuccess,
+    showWarning: mockShowWarning,
+    showError: mockShowError,
   })),
 }))
 
-vi.mock("sonner", () => ({
-  toast: {
-    info: vi.fn(),
-    success: vi.fn(),
-    warning: vi.fn(),
-    error: vi.fn(),
-  },
-}))
-
-import { toast } from "sonner"
 import { useMediaManagement } from "@/domains/media-management"
+import { useNotifications } from "@/domains/system-integration"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type { FileAnalysisProgress } from "@/features/ai-director/types/analysis-progress"
 
 describe("AIDirectorV3Dashboard", () => {
   const mockUseMediaManagement = vi.mocked(useMediaManagement)
   const mockUseAIDirectorAnalysisV2 = vi.mocked(useAIDirectorAnalysisV2)
-  const mockToast = vi.mocked(toast)
+  const mockUseNotifications = vi.mocked(useNotifications)
 
   const createMockFileProgress = (overrides?: Partial<FileAnalysisProgress>): FileAnalysisProgress => ({
     fileId: "file-1",
@@ -165,12 +177,7 @@ describe("AIDirectorV3Dashboard", () => {
         )
       })
 
-      expect(mockToast.success).toHaveBeenCalledWith(
-        "Анализ запущен",
-        expect.objectContaining({
-          description: expect.stringMatching(/Обработка 2 файл/),
-        }),
-      )
+      expect(mockShowSuccess).toHaveBeenCalledWith("Анализ запущен", expect.stringMatching(/Обработка 2 файл/))
     })
 
     it("disables start button when no files selected", () => {
@@ -273,12 +280,7 @@ describe("AIDirectorV3Dashboard", () => {
       await user.click(cancelButton)
 
       expect(mockCancelAnalysis).toHaveBeenCalled()
-      expect(mockToast.info).toHaveBeenCalledWith(
-        "Analysis cancelled",
-        expect.objectContaining({
-          description: "You can start a new analysis",
-        }),
-      )
+      expect(mockShowInfo).toHaveBeenCalledWith("Analysis cancelled", "You can start a new analysis")
     })
   })
 
@@ -321,12 +323,7 @@ describe("AIDirectorV3Dashboard", () => {
       await user.click(newAnalysisButton)
 
       expect(mockReset).toHaveBeenCalled()
-      expect(mockToast.info).toHaveBeenCalledWith(
-        "Dashboard reset",
-        expect.objectContaining({
-          description: "Ready for new analysis",
-        }),
-      )
+      expect(mockShowInfo).toHaveBeenCalledWith("Dashboard reset", "Ready for new analysis")
     })
 
     it("displays file statistics in overall progress card", () => {
@@ -418,12 +415,7 @@ describe("AIDirectorV3Dashboard", () => {
       await user.click(startButton)
 
       await waitFor(() => {
-        expect(mockToast.error).toHaveBeenCalledWith(
-          "Ошибка запуска анализа",
-          expect.objectContaining({
-            description: "Failed to initialize analysis",
-          }),
-        )
+        expect(mockShowError).toHaveBeenCalledWith("Ошибка запуска анализа", "Failed to initialize analysis")
       })
     })
 

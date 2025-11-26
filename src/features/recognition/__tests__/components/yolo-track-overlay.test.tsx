@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { toast } from "sonner"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createMockYoloData, setupCanvasMock } from "../../__mocks__"
 import { YoloTrackOverlay } from "../../components/yolo-track-overlay"
 

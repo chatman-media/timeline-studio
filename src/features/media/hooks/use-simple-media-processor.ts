@@ -1,6 +1,7 @@
-import { convertFileSrc, invoke } from "@tauri-apps/api/core"
+import { convertFileSrc } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
+import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
@@ -61,11 +62,11 @@ export function useSimpleMediaProcessor(options: UseSimpleMediaProcessorOptions 
           options.onProgress?.(i, filePaths.length)
 
           try {
-            // Вызываем упрощенную команду Rust для быстрой обработки
-            const processed = await invoke<ProcessedMediaFile>("process_media_file_simple", {
+            // Вызываем упрощенную команду через domain service
+            const processed = (await mediaProcessorService.processFileSimple(
               filePath,
-              generateThumbnail: options.generateThumbnails || false,
-            })
+              options.generateThumbnails || false,
+            )) as ProcessedMediaFile
 
             // Определяем тип файла по метаданным
             const isVideo = processed.metadata?.has_video || false

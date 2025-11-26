@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api/core"
 import { Activity, AudioWaveform, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -9,6 +8,7 @@ import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import { analyzeAudioPeaks } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
 import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
@@ -94,13 +94,8 @@ export function SubtitleAutoSync() {
    */
   const analyzeAudio = async (audioPath: string): Promise<AudioPeak[]> => {
     try {
-      // Вызываем Rust функцию для анализа аудио
-      const result = await invoke<{
-        peaks: Array<{ time: number; amplitude: number }>
-        sample_rate: number
-        duration: number
-      }>("analyze_audio_peaks", {
-        audioPath,
+      // Вызываем domain service для анализа аудио
+      const result = await analyzeAudioPeaks(audioPath, {
         windowSize: 1024,
         hopSize: 512,
         threshold: sensitivity[0],

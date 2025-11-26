@@ -2,8 +2,8 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { toast } from "sonner"
 
+import { useNotifications } from "@/domains/system-integration"
 import type { YoloVideoData } from "@/features/recognition/types/yolo"
 
 interface YoloTrackOverlayProps {
@@ -26,6 +26,7 @@ export function YoloTrackOverlay({
   showTrajectories: initialShowTrajectories = true,
 }: YoloTrackOverlayProps) {
   const { t } = useTranslation()
+  const { showInfo } = useNotifications()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null)
   const [showTrajectories, setShowTrajectories] = useState(initialShowTrajectories)
@@ -264,10 +265,7 @@ export function YoloTrackOverlay({
         const className = track[0]?.class || "unknown"
         const trackLength = track.length
 
-        toast(`${t("Трек выбран")}: ${className}`, {
-          description: `${t("Точек в треке")}: ${trackLength}`,
-          duration: 2000,
-        })
+        showInfo(`${t("Трек выбран")}: ${className}`, `${t("Точек в треке")}: ${trackLength}`)
       }
     } else {
       setSelectedTrack(null)

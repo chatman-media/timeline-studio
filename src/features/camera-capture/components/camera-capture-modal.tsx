@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
+import { useNotifications } from "@/domains/system-integration"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
 import { useModal } from "@/features/modals"
-import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,
@@ -25,6 +25,7 @@ const logger = createLogger({ module: "CameraCaptureModal" })
  */
 export function CameraCaptureModal() {
   const { t } = useTranslation()
+  const { showSuccess, showError } = useNotifications()
 
   const { isOpen, closeModal } = useModal()
 
@@ -82,7 +83,6 @@ export function CameraCaptureModal() {
     stopScreenCapture,
   } = useScreenCapture()
 
-  const { toast } = useToast()
   const { importFile } = useMediaImport()
   const [isSaving, setIsSaving] = useState(false)
 
@@ -141,11 +141,7 @@ export function CameraCaptureModal() {
         },
       }
 
-      toast({
-        title: t("dialogs.cameraCapture.recordingSuccess", "Запись успешно сохранена"),
-        description: fileName,
-        variant: "success",
-      })
+      showSuccess(t("dialogs.cameraCapture.recordingSuccess", "Запись успешно сохранена"), fileName)
 
       logger.info(`Запись сохранена: ${fullPath}`)
 
@@ -153,11 +149,7 @@ export function CameraCaptureModal() {
       closeModal()
     } catch (error) {
       logger.error("Ошибка при сохранении записи:", { error })
-      toast({
-        title: t("dialogs.cameraCapture.recordingError", "Ошибка при сохранении записи"),
-        description: String(error),
-        variant: "destructive",
-      })
+      showError(t("dialogs.cameraCapture.recordingError", "Ошибка при сохранении записи"), String(error))
     } finally {
       setIsSaving(false)
     }

@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api/core"
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import { cacheMediaMetadata, getCachedMetadata } from "@/domains/video-editing/services/compiler"
 import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
@@ -203,9 +203,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
     setProgress({ current: 0, total: 0 })
 
     try {
-      const files = await invoke<MediaFile[]>("scan_media_folder", {
-        folderPath,
-      })
+      const files = await mediaProcessorService.scanFolder(folderPath)
       return files
     } catch (error) {
       logger.errorSync("Failed to scan folder", { folderPath, error })
@@ -222,11 +220,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
       setProgress({ current: 0, total: 0 })
 
       try {
-        const files = await invoke<MediaFile[]>("scan_media_folder_with_thumbnails", {
-          folderPath,
-          width,
-          height,
-        })
+        const files = await mediaProcessorService.scanFolderWithThumbnails(folderPath, width, height)
         return files
       } catch (error) {
         logger.errorSync("Failed to scan folder with thumbnails", { folderPath, width, height, error })
@@ -258,9 +252,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
         logger.infoSync("Found files in metadata cache", { cachedCount, totalCount: filePaths.length })
       }
 
-      const files = await invoke<MediaFile[]>("process_media_files", {
-        filePaths,
-      })
+      const files = await mediaProcessorService.processFiles(filePaths)
       return files
     } catch (error) {
       logger.errorSync("Failed to process files", { filesCount: filePaths.length, error })
@@ -277,11 +269,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
       setProgress({ current: 0, total: filePaths.length })
 
       try {
-        const files = await invoke<MediaFile[]>("process_media_files_with_thumbnails", {
-          filePaths,
-          width,
-          height,
-        })
+        const files = await mediaProcessorService.processFilesWithThumbnails(filePaths, width, height)
         return files
       } catch (error) {
         logger.errorSync("Failed to process files with thumbnails", {
@@ -304,7 +292,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
 
   const cancelProcessing = useCallback(async () => {
     try {
-      await invoke("cancel_media_processing")
+      await mediaProcessorService.cancelProcessing()
       setIsProcessing(false)
       setProgress({ current: 0, total: 0 })
     } catch (error) {

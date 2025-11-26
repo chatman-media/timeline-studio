@@ -11,7 +11,7 @@ import {
   PersonDatabaseService,
   type TrackedPerson,
 } from "@/domains/ai-services/services/person-identification"
-import { useToast } from "@/hooks/use-toast"
+import { useNotifications } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 
@@ -61,7 +61,7 @@ export interface AdvancedIdentificationState {
 }
 
 export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdentificationOptions = {}) {
-  const { toast } = useToast()
+  const { showSuccess, showError } = useNotifications()
 
   // Состояние
   const [state, setState] = useState<AdvancedIdentificationState>({
@@ -224,10 +224,10 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
               identifiedPersons.set(person.id, person)
             }
 
-            toast({
-              title: "Кластеризация завершена",
-              description: `Создано ${newPersons.length} новых персон из ${unidentifiedFaces.length} лиц`,
-            })
+            showSuccess(
+              "Кластеризация завершена",
+              `Создано ${newPersons.length} новых персон из ${unidentifiedFaces.length} лиц`,
+            )
           }
         }
 
@@ -280,7 +280,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
         throw error
       }
     },
-    [options.enableTracking, options.autoIdentify, options.autoCluster, options.clusterThreshold, toast],
+    [options.enableTracking, options.autoIdentify, options.autoCluster, options.clusterThreshold, showSuccess],
   )
 
   /**
@@ -360,11 +360,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
         })
 
         if (faces.length === 0) {
-          toast({
-            title: "Лица не найдены",
-            description: "На изображении не обнаружено лиц",
-            variant: "destructive",
-          })
+          showError("Лица не найдены", "На изображении не обнаружено лиц")
           return []
         }
 
@@ -394,7 +390,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
         throw error
       }
     },
-    [toast],
+    [showError],
   )
 
   /**
@@ -470,10 +466,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
           identifiedPersons: new Map(prev.identifiedPersons).set(person.id, person),
         }))
 
-        toast({
-          title: "Персона создана",
-          description: `${person.name} успешно добавлен(а) в базу данных`,
-        })
+        showSuccess("Персона создана", `${person.name} успешно добавлен(а) в базу данных`)
 
         return person
       } catch (error) {
@@ -481,7 +474,7 @@ export function useAdvancedPersonIdentification(options: UseAdvancedPersonIdenti
         throw error
       }
     },
-    [toast],
+    [showSuccess],
   )
 
   /**

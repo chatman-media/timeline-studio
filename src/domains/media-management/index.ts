@@ -54,6 +54,12 @@ export type {
 export { IndexedDBCacheService, indexedDBCacheService } from "./services/indexeddb-cache-service"
 // Media API
 export * from "./services/media-api"
+// Orchestrator
+export {
+  getMediaManagementOrchestrator,
+  MediaManagementOrchestrator,
+  resetMediaManagementOrchestrator,
+} from "./services/media-management-orchestrator"
 export type { MediaMetadataService } from "./services/media-metadata-service"
 // Services
 export { getMediaMetadataService } from "./services/media-metadata-service"
