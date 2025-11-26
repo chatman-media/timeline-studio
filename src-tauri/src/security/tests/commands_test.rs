@@ -42,8 +42,8 @@ mod tests {
       has_value: true,
       is_oauth: false,
       has_access_token: false,
-      created_at: Some("2024-01-01T00:00:00Z".to_string()),
-      last_validated: Some("2024-01-02T00:00:00Z".to_string()),
+      created_at: Some("2025-01-01T00:00:00Z".to_string()),
+      last_validated: Some("2025-01-02T00:00:00Z".to_string()),
       is_valid: Some(true),
     };
 
@@ -145,7 +145,7 @@ mod tests {
       has_value: true,
       is_oauth: true,
       has_access_token: true,
-      created_at: Some("2024-01-01T00:00:00Z".to_string()),
+      created_at: Some("2025-01-01T00:00:00Z".to_string()),
       last_validated: None,
       is_valid: Some(true),
     };
@@ -159,7 +159,7 @@ mod tests {
       has_value: true,
       is_oauth: false,
       has_access_token: false,
-      created_at: Some("2024-01-01T00:00:00Z".to_string()),
+      created_at: Some("2025-01-01T00:00:00Z".to_string()),
       last_validated: None,
       is_valid: Some(true),
     };
