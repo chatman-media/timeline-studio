@@ -1,34 +1,42 @@
-import { AudioWaveform, Headphones, Mic, Music, Volume2, VolumeX, Wind } from "lucide-react"
-import { useMemo } from "react"
+import {
+  AudioWaveform,
+  Headphones,
+  Mic,
+  Music,
+  Volume2,
+  VolumeX,
+  Wind,
+} from "lucide-react";
+import { useMemo } from "react";
 
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { createLogger } from "@/lib/tauri-logger"
-import { cn } from "@/lib/utils"
-import { useTimeline } from "../hooks/use-timeline"
-import { useTracks } from "../hooks/use-tracks"
-import type { TimelineTrack, TrackType } from "../types/timeline"
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { createLogger } from "@/lib/tauri-logger";
+import { cn } from "@/lib/utils";
+import { useTimeline } from "../hooks/use-timeline";
+import { useTracks } from "../hooks/use-tracks";
+import type { TimelineTrack, TrackType } from "../types/timeline";
 
-const logger = createLogger("AudioMixer")
+const logger = createLogger("AudioMixer");
 
 interface AudioMixerProps {
-  className?: string
+  className?: string;
 }
 
 /**
  * Аудио микшер для управления громкостью и эффектами аудио треков
  */
 export function AudioMixer({ className }: AudioMixerProps) {
-  const { project } = useTimeline()
-  const { updateTrack } = useTracks()
+  const { project } = useTimeline();
+  const { updateTrack } = useTracks();
 
   // Получаем все аудио треки
   const audioTracks = useMemo(() => {
-    if (!project) return []
+    if (!project) return [];
 
-    type AudioTrackWithSection = TimelineTrack & { sectionName: string }
-    const tracks: AudioTrackWithSection[] = []
+    type AudioTrackWithSection = TimelineTrack & { sectionName: string };
+    const tracks: AudioTrackWithSection[] = [];
 
     // Собираем треки из секций
     project.sections?.forEach((section) => {
@@ -45,10 +53,10 @@ export function AudioMixer({ className }: AudioMixerProps) {
             isSolo: track.solo ?? false,
             trackEffects: [],
             trackFilters: [],
-          } as AudioTrackWithSection)
+          } as AudioTrackWithSection);
         }
-      })
-    })
+      });
+    });
 
     // Добавляем глобальные треки
     project.globalTracks?.forEach((track) => {
@@ -64,58 +72,58 @@ export function AudioMixer({ className }: AudioMixerProps) {
           isSolo: track.solo ?? false,
           trackEffects: [],
           trackFilters: [],
-        } as AudioTrackWithSection)
+        } as AudioTrackWithSection);
       }
-    })
+    });
 
-    return tracks
-  }, [project])
+    return tracks;
+  }, [project]);
 
   const getTrackIcon = (type: TrackType) => {
     switch (type) {
       case "audio":
-        return <Volume2 className="h-4 w-4" />
+        return <Volume2 className="h-4 w-4" />;
       case "music":
-        return <Music className="h-4 w-4" />
+        return <Music className="h-4 w-4" />;
       case "voiceover":
-        return <Mic className="h-4 w-4" />
+        return <Mic className="h-4 w-4" />;
       case "sfx":
-        return <AudioWaveform className="h-4 w-4" />
+        return <AudioWaveform className="h-4 w-4" />;
       case "ambient":
-        return <Wind className="h-4 w-4" />
+        return <Wind className="h-4 w-4" />;
       default:
-        return <Volume2 className="h-4 w-4" />
+        return <Volume2 className="h-4 w-4" />;
     }
-  }
+  };
 
   const getTrackColor = (type: TrackType) => {
     switch (type) {
       case "audio":
-        return "bg-blue-500"
+        return "bg-blue-500";
       case "music":
-        return "bg-purple-500"
+        return "bg-purple-500";
       case "voiceover":
-        return "bg-green-500"
+        return "bg-green-500";
       case "sfx":
-        return "bg-orange-500"
+        return "bg-orange-500";
       case "ambient":
-        return "bg-cyan-500"
+        return "bg-cyan-500";
       default:
-        return "bg-gray-500"
+        return "bg-gray-500";
     }
-  }
+  };
 
   const handleVolumeChange = (trackId: string, value: number[]) => {
-    void updateTrack(trackId, { volume: value[0] })
-  }
+    void updateTrack(trackId, { volume: value[0] });
+  };
 
   const handleMute = (trackId: string, currentMuted: boolean) => {
-    void updateTrack(trackId, { isMuted: !currentMuted })
-  }
+    void updateTrack(trackId, { isMuted: !currentMuted });
+  };
 
   const handleSolo = (trackId: string, currentSolo: boolean) => {
-    void updateTrack(trackId, { isSolo: !currentSolo })
-  }
+    void updateTrack(trackId, { isSolo: !currentSolo });
+  };
 
   if (audioTracks.length === 0) {
     return (
@@ -123,7 +131,7 @@ export function AudioMixer({ className }: AudioMixerProps) {
         <p>Нет аудио треков</p>
         <p className="text-sm mt-2">Добавьте аудио файлы на timeline</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -140,7 +148,7 @@ export function AudioMixer({ className }: AudioMixerProps) {
             defaultValue={[1]}
             onValueChange={(value) => {
               // TODO: Implement master volume
-              logger.info("Master volume:", { volume: value[0] })
+              logger.info("Master volume:", { volume: value[0] });
             }}
           />
         </div>
@@ -148,15 +156,22 @@ export function AudioMixer({ className }: AudioMixerProps) {
 
       <div className="space-y-3">
         {audioTracks.map((track) => (
-          <div key={track.id} className="bg-secondary/50 rounded-lg p-3 space-y-3">
+          <div
+            key={track.id}
+            className="bg-secondary/50 rounded-lg p-3 space-y-3"
+          >
             {/* Заголовок трека */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className={cn("w-2 h-8 rounded", getTrackColor(track.type))} />
+                <div
+                  className={cn("w-2 h-8 rounded", getTrackColor(track.type))}
+                />
                 {getTrackIcon(track.type)}
                 <div>
                   <p className="font-medium text-sm">{track.name}</p>
-                  <p className="text-xs text-muted-foreground">{track.sectionName}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {track.sectionName}
+                  </p>
                 </div>
               </div>
 
@@ -196,7 +211,9 @@ export function AudioMixer({ className }: AudioMixerProps) {
                   onValueChange={(value) => handleVolumeChange(track.id, value)}
                   disabled={track.isMuted}
                 />
-                <span className="text-xs w-10 text-right">{Math.round(track.volume * 100)}%</span>
+                <span className="text-xs w-10 text-right">
+                  {Math.round(track.volume * 100)}%
+                </span>
               </div>
 
               {/* Панорама */}
@@ -208,7 +225,9 @@ export function AudioMixer({ className }: AudioMixerProps) {
                   max={1}
                   step={0.01}
                   value={[(track as any).pan || 0]}
-                  onValueChange={(value) => updateTrack(track.id, { pan: value[0] } as any)}
+                  onValueChange={(value) =>
+                    updateTrack(track.id, { pan: value[0] } as any)
+                  }
                   disabled={track.isMuted}
                 />
                 <span className="text-xs w-10 text-right">
@@ -224,7 +243,7 @@ export function AudioMixer({ className }: AudioMixerProps) {
             {/* VU метр (заглушка) */}
             <div className="h-2 bg-background rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500"
+                className="h-full bg-linear-to-r from-green-500 via-yellow-500 to-red-500"
                 style={{
                   width: `${track.isMuted ? 0 : 60 + Math.random() * 20}%`,
                   transition: "width 100ms",
@@ -236,7 +255,10 @@ export function AudioMixer({ className }: AudioMixerProps) {
             {(track as any).trackEffects?.length > 0 && (
               <div className="flex flex-wrap gap-1 pt-1">
                 {(track as any).trackEffects.map((_: any, index: number) => (
-                  <div key={index} className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
+                  <div
+                    key={index}
+                    className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded"
+                  >
                     FX
                   </div>
                 ))}
@@ -246,10 +268,10 @@ export function AudioMixer({ className }: AudioMixerProps) {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 // Проверка, является ли трек аудио треком
 function isAudioTrack(type: TrackType): boolean {
-  return ["audio", "music", "voiceover", "sfx", "ambient"].includes(type)
+  return ["audio", "music", "voiceover", "sfx", "ambient"].includes(type);
 }

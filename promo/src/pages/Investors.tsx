@@ -1,12 +1,12 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { Link } from "react-router-dom"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { useLanguage } from "../contexts/LanguageContext"
+import { motion } from "framer-motion";
+import type React from "react";
+import { Link } from "react-router-dom";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Investors: React.FC = () => {
-  const { language } = useLanguage()
+  const { language } = useLanguage();
 
   const content = {
     ru: {
@@ -45,7 +45,11 @@ export const Investors: React.FC = () => {
         title: "Использование средств",
         items: [
           { percent: "50%", label: "Команда (8 человек)", amount: "$500K" },
-          { percent: "25%", label: "AI токены и инфраструктура", amount: "$250K" },
+          {
+            percent: "25%",
+            label: "AI токены и инфраструктура",
+            amount: "$250K",
+          },
           { percent: "15%", label: "Маркетинг", amount: "$150K" },
           { percent: "10%", label: "Операционные расходы", amount: "$100K" },
         ],
@@ -98,7 +102,11 @@ export const Investors: React.FC = () => {
         title: "Use of Funds",
         items: [
           { percent: "50%", label: "Team (8 people)", amount: "$500K" },
-          { percent: "25%", label: "AI tokens & infrastructure", amount: "$250K" },
+          {
+            percent: "25%",
+            label: "AI tokens & infrastructure",
+            amount: "$250K",
+          },
           { percent: "15%", label: "Marketing", amount: "$150K" },
           { percent: "10%", label: "Operations", amount: "$100K" },
         ],
@@ -168,9 +176,14 @@ export const Investors: React.FC = () => {
         email: "ak.chatman.media@gmail.com",
       },
     },
-  }
+  };
 
-  const t = language === "zh" ? content.zh : language === "ru" ? content.ru : content.en
+  const t =
+    language === "zh"
+      ? content.zh
+      : language === "ru"
+        ? content.ru
+        : content.en;
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
@@ -189,7 +202,7 @@ export const Investors: React.FC = () => {
               className="max-w-4xl mx-auto text-center"
             >
               {/* Raising Badge */}
-              <div className="inline-flex items-center gap-2 px-6 py-3 mb-8 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full border border-green-500/30">
+              <div className="inline-flex items-center gap-2 px-6 py-3 mb-8 bg-linear-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full border border-green-500/30">
                 <span className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
@@ -239,13 +252,27 @@ export const Investors: React.FC = () => {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-red-500/20 rounded-lg">
-                    <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <svg
+                      className="w-6 h-6 text-red-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{t.problem.title}</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    {t.problem.title}
+                  </h3>
                 </div>
-                <p className="text-gray-300 leading-relaxed">{t.problem.text}</p>
+                <p className="text-gray-300 leading-relaxed">
+                  {t.problem.text}
+                </p>
               </motion.div>
 
               {/* Solution */}
@@ -258,13 +285,27 @@ export const Investors: React.FC = () => {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-green-500/20 rounded-lg">
-                    <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="w-6 h-6 text-green-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{t.solution.title}</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    {t.solution.title}
+                  </h3>
                 </div>
-                <p className="text-gray-300 leading-relaxed">{t.solution.text}</p>
+                <p className="text-gray-300 leading-relaxed">
+                  {t.solution.text}
+                </p>
               </motion.div>
             </div>
           </div>
@@ -281,10 +322,15 @@ export const Investors: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                <h3 className="text-3xl font-bold text-white mb-6">{t.market.title}</h3>
+                <h3 className="text-3xl font-bold text-white mb-6">
+                  {t.market.title}
+                </h3>
                 <ul className="space-y-3">
                   {t.market.items.map((item, i) => (
-                    <li key={i} className="flex items-center gap-3 text-gray-300">
+                    <li
+                      key={i}
+                      className="flex items-center gap-3 text-gray-300"
+                    >
                       <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                       {item}
                     </li>
@@ -299,11 +345,18 @@ export const Investors: React.FC = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                <h3 className="text-3xl font-bold text-white mb-6">{t.traction.title}</h3>
+                <h3 className="text-3xl font-bold text-white mb-6">
+                  {t.traction.title}
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {t.traction.items.map((item, i) => (
-                    <div key={i} className="p-4 bg-white/5 rounded-xl border border-white/10">
-                      <div className="text-2xl font-bold text-purple-400">{item.value}</div>
+                    <div
+                      key={i}
+                      className="p-4 bg-white/5 rounded-xl border border-white/10"
+                    >
+                      <div className="text-2xl font-bold text-purple-400">
+                        {item.value}
+                      </div>
                       <div className="text-sm text-gray-400">{item.label}</div>
                     </div>
                   ))}
@@ -323,12 +376,19 @@ export const Investors: React.FC = () => {
               viewport={{ once: true }}
               className="max-w-3xl mx-auto"
             >
-              <h3 className="text-3xl font-bold text-white text-center mb-10">{t.useOfFunds.title}</h3>
+              <h3 className="text-3xl font-bold text-white text-center mb-10">
+                {t.useOfFunds.title}
+              </h3>
               <div className="space-y-4">
                 {t.useOfFunds.items.map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10">
+                  <div
+                    key={i}
+                    className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10"
+                  >
                     <div className="w-16 text-center">
-                      <span className="text-xl font-bold text-purple-400">{item.percent}</span>
+                      <span className="text-xl font-bold text-purple-400">
+                        {item.percent}
+                      </span>
                     </div>
                     <div className="flex-1">
                       <span className="text-white">{item.label}</span>
@@ -351,7 +411,9 @@ export const Investors: React.FC = () => {
               viewport={{ once: true }}
               className="max-w-2xl mx-auto text-center"
             >
-              <h3 className="text-3xl font-bold text-white mb-8">{t.cta.contact}</h3>
+              <h3 className="text-3xl font-bold text-white mb-8">
+                {t.cta.contact}
+              </h3>
 
               <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
                 <Link
@@ -366,7 +428,11 @@ export const Investors: React.FC = () => {
                   rel="noopener noreferrer"
                   className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors border border-white/20 flex items-center gap-2"
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path d="M11.944 0A12 12 0 1 0 24 12a12 12 0 0 0-12.056-12zM16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                   </svg>
                   @alexanderkireev
@@ -406,7 +472,7 @@ export const Investors: React.FC = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Investors
+export default Investors;

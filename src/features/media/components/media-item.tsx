@@ -76,7 +76,7 @@ export const MediaItem = memo<MediaItemProps>(
           style={{ height: `${listPreviewSize + 8}px` }} // Фиксированная высота для list режима
           data-testid="media-item"
         >
-          <div className="relative mr-3 flex flex-shrink-0 gap-1">
+          <div className="relative mr-3 flex shrink-0 gap-1">
             <MediaPreview
               file={file}
               size={listPreviewSize}

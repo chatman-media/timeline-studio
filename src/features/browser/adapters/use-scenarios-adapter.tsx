@@ -45,7 +45,7 @@ const ScenarioPreviewWrapper: React.FC<PreviewComponentProps<Scenario>> = ({ ite
         onClick={handleClick}
       >
         {/* Icon */}
-        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold">
+        <div className="shrink-0 w-10 h-10 bg-linear-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold">
           {scenario.icon || scenario.name.ru.substring(0, 2).toUpperCase()}
         </div>
 
@@ -56,23 +56,23 @@ const ScenarioPreviewWrapper: React.FC<PreviewComponentProps<Scenario>> = ({ ite
         </div>
 
         {/* Category */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{categoryLabel}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{categoryLabel}</div>
 
         {/* Difficulty */}
-        <div className="flex-shrink-0 flex items-center gap-1">
+        <div className="shrink-0 flex items-center gap-1">
           <div className={`w-2 h-2 rounded-full ${difficultyColor}`} />
           <span className="text-xs text-muted-foreground">{difficultyLabel}</span>
         </div>
 
         {/* Time */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">~{scenario.estimatedTime} мин</div>
+        <div className="shrink-0 text-xs text-muted-foreground">~{scenario.estimatedTime} мин</div>
 
         {/* Steps */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{scenario.steps.length} шагов</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{scenario.steps.length} шагов</div>
 
         {/* AI badge */}
         {scenario.requirements.aiAssisted && (
-          <div className="flex-shrink-0 text-xs bg-purple-500/20 text-purple-600 px-2 py-0.5 rounded">AI</div>
+          <div className="shrink-0 text-xs bg-purple-500/20 text-purple-600 px-2 py-0.5 rounded">AI</div>
         )}
       </div>
     )
@@ -85,7 +85,7 @@ const ScenarioPreviewWrapper: React.FC<PreviewComponentProps<Scenario>> = ({ ite
       onClick={handleClick}
     >
       {/* Header */}
-      <div className="relative aspect-video bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+      <div className="relative aspect-video bg-linear-to-br from-purple-500 to-pink-600 flex items-center justify-center">
         {scenario.thumbnail ? (
           <img src={scenario.thumbnail} alt={scenario.name.ru} className="w-full h-full object-cover" />
         ) : (

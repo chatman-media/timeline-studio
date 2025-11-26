@@ -61,7 +61,7 @@ export function Options({ selectedMediaFile }: OptionsProps) {
       >
         {/* Вкладки */}
         <TabsList
-          className="grid w-full grid-cols-4 flex-shrink-0 border-none bg-muted/50 rounded-none m-0 p-0"
+          className="grid w-full grid-cols-4 shrink-0 border-none bg-muted/50 rounded-none m-0 p-0"
           data-testid="options-tabs-list"
         >
           {TABS.map((tab) => (

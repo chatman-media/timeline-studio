@@ -188,7 +188,7 @@ export function ModalContainer() {
         aria-describedby="modal"
         className={`${dialogClass} bg-[#dfdfdf] dark:bg-[#1e1e1e] [&>button]:cursor-pointer p-4 flex flex-col`}
       >
-        <DialogHeader className="flex-shrink-0 h-[50px] flex items-center justify-center">
+        <DialogHeader className="shrink-0 h-[50px] flex items-center justify-center">
           <DialogTitle className="text-center">{getModalTitle()}</DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-auto">{renderAllModals()}</div>

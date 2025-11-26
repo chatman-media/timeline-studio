@@ -247,7 +247,7 @@ function AgentCard({ agent }: { agent: AIAgent }) {
 
   return (
     <div className="flex items-start gap-3 p-3 rounded-lg border bg-card">
-      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xl">
+      <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xl">
         {icon}
       </div>
       <div className="flex-1 min-w-0">

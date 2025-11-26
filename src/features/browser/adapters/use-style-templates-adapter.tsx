@@ -43,7 +43,7 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
           onClick={handleClick}
         >
           {/* Template preview thumbnail */}
-          <div className="flex-shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden relative">
+          <div className="shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden relative">
             {template.thumbnail ? (
               <img
                 src={template.thumbnail}
@@ -51,7 +51,7 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="w-full h-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <span className="text-white text-xs font-bold">
                   {(typeof template.name === "string" ? template.name : template.name.ru).substring(0, 2).toUpperCase()}
                 </span>
@@ -74,16 +74,16 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
           </div>
 
           {/* Category */}
-          <div className="flex-shrink-0 text-xs text-muted-foreground">{template.category}</div>
+          <div className="shrink-0 text-xs text-muted-foreground">{template.category}</div>
 
           {/* Style */}
-          <div className="flex-shrink-0 text-xs text-muted-foreground">{template.style}</div>
+          <div className="shrink-0 text-xs text-muted-foreground">{template.style}</div>
 
           {/* Duration */}
-          <div className="flex-shrink-0 text-xs text-muted-foreground">{template.duration}s</div>
+          <div className="shrink-0 text-xs text-muted-foreground">{template.duration}s</div>
 
           {/* Features */}
-          <div className="flex-shrink-0 flex gap-1">
+          <div className="shrink-0 flex gap-1">
             {template.hasText && <div className="w-2 h-2 bg-blue-500 rounded-full" title="Содержит текст" />}
             {template.hasAnimation && <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" />}
           </div>

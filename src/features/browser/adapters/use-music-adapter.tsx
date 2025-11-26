@@ -79,7 +79,7 @@ const MusicPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({
       >
         {/* Play/Pause Button */}
         <button
-          className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+          className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
           onClick={handlePlayPause}
         >
           {isPlaying ? <CirclePause className="w-4 h-4" /> : <CirclePlay className="w-4 h-4" />}
@@ -92,10 +92,10 @@ const MusicPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({
         </div>
 
         {/* Duration */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{duration > 0 ? formatTime(duration) : ""}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{duration > 0 ? formatTime(duration) : ""}</div>
 
         {/* Status indicator */}
-        {isAdded && <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full" />}
+        {isAdded && <div className="shrink-0 w-2 h-2 bg-green-500 rounded-full" />}
       </div>
     )
   }

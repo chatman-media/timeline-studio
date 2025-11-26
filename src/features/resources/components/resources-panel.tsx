@@ -106,7 +106,7 @@ function ResourceItem({
     return (
       <div
         key={resource.id}
-        className="group relative mb-2 flex w-[110px] flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-sm border border-[#333] transition-all duration-150 hover:border-[#555]"
+        className="group relative mb-2 flex w-[110px] shrink-0 cursor-pointer flex-col overflow-hidden rounded-sm border border-[#333] transition-all duration-150 hover:border-[#555]"
         {...dragProps}
       >
         {/* Превью медиафайла */}
@@ -179,11 +179,11 @@ function ResourceItem({
   return (
     <div
       key={resource.id}
-      className="group relative mb-2 flex w-[110px] flex-shrink-0 cursor-pointer flex-col overflow-hidden rounded-sm border transition-all duration-150 hover:border-[#555]"
+      className="group relative mb-2 flex w-[110px] shrink-0 cursor-pointer flex-col overflow-hidden rounded-sm border transition-all duration-150 hover:border-[#555]"
       {...dragProps}
     >
       {/* Preview область с градиентом и иконкой */}
-      <div className={`relative flex h-[62px] w-full items-center justify-center bg-gradient-to-br ${getTypeColor()}`}>
+      <div className={`relative flex h-[62px] w-full items-center justify-center bg-linear-to-br ${getTypeColor()}`}>
         <div className="flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
           {getTypeIcon()}
         </div>

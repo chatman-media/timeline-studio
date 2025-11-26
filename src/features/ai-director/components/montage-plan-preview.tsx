@@ -74,8 +74,16 @@ export function MontagePlanPreview({ plan, onApply, onEdit, onCancel, className 
     const styles: Record<string, { label: string; icon: string; color: string }> = {
       dynamic: { label: "Динамичный", icon: "⚡", color: "text-orange-500" },
       calm: { label: "Спокойный", icon: "🌊", color: "text-blue-500" },
-      balanced: { label: "Сбалансированный", icon: "⚖️", color: "text-green-500" },
-      cinematic: { label: "Кинематографический", icon: "🎬", color: "text-purple-500" },
+      balanced: {
+        label: "Сбалансированный",
+        icon: "⚖️",
+        color: "text-green-500",
+      },
+      cinematic: {
+        label: "Кинематографический",
+        icon: "🎬",
+        color: "text-purple-500",
+      },
       vlog: { label: "Vlog", icon: "📹", color: "text-pink-500" },
       highlights: { label: "Highlights", icon: "⭐", color: "text-yellow-500" },
       tutorial: { label: "Обучающий", icon: "📚", color: "text-indigo-500" },
@@ -258,7 +266,7 @@ function TimelinePreview({ plan, onClipClick }: { plan: MontagePlan; onClipClick
 
               {/* Переход */}
               {transition && (
-                <div className="flex-shrink-0 mx-1" title={`${transition.type} (${transition.duration}s)`}>
+                <div className="shrink-0 mx-1" title={`${transition.type} (${transition.duration}s)`}>
                   {transition.type === "cross_dissolve" && <span className="text-xs">⟿</span>}
                   {transition.type === "cut" && <span className="text-xs">→</span>}
                   {transition.type === "fade_to_black" && <span className="text-xs">⬤</span>}
@@ -326,7 +334,7 @@ function ClipCard({ clip, index, transition, isExpanded, onToggle }: ClipCardPro
         {/* Номер */}
         <div
           className={cn(
-            "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm",
+            "shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm",
             isExpanded ? "bg-primary text-primary-foreground" : "bg-muted",
           )}
         >

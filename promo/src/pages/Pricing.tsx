@@ -1,24 +1,24 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { CheckIcon } from "../components/CheckIcon"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { useTranslation } from "../hooks/useTranslation"
+import { motion } from "framer-motion";
+import type React from "react";
+import { CheckIcon } from "../components/CheckIcon";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { useTranslation } from "../hooks/useTranslation";
 
 interface PricingTier {
-  name: string
-  price: string
-  period: string
-  description: string
-  features: string[]
-  cloudStorage: string
-  aiTokens: string
-  buttonText: string
-  highlighted?: boolean
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  cloudStorage: string;
+  aiTokens: string;
+  buttonText: string;
+  highlighted?: boolean;
 }
 
 export const Pricing: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const pricingTiers: PricingTier[] = [
     {
@@ -81,7 +81,7 @@ export const Pricing: React.FC = () => {
       aiTokens: "500K all models\n100 hours",
       buttonText: t("pricing.tiers.max.buttonText"),
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
@@ -103,8 +103,12 @@ export const Pricing: React.FC = () => {
               <h1 className="page-title">
                 <span className="text-gradient">{t("pricing.title")}</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mb-4">{t("pricing.subtitle")}</p>
-              <p className="text-lg text-gray-400">{t("pricing.description")} ⚡</p>
+              <p className="text-xl md:text-2xl text-gray-300 mb-4">
+                {t("pricing.subtitle")}
+              </p>
+              <p className="text-lg text-gray-400">
+                {t("pricing.description")} ⚡
+              </p>
             </motion.div>
           </div>
         </section>
@@ -132,17 +136,17 @@ export const Pricing: React.FC = () => {
                   <div className="relative overflow-hidden rounded-2xl h-full">
                     {/* Glassmorphism background */}
                     <div
-                      className={`absolute inset-0 bg-gradient-to-br ${
+                      className={`absolute inset-0 bg-linear-to-br ${
                         tier.highlighted
                           ? "from-blue-500/15 via-purple-500/15 to-pink-500/15"
                           : "from-purple-500/10 via-blue-500/10 to-pink-500/10"
                       } backdrop-blur-xl`}
                     />
-                    <div className="absolute inset-0 bg-white/[0.02]" />
+                    <div className="absolute inset-0 bg-white/2" />
 
                     {/* Border gradient */}
                     <div
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${
+                      className={`absolute inset-0 rounded-2xl bg-linear-to-br ${
                         tier.highlighted
                           ? "from-blue-500/30 via-purple-500/30 to-pink-500/30"
                           : "from-purple-500/20 via-transparent to-blue-500/20"
@@ -156,8 +160,12 @@ export const Pricing: React.FC = () => {
                       <div className="text-center mb-8">
                         <h3 className="card-title">{tier.name}</h3>
                         <div className="flex items-baseline justify-center mb-4">
-                          <span className="text-5xl font-light text-white tracking-tight">{tier.price}</span>
-                          <span className="text-gray-400 ml-2">{tier.period}</span>
+                          <span className="text-5xl font-light text-white tracking-tight">
+                            {tier.price}
+                          </span>
+                          <span className="text-gray-400 ml-2">
+                            {tier.period}
+                          </span>
                         </div>
                         <p className="card-description">{tier.description}</p>
                       </div>
@@ -165,11 +173,17 @@ export const Pricing: React.FC = () => {
                       {/* Cloud Storage & AI Tokens */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 p-4 bg-white/5 rounded-lg">
                         <div className="text-center">
-                          <p className="text-xs text-gray-400 uppercase mb-1">{t("pricing.cloudStorage")}</p>
-                          <p className="text-sm sm:text-lg font-normal text-white break-words">{tier.cloudStorage}</p>
+                          <p className="text-xs text-gray-400 uppercase mb-1">
+                            {t("pricing.cloudStorage")}
+                          </p>
+                          <p className="text-sm sm:text-lg font-normal text-white break-words">
+                            {tier.cloudStorage}
+                          </p>
                         </div>
                         <div className="text-center">
-                          <p className="text-xs text-gray-400 uppercase mb-1">{t("pricing.aiTokens")}</p>
+                          <p className="text-xs text-gray-400 uppercase mb-1">
+                            {t("pricing.aiTokens")}
+                          </p>
                           <p className="text-sm sm:text-lg font-normal text-white break-words whitespace-pre-line">
                             {tier.aiTokens}
                           </p>
@@ -181,7 +195,9 @@ export const Pricing: React.FC = () => {
                         {tier.features.map((feature) => (
                           <li key={feature} className="flex items-start">
                             <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-300 text-sm">{feature}</span>
+                            <span className="text-gray-300 text-sm">
+                              {feature}
+                            </span>
                           </li>
                         ))}
                       </ul>
@@ -213,56 +229,76 @@ export const Pricing: React.FC = () => {
               className="max-w-full mx-auto mt-20"
             >
               <h2 className="section-title">
-                <span className="text-gradient">{t("pricing.teamsEnterprise")}</span>
+                <span className="text-gradient">
+                  {t("pricing.teamsEnterprise")}
+                </span>
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Team Plan */}
                 <div className="relative overflow-hidden rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-teal-500/10 to-blue-500/10 backdrop-blur-xl" />
-                  <div className="absolute inset-0 bg-white/[0.02]" />
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500/20 via-transparent to-teal-500/20 p-[1px]">
+                  <div className="absolute inset-0 bg-linear-to-br from-green-500/10 via-teal-500/10 to-blue-500/10 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/2" />
+                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-green-500/20 via-transparent to-teal-500/20 p-[1px]">
                     <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
                   <div className="relative p-8">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h3 className="text-2xl font-medium text-white">{t("pricing.tiers.team.name")}</h3>
-                        <p className="text-gray-400 text-sm">{t("pricing.tiers.team.description")}</p>
+                        <h3 className="text-2xl font-medium text-white">
+                          {t("pricing.tiers.team.name")}
+                        </h3>
+                        <p className="text-gray-400 text-sm">
+                          {t("pricing.tiers.team.description")}
+                        </p>
                       </div>
                       <div className="text-right">
                         <span className="text-4xl font-light text-white tracking-tight">
                           {t("pricing.tiers.team.price")}
                         </span>
-                        <span className="text-gray-400">{t("pricing.perUserMonth")}</span>
+                        <span className="text-gray-400">
+                          {t("pricing.perUserMonth")}
+                        </span>
                       </div>
                     </div>
 
                     <ul className="space-y-3 mb-8">
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.everythingInProBase")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.everythingInProBase")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.realTimeCollaboration")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.realTimeCollaboration")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">500GB per user</span>
+                        <span className="text-gray-300 text-sm">
+                          500GB per user
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">50 hours cloud rendering/month</span>
+                        <span className="text-gray-300 text-sm">
+                          50 hours cloud rendering/month
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.teamResourceLibraries")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.teamResourceLibraries")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.ssoAuthentication")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.ssoAuthentication")}
+                        </span>
                       </li>
                     </ul>
 
@@ -283,47 +319,65 @@ export const Pricing: React.FC = () => {
 
                 {/* Enterprise Plan */}
                 <div className="relative overflow-hidden rounded-2xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-red-500/10 backdrop-blur-xl" />
-                  <div className="absolute inset-0 bg-white/[0.02]" />
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/20 via-transparent to-orange-500/20 p-[1px]">
+                  <div className="absolute inset-0 bg-linear-to-br from-amber-500/10 via-orange-500/10 to-red-500/10 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/2" />
+                  <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-amber-500/20 via-transparent to-orange-500/20 p-[1px]">
                     <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
                   <div className="relative p-8">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h3 className="text-2xl font-medium text-white">{t("pricing.tiers.enterprise.name")}</h3>
-                        <p className="text-gray-400 text-sm">{t("pricing.tiers.enterprise.description")}</p>
+                        <h3 className="text-2xl font-medium text-white">
+                          {t("pricing.tiers.enterprise.name")}
+                        </h3>
+                        <p className="text-gray-400 text-sm">
+                          {t("pricing.tiers.enterprise.description")}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl font-light text-white">{t("pricing.contactUs")}</span>
+                        <span className="text-2xl font-light text-white">
+                          {t("pricing.contactUs")}
+                        </span>
                       </div>
                     </div>
 
                     <ul className="space-y-3 mb-8">
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.onPremiseDeployment")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.onPremiseDeployment")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.unlimitedStorageRendering")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.unlimitedStorageRendering")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.customAiModels")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.customAiModels")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.apiAccess")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.apiAccess")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.dedicatedManagerSla")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.dedicatedManagerSla")}
+                        </span>
                       </li>
                       <li className="flex items-start">
                         <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-300 text-sm">{t("pricing.features.whiteLabelCustomization")}</span>
+                        <span className="text-gray-300 text-sm">
+                          {t("pricing.features.whiteLabelCustomization")}
+                        </span>
                       </li>
                     </ul>
 
@@ -349,69 +403,85 @@ export const Pricing: React.FC = () => {
               <div className="space-y-6">
                 <div className="relative overflow-hidden rounded-xl">
                   {/* Glassmorphism background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/2" />
 
                   {/* Border gradient */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                  <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                     <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
                   {/* Content */}
                   <div className="relative p-6">
-                    <h3 className="card-title">{t("pricing.faq.whatAreTokens.question")}</h3>
-                    <p className="card-description">{t("pricing.faq.whatAreTokens.answer")}</p>
+                    <h3 className="card-title">
+                      {t("pricing.faq.whatAreTokens.question")}
+                    </h3>
+                    <p className="card-description">
+                      {t("pricing.faq.whatAreTokens.answer")}
+                    </p>
                   </div>
                 </div>
 
                 <div className="relative overflow-hidden rounded-xl">
                   {/* Glassmorphism background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/2" />
 
                   {/* Border gradient */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                  <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                     <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
                   {/* Content */}
                   <div className="relative p-6">
-                    <h3 className="card-title">{t("pricing.faq.canUpgradeDowngrade.question")}</h3>
-                    <p className="card-description">{t("pricing.faq.canUpgradeDowngrade.answer")}</p>
+                    <h3 className="card-title">
+                      {t("pricing.faq.canUpgradeDowngrade.question")}
+                    </h3>
+                    <p className="card-description">
+                      {t("pricing.faq.canUpgradeDowngrade.answer")}
+                    </p>
                   </div>
                 </div>
 
                 <div className="relative overflow-hidden rounded-xl">
                   {/* Glassmorphism background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/2" />
 
                   {/* Border gradient */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                  <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                     <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
                   {/* Content */}
                   <div className="relative p-6">
-                    <h3 className="card-title">{t("pricing.faq.whyFreePowerful.question")}</h3>
-                    <p className="card-description">{t("pricing.faq.whyFreePowerful.answer")}</p>
+                    <h3 className="card-title">
+                      {t("pricing.faq.whyFreePowerful.question")}
+                    </h3>
+                    <p className="card-description">
+                      {t("pricing.faq.whyFreePowerful.answer")}
+                    </p>
                   </div>
                 </div>
 
                 <div className="relative overflow-hidden rounded-xl">
                   {/* Glassmorphism background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                  <div className="absolute inset-0 bg-white/[0.02]" />
+                  <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                  <div className="absolute inset-0 bg-white/2" />
 
                   {/* Border gradient */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                  <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                     <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                   </div>
 
                   {/* Content */}
                   <div className="relative p-6">
-                    <h3 className="card-title">{t("pricing.faq.isThereFreeTrial.question")}</h3>
-                    <p className="card-description">{t("pricing.faq.isThereFreeTrial.answer")}</p>
+                    <h3 className="card-title">
+                      {t("pricing.faq.isThereFreeTrial.question")}
+                    </h3>
+                    <p className="card-description">
+                      {t("pricing.faq.isThereFreeTrial.answer")}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -422,7 +492,7 @@ export const Pricing: React.FC = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Pricing
+export default Pricing;

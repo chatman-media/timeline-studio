@@ -2,89 +2,104 @@
  * VideoClip - Компонент видео клипа
  */
 
-import { Copy, Image, Scissors, Trash2, Video } from "lucide-react"
-import React, { memo, useCallback, useMemo } from "react"
+import { Copy, Image, Scissors, Trash2, Video } from "lucide-react";
+import React, { memo, useCallback, useMemo } from "react";
 
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-import { useClips } from "../../hooks/use-clips"
-import { useTimeline } from "../../hooks/use-timeline"
-import { timelinePlayerSync } from "../../services/timeline-player-sync"
-import type { TimelineClip, TimelineTrack } from "../../types"
-import { ClipDropZoneDnd } from "./clip-drop-zone-dnd"
-import { ClipResourceIndicators } from "./clip-resource-indicators"
-import { VideoFadeControls } from "./video-fade-controls"
-import { VideoFadeVisualization } from "./video-fade-visualization"
+import { useClips } from "../../hooks/use-clips";
+import { useTimeline } from "../../hooks/use-timeline";
+import { timelinePlayerSync } from "../../services/timeline-player-sync";
+import type { TimelineClip, TimelineTrack } from "../../types";
+import { ClipDropZoneDnd } from "./clip-drop-zone-dnd";
+import { ClipResourceIndicators } from "./clip-resource-indicators";
+import { VideoFadeControls } from "./video-fade-controls";
+import { VideoFadeVisualization } from "./video-fade-visualization";
 
 interface VideoClipProps {
-  clip: TimelineClip
-  track: TimelineTrack
-  pixelsPerSecond: number
-  onUpdate?: (updates: Partial<TimelineClip>) => void
-  onRemove?: () => void
+  clip: TimelineClip;
+  track: TimelineTrack;
+  pixelsPerSecond: number;
+  onUpdate?: (updates: Partial<TimelineClip>) => void;
+  onRemove?: () => void;
 }
 
 // Мемоизируем компонент для предотвращения ненужных ререндеров
 export const VideoClip = memo(
-  function VideoClip({ clip, track, pixelsPerSecond, onUpdate, onRemove }: VideoClipProps) {
-    const [isHovered, setIsHovered] = React.useState(false)
-    const { selectClips, copySelection } = useTimeline()
-    const { splitClip } = useClips()
+  function VideoClip({
+    clip,
+    track,
+    pixelsPerSecond,
+    onUpdate,
+    onRemove,
+  }: VideoClipProps) {
+    const [isHovered, setIsHovered] = React.useState(false);
+    const { selectClips, copySelection } = useTimeline();
+    const { splitClip } = useClips();
 
     // Мемоизируем обработчики для предотвращения создания новых функций при каждом рендере
     const handleSelect = useCallback(() => {
-      const newIsSelected = !clip.isSelected
-      onUpdate?.({ isSelected: newIsSelected })
+      const newIsSelected = !clip.isSelected;
+      onUpdate?.({ isSelected: newIsSelected });
 
       // Синхронизируем с плеером при выборе
       if (newIsSelected) {
-        void timelinePlayerSync.syncSelectedClip(clip)
+        void timelinePlayerSync.syncSelectedClip(clip);
       }
-    }, [clip, onUpdate])
+    }, [clip, onUpdate]);
 
     const handleCopy = useCallback(
       (e: React.MouseEvent) => {
-        e.stopPropagation()
+        e.stopPropagation();
 
         // Выделяем клип если он не выделен
         if (!clip.isSelected) {
-          selectClips([clip.id], false)
+          selectClips([clip.id], false);
         }
 
         // Копируем выделенные клипы
-        copySelection()
+        copySelection();
       },
       [clip.id, clip.isSelected, selectClips, copySelection],
-    )
+    );
 
     const handleSplit = useCallback(
       (e: React.MouseEvent) => {
-        e.stopPropagation()
+        e.stopPropagation();
 
         // Разделяем клип в середине
-        const splitTime = clip.startTime + clip.duration / 2
-        void splitClip(clip.id, splitTime)
+        const splitTime = clip.startTime + clip.duration / 2;
+        void splitClip(clip.id, splitTime);
       },
       [clip.id, clip.startTime, clip.duration, splitClip],
-    )
+    );
 
     const handleRemove = useCallback(
       (e: React.MouseEvent) => {
-        e.stopPropagation()
-        onRemove?.()
+        e.stopPropagation();
+        onRemove?.();
       },
       [onRemove],
-    )
+    );
 
     // Мемоизируем вычисляемые значения
-    const clipColor = useMemo(() => (track.type === "video" ? "bg-blue-500" : "bg-purple-500"), [track.type])
+    const clipColor = useMemo(
+      () => (track.type === "video" ? "bg-blue-500" : "bg-purple-500"),
+      [track.type],
+    );
 
-    const clipColorHover = useMemo(() => (track.type === "video" ? "bg-blue-600" : "bg-purple-600"), [track.type])
+    const clipColorHover = useMemo(
+      () => (track.type === "video" ? "bg-blue-600" : "bg-purple-600"),
+      [track.type],
+    );
 
     // Вычисляем размеры клипа
-    const clipWidth = useMemo(() => clip.duration * pixelsPerSecond, [clip.duration, pixelsPerSecond])
-    const clipHeight = track.height
+    const clipWidth = useMemo(
+      () => clip.duration * pixelsPerSecond,
+      [clip.duration, pixelsPerSecond],
+    );
+    const clipHeight = track.height;
 
     // Мемоизируем прогресс бар вычисления
     const progressBarStyle = useMemo(
@@ -93,7 +108,7 @@ export const VideoClip = memo(
         width: `${(clip.duration / (clip.mediaEndTime - clip.mediaStartTime + clip.duration)) * 100}%`,
       }),
       [clip.mediaStartTime, clip.mediaEndTime, clip.duration],
-    )
+    );
 
     return (
       <ClipDropZoneDnd
@@ -121,7 +136,9 @@ export const VideoClip = memo(
               ) : (
                 <Image className="w-3 h-3 text-white flex-shrink-0" />
               )}
-              <span className="text-xs text-white truncate font-medium">{clip.name}</span>
+              <span className="text-xs text-white truncate font-medium">
+                {clip.name}
+              </span>
 
               {/* Индикаторы ресурсов */}
               <ClipResourceIndicators clip={clip} className="ml-1" />
@@ -165,10 +182,12 @@ export const VideoClip = memo(
           {/* Содержимое клипа */}
           <div className="flex-1 relative">
             {/* Превью видео/изображения */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent">
+            <div className="absolute inset-0 bg-linear-to-r from-black/10 to-transparent">
               {/* TODO: Здесь будет превью кадра из видео */}
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-xs text-white/70">{Math.round(clip.duration)}s</span>
+                <span className="text-xs text-white/70">
+                  {Math.round(clip.duration)}s
+                </span>
               </div>
             </div>
 
@@ -195,7 +214,7 @@ export const VideoClip = memo(
           )}
         </div>
       </ClipDropZoneDnd>
-    )
+    );
   },
   (prevProps, nextProps) => {
     // Кастомная функция сравнения для оптимизации ререндеров
@@ -220,6 +239,6 @@ export const VideoClip = memo(
       prevProps.track.type === nextProps.track.type &&
       prevProps.track.height === nextProps.track.height &&
       prevProps.pixelsPerSecond === nextProps.pixelsPerSecond
-    )
+    );
   },
-)
+);

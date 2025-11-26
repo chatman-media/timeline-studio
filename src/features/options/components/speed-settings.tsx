@@ -72,20 +72,57 @@ export function SpeedSettings() {
 
   // Предустановленные скорости
   const SPEED_PRESETS = [
-    { value: "0.25", label: "0.25x", description: t("options.speed.speeds.0_25", "Very slow") },
-    { value: "0.5", label: "0.5x", description: t("options.speed.speeds.0_5", "Slow") },
-    { value: "0.75", label: "0.75x", description: t("options.speed.speeds.0_75", "Slightly slow") },
-    { value: "1", label: "1x", description: t("options.speed.speeds.1", "Normal") },
-    { value: "1.25", label: "1.25x", description: t("options.speed.speeds.1_25", "Slightly fast") },
-    { value: "1.5", label: "1.5x", description: t("options.speed.speeds.1_5", "Fast") },
-    { value: "2", label: "2x", description: t("options.speed.speeds.2", "Very fast") },
+    {
+      value: "0.25",
+      label: "0.25x",
+      description: t("options.speed.speeds.0_25", "Very slow"),
+    },
+    {
+      value: "0.5",
+      label: "0.5x",
+      description: t("options.speed.speeds.0_5", "Slow"),
+    },
+    {
+      value: "0.75",
+      label: "0.75x",
+      description: t("options.speed.speeds.0_75", "Slightly slow"),
+    },
+    {
+      value: "1",
+      label: "1x",
+      description: t("options.speed.speeds.1", "Normal"),
+    },
+    {
+      value: "1.25",
+      label: "1.25x",
+      description: t("options.speed.speeds.1_25", "Slightly fast"),
+    },
+    {
+      value: "1.5",
+      label: "1.5x",
+      description: t("options.speed.speeds.1_5", "Fast"),
+    },
+    {
+      value: "2",
+      label: "2x",
+      description: t("options.speed.speeds.2", "Very fast"),
+    },
   ]
 
   const INTERPOLATION_OPTIONS = [
-    { value: "none", label: t("options.speed.interpolation.none", "No interpolation") },
-    { value: "linear", label: t("options.speed.interpolation.linear", "Linear") },
+    {
+      value: "none",
+      label: t("options.speed.interpolation.none", "No interpolation"),
+    },
+    {
+      value: "linear",
+      label: t("options.speed.interpolation.linear", "Linear"),
+    },
     { value: "cubic", label: t("options.speed.interpolation.cubic", "Cubic") },
-    { value: "lanczos", label: t("options.speed.interpolation.lanczos", "Lanczos") },
+    {
+      value: "lanczos",
+      label: t("options.speed.interpolation.lanczos", "Lanczos"),
+    },
   ]
 
   const MOTION_BLUR_OPTIONS = [
@@ -96,17 +133,39 @@ export function SpeedSettings() {
   ]
 
   const SPEED_RAMPING_PRESETS = [
-    { id: "slow-motion", name: t("options.speed.presets.slowMotion", "Slow Motion") },
-    { id: "fast-forward", name: t("options.speed.presets.fastForward", "Fast Forward") },
-    { id: "freeze-frame", name: t("options.speed.presets.freezeFrame", "Freeze Frame") },
-    { id: "bullet-time", name: t("options.speed.presets.bulletTime", "Bullet Time") },
-    { id: "ramp-to-slow", name: t("options.speed.presets.rampToSlow", "Ramp to Slow") },
-    { id: "speed-burst", name: t("options.speed.presets.speedBurst", "Speed Burst") },
+    {
+      id: "slow-motion",
+      name: t("options.speed.presets.slowMotion", "Slow Motion"),
+    },
+    {
+      id: "fast-forward",
+      name: t("options.speed.presets.fastForward", "Fast Forward"),
+    },
+    {
+      id: "freeze-frame",
+      name: t("options.speed.presets.freezeFrame", "Freeze Frame"),
+    },
+    {
+      id: "bullet-time",
+      name: t("options.speed.presets.bulletTime", "Bullet Time"),
+    },
+    {
+      id: "ramp-to-slow",
+      name: t("options.speed.presets.rampToSlow", "Ramp to Slow"),
+    },
+    {
+      id: "speed-burst",
+      name: t("options.speed.presets.speedBurst", "Speed Burst"),
+    },
   ]
 
   const handleSpeedPresetSelect = (speed: string) => {
     const numericSpeed = Number.parseFloat(speed)
-    setSettings((prev) => ({ ...prev, defaultSpeed: numericSpeed, customSpeed: numericSpeed }))
+    setSettings((prev) => ({
+      ...prev,
+      defaultSpeed: numericSpeed,
+      customSpeed: numericSpeed,
+    }))
   }
 
   const handleApplySpeedRampingPreset = (presetId: string) => {
@@ -183,7 +242,10 @@ export function SpeedSettings() {
                       type="number"
                       value={settings.customSpeed}
                       onChange={(e) =>
-                        setSettings((prev) => ({ ...prev, customSpeed: Number.parseFloat(e.target.value) || 1.0 }))
+                        setSettings((prev) => ({
+                          ...prev,
+                          customSpeed: Number.parseFloat(e.target.value) || 1.0,
+                        }))
                       }
                       min="0.1"
                       max="10"
@@ -207,7 +269,12 @@ export function SpeedSettings() {
                   <Checkbox
                     id="preserve-pitch-basic"
                     checked={settings.preservePitch}
-                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, preservePitch: !!checked }))}
+                    onCheckedChange={(checked) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        preservePitch: !!checked,
+                      }))
+                    }
                   />
                   <Label htmlFor="preserve-pitch-basic" className="text-sm text-foreground/90">
                     {t("options.speed.preservePitch", "Preserve pitch when changing speed")}
@@ -276,7 +343,12 @@ export function SpeedSettings() {
                   <Checkbox
                     id="maintain-duration"
                     checked={settings.autoKeyframes}
-                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, autoKeyframes: !!checked }))}
+                    onCheckedChange={(checked) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        autoKeyframes: !!checked,
+                      }))
+                    }
                   />
                   <Label htmlFor="maintain-duration" className="text-sm text-foreground/90">
                     {t("options.speed.maintainDuration", "Maintain clip duration")}
@@ -310,7 +382,12 @@ export function SpeedSettings() {
                   </Label>
                   <Select
                     value={settings.interpolationType}
-                    onValueChange={(value) => setSettings((prev) => ({ ...prev, interpolationType: value }))}
+                    onValueChange={(value) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        interpolationType: value,
+                      }))
+                    }
                   >
                     <SelectTrigger className="h-8">
                       <SelectValue />
@@ -353,7 +430,12 @@ export function SpeedSettings() {
                     <Checkbox
                       id="smooth-playback"
                       checked={settings.smoothPlayback}
-                      onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, smoothPlayback: !!checked }))}
+                      onCheckedChange={(checked) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          smoothPlayback: !!checked,
+                        }))
+                      }
                     />
                     <Label htmlFor="smooth-playback" className="text-sm text-foreground/90">
                       {t("options.speed.smoothPlayback", "Smooth Playback")}
@@ -368,7 +450,12 @@ export function SpeedSettings() {
                       <div className="space-y-2">
                         <Slider
                           value={[settings.smoothnessLevel]}
-                          onValueChange={([value]) => setSettings((prev) => ({ ...prev, smoothnessLevel: value }))}
+                          onValueChange={([value]) =>
+                            setSettings((prev) => ({
+                              ...prev,
+                              smoothnessLevel: value,
+                            }))
+                          }
                           max={100}
                           step={1}
                           className="w-full"
@@ -406,7 +493,12 @@ export function SpeedSettings() {
                   <Checkbox
                     id="auto-keyframes"
                     checked={settings.autoKeyframes}
-                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, autoKeyframes: !!checked }))}
+                    onCheckedChange={(checked) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        autoKeyframes: !!checked,
+                      }))
+                    }
                   />
                   <Label htmlFor="auto-keyframes" className="text-sm text-foreground/90">
                     {t("options.speed.autoKeyframes", "Auto keyframes")}
@@ -423,7 +515,10 @@ export function SpeedSettings() {
                       type="number"
                       value={settings.maxSpeed}
                       onChange={(e) =>
-                        setSettings((prev) => ({ ...prev, maxSpeed: Number.parseFloat(e.target.value) || 10.0 }))
+                        setSettings((prev) => ({
+                          ...prev,
+                          maxSpeed: Number.parseFloat(e.target.value) || 10.0,
+                        }))
                       }
                       min="1"
                       max="100"
@@ -440,7 +535,7 @@ export function SpeedSettings() {
       </div>
 
       {/* Нижняя панель с кнопками */}
-      <div className="flex-shrink-0 bg-card border-t border-border p-3">
+      <div className="shrink-0 bg-card border-t border-border p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* Пресеты */}

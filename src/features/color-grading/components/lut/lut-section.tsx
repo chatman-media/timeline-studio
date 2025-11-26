@@ -27,7 +27,11 @@ const PRESET_LUTS = [
   { id: "moody-blue", name: "Moody Blue", category: "creative" },
   // Technical
   { id: "bw-contrast", name: "B&W High Contrast", category: "technical" },
-  { id: "rec709-to-rec2020", name: "Rec.709 to Rec.2020", category: "technical" },
+  {
+    id: "rec709-to-rec2020",
+    name: "Rec.709 to Rec.2020",
+    category: "technical",
+  },
   { id: "log-to-rec709", name: "Log to Rec.709", category: "technical" },
 ]
 
@@ -272,7 +276,7 @@ export function LUTSection() {
                 <div className="aspect-video bg-muted rounded overflow-hidden">
                   {/* В реальном приложении здесь будет реальное превью с WebGL */}
                   <div
-                    className="w-full h-full bg-gradient-to-br from-blue-900 to-purple-900"
+                    className="w-full h-full bg-linear-to-br from-blue-900 to-purple-900"
                     style={{ opacity: 0.3 + (intensity / 100) * 0.7 }}
                   />
                 </div>

@@ -1,60 +1,60 @@
-import { motion, useMotionValue, useSpring } from "framer-motion"
-import type React from "react"
-import { useEffect, useRef, useState } from "react"
+import { motion, useMotionValue, useSpring } from "framer-motion";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const Hero3DLogo: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
-  const [cachedRect, setCachedRect] = useState<DOMRect | null>(null)
-  const animationFrame = useRef<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [cachedRect, setCachedRect] = useState<DOMRect | null>(null);
+  const animationFrame = useRef<number | null>(null);
 
   // Mouse position tracking with springs for smooth animation
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
   // Spring configs for smooth following
-  const springConfig = { damping: 25, stiffness: 200 }
-  const mouseXSpring = useSpring(mouseX, springConfig)
-  const mouseYSpring = useSpring(mouseY, springConfig)
+  const springConfig = { damping: 25, stiffness: 200 };
+  const mouseXSpring = useSpring(mouseX, springConfig);
+  const mouseYSpring = useSpring(mouseY, springConfig);
 
   // Cache rect to avoid forced layout
   useEffect(() => {
     const updateRect = () => {
       if (containerRef.current) {
-        setCachedRect(containerRef.current.getBoundingClientRect())
+        setCachedRect(containerRef.current.getBoundingClientRect());
       }
-    }
+    };
 
-    updateRect()
-    window.addEventListener("resize", updateRect)
-    return () => window.removeEventListener("resize", updateRect)
-  }, [])
+    updateRect();
+    window.addEventListener("resize", updateRect);
+    return () => window.removeEventListener("resize", updateRect);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || !cachedRect) return
+      if (!containerRef.current || !cachedRect) return;
 
-      const x = e.clientX - cachedRect.left
-      const y = e.clientY - cachedRect.top
+      const x = e.clientX - cachedRect.left;
+      const y = e.clientY - cachedRect.top;
 
       // Throttle with requestAnimationFrame
       if (!animationFrame.current) {
         animationFrame.current = requestAnimationFrame(() => {
-          mouseX.set(x)
-          mouseY.set(y)
-          animationFrame.current = null
-        })
+          mouseX.set(x);
+          mouseY.set(y);
+          animationFrame.current = null;
+        });
       }
-    }
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mousemove", handleMouseMove);
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mousemove", handleMouseMove);
       if (animationFrame.current) {
-        cancelAnimationFrame(animationFrame.current)
+        cancelAnimationFrame(animationFrame.current);
       }
-    }
-  }, [mouseX, mouseY, cachedRect])
+    };
+  }, [mouseX, mouseY, cachedRect]);
 
   return (
     <div
@@ -174,7 +174,8 @@ export const Hero3DLogo: React.FC = () => {
               color: "#8b5cf6",
               transform: "perspective(1000px) rotateX(10deg)",
               letterSpacing: "-0.02em",
-              textShadow: "0 20px 40px rgba(139, 92, 246, 0.3), 0 10px 20px rgba(139, 92, 246, 0.4)",
+              textShadow:
+                "0 20px 40px rgba(139, 92, 246, 0.3), 0 10px 20px rgba(139, 92, 246, 0.4)",
             }}
           >
             Timeline Studio
@@ -192,7 +193,7 @@ export const Hero3DLogo: React.FC = () => {
               ease: "easeInOut",
             }}
           >
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-purple-500/30 via-blue-500/30 to-pink-500/30 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-linear-to-r from-purple-500/30 via-blue-500/30 to-pink-500/30 rounded-full blur-3xl" />
           </motion.div>
         </motion.div>
       </div>
@@ -203,5 +204,5 @@ export const Hero3DLogo: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-black/50 to-transparent" />
       </div>
     </div>
-  )
-}
+  );
+};

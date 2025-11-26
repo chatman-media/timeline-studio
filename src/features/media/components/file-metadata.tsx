@@ -25,13 +25,13 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
       <div className="flex w-full justify-between p-2">
         <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{file.name}</p>
         {!file.isImage && file.probeData?.format.duration && (
-          <p className="flex-shrink-0 font-medium" style={{ fontSize: size > 100 ? "13px" : "12px" }}>
+          <p className="shrink-0 font-medium" style={{ fontSize: size > 100 ? "13px" : "12px" }}>
             {formatDuration(file.probeData.format.duration, 3, true)}
           </p>
         )}
 
         {file.isImage && file.createdAt && (
-          <span className="flex-shrink-0 text-sm font-medium whitespace-nowrap text-gray-700 dark:text-gray-200">
+          <span className="shrink-0 text-sm font-medium whitespace-nowrap text-gray-700 dark:text-gray-200">
             {new Date(file.createdAt).toLocaleDateString(i18n.language === "en" ? "en-US" : "ru-RU", {
               year: "numeric",
               month: "long",
@@ -43,7 +43,7 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
 
       {file.isVideo ? (
         <div className="flex w-full items-end p-2">
-          <span className="flex-shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
+          <span className="shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
             {formatTimeWithMilliseconds(file.startTime ?? 0, true, true, false)}
           </span>
 
@@ -70,7 +70,7 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
           </div>
 
           {file.probeData?.format.size && (
-            <p className="ml-2 flex-shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
+            <p className="ml-2 shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
               {formatFileSize(file.probeData.format.size)}
             </p>
           )}
@@ -78,7 +78,7 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
       ) : (
         <div className="flex w-full items-end justify-end p-2">
           {file.probeData?.format.size && (
-            <p className="flex-shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
+            <p className="shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
               {formatFileSize(file.probeData.format.size)}
             </p>
           )}

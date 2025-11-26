@@ -271,7 +271,7 @@ function ClipEditorCard({
     <div className="rounded-lg border p-4 space-y-3 bg-card">
       {/* Заголовок с номером и файлом */}
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
+        <div className="shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">

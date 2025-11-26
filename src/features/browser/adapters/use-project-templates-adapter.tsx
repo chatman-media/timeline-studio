@@ -62,7 +62,7 @@ const ProjectTemplatePreviewWrapper: React.FC<PreviewComponentProps<ProjectTempl
         onClick={handleClick}
       >
         {/* Template preview thumbnail */}
-        <div className="flex-shrink-0 w-16 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded overflow-hidden relative flex items-center justify-center">
+        <div className="shrink-0 w-16 h-9 bg-linear-to-br from-blue-500 to-purple-600 rounded overflow-hidden relative flex items-center justify-center">
           {template.thumbnail ? (
             <img src={template.thumbnail} alt={template.name.ru} className="w-full h-full object-cover" />
           ) : (
@@ -82,16 +82,16 @@ const ProjectTemplatePreviewWrapper: React.FC<PreviewComponentProps<ProjectTempl
         </div>
 
         {/* Category */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{categoryLabel}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{categoryLabel}</div>
 
         {/* Platform */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{platformLabel}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{platformLabel}</div>
 
         {/* Duration */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{formatDuration(template.estimatedDuration)}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{formatDuration(template.estimatedDuration)}</div>
 
         {/* Sections count */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{template.structure.sections.length} sections</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{template.structure.sections.length} sections</div>
       </div>
     )
   }
@@ -103,7 +103,7 @@ const ProjectTemplatePreviewWrapper: React.FC<PreviewComponentProps<ProjectTempl
       onClick={handleClick}
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+      <div className="relative aspect-video bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
         {template.thumbnail ? (
           <img src={template.thumbnail} alt={template.name.ru} className="w-full h-full object-cover" />
         ) : (

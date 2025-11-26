@@ -359,7 +359,7 @@ export function GLSLCodeEditor({
   return (
     <div className={cn("relative flex h-full bg-gray-900 rounded-lg overflow-hidden", className)}>
       {/* Line numbers */}
-      <div className="flex-shrink-0 w-12 bg-gray-950 text-gray-500 text-right pr-2 pt-4 pb-4 text-sm font-mono select-none">
+      <div className="shrink-0 w-12 bg-gray-950 text-gray-500 text-right pr-2 pt-4 pb-4 text-sm font-mono select-none">
         <div ref={lineNumbersRef} className="leading-6">
           1
         </div>
@@ -468,11 +468,21 @@ export function GLSLCodeEditor({
       </div>
 
       <style jsx>{`
-        .keyword { color: #569cd6; }
-        .function { color: #dcdcaa; }
-        .number { color: #b5cea8; }
-        .string { color: #ce9178; }
-        .comment { color: #6a9955; }
+        .keyword {
+          color: #569cd6;
+        }
+        .function {
+          color: #dcdcaa;
+        }
+        .number {
+          color: #b5cea8;
+        }
+        .string {
+          color: #ce9178;
+        }
+        .comment {
+          color: #6a9955;
+        }
       `}</style>
     </div>
   )

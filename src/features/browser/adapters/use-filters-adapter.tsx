@@ -45,7 +45,7 @@ const FilterPreviewWrapper: React.FC<PreviewComponentProps<VideoFilter>> = ({
         {...dragProps}
       >
         {/* Filter preview thumbnail */}
-        <div className="flex-shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden">
+        <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden">
           <video
             src="/t1.mp4"
             className="w-full h-full object-cover"
@@ -63,10 +63,10 @@ const FilterPreviewWrapper: React.FC<PreviewComponentProps<VideoFilter>> = ({
         </div>
 
         {/* Category */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{filter.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{filter.category}</div>
 
         {/* Complexity */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{filter.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{filter.complexity}</div>
       </div>
     )
   }
@@ -134,7 +134,11 @@ export function useFiltersAdapter(): ListAdapter<VideoFilter> {
             return filter.category.toLowerCase()
           case "complexity": {
             // Определяем порядок сложности: basic < intermediate < advanced
-            const complexityOrder: Record<string, number> = { basic: 0, intermediate: 1, advanced: 2 }
+            const complexityOrder: Record<string, number> = {
+              basic: 0,
+              intermediate: 1,
+              advanced: 2,
+            }
             return complexityOrder[filter.complexity || "basic"]
           }
           default:

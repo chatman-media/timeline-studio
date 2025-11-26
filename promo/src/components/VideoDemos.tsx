@@ -1,17 +1,17 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { Clapperboard, Video, Palette } from "lucide-react"
-import { useTranslation } from "../hooks/useTranslation"
+import { motion } from "framer-motion";
+import type React from "react";
+import { Clapperboard, Video, Palette } from "lucide-react";
+import { useTranslation } from "../hooks/useTranslation";
 
 interface Demo {
-  title: string
-  description: string
-  icon: React.ReactNode
-  comingSoon?: boolean
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  comingSoon?: boolean;
 }
 
 export const VideoDemos: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const demos: Demo[] = [
     {
@@ -32,7 +32,7 @@ export const VideoDemos: React.FC = () => {
       icon: <Palette className="w-16 h-16 text-white drop-shadow-2xl" />,
       comingSoon: true,
     },
-  ]
+  ];
 
   return (
     <section className="py-20 bg-[#0a0f1e] relative overflow-hidden">
@@ -51,7 +51,10 @@ export const VideoDemos: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="section-title">
-            {t("mainPage.videoDemos.title")} <span className="text-gradient">{t("mainPage.videoDemos.titleHighlight")}</span>
+            {t("mainPage.videoDemos.title")}{" "}
+            <span className="text-gradient">
+              {t("mainPage.videoDemos.titleHighlight")}
+            </span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             {t("mainPage.videoDemos.subtitle")}
@@ -69,27 +72,29 @@ export const VideoDemos: React.FC = () => {
               className="relative overflow-hidden rounded-xl group"
             >
               {/* Glassmorphism background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-              <div className="absolute inset-0 bg-white/[0.02]" />
+              <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+              <div className="absolute inset-0 bg-white/2" />
 
               {/* Border gradient */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+              <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                 <div className="h-full w-full rounded-xl bg-[#0a0f1e]/90 backdrop-blur-xl" />
               </div>
 
               {/* Content */}
               <div className="relative">
                 {/* Video placeholder */}
-                <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
+                <div className="aspect-video bg-linear-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
                   {/* Animated background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-br from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   {/* Icon */}
                   <div className="relative z-10 text-center">
                     <div className="mb-4 flex justify-center">{demo.icon}</div>
                     {demo.comingSoon && (
                       <div className="inline-block px-4 py-2 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-500/30">
-                        <span className="text-sm text-purple-300 font-medium">{t("mainPage.videoDemos.comingSoon")}</span>
+                        <span className="text-sm text-purple-300 font-medium">
+                          {t("mainPage.videoDemos.comingSoon")}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -98,7 +103,11 @@ export const VideoDemos: React.FC = () => {
                   {!demo.comingSoon && (
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform">
-                        <svg className="w-8 h-8 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg
+                          className="w-8 h-8 text-gray-900 ml-1"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
                           <path d="M8 5v14l11-7z" />
                         </svg>
                       </div>
@@ -108,7 +117,9 @@ export const VideoDemos: React.FC = () => {
 
                 {/* Info */}
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold text-white mb-2">{demo.title}</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {demo.title}
+                  </h3>
                   <p className="text-sm text-gray-400">{demo.description}</p>
                 </div>
               </div>
@@ -126,7 +137,10 @@ export const VideoDemos: React.FC = () => {
         >
           <p className="text-gray-400 mb-4">
             {t("mainPage.videoDemos.checkGithub")}{" "}
-            <a href="https://github.com/chatman-media/timeline-studio" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <a
+              href="https://github.com/chatman-media/timeline-studio"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
               {t("mainPage.videoDemos.githubRepo")}
             </a>{" "}
             {t("mainPage.videoDemos.forDocs")}
@@ -134,5 +148,5 @@ export const VideoDemos: React.FC = () => {
         </motion.div>
       </div>
     </section>
-  )
-}
+  );
+};

@@ -1,24 +1,27 @@
-import type React from "react"
+import type React from "react";
 
 interface LogoProps {
-  size?: "small" | "medium" | "large"
-  showText?: boolean
+  size?: "small" | "medium" | "large";
+  showText?: boolean;
 }
 
-export const Logo: React.FC<LogoProps> = ({ size = "medium", showText = true }) => {
+export const Logo: React.FC<LogoProps> = ({
+  size = "medium",
+  showText = true,
+}) => {
   const sizes = {
     small: { circle: "w-10 h-10", text: "text-lg", font: 43 },
     medium: { circle: "w-12 h-12", text: "text-xl", font: 52 },
     large: { circle: "w-16 h-16", text: "text-2xl", font: "text-3xl" },
-  }
+  };
 
-  const currentSize = sizes[size]
+  const currentSize = sizes[size];
 
   return (
-    <div className="flex items-center flex-shrink-0 w-auto max-w-full pr-2 md:pr-4">
+    <div className="flex items-center shrink-0 w-auto max-w-full pr-2 md:pr-4">
       {/* Static circle with T */}
       <div
-        className={`${currentSize.circle} flex-shrink-0 mb-1 rounded-full flex items-center justify-center overflow-hidden`}
+        className={`${currentSize.circle} shrink-0 mb-1 rounded-full flex items-center justify-center overflow-hidden`}
         style={{
           background: "#8b5cf6",
           boxShadow: "0 8px 32px 0 rgba(139, 92, 246, 0.4)",
@@ -59,7 +62,7 @@ export const Logo: React.FC<LogoProps> = ({ size = "medium", showText = true }) 
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Logo
+export default Logo;

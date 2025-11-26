@@ -89,31 +89,67 @@ export function AudioSettings() {
   }
 
   const SAMPLE_RATE_OPTIONS = [
-    { value: "44100", label: t("options.audio.sampleRates.44100", "44.1 kHz (CD quality)") },
-    { value: "48000", label: t("options.audio.sampleRates.48000", "48 kHz (Professional)") },
-    { value: "96000", label: t("options.audio.sampleRates.96000", "96 kHz (Hi-Res)") },
-    { value: "192000", label: t("options.audio.sampleRates.192000", "192 kHz (Studio)") },
+    {
+      value: "44100",
+      label: t("options.audio.sampleRates.44100", "44.1 kHz (CD quality)"),
+    },
+    {
+      value: "48000",
+      label: t("options.audio.sampleRates.48000", "48 kHz (Professional)"),
+    },
+    {
+      value: "96000",
+      label: t("options.audio.sampleRates.96000", "96 kHz (Hi-Res)"),
+    },
+    {
+      value: "192000",
+      label: t("options.audio.sampleRates.192000", "192 kHz (Studio)"),
+    },
   ]
 
   const BITRATE_OPTIONS = [
-    { value: "128", label: t("options.audio.bitrates.128", "128 kbps (Basic)") },
+    {
+      value: "128",
+      label: t("options.audio.bitrates.128", "128 kbps (Basic)"),
+    },
     { value: "192", label: t("options.audio.bitrates.192", "192 kbps (Good)") },
     { value: "256", label: t("options.audio.bitrates.256", "256 kbps (High)") },
-    { value: "320", label: t("options.audio.bitrates.320", "320 kbps (Maximum)") },
+    {
+      value: "320",
+      label: t("options.audio.bitrates.320", "320 kbps (Maximum)"),
+    },
   ]
 
   const CHANNELS_OPTIONS = [
-    { value: "mono", label: t("options.audio.channelsOptions.mono", "Mono (1 channel)") },
-    { value: "stereo", label: t("options.audio.channelsOptions.stereo", "Stereo (2 channels)") },
-    { value: "5.1", label: t("options.audio.channelsOptions.5_1", "5.1 Surround") },
-    { value: "7.1", label: t("options.audio.channelsOptions.7_1", "7.1 Surround") },
+    {
+      value: "mono",
+      label: t("options.audio.channelsOptions.mono", "Mono (1 channel)"),
+    },
+    {
+      value: "stereo",
+      label: t("options.audio.channelsOptions.stereo", "Stereo (2 channels)"),
+    },
+    {
+      value: "5.1",
+      label: t("options.audio.channelsOptions.5_1", "5.1 Surround"),
+    },
+    {
+      value: "7.1",
+      label: t("options.audio.channelsOptions.7_1", "7.1 Surround"),
+    },
   ]
 
   const AUDIO_CODEC_OPTIONS = [
     { value: "aac", label: t("options.audio.codecs.aac", "AAC (Recommended)") },
-    { value: "mp3", label: t("options.audio.codecs.mp3", "MP3 (Compatibility)") },
+    {
+      value: "mp3",
+      label: t("options.audio.codecs.mp3", "MP3 (Compatibility)"),
+    },
     { value: "flac", label: t("options.audio.codecs.flac", "FLAC (Lossless)") },
-    { value: "opus", label: t("options.audio.codecs.opus", "Opus (Efficiency)") },
+    {
+      value: "opus",
+      label: t("options.audio.codecs.opus", "Opus (Efficiency)"),
+    },
   ]
 
   const handleReset = () => {
@@ -250,7 +286,12 @@ export function AudioSettings() {
                   <div className="space-y-2">
                     <Slider
                       value={[settings.defaultVolume]}
-                      onValueChange={([value]) => setSettings((prev) => ({ ...prev, defaultVolume: value }))}
+                      onValueChange={([value]) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          defaultVolume: value,
+                        }))
+                      }
                       max={100}
                       step={1}
                       className="w-full"
@@ -324,7 +365,12 @@ export function AudioSettings() {
                         ? "border-blue-500 bg-blue-500/10"
                         : "border-border bg-background hover:border-blue-400"
                     }`}
-                    onClick={() => setSettings((prev) => ({ ...prev, noiseReduction: !prev.noiseReduction }))}
+                    onClick={() =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        noiseReduction: !prev.noiseReduction,
+                      }))
+                    }
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Filter className={`h-4 w-4 ${settings.noiseReduction ? "text-blue-400" : "text-gray-400"}`} />
@@ -346,7 +392,12 @@ export function AudioSettings() {
                         ? "border-orange-500 bg-orange-500/10"
                         : "border-border bg-background hover:border-orange-400"
                     }`}
-                    onClick={() => setSettings((prev) => ({ ...prev, compressorEnabled: !prev.compressorEnabled }))}
+                    onClick={() =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        compressorEnabled: !prev.compressorEnabled,
+                      }))
+                    }
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Waves
@@ -370,7 +421,12 @@ export function AudioSettings() {
                         ? "border-green-500 bg-green-500/10"
                         : "border-border bg-background hover:border-green-400"
                     }`}
-                    onClick={() => setSettings((prev) => ({ ...prev, equalizerEnabled: !prev.equalizerEnabled }))}
+                    onClick={() =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        equalizerEnabled: !prev.equalizerEnabled,
+                      }))
+                    }
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Sliders
@@ -394,7 +450,12 @@ export function AudioSettings() {
                         ? "border-purple-500 bg-purple-500/10"
                         : "border-border bg-background hover:border-purple-400"
                     }`}
-                    onClick={() => setSettings((prev) => ({ ...prev, reverbEnabled: !prev.reverbEnabled }))}
+                    onClick={() =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        reverbEnabled: !prev.reverbEnabled,
+                      }))
+                    }
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <Speaker className={`h-4 w-4 ${settings.reverbEnabled ? "text-purple-400" : "text-gray-400"}`} />
@@ -481,7 +542,10 @@ export function AudioSettings() {
                     type="number"
                     value={settings.bufferSize}
                     onChange={(e) =>
-                      setSettings((prev) => ({ ...prev, bufferSize: Number.parseInt(e.target.value, 10) || 512 }))
+                      setSettings((prev) => ({
+                        ...prev,
+                        bufferSize: Number.parseInt(e.target.value, 10) || 512,
+                      }))
                     }
                     min="128"
                     max="2048"
@@ -499,7 +563,10 @@ export function AudioSettings() {
                     type="number"
                     value={settings.latency}
                     onChange={(e) =>
-                      setSettings((prev) => ({ ...prev, latency: Number.parseInt(e.target.value, 10) || 20 }))
+                      setSettings((prev) => ({
+                        ...prev,
+                        latency: Number.parseInt(e.target.value, 10) || 20,
+                      }))
                     }
                     min="0"
                     max="100"
@@ -514,7 +581,7 @@ export function AudioSettings() {
       </div>
 
       {/* Нижняя панель с кнопками */}
-      <div className="flex-shrink-0 bg-card border-t border-border p-3">
+      <div className="shrink-0 bg-card border-t border-border p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* Fairlight интеграция */}

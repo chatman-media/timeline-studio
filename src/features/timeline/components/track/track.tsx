@@ -83,7 +83,7 @@ export function Track({
       }}
     >
       {/* Заголовок трека (фиксированная ширина) */}
-      <div className="flex-shrink-0 w-48 border-r border-border">
+      <div className="shrink-0 w-48 border-r border-border">
         <TrackHeader track={track} isSelected={isSelected} onUpdate={handleUpdate} />
       </div>
 

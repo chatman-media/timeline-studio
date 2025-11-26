@@ -121,15 +121,15 @@ export function AIActionPreview({ actions, onConfirm, onCancel, className }: AIA
               className="flex w-full items-center gap-2 p-3 text-left hover:bg-muted/50 transition-colors"
             >
               {/* Номер */}
-              <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-xs font-medium text-white">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500 text-xs font-medium text-white">
                 {index + 1}
               </span>
 
               {/* Иконка раскрытия */}
               {expandedActions.has(action.id) ? (
-                <ChevronDown className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
               ) : (
-                <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
               )}
 
               {/* Описание */}
@@ -141,10 +141,7 @@ export function AIActionPreview({ actions, onConfirm, onCancel, className }: AIA
               {/* Уровень риска */}
               {action.risk && (
                 <span
-                  className={cn(
-                    "flex-shrink-0 rounded-md border px-2 py-1 text-xs font-medium",
-                    getRiskColor(action.risk),
-                  )}
+                  className={cn("shrink-0 rounded-md border px-2 py-1 text-xs font-medium", getRiskColor(action.risk))}
                 >
                   {getRiskLabel(action.risk)}
                 </span>

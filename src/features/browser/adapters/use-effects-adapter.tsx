@@ -61,10 +61,10 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
         </div>
 
         {/* Category */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{effect.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{effect.category}</div>
 
         {/* Complexity */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{effect.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{effect.complexity}</div>
       </div>
     )
   }
@@ -115,7 +115,12 @@ export function useEffectsAdapter(): ListAdapter<EffectListItem> {
             return effect.category.toLowerCase()
           case "complexity": {
             // Определяем порядок сложности: basic < intermediate < advanced
-            const complexityOrder: Record<string, number> = { low: 0, medium: 1, high: 2, extreme: 3 }
+            const complexityOrder: Record<string, number> = {
+              low: 0,
+              medium: 1,
+              high: 2,
+              extreme: 3,
+            }
             return complexityOrder[effect.complexity || "low"]
           }
           case "processingType":

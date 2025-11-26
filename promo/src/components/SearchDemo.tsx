@@ -1,9 +1,9 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { Clapperboard } from "lucide-react"
+import { motion } from "framer-motion";
+import type React from "react";
+import { Clapperboard } from "lucide-react";
 
 interface SearchDemoProps {
-  className?: string
+  className?: string;
 }
 
 export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
@@ -17,7 +17,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
         className="relative rounded-2xl overflow-hidden shadow-2xl"
       >
         {/* Gradient border effect */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 p-[2px]">
+        <div className="absolute inset-0 rounded-2xl bg-linear-to-r from-purple-500 via-pink-500 to-orange-500 p-[2px]">
           <div className="h-full w-full rounded-2xl bg-[#12192C]" />
         </div>
 
@@ -32,7 +32,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
           />
 
           {/* Заглушка для мобильных */}
-          <div className="md:hidden w-full aspect-video bg-gradient-to-br from-purple-900/20 to-pink-900/20 rounded-2xl flex items-center justify-center">
+          <div className="md:hidden w-full aspect-video bg-linear-to-br from-purple-900/20 to-pink-900/20 rounded-2xl flex items-center justify-center">
             <div className="text-center text-white/60">
               <Clapperboard className="w-12 h-12 mx-auto mb-2" />
               <p className="text-sm">Timeline Studio Interface</p>
@@ -72,7 +72,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
         </div>
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default SearchDemo
+export default SearchDemo;

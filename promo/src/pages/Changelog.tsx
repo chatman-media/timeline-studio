@@ -1,20 +1,20 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { useTranslation } from "../hooks/useTranslation"
-import { parseChangelog } from "../utils/parseChangelog"
+import { motion } from "framer-motion";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { useTranslation } from "../hooks/useTranslation";
+import { parseChangelog } from "../utils/parseChangelog";
 
 // Format changelog item text with proper markdown link parsing
 function formatChangelogItem(text: string): React.ReactNode {
   // Parse markdown links [text](url)
-  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g)
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
 
   return parts.map((part, index) => {
-    const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/)
+    const linkMatch = part.match(/\[([^\]]+)\]\(([^)]+)\)/);
     if (linkMatch) {
-      const [, linkText, url] = linkMatch
+      const [, linkText, url] = linkMatch;
       return (
         <a
           key={index}
@@ -25,27 +25,29 @@ function formatChangelogItem(text: string): React.ReactNode {
         >
           {linkText}
         </a>
-      )
+      );
     }
 
     // Parse bold text **text**
-    const boldParts = part.split(/(\*\*[^*]+\*\*)/g)
+    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
     return boldParts.map((boldPart, boldIndex) => {
       if (boldPart.startsWith("**") && boldPart.endsWith("**")) {
-        return <strong key={`${index}-${boldIndex}`}>{boldPart.slice(2, -2)}</strong>
+        return (
+          <strong key={`${index}-${boldIndex}`}>{boldPart.slice(2, -2)}</strong>
+        );
       }
-      return <span key={`${index}-${boldIndex}`}>{boldPart}</span>
-    })
-  })
+      return <span key={`${index}-${boldIndex}`}>{boldPart}</span>;
+    });
+  });
 }
 
 interface VersionData {
-  version: string
-  date: string
-  features: string[]
-  fixes: string[]
-  improvements: string[]
-  breaking?: string[]
+  version: string;
+  date: string;
+  features: string[];
+  fixes: string[];
+  improvements: string[];
+  breaking?: string[];
 }
 
 // Default versions for fallback
@@ -53,7 +55,10 @@ const defaultVersions: VersionData[] = [
   {
     version: "0.51.0",
     date: "2025-01-30",
-    features: ["Централизованное управление версией приложения", "Оптимизация для GitHub Pages"],
+    features: [
+      "Централизованное управление версией приложения",
+      "Оптимизация для GitHub Pages",
+    ],
     fixes: [
       "Исправлена синхронизация версий между package.json, Cargo.toml и tauri.conf.json",
       "Оптимизирован промо-сайт для GitHub Pages",
@@ -78,35 +83,35 @@ const defaultVersions: VersionData[] = [
     fixes: [],
     improvements: ["Улучшен общий дизайн промо-сайта"],
   },
-]
+];
 
 export const Changelog: React.FC = () => {
-  const { t } = useTranslation()
-  const [versions, setVersions] = useState<VersionData[]>(defaultVersions)
-  const [loading, setLoading] = useState(true)
+  const { t } = useTranslation();
+  const [versions, setVersions] = useState<VersionData[]>(defaultVersions);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Load changelog from markdown file
     fetch("/content/changelog/latest.md")
       .then((response) => {
-        if (!response.ok) throw new Error("Failed to load changelog")
-        return response.text()
+        if (!response.ok) throw new Error("Failed to load changelog");
+        return response.text();
       })
       .then((markdown) => {
-        const parsed = parseChangelog(markdown)
+        const parsed = parseChangelog(markdown);
         if (parsed.length > 0) {
           // Take only the latest 10 versions for performance
-          setVersions(parsed.slice(0, 10))
+          setVersions(parsed.slice(0, 10));
         }
       })
       .catch((error) => {
-        console.error("Failed to load changelog:", error)
+        console.error("Failed to load changelog:", error);
         // Keep default versions on error
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+        setLoading(false);
+      });
+  }, []);
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
       <Navigation />
@@ -127,7 +132,9 @@ export const Changelog: React.FC = () => {
               <h1 className="page-title">
                 <span className="text-gradient">{t("changelog.title")}</span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mb-8">{t("changelog.subtitle")}</p>
+              <p className="text-xl md:text-2xl text-gray-300 mb-8">
+                {t("changelog.subtitle")}
+              </p>
             </motion.div>
           </div>
         </section>
@@ -154,11 +161,11 @@ export const Changelog: React.FC = () => {
                       {/* Glass card for each version */}
                       <div className="relative overflow-hidden rounded-2xl">
                         {/* Glassmorphism background */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                        <div className="absolute inset-0 bg-white/[0.02]" />
+                        <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                        <div className="absolute inset-0 bg-white/2" />
 
                         {/* Border gradient */}
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                        <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                           <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                         </div>
 
@@ -167,9 +174,11 @@ export const Changelog: React.FC = () => {
                           {/* Header */}
                           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                             <div className="flex items-center gap-4 mb-2 sm:mb-0">
-                              <h3 className="text-2xl font-medium text-white">v{version.version}</h3>
+                              <h3 className="text-2xl font-medium text-white">
+                                v{version.version}
+                              </h3>
                               {index === 0 && (
-                                <span className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full">
+                                <span className="px-3 py-1 text-xs font-semibold bg-linear-to-r from-green-500 to-emerald-500 text-white rounded-full">
                                   {t("changelog.latest")}
                                 </span>
                               )}
@@ -194,7 +203,9 @@ export const Changelog: React.FC = () => {
                                     viewport={{ once: true }}
                                     className="flex items-start gap-2 text-gray-300"
                                   >
-                                    <span className="text-purple-400 mt-1">•</span>
+                                    <span className="text-purple-400 mt-1">
+                                      •
+                                    </span>
                                     <span>{formatChangelogItem(feature)}</span>
                                   </motion.li>
                                 ))}
@@ -219,7 +230,9 @@ export const Changelog: React.FC = () => {
                                     viewport={{ once: true }}
                                     className="flex items-start gap-2 text-gray-300"
                                   >
-                                    <span className="text-blue-400 mt-1">•</span>
+                                    <span className="text-blue-400 mt-1">
+                                      •
+                                    </span>
                                     <span>{formatChangelogItem(fix)}</span>
                                   </motion.li>
                                 ))}
@@ -244,8 +257,12 @@ export const Changelog: React.FC = () => {
                                     viewport={{ once: true }}
                                     className="flex items-start gap-2 text-gray-300"
                                   >
-                                    <span className="text-green-400 mt-1">•</span>
-                                    <span>{formatChangelogItem(improvement)}</span>
+                                    <span className="text-green-400 mt-1">
+                                      •
+                                    </span>
+                                    <span>
+                                      {formatChangelogItem(improvement)}
+                                    </span>
                                   </motion.li>
                                 ))}
                               </ul>
@@ -286,7 +303,12 @@ export const Changelog: React.FC = () => {
                               className="inline-flex items-center gap-2 px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-all duration-300 transform hover:scale-105"
                             >
                               {t("changelog.viewRelease")}
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
@@ -319,8 +341,18 @@ export const Changelog: React.FC = () => {
                     className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"
                   >
                     {t("changelog.viewAllReleases")}
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
                     </svg>
                   </a>
                 </motion.div>
@@ -332,7 +364,7 @@ export const Changelog: React.FC = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Changelog
+export default Changelog;

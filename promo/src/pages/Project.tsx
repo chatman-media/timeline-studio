@@ -1,18 +1,18 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { useLanguage } from "../contexts/LanguageContext"
+import { motion } from "framer-motion";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export const Project: React.FC = () => {
-  const { language, t } = useLanguage()
-  const [markdownContent, setMarkdownContent] = useState("")
-  const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("business")
+  const { language, t } = useLanguage();
+  const [markdownContent, setMarkdownContent] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("business");
 
   // Определяем вкладки
   const tabs = [
@@ -31,41 +31,44 @@ export const Project: React.FC = () => {
       title: language === "ru" ? "Инвестиции" : "Investment",
       path: "investment-valuation.md",
     },
-  ]
+  ];
 
   // Определяем путь к документу в зависимости от языка и активной вкладки
-  const currentTab = tabs.find((tab) => tab.id === activeTab)
+  const currentTab = tabs.find((tab) => tab.id === activeTab);
   const manifestPath =
     language === "ru"
       ? `/content/docs/ru/00_project_manifest/${currentTab?.path}`
       : language === "zh"
         ? `/content/docs/zh/00_project_manifest/${currentTab?.path}`
-        : `/content/docs/en/00_project_manifest/${currentTab?.path}`
+        : `/content/docs/en/00_project_manifest/${currentTab?.path}`;
 
   useEffect(() => {
     const fetchMarkdown = async () => {
       try {
-        setLoading(true)
-        console.log("Fetching markdown from:", manifestPath)
-        const response = await fetch(manifestPath)
-        console.log("Response status:", response.status)
+        setLoading(true);
+        console.log("Fetching markdown from:", manifestPath);
+        const response = await fetch(manifestPath);
+        console.log("Response status:", response.status);
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const text = await response.text()
-        console.log("Markdown loaded, length:", text.length)
-        setMarkdownContent(text)
+        const text = await response.text();
+        console.log("Markdown loaded, length:", text.length);
+        setMarkdownContent(text);
       } catch (error) {
-        console.error("Error loading markdown:", error)
-        const errorMessage = error instanceof Error ? error.message : "Unknown error"
-        setMarkdownContent(`# Ошибка загрузки\n\nНе удалось загрузить документ.\n\nОшибка: ${errorMessage}`)
+        console.error("Error loading markdown:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        setMarkdownContent(
+          `# Ошибка загрузки\n\nНе удалось загрузить документ.\n\nОшибка: ${errorMessage}`,
+        );
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchMarkdown()
-  }, [manifestPath, activeTab])
+    fetchMarkdown();
+  }, [manifestPath, activeTab]);
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
@@ -86,7 +89,9 @@ export const Project: React.FC = () => {
             >
               <h1 className="page-title">
                 <span className="text-gradient">
-                  {language === "ru" ? "Проектная документация" : "Project Documentation"}
+                  {language === "ru"
+                    ? "Проектная документация"
+                    : "Project Documentation"}
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-8">
@@ -99,23 +104,37 @@ export const Project: React.FC = () => {
                 <span>•</span>
                 <span>{language === "ru" ? "Локальный AI" : "Local AI"}</span>
                 <span>•</span>
-                <span>{language === "ru" ? "100+ AI инструментов" : "100+ AI tools"}</span>
+                <span>
+                  {language === "ru" ? "100+ AI инструментов" : "100+ AI tools"}
+                </span>
               </div>
 
               {/* Investor CTA */}
               <Link
                 to="/investors"
-                className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 backdrop-blur-sm rounded-full border border-green-500/30 transition-all"
+                className="inline-flex items-center gap-3 px-6 py-3 bg-linear-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 backdrop-blur-sm rounded-full border border-green-500/30 transition-all"
               >
                 <span className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                 </span>
                 <span className="text-green-300 font-medium">
-                  {language === "ru" ? "Ищем инвестиции: $1M Seed Round" : "Raising: $1M Seed Round"}
+                  {language === "ru"
+                    ? "Ищем инвестиции: $1M Seed Round"
+                    : "Raising: $1M Seed Round"}
                 </span>
-                <svg className="w-4 h-4 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-4 h-4 text-green-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </Link>
             </motion.div>
@@ -160,11 +179,11 @@ export const Project: React.FC = () => {
             >
               <div className="relative overflow-hidden rounded-2xl">
                 {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
+                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-white/2" />
 
                 {/* Border gradient */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                   <div className="h-full w-full rounded-2xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
@@ -180,19 +199,29 @@ export const Project: React.FC = () => {
                         remarkPlugins={[remarkGfm]}
                         components={{
                           h1: ({ children }) => (
-                            <h1 className="text-4xl md:text-5xl font-light mb-8 text-gradient">{children}</h1>
+                            <h1 className="text-4xl md:text-5xl font-light mb-8 text-gradient">
+                              {children}
+                            </h1>
                           ),
                           h2: ({ children }) => (
-                            <h2 className="text-3xl md:text-4xl font-light mb-6 text-white mt-12">{children}</h2>
+                            <h2 className="text-3xl md:text-4xl font-light mb-6 text-white mt-12">
+                              {children}
+                            </h2>
                           ),
                           h3: ({ children }) => (
-                            <h3 className="text-2xl md:text-3xl font-light mb-4 text-white mt-8">{children}</h3>
+                            <h3 className="text-2xl md:text-3xl font-light mb-4 text-white mt-8">
+                              {children}
+                            </h3>
                           ),
                           h4: ({ children }) => (
-                            <h4 className="text-xl md:text-2xl font-light mb-3 text-gray-200 mt-6">{children}</h4>
+                            <h4 className="text-xl md:text-2xl font-light mb-3 text-gray-200 mt-6">
+                              {children}
+                            </h4>
                           ),
                           p: ({ children }) => (
-                            <p className="text-sm text-gray-300 mb-4 leading-relaxed font-light">{children}</p>
+                            <p className="text-sm text-gray-300 mb-4 leading-relaxed font-light">
+                              {children}
+                            </p>
                           ),
                           ul: ({ children }) => (
                             <ul className="text-sm text-gray-300 mb-4 space-y-2 list-disc list-inside font-light">
@@ -204,15 +233,25 @@ export const Project: React.FC = () => {
                               {children}
                             </ol>
                           ),
-                          li: ({ children }) => <li className="text-sm text-gray-300 font-light">{children}</li>,
-                          strong: ({ children }) => <strong className="text-white font-medium">{children}</strong>,
+                          li: ({ children }) => (
+                            <li className="text-sm text-gray-300 font-light">
+                              {children}
+                            </li>
+                          ),
+                          strong: ({ children }) => (
+                            <strong className="text-white font-medium">
+                              {children}
+                            </strong>
+                          ),
                           code: ({ children }) => (
                             <code className="bg-gray-800 text-purple-300 px-2 py-1 rounded text-sm font-normal">
                               {children}
                             </code>
                           ),
                           pre: ({ children }) => (
-                            <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto mb-4">{children}</pre>
+                            <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto mb-4">
+                              {children}
+                            </pre>
                           ),
                           blockquote: ({ children }) => (
                             <blockquote className="border-l-4 border-purple-500 pl-4 italic text-gray-400 mb-4">
@@ -231,17 +270,25 @@ export const Project: React.FC = () => {
                           ),
                           table: ({ children }) => (
                             <div className="my-8 overflow-x-auto">
-                              <table className="w-full border-collapse">{children}</table>
+                              <table className="w-full border-collapse">
+                                {children}
+                              </table>
                             </div>
                           ),
                           thead: ({ children }) => (
-                            <thead className="bg-gradient-to-r from-purple-500/20 to-blue-500/20">
+                            <thead className="bg-linear-to-r from-purple-500/20 to-blue-500/20">
                               {children}
                             </thead>
                           ),
-                          tbody: ({ children }) => <tbody className="divide-y divide-gray-700">{children}</tbody>,
+                          tbody: ({ children }) => (
+                            <tbody className="divide-y divide-gray-700">
+                              {children}
+                            </tbody>
+                          ),
                           tr: ({ children }) => (
-                            <tr className="hover:bg-white/5 transition-colors">{children}</tr>
+                            <tr className="hover:bg-white/5 transition-colors">
+                              {children}
+                            </tr>
                           ),
                           th: ({ children }) => (
                             <th className="px-4 py-3 text-left text-sm font-medium text-white border-b-2 border-purple-500/50">
@@ -249,7 +296,9 @@ export const Project: React.FC = () => {
                             </th>
                           ),
                           td: ({ children }) => (
-                            <td className="px-4 py-3 text-sm text-gray-300 font-light">{children}</td>
+                            <td className="px-4 py-3 text-sm text-gray-300 font-light">
+                              {children}
+                            </td>
                           ),
                         }}
                       >
@@ -266,7 +315,7 @@ export const Project: React.FC = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Project
+export default Project;

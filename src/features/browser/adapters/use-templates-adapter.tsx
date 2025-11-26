@@ -53,7 +53,7 @@ const TemplatePreviewWrapper: React.FC<PreviewComponentProps<MediaTemplate>> = (
         draggable
       >
         {/* Template preview thumbnail */}
-        <div className="flex-shrink-0 w-12 h-9 bg-gray-100 rounded overflow-hidden">
+        <div className="shrink-0 w-12 h-9 bg-gray-100 rounded overflow-hidden">
           <TemplatePreview template={template} size={32} dimensions={dimensions} onClick={handleClick} />
         </div>
 
@@ -66,13 +66,13 @@ const TemplatePreviewWrapper: React.FC<PreviewComponentProps<MediaTemplate>> = (
         </div>
 
         {/* Split type */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{template.split}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{template.split}</div>
 
         {/* Screens count */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{template.screens}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{template.screens}</div>
 
         {/* Resizable indicator */}
-        {template.resizable && <div className="flex-shrink-0 text-xs text-green-600">Resizable</div>}
+        {template.resizable && <div className="shrink-0 text-xs text-green-600">Resizable</div>}
       </div>
     )
   }

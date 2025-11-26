@@ -42,7 +42,7 @@ const SubtitlePreviewWrapper: React.FC<PreviewComponentProps<SubtitleStyleTempla
         draggable
       >
         {/* Subtitle preview sample */}
-        <div className="flex-shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+        <div className="shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
           <span
             className="text-xs text-center"
             style={{
@@ -66,13 +66,13 @@ const SubtitlePreviewWrapper: React.FC<PreviewComponentProps<SubtitleStyleTempla
         </div>
 
         {/* Category */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{style.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{style.category}</div>
 
         {/* Complexity */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{style.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{style.complexity}</div>
 
         {/* Font Family */}
-        <div className="flex-shrink-0 text-xs text-muted-foreground">{style.style.fontFamily || "default"}</div>
+        <div className="shrink-0 text-xs text-muted-foreground">{style.style.fontFamily || "default"}</div>
       </div>
     )
   }

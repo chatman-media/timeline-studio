@@ -129,7 +129,7 @@
     "i18next": "^25.6.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "idb-keyval": "^6.2.2",
-    "lucide-react": "^0.554.0",
+    "lucide-react": "^0.555.0",
     "motion": "^12.23.24",
     "next": "16.0.4",
     "next-themes": "^0.4.6",

@@ -454,7 +454,7 @@ export function KeyboardShortcutsModal() {
   return (
     <div className="flex flex-col h-full overflow-hidden p-4">
       {/* Верхняя часть с поиском и выбором предустановки */}
-      <div className="flex-shrink-0 space-y-4">
+      <div className="shrink-0 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex w-1/2 items-center space-x-2">
             <label className="text-sm whitespace-nowrap">
@@ -588,7 +588,7 @@ export function KeyboardShortcutsModal() {
       </div>
 
       {/* Нижняя часть с кнопками */}
-      <div className="mt-4 flex-shrink-0 flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
+      <div className="mt-4 shrink-0 flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
         <div className="flex gap-2">
           <Button
             variant="outline"

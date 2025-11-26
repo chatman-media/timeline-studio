@@ -1,9 +1,9 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import { Link } from "react-router-dom"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { SearchDemo } from "../components/SearchDemo"
+import { motion } from "framer-motion";
+import type React from "react";
+import { Link } from "react-router-dom";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { SearchDemo } from "../components/SearchDemo";
 
 export const Demo: React.FC = () => {
   return (
@@ -27,9 +27,12 @@ export const Demo: React.FC = () => {
                 <span className="text-gradient">AI-Powered Video Creation</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-300 mb-4">
-                Watch how Timeline Studio AI helps you create viral content in seconds
+                Watch how Timeline Studio AI helps you create viral content in
+                seconds
               </p>
-              <p className="text-lg text-gray-400">Type your idea and let AI do the magic ✨</p>
+              <p className="text-lg text-gray-400">
+                Type your idea and let AI do the magic ✨
+              </p>
             </motion.div>
 
             {/* Demo Component */}
@@ -52,11 +55,11 @@ export const Demo: React.FC = () => {
             >
               <div className="relative overflow-hidden rounded-xl">
                 {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
+                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-white/2" />
 
                 {/* Border gradient */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                   <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
@@ -65,18 +68,19 @@ export const Demo: React.FC = () => {
                   <div className="text-4xl mb-4">🎯</div>
                   <div className="card-title">Smart Analysis</div>
                   <p className="card-description">
-                    AI analyzes trends and suggests the best content strategy for maximum engagement
+                    AI analyzes trends and suggests the best content strategy
+                    for maximum engagement
                   </p>
                 </div>
               </div>
 
               <div className="relative overflow-hidden rounded-xl">
                 {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
+                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-white/2" />
 
                 {/* Border gradient */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                   <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
@@ -85,18 +89,19 @@ export const Demo: React.FC = () => {
                   <div className="text-4xl mb-4">⚡</div>
                   <div className="card-title">Instant Creation</div>
                   <p className="card-description">
-                    Generate professional videos with trending effects and transitions in seconds
+                    Generate professional videos with trending effects and
+                    transitions in seconds
                   </p>
                 </div>
               </div>
 
               <div className="relative overflow-hidden rounded-xl">
                 {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
-                <div className="absolute inset-0 bg-white/[0.02]" />
+                <div className="absolute inset-0 bg-linear-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-white/2" />
 
                 {/* Border gradient */}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
+                <div className="absolute inset-0 rounded-xl bg-linear-to-br from-purple-500/20 via-transparent to-blue-500/20 p-[1px]">
                   <div className="h-full w-full rounded-xl bg-[#12192C]/90 backdrop-blur-xl" />
                 </div>
 
@@ -105,7 +110,8 @@ export const Demo: React.FC = () => {
                   <div className="text-4xl mb-4">📈</div>
                   <div className="card-title">Viral Optimization</div>
                   <p className="card-description">
-                    Optimize timing, hashtags, and content format for each social platform
+                    Optimize timing, hashtags, and content format for each
+                    social platform
                   </p>
                 </div>
               </div>
@@ -122,7 +128,8 @@ export const Demo: React.FC = () => {
                 <span className="text-gradient">Ready to Go Viral?</span>
               </h2>
               <p className="text-lg text-gray-300 mb-8">
-                Join millions of creators using Timeline Studio to create engaging content
+                Join millions of creators using Timeline Studio to create
+                engaging content
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <a
@@ -147,7 +154,7 @@ export const Demo: React.FC = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Demo
+export default Demo;
