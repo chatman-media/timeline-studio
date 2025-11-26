@@ -22,8 +22,7 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "types": ["@types/three"]
+    "noUncheckedSideEffectImports": true
   },
   "include": ["src", "src/types/**/*.d.ts"]
 }
