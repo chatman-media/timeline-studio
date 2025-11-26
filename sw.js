@@ -10,7 +10,8 @@ const PRECACHE_URLS = [
   '/',
   '/index.html',
   '/favicon/favicon.svg',
-  '/fav.svg',
+  '/fav.png',
+  '/og-image.png',
 ]
 
 // Установка Service Worker
