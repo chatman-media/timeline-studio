@@ -40,14 +40,15 @@ export const Footer: React.FC = () => {
                       {t("footer.product.about")}
                     </Link>
                   </li>
-                  <li>
+                  {/* Hidden during beta */}
+                  {/* <li>
                     <Link
                       to="/pricing"
                       className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
                     >
                       {t("footer.product.pricing")}
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link
                       to="/changelog"

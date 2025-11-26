@@ -90,7 +90,7 @@ export function HeroSection() {
 
       {/* Content */}
       <motion.div style={{ y, opacity }} className="relative z-10 text-center px-6 max-w-6xl mx-auto">
-        {/* GitHub Badge */}
+        {/* GitHub Badge & Beta Badge */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,6 +108,11 @@ export function HeroSection() {
             </svg>
             <span className="text-sm text-gray-300 font-medium">{t("mainPage.hero.openSource")}</span>
           </a>
+
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 backdrop-blur-sm rounded-full border border-blue-500/20">
+            <span className="text-sm text-blue-300 font-semibold">BETA</span>
+            <span className="text-xs text-blue-200">100% Free</span>
+          </div>
         </motion.div>
 
         <motion.h1
@@ -129,7 +134,7 @@ export function HeroSection() {
         >
           {t("mainPage.hero.description.local")} <span className="text-green-400 font-semibold">{t("mainPage.hero.description.free")}</span>. {t("mainPage.hero.description.localAI")}
           <br className="hidden md:block" />
-          {t("mainPage.hero.description.cloud")}
+          <span className="text-blue-300">Beta: All features free with local AI models. Cloud features and premium AI models available with PRO subscription.</span>
         </motion.p>
 
         {/* Key Stats */}
