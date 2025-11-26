@@ -15,20 +15,32 @@ import {
   removeMotionGraphicsFromClip,
   scaleMotionGraphicsDuration,
   updateMotionPropertyInClip,
+  type MotionGraphicsClip,
 } from "../../services/timeline-integration"
-import type { MotionGraphicsClip, MotionPreset } from "../../types/keyframe"
+import type { MotionPreset } from "../../types/keyframe"
 
 describe("TimelineIntegration", () => {
   const createMockClip = (): TimelineClip => ({
     id: "clip-1",
+    name: "Test Clip",
     trackId: "track-1",
+    mediaId: "media-1",
     startTime: 0,
     duration: 5,
-    trimStart: 0,
-    trimEnd: 0,
-    enabled: true,
-    locked: false,
-    selected: false,
+    mediaStartTime: 0,
+    mediaEndTime: 5,
+    offset: 0,
+    volume: 1,
+    speed: 1,
+    isReversed: false,
+    opacity: 1,
+    isSelected: false,
+    isLocked: false,
+    effects: [],
+    filters: [],
+    transitions: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   })
 
   const createMockPreset = (): MotionPreset => ({

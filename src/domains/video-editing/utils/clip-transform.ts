@@ -5,7 +5,7 @@
  * Используется во всех backend event handlers для консистентности
  */
 
-import type { Clip } from "@/types/generated/state-types"
+import type { Clip, ClipData } from "@/types/generated/tauri-bindings"
 import type { TimelineClip } from "../types"
 
 /**
@@ -39,6 +39,64 @@ export function convertClipToTimelineClip(clip: Clip, trackId: string): Timeline
     // State
     isSelected: false,
     isLocked: !clip.enabled,
+    isMuted: false,
+
+    // Audio/Visual
+    volume: 1.0,
+    opacity: 1.0,
+    position: {
+      x: 0,
+      y: 0,
+      width: 1,
+      height: 1,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1,
+    },
+
+    // Effects/Filters/Transitions
+    effects: [],
+    filters: [],
+    transitions: [],
+
+    // Timestamps
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }
+}
+
+/**
+ * Конвертирует ClipData (из событий) в TimelineClip
+ * ClipData имеет меньше полей чем Clip, поэтому используем значения по умолчанию
+ *
+ * @param clipData - Данные клипа из события (ClipAdded, ClipSplit и др.)
+ * @param trackId - ID трека
+ * @returns Конвертированный TimelineClip
+ */
+export function convertClipDataToTimelineClip(clipData: ClipData, trackId: string): TimelineClip {
+  return {
+    id: clipData.id,
+    name: clipData.name,
+    mediaId: clipData.media_id,
+    trackId,
+    startTime: clipData.timeline_in,
+    duration: clipData.timeline_out - clipData.timeline_in,
+    sourceIn: clipData.source_in,
+    sourceOut: clipData.source_out,
+
+    // Media timing (required fields)
+    mediaStartTime: clipData.source_in,
+    mediaEndTime: clipData.source_out,
+    offset: 0,
+
+    // Playback - defaults since ClipData doesn't have these
+    playbackRate: 1.0,
+    speed: 1.0,
+    isReversed: false,
+
+    // State - defaults
+    isSelected: false,
+    isLocked: false,
     isMuted: false,
 
     // Audio/Visual

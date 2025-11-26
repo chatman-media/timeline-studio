@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { Clip, Project, ProjectEvent, Track as RustTrack } from "@/types/generated/state-types"
+import type { Clip, Project, ProjectEvent, Track as RustTrack } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("TypeValidation")
 
@@ -174,44 +174,49 @@ export function validateProjectEvent(event: unknown): event is ProjectEvent {
     return false
   }
 
-  if (!e.payload || typeof e.payload !== "object") {
-    logger.error("Invalid event: payload must be object", { event })
+  // Cast to any to avoid TypeScript issues with union type narrowing
+  const payload = (e as any).payload
+
+  // Some events don't have payload (e.g., ImportedMediaCleared)
+  const hasPayload = "payload" in e
+  if (hasPayload && payload !== null && typeof payload !== "object") {
+    logger.error("Invalid event: payload must be object if present", { event })
     return false
   }
 
   // Специфичная валидация для каждого типа события
   switch (e.type) {
     case "ClipAdded":
-      if (!e.payload.track_id || !e.payload.clip) {
+      if (!payload?.track_id || !payload?.clip) {
         logger.error("Invalid ClipAdded event: missing track_id or clip", { event })
         return false
       }
-      if (!validateClip(e.payload.clip)) {
+      if (!validateClip(payload.clip)) {
         logger.error("Invalid ClipAdded event: invalid clip", { event })
         return false
       }
       break
 
     case "ClipMoved":
-      if (!e.payload.clip_id || !e.payload.new_track_id || typeof e.payload.new_time !== "number") {
+      if (!payload.clip_id || !payload.new_track_id || typeof payload.new_time !== "number") {
         logger.error("Invalid ClipMoved event: missing required fields", { event })
         return false
       }
       break
 
     case "ClipDeleted":
-      if (!e.payload.clip_id || typeof e.payload.clip_id !== "string") {
+      if (!payload.clip_id || typeof payload.clip_id !== "string") {
         logger.error("Invalid ClipDeleted event: missing clip_id", { event })
         return false
       }
       break
 
     case "TrackAdded":
-      if (!e.payload.track) {
+      if (!payload.track) {
         logger.error("Invalid TrackAdded event: missing track", { event })
         return false
       }
-      if (!validateTrack(e.payload.track)) {
+      if (!validateTrack(payload.track)) {
         logger.error("Invalid TrackAdded event: invalid track", { event })
         return false
       }

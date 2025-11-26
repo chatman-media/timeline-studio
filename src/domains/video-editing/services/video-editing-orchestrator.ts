@@ -80,7 +80,7 @@ const eventBus = mockEventBus
 
 // Import real BackendSync service
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectCommand } from "@/types/generated/state-types"
+import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
 import { playerMachine } from "../machines/player-machine"
 // Import machines

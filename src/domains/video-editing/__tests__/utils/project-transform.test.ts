@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { ProjectState } from "@/types/generated/state-types"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 import {
   createAddClipCommand,
   createMoveClipCommand,

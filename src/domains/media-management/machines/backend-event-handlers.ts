@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/state-types-extensions"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { MediaType } from "@/types/generated/tauri-bindings"
 import type { MediaInfo } from "../types"
 

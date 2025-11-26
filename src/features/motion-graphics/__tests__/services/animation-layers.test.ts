@@ -18,7 +18,12 @@ import {
   updateLayerInTrack,
 } from "../../services/animation-layers"
 import { createKeyframe } from "../../services/keyframe-manager"
-import type { AnimatedProperty, AnimationLayer, AnimationTrack } from "../../types/keyframe"
+import type {
+  AnimatedProperty,
+  AnimationLayer,
+  AnimationTrack,
+  KeyframeValue,
+} from "../../types/keyframe"
 
 describe("AnimationLayers", () => {
   const createMockProperty = (name: string = "Test"): AnimatedProperty => ({
@@ -307,8 +312,8 @@ describe("AnimationLayers", () => {
     })
 
     it("blends vector values", () => {
-      const baseValues = { position: [10, 20] }
-      const layerValues = { position: [5, 10] }
+      const baseValues: Record<string, KeyframeValue> = { position: [10, 20] as [number, number] }
+      const layerValues: Record<string, KeyframeValue> = { position: [5, 10] as [number, number] }
       const layer: AnimationLayer = {
         ...createAnimationLayer("Test"),
         blendMode: "add",

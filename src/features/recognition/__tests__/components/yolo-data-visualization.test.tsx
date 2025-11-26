@@ -57,7 +57,7 @@ describe("YoloDataVisualization", () => {
 
     await waitFor(() => {
       // Кнопка должна быть активной (иметь стиль выбранного элемента)
-      expect(personButton).toHaveClass(/text-white/)
+      expect(personButton.className).toContain("text-white")
     })
   })
 
@@ -74,7 +74,7 @@ describe("YoloDataVisualization", () => {
     await user.click(allClassesButton)
 
     await waitFor(() => {
-      expect(allClassesButton).toHaveClass(/bg-blue-500/)
+      expect(allClassesButton.className).toContain("bg-blue-500")
     })
   })
 

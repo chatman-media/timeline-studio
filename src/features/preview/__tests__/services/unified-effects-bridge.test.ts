@@ -28,13 +28,18 @@ describe("UnifiedEffectsBridge", () => {
 
       const baseEffect: BaseEffect = {
         id: "color_correct_basic",
-        name: "Color Correction",
+        name: { en: "Color Correction", ru: "Цветокоррекция" },
         category: "color_correction",
         scope: ["clip"],
+        processingType: "realtime",
+        complexity: "medium",
+        tags: [],
+        presets: [],
+        processors: {},
         parameters: [
-          { id: "brightness", name: "Brightness", type: "number", defaultValue: 0.0, min: -1, max: 1 },
-          { id: "contrast", name: "Contrast", type: "number", defaultValue: 1.0, min: 0, max: 3 },
-          { id: "saturation", name: "Saturation", type: "number", defaultValue: 1.0, min: 0, max: 3 },
+          { id: "brightness", name: { en: "Brightness", ru: "Яркость" }, type: "number", defaultValue: 0.0, min: -1, max: 1 },
+          { id: "contrast", name: { en: "Contrast", ru: "Контраст" }, type: "number", defaultValue: 1.0, min: 0, max: 3 },
+          { id: "saturation", name: { en: "Saturation", ru: "Насыщенность" }, type: "number", defaultValue: 1.0, min: 0, max: 3 },
         ],
         gpuAccelerated: true,
         version: "1.0.0",
@@ -55,10 +60,15 @@ describe("UnifiedEffectsBridge", () => {
 
       const baseEffect: BaseEffect = {
         id: "blur_gaussian",
-        name: "Gaussian Blur",
+        name: { en: "Gaussian Blur", ru: "Гауссово размытие" },
         category: "blur_sharpen",
         scope: ["clip"],
-        parameters: [{ id: "radius", name: "Radius", type: "number", defaultValue: 5, min: 0, max: 50 }],
+        processingType: "realtime",
+        complexity: "medium",
+        tags: [],
+        presets: [],
+        processors: {},
+        parameters: [{ id: "radius", name: { en: "Radius", ru: "Радиус" }, type: "number", defaultValue: 5, min: 0, max: 50 }],
         gpuAccelerated: true,
         version: "1.0.0",
       }
@@ -66,8 +76,6 @@ describe("UnifiedEffectsBridge", () => {
       const appliedEffect: AppliedEffect = {
         id: "applied_blur_1",
         effectId: "blur_gaussian",
-        targetId: "clip_1",
-        targetType: "clip",
         enabled: false,
         parameters: [{ parameterId: "radius", value: 15 }],
         timestamp: Date.now(),
@@ -86,12 +94,17 @@ describe("UnifiedEffectsBridge", () => {
 
       const baseEffect: BaseEffect = {
         id: "blur_gaussian",
-        name: "Gaussian Blur",
+        name: { en: "Gaussian Blur", ru: "Гауссово размытие" },
         category: "blur_sharpen",
         scope: ["clip"],
+        processingType: "realtime",
+        complexity: "medium",
+        tags: [],
+        presets: [],
+        processors: {},
         parameters: [
-          { id: "radius", name: "Radius", type: "number", defaultValue: 10, min: 0, max: 50 },
-          { id: "blur_type", name: "Type", type: "string", defaultValue: "gaussian" },
+          { id: "radius", name: { en: "Radius", ru: "Радиус" }, type: "number", defaultValue: 10, min: 0, max: 50 },
+          { id: "blur_type", name: { en: "Type", ru: "Тип" }, type: "string", defaultValue: "gaussian" },
         ],
         gpuAccelerated: true,
         version: "1.0.0",

@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/state-types"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("UndoBackendEventHandlers")
 

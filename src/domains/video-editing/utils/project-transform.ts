@@ -10,7 +10,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { Track as BackendTrack, Project, ProjectCommand, ProjectState } from "@/types/generated/state-types"
+import type { Track as BackendTrack, Project, ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
 import type { MediaFile } from "../types/media"
 import type { Timeline, Track } from "../types/timeline"
 
@@ -356,6 +356,7 @@ export function transformTimelineToBackendProject(timeline: Timeline, existingPr
                 duration: t.duration,
                 params: t.customParams || {},
               })),
+              keyframes: [],
             })),
             effects: [],
             volume: track.volume,

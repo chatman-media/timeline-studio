@@ -27,7 +27,7 @@ type TimelineTrack = Track
 type TimelineSection = Section
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import type { ProjectState as BackendProjectState } from "@/types/generated/state-types"
+import type { ProjectState as BackendProjectState } from "@/types/generated/tauri-bindings"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import { transformProjectStateToTimeline } from "../utils/project-transform"
 

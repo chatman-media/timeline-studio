@@ -20,8 +20,8 @@ describe("useNodeEditor", () => {
     category: "color",
     position: { x, y },
     size: { width: 200, height: 100 },
-    inputs: [{ id: "input", name: "Input", type: "image", required: false }],
-    outputs: [{ id: "output", name: "Output", type: "image" }],
+    inputs: [{ id: "input", name: "Input", type: "image", direction: "input", required: false }],
+    outputs: [{ id: "output", name: "Output", type: "image", direction: "output" }],
     parameters: [],
     cached: false,
   })

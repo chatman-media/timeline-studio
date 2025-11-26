@@ -541,8 +541,45 @@ async function extractVideoFrames(
     data: ArrayBuffer
   }>
 > {
-  // В реальной реализации здесь будет вызов Tauri команды
-  // для извлечения кадров из видео
   logger.infoSync("Extracting frames from video:", { videoPath, options })
-  return []
+
+  // Временная mock реализация для тестов
+  // TODO: Заменить на вызов Tauri команды extract_video_frames_batch_advanced когда backend будет реализован
+
+  const startTime = options.startTime || 0
+  const endTime = options.endTime || 10  // По умолчанию 10 секунд
+  const skipFrames = options.skipFrames || 5  // Пропускаем каждые 5 кадров
+
+  const fps = 30  // Предполагаем 30 FPS
+  const frameInterval = skipFrames + 1
+  const duration = endTime - startTime
+  const totalFrames = Math.floor((duration * fps) / frameInterval)
+
+  const frames: Array<{
+    frameNumber: number
+    timestamp: number
+    data: ArrayBuffer
+  }> = []
+
+  for (let i = 0; i < totalFrames; i++) {
+    const frameNumber = i * frameInterval
+    const timestamp = startTime + (frameNumber / fps)
+
+    // Создаём пустой ArrayBuffer (1x1 пиксель RGBA = 4 байта)
+    // В реальной реализации это будут реальные данные кадра
+    const data = new ArrayBuffer(4)
+    const view = new Uint8Array(data)
+    view[0] = 255  // R
+    view[1] = 0    // G
+    view[2] = 0    // B
+    view[3] = 255  // A
+
+    frames.push({
+      frameNumber,
+      timestamp,
+      data,
+    })
+  }
+
+  return frames
 }

@@ -9,7 +9,7 @@ import type {
   ProjectCommand,
   ProjectEvent,
   ProjectState,
-} from "@/types/generated/state-types"
+} from "@/types/generated/tauri-bindings"
 
 export const _mockOnStateChange = vi.fn()
 export const _mockOnEvent = vi.fn()

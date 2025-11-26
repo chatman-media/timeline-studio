@@ -102,7 +102,9 @@ describe("useRecognitionPreview", () => {
       const data = await result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
 
       expect(data).toBeNull()
-      expect(result.current.error).toBe("Recognition failed")
+      await waitFor(() => {
+        expect(result.current.error).toBe("Recognition failed")
+      })
       expect(onError).toHaveBeenCalledWith("Recognition failed")
     })
 
@@ -222,7 +224,9 @@ describe("useRecognitionPreview", () => {
       const preview = await result.current.getPreviewWithRecognition("test-video")
 
       expect(preview).toBeNull()
-      expect(result.current.error).toBe("Failed")
+      await waitFor(() => {
+        expect(result.current.error).toBe("Failed")
+      })
     })
   })
 
@@ -269,7 +273,9 @@ describe("useRecognitionPreview", () => {
       const results = await result.current.processBatchRecognition([{ id: "video1", path: "/path/to/video1.mp4" }])
 
       expect(results.size).toBe(0)
-      expect(result.current.error).toBe("Failed")
+      await waitFor(() => {
+        expect(result.current.error).toBe("Failed")
+      })
     })
   })
 

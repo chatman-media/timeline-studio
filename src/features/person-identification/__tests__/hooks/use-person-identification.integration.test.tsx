@@ -185,14 +185,16 @@ describe("usePersonIdentification - Integration", () => {
         }),
       ).rejects.toThrow()
 
-      expect(result.current.error).toBe("Ошибка добавления персоны")
+      await waitFor(() => {
+        expect(result.current.error).toBe("Ошибка добавления персоны")
+      })
     })
   })
 
   describe("Updating persons", () => {
     it("should update an existing person", async () => {
       vi.mocked(mockService.getAllPersons).mockResolvedValue([mockPerson])
-      vi.mocked(mockService.updatePerson).mockResolvedValue(undefined)
+      vi.mocked(mockService.updatePerson).mockResolvedValue(null)
 
       const { result } = renderHook(() => usePersonIdentification())
 
@@ -223,14 +225,16 @@ describe("usePersonIdentification - Integration", () => {
         }),
       ).rejects.toThrow()
 
-      expect(result.current.error).toBe("Ошибка обновления персоны")
+      await waitFor(() => {
+        expect(result.current.error).toBe("Ошибка обновления персоны")
+      })
     })
   })
 
   describe("Deleting persons", () => {
     it("should delete a person", async () => {
       vi.mocked(mockService.getAllPersons).mockResolvedValueOnce([mockPerson]).mockResolvedValueOnce([])
-      vi.mocked(mockService.deletePerson).mockResolvedValue(undefined)
+      vi.mocked(mockService.deletePerson).mockResolvedValue(true)
 
       const { result } = renderHook(() => usePersonIdentification({ autoSave: true }))
 
@@ -303,7 +307,7 @@ describe("usePersonIdentification - Integration", () => {
         expect(result.current.persons).toHaveLength(1)
       })
 
-      let identifiedPerson: any = null
+      let identifiedPerson: { person: PersonProfile; confidence: number } | null = null
       await act(async () => {
         identifiedPerson = await result.current.identifyPerson({
           id: "face-1",
@@ -317,9 +321,9 @@ describe("usePersonIdentification - Integration", () => {
         })
       })
 
-      expect(identifiedPerson).toBeDefined()
-      expect(identifiedPerson.person.id).toBe("person-1")
-      expect(identifiedPerson.confidence).toBe(0.95)
+      expect(identifiedPerson).not.toBeNull()
+      expect(identifiedPerson!.person.id).toBe("person-1")
+      expect(identifiedPerson!.confidence).toBe(0.95)
     })
 
     it("should return null if no embedding provided", async () => {
@@ -331,7 +335,7 @@ describe("usePersonIdentification - Integration", () => {
         expect(result.current.persons).toHaveLength(0)
       })
 
-      let identifiedPerson: any = null
+      let identifiedPerson: { person: PersonProfile; confidence: number } | null = null
       await act(async () => {
         identifiedPerson = await result.current.identifyPerson({
           id: "face-1",
@@ -358,7 +362,7 @@ describe("usePersonIdentification - Integration", () => {
         expect(result.current.persons).toHaveLength(1)
       })
 
-      let identifiedPerson: any = null
+      let identifiedPerson: { person: PersonProfile; confidence: number } | null = null
       await act(async () => {
         identifiedPerson = await result.current.identifyPerson({
           id: "face-1",

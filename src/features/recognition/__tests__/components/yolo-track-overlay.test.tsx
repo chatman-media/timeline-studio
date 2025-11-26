@@ -197,7 +197,7 @@ describe("YoloTrackOverlay", () => {
     const canvas = container.querySelector("canvas")
     if (canvas) {
       // Клик в позицию трека
-      await user.click(canvas, { clientX: 50, clientY: 50 })
+      await user.click(canvas)
     }
 
     await waitFor(() => {
@@ -213,8 +213,8 @@ describe("YoloTrackOverlay", () => {
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
-      await user.click(canvas, { clientX: 50, clientY: 50 })
-      await user.click(canvas, { clientX: 50, clientY: 50 })
+      await user.click(canvas)
+      await user.click(canvas)
     }
 
     await waitFor(() => {
@@ -286,7 +286,7 @@ describe("YoloTrackOverlay", () => {
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
-      await user.click(canvas, { clientX: 50, clientY: 50 })
+      await user.click(canvas)
     }
 
     await waitFor(() => {

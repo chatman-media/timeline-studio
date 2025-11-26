@@ -9,7 +9,7 @@ import { createContext, type ReactNode, useEffect, useState } from "react"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/state-types-extensions"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import {
   handleMediaBackendEvent,
   type MediaManagementContext as MediaContext,

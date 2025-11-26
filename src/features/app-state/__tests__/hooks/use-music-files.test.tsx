@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react"
 import type React from "react"
 import { describe, expect, it, vi } from "vitest"
 
-import type { MediaItem } from "@/types/generated/state-types"
+import type { MediaItem } from "@/types/generated/tauri-bindings"
 
 import { useMusicFiles } from "../../hooks/use-music-files"
 import { AppProvider } from "../../services/app-provider"
@@ -23,6 +23,7 @@ const mockMusicFiles: MediaItem[] = [
       bitrate: 320,
       audio_channels: 2,
       sample_rate: 44100,
+      creation_time: null,
     },
     usage_count: 1,
     thumbnail: null,
@@ -41,6 +42,7 @@ const mockMusicFiles: MediaItem[] = [
       bitrate: 1411,
       audio_channels: 2,
       sample_rate: 44100,
+      creation_time: null,
     },
     usage_count: 0,
     thumbnail: null,
@@ -85,6 +87,7 @@ const mockProjectState = {
             bitrate: 5000,
             audio_channels: 2,
             sample_rate: 48000,
+            creation_time: null,
           },
           usage_count: 0,
           thumbnail: null,

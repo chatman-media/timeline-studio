@@ -227,7 +227,7 @@ describe("YoloGraphOverlay", () => {
     const canvas = container.querySelector("canvas")
     if (canvas) {
       // Симулируем клик в середине canvas
-      await user.click(canvas, { clientX: 300, clientY: 50 })
+      await user.click(canvas)
     }
 
     await waitFor(() => {
@@ -247,7 +247,7 @@ describe("YoloGraphOverlay", () => {
     const canvas = container.querySelector("canvas")
     if (canvas) {
       // Клик далеко за пределами
-      await user.click(canvas, { clientX: 1000, clientY: 50 })
+      await user.click(canvas)
     }
 
     await waitFor(() => {

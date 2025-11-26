@@ -6,9 +6,9 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/state-types"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { TimelineClip, Track } from "../types"
-import { convertClipToTimelineClip } from "../utils/clip-transform"
+import { convertClipDataToTimelineClip, convertClipToTimelineClip } from "../utils/clip-transform"
 import { validateClip, validateProjectEvent } from "../utils/type-validation"
 import type { TimelineExtendedContext } from "./timeline-extended-machine"
 
@@ -177,7 +177,7 @@ function handleClipAdded(
     updatedProject.globalTracks = updatedProject.globalTracks.map((track) => {
       if (track.id === track_id) {
         trackFound = true
-        const newClip = convertClipToTimelineClip(clip, track_id)
+        const newClip = convertClipDataToTimelineClip(clip, track_id)
 
         return {
           ...track,
@@ -195,7 +195,7 @@ function handleClipAdded(
       tracks: section.tracks.map((track) => {
         if (track.id === track_id) {
           trackFound = true
-          const newClip = convertClipToTimelineClip(clip, track_id)
+          const newClip = convertClipDataToTimelineClip(clip, track_id)
 
           return {
             ...track,
@@ -437,8 +437,8 @@ function handleClipSplit(
     // Удаляем оригинальный клип и добавляем два новых
     const clips = track.clips.filter((c) => c.id !== original_clip_id)
 
-    const leftTimelineClip = convertClipToTimelineClip(left_clip, track_id)
-    const rightTimelineClip = convertClipToTimelineClip(right_clip, track_id)
+    const leftTimelineClip = convertClipDataToTimelineClip(left_clip, track_id)
+    const rightTimelineClip = convertClipDataToTimelineClip(right_clip, track_id)
 
     return {
       ...track,

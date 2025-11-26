@@ -6,7 +6,7 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/state-types-extensions"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { ProjectSettings } from "../types/project"
 
 const logger = createLogger({ module: "ProjectSettingsEventHandlers" })
