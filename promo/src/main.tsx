@@ -20,6 +20,7 @@ const BlogPost = lazy(() => import("./pages/BlogPost"))
 const Changelog = lazy(() => import("./pages/Changelog"))
 const Docs = lazy(() => import("./pages/Docs"))
 const FAQ = lazy(() => import("./pages/FAQ"))
+const Investors = lazy(() => import("./pages/Investors"))
 const Logo3D = lazy(() => import("./pages/Logo3D"))
 const Pricing = lazy(() => import("./pages/Pricing"))
 const Privacy = lazy(() => import("./pages/Privacy"))
@@ -64,6 +65,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/responsible-ai" element={<ResponsibleAI />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/docs" element={<Docs />} />
+              <Route path="/investors" element={<Investors />} />
               <Route path="/logo3d" element={<Logo3D />} />
             </Routes>
           </Suspense>

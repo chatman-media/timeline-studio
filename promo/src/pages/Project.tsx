@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import type React from "react"
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Footer } from "../components/Footer"
@@ -93,13 +94,30 @@ export const Project: React.FC = () => {
                   ? "Полная документация Timeline Studio - революционного AI-видеоредактора"
                   : "Complete Timeline Studio documentation - revolutionary AI video editor"}
               </p>
-              <div className="flex items-center justify-center space-x-4 text-gray-400">
+              <div className="flex items-center justify-center space-x-4 text-gray-400 mb-8">
                 <span>Open Source</span>
                 <span>•</span>
                 <span>{language === "ru" ? "Локальный AI" : "Local AI"}</span>
                 <span>•</span>
                 <span>{language === "ru" ? "100+ AI инструментов" : "100+ AI tools"}</span>
               </div>
+
+              {/* Investor CTA */}
+              <Link
+                to="/investors"
+                className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 backdrop-blur-sm rounded-full border border-green-500/30 transition-all"
+              >
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                <span className="text-green-300 font-medium">
+                  {language === "ru" ? "Ищем инвестиции: $1M Seed Round" : "Raising: $1M Seed Round"}
+                </span>
+                <svg className="w-4 h-4 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </motion.div>
           </div>
         </section>

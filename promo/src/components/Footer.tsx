@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Three columns on the right */}
-            <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-3 md:mb-[120px] md:mt-0 md:flex md:flex-row md:gap-[110px]">
+            <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-4 md:mb-[120px] md:mt-0 md:flex md:flex-row md:gap-[80px]">
               {/* Product Column */}
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-6">
@@ -114,6 +114,43 @@ export const Footer: React.FC = () => {
                       className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
                     >
                       {t("footer.resources.submitFeedback")}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Investors Column */}
+              <div>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-6">
+                  For Investors
+                </h3>
+                <ul className="space-y-3">
+                  <li>
+                    <Link
+                      to="/investors"
+                      className="text-sm text-green-400 hover:text-green-300 transition-colors flex items-center gap-2"
+                    >
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                      </span>
+                      Raising $1M Seed
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/project"
+                      className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
+                    >
+                      Documentation
+                    </Link>
+                  </li>
+                  <li>
+                    <a
+                      href="mailto:ak.chatman.media@gmail.com"
+                      className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
+                    >
+                      Contact
                     </a>
                   </li>
                 </ul>

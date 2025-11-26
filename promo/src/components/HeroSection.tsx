@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
 import { Sparkles, Zap, Lock } from "lucide-react"
 import { useReducedMotion } from "../hooks/useReducedMotion"
 import { useTranslation } from "../hooks/useTranslation"
@@ -113,6 +114,17 @@ export function HeroSection() {
             <span className="text-sm text-blue-300 font-semibold">BETA</span>
             <span className="text-xs text-blue-200">100% Free</span>
           </div>
+
+          <Link
+            to="/investors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 hover:bg-green-500/20 backdrop-blur-sm rounded-full border border-green-500/30 transition-all"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            <span className="text-sm text-green-300 font-medium">Raising $1M Seed</span>
+          </Link>
         </motion.div>
 
         <motion.h1
