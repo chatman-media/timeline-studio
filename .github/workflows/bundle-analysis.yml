@@ -1,17 +1,16 @@
-name: Bundle Analysis - DISABLED
+name: Bundle Analysis
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   bundle-analysis:
     name: Bundle Size Analysis
     runs-on: ubuntu-22.04
-    if: false # Disable this workflow
     
     steps:
       - name: Checkout code
