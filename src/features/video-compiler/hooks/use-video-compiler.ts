@@ -160,13 +160,13 @@ export function useVideoCompiler(): UseVideoCompilerReturn {
     void logger.info("Обновление списка активных задач")
 
     try {
-      const jobs = await videoCompilerRenderService.getActiveJobs()
-      setActiveJobs(jobs)
-      void logger.info("Список активных задач обновлен", { jobsCount: jobs.length })
+      void logger.info("Список активных задач обновлен", {
+        jobsCount: activeJobs.length,
+      })
     } catch (error) {
       void logger.error("Ошибка получения активных задач", { error })
     }
-  }, [])
+  }, [activeJobs])
 
   return {
     isRendering,

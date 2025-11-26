@@ -51,6 +51,7 @@ export async function loginToNetwork(network: string): Promise<OAuthToken | null
   if (!config.clientId) {
     orchestrator.showNotification({
       type: "error",
+      notification_type: "error",
       title: "OAuth Configuration Error",
       message: `OAuth not configured for ${network}. Please check environment variables.`,
     })
@@ -215,6 +216,7 @@ export async function logout(network: string): Promise<void> {
   await SecureTokenStorage.removeToken(network)
   orchestrator.showNotification({
     type: "success",
+    notification_type: "success",
     title: "Logged Out",
     message: `Successfully logged out from ${network}`,
     duration: 3000,

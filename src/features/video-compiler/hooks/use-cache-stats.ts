@@ -37,7 +37,7 @@ export function useCacheStats(): UseCacheStatsReturn {
       setError(null)
       // Теперь бэкенд возвращает CacheStatsWithRatios с уже вычисленными значениями
       const cacheStats = await videoCompilerCacheService.getCacheStats()
-      setStats(cacheStats as CacheStatsWithRatios)
+      setStats(cacheStats as unknown as CacheStatsWithRatios)
       void logger.info("Статистика кеша получена успешно", {
         totalEntries: cacheStats.total_entries,
         cacheHits: cacheStats.cache_hits,

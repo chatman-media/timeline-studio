@@ -108,7 +108,9 @@ export class MediaManagementOrchestrator implements MediaManagementService {
       if (state.matches("completed")) {
         logger.info("[Media Management] Media import completed")
       } else if (state.matches("failed")) {
-        logger.error("[Media Management] Media import failed", { errors: state.context.errors })
+        logger.error("[Media Management] Media import failed", {
+          errors: state.context.errors,
+        })
       }
     })
   }
@@ -207,7 +209,9 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     }
 
     this.mediaPool = initialMediaPool
-    logger.info("[Media Management] Initial media pool loaded", { count: this.mediaPool.size })
+    logger.info("[Media Management] Initial media pool loaded", {
+      count: this.mediaPool.size,
+    })
   }
 
   /**
@@ -217,10 +221,14 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     try {
       const restoredCount = await restorePreviewCache()
       if (restoredCount > 0) {
-        logger.info("[Media Management] Preview cache restored", { count: restoredCount })
+        logger.info("[Media Management] Preview cache restored", {
+          count: restoredCount,
+        })
       }
     } catch (error) {
-      logger.error("[Media Management] Failed to restore preview cache", { error })
+      logger.error("[Media Management] Failed to restore preview cache", {
+        error,
+      })
     }
   }
 
@@ -245,7 +253,9 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Импорт медиафайлов в проект
    */
   async importFiles(files: string[], options: MediaImportOptions = {}): Promise<any[]> {
-    logger.info("[Media Management Orchestrator] Importing files", { filesCount: files.length })
+    logger.info("[Media Management Orchestrator] Importing files", {
+      filesCount: files.length,
+    })
 
     try {
       this.isLoading = true
@@ -283,8 +293,15 @@ export class MediaManagementOrchestrator implements MediaManagementService {
             importResults.push(result)
           }
         } catch (importError) {
-          logger.error("[Media Management] Failed to import file", { filePath, importError })
-          this.errorTrackerService.recordError("media-import", importError as Error, { filePath })
+          logger.error("[Media Management] Failed to import file", {
+            filePath,
+            importError,
+          })
+          this.errorTrackerService.trackError(
+            "import_failed",
+            importError instanceof Error ? importError.message : String(importError),
+            { filePath, error: importError instanceof Error ? importError : undefined },
+          )
         }
       }
 
@@ -292,7 +309,9 @@ export class MediaManagementOrchestrator implements MediaManagementService {
       return importResults
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Import failed"
-      logger.error("[Media Management Orchestrator] Import failed", { error: errorMessage })
+      logger.error("[Media Management Orchestrator] Import failed", {
+        error: errorMessage,
+      })
       this.error = errorMessage
       this.isLoading = false
       throw error
@@ -306,7 +325,9 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     try {
       return await selectMediaFile()
     } catch (error) {
-      logger.error("[Media Management] Failed to select media files", { error })
+      logger.error("[Media Management] Failed to select media files", {
+        error,
+      })
       throw error
     }
   }
@@ -318,7 +339,9 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     try {
       return await selectAudioFile()
     } catch (error) {
-      logger.error("[Media Management] Failed to select audio files", { error })
+      logger.error("[Media Management] Failed to select audio files", {
+        error,
+      })
       throw error
     }
   }
@@ -423,8 +446,8 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     return this.cameraImportService.detectCameras()
   }
 
-  async importFromCamera(deviceId: string, options: CameraImportOptions = {}): Promise<CameraImportResult> {
-    return this.cameraImportService.importFromCamera(deviceId, options)
+  async importFromCamera(device: CameraDevice, options: CameraImportOptions = {}): Promise<CameraImportResult> {
+    return this.cameraImportService.importFromCamera(device, options)
   }
 
   /**
@@ -435,22 +458,36 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     resolution: ProxyResolution = "720p",
     options: ProxyGenerationOptions = {},
   ): Promise<ProxyGenerationResult> {
-    return this.proxyGeneratorService.generateProxy(mediaPath, resolution, options)
+    return this.proxyGeneratorService.generateProxy(mediaPath, { ...options, resolution })
   }
 
   async generateProxies(mediaPaths: string[], options: ProxyGenerationOptions = {}): Promise<ProxyGenerationResult[]> {
-    return this.proxyGeneratorService.generateBatch(mediaPaths, options)
+    return this.proxyGeneratorService.batchGenerate(mediaPaths, options)
   }
 
   /**
    * Smart Organization API
    */
   async organizeByDate(files: string[], options: OrganizeByDateOptions = {}): Promise<MediaGroup[]> {
-    return this.smartOrganizationService.organizeByDate(files, options)
+    // Конвертируем пути в MediaInfo
+    const mediaInfoFiles = files.map((path) => ({
+      path,
+      name: path.split("/").pop() || path,
+      type: this.getMediaTypeFromPath(path),
+    }))
+    const result = await this.smartOrganizationService.organizeByDate(mediaInfoFiles, options)
+    return result.groups
   }
 
   async organizeByCamera(files: string[], options: OrganizeByCameraOptions = {}): Promise<MediaGroup[]> {
-    return this.smartOrganizationService.organizeByCamera(files, options)
+    // Конвертируем пути в MediaInfo
+    const mediaInfoFiles = files.map((path) => ({
+      path,
+      name: path.split("/").pop() || path,
+      type: this.getMediaTypeFromPath(path),
+    }))
+    const result = await this.smartOrganizationService.organizeByCameraType(mediaInfoFiles, options)
+    return result.groups
   }
 
   /**
@@ -474,11 +511,11 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Cache Management API
    */
   async clearCache(): Promise<void> {
-    await this.cacheService.clear()
+    await this.cacheService.clearAllCache()
   }
 
   async getCacheStatistics() {
-    return this.cacheService.getStatistics()
+    return this.cacheService.getCacheStatistics()
   }
 
   /**
@@ -560,11 +597,11 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Error Tracker API
    */
   getErrorStatistics() {
-    return this.errorTrackerService.getStatistics()
+    return this.errorTrackerService.getStats()
   }
 
   clearErrors() {
-    this.errorTrackerService.clearErrors()
+    this.errorTrackerService.clearAll()
   }
 
   /**

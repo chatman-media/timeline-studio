@@ -37,7 +37,7 @@ export function CacheSettingsModal() {
       setCacheStats(stats)
     } catch (error) {
       logger.errorSync("Failed to load cache statistics", { error })
-      showError(t("browser.media.cache.errors.loadStats"))
+      showError("Ошибка", t("browser.media.cache.errors.loadStats"))
     } finally {
       setIsLoading(false)
     }
@@ -61,11 +61,11 @@ export function CacheSettingsModal() {
       }
       setClearingProgress(100)
 
-      showSuccess(t("browser.media.cache.success.clearPreview"))
+      showSuccess("Успех", t("browser.media.cache.success.clearPreview"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear preview cache", { error })
-      showError(t("browser.media.cache.errors.clearPreview"))
+      showError("Ошибка", t("browser.media.cache.errors.clearPreview"))
       if (intervalRef.current) {
         clearInterval(intervalRef.current)
         intervalRef.current = null
@@ -93,11 +93,11 @@ export function CacheSettingsModal() {
       clearInterval(progressInterval)
       setClearingProgress(100)
 
-      showSuccess(t("browser.media.cache.success.clearFrames"))
+      showSuccess("Успех", t("browser.media.cache.success.clearFrames"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear frame cache", { error })
-      showError(t("browser.media.cache.errors.clearFrames"))
+      showError("Ошибка", t("browser.media.cache.errors.clearFrames"))
     } finally {
       setTimeout(() => {
         setClearingProgress(0)
@@ -120,11 +120,11 @@ export function CacheSettingsModal() {
       clearInterval(progressInterval)
       setClearingProgress(100)
 
-      showSuccess(t("browser.media.cache.success.clearRecognition"))
+      showSuccess("Успех", t("browser.media.cache.success.clearRecognition"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear recognition cache", { error })
-      showError(t("browser.media.cache.errors.clearRecognition"))
+      showError("Ошибка", t("browser.media.cache.errors.clearRecognition"))
     } finally {
       setTimeout(() => {
         setClearingProgress(0)
@@ -147,11 +147,11 @@ export function CacheSettingsModal() {
       clearInterval(progressInterval)
       setClearingProgress(100)
 
-      showSuccess(t("browser.media.cache.success.clearAll"))
+      showSuccess("Успех", t("browser.media.cache.success.clearAll"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to clear all cache", { error })
-      showError(t("browser.media.cache.errors.clearAll"))
+      showError("Ошибка", t("browser.media.cache.errors.clearAll"))
     } finally {
       setTimeout(() => {
         setClearingProgress(0)
@@ -164,11 +164,11 @@ export function CacheSettingsModal() {
   const cleanupExpiredCache = useCallback(async () => {
     try {
       await indexedDBCacheService.cleanupExpiredCache()
-      showSuccess(t("browser.media.cache.success.cleanupExpired"))
+      showSuccess("Успех", t("browser.media.cache.success.cleanupExpired"))
       await loadCacheStats()
     } catch (error) {
       logger.errorSync("Failed to cleanup expired cache", { error })
-      showError(t("browser.media.cache.errors.cleanupExpired"))
+      showError("Ошибка", t("browser.media.cache.errors.cleanupExpired"))
     }
   }, [loadCacheStats, t, showSuccess, showError])
 
@@ -312,11 +312,13 @@ export function CacheSettingsModal() {
                     clearInterval(progressInterval)
                     setClearingProgress(100)
 
-                    showSuccess(t("browser.media.cache.success.clearSubtitles"))
+                    showSuccess("Успех", t("browser.media.cache.success.clearSubtitles"))
                     await loadCacheStats()
                   } catch (error) {
-                    logger.errorSync("Failed to clear subtitle cache", { error })
-                    showError(t("browser.media.cache.errors.clearSubtitles"))
+                    logger.errorSync("Failed to clear subtitle cache", {
+                      error,
+                    })
+                    showError("Ошибка", t("browser.media.cache.errors.clearSubtitles"))
                   } finally {
                     setTimeout(() => {
                       setClearingProgress(0)

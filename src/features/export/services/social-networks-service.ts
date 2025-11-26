@@ -23,6 +23,7 @@ export async function login(network: string): Promise<boolean> {
   try {
     orchestrator.showNotification({
       type: "info",
+      notification_type: "info",
       title: "Connecting",
       message: `Connecting to ${network}...`,
     })
@@ -43,6 +44,7 @@ export async function login(network: string): Promise<boolean> {
 
     orchestrator.showNotification({
       type: "success",
+      notification_type: "success",
       title: "Connected",
       message: `Successfully connected to ${network}`,
       duration: 3000,
@@ -52,6 +54,7 @@ export async function login(network: string): Promise<boolean> {
     logger.error(`Login failed for ${network}: ${String(error)}`)
     orchestrator.showNotification({
       type: "error",
+      notification_type: "error",
       title: "Connection Failed",
       message: `Failed to connect to ${network}: ${error instanceof Error ? error.message : "Unknown error"}`,
     })
@@ -63,6 +66,7 @@ export async function logout(network: string): Promise<void> {
   await OAuthService.logout(network)
   orchestrator.showNotification({
     type: "info",
+    notification_type: "info",
     title: "Disconnected",
     message: `Disconnected from ${network}`,
     duration: 3000,

@@ -45,7 +45,7 @@ export const Logo: React.FC<LogoProps> = ({
       {/* <img src="/favicon.svg" alt="Timeline Studio" className="w-12 h-12 mb-3" /> */}
       {/* Text */}
       {showText && (
-        <div className="hidden md:flex items-center space-x-2 -ml-3 mt-0.5 max-w-full overflow-hidden">
+        <div className="flex items-center space-x-2 -ml-3 mt-0.5 max-w-full overflow-hidden">
           <span
             className={`text-white ${currentSize.text} truncate whitespace-nowrap`}
             style={{

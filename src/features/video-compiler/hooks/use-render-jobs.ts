@@ -37,10 +37,14 @@ export function useRenderJobs(): UseRenderJobsReturn {
       setIsLoading(true)
       setError(null)
       const activeJobs = await videoCompilerRenderService.getActiveJobs()
-      setJobs(activeJobs as RenderJob[])
-      void logger.info("Список активных задач получен успешно", { jobsCount: activeJobs.length })
+      setJobs(activeJobs as unknown as RenderJob[])
+      void logger.info("Список активных задач получен успешно", {
+        jobsCount: activeJobs.length,
+      })
     } catch (err) {
-      void logger.error("Ошибка получения списка активных задач", { error: err })
+      void logger.error("Ошибка получения списка активных задач", {
+        error: err,
+      })
       setError(err instanceof Error ? err.message : "Не удалось получить список задач")
     } finally {
       setIsLoading(false)
@@ -55,11 +59,14 @@ export function useRenderJobs(): UseRenderJobsReturn {
     try {
       const job = await videoCompilerRenderService.getRenderJob(jobId)
       if (job) {
-        void logger.info("Задача получена успешно", { jobId, status: job.status })
+        void logger.info("Задача получена успешно", {
+          jobId,
+          status: job.status,
+        })
       } else {
         void logger.info("Задача не найдена", { jobId })
       }
-      return job
+      return job as unknown as RenderJob | null
     } catch (err) {
       void logger.error("Ошибка получения задачи", { error: err })
       return null

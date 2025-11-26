@@ -49,7 +49,7 @@ interface EnhancedTranscriptionPanelProps {
 
 export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscriptionPanelProps) {
   const { t } = useTranslation()
-  const { showError } = useNotifications()
+  const { showError, showSuccess } = useNotifications()
 
   // Базовая транскрипция
   const {
@@ -144,7 +144,7 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
         setSelectedClipId(clipId)
       }
     } catch (error) {
-      showError(t("transcription.fileSelect.error", "Ошибка выбора файла"))
+      showError("Ошибка", t("transcription.fileSelect.error", "Ошибка выбора файла"))
     }
   }
 
@@ -153,48 +153,48 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
    */
   const handleBasicTranscription = useCallback(async () => {
     if (!selectedFile) {
-      showError(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.error", "Ошибка"), t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await transcribe(selectedFile, transcriptionOptions)
-  }, [selectedFile, transcriptionOptions, transcribe, showError])
+  }, [selectedFile, transcriptionOptions, transcribe, showError, t])
 
   /**
    * Запуск расширенной автоматизации
    */
   const handleEnhancedGeneration = useCallback(async () => {
     if (!selectedFile || !selectedClipId) {
-      showError(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.error", "Ошибка"), t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await generateEnhancedSubtitles(selectedFile, selectedClipId, enhancedOptions)
-  }, [selectedFile, selectedClipId, enhancedOptions, generateEnhancedSubtitles, showError])
+  }, [selectedFile, selectedClipId, enhancedOptions, generateEnhancedSubtitles, showError, t])
 
   /**
    * Быстрая генерация субтитров
    */
   const handleQuickGeneration = useCallback(async () => {
     if (!selectedClipId) {
-      showError(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.error", "Ошибка"), t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await quickGenerateFromVideo(selectedClipId, enhancedOptions.language)
-  }, [selectedClipId, enhancedOptions.language, quickGenerateFromVideo, showError])
+  }, [selectedClipId, enhancedOptions.language, quickGenerateFromVideo, showError, t])
 
   /**
    * Извлечение из визуального текста
    */
   const handleOCRExtraction = useCallback(async () => {
     if (!selectedClipId) {
-      showError(t("transcription.noFile", "Выберите файл"))
+      showError(t("transcription.error", "Ошибка"), t("transcription.noFile", "Выберите файл"))
       return
     }
 
     await extractFromScreenText(selectedClipId, enhancedOptions.language)
-  }, [selectedClipId, enhancedOptions.language, extractFromScreenText, showError])
+  }, [selectedClipId, enhancedOptions.language, extractFromScreenText, showError, t])
 
   /**
    * Сохранение субтитров
@@ -218,11 +218,11 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
           mode === "basic" ? await generateBasicSubtitles(format) : await generateBasicSubtitles(format) // Пока используем базовую генерацию
 
         if (subtitleContent) {
-          showError(t("transcription.save.success", "Субтитры сохранены"))
+          showSuccess(t("transcription.save.success", "Субтитры сохранены"), "")
         }
       }
     } catch (error) {
-      showError(t("transcription.save.error", "Ошибка сохранения"))
+      showError(t("transcription.error", "Ошибка"), t("transcription.save.error", "Ошибка сохранения"))
     }
   }
 
@@ -326,9 +326,15 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     value={mode === "basic" ? transcriptionOptions.language : enhancedOptions.language || "auto"}
                     onChange={(value) => {
                       if (mode === "basic") {
-                        setTranscriptionOptions((prev: TranscriptionOptions) => ({ ...prev, language: value }))
+                        setTranscriptionOptions((prev: TranscriptionOptions) => ({
+                          ...prev,
+                          language: value,
+                        }))
                       } else {
-                        setEnhancedOptions((prev: EnhancedSubtitleOptions) => ({ ...prev, language: value }))
+                        setEnhancedOptions((prev: EnhancedSubtitleOptions) => ({
+                          ...prev,
+                          language: value,
+                        }))
                       }
                     }}
                   />
@@ -340,9 +346,15 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     value={mode === "basic" ? transcriptionOptions.task : enhancedOptions.task}
                     onValueChange={(value: "transcribe" | "translate") => {
                       if (mode === "basic") {
-                        setTranscriptionOptions((prev: TranscriptionOptions) => ({ ...prev, task: value }))
+                        setTranscriptionOptions((prev: TranscriptionOptions) => ({
+                          ...prev,
+                          task: value,
+                        }))
                       } else {
-                        setEnhancedOptions((prev: EnhancedSubtitleOptions) => ({ ...prev, task: value }))
+                        setEnhancedOptions((prev: EnhancedSubtitleOptions) => ({
+                          ...prev,
+                          task: value,
+                        }))
                       }
                     }}
                   >
@@ -367,7 +379,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     <ModelSizeSelector
                       value={transcriptionOptions.modelSize}
                       onChange={(value) =>
-                        setTranscriptionOptions((prev: TranscriptionOptions) => ({ ...prev, modelSize: value }))
+                        setTranscriptionOptions((prev: TranscriptionOptions) => ({
+                          ...prev,
+                          modelSize: value,
+                        }))
                       }
                     />
                   </div>
@@ -393,7 +408,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.useSpeechRecognition}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, useSpeechRecognition: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            useSpeechRecognition: checked,
+                          }))
                         }
                       />
                     </div>
@@ -405,7 +423,12 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       </div>
                       <Switch
                         checked={enhancedOptions.useOCR}
-                        onCheckedChange={(checked) => setEnhancedOptions((prev) => ({ ...prev, useOCR: checked }))}
+                        onCheckedChange={(checked) =>
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            useOCR: checked,
+                          }))
+                        }
                       />
                     </div>
 
@@ -417,7 +440,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.useSceneAnalysis}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, useSceneAnalysis: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            useSceneAnalysis: checked,
+                          }))
                         }
                       />
                     </div>
@@ -430,7 +456,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.usePersonIdentification}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, usePersonIdentification: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            usePersonIdentification: checked,
+                          }))
                         }
                       />
                     </div>
@@ -449,7 +478,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.autoCorrectGrammar}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, autoCorrectGrammar: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            autoCorrectGrammar: checked,
+                          }))
                         }
                       />
                     </div>
@@ -459,7 +491,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.autoCapitalization}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, autoCapitalization: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            autoCapitalization: checked,
+                          }))
                         }
                       />
                     </div>
@@ -469,7 +504,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.removeFiller}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, removeFiller: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            removeFiller: checked,
+                          }))
                         }
                       />
                     </div>
@@ -479,7 +517,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                       <Switch
                         checked={enhancedOptions.optimizeReading}
                         onCheckedChange={(checked) =>
-                          setEnhancedOptions((prev) => ({ ...prev, optimizeReading: checked }))
+                          setEnhancedOptions((prev) => ({
+                            ...prev,
+                            optimizeReading: checked,
+                          }))
                         }
                       />
                     </div>
@@ -496,7 +537,12 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     <Label>{t("transcription.ai.style", "Стиль субтитров")}</Label>
                     <Select
                       value={enhancedOptions.styleTemplate}
-                      onValueChange={(value: any) => setEnhancedOptions((prev) => ({ ...prev, styleTemplate: value }))}
+                      onValueChange={(value: any) =>
+                        setEnhancedOptions((prev) => ({
+                          ...prev,
+                          styleTemplate: value,
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -516,7 +562,12 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     <Label>{t("transcription.ai.provider", "AI провайдер")}</Label>
                     <Select
                       value={enhancedOptions.aiProvider}
-                      onValueChange={(value: any) => setEnhancedOptions((prev) => ({ ...prev, aiProvider: value }))}
+                      onValueChange={(value: any) =>
+                        setEnhancedOptions((prev) => ({
+                          ...prev,
+                          aiProvider: value,
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />

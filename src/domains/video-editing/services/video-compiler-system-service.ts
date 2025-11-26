@@ -54,9 +54,7 @@ export class VideoCompilerSystemService {
     try {
       logger.debugSync("Getting system info")
       const systemInfo = await invoke<SystemInfo>("get_system_info")
-      logger.debugSync("System info retrieved successfully", {
-        platform: systemInfo.platform,
-      })
+      logger.debugSync("System info retrieved successfully")
       return systemInfo
     } catch (error) {
       logger.errorSync("Failed to get system info", { error })
@@ -131,7 +129,9 @@ export class VideoCompilerSystemService {
       logger.debugSync("Hardware acceleration support checked", { supported })
       return supported
     } catch (error) {
-      logger.errorSync("Failed to check hardware acceleration support", { error })
+      logger.errorSync("Failed to check hardware acceleration support", {
+        error,
+      })
       throw error
     }
   }

@@ -228,7 +228,7 @@ describe("useAIDirectorAnalysisV2", () => {
       })
 
       expect(result.current.batchProgress?.progress).toBe(100)
-      expect(result.current.batchProgress?.successfulFiles).toBe(2)
+      expect(result.current.batchProgress?.completedFiles).toBe(2)
       expect(result.current.isAnalyzing).toBe(false)
     })
 

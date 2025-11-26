@@ -18,7 +18,7 @@ vi.mock("@/domains/ai-tools/tools/automation/enhanced-subtitle-automation", () =
 vi.mock("@/lib/tauri-logger", async (importOriginal) => {
   const actual = await importOriginal()
   return {
-    ...actual,
+    ...(actual as Record<string, any>),
     logInfo: vi.fn(),
     logError: vi.fn(),
   }
@@ -323,7 +323,10 @@ describe("useEnhancedSubtitleAutomation", () => {
       // Wait for state to update after reset
       await waitFor(() => {
         expect(result.current.isProcessing).toBe(false)
-        expect(result.current.progress).toEqual({ stage: "initializing", progress: 0 })
+        expect(result.current.progress).toEqual({
+          stage: "initializing",
+          progress: 0,
+        })
         expect(result.current.result).toBeNull()
         expect(result.current.error).toBeNull()
       })

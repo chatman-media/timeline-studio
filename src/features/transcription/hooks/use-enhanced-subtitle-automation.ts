@@ -244,7 +244,9 @@ export function useEnhancedSubtitleAutomation() {
     async (clipId: string, language?: string): Promise<EnhancedSubtitleResult | null> => {
       logInfo("[useEnhancedSubtitleAutomation] Быстрая генерация субтитров из видео", { clipId, language })
       try {
-        const toolResult = await autoGenerateSubtitlesFromVideo(clipId, { language })
+        const toolResult = await autoGenerateSubtitlesFromVideo(clipId, {
+          language,
+        })
 
         if (toolResult.success) {
           setResult(toolResult.data!)
@@ -276,7 +278,9 @@ export function useEnhancedSubtitleAutomation() {
 
         if (toolResult.success) {
           setResult(toolResult.data!)
-          logInfo("[useEnhancedSubtitleAutomation] Текст успешно извлечен", { clipId })
+          logInfo("[useEnhancedSubtitleAutomation] Текст успешно извлечен", {
+            clipId,
+          })
           return toolResult.data!
         }
         const error = toolResult.errors?.[0] || "Ошибка OCR"
@@ -355,7 +359,7 @@ export function useEnhancedSubtitleAutomation() {
       setIsProcessing(false)
       setProgress({ stage: "initializing", progress: 0 })
       logInfo("[useEnhancedSubtitleAutomation] Операция отменена пользователем")
-      showInfo(t("subtitles.enhanced.cancelled", "Операция отменена"))
+      showInfo("Отмена", t("subtitles.enhanced.cancelled", "Операция отменена"))
     }
   }, [t, showInfo])
 

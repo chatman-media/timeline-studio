@@ -1,18 +1,18 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import ReactMarkdown from "react-markdown"
-import { Link, useParams } from "react-router-dom"
-import remarkGfm from "remark-gfm"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { SEO } from "../components/SEO"
-import { useLanguage } from "../contexts/LanguageContext"
-import { useBlogPost } from "../hooks/useMarkdownContent"
+import { motion } from "framer-motion";
+import type React from "react";
+import ReactMarkdown from "react-markdown";
+import { Link, useParams } from "react-router-dom";
+import remarkGfm from "remark-gfm";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useBlogPost } from "../hooks/useMarkdownContent";
 
 export const BlogPost: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>()
-  const { post, isLoading } = useBlogPost(slug || "")
-  const { t } = useLanguage()
+  const { slug } = useParams<{ slug: string }>();
+  const { post, isLoading } = useBlogPost(slug || "");
+  const { t } = useLanguage();
 
   if (isLoading || !post) {
     return (
@@ -38,14 +38,14 @@ export const BlogPost: React.FC = () => {
         </main>
         <Footer />
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
       <SEO
-        title={post.title}
-        description={post.excerpt}
+        title={post.metadata.title}
+        description={post.content.slice(0, 160) + "..."}
         url={`/blog/${slug}`}
         type="article"
       />
@@ -68,8 +68,18 @@ export const BlogPost: React.FC = () => {
                 to="/blog"
                 className="inline-flex items-center space-x-2 text-gray-400 hover:text-gray-200 transition-colors mb-6"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
                 <span>{t("blog.backToBlog")}</span>
               </Link>
@@ -179,14 +189,21 @@ export const BlogPost: React.FC = () => {
                             {children}
                           </li>
                         ),
-                        strong: ({ children }) => <strong className="text-white font-semibold">{children}</strong>,
+                        strong: ({ children }) => (
+                          <strong className="text-white font-semibold">
+                            {children}
+                          </strong>
+                        ),
                         code: ({ children }) => (
                           <code className="bg-gray-800/50 px-1.5 py-0.5 rounded text-purple-400 text-sm font-mono">
                             {children}
                           </code>
                         ),
                         a: ({ children, href }) => (
-                          <a href={href} className="text-purple-400 hover:text-purple-300 underline transition-colors">
+                          <a
+                            href={href}
+                            className="text-purple-400 hover:text-purple-300 underline transition-colors"
+                          >
                             {children}
                           </a>
                         ),
@@ -204,7 +221,7 @@ export const BlogPost: React.FC = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default BlogPost
+export default BlogPost;

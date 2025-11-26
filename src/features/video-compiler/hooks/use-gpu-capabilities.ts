@@ -52,7 +52,9 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       // Загружаем все данные параллельно
       const [gpuResponse, system, ffmpeg, settings] = await Promise.all([
         videoCompilerSystemService.getGpuCapabilitiesFull().catch((err: unknown) => {
-          void logger.error("Failed to get GPU capabilities:", { error: err })
+          void logger.error("Failed to get GPU capabilities:", {
+            error: err,
+          })
           throw err
         }),
         videoCompilerSystemService.getSystemInfo().catch((err: unknown) => {
@@ -64,7 +66,9 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
           throw err
         }),
         videoCompilerSystemService.getCompilerSettings().catch((err: unknown) => {
-          void logger.error("Failed to get compiler settings:", { error: err })
+          void logger.error("Failed to get compiler settings:", {
+            error: err,
+          })
           throw err
         }),
       ])
@@ -73,8 +77,8 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
 
       // Преобразуем ответ в нужный формат
       const gpu: GpuCapabilities = {
-        available_encoders: gpuResponse.available_encoders || [],
-        recommended_encoder: gpuResponse.recommended_encoder,
+        available_encoders: (gpuResponse.available_encoders || []) as GpuEncoder[],
+        recommended_encoder: gpuResponse.recommended_encoder as GpuEncoder | undefined,
         current_gpu: gpuResponse.current_gpu,
         hardware_acceleration_supported: gpuResponse.hardware_acceleration_supported || false,
       }
@@ -89,7 +93,9 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
       if (gpu.hardware_acceleration_supported && gpu.recommended_encoder) {
         showSuccess(
           t("videoCompiler.gpu.accelerationAvailable"),
-          t("videoCompiler.gpu.recommendedEncoder", { encoder: gpu.recommended_encoder }),
+          t("videoCompiler.gpu.recommendedEncoder", {
+            encoder: gpu.recommended_encoder,
+          }),
         )
       } else {
         showInfo(t("videoCompiler.gpu.accelerationUnavailable"), t("videoCompiler.gpu.cpuEncodingWillBeUsed"))
@@ -144,7 +150,9 @@ export function useGpuCapabilities(): UseGpuCapabilitiesReturn {
     try {
       return await videoCompilerSystemService.checkHardwareAccelerationSupport()
     } catch (err) {
-      void logger.error("Failed to check hardware acceleration:", { error: err })
+      void logger.error("Failed to check hardware acceleration:", {
+        error: err,
+      })
       return false
     }
   }, [])

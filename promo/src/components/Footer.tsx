@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
           'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       }}
     >
-      <div className="z-10 transition-all duration-300 grid w-full grid-cols-12 gap-2 px-6 md:gap-4 md:px-10 lg:px-12 xl:px-20 xl:gap-6 max-w-[1920px] mx-auto">
+      <div className="z-10 transition-all duration-300 grid w-full grid-cols-12 gap-2 px-4 sm:px-6 md:gap-4 md:px-10 lg:px-12 xl:px-20 xl:gap-6 max-w-[1920px] mx-auto">
         <div className="col-span-12 mb-8 mt-10 md:mb-0 md:mt-14">
           <div className="flex flex-col justify-between md:flex-row">
             {/* Logo on the left */}
@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Three columns on the right */}
-            <div className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-4 md:mb-[120px] md:mt-0 md:flex md:flex-row md:gap-[80px]">
+            <div className="mt-10 grid grid-cols-1 gap-8 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 md:mb-[120px] md:mt-0 lg:flex lg:flex-row lg:gap-[60px] xl:gap-[80px]">
               {/* Product Column */}
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-6">
@@ -157,7 +157,7 @@ export const Footer: React.FC = () => {
               </div>
 
               {/* Social Column */}
-              <div className="col-span-2 sm:col-span-1">
+              <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-6 whitespace-nowrap">
                   {t("footer.social.title")}
                 </h3>
@@ -262,36 +262,36 @@ export const Footer: React.FC = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-800 py-6">
-        <div className="px-6 md:px-10 lg:px-12 xl:px-20 max-w-[1920px] mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center gap-6">
+        <div className="px-4 sm:px-6 md:px-10 lg:px-12 xl:px-20 max-w-[1920px] mx-auto">
+          <div className="flex flex-col items-center space-y-4 md:flex-row md:justify-between md:space-y-0">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
               <img
                 src="/fav.png"
                 alt="Timeline Studio Logo"
                 className="w-7 h-7 invert"
               />
-              <div className="flex flex-wrap gap-x-6 gap-y-2">
+              <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 sm:gap-x-6">
                 <Link
                   to="/terms"
-                  className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                  className="text-xs sm:text-sm text-gray-400 hover:text-gray-200 transition-colors"
                 >
                   {t("footer.legal.termsOfService")}
                 </Link>
                 <Link
                   to="/privacy"
-                  className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                  className="text-xs sm:text-sm text-gray-400 hover:text-gray-200 transition-colors"
                 >
                   {t("footer.legal.privacyPolicy")}
                 </Link>
                 <Link
                   to="/responsible-ai"
-                  className="text-sm text-gray-400 hover:text-gray-200 transition-colors"
+                  className="text-xs sm:text-sm text-gray-400 hover:text-gray-200 transition-colors"
                 >
                   {t("footer.legal.responsibleAI")}
                 </Link>
               </div>
             </div>
-            <div className="text-sm text-gray-400">{t("footer.copyright")}</div>
+            <div className="text-xs sm:text-sm text-gray-400 text-center">{t("footer.copyright")}</div>
           </div>
         </div>
       </div>
