@@ -1,3 +1,12 @@
+## [3.32.1](https://github.com/chatman-media/timeline-studio/compare/v3.32.0...v3.32.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* **css:** migrate gradient classes to Tailwind CSS v4 syntax ([209fa75](https://github.com/chatman-media/timeline-studio/commit/209fa754bd52beb6455e0c6521db561259dcabe9))
+* **promo:** add aria-label to mobile menu button for accessibility ([d97c277](https://github.com/chatman-media/timeline-studio/commit/d97c277cb829b0bc00d911c82f8f53aaca8c7ce7))
+* **promo:** differentiate footer links for accessibility ([e5f7cba](https://github.com/chatman-media/timeline-studio/commit/e5f7cba0b4cdad5db9bc5665d1c05915652d12b2))
+
 # [3.32.0](https://github.com/chatman-media/timeline-studio/compare/v3.31.4...v3.32.0) (2025-11-26)
 
 
