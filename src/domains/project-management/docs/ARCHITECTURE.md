@@ -39,6 +39,17 @@ src/domains/project-management/
 
 ## Component Diagram
 
+### До упрощения (с дублированием состояния)
+```
+React Providers → Local State (369 lines)
+                     ↓
+                Orchestrator → XState Actors
+                     ↓
+              Backend Commands
+```
+**Проблема:** Дублирование состояния между провайдерами и акторами
+
+### После упрощения (Single Source of Truth)
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        React Components                          │
@@ -46,20 +57,26 @@ src/domains/project-management/
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                          React Hooks                             │
-│  ┌─────────────┐  ┌──────────────────┐  ┌─────────────────┐    │
-│  │ useAppState │  │useProjectManagement│  │useUserSettings │    │
-│  └─────────────┘  └──────────────────┘  └─────────────────┘    │
+│                    React Context Providers                       │
+│  ┌──────────────┐  ┌───────────────┐  ┌──────────────┐         │
+│  │   Project    │  │ UserSettings  │  │  AppState    │         │
+│  │   Provider   │  │   Provider    │  │   Provider   │         │
+│  └──────┬───────┘  └───────┬───────┘  └──────┬───────┘         │
+│         │                   │                  │                 │
+│         └──────useSelector──┴──────useSelector┘                 │
+│                  (читают из XState акторов)                      │
 └─────────────────────────────────────────────────────────────────┘
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                ProjectManagementOrchestrator                     │
+│                   ★ SINGLE SOURCE OF TRUTH ★                     │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │                    Singleton Service                     │   │
 │  │  • Координация акторов                                   │   │
 │  │  • Auto-save логика                                      │   │
 │  │  • Performance tracking                                  │   │
+│  │  • Единственный источник состояния                       │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                                 │
@@ -68,6 +85,7 @@ src/domains/project-management/
 ┌───────────────────┐  ┌────────────────┐  ┌────────────────┐
 │    appMachine     │  │userSettingsMachine│  │ Other Services │
 │   (XState Actor)  │  │  (XState Actor)  │  │                │
+│ ★ Source of Truth │  │ ★ Source of Truth │  │                │
 └───────────────────┘  └────────────────┘  └────────────────┘
             │                   │
             └───────────────────┘
@@ -83,6 +101,12 @@ src/domains/project-management/
 │                      Rust Backend (Tauri)                        │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+**Ключевые изменения:**
+- ✅ Провайдеры используют `useSelector` для чтения из XState акторов
+- ✅ Локальное состояние минимизировано (только dirty flags в ProjectProvider)
+- ✅ Все команды выполняются через методы оркестратора
+- ✅ Убрано дублирование состояния (-169 lines, ~46% reduction)
 
 ## State Machine: appMachine
 
@@ -221,7 +245,42 @@ Check isDirty flag
 
 ## Key Design Decisions
 
-### 1. Singleton Orchestrator Pattern
+### 1. Single Source of Truth Pattern (2025-11-27)
+
+**Решение:** Использовать `ProjectManagementOrchestrator` как единственный источник состояния. Провайдеры читают состояние из XState акторов через `useSelector`.
+
+**До упрощения:**
+```tsx
+// ProjectProvider дублировал состояние
+const [projectState, setProjectState] = useState(null)
+const [isLoading, setIsLoading] = useState(false)
+
+// Подписка на события и обновление локального состояния
+useEffect(() => {
+  const unsubscribe = orchestrator.onProjectStateChange((state) => {
+    setProjectState(state) // Дублирование!
+  })
+}, [])
+```
+
+**После упрощения:**
+```tsx
+// ProjectProvider читает напрямую из актора
+const orchestrator = getProjectManagementOrchestrator()
+const appActor = orchestrator.getAppActor()
+const projectState = useSelector(appActor, (state) => state.context.projectState)
+const isLoading = useSelector(appActor, (state) => state.matches({ connected: "executing" }))
+```
+
+**Результат:**
+- ✅ Удалено 169 lines дублированного кода (~46% reduction)
+- ✅ Устранены race conditions между локальным и глобальным состоянием
+- ✅ Упрощена логика синхронизации
+- ✅ Все 228 тестов проходят
+
+**Минимальное локальное состояние:** Только dirty flags в `ProjectProvider` (UI-специфичные данные, не связанные с backend).
+
+### 2. Singleton Orchestrator Pattern
 
 **Решение:** Использовать singleton `ProjectManagementOrchestrator` вместо множества независимых акторов.
 
@@ -230,7 +289,7 @@ Check isDirty flag
 - Предотвращение race conditions между проектами и настройками
 - Централизованный auto-save и performance tracking
 
-### 2. XState для State Management
+### 3. XState для State Management
 
 **Решение:** Использовать XState машины вместо Redux/Zustand.
 
@@ -240,7 +299,7 @@ Check isDirty flag
 - Встроенная поддержка side effects (services)
 - Type safety из коробки
 
-### 3. Dirty Flag Tracking
+### 4. Dirty Flag Tracking
 
 **Решение:** Отслеживать несохраненные изменения через `isDirty`, `lastModifiedTime`, `lastSavedTime`.
 
@@ -249,7 +308,9 @@ Check isDirty flag
 - Предупреждение пользователя о несохраненных данных
 - Оптимизация производительности
 
-### 4. Command Timeout (30s)
+**Важно:** Dirty flags хранятся локально в `ProjectProvider` (единственное локальное состояние), так как это UI-специфичные данные.
+
+### 5. Command Timeout (30s)
 
 **Решение:** Все команды имеют таймаут 30 секунд.
 

@@ -2,7 +2,16 @@
 
 ## Overview
 
-Домен `media-management` отвечает за импорт, организацию и обработку медиафайлов. Использует event-driven архитектуру для синхронизации с Rust backend.
+Домен `media-management` отвечает за импорт, организацию и обработку медиафайлов. Построен на архитектурном паттерне **Orchestrator** с event-driven синхронизацией через Rust backend.
+
+### Orchestrator Pattern
+
+`MediaManagementOrchestrator` (613 строк) - центральный координатор, который:
+- Управляет 2 state machines (fileOperationsMachine, mediaImportMachine)
+- Интегрирует 12 domain services
+- Обеспечивает BackendSync интеграцию для синхронизации с Rust backend
+- Предоставляет единый API для всех операций с медиа
+- Поддерживает внутреннее состояние mediaPool (Map<string, MediaInfo>)
 
 ## Directory Structure
 
@@ -30,11 +39,15 @@ src/domains/media-management/
 ├── providers/
 │   └── media-management-provider.tsx # React context provider
 ├── services/
+│   ├── media-management-orchestrator.ts # Main orchestrator (613 lines)
 │   ├── camera-import.ts              # Camera/device import
 │   ├── error-tracker.ts              # Error tracking & recovery
+│   ├── file-system-service.ts        # File system operations
 │   ├── indexeddb-cache-service.ts    # Browser cache
 │   ├── media-api.ts                  # Tauri media commands
 │   ├── media-metadata-service.ts     # Metadata extraction
+│   ├── media-preview-service.ts      # Preview & thumbnail generation
+│   ├── media-processor-service.ts    # Media file processing
 │   ├── media-restoration-service.ts  # Missing files restoration
 │   ├── proxy-generator.ts            # Proxy file generation
 │   ├── smart-organization.ts         # Smart file organization
@@ -71,43 +84,50 @@ src/domains/media-management/
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MediaManagementProvider                       │
+│            MediaManagementOrchestrator (Singleton)               │
+│                         613 lines                                │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │                    Event Subscriptions                   │   │
-│  │  • backendSync.onStateChange() - Initial sync            │   │
-│  │  • backendSync.onEvent() - Incremental updates           │   │
+│  │                  Coordination Layer                      │   │
+│  │  • Manages 2 State Machines                              │   │
+│  │  • Integrates 12 Services                                │   │
+│  │  • BackendSync Integration                               │   │
+│  │  • Internal MediaPool State                              │   │
 │  └─────────────────────────────────────────────────────────┘   │
-│                            │   │                                 │
-│              ┌─────────────┘   └─────────────┐                  │
-│              ▼                               ▼                   │
-│    ┌────────────────────┐        ┌────────────────────┐        │
-│    │  Backend Events    │        │   User Actions     │        │
-│    │  MediaAdded        │        │  importFiles()     │        │
-│    │  MediaUpdated      │        │  selectMediaFiles()│        │
-│    │  MediaRemoved      │        │  extractMetadata() │        │
-│    └────────────────────┘        └────────────────────┘        │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      Services Layer                              │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
-│  │CameraImport  │ │ProxyGenerator│ │SmartOrganize │            │
-│  │Service       │ │Service       │ │Service       │            │
-│  └──────────────┘ └──────────────┘ └──────────────┘            │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
-│  │Waveform      │ │ErrorTracker  │ │IndexedDBCache│            │
-│  │Generator     │ │Service       │ │Service       │            │
-│  └──────────────┘ └──────────────┘ └──────────────┘            │
+│                            │                                     │
+│              ┌─────────────┴─────────────┐                      │
+│              ▼                           ▼                       │
+│    ┌────────────────────┐      ┌────────────────────┐          │
+│    │  State Machines    │      │  Domain Services   │          │
+│    │                    │      │                    │          │
+│    │ fileOperations     │      │ MediaMetadata      │          │
+│    │ Machine            │      │ CameraImport       │          │
+│    │                    │      │ ProxyGenerator     │          │
+│    │ mediaImport        │      │ Waveform           │          │
+│    │ Machine            │      │ SmartOrganization  │          │
+│    │                    │      │ ErrorTracker       │          │
+│    └────────────────────┘      │ IndexedDBCache     │          │
+│                                │ FileSystem         │          │
+│                                │ MediaPreview       │          │
+│                                │ MediaProcessor     │          │
+│                                └────────────────────┘          │
+│                            │                                     │
+│                            ▼                                     │
+│    ┌───────────────────────────────────────────────────────┐   │
+│    │          BackendSync Event Subscription               │   │
+│    │  • onStateChange() - Initial load                     │   │
+│    │  • onEvent() - Incremental updates                    │   │
+│    │  • executeCommand() - Backend calls                   │   │
+│    └───────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                   Tauri Commands (IPC Bridge)                    │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │  import_media_files(), extract_media_metadata()          │   │
-│  │  copy_media_to_project(), create_proxy_files()           │   │
-│  │  detect_video_scenes(), generate_audio_waveform()        │   │
+│  │  AddMedia, UpdateMedia, RemoveMedia                      │   │
+│  │  file_exists, get_file_stats, search_files_by_name       │   │
+│  │  generate_media_thumbnail, get_media_preview_data        │   │
+│  │  scan_media_folder, process_media_files                  │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                                 │
@@ -119,6 +139,7 @@ src/domains/media-management/
 │  │  • items: HashMap<String, MediaItem>                     │   │
 │  │  + FFmpeg integration for metadata                       │   │
 │  │  + File system operations                                │   │
+│  │  + Event emission (MediaAdded, etc.)                     │   │
 │  └─────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -148,9 +169,93 @@ src/domains/media-management/
            • file.operation.failed ─────────────────────┘
 ```
 
+## Orchestrator Architecture
+
+### MediaManagementOrchestrator Flow
+
+```
+Constructor
+    │
+    ├──► Create State Machine Actors
+    │    ├─ fileOperationsActor = createActor(fileOperationsMachine)
+    │    └─ mediaImportActor = createActor(mediaImportMachine)
+    │
+    ├──► Initialize Services
+    │    ├─ metadataService = getMediaMetadataService()
+    │    ├─ cameraImportService = getCameraImport()
+    │    ├─ proxyGeneratorService = getProxyGenerator()
+    │    ├─ smartOrganizationService = getSmartOrganization()
+    │    ├─ waveformGeneratorService = getWaveformGenerator()
+    │    ├─ errorTrackerService = new ErrorTrackerService()
+    │    └─ cacheService = indexedDBCacheService
+    │
+    ├──► Setup Synchronization
+    │    ├─ Subscribe to fileOperationsActor state changes
+    │    └─ Subscribe to mediaImportActor state changes
+    │
+    ├──► Setup BackendSync
+    │    ├─ backendSync.onEvent() → handleMediaBackendEvent()
+    │    └─ backendSync.onStateChange() → loadInitialState()
+    │
+    └──► Initialize Preview Cache
+         └─ restorePreviewCache()
+
+Public API Methods
+    │
+    ├──► Media Import
+    │    ├─ importFiles() → mediaImportActor + backendSync.executeCommand()
+    │    ├─ selectMediaFiles() → media-api.selectMediaFile()
+    │    ├─ selectAudioFiles() → media-api.selectAudioFile()
+    │    ├─ selectMediaDirectory() → media-api.selectMediaDirectory()
+    │    ├─ getMediaInfo() → mediaPool lookup
+    │    └─ extractMetadata() → metadataService + backendSync
+    │
+    ├──► Camera Import
+    │    ├─ detectCameras() → cameraImportService.detectCameras()
+    │    └─ importFromCamera() → cameraImportService.importFromCamera()
+    │
+    ├──► Proxy Generation
+    │    ├─ generateProxy() → proxyGeneratorService.generateProxy()
+    │    └─ generateProxies() → proxyGeneratorService.generateBatch()
+    │
+    ├──► Smart Organization
+    │    ├─ organizeByDate() → smartOrganizationService.organizeByDate()
+    │    └─ organizeByCamera() → smartOrganizationService.organizeByCamera()
+    │
+    ├──► Waveform Generation
+    │    ├─ generateWaveform() → waveformGeneratorService.generateWaveform()
+    │    └─ getWaveformData() → waveformGeneratorService.generateWaveform()
+    │
+    ├──► File Operations
+    │    ├─ startFileOperation() → fileOperationsActor.send()
+    │    ├─ updateOperationProgress() → fileOperationsActor.send()
+    │    ├─ completeOperation() → fileOperationsActor.send()
+    │    ├─ failOperation() → fileOperationsActor.send()
+    │    └─ cancelOperation() → fileOperationsActor.send()
+    │
+    ├──► Cache Management
+    │    ├─ clearCache() → cacheService.clear()
+    │    └─ getCacheStatistics() → cacheService.getStatistics()
+    │
+    ├──► State Access
+    │    ├─ getMediaPool() → return mediaPool Map
+    │    ├─ getFileOperationsState() → fileOperationsActor.getSnapshot()
+    │    ├─ getMediaImportState() → mediaImportActor.getSnapshot()
+    │    ├─ isMediaLoading() → return isLoading
+    │    └─ getError() → return error
+    │
+    ├──► Subscriptions
+    │    ├─ subscribeToFileOperations() → fileOperationsActor.subscribe()
+    │    └─ subscribeToMediaImport() → mediaImportActor.subscribe()
+    │
+    └──► Error Tracking
+         ├─ getErrorStatistics() → errorTrackerService.getStatistics()
+         └─ clearErrors() → errorTrackerService.clearErrors()
+```
+
 ## Event-Driven Flow
 
-### 1. Media Import Flow
+### 1. Media Import Flow (via Orchestrator)
 
 ```
 User selects files
@@ -158,14 +263,21 @@ User selects files
     ▼
 useMediaManagement().importFiles(files, options)
     │
-    ├──► Set loading state
-    │    setIsLoading(true)
+    ▼
+MediaManagementOrchestrator.importFiles()
+    │
+    ├──► Set loading state (this.isLoading = true)
+    │
+    ├──► Send to mediaImportMachine
+    │    ├─ mediaImportActor.send({ type: "ADD_FILES", files })
+    │    ├─ mediaImportActor.send({ type: "UPDATE_OPTIONS", options })
+    │    └─ mediaImportActor.send({ type: "START_IMPORT" })
     │
     ├──► For each file:
     │    │
-    │    ├──► Determine media type (Video/Audio/Image)
+    │    ├──► Determine media type (getMediaTypeFromPath)
     │    │
-    │    └──► backendSync.executeCommand(AppCommands.addMedia())
+    │    └──► backendSync.executeCommand({ type: "AddMedia", params })
     │
     ▼
 Backend processes AddMedia command
@@ -181,12 +293,18 @@ Backend processes AddMedia command
 BackendSync.onEvent() receives MediaAdded
     │
     ▼
-handleMediaBackendEvent() processes event
+MediaManagementOrchestrator event handler
     │
-    ├──► Update mediaPool Map
-    ├──► Update fileOperations
+    ├──► handleMediaBackendEvent(context, event)
+    │    ├─ Extract media info from event
+    │    └─ Update mediaPool Map
     │
-    └──► React components re-render
+    ├──► Update orchestrator state
+    │    ├─ this.mediaPool updated
+    │    ├─ this.isLoading = false
+    │    └─ this.error = null
+    │
+    └──► React components re-render (via provider)
 ```
 
 ### 2. Backend Event Processing
@@ -211,36 +329,86 @@ MediaManagementProvider callback
     └──► Update fileOperations state
 ```
 
-### 3. Initial State Sync
+### 3. Initial State Sync (via Orchestrator)
 
 ```
-MediaManagementProvider mounts
+MediaManagementOrchestrator constructor
     │
-    ├──► restorePreviewCache()
-    │    (Restore thumbnails from disk)
-    │
-    ├──► backendSync.onStateChange() subscription
+    ├──► Setup BackendSync subscriptions
     │    │
-    │    ├──► Load from project.media_pool.items
-    │    └──► Load from imported_media
+    │    ├──► backendSync.onEvent() → handleMediaBackendEvent()
+    │    │
+    │    └──► backendSync.onStateChange() → loadInitialState()
     │
-    └──► Initialize mediaPool Map
+    └──► Initialize preview cache
+         └─ restorePreviewCache() → restore thumbnails from disk
+
+When backend state loads:
+    │
+    ▼
+Orchestrator.loadInitialState(state)
+    │
+    ├──► Create initialMediaPool Map
+    │
+    ├──► Load from state.project.media_pool.items
+    │    └─ Convert backend MediaItem to frontend MediaInfo
+    │
+    ├──► Load from state.imported_media (temporary)
+    │    └─ Merge into initialMediaPool
+    │
+    └──► Set this.mediaPool = initialMediaPool
 ```
 
 ## Services Architecture
 
-### Singleton Services
+### Orchestrator Integration
+
+```
+MediaManagementOrchestrator (singleton)
+    │
+    ├──► Internal State
+    │    ├─ mediaPool: Map<string, MediaInfo>
+    │    ├─ isLoading: boolean
+    │    └─ error: string | null
+    │
+    ├──► State Machine Actors (created in constructor)
+    │    ├─ fileOperationsActor
+    │    └─ mediaImportActor
+    │
+    ├──► Service Singletons (obtained via getters)
+    │    ├─ metadataService = getMediaMetadataService()
+    │    ├─ cameraImportService = getCameraImport()
+    │    ├─ proxyGeneratorService = getProxyGenerator()
+    │    ├─ smartOrganizationService = getSmartOrganization()
+    │    ├─ waveformGeneratorService = getWaveformGenerator()
+    │    ├─ errorTrackerService = new ErrorTrackerService()
+    │    ├─ cacheService = indexedDBCacheService
+    │    ├─ fileSystemService (imported as singleton)
+    │    ├─ mediaPreviewService (imported as singleton)
+    │    └─ mediaProcessorService (imported as singleton)
+    │
+    └──► BackendSync Integration
+         ├─ backendSync = getBackendSync()
+         ├─ backendUnsubscribe: (() => void) | null
+         └─ Event handlers for backend synchronization
+```
+
+### Service Singletons
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Service Singletons                           │
 │                                                                  │
+│  getMediaMetadataService() → MediaMetadataService (singleton)   │
 │  getCameraImport()      → CameraImportService (singleton)       │
 │  getProxyGenerator()    → ProxyGeneratorService (singleton)     │
 │  getSmartOrganization() → SmartOrganizationService (singleton)  │
 │  getWaveformGenerator() → WaveformGeneratorService (singleton)  │
 │  getErrorTracker()      → ErrorTrackerService (singleton)       │
-│  getMediaMetadataService() → MediaMetadataService (singleton)   │
+│  indexedDBCacheService  → IndexedDBCacheService (singleton)     │
+│  fileSystemService      → FileSystemService (singleton)         │
+│  mediaPreviewService    → MediaPreviewService (singleton)       │
+│  mediaProcessorService  → MediaProcessorService (singleton)     │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -265,9 +433,27 @@ IndexedDB: "timeline-studio-cache"
 
 ## Key Design Decisions
 
-### 1. Event-Driven Architecture
+### 1. Orchestrator Pattern
 
-**Decision:** Use backend events for state synchronization.
+**Decision:** Use MediaManagementOrchestrator to coordinate all media operations.
+
+**Rationale:**
+- Single entry point for all media operations
+- Coordinated management of state machines and services
+- Clear separation between orchestration and implementation
+- Simplified testing (mock orchestrator in tests)
+- Centralized BackendSync integration
+- Internal state management for mediaPool
+
+**Benefits:**
+- 613 lines of well-organized coordination logic
+- Manages complexity of 2 machines + 12 services
+- Provides clean API surface for hooks and components
+- Singleton pattern ensures consistent state
+
+### 2. Event-Driven Architecture
+
+**Decision:** Use backend events for state synchronization through BackendSync.
 
 **Rationale:**
 - Incremental updates (not full state reload)
@@ -275,9 +461,14 @@ IndexedDB: "timeline-studio-cache"
 - Backend as single source of truth
 - Reduced network overhead
 
-### 2. MediaPool as Map<string, MediaInfo>
+**Implementation in Orchestrator:**
+- `backendSync.onEvent()` → `handleMediaBackendEvent()`
+- `backendSync.onStateChange()` → `loadInitialState()`
+- `backendSync.executeCommand()` for backend operations
 
-**Decision:** Store media items in a Map keyed by media ID.
+### 3. MediaPool as Map<string, MediaInfo>
+
+**Decision:** Store media items in a Map keyed by media ID within orchestrator.
 
 **Rationale:**
 - O(1) lookup by ID
@@ -285,9 +476,15 @@ IndexedDB: "timeline-studio-cache"
 - Consistent with backend HashMap structure
 - Simple add/update/remove operations
 
-### 3. Service Singletons
+**Orchestrator Implementation:**
+- Maintained as `this.mediaPool` in orchestrator
+- Updated via `handleMediaBackendEvent()`
+- Loaded via `loadInitialState()` on startup
+- Exposed via `getMediaPool()` method
 
-**Decision:** Use singleton pattern for services.
+### 4. Service Singletons
+
+**Decision:** Use singleton pattern for services coordinated by orchestrator.
 
 **Rationale:**
 - Single instance per service type
@@ -295,9 +492,15 @@ IndexedDB: "timeline-studio-cache"
 - Lazy initialization
 - Memory efficiency
 
-### 4. IndexedDB for Caching
+**Orchestrator Coordination:**
+- Services obtained in constructor
+- Orchestrator delegates to appropriate service
+- Services remain independent and testable
+- Clear separation of concerns
 
-**Decision:** Cache previews and analysis results in IndexedDB.
+### 5. IndexedDB for Caching
+
+**Decision:** Cache previews and analysis results in IndexedDB via cacheService.
 
 **Rationale:**
 - Persistent across sessions
@@ -305,15 +508,24 @@ IndexedDB: "timeline-studio-cache"
 - Async API doesn't block UI
 - Browser-native solution
 
-### 5. Error Tracking with Exponential Backoff
+**Orchestrator Integration:**
+- `clearCache()` → `cacheService.clear()`
+- `getCacheStatistics()` → `cacheService.getStatistics()`
 
-**Decision:** Implement retry logic with exponential backoff.
+### 6. Error Tracking with Exponential Backoff
+
+**Decision:** Implement retry logic with exponential backoff via ErrorTrackerService.
 
 **Rationale:**
 - Handles transient failures
 - Prevents overwhelming backend
 - Configurable retry limits
 - Recovery strategies per error type
+
+**Orchestrator Integration:**
+- `getErrorStatistics()` → `errorTrackerService.getStatistics()`
+- `clearErrors()` → `errorTrackerService.clearErrors()`
+- Errors tracked during import operations
 
 ## Dependencies
 

@@ -35,10 +35,10 @@ function MyComponent() {
 ### Providers
 | Provider | Purpose |
 |----------|---------|
-| `ProjectManagementProvider` | Главный провайдер (включает все) |
-| `AppStateProvider` | Состояние приложения |
-| `UserSettingsProvider` | Настройки пользователя |
-| `ProjectProvider` | Состояние проекта |
+| `ProjectManagementProvider` | Главный провайдер (использует оркестратор как single source of truth) |
+| `AppStateProvider` | Состояние приложения (читает из оркестратора) |
+| `UserSettingsProvider` | Настройки пользователя (читает из оркестратора) |
+| `ProjectProvider` | Состояние проекта (читает из оркестратора) |
 
 ### Services
 | Service | Purpose |
@@ -57,6 +57,7 @@ function MyComponent() {
 
 ## Key Features
 
+- **Single Source of Truth** - Оркестратор как единственный источник состояния
 - **Dirty Flag Tracking** - Отслеживание несохраненных изменений
 - **Auto-Save** - Автоматическое сохранение проектов
 - **Command Timeout** - 30s timeout с user-friendly ошибками
@@ -83,7 +84,7 @@ bun run test src/domains/project-management/__tests__/
 bun run test:e2e:tauri
 ```
 
-**Coverage:** 179 tests, 100% критического функционала
+**Coverage:** 228 tests, 100% критического функционала
 
 ## Documentation
 

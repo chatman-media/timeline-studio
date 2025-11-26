@@ -1,4 +1,40 @@
-# Project Management Domain
+# Project Management Domain - Changelog
+
+## [2025-11-27] Provider Simplification
+
+### ✅ Упрощена архитектура провайдера
+
+**Изменения:**
+- Упрощен `ProjectManagementProvider` для использования оркестратора как единственного источника состояния (single source of truth)
+- Удалено 169 lines дублированного кода управления состоянием (~46% reduction)
+- Удалено локальное состояние `localContext` из всех провайдеров
+- Удалена event-driven логика из провайдера
+- Теперь использует `ProjectManagementOrchestrator` напрямую через `useSelector`
+
+**Архитектурные улучшения:**
+```tsx
+// ДО: Дублирование состояния (369 lines)
+const [projectState, setProjectState] = useState(null)
+useEffect(() => {
+  const unsubscribe = orchestrator.onProjectStateChange(setProjectState)
+}, [])
+
+// ПОСЛЕ: Single source of truth (200 lines)
+const appActor = orchestrator.getAppActor()
+const projectState = useSelector(appActor, (state) => state.context.projectState)
+```
+
+**Результаты:**
+- ✅ Все 228 тестов проходят
+- ✅ Устранены race conditions между локальным и глобальным состоянием
+- ✅ Упрощена логика синхронизации
+- ✅ Минимальное локальное состояние (только dirty flags)
+
+**Файлы:**
+- `providers/project-management-provider.tsx` - упрощен с 369 до 200 lines
+- Все тесты обновлены и проходят
+
+---
 
 ## Обзор
 
@@ -386,9 +422,10 @@ Coverage:    100% критического функционала
 
 **Состояние:**
 - TypeScript ошибки: 0
-- Тесты: 59 (100% pass)
+- Тесты: 228 (100% pass)
 - TODO комментарии: 0 (все решены)
 - Готовность: **100%**
+- Code reduction: -169 lines (~46%)
 
 **Новые возможности:**
 - Dirty flag tracking для умного auto-save

@@ -145,8 +145,6 @@ export function HeroSection() {
           className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto"
         >
           {t("mainPage.hero.description.local")} <span className="text-green-400 font-semibold">{t("mainPage.hero.description.free")}</span>. {t("mainPage.hero.description.localAI")}
-          <br className="hidden md:block" />
-          <span className="text-blue-300">{t("mainPage.hero.betaNote")}</span>
         </motion.p>
 
         {/* Key Stats */}

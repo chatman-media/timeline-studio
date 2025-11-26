@@ -120,7 +120,6 @@ const translations = {
     "mainPage.hero.description.localAI": "Local AI processing.",
     "mainPage.hero.description.cloud":
       "Cloud features and premium AI models available with PRO subscription.",
-    "mainPage.hero.betaNote": "Beta: All features free with local AI models. Cloud features and premium AI models available with PRO subscription.",
     "mainPage.hero.betaBadge": "BETA",
     "mainPage.hero.betaFree": "100% Free",
     "mainPage.hero.raisingSeed": "Raising $1M Seed",
@@ -600,7 +599,6 @@ const translations = {
     "mainPage.hero.description.localAI": "Локальная обработка ИИ.",
     "mainPage.hero.description.cloud":
       "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
-    "mainPage.hero.betaNote": "Бета: Все функции бесплатны с локальными ИИ-моделями. Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
     "mainPage.hero.betaBadge": "БЕТА",
     "mainPage.hero.betaFree": "100% Бесплатно",
     "mainPage.hero.raisingSeed": "Ищем $1M Seed",
@@ -1043,7 +1041,6 @@ const translations = {
     "mainPage.hero.description.free": "永久免费",
     "mainPage.hero.description.localAI": "本地AI处理。",
     "mainPage.hero.description.cloud": "云功能和高级AI模型需要PRO订阅。",
-    "mainPage.hero.betaNote": "测试版：本地AI模型完全免费。云功能和高级AI模型需要PRO订阅。",
     "mainPage.hero.betaBadge": "测试版",
     "mainPage.hero.betaFree": "100%免费",
     "mainPage.hero.raisingSeed": "融资$1M种子轮",

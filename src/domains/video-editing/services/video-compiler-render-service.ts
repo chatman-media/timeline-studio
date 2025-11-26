@@ -95,6 +95,34 @@ export class VideoCompilerRenderService {
   }
 
   /**
+   * Start video compilation
+   *
+   * @param project - Project schema to compile
+   * @param outputPath - Output file path
+   * @returns Promise resolving to job ID
+   */
+  async compileVideo(project: ProjectSchema, outputPath: string): Promise<string> {
+    try {
+      logger.infoSync("Starting video compilation", {
+        projectName: project.metadata.name,
+        outputPath,
+      })
+      const jobId = await invoke<string>("compile_video", {
+        projectSchema: project,
+        outputPath,
+      })
+      logger.infoSync("Video compilation started successfully", {
+        jobId,
+        outputPath,
+      })
+      return jobId
+    } catch (error) {
+      logger.errorSync("Failed to start video compilation", { outputPath, error })
+      throw error
+    }
+  }
+
+  /**
    * Generate preview frame from project at specific timestamp
    *
    * @param project - Project schema to generate preview from

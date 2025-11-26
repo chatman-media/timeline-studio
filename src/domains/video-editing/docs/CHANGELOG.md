@@ -4,6 +4,49 @@
 
 ---
 
+## [2024-11-27] Domain Services for Video Compiler
+
+**Status:** Completed
+
+### Changes
+- Created `video-compiler-cache-service.ts` (87 lines) - Cache statistics and management
+- Created `video-compiler-render-service.ts` - Render job orchestration and video compilation
+- Created `video-compiler-system-service.ts` - GPU capabilities and hardware acceleration detection
+- All services use singleton pattern with exported instances
+- Each service encapsulates Tauri backend calls with built-in logging
+- Updated documentation to reflect new domain services layer
+- Added domain services architecture diagram to ARCHITECTURE.md
+
+### New API Surface
+**videoCompilerCacheService:**
+- `getCacheStats()` - Retrieve cache statistics
+- `clearPreviewCache()` - Clear preview frame cache
+- `clearAllCache()` - Clear all cached data
+
+**videoCompilerRenderService:**
+- `compileVideo(project, outputPath)` - Start video compilation
+- `getActiveJobs()` - Get list of active render jobs
+- `getRenderJob(jobId)` - Get specific render job by ID
+- `cancelRender(jobId)` - Cancel a render job
+- `generatePreview(project, timestamp)` - Generate preview frame
+
+**videoCompilerSystemService:**
+- `getGpuCapabilitiesFull()` - Get GPU capabilities
+- `getSystemInfo()` - Get system information
+- `checkFfmpegCapabilities()` - Check FFmpeg version and capabilities
+- `getCompilerSettings()` - Get advanced compiler settings
+- `setHardwareAcceleration(enabled)` - Enable/disable hardware acceleration
+- `checkHardwareAccelerationSupport()` - Check hardware acceleration support
+
+### Benefits
+- Clean separation between domain logic and backend IPC
+- Centralized Tauri command invocation
+- Consistent error handling and logging
+- Easy testing with service mocking
+- Type-safe API for all video compiler operations
+
+---
+
 ## [2024-11-26] Documentation Restructure
 
 **Status:** Completed

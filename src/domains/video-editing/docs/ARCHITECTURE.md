@@ -49,6 +49,9 @@ src/domains/video-editing/
 │   │   └── index.ts                      # Subtitle services
 │   ├── compiler/
 │   │   └── video-compiler-service.ts     # Video compilation
+│   ├── video-compiler-cache-service.ts   # Cache management (domain service)
+│   ├── video-compiler-render-service.ts  # Render jobs (domain service)
+│   ├── video-compiler-system-service.ts  # GPU & system (domain service)
 │   ├── undo-redo-service.ts              # Undo/redo service
 │   └── video-editing-orchestrator.ts     # Main orchestrator
 ├── types/
@@ -134,9 +137,26 @@ src/domains/video-editing/
                      │
                      ▼
 ┌─────────────────────────────────────────────────────────────────────┐
+│                       Domain Services Layer                          │
+│  ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────┐  │
+│  │ videoCompiler        │  │ videoCompiler        │  │ videoCompiler│
+│  │ CacheService         │  │ RenderService        │  │ SystemService│
+│  │                      │  │                      │  │              │
+│  │ • getCacheStats()    │  │ • compileVideo()     │  │ • getGpu     │
+│  │ • clearPreview       │  │ • getActiveJobs()    │  │   Capabilities()│
+│  │   Cache()            │  │ • getRenderJob()     │  │ • getSystem  │
+│  │ • clearAllCache()    │  │ • cancelRender()     │  │   Info()     │
+│  │                      │  │ • generatePreview()  │  │ • checkFfmpeg│
+│  │                      │  │                      │  │   Capabilities()│
+│  └──────────────────────┘  └──────────────────────┘  └──────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────────────┐
 │                      Tauri Backend (Rust)                            │
 │                                                                      │
 │  Project State │ Playback State │ Media Pool │ Clip Operations      │
+│  Video Compiler │ Cache Management │ Render Jobs │ GPU Detection    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -386,6 +406,82 @@ UndoRedoAction Structure:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+## Domain Services Layer
+
+The domain services layer provides clean API separation between domain logic and Tauri backend operations. This layer consists of three specialized services:
+
+### Video Compiler Services Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      Features Layer                                  │
+│  (video-compiler UI, export pipeline, cache settings)               │
+└───────────────────────────┬─────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Domain Services Layer                             │
+│                                                                      │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ videoCompilerCacheService                                     │  │
+│  │ • getCacheStats() → VideoCompilerCacheStats                  │  │
+│  │ • clearPreviewCache() → void                                 │  │
+│  │ • clearAllCache() → void                                     │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ videoCompilerRenderService                                    │  │
+│  │ • compileVideo(project, outputPath) → jobId                  │  │
+│  │ • getActiveJobs() → VideoRenderJob[]                         │  │
+│  │ • getRenderJob(jobId) → VideoRenderJob | null                │  │
+│  │ • cancelRender(jobId) → boolean                              │  │
+│  │ • generatePreview(project, timestamp) → number[]             │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                                                                      │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ videoCompilerSystemService                                    │  │
+│  │ • getGpuCapabilitiesFull() → GpuCapabilitiesResponse         │  │
+│  │ • getSystemInfo() → SystemInfo                               │  │
+│  │ • checkFfmpegCapabilities() → FfmpegCapabilities             │  │
+│  │ • getCompilerSettings() → CompilerSettings                   │  │
+│  │ • setHardwareAcceleration(enabled) → void                    │  │
+│  │ • checkHardwareAccelerationSupport() → boolean               │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+└───────────────────────────┬─────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      Tauri Backend Commands                          │
+│  get_cache_stats, clear_preview_cache, compile_video,               │
+│  get_active_jobs, get_gpu_capabilities_full, etc.                   │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Design Principles
+
+1. **Singleton Pattern**: Each service is a singleton instance exported directly
+2. **Clean API**: All Tauri invoke calls are encapsulated within services
+3. **Built-in Logging**: Every method includes structured logging
+4. **Type Safety**: Full TypeScript types for all requests and responses
+5. **Error Handling**: Consistent error propagation with logging
+6. **Separation of Concerns**: Features use services, services use Tauri
+
+### Usage Example
+
+```typescript
+// Features layer imports and uses domain services directly
+import { videoCompilerCacheService } from "@/domains/video-editing"
+
+async function displayCacheStats() {
+  try {
+    const stats = await videoCompilerCacheService.getCacheStats()
+    console.log(`Cache hit ratio: ${stats.hit_ratio}%`)
+  } catch (error) {
+    console.error("Failed to get cache stats", error)
+  }
+}
+```
+
 ## Key Design Decisions
 
 ### 1. Singleton Orchestrator
@@ -426,6 +522,17 @@ UndoRedoAction Structure:
 - Industry-standard interchange formats
 - Seamless workflow with Avid, Final Cut Pro, DaVinci Resolve
 - Professional metadata preservation (timecode, camera info, LUTs)
+
+### 5. Domain Services Layer
+
+**Decision:** Create dedicated domain services for video compiler operations.
+
+**Rationale:**
+- Encapsulates all Tauri backend calls in one place
+- Provides consistent API across features
+- Enables easy testing with service mocking
+- Centralizes logging and error handling
+- Clear separation between domain logic and backend IPC
 
 ## Dependencies
 

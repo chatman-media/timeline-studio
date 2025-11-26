@@ -74,6 +74,13 @@ function VideoEditor() {
 | `EDLExporter` / `EDLImporter` | Edit Decision List |
 | `UndoRedoService` | Undo/redo stack |
 
+### Domain Services
+| Service | Purpose |
+|---------|---------|
+| `videoCompilerCacheService` | Cache statistics and management |
+| `videoCompilerRenderService` | Render job orchestration |
+| `videoCompilerSystemService` | GPU and system capabilities |
+
 ## Key Features
 
 - **Timeline Management** - Tracks, clips, sections, markers

@@ -88,6 +88,12 @@ const { settings, updateSettings, isLoading } = useUserSettings()
 
 Главный провайдер домена. Оборачивает все остальные провайдеры.
 
+**Архитектура: Single Source of Truth**
+- Использует `ProjectManagementOrchestrator` как единственный источник состояния
+- Провайдеры читают состояние из XState акторов оркестратора через `useSelector`
+- Минимальное локальное состояние только для UI-специфичных данных (dirty flags)
+- Все команды выполняются через методы оркестратора
+
 ```tsx
 import { ProjectManagementProvider } from "@/domains/project-management"
 
@@ -100,13 +106,27 @@ function App() {
 }
 ```
 
+**Внутренняя структура:**
+```tsx
+// Упрощенная версия без дублирования состояния
+<ProjectProvider>          {/* Читает из appActor */}
+  <UserSettingsProvider>   {/* Читает из userSettingsActor */}
+    <AppStateProvider>     {/* Читает из appActor */}
+      {children}
+    </AppStateProvider>
+  </UserSettingsProvider>
+</ProjectProvider>
+```
+
 ### Отдельные провайдеры
 
 Для более гранулярного контроля:
 
-- `AppStateProvider` - состояние приложения
-- `UserSettingsProvider` - настройки пользователя
-- `ProjectProvider` - состояние проекта
+- `AppStateProvider` - состояние приложения (использует `appActor` из оркестратора)
+- `UserSettingsProvider` - настройки пользователя (использует `userSettingsActor` из оркестратора)
+- `ProjectProvider` - состояние проекта (использует `appActor` из оркестратора)
+
+**Важно:** Все провайдеры используют `useSelector` для подписки на состояние XState акторов. Локальное состояние минимизировано.
 
 ---
 

@@ -8,6 +8,7 @@
 - [Orchestrator](#orchestrator)
 - [State Machines](#state-machines)
 - [Services](#services)
+- [Domain Services](#domain-services)
 - [Utilities](#utilities)
 
 ---
@@ -544,6 +545,134 @@ service.getUndoStack()
 service.getRedoStack()
 service.clear()
 ```
+
+---
+
+## Domain Services
+
+Domain services provide clean API separation between domain logic and Tauri backend. All services are singleton instances exported for direct use.
+
+### videoCompilerCacheService
+
+Manages video compiler cache statistics and operations.
+
+```typescript
+import { videoCompilerCacheService } from "@/domains/video-editing"
+
+// Get cache statistics
+const stats = await videoCompilerCacheService.getCacheStats()
+// Returns: {
+//   total_entries: number
+//   cache_hits: number
+//   cache_misses: number
+//   hit_ratio: number
+//   preview_hit_ratio: number
+//   total_size: number
+//   preview_size: number
+// }
+
+// Clear preview cache
+await videoCompilerCacheService.clearPreviewCache()
+
+// Clear all cache
+await videoCompilerCacheService.clearAllCache()
+```
+
+**Methods:**
+- `getCacheStats()` - Retrieve cache statistics
+- `clearPreviewCache()` - Clear preview frame cache
+- `clearAllCache()` - Clear all cached data
+
+### videoCompilerRenderService
+
+Orchestrates video render jobs and compilation.
+
+```typescript
+import { videoCompilerRenderService } from "@/domains/video-editing"
+
+// Start video compilation
+const jobId = await videoCompilerRenderService.compileVideo(
+  projectSchema,
+  "/path/to/output.mp4"
+)
+
+// Get active render jobs
+const activeJobs = await videoCompilerRenderService.getActiveJobs()
+// Returns: Array<{
+//   id: string
+//   status: string
+//   progress: number
+//   started_at: string
+//   finished_at?: string
+//   error?: string
+// }>
+
+// Get specific render job
+const job = await videoCompilerRenderService.getRenderJob(jobId)
+
+// Cancel render job
+const cancelled = await videoCompilerRenderService.cancelRender(jobId)
+
+// Generate preview frame at timestamp
+const jpegData = await videoCompilerRenderService.generatePreview(
+  projectSchema,
+  5.0 // timestamp in seconds
+)
+```
+
+**Methods:**
+- `compileVideo(project, outputPath)` - Start video compilation, returns job ID
+- `getActiveJobs()` - Get list of active render jobs
+- `getRenderJob(jobId)` - Get specific render job by ID
+- `cancelRender(jobId)` - Cancel a render job
+- `generatePreview(project, timestamp)` - Generate preview frame as JPEG bytes
+
+### videoCompilerSystemService
+
+Detects GPU capabilities, system information, and hardware acceleration.
+
+```typescript
+import { videoCompilerSystemService } from "@/domains/video-editing"
+
+// Get GPU capabilities
+const gpuCaps = await videoCompilerSystemService.getGpuCapabilitiesFull()
+// Returns: {
+//   available_encoders: string[]
+//   recommended_encoder: string | null
+//   current_gpu: any
+//   hardware_acceleration_supported: boolean
+// }
+
+// Get system information
+const systemInfo = await videoCompilerSystemService.getSystemInfo()
+
+// Check FFmpeg capabilities
+const ffmpegCaps = await videoCompilerSystemService.checkFfmpegCapabilities()
+
+// Get compiler settings
+const settings = await videoCompilerSystemService.getCompilerSettings()
+
+// Enable/disable hardware acceleration
+await videoCompilerSystemService.setHardwareAcceleration(true)
+
+// Check hardware acceleration support
+const supported = await videoCompilerSystemService.checkHardwareAccelerationSupport()
+```
+
+**Methods:**
+- `getGpuCapabilitiesFull()` - Get full GPU capabilities information
+- `getSystemInfo()` - Get system information (platform, CPU, etc.)
+- `checkFfmpegCapabilities()` - Check FFmpeg version and capabilities
+- `getCompilerSettings()` - Get advanced compiler settings
+- `setHardwareAcceleration(enabled)` - Enable/disable hardware acceleration
+- `checkHardwareAccelerationSupport()` - Check if hardware acceleration is supported
+
+**Usage Pattern:**
+All domain services follow the same pattern:
+1. Import the singleton instance
+2. Call async methods directly
+3. Handle errors with try/catch
+4. All methods include built-in logging
 
 ---
 

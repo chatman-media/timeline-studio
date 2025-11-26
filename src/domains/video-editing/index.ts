@@ -46,6 +46,8 @@ export {
   useTrackUndoRedo,
   useUndoRedoContext,
 } from "./providers/undo-redo-provider"
+// Экспорт compiler services
+export * from "./services/compiler"
 // Экспорт effects services
 export * from "./services/effects"
 // Экспорт import-export

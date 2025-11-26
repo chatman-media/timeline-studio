@@ -2,12 +2,234 @@
 
 ## Table of Contents
 
+- [Orchestrator](#orchestrator)
 - [Types](#types)
 - [Provider](#provider)
 - [Hooks](#hooks)
 - [State Machines](#state-machines)
 - [Services](#services)
 - [Backend Commands](#backend-commands)
+
+---
+
+## Orchestrator
+
+### MediaManagementOrchestrator
+
+Центральный координатор для всех операций с медиафайлами. Управляет 2 state machines и интегрирует 12 сервисов.
+
+```typescript
+import { getMediaManagementOrchestrator } from "@/domains/media-management"
+
+const orchestrator = getMediaManagementOrchestrator()
+```
+
+### Public API Methods
+
+#### Media Import
+
+```typescript
+// Импорт медиафайлов
+await orchestrator.importFiles(
+  ['/path/to/video.mp4', '/path/to/audio.mp3'],
+  {
+    copyToProject: true,
+    createProxies: true,
+    analyzeContent: true,
+    generateThumbnails: true,
+    preserveMetadata: true
+  }
+)
+
+// Выбор файлов через диалог
+const files = await orchestrator.selectMediaFiles()
+
+// Выбор аудиофайлов
+const audioFiles = await orchestrator.selectAudioFiles()
+
+// Выбор директории с автоимпортом
+const directory = await orchestrator.selectMediaDirectory()
+
+// Получение информации о файле
+const info = await orchestrator.getMediaInfo('/path/to/file.mp4')
+
+// Извлечение метаданных
+const metadata = await orchestrator.extractMetadata('/path/to/file.mp4')
+```
+
+#### Camera Import
+
+```typescript
+// Обнаружение камер
+const cameras = await orchestrator.detectCameras()
+// Returns: CameraDevice[]
+
+// Импорт с камеры
+const result = await orchestrator.importFromCamera(deviceId, {
+  files: selectedFiles,
+  deleteAfterImport: false,
+  organizeByCamera: true
+})
+```
+
+#### Proxy Generation
+
+```typescript
+// Генерация одного прокси
+const proxy = await orchestrator.generateProxy(
+  '/path/to/source.mp4',
+  '720p',
+  {
+    codec: 'h264',
+    quality: 'medium',
+    preserveAudio: true
+  }
+)
+
+// Пакетная генерация прокси
+const proxies = await orchestrator.generateProxies(
+  ['/path/file1.mp4', '/path/file2.mov'],
+  { resolution: '720p' }
+)
+```
+
+#### Smart Organization
+
+```typescript
+// Организация по дате
+const groups = await orchestrator.organizeByDate(files, {
+  format: 'YYYY-MM-DD',
+  useCreationDate: true
+})
+
+// Организация по камерам
+const cameraGroups = await orchestrator.organizeByCamera(files, {
+  includeModel: true
+})
+```
+
+#### Waveform Generation
+
+```typescript
+// Генерация waveform
+const waveform = await orchestrator.generateWaveform(
+  '/path/to/audio.mp3',
+  {
+    samplesPerSecond: 100,
+    channels: 2,
+    normalize: true
+  }
+)
+
+// Получение waveform данных
+const data = await orchestrator.getWaveformData('/path/to/audio.mp3')
+```
+
+#### File Operations
+
+```typescript
+// Начать операцию
+orchestrator.startFileOperation({
+  id: 'op-123',
+  type: 'import',
+  status: 'pending',
+  progress: 0
+})
+
+// Обновить прогресс
+orchestrator.updateOperationProgress('op-123', 50)
+
+// Завершить операцию
+orchestrator.completeOperation('op-123', { result: 'success' })
+
+// Операция не удалась
+orchestrator.failOperation('op-123', 'Network error')
+
+// Отменить операцию
+orchestrator.cancelOperation('op-123')
+```
+
+#### Cache Management
+
+```typescript
+// Очистить кэш
+await orchestrator.clearCache()
+
+// Получить статистику кэша
+const stats = await orchestrator.getCacheStatistics()
+// Returns: { previewCount, framesCount, totalSize }
+```
+
+#### State Access
+
+```typescript
+// Получить MediaPool
+const mediaPool = orchestrator.getMediaPool()
+// Returns: Map<string, MediaInfo>
+
+// Получить состояние файловых операций
+const fileOpsState = orchestrator.getFileOperationsState()
+
+// Получить состояние импорта
+const importState = orchestrator.getMediaImportState()
+
+// Проверить загрузку
+const isLoading = orchestrator.isMediaLoading()
+
+// Получить ошибку
+const error = orchestrator.getError()
+```
+
+#### Subscriptions
+
+```typescript
+// Подписаться на изменения файловых операций
+const unsubscribe1 = orchestrator.subscribeToFileOperations((state) => {
+  console.log('File operations state:', state)
+})
+
+// Подписаться на изменения импорта
+const unsubscribe2 = orchestrator.subscribeToMediaImport((state) => {
+  console.log('Media import state:', state)
+})
+
+// Отписаться
+unsubscribe1.unsubscribe()
+unsubscribe2.unsubscribe()
+```
+
+#### Error Tracking
+
+```typescript
+// Получить статистику ошибок
+const errorStats = orchestrator.getErrorStatistics()
+// Returns: { total, byType, successRate, reliabilityScore }
+
+// Очистить ошибки
+orchestrator.clearErrors()
+```
+
+#### Cleanup
+
+```typescript
+// Освободить ресурсы (обычно не требуется)
+orchestrator.dispose()
+```
+
+### Singleton Management
+
+```typescript
+import {
+  getMediaManagementOrchestrator,
+  resetMediaManagementOrchestrator
+} from "@/domains/media-management"
+
+// Получить экземпляр (создаётся при первом вызове)
+const orchestrator = getMediaManagementOrchestrator()
+
+// Сбросить экземпляр (для тестов)
+resetMediaManagementOrchestrator()
+```
 
 ---
 
