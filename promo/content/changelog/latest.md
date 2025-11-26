@@ -1,3 +1,16 @@
+# [3.21.0](https://github.com/chatman-media/timeline-studio/compare/v3.20.0...v3.21.0) (2025-11-26)
+
+
+### Bug Fixes
+
+* H.265 codec detection and CI disk space issues ([8318cc7](https://github.com/chatman-media/timeline-studio/commit/8318cc77af7d3cc08b0f8e62db13bf6cfa5ee04a))
+* **promo:** fix empty string translation fallback issue ([c5d25a1](https://github.com/chatman-media/timeline-studio/commit/c5d25a1170871a820063c60d0e53dead2de4c23b))
+
+
+### Features
+
+* **promo:** add missing translations for interface section and investors page ([48f1cc8](https://github.com/chatman-media/timeline-studio/commit/48f1cc81834e33c5a5822476af9a0abbbed9a195))
+
 # [3.20.0](https://github.com/chatman-media/timeline-studio/compare/v3.19.0...v3.20.0) (2025-11-26)
 
 
