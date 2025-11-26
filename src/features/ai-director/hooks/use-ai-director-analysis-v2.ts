@@ -12,12 +12,7 @@
 
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useState } from "react"
-import type {
-  AIDirectorConfig,
-  AnalysisError,
-  AnalysisProgress,
-  ComprehensiveAnalysisResult,
-} from "@/domains/ai-director"
+import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@/domains/ai-director"
 import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 

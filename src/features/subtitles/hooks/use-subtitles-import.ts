@@ -6,7 +6,6 @@ import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
-import type { SubtitleImportResult } from "../types/subtitles"
 import { parseSubtitleFile } from "../utils/subtitle-parsers"
 
 const logger = createLogger("UseSubtitlesImport")
