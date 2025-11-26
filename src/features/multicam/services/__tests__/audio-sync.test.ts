@@ -274,23 +274,30 @@ describe("Audio Sync Service", () => {
     })
 
     it("should skip base clip in results", async () => {
+      vi.useFakeTimers()
       const baseClip = createMockClip("base", "media-base")
       const clips = [baseClip, createMockClip("clip1", "media1")]
       const mediaFiles = [createMockMediaFile("media-base", true), createMockMediaFile("media1", true)]
 
-      const results = await syncByAudio(baseClip, clips, mediaFiles)
+      const promise = syncByAudio(baseClip, clips, mediaFiles)
+      await vi.runAllTimersAsync()
+      const results = await promise
 
       expect(results.every((r) => r.clipId !== "base")).toBe(true)
+      vi.useRealTimers()
     })
 
     it("should call onProgress callback during sync", async () => {
+      vi.useFakeTimers()
       const baseClip = createMockClip("base", "media-base")
       const clips = [createMockClip("clip1", "media1")]
       const mediaFiles = [createMockMediaFile("media-base", true), createMockMediaFile("media1", true)]
 
       const onProgress = vi.fn()
 
-      await syncByAudio(baseClip, clips, mediaFiles, onProgress)
+      const promise = syncByAudio(baseClip, clips, mediaFiles, onProgress)
+      await vi.runAllTimersAsync()
+      await promise
 
       expect(onProgress).toHaveBeenCalled()
       // Should report completion
@@ -299,16 +306,20 @@ describe("Audio Sync Service", () => {
           phase: "complete",
         }),
       )
+      vi.useRealTimers()
     })
 
     it("should report progress phases correctly", async () => {
+      vi.useFakeTimers()
       const baseClip = createMockClip("base", "media-base")
       const clips = [createMockClip("clip1", "media1")]
       const mediaFiles = [createMockMediaFile("media-base", true), createMockMediaFile("media1", true)]
 
       const onProgress = vi.fn()
 
-      await syncByAudio(baseClip, clips, mediaFiles, onProgress)
+      const promise = syncByAudio(baseClip, clips, mediaFiles, onProgress)
+      await vi.runAllTimersAsync()
+      await promise
 
       const calls = onProgress.mock.calls.map((call) => call[0])
       const phases = calls.map((c: any) => c.phase)
@@ -317,6 +328,7 @@ describe("Audio Sync Service", () => {
       expect(phases).toContain("analyzing")
       expect(phases).toContain("correlating")
       expect(phases).toContain("complete")
+      vi.useRealTimers()
     })
   })
 
