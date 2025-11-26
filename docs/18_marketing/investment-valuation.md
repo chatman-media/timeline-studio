@@ -172,14 +172,14 @@
 ### Предлагаемые раунды
 
 #### Seed Round: $1M (10% equity)
-**Pre-money оценка**: $10M
-**Post-money оценка**: $11M
+**Pre-money оценка**: $9M
+**Post-money оценка**: $10M
 
 **Использование средств:**
-- Команда разработки (15%): $150K
-- Маркетинг и пользователи (55%): $550K
-- Инфраструктура и операции (10%): $100K
-- Резерв (20%): $200k
+- Команда разработки - 8 человек (50%): $500K
+- AI токены и инфраструктура (25%): $250K
+- Маркетинг и привлечение пользователей (15%): $150K
+- Операционные расходы и резерв (10%): $100K
 
 **Milestones:**
 - 100K активных пользователей
@@ -358,17 +358,34 @@ Timeline Studio AI Stack:
 
 ### D. Команда и hiring план
 
-#### Текущая команда (3 человека)
+#### Текущая команда (1 человек)
 - **Alexander Kireyev** - Founder/CEO/CTO
-- **AI/ML Engineer** - требуется
-- **Frontend Developer** - требуется
 
-#### Hiring план после Seed ($4M)
-- **Head of Product** - $150K + equity
-- **Senior AI/ML Engineers** (2) - $140K + equity
-- **Senior Frontend Developers** (2) - $120K + equity
-- **DevOps Engineer** - $130K + equity
-- **Head of Marketing** - $140K + equity
+#### Hiring план после Seed ($1M) - 8 сотрудников
+
+**Команда разработки (8 человек):**
+1. **Alexander Kireyev** (CTO/Lead) - $5,000/месяц
+2. **Senior AI/ML Engineer** - $6,000/месяц
+3. **Senior Frontend Developer** - $5,000/месяц
+4. **Senior Backend Developer (Rust)** - $5,500/месяц
+5. **DevOps Engineer** - $5,000/месяц
+6. **UI/UX Designer** - $4,000/месяц
+7. **QA Engineer** - $3,500/месяц
+8. **Marketing Lead** - $4,500/месяц
+
+**Итого на команду в месяц:** $38,500
+**Итого на команду за 12 месяцев:** $462K
+
+**AI токены и инфраструктура ($250K):**
+- Claude API / Anthropic - $100K
+- OpenAI API (GPT-4, Whisper) - $80K
+- Cloud infrastructure (AWS/GCP) - $50K
+- Дополнительные AI сервисы - $20K
+
+**Расширение после достижения milestones:**
+- **Head of Product** - $6,000/месяц
+- **Additional AI/ML Engineer** - $6,000/месяц
+- **Mobile Developer** - $5,000/месяц
 
 #### Advisory Board (планируется)
 - **Ex-Adobe VP Engineering** - технический советник

@@ -16,8 +16,8 @@ export const Project: React.FC = () => {
   // Определяем вкладки
   const tabs = [
     {
-      id: "manifest",
-      title: language === "ru" ? "Манифест" : "Manifest",
+      id: "overview",
+      title: language === "ru" ? "Обзор" : "Overview",
       path: "README.md",
     },
     {
@@ -94,9 +94,9 @@ export const Project: React.FC = () => {
                   : "Complete Timeline Studio documentation - revolutionary AI video editor"}
               </p>
               <div className="flex items-center justify-center space-x-4 text-gray-400">
-                <span>{language === "ru" ? "Версия 3.13.0" : "Version 3.13.0"}</span>
-                <span>•</span>
                 <span>Open Source</span>
+                <span>•</span>
+                <span>{language === "ru" ? "Локальный AI" : "Local AI"}</span>
                 <span>•</span>
                 <span>{language === "ru" ? "100+ AI инструментов" : "100+ AI tools"}</span>
               </div>

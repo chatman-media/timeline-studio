@@ -171,21 +171,21 @@
 
 ### Предлагаемые раунды
 
-#### Seed Round: $4M (12% equity)
-**Pre-money оценка**: $29M  
-**Post-money оценка**: $33M
+#### Seed Round: $1M (10% equity)
+**Pre-money valuation**: $9M
+**Post-money valuation**: $10M
 
-**Использование средств:**
-- Команда разработки (40%): $1.6M
-- Маркетинг и пользователи (30%): $1.2M
-- Инфраструктура и операции (20%): $0.8M
-- Резерв (10%): $0.4M
+**Use of funds:**
+- Development team - 8 people (50%): $500K
+- AI tokens and infrastructure (25%): $250K
+- Marketing and user acquisition (15%): $150K
+- Operations and reserve (10%): $100K
 
 **Milestones:**
-- 100K активных пользователей
+- 100K active users
 - $1M ARR
-- Завершение всех 26 модулей
-- Запуск мобильных приложений
+- Complete all 26 modules
+- Launch mobile applications
 
 #### Series A: $12M (17% equity)
 **Pre-money оценка**: $58M  
@@ -358,17 +358,34 @@ Timeline Studio AI Stack:
 
 ### D. Команда и hiring план
 
-#### Текущая команда (3 человека)
+#### Current team (1 person)
 - **Alexander Kireyev** - Founder/CEO/CTO
-- **AI/ML Engineer** - требуется
-- **Frontend Developer** - требуется
 
-#### Hiring план после Seed ($4M)
-- **Head of Product** - $150K + equity
-- **Senior AI/ML Engineers** (2) - $140K + equity
-- **Senior Frontend Developers** (2) - $120K + equity
-- **DevOps Engineer** - $130K + equity
-- **Head of Marketing** - $140K + equity
+#### Hiring plan after Seed ($1M) - 8 employees
+
+**Development team (8 people):**
+1. **Alexander Kireyev** (CTO/Lead) - $5,000/month
+2. **Senior AI/ML Engineer** - $6,000/month
+3. **Senior Frontend Developer** - $5,000/month
+4. **Senior Backend Developer (Rust)** - $5,500/month
+5. **DevOps Engineer** - $5,000/month
+6. **UI/UX Designer** - $4,000/month
+7. **QA Engineer** - $3,500/month
+8. **Marketing Lead** - $4,500/month
+
+**Total team cost per month:** $38,500
+**Total team cost for 12 months:** $462K
+
+**AI tokens and infrastructure ($250K):**
+- Claude API / Anthropic - $100K
+- OpenAI API (GPT-4, Whisper) - $80K
+- Cloud infrastructure (AWS/GCP) - $50K
+- Additional AI services - $20K
+
+**Expansion after milestones:**
+- **Head of Product** - $6,000/month
+- **Additional AI/ML Engineer** - $6,000/month
+- **Mobile Developer** - $5,000/month
 
 #### Advisory Board (планируется)
 - **Ex-Adobe VP Engineering** - технический советник
