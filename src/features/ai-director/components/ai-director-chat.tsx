@@ -269,7 +269,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
       {/* Avatar */}
       <div
         className={cn(
-          "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0",
+          "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
           isUser ? "bg-primary" : "bg-muted",
         )}
       >

@@ -194,7 +194,7 @@ export const Pricing: React.FC = () => {
                       <ul className="space-y-4 mb-8 flex-grow">
                         {tier.features.map((feature) => (
                           <li key={feature} className="flex items-start">
-                            <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                            <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                             <span className="text-gray-300 text-sm">
                               {feature}
                             </span>
@@ -265,37 +265,37 @@ export const Pricing: React.FC = () => {
 
                     <ul className="space-y-3 mb-8">
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.everythingInProBase")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.realTimeCollaboration")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           500GB per user
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           50 hours cloud rendering/month
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.teamResourceLibraries")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.ssoAuthentication")}
                         </span>
@@ -344,37 +344,37 @@ export const Pricing: React.FC = () => {
 
                     <ul className="space-y-3 mb-8">
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.onPremiseDeployment")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.unlimitedStorageRendering")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.customAiModels")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.apiAccess")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.dedicatedManagerSla")}
                         </span>
                       </li>
                       <li className="flex items-start">
-                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckIcon className="w-5 h-5 text-amber-400 mr-3 mt-0.5 shrink-0" />
                         <span className="text-gray-300 text-sm">
                           {t("pricing.features.whiteLabelCustomization")}
                         </span>

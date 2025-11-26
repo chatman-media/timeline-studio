@@ -547,10 +547,10 @@ async function extractVideoFrames(
   // TODO: Заменить на вызов Tauri команды extract_video_frames_batch_advanced когда backend будет реализован
 
   const startTime = options.startTime || 0
-  const endTime = options.endTime || 10  // По умолчанию 10 секунд
-  const skipFrames = options.skipFrames || 5  // Пропускаем каждые 5 кадров
+  const endTime = options.endTime || 10 // По умолчанию 10 секунд
+  const skipFrames = options.skipFrames || 5 // Пропускаем каждые 5 кадров
 
-  const fps = 30  // Предполагаем 30 FPS
+  const fps = 30 // Предполагаем 30 FPS
   const frameInterval = skipFrames + 1
   const duration = endTime - startTime
   const totalFrames = Math.floor((duration * fps) / frameInterval)
@@ -563,16 +563,16 @@ async function extractVideoFrames(
 
   for (let i = 0; i < totalFrames; i++) {
     const frameNumber = i * frameInterval
-    const timestamp = startTime + (frameNumber / fps)
+    const timestamp = startTime + frameNumber / fps
 
     // Создаём пустой ArrayBuffer (1x1 пиксель RGBA = 4 байта)
     // В реальной реализации это будут реальные данные кадра
     const data = new ArrayBuffer(4)
     const view = new Uint8Array(data)
-    view[0] = 255  // R
-    view[1] = 0    // G
-    view[2] = 0    // B
-    view[3] = 255  // A
+    view[0] = 255 // R
+    view[1] = 0 // G
+    view[2] = 0 // B
+    view[3] = 255 // A
 
     frames.push({
       frameNumber,

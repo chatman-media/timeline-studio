@@ -41,7 +41,9 @@ vi.mock("../../services/effect-manager", () => {
       getEffectsByCategory: vi.fn((category: string) =>
         Array.from(effects.values()).filter((e) => e.category === category),
       ),
-      getEffectsByScope: vi.fn((scope: "clip" | "track" | "sequence" | "global") => Array.from(effects.values()).filter((e) => e.scope.includes(scope))),
+      getEffectsByScope: vi.fn((scope: "clip" | "track" | "sequence" | "global") =>
+        Array.from(effects.values()).filter((e) => e.scope.includes(scope)),
+      ),
       searchEffects: vi.fn(() => Array.from(effects.values())),
       createEffectStack: vi.fn((id: string) => {
         const stack = { id, effects: [], groups: [], enabled: true }

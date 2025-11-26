@@ -11,11 +11,11 @@ import {
   getMotionGraphicsSummary,
   getMotionKeyframesForTimeline,
   importMotionGraphics,
+  type MotionGraphicsClip,
   offsetMotionGraphicsTiming,
   removeMotionGraphicsFromClip,
   scaleMotionGraphicsDuration,
   updateMotionPropertyInClip,
-  type MotionGraphicsClip,
 } from "../../services/timeline-integration"
 import type { MotionPreset } from "../../types/keyframe"
 

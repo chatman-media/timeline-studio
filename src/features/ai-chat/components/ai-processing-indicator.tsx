@@ -80,7 +80,7 @@ export function AIProcessingIndicator({ stage, toolsInUse = [], progress, classN
       )}
     >
       {/* Иконка этапа */}
-      <div className="flex-shrink-0">{getStageIcon()}</div>
+      <div className="shrink-0">{getStageIcon()}</div>
 
       {/* Текст этапа */}
       <div className="flex-1">

@@ -56,7 +56,7 @@ export const Logo: React.FC<LogoProps> = ({
           >
             imeline Studio
           </span>
-          <span className="text-[10px] text-gray-500 font-medium px-1.5 ml-0.5 py-0.5 border border-gray-700 rounded-md flex-shrink-0">
+          <span className="text-[10px] text-gray-500 font-medium px-1.5 ml-0.5 py-0.5 border border-gray-700 rounded-md shrink-0">
             BETA
           </span>
         </div>

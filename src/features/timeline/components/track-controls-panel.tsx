@@ -90,11 +90,11 @@ export function TrackControlsPanel({ className }: TrackControlsPanelProps) {
                           <div className="flex items-center min-w-0 flex-1">
                             <div
                               className={cn(
-                                "w-2 h-2 rounded-full mr-2 flex-shrink-0",
+                                "w-2 h-2 rounded-full mr-2 shrink-0",
                                 trackTypeInfo?.color || "bg-gray-500",
                               )}
                             />
-                            <Icon className="w-3 h-3 mr-2 flex-shrink-0" />
+                            <Icon className="w-3 h-3 mr-2 shrink-0" />
                             <span className="text-xs font-medium truncate">{track.name}</span>
                           </div>
                           <Badge variant="secondary" className="text-xs ml-2">

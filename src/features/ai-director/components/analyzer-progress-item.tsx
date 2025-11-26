@@ -82,7 +82,7 @@ export function AnalyzerProgressItem({ analyzer, className, compact = false }: A
   if (compact) {
     return (
       <div className={cn("flex items-center gap-2 py-1", className)}>
-        <StatusIcon className={cn("h-3 w-3 flex-shrink-0", statusConfig.color, isAnimated && "animate-spin")} />
+        <StatusIcon className={cn("h-3 w-3 shrink-0", statusConfig.color, isAnimated && "animate-spin")} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs truncate">{metadata.displayName}</span>

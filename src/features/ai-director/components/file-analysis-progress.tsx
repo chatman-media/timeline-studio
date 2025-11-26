@@ -124,19 +124,19 @@ export function FileAnalysisProgress({ file, className, defaultExpanded = false 
             <button className="flex items-center gap-3 w-full text-left hover:opacity-80 transition-opacity">
               {/* Expand Icon */}
               {isExpanded ? (
-                <ChevronDown className="h-4 w-4 flex-shrink-0" />
+                <ChevronDown className="h-4 w-4 shrink-0" />
               ) : (
-                <ChevronRight className="h-4 w-4 flex-shrink-0" />
+                <ChevronRight className="h-4 w-4 shrink-0" />
               )}
 
               {/* Status Icon */}
-              <StatusIcon className={cn("h-5 w-5 flex-shrink-0", statusConfig.color, isAnimated && "animate-spin")} />
+              <StatusIcon className={cn("h-5 w-5 shrink-0", statusConfig.color, isAnimated && "animate-spin")} />
 
               {/* File Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-medium truncate">{file.fileName}</h3>
-                  <div className="flex items-center gap-3 flex-shrink-0">
+                  <div className="flex items-center gap-3 shrink-0">
                     {/* Duration */}
                     {formattedDuration && <span className="text-sm text-muted-foreground">{formattedDuration}</span>}
 

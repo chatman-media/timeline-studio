@@ -18,12 +18,7 @@ import {
   updateLayerInTrack,
 } from "../../services/animation-layers"
 import { createKeyframe } from "../../services/keyframe-manager"
-import type {
-  AnimatedProperty,
-  AnimationLayer,
-  AnimationTrack,
-  KeyframeValue,
-} from "../../types/keyframe"
+import type { AnimatedProperty, AnimationLayer, AnimationTrack, KeyframeValue } from "../../types/keyframe"
 
 describe("AnimationLayers", () => {
   const createMockProperty = (name: string = "Test"): AnimatedProperty => ({

@@ -52,7 +52,8 @@ describe("NodeGraphProcessor", () => {
     name: `Node ${id}`,
     category: "color",
     position: { x: 0, y: 0 },
-    inputs: inputs.length > 0 ? inputs : [{ id: "input", name: "Input", type: "image", direction: "input", required: false }],
+    inputs:
+      inputs.length > 0 ? inputs : [{ id: "input", name: "Input", type: "image", direction: "input", required: false }],
     outputs: outputs.length > 0 ? outputs : [{ id: "output", name: "Output", type: "image", direction: "output" }],
     parameters: [],
     cached: false,
@@ -105,7 +106,12 @@ describe("NodeGraphProcessor", () => {
     })
 
     it("should process nodes in dependency order", async () => {
-      const node1 = createMockNode("node1", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
+      const node1 = createMockNode(
+        "node1",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
       const node2 = createMockNode(
         "node2",
         "transform",
@@ -268,7 +274,12 @@ describe("NodeGraphProcessor", () => {
     })
 
     it("should detect port type mismatch", () => {
-      const node1 = createMockNode("node1", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
+      const node1 = createMockNode(
+        "node1",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
       const node2 = createMockNode(
         "node2",
         "transform",
@@ -296,7 +307,9 @@ describe("NodeGraphProcessor", () => {
     })
 
     it("should detect missing required inputs", () => {
-      const node = createMockNode("node1", "transform", [{ id: "input", name: "Input", type: "image", direction: "input" as const, required: true }])
+      const node = createMockNode("node1", "transform", [
+        { id: "input", name: "Input", type: "image", direction: "input" as const, required: true },
+      ])
       const graph = createMockGraph([node])
 
       const validation = processor.validateGraph(graph)
@@ -441,7 +454,12 @@ describe("NodeGraphProcessor", () => {
 
   describe("execution order calculation", () => {
     it("should calculate correct execution order for linear graph", async () => {
-      const node1 = createMockNode("node1", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
+      const node1 = createMockNode(
+        "node1",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
       const node2 = createMockNode(
         "node2",
         "transform",
@@ -484,7 +502,12 @@ describe("NodeGraphProcessor", () => {
     })
 
     it("should handle parallel branches", async () => {
-      const source = createMockNode("source", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
+      const source = createMockNode(
+        "source",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
       const branch1 = createMockNode(
         "branch1",
         "transform",
@@ -557,8 +580,18 @@ describe("NodeGraphProcessor", () => {
 
   describe("input gathering", () => {
     it("should gather inputs from multiple connections", async () => {
-      const node1 = createMockNode("node1", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
-      const node2 = createMockNode("node2", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
+      const node1 = createMockNode(
+        "node1",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
+      const node2 = createMockNode(
+        "node2",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
       const node3 = createMockNode(
         "node3",
         "merge",
@@ -594,7 +627,12 @@ describe("NodeGraphProcessor", () => {
     })
 
     it("should skip inactive connections", async () => {
-      const node1 = createMockNode("node1", "source", [], [{ id: "output", name: "Output", type: "image", direction: "output" as const }])
+      const node1 = createMockNode(
+        "node1",
+        "source",
+        [],
+        [{ id: "output", name: "Output", type: "image", direction: "output" as const }],
+      )
       const node2 = createMockNode(
         "node2",
         "transform",

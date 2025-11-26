@@ -136,7 +136,7 @@ export function AudioClip({ clip, track, onUpdate, onRemove }: AudioClipProps) {
       {/* Заголовок клипа */}
       <div className="flex items-center justify-between p-1 bg-black/20">
         <div className="flex items-center gap-1 min-w-0">
-          <Music className="w-3 h-3 text-white flex-shrink-0" />
+          <Music className="w-3 h-3 text-white shrink-0" />
           <span className="text-xs text-white truncate font-medium">{clip.name}</span>
         </div>
 

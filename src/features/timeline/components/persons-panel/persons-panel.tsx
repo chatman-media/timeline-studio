@@ -223,7 +223,7 @@ export function PersonsPanel({ className }: PersonsPanelProps) {
                     onClick={() => showPersonDetail(person.id)}
                   >
                     {/* Аватар */}
-                    <div className="h-8 w-8 rounded-full bg-muted border flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="h-8 w-8 rounded-full bg-muted border flex items-center justify-center overflow-hidden shrink-0">
                       {person.thumbnails && person.thumbnails.length > 0 ? (
                         <img
                           src={person.thumbnails[0].imageUrl}

@@ -48,7 +48,7 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
         {...dragProps}
       >
         {/* Effect Preview */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <EffectPreview effect={effect} onClick={handleClick} size={48} width={48} height={36} />
         </div>
 

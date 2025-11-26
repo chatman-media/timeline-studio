@@ -108,7 +108,7 @@ function TemplateCard({ template, isSelected, onSelect }: TemplateCardProps) {
               <CardDescription className="text-xs mt-1">{template.description}</CardDescription>
             </div>
           </div>
-          {isSelected && <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />}
+          {isSelected && <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />}
         </div>
       </CardHeader>
 

@@ -9,8 +9,7 @@ import React, { createContext, useCallback, useEffect, useState } from "react"
 
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "../types/project"
 import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "./backend-event-handlers"
 

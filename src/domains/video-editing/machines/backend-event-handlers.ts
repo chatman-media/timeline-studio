@@ -8,7 +8,7 @@
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { TimelineClip, Track } from "../types"
-import { convertClipDataToTimelineClip, convertClipToTimelineClip } from "../utils/clip-transform"
+import { convertClipDataToTimelineClip } from "../utils/clip-transform"
 import { validateClip, validateProjectEvent } from "../utils/type-validation"
 import type { TimelineExtendedContext } from "./timeline-extended-machine"
 
@@ -229,7 +229,11 @@ function handleClipMoved(
     return {}
   }
 
-  logger.info("Moving clip:", { clipId: clip_id, newTrackId: new_track_id, newTime: new_time })
+  logger.info("Moving clip:", {
+    clipId: clip_id,
+    newTrackId: new_track_id,
+    newTime: new_time,
+  })
 
   const updatedProject = { ...context.project }
   let movedClip: TimelineClip | null = null
@@ -299,7 +303,11 @@ function handleClipTrimmed(
     return {}
   }
 
-  logger.info("Trimming clip:", { clipId: clip_id, newIn: new_in, newOut: new_out })
+  logger.info("Trimming clip:", {
+    clipId: clip_id,
+    newIn: new_in,
+    newOut: new_out,
+  })
 
   const updatedProject = { ...context.project }
 
@@ -392,7 +400,10 @@ function handleClipUpdated(
         return {
           ...clip,
           ...(changes.name && { name: changes.name }),
-          ...(changes.playback_rate && { playbackRate: changes.playback_rate, speed: changes.playback_rate }),
+          ...(changes.playback_rate && {
+            playbackRate: changes.playback_rate,
+            speed: changes.playback_rate,
+          }),
           ...(changes.volume !== undefined && changes.volume !== null && { volume: changes.volume ?? 1 }),
         }
       }
@@ -427,7 +438,11 @@ function handleClipSplit(
     return {}
   }
 
-  logger.info("Splitting clip:", { originalId: original_clip_id, leftId: left_clip.id, rightId: right_clip.id })
+  logger.info("Splitting clip:", {
+    originalId: original_clip_id,
+    leftId: left_clip.id,
+    rightId: right_clip.id,
+  })
 
   const updatedProject = { ...context.project }
 

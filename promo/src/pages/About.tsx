@@ -252,7 +252,7 @@ export const About: React.FC = () => {
 
                     <div className="relative p-6 h-full">
                       <div className="flex items-center gap-3 mb-3">
-                        <value.Icon className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        <value.Icon className="w-5 h-5 text-gray-400 shrink-0" />
                         <h3 className="text-lg font-medium text-white">
                           {value.title}
                         </h3>

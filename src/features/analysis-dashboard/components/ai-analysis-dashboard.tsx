@@ -216,7 +216,9 @@ export function AIAnalysisDashboard() {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
-      logger.error("Failed to start analysis:", { error: errorMessage } as LogContext)
+      logger.error("Failed to start analysis:", {
+        error: errorMessage,
+      } as LogContext)
     }
   }
 
@@ -304,7 +306,7 @@ export function AIAnalysisDashboard() {
                             />
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <FileVideo className="h-4 w-4 flex-shrink-0" />
+                                <FileVideo className="h-4 w-4 shrink-0" />
                                 <span className="text-sm font-medium truncate">{video.name}</span>
                               </div>
                               <p className="text-xs text-muted-foreground truncate mt-1">{video.path}</p>

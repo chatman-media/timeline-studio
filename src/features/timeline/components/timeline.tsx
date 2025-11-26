@@ -45,7 +45,7 @@ export function Timeline({ className, style }: TimelineProps = {}) {
       <ResizablePanel defaultSize={80} minSize={40}>
         <div className="flex h-full w-full flex-col">
           {/* Вкладки для переключения видов */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <TimelineWorkspaceTabs activeView={activeView} onViewChange={setActiveView} />
           </div>
 

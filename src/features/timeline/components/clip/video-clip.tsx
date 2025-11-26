@@ -117,9 +117,9 @@ export const VideoClip = memo(
           <div className="flex items-center justify-between p-1 bg-black/20">
             <div className="flex items-center gap-1 min-w-0">
               {track.type === "video" ? (
-                <Video className="w-3 h-3 text-white flex-shrink-0" />
+                <Video className="w-3 h-3 text-white shrink-0" />
               ) : (
-                <Image className="w-3 h-3 text-white flex-shrink-0" />
+                <Image className="w-3 h-3 text-white shrink-0" />
               )}
               <span className="text-xs text-white truncate font-medium">{clip.name}</span>
 

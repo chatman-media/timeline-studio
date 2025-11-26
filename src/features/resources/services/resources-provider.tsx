@@ -17,8 +17,7 @@ import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
-import type { MediaItem, MediaType } from "@/types/generated/tauri-bindings"
+import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
 import {
   handleBackendEvent,

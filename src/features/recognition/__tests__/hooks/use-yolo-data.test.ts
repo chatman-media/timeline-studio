@@ -17,7 +17,6 @@ let mockYoloDataService = vi.hoisted(() => ({
   saveYoloData: vi.fn(),
 }))
 
-// biome-ignore lint/complexity/noStaticOnlyClass: Mock class for testing
 const MockYoloDataService = vi.hoisted(() => {
   return class {
     loadYoloData = mockYoloDataService.loadYoloData
@@ -295,8 +294,16 @@ describe("useYoloData", () => {
 
     it("должен группировать объекты по классам", async () => {
       mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.2, width: 0.3, height: 0.6 } },
-        { class: "person", confidence: 0.92, bbox: { x: 0.5, y: 0.3, width: 0.2, height: 0.5 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.2, width: 0.3, height: 0.6 },
+        },
+        {
+          class: "person",
+          confidence: 0.92,
+          bbox: { x: 0.5, y: 0.3, width: 0.2, height: 0.5 },
+        },
       ])
       const { result } = renderHook(() => useYoloData())
 
@@ -307,7 +314,11 @@ describe("useYoloData", () => {
 
     it("должен определять позиции объектов", async () => {
       mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.1, width: 0.2, height: 0.2 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.2, height: 0.2 },
+        },
       ])
       const { result } = renderHook(() => useYoloData())
 
@@ -317,7 +328,6 @@ describe("useYoloData", () => {
       expect(context).toMatch(/лево|центр|право/)
     })
 
-    // biome-ignore lint/suspicious/noSkippedTests: Test documents actual behavior - error is caught internally
     it("должен обработать ошибку в getYoloDataAtTimestamp как отсутствие объектов", async () => {
       // Когда getYoloDataAtTimestamp выбрасывает ошибку, она ловится внутри хука
       // и возвращается пустой массив, что приводит к сообщению об отсутствии объектов

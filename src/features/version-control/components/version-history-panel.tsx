@@ -26,9 +26,17 @@ const formatTimeAgo = (date: Date, t: (key: string, params?: any) => string): st
 
   if (diffMinutes < 1) return t("dialogs.userSettings.versionControl.history.timeAgo.justNow")
   if (diffMinutes < 60)
-    return t("dialogs.userSettings.versionControl.history.timeAgo.minutesAgo", { count: diffMinutes })
-  if (diffHours < 24) return t("dialogs.userSettings.versionControl.history.timeAgo.hoursAgo", { count: diffHours })
-  if (diffDays < 30) return t("dialogs.userSettings.versionControl.history.timeAgo.daysAgo", { count: diffDays })
+    return t("dialogs.userSettings.versionControl.history.timeAgo.minutesAgo", {
+      count: diffMinutes,
+    })
+  if (diffHours < 24)
+    return t("dialogs.userSettings.versionControl.history.timeAgo.hoursAgo", {
+      count: diffHours,
+    })
+  if (diffDays < 30)
+    return t("dialogs.userSettings.versionControl.history.timeAgo.daysAgo", {
+      count: diffDays,
+    })
   return date.toLocaleDateString()
 }
 
@@ -89,7 +97,11 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
   const handleRestoreVersion = useCallback(
     async (versionId: string) => {
       if (
-        window.confirm(t("dialogs.userSettings.versionControl.history.restoreConfirm", { id: versionId.slice(0, 8) }))
+        window.confirm(
+          t("dialogs.userSettings.versionControl.history.restoreConfirm", {
+            id: versionId.slice(0, 8),
+          }),
+        )
       ) {
         const success = await restoreVersion(versionId)
         if (success) {
@@ -122,7 +134,11 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
         </CardTitle>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <GitBranch className="h-3 w-3" />
-          <span>{t("dialogs.userSettings.versionControl.history.branch", { name: branchName })}</span>
+          <span>
+            {t("dialogs.userSettings.versionControl.history.branch", {
+              name: branchName,
+            })}
+          </span>
           <Badge variant="outline" className="text-xs">
             {currentVersionId}
           </Badge>
@@ -137,7 +153,9 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
             <span>
               {t("dialogs.userSettings.versionControl.autoSave", {
                 enabled: autoSaveEnabled
-                  ? t("dialogs.userSettings.versionControl.autoSaveEnabled", { interval: autoSaveIntervalSeconds })
+                  ? t("dialogs.userSettings.versionControl.autoSaveEnabled", {
+                      interval: autoSaveIntervalSeconds,
+                    })
                   : t("dialogs.userSettings.versionControl.autoSaveDisabled"),
               })}
             </span>
@@ -263,7 +281,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
 
                       {version.message && (
                         <div className="flex items-start gap-2 text-xs">
-                          <MessageCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                          <MessageCircle className="h-3 w-3 mt-0.5 shrink-0" />
                           <span className="text-foreground">{version.message}</span>
                         </div>
                       )}

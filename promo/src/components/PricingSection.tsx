@@ -105,7 +105,7 @@ export function PricingSection() {
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start">
                         <svg
-                          className="w-5 h-5 text-green-400 mr-3 mt-0.5 flex-shrink-0"
+                          className="w-5 h-5 text-green-400 mr-3 mt-0.5 shrink-0"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"

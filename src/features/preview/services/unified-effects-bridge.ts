@@ -97,8 +97,9 @@ export class UnifiedEffectsBridge {
 
     // Если есть примененный эффект, перезаписываем значения
     if (appliedEffect) {
-      appliedEffect.parameters.forEach((param: any) => {
-        params[param.parameterId] = param.value
+      // parameters is Record<string, any> per AppliedEffect type
+      Object.entries(appliedEffect.parameters).forEach(([key, value]) => {
+        params[key] = value
       })
     }
 

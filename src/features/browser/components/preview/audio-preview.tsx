@@ -79,18 +79,26 @@ export const AudioPreview = memo(function AudioPreview({
       try {
         // Проверяем, что у файла есть id
         if (!file.id) {
-          logger.errorSync("У аудио файла нет ID", { fileName: file.name, file })
+          logger.errorSync("У аудио файла нет ID", {
+            fileName: file.name,
+            file,
+          })
           // Fallback к локальному воспроизведению
           if (audioRef.current) {
             if (isPlaying) {
               audioRef.current.pause()
-              logger.debugSync("Fallback: Аудио на паузе (нет ID)", { fileName: file.name })
+              logger.debugSync("Fallback: Аудио на паузе (нет ID)", {
+                fileName: file.name,
+              })
             } else {
               if (hoverTime !== null) {
                 audioRef.current.currentTime = hoverTime
               }
               void audioRef.current.play()
-              logger.debugSync("Fallback: Аудио воспроизводится (нет ID)", { fileName: file.name, time: hoverTime })
+              logger.debugSync("Fallback: Аудио воспроизводится (нет ID)", {
+                fileName: file.name,
+                time: hoverTime,
+              })
             }
             setIsPlaying(!isPlaying)
           }
@@ -130,7 +138,10 @@ export const AudioPreview = memo(function AudioPreview({
             audioRef.current.currentTime = hoverTime
           }
           void audioRef.current.play()
-          logger.debugSync("Fallback: Аудио воспроизводится", { fileName: file.name, time: hoverTime })
+          logger.debugSync("Fallback: Аудио воспроизводится", {
+            fileName: file.name,
+            time: hoverTime,
+          })
         }
         setIsPlaying(!isPlaying)
       }
@@ -164,7 +175,10 @@ export const AudioPreview = memo(function AudioPreview({
   // Эффект для загрузки аудио при монтировании компонента
   useEffect(() => {
     let isMounted = true
-    logger.debugSync("Монтирование AudioPreview", { fileName: file.name, filePath: file.path })
+    logger.debugSync("Монтирование AudioPreview", {
+      fileName: file.name,
+      filePath: file.path,
+    })
 
     void loadAudioFile(file.path).then((url) => {
       if (isMounted) {
@@ -211,7 +225,9 @@ export const AudioPreview = memo(function AudioPreview({
         mediaRecorderRef.current = recorder
         setMediaRecorder(recorder)
         recorder.start()
-        logger.infoSync("MediaRecorder запущен для визуализации", { fileName: file.name })
+        logger.infoSync("MediaRecorder запущен для визуализации", {
+          fileName: file.name,
+        })
       } catch (error) {
         logger.errorSync("Ошибка инициализации AudioContext", {
           error: String(error),
@@ -223,7 +239,9 @@ export const AudioPreview = memo(function AudioPreview({
     setTimeout(initAudioContext, 100)
 
     return () => {
-      logger.debugSync("Очистка AudioContext и MediaRecorder", { fileName: file.name })
+      logger.debugSync("Очистка AudioContext и MediaRecorder", {
+        fileName: file.name,
+      })
       if (mediaRecorderRef.current) {
         mediaRecorderRef.current.stop()
         logger.debugSync("MediaRecorder остановлен", { fileName: file.name })
@@ -244,7 +262,7 @@ export const AudioPreview = memo(function AudioPreview({
 
   return (
     <div
-      className={"group relative h-full flex-shrink-0"}
+      className={"group relative h-full shrink-0"}
       style={{
         height: `${size}px`,
         width: `${(size * dimensions[0]) / dimensions[1]}px`,
@@ -261,11 +279,15 @@ export const AudioPreview = memo(function AudioPreview({
         className="pointer-events-none absolute inset-0 h-full w-full focus:outline-none"
         onEnded={() => {
           setIsPlaying(false)
-          logger.debugSync("Воспроизведение аудио завершено", { fileName: file.name })
+          logger.debugSync("Воспроизведение аудио завершено", {
+            fileName: file.name,
+          })
         }}
         onLoadedMetadata={() => {
           setIsLoaded(true)
-          logger.infoSync("Метаданные аудио загружены", { fileName: file.name })
+          logger.infoSync("Метаданные аудио загружены", {
+            fileName: file.name,
+          })
         }}
         onError={(e) => {
           const audio = e.currentTarget as HTMLAudioElement
@@ -303,8 +325,8 @@ export const AudioPreview = memo(function AudioPreview({
       {showFileName && (
         <div
           className={`absolute font-medium ${size > 100 ? "top-1" : "top-0.5"} ${size > 100 ? "left-1" : "left-0.5"} ${
-            size > 100 ? "px-[4px] py-[2px]" : "px-[2px] py-0"
-          } line-clamp-1 max-w-[calc(60%)] rounded-xs bg-black/50 text-xs leading-[16px]`}
+            size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"
+          } line-clamp-1 max-w-[calc(60%)] rounded-xs bg-black/50 text-xs leading-4`}
           style={{
             fontSize: size > 100 ? "13px" : "11px",
             color: "#ffffff", // Явно задаем чисто белый цвет для Tauri

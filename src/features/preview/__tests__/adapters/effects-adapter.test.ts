@@ -29,7 +29,14 @@ describe("EffectsAdapter", () => {
         presets: [],
         processors: {},
         parameters: [
-          { id: "brightness", name: { en: "Brightness", ru: "Яркость" }, type: "number", defaultValue: 0, min: -1, max: 1 },
+          {
+            id: "brightness",
+            name: { en: "Brightness", ru: "Яркость" },
+            type: "number",
+            defaultValue: 0,
+            min: -1,
+            max: 1,
+          },
           { id: "contrast", name: { en: "Contrast", ru: "Контраст" }, type: "number", defaultValue: 1, min: 0, max: 2 },
         ],
         gpuAccelerated: true,
@@ -57,7 +64,9 @@ describe("EffectsAdapter", () => {
         tags: [],
         presets: [],
         processors: {},
-        parameters: [{ id: "radius", name: { en: "Radius", ru: "Радиус" }, type: "number", defaultValue: 5, min: 0, max: 50 }],
+        parameters: [
+          { id: "radius", name: { en: "Radius", ru: "Радиус" }, type: "number", defaultValue: 5, min: 0, max: 50 },
+        ],
         gpuAccelerated: true,
         version: "1.0.0",
       }
@@ -79,7 +88,16 @@ describe("EffectsAdapter", () => {
         tags: [],
         presets: [],
         processors: {},
-        parameters: [{ id: "brightness", name: { en: "Brightness", ru: "Яркость" }, type: "number", defaultValue: 0, min: -1, max: 1 }],
+        parameters: [
+          {
+            id: "brightness",
+            name: { en: "Brightness", ru: "Яркость" },
+            type: "number",
+            defaultValue: 0,
+            min: -1,
+            max: 1,
+          },
+        ],
         gpuAccelerated: true,
         version: "1.0.0",
       }
@@ -138,7 +156,14 @@ describe("EffectsAdapter", () => {
         processors: {},
         parameters: [
           { id: "scale", name: { en: "Scale", ru: "Масштаб" }, type: "number", defaultValue: 1, min: 0.1, max: 5 },
-          { id: "rotation", name: { en: "Rotation", ru: "Поворот" }, type: "number", defaultValue: 0, min: -360, max: 360 },
+          {
+            id: "rotation",
+            name: { en: "Rotation", ru: "Поворот" },
+            type: "number",
+            defaultValue: 0,
+            min: -360,
+            max: 360,
+          },
         ],
         gpuAccelerated: true,
         version: "1.0.0",

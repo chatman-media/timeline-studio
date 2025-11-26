@@ -144,7 +144,9 @@ export function AiChat() {
           selectAgent(modelToSelect.id)
         }
       } catch (error) {
-        logger.error("Failed to load available models:", { error: String(error) })
+        logger.error("Failed to load available models:", {
+          error: String(error),
+        })
         // При ошибке загрузки не устанавливаем модели автоматически
         // Пользователь должен настроить провайдеры вручную
         setAvailableModels([])
@@ -288,7 +290,10 @@ export function AiChat() {
               description: "",
               settings: {
                 ...timelineContext.project.settings,
-                resolution: timelineContext.project.settings?.resolution || { width: 1920, height: 1080 },
+                resolution: timelineContext.project.settings?.resolution || {
+                  width: 1920,
+                  height: 1080,
+                },
                 fps: timelineContext.project.settings?.fps || timelineContext.project.fps || 30,
                 aspectRatio: timelineContext.project.settings?.aspectRatio || "16:9",
               },
@@ -407,7 +412,9 @@ export function AiChat() {
 
         // Проверяем, вызвал ли AI инструменты
         if (response.toolCalls && response.toolCalls.length > 0) {
-          logger.info("AI requested tool calls", { count: response.toolCalls.length })
+          logger.info("AI requested tool calls", {
+            count: response.toolCalls.length,
+          })
 
           // Переходим к этапу использования инструментов
           const toolNames = response.toolCalls.map((tc: any) => tc.name)
@@ -419,11 +426,18 @@ export function AiChat() {
           receiveChatMessage(toolsUsageMessage)
 
           // Выполняем каждый инструмент
-          const toolResults: Array<{ id: string; name: string; result: any; error?: string }> = []
+          const toolResults: Array<{
+            id: string
+            name: string
+            result: any
+            error?: string
+          }> = []
 
           for (const toolCall of response.toolCalls) {
             try {
-              logger.info(`Executing tool: ${toolCall.name}`, { input: toolCall.input })
+              logger.info(`Executing tool: ${toolCall.name}`, {
+                input: toolCall.input,
+              })
 
               const result = await executeToolByName(allAITools, toolCall.name, toolCall.input)
 
@@ -435,7 +449,9 @@ export function AiChat() {
 
               logger.info(`Tool executed successfully: ${toolCall.name}`)
             } catch (error) {
-              logger.error(`Tool execution failed: ${toolCall.name}`, { error })
+              logger.error(`Tool execution failed: ${toolCall.name}`, {
+                error,
+              })
               toolResults.push({
                 id: toolCall.id,
                 name: toolCall.name,
@@ -522,7 +538,9 @@ export function AiChat() {
             try {
               await chatStorageService.addMessage(currentSessionId, finalAgentMessage)
             } catch (error) {
-              logger.error("Failed to save assistant message:", { error: String(error) })
+              logger.error("Failed to save assistant message:", {
+                error: String(error),
+              })
             }
           }
         } else {
@@ -542,7 +560,9 @@ export function AiChat() {
             try {
               await chatStorageService.addMessage(currentSessionId, agentMessage)
             } catch (error) {
-              logger.error("Failed to save assistant message:", { error: String(error) })
+              logger.error("Failed to save assistant message:", {
+                error: String(error),
+              })
             }
           }
         }
@@ -892,7 +912,7 @@ export function AiChat() {
                               ? availableModels[0].name
                               : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
-                      <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
@@ -956,7 +976,7 @@ export function AiChat() {
                       data-testid={`message-${msg.role}-${msg.id}`}
                     >
                       <div className="flex items-start gap-2">
-                        <div className="mt-0.5 flex-shrink-0">
+                        <div className="mt-0.5 shrink-0">
                           {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
                         </div>
                         <div className="text-sm leading-relaxed">{msg.content}</div>
@@ -970,7 +990,7 @@ export function AiChat() {
                   {isStreaming && streamingContent && (
                     <div className="flex max-w-[90%] flex-col rounded-lg bg-muted p-3" data-testid="streaming-message">
                       <div className="flex items-start gap-2">
-                        <div className="mt-0.5 flex-shrink-0">
+                        <div className="mt-0.5 shrink-0">
                           <Bot className="h-3.5 w-3.5 text-foreground" />
                         </div>
                         <div className="text-sm leading-relaxed text-foreground">
@@ -1091,7 +1111,7 @@ export function AiChat() {
                               ? availableModels[0].name
                               : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
-                      <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
@@ -1163,7 +1183,9 @@ export function AiChat() {
                       await switchSession(newSession.id)
                     }
                   } catch (error) {
-                    logger.error("Failed to copy session:", { error: String(error) })
+                    logger.error("Failed to copy session:", {
+                      error: String(error),
+                    })
                   }
                 }}
               />
