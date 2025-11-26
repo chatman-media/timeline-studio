@@ -8,20 +8,10 @@
 import {
   useModals,
   useNotifications,
-  useUpdates,
-  SystemIntegrationProvider
+  useUpdates
 } from "@/domains/system-integration"
 
-// Провайдер в корне приложения
-function App() {
-  return (
-    <SystemIntegrationProvider>
-      <YourApp />
-    </SystemIntegrationProvider>
-  )
-}
-
-// Использование в компоненте
+// Использование в компоненте (хуки получают orchestrator автоматически)
 function MyComponent() {
   const { openModal, closeModal, isModalOpen } = useModals()
   const { showSuccess, showError } = useNotifications()
@@ -48,12 +38,6 @@ function MyComponent() {
 | `useNotifications()` | Toast notifications |
 | `useUpdates()` | App update management |
 | `useFeatures()` | Feature flags |
-
-### Provider
-| Provider | Purpose |
-|----------|---------|
-| `SystemIntegrationProvider` | Main domain provider |
-| `useSystemIntegrationContext()` | Context hook |
 
 ### State Machines
 | Export | Purpose |

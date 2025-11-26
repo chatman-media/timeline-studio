@@ -4,20 +4,20 @@ import type { AppliedEffect, BaseEffect } from "../../types/unified-effects"
 
 // Mock WebGL2EffectProcessor
 vi.mock("../../services/webgl2-effect-processor", () => ({
-  WebGL2EffectProcessor: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(undefined),
-    compileEffect: vi.fn().mockResolvedValue(true),
-    processImage: vi.fn().mockResolvedValue({
+  WebGL2EffectProcessor: class MockWebGL2EffectProcessor {
+    initialize = vi.fn().mockResolvedValue(undefined)
+    compileEffect = vi.fn().mockResolvedValue(true)
+    processImage = vi.fn().mockResolvedValue({
       success: true,
       texture: {},
       width: 1920,
       height: 1080,
-    }),
-    exportAsImageData: vi.fn().mockImplementation((_, width, height) => {
+    })
+    exportAsImageData = vi.fn().mockImplementation((_, width, height) => {
       return Promise.resolve(new ImageData(width, height))
-    }),
-    dispose: vi.fn(),
-  })),
+    })
+    dispose = vi.fn()
+  },
 }))
 
 // Mock createLogger
@@ -35,6 +35,15 @@ describe("WebGL2UnifiedRenderer", () => {
   let mockContext: RenderContext
 
   beforeEach(() => {
+    // Mock createImageBitmap (browser API not available in tests)
+    global.createImageBitmap = vi.fn().mockImplementation((imageData: ImageData) => {
+      return Promise.resolve({
+        width: imageData.width,
+        height: imageData.height,
+        close: () => {},
+      } as ImageBitmap)
+    })
+
     renderer = new WebGL2UnifiedRenderer()
 
     // Create mock canvas

@@ -145,6 +145,8 @@ export const Split = createMockIcon("Split")
 export const Square = createMockIcon("Square")
 export const SquareMousePointer = createMockIcon("SquareMousePointer")
 export const Star = createMockIcon("Star")
+export const SkipBack = createMockIcon("SkipBack")
+export const SkipForward = createMockIcon("SkipForward")
 export const StepBack = createMockIcon("StepBack")
 export const StepForward = createMockIcon("StepForward")
 export const Sticker = createMockIcon("Sticker")
@@ -314,6 +316,8 @@ vi.mock("lucide-react", () => ({
   Square,
   SquareMousePointer,
   Star,
+  SkipBack,
+  SkipForward,
   StepBack,
   StepForward,
   Sticker,

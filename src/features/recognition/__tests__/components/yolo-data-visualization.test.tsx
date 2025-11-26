@@ -28,7 +28,10 @@ describe("YoloDataVisualization", () => {
     render(<YoloDataVisualization yoloData={mockYoloData} />)
 
     expect(screen.getByText(/Общее количество кадров/)).toBeInTheDocument()
-    expect(screen.getByText(mockYoloData.frames.length.toString())).toBeInTheDocument()
+    // Количество кадров будет отображено в статистике
+    const statsContainer = screen.getByText(/Всего кадров/).parentElement
+    const valueDiv = statsContainer?.querySelector(".text-xl.font-semibold")
+    expect(valueDiv).toHaveTextContent(mockYoloData.frames.length.toString())
   })
 
   it("должен отобразить легенду с классами", () => {
@@ -138,7 +141,9 @@ describe("YoloDataVisualization", () => {
     render(<YoloDataVisualization yoloData={emptyData} />)
 
     expect(screen.getByText(/Общее количество кадров/)).toBeInTheDocument()
-    expect(screen.getByText("0")).toBeInTheDocument()
+    const statsContainer = screen.getByText(/Всего кадров/).parentElement
+    const valueDiv = statsContainer?.querySelector(".text-xl.font-semibold")
+    expect(valueDiv).toHaveTextContent("0")
   })
 
   it("должен обработать данные с одним кадром", () => {
@@ -148,7 +153,9 @@ describe("YoloDataVisualization", () => {
     }
     render(<YoloDataVisualization yoloData={singleFrameData} />)
 
-    expect(screen.getByText("1")).toBeInTheDocument()
+    const statsContainer = screen.getByText(/Всего кадров/).parentElement
+    const valueDiv = statsContainer?.querySelector(".text-xl.font-semibold")
+    expect(valueDiv).toHaveTextContent("1")
   })
 
   it("должен использовать пользовательские размеры", () => {
@@ -176,6 +183,8 @@ describe("YoloDataVisualization", () => {
       mockYoloData.frames.flatMap((frame) => frame.detections.map((detection) => detection.class)),
     )
 
-    expect(screen.getByText(uniqueClasses.size.toString())).toBeInTheDocument()
+    const statsContainer = screen.getByText(/Уникальных классов/).parentElement
+    const valueDiv = statsContainer?.querySelector(".text-xl.font-semibold")
+    expect(valueDiv).toHaveTextContent(uniqueClasses.size.toString())
   })
 })

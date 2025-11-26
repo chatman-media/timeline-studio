@@ -6,7 +6,9 @@ import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedFaceDetectionService } from "@/domains/ai-services/services/person-identification"
 
-vi.mock("@tauri-apps/api/core")
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: vi.fn(),
+}))
 
 describe("AdvancedFaceDetectionService", () => {
   let service: AdvancedFaceDetectionService
@@ -51,6 +53,8 @@ describe("AdvancedFaceDetectionService", () => {
   }
 
   beforeEach(() => {
+    // Reset singleton instance before each test
+    ;(AdvancedFaceDetectionService as any).instance = undefined
     service = AdvancedFaceDetectionService.getInstance({ useGPU: false })
     vi.clearAllMocks()
   })
@@ -74,6 +78,8 @@ describe("AdvancedFaceDetectionService", () => {
     })
 
     it("should check GPU availability when useGPU is enabled", async () => {
+      // Reset singleton and create new instance with GPU enabled
+      ;(AdvancedFaceDetectionService as any).instance = undefined
       service = AdvancedFaceDetectionService.getInstance({ useGPU: true })
       vi.mocked(invoke)
         .mockResolvedValueOnce(undefined) // init_yolo_processor
@@ -86,6 +92,9 @@ describe("AdvancedFaceDetectionService", () => {
     })
 
     it("should handle initialization errors", async () => {
+      // Reset singleton to ensure clean state
+      ;(AdvancedFaceDetectionService as any).instance = undefined
+      service = AdvancedFaceDetectionService.getInstance()
       vi.mocked(invoke).mockRejectedValueOnce(new Error("Failed to load model"))
 
       await expect(service.initialize()).rejects.toThrow("Failed to load model")
@@ -135,7 +144,15 @@ describe("AdvancedFaceDetectionService", () => {
     })
 
     it("should return empty array on error", async () => {
-      vi.mocked(invoke).mockRejectedValueOnce(new Error("Detection failed"))
+      // Reset singleton and create fresh instance
+      ;(AdvancedFaceDetectionService as any).instance = undefined
+      service = AdvancedFaceDetectionService.getInstance()
+
+      // Service calls ensureInitialized first, which needs to succeed
+      vi.mocked(invoke)
+        .mockResolvedValueOnce(undefined) // init_yolo_processor
+        .mockResolvedValueOnce(undefined) // init_facenet_processor
+        .mockRejectedValueOnce(new Error("Detection failed")) // detect_faces_advanced
 
       const result = await service.detectFacesAdvanced("imagedata")
 
@@ -209,11 +226,19 @@ describe("AdvancedFaceDetectionService", () => {
 
       expect(result).toBeInstanceOf(Float32Array)
       expect(result).toHaveLength(5)
-      expect(result![0]).toBe(0.1)
+      expect(result![0]).toBeCloseTo(0.1, 5)
     })
 
     it("should return null on error", async () => {
-      vi.mocked(invoke).mockRejectedValueOnce(new Error("Embedding failed"))
+      // Reset singleton and create fresh instance
+      ;(AdvancedFaceDetectionService as any).instance = undefined
+      service = AdvancedFaceDetectionService.getInstance()
+
+      // Service calls ensureInitialized first, which needs to succeed
+      vi.mocked(invoke)
+        .mockResolvedValueOnce(undefined) // init_yolo_processor
+        .mockResolvedValueOnce(undefined) // init_facenet_processor
+        .mockRejectedValueOnce(new Error("Embedding failed")) // generate_face_embedding_from_base64
 
       const result = await service.generateFaceEmbedding("faceimagedata")
 
@@ -250,7 +275,15 @@ describe("AdvancedFaceDetectionService", () => {
     })
 
     it("should return default quality values on error", async () => {
-      vi.mocked(invoke).mockRejectedValueOnce(new Error("Analysis failed"))
+      // Reset singleton and create fresh instance
+      ;(AdvancedFaceDetectionService as any).instance = undefined
+      service = AdvancedFaceDetectionService.getInstance()
+
+      // Service calls ensureInitialized first, which needs to succeed
+      vi.mocked(invoke)
+        .mockResolvedValueOnce(undefined) // init_yolo_processor
+        .mockResolvedValueOnce(undefined) // init_facenet_processor
+        .mockRejectedValueOnce(new Error("Analysis failed")) // analyze_face_quality
 
       const result = await service.analyzeFaceQuality("faceimagedata")
 

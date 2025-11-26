@@ -268,20 +268,26 @@ export class ShaderCompiler {
       const varUsage = /\b([a-zA-Z_]\w*)\s*[=+\-*/([]/.exec(line)
       if (varUsage) {
         const varName = varUsage[1]
-        const isDeclared =
-          extracted.uniforms.some((u) => u.name === varName) ||
-          extracted.attributes.some((a) => a.name === varName) ||
-          extracted.varyings.some((v) => v.name === varName) ||
-          this.isBuiltInVariable(varName) ||
-          this.isBuiltInFunction(varName) ||
-          this.isDeclaredInSource(varName, source, index)
 
-        if (!isDeclared && !this.isGLSLKeyword(varName)) {
-          errors.push({
-            line: index + 1,
-            message: `Undefined variable: ${varName}`,
-            type: "semantic",
-          })
+        // Skip function declarations (e.g., "void main()" or "float foo()")
+        const isFunctionDeclaration = /\b(?:void|float|int|bool|vec[234]|mat[234]|sampler2D|samplerCube)\s+\w+\s*\(/.test(line) && line.includes(varName)
+
+        if (!isFunctionDeclaration) {
+          const isDeclared =
+            extracted.uniforms.some((u) => u.name === varName) ||
+            extracted.attributes.some((a) => a.name === varName) ||
+            extracted.varyings.some((v) => v.name === varName) ||
+            this.isBuiltInVariable(varName) ||
+            this.isBuiltInFunction(varName) ||
+            this.isDeclaredInSource(varName, source, index)
+
+          if (!isDeclared && !this.isGLSLKeyword(varName)) {
+            errors.push({
+              line: index + 1,
+              message: `Undefined variable: ${varName}`,
+              type: "semantic",
+            })
+          }
         }
       }
     })

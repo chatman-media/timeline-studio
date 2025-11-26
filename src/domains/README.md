@@ -10,8 +10,8 @@ Timeline Studio использует доменно-ориентированну
 
 ```
 src/domains/
-├── ai-core/              # Базовая AI инфраструктура
-├── ai-services/          # Специализированные AI сервисы
+├── ai-services/          # AI сервисы и анализ
+├── ai-tools/             # AI инструменты
 ├── browser/              # Файловый браузер и навигация
 ├── media-management/     # Управление медиафайлами
 ├── project-management/   # Управление проектами и настройками
@@ -22,23 +22,23 @@ src/domains/
 
 ## Описание доменов
 
-### 🤖 AI Core
-Централизованная инфраструктура для работы с AI провайдерами (Claude, OpenAI, Grok, DeepSeek, Ollama). Включает DI контейнер, управление моделями и унифицированный API.
-
-**Ключевые компоненты:**
-- DI Container для управления зависимостями
-- Provider Factory для создания AI провайдеров
-- Unified AI Service для единообразной работы с разными моделями
-- Model Manager для выбора оптимальных моделей
-
 ### 🧠 AI Services
 Специализированные AI сервисы для анализа медиа контента. Включает анализ видео/аудио, распознавание объектов, классификацию контента.
 
 **Ключевые сервисы:**
-- FFmpeg Analysis Service
-- Vision Service (YOLO, ONNX)
-- Content Classifier
-- Media Analysis Factory
+- AI Director Service (comprehensive analysis)
+- Unified Orchestrator (coordination)
+- Analysis Storage Service
+- AI Intelligence Machine
+
+### 🛠️ AI Tools
+Набор AI инструментов для автоматизации монтажа, субтитров и анализа контента.
+
+**Ключевые инструменты:**
+- Montage Planning (автоматическая нарезка)
+- Enhanced Subtitle Automation
+- Browser Tools (поиск файлов)
+- MCP Integration (Model Context Protocol)
 
 ### 📁 Browser
 Управление файловой системой и медиа браузером. Поддержка вкладок, фильтрации, поиска и предпросмотра файлов.

@@ -126,8 +126,8 @@ export class ExpressionEvaluator {
       // Create safe context
       const safeContext = this.createSafeContext(context)
 
-      // Evaluate
-      return compiledFn.call(safeContext)
+      // Evaluate with context
+      return compiledFn(safeContext)
     } catch (error) {
       logger.error("Expression evaluation error:", error instanceof Error ? { message: error.message } : { error })
       return context.value // Return current value on error
@@ -137,23 +137,35 @@ export class ExpressionEvaluator {
   /**
    * Compile expression to function
    */
-  private compileExpression(expression: string): (...args: any[]) => KeyframeValue {
-    // Wrap expression in function
-    const functionBody = `
-      with (this) {
-        return (${expression});
-      }
-    `
+  private compileExpression(expression: string): (context: any) => KeyframeValue {
+    // First, validate that the expression can be compiled
+    // Get all context keys for function parameters
+    const testContext = {
+      time: 0,
+      frame: 0,
+      fps: 30,
+      value: 0,
+      velocity: 0,
+      index: 0,
+      comp: { width: 1920, height: 1080, duration: 10, frameDuration: 1 / 30 },
+      ...expressionFunctions,
+    }
+    const contextKeys = Object.keys(testContext)
+
+    // Try to compile the function to catch syntax errors early
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    const fn = new Function(...contextKeys, `return (${expression})`)
 
     // Create safe function with controlled evaluation
-    const compiledFunction = (..._args: any[]): KeyframeValue => {
+    const compiledFunction = (context: any): KeyframeValue => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval
-        const fn = new Function(functionBody)
-        return fn.call(this)
+        const contextKeys = Object.keys(context)
+        const contextValues = contextKeys.map((key) => context[key])
+        return fn(...contextValues)
       } catch (error) {
         logger.error("Expression compilation error:", error instanceof Error ? { message: error.message } : { error })
-        return 0 // Return default value on error
+        // Return the current value from context, or 0 if not available
+        return context.value ?? 0
       }
     }
 
@@ -262,7 +274,20 @@ export class ExpressionEvaluator {
    */
   validateExpression(expression: string): { valid: boolean; error?: string } {
     try {
-      this.compileExpression(expression)
+      // Try to compile with a mock context to validate syntax
+      const mockContext = {
+        time: 0,
+        frame: 0,
+        fps: 30,
+        value: 0,
+        velocity: 0,
+        index: 0,
+        comp: { width: 1920, height: 1080, duration: 10, frameDuration: 1 / 30 },
+        ...expressionFunctions,
+      }
+      const compiledFn = this.compileExpression(expression)
+      // Try to evaluate to check for runtime errors
+      compiledFn(mockContext)
       return { valid: true }
     } catch (error) {
       return {

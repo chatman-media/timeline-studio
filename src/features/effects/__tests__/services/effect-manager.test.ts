@@ -281,6 +281,7 @@ describe("EffectManager", () => {
 
   describe("removing effects", () => {
     it("should remove applied effect", () => {
+      manager.registerEffect(createMockEffect("test_effect"))
       const applied = manager.applyEffect("test_effect", "clip1", "clip")
       manager.removeAppliedEffect(applied.id)
 

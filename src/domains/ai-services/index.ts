@@ -40,8 +40,6 @@ export {
   mapMontageAnalysisToUnified,
 } from "./mappers/ai-director-mapper"
 
-// Providers
-export * from "./providers"
 export type {
   AIDirectorConfig,
   AIDirectorHealthCheckResult,

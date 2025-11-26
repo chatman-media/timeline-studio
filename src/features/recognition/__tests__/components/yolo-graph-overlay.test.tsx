@@ -33,16 +33,18 @@ describe("YoloGraphOverlay", () => {
     const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={150} />)
 
     const canvas = container.querySelector("canvas")
-    expect(canvas?.getAttribute("width")).toBe("800")
-    expect(canvas?.getAttribute("height")).toBe("150")
+    // Canvas width/height are scaled by devicePixelRatio (2x)
+    expect(canvas?.getAttribute("width")).toBe("1600")
+    expect(canvas?.getAttribute("height")).toBe("300")
   })
 
   it("должен использовать размеры по умолчанию", () => {
     const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
 
     const canvas = container.querySelector("canvas")
-    expect(canvas?.getAttribute("width")).toBe("600")
-    expect(canvas?.getAttribute("height")).toBe("100")
+    // Canvas width/height are scaled by devicePixelRatio (2x)
+    expect(canvas?.getAttribute("width")).toBe("1200")
+    expect(canvas?.getAttribute("height")).toBe("200")
   })
 
   it("должен отрисовать график на canvas", () => {

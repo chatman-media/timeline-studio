@@ -33,11 +33,6 @@ function MyComponent() {
 | `useAIDirectorEvents()` | Подписка на события AI Director |
 | `useAIDirectorAnalysisProgress()` | Отслеживание прогресса анализа |
 
-### Providers
-| Provider | Purpose |
-|----------|---------|
-| `AIServicesDomainProvider` | Главный провайдер (все контексты) |
-
 ### Services
 | Service | Purpose |
 |---------|---------|

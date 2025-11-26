@@ -420,36 +420,40 @@ describe("EffectPipelineManager", () => {
 
   describe("performance statistics", () => {
     it("should calculate total chains", () => {
-      manager.createChainFromPreset("cinematic")
-      manager.createChainFromPreset("vintage")
+      // createChainFromPreset automatically adds the chain
+      manager.createChainFromPreset("cinematic", "chain1")
+      manager.createChainFromPreset("vintage", "chain2")
 
       const stats = manager.getPerformanceStats()
       expect(stats.totalChains).toBe(2)
     })
 
     it("should calculate enabled chains", () => {
-      const chain1 = manager.createChainFromPreset("cinematic")!
-      const chain2 = manager.createChainFromPreset("vintage")!
+      // createChainFromPreset automatically adds the chain
+      manager.createChainFromPreset("cinematic", "chain1")
+      const chain2 = manager.createChainFromPreset("vintage", "chain2")!
 
+      // Disable the second chain
       chain2.enabled = false
-
-      manager.addChain(chain1)
-      manager.addChain(chain2)
 
       const stats = manager.getPerformanceStats()
       expect(stats.enabledChains).toBe(1)
     })
 
     it("should calculate total effects", () => {
-      manager.createChainFromPreset("cinematic")
-      manager.createChainFromPreset("vintage")
+      const chain1 = manager.createChainFromPreset("cinematic")!
+      const chain2 = manager.createChainFromPreset("vintage")!
+
+      manager.addChain(chain1)
+      manager.addChain(chain2)
 
       const stats = manager.getPerformanceStats()
       expect(stats.totalEffects).toBeGreaterThan(0)
     })
 
     it("should calculate unique effect types", () => {
-      manager.createChainFromPreset("cinematic")
+      const chain = manager.createChainFromPreset("cinematic")!
+      manager.addChain(chain)
 
       const stats = manager.getPerformanceStats()
       expect(stats.uniqueEffectTypes).toBeGreaterThan(0)
@@ -536,8 +540,11 @@ describe("EffectPipelineManager", () => {
 
   describe("dispose", () => {
     it("should clear all chains and presets", () => {
-      manager.createChainFromPreset("cinematic")
-      manager.createChainFromPreset("vintage")
+      const chain1 = manager.createChainFromPreset("cinematic")!
+      const chain2 = manager.createChainFromPreset("vintage")!
+
+      manager.addChain(chain1)
+      manager.addChain(chain2)
 
       manager.dispose()
 

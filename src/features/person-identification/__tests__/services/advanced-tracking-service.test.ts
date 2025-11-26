@@ -7,7 +7,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedTrackingService } from "@/domains/ai-services/services/person-identification"
 import type { DetectedFace } from "@/features/person-identification/types/person"
 
-vi.mock("@tauri-apps/api/core")
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: vi.fn(),
+}))
 
 describe("AdvancedTrackingService", () => {
   let service: AdvancedTrackingService
@@ -49,6 +51,8 @@ describe("AdvancedTrackingService", () => {
   }
 
   beforeEach(() => {
+    // Reset singleton instance before each test
+    ;(AdvancedTrackingService as any).instance = undefined
     service = AdvancedTrackingService.getInstance({ algorithm: "deepsort" })
     vi.clearAllMocks()
   })
@@ -75,6 +79,9 @@ describe("AdvancedTrackingService", () => {
     })
 
     it("should handle initialization errors", async () => {
+      // Reset singleton to ensure clean state
+      ;(AdvancedTrackingService as any).instance = undefined
+      service = AdvancedTrackingService.getInstance()
       vi.mocked(invoke).mockRejectedValueOnce(new Error("Initialization failed"))
 
       await expect(service.initialize()).rejects.toThrow("Initialization failed")
@@ -142,6 +149,16 @@ describe("AdvancedTrackingService", () => {
     it("should handle new tracks", async () => {
       vi.mocked(invoke).mockResolvedValueOnce({
         ...mockTrackingResult,
+        tracks: [
+          ...mockTrackingResult.tracks,
+          {
+            id: "track-2",
+            box: { x: 200, y: 200, width: 100, height: 100 },
+            state: "tentative",
+            confidence: 0.7,
+            features: [0.2, 0.3, 0.4],
+          },
+        ],
         newTracks: ["track-2"],
       })
 

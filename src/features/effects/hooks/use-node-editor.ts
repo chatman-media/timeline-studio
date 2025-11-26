@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 import type { CompositeNode, NodeGraph } from "../types/node-compositing"
@@ -202,54 +202,71 @@ export function useNodeSelection() {
 
 // Hook for node graph operations
 export function useNodeGraphOperations() {
-  const [graph, setGraph] = useState<NodeGraph>({
+  const initialGraph: NodeGraph = {
     id: "new_graph",
     name: "New Graph",
     nodes: {},
     connections: [],
     selectedNodeIds: [],
     viewport: { x: 0, y: 0, zoom: 1 },
-  })
+  }
 
-  const [history, setHistory] = useState<NodeGraph[]>([])
-  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [graph, setGraph] = useState<NodeGraph>(initialGraph)
+  const [history, setHistory] = useState<NodeGraph[]>([initialGraph])
+  const [historyIndex, setHistoryIndex] = useState(0)
+
+  // Use ref to track current history for callbacks
+  const historyRef = useRef(history)
+
+  useEffect(() => {
+    historyRef.current = history
+  }, [history])
 
   // Add to history
-  const addToHistory = useCallback(
-    (newGraph: NodeGraph) => {
-      void logger.info(`Adding to history at index ${historyIndex + 1}`)
-      setHistory((prev) => [...prev.slice(0, historyIndex + 1), newGraph])
-      setHistoryIndex((prev) => prev + 1)
-    },
-    [historyIndex],
-  )
+  const addToHistory = useCallback((newGraph: NodeGraph) => {
+    setHistoryIndex((currentIndex) => {
+      void logger.info(`Adding to history at index ${currentIndex + 1}`)
+      setHistory((prev) => [...prev.slice(0, currentIndex + 1), newGraph])
+      return currentIndex + 1
+    })
+  }, [])
 
   // Undo
   const undo = useCallback(() => {
-    if (historyIndex > 0) {
-      void logger.info(`Undoing - moving to history index ${historyIndex - 1}`)
-      setHistoryIndex((prev) => prev - 1)
-      setGraph(history[historyIndex - 1])
-    }
-  }, [history, historyIndex])
+    setHistoryIndex((currentIndex) => {
+      const currentHistory = historyRef.current
+      if (currentIndex > 0) {
+        void logger.info(`Undoing - moving to history index ${currentIndex - 1}`)
+        setGraph(currentHistory[currentIndex - 1])
+        return currentIndex - 1
+      }
+      return currentIndex
+    })
+  }, [])
 
   // Redo
   const redo = useCallback(() => {
-    if (historyIndex < history.length - 1) {
-      void logger.info(`Redoing - moving to history index ${historyIndex + 1}`)
-      setHistoryIndex((prev) => prev + 1)
-      setGraph(history[historyIndex + 1])
-    }
-  }, [history, historyIndex])
+    setHistoryIndex((currentIndex) => {
+      const currentHistory = historyRef.current
+      if (currentIndex < currentHistory.length - 1) {
+        void logger.info(`Redoing - moving to history index ${currentIndex + 1}`)
+        setGraph(currentHistory[currentIndex + 1])
+        return currentIndex + 1
+      }
+      return currentIndex
+    })
+  }, [])
 
   // Update graph with history
   const updateGraph = useCallback(
     (updater: (graph: NodeGraph) => NodeGraph) => {
-      const newGraph = updater(graph)
-      setGraph(newGraph)
-      addToHistory(newGraph)
+      setGraph((currentGraph) => {
+        const newGraph = updater(currentGraph)
+        addToHistory(newGraph)
+        return newGraph
+      })
     },
-    [graph, addToHistory],
+    [addToHistory],
   )
 
   // Add node

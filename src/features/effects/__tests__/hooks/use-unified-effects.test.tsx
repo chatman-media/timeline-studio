@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useUnifiedEffects } from "../../hooks/use-unified-effects"
 import type { BaseEffect } from "../../types/unified-effects"
@@ -26,32 +26,40 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 vi.mock("../../services/effect-manager", () => {
-  const EffectManager = vi.fn().mockImplementation(() => {
-    const effects = new Map<string, BaseEffect>()
-    const stacks = new Map()
+  class EffectManager {
+    private effects = new Map<string, BaseEffect>()
+    private stacks = new Map()
 
-    return {
-      registerEffect: vi.fn((effect: BaseEffect) => {
-        effects.set(effect.id, effect)
-      }),
-      registerEffects: vi.fn((effectsArray: BaseEffect[]) => {
-        effectsArray.forEach((e) => effects.set(e.id, e))
-      }),
-      getAllEffects: vi.fn(() => Array.from(effects.values())),
-      getEffectsByCategory: vi.fn((category: string) =>
-        Array.from(effects.values()).filter((e) => e.category === category),
-      ),
-      getEffectsByScope: vi.fn((scope: "clip" | "track" | "sequence" | "global") =>
-        Array.from(effects.values()).filter((e) => e.scope.includes(scope)),
-      ),
-      searchEffects: vi.fn(() => Array.from(effects.values())),
-      createEffectStack: vi.fn((id: string) => {
-        const stack = { id, effects: [], groups: [], enabled: true }
-        stacks.set(id, stack)
-        return stack
-      }),
-      getEffectStack: vi.fn((id: string) => stacks.get(id)),
-      applyEffect: vi.fn((effectId, _targetId, _targetType, options) => ({
+    registerEffect = vi.fn((effect: BaseEffect) => {
+      this.effects.set(effect.id, effect)
+    })
+
+    registerEffects = vi.fn((effectsArray: BaseEffect[]) => {
+      effectsArray.forEach((e) => this.effects.set(e.id, e))
+    })
+
+    getAllEffects = vi.fn(() => Array.from(this.effects.values()))
+
+    getEffectsByCategory = vi.fn((category: string) =>
+      Array.from(this.effects.values()).filter((e) => e.category === category),
+    )
+
+    getEffectsByScope = vi.fn((scope: "clip" | "track" | "sequence" | "global") =>
+      Array.from(this.effects.values()).filter((e) => e.scope.includes(scope)),
+    )
+
+    searchEffects = vi.fn(() => Array.from(this.effects.values()))
+
+    createEffectStack = vi.fn((id: string) => {
+      const stack = { id, effects: [], groups: [], enabled: true }
+      this.stacks.set(id, stack)
+      return stack
+    })
+
+    getEffectStack = vi.fn((id: string) => this.stacks.get(id))
+
+    applyEffect = vi.fn((effectId, targetId, _targetType, options) => {
+      const appliedEffect = {
         id: `applied_${Date.now()}`,
         effectId,
         startTime: options?.startTime || 0,
@@ -66,40 +74,57 @@ vi.mock("../../services/effect-manager", () => {
         effectVersion: "1.0.0",
         createdAt: new Date(),
         modifiedAt: new Date(),
-      })),
-      removeAppliedEffect: vi.fn(),
-      setEffectParameter: vi.fn(),
-      reorderEffects: vi.fn(),
-      applyPreset: vi.fn(),
-      createPreset: vi.fn((_, name) => ({
-        id: `preset_${Date.now()}`,
-        name,
-        parameters: {},
-        tags: [],
-      })),
-      exportEffectStack: vi.fn((id: string) => stacks.get(id) || null),
-      importEffectStack: vi.fn((id, stack) => {
-        stacks.set(id, stack)
-      }),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }
-  })
+      }
+
+      // Add to stack
+      let stack = this.stacks.get(targetId)
+      if (!stack) {
+        stack = { id: targetId, effects: [], groups: [], enabled: true }
+        this.stacks.set(targetId, stack)
+      }
+      stack.effects.push(appliedEffect)
+
+      return appliedEffect
+    })
+
+    removeAppliedEffect = vi.fn()
+    setEffectParameter = vi.fn()
+    reorderEffects = vi.fn()
+    applyPreset = vi.fn()
+
+    createPreset = vi.fn((_, name) => ({
+      id: `preset_${Date.now()}`,
+      name,
+      parameters: {},
+      tags: [],
+    }))
+
+    exportEffectStack = vi.fn((id: string) => this.stacks.get(id) || null)
+
+    importEffectStack = vi.fn((id, stack) => {
+      this.stacks.set(id, stack)
+    })
+
+    addEventListener = vi.fn()
+    removeEventListener = vi.fn()
+  }
 
   return { EffectManager }
 })
 
-vi.mock("../../services/webgl2-unified-renderer", () => ({
-  WebGL2UnifiedRenderer: vi.fn().mockImplementation(() => ({
-    initialize: vi.fn().mockResolvedValue(undefined),
-    renderEffectStack: vi.fn().mockResolvedValue({
+vi.mock("../../services/webgl2-unified-renderer", () => {
+  class WebGL2UnifiedRenderer {
+    initialize = vi.fn().mockResolvedValue(undefined)
+    renderEffectStack = vi.fn().mockResolvedValue({
       success: true,
       output: null,
       processingTime: 10,
-    }),
-    dispose: vi.fn(),
-  })),
-}))
+    })
+    dispose = vi.fn()
+  }
+
+  return { WebGL2UnifiedRenderer }
+})
 
 describe("useUnifiedEffects", () => {
   beforeEach(() => {
@@ -368,6 +393,16 @@ describe("useUnifiedEffects", () => {
     it("should handle rendering errors", async () => {
       const { result } = renderHook(() => useUnifiedEffects("clip1", "clip"))
 
+      // Apply an effect first so rendering actually happens
+      await act(async () => {
+        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+      })
+
+      // Wait for the effect to be applied
+      await waitFor(() => {
+        expect(result.current.appliedEffects.length).toBeGreaterThan(0)
+      })
+
       // Mock renderer to fail
       vi.mocked(result.current.renderer.renderEffectStack).mockResolvedValueOnce({
         success: false,
@@ -391,6 +426,16 @@ describe("useUnifiedEffects", () => {
 
     it("should render with custom time", async () => {
       const { result } = renderHook(() => useUnifiedEffects("clip1", "clip"))
+
+      // Apply an effect first so rendering actually happens
+      await act(async () => {
+        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+      })
+
+      // Wait for the effect to be applied
+      await waitFor(() => {
+        expect(result.current.appliedEffects.length).toBeGreaterThan(0)
+      })
 
       const renderResult = await result.current.renderEffects(undefined, 5000)
 
@@ -465,6 +510,16 @@ describe("useUnifiedEffects", () => {
     it("should use preview quality by default", async () => {
       const { result } = renderHook(() => useUnifiedEffects("clip1", "clip"))
 
+      // Apply an effect first so rendering actually happens
+      await act(async () => {
+        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+      })
+
+      // Wait for the effect to be applied
+      await waitFor(() => {
+        expect(result.current.appliedEffects.length).toBeGreaterThan(0)
+      })
+
       await result.current.renderEffects()
 
       const call = vi.mocked(result.current.renderer.renderEffectStack).mock.calls[0]
@@ -473,6 +528,16 @@ describe("useUnifiedEffects", () => {
 
     it("should use custom quality", async () => {
       const { result } = renderHook(() => useUnifiedEffects("clip1", "clip", { quality: "full" }))
+
+      // Apply an effect first so rendering actually happens
+      await act(async () => {
+        await result.current.applyEffect("color_correct_basic", "clip1", "clip")
+      })
+
+      // Wait for the effect to be applied
+      await waitFor(() => {
+        expect(result.current.appliedEffects.length).toBeGreaterThan(0)
+      })
 
       await result.current.renderEffects()
 

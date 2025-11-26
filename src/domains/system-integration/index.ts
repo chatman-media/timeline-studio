@@ -15,8 +15,6 @@ export type { ModalActor, ModalMachine } from "./machines/modal-machine"
 export { modalMachine } from "./machines/modal-machine"
 export type { UpdateMachine, UpdateMachineActor, UpdateMachineInput } from "./machines/update-machine"
 export { createUpdateMachine, updateMachine } from "./machines/update-machine"
-// Экспорт провайдера
-export { SystemIntegrationProvider, useSystemIntegrationContext } from "./providers/system-integration-provider"
 // Экспорт оркестратора
 export {
   getSystemIntegrationOrchestrator,

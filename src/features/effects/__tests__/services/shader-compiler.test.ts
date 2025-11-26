@@ -1,10 +1,68 @@
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { ShaderCompiler } from "../../services/shader-compiler"
+
+// Mock WebGL2
+const createMockWebGL2Context = () => {
+  const VERTEX_SHADER = 0x8b31
+  const FRAGMENT_SHADER = 0x8b30
+  const COMPILE_STATUS = 0x8b81
+
+  let lastShaderSource = ""
+  let lastShaderType: number | null = null
+  let compileSuccess = true
+  let compileLog = ""
+
+  return {
+    VERTEX_SHADER,
+    FRAGMENT_SHADER,
+    COMPILE_STATUS,
+    createShader: vi.fn((type) => {
+      lastShaderType = type
+      return {}
+    }),
+    shaderSource: vi.fn((shader, source) => {
+      lastShaderSource = source
+      // Reset compilation state for new shader
+      compileSuccess = true
+      compileLog = ""
+    }),
+    compileShader: vi.fn(() => {
+      // Validate shader source for realistic behavior
+      if (!lastShaderSource.includes("void main()")) {
+        compileSuccess = false
+        compileLog = "ERROR: 0:1: missing main function"
+        return
+      }
+
+      // More realistic WebGL shader compilation
+      // WebGL compilers are permissive - they succeed unless there's syntax error
+      // Semantic validation (like missing gl_Position) happens at link time or is just a warning
+      compileSuccess = true
+      compileLog = ""
+    }),
+    getShaderParameter: vi.fn((shader, pname) => {
+      if (pname === COMPILE_STATUS) {
+        return compileSuccess
+      }
+      return null
+    }),
+    getShaderInfoLog: vi.fn(() => compileLog),
+    deleteShader: vi.fn(),
+  }
+}
 
 describe("ShaderCompiler", () => {
   let compiler: ShaderCompiler
 
   beforeEach(() => {
+    // Mock canvas.getContext to return a new mock WebGL2 context for each test
+    HTMLCanvasElement.prototype.getContext = vi.fn((contextType) => {
+      if (contextType === "webgl2") {
+        return createMockWebGL2Context() as any
+      }
+      return null
+    })
+
     compiler = new ShaderCompiler()
   })
 
