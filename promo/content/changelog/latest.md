@@ -1,3 +1,11 @@
+## [3.21.4](https://github.com/chatman-media/timeline-studio/compare/v3.21.3...v3.21.4) (2025-11-26)
+
+
+### Bug Fixes
+
+* **lint:** resolve linter errors and apply code formatting ([d32b079](https://github.com/chatman-media/timeline-studio/commit/d32b0798ffdf2a95dd6509f1204a9502255d818e))
+* **tests:** implement mock extractVideoFrames and fix race conditions ([9144fd8](https://github.com/chatman-media/timeline-studio/commit/9144fd8dfd6fbe5d9bf611c08205a023f0e2d278))
+
 ## [3.21.3](https://github.com/chatman-media/timeline-studio/compare/v3.21.2...v3.21.3) (2025-11-26)
 
 
