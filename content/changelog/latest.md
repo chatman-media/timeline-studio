@@ -1,3 +1,18 @@
+# [3.19.0](https://github.com/chatman-media/timeline-studio/compare/v3.18.0...v3.19.0) (2025-11-26)
+
+
+### Bug Fixes
+
+* **browser:** update imports to use media-management domain ([0f2018e](https://github.com/chatman-media/timeline-studio/commit/0f2018e219d8555802002e472a15e44ed34f7f26))
+
+
+### Features
+
+* **promo:** add investors page and fundraising CTAs ([5a1f22c](https://github.com/chatman-media/timeline-studio/commit/5a1f22cd93b65d27b702ca08ae0957673249c8ee))
+* **promo:** add personal telegram contact for investors ([961edd4](https://github.com/chatman-media/timeline-studio/commit/961edd4ace2164964f0776ffe896c365f580b237))
+* **promo:** update project page and investment docs ([b6ef0b5](https://github.com/chatman-media/timeline-studio/commit/b6ef0b5d8d5f0d0dad386a9c1bba2b5d5c80640b))
+* **promo:** Добавить посты в блог для основных релизов на 3 языках ([1a0118b](https://github.com/chatman-media/timeline-studio/commit/1a0118b4ba637cfbe0ea72cf57ffb4226945e33d))
+
 # [3.18.0](https://github.com/chatman-media/timeline-studio/compare/v3.17.0...v3.18.0) (2025-11-26)
 
 
