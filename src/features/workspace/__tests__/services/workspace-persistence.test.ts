@@ -7,10 +7,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { WorkspaceState } from "../../services/workspace-persistence"
 import {
   clearWorkspaceStateLocal,
+  debouncedSave,
   isValidWorkspaceState,
+  loadWorkspaceState,
+  loadWorkspaceStateBackend,
   loadWorkspaceStateLocal,
+  saveWorkspaceStateBackend,
   saveWorkspaceStateLocal,
 } from "../../services/workspace-persistence"
+
+// Mock Tauri invoke
+vi.mock("@tauri-apps/api/core", () => ({
+  invoke: vi.fn(),
+}))
 
 describe("WorkspacePersistence", () => {
   beforeEach(() => {
@@ -202,6 +211,316 @@ describe("WorkspacePersistence", () => {
       expect(loadedState).toEqual(originalState)
       expect(loadedState?.activeWidgets).toHaveLength(2)
       expect(loadedState?.customLayouts).toHaveLength(1)
+    })
+  })
+
+  describe("saveWorkspaceStateBackend", () => {
+    it("должен вызвать invoke с правильными аргументами", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockResolvedValueOnce(undefined)
+
+      const state: WorkspaceState = {
+        currentPresetId: "default",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      await saveWorkspaceStateBackend(state)
+
+      expect(mockedInvoke).toHaveBeenCalledWith("save_workspace_state", {
+        state: JSON.stringify(state),
+      })
+    })
+
+    it("не должен выбрасывать ошибку при неудаче", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockRejectedValueOnce(new Error("Backend error"))
+
+      const state: WorkspaceState = {
+        currentPresetId: "default",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      // Не должно выбрасывать ошибку
+      await expect(saveWorkspaceStateBackend(state)).resolves.toBeUndefined()
+    })
+  })
+
+  describe("loadWorkspaceStateBackend", () => {
+    it("должен вернуть состояние из backend", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+
+      const state: WorkspaceState = {
+        currentPresetId: "vertical",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      mockedInvoke.mockResolvedValueOnce(JSON.stringify(state))
+
+      const loadedState = await loadWorkspaceStateBackend()
+
+      expect(loadedState).toEqual(state)
+      expect(mockedInvoke).toHaveBeenCalledWith("load_workspace_state")
+    })
+
+    it("должен вернуть null если backend не возвращает данные", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockResolvedValueOnce(null)
+
+      const loadedState = await loadWorkspaceStateBackend()
+
+      expect(loadedState).toBeNull()
+    })
+
+    it("должен вернуть null если backend возвращает пустую строку", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockResolvedValueOnce("")
+
+      const loadedState = await loadWorkspaceStateBackend()
+
+      expect(loadedState).toBeNull()
+    })
+
+    it("должен вернуть null при ошибке backend", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockRejectedValueOnce(new Error("Backend unavailable"))
+
+      const loadedState = await loadWorkspaceStateBackend()
+
+      expect(loadedState).toBeNull()
+    })
+  })
+
+  describe("loadWorkspaceState", () => {
+    it("должен вернуть состояние из localStorage если оно есть", async () => {
+      const state: WorkspaceState = {
+        currentPresetId: "default",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      localStorage.setItem("timeline-studio-workspace-state", JSON.stringify(state))
+
+      const loadedState = await loadWorkspaceState()
+
+      expect(loadedState).toEqual(state)
+    })
+
+    it("должен использовать fallback на backend если localStorage пуст", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+
+      const backendState: WorkspaceState = {
+        currentPresetId: "backend-preset",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      mockedInvoke.mockResolvedValueOnce(JSON.stringify(backendState))
+
+      const loadedState = await loadWorkspaceState()
+
+      expect(loadedState).toEqual(backendState)
+    })
+
+    it("должен синхронизировать backend состояние в localStorage", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+
+      const backendState: WorkspaceState = {
+        currentPresetId: "synced-preset",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      mockedInvoke.mockResolvedValueOnce(JSON.stringify(backendState))
+
+      await loadWorkspaceState()
+
+      // После загрузки из backend, состояние должно быть синхронизировано в localStorage
+      const localState = loadWorkspaceStateLocal()
+      expect(localState).toEqual(backendState)
+    })
+
+    it("должен вернуть null если оба источника пусты", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockResolvedValueOnce(null)
+
+      const loadedState = await loadWorkspaceState()
+
+      expect(loadedState).toBeNull()
+    })
+  })
+
+  describe("debouncedSave", () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it("должен сохранить состояние после debounce задержки", async () => {
+      const state: WorkspaceState = {
+        currentPresetId: "debounced",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      debouncedSave(state)
+
+      // До истечения задержки состояние не должно быть сохранено
+      expect(loadWorkspaceStateLocal()).toBeNull()
+
+      // Пропускаем 1000ms (DEBOUNCE_MS)
+      vi.advanceTimersByTime(1000)
+
+      // Теперь состояние должно быть сохранено
+      expect(loadWorkspaceStateLocal()).toEqual(state)
+    })
+
+    it("должен отменять предыдущий сохранение при повторном вызове", async () => {
+      const state1: WorkspaceState = {
+        currentPresetId: "first",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      const state2: WorkspaceState = {
+        currentPresetId: "second",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      debouncedSave(state1)
+      vi.advanceTimersByTime(500) // Половина задержки
+
+      debouncedSave(state2) // Должно отменить первый вызов
+      vi.advanceTimersByTime(500) // Еще половина - первый бы уже сохранился
+
+      // Состояние не должно быть сохранено (второй вызов сбросил таймер)
+      expect(loadWorkspaceStateLocal()).toBeNull()
+
+      vi.advanceTimersByTime(500) // Теперь должно сохраниться state2
+
+      expect(loadWorkspaceStateLocal()).toEqual(state2)
+    })
+
+    it("должен вызывать saveWorkspaceStateBackend после debounce", async () => {
+      const { invoke } = await import("@tauri-apps/api/core")
+      const mockedInvoke = vi.mocked(invoke)
+      mockedInvoke.mockResolvedValue(undefined)
+
+      const state: WorkspaceState = {
+        currentPresetId: "backend-save",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+
+      debouncedSave(state)
+      vi.advanceTimersByTime(1000)
+
+      // Даем Promise резолвиться
+      await vi.runAllTimersAsync()
+
+      expect(mockedInvoke).toHaveBeenCalledWith("save_workspace_state", {
+        state: JSON.stringify(state),
+      })
+    })
+  })
+
+  describe("Error Handling", () => {
+    it("saveWorkspaceStateLocal должен выбрасывать ошибку при сбое JSON.stringify", async () => {
+      const circularState: any = {
+        currentPresetId: "circular",
+        activeWidgets: [],
+        customLayouts: [],
+        version: "1.0.0",
+      }
+      // Создаём циклическую ссылку
+      circularState.self = circularState
+
+      await expect(saveWorkspaceStateLocal(circularState)).rejects.toThrow()
+    })
+
+    it("clearWorkspaceStateLocal не должен выбрасывать ошибку", () => {
+      // Очистка пустого storage не должна вызывать ошибку
+      expect(() => clearWorkspaceStateLocal()).not.toThrow()
+
+      // Очистка после установки значения тоже не должна вызывать ошибку
+      localStorage.setItem("timeline-studio-workspace-state", "test")
+      expect(() => clearWorkspaceStateLocal()).not.toThrow()
+    })
+  })
+
+  describe("isValidWorkspaceState Edge Cases", () => {
+    it("должен вернуть false для массива", () => {
+      expect(isValidWorkspaceState([])).toBe(false)
+    })
+
+    it("должен вернуть false для строки", () => {
+      expect(isValidWorkspaceState("string")).toBe(false)
+    })
+
+    it("должен вернуть false для числа", () => {
+      expect(isValidWorkspaceState(123)).toBe(false)
+    })
+
+    it("должен вернуть false для boolean", () => {
+      expect(isValidWorkspaceState(true)).toBe(false)
+    })
+
+    it("должен вернуть false если currentPresetId не строка", () => {
+      expect(
+        isValidWorkspaceState({
+          currentPresetId: 123,
+          activeWidgets: [],
+          customLayouts: [],
+          version: "1.0.0",
+        }),
+      ).toBe(false)
+    })
+
+    it("должен вернуть false если version не строка", () => {
+      expect(
+        isValidWorkspaceState({
+          currentPresetId: "default",
+          activeWidgets: [],
+          customLayouts: [],
+          version: 1,
+        }),
+      ).toBe(false)
+    })
+
+    it("должен вернуть false если customLayouts не массив", () => {
+      expect(
+        isValidWorkspaceState({
+          currentPresetId: "default",
+          activeWidgets: [],
+          customLayouts: {},
+          version: "1.0.0",
+        }),
+      ).toBe(false)
     })
   })
 })

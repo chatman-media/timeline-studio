@@ -377,4 +377,339 @@ describe("WorkspaceLayoutProvider", () => {
       expect(result.current.activeWidgets).toHaveLength(4)
     })
   })
+
+  describe("toggleWidgetVisibility", () => {
+    it("должен переключать видимость виджета", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+        const widgetId = workspace.activeWidgets[0]?.id
+
+        return (
+          <div>
+            <button onClick={() => widgetId && workspace.toggleWidgetVisibility(widgetId)}>Toggle Visibility</button>
+            <div data-testid="is-visible">{workspace.activeWidgets[0]?.isVisible.toString()}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      const button = screen.getByText("Toggle Visibility")
+
+      // Изначально visible = true
+      expect(screen.getByTestId("is-visible")).toHaveTextContent("true")
+
+      // Переключаем на false
+      act(() => {
+        button.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("is-visible")).toHaveTextContent("false")
+      })
+
+      // Переключаем обратно на true
+      act(() => {
+        button.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("is-visible")).toHaveTextContent("true")
+      })
+    })
+  })
+
+  describe("Resize operations", () => {
+    it("должен начать resize виджета", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+        const widgetId = workspace.activeWidgets[0]?.id
+
+        return (
+          <div>
+            <button onClick={() => widgetId && workspace.startResize(widgetId, "se")}>Start Resize</button>
+            <div data-testid="is-resizing">{workspace.isResizing.toString()}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      const button = screen.getByText("Start Resize")
+
+      // Изначально isResizing = false
+      expect(screen.getByTestId("is-resizing")).toHaveTextContent("false")
+
+      act(() => {
+        button.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("is-resizing")).toHaveTextContent("true")
+      })
+    })
+
+    it("должен обновлять размер виджета во время resize", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+        const widgetId = workspace.activeWidgets[0]?.id
+        const newBounds = { x: 5, y: 10, width: 25, height: 35 }
+
+        return (
+          <div>
+            <button onClick={() => widgetId && workspace.startResize(widgetId, "se")}>Start Resize</button>
+            <button onClick={() => workspace.updateResize(newBounds)}>Update Resize</button>
+            <div data-testid="widget-width">{workspace.activeWidgets[0]?.bounds.width}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      const startBtn = screen.getByText("Start Resize")
+      const updateBtn = screen.getByText("Update Resize")
+
+      // Начинаем resize
+      act(() => {
+        startBtn.click()
+      })
+
+      // Обновляем размер
+      act(() => {
+        updateBtn.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("widget-width")).toHaveTextContent("25")
+      })
+    })
+
+    it("должен завершать resize виджета", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+        const widgetId = workspace.activeWidgets[0]?.id
+
+        return (
+          <div>
+            <button onClick={() => widgetId && workspace.startResize(widgetId, "e")}>Start Resize</button>
+            <button onClick={() => workspace.endResize()}>End Resize</button>
+            <div data-testid="is-resizing">{workspace.isResizing.toString()}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      const startBtn = screen.getByText("Start Resize")
+      const endBtn = screen.getByText("End Resize")
+
+      // Начинаем resize
+      act(() => {
+        startBtn.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("is-resizing")).toHaveTextContent("true")
+      })
+
+      // Завершаем resize
+      act(() => {
+        endBtn.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("is-resizing")).toHaveTextContent("false")
+      })
+    })
+
+    it("должен поддерживать все типы resize handles", async () => {
+      const handles: Array<"n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw"> = [
+        "n",
+        "s",
+        "e",
+        "w",
+        "ne",
+        "nw",
+        "se",
+        "sw",
+      ]
+
+      for (const handle of handles) {
+        const { result, unmount } = renderHook(() => useWorkspaceLayout(), {
+          wrapper: WorkspaceLayoutProvider,
+        })
+
+        const widgetId = result.current.activeWidgets[0]?.id
+
+        act(() => {
+          if (widgetId) {
+            result.current.startResize(widgetId, handle)
+          }
+        })
+
+        await waitFor(() => {
+          expect(result.current.isResizing).toBe(true)
+        })
+
+        act(() => {
+          result.current.endResize()
+        })
+
+        await waitFor(() => {
+          expect(result.current.isResizing).toBe(false)
+        })
+
+        unmount()
+      }
+    })
+  })
+
+  describe("send function", () => {
+    it("должен позволять отправлять raw events", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+        const widgetId = workspace.activeWidgets[0]?.id
+
+        return (
+          <div>
+            <button onClick={() => widgetId && workspace.send({ type: "SELECT_WIDGET", widgetId })}>
+              Send Select Event
+            </button>
+            <div data-testid="selected-widget">{workspace.selectedWidgetId || "none"}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      const button = screen.getByText("Send Select Event")
+
+      act(() => {
+        button.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("selected-widget")).not.toHaveTextContent("none")
+      })
+    })
+  })
+
+  describe("State access", () => {
+    it("должен предоставлять доступ к isDragging", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+
+        return (
+          <div>
+            <div data-testid="is-dragging">{workspace.isDragging.toString()}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      // Изначально isDragging = false
+      expect(screen.getByTestId("is-dragging")).toHaveTextContent("false")
+    })
+
+    it("должен предоставлять доступ к customLayouts", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+
+        return (
+          <div>
+            <button onClick={() => workspace.saveCustomLayout("Test Layout")}>Save</button>
+            <div data-testid="layouts-count">{workspace.customLayouts.length}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      // Изначально customLayouts пуст
+      expect(screen.getByTestId("layouts-count")).toHaveTextContent("0")
+
+      const button = screen.getByText("Save")
+
+      act(() => {
+        button.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("layouts-count")).toHaveTextContent("1")
+      })
+    })
+  })
+
+  describe("selectWidget with null", () => {
+    it("должен сбрасывать выбор при передаче null", async () => {
+      const TestComponent = () => {
+        const workspace = useWorkspaceLayout()
+        const widgetId = workspace.activeWidgets[0]?.id
+
+        return (
+          <div>
+            <button onClick={() => widgetId && workspace.selectWidget(widgetId)}>Select</button>
+            <button onClick={() => workspace.selectWidget(null)}>Deselect</button>
+            <div data-testid="selected-widget">{workspace.selectedWidgetId || "none"}</div>
+          </div>
+        )
+      }
+
+      render(
+        <WorkspaceLayoutProvider>
+          <TestComponent />
+        </WorkspaceLayoutProvider>,
+      )
+
+      const selectBtn = screen.getByText("Select")
+      const deselectBtn = screen.getByText("Deselect")
+
+      // Выбираем виджет
+      act(() => {
+        selectBtn.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("selected-widget")).not.toHaveTextContent("none")
+      })
+
+      // Сбрасываем выбор
+      act(() => {
+        deselectBtn.click()
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId("selected-widget")).toHaveTextContent("none")
+      })
+    })
+  })
 })

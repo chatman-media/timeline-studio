@@ -243,4 +243,373 @@ describe("WidgetContainer", () => {
     const dragHandle = screen.getByTitle("Drag to move")
     expect(dragHandle).toBeInTheDocument()
   })
+
+  describe("Resize Handles", () => {
+    it("должен отображать resize handles когда enableResize=true", () => {
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      // Corner handles (4 штуки с классом rounded-full)
+      const cornerHandles = container.querySelectorAll(".rounded-full")
+      expect(cornerHandles).toHaveLength(4)
+
+      // Edge handles (4 штуки)
+      const eastHandle = container.querySelector(".cursor-ew-resize.right-0")
+      const westHandle = container.querySelector(".cursor-ew-resize.left-0")
+      const northHandle = container.querySelector(".cursor-ns-resize.top-0")
+      const southHandle = container.querySelector(".cursor-ns-resize.bottom-0")
+
+      expect(eastHandle).toBeInTheDocument()
+      expect(westHandle).toBeInTheDocument()
+      expect(northHandle).toBeInTheDocument()
+      expect(southHandle).toBeInTheDocument()
+    })
+
+    it("не должен отображать resize handles когда enableResize=false", () => {
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} enableResize={false}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      // Corner handles не должны быть
+      const cornerHandles = container.querySelectorAll(".rounded-full")
+      expect(cornerHandles).toHaveLength(0)
+
+      // Edge handles не должны быть
+      const edgeHandles = container.querySelectorAll(".cursor-ew-resize, .cursor-ns-resize")
+      expect(edgeHandles).toHaveLength(0)
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на east handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const eastHandle = container.querySelector(".cursor-ew-resize.right-0") as HTMLElement
+      fireEvent.mouseDown(eastHandle, { clientX: 100, clientY: 100 })
+
+      // Эмулируем движение мыши
+      fireEvent.mouseMove(window, { clientX: 150, clientY: 100 })
+      fireEvent.mouseUp(window)
+
+      // onResize должен быть вызван
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на south handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const southHandle = container.querySelector(".cursor-ns-resize.bottom-0") as HTMLElement
+      fireEvent.mouseDown(southHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 100, clientY: 150 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на west handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const westHandle = container.querySelector(".cursor-ew-resize.left-0") as HTMLElement
+      fireEvent.mouseDown(westHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 50, clientY: 100 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на north handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const northHandle = container.querySelector(".cursor-ns-resize.top-0") as HTMLElement
+      fireEvent.mouseDown(northHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 100, clientY: 50 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на SE corner handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const seHandle = container.querySelector(".cursor-nwse-resize.-bottom-1.-right-1") as HTMLElement
+      fireEvent.mouseDown(seHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 150, clientY: 150 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на NE corner handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const neHandle = container.querySelector(".cursor-nesw-resize.-right-1.-top-1") as HTMLElement
+      fireEvent.mouseDown(neHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 150, clientY: 50 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на SW corner handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const swHandle = container.querySelector(".cursor-nesw-resize.-bottom-1.-left-1") as HTMLElement
+      fireEvent.mouseDown(swHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 50, clientY: 150 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен вызывать handleResizeStart при mousedown на NW corner handle", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const nwHandle = container.querySelector(".cursor-nwse-resize.-left-1.-top-1") as HTMLElement
+      fireEvent.mouseDown(nwHandle, { clientX: 100, clientY: 100 })
+
+      fireEvent.mouseMove(window, { clientX: 50, clientY: 50 })
+      fireEvent.mouseUp(window)
+
+      expect(onResize).toHaveBeenCalled()
+    })
+
+    it("должен предотвращать всплытие событий при resize", () => {
+      const onSelect = vi.fn()
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onSelect={onSelect} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const eastHandle = container.querySelector(".cursor-ew-resize.right-0") as HTMLElement
+      fireEvent.mouseDown(eastHandle, { clientX: 100, clientY: 100 })
+
+      // onSelect не должен вызываться при resize
+      expect(onSelect).not.toHaveBeenCalled()
+    })
+
+    it("не должен вызывать onResize если нет movement после mousedown", () => {
+      const onResize = vi.fn()
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const eastHandle = container.querySelector(".cursor-ew-resize.right-0") as HTMLElement
+      fireEvent.mouseDown(eastHandle, { clientX: 100, clientY: 100 })
+      fireEvent.mouseUp(window)
+
+      // onResize не должен быть вызван без движения
+      expect(onResize).not.toHaveBeenCalled()
+    })
+
+    it("должен удалять event listeners при unmount", () => {
+      const onResize = vi.fn()
+      const removeEventListenerSpy = vi.spyOn(window, "removeEventListener")
+
+      const { container, unmount } = render(
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const eastHandle = container.querySelector(".cursor-ew-resize.right-0") as HTMLElement
+      fireEvent.mouseDown(eastHandle, { clientX: 100, clientY: 100 })
+
+      unmount()
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith("mousemove", expect.any(Function))
+      expect(removeEventListenerSpy).toHaveBeenCalledWith("mouseup", expect.any(Function))
+
+      removeEventListenerSpy.mockRestore()
+    })
+  })
+
+  describe("Dragging State", () => {
+    // Тесты для dragging требуют изменения mock на уровне модуля
+    // Поскольку mock определен статически, проверяем базовое поведение без dragging
+
+    it("не должен иметь opacity-50 класс когда isDragging=false", () => {
+      const { container } = render(
+        <WidgetContainer widget={mockWidget}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const widgetElement = container.querySelector(".rounded-lg.border.bg-background")
+      expect(widgetElement).not.toHaveClass("opacity-50")
+    })
+
+    it("должен иметь z-index равный zIndex виджета когда не dragging", () => {
+      const widgetWithZIndex = createMockWidget("test-no-drag", "timeline", undefined, { zIndex: 5 })
+
+      const { container } = render(
+        <WidgetContainer widget={widgetWithZIndex}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const widgetElement = container.querySelector(".rounded-lg.border.bg-background") as HTMLElement
+      expect(widgetElement).toHaveStyle({ zIndex: "5" })
+    })
+
+    it("должен иметь transform: undefined когда нет transform от useDraggable", () => {
+      const { container } = render(
+        <WidgetContainer widget={mockWidget}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const widgetElement = container.querySelector(".rounded-lg.border.bg-background") as HTMLElement
+      // transform будет undefined или none когда нет transform от useDraggable
+      const computedStyle = window.getComputedStyle(widgetElement)
+      expect(computedStyle.transform === "none" || computedStyle.transform === "").toBe(true)
+    })
+  })
+
+  describe("Edge Cases", () => {
+    it("должен обрабатывать виджет без config", () => {
+      const widgetWithoutConfig = createMockWidget("no-config", "player")
+
+      render(
+        <WidgetContainer widget={widgetWithoutConfig}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      expect(screen.getByText("Content")).toBeInTheDocument()
+    })
+
+    it("должен корректно отображать все типы виджетов", () => {
+      const widgetTypes: Array<"timeline" | "player" | "browser" | "options" | "ai-chat" | "ai-suggestions"> = [
+        "timeline",
+        "player",
+        "browser",
+        "options",
+        "ai-chat",
+        "ai-suggestions",
+      ]
+
+      widgetTypes.forEach((type) => {
+        const widget = createMockWidget(`widget-${type}`, type)
+
+        const { container, unmount } = render(
+          <WidgetContainer widget={widget}>
+            <div>{type} content</div>
+          </WidgetContainer>,
+        )
+
+        expect(screen.getByText(type)).toBeInTheDocument()
+        expect(screen.getByText(`${type} content`)).toBeInTheDocument()
+
+        unmount()
+      })
+    })
+
+    it("должен корректно работать с bounds на границах (0%, 100%)", () => {
+      const edgeBoundsWidget = createMockWidget("edge-bounds", "timeline", {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+      })
+
+      render(
+        <WidgetContainer widget={edgeBoundsWidget}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const widgetElement = document.querySelector(".rounded-lg.border.bg-background") as HTMLElement
+      expect(widgetElement).toHaveStyle({
+        left: "0%",
+        top: "0%",
+        width: "100%",
+        height: "100%",
+      })
+    })
+
+    it("должен работать без onSelect callback", () => {
+      render(
+        <WidgetContainer widget={mockWidget}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const widgetElement = document.querySelector(".rounded-lg.border.bg-background") as HTMLElement
+
+      // Не должно выбрасывать ошибку
+      expect(() => {
+        fireEvent.click(widgetElement)
+      }).not.toThrow()
+    })
+
+    it("должен работать без onResize callback", () => {
+      const { container } = render(
+        <WidgetContainer widget={mockWidget} enableResize={true}>
+          <div>Content</div>
+        </WidgetContainer>,
+      )
+
+      const eastHandle = container.querySelector(".cursor-ew-resize.right-0") as HTMLElement
+
+      // Не должно выбрасывать ошибку
+      expect(() => {
+        fireEvent.mouseDown(eastHandle, { clientX: 100, clientY: 100 })
+        fireEvent.mouseMove(window, { clientX: 150, clientY: 100 })
+        fireEvent.mouseUp(window)
+      }).not.toThrow()
+    })
+  })
 })
