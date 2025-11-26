@@ -43,7 +43,6 @@ const loadTranslation = async (lang: string): Promise<Record<string, unknown>> =
       return (await import("./locales/tr.json")).default
     case "zh":
       return (await import("./locales/zh.json")).default
-    case "en":
     default:
       return translationEN
   }
