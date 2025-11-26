@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom"
 import remarkGfm from "remark-gfm"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
+import { SEO } from "../components/SEO"
 import { useLanguage } from "../contexts/LanguageContext"
 import { useBlogPost } from "../hooks/useMarkdownContent"
 
@@ -42,6 +43,12 @@ export const BlogPost: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        url={`/blog/${slug}`}
+        type="article"
+      />
       <Navigation />
 
       <main className="flex-1">

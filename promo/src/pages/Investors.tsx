@@ -3,6 +3,7 @@ import type React from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
 import { useLanguage } from "../contexts/LanguageContext";
 
 export const Investors: React.FC = () => {
@@ -187,6 +188,11 @@ export const Investors: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Investors"
+        description="Investment opportunity in Timeline Studio. Join the AI video editing revolution. Seed round open."
+        url="/investors"
+      />
       <Navigation />
 
       <main className="flex-1">

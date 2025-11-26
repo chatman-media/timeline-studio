@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { Footer } from "../components/Footer";
 import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
 import { useTranslation } from "../hooks/useTranslation";
 import { parseChangelog } from "../utils/parseChangelog";
 
@@ -114,6 +115,11 @@ export const Changelog: React.FC = () => {
   }, []);
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Changelog"
+        description="Timeline Studio changelog. See what's new in each release, bug fixes, and improvements."
+        url="/changelog"
+      />
       <Navigation />
 
       <main className="flex-1">

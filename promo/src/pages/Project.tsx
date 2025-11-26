@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Footer } from "../components/Footer";
 import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
 import { useLanguage } from "../contexts/LanguageContext";
 
 export const Project: React.FC = () => {
@@ -72,6 +73,11 @@ export const Project: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Project"
+        description="Timeline Studio project overview. Business model, roadmap, and technical documentation."
+        url="/project"
+      />
       <Navigation />
 
       <main className="flex-1">

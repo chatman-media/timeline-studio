@@ -2,10 +2,16 @@ import { motion } from "framer-motion"
 import type React from "react"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
+import { SEO } from "../components/SEO"
 
 export const ResponsibleAI: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Responsible AI"
+        description="Our commitment to responsible AI development. Ethical guidelines and safety practices at Timeline Studio."
+        url="/responsible-ai"
+      />
       <Navigation />
 
       <main className="flex-1">
