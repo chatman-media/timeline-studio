@@ -28,6 +28,7 @@ export function Navigation() {
     { label: t("nav.changelog").toUpperCase(), href: "/changelog", isExternal: false },
     { label: t("nav.docs").toUpperCase(), href: "/docs", isExternal: false },
     { label: t("nav.blog").toUpperCase(), href: "/blog", isExternal: false },
+    { label: "INVESTORS", href: "/investors", isExternal: false },
   ]
 
   useEffect(() => {
