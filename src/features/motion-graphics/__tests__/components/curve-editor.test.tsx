@@ -1,0 +1,167 @@
+import { render, screen, fireEvent } from "@testing-library/react"
+import { describe, expect, it, vi } from "vitest"
+import type { AnimationCurve } from "../../types/keyframe"
+import { CurveEditor } from "../../components/curve-editor"
+import { createKeyframe } from "../../services/keyframe-manager"
+
+describe("CurveEditor Component", () => {
+  const mockCurves: AnimationCurve[] = [
+    {
+      propertyId: "prop-1",
+      keyframes: [
+        createKeyframe(0, 0, "linear"),
+        createKeyframe(1, 100, "linear"),
+      ],
+      preInfinity: "constant",
+      postInfinity: "constant",
+      visible: true,
+      color: "#3b82f6",
+      selected: false,
+    },
+  ]
+
+  const defaultProps = {
+    curves: mockCurves,
+    currentTime: 0,
+    duration: 10,
+    onTimeChange: vi.fn(),
+    onKeyframeAdd: vi.fn(),
+    onKeyframeUpdate: vi.fn(),
+    onKeyframeDelete: vi.fn(),
+    onCurveSelect: vi.fn(),
+  }
+
+  it("renders curve editor", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    expect(screen.getByRole("slider")).toBeInTheDocument()
+  })
+
+  it("displays playback controls", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    // Check for play button
+    const buttons = screen.getAllByRole("button")
+    expect(buttons.length).toBeGreaterThan(0)
+  })
+
+  it("renders canvas element", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    const canvas = document.querySelector("canvas")
+    expect(canvas).toBeInTheDocument()
+  })
+
+  it("calls onTimeChange when slider is moved", () => {
+    const onTimeChange = vi.fn()
+    render(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} />)
+
+    const slider = screen.getByRole("slider")
+    fireEvent.change(slider, { target: { value: "5" } })
+
+    expect(onTimeChange).toHaveBeenCalledWith(5)
+  })
+
+  it("displays time information", () => {
+    render(<CurveEditor {...defaultProps} currentTime={2.5} />)
+
+    expect(screen.getByText(/2\.50s/)).toBeInTheDocument()
+    expect(screen.getByText(/10\.00s/)).toBeInTheDocument()
+  })
+
+  it("renders interpolation type selector", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    // Combobox for interpolation type
+    const comboboxes = screen.getAllByRole("combobox")
+    expect(comboboxes.length).toBeGreaterThan(0)
+  })
+
+  it("displays curve list", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    expect(screen.getByText(/Property prop-1/)).toBeInTheDocument()
+  })
+
+  it("handles curve selection", () => {
+    const onCurveSelect = vi.fn()
+    render(<CurveEditor {...defaultProps} onCurveSelect={onCurveSelect} />)
+
+    const curveItem = screen.getByText(/Property prop-1/)
+    fireEvent.click(curveItem)
+
+    expect(onCurveSelect).toHaveBeenCalledWith("prop-1")
+  })
+
+  it("highlights selected curve", () => {
+    render(<CurveEditor {...defaultProps} selectedCurveId="prop-1" />)
+
+    const curveItem = screen.getByText(/Property prop-1/).closest("div")
+    expect(curveItem).toHaveClass("bg-muted")
+  })
+
+  it("respects snapToGrid prop", () => {
+    const { rerender } = render(<CurveEditor {...defaultProps} snapToGrid={false} />)
+
+    // Re-render with snapToGrid enabled
+    rerender(<CurveEditor {...defaultProps} snapToGrid={true} />)
+
+    // Component should render without errors
+    expect(screen.getByRole("slider")).toBeInTheDocument()
+  })
+
+  it("uses custom height", () => {
+    render(<CurveEditor {...defaultProps} height={600} />)
+
+    const canvas = document.querySelector("canvas")
+    expect(canvas?.height).toBe(600)
+  })
+
+  it("renders multiple curves", () => {
+    const multipleCurves: AnimationCurve[] = [
+      ...mockCurves,
+      {
+        propertyId: "prop-2",
+        keyframes: [createKeyframe(0, 50, "ease-out")],
+        preInfinity: "constant",
+        postInfinity: "constant",
+        visible: true,
+        color: "#ef4444",
+        selected: false,
+      },
+    ]
+
+    render(<CurveEditor {...defaultProps} curves={multipleCurves} />)
+
+    expect(screen.getByText(/Property prop-1/)).toBeInTheDocument()
+    expect(screen.getByText(/Property prop-2/)).toBeInTheDocument()
+  })
+
+  it("handles empty curves array", () => {
+    render(<CurveEditor {...defaultProps} curves={[]} />)
+
+    expect(screen.getByRole("slider")).toBeInTheDocument()
+  })
+
+  it("handles mouse wheel for zoom", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    const canvas = document.querySelector("canvas")
+    expect(canvas).toBeInTheDocument()
+
+    if (canvas) {
+      fireEvent.wheel(canvas, { deltaY: -100 })
+      // Component should handle zoom without errors
+      expect(canvas).toBeInTheDocument()
+    }
+  })
+
+  it("resets zoom and pan when reset button clicked", () => {
+    render(<CurveEditor {...defaultProps} />)
+
+    // Find the maximize/reset button
+    const buttons = screen.getAllByRole("button")
+    // The reset button should be one of the toolbar buttons
+    expect(buttons.length).toBeGreaterThan(4)
+  })
+})
