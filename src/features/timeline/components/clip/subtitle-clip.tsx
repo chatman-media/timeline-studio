@@ -151,10 +151,7 @@ export function SubtitleClip({
       onDoubleClick={onDoubleClick}
     >
       {/* Градиент для визуальной глубины */}
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent"
-        style={{ pointerEvents: "none" }}
-      />
+      <div className="absolute inset-0 bg-linear-to-b from-white/20 to-transparent" style={{ pointerEvents: "none" }} />
 
       {/* Информация о клипе */}
       <div className="relative h-full flex flex-col justify-between p-2">

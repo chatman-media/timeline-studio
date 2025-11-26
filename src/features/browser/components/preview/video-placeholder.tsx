@@ -187,7 +187,7 @@ export const VideoPlaceholder = memo(
 
           {/* Показываем имя файла если видео ещё не загружено и нет превью */}
           {!isLoaded && !previewData && !file.thumbnailPath && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/40 to-black/60 text-center">
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-b from-black/40 to-black/60 text-center">
               <div className="truncate px-2 text-xs text-white/80" style={{ maxWidth: "90%" }}>
                 {file.name}
               </div>

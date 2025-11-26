@@ -148,7 +148,7 @@ export function EmotionGraph({ plan, emotionalArc, className }: EmotionGraphProp
                       <div
                         className={cn(
                           "absolute bottom-0 left-0 right-0 rounded-t transition-all",
-                          "bg-gradient-to-t",
+                          "bg-linear-to-t",
                           getEnergyGradient(point.emotionalIntensity),
                           "opacity-80 group-hover:opacity-100",
                         )}

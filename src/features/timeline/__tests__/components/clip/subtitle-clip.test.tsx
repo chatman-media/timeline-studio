@@ -59,7 +59,15 @@ const createMockSubtitleClip = (overrides: Partial<SubtitleClipType> = {}): Subt
   isReversed: false,
   text: "Test subtitle text",
   name: "Test Subtitle",
-  position: { x: 0, y: 0, width: 100, height: 50, rotation: 0, scaleX: 1, scaleY: 1 },
+  position: {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 50,
+    rotation: 0,
+    scaleX: 1,
+    scaleY: 1,
+  },
   opacity: 1,
   isLocked: false,
   effects: [],
@@ -373,7 +381,7 @@ describe("SubtitleClip", () => {
 
       const { container } = render(<SubtitleClip clip={clip} trackHeight={60} />)
 
-      const gradient = container.querySelector(".bg-gradient-to-b")
+      const gradient = container.querySelector(".bg-linear-to-b")
       expect(gradient).toBeInTheDocument()
       expect(gradient).toHaveStyle({ pointerEvents: "none" })
     })

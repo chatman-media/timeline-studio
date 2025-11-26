@@ -408,7 +408,7 @@ export const Investors: React.FC = () => {
         </section>
 
         {/* CTA */}
-        <section className="py-20 bg-gradient-to-b from-[#12192C] to-[#0a0f1e]">
+        <section className="py-20 bg-linear-to-b from-[#12192C] to-[#0a0f1e]">
           <div className="container mx-auto px-6 md:px-8 lg:px-12">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
