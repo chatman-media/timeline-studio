@@ -1,3 +1,11 @@
+# [3.20.0](https://github.com/chatman-media/timeline-studio/compare/v3.19.0...v3.20.0) (2025-11-26)
+
+
+### Features
+
+* **promo:** add Investors link to navigation menu ([0c8bb1f](https://github.com/chatman-media/timeline-studio/commit/0c8bb1f705c766b437ee987dca6700559048784b))
+* **promo:** add translations for Investors nav item ([5094ab1](https://github.com/chatman-media/timeline-studio/commit/5094ab17cc08d823009f5fa920948368e0d888b0))
+
 # [3.19.0](https://github.com/chatman-media/timeline-studio/compare/v3.18.0...v3.19.0) (2025-11-26)
 
 
