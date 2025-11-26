@@ -377,7 +377,65 @@ BrowserProvider автоматически подписывается на эт�
 
 ## API (Backend Commands)
 
-Browser domain не использует прямые Tauri команды, так как всё состояние управляется через `ProjectState` на бэкенде. Вместо команд используются следующие методы:
+Browser domain использует backend state management через `ProjectState`. Все команды выполняются через Tauri IPC и автоматически синхронизируются с фронтендом через события.
+
+### Tauri Commands
+
+**Расположение:** `src-tauri/src/state/commands_api.rs`
+
+#### Tab Management / Управление вкладками
+
+```rust
+// Переключение активной вкладки
+browser_switch_tab(tab: BrowserTab) -> Result<CommandResult, String>
+
+// Установка поискового запроса
+browser_set_search_query(query: String, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Переключение режима избранного
+browser_toggle_favorites(tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Установка сортировки
+browser_set_sort(sort_by: String, sort_order: SortOrder, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Установка группировки
+browser_set_group_by(group_by: String, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Установка фильтра
+browser_set_filter(filter_type: String, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Установка режима отображения
+browser_set_view_mode(view_mode: ViewMode, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Установка размера превью (индекс 0-4)
+browser_set_preview_size(size_index: u32, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Сброс настроек вкладки к дефолтным значениям
+browser_reset_tab_settings(tab: BrowserTab) -> Result<CommandResult, String>
+```
+
+#### File Selection / Выбор файлов
+
+```rust
+// Выбрать файл
+browser_select_file(file_id: String, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Снять выбор файла
+browser_deselect_file(file_id: String, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Переключить выбор файла (toggle)
+browser_toggle_file_selection(file_id: String, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Выбрать все файлы (массив ID)
+browser_select_all_files(file_ids: Vec<String>, tab: Option<BrowserTab>) -> Result<CommandResult, String>
+
+// Снять все выборы
+browser_deselect_all_files(tab: Option<BrowserTab>) -> Result<CommandResult, String>
+```
+
+### Frontend API / Frontend API
+
+Frontend обёртки для команд (через `useBrowser` hook):
 
 | Method | Parameters | Description |
 |--------|------------|-------------|
@@ -395,7 +453,21 @@ Browser domain не использует прямые Tauri команды, та
 | `selectAllFiles` | `(fileIds[], tab?)` | Выбор всех файлов |
 | `deselectAllFiles` | `(tab?)` | Снятие всех выборов |
 
-**Note**: Все методы автоматически синхронизируются с Rust бэкендом через Tauri IPC и events.
+### Types / Типы
+
+```typescript
+type BrowserTab = "media" | "effects" | "filters" | "transitions" | "templates" | "style-templates"
+type ViewMode = "thumbnails" | "list" | "grid"
+type SortOrder = "asc" | "desc"
+
+interface CommandResult {
+  success: boolean
+  error?: string
+  data?: any
+}
+```
+
+**Note**: Все методы автоматически синхронизируются с Rust бэкендом через Tauri IPC и events. События генерируются после успешного выполнения команды и обновляют frontend state через BackendSync.
 
 ## Behavior (from tests) / Поведение (из тестов)
 

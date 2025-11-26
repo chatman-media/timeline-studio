@@ -405,31 +405,172 @@ async function exportWithProgress() {
 
 ## API (Backend Commands)
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
+System Integration domain использует комбинацию backend events для state management и прямых Tauri команд для системных операций.
+
+### Backend Events / События бэкенда
+
+| Event | Parameters | Description |
+|-------|------------|-------------|
 | **Modal Management** |||
-| `ModalOpened` | `{ modal_type, modal_data }` | Event: модальное окно открыто |
-| `ModalClosed` | `{ modal_type }` | Event: модальное окно закрыто |
+| `ModalOpened` | `{ modal_type, modal_data }` | Модальное окно открыто |
+| `ModalClosed` | `{ modal_type }` | Модальное окно закрыто |
 | **Notifications** |||
-| `NotificationShown` | `{ notification }` | Event: уведомление показано |
-| `NotificationDismissed` | `{ notification_id }` | Event: уведомление закрыто |
-| `NotificationsCleared` | `{}` | Event: все уведомления очищены |
+| `NotificationShown` | `{ notification }` | Уведомление показано |
+| `NotificationDismissed` | `{ notification_id }` | Уведомление закрыто |
+| `NotificationsCleared` | `{}` | Все уведомления очищены |
 | **Updates** |||
-| `UpdateCheckStarted` | `{}` | Event: начата проверка обновлений |
-| `UpdateCheckCompleted` | `{ available }` | Event: проверка завершена |
-| `UpdateAvailable` | `{ version, notes }` | Event: доступно обновление |
-| `UpdateDownloadStarted` | `{}` | Event: загрузка началась |
-| `UpdateDownloadCompleted` | `{}` | Event: загрузка завершена |
-| `UpdateInstallStarted` | `{}` | Event: установка началась |
-| `UpdateDismissed` | `{}` | Event: обновление отклонено |
-| `AutoUpdateEnabled` | `{}` | Event: автообновления включены |
-| `AutoUpdateDisabled` | `{}` | Event: автообновления выключены |
+| `UpdateCheckStarted` | `{}` | Начата проверка обновлений |
+| `UpdateCheckCompleted` | `{ available }` | Проверка завершена |
+| `UpdateAvailable` | `{ version, notes }` | Доступно обновление |
+| `UpdateDownloadStarted` | `{}` | Загрузка началась |
+| `UpdateDownloadCompleted` | `{}` | Загрузка завершена |
+| `UpdateInstallStarted` | `{}` | Установка началась |
+| `UpdateDismissed` | `{}` | Обновление отклонено |
+| `AutoUpdateEnabled` | `{}` | Автообновления включены |
+| `AutoUpdateDisabled` | `{}` | Автообновления выключены |
 | **Feature Flags** |||
-| `FeatureToggled` | `{ feature_name, enabled }` | Event: функция переключена |
-| **Performance Monitoring** (Planned) |||
-| `get_system_info` | `{}` | Command: получить системные метрики (CPU/GPU/Memory) |
+| `FeatureToggled` | `{ feature_name, enabled }` | Функция переключена |
 
 **Примечание:** Все события обрабатываются через `handleBackendEvent()` в `backend-event-handlers.ts`.
+
+### Tauri Commands / Команды Tauri
+
+#### File System Operations / Операции с файловой системой
+
+**Расположение:** `src-tauri/src/filesystem.rs`
+
+```rust
+// Проверка существования файла
+file_exists(path: String) -> Result<bool, String>
+
+// Получение статистики файла (размер, дата модификации)
+get_file_stats(path: String) -> Result<FileStats, String>
+
+// Получение платформы ОС
+get_platform() -> Result<String, String>  // "macos" | "windows" | "linux"
+
+// Рекурсивный поиск файлов по имени
+search_files_by_name(
+  directory: String,
+  filename: String,
+  max_depth: Option<u32>  // default: 5 уровней
+) -> Result<Vec<String>, String>
+
+// Получение абсолютного пути к файлу
+get_absolute_path(path: String) -> Result<String, String>
+```
+
+**Types:**
+```typescript
+interface FileStats {
+  size: number           // размер в байтах
+  lastModified: number   // timestamp в миллисекундах
+}
+```
+
+#### Application Directories / Директории приложения
+
+**Расположение:** `src-tauri/src/app_dirs.rs`
+
+```rust
+// Получить структуру директорий приложения
+get_app_directories() -> Result<AppDirectories, String>
+
+// Создать структуру директорий приложения
+create_app_directories() -> Result<AppDirectories, String>
+
+// Получить размеры директорий
+get_directory_sizes() -> Result<DirectorySizes, String>
+
+// Очистить кэш приложения
+clear_app_cache() -> Result<(), String>
+```
+
+**Types:**
+```typescript
+interface AppDirectories {
+  base_dir: string          // Базовая директория
+  media_dir: string         // Медиа файлы
+  projects_dir: string      // Проекты
+  snapshot_dir: string      // Снимки экрана
+  cinematic_dir: string     // Кинематографические эффекты
+  output_dir: string        // Выходные файлы
+  render_dir: string        // Рендеринг
+  recognition_dir: string   // Распознавание
+  backup_dir: string        // Резервные копии
+  media_proxy_dir: string   // Прокси медиа
+  caches_dir: string        // Кэши
+  recorded_dir: string      // Записанные файлы
+  audio_dir: string         // Аудио файлы
+  cloud_project_dir: string // Облачные проекты
+  upload_dir: string        // Загрузки
+}
+
+interface DirectorySizes {
+  media: number       // размер в байтах
+  projects: number
+  output: number
+  render: number
+  caches: number
+  backup: number
+  total: number
+}
+```
+
+**Default paths by platform:**
+- macOS: `~/Movies/Timeline Studio/`
+- Windows: `~/Videos/Timeline Studio/`
+- Linux: `~/Videos/Timeline Studio/`
+
+#### Performance Monitoring / Мониторинг производительности
+
+**Статус:** ⏳ Planned (требуется для `@/features/analysis-dashboard`)
+
+```rust
+// Получить системные метрики
+get_system_info() -> Result<SystemInfo, String>
+```
+
+**Types:**
+```typescript
+interface SystemInfo {
+  cpu: {
+    usage: number      // 0-100 (процент использования CPU)
+    cores: number      // количество ядер
+    model?: string     // модель процессора
+  }
+  memory: {
+    used: number       // использовано MB
+    total: number      // всего MB
+    available: number  // доступно MB
+  }
+  gpu?: {
+    usage: number          // 0-100 (процент использования GPU)
+    name?: string          // название видеокарты
+    memory_used?: number   // MB
+    memory_total?: number  // MB
+  }
+}
+```
+
+### Frontend API / Frontend API
+
+Frontend обёртки доступны через хуки:
+
+| Hook | Method | Description |
+|------|--------|-------------|
+| `useModals()` | `open(type, data)` | Открыть модальное окно |
+| `useModals()` | `close(type)` | Закрыть модальное окно |
+| `useModals()` | `closeAll()` | Закрыть все окна |
+| `useNotifications()` | `info(message, options)` | Информационное уведомление |
+| `useNotifications()` | `success(message, options)` | Успешное уведомление |
+| `useNotifications()` | `warning(message, options)` | Предупреждение |
+| `useNotifications()` | `error(message, options)` | Ошибка |
+| `useUpdates()` | `checkForUpdates()` | Проверить обновления |
+| `useUpdates()` | `downloadUpdate()` | Загрузить обновление |
+| `useUpdates()` | `installAndRestart()` | Установить и перезапустить |
+| `useFeatures()` | `isEnabled(name)` | Проверить feature flag |
+| `useFeatures()` | `toggle(name, enabled)` | Переключить feature flag |
 
 ### Планируемые команды
 

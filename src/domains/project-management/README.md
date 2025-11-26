@@ -111,14 +111,204 @@ function MyComponent() {
 
 ## API (Backend Commands)
 
-Модуль использует централизованную систему команд через `executeCommand`:
+Модуль использует централизованную систему команд через `executeCommand` и специализированные Tauri команды для работы с проектами.
 
-| Command Category | Commands | Description |
-|-----------------|----------|-------------|
-| Project Lifecycle | `CreateProject`, `OpenProject`, `SaveProject`, `CloseProject` | Создание, открытие, сохранение и закрытие проектов |
-| Settings Management | `UpdateUserSettings`, `GetUserSettings` | Управление пользовательскими настройками |
-| State Management | `getProjectState()` | Получение текущего состояния проекта |
-| Event Handling | `getEventHistory()` | Получение истории событий |
+### Core Commands / Основные команды
+
+**Расположение:** `src-tauri/src/state/commands/types.rs`
+
+```rust
+// Project Lifecycle Commands
+ProjectCommand::CreateProject { settings }
+ProjectCommand::OpenProject { path }
+ProjectCommand::SaveProject
+ProjectCommand::CloseProject
+
+// Settings Management
+ProjectCommand::UpdateUserSettings { settings }
+ProjectCommand::GetUserSettings
+
+// Browser Integration (см. Browser domain)
+ProjectCommand::BrowserSwitchTab { tab }
+ProjectCommand::BrowserSelectFile { file_id, tab }
+// ... остальные browser команды
+```
+
+### Project Schema Commands / Команды схемы проекта
+
+**Расположение:** `src-tauri/src/video_compiler/commands/project/commands.rs`
+
+#### Schema Validation & Optimization / Валидация и оптимизация схемы
+
+```rust
+// Валидировать схему проекта
+validate_project_schema(project_schema: ProjectSchema) -> Result<ValidationResult>
+
+// Оптимизировать схему проекта (треки, настройки экспорта)
+optimize_project_schema(project_schema: ProjectSchema) -> Result<ProjectSchema>
+
+// Анализировать проект и получить статистику
+analyze_project(project_schema: ProjectSchema) -> Result<ProjectStatistics>
+
+// Обновить время доступа к проекту
+touch_project_schema(project: ProjectSchema) -> Result<ProjectSchema>
+```
+
+#### Media Management / Управление медиа
+
+```rust
+// Получить список медиафайлов в проекте
+get_project_media_files(project_schema: ProjectSchema) -> Result<Vec<String>>
+
+// Проверить доступность медиафайлов проекта
+check_project_media_availability(
+  project_schema: ProjectSchema
+) -> Result<HashMap<String, bool>>
+
+// Обновить пути медиафайлов в проекте (remapping)
+update_project_media_paths(
+  project_schema: ProjectSchema,
+  path_mapping: HashMap<String, String>
+) -> Result<ProjectSchema>
+```
+
+#### Subtitles Management / Управление субтитрами
+
+```rust
+// Добавить субтитры в проект
+add_subtitles_to_project(
+  project_schema: ProjectSchema,
+  subtitles: Vec<Subtitle>
+) -> Result<ProjectSchema>
+
+// Извлечь субтитры из проекта в указанном формате
+extract_project_subtitles(
+  project_schema: ProjectSchema,
+  format: String  // "srt" | "vtt" | "ass"
+) -> Result<String>
+
+// Валидация субтитров
+validate_subtitle(subtitle: Subtitle) -> Result<ValidationResult>
+```
+
+#### Project Operations / Операции с проектами
+
+```rust
+// Создать резервную копию проекта
+backup_project(
+  project_schema: ProjectSchema,
+  backup_path: String
+) -> Result<String>
+
+// Объединить два проекта (merge)
+merge_projects(
+  base_project: ProjectSchema,
+  append_project: ProjectSchema,
+  time_offset: f64
+) -> Result<ProjectSchema>
+
+// Разделить проект на части (split at points)
+split_project(
+  project_schema: ProjectSchema,
+  split_points: Vec<f64>
+) -> Result<Vec<ProjectSchema>>
+```
+
+#### Track & Clip Operations / Операции с треками и клипами
+
+```rust
+// Операции с треками
+track_operations(
+  track: Track,
+  operation: String,      // "add_clip" | "remove_clip"
+  params: serde_json::Value
+) -> Result<Track>
+
+// Информация о клипе
+get_clip_info(
+  clip: Clip,
+  info_type: String      // "timeline_duration" | "contains_time"
+) -> Result<serde_json::Value>
+```
+
+### State Management / Управление состоянием
+
+**Расположение:** `src-tauri/src/state/commands_api.rs`
+
+```rust
+// Получить текущее состояние проекта
+get_project_state() -> Result<ProjectState>
+
+// Получить историю событий начиная с указанной версии
+get_event_history(since_version: Option<u32>) -> Result<Vec<EventEnvelope>>
+
+// Выполнить одну команду
+execute_command(command: ProjectCommand) -> Result<CommandResult>
+
+// Выполнить batch команд (транзакция)
+execute_batch_commands(request: BatchCommandRequest) -> Result<BatchCommandResult>
+```
+
+### Frontend API / Frontend API
+
+Frontend обёртки для команд (через хуки):
+
+| Hook | Method | Description |
+|------|--------|-------------|
+| `useProject()` | `createProject(settings)` | Создание нового проекта |
+| `useProject()` | `openProject(path)` | Открытие существующего проекта |
+| `useProject()` | `saveProject()` | Сохранение текущего проекта |
+| `useProject()` | `closeProject()` | Закрытие проекта |
+| `useUserSettings()` | `updateSettings(settings)` | Обновление настроек пользователя |
+| `useUserSettings()` | `getSettings()` | Получение настроек пользователя |
+| `useAppState()` | `getState()` | Получение состояния приложения |
+| `useAppState()` | `isConnected` | Проверка подключения к backend |
+
+### Types / Типы
+
+```typescript
+interface ProjectSchema {
+  version: string
+  settings: ProjectSettings
+  tracks: Track[]
+  subtitles: Subtitle[]
+  // ... другие поля
+}
+
+interface ValidationResult {
+  valid: boolean
+  errors?: string[]
+}
+
+interface ProjectStatistics {
+  totalDuration: number
+  trackCount: number
+  clipCount: number
+  mediaFileCount: number
+  // ... другие метрики
+}
+
+interface CommandResult {
+  success: boolean
+  error?: string
+  data?: any
+}
+
+interface BatchCommandRequest {
+  commands: ProjectCommand[]
+  stop_on_error: boolean
+  transaction_name?: string
+}
+
+interface BatchCommandResult {
+  results: CommandResult[]
+  success_count: number
+  error_count: number
+  execution_time_ms: number
+  success: boolean
+  error_message?: string
+}
+```
 
 **Примечание:** Все команды выполняются через `BackendSync.executeCommand()` - прямые вызовы Tauri API отсутствуют.
 
