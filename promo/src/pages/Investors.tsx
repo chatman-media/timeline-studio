@@ -34,7 +34,7 @@ export const Investors: React.FC = () => {
         ],
       },
       traction: {
-        title: "Traction",
+        title: "Показатели",
         items: [
           { value: "100+", label: "AI инструментов" },
           { value: "95%", label: "готовность продукта" },
@@ -88,7 +88,7 @@ export const Investors: React.FC = () => {
         ],
       },
       traction: {
-        title: "Traction",
+        title: "Progress",
         items: [
           { value: "100+", label: "AI tools" },
           { value: "95%", label: "product ready" },
