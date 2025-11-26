@@ -4,8 +4,8 @@
  */
 
 import { describe, expect, it, vi } from "vitest"
+import type { AppliedEffect, BaseEffect } from "@/features/effects/types/unified-effects"
 import { UnifiedEffectsBridge } from "../../services/unified-effects-bridge"
-import type { BaseEffect, AppliedEffect } from "@/features/effects/types/unified-effects"
 
 // Mock EffectManager
 const createMockEffectManager = () => ({

@@ -3,17 +3,19 @@
  * Testing complex scenarios, edge cases, and advanced functionality
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { invoke } from "@tauri-apps/api/core"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
-import type { PersonProfile, FaceEmbedding, PersonAppearance } from "@/features/person-identification/types/person"
+import type { FaceEmbedding, PersonAppearance, PersonProfile } from "@/features/person-identification/types/person"
 
 vi.mock("@tauri-apps/api/core")
 
 describe("PersonDatabaseService - Advanced", () => {
   let service: PersonDatabaseService
 
-  const createMockPerson = (overrides?: Partial<PersonProfile>): Omit<PersonProfile, "id" | "createdAt" | "updatedAt"> => ({
+  const createMockPerson = (
+    overrides?: Partial<PersonProfile>,
+  ): Omit<PersonProfile, "id" | "createdAt" | "updatedAt"> => ({
     name: "Test Person",
     isVerified: false,
     faceEmbeddings: [],
@@ -146,7 +148,7 @@ describe("PersonDatabaseService - Advanced", () => {
           faceEmbeddings: [
             createMockEmbedding({ vector: new Float32Array([0.9, 0.1, 0, 0, 0]) }), // Similar
           ],
-        })
+        }),
       )
 
       const person2 = await service.createPerson(
@@ -155,7 +157,7 @@ describe("PersonDatabaseService - Advanced", () => {
           faceEmbeddings: [
             createMockEmbedding({ vector: new Float32Array([0, 1, 0, 0, 0]) }), // Orthogonal
           ],
-        })
+        }),
       )
 
       await service.createPerson(
@@ -164,7 +166,7 @@ describe("PersonDatabaseService - Advanced", () => {
           faceEmbeddings: [
             createMockEmbedding({ vector: new Float32Array([0.95, 0.05, 0, 0, 0]) }), // Very similar
           ],
-        })
+        }),
       )
 
       const results = await service.searchPersonsByEmbedding(searchEmbedding, 0.5, 3)
@@ -177,10 +179,8 @@ describe("PersonDatabaseService - Advanced", () => {
     it("should respect similarity threshold", async () => {
       const person = await service.createPerson(
         createMockPerson({
-          faceEmbeddings: [
-            createMockEmbedding({ vector: new Float32Array([1, 0, 0, 0, 0]) }),
-          ],
-        })
+          faceEmbeddings: [createMockEmbedding({ vector: new Float32Array([1, 0, 0, 0, 0]) })],
+        }),
       )
 
       const searchEmbedding = new Float32Array([0, 1, 0, 0, 0]) // Orthogonal
@@ -198,10 +198,8 @@ describe("PersonDatabaseService - Advanced", () => {
         await service.createPerson(
           createMockPerson({
             name: `Person ${i}`,
-            faceEmbeddings: [
-              createMockEmbedding({ vector: new Float32Array([0.8 + i * 0.01, 0.2, 0, 0, 0]) }),
-            ],
-          })
+            faceEmbeddings: [createMockEmbedding({ vector: new Float32Array([0.8 + i * 0.01, 0.2, 0, 0, 0]) })],
+          }),
         )
       }
 
@@ -223,7 +221,7 @@ describe("PersonDatabaseService - Advanced", () => {
           name: "Target Person",
           faceEmbeddings: [createMockEmbedding()],
           totalScreenTime: 10,
-        })
+        }),
       )
 
       const source1 = await service.createPerson(
@@ -231,7 +229,7 @@ describe("PersonDatabaseService - Advanced", () => {
           name: "Source 1",
           faceEmbeddings: [createMockEmbedding(), createMockEmbedding()],
           totalScreenTime: 5,
-        })
+        }),
       )
 
       const source2 = await service.createPerson(
@@ -239,7 +237,7 @@ describe("PersonDatabaseService - Advanced", () => {
           name: "Source 2",
           faceEmbeddings: [createMockEmbedding()],
           totalScreenTime: 3,
-        })
+        }),
       )
 
       const result = await service.mergePersons(target.id, [source1.id, source2.id])
@@ -259,13 +257,13 @@ describe("PersonDatabaseService - Advanced", () => {
       const target = await service.createPerson(
         createMockPerson({
           faceEmbeddings: [createMockEmbedding({ vector: new Float32Array([1, 0, 0, 0, 0]) })],
-        })
+        }),
       )
 
       const source = await service.createPerson(
         createMockPerson({
           faceEmbeddings: [createMockEmbedding({ vector: new Float32Array([0, 1, 0, 0, 0]) })],
-        })
+        }),
       )
 
       await service.mergePersons(target.id, [source.id])

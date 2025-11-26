@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
-import type { MotionGraphicsClip, MotionPreset } from "../../types/keyframe"
+import { createKeyframe } from "../../services/keyframe-manager"
 import {
   addMotionGraphicsToClip,
   applyMotionPresetToClip,
@@ -16,7 +16,7 @@ import {
   scaleMotionGraphicsDuration,
   updateMotionPropertyInClip,
 } from "../../services/timeline-integration"
-import { createKeyframe } from "../../services/keyframe-manager"
+import type { MotionGraphicsClip, MotionPreset } from "../../types/keyframe"
 
 describe("TimelineIntegration", () => {
   const createMockClip = (): TimelineClip => ({

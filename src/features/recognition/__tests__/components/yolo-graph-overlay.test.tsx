@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-import { YoloGraphOverlay } from "../../components/yolo-graph-overlay"
-import { createMockYoloData, setupCanvasMock } from "../../__mocks__"
 import userEvent from "@testing-library/user-event"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { createMockYoloData, setupCanvasMock } from "../../__mocks__"
+import { YoloGraphOverlay } from "../../components/yolo-graph-overlay"
 
 // Mock react-i18next
 vi.mock("react-i18next", () => ({
@@ -30,9 +30,7 @@ describe("YoloGraphOverlay", () => {
   })
 
   it("должен использовать правильные размеры", () => {
-    const { container } = render(
-      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={150} />,
-    )
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={150} />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas?.getAttribute("width")).toBe("800")

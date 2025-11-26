@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-import { YoloDataVisualization } from "../../components/yolo-data-visualization"
-import { createMockYoloData } from "../../__mocks__"
 import userEvent from "@testing-library/user-event"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { createMockYoloData } from "../../__mocks__"
+import { YoloDataVisualization } from "../../components/yolo-data-visualization"
 
 // Mock react-i18next
 vi.mock("react-i18next", () => ({

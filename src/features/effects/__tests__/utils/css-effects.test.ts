@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import { Read } from "@/lib/file-utils"
 
 describe("css-effects utility", () => {
   // This test reads the css-effects.ts file to validate its structure
@@ -220,7 +219,7 @@ describe("css-effects utility", () => {
 
   describe("error handling", () => {
     it("should handle invalid filter values gracefully", () => {
-      const invalidValues = [NaN, Infinity, -Infinity, undefined, null]
+      const invalidValues = [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, undefined, null]
 
       invalidValues.forEach((value) => {
         if (value === null || value === undefined) {

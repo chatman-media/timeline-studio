@@ -1,17 +1,14 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import type { AnimationCurve } from "../../types/keyframe"
 import { CurveEditor } from "../../components/curve-editor"
 import { createKeyframe } from "../../services/keyframe-manager"
+import type { AnimationCurve } from "../../types/keyframe"
 
 describe("CurveEditor Component", () => {
   const mockCurves: AnimationCurve[] = [
     {
       propertyId: "prop-1",
-      keyframes: [
-        createKeyframe(0, 0, "linear"),
-        createKeyframe(1, 100, "linear"),
-      ],
+      keyframes: [createKeyframe(0, 0, "linear"), createKeyframe(1, 100, "linear")],
       preInfinity: "constant",
       postInfinity: "constant",
       visible: true,

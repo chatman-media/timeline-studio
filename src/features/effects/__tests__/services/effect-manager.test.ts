@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { EffectManager } from "../../services/effect-manager"
-import type { BaseEffect, AppliedEffect, EffectStack } from "../../types/unified-effects"
+import type { AppliedEffect, BaseEffect, EffectStack } from "../../types/unified-effects"
 
 describe("EffectManager", () => {
   let manager: EffectManager
@@ -122,9 +122,21 @@ describe("EffectManager", () => {
   describe("effect search", () => {
     beforeEach(() => {
       manager.registerEffects([
-        { ...createMockEffect("gaussian_blur"), name: { en: "Gaussian Blur", ru: "Гауссово размытие" }, tags: ["blur"] },
-        { ...createMockEffect("motion_blur"), name: { en: "Motion Blur", ru: "Размытие в движении" }, tags: ["blur", "motion"] },
-        { ...createMockEffect("color_correct"), name: { en: "Color Correction", ru: "Цветокоррекция" }, tags: ["color"] },
+        {
+          ...createMockEffect("gaussian_blur"),
+          name: { en: "Gaussian Blur", ru: "Гауссово размытие" },
+          tags: ["blur"],
+        },
+        {
+          ...createMockEffect("motion_blur"),
+          name: { en: "Motion Blur", ru: "Размытие в движении" },
+          tags: ["blur", "motion"],
+        },
+        {
+          ...createMockEffect("color_correct"),
+          name: { en: "Color Correction", ru: "Цветокоррекция" },
+          tags: ["color"],
+        },
       ])
     })
 

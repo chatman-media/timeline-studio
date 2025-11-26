@@ -34,10 +34,14 @@ const createMockGL = () => {
 
     bindTexture: vi.fn(),
 
-    texImage2D: vi.fn().mockImplementation((_target: number, _level: number, _internalformat: number, width: number, height: number) => {
-      // Store dimensions for the currently bound texture
-      // In real implementation, we'd track which texture is bound
-    }),
+    texImage2D: vi
+      .fn()
+      .mockImplementation(
+        (_target: number, _level: number, _internalformat: number, _width: number, _height: number) => {
+          // Store dimensions for the currently bound texture
+          // In real implementation, we'd track which texture is bound
+        },
+      ),
 
     texParameteri: vi.fn(),
 

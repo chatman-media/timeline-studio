@@ -2,10 +2,10 @@
  * Integration tests for usePersonIdentification hook
  */
 
-import { renderHook, waitFor, act } from "@testing-library/react"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { usePersonIdentification } from "@/features/person-identification/hooks/use-person-identification"
 import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
+import { usePersonIdentification } from "@/features/person-identification/hooks/use-person-identification"
 import type { PersonProfile } from "@/features/person-identification/types/person"
 
 // Mock PersonDatabaseService
@@ -133,9 +133,7 @@ describe("usePersonIdentification - Integration", () => {
     })
 
     it("should reload persons after adding with autoSave", async () => {
-      vi.mocked(mockService.getAllPersons)
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce([mockPerson])
+      vi.mocked(mockService.getAllPersons).mockResolvedValueOnce([]).mockResolvedValueOnce([mockPerson])
       vi.mocked(mockService.addPerson).mockResolvedValue(mockPerson)
 
       const { result } = renderHook(() => usePersonIdentification({ autoSave: true }))
@@ -184,7 +182,7 @@ describe("usePersonIdentification - Integration", () => {
       await expect(
         act(async () => {
           await result.current.addPerson({ name: "Test" })
-        })
+        }),
       ).rejects.toThrow()
 
       expect(result.current.error).toBe("Ошибка добавления персоны")
@@ -222,7 +220,7 @@ describe("usePersonIdentification - Integration", () => {
       await expect(
         act(async () => {
           await result.current.updatePerson("person-1", { name: "Updated" })
-        })
+        }),
       ).rejects.toThrow()
 
       expect(result.current.error).toBe("Ошибка обновления персоны")
@@ -231,9 +229,7 @@ describe("usePersonIdentification - Integration", () => {
 
   describe("Deleting persons", () => {
     it("should delete a person", async () => {
-      vi.mocked(mockService.getAllPersons)
-        .mockResolvedValueOnce([mockPerson])
-        .mockResolvedValueOnce([])
+      vi.mocked(mockService.getAllPersons).mockResolvedValueOnce([mockPerson]).mockResolvedValueOnce([])
       vi.mocked(mockService.deletePerson).mockResolvedValue(undefined)
 
       const { result } = renderHook(() => usePersonIdentification({ autoSave: true }))
@@ -412,7 +408,7 @@ describe("usePersonIdentification - Integration", () => {
             name: "New Person",
             description: "Created from face",
             tags: ["new"],
-          }
+          },
         )
       })
 

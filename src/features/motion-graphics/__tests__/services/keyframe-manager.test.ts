@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import type { AnimatedProperty, InterpolationType, Keyframe } from "../../types/keyframe"
 import {
   addKeyframeToProperty,
   autoKeyframe,
@@ -23,6 +22,7 @@ import {
   updateKeyframeInProperty,
   validatePropertyKeyframes,
 } from "../../services/keyframe-manager"
+import type { AnimatedProperty } from "../../types/keyframe"
 
 describe("KeyframeManager", () => {
   describe("createKeyframe", () => {
@@ -56,10 +56,7 @@ describe("KeyframeManager", () => {
       name: "Opacity",
       path: "opacity",
       type: "number",
-      keyframes: [
-        createKeyframe(0, 0),
-        createKeyframe(2, 100),
-      ],
+      keyframes: [createKeyframe(0, 0), createKeyframe(2, 100)],
       enabled: true,
     }
 
@@ -93,11 +90,7 @@ describe("KeyframeManager", () => {
 
   describe("removeKeyframeFromProperty", () => {
     it("removes keyframe by id", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -163,11 +156,7 @@ describe("KeyframeManager", () => {
     })
 
     it("re-sorts keyframes when time is updated", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -187,11 +176,7 @@ describe("KeyframeManager", () => {
 
   describe("selectKeyframes", () => {
     it("selects keyframes by id", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -209,10 +194,7 @@ describe("KeyframeManager", () => {
     })
 
     it("adds to selection when not exclusive", () => {
-      const keyframes = [
-        { ...createKeyframe(0, 0), selected: true },
-        createKeyframe(1, 50),
-      ]
+      const keyframes = [{ ...createKeyframe(0, 0), selected: true }, createKeyframe(1, 50)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -229,10 +211,7 @@ describe("KeyframeManager", () => {
     })
 
     it("replaces selection when exclusive", () => {
-      const keyframes = [
-        { ...createKeyframe(0, 0), selected: true },
-        createKeyframe(1, 50),
-      ]
+      const keyframes = [{ ...createKeyframe(0, 0), selected: true }, createKeyframe(1, 50)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -273,10 +252,7 @@ describe("KeyframeManager", () => {
 
   describe("moveKeyframes", () => {
     it("moves keyframes by time offset", () => {
-      const keyframes = [
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(1, 50), createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -311,11 +287,7 @@ describe("KeyframeManager", () => {
 
   describe("scaleKeyframesTime", () => {
     it("scales keyframes around anchor time", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -325,7 +297,12 @@ describe("KeyframeManager", () => {
         enabled: true,
       }
 
-      const updated = scaleKeyframesTime(property, keyframes.map((kf) => kf.id), 2, 0)
+      const updated = scaleKeyframesTime(
+        property,
+        keyframes.map((kf) => kf.id),
+        2,
+        0,
+      )
 
       expect(updated.keyframes[0].time).toBe(0)
       expect(updated.keyframes[1].time).toBe(2)
@@ -362,11 +339,7 @@ describe("KeyframeManager", () => {
 
   describe("deleteSelectedKeyframes", () => {
     it("removes selected keyframes", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        { ...createKeyframe(1, 50), selected: true },
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), { ...createKeyframe(1, 50), selected: true }, createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -385,11 +358,7 @@ describe("KeyframeManager", () => {
 
   describe("reverseKeyframes", () => {
     it("reverses keyframes within range", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
       const property: AnimatedProperty = {
         id: "prop-1",
         name: "Test",
@@ -462,10 +431,7 @@ describe("KeyframeManager", () => {
 
   describe("offsetKeyframesToTime", () => {
     it("offsets keyframes to target start time", () => {
-      const keyframes = [
-        createKeyframe(1, 0),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(1, 0), createKeyframe(2, 100)]
 
       const offset = offsetKeyframesToTime(keyframes, 5)
 
@@ -481,11 +447,7 @@ describe("KeyframeManager", () => {
 
   describe("scaleKeyframesToDuration", () => {
     it("scales keyframes to target duration", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
 
       const scaled = scaleKeyframesToDuration(keyframes, 4, 0)
 
@@ -504,11 +466,7 @@ describe("KeyframeManager", () => {
   })
 
   describe("findKeyframeAtTime", () => {
-    const keyframes = [
-      createKeyframe(0, 0),
-      createKeyframe(1, 50),
-      createKeyframe(2, 100),
-    ]
+    const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
 
     it("finds keyframe at exact time", () => {
       const found = findKeyframeAtTime(keyframes, 1)
@@ -527,12 +485,7 @@ describe("KeyframeManager", () => {
   })
 
   describe("getKeyframesInRange", () => {
-    const keyframes = [
-      createKeyframe(0, 0),
-      createKeyframe(1, 50),
-      createKeyframe(2, 100),
-      createKeyframe(3, 150),
-    ]
+    const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100), createKeyframe(3, 150)]
 
     it("returns keyframes in range", () => {
       const inRange = getKeyframesInRange(keyframes, 1, 2)
@@ -596,11 +549,7 @@ describe("KeyframeManager", () => {
     })
 
     it("keeps keyframes with different times", () => {
-      const keyframes = [
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-        createKeyframe(2, 100),
-      ]
+      const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
 
       const merged = mergeOverlappingKeyframes(keyframes)
 
@@ -615,10 +564,7 @@ describe("KeyframeManager", () => {
         name: "Test",
         path: "test",
         type: "number",
-        keyframes: [
-          createKeyframe(0, 0),
-          createKeyframe(1, 50),
-        ],
+        keyframes: [createKeyframe(0, 0), createKeyframe(1, 50)],
         enabled: true,
       }
 
@@ -632,10 +578,7 @@ describe("KeyframeManager", () => {
         name: "Test",
         path: "test",
         type: "number",
-        keyframes: [
-          createKeyframe(1, 50),
-          createKeyframe(0, 0),
-        ],
+        keyframes: [createKeyframe(1, 50), createKeyframe(0, 0)],
         enabled: true,
       }
 
@@ -650,10 +593,7 @@ describe("KeyframeManager", () => {
         name: "Test",
         path: "test",
         type: "number",
-        keyframes: [
-          createKeyframe(0, 0),
-          createKeyframe(1, "string" as any),
-        ],
+        keyframes: [createKeyframe(0, 0), createKeyframe(1, "string" as any)],
         enabled: true,
       }
 

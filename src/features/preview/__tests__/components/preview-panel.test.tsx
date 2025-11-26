@@ -48,7 +48,7 @@ vi.mock("../../components/preset-gallery", () => ({
 }))
 
 vi.mock("../../components/quality-controls", () => ({
-  QualityControls: ({ quality, gpuTier, onChange }: any) => (
+  QualityControls: ({ quality, gpuTier }: any) => (
     <div data-testid="quality-controls">
       Quality Controls - {gpuTier} - {quality.fps} FPS
     </div>

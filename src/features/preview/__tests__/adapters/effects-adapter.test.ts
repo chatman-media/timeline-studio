@@ -4,6 +4,9 @@
  */
 
 import { describe, expect, it } from "vitest"
+import type { BaseEffect } from "@/features/effects/types/unified-effects"
+import type { VideoFilter } from "@/features/filters/types/filters"
+import type { AppliedColorGrading, AppliedEffect, AppliedFilter } from "@/features/timeline/types/timeline"
 import {
   convertBaseEffect,
   convertColorGrading,
@@ -11,9 +14,6 @@ import {
   filterEffectsByTime,
   getAllAvailableEffects,
 } from "../../adapters/effects-adapter"
-import type { BaseEffect } from "@/features/effects/types/unified-effects"
-import type { VideoFilter } from "@/features/filters/types/filters"
-import type { AppliedColorGrading, AppliedEffect, AppliedFilter } from "@/features/timeline/types/timeline"
 
 describe("EffectsAdapter", () => {
   describe("convertBaseEffect", () => {

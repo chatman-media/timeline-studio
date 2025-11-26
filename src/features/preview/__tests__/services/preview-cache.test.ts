@@ -219,7 +219,7 @@ describe("PreviewCache", () => {
     it("should prefetch frames around center timestamp", async () => {
       const effects: Effect[] = []
       let computeCount = 0
-      const compute = vi.fn().mockImplementation((timestamp: number) => {
+      const compute = vi.fn().mockImplementation((_timestamp: number) => {
         computeCount++
         return Promise.resolve(createMockImageBitmap(1920, 1080))
       })

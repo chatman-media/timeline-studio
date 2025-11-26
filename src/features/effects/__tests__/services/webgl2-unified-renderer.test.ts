@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { AppliedEffect, BaseEffect } from "../../types/unified-effects"
 import { type RenderContext, WebGL2UnifiedRenderer } from "../../services/webgl2-unified-renderer"
+import type { AppliedEffect, BaseEffect } from "../../types/unified-effects"
 
 // Mock WebGL2EffectProcessor
 vi.mock("../../services/webgl2-effect-processor", () => ({
@@ -64,7 +64,10 @@ describe("WebGL2UnifiedRenderer", () => {
   })
 
   describe("renderEffectStack", () => {
-    const createMockBaseEffect = (id: string, processingType: "realtime" | "render" | "hybrid" = "realtime"): BaseEffect => ({
+    const createMockBaseEffect = (
+      id: string,
+      processingType: "realtime" | "render" | "hybrid" = "realtime",
+    ): BaseEffect => ({
       id,
       name: { en: `Effect ${id}`, ru: `Эффект ${id}` },
       category: "color_correction",

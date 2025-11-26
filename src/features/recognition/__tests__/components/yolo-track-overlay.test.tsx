@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-import { YoloTrackOverlay } from "../../components/yolo-track-overlay"
-import { createMockYoloData, setupCanvasMock } from "../../__mocks__"
 import userEvent from "@testing-library/user-event"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { createMockYoloData, setupCanvasMock } from "../../__mocks__"
+import { YoloTrackOverlay } from "../../components/yolo-track-overlay"
 
 // Mock react-i18next
 vi.mock("react-i18next", () => ({

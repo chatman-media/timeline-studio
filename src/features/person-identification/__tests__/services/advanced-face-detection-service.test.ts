@@ -2,8 +2,8 @@
  * Tests for Advanced Face Detection Service
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { invoke } from "@tauri-apps/api/core"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedFaceDetectionService } from "@/domains/ai-services/services/person-identification"
 
 vi.mock("@tauri-apps/api/core")
@@ -17,7 +17,10 @@ describe("AdvancedFaceDetectionService", () => {
     confidence: 0.95,
     embedding: new Float32Array([0.1, 0.2, 0.3]),
     landmarks: {
-      points: [{ x: 120, y: 170 }, { x: 180, y: 170 }],
+      points: [
+        { x: 120, y: 170 },
+        { x: 180, y: 170 },
+      ],
       quality: 0.9,
     },
     pose3D: {
@@ -127,7 +130,7 @@ describe("AdvancedFaceDetectionService", () => {
         "detect_faces_advanced",
         expect.objectContaining({
           imageData: expect.any(String),
-        })
+        }),
       )
     })
 

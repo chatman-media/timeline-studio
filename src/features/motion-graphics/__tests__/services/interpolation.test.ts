@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import type { Keyframe } from "../../types/keyframe"
 import {
   generateSmoothTransition,
   getValueAtTime,
@@ -8,6 +7,7 @@ import {
   snapToFrame,
 } from "../../services/interpolation"
 import { createKeyframe } from "../../services/keyframe-manager"
+import type { Keyframe } from "../../types/keyframe"
 
 describe("Interpolation", () => {
   describe("interpolateKeyframes", () => {
@@ -162,11 +162,7 @@ describe("Interpolation", () => {
   })
 
   describe("getValueAtTime", () => {
-    const keyframes = [
-      createKeyframe(0, 0),
-      createKeyframe(1, 50),
-      createKeyframe(2, 100),
-    ]
+    const keyframes = [createKeyframe(0, 0), createKeyframe(1, 50), createKeyframe(2, 100)]
 
     it("returns default value for empty keyframes", () => {
       const value = getValueAtTime([], 1, 999)
@@ -194,11 +190,7 @@ describe("Interpolation", () => {
     })
 
     it("handles unsorted keyframes", () => {
-      const unsorted = [
-        createKeyframe(2, 100),
-        createKeyframe(0, 0),
-        createKeyframe(1, 50),
-      ]
+      const unsorted = [createKeyframe(2, 100), createKeyframe(0, 0), createKeyframe(1, 50)]
 
       const value = getValueAtTime(unsorted, 1, 0)
       expect(value).toBe(50)
@@ -206,10 +198,7 @@ describe("Interpolation", () => {
   })
 
   describe("getVelocityAtTime", () => {
-    const keyframes = [
-      createKeyframe(0, 0),
-      createKeyframe(1, 100),
-    ]
+    const keyframes = [createKeyframe(0, 0), createKeyframe(1, 100)]
 
     it("returns null for single keyframe", () => {
       const velocity = getVelocityAtTime([createKeyframe(0, 0)], 0.5)

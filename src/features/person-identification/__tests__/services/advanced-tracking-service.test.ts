@@ -2,8 +2,8 @@
  * Tests for Advanced Tracking Service
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { invoke } from "@tauri-apps/api/core"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedTrackingService } from "@/domains/ai-services/services/person-identification"
 import type { DetectedFace } from "@/features/person-identification/types/person"
 
@@ -361,9 +361,7 @@ describe("AdvancedTrackingService", () => {
     })
 
     it("should throw error for non-existent track", async () => {
-      await expect(service.interpolateMissingPositions("track-999", 45, 48)).rejects.toThrow(
-        "Трек track-999 не найден"
-      )
+      await expect(service.interpolateMissingPositions("track-999", 45, 48)).rejects.toThrow("Трек track-999 не найден")
     })
   })
 
@@ -388,7 +386,9 @@ describe("AdvancedTrackingService", () => {
     it("should skip tracks without person id", async () => {
       // Create track without person
       vi.mocked(invoke).mockResolvedValueOnce({
-        tracks: [{ id: "track-2", box: { x: 100, y: 100, width: 50, height: 50 }, state: "confirmed", confidence: 0.9 }],
+        tracks: [
+          { id: "track-2", box: { x: 100, y: 100, width: 50, height: 50 }, state: "confirmed", confidence: 0.9 },
+        ],
         newTracks: ["track-2"],
         deletedTracks: [],
         statistics: mockTrackingResult.statistics,

@@ -269,13 +269,8 @@ describe("MotionGraphics Index", () => {
     })
 
     it("exports interpolation services", async () => {
-      const {
-        interpolateKeyframes,
-        getValueAtTime,
-        getVelocityAtTime,
-        snapToFrame,
-        generateSmoothTransition,
-      } = await import("../index")
+      const { interpolateKeyframes, getValueAtTime, getVelocityAtTime, snapToFrame, generateSmoothTransition } =
+        await import("../index")
 
       expect(interpolateKeyframes).toBeDefined()
       expect(getValueAtTime).toBeDefined()

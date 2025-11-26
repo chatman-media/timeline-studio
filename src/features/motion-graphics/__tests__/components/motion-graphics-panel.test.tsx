@@ -1,9 +1,9 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import type { AnimationTrack } from "../../types/keyframe"
 import { MotionGraphicsPanel } from "../../components/motion-graphics-panel"
 import { createAnimationLayer } from "../../services/animation-layers"
 import { createKeyframe } from "../../services/keyframe-manager"
+import type { AnimationTrack } from "../../types/keyframe"
 
 // Mock the preset manager to avoid file system access
 vi.mock("../../services/preset-manager", () => ({
@@ -20,9 +20,7 @@ vi.mock("../../services/preset-manager", () => ({
       properties: [],
     },
   ]),
-  getPresetCategories: vi.fn(() => [
-    { id: "transitions", name: "Transitions", icon: "arrow-right" },
-  ]),
+  getPresetCategories: vi.fn(() => [{ id: "transitions", name: "Transitions", icon: "arrow-right" }]),
   getPresetsByCategory: vi.fn(() => []),
   searchPresets: vi.fn(() => []),
 }))

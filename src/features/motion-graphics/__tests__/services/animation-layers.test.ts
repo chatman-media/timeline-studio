@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import type { AnimatedProperty, AnimationLayer, AnimationTrack } from "../../types/keyframe"
 import {
   addLayerToTrack,
   blendLayerValues,
@@ -19,6 +18,7 @@ import {
   updateLayerInTrack,
 } from "../../services/animation-layers"
 import { createKeyframe } from "../../services/keyframe-manager"
+import type { AnimatedProperty, AnimationLayer, AnimationTrack } from "../../types/keyframe"
 
 describe("AnimationLayers", () => {
   const createMockProperty = (name: string = "Test"): AnimatedProperty => ({
@@ -26,10 +26,7 @@ describe("AnimationLayers", () => {
     name,
     path: `path.${name}`,
     type: "number",
-    keyframes: [
-      createKeyframe(0, 0),
-      createKeyframe(1, 100),
-    ],
+    keyframes: [createKeyframe(0, 0), createKeyframe(1, 100)],
     enabled: true,
   })
 

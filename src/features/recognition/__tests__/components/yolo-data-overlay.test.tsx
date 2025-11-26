@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-import { YoloDataOverlay } from "../../components/yolo-data-overlay"
-import { mockDetections } from "../../__mocks__"
 import userEvent from "@testing-library/user-event"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { mockDetections } from "../../__mocks__"
+import { YoloDataOverlay } from "../../components/yolo-data-overlay"
 
 // Mock useYoloData hook
 const mockGetYoloDataAtTimestamp = vi.fn()

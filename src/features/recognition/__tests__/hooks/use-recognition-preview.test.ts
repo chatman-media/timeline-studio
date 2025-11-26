@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { useRecognitionPreview } from "../../hooks/use-recognition-preview"
 import { createMockYoloData } from "../../__mocks__"
+import { useRecognitionPreview } from "../../hooks/use-recognition-preview"
 
 // Mock Tauri API
 const mockInvoke = vi.fn()
@@ -78,9 +78,7 @@ describe("useRecognitionPreview", () => {
 
     it("должен обновлять состояние обработки", async () => {
       mockGetPreviewData.mockResolvedValue(null)
-      mockInvoke.mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(mockYoloData), 100)),
-      )
+      mockInvoke.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(mockYoloData), 100)))
 
       const { result } = renderHook(() => useRecognitionPreview())
 
@@ -130,12 +128,10 @@ describe("useRecognitionPreview", () => {
 
       const { result } = renderHook(() => useRecognitionPreview())
 
-      await result.current.processVideoRecognition(
-        "test-video",
-        "/path/to/video.mp4",
-        "/path/to/model.onnx",
-        ["person", "car"],
-      )
+      await result.current.processVideoRecognition("test-video", "/path/to/video.mp4", "/path/to/model.onnx", [
+        "person",
+        "car",
+      ])
 
       expect(mockInvoke).toHaveBeenCalledWith("process_video_recognition", {
         videoPath: "/path/to/video.mp4",
@@ -270,9 +266,7 @@ describe("useRecognitionPreview", () => {
 
       const { result } = renderHook(() => useRecognitionPreview())
 
-      const results = await result.current.processBatchRecognition([
-        { id: "video1", path: "/path/to/video1.mp4" },
-      ])
+      const results = await result.current.processBatchRecognition([{ id: "video1", path: "/path/to/video1.mp4" }])
 
       expect(results.size).toBe(0)
       expect(result.current.error).toBe("Failed")

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import type { BaseEffect } from "../../types/unified-effects"
 import {
   createFallbackEffect,
   processEffect,
@@ -6,7 +7,6 @@ import {
   validateEffect,
   validateEffectsData,
 } from "../../utils/effect-processor"
-import type { BaseEffect } from "../../types/unified-effects"
 
 describe("effect-processor", () => {
   const createRawEffect = (id: string, overrides: any = {}) => ({

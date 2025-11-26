@@ -2,7 +2,7 @@
  * Tests for useAdvancedPersonIdentification hook
  */
 
-import { renderHook, waitFor, act } from "@testing-library/react"
+import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useAdvancedPersonIdentification } from "@/features/person-identification/hooks/use-advanced-person-identification"
 
@@ -118,7 +118,7 @@ describe("useAdvancedPersonIdentification", () => {
         useAdvancedPersonIdentification({
           enableTracking: false,
           autoIdentify: false,
-        })
+        }),
       )
 
       await waitFor(() => {
@@ -187,7 +187,7 @@ describe("useAdvancedPersonIdentification", () => {
         useAdvancedPersonIdentification({
           enableTracking: false,
           autoIdentify: true,
-        })
+        }),
       )
 
       await waitFor(() => {
@@ -240,7 +240,7 @@ describe("useAdvancedPersonIdentification", () => {
       const { result } = renderHook(() =>
         useAdvancedPersonIdentification({
           enableTracking: true,
-        })
+        }),
       )
 
       await waitFor(() => {
@@ -270,7 +270,7 @@ describe("useAdvancedPersonIdentification", () => {
         {
           id: "face-2",
           bbox: { x: 200, y: 200, width: 50, height: 50 },
-          confidence: 0.90,
+          confidence: 0.9,
           embedding: new Float32Array([0.11, 0.21, 0.31]),
           timestamp: { seconds: 2 },
           blur: 0.1,
@@ -287,7 +287,7 @@ describe("useAdvancedPersonIdentification", () => {
           enableTracking: false,
           autoCluster: true,
           clusterThreshold: 0.8,
-        })
+        }),
       )
 
       await waitFor(() => {
@@ -298,10 +298,7 @@ describe("useAdvancedPersonIdentification", () => {
         await result.current.analyzeVideo("video-path")
       })
 
-      expect(mockPersonService.clusterUnidentifiedFaces).toHaveBeenCalledWith(
-        expect.any(Array),
-        0.8
-      )
+      expect(mockPersonService.clusterUnidentifiedFaces).toHaveBeenCalledWith(expect.any(Array), 0.8)
     })
 
     it("should update progress during analysis", async () => {
@@ -335,7 +332,7 @@ describe("useAdvancedPersonIdentification", () => {
       await expect(
         act(async () => {
           await result.current.analyzeVideo("video-path")
-        })
+        }),
       ).rejects.toThrow()
 
       expect(result.current.error).toBeDefined()

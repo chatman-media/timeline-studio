@@ -1,6 +1,6 @@
-import { renderHook, act } from "@testing-library/react"
-import { describe, expect, it, vi, beforeEach } from "vitest"
-import { useNodeEditor, useNodeSelection, useNodeGraphOperations } from "../../hooks/use-node-editor"
+import { act, renderHook } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { useNodeEditor, useNodeGraphOperations, useNodeSelection } from "../../hooks/use-node-editor"
 import type { CompositeNode, NodeGraph } from "../../types/node-compositing"
 
 // Mock logger
@@ -182,7 +182,11 @@ describe("useNodeEditor", () => {
 
     it("should fit multiple nodes to screen", () => {
       const { result } = renderHook(() => useNodeEditor(createMockGraph()))
-      const nodes = [createMockNode("node1", 0, 0), createMockNode("node2", 1000, 1000), createMockNode("node3", 2000, 500)]
+      const nodes = [
+        createMockNode("node1", 0, 0),
+        createMockNode("node2", 1000, 1000),
+        createMockNode("node3", 2000, 500),
+      ]
 
       act(() => {
         result.current.fitToScreen(nodes)
@@ -388,7 +392,7 @@ describe("useNodeGraphOperations", () => {
       result.current.addNode(node)
     })
 
-    expect(result.current.graph.nodes["node1"]).toEqual(node)
+    expect(result.current.graph.nodes.node1).toEqual(node)
   })
 
   it("should remove nodes", () => {
@@ -402,8 +406,8 @@ describe("useNodeGraphOperations", () => {
       result.current.removeNodes(["node1"])
     })
 
-    expect(result.current.graph.nodes["node1"]).toBeUndefined()
-    expect(result.current.graph.nodes["node2"]).toEqual(node2)
+    expect(result.current.graph.nodes.node1).toBeUndefined()
+    expect(result.current.graph.nodes.node2).toEqual(node2)
   })
 
   it("should remove connections when removing nodes", () => {

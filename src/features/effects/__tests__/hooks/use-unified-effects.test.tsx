@@ -49,7 +49,7 @@ vi.mock("../../services/effect-manager", () => {
         return stack
       }),
       getEffectStack: vi.fn((id: string) => stacks.get(id)),
-      applyEffect: vi.fn((effectId, targetId, targetType, options) => ({
+      applyEffect: vi.fn((effectId, _targetId, _targetType, options) => ({
         id: `applied_${Date.now()}`,
         effectId,
         startTime: options?.startTime || 0,
@@ -235,7 +235,13 @@ describe("useUnifiedEffects", () => {
 
       result.current.setEffectParameter("effect1", "intensity", 90)
 
-      expect(result.current.effectManager.setEffectParameter).toHaveBeenCalledWith("effect1", "intensity", 90, false, undefined)
+      expect(result.current.effectManager.setEffectParameter).toHaveBeenCalledWith(
+        "effect1",
+        "intensity",
+        90,
+        false,
+        undefined,
+      )
     })
 
     it("should set effect parameter with keyframe", async () => {
@@ -243,7 +249,13 @@ describe("useUnifiedEffects", () => {
 
       result.current.setEffectParameter("effect1", "intensity", 90, true, 5000)
 
-      expect(result.current.effectManager.setEffectParameter).toHaveBeenCalledWith("effect1", "intensity", 90, true, 5000)
+      expect(result.current.effectManager.setEffectParameter).toHaveBeenCalledWith(
+        "effect1",
+        "intensity",
+        90,
+        true,
+        5000,
+      )
     })
 
     it("should reorder effects", async () => {

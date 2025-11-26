@@ -1,8 +1,8 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { useYoloData } from "../../hooks/use-yolo-data"
 import { YoloDataService } from "@/domains/ai-services/services/recognition"
 import { createMockYoloData, mockDetections } from "../../__mocks__"
+import { useYoloData } from "../../hooks/use-yolo-data"
 
 // Mock dependencies
 vi.mock("@/domains/ai-services/services/recognition", () => ({

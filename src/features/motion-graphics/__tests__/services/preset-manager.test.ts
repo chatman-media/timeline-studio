@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
-import type { AnimationLayer, MotionPreset } from "../../types/keyframe"
+import { createAnimationLayer } from "../../services/animation-layers"
+import { createKeyframe } from "../../services/keyframe-manager"
 import {
   applyPreset,
   combinePresets,
@@ -16,8 +17,7 @@ import {
   searchPresets,
   validatePreset,
 } from "../../services/preset-manager"
-import { createAnimationLayer } from "../../services/animation-layers"
-import { createKeyframe } from "../../services/keyframe-manager"
+import type { MotionPreset } from "../../types/keyframe"
 
 // Mock the motion presets data
 vi.mock("../../data/motion-presets.json", () => ({
@@ -272,11 +272,7 @@ describe("PresetManager", () => {
           name: "Position",
           path: "position",
           type: "vec2",
-          keyframes: [
-            createKeyframe(0, [0, 0]),
-            createKeyframe(1.5, [50, 50]),
-            createKeyframe(3, [100, 100]),
-          ],
+          keyframes: [createKeyframe(0, [0, 0]), createKeyframe(1.5, [50, 50]), createKeyframe(3, [100, 100])],
           enabled: true,
         },
       ])

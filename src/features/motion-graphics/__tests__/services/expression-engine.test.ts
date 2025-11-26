@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
-import type { ExpressionContext } from "../../types/keyframe"
 import { ExpressionEvaluator, expressionPresets } from "../../services/expression-engine"
 import { createKeyframe } from "../../services/keyframe-manager"
+import type { ExpressionContext } from "../../types/keyframe"
 
 describe("ExpressionEngine", () => {
   const createMockContext = (overrides?: Partial<ExpressionContext>): ExpressionContext => ({

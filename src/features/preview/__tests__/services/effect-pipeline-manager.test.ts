@@ -5,7 +5,7 @@
 
 import { beforeEach, describe, expect, it } from "vitest"
 import { EffectPipelineManager } from "../../services/effect-pipeline-manager"
-import type { Effect, GPUTier, PreviewQuality } from "../../types"
+import type { Effect, PreviewQuality } from "../../types"
 
 describe("EffectPipelineManager", () => {
   let manager: EffectPipelineManager
