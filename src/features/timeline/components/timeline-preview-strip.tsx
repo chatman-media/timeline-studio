@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
+import { frameExtractionService } from "@/domains/video-editing/services/compiler"
 import { useSmartTimelinePreviews } from "@/features/video-compiler/hooks/use-frame-extraction"
-import { frameExtractionService } from "@/features/video-compiler/services/frame-extraction-service"
 import { cn } from "@/lib/utils"
 
 export interface TimelinePreviewStripProps {

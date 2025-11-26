@@ -8,19 +8,19 @@
 import { createContext, type ReactNode, useEffect, useState } from "react"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
-import {
-  getMediaFiles,
-  restorePreviewCache,
-  selectAudioFile,
-  selectMediaDirectory,
-  selectMediaFile,
-} from "@/features/media/services/media-api"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/state-types-extensions"
 import {
   handleMediaBackendEvent,
   type MediaManagementContext as MediaContext,
 } from "../machines/backend-event-handlers"
+import {
+  getMediaFiles,
+  restorePreviewCache,
+  selectAudioFile,
+  selectMediaDirectory,
+  selectMediaFile,
+} from "../services/media-api"
 import { getMediaMetadataService } from "../services/media-metadata-service"
 import type { MediaImportOptions, MediaInfo, MediaManagementService, MediaType } from "../types"
 
@@ -86,6 +86,13 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
             type: mediaItem.media_type as MediaType,
             duration: mediaItem.duration ?? undefined,
             thumbnailPath: mediaItem.thumbnail ?? undefined,
+            // Load metadata with codec for H.265 detection
+            metadata: mediaItem.metadata?.codec
+              ? {
+                  type: mediaItem.media_type as "Video" | "Audio" | "Image",
+                  codec: mediaItem.metadata.codec,
+                }
+              : undefined,
           })
         })
       }
@@ -101,6 +108,13 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
               type: mediaItem.media_type as MediaType,
               duration: mediaItem.duration ?? undefined,
               thumbnailPath: mediaItem.thumbnail ?? undefined,
+              // Load metadata with codec for H.265 detection
+              metadata: mediaItem.metadata?.codec
+                ? {
+                    type: mediaItem.media_type as "Video" | "Audio" | "Image",
+                    codec: mediaItem.metadata.codec,
+                  }
+                : undefined,
             })
           }
         })

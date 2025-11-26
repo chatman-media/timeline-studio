@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { promptUserToFindFile } from "@/features/media/services/media-restoration-service"
+import { promptUserToFindFile } from "@/domains/media-management/services/media-restoration-service"
 import type { SavedMediaFile } from "@/features/media/types/saved-media"
 
 import { createLogger } from "@/lib/tauri-logger"

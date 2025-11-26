@@ -43,9 +43,22 @@ export type {
   RetryConfig,
 } from "./services/error-tracker"
 export { ErrorTrackerService, getErrorTracker } from "./services/error-tracker"
+export type {
+  CachedFrames,
+  CachedPreview,
+  CachedRecognition,
+  CachedSubtitles,
+  CacheStatistics,
+} from "./services/indexeddb-cache-service"
+// IndexedDB Cache
+export { IndexedDBCacheService, indexedDBCacheService } from "./services/indexeddb-cache-service"
+// Media API
+export * from "./services/media-api"
 export type { MediaMetadataService } from "./services/media-metadata-service"
 // Services
 export { getMediaMetadataService } from "./services/media-metadata-service"
+// Media Restoration
+export * from "./services/media-restoration-service"
 // Proxy Generator
 export type {
   ProxyGenerationOptions,

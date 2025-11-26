@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
+import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
 import { createLogger } from "@/lib/tauri-logger"
-import { indexedDBCacheService } from "../services/indexeddb-cache-service"
 import type { MediaPreviewData, ThumbnailData } from "../types/preview"
 
 const logger = createLogger("MediaPreview")

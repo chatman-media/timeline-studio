@@ -1,9 +1,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useRef, useState } from "react"
-
+import { cacheMediaMetadata, getCachedMetadata } from "@/domains/video-editing/services/compiler"
 import type { MediaFile } from "@/features/media/types/media"
-import { cacheMediaMetadata, getCachedMetadata } from "@/features/video-compiler/services/metadata-cache-service"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaProcessor")

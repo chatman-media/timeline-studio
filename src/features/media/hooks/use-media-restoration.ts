@@ -4,7 +4,7 @@ import {
   generateRestorationReport,
   type ProjectRestorationResult,
   restoreProjectMedia as restoreProjectMediaService,
-} from "@/features/media/services/media-restoration-service"
+} from "@/domains/media-management/services/media-restoration-service"
 import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import { useModal } from "@/features/modals/services"

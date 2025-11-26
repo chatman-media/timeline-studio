@@ -3,17 +3,16 @@ import { open } from "@tauri-apps/plugin-dialog"
 
 import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
-import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("MediaRestoration")
-
 import {
   convertFromSavedMediaFile,
   fileExists,
   generateAlternativePaths,
   getExtensionsForFile,
   validateFileIntegrity,
-} from "../utils/saved-media-utils"
+} from "@/features/media/utils/saved-media-utils"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("MediaRestoration")
 
 /**
  * Результат попытки восстановления файла

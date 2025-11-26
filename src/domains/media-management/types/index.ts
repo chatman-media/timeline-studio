@@ -10,7 +10,7 @@ import type {
   MediaMetadata as BaseMediaMetadata,
   BrowserVideoMetadata,
   ImageMetadata,
-} from "@/features/media/services/media-api"
+} from "../services/media-api"
 
 // Re-export base types
 export type { AudioMetadata, BrowserVideoMetadata, ImageMetadata }

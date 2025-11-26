@@ -1,10 +1,6 @@
 import { clear as clearStore, createStore, del, entries, get, set, type UseStore } from "idb-keyval"
 
-import type {
-  RecognitionFrame,
-  SubtitleFrame,
-  TimelineFrame,
-} from "@/features/video-compiler/services/frame-extraction-service"
+import type { RecognitionFrame, SubtitleFrame, TimelineFrame } from "@/domains/video-editing/services/compiler"
 
 /**
  * Типы для различных кэшей

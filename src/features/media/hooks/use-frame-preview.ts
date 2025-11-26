@@ -5,7 +5,7 @@ import {
   ExtractionPurpose,
   FrameExtractionService,
   type TimelineFrame,
-} from "@/features/video-compiler/services/frame-extraction-service"
+} from "@/domains/video-editing/services/compiler"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { useMediaPreview } from "./use-media-preview"
