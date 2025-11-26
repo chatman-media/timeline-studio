@@ -1,3 +1,12 @@
+## [3.21.1](https://github.com/chatman-media/timeline-studio/compare/v3.21.0...v3.21.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* **promo:** complete i18n translations for investors section and remove tech references ([4695c77](https://github.com/chatman-media/timeline-studio/commit/4695c77770da366ded8e0671ce3145ed9a08ffb9))
+* **promo:** remove product readiness metric completely ([85d3b29](https://github.com/chatman-media/timeline-studio/commit/85d3b2913f32778071e862f32b97e2a97047b92e))
+* **promo:** translate "Traction" to understandable terms ([5aa2c22](https://github.com/chatman-media/timeline-studio/commit/5aa2c2230eb97793d407e7983d410a32b81d6d8f))
+
 # [3.21.0](https://github.com/chatman-media/timeline-studio/compare/v3.20.0...v3.21.0) (2025-11-26)
 
 
