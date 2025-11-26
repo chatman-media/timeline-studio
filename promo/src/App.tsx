@@ -150,9 +150,14 @@ const DownloadButton: React.FC<{ platform: string; icon: string }> = ({ platform
       className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden block"
       style={{ position: "relative" }}
     >
+      {/* Background with purple base */}
       <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
-      <div className="absolute inset-0 bg-[#7c3aed] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="relative z-10 flex items-center justify-center gap-3">
+
+      {/* Kiro-style spreading effect on hover */}
+      <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+
+      {/* Text */}
+      <div className="relative z-20 flex items-center justify-center gap-3 group-hover:text-[#8b5cf6] transition-colors duration-500">
         {platform === "Windows" && (
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801" />
