@@ -151,7 +151,7 @@ describe("HSLSection", () => {
     render(<HSLSection />)
 
     const hueSlider = screen.getByTestId("parameter-slider-Hue")
-    expect(hueSlider).toHaveClass("[&_input]:bg-gradient-to-r")
+    expect(hueSlider).toHaveClass("[&_input]:bg-linear-to-r")
     expect(hueSlider).toHaveClass("[&_input]:from-red-500")
 
     const saturationSlider = screen.getByTestId("parameter-slider-Saturation")

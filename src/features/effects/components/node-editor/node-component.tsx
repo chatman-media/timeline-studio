@@ -1,20 +1,16 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react"
 
-import { cn } from "@/lib/utils";
-import type { CompositeNode, NodePort } from "../../types/node-compositing";
-import { NodeParameterControl } from "./node-parameter-control";
+import { cn } from "@/lib/utils"
+import type { CompositeNode, NodePort } from "../../types/node-compositing"
+import { NodeParameterControl } from "./node-parameter-control"
 
 interface NodeComponentProps {
-  node: CompositeNode;
-  selected: boolean;
-  onMove: (x: number, y: number) => void;
-  onPortClick: (
-    portId: string,
-    isOutput: boolean,
-    position: { x: number; y: number },
-  ) => void;
-  onParameterChange: (parameterId: string, value: any) => void;
-  onSelect: () => void;
+  node: CompositeNode
+  selected: boolean
+  onMove: (x: number, y: number) => void
+  onPortClick: (portId: string, isOutput: boolean, position: { x: number; y: number }) => void
+  onParameterChange: (parameterId: string, value: any) => void
+  onSelect: () => void
 }
 
 export function NodeComponent({
@@ -25,95 +21,91 @@ export function NodeComponent({
   onParameterChange,
   onSelect,
 }: NodeComponentProps) {
-  const nodeRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const nodeRef = useRef<HTMLDivElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
 
   // Handle node dragging
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      if (
-        e.target === nodeRef.current ||
-        (e.target as HTMLElement).classList.contains("node-header")
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
+      if (e.target === nodeRef.current || (e.target as HTMLElement).classList.contains("node-header")) {
+        e.preventDefault()
+        e.stopPropagation()
 
-        setIsDragging(true);
+        setIsDragging(true)
         setDragStart({
           x: e.clientX - node.position.x,
           y: e.clientY - node.position.y,
-        });
+        })
 
-        onSelect();
+        onSelect()
       }
     },
     [node.position, onSelect],
-  );
+  )
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (isDragging) {
-        const newX = e.clientX - dragStart.x;
-        const newY = e.clientY - dragStart.y;
-        onMove(newX, newY);
+        const newX = e.clientX - dragStart.x
+        const newY = e.clientY - dragStart.y
+        onMove(newX, newY)
       }
     },
     [isDragging, dragStart, onMove],
-  );
+  )
 
   const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+    setIsDragging(false)
+  }, [])
 
   // Setup global mouse listeners for dragging
   React.useEffect(() => {
     if (isDragging) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("mousemove", handleMouseMove)
+      window.addEventListener("mouseup", handleMouseUp)
 
       return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-      };
+        window.removeEventListener("mousemove", handleMouseMove)
+        window.removeEventListener("mouseup", handleMouseUp)
+      }
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove, handleMouseUp])
 
   // Handle port clicks
-  const handlePortClick =
-    (port: NodePort, isOutput: boolean) => (e: React.MouseEvent) => {
-      e.stopPropagation();
+  const handlePortClick = (port: NodePort, isOutput: boolean) => (e: React.MouseEvent) => {
+    e.stopPropagation()
 
-      const portElement = e.currentTarget as HTMLElement;
-      const rect = portElement.getBoundingClientRect();
-      const nodeRect = nodeRef.current!.getBoundingClientRect();
+    const portElement = e.currentTarget as HTMLElement
+    const rect = portElement.getBoundingClientRect()
+    const nodeRect = nodeRef.current!.getBoundingClientRect()
 
-      onPortClick(port.id, isOutput, {
-        x: rect.left + rect.width / 2 - nodeRect.left + node.position.x,
-        y: rect.top + rect.height / 2 - nodeRect.top + node.position.y,
-      });
-    };
+    onPortClick(port.id, isOutput, {
+      x: rect.left + rect.width / 2 - nodeRect.left + node.position.x,
+      y: rect.top + rect.height / 2 - nodeRect.top + node.position.y,
+    })
+  }
 
   // Get node color based on category
   const getCategoryColor = () => {
     switch (node.category) {
       case "source":
-        return "from-green-600 to-green-700";
+        return "from-green-600 to-green-700"
       case "filter":
-        return "from-blue-600 to-blue-700";
+        return "from-blue-600 to-blue-700"
       case "transform":
-        return "from-purple-600 to-purple-700";
+        return "from-purple-600 to-purple-700"
       case "composite":
-        return "from-orange-600 to-orange-700";
+        return "from-orange-600 to-orange-700"
       case "color":
-        return "from-pink-600 to-pink-700";
+        return "from-pink-600 to-pink-700"
       case "output":
-        return "from-red-600 to-red-700";
+        return "from-red-600 to-red-700"
       default:
-        return "from-gray-600 to-gray-700";
+        return "from-gray-600 to-gray-700"
     }
-  };
+  }
 
   return (
     <div
@@ -144,8 +136,8 @@ export function NodeComponent({
         <span className="truncate">{node.name}</span>
         <button
           onClick={(e) => {
-            e.stopPropagation();
-            setIsExpanded(!isExpanded);
+            e.stopPropagation()
+            setIsExpanded(!isExpanded)
           }}
           className="ml-2 text-xs opacity-70 hover:opacity-100"
         >
@@ -163,9 +155,7 @@ export function NodeComponent({
                 className={cn(
                   "port-input w-3 h-3 -ml-5 mr-2 rounded-full border-2",
                   "cursor-pointer hover:scale-125 transition-transform",
-                  port.required
-                    ? "bg-white border-white"
-                    : "bg-gray-600 border-gray-400",
+                  port.required ? "bg-white border-white" : "bg-gray-600 border-gray-400",
                 )}
                 onClick={handlePortClick(port, false)}
                 title={`${port.name} (${port.type})`}
@@ -217,9 +207,7 @@ export function NodeComponent({
 
         {/* Error message */}
         {node.error && (
-          <div className="mt-2 p-2 bg-red-900/20 border border-red-800 rounded text-xs text-red-400">
-            {node.error}
-          </div>
+          <div className="mt-2 p-2 bg-red-900/20 border border-red-800 rounded text-xs text-red-400">{node.error}</div>
         )}
 
         {/* Processing indicator */}
@@ -230,5 +218,5 @@ export function NodeComponent({
         )}
       </div>
     </div>
-  );
+  )
 }
