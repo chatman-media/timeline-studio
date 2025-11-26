@@ -1,3 +1,10 @@
+## [3.21.2](https://github.com/chatman-media/timeline-studio/compare/v3.21.1...v3.21.2) (2025-11-26)
+
+
+### Bug Fixes
+
+* **tests:** add fake timers support for audio sync tests ([330fe7e](https://github.com/chatman-media/timeline-studio/commit/330fe7e46396f2522bf52d660091b13a1acd701f))
+
 ## [3.21.1](https://github.com/chatman-media/timeline-studio/compare/v3.21.0...v3.21.1) (2025-11-26)
 
 
