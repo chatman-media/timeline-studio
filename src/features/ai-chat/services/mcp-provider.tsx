@@ -6,24 +6,13 @@
 
 "use client"
 
-import { invoke } from "@tauri-apps/api/core"
 import { type ReactNode, useEffect, useState } from "react"
+
+import { type MCPConfig, mcpCheckApi, mcpInitialize } from "@/domains/ai-services/tauri/chat-commands"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "MCPProvider" })
-
-/**
- * MCP Configuration interface
- * Соответствует MCPConfig из src-tauri/src/mcp/types.rs
- */
-interface MCPConfig {
-  enabled: boolean
-  claude_api_key?: string | null
-  model: string
-  max_tokens: number
-  temperature: number
-}
 
 interface MCPProviderProps {
   children: ReactNode
@@ -60,7 +49,7 @@ export function MCPProvider({ children }: MCPProviderProps) {
           temperature: 0.7,
         }
 
-        const result = await invoke<boolean>("mcp_initialize", { config })
+        const result = await mcpInitialize(config)
 
         if (result) {
           logger.info("MCP server initialized successfully")
@@ -68,7 +57,7 @@ export function MCPProvider({ children }: MCPProviderProps) {
 
           // Проверяем подключение к Claude API
           try {
-            const apiStatus = await invoke<boolean>("mcp_check_api")
+            const apiStatus = await mcpCheckApi()
             if (apiStatus) {
               logger.info("MCP Claude API connectivity verified")
             } else {

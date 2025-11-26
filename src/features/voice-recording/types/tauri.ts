@@ -1,57 +1,21 @@
 /**
  * Типы для взаимодействия с Tauri командами voice recording
+ * Re-exports from ai-services domain for backward compatibility
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import type { AudioFormat as AudioFormatType } from "@/domains/ai-services/tauri/audio-commands"
 
-/**
- * Поддерживаемые форматы аудио
- */
-export type AudioFormat = "webm" | "mp3" | "wav" | "ogg" | "m4a"
+// Re-export types and functions from domain
+export type {
+  AudioFormat,
+  AudioFormatInfo,
+  SaveAudioParams,
+  SaveAudioResult,
+} from "@/domains/ai-services/tauri/audio-commands"
+export { getSupportedAudioFormats, saveVoiceRecording } from "@/domains/ai-services/tauri/audio-commands"
 
-/**
- * Информация о формате аудио
- */
-export interface AudioFormatInfo {
-  format: AudioFormat
-  name: string
-  description: string
-  supported: boolean
-}
-
-/**
- * Параметры для сохранения аудио записи
- */
-export interface SaveAudioParams {
-  audioData: string // Base64 encoded audio data
-  fileName: string
-  format: AudioFormat
-  useSubdirectory?: boolean
-}
-
-/**
- * Результат сохранения аудио
- */
-export interface SaveAudioResult {
-  filePath: string
-  fileName: string
-  fileSize: number
-  format: AudioFormat
-}
-
-/**
- * Сохранить голосовую запись
- */
-export async function saveVoiceRecording(params: SaveAudioParams): Promise<SaveAudioResult> {
-  return await invoke<SaveAudioResult>("save_voice_recording", { params })
-}
-
-/**
- * Получить список поддерживаемых форматов аудио
- */
-export async function getSupportedAudioFormats(): Promise<AudioFormatInfo[]> {
-  return await invoke<AudioFormatInfo[]>("get_supported_audio_formats")
-}
+// Local type alias for use in this file
+type AudioFormat = AudioFormatType
 
 /**
  * Конвертировать Blob в Base64

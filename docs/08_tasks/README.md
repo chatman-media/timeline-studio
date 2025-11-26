@@ -45,16 +45,16 @@ Task movements and status changes are logged here.
   - TASKS_STATUS_2025-11-25.md (устаревший snapshot)
 - **Active tasks remaining:** 6
 
-### [2025-11-27] Architecture Refactor: Remove Direct Tauri Calls from Features - STARTED
-- **Status:** В работе (Критический приоритет)
+### [2025-11-27] Architecture Refactor: Remove Direct Tauri Calls from Features - COMPLETED ✅
+- **Status:** Завершено (100%)
 - **File:** architecture-refactor-remove-direct-tauri-calls.md
-- **Action:** planned/ → active/
+- **Action:** active/ → completed/
 - **Notes:**
-  - Обнаружено 24 файла нарушающих архитектуру
-  - Features напрямую вызывают Tauri команды вместо использования domain layer
-  - План рефакторинга в 3 фазы: Media & Video Compiler (2 дня), AI Features (1.5 дня), остальное (1.5 дня)
-  - Начинаем с Фазы 1: Media (5 файлов) + Video Compiler (4 файла)
-  - После завершения добавить ESLint rule для предотвращения нарушений
+  - Все 24 файла отрефакторены (Фаза 1, 2, 3)
+  - Features теперь используют domain services вместо прямых invoke() вызовов
+  - Созданы новые domain services: language-service, plugin-service, MCP commands
+  - 11373 тестов проходят
+  - ESLint rule пропущен (Biome не поддерживает restricted imports по location)
 
 ### [2025-11-25] Audio Analysis Architecture Refactoring - COMPLETED ✅
 - **Status:** Завершено (100%)

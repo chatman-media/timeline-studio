@@ -278,3 +278,39 @@ export async function generateSubtitlesFromTranscription(
     options: options || {},
   })
 }
+
+/**
+ * Voice Recording Commands
+ */
+export type AudioFormat = "webm" | "mp3" | "wav" | "ogg" | "m4a"
+
+export interface AudioFormatInfo {
+  format: AudioFormat
+  name: string
+  description: string
+  supported: boolean
+}
+
+export interface SaveAudioParams {
+  audioData: string // Base64 encoded audio data
+  fileName: string
+  format: AudioFormat
+  useSubdirectory?: boolean
+}
+
+export interface SaveAudioResult {
+  filePath: string
+  fileName: string
+  fileSize: number
+  format: AudioFormat
+}
+
+export async function saveVoiceRecording(params: SaveAudioParams): Promise<SaveAudioResult> {
+  logger.infoSync("Saving voice recording", { fileName: params.fileName, format: params.format })
+  return invoke<SaveAudioResult>("save_voice_recording", { params })
+}
+
+export async function getSupportedAudioFormats(): Promise<AudioFormatInfo[]> {
+  logger.debugSync("Getting supported audio formats")
+  return invoke<AudioFormatInfo[]>("get_supported_audio_formats")
+}

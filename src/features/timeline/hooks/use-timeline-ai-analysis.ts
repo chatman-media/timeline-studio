@@ -1,11 +1,14 @@
 /**
  * Timeline AI Analysis Hook
  * Интеграция AI Content Intelligence с Timeline для автоматического анализа
- * Migrated to use Tauri backend commands directly
+ * Migrated to use domain services
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
+import {
+  analyzeScenesByPath,
+  type SceneAnalysisResult,
+} from "@/domains/ai-services/tauri/content-intelligence-commands"
 import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
@@ -15,37 +18,8 @@ import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTimelineAiAnalysis")
 
-// Types from Rust backend (matching src-tauri/src/analysis/types/unified_types.rs)
-interface SceneAnalysis {
-  id: string
-  fileId: string
-  startTime: number
-  endTime: number
-  duration: number
-  sceneType: string
-  confidence: number
-  keyFrames: number[]
-  description?: string
-  visual?: {
-    dominantColors: string[]
-    brightness: number
-    contrast: number
-    saturation: number
-    motionLevel: number
-    compositionScore: number
-    sharpness: number
-    noiseLevel: number
-  }
-  audio?: {
-    hasSpeech: boolean
-    hasMusic: boolean
-    volumeLevel: number
-    clarity: number
-  }
-  objects: string[]
-  persons: string[]
-  transition?: any
-}
+// Re-export type alias for backward compatibility
+type SceneAnalysis = SceneAnalysisResult
 
 interface TimelineAnalysisState {
   isAnalyzing: boolean
@@ -147,12 +121,10 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
         // Прогресс: начало анализа
         setAnalysisState((prev) => ({ ...prev, analysisProgress: 10 }))
 
-        // Вызываем Tauri команду для анализа сцен
-        logger.info("Analyzing scenes via Tauri backend", { path: clip.mediaFile.path })
+        // Вызываем domain команду для анализа сцен
+        logger.info("Analyzing scenes via domain service", { path: clip.mediaFile.path })
 
-        const scenes = await invoke<SceneAnalysis[]>("analyze_scenes_by_path_command", {
-          filePath: clip.mediaFile.path,
-        })
+        const scenes = await analyzeScenesByPath(clip.mediaFile.path)
 
         setAnalysisState((prev) => ({
           ...prev,
@@ -429,9 +401,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
     if (!clip.mediaFile) return []
 
     try {
-      const scenes = await invoke<SceneAnalysis[]>("analyze_scenes_by_path_command", {
-        filePath: clip.mediaFile.path,
-      })
+      const scenes = await analyzeScenesByPath(clip.mediaFile.path)
 
       return convertScenesToKeyMoments(scenes)
     } catch (error) {

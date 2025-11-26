@@ -15,6 +15,12 @@ export type { ModalActor, ModalMachine } from "./machines/modal-machine"
 export { modalMachine } from "./machines/modal-machine"
 export type { UpdateMachine, UpdateMachineActor, UpdateMachineInput } from "./machines/update-machine"
 export { createUpdateMachine, updateMachine } from "./machines/update-machine"
+// Экспорт Language Service
+export type { LanguageResponse } from "./services/language"
+export { getAppLanguage, setAppLanguage } from "./services/language"
+// Экспорт Plugin Service
+export type { PluginCommandResponse } from "./services/plugins"
+export { isPluginLoaded, sendPluginCommand } from "./services/plugins"
 // Экспорт оркестратора
 export {
   getSystemIntegrationOrchestrator,

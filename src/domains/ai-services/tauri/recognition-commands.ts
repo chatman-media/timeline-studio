@@ -386,9 +386,7 @@ export async function processVideoRecognition(
   })
 }
 
-export async function getPreviewDataWithRecognition(
-  fileId: string,
-): Promise<{ preview_with_boxes?: string } | null> {
+export async function getPreviewDataWithRecognition(fileId: string): Promise<{ preview_with_boxes?: string } | null> {
   logger.info("Getting preview data with recognition", { fileId })
   return invoke("get_preview_data_with_recognition", {
     fileId,

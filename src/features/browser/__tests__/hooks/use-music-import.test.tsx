@@ -31,6 +31,7 @@ vi.mock("@/domains/media-management", () => ({
   getMediaMetadata: vi.fn(),
   selectAudioFile: vi.fn(),
   selectMediaDirectory: vi.fn(),
+  getMediaFiles: vi.fn(),
 }))
 
 vi.mock("@/features/media", () => ({
@@ -175,6 +176,7 @@ describe("useMusicImport", () => {
       const mockFiles = ["/path/to/music/song1.mp3", "/path/to/music/song2.wav"]
 
       ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
+      ;(mediaDomainModule.getMediaFiles as any).mockResolvedValue(mockFiles)
 
       const { invoke } = await import("@tauri-apps/api/core")
       ;(invoke as any).mockResolvedValue(mockFiles)
@@ -231,6 +233,7 @@ describe("useMusicImport", () => {
       ]
 
       ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
+      ;(mediaDomainModule.getMediaFiles as any).mockResolvedValue(mockFiles)
 
       const { invoke } = await import("@tauri-apps/api/core")
       ;(invoke as any).mockResolvedValue(mockFiles)
@@ -266,6 +269,7 @@ describe("useMusicImport", () => {
       const mockFiles = ["/path/to/empty/video.mp4", "/path/to/empty/image.jpg"]
 
       ;(mediaDomainModule.selectMediaDirectory as any).mockResolvedValue(mockDir)
+      ;(mediaDomainModule.getMediaFiles as any).mockResolvedValue(mockFiles)
 
       const { invoke } = await import("@tauri-apps/api/core")
       ;(invoke as any).mockResolvedValue(mockFiles)

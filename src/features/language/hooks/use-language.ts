@@ -3,20 +3,15 @@
  * Заменяет устаревший хук из @/i18n/hooks/use-language
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { getAppLanguage, type LanguageResponse, setAppLanguage } from "@/domains/system-integration"
 import { DEFAULT_LANGUAGE, isSupportedLanguage, type LanguageCode } from "@/i18n/constants"
 
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "UseLanguage" })
-
-interface LanguageResponse {
-  language: string
-  system_language: string
-}
 
 interface UseLanguageReturn {
   currentLanguage: LanguageCode
@@ -44,7 +39,7 @@ export function useLanguage(): UseLanguageReturn {
       setError(null)
 
       // Получаем язык из бэкенда Tauri
-      const response = await invoke<LanguageResponse>("get_app_language_tauri")
+      const response = await getAppLanguage()
 
       // Проверяем, поддерживается ли язык
       const appLang = isSupportedLanguage(response.language) ? (response.language as LanguageCode) : DEFAULT_LANGUAGE
@@ -101,7 +96,7 @@ export function useLanguage(): UseLanguageReturn {
         localStorage.setItem("app-language", lang)
 
         // Синхронизируем с бэкендом Tauri
-        await invoke<LanguageResponse>("set_app_language_tauri", { lang })
+        await setAppLanguage(lang)
       } catch (err) {
         logger.error("Error changing language:", {
           error: err instanceof Error ? err.message : String(err),

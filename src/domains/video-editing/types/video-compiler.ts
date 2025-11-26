@@ -10,9 +10,6 @@ import {
   type RenderProgress,
   RenderStatus,
 } from "@/features/video-compiler/types/render"
-import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("VideoCompiler")
 
 // Импортируем новые типы эффектов
 
@@ -729,51 +726,6 @@ export function createEmptyProject(name = "Untitled Project"): ProjectSchema {
   }
 }
 
-/**
- * Пример вызова Tauri команды
- */
-export async function renderProject(project: ProjectSchema, outputPath: string): Promise<string> {
-  const { invoke } = await import("@tauri-apps/api/core")
-
-  try {
-    const jobId = await invoke<string>("compile_video", {
-      projectSchema: project,
-      outputPath,
-    })
-
-    return jobId
-  } catch (error) {
-    logger.error("Failed to start video compilation:", { error })
-    throw error
-  }
-}
-
-/**
- * Отслеживание прогресса рендеринга
- */
-export async function trackRenderProgress(
-  jobId: string,
-  onProgress: (progress: RenderProgress) => void,
-): Promise<void> {
-  const { invoke } = await import("@tauri-apps/api/core")
-
-  const checkProgress = async () => {
-    try {
-      const progress = await invoke<RenderProgress | null>("get_render_progress", { jobId })
-
-      if (progress) {
-        onProgress(progress)
-
-        // Если рендеринг еще идет, проверяем снова через 500ms
-        if (progress.status === RenderStatus.Processing) {
-          setTimeout(checkProgress, 500)
-        }
-      }
-    } catch (error) {
-      logger.error("Failed to get render progress:", { error })
-    }
-  }
-
-  // Начинаем отслеживание
-  void checkProgress()
-}
+// Функции renderProject и trackRenderProgress перенесены в:
+// src/domains/video-editing/services/compiler/video-compiler-service.ts
+// Импортируйте их оттуда: import { renderProject, trackRenderProgress } from "@/domains/video-editing"

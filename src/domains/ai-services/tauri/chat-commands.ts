@@ -98,3 +98,35 @@ export async function extractTimelineContext(): Promise<ChatTimelineContext> {
     filters: [],
   }
 }
+
+/**
+ * MCP (Model Context Protocol) commands
+ */
+
+/**
+ * MCP Configuration interface
+ * Соответствует MCPConfig из src-tauri/src/mcp/types.rs
+ */
+export interface MCPConfig {
+  enabled: boolean
+  claude_api_key?: string | null
+  model: string
+  max_tokens: number
+  temperature: number
+}
+
+/**
+ * Initialize MCP server with configuration
+ */
+export async function mcpInitialize(config: MCPConfig): Promise<boolean> {
+  logger.infoSync("Initializing MCP server", { model: config.model })
+  return invoke<boolean>("mcp_initialize", { config })
+}
+
+/**
+ * Check MCP API connectivity
+ */
+export async function mcpCheckApi(): Promise<boolean> {
+  logger.debugSync("Checking MCP API connectivity")
+  return invoke<boolean>("mcp_check_api")
+}

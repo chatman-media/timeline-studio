@@ -99,11 +99,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
 
         // Запускаем распознавание
         logInfo("[useRecognitionPreview] Запуск нового распознавания", { fileId, modelPath, targetClasses })
-        const result = (await processVideoRecognitionCommand(
-          videoPath,
-          modelPath,
-          targetClasses,
-        )) as YoloVideoData
+        const result = (await processVideoRecognitionCommand(videoPath, modelPath, targetClasses)) as YoloVideoData
 
         logInfo("[useRecognitionPreview] Распознавание завершено успешно", { fileId })
         options.onRecognitionComplete?.(fileId, result)

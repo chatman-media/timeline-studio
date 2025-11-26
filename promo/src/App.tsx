@@ -5,6 +5,7 @@ import { Footer } from "./components/Footer"
 import { HeroSection } from "./components/HeroSection"
 import { Navigation } from "./components/Navigation"
 import { SearchDemo } from "./components/SearchDemo"
+import { SEO } from "./components/SEO"
 import { VideoDemos } from "./components/VideoDemos"
 import { WhatYouCanDo } from "./components/WhatYouCanDo"
 import { useTranslation } from "./hooks/useTranslation"
@@ -13,6 +14,7 @@ const App: React.FC = () => {
   const { t } = useTranslation()
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO />
       <Navigation />
 
       <main className="flex-1">

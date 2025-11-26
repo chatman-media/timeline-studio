@@ -108,10 +108,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
     setProgress(25)
 
     try {
-      const result = (await detectKeyMomentsFromDetections(
-        detections,
-        qualityScores,
-      )) as unknown as MomentScore[]
+      const result = (await detectKeyMomentsFromDetections(detections, qualityScores)) as unknown as MomentScore[]
 
       setProgress(100)
       return result

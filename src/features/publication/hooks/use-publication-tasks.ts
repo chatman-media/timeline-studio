@@ -1,6 +1,6 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { sendPluginCommand } from "@/domains/system-integration"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -50,17 +50,8 @@ export function usePublicationTasks(): UsePublicationTasksReturn {
       setIsLoading(true)
       setError(null)
 
-      // Вызываем команду plugin через send_plugin_command
-      const response = await invoke<{
-        command_id: string
-        success: boolean
-        data?: { uploads: Array<any> }
-        error?: string
-      }>("send_plugin_command", {
-        pluginId: YOUTUBE_PLUGIN_ID,
-        command: "list_uploads",
-        params: {},
-      })
+      // Вызываем команду plugin через domain
+      const response = await sendPluginCommand<{ uploads: Array<any> }>(YOUTUBE_PLUGIN_ID, "list_uploads", {})
 
       if (response.success && response.data?.uploads) {
         // Преобразуем формат plugin в наш тип PublicationTask
@@ -122,16 +113,7 @@ export function usePublicationTasks(): UsePublicationTasksReturn {
     void logger.info("Запрос задачи публикации по ID", { taskId })
 
     try {
-      const response = await invoke<{
-        command_id: string
-        success: boolean
-        data?: any
-        error?: string
-      }>("send_plugin_command", {
-        pluginId: YOUTUBE_PLUGIN_ID,
-        command: "get_status",
-        params: { upload_id: taskId },
-      })
+      const response = await sendPluginCommand(YOUTUBE_PLUGIN_ID, "get_status", { upload_id: taskId })
 
       if (response.success && response.data) {
         const upload = response.data

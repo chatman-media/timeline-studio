@@ -5,10 +5,15 @@ import { TopBar } from "../top-bar"
 // Создаем моки
 const mockLogger = vi.hoisted(() => ({
   info: vi.fn(),
+  infoSync: vi.fn(),
   error: vi.fn(),
+  errorSync: vi.fn(),
   warn: vi.fn(),
+  warnSync: vi.fn(),
   debug: vi.fn(),
+  debugSync: vi.fn(),
   trace: vi.fn(),
+  traceSync: vi.fn(),
 }))
 
 const mockOpenModal = vi.hoisted(() => vi.fn())

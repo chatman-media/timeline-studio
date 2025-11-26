@@ -26,7 +26,16 @@ vi.mock("sonner", () => ({
 // Mock tauri logger
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => ({
+    info: vi.fn(),
+    infoSync: vi.fn(),
     error: vi.fn(),
+    errorSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    trace: vi.fn(),
+    traceSync: vi.fn(),
   }),
 }))
 

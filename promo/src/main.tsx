@@ -1,6 +1,7 @@
 import { Buffer } from "buffer"
 import { lazy, StrictMode, Suspense } from "react"
 import { createRoot } from "react-dom/client"
+import { HelmetProvider } from "react-helmet-async"
 import { HashRouter, Route, Routes } from "react-router-dom"
 import "./index.css"
 import App from "./App"
@@ -47,8 +48,9 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <LanguageProvider>
-        <HashRouter>
+      <HelmetProvider>
+        <LanguageProvider>
+          <HashRouter>
           <ScrollToTop />
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
@@ -66,9 +68,10 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/docs" element={<Docs />} />
               <Route path="/investors" element={<Investors />} />
             </Routes>
-          </Suspense>
-        </HashRouter>
-      </LanguageProvider>
+            </Suspense>
+          </HashRouter>
+        </LanguageProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   </StrictMode>,
 )
