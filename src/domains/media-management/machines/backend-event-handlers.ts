@@ -91,12 +91,15 @@ function handleMediaAdded(
   context: MediaManagementContext,
   event: Extract<ProjectEvent, { type: "MediaAdded" }>,
 ): Partial<MediaManagementContext> {
-  const { media } = event.payload
+  const { media } = event.payload as {
+    media: { id: string; path: string; name: string; media_type: string; duration?: number; codec?: string; thumbnail?: string }
+  }
 
   logger.info("Media added to pool:", {
     mediaId: media.id,
     path: media.path,
     type: media.media_type,
+    codec: media.codec,
   })
 
   // Создаем новую копию media pool
@@ -109,12 +112,12 @@ function handleMediaAdded(
     name: media.name,
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
-    thumbnailPath: (media as any).thumbnail ?? undefined,
+    thumbnailPath: media.thumbnail ?? undefined,
     // Добавляем metadata с codec для H.265 детекции
-    metadata: (media as any).codec
+    metadata: media.codec
       ? {
           type: media.media_type as "Video" | "Audio" | "Image",
-          codec: (media as any).codec,
+          codec: media.codec,
         }
       : undefined,
   }
@@ -209,7 +212,7 @@ function handleImportedMediaAdded(
   if (event.type !== "ImportedMediaAdded") return {}
 
   const { media } = event.payload as {
-    media: { id: string; path: string; name: string; media_type: string; duration?: number }
+    media: { id: string; path: string; name: string; media_type: string; duration?: number; codec?: string }
   }
 
   logger.info("Imported media added to pool:", {
@@ -217,6 +220,7 @@ function handleImportedMediaAdded(
     path: media.path,
     name: media.name,
     type: media.media_type,
+    codec: media.codec,
   })
 
   // Создаем новую копию media pool
@@ -230,10 +234,10 @@ function handleImportedMediaAdded(
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
     // Добавляем metadata с codec для H.265 детекции
-    metadata: (media as any).codec
+    metadata: media.codec
       ? {
           type: media.media_type as "Video" | "Audio" | "Image",
-          codec: (media as any).codec,
+          codec: media.codec,
         }
       : undefined,
   }

@@ -1,6 +1,8 @@
 use super::types::CommandResult;
 use crate::state::project_state::*;
 use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::video_compiler::core::ffmpeg::analysis::get_video_metadata;
+use std::path::Path;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -18,10 +20,6 @@ impl ImportedMediaCommands {
 
   /// Add media to temporary imported storage
   pub async fn add_imported_media(&self, path: String, media_type: MediaType) -> CommandResult {
-    use std::path::Path;
-
-    let mut state = self.state.write().await;
-
     // Generate unique ID for the media item
     let media_id = uuid::Uuid::new_v4().to_string();
 
@@ -32,19 +30,50 @@ impl ImportedMediaCommands {
       .unwrap_or("Unknown")
       .to_string();
 
+    // Extract video codec if this is a video file
+    let (codec, duration, resolution, frame_rate, bitrate) = if media_type == MediaType::Video {
+      match get_video_metadata(Path::new(&path)).await {
+        Ok(metadata) => {
+          log::info!(
+            "Extracted video metadata for {}: codec={}",
+            file_name,
+            metadata.codec
+          );
+          (
+            Some(metadata.codec),
+            Some(metadata.duration),
+            Some(Resolution {
+              width: metadata.width,
+              height: metadata.height,
+            }),
+            Some(metadata.fps),
+            Some(metadata.bitrate as u32),
+          )
+        }
+        Err(e) => {
+          log::warn!("Failed to extract video metadata for {}: {}", path, e);
+          (None, None, None, None, None)
+        }
+      }
+    } else {
+      (None, None, None, None, None)
+    };
+
+    let mut state = self.state.write().await;
+
     // Create media item
     let media_item = MediaItem {
       id: media_id.clone(),
       path: path.clone(),
       name: file_name.clone(),
       media_type: media_type.clone(),
-      duration: None,
+      duration,
       metadata: MediaMetadata {
         format: String::new(),
-        codec: None,
-        resolution: None,
-        frame_rate: None,
-        bitrate: None,
+        codec: codec.clone(),
+        resolution,
+        frame_rate,
+        bitrate,
         audio_channels: None,
         sample_rate: None,
         creation_time: None,
@@ -58,7 +87,7 @@ impl ImportedMediaCommands {
 
     let version = state.version;
 
-    // Publish event
+    // Publish event with codec info for immediate H.265 detection on frontend
     self
       .event_bus
       .publish(
@@ -72,8 +101,8 @@ impl ImportedMediaCommands {
               MediaType::Audio => "Audio".to_string(),
               MediaType::Image => "Image".to_string(),
             },
-            duration: None,
-            codec: None, // Will be set when metadata is available
+            duration,
+            codec, // Now includes codec for H.265/HEVC detection
           },
         },
         "command_handler".to_string(),
