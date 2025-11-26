@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
 import { useMusicFiles } from "@/features/app-state/hooks/use-music-files"
-import { convertToSavedMusicFile, getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/features/media"
+import { getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/domains/media-management"
+import { convertToSavedMusicFile } from "@/features/media"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 
