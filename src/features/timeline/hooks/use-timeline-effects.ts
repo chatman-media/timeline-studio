@@ -3,13 +3,13 @@
  */
 
 import { useCallback } from "react"
-import type { ProjectSchema } from "@/domains/video-editing/types"
 import {
   addEffectToClip,
   addFilterToClip,
   removeEffectFromClip,
   removeFilterFromClip,
-} from "@/features/effects/utils/user-effects"
+} from "@/domains/video-editing/services/effects"
+import type { ProjectSchema } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "./use-timeline"
 

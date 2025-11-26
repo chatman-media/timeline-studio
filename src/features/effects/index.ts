@@ -60,8 +60,8 @@ export type {
 // СЕРВИСЫ
 // ============================================================================
 
-export { EffectManager } from "./services/effect-manager"
-export type { PresetsCollection, UserPreset } from "./services/user-presets-service"
+// Реэкспорт сервисов из домена
+export type { PresetsCollection, UserPreset } from "@/domains/video-editing/services/effects"
 export {
   clearAllPresets,
   convertUserPresetToEffectPreset,
@@ -74,7 +74,8 @@ export {
   loadUserPreset,
   saveUserPreset,
   updateUserPreset,
-} from "./services/user-presets-service"
+} from "@/domains/video-editing/services/effects"
+export { EffectManager } from "./services/effect-manager"
 export { WebGL2EffectProcessor } from "./services/webgl2-effect-processor"
 export {
   type RenderContext,

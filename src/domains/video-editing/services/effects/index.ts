@@ -3,22 +3,6 @@
  * Экспорт всех сервисов для управления эффектами
  */
 
-// User Presets Service
-export type { PresetsCollection, UserPreset } from "./user-presets-service"
-export {
-  clearAllPresets,
-  convertUserPresetToEffectPreset,
-  deleteUserPreset,
-  exportPresets,
-  getAllUserPresets,
-  getFavoritePresets,
-  importPresets,
-  loadPresetsForEffect,
-  loadUserPreset,
-  saveUserPreset,
-  updateUserPreset,
-} from "./user-presets-service"
-
 // User Effects Service
 export type { UserEffect, UserEffectsCollection } from "./user-effects-service"
 export {
@@ -35,3 +19,18 @@ export {
   saveEffectsCollection,
   saveUserEffect,
 } from "./user-effects-service"
+// User Presets Service
+export type { PresetsCollection, UserPreset } from "./user-presets-service"
+export {
+  clearAllPresets,
+  convertUserPresetToEffectPreset,
+  deleteUserPreset,
+  exportPresets,
+  getAllUserPresets,
+  getFavoritePresets,
+  importPresets,
+  loadPresetsForEffect,
+  loadUserPreset,
+  saveUserPreset,
+  updateUserPreset,
+} from "./user-presets-service"

@@ -5,9 +5,9 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import type { BaseEffect } from "@/features/effects/types/unified-effects"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UserEffectsService")
 

@@ -1,14 +1,7 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useState } from "react"
+import { apiKeysService } from "@/domains/project-management/services/api-keys-service"
+import type { ApiKeyInfo, ApiKeyStatus, SupportedService } from "@/domains/project-management/tauri/api-keys-commands"
 import { createLogger } from "@/lib/tauri-logger"
-import { getValidationErrorMessage, validateApiKeyFormat } from "../constants/api-validation-patterns"
-import type {
-  ApiKeyInfo,
-  ApiKeyOperationResult,
-  ApiKeyStatus,
-  SupportedService,
-  ValidationResult,
-} from "../types/api-operations"
 import { useUserSettings } from "./use-user-settings"
 
 const logger = createLogger({ module: "UseApiKeys" })
@@ -28,7 +21,7 @@ export function useApiKeys() {
    */
   const loadApiKeysInfo = useCallback(async () => {
     try {
-      const keysList: ApiKeyInfo[] = await invoke("list_api_keys")
+      const keysList = await apiKeysService.listApiKeys()
       const keysMap = keysList.reduce<Record<string, ApiKeyInfo>>((acc, keyInfo) => {
         acc[keyInfo.key_type] = keyInfo
         return acc
@@ -49,21 +42,9 @@ export function useApiKeys() {
    */
   const getApiKeyStatus = useCallback(
     (service: string): ApiKeyStatus => {
-      if (loadingStatuses[service]) {
-        return "testing"
-      }
-
-      const keyInfo = apiKeysInfo[service]
-      if (!keyInfo || !keyInfo.has_value) {
-        return "not_set"
-      }
-
-      // Показываем сохраненный статус валидации сразу при загрузке
-      if (keyInfo.is_valid !== undefined) {
-        return keyInfo.is_valid ? "valid" : "invalid"
-      }
-
-      return "not_set"
+      const keyInfo = apiKeysInfo[service] || null
+      const isLoading = loadingStatuses[service] || false
+      return apiKeysService.getKeyStatus(keyInfo, isLoading)
     },
     [apiKeysInfo, loadingStatuses],
   )
@@ -73,34 +54,18 @@ export function useApiKeys() {
    */
   const saveSimpleApiKey = useCallback(
     async (service: string, value: string): Promise<boolean> => {
-      // Client-side валидация формата ключа перед отправкой на backend
-      if (value.trim().length > 0 && service in { openai: 1, claude: 1, grok: 1, deepseek: 1, gemini: 1 }) {
-        const isValid = validateApiKeyFormat(service as SupportedService, value)
-        if (!isValid) {
-          const errorMsg = getValidationErrorMessage(service as SupportedService)
-          setClientSideErrors((prev) => ({ ...prev, [service]: errorMsg }))
-          void logger.warn(`Client-side validation failed for ${service}:`, { error: errorMsg })
-          return false
-        }
-      }
-
-      // Очищаем client-side ошибки при успешной валидации
-      setClientSideErrors((prev) => ({ ...prev, [service]: "" }))
-
       try {
-        const result: ApiKeyOperationResult = await invoke("save_simple_api_key", {
-          params: {
-            key_type: service,
-            value: value,
-          },
-        })
+        const result = await apiKeysService.saveSimpleApiKey(service, value)
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
           setValidationErrors((prev) => ({ ...prev, [service]: "" })) // Очищаем ошибки валидации
+          setClientSideErrors((prev) => ({ ...prev, [service]: "" }))
           return true
         }
-        void logger.error(`Failed to save ${service} API key:`, { message: result.message })
+
+        // Если ошибка валидации - показываем её
+        setClientSideErrors((prev) => ({ ...prev, [service]: result.message }))
         return false
       } catch (error) {
         void logger.error(`Error saving ${service} API key:`, { error: String(error) })
@@ -119,9 +84,7 @@ export function useApiKeys() {
       setValidationErrors((prev) => ({ ...prev, [service]: "" }))
 
       try {
-        const result: ValidationResult = await invoke("validate_api_key", {
-          keyType: service,
-        })
+        const result = await apiKeysService.validateApiKey(service)
 
         // Store the specific error message if validation failed
         if (!result.is_valid && result.error_message) {
@@ -154,21 +117,18 @@ export function useApiKeys() {
       refreshToken?: string,
     ): Promise<boolean> => {
       try {
-        const result: ApiKeyOperationResult = await invoke("save_oauth_credentials", {
-          params: {
-            key_type: service,
-            client_id: clientId,
-            client_secret: clientSecret,
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          },
-        })
+        const result = await apiKeysService.saveOAuthCredentials(
+          service,
+          clientId,
+          clientSecret,
+          accessToken,
+          refreshToken,
+        )
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        void logger.error(`Failed to save ${service} OAuth credentials:`, { message: result.message })
         return false
       } catch (error) {
         void logger.error(`Error saving ${service} OAuth credentials:`, { error: String(error) })
@@ -184,12 +144,7 @@ export function useApiKeys() {
   const generateOAuthUrl = useCallback(
     async (service: string, clientId: string, state?: string): Promise<string | null> => {
       try {
-        const url: string = await invoke("generate_oauth_url", {
-          keyType: service,
-          clientId,
-          state,
-        })
-        return url
+        return await apiKeysService.generateOAuthUrl(service, clientId, state)
       } catch (error) {
         void logger.error(`Error generating OAuth URL for ${service}:`, { error: String(error) })
         return null
@@ -204,18 +159,12 @@ export function useApiKeys() {
   const exchangeOAuthCode = useCallback(
     async (service: string, clientId: string, clientSecret: string, code: string): Promise<boolean> => {
       try {
-        const result: ApiKeyOperationResult = await invoke("exchange_oauth_code", {
-          keyType: service,
-          clientId,
-          clientSecret,
-          code,
-        })
+        const result = await apiKeysService.exchangeOAuthCode(service, clientId, clientSecret, code)
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        void logger.error(`Failed to exchange OAuth code for ${service}:`, { message: result.message })
         return false
       } catch (error) {
         void logger.error(`Error exchanging OAuth code for ${service}:`, { error: String(error) })
@@ -231,16 +180,13 @@ export function useApiKeys() {
   const deleteApiKey = useCallback(
     async (service: string): Promise<boolean> => {
       try {
-        const result: ApiKeyOperationResult = await invoke("delete_api_key", {
-          keyType: service,
-        })
+        const result = await apiKeysService.deleteApiKey(service)
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
           setValidationErrors((prev) => ({ ...prev, [service]: "" })) // Очищаем ошибки валидации
           return true
         }
-        void logger.error(`Failed to delete ${service} API key:`, { message: result.message })
         return false
       } catch (error) {
         void logger.error(`Error deleting ${service} API key:`, { error: String(error) })
@@ -256,15 +202,12 @@ export function useApiKeys() {
   const importFromEnv = useCallback(
     async (envFilePath?: string): Promise<boolean> => {
       try {
-        const result: ApiKeyOperationResult = await invoke("import_from_env", {
-          envFilePath,
-        })
+        const result = await apiKeysService.importFromEnv(envFilePath)
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        void logger.error("Failed to import from .env:", { message: result.message })
         return false
       } catch (error) {
         void logger.error("Error importing from .env:", { error: String(error) })
@@ -276,8 +219,7 @@ export function useApiKeys() {
 
   const exportToEnvFormat = useCallback(async (): Promise<string | null> => {
     try {
-      const envContent: string = await invoke("export_to_env_format")
-      return envContent
+      return await apiKeysService.exportToEnvFormat()
     } catch (error) {
       void logger.error("Error exporting to .env format:", { error: String(error) })
       return null

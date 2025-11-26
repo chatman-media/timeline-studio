@@ -37,9 +37,12 @@ vi.mock("@/features/app-state/services/backend-sync", () => ({
     }),
   })),
 }))
-vi.mock("@/features/media/services/media-api", () => ({
+vi.mock("../../services/media-api", () => ({
   selectMediaFile: vi.fn().mockResolvedValue(["/test/video.mp4"]),
   selectAudioFile: vi.fn().mockResolvedValue(["/test/audio.mp3"]),
+  selectMediaDirectory: vi.fn().mockResolvedValue("/test/directory"),
+  getMediaFiles: vi.fn().mockResolvedValue(["/test/video.mp4"]),
+  restorePreviewCache: vi.fn().mockResolvedValue(0),
 }))
 // Mock должен возвращать тот же объект что и mockVideoMetadata
 vi.mock("../../services/media-metadata-service", () => ({

@@ -7,6 +7,9 @@
 
 import { createLogger } from "@/lib/tauri-logger"
 import {
+  type ApiKeyInfo,
+  type ApiKeyOperationResult,
+  type ApiKeyStatus,
   deleteApiKey as deleteApiKeyCommand,
   exchangeOAuthCode as exchangeOAuthCodeCommand,
   exportToEnvFormat as exportToEnvFormatCommand,
@@ -16,14 +19,11 @@ import {
   listApiKeys as listApiKeysCommand,
   parseOAuthCallbackUrl as parseOAuthCallbackUrlCommand,
   refreshOAuthToken as refreshOAuthTokenCommand,
+  type SupportedService,
   saveOAuthCredentials as saveOAuthCredentialsCommand,
   saveSimpleApiKey as saveSimpleApiKeyCommand,
-  validateApiKey as validateApiKeyCommand,
-  type ApiKeyInfo,
-  type ApiKeyOperationResult,
-  type ApiKeyStatus,
-  type SupportedService,
   type ValidationResult,
+  validateApiKey as validateApiKeyCommand,
 } from "../tauri/api-keys-commands"
 
 const logger = createLogger({ module: "ApiKeysService" })
@@ -180,10 +180,7 @@ export class ApiKeysService {
    */
   async saveSimpleApiKey(service: string, value: string): Promise<ApiKeyOperationResult> {
     // Client-side валидация формата ключа перед отправкой на backend
-    if (
-      value.trim().length > 0 &&
-      service in { openai: 1, claude: 1, grok: 1, deepseek: 1, gemini: 1 }
-    ) {
+    if (value.trim().length > 0 && service in { openai: 1, claude: 1, grok: 1, deepseek: 1, gemini: 1 }) {
       const isValid = this.validateKeyFormat(service as SupportedService, value)
       if (!isValid) {
         const errorMsg = this.getValidationErrorMessage(service as SupportedService)
