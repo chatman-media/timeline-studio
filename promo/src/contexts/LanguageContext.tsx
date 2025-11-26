@@ -593,7 +593,7 @@ const translations = {
     "mainPage.hero.viewGithub": "Посмотреть на GitHub",
 
     // Interface section
-    "mainPage.interface.title": "",
+    "mainPage.interface.title": " ",
     "mainPage.interface.titleHighlight": "Интерфейс",
     "mainPage.interface.description": "Чистый, интуитивный и мощный — всё на своих местах",
 
@@ -1027,7 +1027,7 @@ const translations = {
     "mainPage.hero.viewGithub": "查看GitHub",
 
     // Interface section
-    "mainPage.interface.title": "",
+    "mainPage.interface.title": " ",
     "mainPage.interface.titleHighlight": "界面",
     "mainPage.interface.description": "简洁、直观、强大 - 一切尽在掌控",
 
