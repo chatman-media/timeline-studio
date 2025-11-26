@@ -1,7 +1,14 @@
-import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 import { useCallback, useEffect, useState } from "react"
-import { OutputFormat, ProjectSchema, RenderJob, RenderStatus } from "@/domains/video-editing"
+import {
+  cancelRender,
+  getActiveJobs,
+  OutputFormat,
+  ProjectSchema,
+  RenderJob,
+  RenderStatus,
+  renderProject,
+} from "@/domains/video-editing"
 import { loadProject } from "@/features/app-state/services/project-file-service"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
 import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
@@ -74,7 +81,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
   // Обновление списка задач
   const refreshQueue = useCallback(async () => {
     try {
-      const jobs = await invoke<RenderJob[]>("get_active_jobs")
+      const jobs = (await getActiveJobs()) as RenderJob[]
       setRenderJobs(jobs)
 
       // Проверяем, есть ли активные задачи
@@ -169,10 +176,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
             }
 
             // Запускаем рендеринг
-            const jobId = await invoke<string>("compile_video", {
-              projectSchema: projectSchema,
-              outputPath: project.outputPath,
-            })
+            const jobId = await renderProject(projectSchema, project.outputPath)
 
             logInfo(`[useRenderQueue] Запущена задача рендеринга: ${jobId} для ${project.path}`)
           } catch (error) {
@@ -193,7 +197,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
   const cancelJob = useCallback(
     async (jobId: string) => {
       try {
-        const success = await invoke<boolean>("cancel_render", { jobId })
+        const success = await cancelRender(jobId)
         if (success) {
           await refreshQueue()
         }

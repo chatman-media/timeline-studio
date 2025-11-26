@@ -2,9 +2,16 @@
  * Хук для работы с backend командами Smart Montage Planner
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
+import {
+  analyzeAudioContent as analyzeAudioContentCommand,
+  analyzeFrameQuality as analyzeFrameQualityCommand,
+  analyzeVideoCompositionWithProcessor,
+  analyzeVideoQuality as analyzeVideoQualityCommand,
+  detectKeyMomentsFromDetections,
+  generateMontagePlanFromMoments,
+} from "@/domains/ai-services/tauri/montage-planner-commands"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type {
@@ -72,11 +79,11 @@ export function useMontageBackend(): UseMontageBackendReturn {
       setProgress(0)
 
       try {
-        const result = await invoke<VideoCompositionAnalysis>("analyze_video_composition", {
+        const result = (await analyzeVideoCompositionWithProcessor(
           videoPath,
           processorId,
           options,
-        })
+        )) as VideoCompositionAnalysis
 
         setProgress(100)
         return result
@@ -101,10 +108,10 @@ export function useMontageBackend(): UseMontageBackendReturn {
     setProgress(25)
 
     try {
-      const result = await invoke<MomentScore[]>("detect_key_moments", {
+      const result = (await detectKeyMomentsFromDetections(
         detections,
         qualityScores,
-      })
+      )) as unknown as MomentScore[]
 
       setProgress(100)
       return result
@@ -128,11 +135,11 @@ export function useMontageBackend(): UseMontageBackendReturn {
       setProgress(0)
 
       try {
-        const result = await invoke<MontagePlan>("generate_montage_plan", {
-          moments,
+        const result = (await generateMontagePlanFromMoments(
+          moments as any,
           config,
           sourceFiles,
-        })
+        )) as unknown as MontagePlan
 
         setProgress(100)
         return result
@@ -157,9 +164,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
     setProgress(0)
 
     try {
-      const result = await invoke<MontageQualityAnalysis>("analyze_video_quality", {
-        videoPath,
-      })
+      const result = (await analyzeVideoQualityCommand(videoPath)) as MontageQualityAnalysis
 
       setProgress(100)
       return result
@@ -183,10 +188,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
       setProgress(0)
 
       try {
-        const result = await invoke<MontageVideoAnalysis>("analyze_frame_quality", {
-          videoPath,
-          timestamp,
-        })
+        const result = (await analyzeFrameQualityCommand(videoPath, timestamp)) as MontageVideoAnalysis
 
         setProgress(100)
         return result
@@ -211,9 +213,7 @@ export function useMontageBackend(): UseMontageBackendReturn {
     setProgress(0)
 
     try {
-      const result = await invoke<AudioContentAnalysis>("analyze_audio_content", {
-        audioPath,
-      })
+      const result = (await analyzeAudioContentCommand(audioPath)) as AudioContentAnalysis
 
       setProgress(100)
       return result

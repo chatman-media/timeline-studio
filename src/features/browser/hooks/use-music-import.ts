@@ -1,6 +1,5 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/domains/media-management"
+import { getMediaFiles, getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/domains/media-management"
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
 import { useMusicFiles } from "@/features/app-state/hooks/use-music-files"
 import { convertToSavedMusicFile } from "@/features/media"
@@ -354,9 +353,7 @@ export function useMusicImport() {
       logger.info("Директория выбрана", { selectedDir })
 
       // Получаем список медиафайлов в директории
-      const mediaFiles = await invoke<string[]>("get_media_files", {
-        directory: selectedDir,
-      })
+      const mediaFiles = await getMediaFiles(selectedDir)
 
       // Фильтруем только аудио файлы
       const audioFiles = mediaFiles.filter((file: string) => {

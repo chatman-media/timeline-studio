@@ -1,6 +1,11 @@
-import { invoke } from "@tauri-apps/api/core"
 import { useCallback, useState } from "react"
 
+import {
+  clearRecognitionResults as clearRecognitionResultsCommand,
+  getPreviewDataWithRecognition,
+  processVideoRecognition as processVideoRecognitionCommand,
+  type VideoRecognitionResult,
+} from "@/domains/ai-services/tauri/recognition-commands"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { RecognitionResults } from "@/features/media/types/preview"
 import { logError, logInfo } from "@/lib/tauri-logger"
@@ -94,11 +99,11 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
 
         // Запускаем распознавание
         logInfo("[useRecognitionPreview] Запуск нового распознавания", { fileId, modelPath, targetClasses })
-        const result = await invoke<YoloVideoData>("process_video_recognition", {
+        const result = (await processVideoRecognitionCommand(
           videoPath,
           modelPath,
           targetClasses,
-        })
+        )) as YoloVideoData
 
         logInfo("[useRecognitionPreview] Распознавание завершено успешно", { fileId })
         options.onRecognitionComplete?.(fileId, result)
@@ -160,9 +165,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
   const getPreviewWithRecognition = useCallback(
     async (fileId: string): Promise<string | null> => {
       try {
-        const data = await invoke<{ preview_with_boxes?: string } | null>("get_preview_data_with_recognition", {
-          fileId,
-        })
+        const data = await getPreviewDataWithRecognition(fileId)
 
         return data?.preview_with_boxes || null
       } catch (err) {
@@ -234,7 +237,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
   const clearRecognitionResults = useCallback(
     async (fileId: string): Promise<boolean> => {
       try {
-        await invoke("clear_recognition_results", { fileId })
+        await clearRecognitionResultsCommand(fileId)
         return true
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to clear recognition results"

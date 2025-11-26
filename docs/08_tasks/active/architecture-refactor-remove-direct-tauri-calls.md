@@ -1,6 +1,6 @@
 # Рефакторинг: Удаление прямых вызовов Tauri из Features
 
-**Статус:** 🚧 В работе (35% - Фаза 1 + AI Director domain)
+**Статус:** 🚧 В работе (60% - Фаза 1 + Фаза 2 завершена)
 **Приоритет:** 🔴 Критический
 **Дата создания:** 2025-11-27
 **Последнее обновление:** 2025-11-27
@@ -359,7 +359,7 @@ export function useMediaProcessor() {
 - [ ] Обновить тесты
 - [ ] Коммит фазы 1
 
-### Фаза 2: AI Features
+### Фаза 2: AI Features ✅
 - [x] Создать ai-director domain ✅
   - [x] `src/domains/ai-director/tauri/ai-director-commands.ts`
   - [x] `src/domains/ai-director/services/ai-director-service.ts`
@@ -371,9 +371,17 @@ export function useMediaProcessor() {
   - [x] `use-ai-director-analysis.ts` → uses domain
   - [x] `use-ai-director-analysis-v2.ts` → uses domain
   - [x] `use-montage-applicator.ts` → uses fileSystemService
-- [ ] Создать subtitles domain
-- [ ] Рефакторить 2 subtitles файла
-- [ ] Рефакторить export, recognition, montage (3 файла)
+- [x] Создать subtitles domain ✅
+  - [x] `src/domains/subtitles/tauri/subtitle-commands.ts`
+  - [x] `src/domains/subtitles/services/subtitle-service.ts`
+  - [x] `src/domains/subtitles/types/index.ts`
+- [x] Рефакторить 2 subtitles файла ✅
+  - [x] `use-subtitles-import.ts` → uses readSubtitleFile from domain
+  - [x] `subtitle-auto-sync.tsx` → uses analyzeAudioPeaks from domain
+- [x] Рефакторить export, recognition, montage (3 файла) ✅
+  - [x] `use-render-queue.ts` → uses renderProject, getActiveJobs, cancelRender from video-editing
+  - [x] `use-recognition-preview.ts` → uses domain recognition commands
+  - [x] `use-montage-backend.ts` → uses domain montage-planner commands
 - [ ] Обновить тесты
 - [ ] Коммит фазы 2
 
@@ -395,4 +403,4 @@ export function useMediaProcessor() {
 
 ---
 
-**Следующий шаг:** Начать с Фазы 1 - Media & Video Compiler (наивысший приоритет)
+**Следующий шаг:** Фаза 3 - Остальные Features (browser, timeline, voice-recording, language, publication, ai-chat)

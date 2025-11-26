@@ -350,3 +350,52 @@ export async function autoClusterVideoFaces(
     options: options || {},
   })
 }
+
+/**
+ * Video Recognition Preview Commands
+ */
+export interface VideoRecognitionResult {
+  videoId: string
+  videoName: string
+  videoPath: string
+  frames: Array<{
+    timestamp: number
+    detections: Array<{
+      class: string
+      confidence: number
+      bbox: { x: number; y: number; width: number; height: number }
+    }>
+  }>
+  metadata: {
+    model: string
+    version: string
+    processedAt: string
+  }
+}
+
+export async function processVideoRecognition(
+  videoPath: string,
+  modelPath?: string,
+  targetClasses?: string[],
+): Promise<VideoRecognitionResult> {
+  logger.info("Processing video recognition", { videoPath, modelPath, targetClasses })
+  return invoke("process_video_recognition", {
+    videoPath,
+    modelPath,
+    targetClasses,
+  })
+}
+
+export async function getPreviewDataWithRecognition(
+  fileId: string,
+): Promise<{ preview_with_boxes?: string } | null> {
+  logger.info("Getting preview data with recognition", { fileId })
+  return invoke("get_preview_data_with_recognition", {
+    fileId,
+  })
+}
+
+export async function clearRecognitionResults(fileId: string): Promise<void> {
+  logger.info("Clearing recognition results", { fileId })
+  return invoke("clear_recognition_results", { fileId })
+}

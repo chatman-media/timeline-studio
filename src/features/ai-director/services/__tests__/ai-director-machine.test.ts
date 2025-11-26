@@ -143,7 +143,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("analyzing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(invoke).toHaveBeenCalledWith("ai_director_analyze_comprehensive", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_v2_analyze_comprehensive", {
         videoPath: "/path/to/video.mp4",
         config: mockConfig,
       })
@@ -200,7 +200,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("quickAnalyzing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(invoke).toHaveBeenCalledWith("ai_director_analyze_quick", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_v2_analyze_quick", {
         videoPath: "/path/to/video.mp4",
       })
 
@@ -232,7 +232,7 @@ describe("AI Director XState Machine", () => {
       await waitFor(actor, (state) => state.matches("batchAnalyzing"))
       await waitFor(actor, (state) => state.matches("idle"))
 
-      expect(invoke).toHaveBeenCalledWith("ai_director_analyze_batch", {
+      expect(invoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch", {
         filePaths: ["/path/to/video1.mp4", "/path/to/video2.mp4"],
         config: mockConfig,
       })
