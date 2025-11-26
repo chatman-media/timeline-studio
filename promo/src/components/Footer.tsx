@@ -122,7 +122,7 @@ export const Footer: React.FC = () => {
               {/* Investors Column */}
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-6">
-                  For Investors
+                  {t("footer.investors.title")}
                 </h3>
                 <ul className="space-y-3">
                   <li>
@@ -134,7 +134,7 @@ export const Footer: React.FC = () => {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                       </span>
-                      Raising $1M Seed
+                      {t("footer.investors.raisingSeed")}
                     </Link>
                   </li>
                   <li>
@@ -142,7 +142,7 @@ export const Footer: React.FC = () => {
                       to="/project"
                       className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
                     >
-                      Documentation
+                      {t("footer.investors.documentation")}
                     </Link>
                   </li>
                   <li>
@@ -150,7 +150,7 @@ export const Footer: React.FC = () => {
                       href="mailto:ak.chatman.media@gmail.com"
                       className="text-sm text-gray-300 hover:text-gray-100 transition-colors"
                     >
-                      Contact
+                      {t("footer.investors.contact")}
                     </a>
                   </li>
                 </ul>

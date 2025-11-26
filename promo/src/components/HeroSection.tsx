@@ -111,8 +111,8 @@ export function HeroSection() {
           </a>
 
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 backdrop-blur-sm rounded-full border border-blue-500/20">
-            <span className="text-sm text-blue-300 font-semibold">BETA</span>
-            <span className="text-xs text-blue-200">100% Free</span>
+            <span className="text-sm text-blue-300 font-semibold">{t("mainPage.hero.betaBadge")}</span>
+            <span className="text-xs text-blue-200">{t("mainPage.hero.betaFree")}</span>
           </div>
 
           <Link
@@ -123,7 +123,7 @@ export function HeroSection() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-sm text-green-300 font-medium">Raising $1M Seed</span>
+            <span className="text-sm text-green-300 font-medium">{t("mainPage.hero.raisingSeed")}</span>
           </Link>
         </motion.div>
 
@@ -146,7 +146,7 @@ export function HeroSection() {
         >
           {t("mainPage.hero.description.local")} <span className="text-green-400 font-semibold">{t("mainPage.hero.description.free")}</span>. {t("mainPage.hero.description.localAI")}
           <br className="hidden md:block" />
-          <span className="text-blue-300">Beta: All features free with local AI models. Cloud features and premium AI models available with PRO subscription.</span>
+          <span className="text-blue-300">{t("mainPage.hero.betaNote")}</span>
         </motion.p>
 
         {/* Key Stats */}

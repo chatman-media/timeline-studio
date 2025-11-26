@@ -328,7 +328,7 @@ export const translations = {
           },
         },
         audio: {
-          title: "Advanced Audio (Fairlight)",
+          title: "Advanced Audio",
           description: "Professional audio editing suite",
           examples: {
             mixing: "Multi-track audio mixing",
@@ -351,7 +351,7 @@ export const translations = {
           title: "Recognition & Analysis",
           description: "AI-powered scene understanding",
           examples: {
-            faceObject: "Face and object detection (YOLO)",
+            faceObject: "Face and object detection",
             emotion: "Emotion recognition",
             sceneClassification: "Scene classification",
             quality: "Quality analysis and scoring",
@@ -795,7 +795,7 @@ export const translations = {
           },
         },
         audio: {
-          title: "Продвинутый звук (Fairlight)",
+          title: "Продвинутый звук",
           description: "Профессиональный аудиомонтаж",
           examples: {
             mixing: "Многодорожечный аудиомикс",
@@ -818,7 +818,7 @@ export const translations = {
           title: "Распознавание и анализ",
           description: "Понимание сцен с помощью ИИ",
           examples: {
-            faceObject: "Распознавание лиц и объектов (YOLO)",
+            faceObject: "Распознавание лиц и объектов",
             emotion: "Распознавание эмоций",
             sceneClassification: "Классификация сцен",
             quality: "Анализ и оценка качества",
@@ -1253,7 +1253,7 @@ export const translations = {
           },
         },
         audio: {
-          title: "高级音频（Fairlight）",
+          title: "高级音频",
           description: "专业音频编辑套件",
           examples: {
             mixing: "多轨音频混音",
@@ -1276,7 +1276,7 @@ export const translations = {
           title: "识别和分析",
           description: "AI驱动的场景理解",
           examples: {
-            faceObject: "人脸和物体检测（YOLO）",
+            faceObject: "人脸和物体检测",
             emotion: "情绪识别",
             sceneClassification: "场景分类",
             quality: "质量分析和评分",

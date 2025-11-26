@@ -50,6 +50,10 @@ const translations = {
     "footer.legal.termsOfService": "Terms of Service",
     "footer.legal.privacyPolicy": "Privacy Policy",
     "footer.legal.responsibleAI": "Responsible AI Policy",
+    "footer.investors.title": "FOR INVESTORS",
+    "footer.investors.raisingSeed": "Raising $1M Seed",
+    "footer.investors.documentation": "Documentation",
+    "footer.investors.contact": "Contact",
 
     // Hero section
     "hero.title": "AI-Powered Video Creation",
@@ -116,6 +120,10 @@ const translations = {
     "mainPage.hero.description.localAI": "Local AI processing.",
     "mainPage.hero.description.cloud":
       "Cloud features and premium AI models available with PRO subscription.",
+    "mainPage.hero.betaNote": "Beta: All features free with local AI models. Cloud features and premium AI models available with PRO subscription.",
+    "mainPage.hero.betaBadge": "BETA",
+    "mainPage.hero.betaFree": "100% Free",
+    "mainPage.hero.raisingSeed": "Raising $1M Seed",
     "mainPage.hero.openSource": "Open Source",
     "mainPage.hero.downloadFree": "Download Free",
     "mainPage.hero.viewGithub": "View on GitHub",
@@ -161,7 +169,7 @@ const translations = {
       "Chroma key / green screen",
     "mainPage.whatYouCanDo.effects.examples.speedRamping":
       "Speed ramping and time remapping",
-    "mainPage.whatYouCanDo.audio.title": "Advanced Audio (Fairlight)",
+    "mainPage.whatYouCanDo.audio.title": "Advanced Audio",
     "mainPage.whatYouCanDo.audio.description": "Professional audio editing",
     "mainPage.whatYouCanDo.audio.examples.mixing": "Multi-track audio mixing",
     "mainPage.whatYouCanDo.audio.examples.surround": "Surround sound support",
@@ -183,7 +191,7 @@ const translations = {
     "mainPage.whatYouCanDo.recognition.description":
       "AI-powered scene understanding",
     "mainPage.whatYouCanDo.recognition.examples.faceObject":
-      "Face and object recognition (YOLO)",
+      "Face and object recognition",
     "mainPage.whatYouCanDo.recognition.examples.emotion": "Emotion recognition",
     "mainPage.whatYouCanDo.recognition.examples.sceneClassification":
       "Scene classification",
@@ -520,6 +528,10 @@ const translations = {
     "footer.legal.termsOfService": "Условия использования",
     "footer.legal.privacyPolicy": "Политика конфиденциальности",
     "footer.legal.responsibleAI": "Политика ответственного ИИ",
+    "footer.investors.title": "ДЛЯ ИНВЕСТОРОВ",
+    "footer.investors.raisingSeed": "Привлекаем $1M Seed",
+    "footer.investors.documentation": "Документация",
+    "footer.investors.contact": "Связаться",
 
     // Hero section
     "hero.title": "Создание видео с помощью ИИ",
@@ -588,6 +600,10 @@ const translations = {
     "mainPage.hero.description.localAI": "Локальная обработка ИИ.",
     "mainPage.hero.description.cloud":
       "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
+    "mainPage.hero.betaNote": "Бета: Все функции бесплатны с локальными ИИ-моделями. Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
+    "mainPage.hero.betaBadge": "БЕТА",
+    "mainPage.hero.betaFree": "100% Бесплатно",
+    "mainPage.hero.raisingSeed": "Ищем $1M Seed",
     "mainPage.hero.openSource": "Открытый код",
     "mainPage.hero.downloadFree": "Скачать",
     "mainPage.hero.viewGithub": "Посмотреть на GitHub",
@@ -634,7 +650,7 @@ const translations = {
       "Хромакей / зелёный экран",
     "mainPage.whatYouCanDo.effects.examples.speedRamping":
       "Изменение скорости и time remapping",
-    "mainPage.whatYouCanDo.audio.title": "Продвинутый звук (Fairlight)",
+    "mainPage.whatYouCanDo.audio.title": "Продвинутый звук",
     "mainPage.whatYouCanDo.audio.description": "Профессиональный аудиомонтаж",
     "mainPage.whatYouCanDo.audio.examples.mixing": "Многодорожечный аудиомикс",
     "mainPage.whatYouCanDo.audio.examples.surround":
@@ -657,7 +673,7 @@ const translations = {
     "mainPage.whatYouCanDo.recognition.description":
       "Понимание сцен с помощью ИИ",
     "mainPage.whatYouCanDo.recognition.examples.faceObject":
-      "Распознавание лиц и объектов (YOLO)",
+      "Распознавание лиц и объектов",
     "mainPage.whatYouCanDo.recognition.examples.emotion":
       "Распознавание эмоций",
     "mainPage.whatYouCanDo.recognition.examples.sceneClassification":
@@ -997,6 +1013,10 @@ const translations = {
     "footer.legal.termsOfService": "服务条款",
     "footer.legal.privacyPolicy": "隐私政策",
     "footer.legal.responsibleAI": "负责任的AI政策",
+    "footer.investors.title": "投资者",
+    "footer.investors.raisingSeed": "融资 $1M 种子轮",
+    "footer.investors.documentation": "文档",
+    "footer.investors.contact": "联系",
 
     // Hero
     "hero.title": "AI驱动的视频创作",
@@ -1023,6 +1043,10 @@ const translations = {
     "mainPage.hero.description.free": "永久免费",
     "mainPage.hero.description.localAI": "本地AI处理。",
     "mainPage.hero.description.cloud": "云功能和高级AI模型需要PRO订阅。",
+    "mainPage.hero.betaNote": "测试版：本地AI模型完全免费。云功能和高级AI模型需要PRO订阅。",
+    "mainPage.hero.betaBadge": "测试版",
+    "mainPage.hero.betaFree": "100%免费",
+    "mainPage.hero.raisingSeed": "融资$1M种子轮",
     "mainPage.hero.downloadFree": "免费下载",
     "mainPage.hero.viewGithub": "查看GitHub",
 

@@ -33,6 +33,12 @@
 - [**backend/service-layer.md**](backend/service-layer.md) - Сервисный слой
 - [**backend/error-handling.md**](backend/error-handling.md) - Обработка ошибок
 
+### 📦 Backend Модули (Comprehensive Documentation)
+- [**State Management**](../../src-tauri/src/state/README.md) - Event-driven state management с ProjectCommand
+- [**Analysis System**](../../src-tauri/src/analysis/README.md) - AI Director, Scene Engine, Vision Service
+- [**Filesystem**](../../src-tauri/src/filesystem/README.md) - File operations и app directories
+- [**Video Compiler Commands**](../../src-tauri/src/video_compiler/commands/README.md) - 27 модулей команд рендеринга
+
 ### 🎬 Интеграции и AI
 - [**backend/ffmpeg-integration.md**](backend/ffmpeg-integration.md) - Интеграция с FFmpeg
 - [**backend/plugin-system.md**](backend/plugin-system.md) - Система плагинов
@@ -87,7 +93,7 @@
 
 ## 📊 Event-Driven Migration Status
 
-**Статус**: ✅ **Завершено** (16 ноября 2025)
+**Статус**: ✅ **Завершено** (16 ноября 2024)
 
 Все 17 провайдеров успешно мигрированы на event-driven архитектуру с Command-Event Pattern.
 
@@ -96,6 +102,47 @@
 - **Тесты**: 9,406/9,406 пройдено (100%)
 - **Документация**: [FINAL_VERIFICATION_REPORT.md](./FINAL_VERIFICATION_REPORT.md)
 
+## 📚 Backend Module Documentation v3.16.0
+
+### State Management (`src-tauri/src/state/`)
+Централизованное управление состоянием через Event-Driven архитектуру:
+- **ProjectState** с BrowserState, MediaFiles, ProjectSettings
+- **EventBus** для автоматической синхронизации
+- **14 Browser команд** для управления вкладками и выбором файлов
+- **Batch Commands** для производительности
+
+[📖 Подробная документация →](../../src-tauri/src/state/README.md)
+
+### Analysis System (`src-tauri/src/analysis/`)
+AI-powered система анализа медиа с 4 ключевыми компонентами:
+- **AI Director** - Оркестрация 257 AI инструментов
+- **Scene Engine** - Анализ сцен и переходов
+- **Vision Service** - Детекция объектов (YOLO), лиц, цветов
+- **Content Engine** - Классификация и тегирование контента
+
+[📖 Подробная документация →](../../src-tauri/src/analysis/README.md)
+
+### Filesystem Module (`src-tauri/src/filesystem/`)
+Единый модуль для работы с файловой системой:
+- **File Operations** - Generic операции (exists, stats, search, platform)
+- **App Directories** - Структурированные директории Timeline Studio
+- **Cross-platform** - macOS ~/Movies, Windows/Linux ~/Videos
+- **Comprehensive API** с frontend примерами
+
+[📖 Подробная документация →](../../src-tauri/src/filesystem/README.md)
+
+### Video Compiler Commands (`src-tauri/src/video_compiler/commands/`)
+Модульная система из 27 специализированных модулей:
+- **Core Rendering** - compile_video, pipeline, workflow (3 модуля)
+- **Preview** - frame preview, thumbnails (2 модуля)
+- **Cache & Optimization** - render cache, prerender (2 модуля)
+- **GPU & Hardware** - GPU acceleration, platform optimization (2 модуля)
+- **AI Integration** - AI proxy, Whisper, Ollama, multimodal (4 модуля)
+- **System & Config** - info, settings, monitoring, metrics (4 модуля)
+- **Utilities** - batch, FFmpeg, frame extraction (7 модулей)
+
+[📖 Подробная документация →](../../src-tauri/src/video_compiler/commands/README.md)
+
 ---
 
-*Последнее обновление: 16 ноября 2025*
+*Последнее обновление: 26 ноября 2025*
