@@ -1,121 +1,61 @@
 # Scenarios
 
-## Overview / Обзор
+**English** | [Русский](./README.ru.md)
 
-**EN:** Editing scenarios system for Timeline Studio. Provides predefined automated workflows for common video editing tasks. Includes step-by-step wizards for automation, structure creation, effects application, and workflow optimization. Supports AI-assisted and manual scenarios.
+## Overview
 
-**RU:** Система сценариев монтажа для Timeline Studio. Предоставляет предопределённые автоматизированные рабочие процессы для распространённых задач видеомонтажа. Включает пошаговые мастера для автоматизации, создания структуры, применения эффектов и оптимизации рабочего процесса. Поддерживает AI-ассистированные и ручные сценарии.
+Editing scenarios system for Timeline Studio. Provides predefined automated workflows for common video editing tasks including step-by-step wizards for automation, structure creation, effects application, and workflow optimization.
 
-## API (Backend Commands)
+## Status
 
-No direct Tauri backend commands. All scenario execution is client-side with optional AI integration.
+- ✅ **Components**: 3 UI components for scenario browser, preview, and wizard
+- ✅ **Hooks**: 2 hooks for scenario management and wizard control
+- ✅ **Services**: Scenario executor with step handlers and state machine
+- ✅ **Tests**: 30+ tests passing
 
-## Behavior (from tests) / Поведение (из тестов)
-
-### use-scenario.test.tsx
-- ✓ should initialize with default values
-- ✓ should select scenario by id
-- ✓ should clear selection
-- ✓ should get scenario by id
-- ✓ should filter scenarios by category
-- ✓ should filter scenarios by difficulty
-- ✓ should filter scenarios by ai-assisted
-- ✓ should filter scenarios by estimated time
-- ✓ should reset filters
-- ✓ should search scenarios by query
-- ✓ should search in both languages
-- ✓ should return empty array for non-matching query
-- ✓ should sort scenarios by name ascending
-- ✓ should sort scenarios by name descending
-- ✓ should sort scenarios by difficulty
-- ✓ should sort scenarios by time
-- ✓ should check if can execute
-- ✓ should check if can pause
-- ✓ should check if can resume
-- ✓ should check if can cancel
-- ✓ should throw error if no scenario selected
-- ✓ should execute scenario successfully
-- ✓ should handle execution errors
-- ✓ should call onProgress callback during execution
-
-### scenario-executor.test.ts
-- ✓ should register a step handler
-- ✓ should execute a simple scenario successfully
-- ✓ should track progress during execution
-- ✓ should call onStepComplete for each step
-- ✓ should handle optional steps
-- ✓ should stop on error when stopOnError is true
-- ✓ should continue on error when stopOnError is false
-- ✓ should have default handlers registered
-- ✓ should export a singleton instance
-
-## Structure / Структура
+## Structure
 
 ```
 scenarios/
-├── components/         # UI компоненты
+├── components/         # UI components
 │   ├── scenario-browser.tsx
 │   ├── scenario-preview.tsx
 │   └── scenario-wizard.tsx
-├── hooks/              # React хуки
+├── hooks/              # React hooks
 │   ├── use-scenario.ts
 │   └── use-scenario-wizard.ts
-├── lib/                # Библиотеки сценариев
+├── lib/                # Scenario libraries
 │   ├── automation-scenarios.ts
 │   ├── scenarios.ts
 │   └── structure-scenarios.ts
-├── services/           # Бизнес-логика
+├── services/           # Business logic
 │   ├── scenario-executor.ts
 │   └── scenario-machine.ts
-├── types/              # TypeScript типы
+├── types/              # TypeScript types
 │   └── scenario.ts
-└── __tests__/          # Тесты (30+ тестов)
+└── __tests__/          # Tests (30+ tests)
 ```
 
-## Features / Функции
+## Features
 
-### Scenario Categories
-- **Automation**: Automated editing workflows (beat sync, auto cuts)
-- **Structure**: Project structure creation (chapters, sections)
-- **Effects**: Apply effects and transitions automatically
-- **Workflow**: Optimize editing workflow
+### ✅ Implemented
 
-### Difficulty Levels
-- **Beginner**: Simple, guided scenarios (5-10 min)
-- **Intermediate**: More complex workflows (10-20 min)
-- **Advanced**: Professional scenarios with AI (20+ min)
+- [x] **Scenario Categories**: Automation, Structure, Effects, Workflow
+- [x] **Difficulty Levels**: Beginner (5-10 min), Intermediate (10-20 min), Advanced (20+ min)
+- [x] **Scenario Steps**: Select clips, add templates, add cuts, sync beats, apply effects, etc.
+- [x] **Execution System**: Step-by-step wizard with progress tracking
+- [x] **AI Integration**: AI-assisted automation scenarios
+- [x] **Filtering & Search**: By category, difficulty, AI-assisted, duration
+- [x] **Error Handling**: Stop on error or continue modes
+- [x] **Undo Support**: Revert scenario steps
 
-### Scenario Steps
-- **select-clips**: Select video clips
-- **add-template**: Add project template
-- **add-intro/outro**: Add intro/outro graphics
-- **add-cuts**: Add video cuts (manual/auto/beat-sync)
-- **add-music**: Add background music
-- **analyze-audio/video**: Analyze content
-- **apply-transitions**: Apply transitions between clips
-- **apply-effects**: Apply video effects
-- **sync-beats**: Synchronize cuts with music beats
-- **auto-montage**: Automatic video editing
-- **add-chapters**: Add timeline chapters
-- **preview**: Preview result
+### ❌ Not Implemented
 
-### Scenario Execution
-- Step-by-step wizard
-- Progress tracking
-- Optional steps support
-- Error handling (stop or continue)
-- AI-assisted automation
-- Undo support
-- Save progress
-- Preview at any step
+- [ ] Visual scenario editor
+- [ ] Custom user scenarios
+- [ ] Scenario templates marketplace
 
-### Filtering & Search
-- Filter by category, difficulty, AI-assisted, duration
-- Search by name and description (RU/EN)
-- Sort by name, difficulty, category, time
-- Combined filters support
-
-## Hook Usage / Использование хука
+## Usage
 
 ```typescript
 import { useScenario } from '@/features/scenarios'
@@ -128,18 +68,11 @@ function ScenarioPanel() {
     totalSteps,
     progress,
     isExecuting,
-
     selectScenario,
-    clearSelection,
     startExecution,
     pauseExecution,
     resumeExecution,
     cancelExecution,
-
-    filterScenarios,
-    searchScenarios,
-    sortScenarios,
-    resetFilters,
   } = useScenario()
 
   const handleExecute = async () => {
@@ -164,89 +97,38 @@ function ScenarioPanel() {
           </option>
         ))}
       </select>
-
       <button onClick={handleExecute} disabled={!selectedScenario}>
         Execute Scenario
       </button>
-
-      {isExecuting && (
-        <progress value={progress} max={100} />
-      )}
+      {isExecuting && <progress value={progress} max={100} />}
     </div>
   )
 }
 ```
 
-## Scenario Executor / Исполнитель сценариев
+## Integration
 
-```typescript
-import { scenarioExecutor } from '@/features/scenarios'
+- **Depends on**: @/features/project-settings, @/lib/tauri-logger
+- **Used by**: Media Studio, AI Director, Timeline
 
-// Register custom step handler
-scenarioExecutor.registerStepHandler('custom-step', async (step, project) => {
-  // Your custom logic here
-  return {
-    success: true,
-    output: { /* result data */ }
-  }
-})
+## Testing
 
-// Execute scenario
-const result = await scenarioExecutor.executeScenario(
-  scenario,
-  project,
-  {
-    onProgress: (stepId, percentage) => {},
-    onStepComplete: (stepId, result) => {},
-    stopOnError: true,
-    allowSkip: false,
-  }
-)
+- **Total tests**: 30+ tests
+- **Test files**: `__tests__/hooks/use-scenario.test.tsx`, `__tests__/services/scenario-executor.test.ts`
+- **Coverage**: Scenario execution, filtering, searching, error handling
 
-console.log(result.status) // success | partial | failed | cancelled
-console.log(result.completedSteps)
-console.log(result.errors)
+```bash
+# Run all scenario tests
+bun run test src/features/scenarios
+
+# Run specific test file
+bun run test src/features/scenarios/__tests__/hooks/use-scenario.test.tsx
 ```
 
-## Dependencies / Зависимости
+## TODO / Roadmap
 
-- Depends on:
-  - `@/features/project-settings` - для типов проекта
-  - `@/lib/tauri-logger` - для логирования
-- Used by:
-  - Media Studio - для автоматизации монтажа
-  - AI Director - для AI-ассистированных сценариев
-  - Timeline - для применения результатов
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/scenarios/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Загрузка списка сценариев | ⏳ Planned | - | 🔴 High |
-| Фильтрация по категории (automation, structure, effects) | ⏳ Planned | - | 🔴 High |
-| Фильтрация по сложности (beginner, intermediate, advanced) | ⏳ Planned | - | 🟡 Medium |
-| Поиск сценариев по названию (RU/EN) | ⏳ Planned | - | 🟡 Medium |
-| Выбор сценария и отображение деталей | ⏳ Planned | - | 🔴 High |
-| Запуск выполнения сценария | ⏳ Planned | - | 🔴 High |
-| Отображение прогресса выполнения (percentage) | ⏳ Planned | - | 🔴 High |
-| Паузирование выполнения сценария | ⏳ Planned | - | 🟡 Medium |
-| Возобновление выполнения сценария | ⏳ Planned | - | 🟡 Medium |
-| Отмена выполнения сценария | ⏳ Planned | - | 🟡 Medium |
-| Обработка ошибок шагов (stop on error) | ⏳ Planned | - | 🔴 High |
-| Пропуск optional шагов | ⏳ Planned | - | 🟢 Low |
-| Callback onStepComplete | ⏳ Planned | - | 🟢 Low |
-| Callback onProgress | ⏳ Planned | - | 🟢 Low |
-| Wizard пошаговый интерфейс | ⏳ Planned | - | 🟡 Medium |
-| Применение результатов к timeline | ⏳ Planned | - | 🔴 High |
-
-### Приоритеты
-- 🔴 High - критичный функционал (загрузка, выбор, выполнение, прогресс, ошибки)
-- 🟡 Medium - важный функционал (фильтры, паузирование, wizard)
-- 🟢 Low - дополнительный функционал (callbacks, optional steps)
-
-### Описание
-Scenarios - client-side модуль без прямых Tauri команд, но с возможностью AI интеграции. Сценарии выполняются через ScenarioExecutor с step handlers. Тестирование должно проверить корректность выполнения различных типов сценариев (automation, structure, effects) и обработку ошибок. Важно протестировать UI wizard для пошагового выполнения.
+- [ ] Add visual scenario editor for creating custom workflows
+- [ ] Implement scenario sharing and marketplace
+- [ ] Add more AI-assisted scenarios
+- [ ] Improve error recovery mechanisms
+- [ ] Add scenario preview before execution

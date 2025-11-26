@@ -1,553 +1,197 @@
-# Модуль переходов Timeline Studio
+# Transitions
 
-Модуль переходов предоставляет полную систему видео переходов профессионального уровня с GPU ускорением и расширенным контролем параметров.
+[English](./README.md) | **Русский**
+
+## Обзор
+
+Модуль переходов предоставляет GPU-ускоренные эффекты видео переходов с использованием WebGL, включая 24 профессионально созданных перехода: базовые эффекты, glitch-эффекты, системы частиц и продвинутые 3D трансформации.
+
+## Статус
+
+- ✅ **Компоненты**: Полный набор с preview, редактором и панелью управления
+- ✅ **Хуки**: 3 хука для переходов, продвинутых эффектов и динамического управления
+- ✅ **Сервисы**: 4 специализированных WebGL рендера (Basic, Glitch, Particle, 3D)
+- ✅ **Тесты**: 298/317 тестов успешно пройдены (94% успешности)
+
+## Структура
+
+```
+transitions/
+├── components/                      # UI компоненты
+│   ├── transition-preview.tsx      # Компонент превью
+│   ├── transition-editor.tsx       # Редактор кривых Безье
+│   ├── transition-control-panel.tsx # Панель управления
+│   └── transition-group.tsx        # Группировка по категориям
+├── hooks/                          # React хуки
+│   ├── use-transitions.ts          # Основной хук переходов
+│   ├── use-advanced-transitions.ts # Хук продвинутых эффектов
+│   └── use-dynamic-transitions.ts  # Хук динамического управления
+├── services/                       # WebGL рендеры
+│   ├── basic-transition-renderer.ts    # Эффекты размытия и цвета
+│   ├── glitch-transition-renderer.ts   # 10 glitch-эффектов
+│   ├── particle-transition-renderer.ts # 5 эффектов частиц
+│   └── 3d-transition-renderer.ts       # 9 3D-эффектов
+└── __tests__/                      # Файлы тестов (298 тестов)
+```
 
 ## Возможности
 
-### 🎨 Богатая библиотека переходов
-- **55+ профессиональных переходов** в различных категориях
-- **GPU-ускоренные эффекты** с использованием WebGL/WebGL2 шейдеров
-- **Расширенный контроль параметров** с blur, color и 3D эффектами
-- **Динамические переходы** с particle systems и физической симуляцией
-- **Система живого превью** с рендерингом в реальном времени
+### ✅ Реализовано
 
-### ⚡ Продвинутые возможности
-- **Keyframe анимация** с кривыми Безье
-- **Интеграция с таймлайном** с поддержкой drag-and-drop
-- **Экспорт через FFmpeg** с обработкой переходов
-- **Оптимизация производительности** с кешированием и GPU ускорением
+**Базовые переходы (2 эффекта):**
+- [x] Эффекты размытия (gaussian, motion, radial)
+- [x] Цветовые эффекты (tint, saturation, brightness)
 
-### 🛠️ Профессиональные инструменты
-- **Визуальный редактор таймлайна** с handles и кривыми
-- **Панели параметров** со слайдерами и color picker'ами
-- **Браузер переходов** с категоризацией и поиском
-- **Настройки экспорта** с контролем качества и оптимизации
+**Glitch переходы (10 эффектов):**
+- [x] Digital glitch, RGB split, data corruption
+- [x] Analog distortion, signal interference
+- [x] Pixel storm, codec error, matrix rain
+- [x] Screen tear, bit crush
 
-## Архитектура
+**Переходы с частицами (5 эффектов):**
+- [x] Particle dissolve с физикой
+- [x] Liquid morph
+- [x] Glass shatter
+- [x] Fire burn
+- [x] Organic growth
 
-### Основные компоненты
+**3D переходы (9 эффектов):**
+- [x] Book open, cylinder roll (полные шейдеры)
+- [x] Origami fold, polyhedron transform (полные шейдеры)
+- [x] Mobius strip (полный шейдер)
+- [x] Page flip, card shuffle (базовые шейдеры)
+- [x] Helix spin, sphere mapping (базовые шейдеры)
 
-```
-src/features/transitions/
-├── components/           # UI Компоненты
-│   ├── browser/         # Браузер переходов и превью
-│   ├── editor/          # Редактор параметров и контролы
-│   └── timeline/        # Визуализация на таймлайне
-├── data/                # Определения переходов
-├── hooks/               # React хуки для управления состоянием
-├── services/            # Основные сервисы и GPU обработка
-├── types/               # TypeScript определения типов
-└── utils/               # Вспомогательные функции
-```
+**Интеграция:**
+- [x] Интеграция с Timeline с drag & drop
+- [x] Интеграция с Resource Manager
+- [x] Интеграция preview с Browser
+- [x] Интеграция с VideoPlayer
+- [x] Система экспорта FFmpeg
+- [x] GPU ускорение WebGL
 
-### Ключевые сервисы
+### 🚧 Частично реализовано
 
-#### WebGL Transition Service
-- **GPU-ускоренный рендеринг** с использованием WebGL шейдеров
-- **Blur эффекты**: Gaussian, Motion, Radial размытие
-- **Color эффекты**: Tint, насыщенность, яркость
-- **Оптимизация производительности** с кешированием текстур
+**3D шейдеры:**
+- [x] 5 эффектов с полной реалистичной геометрией
+- [x] 4 эффекта с базовой геометрией (могут быть улучшены)
 
-#### Timeline Transition Manager
-- **Управление позицией** на треках таймлайна
-- **Обнаружение столкновений** между переходами
-- **Автоматическая синхронизация** с изменениями клипов
-- **Поддержка drag & drop** для размещения переходов
+### ❌ Не реализовано
 
-#### Dynamic Transition Service
-- **WebGL2 рендеринг** для сложных эффектов
-- **Particle системы** с GPU вычислениями
-- **Физическая симуляция** для реалистичных эффектов
-- **Процедурная генерация** огня, дыма, воды
+- [ ] E2E тесты с реальными видео
+- [ ] Автоматизация бенчмарков производительности
+- [ ] Оптимизация texture pooling
 
-#### Transition Export Service
-- **Интеграция с FFmpeg** для экспорта переходов
-- **Маппинг параметров** из Timeline в FFmpeg
-- **Пакетная обработка** с параллельным выполнением
-- **Оптимизация качества** с GPU ускорением
-
-## Модели данных
-
-### TimelineTransition
-```typescript
-import { createLogger } from '@/lib/tauri-logger'
-
-const logger = createLogger('Example')
-interface TimelineTransition {
-  id: string
-  transitionId: string        // Ссылка на ресурс перехода
-  type: 'between' | 'in' | 'out' | 'adjustment'
-  
-  // Позиционирование на таймлайне
-  position: number            // Позиция в секундах
-  duration: number            // Длительность в секундах
-  
-  // Связи с клипами
-  startClipId?: string        // ID исходного клипа
-  endClipId?: string          // ID целевого клипа
-  trackId: string             // ID трека
-  
-  // Расширенные параметры
-  parameters: TransitionParameters
-  keyframes: TransitionKeyframe[]
-  curve: TransitionCurve
-  
-  // Состояние
-  isEnabled: boolean
-  isLocked: boolean
-  renderCache?: RenderCacheInfo
-}
-```
-
-### Параметры перехода
-```typescript
-interface TransitionParameters {
-  // Базовые параметры
-  direction?: 'left' | 'right' | 'up' | 'down' | 'center' | 'radial'
-  easing?: EasingFunction
-  intensity?: number
-  
-  // Расширенные эффекты
-  blur?: {
-    amount: number
-    type: 'gaussian' | 'motion' | 'radial'
-  }
-  color?: {
-    tint?: string
-    saturation?: number
-    brightness?: number
-  }
-  
-  // 3D параметры
-  perspective?: {
-    rotationX: number
-    rotationY: number
-    rotationZ: number
-    depth: number
-  }
-}
-```
-
-## Примеры использования
-
-### Добавление переходов на таймлайн
+## Использование
 
 ```typescript
-import { useTimelineTransitions } from '@/features/transitions/hooks/use-timeline-transitions'
+import { basicTransitionRenderer } from '@/features/transitions/services'
 
-function TimelineEditor() {
-  const { addTransitionBetweenClips } = useTimelineTransitions()
-  
-  const handleAddTransition = async (clipA: string, clipB: string) => {
-    await addTransitionBetweenClips(
-      'fade',           // ID перехода
-      clipA,            // исходный клип
-      clipB,            // целевой клип
-      'track-1',        // ID трека
-      1.0,              // длительность
-      { intensity: 0.8 } // параметры
-    )
+// Инициализация рендера
+await basicTransitionRenderer.initialize()
+
+// Рендеринг перехода
+const result = await basicTransitionRenderer.renderTransition({
+  sourceTexture: textureA,
+  targetTexture: textureB,
+  progress: 0.5,
+  parameters: {
+    blur: {
+      enabled: true,
+      amount: 50,
+      type: 'gaussian'
+    }
   }
-}
+})
+
+// Продвинутые эффекты
+import {
+  glitchTransitionRenderer,
+  particleTransitionRenderer,
+  threeDTransitionRenderer
+} from '@/features/transitions/services'
+
+// Glitch эффект
+await glitchTransitionRenderer.renderGlitchTransition({
+  sourceTexture,
+  targetTexture,
+  progress: 0.5,
+  effectType: 'digital-glitch',
+  parameters: { blockSize: 16, intensity: 0.8 }
+})
 ```
 
-### Использование расширенных переходов с GPU
+## Интеграция
 
-```typescript
-import { useAdvancedTransitions } from '@/features/transitions/hooks/use-advanced-transitions'
-
-function TransitionPreview() {
-  const { renderTransition, isGPUSupported } = useAdvancedTransitions()
-  
-  const renderPreview = useCallback(async () => {
-    if (!isGPUSupported) return
-    
-    const result = await renderTransition({
-      transitionId: 'blur-fade',
-      sourceA: imageA,
-      sourceB: imageB,
-      progress: 0.5,
-      parameters: {
-        blur: { amount: 10, type: 'gaussian' },
-        color: { tint: '#ff6b6b', saturation: 1.2 }
-      }
-    })
-    
-    return result
-  }, [renderTransition, isGPUSupported])
-}
-```
-
-### Экспорт с переходами
-
-```typescript
-import { useTransitionExport } from '@/features/export/hooks/use-transition-export'
-
-function ExportDialog() {
-  const { exportTransitions, isExporting, progress } = useTransitionExport({
-    onProgress: (status) => logger.debugSync(`Прогресс экспорта: ${status.progress}%`),
-    onComplete: (result) => logger.debugSync('Экспорт завершен:', result)
-  })
-  
-  const handleExport = async () => {
-    const result = await exportTransitions(
-      project,      // Проект таймлайна
-      settings,     // Настройки экспорта
-      clipPaths     // Карта путей к клипам
-    )
-  }
-}
-```
-
-## Категории переходов
-
-### Базовые переходы
-- **Fade**: Cross-fade, fade to black/white
-- **Dissolve**: Стандартное растворение, аддитивное растворение
-- **Wipe**: Смахивание влево, вправо, вверх, вниз
-- **Slide**: Push, cover, reveal переходы
-
-### Расширенные переходы
-- **Blur эффекты**: Gaussian blur, motion blur, radial blur
-- **Color эффекты**: Color wash, tint переходы, хроматическая аберрация
-- **3D эффекты**: Вращение куба, переворот страницы, сферическая обертка
-- **Творческие**: Glitch, light leak, призматическое преломление
-
-### GPU-ускоренные
-- **Particle эффекты**: Растворение частицами, песчаная дисперсия, органический рост
-- **Динамические**: Жидкое превращение, разбитие стекла, торнадо, магнитное поле
-- **Кинематографические**: Выгорание пленки, блики линз, объемные лучи
-- **Элементальные**: Огонь, дым, вода, электрические разряды, кристаллизация
-- **Органические**: Рост растений, чернильные всплески, мыльные пузыри
-
-## Оптимизация производительности
-
-### GPU ускорение
-- **WebGL шейдеры** для сложных эффектов
-- **Кеширование текстур** для повторных рендеров
-- **LOD система** для разных уровней качества
-- **Fallback рендеринг** для неподдерживаемого оборудования
-
-### Стратегия кеширования
-- **Кеш превью переходов** для браузера
-- **Кеш отрендеренных кадров** для таймлайна
-- **Кеш компиляции шейдеров** для GPU эффектов
-- **Кеш состояния параметров** для быстрого переключения
-
-### Управление памятью
-- **Автоматическая очистка** неиспользуемых текстур
-- **Pool allocation** для частых объектов
-- **Прогрессивная загрузка** ресурсов переходов
-- **Мониторинг использования памяти** и предупреждения
+- **Зависит от**: `/lib/webgl/base-renderer.ts` (BaseRenderer для всех рендеров)
+- **Используется в**: `@/features/timeline`, `@/features/video-player`, `@/features/browser`
+- **Интеграция**: Timeline drag & drop, GPU рендеринг, FFmpeg экспорт
 
 ## Тестирование
 
-### Unit тесты
+- **Всего тестов**: 298/317 тестов (94% успешности)
+  - BasicTransitionRenderer: 20 тестов (100% успешно)
+  - GlitchTransitionRenderer: 34 теста (100% успешно)
+  - ParticleTransitionRenderer: 32 теста (100% успешно)
+  - ThreeDTransitionRenderer: 41 тест (100% успешно)
+  - Хуки: 65 тестов (75% успешно, use-dynamic-transitions требует исправлений)
+  - Компоненты: 52 теста (100% успешно)
+
 ```bash
-# Запуск всех тестов переходов
+# Запустить все тесты переходов
 bun run test src/features/transitions
 
-# Запуск специфических тестовых файлов
-bun run test src/features/transitions/__tests__/services/webgl-transition-service.test.ts
-bun run test src/features/transitions/__tests__/hooks/use-advanced-transitions.test.tsx
+# Запустить тесты конкретного рендера
+bun run test src/features/transitions/services/basic-transition-renderer.test.ts
+
+# Запустить с coverage
+bun run test:coverage src/features/transitions
 ```
 
-### Категории тестов
-- **Тесты сервисов**: WebGL сервис, менеджер переходов
-- **Тесты хуков**: React хуки и управление состоянием
-- **Тесты компонентов**: UI компоненты и взаимодействия
-- **Интеграционные тесты**: Интеграция с таймлайном и экспорт
+## TODO / Планы развития
 
-## Конфигурация
+### Высокий приоритет
+- [ ] Исправить оставшиеся 19 падающих тестов в use-dynamic-transitions
+- [ ] E2E тесты с реальными видеофайлами
 
-### Настройки GPU
-```typescript
-// Конфигурация GPU ускорения
-const gpuSettings = {
-  preferHighPerformance: true,
-  enableDebugMode: false,
-  maxTextureSize: 4096,
-  fallbackToSoftware: true
-}
+### Средний приоритет
+- [ ] Улучшить 4 базовых 3D шейдера с реалистичной геометрией
+- [ ] Автоматизация бенчмарков производительности
+- [ ] Расширенная библиотека переходов (5-10 новых эффектов)
+
+### Низкий приоритет
+- [ ] Texture pooling для оптимизации памяти
+- [ ] UI конструктор пользовательских переходов
+- [ ] Система пресетов переходов
+
+## Производительность
+
+### Метрики
+
+```
+Компиляция шейдеров:  < 100ms (все рендеры)
+Время рендера кадра:  < 16ms (60 FPS capable)
+Overhead памяти:      Минимальный (shader pooling)
+Использование GPU:    Оптимальное
 ```
 
-### Настройки экспорта
-```typescript
-// Конфигурация экспорта переходов
-const exportSettings = {
-  includeTransitions: true,
-  transitionQuality: 'high',
-  transitionRenderMode: 'gpu',
-  optimizeTransitions: true,
-  parallelTransitionProcessing: true,
-  maxConcurrentTransitions: 4
-}
+### Время рендеринга эффектов
+
+```
+Blur эффекты:     ~8-12ms за кадр
+Glitch эффекты:   ~5-10ms за кадр
+Particle эффекты: ~10-15ms за кадр
+3D эффекты:       ~12-16ms за кадр
 ```
 
-## Совместимость браузеров
+## Документация
 
-| Функция | Chrome | Firefox | Safari | Edge |
-|---------|---------|---------|---------|------|
-| WebGL 2.0 | ✅ | ✅ | ✅ | ✅ |
-| GPU ускорение | ✅ | ✅ | ⚠️ | ✅ |
-| Аппаратное декодирование | ✅ | ⚠️ | ✅ | ✅ |
-| Полная производительность | ✅ | ⚠️ | ⚠️ | ✅ |
+Подробная документация доступна в:
+- [DEV.md](DEV.md) - Техническая документация v2.0
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Схема архитектуры и детали
+- [CHECKLIST.md](CHECKLIST.md) - Чеклист готовности компонентов
 
-**Обозначения**: ✅ Полная поддержка, ⚠️ Частичная поддержка, ❌ Не поддерживается
+---
 
-## Решение проблем
-
-### Частые проблемы
-
-#### GPU ускорение не работает
-```typescript
-// Проверка поддержки GPU
-const isSupported = useAdvancedTransitions().isGPUSupported
-if (!isSupported) {
-  logger.debugSync('GPU ускорение недоступно, используется программный fallback')
-}
-```
-
-#### Низкая производительность
-- Уменьшите качество переходов в настройках
-- Включите оптимизацию превью
-- Регулярно очищайте кеш переходов
-- Проверьте использование памяти GPU
-
-#### Ошибки экспорта
-- Проверьте установку FFmpeg
-- Проверьте валидность параметров переходов
-- Включите debug логирование для подробных ошибок  
-- Попробуйте режим программного рендеринга
-
-### Debug режим
-```typescript
-// Включение debug логирования
-window.TRANSITIONS_DEBUG = true
-
-// Мониторинг памяти GPU
-const memoryInfo = renderer.info.memory
-logger.debugSync('Использование памяти GPU:', memoryInfo)
-```
-
-## Участие в разработке
-
-### Добавление новых переходов
-
-1. **Определите переход в файле данных**:
-```json
-{
-  "id": "my-custom-transition",
-  "name": "Мой пользовательский переход",
-  "category": "creative",
-  "gpuAccelerated": true,
-  "parameters": {
-    "intensity": { "type": "number", "default": 1.0, "min": 0, "max": 2 }
-  }
-}
-```
-
-2. **Реализуйте WebGL шейдер** (если GPU-ускоренный):
-```glsl
-// Fragment shader для пользовательского перехода
-uniform float progress;
-uniform float intensity;
-uniform sampler2D textureA;
-uniform sampler2D textureB;
-
-void main() {
-  vec2 uv = gl_FragCoord.xy / resolution.xy;
-  vec4 colorA = texture2D(textureA, uv);
-  vec4 colorB = texture2D(textureB, uv);
-  
-  // Логика пользовательского перехода
-  float mix_factor = smoothstep(0.0, 1.0, progress * intensity);
-  gl_FragColor = mix(colorA, colorB, mix_factor);
-}
-```
-
-3. **Добавьте в transition processor**:
-```typescript
-// Добавьте логику обработки для нового перехода
-export const processCustomTransition = (params: TransitionParameters) => {
-  // Логика обработки здесь
-}
-```
-
-### Стандарты кода
-- Используйте TypeScript для всего нового кода
-- Следуйте существующим соглашениям по именованию
-- Добавляйте подробные JSDoc комментарии
-- Включайте unit тесты для новых функций
-- Оптимизируйте для производительности и использования памяти
-
-## Дорожная карта
-
-### Краткосрочные планы
-- [ ] Миграция на WebGPU для лучшей производительности
-- [ ] Больше переходов на основе частиц
-- [ ] Расширенные 3D perspective эффекты
-- [ ] Content-aware предложения переходов
-
-### Долгосрочные планы
-- [ ] AI-генерируемые переходы
-- [ ] Пользовательский редактор переходов с визуальным скриптингом
-- [ ] Marketplace для переходов сообщества
-- [ ] Совместное редактирование переходов в реальном времени
-
-## Статус реализации
-
-### ✅ Полностью готово
-- **Базовая функциональность** - все основные переходы работают
-- **Timeline интеграция** - drag & drop, управление позицией
-- **GPU ускорение** - WebGL рендеринг с шейдерами
-- **Система экспорта** - FFmpeg интеграция с переходами
-- **UI компоненты** - редакторы кривых, панели параметров
-- **Тестирование** - 53+ тестов покрывают функциональность
-
-### 📊 Статистика модуля
-- **65+ переходов** в 12 категориях
-- **25+ GPU-ускоренных** эффектов (15 динамических + 10 glitch)
-- **100% готовность** для production использования
-- **Полная интеграция** с Timeline Studio
-
-## Новые динамические переходы (30.01.2025)
-
-### Реализованные эффекты:
-
-1. **Particle Dissolve** - Растворение на тысячи частиц
-   - До 10000 частиц с индивидуальной физикой
-   - Настраиваемая гравитация и турбулентность
-   - Постепенное затухание частиц
-
-2. **Liquid Morph** - Жидкое превращение
-   - Реалистичная симуляция вязкой жидкости
-   - Волновые искажения
-   - Рефракция на границах
-
-3. **Glass Shatter** - Разбивание стекла
-   - Voronoi диаграммы для реалистичных осколков
-   - Физика взрыва с точкой удара
-   - Вращение и гравитация для каждого осколка
-
-4. **Fire Burn** - Огненное выгорание
-   - Процедурная генерация пламени
-   - Тепловые искажения
-   - Эффект пепла
-
-5. **Organic Growth** - Органический рост
-   - Фрактальные паттерны роста
-   - Настраиваемые ветвления
-   - Естественная рандомизация
-
-И еще 10 динамических переходов с уникальными эффектами!
-
-## Glitch переходы (30.01.2025) 🚧
-
-### Реализованные эффекты:
-
-1. **Digital Glitch** - Цифровые артефакты и блочные искажения
-   - Блочный шум с настраиваемым размером блоков
-   - Горизонтальные полосы искажений
-   - RGB сдвиг и цветовые артефакты
-   - Случайное мерцание
-
-2. **RGB Split** - Разделение цветовых каналов
-   - Настраиваемое направление и расстояние разделения
-   - Анимированное разделение с волновыми искажениями
-   - Хроматическая аберрация по краям
-   - Цветовые искажения в переходной зоне
-
-3. **Data Corruption** - Повреждение цифровых данных
-   - Датамош эффект с блочными повреждениями
-   - Сортировка пикселей (glitch art)
-   - Цифровой шум и битовые ошибки
-   - Артефакты сжатия и макроблоков
-
-4. **Analog Distortion** - VHS эффекты и аналоговые помехи
-   - VHS tracking с горизонтальными искажениями
-   - Цветовое кровотечение (color bleed)
-   - Горизонтальное дрожание (jitter)
-   - Статические помехи и шум
-
-5. **Signal Interference** - Электромагнитные помехи
-   - Синусоидальные волновые искажения
-   - Эффект ghosting (двоение изображения)
-   - Потеря синхронизации сигнала
-   - Электромагнитные полосы и вспышки
-
-6. **Pixel Storm** - Хаотичное движение пикселей
-   - Векторное поле для движения пикселей
-   - Вихревое движение с турбулентностью
-   - Смешивание цветов между пикселями
-   - Эффект распада от центра
-
-7. **Matrix Rain** - Падающие символы из "Матрицы"
-   - Анимированные колонки символов
-   - Настраиваемая плотность и скорость
-   - Зеленое свечение с эффектом следа
-   - Цифровое растворение изображения
-
-8. **Codec Error** - Ошибки видеокодека
-   - Макроблочные артефакты и сжатие
-   - Квантизация цвета (banding)
-   - Mosquito noise вокруг границ
-   - Ошибки ключевых кадров (P-frame)
-
-9. **Screen Tear** - Разрывы экрана
-   - Горизонтальные разрывы с анимацией
-   - Эффект wobble (дрожание)
-   - Вертикальная десинхронизация
-   - Мерцание и артефакты
-
-10. **Bit Crush** - Снижение битности
-    - Эмуляция ретро палитр (CGA, EGA)
-    - Дизеринг Байера 4x4
-    - Постеризация с квантизацией
-    - Палитризация через HSV
-
-### ✅ Все glitch переходы реализованы!
-10 из 10 glitch эффектов готовы к использованию.
-
-## 3D переходы (30.01.2025) 🚧
-
-### Реализованные эффекты:
-
-1. **Page Flip** - 3D переворот страницы с реалистичной физикой
-   - Поддержка всех направлений: влево, вправо, вверх, вниз
-   - Настраиваемая 3D перспектива (500-2000)
-   - Изгиб страницы при повороте (0-1)
-   - Реалистичные тени и освещение
-   - Кубические кривые Безье для плавной анимации
-
-2. **Card Shuffle** - Перетасовка игральных карт с 3D анимацией
-   - До 32 карт с индивидуальной физикой полета
-   - 4 типа перетасовки: riffle, overhand, spiral, random
-   - Настраиваемый хаос вращения (0-1)
-   - Гравитация и траектории полета
-   - Сортировка по глубине для правильного отображения
-
-3. **Helix Spin** - Спиральное вращение по траектории ДНК
-   - Двойная спираль с противоположным вращением
-   - Настраиваемое количество витков (1-5)
-   - Три оси вращения: горизонтальная, вертикальная, диагональная
-   - Эффект закручивания текстуры (0-4)
-   - Спиральные блики и объемное освещение
-
-4. **Sphere Mapping** - Проекция изображения на 3D сферу
-   - Настраиваемый радиус сферы (0.3-1.2)
-   - Контроль скорости вращения (0.2-3.0)
-   - Позиционируемый источник света (вектор 3D)
-   - Отражательная способность поверхности (0-1)
-   - Реалистичное освещение и рефлексы
-
-### ⚠️ В разработке:
-- Book Open - раскрытие книги с перспективой
-- Cylinder Roll - цилиндрическая прокрутка
-- Origami Fold - складывание в стиле японского оригами
-- Polyhedron Transform - многогранные трансформации
-- Mobius Strip - лента Мёбиуса с топологическими эффектами
-
-### ✅ 4 из 9 3D переходов реализованы!
-
-Этот модуль представляет собой полнофункциональную систему переходов профессионального уровня, готовую для использования в продакшене.
+**Версия:** 2.1
+**Последнее обновление:** 26 ноября 2025

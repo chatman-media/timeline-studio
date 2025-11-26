@@ -1,107 +1,61 @@
-# User Settings - Функциональные требования
+# User Settings
 
-## 📋 Статус готовности (v3 Architecture)
+**English** | [Русский](./README.ru.md)
 
-- ✅ **Компоненты**: Полностью реализованы (виджеты, табы, модальные окна)
-- ✅ **Сервисы**: Orchestrator и провайдер готовы
-- ✅ **Хуки**: useUserSettings и useApiKeys полностью протестированы
-- ✅ **Тесты**: Покрытие 87%+ (126 тестов)
-- ✅ **Валидация API**: Client-side + server-side валидация
-- ✅ **Типизация**: Полная TypeScript типизация для всех операций
-- ✅ **Основная логика**: Управление пользовательскими настройками и API ключами
+## Overview
+User settings management module providing configuration for interface layouts, media paths, API keys, and OAuth integrations with comprehensive validation and encryption.
 
-## API (Backend Commands)
+## Status
+- ✅ **Components**: Fully implemented (widgets, tabs, modals)
+- ✅ **Services**: Orchestrator and provider ready
+- ✅ **Hooks**: useUserSettings and useApiKeys fully tested
+- ✅ **Tests**: 87%+ coverage (126 tests passing)
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `list_api_keys` | None | Returns list of all saved API keys with metadata |
-| `save_simple_api_key` | `{ service: string, key: string }` | Saves API key for specified service |
-| `validate_api_key` | `{ service: string }` | Validates stored API key via real API request |
-| `save_oauth_credentials` | `{ service: string, credentials: object }` | Saves OAuth credentials for service |
-| `generate_oauth_url` | `{ service: string }` | Generates OAuth authorization URL |
-| `exchange_oauth_code` | `{ service: string, code: string }` | Exchanges OAuth code for access token |
-| `delete_api_key` | `{ service: string }` | Deletes API key for specified service |
-| `import_from_env` | `{ env_content: string }` | Imports API keys from .env file format |
-| `export_to_env_format` | None | Exports all API keys to .env file format |
-| `refresh_oauth_token` | `{ service: string }` | Refreshes OAuth access token |
-| `get_oauth_user_info` | `{ service: string }` | Retrieves user information from OAuth provider |
-| `parse_oauth_callback_url` | `{ url: string }` | Parses OAuth callback URL to extract code/state |
-
-## 🎯 Основные функции
-
-### ✅ Готово
-
-#### Управление интерфейсом
-- [x] Переключение активной вкладки браузера
-- [x] Изменение макета интерфейса (default, options, vertical, dual)
-- [x] Переключение видимости браузера
-- [x] Горячие клавиши (Cmd+B)
-
-#### Настройки путей
-- [x] Настройка пути для сохранения скриншотов
-- [x] Настройка пути для скриншотов плеера
-- [x] Валидация путей
-
-#### Настройки медиа
-- [x] Регулировка громкости плеера (0-100)
-- [x] Сохранение настроек громкости
-
-#### API интеграция (v3)
-- [x] Настройка API ключей для множества сервисов (OpenAI, Claude, Grok, DeepSeek, Gemini)
-- [x] OAuth интеграция (YouTube, Vimeo, Facebook, Instagram, TikTok, Twitter)
-- [x] Telegram Bot интеграция
-- [x] Client-side валидация формата ключей (regex паттерны)
-- [x] Server-side валидация через реальные API запросы
-- [x] Автоматическая проверка каждые 24 часа
-- [x] Безопасное хранение ключей в зашифрованном виде
-- [x] Маскирование ключей в UI и логах
-- [x] Информация о rate limits и статусе аккаунта
-
-#### Интерфейс настроек
-- [x] UserSettingsModal - модальное окно настроек
-- [x] Формы для всех настроек
-- [x] Валидация ввода
-- [x] Мгновенное применение изменений
-
-## 🔧 Техническая реализация (v3)
-
-### Архитектура
-- **Orchestrator** - централизованное управление настройками через React хуки
-- **React Context** для предоставления данных компонентам
-- **Tauri Store** для персистентного хранения
-- **Rust Backend** для безопасного управления API ключами
-- **TypeScript** для строгой типизации всех операций
-- **Client-side + Server-side валидация** для надежности
-
-### Состояние
-```typescript
-interface UserSettingsContext {
-  activeTab: BrowserTab           // Активная вкладка
-  layoutMode: LayoutMode          // Макет интерфейса
-  screenshotsPath: string         // Путь скриншотов
-  playerScreenshotsPath: string   // Путь скриншотов плеера
-  playerVolume: number            // Громкость плеера
-  openAiApiKey: string           // API ключ OpenAI
-  claudeApiKey: string           // API ключ Claude
-  isBrowserVisible: boolean      // Видимость браузера
-}
+## Structure
+```
+user-settings/
+├── components/
+│   ├── user-settings-modal.tsx
+│   └── api-keys-form.tsx
+├── hooks/
+│   ├── use-user-settings.ts
+│   └── use-api-keys.ts
+├── services/
+│   ├── user-settings-orchestrator.ts
+│   └── user-settings-provider.tsx
+├── constants/
+│   └── api-validation-patterns.ts
+└── types/
+    └── settings.ts
 ```
 
-### Основные операции
-- `handleTabChange` - Смена активной вкладки
-- `handleLayoutChange` - Смена макета
-- `handleScreenshotsPathChange` - Изменение пути скриншотов
-- `handlePlayerScreenshotsPathChange` - Изменение пути скриншотов плеера
-- `handlePlayerVolumeChange` - Изменение громкости
-- `saveSimpleApiKey` - Сохранение API ключа
-- `testApiKey` - Валидация API ключа
-- `toggleBrowserVisibility` - Переключение видимости браузера
+## Features
+### ✅ Implemented
+- [x] Browser tab switching and layout modes (default, options, vertical, dual)
+- [x] Screenshot paths configuration with validation
+- [x] Player volume management (0-100)
+- [x] API keys management (OpenAI, Claude, Grok, DeepSeek, Gemini)
+- [x] OAuth integration (YouTube, Vimeo, Facebook, Instagram, TikTok, Twitter)
+- [x] Telegram Bot integration
+- [x] Client-side format validation (regex patterns)
+- [x] Server-side validation via real API requests
+- [x] Automatic validation every 24 hours
+- [x] Secure encrypted key storage
+- [x] Key masking in UI and logs
+- [x] Rate limits and account status info
+- [x] Import/export via .env format
 
-## 🎣 Использование
+### ❌ Not Implemented
+- [ ] Settings profiles
+- [ ] Cross-device synchronization
+- [ ] UI theme customization
+- [ ] Advanced keyboard shortcuts
+- [ ] Settings change debouncing
+- [ ] Automatic backup
 
-### Базовое использование
+## Usage
 ```typescript
-import { useUserSettings } from '@/features/user-settings';
+import { useUserSettings, useApiKeys } from '@/features/user-settings'
 
 function MyComponent() {
   const {
@@ -111,178 +65,38 @@ function MyComponent() {
     handleTabChange,
     handleLayoutChange,
     handlePlayerVolumeChange
-  } = useUserSettings();
+  } = useUserSettings()
+
+  const { saveSimpleApiKey, testApiKey } = useApiKeys()
 
   return (
     <div>
-      <p>Активная вкладка: {activeTab}</p>
-      <p>Макет: {layoutMode}</p>
-      <p>Громкость: {playerVolume}</p>
-
-      <button onClick={() => handleTabChange('media')}>
-        Переключить на медиа
-      </button>
-
-      <button onClick={() => handleLayoutChange('vertical')}>
-        Вертикальный макет
-      </button>
-
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={playerVolume}
-        onChange={(e) => handlePlayerVolumeChange(Number(e.target.value))}
-      />
+      <p>Active tab: {activeTab}</p>
+      <p>Layout: {layoutMode}</p>
+      <p>Volume: {playerVolume}</p>
     </div>
-  );
+  )
 }
 ```
 
-### Провайдер
-```typescript
-import { UserSettingsProvider } from '@/features/user-settings';
+## Integration
+- **Depends on**: @/lib/tauri-utils, React Context
+- **Used by**: @/features/media-studio, @/features/browser, @/features/video-player, @/features/ai-chat
 
-function App() {
-  return (
-    <UserSettingsProvider>
-      <MyComponent />
-    </UserSettingsProvider>
-  );
-}
-```
+## Testing
+- **Total tests**: 126 tests
+- **Coverage**: 87%+ (Orchestrator: 100%, Provider: 95%, Hooks: 100%, Components: 90%)
 
-## 🔗 Интеграция с другими компонентами
-
-### MediaStudio
-- Использует `layoutMode` для выбора макета интерфейса
-- Реагирует на изменения макета в реальном времени
-
-### Browser
-- Использует `activeTab` для отображения активной вкладки
-- Использует `isBrowserVisible` для показа/скрытия
-
-### VideoPlayer
-- Использует `playerVolume` для установки громкости
-- Использует `playerScreenshotsPath` для сохранения скриншотов
-
-### AI Chat
-- Использует `openAiApiKey` и `claudeApiKey` для API запросов
-- Проверяет наличие ключей перед отправкой запросов
-
-## 🧪 Тестирование
-
-### Запуск тестов
 ```bash
 bun test src/features/user-settings
 ```
 
-### Покрытие
-- Orchestrator логика: 100%
-- Провайдер: 95%
-- Хуки: 100%
-- Компоненты: 90%
-
-## 🔐 Валидация API ключей (v3)
-
-### Client-side валидация
-Перед отправкой на backend происходит проверка формата ключа:
-
-```typescript
-import { validateApiKeyFormat, getValidationErrorMessage } from '@/features/user-settings/constants/api-validation-patterns'
-
-// Проверка формата ключа
-const isValid = validateApiKeyFormat('openai', 'sk-...')
-if (!isValid) {
-  const error = getValidationErrorMessage('openai')
-  console.error(error) // "OpenAI API ключ должен начинаться с 'sk-' и быть не менее 40 символов"
-}
-```
-
-### Поддерживаемые форматы ключей
-
-- **OpenAI**: `sk-[a-zA-Z0-9]{20,}` (мин. 40 символов)
-- **Claude**: `sk-ant-api03-[a-zA-Z0-9_-]{95,}` (мин. 100 символов)
-- **Grok**: `xai-[a-zA-Z0-9]{32,}` (мин. 35 символов)
-- **DeepSeek**: `sk-[a-zA-Z0-9]{32,}` (мин. 35 символов)
-- **Gemini**: `AIza[a-zA-Z0-9_-]{35,}` (мин. 39 символов)
-- **Telegram**: `\d{8,10}:[a-zA-Z0-9_-]{35,}` (формат bot token)
-
-### Server-side валидация
-После успешной client-side валидации backend выполняет реальный API запрос:
-
-```typescript
-const { testApiKey, getValidationError } = useApiKeys()
-
-// Тестирование ключа
-const isValid = await testApiKey('openai')
-if (!isValid) {
-  const error = getValidationError('openai')
-  console.error(error) // Конкретная ошибка от API (например, "Insufficient credits")
-}
-```
-
-### Автоматическая проверка
-Система автоматически проверяет все сохраненные ключи каждые 24 часа:
-- Обновляет статус валидации (valid/invalid)
-- Сохраняет информацию о rate limits
-- Обновляет timestamp последней проверки
-- Показывает актуальный статус в UI
-
-### Маскирование ключей
-
-```typescript
-import { maskApiKey } from '@/features/user-settings/constants/api-validation-patterns'
-
-const masked = maskApiKey('openai', 'sk-proj-abcdefghijklmnop1234567890')
-console.log(masked) // "sk-proj•••••••••••••••••••••1234"
-```
-
-## 🚀 Будущие улучшения
-
-### Планируемые функции
-- [x] Импорт/экспорт настроек (реализовано через .env)
-- [ ] Профили настроек
-- [ ] Синхронизация между устройствами
-- [ ] Темы интерфейса
-- [ ] Расширенные горячие клавиши
-
-### Оптимизации
-- [ ] Дебаунс для частых изменений
-- [ ] Кэширование настроек
-- [x] Валидация API ключей (реализовано в v3)
-- [ ] Автоматическое резервное копирование
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/user-settings/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Открытие и закрытие модального окна настроек | ⏳ Planned | - | 🔴 High |
-| Сохранение API ключей через `save_simple_api_key` | ⏳ Planned | - | 🔴 High |
-| Валидация API ключей через `validate_api_key` | ⏳ Planned | - | 🔴 High |
-| Список API ключей через `list_api_keys` | ⏳ Planned | - | 🔴 High |
-| Client-side валидация формата ключей (regex паттерны) | ⏳ Planned | - | 🔴 High |
-| Маскирование API ключей в UI | ⏳ Planned | - | 🔴 High |
-| OAuth интеграция: генерация URL через `generate_oauth_url` | ⏳ Planned | - | 🟡 Medium |
-| OAuth интеграция: обмен кода через `exchange_oauth_code` | ⏳ Planned | - | 🟡 Medium |
-| Импорт/экспорт настроек через `import_from_env` и `export_to_env_format` | ⏳ Planned | - | 🟡 Medium |
-| Удаление API ключей через `delete_api_key` | ⏳ Planned | - | 🟡 Medium |
-| Изменение макета интерфейса (default, options, vertical, dual) | ⏳ Planned | - | 🟡 Medium |
-| Настройка путей для скриншотов | ⏳ Planned | - | 🟡 Medium |
-| Регулировка громкости плеера | ⏳ Planned | - | 🟡 Medium |
-| Переключение видимости браузера | ⏳ Planned | - | 🟢 Low |
-| Refresh OAuth токена через `refresh_oauth_token` | ⏳ Planned | - | 🟢 Low |
-| Получение информации об OAuth пользователе через `get_oauth_user_info` | ⏳ Planned | - | 🟢 Low |
-
-### Приоритеты
-- 🔴 High - критичный функционал для работы с API и безопасности
-- 🟡 Medium - важный функционал для пользовательского опыта
-- 🟢 Low - дополнительный функционал
-
-**Версия:** 0.60.1
-**Последнее обновление:** 1 августа 2025
-**Разработано с ❤️ командой Timeline Studio**
+## TODO / Roadmap
+- [ ] Settings profiles support
+- [ ] Cloud sync for settings
+- [ ] UI theme configuration
+- [ ] Extended keyboard shortcuts
+- [ ] Debounce for frequent changes
+- [ ] Settings caching optimization
+- [ ] Automatic backup system
+- [ ] E2E tests (currently planned in `e2e/tauri/features/user-settings/`)

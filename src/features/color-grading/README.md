@@ -1,152 +1,76 @@
 # Color Grading
 
-## Overview / Обзор
+**English** | [Русский](./README.ru.md)
 
-**EN:** Professional color correction system integrated into Timeline Studio's Options panel. Provides DaVinci Resolve-level color correction capabilities including Color Wheels, RGB curves, HSL adjustments, LUT support, and professional scopes.
+## Overview
 
-**RU:** Профессиональная система цветокоррекции, интегрированная в панель Options Timeline Studio. Предоставляет возможности цветокоррекции уровня DaVinci Resolve, включая цветовые круги, RGB кривые, HSL настройки, поддержку LUT и профессиональные инструменты анализа.
+Professional color correction system integrated into Timeline Studio's Options panel. Provides DaVinci Resolve-level color correction capabilities including Color Wheels, RGB curves, HSL adjustments, LUT support, and professional scopes.
 
-## API (Backend Commands)
+## Status
 
-This module is frontend-only and does not use Tauri backend commands. All color grading is performed client-side using CSS filters and canvas processing.
+- ✅ **Components**: Complete UI with color wheels, curves, HSL, LUT, and scopes
+- ✅ **Hooks**: Centralized state management with useColorGrading hook
+- ✅ **Services**: Frontend-only, CSS filters and canvas processing
+- ✅ **Tests**: Unit tests for hooks and state management
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| N/A | - | Pure frontend implementation |
+## Structure
 
-## Features / Возможности
-
-The Color Grading feature provides DaVinci Resolve-level color correction capabilities, including:
-- Primary color correction with Color Wheels (Lift/Gamma/Gain/Offset)
-- RGB and tonal curves with Bézier interpolation
-- HSL adjustments (Temperature, Tint, Contrast, Saturation)
-- LUT support with .cube file import
-- Professional scopes (Waveform, Vectorscope, Histogram)
-- Real-time preview integration
-
-## Architecture
-
-### Components Structure
 ```
-components/
-├── color-settings.tsx          # Main panel integrated into Options
-├── color-wheels/
-│   ├── color-wheel.tsx        # Interactive SVG color wheel
-│   └── color-wheels-section.tsx
-├── curves/
-│   ├── curve-editor.tsx       # SVG-based curve editor with Bézier
-│   └── curves-section.tsx
-├── hsl/
-│   └── hsl-section.tsx        # Basic color parameters
-├── lut/
-│   └── lut-section.tsx        # LUT management and preview
-├── scopes/
-│   ├── waveform-scope.tsx     # Luminance analysis
-│   ├── vectorscope-scope.tsx  # Color distribution
-│   ├── histogram-scope.tsx    # RGB channel distribution
-│   ├── scope-viewer.tsx       # Scope container with controls
-│   └── scopes-section.tsx
-└── controls/
-    ├── parameter-slider.tsx   # Reusable slider component
-    └── color-grading-controls.tsx
+color-grading/
+├── components/
+│   ├── color-settings.tsx              # Main panel in Options
+│   ├── color-wheels/
+│   │   ├── color-wheel.tsx             # Interactive SVG color wheel
+│   │   └── color-wheels-section.tsx    # Lift/Gamma/Gain/Offset section
+│   ├── curves/
+│   │   ├── curve-editor.tsx            # SVG curve editor with Bézier
+│   │   └── curves-section.tsx          # RGB and tonal curves
+│   ├── hsl/
+│   │   └── hsl-section.tsx             # Temperature, Tint, Contrast, etc.
+│   ├── lut/
+│   │   └── lut-section.tsx             # LUT management and preview
+│   ├── scopes/
+│   │   ├── waveform-scope.tsx          # Luminance analysis
+│   │   ├── vectorscope-scope.tsx       # Color distribution
+│   │   ├── histogram-scope.tsx         # RGB channel distribution
+│   │   ├── scope-viewer.tsx            # Scope container
+│   │   └── scopes-section.tsx
+│   └── controls/
+│       ├── parameter-slider.tsx        # Reusable slider
+│       └── color-grading-controls.tsx
+├── hooks/
+│   └── use-color-grading.ts            # Main state management hook
+└── __tests__/                          # Test files
 ```
 
-### State Management
+## Features
 
-The feature uses a centralized state managed by `useColorGrading` hook:
+### ✅ Implemented
 
-```typescript
-interface ColorGradingState {
-  // Color Wheels
-  colorWheels: {
-    lift: RGBValue
-    gamma: RGBValue
-    gain: RGBValue
-    offset: RGBValue
-  }
-  
-  // Basic Parameters
-  basicParameters: {
-    temperature: number    // -100 to 100
-    tint: number          // -100 to 100
-    contrast: number      // -100 to 100
-    pivot: number         // 0 to 1
-    saturation: number    // -100 to 100
-    hue: number          // -180 to 180
-    luminance: number    // -100 to 100
-  }
-  
-  // Curves
-  curves: {
-    master: CurvePoint[]
-    red: CurvePoint[]
-    green: CurvePoint[]
-    blue: CurvePoint[]
-    // HSL curves (future)
-  }
-  
-  // LUT
-  lut: {
-    file: string | null
-    intensity: number     // 0 to 100
-    isEnabled: boolean
-  }
-  
-  // Scopes
-  scopes: {
-    waveformEnabled: boolean
-    vectorscopeEnabled: boolean
-    histogramEnabled: boolean
-    refreshRate: number   // 15, 30, or 60 FPS
-  }
-  
-  // UI State
-  previewEnabled: boolean
-  selectedClip: string | null
-  isActive: boolean
-  currentPreset: string | null
-  hasUnsavedChanges: boolean
-}
-```
+- [x] **Color Wheels**: Interactive Lift/Gamma/Gain/Offset with drag & drop
+- [x] **RGB Curves**: Master and RGB channel curves with Bézier interpolation
+- [x] **HSL Adjustments**: Temperature, Tint, Contrast, Saturation, Hue, Luminance
+- [x] **LUT Support**: Import .cube files, built-in presets (Film, Creative, Technical)
+- [x] **Professional Scopes**: Waveform, Vectorscope, Histogram with configurable refresh rates
+- [x] **Real-time Preview**: Live preview integration with video player
+- [x] **Localization**: Support for English and Russian
 
-## Key Features
+### ❌ Not Implemented
 
-### Color Wheels
-- Interactive SVG-based color wheels for Lift/Gamma/Gain/Offset
-- Drag & drop functionality with visual feedback
-- Real-time value updates
-- Reset functionality per wheel
-
-### Curves Editor
-- Master and RGB channel curves
-- Interactive point manipulation
-- Bézier curve interpolation for smooth gradients
-- Add/remove points with click/double-click
-- Auto-correct functionality
-- Grid overlay for precision
-
-### LUT System
-- Import .cube files via Tauri dialog
-- Built-in LUT presets in three categories:
-  - Film emulation (Kodak, Fuji, etc.)
-  - Creative looks (Orange & Teal, Vintage, etc.)
-  - Technical (S-Log to Rec.709, etc.)
-- Intensity control (0-100%)
-- Real-time preview grid
-- Trilinear interpolation for smooth application
-
-### Professional Scopes
-- **Waveform**: ITU-R BT.709 luminance calculation with RGB parade
-- **Vectorscope**: YUV color space visualization with skin tone line
-- **Histogram**: RGB channel distribution with transparency layers
-- Canvas-based rendering for performance
-- Configurable refresh rates (15/30/60 FPS)
-- Full-screen viewing mode
+- [ ] Apply color grading to timeline clips
+- [ ] Save/load custom presets
+- [ ] Keyframe animation support
+- [ ] A/B comparison mode
+- [ ] GPU acceleration via WebGL shaders
+- [ ] HSL secondary curves
+- [ ] Qualifier/mask system
+- [ ] Power windows
+- [ ] HDR support
+- [ ] Export grade as LUT
 
 ## Usage
 
 ### Integration with Options Panel
-The Color Grading feature is accessed through the "Color" tab in the Options panel:
 
 ```typescript
 import { ColorSettings } from "@/features/color-grading/components/color-settings"
@@ -156,6 +80,7 @@ import { ColorSettings } from "@/features/color-grading/components/color-setting
 ```
 
 ### Using the Hook
+
 ```typescript
 import { useColorGrading } from "@/features/color-grading/hooks/use-color-grading"
 
@@ -169,20 +94,19 @@ function MyComponent() {
     resetAll,
     hasChanges
   } = useColorGrading()
-  
+
   // Update color wheel
   updateColorWheel("lift", { r: 10, g: 20, b: 30 })
-  
+
   // Update temperature
   updateBasicParameter("temperature", 50)
-  
+
   // Load LUT
   loadLUT("film-kodak-2383")
 }
 ```
 
 ### Dispatch Pattern
-For complex state updates, use the dispatch pattern:
 
 ```typescript
 dispatch({
@@ -198,28 +122,41 @@ dispatch({
 })
 ```
 
-## Testing
+## Integration
 
-Unit tests are located in `__tests__/hooks/use-color-grading.test.ts`:
-- State initialization
-- Color wheel updates
-- Basic parameter changes
-- Curve manipulation
-- LUT operations
-- Scope controls
-- Reset functionality
-- Dispatch action handling
+- **Depends on**:
+  - `@/features/options` - Options panel integration
+  - `@/i18n` - Localization
+  - `@tauri-apps/api` - File dialog for LUT import
+  - Canvas API - Scopes rendering
+  - SVG - Interactive graphics
+
+- **Used by**:
+  - `@/features/media-studio` - Main interface
+  - `@/features/video-player` - Preview integration
+
+## Testing
 
 Run tests:
 ```bash
 bun run test src/features/color-grading/__tests__/hooks/use-color-grading.test.ts
 ```
 
+### Test Coverage
+- ✓ State initialization
+- ✓ Color wheel updates
+- ✓ Basic parameter changes
+- ✓ Curve manipulation
+- ✓ LUT operations
+- ✓ Scope controls
+- ✓ Reset functionality
+- ✓ Dispatch action handling
+
 ## Performance Considerations
 
 ### Scopes Optimization
-- Canvas rendering uses requestAnimationFrame for smooth updates
-- Configurable refresh rates to balance performance vs accuracy
+- Canvas rendering uses requestAnimationFrame
+- Configurable refresh rates (15/30/60 FPS)
 - Video frame sampling at reduced resolution (0.5x scale)
 - Efficient pixel data processing with typed arrays
 
@@ -233,118 +170,75 @@ bun run test src/features/color-grading/__tests__/hooks/use-color-grading.test.t
 - Batched state updates via dispatch
 - Debounced slider inputs
 
-## Future Enhancements
+## E2E Tests
 
-### Phase 6: Timeline Integration (Planned)
-- Apply color grading to timeline clips
-- Save/load presets
-- Keyframe animation support
-- A/B comparison mode
-- GPU acceleration via WebGL shaders
+**Location**: `e2e/tauri/features/color-grading/`
 
-### Additional Features
-- HSL secondary curves
-- Qualifier/mask system
-- Power windows
-- Motion tracking integration
-- HDR support
-- Export grade as LUT
+**Status**: ⏳ Planned (0 tests implemented)
 
-## Dependencies
+### Planned
+- ⏳ Initialize Color Grading in Options panel
+- ⏳ Color Wheels interactive control
+- ⏳ RGB Curves editor with add/remove points
+- ⏳ HSL parameters control
+- ⏳ Import .cube LUT files via Tauri dialog
+- ⏳ Built-in LUT presets selection
+- ⏳ LUT intensity control
+- ⏳ Waveform/Vectorscope/Histogram display
+- ⏳ Scopes refresh rate settings
+- ⏳ Apply to selected clip
+- ⏳ Save/load presets
+- ⏳ Real-time preview updates
 
-- React 19 with hooks
-- shadcn/ui components
-- Radix UI primitives
-- Tauri file dialog API
-- Canvas API for scopes
-- SVG for interactive graphics
+## TODO / Roadmap
 
-## Localization
+- [ ] Implement timeline clip integration
+- [ ] Add custom preset save/load functionality
+- [ ] Implement keyframe animation for color grading
+- [ ] Add A/B comparison mode
+- [ ] GPU acceleration via WebGL shaders
+- [ ] Add HSL secondary curves
+- [ ] Implement qualifier/mask system
+- [ ] Add power windows
+- [ ] HDR support
+- [ ] Export grade as LUT file
+- [ ] Complete E2E tests
+- [ ] Add more built-in LUT presets
+- [ ] Implement color match feature
+- [ ] Add split-screen before/after view
 
-All UI strings are localized with support for:
-- English (en)
-- Russian (ru)
+## Technical Details
 
-Translation keys are prefixed with `colorGrading.*` in the i18n files.
+### Color Wheels
+- Interactive SVG-based wheels
+- Drag & drop functionality with visual feedback
+- Real-time value updates
+- Reset functionality per wheel
 
-## API Reference
+### Curves Editor
+- Master and RGB channel curves
+- Interactive point manipulation
+- Bézier curve interpolation for smooth gradients
+- Add/remove points with click/double-click
+- Grid overlay for precision
 
-### useColorGrading Hook
+### LUT System
+- Import .cube files via Tauri dialog
+- Built-in LUT presets in three categories:
+  - Film emulation (Kodak, Fuji, etc.)
+  - Creative looks (Orange & Teal, Vintage, etc.)
+  - Technical (S-Log to Rec.709, etc.)
+- Intensity control (0-100%)
+- Trilinear interpolation for smooth application
 
-```typescript
-interface UseColorGradingReturn {
-  // State
-  state: ColorGradingState
-  hasChanges: boolean
-  isActive: boolean
-  
-  // Update methods
-  updateColorWheel: (wheel: ColorWheelType, value: RGBValue) => void
-  updateBasicParameter: (param: keyof BasicParametersState, value: number) => void
-  updateCurve: (curve: CurveType, points: CurvePoint[]) => void
-  loadLUT: (file: string) => void
-  setLUTIntensity: (intensity: number) => void
-  toggleLUT: (enabled: boolean) => void
-  togglePreview: (enabled: boolean) => void
-  
-  // Actions
-  applyToClip: () => void
-  resetAll: () => void
-  loadPreset: (presetId: string) => void
-  savePreset: (name: string) => void
-  
-  // Dispatch
-  dispatch: (action: ColorGradingAction) => void
-}
-```
+### Professional Scopes
+- **Waveform**: ITU-R BT.709 luminance calculation with RGB parade
+- **Vectorscope**: YUV color space visualization with skin tone line
+- **Histogram**: RGB channel distribution with transparency layers
+- Canvas-based rendering for performance
+- Configurable refresh rates (15/30/60 FPS)
+- Full-screen viewing mode
 
-## Contributing
+## License
 
-When adding new features:
-1. Follow the existing component structure
-2. Add proper TypeScript types
-3. Include unit tests
-4. Update localization files
-5. Document new functionality
-6. Ensure performance targets are met
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/color-grading/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Инициализация Color Grading в Options панели | ⏳ Planned | - | 🔴 High |
-| Color Wheels интерактивное управление (Lift/Gamma/Gain/Offset) | ⏳ Planned | - | 🔴 High |
-| RGB Curves редактор с добавлением/удалением точек | ⏳ Planned | - | 🔴 High |
-| Master curve управление | ⏳ Planned | - | 🔴 High |
-| HSL параметры (Temperature, Tint, Contrast) | ⏳ Planned | - | 🟡 Medium |
-| Saturation и Hue контроль | ⏳ Planned | - | 🟡 Medium |
-| Импорт .cube LUT файлов (Tauri dialog) | ⏳ Planned | - | 🟡 Medium |
-| Встроенные LUT presets (Film, Creative, Technical) | ⏳ Planned | - | 🟡 Medium |
-| LUT intensity контроль (0-100%) | ⏳ Planned | - | 🟢 Low |
-| Toggle LUT enable/disable | ⏳ Planned | - | 🟢 Low |
-| Waveform Scope отображение | ⏳ Planned | - | 🟡 Medium |
-| Vectorscope с skin tone line | ⏳ Planned | - | 🟡 Medium |
-| Histogram RGB каналов | ⏳ Planned | - | 🟡 Medium |
-| Scopes refresh rate настройка (15/30/60 FPS) | ⏳ Planned | - | 🟢 Low |
-| Full-screen режим для scopes | ⏳ Planned | - | 🟢 Low |
-| Применение к выбранному клипу | ⏳ Planned | - | 🔴 High |
-| Сохранение пресетов цветокоррекции | ⏳ Planned | - | 🟡 Medium |
-| Загрузка сохраненных пресетов | ⏳ Planned | - | 🟡 Medium |
-| Reset All функциональность | ⏳ Planned | - | 🟢 Low |
-| Real-time preview обновление | ⏳ Planned | - | 🔴 High |
-
-### Приоритеты
-- 🔴 High - критичный функционал (инициализация, color wheels, curves, применение, preview)
-- 🟡 Medium - важный функционал (HSL, LUT, scopes, presets)
-- 🟢 Low - дополнительный функционал (intensity, toggle, refresh rate, reset)
-
-### Описание
-Color Grading - frontend-only модуль без прямых Tauri команд, кроме file dialog для импорта LUT. Вся обработка выполняется client-side через CSS filters и canvas. Критически важно протестировать корректность работы интерактивных элементов (color wheels, curves editor) и real-time preview. Необходимо проверить производительность scopes при разных refresh rates и корректность trilinear interpolation для LUT.
-
----
-
-*Last updated: June 26, 2025*
+Part of Timeline Studio - see root project license.

@@ -1,64 +1,74 @@
-# Recognition - Распознавание объектов YOLO
+# Recognition
 
-Модуль для работы с данными распознавания объектов YOLO в видео. Предоставляет компоненты для визуализации, анализа и взаимодействия с результатами распознавания.
+**English** | [Русский](./README.ru.md)
 
-## API (Backend Commands)
+## Overview
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `init_yolo_processor` | `{ model_type: string, confidence_threshold: number }` | Инициализирует YOLO процессор с выбранной моделью. Поддерживает модели: `yolo11-detection`, `yolo11-face`, `yolo8-detection`, `yolo8-face` |
-| `save_yolo_data` | `{ video_id: string, data: YoloVideoData }` | Сохраняет результаты распознавания YOLO для видео |
-| `clear_recognition_results` | `{ file_id: string }` | Очищает результаты распознавания для указанного файла |
+YOLO object recognition module for Timeline Studio. Provides components for visualization, analysis, and interaction with object recognition results in video. Supports multiple YOLO models (YOLO11, YOLO8) for detection and face recognition.
 
-**Примечание:** Команда `load_yolo_data` также доступна в backend, но в текущей версии данные загружаются непосредственно из файловой системы через YoloDataService.
+## Status
 
-## 📁 Структура
+- ✅ **Components**: Data overlay, visualization, graph overlay, track overlay
+- ✅ **Hooks**: use-yolo-data (43 tests)
+- ✅ **Services**: YoloDataService, SceneContextService
+- ✅ **Tests**: 43 tests passing
+
+## Structure
 
 ```
-src/features/recognition/
-├── components/              # React компоненты
-│   ├── yolo-data-overlay.tsx      # Наложение данных YOLO на видео
-│   ├── yolo-data-visualization.tsx # Визуализация данных в виде графиков
-│   ├── yolo-graph-overlay.tsx     # График временной шкалы с навигацией
-│   └── yolo-track-overlay.tsx     # Отображение треков объектов
-├── hooks/                   # React хуки
-│   └── use-yolo-data.ts           # Хук для работы с данными YOLO
-├── services/                # Сервисы
-│   ├── yolo-data-service.ts       # Сервис загрузки и кэширования данных
-│   └── scene-context-service.ts   # Сервис создания контекста сцены для ИИ
-├── __tests__/              # Тесты (43 работающих теста)
-│   ├── components/              # Тесты компонентов
-│   ├── hooks/                   # Тесты хуков
-│   └── services/                # Тесты сервисов
-├── __mocks__/              # Общие моки для тестов
-├── index.ts                # Экспорты модуля
-├── README.md              # Документация
-└── DEV.md                # Техническая документация
+recognition/
+├── components/              # React components
+│   ├── yolo-data-overlay.tsx      # YOLO data overlay on video
+│   ├── yolo-data-visualization.tsx # Data visualization charts
+│   ├── yolo-graph-overlay.tsx     # Timeline graph with navigation
+│   └── yolo-track-overlay.tsx     # Object track display
+├── hooks/                   # React hooks
+│   └── use-yolo-data.ts           # YOLO data management hook
+├── services/                # Services
+│   ├── yolo-data-service.ts       # Data loading and caching
+│   └── scene-context-service.ts   # Scene context for AI
+├── __tests__/              # Tests (43 tests)
+│   ├── components/              # Component tests
+│   ├── hooks/                   # Hook tests
+│   └── services/                # Service tests
+└── __mocks__/              # Shared test mocks
 ```
 
-## 🎯 Основные возможности
+## Features
 
-### ✅ Компоненты
-- **YoloDataOverlay** - отображение рамок объектов поверх видео
-- **YoloDataVisualization** - графики и статистика обнаружений
-- **YoloGraphOverlay** - временная шкала с навигацией
-- **YoloTrackOverlay** - треки движения объектов
+### ✅ Implemented
 
-### ✅ Хуки
-- **useYoloData** - загрузка и управление данными YOLO
-- Кэширование данных для оптимизации производительности
-- Предзагрузка данных для списка видео
+- [x] YOLO processor initialization (YOLO11, YOLO8 models)
+- [x] Object detection visualization
+- [x] Face detection support
+- [x] Bounding boxes with labels on video overlay
+- [x] Interactive charts and statistics
+- [x] Timeline with click navigation
+- [x] Object tracking visualization
+- [x] Data caching for performance
+- [x] Lazy loading
+- [x] Preloading for video lists
+- [x] Scene context creation for AI
+- [x] JSON export
+- [x] Class-based filtering
+- [x] Internationalization support
 
-### ✅ Сервисы
-- **YoloDataService** - загрузка, кэширование и обработка данных
-- **SceneContextService** - создание контекста сцены для ИИ
+### ❌ Not Implemented
 
-## 🚀 Использование
+- [ ] Timeline integration for data display
+- [ ] Export annotated frames
+- [ ] Confidence filtering
+- [ ] Custom YOLO model support
+- [ ] Motion and behavior analysis
+- [ ] Real-time recognition processing
+- [ ] Multi-object tracking improvements
 
-### Базовое использование
+## Usage
+
+### Basic Usage
 
 ```typescript
-import { YoloDataOverlay, useYoloData } from '@/features/recognition';
+import { YoloDataOverlay, useYoloData } from '@/features/recognition'
 
 function VideoPlayer({ video, currentTime }) {
   return (
@@ -69,14 +79,14 @@ function VideoPlayer({ video, currentTime }) {
         currentTime={currentTime}
       />
     </div>
-  );
+  )
 }
 ```
 
-### Использование хука
+### Using the Hook
 
 ```typescript
-import { useYoloData } from '@/features/recognition';
+import { useYoloData } from '@/features/recognition'
 
 function VideoAnalysis({ videoId }) {
   const {
@@ -84,250 +94,96 @@ function VideoAnalysis({ videoId }) {
     getVideoSummary,
     isLoading,
     getError
-  } = useYoloData();
+  } = useYoloData()
 
-  const [detections, setDetections] = useState([]);
+  const [detections, setDetections] = useState([])
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await getYoloDataAtTimestamp(videoId, currentTime);
-      setDetections(data);
-    };
-    loadData();
-  }, [videoId, currentTime]);
+      const data = await getYoloDataAtTimestamp(videoId, currentTime)
+      setDetections(data)
+    }
+    loadData()
+  }, [videoId, currentTime])
 
-  if (isLoading(videoId)) return <div>Загрузка...</div>;
-  if (getError(videoId)) return <div>Ошибка: {getError(videoId)}</div>;
+  if (isLoading(videoId)) return <div>Loading...</div>
+  if (getError(videoId)) return <div>Error: {getError(videoId)}</div>
 
   return (
     <div>
-      <h3>Обнаружено объектов: {detections.length}</h3>
+      <h3>Objects detected: {detections.length}</h3>
       {detections.map((detection, index) => (
         <div key={index}>
           {detection.class} ({Math.round(detection.confidence * 100)}%)
         </div>
       ))}
     </div>
-  );
+  )
 }
 ```
 
-### Визуализация данных
+### Scene Context for AI
 
 ```typescript
-import { YoloDataVisualization } from '@/features/recognition';
+import { SceneContextService } from '@/features/recognition'
 
-function DataAnalysis({ yoloData }) {
-  return (
-    <YoloDataVisualization
-      yoloData={yoloData}
-      width={800}
-      height={400}
-    />
-  );
-}
-```
-
-### Создание контекста для ИИ
-
-```typescript
-import { SceneContextService } from '@/features/recognition';
-
-const sceneService = new SceneContextService();
+const sceneService = new SceneContextService()
 
 function AIAnalysis({ video, detections, timestamp }) {
   const context = sceneService.createSceneContext(
     { id: video.id, name: video.name },
     detections,
     timestamp
-  );
+  )
 
-  const chatDescription = sceneService.createChatDescription(context);
-  const detailedDescription = sceneService.createDetailedDescription(context);
+  const chatDescription = sceneService.createChatDescription(context)
+  const detailedDescription = sceneService.createDetailedDescription(context)
 
   return (
     <div>
-      <h3>Контекст сцены</h3>
+      <h3>Scene Context</h3>
       <p>{chatDescription}</p>
-
       <button onClick={() => {
-        navigator.clipboard.writeText(sceneService.exportToJSON(context));
+        navigator.clipboard.writeText(sceneService.exportToJSON(context))
       }}>
-        Скопировать JSON
+        Copy JSON
       </button>
     </div>
-  );
+  )
 }
 ```
 
-## 📊 API хуков
+## Integration
 
-### useYoloData()
+- **Depends on**:
+  - `@tauri-apps/api/core` - for invoke commands
+  - `@/lib/tauri-logger` - for logging
+  - ONNX Runtime - for model inference
+- **Used by**:
+  - Video Player - for overlay display
+  - AI Chat - for scene context
+  - Media Browser - for video analysis
 
-```typescript
-const {
-  // Основные методы
-  loadYoloData,           // Загрузка данных для видео
-  getYoloDataAtTimestamp, // Получение данных для времени
-  getVideoSummary,        // Получение сводки по видео
-  getAllYoloData,         // Получение всех данных
-  hasYoloData,           // Проверка наличия данных
+## Testing
 
-  // Управление кэшем
-  clearVideoCache,        // Очистка кэша видео
-  clearAllCache,         // Очистка всего кэша
-  getCacheStats,         // Статистика кэша
+- **Total tests**: 43
+- **Coverage**: Components, hooks, services
+- **Test files**:
+  - `services/montage-planner-machine.test.ts` - XState machine tests
+  - `services/content-analyzer.test.ts` - Content analysis tests
+  - `services/moment-detector.test.ts` - Moment detection tests
+  - `hooks/use-montage-planner.test.tsx` - Hook functionality
+  - `components/analysis/quality-meter.test.tsx` - Component tests
 
-  // Дополнительные возможности
-  preloadYoloData,       // Предзагрузка данных
-  getSceneContext,       // Создание контекста сцены
+## TODO / Roadmap
 
-  // Состояния
-  loadingStates,         // Состояния загрузки
-  errorStates,          // Состояния ошибок
-  isLoading,            // Проверка загрузки
-  getError,             // Получение ошибки
-} = useYoloData();
-```
-
-## 🎨 Компоненты
-
-### YoloDataOverlay
-
-Отображает рамки вокруг обнаруженных объектов поверх видео.
-
-**Пропсы:**
-- `video: { id: string, name: string, path: string }` - информация о видео
-- `currentTime: number` - текущее время воспроизведения
-
-**Возможности:**
-- Отображение рамок с подписями
-- Информационная панель с количеством объектов
-- Кнопка копирования контекста сцены
-
-### YoloDataVisualization
-
-Визуализация данных YOLO в виде графиков и статистики.
-
-**Пропсы:**
-- `yoloData: YoloVideoData` - данные YOLO для визуализации
-- `width?: number` - ширина графика (по умолчанию 800)
-- `height?: number` - высота графика (по умолчанию 400)
-
-**Возможности:**
-- Интерактивный график количества обнаружений
-- Фильтрация по классам объектов
-- Статистические карточки
-
-### YoloGraphOverlay
-
-Временная шкала с возможностью навигации по времени.
-
-**Пропсы:**
-- `yoloData: YoloVideoData` - данные YOLO
-- `currentTime: number` - текущее время
-- `onTimeChange?: (time: number) => void` - обработчик изменения времени
-- `width?: number` - ширина (по умолчанию 600)
-- `height?: number` - высота (по умолчанию 100)
-
-**Возможности:**
-- Клик для перехода к времени
-- Hover для предварительного просмотра
-- Индикатор текущего времени
-
-### YoloTrackOverlay
-
-Отображение треков движения объектов.
-
-**Пропсы:**
-- `yoloData: YoloVideoData` - данные YOLO
-- `currentTime: number` - текущее время
-- `width?: number` - ширина (по умолчанию 400)
-- `height?: number` - высота (по умолчанию 300)
-- `showTrajectories?: boolean` - показывать траектории (по умолчанию true)
-
-**Возможности:**
-- Отображение траекторий движения
-- Выбор треков кликом
-- Цветовая кодировка по классам
-
-## 🔧 Сервисы
-
-### YoloDataService
-
-Основной сервис для работы с данными YOLO.
-
-**Методы:**
-- `loadYoloData(videoId, videoPath?)` - загрузка данных
-- `getYoloDataAtTimestamp(videoId, timestamp)` - данные для времени
-- `getVideoSummary(videoId)` - сводка по видео
-- `hasYoloData(videoId)` - проверка наличия данных
-- `clearVideoCache(videoId)` - очистка кэша
-
-### SceneContextService
-
-Сервис для создания контекста сцены для ИИ.
-
-**Методы:**
-- `createSceneContext(videoInfo, detections, timestamp)` - создание контекста
-- `createChatDescription(context)` - краткое описание для чата
-- `createDetailedDescription(context)` - детальное описание
-- `exportToJSON(context)` - экспорт в JSON
-- `filterByClass(context, targetClass)` - фильтрация по классу
-
-## 🌍 Интернационализация
-
-Модуль поддерживает переводы для:
-- Названий объектов и действий
-- Описаний позиций и размеров
-- Сообщений об ошибках
-- Подсказок интерфейса
-
-## 📈 Производительность
-
-- **Кэширование данных** - автоматическое кэширование загруженных данных
-- **Ленивая загрузка** - данные загружаются только при необходимости
-- **Оптимизация рендеринга** - использование Canvas для графиков
-- **Предзагрузка** - возможность предзагрузки данных для списка видео
-
-## 🔮 Планы развития
-
-- [ ] Интеграция с Timeline для отображения данных на временной шкале
-- [ ] Экспорт аннотированных кадров
-- [ ] Фильтрация по уверенности распознавания
-- [ ] Поддержка пользовательских моделей YOLO
-- [ ] Анализ движения и поведения объектов
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/recognition/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Инициализация YOLO процессора (`init_yolo_processor`) | ⏳ Planned | - | 🔴 High |
-| Загрузка YOLO данных для видео | ⏳ Planned | - | 🔴 High |
-| Получение данных распознавания для временной метки | ⏳ Planned | - | 🔴 High |
-| Сохранение YOLO данных (`save_yolo_data`) | ⏳ Planned | - | 🟡 Medium |
-| Очистка результатов распознавания (`clear_recognition_results`) | ⏳ Planned | - | 🟡 Medium |
-| Кэширование загруженных данных | ⏳ Planned | - | 🟡 Medium |
-| Предзагрузка данных для списка видео | ⏳ Planned | - | 🟢 Low |
-| Очистка кэша видео | ⏳ Planned | - | 🟢 Low |
-| UI - отображение рамок объектов (YoloDataOverlay) | ⏳ Planned | - | 🔴 High |
-| UI - визуализация графиков (YoloDataVisualization) | ⏳ Planned | - | 🟡 Medium |
-| UI - временная шкала с навигацией (YoloGraphOverlay) | ⏳ Planned | - | 🟡 Medium |
-| UI - отображение треков объектов (YoloTrackOverlay) | ⏳ Planned | - | 🟡 Medium |
-| Создание контекста сцены для ИИ | ⏳ Planned | - | 🟡 Medium |
-| Экспорт контекста в JSON | ⏳ Planned | - | 🟢 Low |
-| Копирование контекста в буфер обмена | ⏳ Planned | - | 🟢 Low |
-| Фильтрация данных по классам объектов | ⏳ Planned | - | 🟡 Medium |
-| Получение сводки по видео | ⏳ Planned | - | 🟡 Medium |
-| Статистика обнаружений | ⏳ Planned | - | 🟢 Low |
-| Обработка ошибок загрузки данных | ⏳ Planned | - | 🟡 Medium |
-| Интеграция с VideoPlayer (наложение данных) | ⏳ Planned | - | 🔴 High |
-
-### Приоритеты
-- 🔴 High - критичный функционал (инициализация, загрузка данных, основной UI, интеграция с плеером)
-- 🟡 Medium - важный функционал (сохранение данных, визуализация, создание контекста, фильтрация)
-- 🟢 Low - дополнительный функционал (кэширование, статистика, экспорт, вспомогательные элементы)
+- [ ] E2E tests for recognition workflow (18 tests planned)
+- [ ] Integration with Timeline for data display
+- [ ] Export annotated frames feature
+- [ ] Confidence-based filtering UI
+- [ ] Support for custom YOLO models
+- [ ] Motion and behavior analysis
+- [ ] Real-time recognition processing
+- [ ] Multi-object tracking improvements
+- [ ] Recognition batch processing
+- [ ] Model performance optimization

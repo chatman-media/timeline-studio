@@ -1,111 +1,62 @@
 # Drag & Drop
 
-## Overview / Обзор
+**English** | [Русский](./README.ru.md)
 
-**EN:** Global drag-and-drop management system for Timeline Studio. Provides unified drag-and-drop functionality across all modules (media files, effects, filters, transitions, templates). Uses singleton pattern to coordinate drag operations between different parts of the application.
+## Overview
 
-**RU:** Глобальная система управления drag-and-drop для Timeline Studio. Предоставляет единообразную функциональность перетаскивания для всех модулей (медиа файлы, эффекты, фильтры, переходы, шаблоны). Использует паттерн singleton для координации операций между различными частями приложения.
+Global drag-and-drop management system for Timeline Studio. Provides unified drag-and-drop functionality across all modules (media files, effects, filters, transitions, templates). Uses singleton pattern to coordinate drag operations between different parts of the application.
 
-## API (Backend Commands)
+## Status
 
-This module is frontend-only and does not use Tauri backend commands.
+- ✅ **Components**: N/A (hook-based system)
+- ✅ **Hooks**: useDraggable, useDropZone, useDragDropState
+- ✅ **Services**: DragDropManager singleton with EventEmitter
+- ✅ **Tests**: Comprehensive coverage (hooks and manager), 4 SSR tests skipped
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| N/A | - | Pure frontend implementation using HTML5 Drag & Drop API |
-
-## Features / Возможности
-
-### Draggable Types / Типы перетаскиваемых объектов
-- **media** - Media files (video/audio)
-- **music** - Music library items
-- **effect** - Video effects
-- **filter** - Video filters
-- **transition** - Transition effects
-- **template** - Multi-camera templates
-- **style-template** - Animated intro/outro templates
-- **subtitle-style** - Subtitle style presets
-
-### Key Capabilities / Основные возможности
-- **Global coordination** - Single manager for all drag operations
-- **Type-safe drops** - Drop targets can specify accepted types
-- **Ghost image** - Custom preview images during drag
-- **Event system** - EventEmitter for cross-module communication
-- **Multiple drop targets** - Register multiple drop zones
-- **Backward compatibility** - Supports both new unified system and legacy dataTransfer types
-
-## Behavior (from tests) / Поведение (из тестов)
-
-### use-drag-drop.test.ts
-- ✓ useDraggable hook creates drag handlers
-- ✓ useDraggable calls startDrag when drag starts
-- ✓ useDraggable passes correct item data and preview
-- ✓ useDropZone hook registers drop target
-- ✓ useDropZone accepts specified draggable types
-- ✓ useDropZone calls callbacks on drag events (enter, over, leave, drop)
-- ✓ useDropZone validates draggable types
-- ✓ useDragDropState provides current drag state
-- ✓ useDragDropState updates on drag events
-
-### drag-drop-manager.test.ts
-- ✓ DragDropManager is singleton
-- ✓ startDrag creates drag state
-- ✓ startDrag creates ghost image when preview provided
-- ✓ startDrag sets dataTransfer with item data
-- ✓ startDrag sets legacy dataTransfer types for backward compatibility
-- ✓ registerDropTarget adds target to registry
-- ✓ findActiveDropTarget identifies correct drop target
-- ✓ findActiveDropTarget validates accepted types
-- ✓ drag events update current drag state
-- ✓ drop event calls target's onDrop callback
-- ✓ endDrag clears drag state and removes ghost image
-- ✓ EventEmitter events fired for drag lifecycle
-
-## Structure / Структура
+## Structure
 
 ```
 drag-drop/
 ├── hooks/
-│   └── use-drag-drop.ts    # React hooks for drag & drop
-│       ├── useDraggable()  # Make element draggable
-│       ├── useDropZone()   # Register drop target
-│       └── useDragDropState() # Access current drag state
+│   └── use-drag-drop.ts           # React hooks for drag & drop
+│       ├── useDraggable()         # Make element draggable
+│       ├── useDropZone()          # Register drop target
+│       └── useDragDropState()     # Access current drag state
 ├── services/
-│   └── drag-drop-manager.ts # Global singleton manager
-│       ├── DragDropManager class
-│       └── Event coordination
-├── index.ts                # Public exports
-└── __tests__/             # Test suite
-    ├── hooks/
-    │   └── use-drag-drop.test.ts
-    └── services/
-        └── drag-drop-manager.test.ts
+│   └── drag-drop-manager.ts       # Global singleton manager
+│       ├── DragDropManager        # Main manager class
+│       └── EventEmitter           # Event coordination
+├── __tests__/                     # Test files
+└── index.ts                       # Public exports
 ```
 
-## Dependencies / Зависимости
+## Features
 
-### Internal Dependencies
-- `events` (Node.js EventEmitter) - Event coordination
-- No other internal dependencies - standalone module
+### ✅ Implemented
 
-### External Dependencies
-- `react` - Hook implementations
-- HTML5 Drag & Drop API - Native browser support
+- [x] **Global coordination**: Single manager for all drag operations
+- [x] **Type-safe drops**: Drop targets can specify accepted types
+- [x] **Ghost image**: Custom preview images during drag
+- [x] **Event system**: EventEmitter for cross-module communication
+- [x] **Multiple drop targets**: Register multiple drop zones
+- [x] **Backward compatibility**: Supports both new unified system and legacy dataTransfer types
+- [x] **Draggable types**: media, music, effect, filter, transition, template, style-template, subtitle-style
 
-### Used By
-- `@/features/browser` - Drag media files to timeline
-- `@/features/effects` - Drag effects to clips
-- `@/features/filters` - Drag filters to clips
-- `@/features/transitions` - Drag transitions between clips
-- `@/features/templates` - Drag templates to timeline
-- `@/features/style-templates` - Drag style templates
-- `@/features/timeline` - Drop target for all items
+### ❌ Not Implemented
 
-## Usage Example / Пример использования
+- [ ] Touch device support (mobile/tablet drag)
+- [ ] Drag constraints (limit drag area)
+- [ ] Multi-item drag (select multiple items)
+- [ ] Snap-to-grid for timeline drops
+- [ ] Drag reordering within lists
+- [ ] Keyboard shortcuts during drag (Ctrl for copy, Shift for move)
+- [ ] Analytics/telemetry for drag operations
+
+## Usage
 
 ### Making an element draggable
 
-```tsx
+```typescript
 import { useDraggable } from '@/features/drag-drop'
 
 function MediaFileItem({ file }) {
@@ -130,7 +81,7 @@ function MediaFileItem({ file }) {
 
 ### Creating a drop zone
 
-```tsx
+```typescript
 import { useDropZone } from '@/features/drag-drop'
 
 function TimelineDropZone() {
@@ -141,14 +92,11 @@ function TimelineDropZone() {
     accepts: ['media', 'effect', 'filter', 'transition'],
     elementRef: dropZoneRef,
     onDrop: (item, event) => {
-      console.log('Dropped item:', item)
-      // Add item to timeline
       if (item.type === 'media') {
         addMediaToTimeline(item.data, event.clientX)
       }
     },
     onDragEnter: (item) => {
-      console.log('Drag enter:', item.type)
       // Show drop indicator
     },
     onDragLeave: () => {
@@ -162,7 +110,7 @@ function TimelineDropZone() {
 
 ### Accessing drag state
 
-```tsx
+```typescript
 import { useDragDropState } from '@/features/drag-drop'
 
 function DragStateIndicator() {
@@ -180,7 +128,7 @@ function DragStateIndicator() {
 
 ### Direct manager usage (advanced)
 
-```tsx
+```typescript
 import { getDragDropManager } from '@/features/drag-drop'
 
 const manager = getDragDropManager()
@@ -193,80 +141,82 @@ manager.on('dragStart', (state) => {
 manager.on('dragEnd', () => {
   console.log('Drag ended')
 })
-
-// Manually start drag
-manager.startDrag({
-  type: 'effect',
-  data: effectData
-}, dragEvent)
 ```
 
-## Architecture / Архитектура
+## Integration
+
+- **Depends on**:
+  - `events` (Node.js EventEmitter) - Event coordination
+  - `react` - Hook implementations
+  - HTML5 Drag & Drop API - Native browser support
+
+- **Used by**:
+  - `@/features/browser` - Drag media files to timeline
+  - `@/features/effects` - Drag effects to clips
+  - `@/features/filters` - Drag filters to clips
+  - `@/features/transitions` - Drag transitions between clips
+  - `@/features/templates` - Drag templates to timeline
+  - `@/features/style-templates` - Drag style templates
+  - `@/features/timeline` - Drop target for all items
+
+## Testing
+
+Run tests:
+```bash
+# All drag-drop tests
+bun run test src/features/drag-drop
+
+# Specific test file
+bun run test src/features/drag-drop/hooks/__tests__/use-drag-drop.test.ts
+```
+
+### Test Coverage
+
+**use-drag-drop.test.ts**:
+- ✓ useDraggable hook creates drag handlers
+- ✓ useDraggable calls startDrag when drag starts
+- ✓ useDraggable passes correct item data and preview
+- ✓ useDropZone hook registers drop target
+- ✓ useDropZone accepts specified draggable types
+- ✓ useDropZone calls callbacks on drag events
+- ✓ useDropZone validates draggable types
+- ✓ useDragDropState provides current drag state
+- ✓ useDragDropState updates on drag events
+
+**drag-drop-manager.test.ts**:
+- ✓ DragDropManager is singleton
+- ✓ startDrag creates drag state
+- ✓ startDrag creates ghost image when preview provided
+- ✓ startDrag sets dataTransfer with item data
+- ✓ startDrag sets legacy dataTransfer types for backward compatibility
+- ✓ registerDropTarget adds target to registry
+- ✓ findActiveDropTarget identifies correct drop target
+- ✓ findActiveDropTarget validates accepted types
+- ✓ drag events update current drag state
+- ✓ drop event calls target's onDrop callback
+- ✓ endDrag clears drag state and removes ghost image
+- ✓ EventEmitter events fired for drag lifecycle
+
+**Note:** 4 SSR-related tests are skipped as Timeline Studio is a Tauri desktop application, not SSR.
+
+## Architecture
 
 ### Singleton Pattern
-The `DragDropManager` uses singleton pattern to ensure only one instance manages all drag operations:
-
-```typescript
-export class DragDropManager extends EventEmitter {
-  private static instance: DragDropManager
-
-  static getInstance(): DragDropManager {
-    if (!DragDropManager.instance) {
-      DragDropManager.instance = new DragDropManager()
-    }
-    return DragDropManager.instance
-  }
-}
-```
+The `DragDropManager` uses singleton pattern to ensure only one instance manages all drag operations.
 
 ### Event Lifecycle
 
 1. **dragStart** - User initiates drag
-   - Create ghost image if preview provided
-   - Set dataTransfer data
-   - Emit 'dragStart' event
-
 2. **dragOver** - Mouse moves over drop target
-   - Find active drop target under cursor
-   - Call target's onDragOver callback
-   - Update currentX/currentY
-
 3. **dragEnter** - Mouse enters drop target
-   - Validate accepted types
-   - Call target's onDragEnter callback
-   - Update activeDropTarget
-
 4. **dragLeave** - Mouse leaves drop target
-   - Call target's onDragLeave callback
-   - Clear activeDropTarget
-
 5. **drop** - User releases mouse
-   - Call target's onDrop callback
-   - Emit 'drop' event
-   - Call endDrag()
-
 6. **dragEnd** - Drag operation ends
-   - Clear drag state
-   - Remove ghost image
-   - Emit 'dragEnd' event
 
 ### Ghost Image System
-Custom drag preview created from preview data:
+Custom drag preview created from preview data with position styling.
 
-```typescript
-createGhostImage(preview: { url: string, width: number, height: number }) {
-  const ghost = document.createElement('div')
-  ghost.style.position = 'absolute'
-  ghost.style.left = '-9999px'
-  ghost.style.backgroundImage = `url(${preview.url})`
-  ghost.style.width = `${preview.width}px`
-  ghost.style.height = `${preview.height}px`
-  document.body.appendChild(ghost)
-  this.ghostElement = ghost
-}
-```
-
-## Backward Compatibility / Обратная совместимость
+## Backward Compatibility
 
 The manager supports both new unified system and legacy dataTransfer types:
 
@@ -279,14 +229,11 @@ switch (item.type) {
   case 'media':
     event.dataTransfer.setData('mediaFile', JSON.stringify(item.data))
     break
-  case 'effect':
-    event.dataTransfer.setData('effect', JSON.stringify(item.data))
-    break
   // ... other types
 }
 ```
 
-## Performance / Производительность
+## Performance
 
 - **Singleton pattern** - Single manager instance, minimal memory overhead
 - **Event delegation** - Global listeners instead of per-element listeners
@@ -294,21 +241,40 @@ switch (item.type) {
 - **Efficient target lookup** - Map-based drop target registry
 - **Cleanup on unmount** - Hooks automatically unregister targets
 
-## Testing / Тестирование
+## E2E Tests
 
-The module has comprehensive test coverage:
+**Location**: `e2e/tauri/features/drag-drop/`
 
-```bash
-# Run all drag-drop tests
-bun run test src/features/drag-drop
+**Status**: ⏳ Planned (0 tests implemented)
 
-# Run specific test file
-bun run test src/features/drag-drop/hooks/__tests__/use-drag-drop.test.ts
-```
+### Planned
+- ⏳ Drag & drop media files to timeline
+- ⏳ Drag & drop effects to clips
+- ⏳ Drag & drop filters to clips
+- ⏳ Drag & drop transitions between clips
+- ⏳ Drag & drop templates to timeline
+- ⏳ Custom ghost image during drag
+- ⏳ Type validation on drop targets
+- ⏳ DragEnter/DragLeave events
+- ⏳ Drop callback execution
+- ⏳ Multiple drop zones
+- ⏳ EventEmitter for cross-module communication
 
-**Note:** 4 SSR-related tests are skipped as Timeline Studio is a Tauri desktop application, not SSR.
+## TODO / Roadmap
 
-## Best Practices / Лучшие практики
+- [ ] Add touch device support for mobile/tablet
+- [ ] Implement drag constraints to limit drag area
+- [ ] Add multi-item drag (select multiple items)
+- [ ] Implement snap-to-grid for timeline drops
+- [ ] Add drag reordering within lists
+- [ ] Support keyboard shortcuts during drag (Ctrl, Shift)
+- [ ] Add analytics/telemetry for drag operations
+- [ ] Complete E2E tests for all drag types
+- [ ] Add visual feedback improvements
+- [ ] Implement drag preview animations
+- [ ] Add accessibility features (keyboard navigation)
+
+## Best Practices
 
 1. **Use hooks for components** - `useDraggable` and `useDropZone` for React components
 2. **Specify accepted types** - Always define which types a drop zone accepts
@@ -317,74 +283,6 @@ bun run test src/features/drag-drop/hooks/__tests__/use-drag-drop.test.ts
 5. **Type validation** - Manager validates types before drop
 6. **Error handling** - Handle edge cases in onDrop callbacks
 
-## Migration from Legacy System / Миграция со старой системы
+## License
 
-If you have old code using direct dataTransfer:
-
-```tsx
-// OLD WAY (still works)
-<div
-  draggable
-  onDragStart={(e) => {
-    e.dataTransfer.setData('mediaFile', JSON.stringify(file))
-  }}
-/>
-
-// NEW WAY (recommended)
-const { dragHandlers } = useDraggable({
-  type: 'media',
-  getData: () => file
-})
-
-<div {...dragHandlers} />
-```
-
-Both approaches work, but the new way provides:
-- Type safety
-- Centralized management
-- Better debugging
-- Event coordination
-- Custom previews
-
-## Future Enhancements / Будущие улучшения
-
-- [ ] Touch device support (mobile/tablet drag)
-- [ ] Drag constraints (limit drag area)
-- [ ] Multi-item drag (select multiple items)
-- [ ] Snap-to-grid for timeline drops
-- [ ] Drag reordering within lists
-- [ ] Keyboard shortcuts during drag (Ctrl for copy, Shift for move)
-- [ ] Analytics/telemetry for drag operations
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/drag-drop/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Drag & Drop медиа файлов на timeline | ⏳ Planned | - | 🔴 High |
-| Drag & Drop эффектов на клипы | ⏳ Planned | - | 🔴 High |
-| Drag & Drop фильтров на клипы | ⏳ Planned | - | 🔴 High |
-| Drag & Drop переходов между клипами | ⏳ Planned | - | 🔴 High |
-| Drag & Drop шаблонов на timeline | ⏳ Planned | - | 🟡 Medium |
-| Drag & Drop style templates | ⏳ Planned | - | 🟡 Medium |
-| Drag & Drop subtitle styles | ⏳ Planned | - | 🟢 Low |
-| Custom ghost image при перетаскивании | ⏳ Planned | - | 🟡 Medium |
-| Type validation на drop targets | ⏳ Planned | - | 🔴 High |
-| DragEnter/DragLeave события | ⏳ Planned | - | 🟡 Medium |
-| DragOver курсор индикация | ⏳ Planned | - | 🟢 Low |
-| Drop callback выполнение | ⏳ Planned | - | 🔴 High |
-| Множественные drop zones | ⏳ Planned | - | 🟡 Medium |
-| Backward compatibility с legacy dataTransfer | ⏳ Planned | - | 🟢 Low |
-| EventEmitter для cross-module communication | ⏳ Planned | - | 🟡 Medium |
-| Cleanup при unmount компонентов | ⏳ Planned | - | 🟢 Low |
-
-### Приоритеты
-- 🔴 High - критичный функционал (drag основных типов, type validation, drop callbacks)
-- 🟡 Medium - важный функционал (templates, ghost image, события, multiple zones, events)
-- 🟢 Low - дополнительный функционал (subtitle styles, курсор, backward compat, cleanup)
-
-### Описание
-Drag & Drop - frontend-only модуль без Tauri команд, использует HTML5 Drag & Drop API. Критически важно протестировать корректность перетаскивания основных типов контента (media, effects, filters, transitions) и валидацию типов на drop targets. Необходимо проверить работу singleton DragDropManager для координации операций между разными модулями. Важно убедиться что ghost images создаются правильно и cleanup происходит при unmount.
+Part of Timeline Studio - see root project license.

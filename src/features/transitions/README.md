@@ -1,178 +1,96 @@
-# Transitions - Функциональные требования
+# Transitions
 
-**Последнее обновление:** 2025-11-17
-**Версия:** 2.0 (после миграции на BaseRenderer)
+**English** | [Русский](./README.ru.md)
 
----
+## Overview
 
-## API (Backend Commands)
+The Transitions module provides GPU-accelerated video transition effects using WebGL, featuring 24 professionally crafted transitions including basic effects, glitch effects, particle systems, and advanced 3D transformations.
 
-This module is frontend-only and does not use Tauri backend commands.
+## Status
 
-**Note:** All transition effects are rendered using WebGL in the browser. The module uses 4 specialized WebGL renderers (`BasicTransitionRenderer`, `GlitchTransitionRenderer`, `ParticleTransitionRenderer`, `ThreeDTransitionRenderer`) that process video transitions entirely on the GPU without backend integration.
+- ✅ **Components**: Complete with preview, editor, and control panel
+- ✅ **Hooks**: 3 hooks for transitions, advanced effects, and dynamic controls
+- ✅ **Services**: 4 specialized WebGL renderers (Basic, Glitch, Particle, 3D)
+- ✅ **Tests**: 298/317 tests passing (94% success rate)
 
----
-
-## 📊 Статус готовности
-
-**🟢 100% ГОТОВО К ИСПОЛЬЗОВАНИЮ**
+## Structure
 
 ```
-✅ WebGL Рендеры:     4/4  (100%)
-✅ Эффекты переходов: 24/24 (100%)
-✅ Unit тесты:        298/317 PASS (94%)
-✅ Hooks тесты:       Добавлены (use-advanced-transitions)
-✅ 3D переходы:       9/9  (5 полных + 4 базовых)
-✅ Timeline:          Интегрировано
-✅ Архитектура:       Миграция завершена
-✅ Документация:      Обновлена (DEV.md v2.0)
-⚠️ Benchmarks:       Отсутствуют
+transitions/
+├── components/                      # UI components
+│   ├── transition-preview.tsx      # Preview component
+│   ├── transition-editor.tsx       # Bezier curve editor
+│   ├── transition-control-panel.tsx # Control panel
+│   └── transition-group.tsx        # Category grouping
+├── hooks/                          # React hooks
+│   ├── use-transitions.ts          # Main transitions hook
+│   ├── use-advanced-transitions.ts # Advanced effects hook
+│   └── use-dynamic-transitions.ts  # Dynamic controls hook
+├── services/                       # WebGL renderers
+│   ├── basic-transition-renderer.ts    # Blur & color effects
+│   ├── glitch-transition-renderer.ts   # 10 glitch effects
+│   ├── particle-transition-renderer.ts # 5 particle effects
+│   └── 3d-transition-renderer.ts       # 9 3D effects
+└── __tests__/                      # Test files (298 tests)
 ```
 
----
+## Features
 
-## 🎯 Основные компоненты
+### ✅ Implemented
 
-### ✅ WebGL Рендеры (100% готовности)
+**Basic Transitions (2 effects):**
+- [x] Blur effects (gaussian, motion, radial)
+- [x] Color effects (tint, saturation, brightness)
 
-#### 1. BasicTransitionRenderer
-- **Файл:** `services/basic-transition-renderer.ts`
-- **Эффекты:** Blur (gaussian, motion, radial), Color (tint, saturation, brightness)
-- **Тесты:** 20/20 PASS ✅
-- **Статус:** Полностью реализован
+**Glitch Transitions (10 effects):**
+- [x] Digital glitch, RGB split, data corruption
+- [x] Analog distortion, signal interference
+- [x] Pixel storm, codec error, matrix rain
+- [x] Screen tear, bit crush
 
-#### 2. GlitchTransitionRenderer
-- **Файл:** `services/glitch-transition-renderer.ts`
-- **Эффекты:** 10 glitch эффектов
-  - digital-glitch, rgb-split, data-corruption
-  - analog-distortion, signal-interference
-  - pixel-storm, codec-error, matrix-rain
-  - screen-tear, bit-crush
-- **Тесты:** 34/34 PASS ✅
-- **Статус:** Полностью реализован
+**Particle Transitions (5 effects):**
+- [x] Particle dissolve with physics
+- [x] Liquid morph
+- [x] Glass shatter
+- [x] Fire burn
+- [x] Organic growth
 
-#### 3. ParticleTransitionRenderer
-- **Файл:** `services/particle-transition-renderer.ts`
-- **Эффекты:** 5 dynamic эффектов с физикой
-  - particle-dissolve, liquid-morph
-  - glass-shatter, fire-burn
-  - organic-growth
-- **Физика:** Gravity, turbulence, speed, fade-out
-- **Тесты:** 32/32 PASS ✅
-- **Статус:** Полностью реализован
+**3D Transitions (9 effects):**
+- [x] Book open, cylinder roll (full shaders)
+- [x] Origami fold, polyhedron transform (full shaders)
+- [x] Mobius strip (full shader)
+- [x] Page flip, card shuffle (basic shaders)
+- [x] Helix spin, sphere mapping (basic shaders)
 
-#### 4. ThreeDTransitionRenderer
-- **Файл:** `services/3d-transition-renderer.ts`
-- **Эффекты:** 9 3D геометрических эффектов
-  - **Полные шейдеры (5):** book-open, cylinder-roll, origami-fold, polyhedron-transform, mobius-strip
-  - **Базовые (4):** page-flip, card-shuffle, helix-spin, sphere-mapping
-- **Тесты:** 41/41 PASS ✅
-- **Статус:** 95% реализован
+**Integration:**
+- [x] Timeline integration with drag & drop
+- [x] Resource Manager integration
+- [x] Browser preview integration
+- [x] VideoPlayer integration
+- [x] FFmpeg export system
+- [x] WebGL GPU acceleration
 
-**Всего:** 24 эффекта перехода, 127 тестов
+### 🚧 Partially Implemented
 
----
+**3D Shaders:**
+- [x] 5 effects with full realistic geometry
+- [x] 4 effects with basic geometry (can be improved)
 
-## 🏗️ Архитектура
+### ❌ Not Implemented
 
-### Миграция завершена ✅
+- [ ] E2E tests with real videos
+- [ ] Performance benchmarks automation
+- [ ] Texture pooling optimization
 
-```
-СТАРАЯ АРХИТЕКТУРА (удалена):
-❌ webgl-transition-service.ts (489 строк)
-❌ dynamic-transition-service.ts (1858 строк)
-❌ base-webgl-service.ts (315 строк)
-Итого: 2662 строки
-
-НОВАЯ АРХИТЕКТУРА (активна):
-✅ BasicTransitionRenderer (343 строки)
-✅ GlitchTransitionRenderer (484 строки)
-✅ ParticleTransitionRenderer (484 строки)
-✅ ThreeDTransitionRenderer (539 строки)
-Итого: 1850 строк (-30% кода)
-```
-
-### BaseRenderer интеграция
-
-Все рендеры наследуются от `/lib/webgl/base-renderer.ts`:
-- ✅ Context management
-- ✅ Shader compilation
-- ✅ Uniform binding
-- ✅ VAO management
-- ✅ Texture handling
-- ✅ Resource cleanup
-
----
-
-## 🧪 Тестирование
-
-### Unit Tests (94% PASS)
-
-```bash
-$ bun run test src/features/transitions/
-
-✅ basic-transition-renderer.test.ts    (20 tests) - PASS
-✅ glitch-transition-renderer.test.ts   (34 tests) - PASS
-✅ particle-transition-renderer.test.ts (32 tests) - PASS
-✅ 3d-transition-renderer.test.ts       (41 tests) - PASS
-✅ use-advanced-transitions.test.ts     (27 tests) - PASS
-✅ use-transitions.test.ts              (18 tests) - PASS
-✅ use-transitions-import.test.ts       (20 tests) - PASS
-✅ transition-group.test.tsx            (16 tests) - PASS
-✅ transition-preview.test.tsx          (36 tests) - PASS
-✅ transition-processor.test.ts         (36 tests) - PASS
-✅ webgl-transition-service.test.ts     (15 tests) - PASS
-⚠️ use-dynamic-transitions.test.ts     (22 tests) - 17 failures (требует доработки)
-
-Total: 298/317 tests PASS (94%)
-Duration: ~2s
-```
-
-### Тестируемые аспекты
-- ✅ WebGL2 context инициализация
-- ✅ Компиляция всех шейдеров
-- ✅ Рендеринг с различными параметрами
-- ✅ Обработка текстур
-- ✅ Установка uniforms
-- ✅ Специфичные параметры эффектов
-- ✅ Обработка ошибок
-- ✅ Hooks интеграция (useAdvancedTransitions)
-- ✅ Transitions загрузка и импорт
-- ✅ Компоненты preview и группировки
-
----
-
-## 📈 Производительность
-
-### Метрики
-```
-Shader compilation:  < 100ms (все рендеры)
-Frame render time:   < 16ms (60 FPS capable)
-Memory overhead:     Минимальный (shader pooling)
-GPU utilization:     Оптимальная
-```
-
-### Эффекты по времени рендеринга
-```
-Blur effects:     ~8-12ms per frame
-Glitch effects:   ~5-10ms per frame
-Particle effects: ~10-15ms per frame
-3D effects:       ~12-16ms per frame
-```
-
----
-
-## 🔌 Использование
-
-### Базовое использование
+## Usage
 
 ```typescript
 import { basicTransitionRenderer } from '@/features/transitions/services'
 
-// Инициализация
+// Initialize renderer
 await basicTransitionRenderer.initialize()
 
-// Рендеринг
+// Render transition
 const result = await basicTransitionRenderer.renderTransition({
   sourceTexture: textureA,
   targetTexture: textureB,
@@ -185,284 +103,95 @@ const result = await basicTransitionRenderer.renderTransition({
     }
   }
 })
-```
 
-### Продвинутое использование
-
-```typescript
+// Advanced effects
 import {
   glitchTransitionRenderer,
   particleTransitionRenderer,
   threeDTransitionRenderer
 } from '@/features/transitions/services'
 
-// Glitch эффект
+// Glitch effect
 await glitchTransitionRenderer.renderGlitchTransition({
   sourceTexture,
   targetTexture,
   progress: 0.5,
   effectType: 'digital-glitch',
-  parameters: {
-    blockSize: 16,
-    intensity: 0.8
-  }
-})
-
-// Particle эффект
-await particleTransitionRenderer.renderParticleTransition({
-  sourceTexture,
-  targetTexture,
-  progress: 0.5,
-  effectType: 'glass-shatter',
-  particles: {
-    count: 150,
-    size: 10,
-    speed: 1.0,
-    gravity: 0.5,
-    turbulence: 0.3
-  }
-})
-
-// 3D эффект
-await threeDTransitionRenderer.renderThreeDTransition({
-  sourceTexture,
-  targetTexture,
-  progress: 0.5,
-  effectType: 'book-open',
-  transform: {
-    perspective: 800,
-    depth: 100
-  }
+  parameters: { blockSize: 16, intensity: 0.8 }
 })
 ```
 
-### Timeline интеграция
+## Integration
 
-```typescript
-import { useTimelineTransitions } from '@/features/timeline'
+- **Depends on**: `/lib/webgl/base-renderer.ts` (BaseRenderer for all renderers)
+- **Used by**: `@/features/timeline`, `@/features/video-player`, `@/features/browser`
+- **Integration**: Timeline drag & drop, GPU rendering, FFmpeg export
 
-const {
-  createTransition,
-  updateTransitionParameters,
-  addKeyframe
-} = useTimelineTransitions(project)
+## Testing
 
-// Создание перехода на таймлайне
-const { project: updated, timelineTransition } = createTransition(
-  transitionResource,
-  {
-    position: currentTime,
-    duration: 1.0,
-    type: 'between',
-    parameters: {
-      blur: { enabled: true, amount: 50 }
-    }
-  }
-)
+- **Total tests**: 298/317 tests (94% pass rate)
+  - BasicTransitionRenderer: 20 tests (100% pass)
+  - GlitchTransitionRenderer: 34 tests (100% pass)
+  - ParticleTransitionRenderer: 32 tests (100% pass)
+  - ThreeDTransitionRenderer: 41 tests (100% pass)
+  - Hooks: 65 tests (75% pass, use-dynamic-transitions needs fixes)
+  - Components: 52 tests (100% pass)
+
+```bash
+# Run all transitions tests
+bun run test src/features/transitions
+
+# Run specific renderer tests
+bun run test src/features/transitions/services/basic-transition-renderer.test.ts
+
+# Run with coverage
+bun run test:coverage src/features/transitions
 ```
 
----
+## TODO / Roadmap
 
-## 🔄 Интеграция с другими компонентами
+### High Priority
+- [ ] Fix remaining 19 failing tests in use-dynamic-transitions
+- [ ] E2E tests with real video files
 
-### ✅ Реализовано
+### Medium Priority
+- [ ] Improve 4 basic 3D shaders with realistic geometry
+- [ ] Performance benchmarks automation
+- [ ] Extended transition library (5-10 new effects)
 
-- [x] Timeline интеграция - drag & drop, управление, синхронизация
-- [x] Resource Manager - полное управление TimelineTransition
-- [x] Browser интеграция - preview и выбор переходов
-- [x] VideoPlayer интеграция - предпросмотр переходов
-- [x] FFmpeg экспорт - система экспорта переходов
-- [x] WebGL rendering - GPU ускорение
+### Low Priority
+- [ ] Texture pooling for memory optimization
+- [ ] Custom transition builder UI
+- [ ] Transition presets system
 
----
+## Performance
 
-## ⚠️ Что можно улучшить (2-5%)
+### Metrics
 
-### HIGH Priority
-- [x] **Обновить DEV.md** - документация обновлена до v2.0
-
-### MEDIUM Priority
-- [ ] **Улучшить 4 базовых 3D шейдера** - добавить реалистичную геометрию (4-6 часов)
-  - page-flip, card-shuffle, helix-spin, sphere-mapping
-- [ ] **E2E тестирование** - тесты с реальными видео (3-4 часа)
-
-### LOW Priority
-- [ ] **Performance benchmarks** - автоматизированные метрики (2-3 часа)
-- [ ] **Texture pooling** - оптимизация памяти
-
----
-
-## 📊 Статистика модуля
-
-### Код
 ```
-Services:        1850 строк (4 рендера)
-Components:      ~800 строк
-Hooks:           ~600 строк
-Utils:           ~200 строк
-Tests:           127 тестов (100% PASS)
-
-Total:           ~3450 строк
-Code reduction:  -30% (после миграции)
+Shader compilation:  < 100ms (all renderers)
+Frame render time:   < 16ms (60 FPS capable)
+Memory overhead:     Minimal (shader pooling)
+GPU utilization:     Optimal
 ```
 
-### Эффекты
-```
-Basic:           2 (blur, color)
-Glitch:          10 эффектов
-Particle:        5 эффектов
-3D:              9 эффектов (5 полных + 4 базовых)
+### Effect Rendering Time
 
-Total:           24 эффекта перехода
 ```
-
-### Покрытие тестами
-```
-Services:        142/142 PASS (100%)
-Components:      52/52 PASS (100%)
-Hooks:           65/87 PASS (75%)
-Utils:           36/36 PASS (100%)
-
-Overall:         298/317 PASS (94%)
+Blur effects:     ~8-12ms per frame
+Glitch effects:   ~5-10ms per frame
+Particle effects: ~10-15ms per frame
+3D effects:       ~12-16ms per frame
 ```
 
----
+## Documentation
 
-## 🚀 Реализованные возможности
-
-### ✅ Timeline интеграция
-- Timeline Transition Manager - полное управление
-- Drag & Drop - перетаскивание переходов
-- TransitionDropZone - интуитивные зоны
-- Автоматическая корректировка позиций
-
-### ✅ WebGL рендеринг
-- 4 специализированных рендера
-- 24 GPU-ускоренных эффекта
-- Shader pooling и кэширование
-- Оптимизированное управление ресурсами
-
-### ✅ Компоненты редактирования
-- TransitionCurveEditor - редактор кривых Безье
-- TransitionControlPanel - панель управления
-- TransitionPreview - превью в Browser
-- TransitionGroup - группировка по категориям
-
-### ✅ Система экспорта
-- FFmpeg интеграция
-- GPU ускорение в экспорте
-- Параллельная обработка
-- Расширенные настройки
+For detailed documentation, see:
+- [DEV.md](DEV.md) - Technical documentation v2.0
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture schema and details
+- [CHECKLIST.md](CHECKLIST.md) - Component readiness checklist
 
 ---
 
-## 📚 Документация
-
-### Основная документация
-- **README.md** - Этот файл, функциональные требования
-- **ARCHITECTURE.md** - Архитектурная схема и детали
-- **CHECKLIST.md** - Чек-лист готовности компонентов
-- **DEV.md** - Техническая документация (⚠️ требует обновления)
-
-### Детальные отчёты
-- **/docs/08_tasks/active/transitions-feature-final-report.md** - Детальный отчёт (RU)
-- **/TRANSITIONS_STATUS.md** - Краткая сводка статуса
-
----
-
-## 🎯 Итоговый статус модуля
-
-### 🟢 ГОТОВО К ИСПОЛЬЗОВАНИЮ (100%)
-
-**Transitions Feature полностью функционален и готов к production использованию.**
-
-### ✅ Что работает отлично:
-- ✅ Все 24 эффекта перехода реализованы
-- ✅ 298 из 317 тестов проходят успешно (94%)
-- ✅ Hooks тесты добавлены (use-advanced-transitions, use-transitions, use-transitions-import)
-- ✅ Современная архитектура на BaseRenderer
-- ✅ Timeline интеграция работает
-- ✅ Performance оптимальная для 60 FPS
-- ✅ Полная TypeScript типизация
-- ✅ Документация DEV.md обновлена до v2.0
-
-### ⚠️ Что можно улучшить (необязательно):
-- ⚠️ 4 3D шейдера базовые (желательно улучшить до полных)
-- ⚠️ use-dynamic-transitions тесты требуют доработки (17 failures)
-- ⚠️ Нет performance benchmarks (низкий приоритет)
-- ⚠️ Нет E2E тестов с реальными видео (средний приоритет)
-
-### 📈 История версий
-
-#### v2.1 (2025-11-19) - Current
-- ✅ Добавлены тесты для hooks (use-advanced-transitions, use-transitions, use-transitions-import)
-- ✅ Документация DEV.md обновлена до v2.0
-- ✅ 298/317 тестов проходят (94% успешности)
-- ✅ Оценка готовности: 100% (production ready)
-
-#### v2.0 (2025-11-17)
-- ✅ Миграция на BaseRenderer завершена
-- ✅ Все 4 рендера реализованы и протестированы
-- ✅ 127 тестов проходят успешно
-- ✅ Оценка готовности: 95-98%
-
-#### v1.0 (2025-01-30)
-- ✅ Базовая реализация WebGL
-- ✅ Timeline интеграция
-- ✅ FFmpeg экспорт
-- ⚠️ Устаревшая архитектура (удалена в v2.0)
-
----
-
-## 🤝 Contributing
-
-При добавлении новых эффектов:
-
-1. Создать новый метод в соответствующем рендере
-2. Добавить fragment shader
-3. Добавить параметры эффекта
-4. Написать unit тесты
-5. Обновить документацию
-
-См. подробности в `ARCHITECTURE.md`
-
----
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/transitions/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Инициализация WebGL2 context | ⏳ Planned | - | 🔴 High |
-| Рендеринг Basic transitions (blur, color) | ⏳ Planned | - | 🔴 High |
-| Рендеринг Glitch transitions (10 эффектов) | ⏳ Planned | - | 🔴 High |
-| Рендеринг Particle transitions (5 эффектов) | ⏳ Planned | - | 🔴 High |
-| Рендеринг 3D transitions (9 эффектов) | ⏳ Planned | - | 🔴 High |
-| Применение перехода между клипами на Timeline | ⏳ Planned | - | 🔴 High |
-| Drag & Drop перехода на Timeline | ⏳ Planned | - | 🔴 High |
-| Компиляция всех шейдеров | ⏳ Planned | - | 🔴 High |
-| Управление текстурами и uniforms | ⏳ Planned | - | 🟡 Medium |
-| Редактирование кривых Безье в TransitionCurveEditor | ⏳ Planned | - | 🟡 Medium |
-| TransitionControlPanel настройки параметров | ⏳ Planned | - | 🟡 Medium |
-| Превью переходов в Browser | ⏳ Planned | - | 🟡 Medium |
-| Группировка переходов по категориям | ⏳ Planned | - | 🟡 Medium |
-| FFmpeg экспорт с GPU ускорением | ⏳ Planned | - | 🟡 Medium |
-| Keyframe анимация параметров перехода | ⏳ Planned | - | 🟡 Medium |
-| Физика частиц (gravity, turbulence) | ⏳ Planned | - | 🟢 Low |
-| Shader pooling и кэширование | ⏳ Planned | - | 🟢 Low |
-| Performance benchmarks (60 FPS) | ⏳ Planned | - | 🟢 Low |
-| Обработка ошибок WebGL | ⏳ Planned | - | 🟢 Low |
-
-### Приоритеты
-- 🔴 High - критичный функционал рендеринга всех типов переходов
-- 🟡 Medium - редактирование, управление и экспорт
-- 🟢 Low - оптимизация производительности и обработка ошибок
-
----
-
-**Статус:** 🟢 Production Ready
-**Рекомендация:** Можно использовать в production (100% готовности)
-**Последнее обновление:** 2025-11-19
+**Version:** 2.1
+**Last Updated:** 2025-11-26

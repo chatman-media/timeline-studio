@@ -1,74 +1,58 @@
 # Publication
 
-## Overview / Обзор
+**English** | [Русский](./README.ru.md)
 
-**EN:** Publication tasks management system for Timeline Studio. Provides integration with video hosting platforms (YouTube, TikTok, VK) through plugin system. Monitors upload progress, manages publication metadata, and tracks task status.
+## Overview
 
-**RU:** Система управления задачами публикации для Timeline Studio. Обеспечивает интеграцию с видеохостингами (YouTube, TikTok, VK) через систему плагинов. Отслеживает прогресс загрузки, управляет метаданными публикации и отслеживает статус задач.
+Publication tasks management system for Timeline Studio. Provides integration with video hosting platforms (YouTube, TikTok, VK) through plugin system. Monitors upload progress, manages publication metadata, and tracks task status.
 
-## API (Backend Commands)
+## Status
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `send_plugin_command` | `{ pluginId: "youtube-uploader", command: "list_uploads", params: {} }` | Get list of active uploads |
-| `send_plugin_command` | `{ pluginId: "youtube-uploader", command: "get_status", params: { upload_id: string } }` | Get upload status by ID |
+- ✅ **Components**: Publication tasks dropdown
+- ✅ **Hooks**: use-publication-tasks
+- ✅ **Types**: Publication task and status types
+- ⚠️ **Tests**: Not implemented yet
 
-**Note**: Uses plugin system for communication with backend. Plugin commands are routed through `send_plugin_command`.
-
-## Behavior (from tests) / Поведение (из тестов)
-
-No tests found in the module. Tests should be added for:
-- Publication task creation
-- Progress tracking
-- Status updates
-- Error handling
-- Plugin communication
-
-## Structure / Структура
+## Structure
 
 ```
 publication/
-├── components/               # UI компоненты
+├── components/               # UI components
 │   └── publication-tasks-dropdown.tsx
-├── hooks/                    # React хуки
+├── hooks/                    # React hooks
 │   └── use-publication-tasks.ts
-└── types/                    # TypeScript типы
+└── types/                    # TypeScript types
     └── publication.ts
 ```
 
-## Features / Функции
+## Features
 
-### Supported Platforms
-- **YouTube**: Full upload support
-- **TikTok**: Planned
-- **VK**: Planned
-- **Instagram**: Planned
-- **Facebook**: Planned
-- **Twitter**: Planned
+### ✅ Implemented
 
-### Publication Status
-- **Preparing**: Initial stage, preparing files
-- **Uploading**: Actively uploading to platform
-- **Processing**: Platform processing video
-- **Completed**: Successfully published
-- **Failed**: Upload failed with error
-- **Cancelled**: User cancelled upload
+- [x] Publication status tracking (Preparing, Uploading, Processing, Completed, Failed, Cancelled)
+- [x] Progress tracking (percentage, bytes uploaded, messages)
+- [x] Task management (list, get by ID, cancel)
+- [x] Auto-refresh every 5 seconds
+- [x] Plugin availability detection
+- [x] YouTube uploader integration
+- [x] Localized status labels
+- [x] Status color indicators
+- [x] Duration formatting
 
-### Progress Tracking
-- Upload percentage (0-100%)
-- Current stage description
-- Bytes uploaded / total bytes
-- Progress messages
-- Estimated time remaining
+### ❌ Not Implemented
 
-### Task Management
-- List all active publication tasks
-- Get task details by ID
-- Cancel ongoing uploads
-- Auto-refresh every 5 seconds
-- Plugin availability detection
+- [ ] TikTok platform support
+- [ ] VK platform support
+- [ ] Instagram platform support
+- [ ] Facebook platform support
+- [ ] Twitter platform support
+- [ ] Multiple concurrent uploads
+- [ ] Upload queue management
+- [ ] Upload scheduling
+- [ ] Retry failed uploads
+- [ ] Unit tests for hooks and components
 
-## Hook Usage / Использование хука
+## Usage
 
 ```typescript
 import { usePublicationTasks } from '@/features/publication'
@@ -83,6 +67,9 @@ function PublicationPanel() {
     cancelTask,      // Cancel upload
   } = usePublicationTasks()
 
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+
   return (
     <div>
       {tasks.map(task => (
@@ -92,6 +79,7 @@ function PublicationPanel() {
           {task.progress && (
             <progress value={task.progress.percentage} max={100} />
           )}
+          <button onClick={() => cancelTask(task.id)}>Cancel</button>
         </div>
       ))}
     </div>
@@ -99,57 +87,36 @@ function PublicationPanel() {
 }
 ```
 
-## Utility Functions / Утилиты
+## Integration
 
-```typescript
-// Get localized status label
-getPublicationStatusLabel(status: PublicationStatus, t: Function): string
-
-// Get status color class
-getPublicationStatusColor(status: PublicationStatus): string
-
-// Format publication duration
-formatPublicationDuration(startTime: string, endTime?: string, t?: Function): string
-```
-
-## Dependencies / Зависимости
-
-- Depends on:
-  - `@tauri-apps/api/core` - для invoke команд
-  - `@/lib/duration-formatter` - для форматирования времени
-  - `@/lib/tauri-logger` - для логирования
-  - Plugin system: `youtube-uploader` плагин
-- Used by:
-  - Media Studio - для экспорта и публикации
+- **Depends on**:
+  - `@tauri-apps/api/core` - for invoke commands
+  - `@/lib/duration-formatter` - for time formatting
+  - `@/lib/tauri-logger` - for logging
+  - Plugin system: `youtube-uploader` plugin
+- **Used by**:
+  - Media Studio - for export and publication
   - Project export workflow
 
-## E2E Tests / E2E Тесты
+## Testing
 
-**Расположение:** `e2e/tauri/features/publication/`
+- **Total tests**: 0 (needs to be implemented)
+- **Planned tests**:
+  - Hook functionality
+  - Component rendering
+  - Plugin communication
+  - Progress updates
+  - Error handling
 
-### Чеклист тестов
+## TODO / Roadmap
 
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Загрузка списка активных публикаций | ⏳ Planned | - | 🔴 High |
-| Tauri команда `send_plugin_command` (list_uploads) | ⏳ Planned | - | 🔴 High |
-| Tauri команда `send_plugin_command` (get_status) | ⏳ Planned | - | 🔴 High |
-| Отображение статуса публикации (preparing, uploading, processing) | ⏳ Planned | - | 🔴 High |
-| Обновление прогресса загрузки (0-100%) | ⏳ Planned | - | 🔴 High |
-| Автоматическое обновление каждые 5 секунд | ⏳ Planned | - | 🟡 Medium |
-| Отмена загрузки (cancel task) | ⏳ Planned | - | 🟡 Medium |
-| Обработка ошибок загрузки (failed status) | ⏳ Planned | - | 🔴 High |
-| Отображение Dropdown с задачами публикации | ⏳ Planned | - | 🟡 Medium |
-| Проверка доступности YouTube uploader plugin | ⏳ Planned | - | 🔴 High |
-| Обработка отсутствия plugin | ⏳ Planned | - | 🟡 Medium |
-| Форматирование длительности публикации | ⏳ Planned | - | 🟢 Low |
-| Локализованные статусы (EN/RU) | ⏳ Planned | - | 🟢 Low |
-| Цветовая индикация статусов | ⏳ Planned | - | 🟢 Low |
-
-### Приоритеты
-- 🔴 High - критичный функционал (plugin commands, статусы, прогресс, ошибки)
-- 🟡 Medium - важный функционал (автообновление, отмена, UI, проверка plugin)
-- 🟢 Low - дополнительный функционал (форматирование, локализация, цвета)
-
-### Описание
-Publication модуль интегрируется с YouTube Uploader plugin через Tauri команду `send_plugin_command`. Критически важно протестировать взаимодействие с plugin системой, обработку различных статусов публикации и корректность отображения прогресса. Необходимо проверить работу автоматического обновления статусов и корректную обработку ошибок при недоступности plugin.
+- [ ] Implement unit tests for hooks and components
+- [ ] E2E tests for publication workflow (14 tests planned)
+- [ ] Add support for more platforms (TikTok, VK, Instagram, Facebook, Twitter)
+- [ ] Implement upload queue management
+- [ ] Add upload scheduling feature
+- [ ] Implement retry mechanism for failed uploads
+- [ ] Add upload analytics and history
+- [ ] Implement batch upload for multiple videos
+- [ ] Add custom metadata templates
+- [ ] Implement upload presets

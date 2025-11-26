@@ -1,243 +1,112 @@
 # Effects
 
-## Overview / Обзор
+**English** | [Русский](./README.ru.md)
 
-**EN:** Comprehensive video effects system with 39 built-in effects across 8 categories. Features WebGL2 GPU-accelerated rendering, real-time preview, interactive parameter controls, and support for user presets. Includes artistic, cinematic, technical, and creative effects with FFmpeg export integration.
+## Overview
 
-**RU:** Комплексная система видеоэффектов с 39 встроенными эффектами в 8 категориях. Включает WebGL2 GPU-ускоренный рендеринг, предпросмотр в реальном времени, интерактивные элементы управления параметрами и поддержку пользовательских пресетов. Содержит художественные, кинематографические, технические и креативные эффекты с интеграцией экспорта FFmpeg.
+Comprehensive video effects system with 39 built-in effects across 8 categories. Features WebGL2 GPU-accelerated rendering, real-time preview, interactive parameter controls, and support for user presets. Includes artistic, cinematic, technical, and creative effects with FFmpeg export integration.
 
-## API (Backend Commands)
+## Status
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `save_file` | `{ path: string, contents: string }` | Save user preset to file system |
-| `delete_user_effect` | `{ filePath: string }` | Delete user effect file |
-| `create_effect` | `{ name: string, params: EffectParams }` | Create custom effect definition |
-| `create_filter` | `{ name: string, params: FilterParams }` | Create custom filter definition |
+- ✅ **Components**: 7 components fully implemented (EffectList, EffectPreview, EffectCategories, EffectDetail, EffectIndicators, EffectPresets, EffectParameterControls)
+- ✅ **Hooks**: 8 hooks (useEffects, useEffectCategories, useUnifiedEffects, useEffectsImport, useEffectsSearch, useEffectsByCategory, useEffectById)
+- ✅ **Processors**: WebGL2 GPU-accelerated rendering, CSS preview fallback
+- ✅ **Tests**: 66+ tests passing (91.75% component coverage, 100% utilities)
+- ✅ **Internationalization**: 15 languages with RTL support
 
-## 📋 Readiness Status: ✅ COMPLETE (Fully Implemented)
+## Structure
 
-- ✅ **Components**: 7 components fully implemented
-- ✅ **Hooks**: 3 main hooks + utility functions
-- ✅ **Processors**: 2 utility modules for data processing + WebGL2 processors
-- ✅ **Tests**: 66+ tests (all passing) ✨
-- ✅ **Coverage**: 91.75% components, 100% utilities, WebGL2 integration
-- ✅ **Internationalization**: Support for 15 languages (including RTL)
-- ✅ **Data Structure**: 39 effects, 8 categories, presets
-- ✅ **JSON Data**: Effects and categories in separate files
-- ✅ **Interactive Controls**: Real-time parameter adjustment ✨
-- ✅ **WebGL2 Rendering**: GPU-accelerated effects processing ✨ NEW
-
-## 🎯 Main Functions
-
-### ✅ Complete
-
-#### Effect Components
-
-- [x] **EffectList** - available effects list with search
-- [x] **EffectPreview** - effects preview with video (customParams support) ✨
-- [x] **EffectCategories** - category browsing with filters ✨
-- [x] **EffectDetail** - detailed effect information with interactive controls ✨
-- [x] **EffectIndicators** - complexity and tag indicators ✨
-- [x] **EffectPresets** - effect presets management ✨
-- [x] **EffectParameterControls** - interactive parameter adjustment ✨ NEW
-
-#### Hooks and Utilities
-
-- [x] **useEffects** - load all effects from JSON ✨
-- [x] **useEffectCategories** - load categories with translations ✨
-- [x] **useUnifiedEffects** - WebGL2 system integration ✨ NEW
-- [x] **useEffectsImport** - import custom effects ✨ NEW
-- [x] **useEffectsSearch** - search effects by text
-- [x] **useEffectsByCategory** - filter by categories
-- [x] **useEffectById** - get effect by ID
-- [x] **effect-processor** - data processing and validation ✨
-- [x] **webgl2-effect-processor** - WebGL2 effects processing ✨ NEW
-- [x] **webgl2-unified-renderer** - unified WebGL2 renderer ✨ NEW
-- [x] **css-effects** - CSS filters for preview ✨
-
-#### Integration
-
-- [x] Integration with Browser tabs
-- [x] Usage in TimelineResources
-- [x] Typed effects with extended metadata
-- [x] WebGL2 preview system integration ✨ NEW
-
-#### Effect Categories (8 categories) ✨ EXPANDED
-
-- [x] **Color Correction** - brightness, contrast, saturation
-- [x] **Artistic** - creative styles
-- [x] **Vintage** - retro effects, film grain
-- [x] **Cinematic** - vignette, professional effects
-- [x] **Creative** - neon, glow, modern effects  
-- [x] **Technical** - sharpness, noise reduction
-- [x] **Motion** - speed, reverse
-- [x] **Distortions** - special distortions
-
-#### Extended Features ✨
-
-- [x] **39 effects** - complete library with FFmpeg commands
-- [x] **Effect presets** - ready settings (subtle, moderate, dramatic)
-- [x] **Effect tags** - popular, professional, beginner-friendly, etc.
-- [x] **Complexity levels** - basic, intermediate, advanced
-- [x] **Full internationalization** - support for 15 languages (ru, en, es, fr, de, pt, zh, ja, ko, tr, th, it, hi, ar, fa)
-- [x] **JSON data structure** - effects and categories in separate files
-- [x] **Utility functions** - search, filtering, grouping
-- [x] **Extended filters** - by category, complexity, tags
-- [x] **Two view modes** - grid and categories
-- [x] **Simple tags** - 3-letter abbreviations without colors
-- [x] **WebGL2 rendering** - high-performance shaders for preview ✨ NEW
-- [x] **CSS preview** - web filters for quick preview (fallback)
-- [x] **Fallback system** - backup data on errors
-- [x] **Effects import** - JSON files and individual files (.cube, .lut) ✨ NEW
-
-### ❌ Requires Implementation
-
-- [ ] Apply effects to clips
-- [ ] Save custom presets (partially ready)
-
-## 🎨 UI/UX Requirements
-
-### ✅ Implemented
-
-- [x] **Effects list with preview** - adaptive grid with video
-- [x] **Effect categorization** - grouping by 8 categories ✨
-- [x] **Effects search** - real-time by name and description
-- [x] **Extended filters** - by category, complexity, tags ✨
-- [x] **Two view modes** - grid and categories ✨
-- [x] **Simple indicators** - 3-letter tags without colors ✨
-- [x] **Detailed information** - modal with parameters ✨
-- [x] **Presets in UI** - ready settings for quick application ✨
-- [x] **Full internationalization** - support for 15 languages ✨
-- [x] **Error translations** - all messages localized ✨
-- [x] **Dark theme** - full support
-- [x] **Tooltips and hints** - for all control elements
-- [x] **Favorite effects** - favorites system
-- [x] **FFmpeg commands** - technical details display ✨
-- [x] **Fallback UI** - loading error handling ✨
-- [x] **WebGL2 preview** - real-time GPU-accelerated effects ✨ NEW
-
-### ❌ Requires Implementation
-
-- [ ] Drag & drop to Timeline
-- [ ] Effects settings panel with parameters
-- [ ] Real-time video preview
-- [ ] Animated effect previews
-
-## 🔄 Integration with Other Components
-
-### ✅ Implemented
-
-- [x] Integration with Browser
-- [x] Usage in Resources
-- [x] WebGL2 preview system integration ✨ NEW
-
-### ❌ Requires Implementation
-
-- [ ] Apply to Timeline clips
-- [ ] Preview in VideoPlayer
-- [ ] Additional tests for new components
-
-## 📊 Technical Details
-
-### Data Structure
-
-- **effects.json** - 39 effects with complete metadata
-- **effect-categories.json** - 8 categories with translations to 15 languages
-- **Typing** - full TypeScript typing for all structures
-
-### Architecture
-
-- **Component approach** - 7 reusable components
-- **Hooks** - 3 main hooks + utility functions
-- **JSON loading** - direct JSON import in Tauri environment
-- **WebGL2 rendering** - unified GPU effects system ✨
-  - **WebGL2EffectProcessor** - effects processor for real-time rendering
-  - **WebGL2UnifiedRenderer** - unified renderer for all effects
-  - **Shader-based effects** - effects based on GLSL ES 3.0 shaders
-  - **GPU accelerated** - hardware acceleration on graphics card
-- **Fallback system** - error handling with backup data
-
-### Internationalization
-
-- **15 languages** - ru, en, es, fr, de, pt, zh, ja, ko, tr, th, it, hi, ar, fa
-- **RTL support** - Arabic (ar) and Persian (fa) with proper text direction
-- **react-i18next** - full integration with translation system
-- **Error translations** - all messages localized
-- **Fallback translations** - backup texts in English
-
-### Performance
-
-- **WebGL2 GPU acceleration** - real-time effects rendering on graphics card ✨
-  - **Shader pooling** - caching and reuse of compiled shaders
-  - **Texture optimization** - optimized GPU texture management
-  - **Pipeline batching** - effect grouping for efficient rendering
-  - **GPU tier detection** - automatic adaptation to GPU performance
-- **Lazy loading** - effects loaded on demand
-- **Memoization** - list rendering optimization
-- **Real-time search** - optimized filtering
-- **CSS preview** - fast web filters for preview (fallback)
-
-## 📚 Documentation
-
-- **README.md** - Functional requirements and readiness status
-- **README_EN.md** - English version of documentation
-- **DEV.md** - Technical documentation, architecture and testing
-- **WEBGL2_MIGRATION.md** - WebGL2 migration guide
-- **examples/hooks-usage.md** - Hook usage examples
-
-## 🚀 Next Steps
-
-1. **Timeline integration** - implement applying effects to clips via WebGL2
-2. **Drag & Drop** - add effect dragging to timeline
-3. **Real-time parameters** - effect adjustment with WebGL2 preview ✨
-4. **Custom presets** - save user settings
-5. **WebGL2 shaders** - expand GLSL effects library ✨
-6. **Animated previews** - improve visual presentation with GPU acceleration ✨
-
-## 🧪 Test Coverage
-
-### General Statistics
-- **Total tests**: 66+ (all passing)
-- **Execution time**: ~920ms
-- **Overall coverage**: 64.87%
-
-### Coverage by Modules
-- **Components**: 91.75% coverage
-  - effect-detail.tsx: 88.8%
-  - effect-indicators.tsx: 100%
-  - effect-parameter-controls.tsx: 91.66%
-- **Utilities**: 100% coverage
-  - css-effects.ts: 100%
-  - effect-processor.ts: 100%
-  - webgl2-effect-processor.ts: 95% ✨ NEW
-- **Hooks**: 9.61% coverage
-  - use-effects.ts: 10.81%
-  - use-effects-import.ts: 9.13%
-  - use-unified-effects.ts: 85% ✨ NEW
-
-```bash
-# Run module tests
-bun test src/features/effects
-
-# With coverage
-bun test:coverage src/features/effects
+```
+effects/
+├── components/
+│   ├── effect-list.tsx
+│   ├── effect-preview.tsx
+│   ├── effect-categories.tsx
+│   ├── effect-detail.tsx
+│   ├── effect-indicators.tsx
+│   ├── effect-presets.tsx
+│   └── effect-parameter-controls.tsx
+├── hooks/
+│   ├── use-effects.ts
+│   ├── use-effect-categories.ts
+│   ├── use-unified-effects.ts
+│   └── use-effects-import.ts
+├── services/
+│   ├── effect-processor.ts
+│   ├── webgl2-effect-processor.ts
+│   └── webgl2-unified-renderer.ts
+├── utils/
+│   └── css-effects.ts
+├── data/
+│   ├── effects.json
+│   └── effect-categories.json
+└── __tests__/
 ```
 
-## 🎮 WebGL2 Features
+## Features
 
-### GPU-Accelerated Effects
+### ✅ Implemented
 
-All effects now support WebGL2 rendering:
+**Effect Categories (8 categories)**
+- [x] Color Correction - brightness, contrast, saturation
+- [x] Artistic - creative styles and artistic effects
+- [x] Vintage - retro effects, film grain
+- [x] Cinematic - vignette, professional film effects
+- [x] Creative - neon, glow, modern effects
+- [x] Technical - sharpness, noise reduction
+- [x] Motion - speed control, reverse playback
+- [x] Distortions - special visual distortions
+
+**Core Features**
+- [x] 39 effects with complete metadata and FFmpeg commands
+- [x] Effect presets (subtle, moderate, dramatic)
+- [x] Effect tags (popular, professional, beginner-friendly)
+- [x] Complexity levels (basic, intermediate, advanced)
+- [x] WebGL2 GPU-accelerated rendering
+- [x] CSS preview fallback
+- [x] Interactive parameter controls
+- [x] Real-time preview
+- [x] Effects import (JSON, .cube, .lut files)
+- [x] Favorite effects system
+- [x] Two view modes (grid and categories)
+
+**Integration**
+- [x] Browser tabs integration
+- [x] TimelineResources usage
+- [x] WebGL2 preview system
+
+### ❌ Not Implemented
+
+- [ ] Apply effects to timeline clips
+- [ ] Save custom user presets (partially ready)
+- [ ] Drag & drop to Timeline
+- [ ] Animated effect previews
+
+## Usage
+
+### Basic Usage
+
+```typescript
+import { useEffects, EffectList } from '@/features/effects'
+
+function MyComponent() {
+  const effects = useEffects()
+
+  return <EffectList effects={effects} />
+}
+```
+
+### WebGL2 GPU-Accelerated Effects
 
 ```typescript
 import { useUnifiedEffects } from '@/features/effects/hooks'
 import { WebGL2EffectProcessor } from '@/features/effects/services'
 
-// Apply effects with GPU acceleration
+// Initialize processor
 const processor = new WebGL2EffectProcessor()
 await processor.initialize()
 
+// Apply effects with GPU acceleration
 const result = await processor.processFrame(
   sourceFrame,
   [
@@ -247,67 +116,63 @@ const result = await processor.processFrame(
 )
 ```
 
-### Real-time Preview
-
-Effects preview now uses WebGL2 for real-time rendering:
+### Import Custom Effects
 
 ```typescript
-function EffectPreview({ effect }) {
-  const { previewFrame, applyEffect } = useUnifiedEffects()
-  
-  const handleParameterChange = (param, value) => {
-    applyEffect(effect.id, { [param]: value })
-    // Real-time WebGL2 preview update
-  }
-  
-  return <canvas ref={previewCanvasRef} />
-}
+import { useEffectsImport } from '@/features/effects/hooks'
+
+const { importEffect, importLUT } = useEffectsImport()
+
+// Import JSON effect
+await importEffect('/path/to/effect.json')
+
+// Import LUT file
+await importLUT('/path/to/lut.cube')
 ```
 
-### Performance Benefits
+## Integration
 
-- **10x faster** rendering compared to CPU processing
-- **Real-time parameter adjustment** without lag
-- **Automatic quality scaling** based on GPU capabilities
-- **Memory efficient** shader pooling and caching
+- **Depends on**: `@/domains/video-compiler`, `@/lib/webgl2`
+- **Used by**: `@/features/browser`, `@/features/timeline`
 
-## 🎭 E2E Tests / E2E Тесты
+## Testing
 
-**Расположение:** `e2e/tauri/features/effects/`
+- **Total tests**: 66+
+- **Coverage**: 64.87% overall
+  - Components: 91.75%
+  - Utilities: 100%
+  - WebGL2 processors: 95%
+- **Run tests**: `bun test src/features/effects`
+- **Coverage report**: `bun test:coverage src/features/effects`
 
-### Чеклист тестов
+## Performance
 
-| Тест | Приоритет | Статус | Файл |
-|------|-----------|--------|------|
-| Навигация на вкладку Effects | 🔴 High | ⏳ Planned | - |
-| Отображение списка эффектов (39 items) | 🔴 High | ⏳ Planned | - |
-| Отображение категорий (8 categories) | 🔴 High | ⏳ Planned | - |
-| Фильтрация по категории | 🟡 Medium | ⏳ Planned | - |
-| Поиск эффектов по названию | 🟡 Medium | ⏳ Planned | - |
-| Переключение Grid/Categories view | 🟢 Low | ⏳ Planned | - |
-| Просмотр деталей эффекта (modal) | 🟡 Medium | ⏳ Planned | - |
-| Отображение параметров эффекта | 🟡 Medium | ⏳ Planned | - |
-| Изменение параметров (интерактивные контролы) | 🔴 High | ⏳ Planned | - |
-| WebGL2 preview рендеринг | 🔴 High | ⏳ Planned | - |
-| CSS preview fallback | 🟡 Medium | ⏳ Planned | - |
-| Выбор пресета эффекта | 🟡 Medium | ⏳ Planned | - |
-| Команда `save_file` (сохранение пресета) | 🟡 Medium | ⏳ Planned | - |
-| Команда `delete_user_effect` | 🟢 Low | ⏳ Planned | - |
-| Команда `create_effect` | 🟡 Medium | ⏳ Planned | - |
-| Команда `create_filter` | 🟡 Medium | ⏳ Planned | - |
-| Импорт пользовательского эффекта (JSON) | 🟢 Low | ⏳ Planned | - |
-| Импорт LUT файлов (.cube, .lut) | 🟢 Low | ⏳ Planned | - |
-| Добавление эффекта в избранное | 🟢 Low | ⏳ Planned | - |
-| Drag & drop эффекта на Timeline | 🔴 High | ⏳ Planned | - |
-| Применение эффекта к клипу | 🔴 High | ⏳ Planned | - |
-| Real-time preview в VideoPlayer | 🔴 High | ⏳ Planned | - |
-| Отображение FFmpeg команд | 🟢 Low | ⏳ Planned | - |
-| Error handling (WebGL не поддерживается) | 🟡 Medium | ⏳ Planned | - |
-| Загрузка fallback данных при ошибке | 🟡 Medium | ⏳ Planned | - |
+**WebGL2 GPU Acceleration**
+- 10x faster rendering vs CPU processing
+- Real-time parameter adjustment without lag
+- Automatic quality scaling based on GPU capabilities
+- Memory efficient shader pooling and caching
 
-### Примечания
-- Effects модуль использует 4 Tauri команды для работы с пользовательскими эффектами
-- Основной функционал - WebGL2 GPU-ускоренный рендеринг
-- Важно тестировать fallback на CSS preview при отсутствии WebGL2
-- Требуется проверка интеграции с Timeline для применения эффектов
-- Тесты должны покрывать импорт пользовательских эффектов и LUT файлов
+**Optimizations**
+- Lazy loading of effects
+- Memoization for list rendering
+- Real-time search optimization
+- CSS preview for quick fallback
+
+## TODO / Roadmap
+
+- [ ] Timeline integration - implement applying effects to clips via WebGL2
+- [ ] Drag & Drop - add effect dragging to timeline
+- [ ] Real-time parameters - effect adjustment with WebGL2 preview
+- [ ] Custom presets - save user settings to file system
+- [ ] WebGL2 shaders - expand GLSL effects library
+- [ ] Animated previews - improve visual presentation with GPU acceleration
+- [ ] E2E tests - create comprehensive test suite (see E2E Tests section in old README)
+
+## Documentation
+
+- **README.md** - This file (EN)
+- **README.ru.md** - Russian version
+- **DEV.md** - Technical documentation, architecture and testing
+- **WEBGL2_MIGRATION.md** - WebGL2 migration guide
+- **examples/hooks-usage.md** - Hook usage examples

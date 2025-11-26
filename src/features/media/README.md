@@ -1,29 +1,65 @@
-# Модуль Media
+# Media
 
-Комплексное управление медиафайлами для Timeline Studio, включающее импорт, генерацию превью, извлечение метаданных, кэширование и потоковую передачу.
+**English** | [Русский](./README.ru.md)
 
-## Обзор
+## Overview
 
-Модуль media обеспечивает:
-- **Импорт и сканирование** - Drag-and-drop файлов, сканирование папок, пакетная обработка
-- **Генерация превью** - Миниатюры, кадры таймлайна, разные размеры
-- **Извлечение метаданных** - Длительность, разрешение, кодеки через FFmpeg
-- **Видео стриминг** - Локальный сервер для плавного воспроизведения
-- **Восстановление файлов** - Автоматическое восстановление отсутствующих файлов
-- **Производительность** - IndexedDB кэширование, пакетные операции, предзагрузка превью
+Comprehensive media management module for Timeline Studio. Handles media file import, preview generation, metadata extraction, caching, and video streaming.
 
-## Быстрый старт
+## Status
 
-### Базовое использование
+- ✅ **Components**: MediaContent, file selection, drag-and-drop
+- ✅ **Hooks**: useMediaImport, useMediaProcessor, useMediaPreview, useFramePreview, useVideoStreaming, useCacheStatistics, useMediaRestoration
+- ✅ **Services**: IndexedDBCacheService, MediaRestorationService, VideoStreamingService
+- ✅ **Tests**: 87% coverage (~150+ tests)
+
+## Structure
+
+```
+media/
+├── components/    # UI components
+├── hooks/         # React hooks
+├── services/      # Business logic
+├── types/         # TypeScript types
+├── utils/         # Helper functions
+└── __tests__/     # Test files
+```
+
+## Features
+
+### ✅ Implemented
+
+- [x] File import (drag-and-drop, file/folder selection, batch processing)
+- [x] Metadata extraction via FFmpeg (duration, resolution, codecs)
+- [x] Preview generation (thumbnails, timeline frames, multiple sizes)
+- [x] Video streaming via local server
+- [x] File restoration (automatic recovery of missing files)
+- [x] IndexedDB caching (preview, timeline frames, recognition, subtitles)
+- [x] Cache statistics and management
+- [x] Audio track extraction from video
+- [x] TypeScript strict mode with comprehensive types
+
+### ❌ Not Implemented
+
+- [ ] Cloud storage integration
+- [ ] Advanced video analysis (scene detection, quality metrics)
+- [ ] Batch metadata editing
+- [ ] Smart preview caching strategies
+- [ ] Media library organization (tags, collections)
+
+## Usage
+
+### Basic Media Import
+
 ```typescript
 import { MediaContent } from '@/features/media/components/media-content'
 import { useMediaImport } from '@/features/media/hooks'
 
 function MyMediaBrowser() {
   const { importFiles, isImporting } = useMediaImport()
-  
+
   return (
-    <MediaContent 
+    <MediaContent
       onImport={importFiles}
       isLoading={isImporting}
     />
@@ -31,186 +67,123 @@ function MyMediaBrowser() {
 }
 ```
 
-### Доступные хуки
+### Available Hooks
+
 ```typescript
 import {
-  useMediaImport,      // Импорт файлов/папок
-  useMediaProcessor,   // Извлечение метаданных
-  useMediaPreview,     // Генерация миниатюр
-  useFramePreview,     // Кадры таймлайна
-  useVideoStreaming,   // Интеграция с видео сервером
-  useCacheStatistics,  // Управление кэшем
-  useMediaRestoration  // Восстановление отсутствующих файлов
+  useMediaImport,      // Import files/folders
+  useMediaProcessor,   // Extract metadata
+  useMediaPreview,     // Generate thumbnails
+  useFramePreview,     // Timeline frames
+  useVideoStreaming,   // Video server integration
+  useCacheStatistics,  // Cache management
+  useMediaRestoration  // Restore missing files
 } from '@/features/media/hooks'
 ```
 
-## Тестирование
+### Cache Management
 
-Модуль поддерживает высокое покрытие тестами всех компонентов:
+```typescript
+import { IndexedDBCacheService } from '@/features/media/services'
 
-### Покрытие тестами
-- **Общее**: ~87% покрытие инструкций
-- **Хуки**: 92% инструкций, 84% ветвлений
-- **Сервисы**: 88% инструкций, 90% ветвлений
-- **Компоненты**: 83% инструкций, 69% ветвлений
+const cache = IndexedDBCacheService.getInstance()
 
-### Запуск тестов
+// Cache preview
+await cache.cachePreview(fileId, previewData, 24 * 60 * 60 * 1000) // 24h
+
+// Get cached data
+const preview = await cache.getPreview(fileId)
+
+// Clear cache
+await cache.clearAllCache()
+
+// Get statistics
+const stats = await cache.getCacheStatistics()
+console.log(`Total size: ${stats.totalSize} bytes`)
+```
+
+## Integration
+
+- **Depends on**:
+  - `@tauri-apps/api` - File system and media commands
+  - `@/domains/browser` - Browser state management
+  - `idb` - IndexedDB wrapper for caching
+  - FFmpeg (backend) - Metadata extraction
+
+- **Used by**:
+  - `@/features/browser` - Media file browsing and selection
+  - `@/features/timeline` - Timeline clips and media references
+  - `@/features/video-player` - Video streaming integration
+  - `@/domains/project` - Project media restoration
+  - `@/features/recognition` - Media analysis and caching
+
+## Testing
+
+- **Total tests**: 150+ tests
+- **Coverage**: ~87% statements, 90% branches (services), 84% branches (hooks)
+- **Test categories**:
+  - Hooks (use-media-import, use-media-processor, use-file-selection)
+  - Services (indexeddb-cache-service, media-restoration-service)
+  - Utils (tracks-utils, audio-tracks, preview-sizes)
+
 ```bash
-# Все тесты модуля media
-bun run test src/features/media/__tests__/
+# Run all tests
+bun test src/features/media/__tests__/
 
-# С отчетом о покрытии
-bun run test:coverage -- src/features/media/
+# Run with coverage
+bun test:coverage -- src/features/media/
 
-# Конкретный файл теста
-bun run test src/features/media/__tests__/hooks/use-media-import.test.tsx
+# Run specific test file
+bun test src/features/media/__tests__/hooks/use-media-import.test.tsx
 ```
 
-## Структура проекта
-```
-media/
-├── components/    # UI компоненты
-├── hooks/         # React хуки
-├── services/      # Бизнес-логика
-├── types/         # TypeScript типы
-├── utils/         # Вспомогательные функции
-└── __tests__/     # Тестовые файлы
-```
-
-## Документация
-
-- **[DEV.md](./DEV.md)** - Подробная техническая документация для разработчиков
-- **[API Reference](./types)** - TypeScript определения типов
-- **[Примеры тестов](./\_\_tests\_\_)** - Паттерны тестирования и примеры
-
-## Участие в разработке
-
-1. Следуйте существующим паттернам и архитектуре
-2. Пишите тесты для новых функций (>80% покрытия)
-3. Обновляйте документацию (README.md для обзора, DEV.md для технических деталей)
-4. Используйте TypeScript strict mode
-5. Запускайте `bun run lint` перед коммитом
-
-## API (Backend Commands)
+## Tauri Commands
 
 | Command | Parameters | Description |
 |---------|------------|-------------|
 | `get_media_metadata` | `{ filePath: string }` | Extract video/audio metadata via FFmpeg |
+| `get_media_files` | `{ directoryPath: string }` | Get list of media files in directory |
 | `cancel_media_processing` | - | Cancel ongoing media processing |
 | `clear_media_preview_data` | `{ fileId: string }` | Clear cached preview data for file |
 | `save_preview_data` | `{ path: string }` | Save preview cache to disk |
 | `load_preview_data` | `{ path: string }` | Load preview cache from disk |
 | `save_timeline_frames` | `{ fileId: string, frames: Frame[] }` | Save timeline preview frames |
 
-## Behavior (from tests) / Поведение (из тестов)
+Plus `@tauri-apps/plugin-dialog` (open) for file/folder selection dialogs.
 
-### media-restoration-service.test.ts
-- ✓ Должен восстановить файл по оригинальному пути
-- ✓ Должен найти файл по относительному пути
-- ✓ Должен найти файл в альтернативных местах
-- ✓ Должен вернуть missing если файл не найден
-- ✓ Должен восстановить все файлы проекта
-- ✓ Должен обрабатывать отсутствующие файлы
-- ✓ Должен генерировать отчет о восстановлении
-- ✓ Должен открыть диалог выбора файла через Tauri
-- ✓ Должен обработать edge cases (Unicode, спецсимволы, длинные пути)
+## Key Services
 
-### indexeddb-cache-service.test.ts
-- ✓ Should return the same instance (Singleton pattern)
-- ✓ Should cache preview/timeline frames/recognition/subtitle frames successfully
-- ✓ Should retrieve cached data with expiration check
-- ✓ Should remove expired entries and return null
-- ✓ Should calculate cache statistics correctly
-- ✓ Should clear individual and all cache types
-- ✓ Should cleanup expired cache entries
-- ✓ Should estimate size correctly (string and object)
-- ✓ Should trigger cleanup when cache size exceeds limit
-- ✓ Should remove oldest entries first during cleanup
-- ✓ Should handle IndexedDB errors gracefully
-- ✓ Should handle edge cases (empty strings, large data, special characters, concurrent operations)
+### IndexedDBCacheService
+- Singleton pattern for cache management
+- Multiple cache types (preview, timeline, recognition, subtitles)
+- Automatic expiration and cleanup
+- Size-based cache limits
+- Statistics and monitoring
 
-### use-file-selection.test.tsx
-- ✓ Должен возвращать правильное начальное состояние
-- ✓ Должен переключать состояние выбора файла
-- ✓ Должен выбирать/отменять выбор файла
-- ✓ Должен обрабатывать клик с Shift для множественного выбора
+### MediaRestorationService
+- Restore missing files by original path
+- Search by relative path
+- Search in alternative locations
+- Generate restoration report
+- Manual file selection via Tauri dialog
 
-### tracks-utils.test.ts / audio-tracks.test.ts / preview-sizes.test.ts
-- ✓ Should extract audio tracks from media files
-- ✓ Should calculate optimal preview sizes based on container
-- ✓ Should handle media with/without audio tracks
-- ✓ Should validate track metadata
+### VideoStreamingService
+- Local HTTP server for video playback
+- Frame-accurate seeking
+- Integration with video player
 
-## Dependencies / Зависимости
+## TODO / Roadmap
 
-**Used by:**
-- `@/features/browser` - Media file browsing and selection
-- `@/features/timeline` - Timeline clips and media references
-- `@/features/video-player` - Video streaming integration
-- `@/domains/project` - Project media restoration
-- `@/features/recognition` - Media analysis and caching
-
-**Depends on:**
-- `@tauri-apps/api` - File system and media commands
-- `@/domains/browser` - Browser state management
-- `idb` - IndexedDB wrapper for caching
-- FFmpeg (backend) - Metadata extraction
-
-## Лицензия
-
-Часть Timeline Studio - смотрите корневой файл LICENSE
-
-## E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/media/`
-
-### Чеклист тестов
-
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Открытие диалога выбора медиафайла | ⏳ Planned | - | 🔴 High |
-| Выбор одиночного медиафайла (open dialog) | ⏳ Planned | - | 🔴 High |
-| Выбор множественных медиафайлов | ⏳ Planned | - | 🔴 High |
-| Выбор аудиофайлов через selectAudioFile | ⏳ Planned | - | 🟡 Medium |
-| Выбор директории (selectMediaDirectory) | ⏳ Planned | - | 🔴 High |
-| Получение списка файлов в директории (get_media_files) | ⏳ Planned | - | 🔴 High |
-| Извлечение метаданных видео (get_media_metadata) | ⏳ Planned | - | 🔴 High |
-| Извлечение метаданных аудио | ⏳ Planned | - | 🟡 Medium |
-| Извлечение метаданных изображения | ⏳ Planned | - | 🟡 Medium |
-| Обработка неизвестного типа файла | ⏳ Planned | - | 🟡 Medium |
-| Генерация превью миниатюры | ⏳ Planned | - | 🔴 High |
-| Генерация кадров таймлайна | ⏳ Planned | - | 🔴 High |
-| Сохранение preview data (save_preview_data) | ⏳ Planned | - | 🟡 Medium |
-| Загрузка preview data (load_preview_data) | ⏳ Planned | - | 🟡 Medium |
-| Очистка preview data (clear_media_preview_data) | ⏳ Planned | - | 🟢 Low |
-| Отмена обработки (cancel_media_processing) | ⏳ Planned | - | 🟡 Medium |
-| Кэширование в IndexedDB | ⏳ Planned | - | 🟡 Medium |
-| Очистка expired кэша | ⏳ Planned | - | 🟢 Low |
-| Статистика кэша | ⏳ Planned | - | 🟢 Low |
-| Восстановление отсутствующих файлов | ⏳ Planned | - | 🔴 High |
-| Поиск файлов по относительному пути | ⏳ Planned | - | 🟡 Medium |
-| Генерация отчета восстановления | ⏳ Planned | - | 🟢 Low |
-| Drag-and-drop файлов | ⏳ Planned | - | 🔴 High |
-| Импорт аудиотреков из видео | ⏳ Planned | - | 🟡 Medium |
-| Видео стриминг интеграция | ⏳ Planned | - | 🟡 Medium |
-
-### Приоритеты
-- 🔴 High - критичный функционал, тестировать первым
-- 🟡 Medium - важный функционал
-- 🟢 Low - дополнительный функционал
-
-### Tauri команды используемые модулем
-- `get_media_metadata` - извлечение метаданных через FFmpeg
-- `get_media_files` - получение списка медиафайлов в директории
-- `cancel_media_processing` - отмена текущей обработки
-- `clear_media_preview_data` - очистка кэшированных превью
-- `save_preview_data` - сохранение превью на диск
-- `load_preview_data` - загрузка превью с диска
-- `save_timeline_frames` - сохранение кадров таймлайна
-- `@tauri-apps/plugin-dialog` (open) - диалоги выбора файлов/директорий
-
-### Примечания
-- Модуль использует IndexedDB для кэширования превью
-- FFmpeg используется для извлечения метаданных (backend)
-- Поддержка drag-and-drop и пакетной обработки
-- Интеграция с video streaming сервером
+- [ ] **Cloud Integration** - Support for cloud storage providers (S3, Google Drive, Dropbox)
+- [ ] **Advanced Analysis** - Scene detection, quality metrics, duplicate detection
+- [ ] **Batch Editing** - Edit metadata for multiple files at once
+- [ ] **Smart Caching** - Predictive cache preloading based on usage patterns
+- [ ] **Library Organization** - Tags, collections, smart folders
+- [ ] **E2E Tests** - Complete E2E test coverage
+  - File/folder selection dialogs
+  - Metadata extraction for video/audio/image
+  - Preview generation workflow
+  - IndexedDB caching operations
+  - File restoration flow
+  - Drag-and-drop import
+  - Video streaming integration

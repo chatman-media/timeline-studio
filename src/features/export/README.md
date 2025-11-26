@@ -1,102 +1,98 @@
 # Export
 
-## Overview / Обзор
+**English** | [Русский](./README.ru.md)
 
-**EN:** Comprehensive video export system with professional presets, social media integration (YouTube, TikTok, Vimeo, Telegram), batch export, and section export. Features 4-tab interface similar to DaVinci Resolve with H.264/H.265/ProRes codecs, OAuth authentication, and render queue management.
+## Overview
 
-**RU:** Комплексная система экспорта видео с профессиональными пресетами, интеграцией социальных сетей (YouTube, TikTok, Vimeo, Telegram), пакетным экспортом и экспортом секций. Включает 4-вкладочный интерфейс, похожий на DaVinci Resolve, с кодеками H.264/H.265/ProRes, OAuth авторизацией и управлением очередью рендеринга.
+Comprehensive video export system with professional presets, social media integration (YouTube, TikTok, Vimeo, Telegram), batch export, and section export. Features 4-tab interface similar to DaVinci Resolve with H.264/H.265/ProRes codecs, OAuth authentication, and render queue management.
 
-## API (Backend Commands)
+## Status
 
-The export module uses Video Compiler backend commands for rendering:
+- ✅ **Components**: 6/6 implemented (ExportModal, LocalExportTab, SocialExportTab, BatchExportTab, SectionExportTab, DetailedExportInterface)
+- ✅ **Hooks**: 3/3 implemented (useExportSettings, useSocialExport, useRenderQueue)
+- ✅ **Services**: 3/3 implemented (OAuthService, SocialNetworksService, SecureTokenStorage)
+- ✅ **Tests**: 40+ tests passing (~90% coverage)
+- ✅ **Status**: Production ready - 95% complete
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `compile_video` | `{ schema: ProjectSchema, outputPath: string, settings: RenderSettings }` | Start video rendering with specified settings |
-| `cancel_render` | `{ jobId: string }` | Cancel active render job |
-| `get_render_progress` | `{ jobId: string }` | Get current render progress (0-100%) |
-
-**OAuth & Social Media Commands:**
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `store_token` | `{ network: string, token: OAuthToken }` | Securely store OAuth token (Tauri Store) |
-| `get_token` | `{ network: string }` | Retrieve stored OAuth token |
-| `delete_token` | `{ network: string }` | Remove OAuth token |
-
-**Status:** ✅ 95% Complete - Модуль экспорта готов к продакшену
-
-## 🎯 Возможности - Все реализовано ✅
-
-### ✅ Локальный экспорт
-- **Профессиональный интерфейс экспорта** - Вкладки как в DaVinci Resolve
-- **Пресеты экспорта** - H.264 Master, H.265, ProRes, HyperDeck и другие
-- **Настройки качества** - Custom, Good, Best с автоматическим битрейтом
-- **Выбор разрешения** - 720p, 1080p, 1440p, 4K, Timeline
-- **Выбор FPS** - 24, 25, 30, 60 fps, Timeline
-- **Форматы** - MP4, MOV, WebM, QuickTime
-- **Кодеки** - H.264, H.265/HEVC, ProRes, VP8, VP9
-- **GPU ускорение** - Поддержка аппаратного кодирования
-- **Прогресс экспорта** - Отображение процесса рендеринга
-
-### ✅ Социальные сети
-- **YouTube** - OAuth 2.0 интеграция, оптимизированные настройки
-- **TikTok** - Вертикальные форматы, прямая загрузка
-- **Vimeo** - Высокое качество, профессиональные настройки  
-- **Telegram** - Bot API, оптимизация размера файлов
-
-### ✅ Пакетный экспорт
-- **Множественный экспорт проектов** - Через очередь рендеринга
-- **Управление очередью** - Добавление, отмена, статистика
-- **Параллельный рендеринг** - Оптимизация производительности
-- **Отчеты об экспорте** - Детальная статистика
-
-### ✅ Экспорт секций
-- **По маркерам времени** - Автоматическое разделение
-- **По отдельным клипам** - Экспорт каждого клипа отдельно
-- **Ручная настройка** - Произвольные временные диапазоны
-- **Пресеты качества** - Превью/черновик/финал
-- **Индивидуальные названия** - Настройка имен файлов
-
-### ✅ Расширенные возможности
-- **OAuth интеграция** - Все социальные платформы
-- **Secure token storage** - Безопасное хранение токенов
-- **Интеграция с очередью задач** - Единый интерфейс рендеринга
-- **Полная локализация** - 15 языков
-- **Профессиональные форматы** - ProRes, H.264/H.265 Master
-
-## 📁 Структура модуля
+## Structure
 
 ```
 export/
 ├── components/
-│   ├── export-modal.tsx          # Главный компонент с 4 вкладками ✅
-│   ├── export-presets.tsx        # Панель выбора пресетов экспорта ✅
-│   ├── detailed-export-interface.tsx  # Локальный экспорт ✅
-│   ├── social-export-tab.tsx     # Экспорт в социальные сети ✅
-│   ├── batch-export-tab.tsx      # Пакетный экспорт проектов ✅
-│   └── section-export-tab.tsx    # Экспорт секций видео ✅
+│   ├── export-modal.tsx
+│   ├── export-presets.tsx
+│   ├── detailed-export-interface.tsx
+│   ├── social-export-tab.tsx
+│   ├── batch-export-tab.tsx
+│   └── section-export-tab.tsx
 ├── hooks/
-│   ├── use-export-settings.ts    # Управление настройками экспорта ✅
-│   ├── use-social-export.ts      # Интеграция с социальными сетями ✅
-│   └── use-render-queue.ts       # Управление очередью рендеринга ✅
-├── services/                     # Инфраструктура для соцсетей ✅
-│   ├── social-networks-service.ts # Интеграция с API соцсетей ✅
-│   ├── oauth-service.ts          # OAuth авторизация ✅
-│   └── secure-token-storage.ts   # Безопасное хранение токенов ✅
+│   ├── use-export-settings.ts
+│   ├── use-social-export.ts
+│   └── use-render-queue.ts
+├── services/
+│   ├── social-networks-service.ts
+│   ├── oauth-service.ts
+│   └── secure-token-storage.ts
 ├── constants/
-│   └── export-constants.ts       # Константы и пресеты ✅
+│   └── export-constants.ts
 ├── types/
-│   └── export-types.ts          # TypeScript типы ✅
+│   └── export-types.ts
 ├── utils/
-│   └── preset-configs.ts        # Конфигурации пресетов ✅
-└── index.ts                     # Экспорт публичного API ✅
+│   └── preset-configs.ts
+└── __tests__/
 ```
 
-## 🔧 Использование
+## Features
 
-### Основной компонент
+### ✅ Implemented
 
-```tsx
+**Local Export**
+- [x] Professional export interface (4 tabs like DaVinci Resolve)
+- [x] Export presets (H.264 Master, H.265, ProRes, HyperDeck, etc.)
+- [x] Quality settings (Custom, Good, Best with automatic bitrate)
+- [x] Resolution selection (720p, 1080p, 1440p, 4K, Timeline)
+- [x] FPS selection (24, 25, 30, 60 fps, Timeline)
+- [x] Format support (MP4, MOV, WebM, QuickTime)
+- [x] Codec support (H.264, H.265/HEVC, ProRes, VP8, VP9)
+- [x] GPU acceleration support
+- [x] Export progress tracking
+
+**Social Media Integration**
+- [x] YouTube - OAuth 2.0 integration, optimized settings
+- [x] TikTok - Vertical formats, direct upload
+- [x] Vimeo - High quality, professional settings
+- [x] Telegram - Bot API, file size optimization
+
+**Batch Export**
+- [x] Multiple project export via render queue
+- [x] Queue management (add, cancel, statistics)
+- [x] Parallel rendering optimization
+- [x] Export reports with detailed statistics
+
+**Section Export**
+- [x] By markers - automatic splitting between markers
+- [x] By clips - export each clip separately
+- [x] Manual ranges - custom time ranges
+- [x] Quality presets (Preview/Draft/Final)
+- [x] Individual file naming
+
+**Advanced Features**
+- [x] OAuth integration for all social platforms
+- [x] Secure token storage
+- [x] Render queue integration
+- [x] Full internationalization (15 languages)
+- [x] Professional formats (ProRes, H.264/H.265 Master)
+
+### ❌ Not Implemented
+
+- [ ] Advanced audio export settings (partially ready)
+- [ ] Timecode burn-in options
+
+## Usage
+
+### Basic Export
+
+```typescript
 import { ExportModal } from '@/features/export'
 
 function App() {
@@ -104,305 +100,99 @@ function App() {
 }
 ```
 
-### Компоненты
+### Export Presets
 
-#### ExportModal - Главное модальное окно экспорта
-
-```tsx
-import { ExportModal } from '@/features/export'
-
-// Автоматически интегрируется с:
-// - useTimeline() - получение текущего проекта
-// - useVideoCompiler() - запуск рендеринга
-// - useModal() - управление модальным окном
-```
-
-#### ExportPresets - Панель выбора пресетов
-
-```tsx
+```typescript
 import { ExportPresets, EXPORT_PRESETS } from '@/features/export'
 
 function MyExportUI() {
   const [selectedPreset, setSelectedPreset] = useState('custom')
-  
+
   return (
     <ExportPresets
       selectedPresetId={selectedPreset}
       onSelectPreset={(preset) => {
         setSelectedPreset(preset.id)
-        // Применить настройки пресета
+        // Apply preset settings
       }}
     />
   )
 }
 ```
 
-### Хуки
+### Export Settings Hook
 
-#### useExportSettings - Управление настройками экспорта
+```typescript
+import { useExportSettings } from '@/features/export'
 
-```tsx
 const {
-  getCurrentSettings,   // Текущие настройки
-  updateSettings,       // Обновить настройки
-  handleChooseFolder,   // Выбор папки сохранения
-  getExportConfig      // Получить конфигурацию для рендера
+  getCurrentSettings,   // Get current settings
+  updateSettings,       // Update settings
+  handleChooseFolder,   // Choose save folder
+  getExportConfig      // Get render configuration
 } = useExportSettings()
 ```
 
-## 📊 Пресеты экспорта
-
-### Профессиональные пресеты
-- **Custom Export** - Ручная настройка всех параметров
-- **H.264 Master** - Высокое качество H.264 для архива (80 Mbps CBR)
-- **H.265 Master** - Высокое качество H.265/HEVC (60 Mbps VBR)
-- **ProRes 422 HQ** - Apple ProRes для профессионального монтажа
-- **HyperDeck** - Формат для Blackmagic HyperDeck (50 Mbps CBR)
-
-### Социальные сети (готовые пресеты)
-- **YouTube 1080p** - Оптимизировано для YouTube (12 Mbps VBR, -14 LKFS)
-- **Vimeo 1080p** - Высокое качество для Vimeo (20 Mbps VBR)
-- **TikTok 1080p** - Вертикальное видео для TikTok (автобитрейт)
-
-### Разрешения
-- **4K (2160p)**: 3840x2160
-- **QHD (1440p)**: 2560x1440
-- **Full HD (1080p)**: 1920x1080  
-- **HD (720p)**: 1280x720
-- **Timeline** - Использовать разрешение проекта
-
-### Кодеки и форматы
-- **H.264/AVC** - MP4, MOV (универсальная совместимость)
-- **H.265/HEVC** - MP4 (меньший размер файла)
-- **ProRes** - QuickTime (профессиональный монтаж)
-- **VP8/VP9** - WebM (веб-оптимизация)
-
-## 🎨 UI/UX
-
-### Текущий интерфейс
-- **Панель пресетов** - Быстрый выбор профессиональных настроек
-- **Форма настроек** - Детальная конфигурация экспорта
-- **Выбор папки сохранения** - Удобный file picker
-- **Прогресс-бар рендеринга** - Живое отслеживание процесса
-- **Валидация настроек** - Проверка корректности параметров
-
-### Особенности интерфейса
-- **Адаптивные пресеты** - Настройки автоматически подстраиваются под проект
-- **Профессиональные иконки** - Визуальное различение типов экспорта
-- **Tooltip описания** - Подсказки для каждого пресета
-
-## 🔄 Интеграция
-
-Модуль интегрирован с:
-- `useTimeline` - Получение проекта для экспорта
-- `useVideoCompiler` - Рендеринг видео
-- `useModal` - Управление модальным окном
-
-## 🌐 Локализация
-
-Все тексты локализованы через i18n:
-- Заголовки и метки
-- Сообщения об ошибках
-- Подсказки и описания
-- Названия соцсетей и устройств
-
-## ⚡ Производительность
-
-- Ленивая загрузка компонентов вкладок
-- Мемоизация настроек экспорта
-- GPU ускорение при доступности
-- Оптимизация битрейта под разрешение
-
-## 🎯 Связь с задачами экспорта
-
-### Интеграция с Render Jobs
-
-Export модуль **полностью интегрирован** с системой Render Jobs через Video Compiler:
+### Social Media Export
 
 ```typescript
-// Когда пользователь нажимает "Экспорт"
-const handleExport = async () => {
-  // 1. Преобразуем timeline в схему проекта с реальным именем
-  const projectSchema = timelineToProjectSchema(project)
-  
-  // 2. Запускаем рендеринг через Video Compiler
-  await startRender(projectSchema, settings.savePath)
-  
-  // 3. Задача автоматически появляется в RenderJobsDropdown
-}
+import { useSocialExport } from '@/features/export'
+
+const {
+  authorize,           // OAuth authorization
+  uploadVideo,        // Upload to platform
+  isAuthorized       // Check auth status
+} = useSocialExport('youtube')
 ```
 
-### Что происходит при экспорте:
+## Integration
 
-1. **Export Modal** → `handleExport()` → преобразует timeline в `ProjectSchema`
-2. **Video Compiler** → `startRender()` → создает `RenderJob` с реальным именем проекта  
-3. **Backend** → `compile_video` → добавляет задачу в `active_jobs`
-4. **RenderJobsDropdown** → автообновление каждые 2 секунды → показывает реальный прогресс
+- **Depends on**: `@/features/timeline`, `@/domains/video-compiler`
+- **Used by**: `@/features/media-studio`
 
-### Статус задач экспорта ✅
+## Testing
 
-- ✅ **Создание задач**: Export корректно создает задачи рендеринга
-- ✅ **Отображение**: Задачи показываются с реальными именами проектов
-- ✅ **Прогресс**: Живое отслеживание прогресса экспорта
-- ✅ **Отмена**: Возможность отменить экспорт через dropdown
-- ✅ **Уведомления**: Toast сообщения о статусе экспорта
+- **Total tests**: 40+
+- **Coverage**: ~90%
+  - ExportModal: 21 tests
+  - LocalExportTab: 14 tests
+  - useExportSettings: 7 tests
+  - Services: 59 tests (OAuth, Social Networks, TikTok)
+  - Constants: 18 tests
+- **Run tests**: `bun test src/features/export`
 
-## 🧪 Тестирование
+## Export Presets
 
-### Статус тестов ✅
+### Professional Presets
+- **Custom Export** - Manual configuration of all parameters
+- **H.264 Master** - High quality H.264 for archive (80 Mbps CBR)
+- **H.265 Master** - High quality H.265/HEVC (60 Mbps VBR)
+- **ProRes 422 HQ** - Apple ProRes for professional editing
+- **HyperDeck** - Blackmagic HyperDeck format (50 Mbps CBR)
 
-Export модуль имеет **хорошее покрытие тестами**:
+### Social Media Presets
+- **YouTube 1080p** - Optimized for YouTube (12 Mbps VBR, -14 LKFS)
+- **Vimeo 1080p** - High quality for Vimeo (20 Mbps VBR)
+- **TikTok 1080p** - Vertical video for TikTok (auto bitrate)
 
-- **Активные тесты**: 40+ ✅ (все прошли)
-- **Покрытие**: ~90% рабочей функциональности
-- **Статус**: Готов к продакшену для локального экспорта
+### Resolutions
+- **4K (2160p)**: 3840x2160
+- **QHD (1440p)**: 2560x1440
+- **Full HD (1080p)**: 1920x1080
+- **HD (720p)**: 1280x720
+- **Timeline** - Use project resolution
 
-### Структура тестов
+## TODO / Roadmap
 
-```
-export/__tests__/
-├── components/
-│   ├── export-modal.test.tsx               # 21 тестов ✅
-│   ├── export-presets.test.tsx             # В разработке
-│   └── local-export-tab.test.tsx           # 14 тестов ✅
-├── hooks/
-│   └── use-export-settings.test.ts         # 7 тестов ✅
-├── services/                               # Инфраструктурные тесты (готовы к использованию)
-│   ├── oauth-service-simple.test.ts        # 9 тестов ✅
-│   ├── social-networks-service.test.ts     # 36 тестов ✅
-│   └── tiktok-service-simple.test.ts       # 14 тестов ✅
-└── constants/
-    └── export-constants.test.ts            # 18 тестов ✅
-```
+- [ ] Advanced audio export settings (multi-track, channel mapping)
+- [ ] Timecode burn-in options for professional workflows
+- [ ] HDR export support (HDR10, Dolby Vision)
+- [ ] Custom watermark overlay
+- [ ] E2E tests - comprehensive test suite (see E2E Tests section in old README)
+- [ ] Export queue persistence (save/restore queue on app restart)
+- [ ] Export templates (save complete export configurations)
 
-### Покрытые функции
+## Documentation
 
-✅ **Export Modal & Components**
-- Главное модальное окно экспорта
-- Интеграция с timeline и video compiler
-- Формы настроек и валидация
-- Прогресс рендеринга
-
-✅ **Export Settings (Настройки экспорта)**
-- Локальный экспорт
-- Качество, разрешение, FPS, форматы
-- Валидация и конфигурация
-
-✅ **Social Services (Инфраструктура соцсетей)**  
-- OAuth авторизация (готово к интеграции)
-- Сервисы YouTube, TikTok (готовы к использованию)
-- Валидация ограничений соцсетей
-
-✅ **Integration (Интеграция)**
-- Timeline → ProjectSchema конвертация
-- Video Compiler интеграция
-- Render Jobs создание
-
-## 🆕 Новые возможности (2025)
-
-### ✅ Экспорт секций
-- **Три режима экспорта**:
-  - По маркерам - автоматическое разделение между маркерами
-  - По клипам - каждый клип экспортируется отдельно
-  - Ручной - произвольные временные диапазоны
-- **Пресеты качества**: Превью (720p), Черновик (1080p), Финал (настройки проекта)
-- **Индивидуальные названия** файлов для каждой секции
-- **Массовый выбор** секций для экспорта
-- **Предпросмотр временных диапазонов** каждой секции
-
-### ✅ Пакетный экспорт
-- **Выбор нескольких проектов** через файловый диалог
-- **Глобальные настройки** для всех проектов
-- **Пресеты качества** с автоприменением
-- **Очередь рендеринга** с управлением:
-  - Статистика: завершено/ошибки/в очереди
-  - Отмена отдельных задач или всей очереди
-  - Автообновление статуса каждые 2 секунды
-  - Очистка завершенных задач
-- **Выбор папки вывода** с автоматическими именами файлов
-
-### ✅ Интеграция с социальными сетями
-- **OAuth 2.0 авторизация** для YouTube, TikTok, Vimeo
-- **Telegram Bot API** для прямой публикации
-- **Безопасное хранение токенов** через Tauri Store
-- **Автообновление токенов** при истечении
-- **Оптимизированные пресеты** для каждой платформы
-- **Прямая публикация** без промежуточного сохранения
-
-## 📊 Итоговая статистика
-
-### Компоненты: 6/6 ✅
-- ✅ ExportModal - главное окно с 4 вкладками
-- ✅ LocalExportTab - локальный экспорт  
-- ✅ SocialExportTab - социальные сети
-- ✅ BatchExportTab - пакетный экспорт
-- ✅ SectionExportTab - экспорт секций
-- ✅ DetailedExportInterface - расширенные настройки
-
-### Хуки: 3/3 ✅
-- ✅ useExportSettings - настройки экспорта
-- ✅ useSocialExport - интеграция с соцсетями
-- ✅ useRenderQueue - пакетный рендеринг
-
-### Сервисы: 3/3 ✅
-- ✅ OAuthService - авторизация в соцсетях
-- ✅ SocialNetworksService - API интеграция
-- ✅ SecureTokenStorage - безопасное хранение
-
-### Функции: 100% ✅
-- ✅ Локальный экспорт (все форматы и настройки)
-- ✅ Социальные сети (YouTube, TikTok, Vimeo, Telegram)
-- ✅ Пакетный экспорт (множественные проекты)
-- ✅ Экспорт секций (маркеры, клипы, ручной)
-- ✅ Расширенные настройки (кодеки, качество, GPU)
-- ✅ OAuth интеграция (все платформы)
-- ✅ Интернационализация (15 языков)
-
-**Модуль Export достиг 100% готовности** 🎉
-
-## 🎭 E2E Tests / E2E Тесты
-
-**Расположение:** `e2e/tauri/features/export/`
-
-### Чеклист тестов
-
-| Тест | Приоритет | Статус | Файл |
-|------|-----------|--------|------|
-| Открытие Export Modal | 🔴 High | ⏳ Planned | - |
-| Отображение 4 вкладок (Local, Social, Batch, Section) | 🔴 High | ⏳ Planned | - |
-| Переключение между вкладками | 🔴 High | ⏳ Planned | - |
-| Отображение пресетов экспорта | 🔴 High | ⏳ Planned | - |
-| Выбор пресета (H.264 Master, H.265, ProRes) | 🔴 High | ⏳ Planned | - |
-| Настройка разрешения (720p, 1080p, 4K) | 🔴 High | ⏳ Planned | - |
-| Настройка FPS (24, 30, 60) | 🔴 High | ⏳ Planned | - |
-| Выбор качества (Custom, Good, Best) | 🟡 Medium | ⏳ Planned | - |
-| Выбор формата (MP4, MOV, WebM) | 🔴 High | ⏳ Planned | - |
-| Выбор кодека (H.264, H.265, ProRes) | 🔴 High | ⏳ Planned | - |
-| Выбор папки сохранения | 🔴 High | ⏳ Planned | - |
-| Команда `compile_video` (старт рендеринга) | 🔴 High | ⏳ Planned | - |
-| Команда `get_render_progress` | 🔴 High | ⏳ Planned | - |
-| Команда `cancel_render` | 🟡 Medium | ⏳ Planned | - |
-| Отображение прогресса экспорта | 🔴 High | ⏳ Planned | - |
-| Интеграция с Render Jobs Dropdown | 🔴 High | ⏳ Planned | - |
-| YouTube OAuth авторизация | 🟡 Medium | ⏳ Planned | - |
-| TikTok OAuth авторизация | 🟡 Medium | ⏳ Planned | - |
-| Vimeo OAuth авторизация | 🟢 Low | ⏳ Planned | - |
-| Telegram Bot API интеграция | 🟢 Low | ⏳ Planned | - |
-| Команда `store_token` (OAuth) | 🟡 Medium | ⏳ Planned | - |
-| Команда `get_token` | 🟡 Medium | ⏳ Planned | - |
-| Команда `delete_token` | 🟢 Low | ⏳ Planned | - |
-| Пакетный экспорт (выбор файлов) | 🟡 Medium | ⏳ Planned | - |
-| Управление очередью рендеринга | 🟡 Medium | ⏳ Planned | - |
-| Экспорт секций (по маркерам) | 🟡 Medium | ⏳ Planned | - |
-| Экспорт секций (по клипам) | 🟡 Medium | ⏳ Planned | - |
-| Экспорт секций (ручной диапазон) | 🟡 Medium | ⏳ Planned | - |
-| Валидация настроек экспорта | 🟡 Medium | ⏳ Planned | - |
-| Error handling (нет свободного места) | 🟡 Medium | ⏳ Planned | - |
-| Уведомления о завершении экспорта | 🟡 Medium | ⏳ Planned | - |
-
-### Примечания
-- Export модуль интегрирован с Video Compiler для рендеринга
-- Использует 3 основные Tauri команды: `compile_video`, `get_render_progress`, `cancel_render`
-- OAuth интеграция требует отдельных тестов для каждой соцсети
-- Важно тестировать интеграцию с Render Jobs Dropdown
-- Пакетный и секционный экспорт - продвинутые функции, требуют детального тестирования
+- **README.md** - This file (EN)
+- **README.ru.md** - Russian version

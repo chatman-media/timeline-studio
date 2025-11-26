@@ -1,234 +1,179 @@
-# App State - Функциональные требования
+# App State
 
-## 📋 Статус готовности
+**English** | [Русский](./README.ru.md)
 
-- ✅ **Машина состояний**: Полностью реализована
-- ✅ **Провайдер**: Полностью реализован
-- ✅ **Тесты**: Покрыты тестами
-- ✅ **Основная логика**: Глобальное состояние приложения
+## Overview
 
-## API (Backend Commands)
+App State is the global state management module for Timeline Studio. It provides centralized state management for application settings, projects, media library, favorites, and user preferences using XState machines and React Context.
 
-| Command | Parameters | Description |
-|---------|------------|-------------|
-| `clear_app_cache` | - | Clear application cache |
-| `execute_batch_commands` | `{ request: BatchCommandRequest }` | Execute multiple project commands in batch |
+## Status
 
-## 📊 Покрытие тестами
+- ✅ **Components**: MissingFilesDialog component (97% coverage)
+- ✅ **Hooks**: All hooks fully covered (100%)
+- ✅ **Services**: AppSettingsMachine (78%), ProjectFileService (99%), StoreService (100%), AppDirectoriesService (92%)
+- ✅ **Tests**: 124 tests passing
 
-- **Общее покрытие**: 57.55%
-- **Компоненты**: 97%
-- **Сервисы**: 84.25%
-- **Хуки**: 100% (полностью покрыты)
-- **Всего тестов**: 124
+## Structure
 
-## Behavior (from tests) / Поведение (из тестов)
-
-### project-file-service.test.ts (ProjectFileService)
-**loadProject:**
-- ✓ Should successfully load new project from file
-- ✓ Should migrate old project to new format
-- ✓ Should throw error on invalid JSON
-- ✓ Should throw error when required fields are missing
-
-**saveProject:**
-- ✓ Should save project with updated metadata
-- ✓ Should throw error on save failure
-
-**createNewProject:**
-- ✓ Should create new project with basic structure
-- ✓ Should set correct default values
-
-**Compatibility methods:**
-- ✓ Should update media library (updateMediaLibrary)
-- ✓ Should update browser state (updateBrowserState)
-- ✓ Should update project favorites (updateProjectFavorites)
-
-**getProjectStats:**
-- ✓ Should return stats for old project format
-- ✓ Should return stats for new project format
-- ✓ Should correctly handle project without media
-
-**hasUnsavedChanges:**
-- ✓ Should detect unsaved changes
-- ✓ Should return false when no changes exist
-
-**migrateProject:**
-- ✓ Should migrate old project to new format
-
-**Validation:**
-- ✓ Should validate empty media file ID in new format
-- ✓ Should check project type
-- ✓ Should check for missing meta
-
-### app-directories-service.test.ts (AppDirectoriesService)
-- ✓ Should return singleton instance
-- ✓ Should fetch and cache app directories
-- ✓ Should handle errors
-- ✓ Should create directories and update cache
-- ✓ Should fetch directory sizes
-- ✓ Should clear app cache (invoke: clear_app_cache)
-- ✓ Should return correct subdirectory path
-- ✓ Should throw error if directories not initialized
-- ✓ Should format bytes correctly
-- ✓ Should handle large sizes
-
-### batch-commands.test.ts
-**BatchCommandBuilder:**
-- ✓ Should add single command
-- ✓ Should add multiple commands
-- ✓ Should chain method calls
-- ✓ Should set continue on error
-- ✓ Should set transaction name
-- ✓ Should clear all commands
-- ✓ Should execute batch successfully (invoke: execute_batch_commands)
-- ✓ Should throw error for empty batch
-- ✓ Should pass transaction name to backend
-- ✓ Should handle execution errors
-- ✓ Should validate result format
-
-**createBatch:**
-- ✓ Should create builder without name
-- ✓ Should create builder with name
-
-**executeBatch:**
-- ✓ Should execute batch of commands
-- ✓ Should pass options to builder
-
-**batchOperations:**
-- ✓ Should create project with media
-- ✓ Should add multiple clips
-- ✓ Should delete multiple clips
-- ✓ Should apply effect to clips
-- ✓ Should create multiple tracks
-- ✓ Should setup timeline with content
-
-**batchUtils:**
-- ✓ isFullySuccessful - Should return true for fully successful batch
-- ✓ isFullySuccessful - Should return false for partial success
-- ✓ isFullySuccessful - Should return false for failed batch
-- ✓ getErrorMessages - Should extract error messages from results
-- ✓ getErrorMessages - Should return empty array for successful batch
-- ✓ getSuccessRate - Should calculate success rate
-- ✓ getSuccessRate - Should return 0 for no operations
-- ✓ getSuccessRate - Should return 100 for fully successful batch
-- ✓ formatResult - Should format result as string
-- ✓ throwIfFailed - Should not throw for successful batch
-- ✓ throwIfFailed - Should throw for failed batch
-
-**useBatchCommands Hook:**
-- ✓ Should initialize with default state
-- ✓ Should execute batch and update state
-- ✓ Should execute builder and update state
-- ✓ Should provide operations and utils
-- ✓ Should handle execution errors
-
-## 🎯 Основные функции
-
-### ✅ Готово
-- [x] AppSettingsMachine - машина состояний настроек (78% покрытие)
-- [x] AppSettingsProvider - провайдер контекста (67% покрытие)
-- [x] AppDirectoriesService - управление директориями (92% покрытие)
-- [x] StoreService - сервис хранения данных (100% покрытие)
-- [x] ProjectFileService - работа с файлами проектов (99% покрытие)
-- [x] MissingFilesDialog - диалог восстановления файлов (97% покрытие)
-- [x] Типизированные настройки приложения
-- [x] Хуки для доступа к состоянию:
-  - useAppSettings - базовый хук доступа
-  - useCurrentProject - управление текущим проектом
-  - useRecentProjects - недавние проекты
-  - useFavorites - избранные элементы
-  - useMediaFiles - медиафайлы
-  - useMusicFiles - музыкальные файлы
-
-### ⚠️ Архитектурные проблемы
-- Смешение ответственностей в app-settings-machine
-- Дублирование данных между настройками и проектами
-- Плохая изоляция между доменами
-
-### 📁 Структура модуля
 ```
 app-state/
 ├── components/
-│   └── missing-files-dialog.tsx    # Диалог восстановления файлов (97%)
+│   └── missing-files-dialog.tsx    # File restoration dialog (97%)
 ├── hooks/
-│   ├── use-app-settings.ts         # Базовый хук
-│   ├── use-current-project.ts      # Текущий проект
-│   ├── use-recent-projects.ts      # Недавние проекты
-│   ├── use-favorites.ts            # Избранные
-│   ├── use-media-files.ts          # Медиафайлы
-│   └── use-music-files.ts          # Музыкальные файлы
+│   ├── use-app-settings.ts         # Base hook
+│   ├── use-current-project.ts      # Current project management
+│   ├── use-recent-projects.ts      # Recent projects
+│   ├── use-favorites.ts            # Favorites
+│   ├── use-media-files.ts          # Media files
+│   └── use-music-files.ts          # Music files
 ├── services/
-│   ├── app-settings-machine.ts     # Машина состояний (78%)
-│   ├── app-settings-provider.tsx   # Провайдер контекста (67%)
-│   ├── app-directories-service.ts  # Управление директориями (92%)
-│   ├── project-file-service.ts     # Работа с файлами проектов (99%)
-│   └── store-service.ts            # Хранилище (100%)
+│   ├── app-settings-machine.ts     # State machine (78%)
+│   ├── app-settings-provider.tsx   # Context provider (67%)
+│   ├── app-directories-service.ts  # Directory management (92%)
+│   ├── project-file-service.ts     # Project file operations (99%)
+│   ├── store-service.ts            # Storage service (100%)
+│   └── batch-commands.ts           # Batch command execution
 └── __tests__/
-    ├── components/                 # Тесты компонентов
-    ├── hooks/                      # Тесты хуков
-    └── services/                   # Тесты сервисов
+    ├── components/                 # Component tests
+    ├── hooks/                      # Hook tests
+    └── services/                   # Service tests
 ```
 
-### ❌ Возможные улучшения
-- [ ] Разделение машины состояний на домены
-- [ ] Увеличение покрытия AppSettingsProvider (текущее 67%)
-- [ ] Рефакторинг для устранения смешения ответственностей
-- [ ] Синхронизация настроек между окнами
-- [ ] Резервное копирование настроек
-- [ ] Импорт/экспорт конфигурации
+## Features
 
-## 🔄 Интеграция с другими компонентами
+### ✅ Implemented
 
-### ✅ Реализовано
-- [x] Глобальное состояние для всего приложения
-- [x] Сохранение пользовательских предпочтений
-- [x] Управление проектами (создание, открытие, сохранение)
-- [x] Управление медиабиблиотекой
-- [x] Система избранного
+- [x] AppSettingsMachine - State machine for settings (78% coverage)
+- [x] AppSettingsProvider - Context provider (67% coverage)
+- [x] AppDirectoriesService - Directory management (92% coverage)
+- [x] StoreService - Data storage service (100% coverage)
+- [x] ProjectFileService - Project file operations (99% coverage)
+- [x] BatchCommandBuilder - Execute multiple commands in batch
+- [x] MissingFilesDialog - File restoration UI (97% coverage)
+- [x] Typed application settings
+- [x] Global state for the entire application
+- [x] User preferences persistence
+- [x] Project management (create, open, save)
+- [x] Media library management
+- [x] Favorites system
 
-### ❌ Требует реализации
-- [ ] Четкое разделение между настройками приложения и проекта
-- [ ] Миграция медиафайлов в отдельный модуль
-- [ ] Унификация системы избранного
+### ❌ Not Implemented
 
-## E2E Tests / E2E Тесты
+- [ ] Clear separation between app settings and project settings
+- [ ] Migration of media files to separate module
+- [ ] Settings synchronization between windows
+- [ ] Settings backup and restore
+- [ ] Configuration import/export
 
-**Расположение:** `e2e/tauri/features/app-state/`
+## Usage
 
-### Чеклист тестов
+### Basic App State Access
 
-| Тест | Статус | Файл | Приоритет |
-|------|--------|------|-----------|
-| Инициализация AppSettingsProvider | ⏳ Planned | - | 🔴 High |
-| Команда `clear_app_cache` | ⏳ Planned | - | 🟡 Medium |
-| Команда `execute_batch_commands` с одной операцией | ⏳ Planned | - | 🔴 High |
-| Команда `execute_batch_commands` с множественными операциями | ⏳ Planned | - | 🔴 High |
-| Batch операция с `continue_on_error: false` | ⏳ Planned | - | 🔴 High |
-| Batch операция с `continue_on_error: true` | ⏳ Planned | - | 🔴 High |
-| Создание проекта через ProjectFileService | ⏳ Planned | - | 🔴 High |
-| Загрузка проекта из файла | ⏳ Planned | - | 🔴 High |
-| Сохранение проекта | ⏳ Planned | - | 🔴 High |
-| Миграция старого формата проекта | ⏳ Planned | - | 🟡 Medium |
-| Валидация проекта (некорректный JSON) | ⏳ Planned | - | 🔴 High |
-| AppDirectoriesService инициализация | ⏳ Planned | - | 🔴 High |
-| Получение размера директорий | ⏳ Planned | - | 🟡 Medium |
-| Создание поддиректорий | ⏳ Planned | - | 🟡 Medium |
-| MissingFilesDialog отображение и взаимодействие | ⏳ Planned | - | 🔴 High |
-| Восстановление отсутствующих файлов | ⏳ Planned | - | 🔴 High |
-| Хуки доступа к состоянию (useCurrentProject, useRecentProjects, etc.) | ⏳ Planned | - | 🔴 High |
-| StoreService сохранение и загрузка данных | ⏳ Planned | - | 🔴 High |
-| Обработка ошибок при работе с файловой системой | ⏳ Planned | - | 🔴 High |
+```typescript
+import { useAppSettings } from "@/features/app-state"
 
-### Приоритеты
-- 🔴 High - критичный функционал (проекты, состояние, batch команды)
-- 🟡 Medium - важный функционал (директории, кэш, миграция)
-- 🟢 Low - дополнительный функционал
+function MyComponent() {
+  const { settings, updateSettings } = useAppSettings()
 
-### Примечания
-- Модуль использует две основные Tauri команды: `clear_app_cache` и `execute_batch_commands`
-- `execute_batch_commands` - критичная команда для производительности, требует тщательного тестирования
-- Batch операции должны быть протестированы с различными сценариями (success, partial failure, full failure)
-- ProjectFileService требует тестирования совместимости форматов проектов
-- MissingFilesDialog - важный UX компонент, требует интеграционного тестирования
-- Тесты должны покрывать все хуки доступа к состоянию
+  return <div>Theme: {settings.theme}</div>
+}
+```
+
+### Project Management
+
+```typescript
+import { useCurrentProject } from "@/features/app-state"
+
+function ProjectComponent() {
+  const { currentProject, createProject, saveProject } = useCurrentProject()
+
+  const handleCreate = async () => {
+    await createProject({ name: "New Project" })
+  }
+
+  const handleSave = async () => {
+    await saveProject()
+  }
+}
+```
+
+### Batch Commands
+
+```typescript
+import { useBatchCommands } from "@/features/app-state"
+
+function BatchExample() {
+  const { executeBatch, operations, isExecuting } = useBatchCommands()
+
+  const setupTimeline = async () => {
+    const result = await operations.setupTimelineWithContent({
+      projectName: "My Video",
+      tracks: 3,
+      mediaFiles: ["file1.mp4", "file2.mp4"],
+      clips: [/* clip data */]
+    })
+  }
+}
+```
+
+## Integration
+
+- **Depends on**: `@tauri-apps/api`, `xstate`, UI components
+- **Used by**: All features requiring global state access
+
+## Testing
+
+- **Total tests**: 124 tests
+- **Overall coverage**: 57.55%
+- **Components**: 97%
+- **Services**: 84.25%
+- **Hooks**: 100%
+
+### Test Suites
+
+- `project-file-service.test.ts` - Project loading, saving, migration (20+ tests)
+- `app-directories-service.test.ts` - Directory management, cache operations (10 tests)
+- `batch-commands.test.ts` - Batch command execution, utilities (40+ tests)
+
+### Running Tests
+
+```bash
+# Run all app-state tests
+bun run test src/features/app-state/
+
+# Run with coverage
+bun run test:coverage src/features/app-state/
+
+# Run in watch mode
+bun run test:watch src/features/app-state/
+```
+
+## TODO / Roadmap
+
+### High Priority
+- [ ] Increase AppSettingsProvider coverage (currently 67%)
+- [ ] Refactor to eliminate mixed responsibilities
+- [ ] Clear separation between app and project settings
+
+### Medium Priority
+- [ ] Settings synchronization between windows
+- [ ] Settings backup and restore
+- [ ] Configuration import/export
+- [ ] Migrate media files to separate domain
+
+### Low Priority
+- [ ] Settings migration tools
+- [ ] Settings validation and schema versioning
+- [ ] Advanced batch operation monitoring
+
+## Known Issues
+
+- Mixed responsibilities in app-settings-machine
+- Data duplication between settings and projects
+- Poor isolation between domains
+
+## Documentation
+
+See also:
+- Project Management: `/docs/03_architecture/state-management.md`
+- Batch Commands: Service documentation in `services/batch-commands.ts`
