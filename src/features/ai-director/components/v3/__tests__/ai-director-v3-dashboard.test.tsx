@@ -17,7 +17,7 @@ vi.mock("@/features/ai-director/hooks/use-ai-director-analysis-v2", () => ({
 }))
 
 vi.mock("@/lib/tauri-logger", async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
     createLogger: vi.fn(() => ({

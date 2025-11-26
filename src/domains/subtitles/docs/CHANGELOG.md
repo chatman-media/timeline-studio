@@ -1,5 +1,70 @@
 # Subtitles Domain - Changelog
 
+## [2024-11-27] Subtitle Service Consolidation
+
+### Changes
+
+**Domain Consolidation:**
+- Merged subtitle functionality from `video-editing/services/subtitles` into unified `domains/subtitles`
+- Removed duplicate `SubtitlesService` from video-editing domain
+- Updated all features to use consolidated domain service
+
+**New Methods Added:**
+- `SubtitleService.exportSubtitleFile()` - Export subtitles to file (SRT, VTT, ASS, SSA)
+- `SubtitleService.updateTimelineSubtitles()` - Update subtitles on timeline track
+
+**New Tauri Commands:**
+- `saveSubtitleFile()` - Save subtitle file through Rust backend
+- `updateTimelineSubtitles()` - Update timeline subtitles through Rust backend
+
+**New Types:**
+- `SubtitleExportOptions` - Configuration for subtitle export
+- `UpdateTimelineSubtitlesParams` - Parameters for timeline update
+
+**Documentation Updates:**
+- Added export methods to API.md
+- Added timeline integration to README.md
+- Updated Quick Start examples
+- Added new types documentation
+- Updated Key Features section
+
+**Files Updated:**
+- `src/features/subtitles/hooks/use-subtitles-export.ts` - Updated imports
+- `src/features/subtitles/hooks/use-subtitle-import.ts` - Updated imports
+- Removed `src/domains/video-editing/services/subtitles/` directory
+
+### Migration Guide
+
+**Before (video-editing service):**
+```typescript
+import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
+
+await SubtitlesService.saveSubtitleFile({ format, content, output_path })
+await SubtitlesService.updateTimelineSubtitles({ trackId, subtitles })
+```
+
+**After (subtitles domain):**
+```typescript
+import { subtitleService } from "@/domains/subtitles"
+
+await subtitleService.exportSubtitleFile({ format, content, output_path })
+await subtitleService.updateTimelineSubtitles(trackId, subtitles)
+```
+
+### Breaking Changes
+
+- Removed static `SubtitlesService` from video-editing domain
+- Updated `updateTimelineSubtitles()` signature: now takes separate parameters instead of object
+
+### Benefits
+
+- Single source of truth for subtitle operations
+- Consistent API with other domains
+- Better separation of concerns
+- Easier maintenance and testing
+
+---
+
 ## [2024-11-27] Initial Domain Creation
 
 ### Created Components
@@ -105,7 +170,7 @@
 
 ### Known Limitations
 
-1. **Read-only:** Currently only imports subtitles, no editing/saving
+1. ~~**Read-only:** Currently only imports subtitles, no editing/saving~~ **RESOLVED** - Export and timeline update now supported
 2. **Format detection:** Based on file extension only
 3. **No parsing:** Returns raw content, features must parse themselves
 4. **No validation:** Assumes subtitle files are well-formed

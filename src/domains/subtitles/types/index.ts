@@ -19,3 +19,17 @@ export interface AudioAnalysisOptions {
   hopSize?: number
   threshold?: number
 }
+
+/**
+ * Subtitle Export Types
+ */
+export interface SubtitleExportOptions {
+  format: "srt" | "vtt" | "ass" | "ssa"
+  content: string
+  output_path: string
+}
+
+export interface UpdateTimelineSubtitlesParams {
+  trackId: string
+  subtitles: any[]
+}

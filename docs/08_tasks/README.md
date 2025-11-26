@@ -43,7 +43,36 @@ Task movements and status changes are logged here.
   - ai-director-v2-phase3-plan.md (optional future work)
 - **Deleted:**
   - TASKS_STATUS_2025-11-25.md (устаревший snapshot)
-- **Active tasks remaining:** 6
+- **Active tasks remaining:** 2
+
+### [2025-11-27] Domain Architecture Refactoring - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** domain-architecture-refactoring.md
+- **Action:** completed → moved to completed/
+- **Summary:**
+  - Фаза 1: Устранение дубликатов (person-identification, recognition) ✅
+  - Фаза 2: Критичная бизнес-логика (video-compiler, media) ✅
+  - Фаза 3: Пользовательские настройки (user-settings, effects, subtitles) ✅
+  - Фаза 4: Системная интеграция (ai-director, workspace, updates, app-state) ✅
+- **Result:** Все 12 features перенесены в domains, invoke() только в domains
+
+### [2025-11-27] AI Director v3 UI Implementation - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** ai-director-v3-ui-implementation.md
+- **Action:** completed → moved to completed/
+- **Summary:**
+  - Phase 1: Core Components ✅
+  - Phase 2: Progress Display ✅
+  - Phase 3: Settings Panel ✅
+  - Phase 4: UI Polish - добавлены motion анимации, tooltips ✅
+  - Phase 5: Testing & Integration - 410+ тестов ✅
+- **Key deliverables:**
+  - Modern minimalist UI для AI Director
+  - Batch analysis с real-time прогрессом
+  - Media pool интеграция
+  - Framer-motion анимации
+  - HelpCircle tooltips для анализаторов
+  - E2E тесты
 
 ### [2025-11-27] Architecture Refactor: Remove Direct Tauri Calls from Features - COMPLETED ✅
 - **Status:** Завершено (100%)

@@ -6,8 +6,8 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import { analyzeAudioPeaks, readSubtitleFile } from "../tauri"
-import type { AudioAnalysisOptions, AudioPeaksResult, SubtitleImportResult } from "../types"
+import { analyzeAudioPeaks, readSubtitleFile, saveSubtitleFile, updateTimelineSubtitles } from "../tauri"
+import type { AudioAnalysisOptions, AudioPeaksResult, SubtitleExportOptions, SubtitleImportResult } from "../types"
 
 const logger = createLogger("SubtitleService")
 
@@ -42,6 +42,27 @@ export class SubtitleService {
   async analyzeAudioForSync(audioPath: string, options?: AudioAnalysisOptions): Promise<AudioPeaksResult> {
     logger.debugSync("Analyzing audio for sync", { audioPath })
     return analyzeAudioPeaks(audioPath, options)
+  }
+
+  /**
+   * Export subtitle file to disk
+   *
+   * @param options - Export options (format, content, output path)
+   */
+  async exportSubtitleFile(options: SubtitleExportOptions): Promise<void> {
+    logger.infoSync("Exporting subtitle file", { format: options.format, outputPath: options.output_path })
+    return saveSubtitleFile(options)
+  }
+
+  /**
+   * Update subtitles on timeline track
+   *
+   * @param trackId - Timeline track ID
+   * @param subtitles - Array of subtitle objects
+   */
+  async updateTimelineSubtitles(trackId: string, subtitles: any[]): Promise<void> {
+    logger.infoSync("Updating timeline subtitles", { trackId, subtitlesCount: subtitles.length })
+    return updateTimelineSubtitles({ trackId, subtitles })
   }
 
   /**

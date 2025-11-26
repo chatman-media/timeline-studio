@@ -1,13 +1,13 @@
 # Subtitles Domain
 
-Централизованная работа с субтитрами: импорт файлов и синхронизация с аудио в Timeline Studio.
+Централизованная работа с субтитрами: импорт/экспорт файлов, синхронизация с аудио и интеграция с таймлайном в Timeline Studio.
 
 ## Quick Start
 
 ```typescript
 import { subtitleService } from "@/domains/subtitles"
 
-async function importSubtitles() {
+async function workWithSubtitles() {
   // Импорт файла субтитров
   const result = await subtitleService.importSubtitleFile("/path/to/subtitle.srt")
   console.log("Imported:", result.file_name, result.format)
@@ -20,6 +20,16 @@ async function importSubtitles() {
     threshold: 0.5
   })
   console.log("Audio peaks:", peaks.peaks.length)
+
+  // Экспорт субтитров в файл
+  await subtitleService.exportSubtitleFile({
+    format: "srt",
+    content: subtitleContent,
+    output_path: "/path/to/output.srt"
+  })
+
+  // Обновление субтитров на таймлайне
+  await subtitleService.updateTimelineSubtitles("track-id", subtitles)
 
   // Получить поддерживаемые форматы
   const formats = subtitleService.getSupportedFormats()
@@ -38,14 +48,18 @@ async function importSubtitles() {
 | Type | Purpose |
 |------|---------|
 | `SubtitleImportResult` | Результат импорта субтитров |
+| `SubtitleExportOptions` | Опции экспорта субтитров |
 | `AudioPeaksResult` | Результат анализа аудио пиков |
 | `AudioAnalysisOptions` | Опции анализа аудио |
+| `UpdateTimelineSubtitlesParams` | Параметры обновления таймлайна |
 
 ### Tauri Commands (Advanced)
 | Command | Purpose |
 |---------|---------|
 | `readSubtitleFile(path)` | Чтение файла субтитров через Rust backend |
+| `saveSubtitleFile(options)` | Сохранение файла субтитров через Rust backend |
 | `analyzeAudioPeaks(path, options)` | Анализ аудио пиков через FFmpeg |
+| `updateTimelineSubtitles(params)` | Обновление субтитров на таймлайне |
 
 ## Supported Formats
 
@@ -56,9 +70,10 @@ async function importSubtitles() {
 
 ## Key Features
 
-- **Multi-format Import** - Support for SRT, VTT, ASS, SSA
+- **Multi-format Import/Export** - Support for SRT, VTT, ASS, SSA
 - **Audio Synchronization** - Detect audio peaks for subtitle timing alignment
-- **Rust Backend** - Fast file reading and audio analysis via Tauri
+- **Timeline Integration** - Update subtitles directly on timeline tracks
+- **Rust Backend** - Fast file I/O and audio analysis via Tauri
 - **Singleton Pattern** - Simple API through `subtitleService`
 - **Type Safety** - Full TypeScript typing
 

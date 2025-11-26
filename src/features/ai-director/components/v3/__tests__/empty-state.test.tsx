@@ -71,7 +71,8 @@ describe("EmptyState", () => {
     render(<EmptyState {...defaultProps} />)
 
     expect(screen.getByText("balanced")).toBeInTheDocument()
-    expect(screen.getByText("audio_quality, scene_detection")).toBeInTheDocument()
+    // When multiple analyzers selected, shows "X выбрано" instead of list
+    expect(screen.getByText("2 выбрано")).toBeInTheDocument()
   })
 
   it("displays 'не выбраны' when no analyzers selected", () => {

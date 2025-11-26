@@ -6,6 +6,7 @@
  */
 
 import { Settings, Zap } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
 import { useCallback, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -145,9 +146,19 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
     <TooltipProvider>
       <div className="flex h-full w-full flex-col p-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-500">
+        <motion.div
+          className="flex items-center justify-between"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="flex items-center gap-3">
-            <Zap className="h-8 w-8 text-primary" />
+            <motion.div
+              animate={{ rotate: isAnalyzing ? 360 : 0 }}
+              transition={{ duration: 2, repeat: isAnalyzing ? Number.POSITIVE_INFINITY : 0, ease: "linear" }}
+            >
+              <Zap className="h-8 w-8 text-primary" />
+            </motion.div>
             <div>
               <h1 className="text-3xl font-bold">AI Director v3</h1>
               <p className="text-sm text-muted-foreground">Batch analysis with real-time progress</p>
@@ -175,26 +186,39 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
               />
             </PopoverContent>
           </Popover>
-        </div>
+        </motion.div>
 
         {/* Empty State */}
-        {showEmptyState && (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <EmptyState
-              onSelectFiles={handleOpenMediaPool}
-              onStartAnalysis={handleStartAnalysisFromEmptyState}
-              mediaPool={mediaPool}
-              selectedFileIds={selectedFileIds}
-              onSelectionChange={handleSelectionChange}
-              currentSettings={analysisSettings}
-              isAnalyzing={isAnalyzing}
-            />
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {showEmptyState && (
+            <motion.div
+              key="empty-state"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <EmptyState
+                onSelectFiles={handleOpenMediaPool}
+                onStartAnalysis={handleStartAnalysisFromEmptyState}
+                mediaPool={mediaPool}
+                selectedFileIds={selectedFileIds}
+                onSelectionChange={handleSelectionChange}
+                currentSettings={analysisSettings}
+                isAnalyzing={isAnalyzing}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Analysis Progress */}
         {hasFiles && (
-          <div className="flex flex-col gap-6 flex-1 min-h-0 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <motion.div
+            className="flex flex-col gap-6 flex-1 min-h-0"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             {/* Files Section Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -217,15 +241,20 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
             {/* Files List */}
             <ScrollArea className="flex-1">
               <div className="space-y-3 pr-4">
-                {fileCardsData.map((file, index) => (
-                  <div
-                    key={file.filePath}
-                    className="animate-in fade-in slide-in-from-left-4 duration-500"
-                    style={{ animationDelay: `${index * 100}ms`, animationFillMode: "backwards" }}
-                  >
-                    <FileAnalysisCard file={file} />
-                  </div>
-                ))}
+                <AnimatePresence mode="popLayout">
+                  {fileCardsData.map((file, index) => (
+                    <motion.div
+                      key={file.filePath}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      layout
+                    >
+                      <FileAnalysisCard file={file} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             </ScrollArea>
 
@@ -245,11 +274,16 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
             )}
 
             {/* Active Analyzers Info */}
-            <div className="text-sm text-muted-foreground text-center">
+            <motion.div
+              className="text-sm text-muted-foreground text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               ⚡ Mode: {analysisSettings.mode} • {analysisSettings.analyzers.length} analyzer
               {analysisSettings.analyzers.length !== 1 ? "s" : ""} active
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
       </div>
     </TooltipProvider>

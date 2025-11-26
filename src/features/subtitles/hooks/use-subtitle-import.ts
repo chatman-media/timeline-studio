@@ -5,8 +5,8 @@
 import { open } from "@tauri-apps/plugin-dialog"
 import { readTextFile } from "@tauri-apps/plugin-fs"
 import { useCallback, useState } from "react"
+import { subtitleService } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
-import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
 import { MediaType } from "@/domains/video-editing/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
@@ -153,10 +153,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
       }
 
       // Сохраняем изменения в backend через сервис
-      await SubtitlesService.updateTimelineSubtitles({
-        trackId: targetTrackId,
-        subtitles: clipsToAdd,
-      })
+      await subtitleService.updateTimelineSubtitles(targetTrackId, clipsToAdd)
     } catch (error) {
       await logError("[useSubtitleImport] Ошибка импорта субтитров", { error } as LogContext)
       showError("Ошибка импорта", error instanceof Error ? error.message : "Неизвестная ошибка")

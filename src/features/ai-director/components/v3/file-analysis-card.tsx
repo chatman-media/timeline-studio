@@ -6,9 +6,22 @@
  */
 
 import { CheckCircle2, Circle, Clock, XCircle } from "lucide-react"
+import { motion } from "motion/react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
 import type { AnalyzerType } from "@/features/ai-director/types/analysis-progress"
+
+// Motion variants for card
+const cardVariants = {
+  initial: { opacity: 0, y: 20, scale: 0.95 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+  exit: { opacity: 0, y: -10, scale: 0.95 },
+}
+
+// Motion variants for analyzers
+const analyzerVariants = {
+  initial: { opacity: 0, x: -10 },
+  animate: { opacity: 1, x: 0 },
+}
 
 export interface FileAnalysisCardData {
   filePath: string
@@ -89,48 +102,98 @@ export function FileAnalysisCard({ file }: FileAnalysisCardProps) {
   }
 
   return (
-    <Card className={`transition-colors ${getStatusColor()}`}>
-      <CardContent className="pt-4">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            {getStatusIcon()}
-            <div className="flex-1 min-w-0">
-              <h3 className="font-medium text-sm truncate" title={file.filePath}>
-                {file.fileName}
-              </h3>
-              {file.currentStage && file.status === "analyzing" && (
-                <p className="text-xs text-muted-foreground">{file.currentStage}</p>
+    <motion.div
+      variants={cardVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      whileHover={{ scale: 1.01 }}
+      layout
+    >
+      <Card className={`transition-colors ${getStatusColor()}`}>
+        <CardContent className="pt-4">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <motion.div
+                animate={file.status === "analyzing" ? { rotate: [0, 360] } : {}}
+                transition={{
+                  duration: 2,
+                  repeat: file.status === "analyzing" ? Number.POSITIVE_INFINITY : 0,
+                  ease: "linear",
+                }}
+              >
+                {getStatusIcon()}
+              </motion.div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-medium text-sm truncate" title={file.filePath}>
+                  {file.fileName}
+                </h3>
+                {file.currentStage && file.status === "analyzing" && (
+                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-muted-foreground">
+                    {file.currentStage}
+                  </motion.p>
+                )}
+                {file.status === "pending" && <p className="text-xs text-muted-foreground">Pending analysis...</p>}
+                {file.status === "completed" && (
+                  <motion.p
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="text-xs text-green-600"
+                  >
+                    Analysis complete
+                  </motion.p>
+                )}
+                {file.error && <p className="text-xs text-red-600">{file.error}</p>}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 ml-2">
+              <motion.span
+                key={file.progress}
+                initial={{ scale: 1.2 }}
+                animate={{ scale: 1 }}
+                className="text-sm font-medium"
+              >
+                {file.progress}%
+              </motion.span>
+              {file.eta && file.status === "analyzing" && (
+                <span className="text-xs text-muted-foreground">{formatETA(file.eta)}</span>
               )}
-              {file.status === "pending" && <p className="text-xs text-muted-foreground">Pending analysis...</p>}
-              {file.status === "completed" && <p className="text-xs text-green-600">Analysis complete</p>}
-              {file.error && <p className="text-xs text-red-600">{file.error}</p>}
             </div>
           </div>
 
-          <div className="flex items-center gap-2 ml-2">
-            <span className="text-sm font-medium">{file.progress}%</span>
-            {file.eta && file.status === "analyzing" && (
-              <span className="text-xs text-muted-foreground">{formatETA(file.eta)}</span>
-            )}
+          {/* Progress Bar */}
+          <div className="relative h-2 mb-3 bg-secondary rounded-full overflow-hidden">
+            <motion.div
+              className="absolute inset-y-0 left-0 bg-primary rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${file.progress}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
           </div>
-        </div>
 
-        {/* Progress Bar */}
-        <Progress value={file.progress} className="h-2 mb-3" />
-
-        {/* Analyzers */}
-        {file.analyzers.length > 0 && (
-          <div className="flex flex-wrap gap-2 text-xs">
-            {file.analyzers.map((analyzer) => (
-              <div key={analyzer.name} className={`flex items-center gap-1 ${getAnalyzerColor(analyzer.status)}`}>
-                <span>{getAnalyzerIcon(analyzer.status)}</span>
-                <span>{analyzer.name}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          {/* Analyzers */}
+          {file.analyzers.length > 0 && (
+            <div className="flex flex-wrap gap-2 text-xs">
+              {file.analyzers.map((analyzer, index) => (
+                <motion.div
+                  key={analyzer.name}
+                  variants={analyzerVariants}
+                  initial="initial"
+                  animate="animate"
+                  transition={{ delay: index * 0.1 }}
+                  className={`flex items-center gap-1 ${getAnalyzerColor(analyzer.status)}`}
+                >
+                  <span>{getAnalyzerIcon(analyzer.status)}</span>
+                  <span>{analyzer.name}</span>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }

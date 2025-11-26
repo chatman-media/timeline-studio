@@ -52,8 +52,6 @@ export * from "./services/compiler"
 export * from "./services/effects"
 // Экспорт import-export
 export * from "./services/import-export"
-// Экспорт subtitles
-export * from "./services/subtitles"
 export type { ActionType, UndoRedoAction, UndoRedoResult } from "./services/undo-redo-service"
 // Экспорт undo-redo
 export { UndoRedoService } from "./services/undo-redo-service"

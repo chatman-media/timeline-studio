@@ -7,7 +7,13 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AudioAnalysisOptions, AudioPeaksResult, SubtitleImportResult } from "../types"
+import type {
+  AudioAnalysisOptions,
+  AudioPeaksResult,
+  SubtitleExportOptions,
+  SubtitleImportResult,
+  UpdateTimelineSubtitlesParams,
+} from "../types"
 
 const logger = createLogger("SubtitleCommands")
 
@@ -57,6 +63,48 @@ export async function analyzeAudioPeaks(
     return result
   } catch (error) {
     logger.errorSync("Failed to analyze audio", { audioPath, error })
+    throw error
+  }
+}
+
+/**
+ * Save subtitle file to disk
+ *
+ * @param options - Export options (format, content, output path)
+ */
+export async function saveSubtitleFile(options: SubtitleExportOptions): Promise<void> {
+  logger.infoSync("Saving subtitle file", {
+    format: options.format,
+    outputPath: options.output_path,
+    contentLength: options.content.length,
+  })
+  try {
+    await invoke("save_subtitle_file", { options })
+    logger.infoSync("Subtitle file saved successfully", { outputPath: options.output_path })
+  } catch (error) {
+    logger.errorSync("Failed to save subtitle file", { error, options })
+    throw error
+  }
+}
+
+/**
+ * Update subtitles on timeline track
+ *
+ * @param params - Track ID and subtitles array
+ */
+export async function updateTimelineSubtitles(params: UpdateTimelineSubtitlesParams): Promise<void> {
+  logger.infoSync("Updating timeline subtitles", {
+    trackId: params.trackId,
+    subtitlesCount: params.subtitles.length,
+  })
+  try {
+    await invoke("update_timeline_subtitles", {
+      trackId: params.trackId,
+      subtitles: params.subtitles,
+    })
+    logger.infoSync("Timeline subtitles updated successfully", { trackId: params.trackId })
+  } catch (error) {
+    logger.errorSync("Failed to update timeline subtitles", { error, params })
     throw error
   }
 }

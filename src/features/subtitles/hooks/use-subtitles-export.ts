@@ -1,8 +1,8 @@
 import { save } from "@tauri-apps/plugin-dialog"
 import { useCallback, useState } from "react"
 
+import { subtitleService } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
-import { SubtitlesService } from "@/domains/video-editing/services/subtitles"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
 import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
@@ -87,8 +87,8 @@ export function useSubtitlesExport() {
         // Экспортируем субтитры
         const content = exportSubtitles(subtitlesToExport, format)
 
-        // Сохраняем файл через сервис
-        await SubtitlesService.saveSubtitleFile({
+        // Сохраняем файл через domain service
+        await subtitleService.exportSubtitleFile({
           format,
           content,
           output_path: filePath,

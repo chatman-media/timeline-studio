@@ -168,6 +168,83 @@ function findBestAlignment(subtitles, peaks) {
 
 ---
 
+### exportSubtitleFile()
+
+Экспорт субтитров в файл на диск.
+
+```typescript
+async function exportSubtitleFile(options: SubtitleExportOptions): Promise<void>
+```
+
+**Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `options` | `SubtitleExportOptions` | Export configuration |
+
+**SubtitleExportOptions:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `format` | `"srt" \| "vtt" \| "ass" \| "ssa"` | Output format |
+| `content` | `string` | Subtitle content to save |
+| `output_path` | `string` | Destination file path |
+
+**Returns:** `Promise<void>`
+
+**Example:**
+
+```typescript
+import { subtitleService } from "@/domains/subtitles"
+
+async function saveSubtitles(subtitles: SubtitleClip[], filePath: string) {
+  // Convert subtitles to SRT format
+  const content = convertToSRT(subtitles)
+
+  await subtitleService.exportSubtitleFile({
+    format: "srt",
+    content: content,
+    output_path: filePath
+  })
+
+  console.log("Subtitles saved to:", filePath)
+}
+```
+
+---
+
+### updateTimelineSubtitles()
+
+Обновление субтитров на треке таймлайна.
+
+```typescript
+async function updateTimelineSubtitles(trackId: string, subtitles: any[]): Promise<void>
+```
+
+**Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `trackId` | `string` | Timeline track ID |
+| `subtitles` | `any[]` | Array of subtitle objects |
+
+**Returns:** `Promise<void>`
+
+**Example:**
+
+```typescript
+import { subtitleService } from "@/domains/subtitles"
+
+async function addSubtitlesToTrack(trackId: string) {
+  const subtitles = [
+    { id: "sub-1", text: "Hello", startTime: 0, duration: 2 },
+    { id: "sub-2", text: "World", startTime: 2, duration: 2 }
+  ]
+
+  await subtitleService.updateTimelineSubtitles(trackId, subtitles)
+  console.log("Timeline updated with", subtitles.length, "subtitles")
+}
+```
+
+---
+
 ### getSupportedFormats()
 
 Получить список поддерживаемых форматов субтитров.
@@ -249,6 +326,55 @@ const peaks = await analyzeAudioPeaks("/path/to/video.mp4", {
 **Returns:** `Promise<AudioPeaksResult>`
 
 **Rust Command:** `analyze_audio_peaks`
+
+---
+
+### saveSubtitleFile()
+
+Прямое сохранение файла субтитров через Rust backend.
+
+```typescript
+import { saveSubtitleFile } from "@/domains/subtitles"
+
+await saveSubtitleFile({
+  format: "srt",
+  content: subtitleContent,
+  output_path: "/path/to/output.srt"
+})
+```
+
+**Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `options` | `SubtitleExportOptions` | Export configuration |
+
+**Returns:** `Promise<void>`
+
+**Rust Command:** `save_subtitle_file`
+
+---
+
+### updateTimelineSubtitles()
+
+Прямое обновление субтитров таймлайна через Rust backend.
+
+```typescript
+import { updateTimelineSubtitles } from "@/domains/subtitles"
+
+await updateTimelineSubtitles({
+  trackId: "track-123",
+  subtitles: [...]
+})
+```
+
+**Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `params` | `UpdateTimelineSubtitlesParams` | Update parameters |
+
+**Returns:** `Promise<void>`
+
+**Rust Command:** `update_timeline_subtitles`
 
 ---
 
@@ -364,5 +490,83 @@ interface AudioAnalysisOptions {
   windowSize: 512,
   hopSize: 1024,
   threshold: 0.7
+}
+```
+
+---
+
+### SubtitleExportOptions
+
+Опции для экспорта субтитров.
+
+```typescript
+interface SubtitleExportOptions {
+  format: "srt" | "vtt" | "ass" | "ssa"
+  content: string
+  output_path: string
+}
+```
+
+**Field Descriptions:**
+
+**format:**
+- Output subtitle format
+- Supported: SRT, VTT, ASS, SSA
+- Must match file extension
+
+**content:**
+- Subtitle content to save
+- Already formatted in target format
+- Raw text string
+
+**output_path:**
+- Absolute path to output file
+- Directory must exist
+- File will be overwritten if exists
+
+**Example:**
+
+```typescript
+const options: SubtitleExportOptions = {
+  format: "srt",
+  content: "1\n00:00:00,000 --> 00:00:02,000\nHello World\n\n",
+  output_path: "/videos/subtitles.srt"
+}
+```
+
+---
+
+### UpdateTimelineSubtitlesParams
+
+Параметры для обновления субтитров на таймлайне.
+
+```typescript
+interface UpdateTimelineSubtitlesParams {
+  trackId: string
+  subtitles: any[]
+}
+```
+
+**Field Descriptions:**
+
+**trackId:**
+- ID трека таймлайна
+- Must be valid existing track
+- Track type should be "subtitle"
+
+**subtitles:**
+- Array of subtitle objects
+- Each contains: id, text, startTime, duration
+- Will replace existing subtitles on track
+
+**Example:**
+
+```typescript
+const params: UpdateTimelineSubtitlesParams = {
+  trackId: "track-abc123",
+  subtitles: [
+    { id: "sub-1", text: "First subtitle", startTime: 0, duration: 2.5 },
+    { id: "sub-2", text: "Second subtitle", startTime: 2.5, duration: 3.0 }
+  ]
 }
 ```

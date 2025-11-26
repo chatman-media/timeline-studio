@@ -84,6 +84,7 @@ export const GripVerticalIcon = createMockIcon("GripVerticalIcon")
 export const HardDrive = createMockIcon("HardDrive")
 export const Hash = createMockIcon("Hash")
 export const Headphones = createMockIcon("Headphones")
+export const HelpCircle = createMockIcon("HelpCircle")
 export const History = createMockIcon("History")
 export const Image = createMockIcon("Image")
 export const ImagePlay = createMockIcon("ImagePlay")
@@ -253,6 +254,7 @@ vi.mock("lucide-react", () => ({
   HardDrive,
   Hash,
   Headphones,
+  HelpCircle,
   History,
   Image,
   ImagePlay,

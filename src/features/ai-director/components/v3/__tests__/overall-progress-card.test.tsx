@@ -233,8 +233,8 @@ describe("OverallProgressCard", () => {
 
       const { container } = render(<OverallProgressCard {...defaultProps} progressData={progressData} />)
 
-      // Progress component should be present with value 48
-      const progressBar = container.querySelector('[role="progressbar"]')
+      // Custom animated progress bar uses div with bg-primary class
+      const progressBar = container.querySelector(".bg-primary.rounded-full")
       expect(progressBar).toBeInTheDocument()
     })
   })
