@@ -3,7 +3,7 @@ title: 介绍Timeline Studio - AI驱动的视频编辑器
 date: 2025-08-10
 author: Chatman Media
 slug: introducing-timeline-studio
-excerpt: 认识Timeline Studio - 一款革命性的视频编辑器，结合专业工具和257个AI功能，改变您创建内容的方式。
+excerpt: 认识Timeline Studio - 一款革命性的视频编辑器，结合专业工具和AI功能，改变您创建内容的方式。
 category: 产品发布
 readTime: 5分钟阅读
 ---
@@ -17,13 +17,13 @@ readTime: 5分钟阅读
 为多个平台创建视频内容从未如此具有挑战性。每个平台都有自己的要求、格式和受众期望。Timeline Studio通过提供以下功能解决了这个问题：
 
 - **一次上传，多种输出** - 自动为TikTok、YouTube、Instagram等平台调整您的内容
-- **AI驱动的编辑** - 257个专业AI工具自动化繁琐任务
+- **AI驱动的编辑** - 100+个专业AI工具自动化繁琐任务
 - **专业品质** - GPU加速、8K渲染和60 FPS支持
 
 ## 核心功能
 
 ### 🤖 AI集成
-- 支持Claude、OpenAI、DeepSeek和Ollama
+- 支持云端AI（Claude、GPT）和本地模型
 - 智能蒙太奇规划
 - 自动场景检测
 - 内容感知编辑建议

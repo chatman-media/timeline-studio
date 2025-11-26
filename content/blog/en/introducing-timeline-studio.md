@@ -1,9 +1,9 @@
 ---
 title: Introducing Timeline Studio - AI-Powered Video Editor
-date: 2025-08-10
+date: 2025-07-28
 author: Chatman Media
 slug: introducing-timeline-studio
-excerpt: Meet Timeline Studio - a revolutionary video editor that combines professional tools with 257 AI features to transform how you create content.
+excerpt: Meet Timeline Studio - a revolutionary video editor that combines professional tools with 100+ AI features to transform how you create content.
 category: Product Launch
 readTime: 5 min read
 ---
@@ -17,13 +17,13 @@ We're excited to announce Timeline Studio, a next-generation video editor that b
 Creating video content for multiple platforms has never been more challenging. Each platform has its own requirements, formats, and audience expectations. Timeline Studio solves this by offering:
 
 - **One Upload, Multiple Outputs** - Automatically adapt your content for TikTok, YouTube, Instagram, and more
-- **AI-Powered Editing** - 257 specialized AI tools to automate tedious tasks
+- **AI-Powered Editing** - 100+ specialized AI tools to automate tedious tasks
 - **Professional Quality** - GPU acceleration, 8K rendering, and 60 FPS support
 
 ## Key Features
 
 ### 🤖 AI Integration
-- Support for Claude, OpenAI, DeepSeek, and Ollama
+- Support for cloud AI (Claude, GPT) and local models
 - Smart montage planning
 - Automatic scene detection
 - Content-aware editing suggestions
