@@ -9,12 +9,15 @@ vi.unmock("@/features/modals/services/modal-provider")
 vi.unmock("@/features/modals/services")
 vi.unmock("@/features/modals")
 
+import { resetSystemIntegrationOrchestrator } from "@/domains/system-integration"
 import type { ModalType } from "@/domains/system-integration/machines/modal-machine"
 import { ModalProvider, useModal } from "../modal-provider"
 
 describe("ModalProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Сбрасываем оркестратор между тестами для чистого состояния
+    resetSystemIntegrationOrchestrator()
   })
 
   it("должен рендерить дочерние элементы", () => {

@@ -2,15 +2,27 @@
  * System Integration Orchestrator Service
  *
  * Координирует системные функции: модальные окна, обновления, уведомления
+ * Интегрирован с BackendSync для синхронизации с Rust backend
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
+import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectCommand, ProjectEvent } from "@/types/generated/tauri-bindings"
 import { type ModalData, type ModalType, modalMachine } from "../machines/modal-machine"
 import { updateMachine } from "../machines/update-machine"
 import type { SystemNotification } from "../types"
 
 const logger = createLogger("SystemIntegrationOrchestrator")
+
+// Модальные окна, которые требуют синхронизации с backend
+const BACKEND_SYNCED_MODALS: ModalType[] = [
+  "project-settings",
+  "export",
+  "user-settings",
+  "cache-settings",
+  "missing-files",
+]
 
 export class SystemIntegrationOrchestrator {
   private modalActor: ActorRefFrom<typeof modalMachine>
@@ -18,6 +30,8 @@ export class SystemIntegrationOrchestrator {
   private notifications: SystemNotification[] = []
   private features: Record<string, boolean> = {}
   private notificationCounter = 0
+  private backendSync = getBackendSync()
+  private backendUnsubscribe: (() => void) | null = null
 
   constructor() {
     logger.info("[System Integration Orchestrator] Initializing...")
@@ -32,6 +46,7 @@ export class SystemIntegrationOrchestrator {
 
     // Настраиваем синхронизацию
     this.setupSynchronization()
+    this.setupBackendSync()
 
     logger.info("[System Integration Orchestrator] Initialized successfully")
   }
@@ -68,28 +83,116 @@ export class SystemIntegrationOrchestrator {
   }
 
   /**
+   * Настройка синхронизации с backend через BackendSync
+   */
+  private setupBackendSync() {
+    // Подписываемся на backend события
+    this.backendUnsubscribe = this.backendSync.onEvent((event: ProjectEvent) => {
+      logger.info("[System Integration Orchestrator] Received backend event:", { eventType: event.type })
+
+      // Обрабатываем события модальных окон
+      // TODO: добавить когда в backend будут реализованы эти события
+      // if (event.type === "ModalOpened") { ... }
+      // if (event.type === "ModalClosed") { ... }
+      // if (event.type === "ModalSubmitted") { ... }
+
+      // Обрабатываем события обновлений
+      // TODO: добавить когда в backend будут реализованы эти события
+      // if (event.type === "UpdateAvailable") { ... }
+      // if (event.type === "UpdateDownloaded") { ... }
+    })
+  }
+
+  /**
    * Управление модальными окнами
    */
-  openModal(modal: ModalType, data?: ModalData) {
+  async openModal(modal: ModalType, data?: ModalData): Promise<void> {
     logger.info("[System Integration Orchestrator] Opening modal:", { modal })
+
+    // Оптимистичное обновление - обновляем машину сразу
     this.modalActor.send({
       type: "OPEN_MODAL",
       modalType: modal,
       modalData: data,
     })
+
+    // Отправляем команду на backend только для важных модалов
+    if (this.shouldSyncWithBackend(modal)) {
+      try {
+        const command: ProjectCommand = {
+          type: "OpenModal" as any,
+          params: {
+            modal_type: modal,
+            modal_data: data || null,
+          },
+        } as any
+
+        await this.backendSync.executeCommand(command)
+        logger.info("[System Integration Orchestrator] Modal open command sent to backend")
+      } catch (error) {
+        logger.error("[System Integration Orchestrator] Failed to sync modal open with backend:", { error })
+        // Не бросаем ошибку - модал уже открыт в UI
+      }
+    }
   }
 
-  closeModal() {
+  async closeModal(): Promise<void> {
     logger.info("[System Integration Orchestrator] Closing modal")
+
+    const currentModal = this.getActiveModal()
+
+    // Оптимистичное обновление
     this.modalActor.send({ type: "CLOSE_MODAL" })
+
+    // Отправляем команду на backend только для важных модалов
+    if (this.shouldSyncWithBackend(currentModal)) {
+      try {
+        const command: ProjectCommand = {
+          type: "CloseModal" as any,
+        } as any
+
+        await this.backendSync.executeCommand(command)
+        logger.info("[System Integration Orchestrator] Modal close command sent to backend")
+      } catch (error) {
+        logger.error("[System Integration Orchestrator] Failed to sync modal close with backend:", { error })
+      }
+    }
   }
 
-  submitModal(data?: ModalData) {
+  async submitModal(data?: ModalData): Promise<void> {
     logger.info("[System Integration Orchestrator] Submitting modal")
+
+    const currentModal = this.getActiveModal()
+
+    // Оптимистичное обновление
     this.modalActor.send({
       type: "SUBMIT_MODAL",
       data,
     })
+
+    // Отправляем команду на backend только для важных модалов
+    if (this.shouldSyncWithBackend(currentModal)) {
+      try {
+        const command: ProjectCommand = {
+          type: "SubmitModal" as any,
+          params: {
+            data: data || null,
+          },
+        } as any
+
+        await this.backendSync.executeCommand(command)
+        logger.info("[System Integration Orchestrator] Modal submit command sent to backend")
+      } catch (error) {
+        logger.error("[System Integration Orchestrator] Failed to sync modal submit with backend:", { error })
+      }
+    }
+  }
+
+  /**
+   * Проверка, нужна ли backend синхронизация для модального окна
+   */
+  private shouldSyncWithBackend(modalType: ModalType): boolean {
+    return BACKEND_SYNCED_MODALS.includes(modalType)
   }
 
   getActiveModal(): ModalType {
@@ -225,8 +328,18 @@ export class SystemIntegrationOrchestrator {
    */
   dispose() {
     logger.info("[System Integration Orchestrator] Disposing...")
+
+    // Отписываемся от backend событий
+    if (this.backendUnsubscribe) {
+      this.backendUnsubscribe()
+      this.backendUnsubscribe = null
+    }
+
+    // Останавливаем акторы
     this.modalActor.stop()
     this.updateActor.stop()
+
+    // Очищаем уведомления
     this.clearNotifications()
   }
 }
