@@ -6,6 +6,20 @@
 
 The Browser module provides a tabbed interface for browsing and managing different types of media files and resources in Timeline Studio. It serves as the main entry point for importing and organizing project assets.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `get_media_files` | `{ directory: string }` | Get list of media files in a directory (used for directory import) |
+
+**Note:** The Browser module also relies on shared media commands from `/src/features/media/`:
+- `import_media` - Import media files into the project
+- `add_imported_media` - Add imported media to media pool
+- `get_media_metadata` - Get metadata for media files (duration, resolution, etc.)
+- `clear_imported_media` - Clear imported media from backend state
+
+These commands are used through the `use-music-import.ts` hook for Music tab functionality.
+
 ## Features
 
 ### Tab System

@@ -162,14 +162,17 @@ import { convertVideoSrc } from "@/lib/tauri-utils"
 import { getBackendSync } from "@/features/app-state/services/backend-sync"
 ```
 
-### Backend Commands
-- `Play`: Start playback
-- `Pause`: Pause playback
-- `Seek`: Seek to position
-- `SetPlaybackRate`: Change speed
-- `playerSetMedia`: Load media
-- `playerSetVolume`: Set volume
-- `playerSelectClip`: Select clip
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `Play` | - | Start playback |
+| `Pause` | - | Pause playback |
+| `Seek` | `{ position: number }` | Seek to position in seconds |
+| `SetPlaybackRate` | `{ rate: number }` | Change playback speed (0.25x - 2x) |
+| `playerSetMedia` | `{ path: string }` | Load media file |
+| `playerSetVolume` | `{ volume: number }` | Set volume level (0.0 - 1.0) |
+| `playerSelectClip` | `{ clipId: string }` | Select clip for playback |
 
 ### Performance Optimizations
 - [x] Efficient video loading

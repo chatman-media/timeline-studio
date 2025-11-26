@@ -2,6 +2,31 @@
 
 Модуль субтитров для Timeline Studio предоставляет полный набор компонентов, хуков и утилит для работы с профессиональными стилями субтитров.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `save_subtitle_file` | `{ options: SaveSubtitleFileOptions }` | Сохранение субтитров в файл в формате SRT/VTT/ASS |
+| `update_timeline_subtitles` | `{ trackId: string, subtitles: SubtitleClip[] }` | Обновление субтитров на треке таймлайна |
+
+### Types
+
+```typescript
+interface SaveSubtitleFileOptions {
+  content: string;        // Содержимое файла субтитров
+  format: 'srt' | 'vtt' | 'ass';  // Формат файла
+  defaultPath?: string;   // Путь по умолчанию для сохранения
+}
+
+interface SubtitleClip {
+  id: string;
+  start: number;          // Время начала в секундах
+  end: number;            // Время окончания в секундах
+  text: string;           // Текст субтитра
+  style?: string;         // ID стиля субтитра
+}
+```
+
 ## 📊 Статус модуля
 
 - ✅ **Готовность**: 100% - Полностью готов к production

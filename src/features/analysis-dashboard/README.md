@@ -4,6 +4,12 @@
 
 Analysis Dashboard - это модуль для визуализации и управления процессом AI анализа видео в Timeline Studio. Модуль предоставляет интерфейс для запуска анализа, мониторинга прогресса в реальном времени и просмотра результатов.
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands directly. It relies on the AI Director module (`/src/features/ai-director/`) which handles all backend communication for video analysis operations.
+
+**Note:** The commented-out `get_system_info` command in `use-performance-monitoring.ts` is planned for future implementation of system metrics monitoring (CPU/GPU/Memory usage).
+
 **Статус готовности:** 100% (завершен)
 
 ## Архитектура

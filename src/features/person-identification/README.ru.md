@@ -6,6 +6,58 @@
 
 Person Identification - это продвинутый модуль для распознавания лиц, идентификации персон и отслеживания их появления на протяжении всего видео. Модуль интегрирован с Timeline и предоставляет полный набор инструментов для работы с персонами в видеопроектах.
 
+## API (Backend Commands)
+
+Модуль использует обширную интеграцию с Tauri backend для обнаружения лиц, трекинга и операций с базой данных:
+
+### Команды базы данных персон
+
+| Команда | Параметры | Описание |
+|---------|------------|-------------|
+| `init_person_database` | - | Инициализировать базу данных персон Tauri |
+| `create_person` | `{ name, tags, notes }` | Создать новый профиль персоны |
+| `delete_person` | `{ personId }` | Удалить персону из базы данных |
+| `add_face_embedding` | `{ personId, embedding, quality }` | Добавить эмбеддинг лица к персоне |
+| `add_person_appearance` | `{ personId, clipId, startTime, endTime, confidence }` | Записать появление персоны |
+| `add_person_thumbnail` | `{ personId, imageData }` | Добавить миниатюру |
+| `set_similarity_threshold` | `{ threshold }` | Установить порог схожести для сопоставления |
+
+### Команды расширенного трекинга
+
+| Команда | Параметры | Описание |
+|---------|------------|-------------|
+| `init_advanced_tracking` | `{ config }` | Инициализировать систему расширенного трекинга |
+| `start_person_tracking` | `{ videoPath, personIds }` | Запустить трекинг персон в видео |
+| `stop_person_tracking` | - | Остановить процесс трекинга |
+| `assign_person_to_track` | `{ trackId, personId }` | Назначить персону на трек |
+| `merge_tracks` | `{ sourceTrackId, targetTrackId }` | Объединить два трека |
+| `update_tracking_config` | `{ config }` | Обновить конфигурацию трекинга |
+| `cleanup_tracking` | - | Очистить ресурсы трекинга |
+
+### Команды обнаружения лиц
+
+| Команда | Параметры | Описание |
+|---------|------------|-------------|
+| `init_yolo_processor` | `{ modelPath }` | Инициализировать YOLO детектор лиц |
+| `init_facenet_processor` | `{ modelPath }` | Инициализировать FaceNet эмбеддер |
+| `start_realtime_face_detection` | `{ config }` | Запустить обнаружение лиц в реальном времени |
+| `stop_realtime_face_detection` | - | Остановить обнаружение в реальном времени |
+| `update_face_detection_config` | `{ config }` | Обновить настройки обнаружения |
+| `cleanup_face_detection` | - | Очистить ресурсы обнаружения |
+
+### Команды кластеризации
+
+| Команда | Параметры | Описание |
+|---------|------------|-------------|
+| `init_clustering_engine` | `{ params: { eps, min_samples } }` | Инициализировать движок кластеризации |
+| `cluster_faces` | `{ embeddings, params }` | Кластеризовать эмбеддинги лиц |
+| `find_nearest_cluster` | `{ embedding, clusters }` | Найти ближайший кластер для эмбеддинга |
+| `auto_cluster_video_faces` | `{ fileId, embeddings, metadata }` | Автоматически кластеризовать лица в видео |
+| `get_aligned_face` | `{ imageData, landmarks, outputSize }` | Получить выровненное лицо с оценкой качества |
+| `blur_faces_in_image` | `{ imagePath, outputPath, autoDetect }` | Размыть лица для приватности |
+
+Подробные примеры использования см. в секции [Tauri Backend Commands](#tauri-backend-commands) ниже.
+
 ## ✅ Реализованные возможности
 
 ### 🎯 Основная функциональность:

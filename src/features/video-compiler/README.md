@@ -4,6 +4,29 @@
 
 The Video Compiler module is a comprehensive video rendering system for Timeline Studio, providing high-performance video compilation with GPU acceleration support, caching, and advanced media processing capabilities.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `compile_video` | `{ projectSchema: ProjectSchema, outputPath: string, settings: RenderSettings }` | Start project rendering |
+| `cancel_render` | `{ jobId: string }` | Cancel active rendering job |
+| `get_render_progress` | `{ jobId: string }` | Get rendering progress information |
+| `get_gpu_capabilities_full` | - | Get full GPU capabilities and available encoders |
+| `check_gpu_encoder_availability` | `{ encoder: string }` | Check if specific GPU encoder is available |
+| `update_compiler_settings_advanced` | `{ settings: Partial<RenderSettings> }` | Update compiler settings |
+| `extract_timeline_frames` | `{ videoPath: string, options: TimelineExtractionOptions }` | Extract frames for timeline preview |
+| `extract_recognition_frames` | `{ videoPath: string, options: RecognitionExtractionOptions }` | Extract frames for AI recognition |
+| `extract_subtitle_frames` | `{ videoPath: string, timestamps: number[] }` | Extract frames for subtitles |
+| `get_cache_stats` | - | Get cache statistics |
+| `clear_preview_cache` | - | Clear preview cache |
+| `clear_media_metadata_cache` | - | Clear metadata cache |
+| `clear_all_cache` | - | Full cache cleanup |
+| `get_active_jobs` | - | Get list of active rendering jobs |
+| `get_render_job` | `{ jobId: string }` | Get specific job information |
+| `get_disk_space` | `{ path: string }` | Get free disk space |
+| `cache_media_metadata` | `{ filePath: string, metadata: object }` | Cache video metadata |
+| `configure_cache` | `{ settings: CacheSettings }` | Configure cache settings |
+
 ## 📊 Module Status
 
 - ✅ **Readiness**: Fully implemented and ready for use
@@ -68,28 +91,6 @@ src/features/video-compiler/
 - **Storage Optimization**: Data compression and deduplication
 
 ## 🔗 API and Hooks
-
-### Tauri Commands
-The module uses the following commands for Rust backend interaction:
-
-| Command | Description |
-|---------|----------|
-| `compile_video` | Start project rendering |
-| `cancel_render` | Cancel active rendering |
-| `get_render_progress` | Get rendering progress |
-| `get_gpu_capabilities_full` | Full GPU information |
-| `check_gpu_encoder_availability` | Check encoder availability |
-| `update_compiler_settings_advanced` | Update compiler settings |
-| `extract_timeline_frames` | Extract frames for timeline |
-| `extract_recognition_frames` | Extract frames for AI |
-| `extract_subtitle_frames` | Extract frames for subtitles |
-| `get_cache_stats` | Cache statistics |
-| `clear_preview_cache` | Clear preview cache |
-| `clear_media_metadata_cache` | Clear metadata cache |
-| `clear_all_cache` | Full cache cleanup |
-| `get_active_jobs` | List of active jobs |
-| `get_render_job` | Specific job information |
-| `get_disk_space` | Free disk space |
 
 ### useVideoCompiler()
 Main hook for video rendering operations:

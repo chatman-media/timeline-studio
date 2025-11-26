@@ -6,6 +6,12 @@ The Updates module provides comprehensive application update management function
 
 This module manages the entire update lifecycle from checking for updates to downloading and installing them, providing users with a smooth and controlled update experience through Tauri's updater system.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `download_and_install_update` | None | Downloads and installs available application update |
+
 ## Architecture
 
 ### Components

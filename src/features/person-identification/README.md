@@ -8,6 +8,58 @@
 
 Person Identification is an advanced module for face detection, person identification, and tracking their appearances throughout the video. The module is integrated with Timeline and provides a complete set of tools for working with persons in video projects.
 
+## API (Backend Commands)
+
+This module uses extensive Tauri backend integration for face detection, tracking, and database operations:
+
+### Person Database Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_person_database` | - | Initialize Tauri person database |
+| `create_person` | `{ name, tags, notes }` | Create new person profile |
+| `delete_person` | `{ personId }` | Delete person from database |
+| `add_face_embedding` | `{ personId, embedding, quality }` | Add face embedding to person |
+| `add_person_appearance` | `{ personId, clipId, startTime, endTime, confidence }` | Record person appearance |
+| `add_person_thumbnail` | `{ personId, imageData }` | Add thumbnail image |
+| `set_similarity_threshold` | `{ threshold }` | Set similarity threshold for matching |
+
+### Advanced Tracking Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_advanced_tracking` | `{ config }` | Initialize advanced tracking system |
+| `start_person_tracking` | `{ videoPath, personIds }` | Start tracking persons in video |
+| `stop_person_tracking` | - | Stop tracking process |
+| `assign_person_to_track` | `{ trackId, personId }` | Assign person to tracking track |
+| `merge_tracks` | `{ sourceTrackId, targetTrackId }` | Merge two tracking tracks |
+| `update_tracking_config` | `{ config }` | Update tracking configuration |
+| `cleanup_tracking` | - | Cleanup tracking resources |
+
+### Face Detection Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_yolo_processor` | `{ modelPath }` | Initialize YOLO face detector |
+| `init_facenet_processor` | `{ modelPath }` | Initialize FaceNet embedder |
+| `start_realtime_face_detection` | `{ config }` | Start real-time face detection |
+| `stop_realtime_face_detection` | - | Stop real-time detection |
+| `update_face_detection_config` | `{ config }` | Update detection settings |
+| `cleanup_face_detection` | - | Cleanup detection resources |
+
+### Clustering Commands
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_clustering_engine` | `{ params: { eps, min_samples } }` | Initialize clustering engine |
+| `cluster_faces` | `{ embeddings, params }` | Cluster face embeddings |
+| `find_nearest_cluster` | `{ embedding, clusters }` | Find nearest cluster for embedding |
+| `auto_cluster_video_faces` | `{ fileId, embeddings, metadata }` | Auto-cluster faces in video |
+| `get_aligned_face` | `{ imageData, landmarks, outputSize }` | Get aligned face with quality score |
+| `blur_faces_in_image` | `{ imagePath, outputPath, autoDetect }` | Blur faces for privacy |
+
+For detailed usage examples, see the [Tauri Backend Commands](#tauri-backend-commands) section below.
+
 ## ✅ Implemented Features
 
 ### 🎯 Core Functionality:

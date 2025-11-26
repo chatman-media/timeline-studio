@@ -2,6 +2,15 @@
 
 Современная виджетная система для Timeline Studio на базе **@dnd-kit** и **XState v5**.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `save_workspace_state` | `{ state: string }` | Save workspace state to backend (JSON serialized) |
+| `load_workspace_state` | - | Load workspace state from backend, returns JSON string |
+
+The workspace module primarily uses localStorage for state persistence with backend sync as a fallback/backup strategy.
+
 ## Статус
 
 **Текущая версия:** v1.1.0

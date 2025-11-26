@@ -1,5 +1,9 @@
 # Style Templates - Стилистические шаблоны
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands.
+
 ## 📋 Статус готовности: **100%** ✅
 
 - ✅ **Типы данных**: Полностью определены (120 строк)

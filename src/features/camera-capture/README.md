@@ -2,6 +2,13 @@
 
 Модуль для захвата видео с камеры с поддержкой выбора устройств, настройки качества и записи.
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands. It uses Web APIs:
+- `navigator.mediaDevices` - Camera and microphone access
+- `MediaRecorder` - Video recording
+- `Screen Capture API` - Screen recording
+
 ## 🎥 Возможности
 
 ### ✅ Реализовано

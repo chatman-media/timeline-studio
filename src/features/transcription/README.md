@@ -2,6 +2,12 @@
 
 Модуль транскрипции для Timeline Studio обеспечивает высокоскоростное распознавание речи с использованием передовых AI технологий.
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands.
+
+**Note:** Transcription functionality uses AI services (OpenAI Whisper, local Whisper, Faster Whisper) which are accessed through the `TranscriptionService` located in `/src/domains/ai-services/services/transcription-service.ts`. All processing happens either via external APIs or local models, without requiring custom Tauri commands.
+
 ## 📊 Статус модуля
 
 - ✅ **Готовность**: Полностью реализован и готов к использованию

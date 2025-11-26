@@ -5,6 +5,14 @@
 
 ---
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands.
+
+**Note:** All transition effects are rendered using WebGL in the browser. The module uses 4 specialized WebGL renderers (`BasicTransitionRenderer`, `GlitchTransitionRenderer`, `ParticleTransitionRenderer`, `ThreeDTransitionRenderer`) that process video transitions entirely on the GPU without backend integration.
+
+---
+
 ## 📊 Статус готовности
 
 **🟢 100% ГОТОВО К ИСПОЛЬЗОВАНИЮ**

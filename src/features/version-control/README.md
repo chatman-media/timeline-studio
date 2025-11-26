@@ -4,6 +4,24 @@
 
 The Version Control module provides version control functionality for Timeline Studio, allowing users to create project snapshots, manage branches, restore previous versions, and track changes.
 
+## API (Backend Commands)
+
+This module uses the unified `execute_command` Tauri command with the following command types:
+
+| Command Type | Parameters | Description |
+|--------------|------------|-------------|
+| `CreateSnapshot` | `{ message?: string }` | Creates a new project snapshot with optional description |
+| `RestoreVersion` | `{ version_id: string }` | Restores project to specified version |
+| `GetVersionHistory` | `{ limit?: number }` | Retrieves version history with optional limit |
+| `CompareVersions` | `{ version_a: string, version_b: string }` | Compares differences between two versions |
+| `CreateBranch` | `{ branch_name: string, from_version?: string }` | Creates new branch from current or specified version |
+| `MergeBranch` | `{ source_branch: string, target_branch: string }` | Merges source branch into target branch |
+| `SwitchBranch` | `{ branch_name: string }` | Switches to different branch |
+| `SetAutoSaveInterval` | `{ seconds: number }` | Configures auto-save interval in seconds |
+| `EnableAutoSave` | `{ enabled: boolean }` | Enables or disables auto-save functionality |
+
+All commands are executed via: `commands.executeCommand(command)` where command is a `ProjectCommand` object.
+
 ## 📊 Module Status
 
 - ✅ **Readiness**: 100% - Fully implemented and production-ready

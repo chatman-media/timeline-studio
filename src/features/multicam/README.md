@@ -4,6 +4,10 @@
 
 Модуль мультикамеры предоставляет полноценную систему для работы с многокамерной съемкой в Timeline Studio. Позволяет синхронизировать, переключать и редактировать видео с нескольких камер одновременно.
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands.
+
 ## 🎯 Основные возможности
 
 - **Переключение камер** - быстрое переключение между углами съемки
@@ -239,10 +243,6 @@ manager.on('camera-switched', (angleIndex) => {
   logger.debugSync(`Переключено на камеру ${angleIndex + 1}`)
 })
 ```
-
-## 🔌 API (Backend Commands)
-
-**Нет Tauri команд** - Модуль работает полностью на фронтенде, используя JavaScript/TypeScript.
 
 ## 🧪 Тестирование
 

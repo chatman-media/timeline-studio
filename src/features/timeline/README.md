@@ -1,5 +1,21 @@
 # Timeline - Функциональные требования
 
+## API (Backend Commands)
+
+This module does not directly invoke Tauri commands. Timeline operations are managed through:
+
+1. **App State Integration** - Timeline data is synchronized with the backend through the centralized app-state system
+2. **Event-based Communication** - Backend events notify the frontend of changes (e.g., media updates, project changes)
+3. **Indirect Command Usage** - Timeline operations trigger commands through higher-level services:
+   - Project operations via `app-state` machine
+   - Media file operations via `media-management` service
+   - Player synchronization via `timeline-player-sync` service
+
+For direct backend command usage, see the documentation in:
+- `/src/features/app-state/` - Project and state management commands
+- `/src/features/media-management/` - Media file operations
+- `/src/features/video-player/` - Playback control commands
+
 ## 📋 Статус готовности
 
 - ✅ **Компоненты**: Базовые компоненты созданы и протестированы

@@ -6,6 +6,10 @@
 
 The Voice Recording module provides functionality for recording voice through the microphone with subsequent saving to the project's media library. The module supports audio device selection, permission management, countdown before recording, and multiple audio formats.
 
+## API (Backend Commands)
+
+This module is frontend-only and uses native Web APIs (MediaDevices API, MediaRecorder API) for audio recording. File saving is handled through Tauri's file system operations, but there are no dedicated backend commands for this module.
+
 ## 📊 Current Status
 
 - ✅ **Components**: Fully implemented

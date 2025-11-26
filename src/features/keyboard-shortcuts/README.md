@@ -2,6 +2,17 @@
 
 Модуль для управления клавиатурными сочетаниями в приложении Timeline Studio.
 
+## API (Backend Commands)
+
+This module does not use direct Tauri `invoke()` commands. Instead, it integrates with Tauri plugins:
+
+| Plugin | Usage | Description |
+|--------|-------|-------------|
+| `@tauri-apps/plugin-store` | `Store.load()`, `Store.save()` | Persists keyboard shortcut settings |
+| `@tauri-apps/plugin-global-shortcut` | `register()`, `unregister()`, `isRegistered()` | Registers global system shortcuts |
+
+Fallback to `localStorage` is used when running in web mode.
+
 ## 📁 Структура модуля
 
 ```

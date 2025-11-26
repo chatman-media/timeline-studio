@@ -8,9 +8,13 @@
 
 The Options module serves as a unified settings panel providing comprehensive control over:
 - **Color Grading**: Advanced color correction and grading controls
-- **Speed Control**: Timeline playback speed and clip speed modifications 
+- **Speed Control**: Timeline playback speed and clip speed modifications
 - **Audio Settings**: Professional audio configuration and effects
 - **Media Information**: Detailed metadata display for selected media files
+
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands.
 
 ## ✅ Implementation Status
 
@@ -165,10 +169,6 @@ interface SpeedSettings {
 - **Auto-switching**: Automatically shows Info tab when media is selected
 - **Media File Display**: Rich metadata display for selected files
 - **Format Support**: Comprehensive format and codec information
-
-## 🔌 API (Backend Commands)
-
-**No Tauri commands used** - This module operates entirely on the frontend using JavaScript/TypeScript for UI controls and settings management.
 
 ## 🧪 Testing
 

@@ -4,6 +4,15 @@
 
 AI-powered chat interface for Timeline Studio with domain-driven architecture. Provides React components and hooks for integrating AI chat functionality with MCP (Model Context Protocol) support.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `mcp_initialize` | `{ config: MCPConfig }` | Initialize MCP server with configuration (enables MCP, sets model, max_tokens, temperature) |
+| `mcp_check_api` | - | Verify connectivity to Claude API |
+
+**Note:** The AI Chat module primarily uses frontend AI services and tools from `/src/domains/ai-tools/` and `/src/domains/ai-services/`. MCP commands are only used for Model Context Protocol integration.
+
 ## 🏗️ Architecture Overview
 
 The AI Chat module is a **lightweight frontend layer** that integrates with domain services:

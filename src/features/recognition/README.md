@@ -2,6 +2,16 @@
 
 Модуль для работы с данными распознавания объектов YOLO в видео. Предоставляет компоненты для визуализации, анализа и взаимодействия с результатами распознавания.
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `init_yolo_processor` | `{ model_type: string, confidence_threshold: number }` | Инициализирует YOLO процессор с выбранной моделью. Поддерживает модели: `yolo11-detection`, `yolo11-face`, `yolo8-detection`, `yolo8-face` |
+| `save_yolo_data` | `{ video_id: string, data: YoloVideoData }` | Сохраняет результаты распознавания YOLO для видео |
+| `clear_recognition_results` | `{ file_id: string }` | Очищает результаты распознавания для указанного файла |
+
+**Примечание:** Команда `load_yolo_data` также доступна в backend, но в текущей версии данные загружаются непосредственно из файловой системы через YoloDataService.
+
 ## 📁 Структура
 
 ```

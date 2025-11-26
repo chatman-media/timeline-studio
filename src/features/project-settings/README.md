@@ -1,5 +1,9 @@
 # Project Settings - Настройки проекта
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands. All project settings are managed in memory using React state and XState machines, and persisted through the project file system.
+
 ## 📋 Статус готовности
 
 - ✅ **Компоненты**: Полностью реализованы
@@ -180,10 +184,6 @@ function App() {
   );
 }
 ```
-
-## 🔌 API (Backend Commands)
-
-**No Tauri commands used** - This module operates entirely on the frontend using React and XState for state management. All project settings are managed in memory and persisted through the project file system.
 
 ## 🧪 Тестирование
 

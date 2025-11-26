@@ -6,6 +6,10 @@
 **Архитектура**: Конфигурационная система шаблонов с анимациями
 **Статус**: 100% готово к производству ✅
 
+## API (Backend Commands)
+
+This module is frontend-only and does not use Tauri backend commands. All template rendering, configuration, and customization is handled client-side using React components and local storage for custom templates.
+
 ## 📋 Статус готовности
 
 - ✅ **Configuration System**: Новая конфигурационная архитектура

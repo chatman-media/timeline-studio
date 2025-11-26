@@ -10,6 +10,23 @@
 - ✅ **Типизация**: Полная TypeScript типизация для всех операций
 - ✅ **Основная логика**: Управление пользовательскими настройками и API ключами
 
+## API (Backend Commands)
+
+| Command | Parameters | Description |
+|---------|------------|-------------|
+| `list_api_keys` | None | Returns list of all saved API keys with metadata |
+| `save_simple_api_key` | `{ service: string, key: string }` | Saves API key for specified service |
+| `validate_api_key` | `{ service: string }` | Validates stored API key via real API request |
+| `save_oauth_credentials` | `{ service: string, credentials: object }` | Saves OAuth credentials for service |
+| `generate_oauth_url` | `{ service: string }` | Generates OAuth authorization URL |
+| `exchange_oauth_code` | `{ service: string, code: string }` | Exchanges OAuth code for access token |
+| `delete_api_key` | `{ service: string }` | Deletes API key for specified service |
+| `import_from_env` | `{ env_content: string }` | Imports API keys from .env file format |
+| `export_to_env_format` | None | Exports all API keys to .env file format |
+| `refresh_oauth_token` | `{ service: string }` | Refreshes OAuth access token |
+| `get_oauth_user_info` | `{ service: string }` | Retrieves user information from OAuth provider |
+| `parse_oauth_callback_url` | `{ url: string }` | Parses OAuth callback URL to extract code/state |
+
 ## 🎯 Основные функции
 
 ### ✅ Готово
