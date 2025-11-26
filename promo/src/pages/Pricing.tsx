@@ -188,13 +188,26 @@ export const Pricing: React.FC = () => {
 
                       {/* CTA Button */}
                       <button
-                        className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-300 cursor-pointer ${
+                        className={`group relative w-full py-3 px-6 rounded-xl font-medium overflow-hidden cursor-pointer ${
                           tier.highlighted
-                            ? "bg-[#8b5cf6] text-white hover:bg-[#7c3aed]"
-                            : "bg-white/10 text-white hover:bg-white/20"
+                            ? "text-white"
+                            : "bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
                         }`}
                       >
-                        {tier.buttonText}
+                        {tier.highlighted && (
+                          <>
+                            {/* Background with purple base */}
+                            <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+
+                            {/* Kiro-style spreading effect on hover */}
+                            <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+                          </>
+                        )}
+
+                        {/* Text */}
+                        <span className={tier.highlighted ? "relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500" : ""}>
+                          {tier.buttonText}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -263,8 +276,17 @@ export const Pricing: React.FC = () => {
                       </li>
                     </ul>
 
-                    <button className="w-full py-4 px-8 rounded-xl bg-[#8b5cf6] text-white font-medium transition-all duration-300 hover:bg-[#7c3aed] transform hover:scale-[1.02] cursor-pointer">
-                      {t("pricing.tiers.team.buttonText")}
+                    <button className="group relative w-full py-4 px-8 rounded-xl text-white font-medium overflow-hidden cursor-pointer">
+                      {/* Background with purple base */}
+                      <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+
+                      {/* Kiro-style spreading effect on hover */}
+                      <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+
+                      {/* Text */}
+                      <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
+                        {t("pricing.tiers.team.buttonText")}
+                      </span>
                     </button>
                   </div>
                 </div>
