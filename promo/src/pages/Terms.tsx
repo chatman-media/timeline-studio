@@ -2,10 +2,12 @@ import { motion } from "framer-motion"
 import type React from "react"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
+import { SEO } from "../components/SEO"
 
 export const Terms: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO title="Terms of Service" description="Terms of Service for Timeline Studio video editor." url="/terms" />
       <Navigation />
 
       <main className="flex-1">

@@ -4,7 +4,6 @@ import {
   clearRecognitionResults as clearRecognitionResultsCommand,
   getPreviewDataWithRecognition,
   processVideoRecognition as processVideoRecognitionCommand,
-  type VideoRecognitionResult,
 } from "@/domains/ai-services/tauri/recognition-commands"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { RecognitionResults } from "@/features/media/types/preview"

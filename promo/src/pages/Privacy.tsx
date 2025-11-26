@@ -2,10 +2,12 @@ import { motion } from "framer-motion"
 import type React from "react"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
+import { SEO } from "../components/SEO"
 
 export const Privacy: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO title="Privacy Policy" description="Privacy Policy for Timeline Studio. Learn how we handle your data." url="/privacy" />
       <Navigation />
 
       <main className="flex-1">

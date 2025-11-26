@@ -8,7 +8,6 @@ import {
   OutputFormat,
   type VideoRenderJob as RenderJob,
   type RenderProgress,
-  RenderStatus,
 } from "@/features/video-compiler/types/render"
 
 // Импортируем новые типы эффектов

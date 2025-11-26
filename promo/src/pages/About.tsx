@@ -3,6 +3,7 @@ import type React from "react";
 import { Clapperboard, Wrench, Lock, Zap, Rocket, Globe } from "lucide-react";
 import { Footer } from "../components/Footer";
 import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
 import { useTranslation } from "../hooks/useTranslation";
 import { GITHUB_RELEASES_URL } from "../constants";
 
@@ -10,6 +11,11 @@ export const About: React.FC = () => {
   const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="About"
+        description="Timeline Studio is a professional open-source video editor with 100+ AI tools. Learn about our mission, features, and technology."
+        url="/about"
+      />
       <Navigation />
 
       <main className="flex-1">

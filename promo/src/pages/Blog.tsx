@@ -3,6 +3,7 @@ import type React from "react"
 import { Link } from "react-router-dom"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
+import { SEO } from "../components/SEO"
 import { useLanguage } from "../contexts/LanguageContext"
 import { useBlogPosts } from "../hooks/useMarkdownContent"
 
@@ -10,11 +11,13 @@ export const Blog: React.FC = () => {
   const { posts, isLoading } = useBlogPosts()
   const { t } = useLanguage()
 
-  console.log('[Blog Component] Render - isLoading:', isLoading, 'posts.length:', posts.length)
-  console.log('[Blog Component] Posts:', posts)
-
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Blog"
+        description="Latest news, updates, and tutorials about Timeline Studio video editor. Release notes, tips, and development insights."
+        url="/blog"
+      />
       <Navigation />
 
       <main className="flex-1">

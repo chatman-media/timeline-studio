@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import type React from "react";
 import { Footer } from "../components/Footer";
 import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
 import { useTranslation } from "../hooks/useTranslation";
 
 const Docs: React.FC = () => {
@@ -245,6 +246,11 @@ const Docs: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Documentation"
+        description="Timeline Studio documentation. Guides, tutorials, API reference, and developer resources."
+        url="/docs"
+      />
       <Navigation />
 
       <main className="flex-1">

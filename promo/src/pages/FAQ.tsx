@@ -2,6 +2,7 @@ import type React from "react"
 import { AnimatedSection } from "../components/AnimatedSection"
 import { Footer } from "../components/Footer"
 import { Navigation } from "../components/Navigation"
+import { SEO } from "../components/SEO"
 import { useTranslation } from "../hooks/useTranslation"
 
 const FAQ: React.FC = () => {
@@ -44,6 +45,11 @@ const FAQ: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="FAQ"
+        description="Frequently asked questions about Timeline Studio. Learn about features, pricing, supported formats, and how to get started."
+        url="/faq"
+      />
       <Navigation />
 
       <main className="flex-1">

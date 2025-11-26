@@ -3,6 +3,7 @@ import type React from "react";
 import { CheckIcon } from "../components/CheckIcon";
 import { Footer } from "../components/Footer";
 import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
 import { useTranslation } from "../hooks/useTranslation";
 
 interface PricingTier {
@@ -85,6 +86,11 @@ export const Pricing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
+      <SEO
+        title="Pricing"
+        description="Timeline Studio pricing plans. Free tier with local AI, Pro with cloud features, and Max for professionals. All local features are free forever."
+        url="/pricing"
+      />
       <Navigation />
 
       <main className="flex-1">
