@@ -171,19 +171,19 @@
 
 ### Предлагаемые раунды
 
-#### Seed Round: $300K (5% equity)
-**Pre-money оценка**: $5.7M
-**Post-money оценка**: $6M
+#### Seed Round: $1M (10% equity)
+**Pre-money оценка**: $9M
+**Post-money оценка**: $10M
 
 **Использование средств:**
-- Команда разработки (60%): $180K
-- Маркетинг и пользователи (20%): $60K
-- Инфраструктура и операции (15%): $45K
-- Резерв (5%): $15K
+- Команда разработки - 8 человек (50%): $500K
+- AI токены и инфраструктура (25%): $250K
+- Маркетинг и привлечение пользователей (15%): $150K
+- Операционные расходы и резерв (10%): $100K
 
 **Milestones:**
-- 50K активных пользователей
-- $500K ARR
+- 100K активных пользователей
+- $1M ARR
 - Завершение всех 26 модулей
 - Запуск мобильных приложений
 
@@ -359,25 +359,33 @@ Timeline Studio AI Stack:
 ### D. Команда и hiring план
 
 #### Текущая команда (1 человек)
-- **Alexander Kireyev** - Founder/CEO/CTO ($4K/месяц)
+- **Alexander Kireyev** - Founder/CEO/CTO
 
-#### Hiring план после Seed ($300K)
+#### Hiring план после Seed ($1M) - 8 сотрудников
 
-**Первые 6 месяцев (приоритетные позиции):**
-- **Alexander Kireyev** (CTO/Lead) - $4,000/месяц ($24K за 6 мес)
-- **Senior Frontend Developer** - $4,000/месяц ($24K за 6 мес)
-- **Senior AI/ML Engineer** - $5,000/месяц ($30K за 6 мес)
-- **DevOps Engineer** - $5,000/месяц ($30K за 6 мес)
-- **UI/UX Designer** - $3,500/месяц ($21K за 6 мес)
+**Команда разработки (8 человек):**
+1. **Alexander Kireyev** (CTO/Lead) - $5,000/месяц
+2. **Senior AI/ML Engineer** - $6,000/месяц
+3. **Senior Frontend Developer** - $5,000/месяц
+4. **Senior Backend Developer (Rust)** - $5,500/месяц
+5. **DevOps Engineer** - $5,000/месяц
+6. **UI/UX Designer** - $4,000/месяц
+7. **QA Engineer** - $3,500/месяц
+8. **Marketing Lead** - $4,500/месяц
 
-**Итого на команду за 6 месяцев:** $129K
+**Итого на команду в месяц:** $38,500
+**Итого на команду за 12 месяцев:** $462K
 
-**Оставшийся бюджет на второе полугодие:** $51K (операционные расходы, инфраструктура)
+**AI токены и инфраструктура ($250K):**
+- Claude API / Anthropic - $100K
+- OpenAI API (GPT-4, Whisper) - $80K
+- Cloud infrastructure (AWS/GCP) - $50K
+- Дополнительные AI сервисы - $20K
 
 **Расширение после достижения milestones:**
-- **Head of Product** - $5,000/месяц
-- **Marketing Lead** - $5,000/месяц
-- **Additional Frontend Developer** - $4,000/месяц
+- **Head of Product** - $6,000/месяц
+- **Additional AI/ML Engineer** - $6,000/месяц
+- **Mobile Developer** - $5,000/месяц
 
 #### Advisory Board (планируется)
 - **Ex-Adobe VP Engineering** - технический советник

@@ -1,3 +1,26 @@
+# [3.18.0](https://github.com/chatman-media/timeline-studio/compare/v3.17.0...v3.18.0) (2025-11-26)
+
+
+### Bug Fixes
+
+* **ai-director:** Исправить импорты и добавить MediaPoolList компонент ([535d770](https://github.com/chatman-media/timeline-studio/commit/535d77078b3548b8986b407acab722e4ecadd6ee))
+* **i18n:** Удалить бесполезный case clause перед default ([4a9c606](https://github.com/chatman-media/timeline-studio/commit/4a9c60666b0a034975a1d72a228e0fbb9f6f76eb))
+* **person-identification:** use notes field instead of description in createPerson ([b41f913](https://github.com/chatman-media/timeline-studio/commit/b41f9135fa3488233d4a72cc0a5c81de13f5c1cf))
+* **thumbnail:** Пометить generate_thumbnail_smart как future feature ([bddece4](https://github.com/chatman-media/timeline-studio/commit/bddece483db54dc0c9f15e9935d8e421fc3463df))
+
+
+### Features
+
+* **ai-director:** Add Storybook stories for AI Director v3 components ([282ffb1](https://github.com/chatman-media/timeline-studio/commit/282ffb199185124040a880208f11d0f1ec36a20f))
+* **media:** Добавить поддержку codec для H.265 детекции ([43f3fe4](https://github.com/chatman-media/timeline-studio/commit/43f3fe4a702cfbe1e68ca26e8754b100256c9c2c))
+* **promo:** add release blog posts 3.11, 3.14, 3.15 and update navigation ([80ada43](https://github.com/chatman-media/timeline-studio/commit/80ada434bfa714e8f7b2c03b0aa3324371d806b2))
+* **promo:** Применить Kiro-style hover эффект к кнопкам на странице Pricing ([ddfd107](https://github.com/chatman-media/timeline-studio/commit/ddfd107ad38e499a2a15f12cb6b47ca63dbaf95b)), closes [#8b5cf6](https://github.com/chatman-media/timeline-studio/issues/8b5cf6) [#8b5cf6](https://github.com/chatman-media/timeline-studio/issues/8b5cf6)
+* **promo:** Применить Kiro-style эффект ко всем тарифным планам на Pricing ([45a0738](https://github.com/chatman-media/timeline-studio/commit/45a07385e51e1bc65a611aaae9e338c8f546bfe0))
+* **promo:** Применить единый Kiro-style hover эффект ко всем кнопкам скачивания ([d71747d](https://github.com/chatman-media/timeline-studio/commit/d71747dea21e04779dd7341668033cff63f4b245)), closes [#8b5cf6](https://github.com/chatman-media/timeline-studio/issues/8b5cf6) [#8b5cf6](https://github.com/chatman-media/timeline-studio/issues/8b5cf6)
+* **promo:** Скрыть страницу Pricing и добавить информацию о бета-версии ([7536a2c](https://github.com/chatman-media/timeline-studio/commit/7536a2c75a4ea234fdff3b8f2bd0813aeeb0d1b6))
+* **storybook:** Add stories for Browser, AI Chat, and Video Player components ([640d288](https://github.com/chatman-media/timeline-studio/commit/640d288d2e646f513f411ad48d76c4efa458685c))
+* **storybook:** Add Storybook configuration for component documentation ([ad798b2](https://github.com/chatman-media/timeline-studio/commit/ad798b28f1b8e3af04ceab21207684e3a70859fd))
+
 # [3.17.0](https://github.com/chatman-media/timeline-studio/compare/v3.16.0...v3.17.0) (2025-11-25)
 
 
