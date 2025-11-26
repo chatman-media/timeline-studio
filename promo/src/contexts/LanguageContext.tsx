@@ -52,7 +52,7 @@ const translations = {
     "footer.legal.responsibleAI": "Responsible AI Policy",
     "footer.investors.title": "FOR INVESTORS",
     "footer.investors.raisingSeed": "Raising $1M Seed",
-    "footer.investors.documentation": "Documentation",
+    "footer.investors.documentation": "Project Docs",
     "footer.investors.contact": "Contact",
 
     // Hero section
@@ -529,7 +529,7 @@ const translations = {
     "footer.legal.responsibleAI": "Политика ответственного ИИ",
     "footer.investors.title": "ДЛЯ ИНВЕСТОРОВ",
     "footer.investors.raisingSeed": "Привлекаем $1M Seed",
-    "footer.investors.documentation": "Документация",
+    "footer.investors.documentation": "О проекте",
     "footer.investors.contact": "Связаться",
 
     // Hero section
@@ -1013,7 +1013,7 @@ const translations = {
     "footer.legal.responsibleAI": "负责任的AI政策",
     "footer.investors.title": "投资者",
     "footer.investors.raisingSeed": "融资 $1M 种子轮",
-    "footer.investors.documentation": "文档",
+    "footer.investors.documentation": "项目文档",
     "footer.investors.contact": "联系",
 
     // Hero
