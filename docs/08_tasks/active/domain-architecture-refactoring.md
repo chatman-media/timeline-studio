@@ -261,13 +261,13 @@ Features должны содержать только:
 
 ## Порядок выполнения
 
-### Фаза 1: Устранение дубликатов (Критично)
-1. [ ] person-identification - удалить дубликаты, использовать ai-services
-2. [ ] recognition - удалить дубликаты, использовать ai-services
+### Фаза 1: Устранение дубликатов (Критично) ✅ ЗАВЕРШЕНО
+1. [x] person-identification - удалить дубликаты, использовать ai-services (2024-11-26)
+2. [x] recognition - удалить дубликаты, использовать ai-services (2024-11-26)
 
-### Фаза 2: Критичная бизнес-логика
-3. [ ] video-compiler → video-editing
-4. [ ] media → media-management
+### Фаза 2: Критичная бизнес-логика ✅ ЗАВЕРШЕНО
+3. [x] video-compiler → video-editing (2024-11-26)
+4. [x] media → media-management (2024-11-26)
 
 ### Фаза 3: Пользовательские настройки
 5. [ ] user-settings → project-management

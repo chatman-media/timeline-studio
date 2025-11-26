@@ -1,7 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { DatabaseStats } from "../../services/person-database-service"
-import { PersonDatabaseService } from "../../services/person-database-service"
+import { type DatabaseStats, PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../../types/person"
 
 // Mock Tauri invoke

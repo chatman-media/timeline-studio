@@ -4,12 +4,15 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-
+import {
+  type AdvancedFaceDetection,
+  AdvancedFaceDetectionService,
+  AdvancedTrackingService,
+  PersonDatabaseService,
+  type TrackedPerson,
+} from "@/domains/ai-services/services/person-identification"
 import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"
-import { type AdvancedFaceDetection, AdvancedFaceDetectionService } from "../services/advanced-face-detection-service"
-import { AdvancedTrackingService, type TrackedPerson } from "../services/advanced-tracking-service"
-import { PersonDatabaseService } from "../services/person-database-service"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 
 const logger = createLogger("UseAdvancedPersonIdentification")

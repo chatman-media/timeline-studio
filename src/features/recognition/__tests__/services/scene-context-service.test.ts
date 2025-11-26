@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
-
+import { SceneContextService } from "@/domains/ai-services/services/recognition"
 import { createMockDetection, createMockVideo } from "../../__mocks__"
-import { SceneContextService } from "../../services/scene-context-service"
 
 describe("SceneContextService", () => {
   let service: SceneContextService

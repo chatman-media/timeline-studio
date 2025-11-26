@@ -4,8 +4,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
 import { createLogger } from "@/lib/tauri-logger"
-import { PersonDatabaseService } from "../services/person-database-service"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../types/person"
 
 const logger = createLogger("UsePersonIdentification")

@@ -98,6 +98,8 @@ export const useYoloData = vi.fn(() => ({
 }))
 
 // Мок сервисов
+// Note: Real services are now in @/domains/ai-services/services/recognition
+// These mocks remain here for testing purposes
 export const YoloDataService = vi.fn().mockImplementation(() => ({
   loadYoloData: vi.fn().mockResolvedValue(mockYoloData),
   getYoloDataAtTimestamp: vi.fn().mockResolvedValue(mockDetections),

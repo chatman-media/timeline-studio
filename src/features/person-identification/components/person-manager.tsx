@@ -6,9 +6,9 @@
 import { useEffect, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
 import { useModal } from "@/features/modals/services"
 import { createLogger } from "@/lib/tauri-logger"
-import { PersonDatabaseService } from "../services/person-database-service"
 import type { PersonAppearance, PersonProfile } from "../types/person"
 import { PersonDetail } from "./person-detail"
 import { PersonList } from "./person-list"

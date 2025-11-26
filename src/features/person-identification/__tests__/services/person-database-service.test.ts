@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { PersonDatabaseService } from "../../services/person-database-service"
+import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
 
 import type { PersonProfile as Person } from "../../types/person"
 

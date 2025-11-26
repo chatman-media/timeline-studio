@@ -14,15 +14,15 @@ import { Progress } from "@/components/ui/progress"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { createLogger } from "@/lib/tauri-logger"
-import { cn } from "@/lib/utils"
 import {
   type AdvancedDetectionConfig,
   type AdvancedFaceDetection,
   AdvancedFaceDetectionService,
+  PersonDatabaseService,
   type RealtimeProcessingStatus,
-} from "../services/advanced-face-detection-service"
-import { PersonDatabaseService } from "../services/person-database-service"
+} from "@/domains/ai-services/services/person-identification"
+import { createLogger } from "@/lib/tauri-logger"
+import { cn } from "@/lib/utils"
 
 const logger = createLogger("RealtimeMonitor")
 
