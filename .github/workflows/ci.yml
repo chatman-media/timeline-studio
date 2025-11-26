@@ -21,12 +21,20 @@ jobs:
     steps:
       - name: Free disk space
         run: |
-          # Удаляем неиспользуемые пакеты для освобождения места (~10GB)
+          # Агрессивное освобождение места (~25GB)
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /opt/hostedtoolcache/go
+          sudo rm -rf /opt/hostedtoolcache/Python
+          sudo rm -rf /opt/hostedtoolcache/Ruby
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/.ghcup
           sudo docker image prune --all --force
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
           df -h
 
       - name: Checkout repository
@@ -76,10 +84,10 @@ jobs:
         with:
           workspaces: src-tauri
           cache-on-failure: false
-          # Кэшируем только зависимости, не финальные артефакты
           cache-all-crates: false
-          # Очищаем старые артефакты
           shared-key: ci-build
+          # Не сохранять кэш, только восстанавливать (экономит место)
+          save-if: false
 
       - name: Build Rust dependencies
         env:
