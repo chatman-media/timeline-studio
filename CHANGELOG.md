@@ -1,3 +1,10 @@
+## [3.32.2](https://github.com/chatman-media/timeline-studio/compare/v3.32.1...v3.32.2) (2025-11-26)
+
+
+### Bug Fixes
+
+* **promo:** improve navigation and footer responsiveness ([adc0505](https://github.com/chatman-media/timeline-studio/commit/adc050580a36b05df6ef533763d54ded7b9af523))
+
 ## [3.32.1](https://github.com/chatman-media/timeline-studio/compare/v3.32.0...v3.32.1) (2025-11-26)
 
 
