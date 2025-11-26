@@ -180,9 +180,14 @@ export function HeroSection() {
             rel="noopener noreferrer"
             className="group relative px-8 py-4 rounded-xl text-lg font-medium text-white overflow-hidden transform hover:scale-[1.02] transition-transform"
           >
+            {/* Background with purple base */}
             <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
-            <div className="absolute inset-0 bg-[#7c3aed] rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <span className="relative z-10 flex items-center gap-2">
+
+            {/* Kiro-style spreading effect on hover */}
+            <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+
+            {/* Text */}
+            <span className="relative z-20 flex items-center gap-2 group-hover:text-[#8b5cf6] transition-colors duration-500">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>

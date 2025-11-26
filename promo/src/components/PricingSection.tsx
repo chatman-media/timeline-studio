@@ -99,13 +99,26 @@ export function PricingSection() {
                   </ul>
 
                   <button
-                    className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-300 ${
+                    className={`group relative w-full py-3 px-6 rounded-xl font-medium overflow-hidden ${
                       plan.featured
-                        ? "bg-[#8b5cf6] text-white hover:bg-[#7c3aed]"
-                        : "glass text-white hover:bg-white/10"
+                        ? "text-white"
+                        : "glass text-white hover:bg-white/10 transition-all duration-300"
                     }`}
                   >
-                    {plan.buttonText}
+                    {plan.featured && (
+                      <>
+                        {/* Background with purple base */}
+                        <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+
+                        {/* Kiro-style spreading effect on hover */}
+                        <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+                      </>
+                    )}
+
+                    {/* Text */}
+                    <span className={plan.featured ? "relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500" : ""}>
+                      {plan.buttonText}
+                    </span>
                   </button>
                 </div>
               </motion.div>

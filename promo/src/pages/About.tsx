@@ -295,9 +295,18 @@ export const About: React.FC = () => {
               <p className="text-lg text-gray-400 mb-8">{t("about.investor.description")}</p>
               <a
                 href="/#/project"
-                className="inline-block px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-all cursor-pointer"
+                className="group relative inline-block px-6 py-3 text-white font-medium rounded-xl overflow-hidden cursor-pointer"
               >
-                {t("about.investor.viewDocs")}
+                {/* Background with purple base */}
+                <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+
+                {/* Kiro-style spreading effect on hover */}
+                <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+
+                {/* Text */}
+                <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
+                  {t("about.investor.viewDocs")}
+                </span>
               </a>
             </motion.div>
           </div>
@@ -333,9 +342,18 @@ export const About: React.FC = () => {
                   href={GITHUB_RELEASES_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 bg-[#8b5cf6] text-white font-medium rounded-xl hover:bg-[#7c3aed] transition-colors"
+                  className="group relative px-6 py-3 text-white font-medium rounded-xl overflow-hidden"
                 >
-                  {t("about.cta.tryStudio")}
+                  {/* Background with purple base */}
+                  <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+
+                  {/* Kiro-style spreading effect on hover */}
+                  <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+
+                  {/* Text */}
+                  <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
+                    {t("about.cta.tryStudio")}
+                  </span>
                 </a>
               </div>
             </motion.div>
