@@ -1,9 +1,4 @@
 /**
- * @deprecated Тесты перенесены в @/domains/project-management/__tests__/services/batch-commands-service.test.ts
- * Этот файл оставлен для обратной совместимости и будет удален в будущем
- */
-
-/**
  * Tests for batch command utilities
  * Tests builder pattern, batch operations, and utility functions
  */
@@ -19,7 +14,7 @@ import {
   createBatch,
   executeBatch,
   useBatchCommands,
-} from "../../services/batch-commands"
+} from "../../services/batch-commands-service"
 
 // Mock Tauri invoke
 vi.mock("@tauri-apps/api/core", () => ({

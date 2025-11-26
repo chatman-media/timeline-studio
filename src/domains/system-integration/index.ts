@@ -1,7 +1,7 @@
 /**
  * System Integration Domain
  *
- * Домен для системной интеграции: модальные окна, обновления, уведомления
+ * Домен для системной интеграции: модальные окна, обновления, уведомления, workspace
  */
 
 export { useFeatures } from "./hooks/use-features"
@@ -23,5 +23,19 @@ export {
   resetSystemIntegrationOrchestrator,
   SystemIntegrationOrchestrator,
 } from "./services/system-integration-orchestrator"
+// Экспорт Update Services
+export { UpdateService, updateService } from "./services/updates"
+// Экспорт Workspace Persistence
+export type { WorkspaceState } from "./services/workspace"
+export {
+  clearWorkspaceStateLocal,
+  debouncedSave,
+  isValidWorkspaceState,
+  loadWorkspaceState,
+  loadWorkspaceStateBackend,
+  loadWorkspaceStateLocal,
+  saveWorkspaceStateBackend,
+  saveWorkspaceStateLocal,
+} from "./services/workspace"
 // Экспорт типов
 export * from "./types"

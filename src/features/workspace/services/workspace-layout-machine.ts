@@ -6,11 +6,11 @@
 
 import { assign, setup } from "xstate"
 
+import { debouncedSave, type WorkspaceState } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { DEFAULT_LAYOUT_PRESET_ID, getLayoutPreset, LAYOUT_PRESETS } from "../config/layout-presets"
 import type { LayoutPreset, Widget, WidgetBounds } from "../types/widget"
-import { debouncedSave, type WorkspaceState } from "./workspace-persistence"
 
 const logger = createLogger("WorkspaceLayoutMachine")
 

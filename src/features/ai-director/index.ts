@@ -9,12 +9,7 @@
 export type {
   AnalysisError,
   AnalysisProgress,
-  HealthCheckResult,
-  SystemCapabilities,
 } from "@/domains/ai-services/types/ai-director-events"
-// AI Director types are not in tauri-bindings yet, using placeholder exports
-export type AIDirectorConfig = any
-export type ComprehensiveAnalysisResult = any
 
 // Components
 export * from "./components/ai-director-chat"
@@ -31,7 +26,17 @@ export * from "./components/montage-template-selector"
 export * from "./hooks"
 // Services
 export * from "./services/ai-director-machine"
-export * from "./services/ai-director-service"
+// AI Director Service and types are now re-exported from domain
+export { AIDirectorService, aiDirectorService } from "@/domains/ai-services"
+export type {
+  AIDirectorConfig,
+  AIDirectorVideoAnalysisOptions,
+  ComprehensiveAnalysisResult,
+  ConfigValidationResult,
+  HealthCheckResult,
+  SystemCapabilities,
+  UnifiedAudioConfig,
+} from "@/domains/ai-services"
 // New progress types
 export type {
   AnalysisConfig,

@@ -5,6 +5,8 @@
  * Organized by service type for better maintainability
  */
 
+// AI Director commands (comprehensive analysis)
+export * from "./ai-director-commands"
 // Audio analysis and transcription commands
 export * from "./audio-commands"
 // Chat and AI interaction commands

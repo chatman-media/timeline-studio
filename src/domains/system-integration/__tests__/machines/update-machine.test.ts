@@ -4,9 +4,9 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor } from "xstate"
-import type { UpdateService } from "@/features/updates/services/update-service"
 import type { UpdateCheckResult } from "@/features/updates/types"
 import { createUpdateMachine } from "../../machines/update-machine"
+import type { UpdateService } from "../../services/updates/update-service"
 
 describe("Update Machine", () => {
   // Mock UpdateService для тестирования

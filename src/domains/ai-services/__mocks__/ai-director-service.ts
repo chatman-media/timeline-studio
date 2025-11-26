@@ -10,7 +10,7 @@ import type {
   ComprehensiveAnalysisResult,
   HealthCheckResult,
   SystemCapabilities,
-} from "@/features/ai-director/types/ai-director"
+} from "../services/ai-director"
 
 // Define types that match the mock data structure
 type HealthStatus = HealthCheckResult

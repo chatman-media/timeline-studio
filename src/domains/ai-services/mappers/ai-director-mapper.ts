@@ -6,7 +6,7 @@
  */
 
 // Use types from ai-director and montage-planner
-import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { ComprehensiveAnalysisResult } from "../services/ai-director"
 import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 
 // ============================================================================

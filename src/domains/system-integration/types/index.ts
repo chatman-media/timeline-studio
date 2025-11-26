@@ -4,11 +4,32 @@
  * Центральное место для всех типов домена системной интеграции
  */
 
-// Re-export update types
-export type {
+// Import and re-export all update types from features
+import type {
+  AutoCheckSettings,
+  UpdateAvailability,
   UpdateCheckResult,
+  UpdateEventPayload,
+  UpdateInfo,
+  UpdateMachineContext,
+  UpdateMachineEvent,
   UpdateProgress,
+  UpdateProgressWithPercentage,
+  UpdateStatus,
 } from "@/features/updates/types"
+
+export type {
+  AutoCheckSettings,
+  UpdateAvailability,
+  UpdateCheckResult,
+  UpdateEventPayload,
+  UpdateInfo,
+  UpdateMachineContext,
+  UpdateMachineEvent,
+  UpdateProgress,
+  UpdateProgressWithPercentage,
+  UpdateStatus,
+}
 
 // Import modal types
 import type { ModalData as MachineModalData, ModalType as MachineModalType } from "../machines/modal-machine"
@@ -22,22 +43,6 @@ export type {
   UpdateMachine,
   UpdateMachineActor,
 } from "../machines/update-machine"
-
-// Import types needed from features
-import type {
-  UpdateInfo as FeatureUpdateInfo,
-  UpdateMachineContext as FeatureUpdateMachineContext,
-  UpdateMachineEvent as FeatureUpdateMachineEvent,
-  UpdateProgressWithPercentage as FeatureUpdateProgressWithPercentage,
-  UpdateStatus as FeatureUpdateStatus,
-} from "@/features/updates/types"
-
-// Re-export with proper types
-export type UpdateInfo = FeatureUpdateInfo
-export type UpdateProgressWithPercentage = FeatureUpdateProgressWithPercentage
-export type UpdateStatus = FeatureUpdateStatus
-export type UpdateMachineContext = FeatureUpdateMachineContext
-export type UpdateMachineEvent = FeatureUpdateMachineEvent
 
 // System integration orchestrator context
 export interface SystemIntegrationContext {

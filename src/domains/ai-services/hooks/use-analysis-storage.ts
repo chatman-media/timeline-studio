@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { ComprehensiveAnalysisResult } from "../services/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MontageAnalysisResult } from "@/types/montage-planner-rust"
 import type { UnifiedContentAnalysis } from "../mappers/ai-director-mapper"

@@ -20,9 +20,9 @@ import type {
   MontagePlanGeneratedEvent,
 } from "@/domains/shared/events"
 import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
-import { aiDirectorService } from "@/features/ai-director/services/ai-director-service"
+import { aiDirectorService } from "./ai-director"
 // Use types from ai-director and montage-planner
-import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig, ComprehensiveAnalysisResult } from "./ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   AnalysisOptions,
@@ -769,7 +769,7 @@ export class UnifiedOrchestrator {
       object_detection: undefined,
       face_recognition: undefined,
       started_at: new Date().toISOString(),
-      completed_at: undefined,
+      completed_at: new Date().toISOString(),
       total_duration_ms: 0,
       errors: ["Analysis failed"],
     }

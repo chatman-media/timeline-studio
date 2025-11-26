@@ -42,6 +42,17 @@ export {
 
 // Providers
 export * from "./providers"
+// AI Director Service (NEW - Unified comprehensive analysis)
+export { AIDirectorService, aiDirectorService } from "./services/ai-director"
+export type {
+  AIDirectorConfig,
+  AIDirectorVideoAnalysisOptions,
+  ComprehensiveAnalysisResult,
+  ConfigValidationResult,
+  HealthCheckResult,
+  SystemCapabilities,
+  UnifiedAudioConfig,
+} from "./services/ai-director"
 // AI Event Bridge (NEW - Tauri ↔ TypeScript Event Sync)
 export { AIEventBridge, aiEventBridge, TAURI_EVENTS } from "./services/ai-event-bridge"
 export type {

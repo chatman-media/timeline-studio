@@ -18,6 +18,36 @@ export {
   ProjectProvider,
   UserSettingsProvider,
 } from "./providers/project-management-provider"
+// Экспорт API Keys Service
+export {
+  API_DOCUMENTATION_LINKS,
+  API_KEY_MASKS,
+  API_KEY_MIN_LENGTH,
+  API_KEY_PATTERNS,
+  type ApiKeyMask,
+  ApiKeysService,
+  apiKeysService,
+  VALIDATION_ERROR_MESSAGES,
+} from "./services/api-keys-service"
+// Экспорт App Directories Service
+export {
+  type AppDirectories,
+  AppDirectoriesService,
+  appDirectoriesService,
+  type DirectorySizes,
+} from "./services/app-directories-service"
+// Экспорт Batch Commands Service
+export {
+  BatchCommandBuilder,
+  type BatchCommandRequest,
+  type BatchCommandResult,
+  batchOperations,
+  batchUtils,
+  type CommandResult,
+  createBatch,
+  executeBatch,
+  useBatchCommands,
+} from "./services/batch-commands-service"
 // Экспорт метрик производительности
 export {
   type CommandMetric,
@@ -33,5 +63,7 @@ export {
   ProjectManagementOrchestrator,
   resetProjectManagementOrchestrator,
 } from "./services/project-management-orchestrator"
+// Экспорт Tauri Commands для API Keys
+export * from "./tauri/api-keys-commands"
 // Экспорт типов
 export * from "./types"

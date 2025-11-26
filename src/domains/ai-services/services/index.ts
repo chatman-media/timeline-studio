@@ -13,6 +13,8 @@
  * See: /docs/ru/05_development/ai-director-unified-migration-guide.md
  */
 
+// AI Director Service (comprehensive analysis, audio/video analysis)
+export * from "./ai-director"
 // Core services
 // export * from "./ai-orchestrator" // ⚠️ REMOVED: Migrated to unified-orchestrator with AI Director integration
 // Specialized services

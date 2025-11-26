@@ -9,11 +9,11 @@
 import { useActor } from "@xstate/react"
 import { createContext, type ReactNode, useContext, useEffect } from "react"
 
+import { isValidWorkspaceState, loadWorkspaceState } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Widget, WidgetBounds } from "../types/widget"
 import { type ResizeHandle, type WorkspaceLayoutEvent, workspaceLayoutMachine } from "./workspace-layout-machine"
-import { isValidWorkspaceState, loadWorkspaceState } from "./workspace-persistence"
 
 const logger = createLogger("WorkspaceLayoutProvider")
 

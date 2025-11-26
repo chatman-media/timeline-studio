@@ -5,7 +5,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { AIDirectorConfig } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig } from "../ai-director"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
 import { mockAIDirectorConfig } from "../../__mocks__/ai-director-service"
 import { mockMontageAnalysisResult, mockMontagePlan } from "../../__mocks__/unified-orchestrator"
@@ -18,7 +18,7 @@ vi.mock("@tauri-apps/api/core", () => ({
 
 vi.mock("@/domains/ai-services/utils/validation")
 
-vi.mock("@/features/ai-director/services/ai-director-service", () => ({
+vi.mock("../ai-director", () => ({
   aiDirectorService: {
     analyzeComprehensive: vi.fn().mockResolvedValue({
       analysis_id: "test-analysis-123",
@@ -307,7 +307,7 @@ describe("UnifiedOrchestrator", () => {
     })
 
     it("должен использовать переданную конфигурацию AI Director", async () => {
-      const { aiDirectorService } = await import("@/features/ai-director/services/ai-director-service")
+      const { aiDirectorService } = await import("../ai-director")
 
       const config: AIDirectorConfig = {
         ...mockAIDirectorConfig,
@@ -336,7 +336,7 @@ describe("UnifiedOrchestrator", () => {
     })
 
     it("должен обрабатывать ошибки AI Director", async () => {
-      const { aiDirectorService } = await import("@/features/ai-director/services/ai-director-service")
+      const { aiDirectorService } = await import("../ai-director")
       vi.mocked(aiDirectorService.analyzeComprehensive).mockRejectedValueOnce(new Error("AI Director failed"))
 
       await expect(orchestrator.analyzeComprehensive("/test/video.mp4")).rejects.toThrow(
@@ -395,7 +395,7 @@ describe("UnifiedOrchestrator", () => {
     })
 
     it("должен обрабатывать частичные ошибки в batch", async () => {
-      const { aiDirectorService } = await import("@/features/ai-director/services/ai-director-service")
+      const { aiDirectorService } = await import("../ai-director")
       const { mockComprehensiveAnalysisResult } = await import("../../__mocks__/ai-director-service")
 
       // Первый вызов успешный, второй с ошибкой

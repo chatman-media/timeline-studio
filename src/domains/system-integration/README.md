@@ -426,8 +426,53 @@ async function exportWithProgress() {
 | `AutoUpdateDisabled` | `{}` | Event: автообновления выключены |
 | **Feature Flags** |||
 | `FeatureToggled` | `{ feature_name, enabled }` | Event: функция переключена |
+| **Performance Monitoring** (Planned) |||
+| `get_system_info` | `{}` | Command: получить системные метрики (CPU/GPU/Memory) |
 
 **Примечание:** Все события обрабатываются через `handleBackendEvent()` в `backend-event-handlers.ts`.
+
+### Планируемые команды
+
+#### get_system_info
+
+**Статус:** ⏳ Planned (требуется для `@/features/analysis-dashboard`)
+
+**Назначение:** Получение системных метрик для мониторинга производительности анализа видео.
+
+**Возвращаемые данные:**
+```typescript
+interface SystemInfo {
+  cpu: {
+    usage: number;      // 0-100 (процент использования CPU)
+    cores: number;      // количество ядер
+    model?: string;     // модель процессора
+  };
+  memory: {
+    used: number;       // использовано MB
+    total: number;      // всего MB
+    available: number;  // доступно MB
+  };
+  gpu?: {
+    usage: number;      // 0-100 (процент использования GPU)
+    name?: string;      // название видеокарты
+    memory_used?: number;  // MB
+    memory_total?: number; // MB
+  };
+}
+```
+
+**Использование:**
+```typescript
+import { invoke } from "@tauri-apps/api/core";
+
+const systemInfo = await invoke<SystemInfo>("get_system_info");
+console.log(`CPU: ${systemInfo.cpu.usage}%`);
+console.log(`Memory: ${systemInfo.memory.used} / ${systemInfo.memory.total} MB`);
+```
+
+**Связанные модули:**
+- `@/features/analysis-dashboard` - будет использовать для отображения метрик производительности
+- `services/performance/` - сервис для работы с системными метриками (планируется)
 
 ## Тестирование
 
@@ -515,11 +560,20 @@ system-integration/
 ├── providers/
 │   └── system-integration-provider.tsx
 ├── services/
-│   └── system-integration-orchestrator.ts
+│   ├── system-integration-orchestrator.ts
+│   ├── performance/         # ⏳ Planned: Системные метрики
+│   │   ├── performance-monitor.ts    # Сервис мониторинга
+│   │   └── system-info-service.ts    # Обертка для get_system_info
+│   ├── updates/             # Сервисы обновлений
+│   └── workspace/           # Сервисы рабочей области
 ├── types/
-│   └── index.ts             # SystemNotification, ModalType
+│   └── index.ts             # SystemNotification, ModalType, SystemInfo
 └── __tests__/               # Полный набор тестов
 ```
+
+**Планируемые добавления:**
+- `services/performance/` - сервисы для мониторинга системных ресурсов (CPU/GPU/Memory)
+- Будет использоваться модулем `@/features/analysis-dashboard` для отображения метрик производительности
 
 ## E2E Tests / E2E Тесты
 

@@ -1,17 +1,32 @@
 /**
  * AI Director Service - сервис для работы с реальной AI Director архитектурой
  * Все операции проходят через актуальные Tauri backend команды
+ *
+ * @module ai-services/services/ai-director
  */
 
-import { invoke } from "@tauri-apps/api/core"
-import { createLogger } from "../../../lib/tauri-logger"
-import type {
-  AIDirectorConfig,
-  ComprehensiveAnalysisResult,
-  ConfigValidationResult,
-  HealthCheckResult,
-  SystemCapabilities,
-} from "../types/ai-director"
+import { createLogger } from "@/lib/tauri-logger"
+import {
+  type AIDirectorConfig,
+  type AIDirectorVideoAnalysisOptions,
+  aiDirectorAnalyzeBatch,
+  aiDirectorAnalyzeComprehensive,
+  aiDirectorAnalyzeQuick,
+  aiDirectorGetCapabilities,
+  aiDirectorGetDefaultConfig,
+  aiDirectorHealthCheck,
+  aiDirectorValidateConfig,
+  analyzeVideoComprehensive,
+  type ComprehensiveAnalysisResult,
+  type ConfigValidationResult,
+  type HealthCheckResult,
+  type SystemCapabilities,
+  type UnifiedAudioConfig,
+  unifiedAudioAnalyzeBatch,
+  unifiedAudioAnalyzeComprehensive,
+  unifiedAudioAnalyzeQuick,
+  unifiedAudioGetCapabilities,
+} from "../../tauri/ai-director-commands"
 
 const logger = createLogger({ module: "AiDirectorService" })
 
@@ -31,57 +46,49 @@ export class AIDirectorService {
    * Запустить comprehensive analysis медиафайла
    */
   async analyzeComprehensive(videoPath: string, config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult> {
-    return invoke("ai_director_v2_analyze_comprehensive", {
-      videoPath,
-      config,
-    })
+    return aiDirectorAnalyzeComprehensive(videoPath, config)
   }
 
   /**
    * Запустить быстрый анализ медиафайла
    */
   async analyzeQuick(videoPath: string): Promise<ComprehensiveAnalysisResult> {
-    return invoke("ai_director_v2_analyze_quick", {
-      videoPath,
-    })
+    return aiDirectorAnalyzeQuick(videoPath)
   }
 
   /**
    * Запустить batch analysis нескольких файлов
    */
   async analyzeBatch(filePaths: string[], config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult[]> {
-    return invoke("ai_director_v2_analyze_batch", {
-      filePaths,
-      config,
-    })
+    return aiDirectorAnalyzeBatch(filePaths, config)
   }
 
   /**
    * Получить системные возможности AI Director
    */
   async getCapabilities(): Promise<SystemCapabilities> {
-    return invoke("ai_director_get_capabilities")
+    return aiDirectorGetCapabilities()
   }
 
   /**
    * Получить конфигурацию по умолчанию
    */
   async getDefaultConfig(mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> {
-    return invoke("ai_director_get_default_config", { mode })
+    return aiDirectorGetDefaultConfig(mode)
   }
 
   /**
    * Валидировать конфигурацию AI Director
    */
   async validateConfig(config: AIDirectorConfig): Promise<ConfigValidationResult> {
-    return invoke("ai_director_validate_config", { config })
+    return aiDirectorValidateConfig(config)
   }
 
   /**
    * Выполнить health check системы
    */
   async healthCheck(): Promise<HealthCheckResult> {
-    return invoke("ai_director_health_check")
+    return aiDirectorHealthCheck()
   }
 
   // === Audio Analysis (через Unified System) ===
@@ -98,22 +105,20 @@ export class AIDirectorService {
       performanceMode?: "fast" | "balanced" | "quality"
     },
   ): Promise<any> {
-    return invoke("unified_audio_analyze_comprehensive", {
-      videoPath,
-      config: {
-        enable_ffmpeg_analysis: config?.enableFFmpeg ?? true,
-        enable_montage_analysis: config?.enableMontage ?? true,
-        enable_transcription: config?.enableTranscription ?? false,
-        performance_mode: config?.performanceMode ?? "balanced",
-      },
-    })
+    const unifiedConfig: UnifiedAudioConfig = {
+      enable_ffmpeg_analysis: config?.enableFFmpeg ?? true,
+      enable_montage_analysis: config?.enableMontage ?? true,
+      enable_transcription: config?.enableTranscription ?? false,
+      performance_mode: config?.performanceMode ?? "balanced",
+    }
+    return unifiedAudioAnalyzeComprehensive(videoPath, unifiedConfig)
   }
 
   /**
    * Быстрый audio analysis
    */
   async analyzeAudioQuick(videoPath: string): Promise<any> {
-    return invoke("unified_audio_analyze_quick", { videoPath })
+    return unifiedAudioAnalyzeQuick(videoPath)
   }
 
   /**
@@ -123,12 +128,7 @@ export class AIDirectorService {
     filePaths: string[],
     config?: { performanceMode?: "fast" | "balanced" | "quality" },
   ): Promise<any[]> {
-    return invoke("unified_audio_analyze_batch", {
-      filePaths,
-      config: {
-        performance_mode: config?.performanceMode ?? "fast",
-      },
-    })
+    return unifiedAudioAnalyzeBatch(filePaths, config)
   }
 
   /**
@@ -140,7 +140,7 @@ export class AIDirectorService {
     whisperAvailable: boolean
     gpuAvailable: boolean
   }> {
-    return invoke("unified_audio_get_capabilities")
+    return unifiedAudioGetCapabilities()
   }
 
   // === Video Analysis ===
@@ -160,18 +160,16 @@ export class AIDirectorService {
       maxMoments?: number
     },
   ): Promise<any> {
-    return invoke("analyze_video_comprehensive", {
-      videoPath,
-      options: {
-        enable_object_detection: options?.enableObjectDetection ?? true,
-        enable_face_detection: options?.enableFaceDetection ?? true,
-        enable_emotion_analysis: options?.enableEmotionAnalysis ?? true,
-        enable_composition_analysis: options?.enableCompositionAnalysis ?? true,
-        enable_audio_analysis: options?.enableAudioAnalysis ?? true,
-        quality_threshold: options?.qualityThreshold ?? 50.0,
-        max_moments: options?.maxMoments ?? 50,
-      },
-    })
+    const videoOptions: AIDirectorVideoAnalysisOptions = {
+      enable_object_detection: options?.enableObjectDetection ?? true,
+      enable_face_detection: options?.enableFaceDetection ?? true,
+      enable_emotion_analysis: options?.enableEmotionAnalysis ?? true,
+      enable_composition_analysis: options?.enableCompositionAnalysis ?? true,
+      enable_audio_analysis: options?.enableAudioAnalysis ?? true,
+      quality_threshold: options?.qualityThreshold ?? 50.0,
+      max_moments: options?.maxMoments ?? 50,
+    }
+    return analyzeVideoComprehensive(videoPath, videoOptions)
   }
 
   // === Configuration Management ===
@@ -257,3 +255,14 @@ export class AIDirectorService {
 
 // Export singleton instance
 export const aiDirectorService = AIDirectorService.getInstance()
+
+// Re-export types for convenience
+export type {
+  AIDirectorConfig,
+  AIDirectorVideoAnalysisOptions,
+  ComprehensiveAnalysisResult,
+  ConfigValidationResult,
+  HealthCheckResult,
+  SystemCapabilities,
+  UnifiedAudioConfig,
+}

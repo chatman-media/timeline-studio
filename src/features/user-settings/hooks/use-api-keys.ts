@@ -242,15 +242,12 @@ export function useApiKeys() {
   const refreshOAuthToken = useCallback(
     async (service: string): Promise<boolean> => {
       try {
-        const result: ApiKeyOperationResult = await invoke("refresh_oauth_token", {
-          keyType: service,
-        })
+        const result = await apiKeysService.refreshOAuthToken(service)
 
         if (result.success) {
           await loadApiKeysInfo() // Обновляем информацию
           return true
         }
-        void logger.error(`Failed to refresh OAuth token for ${service}:`, { message: result.message })
         return false
       } catch (error) {
         void logger.error(`Error refreshing OAuth token for ${service}:`, { error: String(error) })
@@ -265,10 +262,7 @@ export function useApiKeys() {
    */
   const getOAuthUserInfo = useCallback(async (service: string): Promise<Record<string, unknown> | null> => {
     try {
-      const userInfo = await invoke("get_oauth_user_info", {
-        keyType: service,
-      })
-      return userInfo as Record<string, unknown>
+      return await apiKeysService.getOAuthUserInfo(service)
     } catch (error) {
       void logger.error(`Error getting OAuth user info for ${service}:`, { error: String(error) })
       return null
@@ -280,10 +274,7 @@ export function useApiKeys() {
    */
   const parseOAuthCallbackUrl = useCallback(async (url: string): Promise<Record<string, unknown> | null> => {
     try {
-      const result = await invoke("parse_oauth_callback_url", {
-        url,
-      })
-      return result as Record<string, unknown>
+      return await apiKeysService.parseOAuthCallbackUrl(url)
     } catch (error) {
       void logger.error("Error parsing OAuth callback URL:", { error: String(error) })
       return null
@@ -308,7 +299,7 @@ export function useApiKeys() {
     if (!key || key.trim().length === 0) return true // Пустой ключ валиден (не установлен)
     if (!(service in { openai: 1, claude: 1, grok: 1, deepseek: 1, gemini: 1 })) return true // OAuth сервисы не валидируем
 
-    return validateApiKeyFormat(service as SupportedService, key)
+    return apiKeysService.validateKeyFormat(service as SupportedService, key)
   }, [])
 
   return {

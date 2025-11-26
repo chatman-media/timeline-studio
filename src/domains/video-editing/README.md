@@ -11,7 +11,11 @@ Video Editing домен содержит всю логику, связанну�
 ```
 video-editing/
 ├── providers/         # React провайдеры для таймлайна
-├── services/          # Сервисы импорта/экспорта
+├── services/          # Сервисы домена
+│   ├── effects/       # Сервисы управления эффектами
+│   │   ├── user-presets-service.ts  # Пресеты эффектов
+│   │   ├── user-effects-service.ts  # Пользовательские эффекты
+│   │   └── index.ts
 │   └── import-export/ # AAF, FCPXML импортеры/экспортеры
 ├── types/            # Основные типы домена
 │   ├── timeline.ts   # Типы таймлайна

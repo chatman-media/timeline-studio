@@ -1,7 +1,3 @@
-/**
- * @deprecated Тесты перенесены в @/domains/project-management/__tests__/services/app-directories-service.test.ts
- * Этот файл оставлен для обратной совместимости и будет удален в будущем
- */
 import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 

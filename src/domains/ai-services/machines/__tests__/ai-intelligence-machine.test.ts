@@ -6,12 +6,12 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
-import type { AIDirectorConfig } from "@/features/ai-director/types/ai-director"
+import type { AIDirectorConfig } from "../../services/ai-director"
 import type { AnalysisOptions } from "@/types/montage-planner-rust"
 import { aiIntelligenceMachine } from "../ai-intelligence-machine"
 
 // Mock dependencies
-vi.mock("@/features/ai-director/services/ai-director-service", async () => {
+vi.mock("../../services/ai-director", async () => {
   const mocks = await import("../../__mocks__/ai-director-service")
   return {
     aiDirectorService: {
