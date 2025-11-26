@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState } from "react";
 
-type Language = "en" | "ru" | "zh"
+type Language = "en" | "ru" | "zh";
 
 interface LanguageContextType {
-  language: Language
-  setLanguage: (lang: Language) => void
-  t: (key: string) => string
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
 }
 
 const translations = {
@@ -23,7 +23,8 @@ const translations = {
 
     // Blog
     "blog.title": "Blog",
-    "blog.subtitle": "News, tutorials, and insights from the Timeline Studio team",
+    "blog.subtitle":
+      "News, tutorials, and insights from the Timeline Studio team",
     "blog.tagline": "Stay updated with the latest features and best practices",
     "blog.loading": "Loading posts...",
     "blog.readMore": "Read more",
@@ -45,20 +46,22 @@ const translations = {
     "footer.resources.faqs": "FAQs",
     "footer.resources.submitFeedback": "Submit feedback",
     "footer.social.title": "Follow Us",
-    "footer.copyright": "© 2025 Timeline Studio, Inc.",
+    "footer.copyright": "© Timeline Studio, Inc.",
     "footer.legal.termsOfService": "Terms of Service",
     "footer.legal.privacyPolicy": "Privacy Policy",
     "footer.legal.responsibleAI": "Responsible AI Policy",
 
     // Hero section
     "hero.title": "AI-Powered Video Creation",
-    "hero.subtitle": "Watch Timeline Studio AI help you create viral content in seconds",
+    "hero.subtitle":
+      "Watch Timeline Studio AI help you create viral content in seconds",
     "hero.description": "Enter your ideas and let AI work its magic",
     "hero.downloadFree": "Download Free",
 
     // Changelog
     "changelog.title": "Changelog",
-    "changelog.subtitle": "Track all updates and improvements to Timeline Studio",
+    "changelog.subtitle":
+      "Track all updates and improvements to Timeline Studio",
     "changelog.latest": "LATEST",
     "changelog.newFeatures": "New Features",
     "changelog.bugFixes": "Bug Fixes",
@@ -87,8 +90,10 @@ const translations = {
       "Upscale to 8K, stabilize shaky footage, remove objects, and enhance audio - all with one-click AI magic",
     "mainPage.features.magicEnhancement.superResolution": "Super Resolution",
     "mainPage.aiSmartEditing.title": "AI-Powered Smart Editing",
-    "mainPage.aiSmartEditing.subtitle": "Let AI do the heavy lifting while you focus on creativity",
-    "mainPage.aiSmartEditing.description": "Our neural networks analyze, optimize, and perfect every frame 🤖",
+    "mainPage.aiSmartEditing.subtitle":
+      "Let AI do the heavy lifting while you focus on creativity",
+    "mainPage.aiSmartEditing.description":
+      "Our neural networks analyze, optimize, and perfect every frame 🤖",
     "mainPage.aiSmartEditing.neuralSceneAnalysis": "Neural Scene Analysis",
     "mainPage.aiSmartEditing.neuralSceneAnalysisDesc":
       "Our AI watches your footage like a professional editor, identifying key moments, emotions, and story beats in milliseconds",
@@ -96,7 +101,8 @@ const translations = {
     "mainPage.aiSmartEditing.realTime": "Real-time",
     "mainPage.download.title": "Download Free",
     "mainPage.download.subtitle": "Available for all major operating systems",
-    "mainPage.download.description": "Choose your platform and start creating amazing videos today",
+    "mainPage.download.description":
+      "Choose your platform and start creating amazing videos today",
     "mainPage.download.downloadFor": "Download for",
     "mainPage.download.latestVersion": "Latest version",
     "mainPage.download.checkGithub": "Check GitHub",
@@ -108,56 +114,87 @@ const translations = {
     "mainPage.hero.description.local": "Local features",
     "mainPage.hero.description.free": "free forever",
     "mainPage.hero.description.localAI": "Local AI processing.",
-    "mainPage.hero.description.cloud": "Cloud features and premium AI models available with PRO subscription.",
+    "mainPage.hero.description.cloud":
+      "Cloud features and premium AI models available with PRO subscription.",
     "mainPage.hero.openSource": "Open Source",
     "mainPage.hero.downloadFree": "Download Free",
     "mainPage.hero.viewGithub": "View on GitHub",
 
+    // Interface section
+    "mainPage.interface.title": "The",
+    "mainPage.interface.titleHighlight": "Interface",
+    "mainPage.interface.description": "Clean, intuitive, and powerful - everything where you need it",
+
     // What You Can Do
     "mainPage.whatYouCanDo.title": "What You Can",
     "mainPage.whatYouCanDo.titleHighlight": "Create",
-    "mainPage.whatYouCanDo.subtitle": "Everything you need for professional video production",
+    "mainPage.whatYouCanDo.subtitle":
+      "Everything you need for professional video production",
     "mainPage.whatYouCanDo.professional.title": "Professional Video Editing",
-    "mainPage.whatYouCanDo.professional.description": "Full-featured timeline with all the tools you need",
-    "mainPage.whatYouCanDo.professional.examples.multitrack": "Multi-track timeline with unlimited layers",
-    "mainPage.whatYouCanDo.professional.examples.frameAccurate": "Frame-accurate editing",
-    "mainPage.whatYouCanDo.professional.examples.multicam": "Multi-camera editing with angle switching",
-    "mainPage.whatYouCanDo.professional.examples.compound": "Compound clips and nesting",
+    "mainPage.whatYouCanDo.professional.description":
+      "Full-featured timeline with all the tools you need",
+    "mainPage.whatYouCanDo.professional.examples.multitrack":
+      "Multi-track timeline with unlimited layers",
+    "mainPage.whatYouCanDo.professional.examples.frameAccurate":
+      "Frame-accurate editing",
+    "mainPage.whatYouCanDo.professional.examples.multicam":
+      "Multi-camera editing with angle switching",
+    "mainPage.whatYouCanDo.professional.examples.compound":
+      "Compound clips and nesting",
     "mainPage.whatYouCanDo.aiPowered.title": "AI-Powered Automation",
-    "mainPage.whatYouCanDo.aiPowered.description": "100+ AI tools to accelerate your workflow",
-    "mainPage.whatYouCanDo.aiPowered.examples.sceneDetection": "Auto scene detection and slicing",
-    "mainPage.whatYouCanDo.aiPowered.examples.colorGrading": "Smart color grading",
-    "mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement": "Audio enhancement and noise removal",
-    "mainPage.whatYouCanDo.aiPowered.examples.subtitles": "Automatic subtitle generation",
+    "mainPage.whatYouCanDo.aiPowered.description":
+      "100+ AI tools to accelerate your workflow",
+    "mainPage.whatYouCanDo.aiPowered.examples.sceneDetection":
+      "Auto scene detection and slicing",
+    "mainPage.whatYouCanDo.aiPowered.examples.colorGrading":
+      "Smart color grading",
+    "mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement":
+      "Audio enhancement and noise removal",
+    "mainPage.whatYouCanDo.aiPowered.examples.subtitles":
+      "Automatic subtitle generation",
     "mainPage.whatYouCanDo.effects.title": "Effects & Transitions",
     "mainPage.whatYouCanDo.effects.description": "Professional effects library",
-    "mainPage.whatYouCanDo.effects.examples.transitions": "100+ transitions (3D, glitch, cinematic)",
+    "mainPage.whatYouCanDo.effects.examples.transitions":
+      "100+ transitions (3D, glitch, cinematic)",
     "mainPage.whatYouCanDo.effects.examples.luts": "Color grading with LUTs",
-    "mainPage.whatYouCanDo.effects.examples.chromaKey": "Chroma key / green screen",
-    "mainPage.whatYouCanDo.effects.examples.speedRamping": "Speed ramping and time remapping",
+    "mainPage.whatYouCanDo.effects.examples.chromaKey":
+      "Chroma key / green screen",
+    "mainPage.whatYouCanDo.effects.examples.speedRamping":
+      "Speed ramping and time remapping",
     "mainPage.whatYouCanDo.audio.title": "Advanced Audio (Fairlight)",
     "mainPage.whatYouCanDo.audio.description": "Professional audio editing",
     "mainPage.whatYouCanDo.audio.examples.mixing": "Multi-track audio mixing",
     "mainPage.whatYouCanDo.audio.examples.surround": "Surround sound support",
     "mainPage.whatYouCanDo.audio.examples.effects": "Audio effects and filters",
-    "mainPage.whatYouCanDo.audio.examples.voiceEnhancement": "Voice enhancement and EQ",
+    "mainPage.whatYouCanDo.audio.examples.voiceEnhancement":
+      "Voice enhancement and EQ",
     "mainPage.whatYouCanDo.export.title": "Export & Publishing",
-    "mainPage.whatYouCanDo.export.description": "Export to any format or platform",
-    "mainPage.whatYouCanDo.export.examples.quality": "4K/8K export without watermarks",
-    "mainPage.whatYouCanDo.export.examples.directUpload": "Direct upload to YouTube, TikTok, Vimeo",
-    "mainPage.whatYouCanDo.export.examples.presets": "Custom presets for social media",
-    "mainPage.whatYouCanDo.export.examples.hwAccelerated": "Hardware-accelerated rendering",
+    "mainPage.whatYouCanDo.export.description":
+      "Export to any format or platform",
+    "mainPage.whatYouCanDo.export.examples.quality":
+      "4K/8K export without watermarks",
+    "mainPage.whatYouCanDo.export.examples.directUpload":
+      "Direct upload to YouTube, TikTok, Vimeo",
+    "mainPage.whatYouCanDo.export.examples.presets":
+      "Custom presets for social media",
+    "mainPage.whatYouCanDo.export.examples.hwAccelerated":
+      "Hardware-accelerated rendering",
     "mainPage.whatYouCanDo.recognition.title": "Recognition & Analysis",
-    "mainPage.whatYouCanDo.recognition.description": "AI-powered scene understanding",
-    "mainPage.whatYouCanDo.recognition.examples.faceObject": "Face and object recognition (YOLO)",
+    "mainPage.whatYouCanDo.recognition.description":
+      "AI-powered scene understanding",
+    "mainPage.whatYouCanDo.recognition.examples.faceObject":
+      "Face and object recognition (YOLO)",
     "mainPage.whatYouCanDo.recognition.examples.emotion": "Emotion recognition",
-    "mainPage.whatYouCanDo.recognition.examples.sceneClassification": "Scene classification",
-    "mainPage.whatYouCanDo.recognition.examples.quality": "Quality analysis and rating",
+    "mainPage.whatYouCanDo.recognition.examples.sceneClassification":
+      "Scene classification",
+    "mainPage.whatYouCanDo.recognition.examples.quality":
+      "Quality analysis and rating",
 
     // Video Demos
     "mainPage.videoDemos.title": "See it",
     "mainPage.videoDemos.titleHighlight": "in Action",
-    "mainPage.videoDemos.subtitle": "Short video tutorials showcasing Timeline Studio's powerful features",
+    "mainPage.videoDemos.subtitle":
+      "Short video tutorials showcasing Timeline Studio's powerful features",
     "mainPage.videoDemos.aiEditing.title": "AI Auto-Edit in Action",
     "mainPage.videoDemos.aiEditing.description":
       "Watch how AI selects the best moments and creates engaging edits automatically",
@@ -165,7 +202,8 @@ const translations = {
     "mainPage.videoDemos.multiCamera.description":
       "Editing multi-angle footage with automatic switching and synchronization",
     "mainPage.videoDemos.colorGrading.title": "Color Grading Tutorial",
-    "mainPage.videoDemos.colorGrading.description": "Professional color correction and grading workflow",
+    "mainPage.videoDemos.colorGrading.description":
+      "Professional color correction and grading workflow",
     "mainPage.videoDemos.comingSoon": "Coming Soon",
     "mainPage.videoDemos.checkGithub": "Want to see more? Check out our",
     "mainPage.videoDemos.githubRepo": "GitHub repository",
@@ -174,9 +212,11 @@ const translations = {
     // Docs
     "docs.title": "Documentation",
     "docs.subtitle": "Everything you need to know about Timeline Studio",
-    "docs.description": "Development guides, API reference, and best practices 📚",
+    "docs.description":
+      "Development guides, API reference, and best practices 📚",
     "docs.contribute.title": "Want to contribute?",
-    "docs.contribute.description": "Help us improve Timeline Studio by contributing to the documentation or codebase.",
+    "docs.contribute.description":
+      "Help us improve Timeline Studio by contributing to the documentation or codebase.",
     "docs.contribute.viewGithub": "View on GitHub",
     "docs.contribute.contributingGuide": "Contributing Guide",
     "docs.sections.integrations.title": "Integrations",
@@ -240,7 +280,8 @@ const translations = {
 
     // Project page translations
     "project.hero.title": "Project Documentation",
-    "project.hero.description": "Complete Timeline Studio documentation - revolutionary AI video editor",
+    "project.hero.description":
+      "Complete Timeline Studio documentation - revolutionary AI video editor",
     "project.hero.version": "Version 1.40.0",
     "project.hero.ready": "95% ready",
     "project.hero.tools": "100+ AI tools",
@@ -261,7 +302,8 @@ const translations = {
 
     // Pricing
     "pricing.title": "Simple Pricing",
-    "pricing.subtitle": "Local features free. Cloud features paid. Everything transparent.",
+    "pricing.subtitle":
+      "Local features free. Cloud features paid. Everything transparent.",
     "pricing.description":
       "AI avatars, video generation, one-click export to TikTok/YouTube\nEverything you need to dominate social media",
     "pricing.mostPopular": "MOST POPULAR",
@@ -300,7 +342,8 @@ const translations = {
     "pricing.features.teamResourceLibraries": "Team resource libraries",
     "pricing.features.ssoAuthentication": "SSO authentication",
     "pricing.features.onPremiseDeployment": "On-premise deployment",
-    "pricing.features.unlimitedStorageRendering": "Unlimited storage & rendering",
+    "pricing.features.unlimitedStorageRendering":
+      "Unlimited storage & rendering",
     "pricing.features.customAiModels": "Custom AI models",
     "pricing.features.apiAccess": "API access",
     "pricing.features.dedicatedManagerSla": "Dedicated manager & SLA",
@@ -313,7 +356,8 @@ const translations = {
     "pricing.faq.canUpgradeDowngrade.question": "Can I upgrade or downgrade?",
     "pricing.faq.canUpgradeDowngrade.answer":
       "Yes! You can change your plan anytime. When upgrading, you'll get instant access to new features. When downgrading, changes take effect at the next billing cycle.",
-    "pricing.faq.whyFreePowerful.question": "Why is the free version so powerful?",
+    "pricing.faq.whyFreePowerful.question":
+      "Why is the free version so powerful?",
     "pricing.faq.whyFreePowerful.answer":
       "We believe in transparency. Everything that can run on your computer is free. You only pay for cloud services and third-party APIs that require our infrastructure costs.",
     "pricing.faq.isThereFreeTrial.question": "Is there a free trial?",
@@ -322,86 +366,117 @@ const translations = {
 
     // About page
     "about.hero.title": "Redefining Video Editing",
-    "about.hero.subtitle": "Timeline Studio combines AI innovation with professional editing tools",
+    "about.hero.subtitle":
+      "Timeline Studio combines AI innovation with professional editing tools",
     "about.hero.founded": "Founded in 2025",
     "about.hero.remote": "Distributed Development Team",
     "about.hero.openSource": "Open Source",
     "about.mission.title": "Our Mission",
-    "about.mission.paragraph1": "We believe that professional video editing software should be accessible to everyone, not just professionals with expensive tools and years of experience. Our mission is to democratize video creation by combining cutting-edge AI technology with intuitive design.",
-    "about.mission.paragraph2": "Timeline Studio represents a new paradigm in video editing - where AI handles the technical complexity while you focus on creating the best content. Our AI assistant, powered by Claude, OpenAI, DeepSeek, and Ollama, helps you choose the best moments during editing, turning raw footage into compelling stories.",
+    "about.mission.paragraph1":
+      "We believe that professional video editing software should be accessible to everyone, not just professionals with expensive tools and years of experience. Our mission is to democratize video creation by combining cutting-edge AI technology with intuitive design.",
+    "about.mission.paragraph2":
+      "Timeline Studio represents a new paradigm in video editing - where AI handles the technical complexity while you focus on creating the best content. Our AI assistant, powered by Claude, OpenAI, DeepSeek, and Ollama, helps you choose the best moments during editing, turning raw footage into compelling stories.",
     "about.values.title": "Our Values",
     "about.values.innovation.title": "Innovation",
-    "about.values.innovation.description": "We push the boundaries of what's possible with AI and video technology, constantly exploring new ways to enhance creativity.",
+    "about.values.innovation.description":
+      "We push the boundaries of what's possible with AI and video technology, constantly exploring new ways to enhance creativity.",
     "about.values.community.title": "Community",
-    "about.values.community.description": "We build for our community first, listening to feedback and collaborating with users to create the best possible experience.",
+    "about.values.community.description":
+      "We build for our community first, listening to feedback and collaborating with users to create the best possible experience.",
     "about.values.efficiency.title": "Efficiency",
-    "about.values.efficiency.description": "We believe technology should make complex tasks simple, allowing creators to focus on their vision rather than technical details.",
+    "about.values.efficiency.description":
+      "We believe technology should make complex tasks simple, allowing creators to focus on their vision rather than technical details.",
     "about.values.privacy.title": "Privacy",
-    "about.values.privacy.description": "Your data belongs to you. We prioritize privacy and security, with local-first architecture that keeps your content safe.",
+    "about.values.privacy.description":
+      "Your data belongs to you. We prioritize privacy and security, with local-first architecture that keeps your content safe.",
     "about.values.userCentric.title": "User-Centric Design",
-    "about.values.userCentric.description": "Every feature is designed with real users in mind, ensuring our tools are intuitive and accessible to creators of all skill levels.",
+    "about.values.userCentric.description":
+      "Every feature is designed with real users in mind, ensuring our tools are intuitive and accessible to creators of all skill levels.",
     "about.values.openInnovation.title": "Open Innovation",
-    "about.values.openInnovation.description": "We believe in transparent development and open collaboration, contributing to the broader creative community.",
+    "about.values.openInnovation.description":
+      "We believe in transparent development and open collaboration, contributing to the broader creative community.",
     "about.team.title": "Our Team",
-    "about.team.description": "We're a passionate team of developers, designers, and video enthusiasts dedicated to revolutionizing video editing. Based around the world, we collaborate remotely to build tools that empower creators everywhere.",
+    "about.team.description":
+      "We're a passionate team of developers, designers, and video enthusiasts dedicated to revolutionizing video editing. Based around the world, we collaborate remotely to build tools that empower creators everywhere.",
     "about.team.founder": "Founder & Lead Developer",
     "about.investor.title": "For Investors",
-    "about.investor.description": "Interested in investing? View our detailed project documentation, business plan, and financial projections.",
+    "about.investor.description":
+      "Interested in investing? View our detailed project documentation, business plan, and financial projections.",
     "about.investor.viewDocs": "View Investment Documentation",
     "about.cta.title": "Ready to Transform Your Video Editing?",
-    "about.cta.description": "Join thousands of creators who are already using Timeline Studio to create amazing content. Start your journey today.",
+    "about.cta.description":
+      "Join thousands of creators who are already using Timeline Studio to create amazing content. Start your journey today.",
     "about.cta.contributeGithub": "Contribute on GitHub",
     "about.cta.tryStudio": "Try Timeline Studio",
     "about.aiEditor.title": "AI-Powered Video Editor",
-    "about.aiEditor.subtitle": "Professional video editing with intelligent AI director and 100+ specialized tools",
+    "about.aiEditor.subtitle":
+      "Professional video editing with intelligent AI director and 100+ specialized tools",
     "about.aiDirector.title": "AI Director",
-    "about.aiDirector.description": "Intelligent scene selection and automated multicam editing powered by AI assistants (Claude, OpenAI, DeepSeek, Ollama) that help you choose the best moments during the editing process",
+    "about.aiDirector.description":
+      "Intelligent scene selection and automated multicam editing powered by AI assistants (Claude, OpenAI, DeepSeek, Ollama) that help you choose the best moments during the editing process",
     "about.aiDirector.feature1": "Auto-detect best moments",
     "about.aiDirector.feature2": "Emotional arc construction",
     "about.aiDirector.feature3": "Smart angle switching",
     "about.aiDirector.feature4": "Music synchronization",
     "about.aiTools.title": "100+ AI Tools",
-    "about.aiTools.description": "Comprehensive suite of specialized AI tools running locally for complete creative control and privacy",
+    "about.aiTools.description":
+      "Comprehensive suite of specialized AI tools running locally for complete creative control and privacy",
     "about.aiTools.feature1": "Color grading AI",
     "about.aiTools.feature2": "Audio enhancement",
     "about.aiTools.feature3": "Effects & transitions",
     "about.aiTools.feature4": "Text & subtitles",
     "about.localModels.title": "Local AI Models",
-    "about.localModels.description": "Advanced computer vision and audio analysis models running entirely on your machine for maximum privacy",
+    "about.localModels.description":
+      "Advanced computer vision and audio analysis models running entirely on your machine for maximum privacy",
     "about.localModels.feature1": "Face & object detection",
     "about.localModels.feature2": "Emotion recognition",
-    "about.localModels.feature3": "Local scene analysis models (YOLO, Moondream)",
+    "about.localModels.feature3":
+      "Local scene analysis models (YOLO, Moondream)",
     "about.localModels.feature4": "Speech recognition",
     "about.corePrinciples.title": "Core Principles",
     "about.corePrinciples.speed.title": "Speed & Efficiency",
-    "about.corePrinciples.speed.description": "GPU acceleration and smart caching for real-time editing",
+    "about.corePrinciples.speed.description":
+      "GPU acceleration and smart caching for real-time editing",
     "about.corePrinciples.privacy.title": "Privacy First",
-    "about.corePrinciples.privacy.description": "All AI processing runs locally - your data never leaves your machine",
+    "about.corePrinciples.privacy.description":
+      "All AI processing runs locally - your data never leaves your machine",
     "about.corePrinciples.innovation.title": "Innovation",
-    "about.corePrinciples.innovation.description": "Cutting-edge AI technology for professional video production",
+    "about.corePrinciples.innovation.description":
+      "Cutting-edge AI technology for professional video production",
     "about.corePrinciples.openSource.title": "Open Source",
-    "about.corePrinciples.openSource.description": "Free forever, built by the community for creators worldwide",
+    "about.corePrinciples.openSource.description":
+      "Free forever, built by the community for creators worldwide",
 
     // FAQ page
     "faq.title": "Frequently Asked Questions",
     "faq.questions.whatIs.question": "What is Timeline Studio?",
-    "faq.questions.whatIs.answer": "Timeline Studio is an AI-powered video editing application that helps you create professional-quality videos faster than ever. With 100+ AI tools, it automates tedious tasks while giving you creative control.",
+    "faq.questions.whatIs.answer":
+      "Timeline Studio is an AI-powered video editing application that helps you create professional-quality videos faster than ever. With 100+ AI tools, it automates tedious tasks while giving you creative control.",
     "faq.questions.isFree.question": "Is Timeline Studio free?",
-    "faq.questions.isFree.answer": "Yes! Timeline Studio is completely free and open-source. You can download it for Windows, macOS, and Linux without any cost or subscription fees.",
+    "faq.questions.isFree.answer":
+      "Yes! Timeline Studio is completely free and open-source. You can download it for Windows, macOS, and Linux without any cost or subscription fees.",
     "faq.questions.formats.question": "What video formats are supported?",
-    "faq.questions.formats.answer": "Timeline Studio supports all major video formats including MP4, MOV, AVI, MKV, WebM, and more. It can also export to various formats optimized for different platforms.",
-    "faq.questions.commercial.question": "Can I use Timeline Studio for commercial projects?",
-    "faq.questions.commercial.answer": "Absolutely! Timeline Studio is released under a permissive license that allows both personal and commercial use without restrictions.",
+    "faq.questions.formats.answer":
+      "Timeline Studio supports all major video formats including MP4, MOV, AVI, MKV, WebM, and more. It can also export to various formats optimized for different platforms.",
+    "faq.questions.commercial.question":
+      "Can I use Timeline Studio for commercial projects?",
+    "faq.questions.commercial.answer":
+      "Absolutely! Timeline Studio is released under a permissive license that allows both personal and commercial use without restrictions.",
     "faq.questions.requirements.question": "What are the system requirements?",
-    "faq.questions.requirements.answer": "Timeline Studio runs on Windows 10+, macOS 10.15+, and most Linux distributions. We recommend at least 8GB RAM and a dedicated graphics card for optimal performance with AI features.",
+    "faq.questions.requirements.answer":
+      "Timeline Studio runs on Windows 10+, macOS 10.15+, and most Linux distributions. We recommend at least 8GB RAM and a dedicated graphics card for optimal performance with AI features.",
     "faq.questions.aiHow.question": "How does the AI video editing work?",
-    "faq.questions.aiHow.answer": "Our AI analyzes your footage to identify key moments, suggests cuts, applies effects, and can even generate entire edited sequences based on your preferences. You maintain full control and can override any AI decisions.",
+    "faq.questions.aiHow.answer":
+      "Our AI analyzes your footage to identify key moments, suggests cuts, applies effects, and can even generate entire edited sequences based on your preferences. You maintain full control and can override any AI decisions.",
     "faq.questions.dataSafe.question": "Is my data safe?",
-    "faq.questions.dataSafe.answer": "Yes! Timeline Studio processes everything locally on your computer. Your videos and projects never leave your device, ensuring complete privacy and security.",
+    "faq.questions.dataSafe.answer":
+      "Yes! Timeline Studio processes everything locally on your computer. Your videos and projects never leave your device, ensuring complete privacy and security.",
     "faq.questions.contribute.question": "Can I contribute to the project?",
-    "faq.questions.contribute.answer": "We welcome contributions! Timeline Studio is open-source on GitHub. You can submit bug reports, feature requests, or even contribute code to help improve the software.",
+    "faq.questions.contribute.answer":
+      "We welcome contributions! Timeline Studio is open-source on GitHub. You can submit bug reports, feature requests, or even contribute code to help improve the software.",
     "faq.stillQuestions.title": "Still have questions?",
-    "faq.stillQuestions.description": "Feel free to reach out to our community or check our documentation.",
+    "faq.stillQuestions.description":
+      "Feel free to reach out to our community or check our documentation.",
     "faq.stillQuestions.joinDiscord": "Join Discord Community",
     "faq.stillQuestions.openIssue": "Open GitHub Issue",
   },
@@ -441,20 +516,22 @@ const translations = {
     "footer.resources.faqs": "Частые вопросы",
     "footer.resources.submitFeedback": "Отправить отзыв",
     "footer.social.title": "Подписывайтесь",
-    "footer.copyright": "© 2025 Timeline Studio, Inc.",
+    "footer.copyright": "© Timeline Studio, Inc.",
     "footer.legal.termsOfService": "Условия использования",
     "footer.legal.privacyPolicy": "Политика конфиденциальности",
     "footer.legal.responsibleAI": "Политика ответственного ИИ",
 
     // Hero section
     "hero.title": "Создание видео с помощью ИИ",
-    "hero.subtitle": "Смотрите, как Timeline Studio AI поможет вам создать вирусный контент за секунды",
+    "hero.subtitle":
+      "Смотрите, как Timeline Studio AI поможет вам создать вирусный контент за секунды",
     "hero.description": "Введите свои идеи и позвольте ИИ творить чудеса",
     "hero.downloadFree": "Скачать бесплатно",
 
     // Changelog
     "changelog.title": "История изменений",
-    "changelog.subtitle": "Отслеживайте все обновления и улучшения Timeline Studio",
+    "changelog.subtitle":
+      "Отслеживайте все обновления и улучшения Timeline Studio",
     "changelog.latest": "ПОСЛЕДНЯЯ",
     "changelog.newFeatures": "Новые функции",
     "changelog.bugFixes": "Исправления ошибок",
@@ -473,7 +550,8 @@ const translations = {
     "mainPage.features.viralOptimization.title": "Вирусная оптимизация",
     "mainPage.features.viralOptimization.description":
       "Оптимизируйте тайминг, хештеги и формат контента для каждой социальной платформы",
-    "mainPage.features.cinematicAutoEdit.title": "Кинематографическое авто-редактирование",
+    "mainPage.features.cinematicAutoEdit.title":
+      "Кинематографическое авто-редактирование",
     "mainPage.features.cinematicAutoEdit.description":
       "Превращайте сырые клипы в голливудские последовательности с динамичным темпом, идеальным таймингом и эмоциональным потоком",
     "mainPage.features.cinematicAutoEdit.filmTheory": "Теория кино",
@@ -483,7 +561,8 @@ const translations = {
       "Увеличивайте до 8K, стабилизируйте дрожащие кадры, удаляйте объекты и улучшайте звук - всё одним кликом ИИ магии",
     "mainPage.features.magicEnhancement.superResolution": "Супер разрешение",
     "mainPage.aiSmartEditing.title": "ИИ-управляемое умное редактирование",
-    "mainPage.aiSmartEditing.subtitle": "Позвольте ИИ делать тяжёлую работу, пока вы сосредотачиваетесь на творчестве",
+    "mainPage.aiSmartEditing.subtitle":
+      "Позвольте ИИ делать тяжёлую работу, пока вы сосредотачиваетесь на творчестве",
     "mainPage.aiSmartEditing.description":
       "Наши нейронные сети анализируют, оптимизируют и совершенствуют каждый кадр 🤖",
     "mainPage.aiSmartEditing.neuralSceneAnalysis": "Нейронный анализ сцен",
@@ -492,8 +571,10 @@ const translations = {
     "mainPage.aiSmartEditing.deepLearning": "Глубокое обучение",
     "mainPage.aiSmartEditing.realTime": "В реальном времени",
     "mainPage.download.title": "Скачать",
-    "mainPage.download.subtitle": "Доступно для всех основных операционных систем",
-    "mainPage.download.description": "Выберите свою платформу и начните создавать потрясающие видео уже сегодня",
+    "mainPage.download.subtitle":
+      "Доступно для всех основных операционных систем",
+    "mainPage.download.description":
+      "Выберите свою платформу и начните создавать потрясающие видео уже сегодня",
     "mainPage.download.downloadFor": "Скачать для",
     "mainPage.download.latestVersion": "Последняя версия",
     "mainPage.download.checkGithub": "Проверить на GitHub",
@@ -505,56 +586,90 @@ const translations = {
     "mainPage.hero.description.local": "Локальные функции",
     "mainPage.hero.description.free": "бесплатно навсегда",
     "mainPage.hero.description.localAI": "Локальная обработка ИИ.",
-    "mainPage.hero.description.cloud": "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
+    "mainPage.hero.description.cloud":
+      "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
     "mainPage.hero.openSource": "Открытый код",
     "mainPage.hero.downloadFree": "Скачать",
     "mainPage.hero.viewGithub": "Посмотреть на GitHub",
 
+    // Interface section
+    "mainPage.interface.title": "",
+    "mainPage.interface.titleHighlight": "Интерфейс",
+    "mainPage.interface.description": "Чистый, интуитивный и мощный — всё на своих местах",
+
     // What You Can Do
     "mainPage.whatYouCanDo.title": "Что можно",
     "mainPage.whatYouCanDo.titleHighlight": "создать",
-    "mainPage.whatYouCanDo.subtitle": "Всё необходимое для профессионального производства видео",
+    "mainPage.whatYouCanDo.subtitle":
+      "Всё необходимое для профессионального производства видео",
     "mainPage.whatYouCanDo.professional.title": "Профессиональный видеомонтаж",
-    "mainPage.whatYouCanDo.professional.description": "Полнофункциональный таймлайн со всеми необходимыми инструментами",
-    "mainPage.whatYouCanDo.professional.examples.multitrack": "Многодорожечный таймлайн с неограниченным количеством слоёв",
-    "mainPage.whatYouCanDo.professional.examples.frameAccurate": "Покадровый монтаж",
-    "mainPage.whatYouCanDo.professional.examples.multicam": "Мультикамерный монтаж с переключением углов",
-    "mainPage.whatYouCanDo.professional.examples.compound": "Составные клипы и вложенность",
+    "mainPage.whatYouCanDo.professional.description":
+      "Полнофункциональный таймлайн со всеми необходимыми инструментами",
+    "mainPage.whatYouCanDo.professional.examples.multitrack":
+      "Многодорожечный таймлайн с неограниченным количеством слоёв",
+    "mainPage.whatYouCanDo.professional.examples.frameAccurate":
+      "Покадровый монтаж",
+    "mainPage.whatYouCanDo.professional.examples.multicam":
+      "Мультикамерный монтаж с переключением углов",
+    "mainPage.whatYouCanDo.professional.examples.compound":
+      "Составные клипы и вложенность",
     "mainPage.whatYouCanDo.aiPowered.title": "Автоматизация с помощью ИИ",
-    "mainPage.whatYouCanDo.aiPowered.description": "100+ ИИ-инструментов для ускорения рабочего процесса",
-    "mainPage.whatYouCanDo.aiPowered.examples.sceneDetection": "Автоопределение сцен и нарезка",
-    "mainPage.whatYouCanDo.aiPowered.examples.colorGrading": "Умная цветокоррекция",
-    "mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement": "Улучшение звука и удаление шума",
-    "mainPage.whatYouCanDo.aiPowered.examples.subtitles": "Автоматическая генерация субтитров",
+    "mainPage.whatYouCanDo.aiPowered.description":
+      "100+ ИИ-инструментов для ускорения рабочего процесса",
+    "mainPage.whatYouCanDo.aiPowered.examples.sceneDetection":
+      "Автоопределение сцен и нарезка",
+    "mainPage.whatYouCanDo.aiPowered.examples.colorGrading":
+      "Умная цветокоррекция",
+    "mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement":
+      "Улучшение звука и удаление шума",
+    "mainPage.whatYouCanDo.aiPowered.examples.subtitles":
+      "Автоматическая генерация субтитров",
     "mainPage.whatYouCanDo.effects.title": "Эффекты и переходы",
-    "mainPage.whatYouCanDo.effects.description": "Профессиональная библиотека эффектов",
-    "mainPage.whatYouCanDo.effects.examples.transitions": "100+ переходов (3D, глитч, кинематограф)",
+    "mainPage.whatYouCanDo.effects.description":
+      "Профессиональная библиотека эффектов",
+    "mainPage.whatYouCanDo.effects.examples.transitions":
+      "100+ переходов (3D, глитч, кинематограф)",
     "mainPage.whatYouCanDo.effects.examples.luts": "Цветокоррекция с LUT",
-    "mainPage.whatYouCanDo.effects.examples.chromaKey": "Хромакей / зелёный экран",
-    "mainPage.whatYouCanDo.effects.examples.speedRamping": "Изменение скорости и time remapping",
+    "mainPage.whatYouCanDo.effects.examples.chromaKey":
+      "Хромакей / зелёный экран",
+    "mainPage.whatYouCanDo.effects.examples.speedRamping":
+      "Изменение скорости и time remapping",
     "mainPage.whatYouCanDo.audio.title": "Продвинутый звук (Fairlight)",
     "mainPage.whatYouCanDo.audio.description": "Профессиональный аудиомонтаж",
     "mainPage.whatYouCanDo.audio.examples.mixing": "Многодорожечный аудиомикс",
-    "mainPage.whatYouCanDo.audio.examples.surround": "Поддержка объёмного звука",
+    "mainPage.whatYouCanDo.audio.examples.surround":
+      "Поддержка объёмного звука",
     "mainPage.whatYouCanDo.audio.examples.effects": "Аудиоэффекты и фильтры",
-    "mainPage.whatYouCanDo.audio.examples.voiceEnhancement": "Улучшение голоса и EQ",
+    "mainPage.whatYouCanDo.audio.examples.voiceEnhancement":
+      "Улучшение голоса и EQ",
     "mainPage.whatYouCanDo.export.title": "Экспорт и публикация",
-    "mainPage.whatYouCanDo.export.description": "Экспорт в любой формат или платформу",
-    "mainPage.whatYouCanDo.export.examples.quality": "Экспорт 4K/8K без водяных знаков",
-    "mainPage.whatYouCanDo.export.examples.directUpload": "Прямая загрузка на YouTube, TikTok, Vimeo",
-    "mainPage.whatYouCanDo.export.examples.presets": "Пользовательские пресеты для соцсетей",
-    "mainPage.whatYouCanDo.export.examples.hwAccelerated": "Аппаратно-ускоренный рендеринг",
+    "mainPage.whatYouCanDo.export.description":
+      "Экспорт в любой формат или платформу",
+    "mainPage.whatYouCanDo.export.examples.quality":
+      "Экспорт 4K/8K без водяных знаков",
+    "mainPage.whatYouCanDo.export.examples.directUpload":
+      "Прямая загрузка на YouTube, TikTok, Vimeo",
+    "mainPage.whatYouCanDo.export.examples.presets":
+      "Пользовательские пресеты для соцсетей",
+    "mainPage.whatYouCanDo.export.examples.hwAccelerated":
+      "Аппаратно-ускоренный рендеринг",
     "mainPage.whatYouCanDo.recognition.title": "Распознавание и анализ",
-    "mainPage.whatYouCanDo.recognition.description": "Понимание сцен с помощью ИИ",
-    "mainPage.whatYouCanDo.recognition.examples.faceObject": "Распознавание лиц и объектов (YOLO)",
-    "mainPage.whatYouCanDo.recognition.examples.emotion": "Распознавание эмоций",
-    "mainPage.whatYouCanDo.recognition.examples.sceneClassification": "Классификация сцен",
-    "mainPage.whatYouCanDo.recognition.examples.quality": "Анализ и оценка качества",
+    "mainPage.whatYouCanDo.recognition.description":
+      "Понимание сцен с помощью ИИ",
+    "mainPage.whatYouCanDo.recognition.examples.faceObject":
+      "Распознавание лиц и объектов (YOLO)",
+    "mainPage.whatYouCanDo.recognition.examples.emotion":
+      "Распознавание эмоций",
+    "mainPage.whatYouCanDo.recognition.examples.sceneClassification":
+      "Классификация сцен",
+    "mainPage.whatYouCanDo.recognition.examples.quality":
+      "Анализ и оценка качества",
 
     // Video Demos
     "mainPage.videoDemos.title": "Посмотрите",
     "mainPage.videoDemos.titleHighlight": "в действии",
-    "mainPage.videoDemos.subtitle": "Короткие видеоуроки, демонстрирующие мощные функции Timeline Studio",
+    "mainPage.videoDemos.subtitle":
+      "Короткие видеоуроки, демонстрирующие мощные функции Timeline Studio",
     "mainPage.videoDemos.aiEditing.title": "Авто-монтаж с ИИ в действии",
     "mainPage.videoDemos.aiEditing.description":
       "Смотрите, как ИИ выбирает лучшие моменты и создаёт захватывающий монтаж автоматически",
@@ -562,7 +677,8 @@ const translations = {
     "mainPage.videoDemos.multiCamera.description":
       "Монтаж многоугловых кадров с автоматическим переключением и синхронизацией",
     "mainPage.videoDemos.colorGrading.title": "Туториал по цветокоррекции",
-    "mainPage.videoDemos.colorGrading.description": "Профессиональный рабочий процесс цветокоррекции и грейдинга",
+    "mainPage.videoDemos.colorGrading.description":
+      "Профессиональный рабочий процесс цветокоррекции и грейдинга",
     "mainPage.videoDemos.comingSoon": "Скоро",
     "mainPage.videoDemos.checkGithub": "Хотите увидеть больше? Посмотрите наш",
     "mainPage.videoDemos.githubRepo": "репозиторий на GitHub",
@@ -571,7 +687,8 @@ const translations = {
     // Docs
     "docs.title": "Документация",
     "docs.subtitle": "Всё, что нужно знать о Timeline Studio",
-    "docs.description": "Руководства по разработке, справочник API и лучшие практики 📚",
+    "docs.description":
+      "Руководства по разработке, справочник API и лучшие практики 📚",
     "docs.contribute.title": "Хотите внести вклад?",
     "docs.contribute.description":
       "Помогите нам улучшить Timeline Studio, внося вклад в документацию или кодовую базу.",
@@ -638,7 +755,8 @@ const translations = {
 
     // Project page translations
     "project.hero.title": "Проектная документация",
-    "project.hero.description": "Полная документация Timeline Studio - революционного AI-видеоредактора",
+    "project.hero.description":
+      "Полная документация Timeline Studio - революционного AI-видеоредактора",
     "project.hero.version": "Версия 1.40.0",
     "project.hero.ready": "95% готовности",
     "project.hero.tools": "100+ AI инструментов",
@@ -659,7 +777,8 @@ const translations = {
 
     // Pricing
     "pricing.title": "Простые цены",
-    "pricing.subtitle": "Локальные функции бесплатно. Облачные функции платно. Всё прозрачно.",
+    "pricing.subtitle":
+      "Локальные функции бесплатно. Облачные функции платно. Всё прозрачно.",
     "pricing.description":
       "AI аватары, генерация видео, экспорт в TikTok/YouTube одним кликом\nВсё что нужно для доминирования в социальных сетях",
     "pricing.mostPopular": "САМЫЙ ПОПУЛЯРНЫЙ",
@@ -682,7 +801,8 @@ const translations = {
     "pricing.tiers.max.name": "MAX",
     "pricing.tiers.max.price": "$99",
     "pricing.tiers.max.period": "/месяц",
-    "pricing.tiers.max.description": "Максимальная мощность AI для профессионалов",
+    "pricing.tiers.max.description":
+      "Максимальная мощность AI для профессионалов",
     "pricing.tiers.max.buttonText": "Попробовать MAX",
     "pricing.tiers.team.name": "КОМАНДА",
     "pricing.tiers.team.price": "$39",
@@ -694,11 +814,13 @@ const translations = {
     "pricing.features.everythingInFree": "Всё из БЕСПЛАТНО +",
     "pricing.features.everythingInPro": "Всё из PRO +",
     "pricing.features.everythingInProBase": "Всё из PRO",
-    "pricing.features.realTimeCollaboration": "Совместная работа в реальном времени",
+    "pricing.features.realTimeCollaboration":
+      "Совместная работа в реальном времени",
     "pricing.features.teamResourceLibraries": "Командные библиотеки ресурсов",
     "pricing.features.ssoAuthentication": "SSO аутентификация",
     "pricing.features.onPremiseDeployment": "Развертывание на ваших серверах",
-    "pricing.features.unlimitedStorageRendering": "Неограниченное хранилище и рендеринг",
+    "pricing.features.unlimitedStorageRendering":
+      "Неограниченное хранилище и рендеринг",
     "pricing.features.customAiModels": "Пользовательские ИИ-модели",
     "pricing.features.apiAccess": "API доступ",
     "pricing.features.dedicatedManagerSla": "Выделенный менеджер и SLA",
@@ -711,7 +833,8 @@ const translations = {
     "pricing.faq.canUpgradeDowngrade.question": "Могу ли я изменить тариф?",
     "pricing.faq.canUpgradeDowngrade.answer":
       "Да! Вы можете изменить свой тариф в любое время. При повышении тарифа вы сразу получите доступ к новым функциям. При понижении тарифа изменения вступят в силу в следующем расчетном периоде.",
-    "pricing.faq.whyFreePowerful.question": "Почему бесплатная версия такая мощная?",
+    "pricing.faq.whyFreePowerful.question":
+      "Почему бесплатная версия такая мощная?",
     "pricing.faq.whyFreePowerful.answer":
       "Мы верим в прозрачность. Всё, что может работать на вашем компьютере, бесплатно. Вы платите только за облачные сервисы и сторонние API, которые требуют затрат на нашу инфраструктуру.",
     "pricing.faq.isThereFreeTrial.question": "Есть ли бесплатный триал?",
@@ -720,86 +843,117 @@ const translations = {
 
     // About page
     "about.hero.title": "О Timeline Studio",
-    "about.hero.subtitle": "Революционный AI-редактор видео, который меняет правила игры",
+    "about.hero.subtitle":
+      "Революционный AI-редактор видео, который меняет правила игры",
     "about.hero.founded": "Основан в 2025 году",
     "about.hero.remote": "Распределенная команда разработчиков",
     "about.hero.openSource": "100% открытый исходный код",
     "about.mission.title": "Наша миссия",
-    "about.mission.paragraph1": "Мы делаем профессиональный видеоредактор доступным для всех. Независимо от того, являетесь ли вы опытным кинорежиссером или создаете свой первый контент, Timeline Studio предоставляет вам мощные AI-инструменты для воплощения ваших творческих идей в жизнь.",
-    "about.mission.paragraph2": "Наша миссия - демократизировать видеопроизводство, используя силу ИИ для автоматизации технических задач. AI-ассистент на базе Claude, OpenAI, DeepSeek и Ollama помогает выбирать лучшие моменты в процессе монтажа, превращая необработанный материал в убедительные истории.",
+    "about.mission.paragraph1":
+      "Мы делаем профессиональный видеоредактор доступным для всех. Независимо от того, являетесь ли вы опытным кинорежиссером или создаете свой первый контент, Timeline Studio предоставляет вам мощные AI-инструменты для воплощения ваших творческих идей в жизнь.",
+    "about.mission.paragraph2":
+      "Наша миссия - демократизировать видеопроизводство, используя силу ИИ для автоматизации технических задач. AI-ассистент на базе Claude, OpenAI, DeepSeek и Ollama помогает выбирать лучшие моменты в процессе монтажа, превращая необработанный материал в убедительные истории.",
     "about.values.title": "Наши ценности",
     "about.values.innovation.title": "Инновации",
-    "about.values.innovation.description": "Мы постоянно толкаем границы возможного в видеотехнологиях, интегрируя новейшие достижения ИИ и машинного обучения.",
+    "about.values.innovation.description":
+      "Мы постоянно толкаем границы возможного в видеотехнологиях, интегрируя новейшие достижения ИИ и машинного обучения.",
     "about.values.community.title": "Сообщество",
-    "about.values.community.description": "Мы верим в силу открытого исходного кода и активно способствуем нашему сообществу разработчиков и создателей контента.",
+    "about.values.community.description":
+      "Мы верим в силу открытого исходного кода и активно способствуем нашему сообществу разработчиков и создателей контента.",
     "about.values.efficiency.title": "Эффективность",
-    "about.values.efficiency.description": "Наши инструменты предназначены для упрощения вашего рабочего процесса, экономя время и усилия при сохранении высокого качества.",
+    "about.values.efficiency.description":
+      "Наши инструменты предназначены для упрощения вашего рабочего процесса, экономя время и усилия при сохранении высокого качества.",
     "about.values.privacy.title": "Конфиденциальность",
-    "about.values.privacy.description": "Ваша приватность имеет первостепенное значение. Все локальные функции работают полностью офлайн, сохраняя ваш контент конфиденциальным и безопасным.",
+    "about.values.privacy.description":
+      "Ваша приватность имеет первостепенное значение. Все локальные функции работают полностью офлайн, сохраняя ваш контент конфиденциальным и безопасным.",
     "about.values.userCentric.title": "Ориентация на пользователя",
-    "about.values.userCentric.description": "Мы разрабатываем наши продукты с учетом ваших потребностей, постоянно собирая отзывы и улучшая пользовательский опыт.",
+    "about.values.userCentric.description":
+      "Мы разрабатываем наши продукты с учетом ваших потребностей, постоянно собирая отзывы и улучшая пользовательский опыт.",
     "about.values.openInnovation.title": "Открытые инновации",
-    "about.values.openInnovation.description": "Мы верим в прозрачность и сотрудничество. Наш открытый исходный код позволяет сообществу вносить вклад и извлекать выгоду из наших инноваций.",
+    "about.values.openInnovation.description":
+      "Мы верим в прозрачность и сотрудничество. Наш открытый исходный код позволяет сообществу вносить вклад и извлекать выгоду из наших инноваций.",
     "about.team.title": "Наша команда",
-    "about.team.description": "Мы - группа увлеченных разработчиков, дизайнеров и инженеров ИИ, объединенных страстью к созданию лучших инструментов для создателей контента.",
+    "about.team.description":
+      "Мы - группа увлеченных разработчиков, дизайнеров и инженеров ИИ, объединенных страстью к созданию лучших инструментов для создателей контента.",
     "about.team.founder": "Основатель и генеральный директор",
     "about.investor.title": "Для инвесторов",
-    "about.investor.description": "Заинтересованы в инвестировании? Посмотрите нашу подробную проектную документацию, бизнес-план и финансовые прогнозы.",
+    "about.investor.description":
+      "Заинтересованы в инвестировании? Посмотрите нашу подробную проектную документацию, бизнес-план и финансовые прогнозы.",
     "about.investor.viewDocs": "Просмотреть инвестиционную документацию",
     "about.cta.title": "Готовы присоединиться к революции?",
-    "about.cta.description": "Начните использовать Timeline Studio сегодня и откройте для себя будущее видеомонтажа с ИИ.",
+    "about.cta.description":
+      "Начните использовать Timeline Studio сегодня и откройте для себя будущее видеомонтажа с ИИ.",
     "about.cta.contributeGithub": "Внести вклад на GitHub",
     "about.cta.tryStudio": "Попробовать Studio",
     "about.aiEditor.title": "AI-редактор видео",
-    "about.aiEditor.subtitle": "Профессиональный видеомонтаж с интеллектуальным AI-директором и 100+ специализированных инструментов",
+    "about.aiEditor.subtitle":
+      "Профессиональный видеомонтаж с интеллектуальным AI-директором и 100+ специализированных инструментов",
     "about.aiDirector.title": "AI-директор",
-    "about.aiDirector.description": "Интеллектуальный выбор сцен и автоматический мультикамерный монтаж с помощью AI-ассистентов (Claude, OpenAI, DeepSeek, Ollama), которые помогают выбрать лучшее в процессе монтажа",
+    "about.aiDirector.description":
+      "Интеллектуальный выбор сцен и автоматический мультикамерный монтаж с помощью AI-ассистентов (Claude, OpenAI, DeepSeek, Ollama), которые помогают выбрать лучшее в процессе монтажа",
     "about.aiDirector.feature1": "Автоопределение лучших моментов",
     "about.aiDirector.feature2": "Построение эмоциональной арки",
     "about.aiDirector.feature3": "Умное переключение ракурсов",
     "about.aiDirector.feature4": "Синхронизация с музыкой",
     "about.aiTools.title": "100+ AI инструментов",
-    "about.aiTools.description": "Полный набор специализированных AI-инструментов, работающих локально для полного творческого контроля и приватности",
+    "about.aiTools.description":
+      "Полный набор специализированных AI-инструментов, работающих локально для полного творческого контроля и приватности",
     "about.aiTools.feature1": "AI цветокоррекция",
     "about.aiTools.feature2": "Улучшение аудио",
     "about.aiTools.feature3": "Эффекты и переходы",
     "about.aiTools.feature4": "Текст и субтитры",
     "about.localModels.title": "Локальные AI-модели",
-    "about.localModels.description": "Продвинутые модели компьютерного зрения и анализа аудио, работающие полностью на вашем компьютере для максимальной приватности",
+    "about.localModels.description":
+      "Продвинутые модели компьютерного зрения и анализа аудио, работающие полностью на вашем компьютере для максимальной приватности",
     "about.localModels.feature1": "Распознавание лиц и объектов",
     "about.localModels.feature2": "Распознавание эмоций",
-    "about.localModels.feature3": "Локальные модели анализа сцен (YOLO, Moondream)",
+    "about.localModels.feature3":
+      "Локальные модели анализа сцен (YOLO, Moondream)",
     "about.localModels.feature4": "Распознавание речи",
     "about.corePrinciples.title": "Основные принципы",
     "about.corePrinciples.speed.title": "Скорость и эффективность",
-    "about.corePrinciples.speed.description": "GPU-ускорение и умное кэширование для редактирования в реальном времени",
+    "about.corePrinciples.speed.description":
+      "GPU-ускорение и умное кэширование для редактирования в реальном времени",
     "about.corePrinciples.privacy.title": "Приватность прежде всего",
-    "about.corePrinciples.privacy.description": "Вся обработка AI выполняется локально - ваши данные не покидают компьютер",
+    "about.corePrinciples.privacy.description":
+      "Вся обработка AI выполняется локально - ваши данные не покидают компьютер",
     "about.corePrinciples.innovation.title": "Инновации",
-    "about.corePrinciples.innovation.description": "Передовые AI-технологии для профессионального видеопроизводства",
+    "about.corePrinciples.innovation.description":
+      "Передовые AI-технологии для профессионального видеопроизводства",
     "about.corePrinciples.openSource.title": "Открытый код",
-    "about.corePrinciples.openSource.description": "Бесплатно навсегда, создано сообществом для авторов по всему миру",
+    "about.corePrinciples.openSource.description":
+      "Бесплатно навсегда, создано сообществом для авторов по всему миру",
 
     // FAQ page
     "faq.title": "Часто задаваемые вопросы",
     "faq.questions.whatIs.question": "Что такое Timeline Studio?",
-    "faq.questions.whatIs.answer": "Timeline Studio — это приложение для видеомонтажа с искусственным интеллектом, которое помогает создавать видео профессионального качества быстрее, чем когда-либо. С более чем 100 AI-инструментами оно автоматизирует рутинные задачи, сохраняя творческий контроль.",
+    "faq.questions.whatIs.answer":
+      "Timeline Studio — это приложение для видеомонтажа с искусственным интеллектом, которое помогает создавать видео профессионального качества быстрее, чем когда-либо. С более чем 100 AI-инструментами оно автоматизирует рутинные задачи, сохраняя творческий контроль.",
     "faq.questions.isFree.question": "Timeline Studio бесплатен?",
-    "faq.questions.isFree.answer": "Да! Timeline Studio полностью бесплатен и имеет открытый исходный код. Вы можете скачать его для Windows, macOS и Linux без каких-либо затрат или подписок.",
+    "faq.questions.isFree.answer":
+      "Да! Timeline Studio полностью бесплатен и имеет открытый исходный код. Вы можете скачать его для Windows, macOS и Linux без каких-либо затрат или подписок.",
     "faq.questions.formats.question": "Какие форматы видео поддерживаются?",
-    "faq.questions.formats.answer": "Timeline Studio поддерживает все основные форматы видео, включая MP4, MOV, AVI, MKV, WebM и другие. Также можно экспортировать в различные форматы, оптимизированные для разных платформ.",
-    "faq.questions.commercial.question": "Можно ли использовать Timeline Studio для коммерческих проектов?",
-    "faq.questions.commercial.answer": "Конечно! Timeline Studio выпущен под свободной лицензией, которая разрешает как личное, так и коммерческое использование без ограничений.",
+    "faq.questions.formats.answer":
+      "Timeline Studio поддерживает все основные форматы видео, включая MP4, MOV, AVI, MKV, WebM и другие. Также можно экспортировать в различные форматы, оптимизированные для разных платформ.",
+    "faq.questions.commercial.question":
+      "Можно ли использовать Timeline Studio для коммерческих проектов?",
+    "faq.questions.commercial.answer":
+      "Конечно! Timeline Studio выпущен под свободной лицензией, которая разрешает как личное, так и коммерческое использование без ограничений.",
     "faq.questions.requirements.question": "Какие системные требования?",
-    "faq.questions.requirements.answer": "Timeline Studio работает на Windows 10+, macOS 10.15+ и большинстве дистрибутивов Linux. Рекомендуется минимум 8 ГБ ОЗУ и выделенная видеокарта для оптимальной работы AI-функций.",
+    "faq.questions.requirements.answer":
+      "Timeline Studio работает на Windows 10+, macOS 10.15+ и большинстве дистрибутивов Linux. Рекомендуется минимум 8 ГБ ОЗУ и выделенная видеокарта для оптимальной работы AI-функций.",
     "faq.questions.aiHow.question": "Как работает AI-редактирование видео?",
-    "faq.questions.aiHow.answer": "Наш AI анализирует ваши материалы для определения ключевых моментов, предлагает монтажные решения, применяет эффекты и может даже генерировать целые смонтированные последовательности на основе ваших предпочтений. Вы сохраняете полный контроль и можете отменить любые решения AI.",
+    "faq.questions.aiHow.answer":
+      "Наш AI анализирует ваши материалы для определения ключевых моментов, предлагает монтажные решения, применяет эффекты и может даже генерировать целые смонтированные последовательности на основе ваших предпочтений. Вы сохраняете полный контроль и можете отменить любые решения AI.",
     "faq.questions.dataSafe.question": "Мои данные в безопасности?",
-    "faq.questions.dataSafe.answer": "Да! Timeline Studio обрабатывает всё локально на вашем компьютере. Ваши видео и проекты никогда не покидают устройство, обеспечивая полную конфиденциальность и безопасность.",
+    "faq.questions.dataSafe.answer":
+      "Да! Timeline Studio обрабатывает всё локально на вашем компьютере. Ваши видео и проекты никогда не покидают устройство, обеспечивая полную конфиденциальность и безопасность.",
     "faq.questions.contribute.question": "Могу ли я внести вклад в проект?",
-    "faq.questions.contribute.answer": "Мы приветствуем вклад! Timeline Studio имеет открытый исходный код на GitHub. Вы можете сообщать об ошибках, предлагать новые функции или даже вносить код для улучшения программы.",
+    "faq.questions.contribute.answer":
+      "Мы приветствуем вклад! Timeline Studio имеет открытый исходный код на GitHub. Вы можете сообщать об ошибках, предлагать новые функции или даже вносить код для улучшения программы.",
     "faq.stillQuestions.title": "Остались вопросы?",
-    "faq.stillQuestions.description": "Свяжитесь с нашим сообществом или ознакомьтесь с документацией.",
+    "faq.stillQuestions.description":
+      "Свяжитесь с нашим сообществом или ознакомьтесь с документацией.",
     "faq.stillQuestions.joinDiscord": "Присоединиться к Discord",
     "faq.stillQuestions.openIssue": "Создать Issue на GitHub",
   },
@@ -839,7 +993,7 @@ const translations = {
     "footer.resources.faqs": "常见问题",
     "footer.resources.submitFeedback": "提交反馈",
     "footer.social.title": "关注我们",
-    "footer.copyright": "© 2025 Timeline Studio, Inc.",
+    "footer.copyright": "© Timeline Studio, Inc.",
     "footer.legal.termsOfService": "服务条款",
     "footer.legal.privacyPolicy": "隐私政策",
     "footer.legal.responsibleAI": "负责任的AI政策",
@@ -872,66 +1026,92 @@ const translations = {
     "mainPage.hero.downloadFree": "免费下载",
     "mainPage.hero.viewGithub": "查看GitHub",
 
+    // Interface section
+    "mainPage.interface.title": "",
+    "mainPage.interface.titleHighlight": "界面",
+    "mainPage.interface.description": "简洁、直观、强大 - 一切尽在掌控",
+
     "mainPage.whatYouCanDo.title": "Timeline Studio能做什么",
     "mainPage.whatYouCanDo.titleHighlight": "？",
     "mainPage.whatYouCanDo.subtitle": "强大的功能满足专业和创意需求",
     "mainPage.whatYouCanDo.professional.title": "专业编辑",
-    "mainPage.whatYouCanDo.professional.description": "完整的多轨时间轴，具有无限轨道、段落和帧精确控制",
-    "mainPage.whatYouCanDo.professional.examples.multitrack": "多轨编辑（视频、音频、字幕）",
-    "mainPage.whatYouCanDo.professional.examples.frameAccurate": "帧精确剪切和修剪",
+    "mainPage.whatYouCanDo.professional.description":
+      "完整的多轨时间轴，具有无限轨道、段落和帧精确控制",
+    "mainPage.whatYouCanDo.professional.examples.multitrack":
+      "多轨编辑（视频、音频、字幕）",
+    "mainPage.whatYouCanDo.professional.examples.frameAccurate":
+      "帧精确剪切和修剪",
     "mainPage.whatYouCanDo.professional.examples.multicam": "多机位编辑与同步",
-    "mainPage.whatYouCanDo.professional.examples.compound": "复合剪辑和嵌套序列",
+    "mainPage.whatYouCanDo.professional.examples.compound":
+      "复合剪辑和嵌套序列",
     "mainPage.whatYouCanDo.aiPowered.title": "AI驱动功能",
-    "mainPage.whatYouCanDo.aiPowered.description": "智能工具可加速您的工作流程并增强创意",
-    "mainPage.whatYouCanDo.aiPowered.examples.sceneDetection": "自动场景检测和分段",
-    "mainPage.whatYouCanDo.aiPowered.examples.colorGrading": "基于AI的色彩分级建议",
-    "mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement": "智能音频降噪和增强",
-    "mainPage.whatYouCanDo.aiPowered.examples.subtitles": "自动字幕和语音转文字",
+    "mainPage.whatYouCanDo.aiPowered.description":
+      "智能工具可加速您的工作流程并增强创意",
+    "mainPage.whatYouCanDo.aiPowered.examples.sceneDetection":
+      "自动场景检测和分段",
+    "mainPage.whatYouCanDo.aiPowered.examples.colorGrading":
+      "基于AI的色彩分级建议",
+    "mainPage.whatYouCanDo.aiPowered.examples.audioEnhancement":
+      "智能音频降噪和增强",
+    "mainPage.whatYouCanDo.aiPowered.examples.subtitles":
+      "自动字幕和语音转文字",
     "mainPage.whatYouCanDo.effects.title": "效果与滤镜",
     "mainPage.whatYouCanDo.effects.description": "专业视觉效果和实时预览",
     "mainPage.whatYouCanDo.effects.examples.transitions": "200多种过渡效果",
     "mainPage.whatYouCanDo.effects.examples.luts": "专业色彩LUT和预设",
     "mainPage.whatYouCanDo.effects.examples.chromaKey": "绿幕（色度键）",
-    "mainPage.whatYouCanDo.effects.examples.speedRamping": "速度渐变和时间重映射",
+    "mainPage.whatYouCanDo.effects.examples.speedRamping":
+      "速度渐变和时间重映射",
     "mainPage.whatYouCanDo.audio.title": "音频制作",
     "mainPage.whatYouCanDo.audio.description": "专业音频混音和处理",
     "mainPage.whatYouCanDo.audio.examples.mixing": "多轨音频混音",
     "mainPage.whatYouCanDo.audio.examples.surround": "5.1/7.1环绕声支持",
-    "mainPage.whatYouCanDo.audio.examples.effects": "内置音频效果（均衡器、压缩器、混响）",
+    "mainPage.whatYouCanDo.audio.examples.effects":
+      "内置音频效果（均衡器、压缩器、混响）",
     "mainPage.whatYouCanDo.audio.examples.voiceEnhancement": "AI语音增强和降噪",
     "mainPage.whatYouCanDo.export.title": "导出与分享",
     "mainPage.whatYouCanDo.export.description": "以任何格式和质量导出",
     "mainPage.whatYouCanDo.export.examples.quality": "4K/8K导出支持",
-    "mainPage.whatYouCanDo.export.examples.directUpload": "直接上传到YouTube/Vimeo",
-    "mainPage.whatYouCanDo.export.examples.presets": "优化的平台预设（Instagram、TikTok、YouTube）",
-    "mainPage.whatYouCanDo.export.examples.hwAccelerated": "硬件加速编码（NVENC、QuickSync）",
+    "mainPage.whatYouCanDo.export.examples.directUpload":
+      "直接上传到YouTube/Vimeo",
+    "mainPage.whatYouCanDo.export.examples.presets":
+      "优化的平台预设（Instagram、TikTok、YouTube）",
+    "mainPage.whatYouCanDo.export.examples.hwAccelerated":
+      "硬件加速编码（NVENC、QuickSync）",
     "mainPage.whatYouCanDo.recognition.title": "识别与分析",
     "mainPage.whatYouCanDo.recognition.description": "智能视频内容分析",
     "mainPage.whatYouCanDo.recognition.examples.faceObject": "人脸和物体识别",
     "mainPage.whatYouCanDo.recognition.examples.emotion": "情感和情绪检测",
-    "mainPage.whatYouCanDo.recognition.examples.sceneClassification": "自动场景分类",
+    "mainPage.whatYouCanDo.recognition.examples.sceneClassification":
+      "自动场景分类",
     "mainPage.whatYouCanDo.recognition.examples.quality": "质量评估和改进建议",
 
     "mainPage.videoDemos.title": "观看",
     "mainPage.videoDemos.titleHighlight": "实际操作",
     "mainPage.videoDemos.subtitle": "通过实际示例探索Timeline Studio的功能",
     "mainPage.videoDemos.aiEditing.title": "AI辅助编辑",
-    "mainPage.videoDemos.aiEditing.description": "观看AI如何在几秒钟内分析和编辑您的片段",
+    "mainPage.videoDemos.aiEditing.description":
+      "观看AI如何在几秒钟内分析和编辑您的片段",
     "mainPage.videoDemos.multiCamera.title": "多机位编辑",
-    "mainPage.videoDemos.multiCamera.description": "轻松同步和切换多个摄像机角度",
+    "mainPage.videoDemos.multiCamera.description":
+      "轻松同步和切换多个摄像机角度",
     "mainPage.videoDemos.colorGrading.title": "色彩分级",
-    "mainPage.videoDemos.colorGrading.description": "专业色彩校正和分级工作流程",
+    "mainPage.videoDemos.colorGrading.description":
+      "专业色彩校正和分级工作流程",
     "mainPage.videoDemos.comingSoon": "即将推出",
     "mainPage.videoDemos.checkGithub": "访问我们的",
     "mainPage.videoDemos.githubRepo": "GitHub仓库",
     "mainPage.videoDemos.forDocs": "以获取文档和教程",
 
     "mainPage.features.smartAnalysis.title": "智能分析",
-    "mainPage.features.smartAnalysis.description": "AI分析趋势并建议最佳内容策略以获得最大参与度",
+    "mainPage.features.smartAnalysis.description":
+      "AI分析趋势并建议最佳内容策略以获得最大参与度",
     "mainPage.features.instantCreation.title": "即时创作",
-    "mainPage.features.instantCreation.description": "在几秒钟内生成具有趋势效果和转场的专业视频",
+    "mainPage.features.instantCreation.description":
+      "在几秒钟内生成具有趋势效果和转场的专业视频",
     "mainPage.features.viralOptimization.title": "病毒式优化",
-    "mainPage.features.viralOptimization.description": "为每个社交平台优化时机、标签和内容格式",
+    "mainPage.features.viralOptimization.description":
+      "为每个社交平台优化时机、标签和内容格式",
     "mainPage.features.cinematicAutoEdit.title": "电影级自动编辑",
     "mainPage.features.cinematicAutoEdit.description":
       "将原始片段转换为好莱坞风格的序列，具有动态节奏、完美时机和情感流动",
@@ -943,7 +1123,8 @@ const translations = {
     "mainPage.features.magicEnhancement.superResolution": "超级分辨率",
     "mainPage.aiSmartEditing.title": "AI驱动的智能编辑",
     "mainPage.aiSmartEditing.subtitle": "让AI承担繁重的工作，您专注于创意",
-    "mainPage.aiSmartEditing.description": "我们的神经网络分析、优化并完善每一帧 🤖",
+    "mainPage.aiSmartEditing.description":
+      "我们的神经网络分析、优化并完善每一帧 🤖",
     "mainPage.aiSmartEditing.neuralSceneAnalysis": "神经场景分析",
     "mainPage.aiSmartEditing.neuralSceneAnalysisDesc":
       "我们的AI像专业编辑一样观察您的镜头，在毫秒内识别关键时刻、情感和故事节拍",
@@ -962,7 +1143,8 @@ const translations = {
     "docs.subtitle": "关于Timeline Studio的一切",
     "docs.description": "开发指南、API参考和最佳实践 📚",
     "docs.contribute.title": "想要贡献？",
-    "docs.contribute.description": "通过为文档或代码库做贡献来帮助我们改进Timeline Studio。",
+    "docs.contribute.description":
+      "通过为文档或代码库做贡献来帮助我们改进Timeline Studio。",
     "docs.contribute.viewGithub": "在 GitHub 上查看",
     "docs.contribute.contributingGuide": "贡献指南",
     "docs.sections.integrations.title": "集成",
@@ -1026,7 +1208,8 @@ const translations = {
 
     // Project page translations
     "project.hero.title": "项目文档",
-    "project.hero.description": "完整的Timeline Studio文档 - 革命性的AI视频编辑器",
+    "project.hero.description":
+      "完整的Timeline Studio文档 - 革命性的AI视频编辑器",
     "project.hero.version": "版本 1.40.0",
     "project.hero.ready": "95% 完成",
     "project.hero.tools": "100+ AI工具",
@@ -1048,7 +1231,8 @@ const translations = {
     // Pricing
     "pricing.title": "简单定价",
     "pricing.subtitle": "本地功能免费。云功能付费。一切透明。",
-    "pricing.description": "AI头像，视频生成，一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
+    "pricing.description":
+      "AI头像，视频生成，一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
     "pricing.mostPopular": "最受欢迎",
     "pricing.cloudStorage": "云存储",
     "pricing.aiTokens": "AI令牌",
@@ -1112,47 +1296,61 @@ const translations = {
     "about.hero.remote": "分布式开发团队",
     "about.hero.openSource": "100% 开源",
     "about.mission.title": "我们的使命",
-    "about.mission.paragraph1": "我们让专业的视频编辑软件对所有人开放。无论您是经验丰富的电影制作人还是创建您的第一个内容，Timeline Studio 都为您提供强大的AI工具，将您的创意愿景变为现实。",
-    "about.mission.paragraph2": "我们的使命是通过使用AI的力量自动化技术任务来民主化视频制作。基于 Claude、OpenAI、DeepSeek 和 Ollama 的 AI 助手帮助您在编辑过程中选择最佳时刻，将原始素材转化为引人入胜的故事。",
+    "about.mission.paragraph1":
+      "我们让专业的视频编辑软件对所有人开放。无论您是经验丰富的电影制作人还是创建您的第一个内容，Timeline Studio 都为您提供强大的AI工具，将您的创意愿景变为现实。",
+    "about.mission.paragraph2":
+      "我们的使命是通过使用AI的力量自动化技术任务来民主化视频制作。基于 Claude、OpenAI、DeepSeek 和 Ollama 的 AI 助手帮助您在编辑过程中选择最佳时刻，将原始素材转化为引人入胜的故事。",
     "about.values.title": "我们的价值观",
     "about.values.innovation.title": "创新",
-    "about.values.innovation.description": "我们不断突破视频技术的可能性界限，整合最新的AI和机器学习进展。",
+    "about.values.innovation.description":
+      "我们不断突破视频技术的可能性界限，整合最新的AI和机器学习进展。",
     "about.values.community.title": "社区",
-    "about.values.community.description": "我们相信开源的力量，并积极为我们开发者和内容创作者社区做出贡献。",
+    "about.values.community.description":
+      "我们相信开源的力量，并积极为我们开发者和内容创作者社区做出贡献。",
     "about.values.efficiency.title": "效率",
-    "about.values.efficiency.description": "我们的工具旨在简化您的工作流程，在保持高质量的同时节省您的时间和精力。",
+    "about.values.efficiency.description":
+      "我们的工具旨在简化您的工作流程，在保持高质量的同时节省您的时间和精力。",
     "about.values.privacy.title": "隐私",
-    "about.values.privacy.description": "您的隐私至关重要。所有本地功能都完全离线工作，保持您的内容私密和安全。",
+    "about.values.privacy.description":
+      "您的隐私至关重要。所有本地功能都完全离线工作，保持您的内容私密和安全。",
     "about.values.userCentric.title": "以用户为中心",
-    "about.values.userCentric.description": "我们根据您的需求设计我们的产品，不断收集反馈并改善用户体验。",
+    "about.values.userCentric.description":
+      "我们根据您的需求设计我们的产品，不断收集反馈并改善用户体验。",
     "about.values.openInnovation.title": "开放创新",
-    "about.values.openInnovation.description": "我们相信透明度和协作。我们的开源代码允许社区为我们的创新做出贡献并从中受益。",
+    "about.values.openInnovation.description":
+      "我们相信透明度和协作。我们的开源代码允许社区为我们的创新做出贡献并从中受益。",
     "about.team.title": "我们的团队",
-    "about.team.description": "我们是一群充满激情的开发者、设计师和AI工程师，团结一致致力于为我们的创作者社区创造最佳工具。",
+    "about.team.description":
+      "我们是一群充满激情的开发者、设计师和AI工程师，团结一致致力于为我们的创作者社区创造最佳工具。",
     "about.team.founder": "创始人兼首席执行官",
     "about.investor.title": "投资者专区",
-    "about.investor.description": "有兴趣投资？查看我们详细的项目文档、商业计划和财务预测。",
+    "about.investor.description":
+      "有兴趣投资？查看我们详细的项目文档、商业计划和财务预测。",
     "about.investor.viewDocs": "查看投资文档",
     "about.cta.title": "准备好加入革命了吗？",
-    "about.cta.description": "今天就开始使用 Timeline Studio，体验AI视频编辑的未来。",
+    "about.cta.description":
+      "今天就开始使用 Timeline Studio，体验AI视频编辑的未来。",
     "about.cta.contributeGithub": "在 GitHub 上贡献",
     "about.cta.tryStudio": "试用 Studio",
     "about.aiEditor.title": "AI 视频编辑器",
     "about.aiEditor.subtitle": "专业视频编辑，智能 AI 导演和 100+ 专业工具",
     "about.aiDirector.title": "AI 导演",
-    "about.aiDirector.description": "智能场景选择和自动多机位编辑，由 AI 助手（Claude、OpenAI、DeepSeek、Ollama）驱动，帮助您在编辑过程中选择最佳时刻",
+    "about.aiDirector.description":
+      "智能场景选择和自动多机位编辑，由 AI 助手（Claude、OpenAI、DeepSeek、Ollama）驱动，帮助您在编辑过程中选择最佳时刻",
     "about.aiDirector.feature1": "自动检测最佳时刻",
     "about.aiDirector.feature2": "情感弧线构建",
     "about.aiDirector.feature3": "智能角度切换",
     "about.aiDirector.feature4": "音乐同步",
     "about.aiTools.title": "100+ AI 工具",
-    "about.aiTools.description": "全面的专业 AI 工具套件，本地运行，完全创意控制和隐私保护",
+    "about.aiTools.description":
+      "全面的专业 AI 工具套件，本地运行，完全创意控制和隐私保护",
     "about.aiTools.feature1": "AI 调色",
     "about.aiTools.feature2": "音频增强",
     "about.aiTools.feature3": "效果和过渡",
     "about.aiTools.feature4": "文本和字幕",
     "about.localModels.title": "本地 AI 模型",
-    "about.localModels.description": "先进的计算机视觉和音频分析模型，完全在您的机器上运行，最大化隐私保护",
+    "about.localModels.description":
+      "先进的计算机视觉和音频分析模型，完全在您的机器上运行，最大化隐私保护",
     "about.localModels.feature1": "人脸和物体检测",
     "about.localModels.feature2": "情感识别",
     "about.localModels.feature3": "本地场景分析模型 (YOLO, Moondream)",
@@ -1161,68 +1359,89 @@ const translations = {
     "about.corePrinciples.speed.title": "速度与效率",
     "about.corePrinciples.speed.description": "GPU加速和智能缓存实现实时编辑",
     "about.corePrinciples.privacy.title": "隐私优先",
-    "about.corePrinciples.privacy.description": "所有AI处理都在本地运行 - 您的数据永远不会离开您的设备",
+    "about.corePrinciples.privacy.description":
+      "所有AI处理都在本地运行 - 您的数据永远不会离开您的设备",
     "about.corePrinciples.innovation.title": "创新",
     "about.corePrinciples.innovation.description": "专业视频制作的前沿AI技术",
     "about.corePrinciples.openSource.title": "开源",
-    "about.corePrinciples.openSource.description": "永久免费，由社区为全球创作者打造",
+    "about.corePrinciples.openSource.description":
+      "永久免费，由社区为全球创作者打造",
 
     // FAQ page
     "faq.title": "常见问题",
     "faq.questions.whatIs.question": "什么是 Timeline Studio？",
-    "faq.questions.whatIs.answer": "Timeline Studio 是一款 AI 驱动的视频编辑应用程序，帮助您比以往更快地创建专业品质的视频。通过 100 多个 AI 工具，它可以自动化繁琐的任务，同时让您保持创意控制。",
+    "faq.questions.whatIs.answer":
+      "Timeline Studio 是一款 AI 驱动的视频编辑应用程序，帮助您比以往更快地创建专业品质的视频。通过 100 多个 AI 工具，它可以自动化繁琐的任务，同时让您保持创意控制。",
     "faq.questions.isFree.question": "Timeline Studio 是免费的吗？",
-    "faq.questions.isFree.answer": "是的！Timeline Studio 完全免费且开源。您可以在 Windows、macOS 和 Linux 上免费下载，无需任何费用或订阅。",
+    "faq.questions.isFree.answer":
+      "是的！Timeline Studio 完全免费且开源。您可以在 Windows、macOS 和 Linux 上免费下载，无需任何费用或订阅。",
     "faq.questions.formats.question": "支持哪些视频格式？",
-    "faq.questions.formats.answer": "Timeline Studio 支持所有主要视频格式，包括 MP4、MOV、AVI、MKV、WebM 等。还可以导出为针对不同平台优化的各种格式。",
-    "faq.questions.commercial.question": "可以将 Timeline Studio 用于商业项目吗？",
-    "faq.questions.commercial.answer": "当然可以！Timeline Studio 采用宽松许可证发布，允许个人和商业用途，没有任何限制。",
+    "faq.questions.formats.answer":
+      "Timeline Studio 支持所有主要视频格式，包括 MP4、MOV、AVI、MKV、WebM 等。还可以导出为针对不同平台优化的各种格式。",
+    "faq.questions.commercial.question":
+      "可以将 Timeline Studio 用于商业项目吗？",
+    "faq.questions.commercial.answer":
+      "当然可以！Timeline Studio 采用宽松许可证发布，允许个人和商业用途，没有任何限制。",
     "faq.questions.requirements.question": "系统要求是什么？",
-    "faq.questions.requirements.answer": "Timeline Studio 可在 Windows 10+、macOS 10.15+ 和大多数 Linux 发行版上运行。建议至少 8GB 内存和独立显卡以获得 AI 功能的最佳性能。",
+    "faq.questions.requirements.answer":
+      "Timeline Studio 可在 Windows 10+、macOS 10.15+ 和大多数 Linux 发行版上运行。建议至少 8GB 内存和独立显卡以获得 AI 功能的最佳性能。",
     "faq.questions.aiHow.question": "AI 视频编辑是如何工作的？",
-    "faq.questions.aiHow.answer": "我们的 AI 分析您的素材以识别关键时刻，建议剪辑，应用效果，甚至可以根据您的偏好生成完整的编辑序列。您保持完全控制，可以覆盖任何 AI 决策。",
+    "faq.questions.aiHow.answer":
+      "我们的 AI 分析您的素材以识别关键时刻，建议剪辑，应用效果，甚至可以根据您的偏好生成完整的编辑序列。您保持完全控制，可以覆盖任何 AI 决策。",
     "faq.questions.dataSafe.question": "我的数据安全吗？",
-    "faq.questions.dataSafe.answer": "是的！Timeline Studio 在您的计算机上本地处理所有内容。您的视频和项目永远不会离开您的设备，确保完全的隐私和安全。",
+    "faq.questions.dataSafe.answer":
+      "是的！Timeline Studio 在您的计算机上本地处理所有内容。您的视频和项目永远不会离开您的设备，确保完全的隐私和安全。",
     "faq.questions.contribute.question": "我可以为项目做贡献吗？",
-    "faq.questions.contribute.answer": "我们欢迎贡献！Timeline Studio 在 GitHub 上开源。您可以提交错误报告、功能请求，甚至贡献代码来帮助改进软件。",
+    "faq.questions.contribute.answer":
+      "我们欢迎贡献！Timeline Studio 在 GitHub 上开源。您可以提交错误报告、功能请求，甚至贡献代码来帮助改进软件。",
     "faq.stillQuestions.title": "还有问题？",
     "faq.stillQuestions.description": "欢迎联系我们的社区或查阅文档。",
     "faq.stillQuestions.joinDiscord": "加入 Discord 社区",
     "faq.stillQuestions.openIssue": "在 GitHub 创建 Issue",
   },
-}
+};
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined,
+);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [language, setLanguageState] = useState<Language>(() => {
     // Check localStorage for saved language preference
-    const saved = localStorage.getItem("promo-language")
-    if (saved === "ru" || saved === "en" || saved === "zh") return saved
+    const saved = localStorage.getItem("promo-language");
+    if (saved === "ru" || saved === "en" || saved === "zh") return saved;
 
     // Check browser language
-    const browserLang = navigator.language.toLowerCase()
-    if (browserLang.startsWith("ru")) return "ru"
-    if (browserLang.startsWith("zh")) return "zh"
-    return "en"
-  })
+    const browserLang = navigator.language.toLowerCase();
+    if (browserLang.startsWith("ru")) return "ru";
+    if (browserLang.startsWith("zh")) return "zh";
+    return "en";
+  });
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang)
-    localStorage.setItem("promo-language", lang)
-  }
+    setLanguageState(lang);
+    localStorage.setItem("promo-language", lang);
+  };
 
   const t = (key: string): string => {
-    return translations[language][key as keyof (typeof translations)["en"]] || key
-  }
+    return (
+      translations[language][key as keyof (typeof translations)["en"]] || key
+    );
+  };
 
-  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
-}
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
 
 export const useLanguage = () => {
-  const context = useContext(LanguageContext)
+  const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error("useLanguage must be used within a LanguageProvider")
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
-  return context
-}
+  return context;
+};

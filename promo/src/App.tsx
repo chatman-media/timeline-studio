@@ -35,10 +35,10 @@ const App: React.FC = () => {
               className="text-center mb-12"
             >
               <h2 className="section-title">
-                The <span className="text-gradient">Interface</span>
+                {t("mainPage.interface.title")} <span className="text-gradient">{t("mainPage.interface.titleHighlight")}</span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Clean, intuitive, and powerful - everything where you need it
+                {t("mainPage.interface.description")}
               </p>
             </motion.div>
 

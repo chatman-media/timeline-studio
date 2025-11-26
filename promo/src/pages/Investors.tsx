@@ -117,9 +117,63 @@ export const Investors: React.FC = () => {
         email: "ak.chatman.media@gmail.com",
       },
     },
+    zh: {
+      title: "投资机会",
+      subtitle: "加入AI视频编辑革命",
+      raising: "我们正在筹集",
+      seedRound: "种子轮",
+      forEquity: "10%股权",
+      problem: {
+        title: "问题",
+        text: "视频编辑仍然复杂且耗时。现有解决方案要么太贵（Adobe $23/月），要么功能有限。AI工具分散，需要订阅多个服务。",
+      },
+      solution: {
+        title: "解决方案",
+        text: "Timeline Studio——首个AI原生视频编辑器，内置100多个AI工具。本地处理确保隐私和速度。开源模式保证透明度和社区信任。",
+      },
+      market: {
+        title: "$451亿市场",
+        items: [
+          "视频编辑器: $21.5亿 (CAGR 13.4%)",
+          "直播: $153亿 (CAGR 28.1%)",
+          "病毒式内容: $82亿 (CAGR 35%)",
+          "AI头像: $38亿 (CAGR 47%)",
+          "移动平台: $157亿 (CAGR 22.3%)",
+        ],
+      },
+      traction: {
+        title: "发展指标",
+        items: [
+          { value: "100+", label: "AI工具" },
+          { value: "95%", label: "产品就绪" },
+          { value: "10K+", label: "测试用例" },
+          { value: "60 FPS", label: "性能" },
+        ],
+      },
+      useOfFunds: {
+        title: "资金用途",
+        items: [
+          { percent: "50%", label: "团队（8人）", amount: "$500K" },
+          { percent: "25%", label: "AI代币和基础设施", amount: "$250K" },
+          { percent: "15%", label: "营销", amount: "$150K" },
+          { percent: "10%", label: "运营", amount: "$100K" },
+        ],
+      },
+      team: {
+        title: "团队",
+        founder: "Alexander Kireyev",
+        role: "创始人兼CEO",
+        bio: "15年以上开发经验，视频和AI领域专家",
+      },
+      cta: {
+        docs: "完整文档",
+        contact: "联系我们",
+        email: "ak.chatman.media@gmail.com",
+      },
+    },
   }
 
-  const t = language === "ru" ? content.ru : content.en
+  const t = language === "zh" ? content.zh : language === "ru" ? content.ru : content.en
 
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
