@@ -110,6 +110,13 @@ function handleMediaAdded(
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
     thumbnailPath: (media as any).thumbnail ?? undefined,
+    // Добавляем metadata с codec для H.265 детекции
+    metadata: (media as any).codec
+      ? {
+          type: media.media_type as "Video" | "Audio" | "Image",
+          codec: (media as any).codec,
+        }
+      : undefined,
   }
 
   // Добавляем в pool
@@ -222,6 +229,13 @@ function handleImportedMediaAdded(
     name: media.name,
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
+    // Добавляем metadata с codec для H.265 детекции
+    metadata: (media as any).codec
+      ? {
+          type: media.media_type as "Video" | "Audio" | "Image",
+          codec: (media as any).codec,
+        }
+      : undefined,
   }
 
   // Добавляем в pool
@@ -261,23 +275,52 @@ function handleImportedMediaRemoved(
 
 /**
  * Обработка события ImportedMediaUpdated
- * Обновляет импортированный медиа файл в media pool
+ * Обновляет импортированный медиа файл в media pool с codec информацией
  */
 function handleImportedMediaUpdated(
-  _context: MediaManagementContext,
+  context: MediaManagementContext,
   event: ProjectEvent,
 ): Partial<MediaManagementContext> {
   // Type guard
   if (event.type !== "ImportedMediaUpdated") return {}
 
-  const { media_id } = event.payload as { media_id: string }
+  const { media_id, codec } = event.payload as { media_id: string; codec?: string }
 
-  logger.info("Imported media updated in pool:", { mediaId: media_id })
+  logger.info("Imported media updated in pool:", { mediaId: media_id, codec })
 
-  // Для ImportedMediaUpdated бэкенд не присылает полные данные,
-  // поэтому просто логируем. Данные обновятся при следующей синхронизации
-  // или при получении состояния через getProjectState()
-  return {}
+  // Если codec не передан, нет смысла обновлять
+  if (!codec) {
+    return {}
+  }
+
+  // Создаем новую копию media pool
+  const updatedMediaPool = new Map(context.mediaPool)
+
+  // Получаем существующий media item
+  const existingMedia = updatedMediaPool.get(media_id)
+
+  if (!existingMedia) {
+    logger.warn("Cannot update media - not found in pool:", { mediaId: media_id })
+    return {}
+  }
+
+  // Обновляем media info с codec для H.265 детекции
+  const updatedMedia: MediaInfo = {
+    ...existingMedia,
+    metadata: {
+      type: existingMedia.type as "Video" | "Audio" | "Image",
+      codec: codec,
+    },
+  }
+
+  // Обновляем в pool
+  updatedMediaPool.set(media_id, updatedMedia)
+
+  logger.info("Media updated with codec:", { mediaId: media_id, codec })
+
+  return {
+    mediaPool: updatedMediaPool,
+  }
 }
 
 /**

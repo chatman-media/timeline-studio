@@ -98,6 +98,8 @@ pub enum ProjectEvent {
   },
   ImportedMediaUpdated {
     media_id: String,
+    /// Video codec (e.g., "hevc", "h264") for H.265 detection - sent after metadata extraction
+    codec: Option<String>,
   },
   ImportedMediaCleared,
 
@@ -467,6 +469,8 @@ pub struct MediaData {
   pub name: String,
   pub media_type: String,
   pub duration: Option<f64>,
+  /// Video codec (e.g., "hevc", "h264") for H.265 detection
+  pub codec: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]

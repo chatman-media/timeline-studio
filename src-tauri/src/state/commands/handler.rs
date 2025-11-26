@@ -1765,6 +1765,7 @@ impl CommandHandler {
               MediaType::Image => "Image".to_string(),
             },
             duration: None,
+            codec: None, // Codec will be set via MediaUpdated event after metadata extraction
           },
         },
         "command_handler".to_string(),

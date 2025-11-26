@@ -73,6 +73,7 @@ impl ImportedMediaCommands {
               MediaType::Image => "Image".to_string(),
             },
             duration: None,
+            codec: None, // Will be set when metadata is available
           },
         },
         "command_handler".to_string(),
@@ -125,16 +126,34 @@ impl ImportedMediaCommands {
           });
         }
       }
+
+      // Extract video codec from probeData.streams
+      // Frontend sends probeData with structure: { streams: [{ codec_type: "video", codec_name: "hevc" }], format: {...} }
+      if let Some(streams) = metadata.get("streams").and_then(|v| v.as_array()) {
+        for stream in streams {
+          if let Some(codec_type) = stream.get("codec_type").and_then(|v| v.as_str()) {
+            if codec_type == "video" {
+              if let Some(codec_name) = stream.get("codec_name").and_then(|v| v.as_str()) {
+                media_item.metadata.codec = Some(codec_name.to_string());
+                break;
+              }
+            }
+          }
+        }
+      }
     }
 
+    // Get codec after extraction to include in event
+    let codec = media_item.metadata.codec.clone();
     let version = state.version;
 
-    // Publish event
+    // Publish event with codec info for H.265 detection on frontend
     self
       .event_bus
       .publish(
         ProjectEvent::ImportedMediaUpdated {
           media_id: media_id.clone(),
+          codec,
         },
         "command_handler".to_string(),
         version,
@@ -198,6 +217,7 @@ impl ImportedMediaCommands {
         MediaType::Image => "Image".to_string(),
       },
       duration: media_item.duration,
+      codec: media_item.metadata.codec.clone(),
     };
 
     // Add to media pool
