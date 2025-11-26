@@ -228,7 +228,7 @@ export class PersonDatabaseService {
       const person = await invoke<PersonProfile>("create_person", {
         name: personData.name,
         tags: personData.tags,
-        notes: (personData as any).description, // Используем notes вместо description
+        notes: personData.notes,
       })
 
       // Кэшируем
