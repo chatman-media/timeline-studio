@@ -54,7 +54,6 @@ Timeline Studio is not just an AI assistant, but a full professional system:
 ## 📊 Current Status (September 11, 2025)
 
 ### General Metrics
-- **Product readiness**: 95%
 - **Test coverage**: Frontend 10,000+ tests, Backend 85%
 - **Performance**: 60 FPS with 50+ clips
 - **Language support**: 15 languages

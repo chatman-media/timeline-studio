@@ -37,7 +37,6 @@ export const Investors: React.FC = () => {
         title: "Показатели",
         items: [
           { value: "100+", label: "AI инструментов" },
-          { value: "95%", label: "готовность продукта" },
           { value: "10K+", label: "тестов" },
           { value: "60 FPS", label: "производительность" },
         ],
@@ -91,7 +90,6 @@ export const Investors: React.FC = () => {
         title: "Progress",
         items: [
           { value: "100+", label: "AI tools" },
-          { value: "95%", label: "product ready" },
           { value: "10K+", label: "tests" },
           { value: "60 FPS", label: "performance" },
         ],
@@ -145,7 +143,6 @@ export const Investors: React.FC = () => {
         title: "发展指标",
         items: [
           { value: "100+", label: "AI工具" },
-          { value: "95%", label: "产品就绪" },
           { value: "10K+", label: "测试用例" },
           { value: "60 FPS", label: "性能" },
         ],
