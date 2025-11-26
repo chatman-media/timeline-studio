@@ -3,7 +3,7 @@ use specta::Type;
 use std::path::Path;
 use std::process::Command;
 
-use crate::app_dirs::AppDirectories;
+use crate::filesystem::AppDirectories;
 use crate::state::project_state::Resolution;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]

@@ -113,7 +113,7 @@ describe("Update Machine", () => {
         current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          pub_date: "2024-01-01",
+          pub_date: "2025-01-01",
           notes: "New version available",
           signature: "mock-signature",
           url: "https://example.com/update",
@@ -131,7 +131,7 @@ describe("Update Machine", () => {
     it("should save update info in context", async () => {
       const updateInfo = {
         version: "2.0.0",
-        pub_date: "2024-01-01",
+        pub_date: "2025-01-01",
         notes: "New features",
         signature: "mock-signature",
         url: "https://example.com/update",
@@ -205,7 +205,7 @@ describe("Update Machine", () => {
         current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          pub_date: "2024-01-01",
+          pub_date: "2025-01-01",
           notes: "Update available",
           signature: "mock-signature",
           url: "https://example.com/update",
@@ -253,7 +253,7 @@ describe("Update Machine", () => {
         current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          pub_date: "2024-01-01",
+          pub_date: "2025-01-01",
           notes: "Update ready",
           signature: "mock-signature",
           url: "https://example.com/update",
@@ -346,7 +346,7 @@ describe("Update Machine", () => {
         current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          pub_date: "2024-01-01",
+          pub_date: "2025-01-01",
           notes: "Update",
           signature: "mock-signature",
           url: "https://example.com/update",
@@ -369,7 +369,7 @@ describe("Update Machine", () => {
         current_version: "1.0.0",
         update_info: {
           version: "2.0.0",
-          pub_date: "2024-01-01",
+          pub_date: "2025-01-01",
           notes: "Update",
           signature: "mock-signature",
           url: "https://example.com/update",

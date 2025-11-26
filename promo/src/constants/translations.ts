@@ -84,7 +84,8 @@ export const translations = {
       },
       contribute: {
         title: "Want to contribute?",
-        description: "Help us improve Timeline Studio by contributing to the documentation or codebase.",
+        description:
+          "Help us improve Timeline Studio by contributing to the documentation or codebase.",
         viewGithub: "View on GitHub",
         contributingGuide: "Contributing Guide",
       },
@@ -92,7 +93,8 @@ export const translations = {
     about: {
       hero: {
         title: "Redefining Video Editing",
-        subtitle: "Building the future of creative content with AI-powered tools",
+        subtitle:
+          "Building the future of creative content with AI-powered tools",
         founded: "Founded 2025",
         remote: "Remote First",
         openSource: "Open Source",
@@ -113,15 +115,18 @@ export const translations = {
         },
         community: {
           title: "Global Community",
-          description: "Supporting creators worldwide with multi-language support and platform-agnostic solutions.",
+          description:
+            "Supporting creators worldwide with multi-language support and platform-agnostic solutions.",
         },
         efficiency: {
           title: "Speed & Efficiency",
-          description: "Every feature is designed to save time and enhance creativity, not complicate workflows.",
+          description:
+            "Every feature is designed to save time and enhance creativity, not complicate workflows.",
         },
         privacy: {
           title: "Privacy Focused",
-          description: "Your content is yours. We prioritize user privacy and data security in everything we build.",
+          description:
+            "Your content is yours. We prioritize user privacy and data security in everything we build.",
         },
         userCentric: {
           title: "User Centric",
@@ -130,7 +135,8 @@ export const translations = {
         },
         openInnovation: {
           title: "Open Innovation",
-          description: "We believe in the power of open source and community-driven development.",
+          description:
+            "We believe in the power of open source and community-driven development.",
         },
       },
       team: {
@@ -160,7 +166,8 @@ export const translations = {
     },
     pricing: {
       title: "Simple Pricing",
-      subtitle: "Local features free. Cloud features paid. Everything transparent.",
+      subtitle:
+        "Local features free. Cloud features paid. Everything transparent.",
       description:
         "AI avatars, video generation, one-click export to TikTok/YouTube\nEverything you need to dominate social media",
       mostPopular: "MOST POPULAR",
@@ -262,11 +269,12 @@ export const translations = {
       social: {
         title: "Follow Us",
       },
-      copyright: "© 2025 Timeline Studio, Inc.",
+      copyright: "© Timeline Studio, Inc.",
     },
     hero: {
       title: "AI-Powered Video Creation",
-      subtitle: "Watch how Timeline Studio AI helps you create viral content in seconds",
+      subtitle:
+        "Watch how Timeline Studio AI helps you create viral content in seconds",
       description: "Type your idea and let AI do the magic",
       downloadFree: "Download Free",
     },
@@ -278,7 +286,8 @@ export const translations = {
           local: "Local features",
           free: "free forever",
           localAI: "Local AI processing.",
-          cloud: "Cloud features and premium AI models available with PRO subscription.",
+          cloud:
+            "Cloud features and premium AI models available with PRO subscription.",
         },
         openSource: "Open Source",
         downloadFree: "Download Free",
@@ -352,14 +361,17 @@ export const translations = {
       videoDemos: {
         title: "See It",
         titleHighlight: "In Action",
-        subtitle: "Quick video tutorials showing Timeline Studio's powerful features",
+        subtitle:
+          "Quick video tutorials showing Timeline Studio's powerful features",
         aiEditing: {
           title: "AI Auto-Editing in Action",
-          description: "Watch how AI selects best moments and creates engaging edits automatically",
+          description:
+            "Watch how AI selects best moments and creates engaging edits automatically",
         },
         multiCamera: {
           title: "Multi-Camera Workflow",
-          description: "Edit multi-angle footage with automated switching and sync",
+          description:
+            "Edit multi-angle footage with automated switching and sync",
         },
         colorGrading: {
           title: "Color Grading Tutorial",
@@ -373,21 +385,25 @@ export const translations = {
       features: {
         smartAnalysis: {
           title: "Smart Analysis",
-          description: "AI analyzes trends and suggests the best content strategy for maximum engagement",
+          description:
+            "AI analyzes trends and suggests the best content strategy for maximum engagement",
         },
         instantCreation: {
           title: "Instant Creation",
-          description: "Generate professional videos with trending effects and transitions in seconds",
+          description:
+            "Generate professional videos with trending effects and transitions in seconds",
         },
         viralOptimization: {
           title: "Viral Optimization",
-          description: "Optimize timing, hashtags, and content format for each social platform",
+          description:
+            "Optimize timing, hashtags, and content format for each social platform",
         },
       },
       download: {
         title: "Download for free",
         subtitle: "Available for all major operating systems",
-        description: "Choose your platform and start creating amazing videos today",
+        description:
+          "Choose your platform and start creating amazing videos today",
         latestVersion: "Latest version",
         checkGithub: "Check on GitHub",
         allReleases: "All releases",
@@ -440,7 +456,8 @@ export const translations = {
       },
       stillQuestions: {
         title: "Still have questions?",
-        description: "Feel free to reach out to our community or check our documentation.",
+        description:
+          "Feel free to reach out to our community or check our documentation.",
         joinDiscord: "Join Discord Community",
         openIssue: "Open GitHub Issue",
       },
@@ -450,7 +467,8 @@ export const translations = {
     docs: {
       title: "Документация",
       subtitle: "Всё, что нужно знать о Timeline Studio",
-      description: "Руководства по разработке, справочник API и лучшие практики",
+      description:
+        "Руководства по разработке, справочник API и лучшие практики",
       sections: {
         gettingStarted: {
           title: "Начало работы",
@@ -531,7 +549,8 @@ export const translations = {
       },
       contribute: {
         title: "Хотите внести вклад?",
-        description: "Помогите нам улучшить Timeline Studio, внося вклад в документацию или кодовую базу.",
+        description:
+          "Помогите нам улучшить Timeline Studio, внося вклад в документацию или кодовую базу.",
         viewGithub: "Посмотреть на GitHub",
         contributingGuide: "Руководство по внесению вклада",
       },
@@ -539,7 +558,8 @@ export const translations = {
     about: {
       hero: {
         title: "Переосмысливаем видеомонтаж",
-        subtitle: "Создаём будущее креативного контента с помощью инструментов на основе ИИ",
+        subtitle:
+          "Создаём будущее креативного контента с помощью инструментов на основе ИИ",
         founded: "Основано в 2025",
         remote: "Удалённая работа",
         openSource: "Открытый код",
@@ -555,7 +575,8 @@ export const translations = {
         title: "Наши ценности",
         innovation: {
           title: "Инновации прежде всего",
-          description: "Мы раздвигаем границы возможного, интегрируя последние достижения ИИ в практичные инструменты.",
+          description:
+            "Мы раздвигаем границы возможного, интегрируя последние достижения ИИ в практичные инструменты.",
         },
         community: {
           title: "Глобальное сообщество",
@@ -579,7 +600,8 @@ export const translations = {
         },
         openInnovation: {
           title: "Открытые инновации",
-          description: "Мы верим в силу открытого исходного кода и разработки, ориентированной на сообщество.",
+          description:
+            "Мы верим в силу открытого исходного кода и разработки, ориентированной на сообщество.",
         },
       },
       team: {
@@ -609,7 +631,8 @@ export const translations = {
     },
     pricing: {
       title: "Простые цены",
-      subtitle: "Локальные функции бесплатно. Облачные функции платно. Всё прозрачно.",
+      subtitle:
+        "Локальные функции бесплатно. Облачные функции платно. Всё прозрачно.",
       description:
         "ИИ-аватары, генерация видео, экспорт в TikTok/YouTube одним кликом\nВсё, что нужно для доминирования в соцсетях",
       mostPopular: "САМЫЙ ПОПУЛЯРНЫЙ",
@@ -711,11 +734,12 @@ export const translations = {
       social: {
         title: "Подписывайтесь",
       },
-      copyright: "© 2025 Timeline Studio, Inc.",
+      copyright: "© Timeline Studio, Inc.",
     },
     hero: {
       title: "Создание видео с помощью ИИ",
-      subtitle: "Посмотрите, как ИИ Timeline Studio помогает создавать виральный контент за секунды",
+      subtitle:
+        "Посмотрите, как ИИ Timeline Studio помогает создавать виральный контент за секунды",
       description: "Напишите свою идею и позвольте ИИ сделать волшебство",
       downloadFree: "Скачать бесплатно",
     },
@@ -727,7 +751,8 @@ export const translations = {
           local: "Локальные функции",
           free: "бесплатно навсегда",
           localAI: "Локальная обработка ИИ.",
-          cloud: "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
+          cloud:
+            "Облачные функции и премиум ИИ-модели доступны с подпиской PRO.",
         },
         openSource: "Открытый код",
         downloadFree: "Скачать бесплатно",
@@ -739,9 +764,11 @@ export const translations = {
         subtitle: "Всё необходимое для профессионального производства видео",
         professional: {
           title: "Профессиональный видеомонтаж",
-          description: "Полнофункциональный таймлайн со всеми необходимыми инструментами",
+          description:
+            "Полнофункциональный таймлайн со всеми необходимыми инструментами",
           examples: {
-            multitrack: "Многодорожечный таймлайн с неограниченным количеством слоёв",
+            multitrack:
+              "Многодорожечный таймлайн с неограниченным количеством слоёв",
             frameAccurate: "Покадровый монтаж",
             multicam: "Мультикамерный монтаж с переключением углов",
             compound: "Составные клипы и вложенность",
@@ -801,18 +828,22 @@ export const translations = {
       videoDemos: {
         title: "Посмотрите",
         titleHighlight: "в действии",
-        subtitle: "Короткие видеоуроки, демонстрирующие мощные функции Timeline Studio",
+        subtitle:
+          "Короткие видеоуроки, демонстрирующие мощные функции Timeline Studio",
         aiEditing: {
           title: "Авто-монтаж с ИИ в действии",
-          description: "Смотрите, как ИИ выбирает лучшие моменты и создаёт захватывающий монтаж автоматически",
+          description:
+            "Смотрите, как ИИ выбирает лучшие моменты и создаёт захватывающий монтаж автоматически",
         },
         multiCamera: {
           title: "Мультикамерный рабочий процесс",
-          description: "Монтаж многоугловых кадров с автоматическим переключением и синхронизацией",
+          description:
+            "Монтаж многоугловых кадров с автоматическим переключением и синхронизацией",
         },
         colorGrading: {
           title: "Туториал по цветокоррекции",
-          description: "Профессиональный рабочий процесс цветокоррекции и грейдинга",
+          description:
+            "Профессиональный рабочий процесс цветокоррекции и грейдинга",
         },
         comingSoon: "Скоро",
         checkGithub: "Хотите увидеть больше? Посмотрите наш",
@@ -822,21 +853,25 @@ export const translations = {
       features: {
         smartAnalysis: {
           title: "Умный анализ",
-          description: "ИИ анализирует тренды и предлагает лучшую контент-стратегию для максимального охвата",
+          description:
+            "ИИ анализирует тренды и предлагает лучшую контент-стратегию для максимального охвата",
         },
         instantCreation: {
           title: "Мгновенное создание",
-          description: "Генерируйте профессиональные видео с трендовыми эффектами и переходами за секунды",
+          description:
+            "Генерируйте профессиональные видео с трендовыми эффектами и переходами за секунды",
         },
         viralOptimization: {
           title: "Вирусная оптимизация",
-          description: "Оптимизируйте тайминг, хештеги и формат контента для каждой социальной платформы",
+          description:
+            "Оптимизируйте тайминг, хештеги и формат контента для каждой социальной платформы",
         },
       },
       download: {
         title: "Скачать бесплатно",
         subtitle: "Доступно для всех основных операционных систем",
-        description: "Выберите вашу платформу и начните создавать удивительные видео сегодня",
+        description:
+          "Выберите вашу платформу и начните создавать удивительные видео сегодня",
         latestVersion: "Последняя версия",
         checkGithub: "Проверить на GitHub",
         allReleases: "Все релизы",
@@ -862,7 +897,8 @@ export const translations = {
             "Timeline Studio поддерживает все основные форматы видео, включая MP4, MOV, AVI, MKV, WebM и другие. Также можно экспортировать в различные форматы, оптимизированные для разных платформ.",
         },
         commercial: {
-          question: "Могу ли я использовать Timeline Studio для коммерческих проектов?",
+          question:
+            "Могу ли я использовать Timeline Studio для коммерческих проектов?",
           answer:
             "Конечно! Timeline Studio выпущен под свободной лицензией, которая позволяет как личное, так и коммерческое использование без ограничений.",
         },
@@ -889,7 +925,8 @@ export const translations = {
       },
       stillQuestions: {
         title: "Остались вопросы?",
-        description: "Не стесняйтесь обращаться к нашему сообществу или проверить документацию.",
+        description:
+          "Не стесняйтесь обращаться к нашему сообществу или проверить документацию.",
         joinDiscord: "Присоединиться к Discord",
         openIssue: "Открыть issue на GitHub",
       },
@@ -1012,15 +1049,18 @@ export const translations = {
         },
         efficiency: {
           title: "速度与效率",
-          description: "每个功能都旨在节省时间和增强创造力，而不是使工作流程复杂化。",
+          description:
+            "每个功能都旨在节省时间和增强创造力，而不是使工作流程复杂化。",
         },
         privacy: {
           title: "注重隐私",
-          description: "您的内容属于您。我们在构建的一切中都优先考虑用户隐私和数据安全。",
+          description:
+            "您的内容属于您。我们在构建的一切中都优先考虑用户隐私和数据安全。",
         },
         userCentric: {
           title: "以用户为中心",
-          description: "每个决定都从我们的用户开始。我们构建解决真实创作者真实问题的功能。",
+          description:
+            "每个决定都从我们的用户开始。我们构建解决真实创作者真实问题的功能。",
         },
         openInnovation: {
           title: "开放创新",
@@ -1029,12 +1069,14 @@ export const translations = {
       },
       team: {
         title: "由创作者为创作者构建",
-        description: "我们的团队结合了AI、视频技术和用户体验设计方面的专业知识，创造真正理解创作者需求的工具。",
+        description:
+          "我们的团队结合了AI、视频技术和用户体验设计方面的专业知识，创造真正理解创作者需求的工具。",
         founder: "创始人兼首席开发者",
       },
       cta: {
         title: "加入我们的旅程",
-        description: "无论您是内容创作者、开发者，还是只是对视频的未来充满热情，我们都希望您成为我们社区的一部分。",
+        description:
+          "无论您是内容创作者、开发者，还是只是对视频的未来充满热情，我们都希望您成为我们社区的一部分。",
         contributeGithub: "在GitHub上贡献",
         tryStudio: "试用Timeline Studio",
       },
@@ -1053,7 +1095,8 @@ export const translations = {
     pricing: {
       title: "简单定价",
       subtitle: "本地功能免费。云功能付费。一切透明。",
-      description: "AI头像、视频生成、一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
+      description:
+        "AI头像、视频生成、一键导出到TikTok/YouTube\n您在社交媒体上占主导地位所需的一切",
       mostPopular: "最受欢迎",
       cloudStorage: "云存储",
       aiTokens: "AI令牌",
@@ -1153,7 +1196,7 @@ export const translations = {
       social: {
         title: "关注我们",
       },
-      copyright: "© 2025 Timeline Studio, Inc.",
+      copyright: "© Timeline Studio, Inc.",
     },
     hero: {
       title: "AI驱动的视频创作",
@@ -1295,7 +1338,8 @@ export const translations = {
         },
         isFree: {
           question: "Timeline Studio免费吗？",
-          answer: "是的！Timeline Studio完全免费且开源。您可以为Windows、macOS和Linux下载它，无需任何费用或订阅费。",
+          answer:
+            "是的！Timeline Studio完全免费且开源。您可以为Windows、macOS和Linux下载它，无需任何费用或订阅费。",
         },
         formats: {
           question: "支持哪些视频格式？",
@@ -1304,7 +1348,8 @@ export const translations = {
         },
         commercial: {
           question: "我可以将Timeline Studio用于商业项目吗？",
-          answer: "当然可以！Timeline Studio在自由许可证下发布，允许个人和商业使用，无任何限制。",
+          answer:
+            "当然可以！Timeline Studio在自由许可证下发布，允许个人和商业使用，无任何限制。",
         },
         requirements: {
           question: "系统要求是什么？",
@@ -1335,7 +1380,7 @@ export const translations = {
       },
     },
   },
-} as const
+} as const;
 
-export type Language = keyof typeof translations
-export type TranslationKey = keyof typeof translations.en
+export type Language = keyof typeof translations;
+export type TranslationKey = keyof typeof translations.en;

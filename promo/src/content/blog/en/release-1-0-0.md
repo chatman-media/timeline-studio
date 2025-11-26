@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 1.0.0 - First Stable Release!
-date: 2024-09-20
+date: 2025-09-20
 author: Timeline Team
 slug: release-1-0-0
 excerpt: We are excited to introduce Timeline Studio 1.0 - the first stable release of a professional open-source video editor! A full-featured tool for video creation with AI support, effects, and much more.

@@ -165,7 +165,7 @@ jobs:
 ```markdown
 # Changelog
 
-## [0.53.0](https://github.com/org/repo/compare/v0.52.1...v0.53.0) (2024-07-31)
+## [0.53.0](https://github.com/org/repo/compare/v0.52.1...v0.53.0) (2025-07-31)
 
 ### Features
 

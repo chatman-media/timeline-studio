@@ -92,7 +92,15 @@ function handleMediaAdded(
   event: Extract<ProjectEvent, { type: "MediaAdded" }>,
 ): Partial<MediaManagementContext> {
   const { media } = event.payload as {
-    media: { id: string; path: string; name: string; media_type: string; duration?: number; codec?: string; thumbnail?: string }
+    media: {
+      id: string
+      path: string
+      name: string
+      media_type: string
+      duration?: number
+      codec?: string
+      thumbnail?: string
+    }
   }
 
   logger.info("Media added to pool:", {

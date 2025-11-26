@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.0.0 - Революционный переход на Event-Driven архитектуру
-date: 2024-11-18
+date: 2025-11-18
 author: Команда Timeline
 slug: release-3-0-0
 excerpt: Масштабный релиз 3.0 с полностью переработанной event-driven архитектурой, Ollama Vision Models для бесплатного AI-анализа и secure storage для API ключей. Новая эра Timeline Studio!

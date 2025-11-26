@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.15.0 - AI Director 仪表板和工作区个性化
-date: 2024-11-24
+date: 2025-11-24
 author: Timeline 团队
 slug: release-3-15-0
 excerpt: 强大的更新，带有 AI Director 仪表板用于可视化自动编辑管理、工作区持久化和扩展样式模板。

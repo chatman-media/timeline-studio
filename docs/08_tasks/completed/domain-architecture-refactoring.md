@@ -1,6 +1,6 @@
 # Рефакторинг: Перенос бизнес-логики из Features в Domains
 
-**Создано:** 2024-11-26
+**Создано:** 2025-11-26
 **Завершено:** 2025-11-26
 **Статус:** ✅ Завершено
 **Приоритет:** Высокий
@@ -263,24 +263,24 @@ Features должны содержать только:
 ## Порядок выполнения
 
 ### Фаза 1: Устранение дубликатов (Критично) ✅ ЗАВЕРШЕНО
-1. [x] person-identification - удалить дубликаты, использовать ai-services (2024-11-26)
-2. [x] recognition - удалить дубликаты, использовать ai-services (2024-11-26)
+1. [x] person-identification - удалить дубликаты, использовать ai-services (2025-11-26)
+2. [x] recognition - удалить дубликаты, использовать ai-services (2025-11-26)
 
 ### Фаза 2: Критичная бизнес-логика ✅ ЗАВЕРШЕНО
-3. [x] video-compiler → video-editing (2024-11-26)
-4. [x] media → media-management (2024-11-26)
+3. [x] video-compiler → video-editing (2025-11-26)
+4. [x] media → media-management (2025-11-26)
 
 ### Фаза 3: Пользовательские настройки ✅ ЗАВЕРШЕНО
-5. [x] user-settings → project-management (2024-11-26)
-6. [x] effects → video-editing (2024-11-26)
-7. [x] subtitles → video-editing (2024-11-26)
+5. [x] user-settings → project-management (2025-11-26)
+6. [x] effects → video-editing (2025-11-26)
+7. [x] subtitles → video-editing (2025-11-26)
 
 ### Фаза 4: Системная интеграция ✅ ЗАВЕРШЕНО
-8. [x] ai-director → ai-services (2024-11-26)
-9. [x] workspace → system-integration (2024-11-26)
-10. [x] updates → system-integration (2024-11-26)
-11. [x] app-state → project-management (2024-11-26)
-12. [x] analysis-dashboard → frontend-only, документация обновлена (2024-11-26)
+8. [x] ai-director → ai-services (2025-11-26)
+9. [x] workspace → system-integration (2025-11-26)
+10. [x] updates → system-integration (2025-11-26)
+11. [x] app-state → project-management (2025-11-26)
+12. [x] analysis-dashboard → frontend-only, документация обновлена (2025-11-26)
 
 ---
 

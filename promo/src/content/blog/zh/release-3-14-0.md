@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.14.0 - 本地 AI 模型优先
-date: 2024-11-18
+date: 2025-11-18
 author: Timeline 团队
 slug: release-3-14-0
 excerpt: 更新专注于隐私 - 本地 AI 模型现在在自动选择中具有优先权。完全离线处理您的数据！

@@ -655,7 +655,7 @@ results.forEach((result, i) => {
 
 ## Breaking Changes
 
-### Версия 2.0-unified (November 2024)
+### Версия 2.0-unified (November 2025)
 
 #### ⚠️ Удалённые API
 

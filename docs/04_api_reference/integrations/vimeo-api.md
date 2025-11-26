@@ -181,7 +181,7 @@ await vimeo.request(`/videos/${videoId}`, {
       '/categories/animation',
       '/categories/documentary'
     ],
-    tags: ['timeline-studio', 'монтаж', '2024']
+    tags: ['timeline-studio', 'монтаж', '2025']
   }
 })
 
@@ -378,8 +378,8 @@ logger.infoSync(`Общее время просмотра: ${stats.total_time_wa
 // Детальная аналитика (требует Vimeo Pro)
 const analytics = await vimeo.request(`/videos/${videoId}/analytics`, {
   dimension: 'country', // 'country' | 'device_type' | 'embed_domain' | 'stream_type' | 'video'
-  from: '2024-01-01',
-  to: '2024-12-31',
+  from: '2025-01-01',
+  to: '2025-12-31',
   sort: 'plays',
   direction: 'desc'
 })
@@ -388,8 +388,8 @@ const analytics = await vimeo.request(`/videos/${videoId}/analytics`, {
 const timeSeriesData = await vimeo.request(`/videos/${videoId}/analytics/timeseries`, {
   metric: 'plays', // 'plays' | 'loads' | 'finishes' | 'downloads' | 'unique_viewers'
   interval: 'day', // 'day' | 'week' | 'month'
-  from: '2024-01-01',
-  to: '2024-12-31'
+  from: '2025-01-01',
+  to: '2025-12-31'
 })
 ```
 
@@ -414,7 +414,7 @@ const liveEvent = await vimeo.request('/me/live_events', {
       view: 'anybody'
     },
     schedule: {
-      start_time: '2024-12-25T15:00:00+00:00'
+      start_time: '2025-12-25T15:00:00+00:00'
     },
     auto_cc: true, // Автоматические субтитры
     dvr: true, // Digital Video Recorder

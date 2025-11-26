@@ -1,6 +1,6 @@
 ---
 title: "Представляем Timeline Studio - видеоредактор с AI"
-date: "2024-01-28"
+date: "2025-01-28"
 author: "Chatman Media"
 slug: "introducing-timeline-studio"
 excerpt: "Знакомьтесь с Timeline Studio - революционный видеоредактор, который объединяет профессиональные инструменты и AI-функции для трансформации создания контента."

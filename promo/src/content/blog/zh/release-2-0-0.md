@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 2.0.0 - 专业视频编辑的新时代
-date: 2024-10-15
+date: 2025-10-15
 author: Timeline 团队
 slug: release-2-0-0
 excerpt: 重大 2.0 版本发布，全新界面设计、多机位编辑、AI 编辑助手和专业色彩校正工具。Timeline Studio 达到新高度！

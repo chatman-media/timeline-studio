@@ -29,11 +29,8 @@ mod media;
 use media::preview_manager::PreviewDataManager;
 use media::{MediaProcessor, ThumbnailOptions};
 
-// Модуль для работы с файловой системой
+// Модуль для работы с файловой системой и управления директориями
 mod filesystem;
-
-// Модуль управления директориями приложения
-mod app_dirs;
 
 // Модуль для работы с голосовыми записями
 mod voice_recording;
@@ -135,7 +132,7 @@ async fn scan_media_folder<R: tauri::Runtime>(
   use std::path::Path;
 
   // Получаем директорию для кеша превью
-  let app_dirs = app_dirs::get_app_directories().await?;
+  let app_dirs = filesystem::get_app_directories().await?;
   let thumbnail_dir = app_dirs.caches_dir.join("thumbnails");
 
   // Создаем процессор
@@ -156,7 +153,7 @@ async fn scan_media_folder_with_thumbnails<R: tauri::Runtime>(
   use std::path::Path;
 
   // Получаем директорию для кеша превью
-  let app_dirs = app_dirs::get_app_directories().await?;
+  let app_dirs = filesystem::get_app_directories().await?;
   let thumbnail_dir = app_dirs.caches_dir.join("thumbnails");
 
   // Создаем процессор
@@ -217,7 +214,7 @@ pub fn run() {
 
   // Ensure app directories exist on startup
   tauri::async_runtime::block_on(async {
-    if let Err(e) = app_dirs::create_app_directories().await {
+    if let Err(e) = filesystem::create_app_directories().await {
       eprintln!("Failed to create app directories: {e}");
     }
   });

@@ -255,8 +255,8 @@ await tiktok.updateVideo(videoId, {
 // Детальная аналитика
 const analytics = await tiktok.getVideoAnalytics(videoId, {
   dateRange: {
-    startDate: '2024-01-01',
-    endDate: '2024-12-31'
+    startDate: '2025-01-01',
+    endDate: '2025-12-31'
   },
   metrics: [
     'views',
@@ -393,7 +393,7 @@ const videoWithTemplate = await tiktok.applyTemplate({
   videoPath: '/path/to/video.mp4',
   templateId: 'template_123',
   customization: {
-    text: ['Timeline Studio', '2024'],
+    text: ['Timeline Studio', '2025'],
     colors: ['#FF0000', '#00FF00'],
     music: 'auto' // Автоподбор музыки
   }
@@ -413,12 +413,12 @@ const batchUpload = await tiktok.batchPublish([
   {
     videoPath: '/path/to/video1.mp4',
     caption: 'Видео 1',
-    scheduledTime: '2024-12-01T10:00:00Z'
+    scheduledTime: '2025-12-01T10:00:00Z'
   },
   {
     videoPath: '/path/to/video2.mp4',
     caption: 'Видео 2',
-    scheduledTime: '2024-12-02T10:00:00Z'
+    scheduledTime: '2025-12-02T10:00:00Z'
   }
 ], {
   parallel: 2,

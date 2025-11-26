@@ -10,8 +10,8 @@ const mockSessions: ChatListItem[] = [
     title: "First chat session",
     messageCount: 5,
     lastMessage: "This is the last message",
-    lastMessageAt: new Date("2024-01-01"),
-    createdAt: new Date("2024-01-01"),
+    lastMessageAt: new Date("2025-01-01"),
+    createdAt: new Date("2025-01-01"),
     agent: "gpt-5",
   },
   {
@@ -19,8 +19,8 @@ const mockSessions: ChatListItem[] = [
     title: "Second chat session",
     messageCount: 3,
     lastMessage: "Another message",
-    lastMessageAt: new Date("2024-01-02"),
-    createdAt: new Date("2024-01-02"),
+    lastMessageAt: new Date("2025-01-02"),
+    createdAt: new Date("2025-01-02"),
     agent: "gpt-5",
   },
   {
@@ -28,8 +28,8 @@ const mockSessions: ChatListItem[] = [
     title: "Third chat session",
     messageCount: 10,
     lastMessage: "Latest message",
-    lastMessageAt: new Date("2024-01-03"),
-    createdAt: new Date("2024-01-03"),
+    lastMessageAt: new Date("2025-01-03"),
+    createdAt: new Date("2025-01-03"),
     agent: "gpt-5",
   },
   {
@@ -37,8 +37,8 @@ const mockSessions: ChatListItem[] = [
     title: "Fourth chat session",
     messageCount: 2,
     lastMessage: "Hidden session",
-    lastMessageAt: new Date("2024-01-04"),
-    createdAt: new Date("2024-01-04"),
+    lastMessageAt: new Date("2025-01-04"),
+    createdAt: new Date("2025-01-04"),
     agent: "gpt-5",
   },
 ]

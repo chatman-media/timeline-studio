@@ -1,6 +1,6 @@
 ---
 title: "Timeline Studio Alpha v0.60.0：专业视频编辑器配备免费本地AI"
-date: "2024-08-03"
+date: "2025-08-03"
 author: "Timeline团队"
 slug: "alpha-release-ollama-integration"
 excerpt: "Timeline Studio首个公开Alpha版本发布，采用革命性AI方法：通过本地AI实现完全本地化和免费使用！"

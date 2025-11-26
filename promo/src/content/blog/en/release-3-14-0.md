@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.14.0 - Priority for Local AI Models
-date: 2024-11-18
+date: 2025-11-18
 author: Timeline Team
 slug: release-3-14-0
 excerpt: Update focuses on privacy - local AI models now have priority in auto-selection. Work with your data completely offline!

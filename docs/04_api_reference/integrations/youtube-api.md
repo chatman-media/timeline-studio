@@ -108,9 +108,9 @@ const advancedUpload = await youtube.uploadVideo({
     embeddable: true,
     license: 'youtube', // 'youtube' | 'creativeCommon'
     publicStatsViewable: true,
-    publishAt: '2024-12-25T10:00:00Z', // Scheduled
+    publishAt: '2025-12-25T10:00:00Z', // Scheduled
     recordingDetails: {
-      recordingDate: '2024-12-20T15:30:00Z',
+      recordingDate: '2025-12-20T15:30:00Z',
       location: {
         latitude: 37.42,
         longitude: -122.08,
@@ -288,16 +288,16 @@ await youtube.setCommentSettings(videoId, {
 ```typescript
 // Получение аналитики канала
 const analytics = await youtube.getAnalytics({
-  startDate: '2024-01-01',
-  endDate: '2024-12-31',
+  startDate: '2025-01-01',
+  endDate: '2025-12-31',
   metrics: ['views', 'likes', 'shares', 'estimatedMinutesWatched'],
   dimensions: ['day']
 })
 
 // Аналитика конкретного видео
 const videoAnalytics = await youtube.getVideoAnalytics(videoId, {
-  startDate: '2024-01-01',
-  endDate: '2024-12-31',
+  startDate: '2025-01-01',
+  endDate: '2025-12-31',
   metrics: [
     'views',
     'likes',

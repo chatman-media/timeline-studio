@@ -1,6 +1,6 @@
 ---
 title: "Timeline Studio Alpha v0.60.0: Professional Video Editor with Free Local AI"
-date: "2024-08-03"
+date: "2025-08-03"
 author: "Timeline Team"
 slug: "alpha-release-ollama-integration"
 excerpt: "First public alpha release of Timeline Studio with revolutionary AI approach: everything works locally and for free!"
@@ -10,7 +10,7 @@ readTime: "7 min read"
 
 # Timeline Studio Alpha v0.60.0: Professional Video Editor with Free Local AI
 
-*August 3, 2024*
+*August 3, 2025*
 
 We're excited to introduce the first public alpha release of Timeline Studio — a professional video editor with a revolutionary approach to AI: **everything works locally and for free!**
 

@@ -23,8 +23,8 @@ describe("MediaFileAdapter", () => {
         isImage: false,
         duration: 120,
         size: 1024 * 1024 * 50,
-        createdAt: new Date("2024-01-01"),
-        updatedAt: new Date("2024-01-02"),
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-02"),
         probeData: {
           streams: [
             {
@@ -211,7 +211,7 @@ describe("MediaFileAdapter", () => {
         isAddedToTimeline: true,
         isIncluded: true,
         isUnavailable: false,
-        lastCheckedAt: Date.parse("2024-01-01T00:00:00Z"),
+        lastCheckedAt: Date.parse("2025-01-01T00:00:00Z"),
         isLoadingMetadata: false,
         source: "browser",
       }
@@ -256,8 +256,8 @@ describe("MediaFileAdapter", () => {
         type: MediaType.VideoWithAudio,
         duration: 120,
         size: 1024 * 1024 * 50,
-        createdAt: new Date("2024-01-01"),
-        updatedAt: new Date("2024-01-02"),
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-02"),
         width: 1920,
         height: 1080,
         fps: 30,
@@ -410,8 +410,8 @@ describe("MediaFileAdapter", () => {
         type: MediaType.Video,
         duration: 60,
         size: 1024,
-        createdAt: new Date("2024-01-01"),
-        updatedAt: new Date("2024-01-02"),
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-02"),
       }
 
       const featureFile1 = domainToFeatureMediaFile(domainFile1)
@@ -420,8 +420,8 @@ describe("MediaFileAdapter", () => {
 
       const domainFile2 = {
         ...domainFile1,
-        createdAt: "2024-01-01T00:00:00Z" as any,
-        updatedAt: "2024-01-02T00:00:00Z" as any,
+        createdAt: "2025-01-01T00:00:00Z" as any,
+        updatedAt: "2025-01-02T00:00:00Z" as any,
       }
 
       const featureFile2 = domainToFeatureMediaFile(domainFile2)
@@ -442,8 +442,8 @@ describe("MediaFileAdapter", () => {
         isImage: false,
         duration: 90,
         size: 1024 * 1024 * 30,
-        createdAt: new Date("2024-01-01"),
-        updatedAt: new Date("2024-01-02"),
+        createdAt: new Date("2025-01-01"),
+        updatedAt: new Date("2025-01-02"),
         isAddedToTimeline: true,
         isIncluded: true,
         source: "browser",

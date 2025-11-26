@@ -1,6 +1,6 @@
 ---
 title: Introducing Timeline Studio - AI-Powered Video Editor
-date: 2024-01-28
+date: 2025-07-28
 author: Chatman Media
 slug: introducing-timeline-studio
 excerpt: Meet Timeline Studio - a revolutionary video editor that combines professional tools with 100+ AI features to transform how you create content.

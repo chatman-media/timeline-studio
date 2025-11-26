@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.0.0 - 革命性转向事件驱动架构
-date: 2024-11-18
+date: 2025-11-18
 author: Timeline 团队
 slug: release-3-0-0
 excerpt: 重大 3.0 版本发布，全新事件驱动架构、Ollama Vision 模型免费 AI 分析和 API 密钥安全存储。Timeline Studio 新时代！

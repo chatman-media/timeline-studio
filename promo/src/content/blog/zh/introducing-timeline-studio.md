@@ -1,6 +1,6 @@
 ---
 title: 介绍Timeline Studio - AI驱动的视频编辑器
-date: 2024-08-10
+date: 2025-08-10
 author: Chatman Media
 slug: introducing-timeline-studio
 excerpt: 认识Timeline Studio - 一款革命性的视频编辑器，结合专业工具和AI功能，改变您创建内容的方式。

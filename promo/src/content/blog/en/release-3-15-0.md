@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.15.0 - AI Director Dashboard and Workspace Personalization
-date: 2024-11-24
+date: 2025-11-24
 author: Timeline Team
 slug: release-3-15-0
 excerpt: Powerful update with AI Director Dashboard for visual automatic editing management, workspace persistence, and extended style templates.

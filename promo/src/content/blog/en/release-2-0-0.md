@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 2.0.0 - A New Era of Professional Video Editing
-date: 2024-10-15
+date: 2025-10-15
 author: Timeline Team
 slug: release-2-0-0
 excerpt: Major 2.0 release with completely redesigned interface, multi-camera editing, AI editing assistant, and professional color correction tools. Timeline Studio reaches a new level!

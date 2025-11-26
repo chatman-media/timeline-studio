@@ -5,7 +5,7 @@ use std::path::PathBuf;
 /// Сохранить пользовательский эффект
 #[tauri::command]
 pub async fn save_user_effect(file_name: String, effect: String) -> Result<String, String> {
-  let app_dirs = crate::app_dirs::get_app_directories()
+  let app_dirs = crate::filesystem::get_app_directories()
     .await
     .map_err(|e| e.to_string())?;
 
@@ -45,7 +45,7 @@ pub async fn save_effects_collection(
   file_name: String,
   collection: String,
 ) -> Result<String, String> {
-  let app_dirs = crate::app_dirs::get_app_directories()
+  let app_dirs = crate::filesystem::get_app_directories()
     .await
     .map_err(|e| e.to_string())?;
 
@@ -84,7 +84,7 @@ pub async fn load_effects_collection(file_path: String) -> Result<String, String
 /// Получить список пользовательских эффектов
 #[tauri::command]
 pub async fn get_user_effects_list() -> Result<Vec<String>, String> {
-  let app_dirs = crate::app_dirs::get_app_directories()
+  let app_dirs = crate::filesystem::get_app_directories()
     .await
     .map_err(|e| e.to_string())?;
 

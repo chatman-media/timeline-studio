@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 3.11.0 - MCP Tools Integration
-date: 2024-11-18
+date: 2025-11-18
 author: Timeline Team
 slug: release-3-11-0
 excerpt: Revolutionary integration with Model Context Protocol - 18 new MCP Tools are now available in AI Chat for extended automation capabilities and external service integration.

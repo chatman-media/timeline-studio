@@ -216,9 +216,9 @@
 
 | Year | Timeline Studio | Adobe | DaVinci | Final Cut | CapCut |
 |------|----------------|-------|---------|-----------|--------|
-| **2024** | 100+ AI tools | 12 tools | 8 tools | 15 tools | 25 tools |
-| **2025** | 400+ tools | ~20 tools | ~15 tools | ~25 tools | ~40 tools |
-| **2026** | 600+ tools | ~30 tools | ~25 tools | ~35 tools | ~60 tools |
+| **2025** | 100+ AI tools | 12 tools | 8 tools | 15 tools | 25 tools |
+| **2026** | 400+ tools | ~20 tools | ~15 tools | ~25 tools | ~40 tools |
+| **2027** | 1000+ tools | ~40 tools | ~25 tools | ~35 tools | ~60 tools |
 
 ### Innovation Lead:
 ```

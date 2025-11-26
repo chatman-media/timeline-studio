@@ -169,14 +169,14 @@ const info = await metadata.getMetadata(filePath)
 
 // Обновление метаданных
 await metadata.updateMetadata(filePath, {
-  tags: ['vacation', '2024'],
+  tags: ['vacation', '2025'],
   rating: 5,
   description: 'Family vacation in Greece'
 })
 
 // Пакетное обновление
 await metadata.batchUpdate(files, {
-  copyright: '© 2024 My Studio',
+  copyright: '© 2025 My Studio',
   author: 'John Doe'
 })
 ```
@@ -488,7 +488,7 @@ async function batchRename() {
 
 ## 📝 Changelog
 
-### v2.0.0 (November 25, 2024)
+### v2.0.0 (November 25, 2025)
 
 **🎉 Основные изменения:**
 

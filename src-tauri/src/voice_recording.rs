@@ -2,7 +2,7 @@
 //!
 //! Обеспечивает функциональность сохранения аудио записей в структуре проекта
 
-use crate::app_dirs::AppDirectories;
+use crate::filesystem::AppDirectories;
 use base64::{engine::general_purpose, Engine as _};
 use serde::{Deserialize, Serialize};
 use std::fs;

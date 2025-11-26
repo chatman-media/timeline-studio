@@ -1,6 +1,6 @@
 ---
 title: Timeline Studio 1.0.0 - 首个稳定版本！
-date: 2024-09-20
+date: 2025-09-20
 author: Timeline 团队
 slug: release-1-0-0
 excerpt: 我们很高兴推出 Timeline Studio 1.0 - 首个专业开源视频编辑器的稳定版本！具有 AI 支持、特效等功能的全功能工具。
