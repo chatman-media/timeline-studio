@@ -2,14 +2,13 @@
  * App Provider
  *
  * Главный провайдер с архитектурой backend state management
+ * Использует ProjectManagementOrchestrator для единого управления состоянием
  */
 
-import { useMachine } from "@xstate/react"
-import React, { type ReactNode, useEffect, useCallback } from "react"
-// Используем машину из домена
-import { appMachine } from "@/domains/project-management/machines/app-machine"
-import { getBackendSync } from "./backend-sync"
-import type { ProjectCommand } from "@/types/generated/tauri-bindings"
+import { useSelector } from "@xstate/react"
+import React, { type ReactNode, useCallback, useMemo } from "react"
+import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
+import type { ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
 
 export interface AppContext {
   // Backend connection state
@@ -18,7 +17,7 @@ export interface AppContext {
   connectionError: string | null
 
   // Project state (from backend)
-  projectState: any // ProjectState from backend
+  projectState: ProjectState | null
 
   // Actions
   connect: () => void
@@ -34,46 +33,51 @@ interface AppProviderProps {
 }
 
 export function AppProvider({ children }: AppProviderProps) {
-  const [state, send] = useMachine(appMachine)
+  // Используем orchestrator вместо создания собственного actor
+  const orchestrator = useMemo(() => getProjectManagementOrchestrator(), [])
+  const appActor = orchestrator.getAppActor()
 
-  // Auto-connect when component mounts
-  useEffect(() => {
-    if (state?.matches("disconnected")) {
-      send({ type: "CONNECT" })
-    }
-  }, [state, send])
+  // Получаем состояние из actor через useSelector
+  const isConnected = useSelector(appActor, (state) => state.context.isConnected)
+  const isConnecting = useSelector(appActor, (state) => state.matches("connecting"))
+  const connectionError = useSelector(appActor, (state) => state.context.error)
+  const projectState = useSelector(appActor, (state) => state.context.projectState)
 
-  // Actions
-  const connect = () => {
-    send({ type: "CONNECT" })
-  }
+  // Actions через actor напрямую
+  const connect = useCallback(() => {
+    appActor.send({ type: "CONNECT" })
+  }, [appActor])
 
-  const disconnect = () => {
-    send({ type: "DISCONNECT" })
-  }
+  const disconnect = useCallback(() => {
+    appActor.send({ type: "DISCONNECT" })
+  }, [appActor])
 
-  const retryConnection = () => {
-    send({ type: "RETRY_CONNECTION" })
-  }
+  const retryConnection = useCallback(() => {
+    appActor.send({ type: "RETRY_CONNECTION" })
+  }, [appActor])
 
-  // Выполнение команды напрямую через backendSync для получения результата
-  // НЕ отправляем в XState машину - это вызывает двойное выполнение команды
-  const executeCommand = useCallback(async (command: ProjectCommand) => {
-    const backendSync = getBackendSync()
-    return backendSync.executeCommand(command)
-  }, [])
+  // Выполнение команды через orchestrator для правильной синхронизации
+  const executeCommand = useCallback(
+    async (command: ProjectCommand) => {
+      return orchestrator.executeCommand(command)
+    },
+    [orchestrator],
+  )
 
-  // Context value with safe fallbacks
-  const contextValue: AppContext = {
-    isConnected: state?.context?.isConnected ?? false,
-    isConnecting: state?.matches("connecting") ?? false,
-    connectionError: state?.context?.error ?? null,
-    projectState: state?.context?.projectState ?? null,
-    connect,
-    disconnect,
-    retryConnection,
-    executeCommand,
-  }
+  // Context value
+  const contextValue: AppContext = useMemo(
+    () => ({
+      isConnected,
+      isConnecting,
+      connectionError,
+      projectState,
+      connect,
+      disconnect,
+      retryConnection,
+      executeCommand,
+    }),
+    [isConnected, isConnecting, connectionError, projectState, connect, disconnect, retryConnection, executeCommand],
+  )
 
   return <AppContextInternal.Provider value={contextValue}>{children}</AppContextInternal.Provider>
 }

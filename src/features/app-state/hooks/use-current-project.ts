@@ -66,7 +66,7 @@ export function useCurrentProject() {
   const saveProject = async (projectPath?: string) => {
     return executeCommand({
       type: "SaveProject",
-      params: { path: projectPath },
+      params: { path: projectPath || null },
     })
   }
 
@@ -78,7 +78,7 @@ export function useCurrentProject() {
   }
 
   // Проверка, является ли проект временным
-  const isTempProject = currentProject?.metadata?.temporary || false
+  const isTempProject = false // Поле temporary больше не существует в новой структуре
 
   return {
     currentProject,

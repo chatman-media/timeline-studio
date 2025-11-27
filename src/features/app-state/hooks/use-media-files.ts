@@ -13,7 +13,7 @@ export function useMediaFiles() {
 
   // Извлекаем медиа-файлы из media_pool
   const mediaFiles: MediaItem[] = projectState?.project?.media_pool?.items
-    ? Object.values(projectState.project.media_pool.items)
+    ? Object.values(projectState.project.media_pool.items).filter((item): item is MediaItem => item !== undefined)
     : []
 
   // Добавление медиа-файла
