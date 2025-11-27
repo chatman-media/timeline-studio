@@ -71,7 +71,8 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   private error: string | null = null
 
   constructor() {
-    logger.info("[Media Management Orchestrator] Initializing...")
+    console.log("🟢 [MediaManagementOrchestrator] CONSTRUCTOR CALLED")
+    logger.infoSync("[Media Management Orchestrator] Initializing...")
 
     // Создаем акторы для машин состояния
     this.fileOperationsActor = createActor(fileOperationsMachine)
@@ -83,15 +84,15 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
     // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
     try {
-      logger.info("[MediaManagementOrchestrator] Checking if backend is available")
+      logger.infoSync("[MediaManagementOrchestrator] Checking if backend is available")
       if (container.hasBackend()) {
         this.backend = container.getBackend()
-        logger.info("[MediaManagementOrchestrator] Backend retrieved successfully")
+        logger.infoSync("[MediaManagementOrchestrator] Backend retrieved successfully")
       } else {
-        logger.warn("[MediaManagementOrchestrator] Backend is not registered in container")
+        logger.warnSync("[MediaManagementOrchestrator] Backend is not registered in container")
       }
     } catch (error) {
-      logger.warn("[MediaManagementOrchestrator] Backend not available yet", { error: String(error) })
+      logger.warnSync("[MediaManagementOrchestrator] Backend not available yet", { error: String(error) })
     }
 
     // Настраиваем синхронизацию
@@ -101,7 +102,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     // Инициализируем кэш превью
     this.initPreviewCache()
 
-    logger.info("[Media Management Orchestrator] Initialized successfully")
+    logger.infoSync("[Media Management Orchestrator] Initialized successfully")
   }
 
   /**
@@ -133,19 +134,19 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Настройка синхронизации с backend
    */
   private setupBackendSync() {
-    logger.info("[MediaManagementOrchestrator] Setting up backend sync", {
+    logger.infoSync("[MediaManagementOrchestrator] Setting up backend sync", {
       hasBackend: !!this.backend,
     })
 
     if (!this.backend) {
-      logger.warn("[MediaManagementOrchestrator] Backend not available, skipping sync setup")
+      logger.warnSync("[MediaManagementOrchestrator] Backend not available, skipping sync setup")
       return
     }
 
     // Подписываемся на backend события
-    logger.info("[MediaManagementOrchestrator] Subscribing to backend events")
+    logger.infoSync("[MediaManagementOrchestrator] Subscribing to backend events")
     this.backendUnsubscribe = this.backend.onEvent((event: ProjectEvent) => {
-      logger.info("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
+      logger.infoSync("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
 
       // Создаем контекст для event handler
       const context: MediaContext = {

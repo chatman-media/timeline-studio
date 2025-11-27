@@ -28,11 +28,14 @@ interface MediaManagementProviderProps {
 }
 
 export function MediaManagementProvider({ children }: MediaManagementProviderProps) {
+  console.log("🔵 [MediaManagementProvider] COMPONENT MOUNTING")
+
   // Используем orchestrator вместо прямого управления состоянием
   const orchestrator = useMemo(() => {
-    logger.info("[MediaManagementProvider] Creating orchestrator instance")
+    console.log("🔵 [MediaManagementProvider] Creating orchestrator instance")
+    logger.infoSync("[MediaManagementProvider] Creating orchestrator instance")
     const instance = getMediaManagementOrchestrator()
-    logger.info("[MediaManagementProvider] Orchestrator created", {
+    logger.infoSync("[MediaManagementProvider] Orchestrator created", {
       hasMediaPool: instance.getMediaPool().size > 0,
       poolSize: instance.getMediaPool().size,
     })
@@ -95,7 +98,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
   // Сервис делегирует все операции orchestrator
   const importFiles = useCallback(
     async (files: string[], options: MediaImportOptions = {}) => {
-      logger.info("[MediaManagementProvider] Importing files via orchestrator", { filesCount: files.length })
+      logger.infoSync("[MediaManagementProvider] Importing files via orchestrator", { filesCount: files.length })
       const result = await orchestrator.importFiles(files, options)
       // Синхронизируем состояние после операции
       setMediaPool(orchestrator.getMediaPool())

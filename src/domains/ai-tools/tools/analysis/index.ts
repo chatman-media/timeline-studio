@@ -5,29 +5,6 @@
 
 // Audio Analysis Tools
 export * from "./audio-analysis"
-// LEGACY CODE: content-intelligence was deleted/moved
-// export type {
-//   ContentAnalysisResult,
-//   ContentIntelligenceInput,
-//   ContentIntelligenceResult,
-//   ContentIntelligenceToolResult,
-//   ContentVariant,
-// } from "./content-intelligence"
-// // Content Intelligence Tools - явный экспорт для избежания конфликтов
-// export {
-//   adaptContentToPlatform,
-//   analyzeAudienceSegments,
-//   analyzeContentIntelligence,
-//   ContentIntelligenceTool,
-//   classifyContent,
-//   contentIntelligenceTool,
-//   contentIntelligenceTools,
-//   detectSceneBoundaries,
-//   executeContentIntelligenceTool,
-//   generateContentVariants,
-//   generateMultiLanguageBatch,
-//   optimizeEngagementFactors,
-// } from "./content-intelligence"
 // Multimodal & Person ID Tools
 export * from "./multimodal"
 export * from "./person-identification"
@@ -37,8 +14,6 @@ export * from "./video-analysis"
 export * from "./whisper"
 
 import { audioAnalysisTools } from "./audio-analysis"
-// LEGACY CODE: content-intelligence was deleted/moved
-// import { contentIntelligenceTools } from "./content-intelligence"
 import { multimodalTools } from "./multimodal"
 import { personIdentificationTools } from "./person-identification"
 // Импорты для статистики
@@ -49,7 +24,6 @@ import { whisperTools } from "./whisper"
 export const analysisTools = [
   ...videoAnalysisTools,
   ...audioAnalysisTools,
-  // ...contentIntelligenceTools, // LEGACY CODE: deleted
   ...whisperTools,
   ...multimodalTools,
   ...personIdentificationTools,
@@ -61,8 +35,6 @@ export const ANALYSIS_TOOLS_COUNT = analysisTools.length
 export const ANALYSIS_TOOLS_STATS = {
   videoAnalysis: videoAnalysisTools.length,
   audioAnalysis: audioAnalysisTools.length,
-  // contentIntelligence: contentIntelligenceTools.length, // LEGACY CODE: deleted
-  contentIntelligence: 0, // placeholder for backward compatibility
   whisper: whisperTools.length,
   multimodal: multimodalTools.length,
   personIdentification: personIdentificationTools.length,
@@ -76,8 +48,6 @@ export function getAnalysisToolsByCategory(category: keyof typeof ANALYSIS_TOOLS
       return videoAnalysisTools
     case "audioAnalysis":
       return audioAnalysisTools
-    case "contentIntelligence":
-      return [] // LEGACY CODE: contentIntelligenceTools deleted
     case "whisper":
       return whisperTools
     case "multimodal":

@@ -29,6 +29,10 @@ const mockClearBrowserState = vi.hoisted(() => vi.fn())
 
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => mockLogger,
+  logInfo: vi.fn(),
+  logError: vi.fn(),
+  logWarn: vi.fn(),
+  logDebug: vi.fn(),
 }))
 
 vi.mock("react-i18next", () => ({
@@ -94,6 +98,10 @@ vi.mock("@/features/media-studio", () => ({
 vi.mock("@/features/video-compiler", () => ({
   GpuStatusBadge: () => <div data-testid="gpu-status-badge">GPU Status</div>,
   RenderJobsDropdown: () => <div data-testid="render-jobs-dropdown">Render Jobs</div>,
+}))
+
+vi.mock("@/features/export", () => ({
+  RenderQueueDropdown: () => <div data-testid="render-queue-dropdown">Render Queue</div>,
 }))
 
 vi.mock("@/components/ui/popover", () => ({

@@ -1600,7 +1600,8 @@
       "empty_project_hint": "Project is empty. Start with:",
       "import_media": "Import Media",
       "ask_ai_import": "Ask AI",
-      "copy": "Copy"
+      "copy": "Copy",
+      "loading_models": "Loading models..."
     },
     "title": "Timeline",
     "noTracks": "No tracks",
@@ -1975,7 +1976,14 @@
     "empty_project_hint": "Project is empty. Start with:",
     "import_media": "Import Media",
     "ask_ai_import": "Ask AI",
-    "copy": "Copy"
+    "copy": "Copy",
+    "loading_models": "Loading models..."
+  },
+  "ai": {
+    "suggestions": {
+      "whatCanDo": "What can I do",
+      "emptyHint": "Add videos to media browser or use AI to help with import"
+    }
   },
   "source": {
     "timeline": "Timeline",
@@ -2542,6 +2550,8 @@
     }
   },
   "export": {
+    "renderQueue": "Render Queue",
+    "noActiveJobs": "No active jobs",
     "sections": {
       "exportMode": "Export Mode",
       "exportModeDescription": "Choose how to divide your project into sections",
