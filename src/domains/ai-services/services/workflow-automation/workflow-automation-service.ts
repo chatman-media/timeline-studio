@@ -3,8 +3,8 @@
  * Создаёт комплексные workflow для автоматического редактирования видео
  */
 
-import { invoke } from "@tauri-apps/api/core"
-
+import * as PlatformCmds from "@/domains/ai-services/tauri/platform-optimization-commands"
+import * as WorkflowCmds from "@/domains/ai-services/tauri/workflow-automation-commands"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("WorkflowAutomationService")
@@ -410,7 +410,7 @@ export class WorkflowAutomationService {
       execute: async (context) => {
         const analyses = []
         for (const video of context.params.inputVideos) {
-          const analysis = await invoke("ffmpeg_quick_analysis", { filePath: video })
+          const analysis = await PlatformCmds.ffmpegQuickAnalysis(video)
           analyses.push(analysis)
         }
         context.analysisResults.inputAnalysis = analyses
@@ -429,7 +429,7 @@ export class WorkflowAutomationService {
       execute: async (context) => {
         const scenes = []
         for (const video of context.params.inputVideos) {
-          const sceneData = await invoke("ffmpeg_detect_scenes", {
+          const sceneData = await PlatformCmds.ffmpegDetectScenes({
             filePath: video,
             threshold: 0.3,
             minSceneLength: 2.0,
@@ -456,12 +456,12 @@ export class WorkflowAutomationService {
 
         const subtitles = []
         for (const video of context.params.inputVideos) {
-          const audioPath = await invoke("extract_audio_for_whisper", {
+          const audioPath = await WorkflowCmds.extractAudioForWhisper({
             videoFilePath: video,
             outputFormat: "wav",
           })
 
-          const transcription = await invoke("whisper_transcribe_openai", {
+          const transcription = await WorkflowCmds.whisperTranscribeOpenai({
             audioFilePath: audioPath,
             apiKey: "",
             model: "whisper-1",
@@ -490,7 +490,7 @@ export class WorkflowAutomationService {
         const timelineData = this.generateTimelineFromScenes(context.analysisResults.scenes, context.params)
 
         const projectFile = `${context.tempDirectory}/project.json`
-        await invoke("create_timeline_project", {
+        await WorkflowCmds.createTimelineProject({
           projectData: JSON.stringify(timelineData),
           outputPath: projectFile,
         })
@@ -583,7 +583,7 @@ export class WorkflowAutomationService {
       execute: async (context) => {
         const outputPath = `${context.params.outputDirectory}/final_video.mp4`
 
-        const renderResult = await invoke("compile_workflow_video", {
+        const renderResult = await WorkflowCmds.compileWorkflowVideo({
           projectFile: context.intermediateFiles.projectFile,
           outputPath,
           settings: JSON.stringify({
@@ -617,7 +617,7 @@ export class WorkflowAutomationService {
         for (const target of context.params.platformTargets) {
           const optimizedPath = `${context.params.outputDirectory}/${target.platform}_optimized.mp4`
 
-          const optimizationResult = await invoke("ffmpeg_optimize_for_platform", {
+          const optimizationResult = await PlatformCmds.ffmpegOptimizeForPlatform({
             inputPath: sourceVideo,
             outputPath: optimizedPath,
             targetWidth: target.aspectRatio === "16:9" ? 1920 : 1080,
@@ -695,7 +695,7 @@ export class WorkflowAutomationService {
 
   private async createTempDirectory(workflowId: string): Promise<string> {
     const tempDir = `/tmp/timeline_studio/workflows/${workflowId}`
-    await invoke("create_directory", { path: tempDir })
+    await WorkflowCmds.createDirectory(tempDir)
     return tempDir
   }
 
@@ -776,9 +776,7 @@ export class WorkflowAutomationService {
 
     // Основное видео
     if (context.intermediateFiles.finalVideo) {
-      const metadata = (await invoke("ffmpeg_get_metadata", {
-        filePath: context.intermediateFiles.finalVideo,
-      })) as any
+      const metadata = (await PlatformCmds.ffmpegGetMetadata(context.intermediateFiles.finalVideo)) as any
 
       outputs.push({
         type: "main_video",

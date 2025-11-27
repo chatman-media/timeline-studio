@@ -662,10 +662,7 @@ export class MontagePlanningTool extends BaseAITool implements IAITool {
               plan,
               planSummary,
               appliedToTimeline,
-              clipCount: plan.sequences.reduce(
-                (acc: number, seq: { clips: any[] }) => acc + seq.clips.length,
-                0,
-              ),
+              clipCount: plan.sequences.reduce((acc: number, seq: { clips: any[] }) => acc + seq.clips.length, 0),
               totalDuration: plan.totalDuration,
               qualityScore: plan.qualityScore,
               message: baseMessage,

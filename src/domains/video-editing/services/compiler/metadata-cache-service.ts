@@ -2,10 +2,14 @@
  * Сервис для работы с кэшем метаданных медиафайлов
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { MediaMetadata } from "@/domains/shared/types/media"
 import type { CacheMemoryUsage } from "@/features/video-compiler/types/cache"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  cacheMediaMetadata as cacheMediaMetadataTauri,
+  getCachedMetadata as getCachedMetadataTauri,
+  getCacheMemoryUsage as getCacheMemoryUsageTauri,
+} from "../../tauri/compiler-commands"
 
 const logger = createLogger("MetadataCacheService")
 
@@ -14,7 +18,7 @@ const logger = createLogger("MetadataCacheService")
  */
 export async function getCachedMetadata(filePath: string): Promise<MediaMetadata | null> {
   try {
-    return await invoke<MediaMetadata | null>("get_cached_metadata", { filePath })
+    return await getCachedMetadataTauri(filePath)
   } catch (error) {
     void logger.error("Failed to get cached metadata:", { error })
     return null
@@ -26,7 +30,7 @@ export async function getCachedMetadata(filePath: string): Promise<MediaMetadata
  */
 export async function cacheMediaMetadata(filePath: string, metadata: MediaMetadata): Promise<void> {
   try {
-    await invoke("cache_media_metadata", { filePath, metadata })
+    await cacheMediaMetadataTauri({ filePath, metadata })
   } catch (error) {
     void logger.error("Failed to cache metadata:", { error })
     throw error
@@ -38,7 +42,7 @@ export async function cacheMediaMetadata(filePath: string, metadata: MediaMetada
  */
 export async function getCacheMemoryUsage(): Promise<CacheMemoryUsage> {
   try {
-    return await invoke<CacheMemoryUsage>("get_cache_memory_usage")
+    return await getCacheMemoryUsageTauri()
   } catch (error) {
     void logger.error("Failed to get cache memory usage:", { error })
     throw error

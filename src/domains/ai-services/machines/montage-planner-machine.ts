@@ -5,9 +5,8 @@
  * Перенесено из src/features/montage-planner/services/montage-planner-machine.ts
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { assign, fromPromise, setup } from "xstate"
-
+import * as WorkflowCmds from "@/domains/ai-services/tauri/workflow-automation-commands"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MontagePlannerMachine")
@@ -331,7 +330,7 @@ export const montagePlannerMachine = setup({
       logger.infoSync("Applying plan to timeline")
       if (context.currentPlan) {
         try {
-          await invoke("apply_montage_plan", { plan: context.currentPlan })
+          await WorkflowCmds.applyMontagePlan(context.currentPlan)
         } catch (error) {
           logger.errorSync("Failed to apply plan", { error })
         }
@@ -342,7 +341,7 @@ export const montagePlannerMachine = setup({
       logger.infoSync("Exporting plan")
       if (context.currentPlan && event.type === "EXPORT_PLAN") {
         try {
-          await invoke("export_montage_plan", {
+          await WorkflowCmds.exportMontagePlan({
             plan: context.currentPlan,
             format: event.format,
           })
@@ -356,7 +355,7 @@ export const montagePlannerMachine = setup({
     // Video analysis service
     analyzeVideos: fromPromise(
       async ({ input }: { input: { videoIds: string[]; analysisOptions: AnalysisOptions } }) => {
-        return invoke("analyze_montage_videos", {
+        return WorkflowCmds.analyzeMontagelVideos({
           videoIds: input.videoIds,
           options: input.analysisOptions,
         }).catch((error: unknown) => {
@@ -368,7 +367,7 @@ export const montagePlannerMachine = setup({
     // Plan generation service
     generatePlan: fromPromise(
       async ({ input }: { input: { fragments: Fragment[]; generationOptions: PlanGenerationOptions } }) => {
-        return invoke("generate_montage_plan", {
+        return WorkflowCmds.generateMontagePlan({
           fragments: input.fragments,
           options: input.generationOptions,
         }).catch((error: unknown) => {
@@ -379,7 +378,7 @@ export const montagePlannerMachine = setup({
 
     // Plan optimization service
     optimizePlan: fromPromise(async ({ input }: { input: { plan: MontagePlan; preferences: any } }) => {
-      return invoke("optimize_montage_plan", {
+      return WorkflowCmds.optimizeMontagePlan({
         plan: input.plan,
         preferences: input.preferences,
       }).catch((error: unknown) => {
@@ -389,18 +388,14 @@ export const montagePlannerMachine = setup({
 
     // Validation service
     validatePlan: fromPromise(async ({ input }: { input: { plan: MontagePlan } }) => {
-      return invoke("validate_montage_plan", {
-        plan: input.plan,
-      }).catch((error: unknown) => {
+      return WorkflowCmds.validateMontagePlan(input.plan).catch((error: unknown) => {
         throw new Error(`Plan validation failed: ${String(error)}`)
       })
     }),
 
     // Statistics calculation
     calculateStatistics: fromPromise(async ({ input }: { input: { plan: MontagePlan } }) => {
-      return invoke("calculate_plan_statistics", {
-        plan: input.plan,
-      }).catch((error: unknown) => {
+      return WorkflowCmds.calculatePlanStatistics(input.plan).catch((error: unknown) => {
         throw new Error(`Statistics calculation failed: ${String(error)}`)
       })
     }),

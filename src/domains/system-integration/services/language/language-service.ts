@@ -7,7 +7,7 @@
 import { createLogger } from "@/lib/tauri-logger"
 import {
   getAppLanguage as getAppLanguageTauri,
-  setAppLanguage as setAppLanguageTauri
+  setAppLanguage as setAppLanguageTauri,
 } from "../../tauri/language-commands"
 
 const logger = createLogger("LanguageService")

@@ -3,7 +3,7 @@
  * Автоматически оптимизирует разрешение, соотношение сторон, битрейт и метаданные
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import * as PlatformCmds from "@/domains/ai-services/tauri/platform-optimization-commands"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("PlatformOptimizationService")
@@ -351,9 +351,7 @@ export class PlatformOptimizationService {
     const specs = this.platformSpecs[params.platform]
 
     // Получаем метаданные исходного видео
-    const originalMetadata = (await invoke("ffmpeg_get_metadata", {
-      filePath: params.inputVideoPath,
-    })) as any
+    const originalMetadata = (await PlatformCmds.ffmpegGetMetadata(params.inputVideoPath)) as any
 
     // Определяем параметры оптимизации
     const targetResolution = params.customSettings?.targetResolution || specs.recommendedResolution
@@ -366,7 +364,7 @@ export class PlatformOptimizationService {
 
     try {
       // Выполняем оптимизацию через FFmpeg
-      const optimizationResult = await invoke("ffmpeg_optimize_for_platform", {
+      const optimizationResult = await PlatformCmds.ffmpegOptimizeForPlatform({
         inputPath: params.inputVideoPath,
         outputPath: outputPath,
         targetWidth: targetResolution.width,
@@ -379,14 +377,12 @@ export class PlatformOptimizationService {
       })
 
       // Получаем метаданные оптимизированного видео
-      const optimizedMetadata = (await invoke("ffmpeg_get_metadata", {
-        filePath: outputPath,
-      })) as any
+      const optimizedMetadata = (await PlatformCmds.ffmpegGetMetadata(outputPath)) as any
 
       // Генерируем превью если требуется
       let thumbnailPath: string | undefined
       if (params.customSettings?.generateThumbnail) {
-        thumbnailPath = await invoke("ffmpeg_generate_thumbnail", {
+        thumbnailPath = await PlatformCmds.ffmpegGenerateThumbnail({
           videoPath: outputPath,
           outputPath: `${params.outputDirectory}/thumb_${params.platform}_${Date.now()}.jpg`,
           timestamp: originalMetadata.duration / 2, // Середина видео
@@ -499,13 +495,9 @@ export class PlatformOptimizationService {
     }>
   }> {
     // Анализируем видео
-    const analysis = await invoke("ffmpeg_quick_analysis", {
-      filePath: videoPath,
-    })
+    const analysis = await PlatformCmds.ffmpegQuickAnalysis(videoPath)
 
-    const metadata = (await invoke("ffmpeg_get_metadata", {
-      filePath: videoPath,
-    })) as any
+    const metadata = (await PlatformCmds.ffmpegGetMetadata(videoPath)) as any
 
     // Оцениваем совместимость с каждой платформой
     const recommendations = Object.entries(this.platformSpecs)

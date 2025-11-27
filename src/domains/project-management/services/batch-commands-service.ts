@@ -5,10 +5,10 @@
  * with better performance and atomic operations.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import React from "react"
 
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
+import { executeBatchCommands as executeBatchCommandsTauri } from "../tauri/project-commands"
 
 // Local type definitions until Specta export is updated
 export interface BatchCommandRequest {
@@ -86,7 +86,7 @@ export class BatchCommandBuilder {
       transaction_name: this.transactionName,
     }
 
-    const result = await invoke("execute_batch_commands", { request })
+    const result = await executeBatchCommandsTauri(request)
 
     if (typeof result !== "object" || result === null) {
       throw new Error("Invalid batch command result")

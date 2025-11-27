@@ -4,9 +4,12 @@
  * Handles saving and loading workspace state from localStorage and Tauri backend
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { LayoutPreset, Widget } from "@/features/workspace/types/widget"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  loadWorkspaceState as loadWorkspaceStateTauri,
+  saveWorkspaceState as saveWorkspaceStateTauri,
+} from "../../tauri/workspace-commands"
 
 const logger = createLogger("WorkspacePersistence")
 
@@ -81,7 +84,7 @@ export function clearWorkspaceStateLocal(): void {
  */
 export async function saveWorkspaceStateBackend(state: WorkspaceState): Promise<void> {
   try {
-    await invoke("save_workspace_state", { state: JSON.stringify(state) })
+    await saveWorkspaceStateTauri(JSON.stringify(state))
     logger.debugSync("Workspace state saved to backend", {
       presetId: state.currentPresetId,
       widgetCount: state.activeWidgets.length,
@@ -97,7 +100,7 @@ export async function saveWorkspaceStateBackend(state: WorkspaceState): Promise<
  */
 export async function loadWorkspaceStateBackend(): Promise<WorkspaceState | null> {
   try {
-    const stateJson = await invoke<string>("load_workspace_state")
+    const stateJson = await loadWorkspaceStateTauri()
     if (!stateJson) {
       logger.debugSync("No workspace state found in backend")
       return null

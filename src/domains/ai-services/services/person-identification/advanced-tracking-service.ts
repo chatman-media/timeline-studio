@@ -3,10 +3,8 @@
  * Сервис для продвинутого трекинга персон с использованием DeepSORT и Kalman фильтров
  */
 
-import { invoke } from "@tauri-apps/api/core"
-
+import * as PersonIdCmds from "@/domains/ai-services/tauri/person-identification-commands"
 import type { DetectedFace, PersonAppearance } from "@/features/person-identification/types/person"
-
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AdvancedTrackingService")
@@ -156,9 +154,7 @@ export class AdvancedTrackingService {
     if (this.isInitialized) return
 
     try {
-      await invoke("init_advanced_tracking", {
-        config: this.config,
-      })
+      await PersonIdCmds.initAdvancedTracking(this.config)
 
       this.isInitialized = true
       logger.debug("Advanced Tracking Service инициализирован")
@@ -179,7 +175,7 @@ export class AdvancedTrackingService {
     }
 
     try {
-      await invoke("start_person_tracking", {
+      await PersonIdCmds.startPersonTracking({
         videoId,
         config: this.config,
       })
@@ -222,12 +218,7 @@ export class AdvancedTrackingService {
       }))
 
       // Отправляем на обработку
-      const result = await invoke<{
-        tracks: any[]
-        newTracks: string[]
-        deletedTracks: string[]
-        statistics: TrackingStatistics
-      }>("process_tracking_frame", {
+      const result = await PersonIdCmds.processTrackingFrame({
         detections: detectionData,
         frameNumber,
         timestamp,
@@ -288,9 +279,7 @@ export class AdvancedTrackingService {
 
     try {
       const trackIds = Array.from(this.tracks.keys())
-      const predictedBoxes = await invoke<Array<{ trackId: string; box: BoundingBox }>>("predict_track_positions", {
-        trackIds,
-      })
+      const predictedBoxes = await PersonIdCmds.predictTrackPositions(trackIds)
 
       for (const { trackId, box } of predictedBoxes) {
         predictions.set(trackId, box)
@@ -332,7 +321,7 @@ export class AdvancedTrackingService {
     }
 
     try {
-      await invoke("assign_person_to_track", { trackId, personId })
+      await PersonIdCmds.assignPersonToTrack(trackId, personId)
 
       track.personId = personId
       this.emitEvent({
@@ -360,7 +349,7 @@ export class AdvancedTrackingService {
     }
 
     try {
-      await invoke("merge_tracks", { sourceTrackId, targetTrackId })
+      await PersonIdCmds.mergeTracks(sourceTrackId, targetTrackId)
 
       // Объединяем траектории
       targetTrack.trajectory.push(...sourceTrack.trajectory)
@@ -417,7 +406,7 @@ export class AdvancedTrackingService {
     }
 
     try {
-      const interpolated = await invoke<TrajectoryPoint[]>("interpolate_track_positions", {
+      const interpolated = await PersonIdCmds.interpolateTrackPositions({
         trackId,
         startFrame,
         endFrame,
@@ -493,7 +482,7 @@ export class AdvancedTrackingService {
     if (!this.isTracking) return
 
     try {
-      await invoke("stop_person_tracking")
+      await PersonIdCmds.stopPersonTracking()
 
       this.isTracking = false
 
@@ -516,9 +505,7 @@ export class AdvancedTrackingService {
     this.config = { ...this.config, ...config }
 
     if (this.isInitialized) {
-      await invoke("update_tracking_config", {
-        config: this.config,
-      })
+      await PersonIdCmds.updateTrackingConfig(this.config)
     }
   }
 
@@ -662,7 +649,7 @@ export class AdvancedTrackingService {
     this.eventListeners.length = 0
 
     if (this.isInitialized) {
-      await invoke("cleanup_tracking")
+      await PersonIdCmds.cleanupTracking()
       this.isInitialized = false
     }
   }

@@ -5,8 +5,12 @@
  * Handles all backend calls related to cache management.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  clearAllCache as clearAllCacheTauri,
+  clearPreviewCache as clearPreviewCacheTauri,
+  getCacheStats as getCacheStatsTauri,
+} from "../tauri/compiler-commands"
 
 const logger = createLogger("VideoCompilerCacheService")
 
@@ -35,7 +39,7 @@ export class VideoCompilerCacheService {
   async getCacheStats(): Promise<VideoCompilerCacheStats> {
     try {
       logger.debugSync("Getting cache stats")
-      const stats = await invoke<VideoCompilerCacheStats>("get_cache_stats")
+      const stats = await getCacheStatsTauri()
       logger.debugSync("Cache stats retrieved successfully", {
         totalEntries: stats.total_entries,
         hitRatio: stats.hit_ratio,
@@ -55,7 +59,7 @@ export class VideoCompilerCacheService {
   async clearPreviewCache(): Promise<void> {
     try {
       logger.infoSync("Clearing preview cache")
-      await invoke("clear_preview_cache")
+      await clearPreviewCacheTauri()
       logger.infoSync("Preview cache cleared successfully")
     } catch (error) {
       logger.errorSync("Failed to clear preview cache", { error })
@@ -71,7 +75,7 @@ export class VideoCompilerCacheService {
   async clearAllCache(): Promise<void> {
     try {
       logger.infoSync("Clearing all cache")
-      await invoke("clear_all_cache")
+      await clearAllCacheTauri()
       logger.infoSync("All cache cleared successfully")
     } catch (error) {
       logger.errorSync("Failed to clear all cache", { error })

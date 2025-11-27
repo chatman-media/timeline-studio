@@ -5,8 +5,6 @@
  * Они позволяют использовать MCP через существующий AI Chat интерфейс.
  */
 
-import { invoke } from "@tauri-apps/api/core"
-
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -14,6 +12,7 @@ import {
   type AIToolResult,
   BaseAITool,
 } from "../../base"
+import { mcpExecuteTool } from "../../tauri/ai-tools-commands"
 
 /**
  * Базовый класс для всех MCP инструментов
@@ -33,15 +32,9 @@ abstract class BaseMCPTool extends BaseAITool {
       this.logger?.info(`Executing MCP tool: ${this.mcpToolName}`, { input })
 
       // Вызов MCP tool через Tauri
-      const result = await invoke<{
-        success: boolean
-        data?: any
-        error?: string
-      }>("mcp_execute_tool", {
-        request: {
-          tool_name: this.mcpToolName,
-          arguments: input,
-        },
+      const result = await mcpExecuteTool({
+        tool_name: this.mcpToolName,
+        arguments: input,
       })
 
       const executionTime = Date.now() - startTime

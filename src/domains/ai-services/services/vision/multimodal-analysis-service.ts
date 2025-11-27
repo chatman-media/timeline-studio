@@ -3,11 +3,9 @@
  * Анализ кадров, создание описаний, определение ключевых моментов
  */
 
-import { invoke } from "@tauri-apps/api/core"
-
+import * as PlatformCmds from "@/domains/ai-services/tauri/platform-optimization-commands"
 // REMOVED: // REMOVED: import { ApiKeyLoader } from "@/domains/ai-core" // ai-core module deleted - use backend AI proxy instead
 import type { FrameAnalysis } from "@/domains/ai-services/types/interfaces"
-
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MultimodalAnalysisService")
@@ -359,14 +357,14 @@ export class MultimodalAnalysisService {
    */
 
   private async imageToBase64(imagePath: string): Promise<string> {
-    return await invoke("convert_image_to_base64", { imagePath })
+    return await PlatformCmds.convertImageToBase64(imagePath)
   }
 
   private async extractFramesForAnalysis(
     clipId: string,
     options: { samplingRate: number; maxFrames: number },
   ): Promise<Array<{ imagePath: string; timestamp: number }>> {
-    return await invoke("extract_frames_for_multimodal_analysis", {
+    return await PlatformCmds.extractFramesForMultimodalAnalysis({
       clipId,
       samplingRate: options.samplingRate,
       maxFrames: options.maxFrames,

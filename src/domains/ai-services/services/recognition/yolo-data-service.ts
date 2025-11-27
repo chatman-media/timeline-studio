@@ -1,5 +1,5 @@
+import * as PersonIdCmds from "@/domains/ai-services/tauri/person-identification-commands"
 import type { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@/features/recognition/types/yolo"
-
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("YoloDataService")
@@ -71,8 +71,7 @@ export class YoloDataService {
 
     try {
       // Пытаемся загрузить сохраненные данные из Tauri
-      const { invoke } = await import("@tauri-apps/api/core")
-      const savedData = await invoke<any>("load_yolo_data", { videoId })
+      const savedData = await PersonIdCmds.loadYoloData(videoId)
 
       if (savedData) {
         const yoloData = savedData as YoloVideoData
@@ -93,12 +92,10 @@ export class YoloDataService {
         }
 
         // Анализируем видео
-        const results = await invoke<any[]>("analyze_video_with_yolo", {
-          request: {
-            video_path: videoPath,
-            confidence_threshold: 0.5,
-            skip_frames: 10, // Анализируем каждый 10-й кадр для производительности
-          },
+        const results = await PersonIdCmds.analyzeVideoWithYolo({
+          video_path: videoPath,
+          confidence_threshold: 0.5,
+          skip_frames: 10, // Анализируем каждый 10-й кадр для производительности
         })
 
         // Преобразуем результаты в формат YoloVideoData
@@ -128,7 +125,7 @@ export class YoloDataService {
         }
 
         // Сохраняем данные
-        await invoke("save_yolo_data", { videoId, data: yoloData })
+        await PersonIdCmds.saveYoloData(videoId, yoloData)
 
         this.yoloDataCache[videoId] = yoloData
         return yoloData
@@ -333,12 +330,10 @@ export class YoloDataService {
     if (this.yoloInitialized) return true
 
     try {
-      const { invoke } = await import("@tauri-apps/api/core")
-
       // Инициализируем YOLO процессор с моделью для детекции лиц
-      await invoke("init_yolo_processor", {
-        model_type: "yolo11-face",
-        confidence_threshold: 0.5,
+      await PersonIdCmds.initYoloProcessor({
+        modelType: "yolo11-face",
+        confidenceThreshold: 0.5,
       })
 
       this.yoloInitialized = true

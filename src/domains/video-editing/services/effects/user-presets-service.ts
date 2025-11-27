@@ -4,9 +4,9 @@
  * Сохранение и загрузка пользовательских настроек
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { EffectPreset } from "@/features/effects/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
+import { loadFile, saveFile } from "../../tauri/compiler-commands"
 
 const logger = createLogger("UserPresetsService")
 
@@ -225,7 +225,7 @@ export async function getFavoritePresets(): Promise<UserPreset[]> {
  */
 export async function importPresets(filePath: string): Promise<number> {
   try {
-    const importedData = await invoke<string>("load_file", { path: filePath })
+    const importedData = await loadFile(filePath)
     const importedCollection: PresetsCollection = JSON.parse(importedData)
 
     const currentCollection = await loadPresetsCollection()
@@ -263,7 +263,7 @@ export async function exportPresets(presetIds: string[], filePath: string): Prom
       favorites: collection.favorites.filter((id) => presetIds.includes(id)),
     }
 
-    await invoke("save_file", {
+    await saveFile({
       path: filePath,
       content: JSON.stringify(exportCollection, null, 2),
     })

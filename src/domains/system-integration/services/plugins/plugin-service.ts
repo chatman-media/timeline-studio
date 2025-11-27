@@ -18,11 +18,7 @@ export type { PluginCommandResponse } from "../../tauri/plugin-commands"
  * @param command - Command name
  * @param params - Command parameters
  */
-export async function sendPluginCommand<T = any>(
-  pluginId: string,
-  command: string,
-  params: Record<string, any> = {},
-) {
+export async function sendPluginCommand<T = any>(pluginId: string, command: string, params: Record<string, any> = {}) {
   logger.debugSync("Delegating plugin command to Tauri layer", { pluginId, command })
   return sendPluginCommandTauri<T>(pluginId, command, params)
 }

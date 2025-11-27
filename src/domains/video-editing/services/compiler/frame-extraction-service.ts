@@ -1,8 +1,11 @@
-import { invoke } from "@tauri-apps/api/core"
 import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
 import { Subtitle } from "@/domains/video-editing/types/video-compiler"
-
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  extractRecognitionFrames as extractRecognitionFramesTauri,
+  extractSubtitleFrames as extractSubtitleFramesTauri,
+  extractTimelineFrames as extractTimelineFramesTauri,
+} from "../../tauri/compiler-commands"
 
 const logger = createLogger("FrameExtractionService")
 
@@ -72,19 +75,11 @@ export class FrameExtractionService {
     maxFrames?: number,
   ): Promise<TimelineFrame[]> {
     try {
-      const frames = await invoke<
-        Array<{
-          timestamp: number
-          frame_data: string
-          is_keyframe: boolean
-        }>
-      >("extract_timeline_frames", {
-        request: {
-          video_path: videoPath,
-          duration,
-          interval,
-          max_frames: maxFrames,
-        },
+      const frames = await extractTimelineFramesTauri({
+        video_path: videoPath,
+        duration,
+        interval,
+        max_frames: maxFrames,
       })
 
       return frames.map((frame) => ({
@@ -107,19 +102,7 @@ export class FrameExtractionService {
     interval = 1.0,
   ): Promise<RecognitionFrame[]> {
     try {
-      const frames = await invoke<
-        Array<{
-          timestamp: number
-          frame_data: number[]
-          resolution: [number, number]
-          scene_change_score?: number
-          is_keyframe: boolean
-        }>
-      >("extract_recognition_frames", {
-        video_path: videoPath,
-        purpose: purpose.toString(),
-        interval,
-      })
+      const frames = await extractRecognitionFramesTauri(videoPath, purpose.toString(), interval)
 
       return frames.map((frame) => ({
         timestamp: frame.timestamp,
@@ -139,18 +122,9 @@ export class FrameExtractionService {
    */
   async extractSubtitleFrames(videoPath: string, subtitles: Subtitle[]): Promise<SubtitleFrame[]> {
     try {
-      const frames = await invoke<
-        Array<{
-          subtitle_id: string
-          subtitle_text: string
-          timestamp: number
-          frame_data: number[]
-          start_time: number
-          end_time: number
-        }>
-      >("extract_subtitle_frames", {
-        video_path: videoPath,
-        subtitles: subtitles.map((subtitle) => ({
+      const frames = await extractSubtitleFramesTauri(
+        videoPath,
+        subtitles.map((subtitle) => ({
           id: subtitle.id,
           text: subtitle.text,
           start_time: subtitle.start_time,
@@ -160,7 +134,7 @@ export class FrameExtractionService {
           animations: subtitle.animations,
           enabled: subtitle.enabled,
         })),
-      })
+      )
 
       return frames.map((frame) => ({
         subtitleId: frame.subtitle_id,

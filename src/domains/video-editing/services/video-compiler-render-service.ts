@@ -5,9 +5,15 @@
  * Handles all backend calls related to render job management.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  cancelRender as cancelRenderTauri,
+  generatePreview as generatePreviewTauri,
+  getActiveJobs as getActiveJobsTauri,
+  getRenderJob as getRenderJobTauri,
+  renderProject as renderProjectTauri,
+} from "../tauri/compiler-commands"
 
 const logger = createLogger("VideoCompilerRenderService")
 
@@ -36,7 +42,7 @@ export class VideoCompilerRenderService {
   async getActiveJobs(): Promise<VideoRenderJob[]> {
     try {
       logger.debugSync("Getting active render jobs")
-      const jobs = await invoke<VideoRenderJob[]>("get_active_jobs")
+      const jobs = await getActiveJobsTauri()
       logger.debugSync("Active render jobs retrieved successfully", {
         jobsCount: jobs.length,
       })
@@ -56,7 +62,7 @@ export class VideoCompilerRenderService {
   async getRenderJob(jobId: string): Promise<VideoRenderJob | null> {
     try {
       logger.debugSync("Getting render job", { jobId })
-      const job = await invoke<VideoRenderJob | null>("get_render_job", { jobId })
+      const job = await getRenderJobTauri(jobId)
       if (job) {
         logger.debugSync("Render job retrieved successfully", {
           jobId,
@@ -81,7 +87,7 @@ export class VideoCompilerRenderService {
   async cancelRender(jobId: string): Promise<boolean> {
     try {
       logger.infoSync("Cancelling render job", { jobId })
-      const success = await invoke<boolean>("cancel_render", { jobId })
+      const success = await cancelRenderTauri(jobId)
       if (success) {
         logger.infoSync("Render job cancelled successfully", { jobId })
       } else {
@@ -107,10 +113,7 @@ export class VideoCompilerRenderService {
         projectName: project.metadata.name,
         outputPath,
       })
-      const jobId = await invoke<string>("compile_video", {
-        projectSchema: project,
-        outputPath,
-      })
+      const jobId = await renderProjectTauri(project, outputPath)
       logger.infoSync("Video compilation started successfully", {
         jobId,
         outputPath,
@@ -135,10 +138,7 @@ export class VideoCompilerRenderService {
         projectName: project.metadata.name,
         timestamp,
       })
-      const jpegData = await invoke<number[]>("generate_preview", {
-        projectSchema: project,
-        timestamp,
-      })
+      const jpegData = await generatePreviewTauri(project, timestamp)
       logger.debugSync("Preview frame generated successfully", {
         timestamp,
         byteSize: jpegData.length,

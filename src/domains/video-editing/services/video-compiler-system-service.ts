@@ -5,9 +5,16 @@
  * Handles all backend calls related to GPU capabilities, system info, and hardware acceleration.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { CompilerSettings, FfmpegCapabilities, SystemInfo } from "@/domains/video-editing"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  checkFfmpegCapabilities as checkFfmpegCapabilitiesTauri,
+  checkHardwareAccelerationSupport as checkHardwareAccelerationSupportTauri,
+  getCompilerSettingsAdvanced as getCompilerSettingsAdvancedTauri,
+  getGpuCapabilitiesFull as getGpuCapabilitiesFullTauri,
+  getSystemInfo as getSystemInfoTauri,
+  setHardwareAcceleration as setHardwareAccelerationTauri,
+} from "../tauri/compiler-commands"
 
 const logger = createLogger("VideoCompilerSystemService")
 
@@ -33,7 +40,7 @@ export class VideoCompilerSystemService {
   async getGpuCapabilitiesFull(): Promise<GpuCapabilitiesResponse> {
     try {
       logger.debugSync("Getting GPU capabilities")
-      const capabilities = await invoke<GpuCapabilitiesResponse>("get_gpu_capabilities_full")
+      const capabilities = await getGpuCapabilitiesFullTauri()
       logger.debugSync("GPU capabilities retrieved successfully", {
         hardwareSupported: capabilities.hardware_acceleration_supported,
         recommendedEncoder: capabilities.recommended_encoder,
@@ -53,7 +60,7 @@ export class VideoCompilerSystemService {
   async getSystemInfo(): Promise<SystemInfo> {
     try {
       logger.debugSync("Getting system info")
-      const systemInfo = await invoke<SystemInfo>("get_system_info")
+      const systemInfo = await getSystemInfoTauri()
       logger.debugSync("System info retrieved successfully")
       return systemInfo
     } catch (error) {
@@ -70,7 +77,7 @@ export class VideoCompilerSystemService {
   async checkFfmpegCapabilities(): Promise<FfmpegCapabilities> {
     try {
       logger.debugSync("Checking FFmpeg capabilities")
-      const capabilities = await invoke<FfmpegCapabilities>("check_ffmpeg_capabilities")
+      const capabilities = await checkFfmpegCapabilitiesTauri()
       logger.debugSync("FFmpeg capabilities retrieved successfully", {
         version: capabilities.version,
       })
@@ -89,7 +96,7 @@ export class VideoCompilerSystemService {
   async getCompilerSettings(): Promise<CompilerSettings> {
     try {
       logger.debugSync("Getting compiler settings")
-      const settings = await invoke<CompilerSettings>("get_compiler_settings_advanced")
+      const settings = await getCompilerSettingsAdvancedTauri()
       logger.debugSync("Compiler settings retrieved successfully", {
         hardwareAcceleration: settings.hardware_acceleration,
       })
@@ -109,7 +116,7 @@ export class VideoCompilerSystemService {
   async setHardwareAcceleration(enabled: boolean): Promise<void> {
     try {
       logger.infoSync("Setting hardware acceleration", { enabled })
-      await invoke("set_hardware_acceleration", { enabled })
+      await setHardwareAccelerationTauri(enabled)
       logger.infoSync("Hardware acceleration updated successfully")
     } catch (error) {
       logger.errorSync("Failed to set hardware acceleration", { error })
@@ -125,7 +132,7 @@ export class VideoCompilerSystemService {
   async checkHardwareAccelerationSupport(): Promise<boolean> {
     try {
       logger.debugSync("Checking hardware acceleration support")
-      const supported = await invoke<boolean>("check_hardware_acceleration_support")
+      const supported = await checkHardwareAccelerationSupportTauri()
       logger.debugSync("Hardware acceleration support checked", { supported })
       return supported
     } catch (error) {

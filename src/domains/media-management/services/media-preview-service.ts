@@ -5,8 +5,20 @@
  * Handles all backend calls related to previews, thumbnails, and timeline frames.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  clearMediaPreviewDataForFile,
+  generateMediaThumbnail,
+  getCachedThumbnailPath as getCachedThumbnailPathTauri,
+  getFilesWithPreviews as getFilesWithPreviewsTauri,
+  getMediaPreviewData,
+  getTimelineFrames as getTimelineFramesTauri,
+  hasCachedThumbnail as hasCachedThumbnailTauri,
+  loadPreviewData,
+  restorePreviewCache as restorePreviewCacheTauri,
+  savePreviewData,
+  saveTimelineFramesForFile,
+} from "../tauri/media-commands"
 
 const logger = createLogger("MediaPreviewService")
 
@@ -56,7 +68,7 @@ export class MediaPreviewService {
   async getPreviewData(fileId: string): Promise<MediaPreviewData | null> {
     try {
       logger.debugSync("Getting preview data", { fileId })
-      const data = await invoke<MediaPreviewData | null>("get_media_preview_data", { fileId })
+      const data = await getMediaPreviewData(fileId)
       return data
     } catch (error) {
       logger.errorSync("Failed to get preview data", { fileId, error })
@@ -83,13 +95,7 @@ export class MediaPreviewService {
   ): Promise<ThumbnailData> {
     try {
       logger.debugSync("Generating thumbnail", { fileId, width, height, timestamp })
-      const thumbnail = await invoke<ThumbnailData>("generate_media_thumbnail", {
-        fileId,
-        filePath,
-        width,
-        height,
-        timestamp,
-      })
+      const thumbnail = await generateMediaThumbnail(fileId, filePath, width, height, timestamp)
       logger.debugSync("Thumbnail generated successfully", { fileId })
       return thumbnail
     } catch (error) {
@@ -107,7 +113,7 @@ export class MediaPreviewService {
   async clearPreviewData(fileId: string): Promise<void> {
     try {
       logger.debugSync("Clearing preview data", { fileId })
-      await invoke("clear_media_preview_data", { fileId })
+      await clearMediaPreviewDataForFile(fileId)
       logger.debugSync("Preview data cleared successfully", { fileId })
     } catch (error) {
       logger.errorSync("Failed to clear preview data", { fileId, error })
@@ -122,7 +128,7 @@ export class MediaPreviewService {
    */
   async getFilesWithPreviews(): Promise<string[]> {
     try {
-      const files = await invoke<string[]>("get_files_with_previews")
+      const files = await getFilesWithPreviewsTauri()
       return files
     } catch (error) {
       logger.errorSync("Failed to get files with previews", { error })
@@ -139,7 +145,7 @@ export class MediaPreviewService {
   async savePreviewData(path: string): Promise<void> {
     try {
       logger.debugSync("Saving preview data", { path })
-      await invoke("save_preview_data", { path })
+      await savePreviewData(path)
       logger.debugSync("Preview data saved successfully", { path })
     } catch (error) {
       logger.errorSync("Failed to save preview data", { path, error })
@@ -156,7 +162,7 @@ export class MediaPreviewService {
   async loadPreviewData(path: string): Promise<void> {
     try {
       logger.debugSync("Loading preview data", { path })
-      await invoke("load_preview_data", { path })
+      await loadPreviewData(path)
       logger.debugSync("Preview data loaded successfully", { path })
     } catch (error) {
       logger.errorSync("Failed to load preview data", { path, error })
@@ -173,7 +179,7 @@ export class MediaPreviewService {
   async restorePreviewCache(): Promise<number> {
     try {
       logger.debugSync("Restoring preview cache")
-      const count = await invoke<number>("restore_preview_cache")
+      const count = await restorePreviewCacheTauri()
       logger.debugSync(`Preview cache restored: ${count} thumbnails`)
       return count
     } catch (error) {
@@ -193,7 +199,7 @@ export class MediaPreviewService {
    */
   async hasCachedThumbnail(fileId: string, width: number, height: number): Promise<boolean> {
     try {
-      return await invoke<boolean>("has_cached_thumbnail", { fileId, width, height })
+      return await hasCachedThumbnailTauri(fileId, width, height)
     } catch {
       return false
     }
@@ -209,7 +215,7 @@ export class MediaPreviewService {
    */
   async getCachedThumbnailPath(fileId: string, width: number, height: number): Promise<string> {
     try {
-      return await invoke<string>("get_cached_thumbnail_path", { fileId, width, height })
+      return await getCachedThumbnailPathTauri(fileId, width, height)
     } catch {
       return ""
     }
@@ -225,7 +231,7 @@ export class MediaPreviewService {
   async saveTimelineFrames(fileId: string, frames: TimelineFrame[]): Promise<void> {
     try {
       logger.debugSync("Saving timeline frames", { fileId, count: frames.length })
-      await invoke("save_timeline_frames", { fileId, frames })
+      await saveTimelineFramesForFile(fileId, frames)
       logger.debugSync("Timeline frames saved successfully", { fileId })
     } catch (error) {
       logger.errorSync("Failed to save timeline frames", { fileId, error })
@@ -242,7 +248,7 @@ export class MediaPreviewService {
   async getTimelineFrames(fileId: string): Promise<TimelineFrame[]> {
     try {
       logger.debugSync("Getting timeline frames", { fileId })
-      const frames = await invoke<TimelineFrame[]>("get_timeline_frames", { fileId })
+      const frames = await getTimelineFramesTauri(fileId)
       return frames
     } catch (error) {
       logger.errorSync("Failed to get timeline frames", { fileId, error })

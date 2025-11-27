@@ -9,6 +9,12 @@
 import { invoke } from "@tauri-apps/api/core"
 import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  cancelMediaProcessing,
+  processMediaFile,
+  scanMediaFolder,
+  scanMediaFolderWithThumbnails,
+} from "../tauri/media-commands"
 
 const logger = createLogger("MediaProcessorService")
 
@@ -27,12 +33,8 @@ export class MediaProcessorService {
    */
   async scanFolder(folderPath: string): Promise<MediaFile[]> {
     try {
-      logger.infoSync("Scanning folder", { folderPath })
-      const files = await invoke<MediaFile[]>("scan_media_folder", {
-        folderPath,
-      })
-      logger.infoSync("Folder scanned successfully", { folderPath, filesCount: files.length })
-      return files
+      const files = await scanMediaFolder(folderPath)
+      return files as MediaFile[]
     } catch (error) {
       logger.errorSync("Failed to scan folder", { folderPath, error })
       throw error
@@ -49,17 +51,8 @@ export class MediaProcessorService {
    */
   async scanFolderWithThumbnails(folderPath: string, width = 320, height = 180): Promise<MediaFile[]> {
     try {
-      logger.infoSync("Scanning folder with thumbnails", { folderPath, width, height })
-      const files = await invoke<MediaFile[]>("scan_media_folder_with_thumbnails", {
-        folderPath,
-        width,
-        height,
-      })
-      logger.infoSync("Folder scanned with thumbnails successfully", {
-        folderPath,
-        filesCount: files.length,
-      })
-      return files
+      const files = await scanMediaFolderWithThumbnails(folderPath, width, height)
+      return files as MediaFile[]
     } catch (error) {
       logger.errorSync("Failed to scan folder with thumbnails", { folderPath, width, height, error })
       throw error
@@ -122,9 +115,7 @@ export class MediaProcessorService {
    */
   async cancelProcessing(): Promise<void> {
     try {
-      logger.infoSync("Cancelling media processing")
-      await invoke("cancel_media_processing")
-      logger.infoSync("Media processing cancelled successfully")
+      await cancelMediaProcessing("")
     } catch (error) {
       logger.errorSync("Failed to cancel processing", { error })
       throw error
@@ -142,10 +133,7 @@ export class MediaProcessorService {
   async processFileSimple(filePath: string, generateThumbnail = false): Promise<any> {
     try {
       logger.infoSync("Processing file (simple mode)", { filePath, generateThumbnail })
-      const result = await invoke("process_media_file_simple", {
-        filePath,
-        generateThumbnail,
-      })
+      const result = await processMediaFile(filePath, generateThumbnail, false)
       logger.infoSync("File processed successfully (simple mode)", { filePath })
       return result
     } catch (error) {

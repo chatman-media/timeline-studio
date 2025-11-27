@@ -2,11 +2,25 @@
  * Сервис для работы с Video Compiler (Rust backend)
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import type { RenderProgress } from "@/features/video-compiler/types/render"
 import { RenderStatus } from "@/features/video-compiler/types/render"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  cancelRender as cancelRenderTauri,
+  checkGpuEncoderAvailability as checkGpuEncoderAvailabilityTauri,
+  clearMediaMetadataCache as clearMediaMetadataCacheTauri,
+  clearPrerenderCache as clearPrerenderCacheTauri,
+  generatePreview as generatePreviewTauri,
+  getActiveJobs as getActiveJobsTauri,
+  getGpuCapabilitiesFull as getGpuCapabilitiesFullTauri,
+  getPrerenderCacheInfo as getPrerenderCacheInfoTauri,
+  getRenderJob as getRenderJobTauri,
+  getRenderProgress as getRenderProgressTauri,
+  prerenderSegment as prerenderSegmentTauri,
+  renderProject as renderProjectTauri,
+  updateCompilerSettings as updateCompilerSettingsTauri,
+} from "../../tauri/compiler-commands"
 
 const logger = createLogger("VideoCompilerService")
 
@@ -15,11 +29,7 @@ const logger = createLogger("VideoCompilerService")
  */
 export async function renderProject(project: ProjectSchema, outputPath: string): Promise<string> {
   try {
-    const jobId = await invoke<string>("compile_video", {
-      projectSchema: project,
-      outputPath,
-    })
-
+    const jobId = await renderProjectTauri(project, outputPath)
     return jobId
   } catch (error) {
     void logger.error("Failed to start video compilation:", { error })
@@ -36,7 +46,7 @@ export async function trackRenderProgress(
 ): Promise<void> {
   const checkProgress = async () => {
     try {
-      const progress = await invoke<RenderProgress | null>("get_render_progress", { jobId })
+      const progress = await getRenderProgressTauri(jobId)
 
       if (progress) {
         onProgress(progress)
@@ -64,12 +74,7 @@ export async function generatePreview(
   quality?: number,
 ): Promise<Uint8Array> {
   try {
-    const jpegData = await invoke<number[]>("generate_preview", {
-      projectSchema: project,
-      timestamp,
-      quality: quality || 75,
-    })
-
+    const jpegData = await generatePreviewTauri(project, timestamp, quality)
     return new Uint8Array(jpegData)
   } catch (error) {
     void logger.error("Failed to generate preview:", { error })
@@ -82,7 +87,7 @@ export async function generatePreview(
  */
 export async function cancelRender(jobId: string): Promise<boolean> {
   try {
-    return await invoke<boolean>("cancel_render", { jobId })
+    return await cancelRenderTauri(jobId)
   } catch (error) {
     void logger.error("Failed to cancel render:", { error })
     return false
@@ -94,7 +99,7 @@ export async function cancelRender(jobId: string): Promise<boolean> {
  */
 export async function getActiveJobs() {
   try {
-    return await invoke("get_active_jobs")
+    return await getActiveJobsTauri()
   } catch (error) {
     void logger.error("Failed to get active jobs:", { error })
     throw error
@@ -106,7 +111,7 @@ export async function getActiveJobs() {
  */
 export async function getRenderJob(jobId: string) {
   try {
-    return await invoke("get_render_job", { jobId })
+    return await getRenderJobTauri(jobId)
   } catch (error) {
     void logger.error("Failed to get render job:", { error })
     return null
@@ -139,14 +144,12 @@ export interface PrerenderResult {
  */
 export async function prerenderSegment(request: PrerenderRequest): Promise<PrerenderResult> {
   try {
-    const result = await invoke<PrerenderResult>("prerender_segment", {
-      request: {
-        project_schema: request.projectSchema,
-        start_time: request.startTime,
-        end_time: request.endTime,
-        apply_effects: request.applyEffects,
-        quality: request.quality,
-      },
+    const result = await prerenderSegmentTauri({
+      project_schema: request.projectSchema,
+      start_time: request.startTime,
+      end_time: request.endTime,
+      apply_effects: request.applyEffects,
+      quality: request.quality,
     })
 
     return result
@@ -180,22 +183,12 @@ export interface PrerenderCacheFile {
  * Получить информацию о кеше пререндеров
  */
 export async function getPrerenderCacheInfo(): Promise<PrerenderCacheInfo> {
-  const result = await invoke<{
-    file_count: number
-    total_size: number
-    files?: Array<{
-      path: string
-      size: number
-      created: number
-      start_time: number
-      end_time: number
-    }>
-  }>("get_prerender_cache_info")
+  const result = await getPrerenderCacheInfoTauri()
 
   return {
     fileCount: result.file_count || 0,
     totalSize: result.total_size || 0,
-    files: (result.files || []).map((f) => ({
+    files: (result.files || []).map((f: any) => ({
       path: f.path,
       size: f.size,
       created: f.created,
@@ -210,7 +203,7 @@ export async function getPrerenderCacheInfo(): Promise<PrerenderCacheInfo> {
  * @returns Размер удаленных файлов в байтах
  */
 export async function clearPrerenderCache(): Promise<number> {
-  return await invoke<number>("clear_prerender_cache")
+  return await clearPrerenderCacheTauri()
 }
 
 /**
@@ -218,7 +211,7 @@ export async function clearPrerenderCache(): Promise<number> {
  */
 export async function checkGpuCapabilities() {
   try {
-    return await invoke("get_gpu_capabilities_full")
+    return await getGpuCapabilitiesFullTauri()
   } catch (error) {
     void logger.error("Failed to get GPU capabilities:", { error })
     throw error
@@ -230,7 +223,7 @@ export async function checkGpuCapabilities() {
  */
 export async function updateCompilerSettings(settings: any) {
   try {
-    return await invoke("update_compiler_settings_advanced", { settings })
+    return await updateCompilerSettingsTauri(settings)
   } catch (error) {
     void logger.error("Failed to update compiler settings:", { error })
     throw error
@@ -242,7 +235,7 @@ export async function updateCompilerSettings(settings: any) {
  */
 export async function checkGpuEncoderAvailability(encoder: string) {
   try {
-    return await invoke("check_gpu_encoder_availability", { encoder })
+    return await checkGpuEncoderAvailabilityTauri()
   } catch (error) {
     void logger.error("Failed to check GPU encoder availability:", { error })
     throw error
@@ -254,7 +247,7 @@ export async function checkGpuEncoderAvailability(encoder: string) {
  */
 export async function clearMediaMetadataCache() {
   try {
-    return await invoke("clear_media_metadata_cache")
+    return await clearMediaMetadataCacheTauri()
   } catch (error) {
     void logger.error("Failed to clear media metadata cache:", { error })
     throw error

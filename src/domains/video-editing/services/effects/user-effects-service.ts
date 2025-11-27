@@ -4,10 +4,23 @@
  * Операции с файловой системой и backend командами
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
 import type { BaseEffect } from "@/features/effects/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  addEffectToClip as addEffectToClipTauri,
+  addFilterToClip as addFilterToClipTauri,
+  createEffect as createEffectTauri,
+  createFilter as createFilterTauri,
+  deleteUserEffectById,
+  getUserEffectsList as getUserEffectsListTauri,
+  loadEffectsCollection as loadEffectsCollectionTauri,
+  loadUserEffect as loadUserEffectTauri,
+  removeEffectFromClip as removeEffectFromClipTauri,
+  removeFilterFromClip as removeFilterFromClipTauri,
+  saveEffectsCollection as saveEffectsCollectionTauri,
+  saveUserEffect as saveUserEffectTauri,
+} from "../../tauri/compiler-commands"
 
 const logger = createLogger("UserEffectsService")
 
@@ -49,10 +62,7 @@ export async function saveUserEffect(effect: BaseEffect, fileName: string): Prom
       isCustom: true,
     }
 
-    const filePath = await invoke<string>("save_user_effect", {
-      fileName,
-      effect: JSON.stringify(userEffect),
-    })
+    const filePath = await saveUserEffectTauri(fileName, JSON.stringify(userEffect))
 
     void logger.info("User effect saved", { fileName, filePath })
     return filePath
@@ -67,7 +77,7 @@ export async function saveUserEffect(effect: BaseEffect, fileName: string): Prom
  */
 export async function loadUserEffect(filePath: string): Promise<UserEffect> {
   try {
-    const effectData = await invoke<string>("load_user_effect", { filePath })
+    const effectData = await loadUserEffectTauri(filePath)
     const effect = JSON.parse(effectData) as UserEffect
 
     void logger.info("User effect loaded", { filePath })
@@ -83,7 +93,7 @@ export async function loadUserEffect(filePath: string): Promise<UserEffect> {
  */
 export async function getUserEffectsList(): Promise<string[]> {
   try {
-    const files = await invoke<string[]>("get_user_effects_list")
+    const files = await getUserEffectsListTauri()
     void logger.info("User effects list loaded", { count: files.length })
     return files
   } catch (error) {
@@ -97,7 +107,7 @@ export async function getUserEffectsList(): Promise<string[]> {
  */
 export async function deleteUserEffect(filePath: string): Promise<void> {
   try {
-    await invoke("delete_user_effect", { filePath })
+    await deleteUserEffectById(filePath)
     void logger.info("User effect deleted", { filePath })
   } catch (error) {
     void logger.error("Error deleting user effect", { error })
@@ -114,10 +124,7 @@ export async function deleteUserEffect(filePath: string): Promise<void> {
  */
 export async function saveEffectsCollection(collection: UserEffectsCollection, fileName: string): Promise<string> {
   try {
-    const filePath = await invoke<string>("save_effects_collection", {
-      fileName,
-      collection: JSON.stringify(collection),
-    })
+    const filePath = await saveEffectsCollectionTauri(fileName, JSON.stringify(collection))
 
     void logger.info("Effects collection saved", { fileName, filePath })
     return filePath
@@ -132,7 +139,7 @@ export async function saveEffectsCollection(collection: UserEffectsCollection, f
  */
 export async function loadEffectsCollection(filePath: string): Promise<UserEffectsCollection> {
   try {
-    const collectionData = await invoke<string>("load_effects_collection", { filePath })
+    const collectionData = await loadEffectsCollectionTauri(filePath)
     const collection = JSON.parse(collectionData) as UserEffectsCollection
 
     void logger.info("Effects collection loaded", { filePath })
@@ -156,11 +163,7 @@ export async function addEffectToClip(
   effectId: string,
 ): Promise<ProjectSchema> {
   try {
-    const updatedSchema = await invoke<ProjectSchema>("add_effect_to_clip", {
-      clipId,
-      effectId,
-      projectSchema,
-    })
+    const updatedSchema = await addEffectToClipTauri(clipId, effectId, projectSchema)
 
     void logger.info("Effect added to clip", { clipId, effectId })
     return updatedSchema
@@ -179,11 +182,7 @@ export async function addFilterToClip(
   filterId: string,
 ): Promise<ProjectSchema> {
   try {
-    const updatedSchema = await invoke<ProjectSchema>("add_filter_to_clip", {
-      clipId,
-      filterId,
-      projectSchema,
-    })
+    const updatedSchema = await addFilterToClipTauri(clipId, filterId, projectSchema)
 
     void logger.info("Filter added to clip", { clipId, filterId })
     return updatedSchema
@@ -202,11 +201,7 @@ export async function removeEffectFromClip(
   effectId: string,
 ): Promise<ProjectSchema> {
   try {
-    const updatedSchema = await invoke<ProjectSchema>("remove_effect_from_clip", {
-      clipId,
-      effectId,
-      projectSchema,
-    })
+    const updatedSchema = await removeEffectFromClipTauri(clipId, effectId, projectSchema)
 
     void logger.info("Effect removed from clip", { clipId, effectId })
     return updatedSchema
@@ -225,11 +220,7 @@ export async function removeFilterFromClip(
   filterId: string,
 ): Promise<ProjectSchema> {
   try {
-    const updatedSchema = await invoke<ProjectSchema>("remove_filter_from_clip", {
-      clipId,
-      filterId,
-      projectSchema,
-    })
+    const updatedSchema = await removeFilterFromClipTauri(clipId, filterId, projectSchema)
 
     void logger.info("Filter removed from clip", { clipId, filterId })
     return updatedSchema
@@ -248,7 +239,7 @@ export async function removeFilterFromClip(
  */
 export async function createEffect(effectType: string, parameters: Record<string, any>): Promise<any> {
   try {
-    const effect = await invoke("create_effect", {
+    const effect = await createEffectTauri({
       effectType,
       parameters,
     })
@@ -266,7 +257,7 @@ export async function createEffect(effectType: string, parameters: Record<string
  */
 export async function createFilter(filterType: string, parameters: Record<string, any>): Promise<any> {
   try {
-    const filter = await invoke("create_filter", {
+    const filter = await createFilterTauri({
       filterType,
       parameters,
     })

@@ -2,9 +2,15 @@
  * Сервис для работы с кэшем компилятора
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import type { VideoCompilerCacheStats } from "@/features/video-compiler/types/cache"
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  clearAllCache as clearAllCacheTauri,
+  clearPreviewCache as clearPreviewCacheTauri,
+  configureCache,
+  getCacheSize as getCacheSizeTauri,
+  getCacheStats as getCacheStatsTauri,
+} from "../../tauri/compiler-commands"
 
 const logger = createLogger("CacheService")
 
@@ -13,7 +19,7 @@ const logger = createLogger("CacheService")
  */
 export async function getCacheStats(): Promise<VideoCompilerCacheStats> {
   try {
-    return await invoke<VideoCompilerCacheStats>("get_cache_stats")
+    return await getCacheStatsTauri()
   } catch (error) {
     void logger.error("Failed to get cache stats:", { error })
     throw error
@@ -25,7 +31,7 @@ export async function getCacheStats(): Promise<VideoCompilerCacheStats> {
  */
 export async function clearPreviewCache(): Promise<void> {
   try {
-    await invoke("clear_preview_cache")
+    await clearPreviewCacheTauri()
   } catch (error) {
     void logger.error("Failed to clear preview cache:", { error })
     throw error
@@ -37,7 +43,7 @@ export async function clearPreviewCache(): Promise<void> {
  */
 export async function clearAllCache(): Promise<void> {
   try {
-    await invoke("clear_all_cache")
+    await clearAllCacheTauri()
   } catch (error) {
     void logger.error("Failed to clear all cache:", { error })
     throw error
@@ -49,7 +55,7 @@ export async function clearAllCache(): Promise<void> {
  */
 export async function getCacheSize(): Promise<number> {
   try {
-    return await invoke<number>("get_cache_size")
+    return await getCacheSizeTauri()
   } catch (error) {
     void logger.error("Failed to get cache size:", { error })
     return 0
@@ -65,7 +71,7 @@ export async function configureCacheSettings(settings: {
   auto_cleanup?: boolean
 }): Promise<void> {
   try {
-    await invoke("configure_cache", settings)
+    await configureCache(settings)
   } catch (error) {
     void logger.error("Failed to configure cache:", { error })
     throw error
