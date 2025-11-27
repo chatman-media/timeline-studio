@@ -135,7 +135,7 @@ vi.mock("@/domains/project-management/services/project-management-orchestrator",
 }))
 
 vi.mock("@xstate/react", () => ({
-  useSelector: vi.fn((actor, selector) => selector(mockAppState)),
+  useSelector: vi.fn((_actor, selector) => selector(mockAppState)),
 }))
 
 vi.mock("../../services/backend-sync", () => ({
