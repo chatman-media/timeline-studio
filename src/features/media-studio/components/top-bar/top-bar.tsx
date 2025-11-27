@@ -333,15 +333,15 @@ const TopBarComponent = function TopBar() {
           </div>
         </div>
 
-        {/* Группа 4: Video toolbox - рендеринг, задачи и GPU */}
+        {/* Группа 4: Video Toolbox - GPU и рендеринг */}
         <div className="flex items-center justify-end mr-[30%]">
           <GpuStatusBadge className="mr-2" />
-          <PublicationTasksDropdown />
           <RenderJobsDropdown />
         </div>
 
-        {/* Группа 5: AI Director и экспорт */}
+        {/* Группа 5: Публикация, AI Director и экспорт */}
         <div className="flex items-center justify-end">
+          <PublicationTasksDropdown />
 
           <Button
             variant="ghost"
