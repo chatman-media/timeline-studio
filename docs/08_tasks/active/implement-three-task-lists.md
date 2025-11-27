@@ -414,16 +414,28 @@ Tauri Plugin API
   - Error Handling (2 теста)
   - **Коммит:** c4dc80f73ed
 
-**Unit тесты (use-analysis-tasks hook - TODO):**
-- [ ] `/src/features/montage-planner/hooks/__tests__/use-analysis-tasks.test.tsx`
-  - Тест polling логики
-  - Тест cancel task
-  - Тест error handling
+**Unit тесты (use-analysis-tasks hook - ГОТОВО):**
+- [x] `/src/features/montage-planner/hooks/__tests__/use-analysis-tasks.test.tsx` ✅
+  - **555 строк, 31 comprehensive тестов (29 проходят ✅, 2 skipped)**
+  - Initial State (3 теста)
+  - refreshTasks (4 теста)
+  - getTask (3 теста)
+  - createTask (4 теста)
+  - cancelTask (4 теста)
+  - Progress Subscription (3 теста)
+  - Polling (2 теста - skipped, сложно тестировать setInterval в useEffect)
+  - Helper Functions: getAnalysisTaskStatusLabel, getAnalysisTaskStatusColor, formatAnalysisTaskDuration (11 тестов)
 
-- [ ] `/src/features/analysis-tasks/__tests__/components/analysis-tasks-dropdown.test.tsx`
-  - Рендер с tasks
-  - Рендер пустого состояния
-  - Тест interactions
+**Unit тесты (AnalysisTasksDropdown - ГОТОВО):**
+- [x] `/src/features/montage-planner/components/__tests__/analysis-tasks-dropdown.test.tsx` ✅
+  - **630+ строк, 31 comprehensive тестов, все проходят ✅**
+  - Rendering (5 тестов - badge, pulse animation)
+  - Dropdown Menu Content (4 теста - loader, error, empty state)
+  - Task Display (6 тестов - info, progress, ETA, cancel button, error message, results)
+  - Task Interaction (2 теста - cancel task with confirmation)
+  - Statistics (5 тестов - total, active, completed tasks)
+  - Multiple Tasks (2 теста - multiple task display)
+  - Status Icons (6 тестов - pending, analyzing, completed, failed, cancelled)
 
 **Mocks:**
 - [ ] `/src/features/analysis-tasks/__mocks__/analysis-tasks.ts`
