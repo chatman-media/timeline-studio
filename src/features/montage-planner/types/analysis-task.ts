@@ -6,7 +6,6 @@
 
 import type {
   AnalysisPhase,
-  AnalysisProgress,
   AudioContentAnalysis,
   MomentScore,
   MontagePlan,

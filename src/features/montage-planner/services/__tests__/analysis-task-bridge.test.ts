@@ -5,9 +5,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { AnalysisWorkflow } from "@/domains/ai-services/services/unified-orchestrator"
 import { unifiedOrchestrator } from "@/domains/ai-services/services/unified-orchestrator"
-import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
-import { AnalysisTaskBridge } from "../analysis-task-bridge"
 import { AnalysisTaskStatus } from "../../types/analysis-task"
+import { AnalysisTaskBridge } from "../analysis-task-bridge"
 
 // Mock dependencies
 vi.mock("@/domains/ai-services/services/unified-orchestrator", () => ({
