@@ -1,7 +1,6 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { readTextFile } from "@tauri-apps/plugin-fs"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import { useResources } from "@/features/resources"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -23,6 +22,14 @@ export function useStyleTemplatesImport() {
   const [isImporting, setIsImporting] = useState(false)
   const { addStyleTemplate } = useResources()
 
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
+
   /**
    * Импорт JSON файла со стилистическими шаблонами
    */
@@ -35,7 +42,13 @@ export function useStyleTemplatesImport() {
     setIsImporting(true)
     void logger.info("Starting style templates file import")
     try {
-      const selected = await open({
+      if (!platform) {
+        void logger.error("Platform service not available")
+        setIsImporting(false)
+        return
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -46,9 +59,10 @@ export function useStyleTemplatesImport() {
       })
 
       if (selected) {
-        void logger.info(`File selected: ${selected}`)
+        const filePath = Array.isArray(selected) ? selected[0] : selected
+        void logger.info(`File selected: ${filePath}`)
         // Читаем содержимое JSON файла
-        const content = await readTextFile(selected)
+        const content = await platform.readTextFile(filePath)
         const templatesData = JSON.parse(content)
 
         // Проверяем формат данных
@@ -97,7 +111,13 @@ export function useStyleTemplatesImport() {
     setIsImporting(true)
     void logger.info("Starting style template files import")
     try {
-      const selected = await open({
+      if (!platform) {
+        void logger.error("Platform service not available")
+        setIsImporting(false)
+        return
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {
@@ -120,7 +140,7 @@ export function useStyleTemplatesImport() {
 
           if (fileExtension === "json") {
             // Читаем JSON файл
-            const content = await readTextFile(filePath)
+            const content = await platform.readTextFile(filePath)
             const templateData = JSON.parse(content)
 
             if (validateStyleTemplate(templateData)) {

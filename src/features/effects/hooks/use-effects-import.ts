@@ -1,5 +1,6 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+
+import { container } from "@/core"
 import type { BaseEffect } from "@/features/effects/types"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -26,6 +27,14 @@ interface ImportResult {
 export function useEffectsImport() {
   const [isImporting, setIsImporting] = useState(false)
   const [progress, setProgress] = useState(0)
+
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   /**
    * Валидация структуры эффекта
@@ -64,7 +73,17 @@ export function useEffectsImport() {
 
     try {
       // Открываем диалог выбора файла эффектов
-      const selected = await open({
+      if (!platform) {
+        void logger.error("Platform service not available")
+        setIsImporting(false)
+        return {
+          success: false,
+          message: "Платформенный сервис недоступен",
+          effects: [],
+        }
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -83,10 +102,11 @@ export function useEffectsImport() {
         }
       }
 
+      const filePath = Array.isArray(selected) ? selected[0] : selected
       setProgress(25)
 
       // Определяем тип файла
-      const fileExtension = selected.split(".").pop()?.toLowerCase()
+      const fileExtension = filePath.split(".").pop()?.toLowerCase()
       let effects: BaseEffect[] = []
       let imported = 0
       let failed = 0
@@ -94,7 +114,7 @@ export function useEffectsImport() {
       try {
         if (fileExtension === "effect") {
           // Пользовательский эффект
-          const userEffect = await loadUserEffect(selected)
+          const userEffect = await loadUserEffect(filePath)
           if (userEffect && validateEffect(userEffect)) {
             effects = [userEffect]
             imported = 1
@@ -103,7 +123,7 @@ export function useEffectsImport() {
           }
         } else if (fileExtension === "effects") {
           // Коллекция эффектов
-          const collection = await loadEffectsCollection(selected)
+          const collection = await loadEffectsCollection(filePath)
           if (collection && collection.effects && Array.isArray(collection.effects)) {
             collection.effects.forEach((effect) => {
               if (validateEffect(effect)) {
@@ -116,7 +136,7 @@ export function useEffectsImport() {
           }
         } else {
           // Обычный JSON
-          const response = await fetch(`file://${selected}`)
+          const response = await fetch(`file://${filePath}`)
           const data = await response.json()
 
           if (Array.isArray(data)) {
@@ -229,7 +249,17 @@ export function useEffectsImport() {
 
     try {
       // Открываем диалог выбора файла эффекта
-      const selected = await open({
+      if (!platform) {
+        void logger.error("Platform service not available")
+        setIsImporting(false)
+        return {
+          success: false,
+          message: "Платформенный сервис недоступен",
+          effects: [],
+        }
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {

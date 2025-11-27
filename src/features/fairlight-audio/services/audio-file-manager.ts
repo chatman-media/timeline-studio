@@ -1,4 +1,5 @@
-import { convertFileSrc } from "@tauri-apps/api/core"
+import { container } from "@/core"
+import type { IPlatformService } from "@/core/ports/platform.port"
 
 export interface AudioFile {
   id: string
@@ -13,6 +14,16 @@ export class AudioFileManager {
   private audioFiles = new Map<string, AudioFile>()
 
   /**
+   * Получает platform service
+   */
+  private getPlatformService(): IPlatformService {
+    if (!container.hasPlatform()) {
+      throw new Error("Platform service not available")
+    }
+    return container.getPlatform()
+  }
+
+  /**
    * Load audio file and create HTMLAudioElement
    */
   async loadAudioFile(id: string, path: string): Promise<AudioFile> {
@@ -23,8 +34,9 @@ export class AudioFileManager {
     }
 
     try {
+      const platform = this.getPlatformService()
       // Convert Tauri file path to URL
-      const url = convertFileSrc(path)
+      const url = platform.convertFileSrc(path)
 
       // Create audio element
       const element = new Audio()

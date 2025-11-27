@@ -97,22 +97,32 @@ export interface AnalysisTask {
 
 /**
  * Настройки анализа
+ * Соответствует параметрам UnifiedOrchestrator.analyzeComprehensive
  */
 export interface AnalysisTaskOptions {
-  /** Включить анализ видео */
-  enable_video_analysis?: boolean
-  /** Включить анализ аудио */
-  enable_audio_analysis?: boolean
-  /** Включить обнаружение моментов */
-  enable_moment_detection?: boolean
-  /** Генерировать монтажный план */
-  generate_montage_plan?: boolean
-  /** Порог качества (0-100) */
-  quality_threshold?: number
-  /** Частота сэмплирования (кадры в секунду) */
-  sample_rate?: number
-  /** Стиль монтажа для плана */
-  montage_style?: string
+  /** Конфигурация AI Director */
+  aiDirectorConfig?: {
+    providers: {
+      speech_to_text?: string
+      vision_ai?: string
+    }
+    language?: string
+    quality_preset?: string
+  }
+  /** Опции Montage Planner анализа */
+  montageOptions?: {
+    enable_object_detection?: boolean
+    enable_face_detection?: boolean
+    enable_emotion_analysis?: boolean
+    enable_composition_analysis?: boolean
+    enable_audio_analysis?: boolean
+    frame_sample_rate?: number
+    quality_threshold?: number
+    max_moments?: number
+    frame_sampling_rate?: number
+  }
+  /** Пропустить анализ монтажа (только AI Director) */
+  skipMontageAnalysis?: boolean
 }
 
 /**

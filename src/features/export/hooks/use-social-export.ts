@@ -1,7 +1,7 @@
-import { readFile } from "@tauri-apps/plugin-fs"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
+import { container } from "@/core"
 import { useNotifications } from "@/domains/system-integration"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
@@ -21,6 +21,13 @@ export function useSocialExport() {
   const { showError, showSuccess } = useNotifications()
   const [uploadProgress, setUploadProgress] = useState<number>(0)
   const [isUploading, setIsUploading] = useState<boolean>(false)
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   const loginToSocialNetwork = useCallback(
     async (network: string) => {
@@ -56,12 +63,16 @@ export function useSocialExport() {
         throw new Error("Unknown social network")
       }
 
+      if (!platform) {
+        throw new Error("Platform service not available")
+      }
+
       try {
         setIsUploading(true)
         setUploadProgress(0)
 
-        // Читаем файл через Tauri API
-        const fileData = await readFile(videoPath)
+        // Читаем файл через Platform service
+        const fileData = await platform.readFile(videoPath)
         const videoBlob = new Blob([fileData as BlobPart], { type: "video/mp4" })
 
         const result = await SocialNetworksService.uploadVideo(
@@ -85,7 +96,7 @@ export function useSocialExport() {
         throw error
       }
     },
-    [showError, showSuccess, t],
+    [platform, showError, showSuccess, t],
   )
 
   const validateSocialExport = useCallback(

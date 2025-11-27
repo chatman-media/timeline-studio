@@ -4,17 +4,13 @@
  * Provides plugin management functionality through Tauri backend
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
+import { sendPluginCommand as sendPluginCommandTauri } from "../../tauri/plugin-commands"
 
 const logger = createLogger("PluginService")
 
-export interface PluginCommandResponse<T = any> {
-  command_id: string
-  success: boolean
-  data?: T
-  error?: string
-}
+// Re-export types
+export type { PluginCommandResponse } from "../../tauri/plugin-commands"
 
 /**
  * Send a command to a loaded plugin
@@ -26,13 +22,9 @@ export async function sendPluginCommand<T = any>(
   pluginId: string,
   command: string,
   params: Record<string, any> = {},
-): Promise<PluginCommandResponse<T>> {
-  logger.debugSync("Sending plugin command", { pluginId, command })
-  return invoke<PluginCommandResponse<T>>("send_plugin_command", {
-    pluginId,
-    command,
-    params,
-  })
+) {
+  logger.debugSync("Delegating plugin command to Tauri layer", { pluginId, command })
+  return sendPluginCommandTauri<T>(pluginId, command, params)
 }
 
 /**

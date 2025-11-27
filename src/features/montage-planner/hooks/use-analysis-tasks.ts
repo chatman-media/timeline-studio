@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
+import { analysisTaskBridge } from "../services/analysis-task-bridge"
 import type { AnalysisTask, AnalysisTaskStatus } from "../types/analysis-task"
 
 const logger = createLogger("UseAnalysisTasks")
@@ -47,10 +48,8 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
       setIsLoading(true)
       setError(null)
 
-      // TODO: Заменить на реальный backend вызов
-      // Пока используем mock данные из localStorage
-      const storedTasks = localStorage.getItem("analysis-tasks")
-      const analysisTasks: AnalysisTask[] = storedTasks ? JSON.parse(storedTasks) : []
+      // Получаем задачи через AnalysisTaskBridge
+      const analysisTasks = await analysisTaskBridge.getActiveTasks()
 
       setTasks(analysisTasks)
       void logger.info("Список задач анализа получен успешно", {
@@ -73,9 +72,7 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
       void logger.info("Запрос задачи анализа по ID", { taskId })
 
       try {
-        const storedTasks = localStorage.getItem("analysis-tasks")
-        const analysisTasks: AnalysisTask[] = storedTasks ? JSON.parse(storedTasks) : []
-        const task = analysisTasks.find((t) => t.id === taskId)
+        const task = await analysisTaskBridge.getTask(taskId)
 
         if (task) {
           void logger.info("Задача анализа получена успешно", {
@@ -85,7 +82,7 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
         } else {
           void logger.info("Задача анализа не найдена", { taskId })
         }
-        return task || null
+        return task
       } catch (err) {
         void logger.error("Ошибка получения задачи анализа", { error: err })
         return null
@@ -100,31 +97,20 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
       void logger.info("Создание задачи анализа", { videoPath, videoName })
 
       try {
-        const newTask: AnalysisTask = {
-          id: `analysis-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          video_path: videoPath,
-          video_name: videoName,
-          status: "pending" as AnalysisTaskStatus,
-          created_at: new Date().toISOString(),
-          progress: {
-            percentage: 0,
-            phase: "initializing",
-          },
-        }
+        // Запускаем анализ через bridge
+        const taskId = await analysisTaskBridge.startAnalysis(videoPath)
 
-        // TODO: Заменить на реальный backend вызов
-        const storedTasks = localStorage.getItem("analysis-tasks")
-        const analysisTasks: AnalysisTask[] = storedTasks ? JSON.parse(storedTasks) : []
-        analysisTasks.push(newTask)
-        localStorage.setItem("analysis-tasks", JSON.stringify(analysisTasks))
+        // Получаем созданную задачу
+        const task = await analysisTaskBridge.getTask(taskId)
+        if (!task) {
+          throw new Error("Failed to retrieve created task")
+        }
 
         await refreshTasks()
 
-        void logger.info("Задача анализа создана успешно", {
-          taskId: newTask.id,
-        })
+        void logger.info("Задача анализа создана успешно", { taskId })
 
-        return newTask
+        return task
       } catch (err) {
         void logger.error("Ошибка создания задачи анализа", { error: err })
         throw err
@@ -139,23 +125,16 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
       void logger.info("Отмена задачи анализа", { taskId })
 
       try {
-        // TODO: Заменить на реальный backend вызов
-        const storedTasks = localStorage.getItem("analysis-tasks")
-        const analysisTasks: AnalysisTask[] = storedTasks ? JSON.parse(storedTasks) : []
+        const success = await analysisTaskBridge.cancelTask(taskId)
 
-        const taskIndex = analysisTasks.findIndex((t) => t.id === taskId)
-        if (taskIndex !== -1) {
-          analysisTasks[taskIndex].status = "cancelled" as AnalysisTaskStatus
-          analysisTasks[taskIndex].completed_at = new Date().toISOString()
-          localStorage.setItem("analysis-tasks", JSON.stringify(analysisTasks))
-
+        if (success) {
           void logger.info("Задача анализа отменена успешно", { taskId })
           await refreshTasks()
-          return true
+        } else {
+          void logger.warn("Не удалось отменить задачу анализа", { taskId })
         }
 
-        void logger.warn("Задача анализа не найдена", { taskId })
-        return false
+        return success
       } catch (err) {
         void logger.error("Ошибка отмены задачи анализа", { error: err })
         return false
@@ -164,18 +143,36 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
     [refreshTasks],
   )
 
-  // Автоматическое обновление списка задач
+  // Автоматическое обновление списка задач и подписка на прогресс
   useEffect(() => {
     void logger.info("Инициализация useAnalysisTasks хука")
     void refreshTasks()
 
-    // Обновляем список каждые 5 секунд
+    // Подписываемся на события прогресса
+    const unsubscribe = analysisTaskBridge.subscribeToProgress((updatedTask) => {
+      setTasks((prevTasks) => {
+        const index = prevTasks.findIndex((t) => t.id === updatedTask.id)
+        if (index !== -1) {
+          // Обновляем существующую задачу
+          const newTasks = [...prevTasks]
+          newTasks[index] = updatedTask
+          return newTasks
+        } else {
+          // Добавляем новую задачу
+          return [...prevTasks, updatedTask]
+        }
+      })
+    })
+
+    // Обновляем список каждые 30 секунд для синхронизации
+    // (события прогресса уже обновляют список в реальном времени)
     const interval = setInterval(() => {
       void refreshTasks()
-    }, 5000)
+    }, 30000)
 
     return () => {
       void logger.info("Размонтирование useAnalysisTasks хука")
+      unsubscribe()
       clearInterval(interval)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

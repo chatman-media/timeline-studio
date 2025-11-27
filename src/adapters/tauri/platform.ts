@@ -118,4 +118,20 @@ export class TauriPlatformService implements IPlatformService {
     const { openUrl } = await import("@tauri-apps/plugin-opener")
     await openUrl(url)
   }
+
+  // === App Info ===
+
+  async getVersion(): Promise<string> {
+    const { getVersion } = await import("@tauri-apps/api/app")
+    return getVersion()
+  }
+
+  // === File Conversion ===
+
+  convertFileSrc(path: string): string {
+    // Используем синхронный импорт для convertFileSrc так как это синхронная функция
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { convertFileSrc } = require("@tauri-apps/api/core")
+    return convertFileSrc(path)
+  }
 }

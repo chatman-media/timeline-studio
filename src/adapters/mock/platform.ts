@@ -93,6 +93,24 @@ export class MockPlatformService implements IPlatformService {
     }
   }
 
+  // === App Info ===
+
+  async getVersion(): Promise<string> {
+    return "1.0.0-mock"
+  }
+
+  // === File Conversion ===
+
+  convertFileSrc(path: string): string {
+    // In mock/browser environment, return as is or use file:// protocol
+    if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("blob:")) {
+      return path
+    }
+    // For mock file paths, create a blob URL would be more realistic
+    // but for simplicity we just prefix with file://
+    return `file://${path}`
+  }
+
   // === Test Helpers ===
 
   /**

@@ -1,6 +1,6 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import { readSubtitleFile } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
@@ -21,6 +21,14 @@ export function useSubtitlesImport() {
   const [isImporting, setIsImporting] = useState(false)
   const { project, send } = useTimeline()
   const { showSuccess, showError } = useNotifications()
+
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   /**
    * Добавление субтитров на таймлайн
@@ -91,11 +99,11 @@ export function useSubtitlesImport() {
    * Импорт файлов субтитров (SRT, VTT, ASS)
    */
   const importSubtitleFiles = useCallback(async () => {
-    if (isImporting) return
+    if (isImporting || !platform) return
 
     setIsImporting(true)
     try {
-      const selected = await open({
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {
@@ -152,17 +160,17 @@ export function useSubtitlesImport() {
     } finally {
       setIsImporting(false)
     }
-  }, [isImporting, addSubtitleClip, project])
+  }, [isImporting, platform, addSubtitleClip, project, showSuccess, showError])
 
   /**
    * Импорт одного файла субтитров
    */
   const importSubtitleFile = useCallback(async () => {
-    if (isImporting) return
+    if (isImporting || !platform) return
 
     setIsImporting(true)
     try {
-      const selected = await open({
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -172,10 +180,11 @@ export function useSubtitlesImport() {
         ],
       })
 
-      if (selected && typeof selected === "string") {
+      if (selected && Array.isArray(selected) && selected.length > 0) {
+        const filePath = selected[0]
         try {
           // Читаем файл через domain service
-          const result = await readSubtitleFile(selected)
+          const result = await readSubtitleFile(filePath)
 
           // Парсим субтитры
           const subtitles = parseSubtitleFile(result.content, result.format as any)
@@ -212,7 +221,7 @@ export function useSubtitlesImport() {
     } finally {
       setIsImporting(false)
     }
-  }, [isImporting, addSubtitleClip, project])
+  }, [isImporting, platform, addSubtitleClip, project, showSuccess, showError])
 
   return {
     importSubtitleFiles,

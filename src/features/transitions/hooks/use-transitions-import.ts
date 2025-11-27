@@ -1,6 +1,6 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
@@ -20,6 +20,14 @@ interface ImportResult {
 export function useTransitionsImport() {
   const [isImporting, setIsImporting] = useState(false)
   const [progress, setProgress] = useState(0)
+
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   /**
    * Валидация структуры перехода
@@ -57,7 +65,17 @@ export function useTransitionsImport() {
 
     try {
       // Открываем диалог выбора JSON файла
-      const selected = await open({
+      if (!platform) {
+        void logError("Platform service not available")
+        setIsImporting(false)
+        return {
+          success: false,
+          message: "Платформенный сервис недоступен",
+          transitions: [],
+        }
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -77,11 +95,12 @@ export function useTransitionsImport() {
         }
       }
 
-      void logInfo(`File selected: ${selected}`)
+      const filePath = Array.isArray(selected) ? selected[0] : selected
+      void logInfo(`File selected: ${filePath}`)
       setProgress(25)
 
       // Читаем файл
-      const response = await fetch(`file://${selected}`)
+      const response = await fetch(`file://${filePath}`)
       const data = await response.json()
       void logInfo("File loaded and parsed successfully")
 
@@ -164,7 +183,17 @@ export function useTransitionsImport() {
 
     try {
       // Открываем диалог выбора файла перехода
-      const selected = await open({
+      if (!platform) {
+        void logError("Platform service not available")
+        setIsImporting(false)
+        return {
+          success: false,
+          message: "Платформенный сервис недоступен",
+          transitions: [],
+        }
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {

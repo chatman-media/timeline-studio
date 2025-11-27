@@ -2,9 +2,7 @@
  * Утилиты для экспорта и импорта планов монтажа
  */
 
-import { open, save } from "@tauri-apps/plugin-dialog"
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
-
+import { container } from "@/core"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { MontagePlan } from "../types/montage-plan"
@@ -23,6 +21,11 @@ interface ExportTemplateOptions {
  * Экспортировать план монтажа в JSON файл
  */
 export async function exportMontagePlan(plan: MontagePlan): Promise<string | null> {
+  const platform = container.hasPlatform() ? container.getPlatform() : null
+  if (!platform) {
+    throw new Error("Platform service not available")
+  }
+
   try {
     logger.infoSync("[MontagePlanIO] Exporting montage plan", { planId: plan.id })
 
@@ -30,7 +33,7 @@ export async function exportMontagePlan(plan: MontagePlan): Promise<string | nul
     const defaultFileName = `${plan.name.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.json`
 
     // Открываем диалог сохранения файла
-    const filePath = await save({
+    const filePath = await platform.showSaveDialog({
       filters: [
         {
           name: "Montage Plan",
@@ -49,7 +52,7 @@ export async function exportMontagePlan(plan: MontagePlan): Promise<string | nul
     const planJSON = JSON.stringify(plan, null, 2)
 
     // Сохраняем файл
-    await writeTextFile(filePath, planJSON)
+    await platform.writeTextFile(filePath, planJSON)
 
     logger.infoSync("[MontagePlanIO] Plan exported successfully", { filePath })
     return filePath
@@ -63,11 +66,16 @@ export async function exportMontagePlan(plan: MontagePlan): Promise<string | nul
  * Импортировать план монтажа из JSON файла
  */
 export async function importMontagePlan(): Promise<MontagePlan | null> {
+  const platform = container.hasPlatform() ? container.getPlatform() : null
+  if (!platform) {
+    throw new Error("Platform service not available")
+  }
+
   try {
     logger.infoSync("[MontagePlanIO] Importing montage plan")
 
     // Открываем диалог выбора файла
-    const filePath = await open({
+    const selectedPaths = await platform.showOpenDialog({
       filters: [
         {
           name: "Montage Plan",
@@ -77,13 +85,15 @@ export async function importMontagePlan(): Promise<MontagePlan | null> {
       multiple: false,
     })
 
-    if (!filePath) {
+    if (!selectedPaths || selectedPaths.length === 0) {
       logger.infoSync("[MontagePlanIO] Import cancelled by user")
       return null
     }
 
+    const filePath = selectedPaths[0]
+
     // Читаем файл
-    const fileContent = await readTextFile(filePath as string)
+    const fileContent = await platform.readTextFile(filePath)
 
     // Парсим JSON
     const planData = JSON.parse(fileContent)
@@ -120,10 +130,15 @@ export async function importMontagePlan(): Promise<MontagePlan | null> {
  * Экспортировать несколько планов в один файл
  */
 export async function exportMultiplePlans(plans: MontagePlan[]): Promise<string | null> {
+  const platform = container.hasPlatform() ? container.getPlatform() : null
+  if (!platform) {
+    throw new Error("Platform service not available")
+  }
+
   try {
     logger.infoSync("[MontagePlanIO] Exporting multiple plans", { count: plans.length })
 
-    const filePath = await save({
+    const filePath = await platform.showSaveDialog({
       filters: [
         {
           name: "Montage Plans",
@@ -140,7 +155,7 @@ export async function exportMultiplePlans(plans: MontagePlan[]): Promise<string 
     // Экспортируем как простой массив (по требованию тестов)
     const plansJSON = JSON.stringify(plans, null, 2)
 
-    await writeTextFile(filePath, plansJSON)
+    await platform.writeTextFile(filePath, plansJSON)
 
     logger.infoSync("[MontagePlanIO] Multiple plans exported successfully")
     return filePath
@@ -154,10 +169,15 @@ export async function exportMultiplePlans(plans: MontagePlan[]): Promise<string 
  * Импортировать несколько планов из файла
  */
 export async function importMultiplePlans(): Promise<MontagePlan[] | null> {
+  const platform = container.hasPlatform() ? container.getPlatform() : null
+  if (!platform) {
+    throw new Error("Platform service not available")
+  }
+
   try {
     logger.infoSync("[MontagePlanIO] Importing multiple plans")
 
-    const filePath = await open({
+    const selectedPaths = await platform.showOpenDialog({
       filters: [
         {
           name: "Montage Plans",
@@ -167,11 +187,12 @@ export async function importMultiplePlans(): Promise<MontagePlan[] | null> {
       multiple: false,
     })
 
-    if (!filePath) {
+    if (!selectedPaths || selectedPaths.length === 0) {
       return null
     }
 
-    const fileContent = await readTextFile(filePath as string)
+    const filePath = selectedPaths[0]
+    const fileContent = await platform.readTextFile(filePath)
     const data = JSON.parse(fileContent)
 
     // Поддерживаем как массив, так и одиночный план
@@ -205,6 +226,11 @@ export async function importMultiplePlans(): Promise<MontagePlan[] | null> {
  * Экспортировать план как шаблон (без привязки к конкретным файлам)
  */
 export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTemplateOptions): Promise<string | null> {
+  const platform = container.hasPlatform() ? container.getPlatform() : null
+  if (!platform) {
+    throw new Error("Platform service not available")
+  }
+
   try {
     const avgClipDuration =
       plan.clips.length > 0 ? plan.clips.reduce((sum, c) => sum + c.duration, 0) / plan.clips.length : 5
@@ -270,7 +296,7 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
         : undefined,
     }
 
-    const filePath = await save({
+    const filePath = await platform.showSaveDialog({
       filters: [
         {
           name: "Montage Template",
@@ -284,7 +310,7 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
       return null
     }
 
-    await writeTextFile(filePath, JSON.stringify(template, null, 2))
+    await platform.writeTextFile(filePath, JSON.stringify(template, null, 2))
 
     logger.infoSync("[MontagePlanIO] Plan exported as template")
     return filePath

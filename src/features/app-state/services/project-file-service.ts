@@ -1,5 +1,4 @@
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
-
+import { container } from "@/core"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import type { ProjectFile } from "@/features/project-settings/types/project"
 
@@ -13,11 +12,22 @@ const logger = createLogger("ProjectFileService")
  */
 
 /**
+ * Получает platform service
+ */
+function getPlatformService() {
+  if (!container.hasPlatform()) {
+    throw new Error("Platform service not available")
+  }
+  return container.getPlatform()
+}
+
+/**
  * Загружает проект из файла
  */
 export async function loadProject(projectPath: string): Promise<ProjectFile> {
   try {
-    const content = await readTextFile(projectPath)
+    const platform = getPlatformService()
+    const content = await platform.readTextFile(projectPath)
 
     let projectData: any
     try {
@@ -55,6 +65,8 @@ export async function loadProject(projectPath: string): Promise<ProjectFile> {
  */
 export async function saveProject(projectPath: string, projectData: ProjectFile): Promise<void> {
   try {
+    const platform = getPlatformService()
+
     // Обновляем метаданные перед сохранением
     const updatedProject: ProjectFile = {
       ...projectData,
@@ -65,7 +77,7 @@ export async function saveProject(projectPath: string, projectData: ProjectFile)
     }
 
     const content = JSON.stringify(updatedProject, null, 2)
-    await writeTextFile(projectPath, content)
+    await platform.writeTextFile(projectPath, content)
 
     logger.info(`Project saved to ${projectPath}`)
   } catch (error) {

@@ -1,11 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { container } from "@/core"
+import { MockPlatformService } from "@/adapters/mock/platform"
 import { AudioFileManager } from "../audio-file-manager"
-
-// Mock Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  convertFileSrc: (path: string) => `tauri://localhost/${path}`,
-}))
 
 // Mock HTMLAudioElement
 class MockAudioElement {
@@ -50,16 +47,21 @@ class MockAudioElement {
 
 global.Audio = MockAudioElement as any
 
+// Setup mock platform
+const mockPlatform = new MockPlatformService()
+
 describe("AudioFileManager", () => {
   let manager: AudioFileManager
 
   beforeEach(() => {
+    container.setPlatform(mockPlatform)
     manager = new AudioFileManager()
   })
 
   afterEach(() => {
     manager.unloadAll()
     vi.clearAllMocks()
+    container.reset()
   })
 
   describe("Loading Audio Files", () => {
@@ -68,7 +70,7 @@ describe("AudioFileManager", () => {
 
       expect(audioFile.id).toBe("test-id")
       expect(audioFile.path).toBe("/path/to/audio.mp3")
-      expect(audioFile.url).toBe("tauri://localhost//path/to/audio.mp3")
+      expect(audioFile.url).toBe("file:///path/to/audio.mp3") // MockPlatform uses file:// protocol
       expect(audioFile.isLoaded).toBe(true)
       expect(audioFile.element).toBeDefined()
       expect(audioFile.error).toBeUndefined()
@@ -77,7 +79,7 @@ describe("AudioFileManager", () => {
     it("should create audio element with correct properties", async () => {
       const audioFile = await manager.loadAudioFile("test-id", "/path/to/audio.mp3")
 
-      expect(audioFile.element?.src).toBe("tauri://localhost//path/to/audio.mp3")
+      expect(audioFile.element?.src).toBe("file:///path/to/audio.mp3")
       expect(audioFile.element?.crossOrigin).toBe("anonymous")
       expect(audioFile.element?.preload).toBe("auto")
     })
@@ -282,7 +284,7 @@ describe("AudioFileManager", () => {
       const audioFile = await manager.loadAudioFile("test-id", "")
 
       expect(audioFile.path).toBe("")
-      expect(audioFile.url).toBe("tauri://localhost/")
+      expect(audioFile.url).toBe("file://")
     })
 
     it("should handle special characters in path", async () => {

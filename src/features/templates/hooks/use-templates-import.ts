@@ -1,6 +1,6 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "UseTemplatesImport" })
@@ -18,6 +18,14 @@ const logger = createLogger({ module: "UseTemplatesImport" })
 export function useTemplatesImport() {
   const [isImporting, setIsImporting] = useState(false)
 
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
+
   /**
    * Импорт JSON файла с многокамерными шаблонами
    */
@@ -26,7 +34,13 @@ export function useTemplatesImport() {
 
     setIsImporting(true)
     try {
-      const selected = await open({
+      if (!platform) {
+        logger.error("Platform service not available")
+        setIsImporting(false)
+        return
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -37,7 +51,8 @@ export function useTemplatesImport() {
       })
 
       if (selected) {
-        logger.info("Импорт JSON файла с многокамерными шаблонами:", { path: selected })
+        const filePath = Array.isArray(selected) ? selected[0] : selected
+        logger.info("Импорт JSON файла с многокамерными шаблонами:", { path: filePath })
         // TODO: Обработка импорта JSON файла с шаблонами
         // Валидация структуры, добавление в пользовательскую коллекцию
       }
@@ -57,7 +72,13 @@ export function useTemplatesImport() {
 
     setIsImporting(true)
     try {
-      const selected = await open({
+      if (!platform) {
+        logger.error("Platform service not available")
+        setIsImporting(false)
+        return
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {

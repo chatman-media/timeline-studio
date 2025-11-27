@@ -63,4 +63,16 @@ export interface IPlatformService {
    */
   openPath(path: string): Promise<void>
   openUrl(url: string): Promise<void>
+
+  /**
+   * App info
+   */
+  getVersion(): Promise<string>
+
+  /**
+   * Convert file path to URL for use in <img>, <video>, <audio> tags
+   * In Tauri: uses convertFileSrc
+   * In browser: uses file:// or blob URLs
+   */
+  convertFileSrc(path: string): string
 }

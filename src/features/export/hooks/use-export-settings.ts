@@ -1,6 +1,7 @@
-import { save } from "@tauri-apps/plugin-dialog"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
+
+import { container } from "@/core"
 import { useNotifications } from "@/domains/system-integration"
 import { OutputFormat } from "@/domains/video-editing/types"
 import { logError, logInfo } from "@/lib/tauri-logger"
@@ -28,10 +29,23 @@ export function useExportSettings() {
     ...DEFAULT_EXPORT_SETTINGS,
     fileName: t("project.untitledExport", { number: 1 }),
   })
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   const handleChooseFolder = useCallback(async () => {
+    if (!platform) {
+      logError("[useExportSettings] Platform service not available")
+      showError(t("dialogs.export.errors.folderSelection"), "")
+      return
+    }
+
     try {
-      const selectedPath = await save({
+      const selectedPath = await platform.showSaveDialog({
         title: t("dialogs.export.selectFolder"),
         defaultPath: `${exportSettings.fileName}.${exportSettings.format}`,
         filters: [
@@ -49,7 +63,7 @@ export function useExportSettings() {
       logError(`[useExportSettings] Ошибка выбора папки: ${String(error)}`)
       showError(t("dialogs.export.errors.folderSelection"), "")
     }
-  }, [exportSettings, showError, t])
+  }, [platform, exportSettings, showError, t])
 
   const getExportConfig = useCallback(() => {
     const qualityPreset = QUALITY_PRESETS[exportSettings.quality]

@@ -1,6 +1,6 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { readTextFile } from "@tauri-apps/plugin-fs"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+
+import { container } from "@/core"
 import { useResources } from "@/features/resources"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
@@ -13,6 +13,14 @@ import type { VideoFilter } from "../types/filters"
 export function useFiltersImport() {
   const [isImporting, setIsImporting] = useState(false)
   const { addFilter } = useResources()
+
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   /**
    * Импорт JSON файла с фильтрами
@@ -27,7 +35,13 @@ export function useFiltersImport() {
 
     setIsImporting(true)
     try {
-      const selected = await open({
+      if (!platform) {
+        await logError("Platform service not available")
+        setIsImporting(false)
+        return
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -38,8 +52,9 @@ export function useFiltersImport() {
       })
 
       if (selected) {
+        const filePath = Array.isArray(selected) ? selected[0] : selected
         // Читаем содержимое JSON файла
-        const content = await readTextFile(selected)
+        const content = await platform.readTextFile(filePath)
         const filtersData = JSON.parse(content)
 
         // Проверяем формат данных
@@ -83,7 +98,13 @@ export function useFiltersImport() {
 
     setIsImporting(true)
     try {
-      const selected = await open({
+      if (!platform) {
+        await logError("Platform service not available")
+        setIsImporting(false)
+        return
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {
