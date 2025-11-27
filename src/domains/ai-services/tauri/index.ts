@@ -14,27 +14,27 @@ export * from "./ai-director-commands"
 // Audio analysis and transcription commands
 // Note: extractAudioForWhisper also exists in workflow-automation-commands
 export {
+  type AudioPeakData,
   analyzeAudioPeaks,
-  detectSpeechOnsets,
-  whisperTranscribeOpenAI,
-  whisperTranslateOpenAI,
-  whisperTranscribeLocal,
-  getWhisperLocalModels,
-  downloadWhisperModel,
   checkWhisperLocalAvailability,
-  initWhisperPython,
-  transcribeWithFasterWhisper,
-  getWhisperModels,
+  detectSpeechOnsets,
+  downloadWhisperModel,
   downloadWhisperModelFaster,
-  prepareAudioForWhisper,
-  generateSubtitlesFromTranscription,
   // Export extractAudioForWhisper from audio-commands (primary implementation)
   extractAudioForWhisper,
-  type AudioPeakData,
+  generateSubtitlesFromTranscription,
+  getWhisperLocalModels,
+  getWhisperModels,
+  initWhisperPython,
+  prepareAudioForWhisper,
   type SpeechOnsetData,
+  type SubtitleSegment,
   type TranscriptionResult,
   type TranslationResult,
-  type SubtitleSegment,
+  transcribeWithFasterWhisper,
+  whisperTranscribeLocal,
+  whisperTranscribeOpenAI,
+  whisperTranslateOpenAI,
 } from "./audio-commands"
 
 // Chat and AI interaction commands
@@ -43,74 +43,74 @@ export * from "./chat-commands"
 // Content intelligence and analysis commands
 // Note: Several functions also exist in platform-optimization-commands
 export {
-  ffmpegAnalyzeQuality,
-  ffmpegDetectSilence,
-  ffmpegAnalyzeMotion,
-  ffmpegExtractKeyframes,
-  ffmpegAnalyzeAudio,
-  extractThumbnailCandidates,
-  createFrameCollage,
-  optimizeImageForAnalysis,
-  analyzeContentWithAI,
-  generateScriptWithAI,
   adaptContentForPlatforms,
+  analyzeContentWithAI,
   analyzeScenesByPath,
+  convertImageToBase64,
+  createFrameCollage,
+  extractFramesForMultimodalAnalysis,
+  extractThumbnailCandidates,
+  ffmpegAnalyzeAudio,
+  ffmpegAnalyzeMotion,
+  ffmpegAnalyzeQuality,
   // Export FFmpeg utilities from content-intelligence-commands (primary implementation)
   ffmpegDetectScenes,
+  ffmpegDetectSilence,
+  ffmpegExtractKeyframes,
   ffmpegQuickAnalysis,
-  extractFramesForMultimodalAnalysis,
-  convertImageToBase64,
+  generateScriptWithAI,
+  optimizeImageForAnalysis,
   type SceneAnalysisResult,
 } from "./content-intelligence-commands"
 
 // Montage planning commands
 // Note: Several functions also exist in workflow-automation-commands
 export {
+  applyMontagePlan,
+  calculatePlanStatistics,
+  exportMontagePlan,
   // Export montage planning functions from montage-planner-commands (primary implementation)
   generateMontagePlan,
+  generateMontagePlanFromMoments,
   optimizeMontagePlan,
   validateMontagePlan,
-  calculatePlanStatistics,
-  applyMontagePlan,
-  exportMontagePlan,
-  generateMontagePlanFromMoments,
 } from "./montage-planner-commands"
 
 // Person identification, face detection and tracking commands
 // Note: Several functions also exist in recognition-commands
 export {
-  initYoloProcessor,
-  initFacenetProcessor,
-  checkGpuAvailability,
-  detectFacesAdvanced,
-  generateFaceEmbeddingFromBase64,
-  analyzeFaceQuality,
-  startRealtimeFaceDetection,
-  stopRealtimeFaceDetection,
-  updateFaceDetectionConfig,
-  cleanupFaceDetection,
-  // Export person database functions from person-identification-commands (primary implementation)
-  blurFacesInImage,
-  initPersonDatabase,
-  createPerson,
-  getPerson,
-  deletePerson,
-  searchSimilarPersons,
+  type AdvancedDetectionConfig,
+  type AdvancedFaceDetection,
   addFaceEmbedding,
   addPersonAppearance,
   addPersonThumbnail,
+  analyzeFaceQuality,
+  // Export person database functions from person-identification-commands (primary implementation)
+  blurFacesInImage,
+  checkGpuAvailability,
+  cleanupFaceDetection,
+  createPerson,
+  deletePerson,
+  detectFacesAdvanced,
+  generateFaceEmbeddingFromBase64,
+  getPerson,
   getPersonDatabaseStats,
+  initFacenetProcessor,
+  initPersonDatabase,
+  initYoloProcessor,
+  searchSimilarPersons,
   setSimilarityThreshold,
-  type AdvancedDetectionConfig,
-  type AdvancedFaceDetection,
+  startRealtimeFaceDetection,
+  stopRealtimeFaceDetection,
+  updateFaceDetectionConfig,
 } from "./person-identification-commands"
 
 // Platform optimization and FFmpeg commands
 // Note: Avoid re-exporting duplicate functions already exported from content-intelligence-commands
 export {
+  ffmpegGenerateThumbnail,
   ffmpegGetMetadata,
   ffmpegOptimizeForPlatform,
-  ffmpegGenerateThumbnail,
   // FFmpeg utilities (ffmpegQuickAnalysis, ffmpegDetectScenes, convertImageToBase64, extractFramesForMultimodalAnalysis)
   // are exported from content-intelligence-commands to avoid ambiguity
 } from "./platform-optimization-commands"
@@ -118,27 +118,27 @@ export {
 // Recognition and detection commands
 // Note: Avoid re-exporting duplicate person management functions already exported from person-identification-commands
 export {
-  initYOLOProcessor,
-  detectObjectsInImage,
-  analyzeVideoWithYOLO,
-  getYOLOClassNames,
-  updateYOLOConfidenceThreshold,
-  getAvailableYOLOModels,
-  initRetinaFaceProcessor,
-  detectFacesWithLandmarks,
-  initFaceNetProcessor,
-  generateFaceEmbedding,
-  calculateCosineSimilarity,
-  initMediaPipeProcessor,
-  detectFacesBlazeFace,
-  extractFaceMeshLandmarks,
   analyzeFacialExpressions,
+  analyzeVideoWithYOLO,
+  calculateCosineSimilarity,
+  detectFacesBlazeFace,
+  detectFacesWithLandmarks,
+  detectObjectsInImage,
+  extractFaceMeshLandmarks,
+  type FaceDetectionResult,
+  generateFaceEmbedding,
+  getAvailableYOLOModels,
+  getYOLOClassNames,
+  initFaceNetProcessor,
+  initMediaPipeProcessor,
+  initRetinaFaceProcessor,
+  initYOLOProcessor,
+  type PersonData,
+  updateYOLOConfidenceThreshold,
   // Person management functions (createPerson, getPerson, addFaceEmbedding, searchSimilarPersons,
   // addPersonAppearance, deletePerson, getPersonDatabaseStats, blurFacesInImage)
   // are exported from person-identification-commands to avoid ambiguity
   type YOLODetectionResult,
-  type FaceDetectionResult,
-  type PersonData,
 } from "./recognition-commands"
 
 // Generic AI service utilities
@@ -147,11 +147,11 @@ export * from "./service-utils"
 // Workflow automation commands
 // Note: Avoid re-exporting duplicate functions already exported from other modules
 export {
-  createDirectory,
-  whisperTranscribeOpenai,
-  createTimelineProject,
-  compileWorkflowVideo,
   analyzeMontagelVideos,
+  compileWorkflowVideo,
+  createDirectory,
+  createTimelineProject,
+  whisperTranscribeOpenai,
   // Audio and montage planning functions (extractAudioForWhisper, applyMontagePlan, exportMontagePlan,
   // generateMontagePlan, optimizeMontagePlan, validateMontagePlan, calculatePlanStatistics)
   // are exported from their respective primary modules to avoid ambiguity

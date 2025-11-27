@@ -22,7 +22,7 @@ export async function checkForUpdate(): Promise<UpdateCheckResult> {
     const result = await invoke<UpdateCheckResult>("check_for_update")
     logger.infoSync("Update check completed", {
       available: result.available,
-      version: result.update_info?.version
+      version: result.update_info?.version,
     })
     return result
   } catch (error) {

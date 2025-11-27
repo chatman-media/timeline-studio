@@ -314,3 +314,28 @@ export async function getSupportedAudioFormats(): Promise<AudioFormatInfo[]> {
   logger.debugSync("Getting supported audio formats")
   return invoke<AudioFormatInfo[]>("get_supported_audio_formats")
 }
+
+/**
+ * Audio Correlation for Multicam Sync
+ */
+export interface AudioCorrelationResult {
+  offsetSeconds: number // Time offset in seconds (positive = target is ahead of base)
+  confidence: number // Confidence score (0.0 to 1.0)
+  correlationPeak: number // Peak correlation value
+}
+
+/**
+ * Correlates two audio files and returns the time offset for synchronization
+ */
+export async function correlateAudioFiles(
+  basePath: string,
+  targetPath: string,
+  maxOffsetSeconds: number = 30,
+): Promise<AudioCorrelationResult> {
+  logger.infoSync("Correlating audio files", { basePath, targetPath, maxOffsetSeconds })
+  return invoke<AudioCorrelationResult>("correlate_audio_files", {
+    basePath,
+    targetPath,
+    maxOffsetSeconds,
+  })
+}

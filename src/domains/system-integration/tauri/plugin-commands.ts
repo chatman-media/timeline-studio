@@ -40,7 +40,7 @@ export async function sendPluginCommand<T = any>(
     logger.debugSync("Plugin command executed", {
       pluginId,
       command,
-      success: result.success
+      success: result.success,
     })
     return result
   } catch (error) {
