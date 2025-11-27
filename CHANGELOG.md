@@ -1,3 +1,26 @@
+# [3.33.0](https://github.com/chatman-media/timeline-studio/compare/v3.32.5...v3.33.0) (2025-11-27)
+
+
+### Bug Fixes
+
+* **ai-services:** Исправить ошибки TypeScript в AI Services ([4f48440](https://github.com/chatman-media/timeline-studio/commit/4f4844017d71588214f0b5e66af363fd8856cc9b))
+* **media-management:** fix provider tests and update provider ([5b5d95a](https://github.com/chatman-media/timeline-studio/commit/5b5d95a39958673a854d6ab52067f5e385b9d77d))
+* **media-management:** Исправить ошибки TypeScript в Media Management ([1aa7d41](https://github.com/chatman-media/timeline-studio/commit/1aa7d41d4775219590633d18de8698f9601f3de7))
+* **montage-planner:** Remove unused imports ([a1c4948](https://github.com/chatman-media/timeline-studio/commit/a1c4948b8b5c9ffc959ea008c577942785efa8af))
+* **montage-planner:** Replace string literals with enum values in tests ([d780a48](https://github.com/chatman-media/timeline-studio/commit/d780a48abc1e14d2f766f767a09b8a336e6e7ccb))
+* **tests:** fix lint warnings for unused parameters ([0d0b587](https://github.com/chatman-media/timeline-studio/commit/0d0b587d68758d5adceb5f2e685bded03cfa188e))
+* **tests:** Исправить ошибки TypeScript в тестах video-compiler ([144982a](https://github.com/chatman-media/timeline-studio/commit/144982aff1ee65ae685aed1ee38238268efe8132))
+* **typescript:** Исправить ошибки TypeScript в модулях Video Editing ([36def52](https://github.com/chatman-media/timeline-studio/commit/36def522b7a91cbe2edab2811ae43cfd055ffd8f))
+* Исправить TypeScript ошибки в System & Project Management ([1c3b63c](https://github.com/chatman-media/timeline-studio/commit/1c3b63cca95d0324e81fd307509fcc576a20d557))
+* Исправить ошибки TypeScript в тестах ([65611b1](https://github.com/chatman-media/timeline-studio/commit/65611b19d5d7ec99b2ebf1eb47953715c2dbeeb7))
+
+
+### Features
+
+* **analysis-tasks:** Add backend integration via AnalysisTaskBridge ([ab543d1](https://github.com/chatman-media/timeline-studio/commit/ab543d19c7b2c4505719783ef780aae60ec47393)), closes [#implement-three-task-lists](https://github.com/chatman-media/timeline-studio/issues/implement-three-task-lists)
+* Временно отключить camera-capture и voice-recording ([0e6dec2](https://github.com/chatman-media/timeline-studio/commit/0e6dec2093831a9a43eb2a2e5d12f80a3a490fd9))
+* Добавить Analysis Tasks dropdown в топбар ([f2118a8](https://github.com/chatman-media/timeline-studio/commit/f2118a83002a0f4029b1090a3e189a2240451a88))
+
 ## [3.32.5](https://github.com/chatman-media/timeline-studio/compare/v3.32.4...v3.32.5) (2025-11-27)
 
 
