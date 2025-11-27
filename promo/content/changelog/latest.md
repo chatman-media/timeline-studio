@@ -1,3 +1,18 @@
+## [3.33.2](https://github.com/chatman-media/timeline-studio/compare/v3.33.1...v3.33.2) (2025-11-27)
+
+
+### Bug Fixes
+
+* **backend:** use BackendSync singleton in TauriBackendService ([5e41725](https://github.com/chatman-media/timeline-studio/commit/5e417258f0f8c36aae41dd03c3d864740240e9f7))
+* **media-management:** ensure backend is available before import ([aa5b74c](https://github.com/chatman-media/timeline-studio/commit/aa5b74c0208dd08b707934f7928f6d414405180f))
+
+
+### Performance Improvements
+
+* **browser:** reduce BrowserMachine and event handlers log verbosity ([fa46704](https://github.com/chatman-media/timeline-studio/commit/fa46704324760a5c89b4469e69bdf48da51c76f8)), closes [hi#frequency](https://github.com/hi/issues/frequency)
+* further optimize logging in AI integration and settings hooks ([2900e36](https://github.com/chatman-media/timeline-studio/commit/2900e36244809336b43ebb85a35f0fd0fdbf7e9e))
+* reduce BrowserMachine log verbosity ([ff34301](https://github.com/chatman-media/timeline-studio/commit/ff34301c463692a87086c3076c6b46ff5cd79e62))
+
 ## [3.33.1](https://github.com/chatman-media/timeline-studio/compare/v3.33.0...v3.33.1) (2025-11-27)
 
 
