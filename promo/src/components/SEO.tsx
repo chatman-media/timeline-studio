@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async"
+import { useEffect } from "react"
 
 interface SEOProps {
   title?: string
@@ -13,6 +13,33 @@ const BASE_URL = "https://timelinestudio.pro"
 const DEFAULT_IMAGE = `${BASE_URL}/og-image.png`
 const SITE_NAME = "Timeline Studio"
 
+const updateMetaTag = (property: string, content: string, isProperty = false) => {
+  const selector = isProperty ? `meta[property="${property}"]` : `meta[name="${property}"]`
+  let element = document.querySelector(selector) as HTMLMetaElement | null
+
+  if (!element) {
+    element = document.createElement("meta")
+    if (isProperty) {
+      element.setAttribute("property", property)
+    } else {
+      element.setAttribute("name", property)
+    }
+    document.head.appendChild(element)
+  }
+  element.content = content
+}
+
+const updateCanonical = (href: string) => {
+  let element = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+
+  if (!element) {
+    element = document.createElement("link")
+    element.rel = "canonical"
+    document.head.appendChild(element)
+  }
+  element.href = href
+}
+
 export const SEO: React.FC<SEOProps> = ({
   title,
   description = "Professional video editor with 100+ AI tools. Local features free forever. Local AI processing.",
@@ -24,31 +51,35 @@ export const SEO: React.FC<SEOProps> = ({
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} - Professional Video Editor with AI`
   const fullUrl = url ? `${BASE_URL}/#${url}` : BASE_URL
 
-  return (
-    <Helmet>
-      {/* Basic */}
-      <title>{fullTitle}</title>
-      <meta name="description" content={description} />
-      {noIndex && <meta name="robots" content="noindex, nofollow" />}
+  useEffect(() => {
+    // Update document title
+    document.title = fullTitle
 
-      {/* Open Graph */}
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={image} />
-      <meta property="og:url" content={fullUrl} />
-      <meta property="og:type" content={type} />
-      <meta property="og:site_name" content={SITE_NAME} />
+    // Basic meta tags
+    updateMetaTag("description", description)
+    if (noIndex) {
+      updateMetaTag("robots", "noindex, nofollow")
+    }
 
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
+    // Open Graph
+    updateMetaTag("og:title", fullTitle, true)
+    updateMetaTag("og:description", description, true)
+    updateMetaTag("og:image", image, true)
+    updateMetaTag("og:url", fullUrl, true)
+    updateMetaTag("og:type", type, true)
+    updateMetaTag("og:site_name", SITE_NAME, true)
 
-      {/* Canonical */}
-      <link rel="canonical" href={fullUrl} />
-    </Helmet>
-  )
+    // Twitter
+    updateMetaTag("twitter:card", "summary_large_image")
+    updateMetaTag("twitter:title", fullTitle)
+    updateMetaTag("twitter:description", description)
+    updateMetaTag("twitter:image", image)
+
+    // Canonical
+    updateCanonical(fullUrl)
+  }, [fullTitle, description, image, fullUrl, type, noIndex])
+
+  return null
 }
 
 export default SEO
