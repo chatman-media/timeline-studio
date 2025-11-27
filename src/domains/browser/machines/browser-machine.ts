@@ -116,7 +116,8 @@ export const browserMachine = setup({
       // Делегируем обработку в event handlers
       const updates = handleBrowserBackendEvent(context, event.event)
 
-      logger.debug("[BrowserMachine] Context updates:", { updates })
+      // ОПТИМИЗИРОВАНО: логируем только ключи, не весь объект
+      logger.debug("[BrowserMachine] Context updates:", { updatedKeys: Object.keys(updates) })
 
       return {
         ...context,
