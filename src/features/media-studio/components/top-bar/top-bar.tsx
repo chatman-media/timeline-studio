@@ -48,13 +48,13 @@ const TopBarComponent = function TopBar() {
   const { createProject: createTimelineProject } = useTimeline()
   const { clearBrowserState } = useBrowserState()
   const [isEditing, setIsEditing] = useState(false)
-  const [projectName, setProjectName] = useState(currentProject?.name || "Новый проект")
+  const [projectName, setProjectName] = useState(currentProject?.metadata?.name || "Новый проект")
   const projectNameInputId = useId()
 
-  // Синхронизируем projectName с currentProject.name
+  // Синхронизируем projectName с currentProject.metadata.name
   useEffect(() => {
-    setProjectName(currentProject?.name || "Новый проект")
-  }, [currentProject?.name])
+    setProjectName(currentProject?.metadata?.name || "Новый проект")
+  }, [currentProject?.metadata?.name])
 
   const handleOpenModal = useCallback(
     (modal: string) => {
@@ -171,7 +171,7 @@ const TopBarComponent = function TopBar() {
       projectSettings: t("topBar.projectSettings"),
       openProject: t("topBar.openProject"),
       newProject: t("topBar.newProject"),
-      save: currentProject?.isDirty ? t("topBar.saveChanges") : t("topBar.allChangesSaved"),
+      save: currentProject?.metadata?.is_dirty ? t("topBar.saveChanges") : t("topBar.allChangesSaved"),
       cameraCapture: t("topBar.cameraCapture"),
       voiceRecording: t("topBar.voiceRecording"),
       publish: t("topBar.publish"),
@@ -179,7 +179,7 @@ const TopBarComponent = function TopBar() {
       aiDirector: t("topBar.aiDirector"),
       export: t("topBar.export"),
     }),
-    [t, isBrowserVisible, isTimelineVisible, currentProject?.isDirty],
+    [t, isBrowserVisible, isTimelineVisible, currentProject?.metadata?.is_dirty],
   )
 
   // Мемоизируем CSS классы
@@ -187,9 +187,9 @@ const TopBarComponent = function TopBar() {
     () =>
       cn(
         "h-7 w-7 cursor-pointer p-0",
-        currentProject?.isDirty ? "hover:bg-accent opacity-100" : "opacity-50 hover:opacity-50",
+        currentProject?.metadata?.is_dirty ? "hover:bg-accent opacity-100" : "opacity-50 hover:opacity-50",
       ),
-    [currentProject?.isDirty],
+    [currentProject?.metadata?.is_dirty],
   )
 
   const projectNameClassName = useMemo(
@@ -311,7 +311,7 @@ const TopBarComponent = function TopBar() {
             size="icon"
             title={buttonTitles.save}
             onClick={handleSave}
-            disabled={!currentProject?.isDirty}
+            disabled={!currentProject?.metadata?.is_dirty}
             data-testid="save-button"
           >
             <Save className="h-5 w-5" />

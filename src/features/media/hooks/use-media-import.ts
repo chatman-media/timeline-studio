@@ -196,9 +196,9 @@ export function useMediaImport() {
    */
   const saveFilesToProject = useCallback(
     async (files: MediaFile[]) => {
-      if (!currentProject?.path || files.length === 0) {
+      if (!currentProject?.metadata?.file_path || files.length === 0) {
         logger.debugSync("Пропускаем сохранение файлов", {
-          hasProject: !!currentProject?.path,
+          hasProject: !!currentProject?.metadata?.file_path,
           filesCount: files.length,
         })
         return
@@ -206,11 +206,11 @@ export function useMediaImport() {
 
       try {
         logger.infoSync(`Сохраняем ${files.length} медиафайлов в проект`, {
-          projectPath: currentProject?.path,
+          projectPath: currentProject?.metadata?.file_path,
           filesCount: files.length,
         })
         const savedFiles = await Promise.all(
-          files.map((file) => convertToSavedMediaFile(file, currentProject?.path || undefined)),
+          files.map((file) => convertToSavedMediaFile(file, currentProject?.metadata?.file_path || undefined)),
         )
 
         logger.infoSync(`Сохранено ${savedFiles.length} медиафайлов в проект`)
@@ -219,7 +219,7 @@ export function useMediaImport() {
         logger.errorSync("Ошибка при сохранении файлов в проект", { error: String(error), filesCount: files.length })
       }
     },
-    [currentProject?.path, setProjectDirty],
+    [currentProject?.metadata?.file_path, setProjectDirty],
   )
 
   /**

@@ -17,7 +17,10 @@ export function useBrowserAIIntegration() {
   const { projectState } = useApp()
 
   // Получаем медиафайлы из project state
-  const mediaFiles = projectState?.mediaFiles || []
+  // Note: MediaItem and MediaFile are different types - this needs conversion
+  const mediaFiles = projectState?.imported_media
+    ? (Object.values(projectState.imported_media).filter(Boolean) as any[])
+    : []
   const isLoading = false
 
   // Функция для получения файлов из текущей вкладки

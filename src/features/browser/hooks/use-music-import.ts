@@ -62,19 +62,19 @@ export function useMusicImport() {
   const saveFilesToProject = useCallback(
     async (files: MediaFile[]) => {
       // Сохраняем только если есть открытый проект
-      if (!currentProject?.path || files.length === 0) {
+      if (!currentProject?.metadata?.file_path || files.length === 0) {
         return
       }
 
       try {
         // Конвертируем MediaFile в SavedMusicFile
         const savedFiles = await Promise.all(
-          files.map((file) => convertToSavedMusicFile(file, currentProject?.path || undefined)),
+          files.map((file) => convertToSavedMusicFile(file, currentProject?.metadata?.file_path || undefined)),
         )
 
         // Сохраняем проект с обновленными музыкальными файлами
         // Используем существующее имя проекта или создаем новое
-        const projectName = currentProject?.name || "Untitled Project"
+        const projectName = currentProject?.metadata?.name || "Untitled Project"
         await saveProject(projectName)
         logger.info(`Сохранено ${savedFiles.length} музыкальных файлов в проект`)
 
@@ -84,7 +84,7 @@ export function useMusicImport() {
         logger.error("Ошибка при сохранении музыкальных файлов в проект", { error })
       }
     },
-    [currentProject?.path, setProjectDirty],
+    [currentProject?.metadata?.file_path, currentProject?.metadata?.name, saveProject, setProjectDirty],
   )
 
   /**
