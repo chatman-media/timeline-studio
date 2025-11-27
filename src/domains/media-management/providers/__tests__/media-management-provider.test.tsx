@@ -91,11 +91,15 @@ vi.mock("@tauri-apps/api/core", () => ({
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     trace: vi.fn(),
+    traceSync: vi.fn(),
     debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
     debugSync: vi.fn(),
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
   })),
 }))
 

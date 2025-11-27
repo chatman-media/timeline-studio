@@ -1,6 +1,6 @@
 // Используем типы и машину из домена
 
-import { createContext, useEffect, useState } from "react"
+import { createContext, useCallback, useEffect, useMemo, useState } from "react"
 import { type BrowserTab } from "@/domains/browser"
 import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
@@ -127,159 +127,250 @@ export function UserSettingsProvider({
     return () => sub.unsubscribe()
   }, [orchestrator])
 
-  const value: UserSettingsContextValue = {
-    // Значения настроек
-    activeTab: settings?.activeTab ?? "media",
-    layoutMode: settings?.layoutMode ?? ("default" as LayoutMode),
-    screenshotsPath: settings?.screenshotsPath ?? "",
-    playerScreenshotsPath: settings?.playerScreenshotsPath ?? "",
-    playerVolume: settings?.playerVolume ?? 100,
-    openAiApiKey: settings?.openAiApiKey ?? "",
-    claudeApiKey: settings?.claudeApiKey ?? "",
-    isBrowserVisible: settings?.isBrowserVisible ?? true,
-    isTimelineVisible: settings?.isTimelineVisible ?? true,
-    isOptionsVisible: settings?.isOptionsVisible ?? false,
-
-    // GPU и производительность
-    gpuAccelerationEnabled: settings?.gpuAccelerationEnabled ?? false,
-    preferredGpuEncoder: settings?.preferredGpuEncoder ?? "auto",
-    maxConcurrentJobs: settings?.maxConcurrentJobs ?? 1,
-    renderQuality: settings?.renderQuality ?? "medium",
-    backgroundRenderingEnabled: settings?.backgroundRenderingEnabled ?? false,
-    renderDelay: settings?.renderDelay ?? 0,
-
-    // Прокси
-    proxyEnabled: settings?.proxyEnabled ?? false,
-    proxyType: settings?.proxyType ?? "http",
-    proxyHost: settings?.proxyHost ?? "",
-    proxyPort: settings?.proxyPort ?? "",
-    proxyUsername: settings?.proxyUsername ?? "",
-    proxyPassword: settings?.proxyPassword ?? "",
-
-    // Автосохранение
-    autoSaveEnabled: settings?.autoSaveEnabled ?? true,
-    autoSaveInterval: settings?.autoSaveInterval ?? 300,
-
-    // Оптимизация Timeline
-    timelineVirtualizationEnabled: settings?.timelineVirtualizationEnabled ?? true,
-    timelineVirtualizationOverscan: settings?.timelineVirtualizationOverscan ?? 5,
-    timelineClipDetailsThreshold: settings?.timelineClipDetailsThreshold ?? 50,
-
-    // Методы изменения
-    handleTabChange: (value: string) => {
+  // Мемоизированные методы изменения настроек
+  const handleTabChange = useCallback(
+    (value: string) => {
       if (["media", "music", "transitions", "effects", "filters", "templates"].includes(value)) {
         orchestrator.updateUserSettings({ activeTab: value as BrowserTab })
       }
     },
+    [orchestrator],
+  )
 
-    handleLayoutChange: (value: LayoutMode) => {
-      orchestrator.updateUserSettings({ layoutMode: value })
-    },
+  const handleLayoutChange = useCallback(
+    (value: LayoutMode) => orchestrator.updateUserSettings({ layoutMode: value }),
+    [orchestrator],
+  )
 
-    handlePlayerScreenshotsPathChange: (value: string) => {
-      orchestrator.updateUserSettings({ playerScreenshotsPath: value })
-    },
+  const handlePlayerScreenshotsPathChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ playerScreenshotsPath: value }),
+    [orchestrator],
+  )
 
-    handleScreenshotsPathChange: (value: string) => {
-      orchestrator.updateUserSettings({ screenshotsPath: value })
-    },
+  const handleScreenshotsPathChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ screenshotsPath: value }),
+    [orchestrator],
+  )
 
-    handleAiApiKeyChange: (value: string) => {
-      orchestrator.updateUserSettings({ openAiApiKey: value })
-    },
+  const handleAiApiKeyChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ openAiApiKey: value }),
+    [orchestrator],
+  )
 
-    handleClaudeApiKeyChange: (value: string) => {
-      orchestrator.updateUserSettings({ claudeApiKey: value })
-    },
+  const handleClaudeApiKeyChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ claudeApiKey: value }),
+    [orchestrator],
+  )
 
-    handlePlayerVolumeChange: (value: number) => {
-      orchestrator.updateUserSettings({ playerVolume: value })
-    },
+  const handlePlayerVolumeChange = useCallback(
+    (value: number) => orchestrator.updateUserSettings({ playerVolume: value }),
+    [orchestrator],
+  )
 
-    toggleBrowserVisibility: () => {
-      orchestrator.updateUserSettings({ isBrowserVisible: !settings.isBrowserVisible })
-    },
+  const toggleBrowserVisibility = useCallback(
+    () => orchestrator.updateUserSettings({ isBrowserVisible: !settings.isBrowserVisible }),
+    [orchestrator, settings.isBrowserVisible],
+  )
 
-    toggleTimelineVisibility: () => {
-      orchestrator.updateUserSettings({ isTimelineVisible: !settings.isTimelineVisible })
-    },
+  const toggleTimelineVisibility = useCallback(
+    () => orchestrator.updateUserSettings({ isTimelineVisible: !settings.isTimelineVisible }),
+    [orchestrator, settings.isTimelineVisible],
+  )
 
-    toggleOptionsVisibility: () => {
-      orchestrator.updateUserSettings({ isOptionsVisible: !settings.isOptionsVisible })
-    },
+  const toggleOptionsVisibility = useCallback(
+    () => orchestrator.updateUserSettings({ isOptionsVisible: !settings.isOptionsVisible }),
+    [orchestrator, settings.isOptionsVisible],
+  )
 
-    // GPU и производительность
-    handleGpuAccelerationChange: (value: boolean) => {
-      orchestrator.updateUserSettings({ gpuAccelerationEnabled: value })
-    },
+  // GPU и производительность
+  const handleGpuAccelerationChange = useCallback(
+    (value: boolean) => orchestrator.updateUserSettings({ gpuAccelerationEnabled: value }),
+    [orchestrator],
+  )
 
-    handlePreferredGpuEncoderChange: (value: string) => {
-      orchestrator.updateUserSettings({ preferredGpuEncoder: value })
-    },
+  const handlePreferredGpuEncoderChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ preferredGpuEncoder: value }),
+    [orchestrator],
+  )
 
-    handleMaxConcurrentJobsChange: (value: number) => {
-      orchestrator.updateUserSettings({ maxConcurrentJobs: value })
-    },
+  const handleMaxConcurrentJobsChange = useCallback(
+    (value: number) => orchestrator.updateUserSettings({ maxConcurrentJobs: value }),
+    [orchestrator],
+  )
 
-    handleRenderQualityChange: (value: string) => {
-      orchestrator.updateUserSettings({ renderQuality: value })
-    },
+  const handleRenderQualityChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ renderQuality: value }),
+    [orchestrator],
+  )
 
-    handleBackgroundRenderingChange: (value: boolean) => {
-      orchestrator.updateUserSettings({ backgroundRenderingEnabled: value })
-    },
+  const handleBackgroundRenderingChange = useCallback(
+    (value: boolean) => orchestrator.updateUserSettings({ backgroundRenderingEnabled: value }),
+    [orchestrator],
+  )
 
-    handleRenderDelayChange: (value: number) => {
-      orchestrator.updateUserSettings({ renderDelay: value })
-    },
+  const handleRenderDelayChange = useCallback(
+    (value: number) => orchestrator.updateUserSettings({ renderDelay: value }),
+    [orchestrator],
+  )
 
-    // Прокси
-    handleProxyEnabledChange: (value: boolean) => {
-      orchestrator.updateUserSettings({ proxyEnabled: value })
-    },
+  // Прокси
+  const handleProxyEnabledChange = useCallback(
+    (value: boolean) => orchestrator.updateUserSettings({ proxyEnabled: value }),
+    [orchestrator],
+  )
 
-    handleProxyTypeChange: (value: string) => {
-      orchestrator.updateUserSettings({ proxyType: value })
-    },
+  const handleProxyTypeChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ proxyType: value }),
+    [orchestrator],
+  )
 
-    handleProxyHostChange: (value: string) => {
-      orchestrator.updateUserSettings({ proxyHost: value })
-    },
+  const handleProxyHostChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ proxyHost: value }),
+    [orchestrator],
+  )
 
-    handleProxyPortChange: (value: string) => {
-      orchestrator.updateUserSettings({ proxyPort: value })
-    },
+  const handleProxyPortChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ proxyPort: value }),
+    [orchestrator],
+  )
 
-    handleProxyUsernameChange: (value: string) => {
-      orchestrator.updateUserSettings({ proxyUsername: value })
-    },
+  const handleProxyUsernameChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ proxyUsername: value }),
+    [orchestrator],
+  )
 
-    handleProxyPasswordChange: (value: string) => {
-      orchestrator.updateUserSettings({ proxyPassword: value })
-    },
+  const handleProxyPasswordChange = useCallback(
+    (value: string) => orchestrator.updateUserSettings({ proxyPassword: value }),
+    [orchestrator],
+  )
 
-    // Автосохранение
-    handleAutoSaveEnabledChange: (value: boolean) => {
-      orchestrator.updateUserSettings({ autoSaveEnabled: value })
-    },
+  // Автосохранение
+  const handleAutoSaveEnabledChange = useCallback(
+    (value: boolean) => orchestrator.updateUserSettings({ autoSaveEnabled: value }),
+    [orchestrator],
+  )
 
-    handleAutoSaveIntervalChange: (value: number) => {
-      orchestrator.updateUserSettings({ autoSaveInterval: value })
-    },
+  const handleAutoSaveIntervalChange = useCallback(
+    (value: number) => orchestrator.updateUserSettings({ autoSaveInterval: value }),
+    [orchestrator],
+  )
 
-    // Оптимизация Timeline
-    handleTimelineVirtualizationEnabledChange: (value: boolean) => {
-      orchestrator.updateUserSettings({ timelineVirtualizationEnabled: value })
-    },
+  // Оптимизация Timeline
+  const handleTimelineVirtualizationEnabledChange = useCallback(
+    (value: boolean) => orchestrator.updateUserSettings({ timelineVirtualizationEnabled: value }),
+    [orchestrator],
+  )
 
-    handleTimelineVirtualizationOverscanChange: (value: number) => {
-      orchestrator.updateUserSettings({ timelineVirtualizationOverscan: value })
-    },
+  const handleTimelineVirtualizationOverscanChange = useCallback(
+    (value: number) => orchestrator.updateUserSettings({ timelineVirtualizationOverscan: value }),
+    [orchestrator],
+  )
 
-    handleTimelineClipDetailsThresholdChange: (value: number) => {
-      orchestrator.updateUserSettings({ timelineClipDetailsThreshold: value })
-    },
-  }
+  const handleTimelineClipDetailsThresholdChange = useCallback(
+    (value: number) => orchestrator.updateUserSettings({ timelineClipDetailsThreshold: value }),
+    [orchestrator],
+  )
+
+  // Мемоизированное значение контекста
+  const value: UserSettingsContextValue = useMemo(
+    () => ({
+      // Значения настроек
+      activeTab: settings?.activeTab ?? "media",
+      layoutMode: settings?.layoutMode ?? ("default" as LayoutMode),
+      screenshotsPath: settings?.screenshotsPath ?? "",
+      playerScreenshotsPath: settings?.playerScreenshotsPath ?? "",
+      playerVolume: settings?.playerVolume ?? 100,
+      openAiApiKey: settings?.openAiApiKey ?? "",
+      claudeApiKey: settings?.claudeApiKey ?? "",
+      isBrowserVisible: settings?.isBrowserVisible ?? true,
+      isTimelineVisible: settings?.isTimelineVisible ?? true,
+      isOptionsVisible: settings?.isOptionsVisible ?? false,
+
+      // GPU и производительность
+      gpuAccelerationEnabled: settings?.gpuAccelerationEnabled ?? false,
+      preferredGpuEncoder: settings?.preferredGpuEncoder ?? "auto",
+      maxConcurrentJobs: settings?.maxConcurrentJobs ?? 1,
+      renderQuality: settings?.renderQuality ?? "medium",
+      backgroundRenderingEnabled: settings?.backgroundRenderingEnabled ?? false,
+      renderDelay: settings?.renderDelay ?? 0,
+
+      // Прокси
+      proxyEnabled: settings?.proxyEnabled ?? false,
+      proxyType: settings?.proxyType ?? "http",
+      proxyHost: settings?.proxyHost ?? "",
+      proxyPort: settings?.proxyPort ?? "",
+      proxyUsername: settings?.proxyUsername ?? "",
+      proxyPassword: settings?.proxyPassword ?? "",
+
+      // Автосохранение
+      autoSaveEnabled: settings?.autoSaveEnabled ?? true,
+      autoSaveInterval: settings?.autoSaveInterval ?? 300,
+
+      // Оптимизация Timeline
+      timelineVirtualizationEnabled: settings?.timelineVirtualizationEnabled ?? true,
+      timelineVirtualizationOverscan: settings?.timelineVirtualizationOverscan ?? 5,
+      timelineClipDetailsThreshold: settings?.timelineClipDetailsThreshold ?? 50,
+
+      // Методы изменения (стабильные ссылки благодаря useCallback)
+      handleTabChange,
+      handleLayoutChange,
+      handlePlayerScreenshotsPathChange,
+      handleScreenshotsPathChange,
+      handleAiApiKeyChange,
+      handleClaudeApiKeyChange,
+      handlePlayerVolumeChange,
+      toggleBrowserVisibility,
+      toggleTimelineVisibility,
+      toggleOptionsVisibility,
+      handleGpuAccelerationChange,
+      handlePreferredGpuEncoderChange,
+      handleMaxConcurrentJobsChange,
+      handleRenderQualityChange,
+      handleBackgroundRenderingChange,
+      handleRenderDelayChange,
+      handleProxyEnabledChange,
+      handleProxyTypeChange,
+      handleProxyHostChange,
+      handleProxyPortChange,
+      handleProxyUsernameChange,
+      handleProxyPasswordChange,
+      handleAutoSaveEnabledChange,
+      handleAutoSaveIntervalChange,
+      handleTimelineVirtualizationEnabledChange,
+      handleTimelineVirtualizationOverscanChange,
+      handleTimelineClipDetailsThresholdChange,
+    }),
+    [
+      settings,
+      handleTabChange,
+      handleLayoutChange,
+      handlePlayerScreenshotsPathChange,
+      handleScreenshotsPathChange,
+      handleAiApiKeyChange,
+      handleClaudeApiKeyChange,
+      handlePlayerVolumeChange,
+      toggleBrowserVisibility,
+      toggleTimelineVisibility,
+      toggleOptionsVisibility,
+      handleGpuAccelerationChange,
+      handlePreferredGpuEncoderChange,
+      handleMaxConcurrentJobsChange,
+      handleRenderQualityChange,
+      handleBackgroundRenderingChange,
+      handleRenderDelayChange,
+      handleProxyEnabledChange,
+      handleProxyTypeChange,
+      handleProxyHostChange,
+      handleProxyPortChange,
+      handleProxyUsernameChange,
+      handleProxyPasswordChange,
+      handleAutoSaveEnabledChange,
+      handleAutoSaveIntervalChange,
+      handleTimelineVirtualizationEnabledChange,
+      handleTimelineVirtualizationOverscanChange,
+      handleTimelineClipDetailsThresholdChange,
+    ],
+  )
 
   return <UserSettingsContext.Provider value={value}>{children}</UserSettingsContext.Provider>
 }

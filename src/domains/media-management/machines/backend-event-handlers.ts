@@ -28,6 +28,7 @@ export function handleMediaBackendEvent(
   context: MediaManagementContext,
   event: ProjectEvent,
 ): Partial<MediaManagementContext> {
+  console.log("🔵 [handleMediaBackendEvent] CALLED", event.type)
   logger.info("Handling media backend event:", { event: event.type })
 
   switch (event.type) {
@@ -215,6 +216,8 @@ function handleImportedMediaAdded(
   context: MediaManagementContext,
   event: ProjectEvent,
 ): Partial<MediaManagementContext> {
+  console.log("🔵 [handleImportedMediaAdded] CALLED", event.type)
+
   // Type guard
   if (event.type !== "ImportedMediaAdded") return {}
 
@@ -222,6 +225,7 @@ function handleImportedMediaAdded(
     media: { id: string; path: string; name: string; media_type: string; duration?: number; codec?: string }
   }
 
+  console.log("🔵 [handleImportedMediaAdded] Processing media:", media.name)
   logger.info("Imported media added to pool:", {
     mediaId: media.id,
     path: media.path,

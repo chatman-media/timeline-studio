@@ -14,10 +14,15 @@ import { useMediaMetadata } from "../use-media-metadata"
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     trace: vi.fn(),
+    traceSync: vi.fn(),
     debug: vi.fn(),
+    debugSync: vi.fn(),
     info: vi.fn(),
+    infoSync: vi.fn(),
     warn: vi.fn(),
+    warnSync: vi.fn(),
     error: vi.fn(),
+    errorSync: vi.fn(),
   })),
 }))
 vi.mock("@/features/app-state/services/backend-sync", () => ({

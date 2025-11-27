@@ -5,6 +5,8 @@
  * Использует IBackendService из DI контейнера для синхронизации
  */
 
+console.log("🟡 [MediaManagementOrchestrator] MODULE LOADED AT TOP")
+
 import { type ActorRefFrom, createActor } from "xstate"
 import { container } from "@/core"
 import type { IBackendService } from "@/core/ports"
@@ -134,18 +136,22 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Настройка синхронизации с backend
    */
   private setupBackendSync() {
+    console.log("🟢 [MediaManagementOrchestrator] setupBackendSync called", { hasBackend: !!this.backend })
     logger.infoSync("[MediaManagementOrchestrator] Setting up backend sync", {
       hasBackend: !!this.backend,
     })
 
     if (!this.backend) {
+      console.log("🔴 [MediaManagementOrchestrator] Backend not available!")
       logger.warnSync("[MediaManagementOrchestrator] Backend not available, skipping sync setup")
       return
     }
 
     // Подписываемся на backend события
+    console.log("🟢 [MediaManagementOrchestrator] Subscribing to backend events")
     logger.infoSync("[MediaManagementOrchestrator] Subscribing to backend events")
     this.backendUnsubscribe = this.backend.onEvent((event: ProjectEvent) => {
+      console.log("🟢 [MediaManagementOrchestrator] EVENT RECEIVED:", event.type)
       logger.infoSync("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
 
       // Создаем контекст для event handler
@@ -310,7 +316,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
         try {
           const mediaType = this.getMediaTypeFromPath(filePath)
           const result = await this.backend?.executeCommand({
-            type: "AddMedia",
+            type: "AddImportedMedia",
             params: { path: filePath, media_type: mediaType },
           } as any)
 
@@ -652,13 +658,18 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
 // Singleton экземпляр
 let orchestratorInstance: MediaManagementOrchestrator | null = null
+let instanceCount = 0
 
 /**
  * Получить экземпляр Media Management Orchestrator
  */
 export function getMediaManagementOrchestrator(): MediaManagementOrchestrator {
   if (!orchestratorInstance) {
+    instanceCount++
+    console.log(`🟡 [MediaManagementOrchestrator] Creating NEW instance #${instanceCount}`)
     orchestratorInstance = new MediaManagementOrchestrator()
+  } else {
+    console.log(`🟡 [MediaManagementOrchestrator] Returning EXISTING instance #${instanceCount}`)
   }
   return orchestratorInstance
 }

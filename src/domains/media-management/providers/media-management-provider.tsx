@@ -5,7 +5,9 @@
  * Использует MediaManagementOrchestrator для единого управления состоянием
  */
 
-import { createContext, type ReactNode, useCallback, useEffect, useMemo, useState } from "react"
+// Debug logs removed for performance optimization
+
+import { createContext, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { getMediaManagementOrchestrator } from "../services/media-management-orchestrator"
 import type { MediaImportOptions, MediaInfo, MediaManagementService } from "../types"
@@ -28,22 +30,26 @@ interface MediaManagementProviderProps {
 }
 
 export function MediaManagementProvider({ children }: MediaManagementProviderProps) {
-  console.log("🔵 [MediaManagementProvider] COMPONENT MOUNTING")
-
   // Используем orchestrator вместо прямого управления состоянием
   const orchestrator = useMemo(() => {
-    console.log("🔵 [MediaManagementProvider] Creating orchestrator instance")
-    logger.infoSync("[MediaManagementProvider] Creating orchestrator instance")
-    const instance = getMediaManagementOrchestrator()
-    logger.infoSync("[MediaManagementProvider] Orchestrator created", {
-      hasMediaPool: instance.getMediaPool().size > 0,
-      poolSize: instance.getMediaPool().size,
-    })
-    return instance
+    try {
+      logger.infoSync("[MediaManagementProvider] Creating orchestrator instance")
+      const instance = getMediaManagementOrchestrator()
+      logger.infoSync("[MediaManagementProvider] Orchestrator created", {
+        hasMediaPool: instance.getMediaPool().size > 0,
+        poolSize: instance.getMediaPool().size,
+      })
+      return instance
+    } catch (error) {
+      logger.errorSync("ERROR creating orchestrator", { error: String(error) })
+      throw error
+    }
   }, [])
 
   // Локальное состояние для React-реактивности (синхронизируется с orchestrator)
-  const [mediaPool, setMediaPool] = useState<Map<string, MediaInfo>>(() => orchestrator.getMediaPool())
+  const [mediaPool, setMediaPool] = useState<Map<string, MediaInfo>>(() => {
+    return orchestrator.getMediaPool()
+  })
   const [isLoading, setIsLoading] = useState(() => orchestrator.isMediaLoading())
   const [error, setError] = useState<string | null>(() => orchestrator.getError())
   const [fileOperationsState, setFileOperationsState] = useState(() => orchestrator.getFileOperationsState())
@@ -67,6 +73,10 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
 
   // Периодическая синхронизация состояния с orchestrator
   // (для mediaPool, isLoading, error которые не имеют подписок)
+  // ОПТИМИЗИРОВАНО: используем refs для сравнения и обновляем только при изменениях
+  const prevLoadingRef = useRef(isLoading)
+  const prevErrorRef = useRef(error)
+
   useEffect(() => {
     const syncState = () => {
       const newMediaPool = orchestrator.getMediaPool()
@@ -82,15 +92,25 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
         }
         return prev
       })
-      setIsLoading(newIsLoading)
-      setError(newError)
+
+      // ОПТИМИЗИРОВАНО: обновляем isLoading только при изменении
+      if (prevLoadingRef.current !== newIsLoading) {
+        prevLoadingRef.current = newIsLoading
+        setIsLoading(newIsLoading)
+      }
+
+      // ОПТИМИЗИРОВАНО: обновляем error только при изменении
+      if (prevErrorRef.current !== newError) {
+        prevErrorRef.current = newError
+        setError(newError)
+      }
     }
 
     // Первоначальная синхронизация
     syncState()
 
-    // Синхронизация каждые 500ms для отслеживания изменений
-    const interval = setInterval(syncState, 500)
+    // ОПТИМИЗИРОВАНО: увеличен интервал до 1000ms (было 500ms)
+    const interval = setInterval(syncState, 1000)
 
     return () => clearInterval(interval)
   }, [orchestrator])

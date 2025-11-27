@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { useResources } from "@/features/resources/services/resources-provider"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 
@@ -24,7 +24,14 @@ export interface AIResourceStats {
  * позволяя им управлять ресурсами проекта через естественный язык
  */
 export function useResourcesAIIntegration() {
-  logInfo("[useResourcesAIIntegration] Инициализация")
+  // Логируем только при первом маунте
+  const isInitialized = useRef(false)
+  useEffect(() => {
+    if (!isInitialized.current) {
+      logInfo("[useResourcesAIIntegration] Инициализация")
+      isInitialized.current = true
+    }
+  }, [])
 
   const resources = useResources()
 
@@ -184,10 +191,15 @@ export function useResourcesAIIntegration() {
     [resources],
   )
 
+  // Стабильная ссылка на resources для useEffect
+  const resourcesRef = useRef(resources)
+  resourcesRef.current = resources
+
   // Устанавливаем доступ к ресурсам для AI инструментов
+  // ОПТИМИЗИРОВАНО: зависимости сведены к минимуму через ref
   useEffect(() => {
     const resourcesAccess = {
-      getResourcesProvider: () => resources,
+      getResourcesProvider: () => resourcesRef.current,
       addMediaFile,
       addEffect,
       addFilter,
@@ -200,18 +212,47 @@ export function useResourcesAIIntegration() {
     setResourcesStateAccess(resourcesAccess)
     logInfo("[useResourcesAIIntegration] Доступ к ресурсам установлен")
 
-    // Очищаем при размонтировании
+    // Очищаем только при размонтировании
     return () => {
       setResourcesStateAccess(null)
       logInfo("[useResourcesAIIntegration] Доступ к ресурсам очищен")
     }
-  }, [resources, addMediaFile, addEffect, addFilter, addResource, removeResource, updateResource, getResourceStats])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Пустой массив - устанавливаем только один раз при маунте
 
-  const stats = getResourceStats()
-  logInfo("[useResourcesAIIntegration] Готов", { isIntegrated: true, stats })
+  // Мемоизируем статистику чтобы не пересчитывать на каждый рендер
+  const stats = useMemo(() => {
+    const totalMedia = resources.mediaResources.length
+    const totalMusic = resources.musicResources.length
+    const totalEffects = resources.effectResources.length
+    const totalFilters = resources.filterResources.length
 
-  return {
-    isIntegrated: true,
-    resourceStats: stats as AIResourceStats,
-  }
+    const totalSize = [...resources.mediaResources, ...resources.musicResources].reduce(
+      (sum, r) => sum + (r.file.size || 0),
+      0,
+    )
+
+    const totalDuration = [...resources.mediaResources, ...resources.musicResources].reduce(
+      (sum, r) => sum + (r.file.duration || 0),
+      0,
+    )
+
+    return {
+      totalMedia,
+      totalEffects,
+      totalFilters,
+      totalSize,
+      totalDuration,
+      totalMusic,
+    }
+  }, [resources.mediaResources, resources.musicResources, resources.effectResources, resources.filterResources])
+
+  // Мемоизируем результат
+  return useMemo(
+    () => ({
+      isIntegrated: true,
+      resourceStats: stats as AIResourceStats,
+    }),
+    [stats],
+  )
 }

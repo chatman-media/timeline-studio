@@ -26,6 +26,20 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-28] Performance: Re-render Optimization - PLANNED 🔴
+- **Status:** Запланировано
+- **File:** performance-rerender-optimization.md
+- **Action:** Создана задача в planned/
+- **Priority:** High
+- **Summary:**
+  - Анализ логов выявил избыточные ререндеры при старте
+  - useUserSettings: 15+ инициализаций (ожидается 1)
+  - AI интеграции: 30+ инициализаций (ожидается 3)
+  - 39 циклов cleanup/setup
+  - MediaManagementProvider: 8 маунтов (ожидается 1)
+  - BrowserEventHandlers: 128 вызовов
+- **Plan:** 4 фазы - стабилизация контекстов, оптимизация подписок, polling, provider tree
+
 ### [2025-11-27] Ports & Adapters (Hexagonal) Architecture - COMPLETED ✅
 - **Status:** Завершено (100%)
 - **File:** ports-and-adapters-architecture.md
@@ -217,4 +231,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-27 (Ports & Adapters Architecture completed)*
+*Last updated: 2025-11-28 (Performance re-render optimization task created)*

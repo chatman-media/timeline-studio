@@ -78,7 +78,7 @@ vi.mock("@/features/timeline/hooks/use-timeline", () => ({
 }))
 
 vi.mock("@/domains/browser", async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
     useBrowserState: () => ({

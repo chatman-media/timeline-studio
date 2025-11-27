@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import type { BrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/types"
 import { setBrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/utils/helpers"
 import { useBrowserState } from "@/domains/browser"
@@ -11,7 +11,14 @@ import { logInfo } from "@/lib/tauri-logger"
  * Предоставляет доступ к состоянию браузера для AI инструментов
  */
 export function useBrowserAIIntegration() {
-  logInfo("[useBrowserAIIntegration] Инициализация")
+  // Логируем только при первом маунте
+  const isInitialized = useRef(false)
+  useEffect(() => {
+    if (!isInitialized.current) {
+      logInfo("[useBrowserAIIntegration] Инициализация")
+      isInitialized.current = true
+    }
+  }, [])
 
   const browserState = useBrowserState()
   const { projectState } = useApp()
@@ -218,19 +225,21 @@ export function useBrowserAIIntegration() {
     setBrowserStateAccess(browserAccess)
     logInfo("[useBrowserAIIntegration] Доступ к браузеру установлен")
 
-    // Очищаем при размонтировании
+    // Очищаем только при размонтировании
     return () => {
       setBrowserStateAccess(null)
       logInfo("[useBrowserAIIntegration] Доступ к браузеру очищен")
     }
-  }, [browserState, mediaFiles, isLoading, getTabFiles, getSelectedFiles, getFilteredFiles])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // ОПТИМИЗИРОВАНО: устанавливаем только один раз при маунте
 
-  const result = {
-    isReady: !isLoading && mediaFiles.length > 0,
-    filesCount: mediaFiles.length,
-    activeTab: browserState.activeTab,
-  }
-
-  logInfo("[useBrowserAIIntegration] Готов", result)
-  return result
+  // Мемоизируем результат
+  return useMemo(
+    () => ({
+      isReady: !isLoading && mediaFiles.length > 0,
+      filesCount: mediaFiles.length,
+      activeTab: browserState.activeTab,
+    }),
+    [isLoading, mediaFiles.length, browserState.activeTab],
+  )
 }

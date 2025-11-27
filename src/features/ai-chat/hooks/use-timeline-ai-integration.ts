@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { createLogger, type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "../../timeline/hooks"
 import type { TimelineClip, TimelineSection, TimelineTrack } from "../../timeline/types"
@@ -28,7 +28,14 @@ const setTimelineStateAccess = (access: TimelineStateAccess | null) => {
  * Предоставляет доступ к состоянию timeline для AI инструментов
  */
 export function useTimelineAIIntegration() {
-  logInfo("[useTimelineAIIntegration] Инициализация")
+  // Логируем только при первом маунте
+  const isInitialized = useRef(false)
+  useEffect(() => {
+    if (!isInitialized.current) {
+      logInfo("[useTimelineAIIntegration] Инициализация")
+      isInitialized.current = true
+    }
+  }, [])
 
   const timeline = useTimeline() as any
 
@@ -277,21 +284,19 @@ export function useTimelineAIIntegration() {
   }, [timeline]) // ОПТИМИЗИРОВАНО: только одна зависимость вместо 7!
 
   // Мемоизируем результат, чтобы избежать лишних ре-рендеров
+  // ОПТИМИЗИРОВАНО: убран лог из useMemo чтобы не логировать на каждый рендер
   const result = useMemo(() => {
     const clips = getAllClips()
     const tracks = getAllTracks()
     const duration = getProjectDuration()
 
-    const stats = {
+    return {
       isReady: timeline.isReady && timeline.project !== null,
       hasProject: timeline.project !== null,
       clipsCount: clips.length,
       tracksCount: tracks.length,
       projectDuration: duration,
     }
-
-    logInfo("[useTimelineAIIntegration] Готов", stats)
-    return stats
   }, [timeline.isReady, timeline.project, getAllClips, getAllTracks, getProjectDuration])
 
   return result
