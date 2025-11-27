@@ -95,8 +95,8 @@ function TimelineContentInner() {
   useEffect(() => {
     if (!project && currentProject && projectSettings) {
       // Создаем проект синхронно
-      createProject(currentProject.name).then(() => {
-        logger.info("[TimelineContent] Timeline project created for:", currentProject.name)
+      createProject(currentProject.metadata.name).then(() => {
+        logger.info("[TimelineContent] Timeline project created", { projectName: currentProject.metadata.name })
       })
     }
   }, [project, currentProject, projectSettings, createProject])
@@ -177,7 +177,7 @@ function TimelineContentInner() {
             <div className="flex items-center gap-6">
               <div>
                 <h3 className="font-semibold text-foreground">
-                  {currentProject?.name || project?.name || "Новый проект"}
+                  {currentProject?.metadata?.name || project?.name || "Новый проект"}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {projectSettings
