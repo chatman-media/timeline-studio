@@ -7,13 +7,16 @@
 
 import type { IBackendService, Unsubscribe } from "@/core/ports"
 import type { CommandResult, EventEnvelope, ProjectCommand, ProjectEvent, ProjectState } from "@/core/types"
-import { BackendSync } from "./backend-sync"
+import { getBackendSync } from "./backend-sync"
 
 export class TauriBackendService implements IBackendService {
-  private backend: BackendSync
+  private backend: ReturnType<typeof getBackendSync>
 
   constructor() {
-    this.backend = new BackendSync()
+    // ВАЖНО: используем синглтон BackendSync, а не новый экземпляр
+    // Это гарантирует, что все подписчики (orchestrators, providers)
+    // получают события от одного и того же источника
+    this.backend = getBackendSync()
   }
 
   get connected(): boolean {
