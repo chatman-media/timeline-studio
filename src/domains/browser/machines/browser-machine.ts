@@ -109,7 +109,8 @@ export const browserMachine = setup({
     handleBackendEvent: assign(({ context, event }) => {
       if (event.type !== "BACKEND_EVENT") return context
 
-      logger.info("[BrowserMachine] Processing backend event", {
+      // ОПТИМИЗИРОВАНО: debug вместо info - много событий при начальной синхронизации
+      logger.debug("[BrowserMachine] Processing backend event", {
         eventType: event.event.event_type,
       })
 

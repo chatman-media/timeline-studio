@@ -18,7 +18,8 @@ export function handleBrowserBackendEvent(
   context: BrowserMachineContext,
   event: BrowserEvent,
 ): Partial<BrowserMachineContext> {
-  logger.info("Handling browser backend event:", { event: event.event_type })
+  // ОПТИМИЗИРОВАНО: debug вместо info - много событий при начальной синхронизации
+  logger.debug("Handling browser backend event:", { event: event.event_type })
 
   switch (event.event_type) {
     case "TabSwitched":
@@ -82,7 +83,7 @@ function handleSearchQueryChanged(
 ): Partial<BrowserMachineContext> {
   const { tab, query } = event.data
 
-  logger.info("Search query changed:", { tab, query })
+  logger.debug("Search query changed:", { tab, query })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -105,7 +106,7 @@ function handleFavoritesToggled(
 ): Partial<BrowserMachineContext> {
   const { tab, show_favorites } = event.data
 
-  logger.info("Favorites toggled:", { tab, show_favorites })
+  logger.debug("Favorites toggled:", { tab, show_favorites })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -128,7 +129,7 @@ function handleSortChanged(
 ): Partial<BrowserMachineContext> {
   const { tab, sort_by, sort_order } = event.data
 
-  logger.info("Sort changed:", { tab, sort_by, sort_order })
+  logger.debug("Sort changed:", { tab, sort_by, sort_order })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -152,7 +153,7 @@ function handleGroupByChanged(
 ): Partial<BrowserMachineContext> {
   const { tab, group_by } = event.data
 
-  logger.info("Group by changed:", { tab, group_by })
+  logger.debug("Group by changed:", { tab, group_by })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -175,7 +176,7 @@ function handleFilterChanged(
 ): Partial<BrowserMachineContext> {
   const { tab, filter_type } = event.data
 
-  logger.info("Filter changed:", { tab, filter_type })
+  logger.debug("Filter changed:", { tab, filter_type })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -198,7 +199,7 @@ function handleViewModeChanged(
 ): Partial<BrowserMachineContext> {
   const { tab, view_mode } = event.data
 
-  logger.info("View mode changed:", { tab, view_mode })
+  logger.debug("View mode changed:", { tab, view_mode })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -221,7 +222,7 @@ function handlePreviewSizeChanged(
 ): Partial<BrowserMachineContext> {
   const { tab, size_index } = event.data
 
-  logger.info("Preview size changed:", { tab, size_index })
+  logger.debug("Preview size changed:", { tab, size_index })
 
   const updatedTabSettings = { ...context.tabSettings }
   if (!updatedTabSettings[tab]) {
@@ -244,7 +245,7 @@ function handleTabSettingsReset(
 ): Partial<BrowserMachineContext> {
   const { tab } = event.data
 
-  logger.info("Tab settings reset:", { tab })
+  logger.debug("Tab settings reset:", { tab })
 
   const updatedTabSettings = { ...context.tabSettings }
   updatedTabSettings[tab] = getDefaultTabSettings()
@@ -264,7 +265,7 @@ function handleFileSelected(
 ): Partial<BrowserMachineContext> {
   const { tab, file_id } = event.data
 
-  logger.info("File selected:", { tab, file_id })
+  logger.debug("File selected:", { tab, file_id })
 
   const updatedSelectedFiles = { ...context.selectedFiles }
   if (!updatedSelectedFiles[tab]) {
@@ -286,7 +287,7 @@ function handleFileDeselected(
 ): Partial<BrowserMachineContext> {
   const { tab, file_id } = event.data
 
-  logger.info("File deselected:", { tab, file_id })
+  logger.debug("File deselected:", { tab, file_id })
 
   const updatedSelectedFiles = { ...context.selectedFiles }
   if (updatedSelectedFiles[tab]) {
@@ -304,7 +305,7 @@ function handleFileSelectionToggled(
 ): Partial<BrowserMachineContext> {
   const { tab, file_id, is_selected } = event.data
 
-  logger.info("File selection toggled:", { tab, file_id, is_selected })
+  logger.debug("File selection toggled:", { tab, file_id, is_selected })
 
   const updatedSelectedFiles = { ...context.selectedFiles }
   if (!updatedSelectedFiles[tab]) {
@@ -330,7 +331,7 @@ function handleAllFilesSelected(
 ): Partial<BrowserMachineContext> {
   const { tab, file_ids } = event.data
 
-  logger.info("All files selected:", { tab, count: file_ids.length })
+  logger.debug("All files selected:", { tab, count: file_ids.length })
 
   const updatedSelectedFiles = { ...context.selectedFiles }
   updatedSelectedFiles[tab] = file_ids
@@ -346,7 +347,7 @@ function handleAllFilesDeselected(
 ): Partial<BrowserMachineContext> {
   const { tab } = event.data
 
-  logger.info("All files deselected:", { tab })
+  logger.debug("All files deselected:", { tab })
 
   const updatedSelectedFiles = { ...context.selectedFiles }
   updatedSelectedFiles[tab] = []
