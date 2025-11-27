@@ -2,27 +2,13 @@
  * Media Management Domain Provider
  *
  * Централизованный провайдер для Media Management домена
- * Использует event-driven архитектуру для синхронизации с backend
+ * Использует MediaManagementOrchestrator для единого управления состоянием
  */
 
-import { createContext, type ReactNode, useEffect, useState } from "react"
-import { AppCommands } from "@/domains/project-management/machines/app-machine"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createContext, type ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectEvent } from "@/types/generated/tauri-bindings"
-import {
-  handleMediaBackendEvent,
-  type MediaManagementContext as MediaContext,
-} from "../machines/backend-event-handlers"
-import {
-  getMediaFiles,
-  restorePreviewCache,
-  selectAudioFile,
-  selectMediaDirectory,
-  selectMediaFile,
-} from "../services/media-api"
-import { getMediaMetadataService } from "../services/media-metadata-service"
-import type { MediaImportOptions, MediaInfo, MediaManagementService, MediaType } from "../types"
+import { getMediaManagementOrchestrator } from "../services/media-management-orchestrator"
+import type { MediaImportOptions, MediaInfo, MediaManagementService } from "../types"
 
 const logger = createLogger("MediaManagementProvider")
 
@@ -42,336 +28,174 @@ interface MediaManagementProviderProps {
 }
 
 export function MediaManagementProvider({ children }: MediaManagementProviderProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [mediaPool, setMediaPool] = useState<Map<string, MediaInfo>>(new Map())
-  const [fileOperations, setFileOperations] = useState<any[]>([])
-  const [mediaImportStatus, setMediaImportStatus] = useState<"idle" | "importing" | "completed" | "failed">("idle")
+  // Используем orchestrator вместо прямого управления состоянием
+  const orchestrator = useMemo(() => getMediaManagementOrchestrator(), [])
 
-  const backendSync = getBackendSync()
-  const metadataService = getMediaMetadataService()
+  // Локальное состояние для React-реактивности (синхронизируется с orchestrator)
+  const [mediaPool, setMediaPool] = useState<Map<string, MediaInfo>>(() => orchestrator.getMediaPool())
+  const [isLoading, setIsLoading] = useState(() => orchestrator.isMediaLoading())
+  const [error, setError] = useState<string | null>(() => orchestrator.getError())
+  const [fileOperationsState, setFileOperationsState] = useState(() => orchestrator.getFileOperationsState())
+  const [mediaImportState, setMediaImportState] = useState(() => orchestrator.getMediaImportState())
 
-  // Восстановление кэша превью при старте приложения
+  // Подписка на изменения состояния операций с файлами
   useEffect(() => {
-    const initPreviewCache = async () => {
-      try {
-        const restoredCount = await restorePreviewCache()
-        if (restoredCount > 0) {
-          logger.info(`Preview cache restored: ${restoredCount} thumbnails loaded from disk`)
-        }
-      } catch (error) {
-        // Не критичная ошибка - продолжаем работу без кэша
-        logger.error("Failed to restore preview cache", { error })
-      }
-    }
+    const unsubscribeFileOps = orchestrator.subscribeToFileOperations((state) => {
+      setFileOperationsState(state.context)
+    })
 
-    initPreviewCache()
-  }, [])
-
-  // Загрузка начального состояния при монтировании
-  useEffect(() => {
-    const unsubscribeState = backendSync.onStateChange((state: any) => {
-      logger.info("Loading initial media state from backend")
-
-      const initialMediaPool = new Map<string, MediaInfo>()
-
-      // Загружаем из project.media_pool
-      if (state.project?.media_pool?.items) {
-        const mediaPoolItems = state.project.media_pool.items
-        Object.entries(mediaPoolItems).forEach(([mediaId, mediaItem]: [string, any]) => {
-          initialMediaPool.set(mediaId, {
-            id: mediaId,
-            path: mediaItem.path,
-            name: mediaItem.name,
-            type: mediaItem.media_type as MediaType,
-            duration: mediaItem.duration ?? undefined,
-            thumbnailPath: mediaItem.thumbnail ?? undefined,
-            // Load metadata with codec for H.265 detection
-            metadata: mediaItem.metadata?.codec
-              ? {
-                  type: mediaItem.media_type as "Video" | "Audio" | "Image",
-                  codec: mediaItem.metadata.codec,
-                }
-              : undefined,
-          })
-        })
-      }
-
-      // Загружаем из imported_media (временное хранилище)
-      if (state.imported_media) {
-        Object.entries(state.imported_media).forEach(([mediaId, mediaItem]: [string, any]) => {
-          if (!initialMediaPool.has(mediaId)) {
-            initialMediaPool.set(mediaId, {
-              id: mediaId,
-              path: mediaItem.path,
-              name: mediaItem.name,
-              type: mediaItem.media_type as MediaType,
-              duration: mediaItem.duration ?? undefined,
-              thumbnailPath: mediaItem.thumbnail ?? undefined,
-              // Load metadata with codec for H.265 detection
-              metadata: mediaItem.metadata?.codec
-                ? {
-                    type: mediaItem.media_type as "Video" | "Audio" | "Image",
-                    codec: mediaItem.metadata.codec,
-                  }
-                : undefined,
-            })
-          }
-        })
-      }
-
-      logger.info("Initial media pool loaded", { count: initialMediaPool.size })
-      setMediaPool(initialMediaPool)
-
-      // Обновляем fileOperations для совместимости
-      const operations = Array.from(initialMediaPool.values()).map((mediaInfo) => ({
-        id: mediaInfo.id || mediaInfo.path,
-        path: mediaInfo.path,
-        status: "completed" as const,
-        result: mediaInfo,
-        progress: 100,
-      }))
-      setFileOperations(operations)
+    const unsubscribeImport = orchestrator.subscribeToMediaImport((state) => {
+      setMediaImportState(state.context)
     })
 
     return () => {
-      unsubscribeState()
+      unsubscribeFileOps.unsubscribe()
+      unsubscribeImport.unsubscribe()
     }
-  }, [backendSync])
+  }, [orchestrator])
 
-  // Event-driven синхронизация через backend события
+  // Периодическая синхронизация состояния с orchestrator
+  // (для mediaPool, isLoading, error которые не имеют подписок)
   useEffect(() => {
-    const unsubscribe = backendSync.onEvent((event: ProjectEvent) => {
-      // Используем функциональное обновление для актуального состояния
-      setMediaPool((currentMediaPool) => {
-        // Создаем контекст для event handler с актуальным состоянием
-        const context: MediaContext = {
-          mediaPool: currentMediaPool,
-          isLoading: false,
-          error: null,
+    const syncState = () => {
+      const newMediaPool = orchestrator.getMediaPool()
+      const newIsLoading = orchestrator.isMediaLoading()
+      const newError = orchestrator.getError()
+
+      // Обновляем только если изменилось
+      setMediaPool((prev) => {
+        if (prev.size !== newMediaPool.size) return newMediaPool
+        // Проверяем содержимое только если размеры одинаковые
+        for (const [key, value] of newMediaPool) {
+          if (!prev.has(key) || prev.get(key) !== value) return newMediaPool
         }
-
-        // Обрабатываем событие
-        const updates = handleMediaBackendEvent(context, event)
-
-        // Если есть обновления mediaPool, возвращаем новое значение
-        if (updates.mediaPool !== undefined) {
-          logger.info("Media pool updated via event", {
-            eventType: event.type,
-            oldCount: currentMediaPool.size,
-            newCount: updates.mediaPool.size,
-          })
-
-          // Обновляем fileOperations для совместимости
-          const operations = Array.from(updates.mediaPool.values()).map((mediaInfo) => ({
-            id: mediaInfo.id || mediaInfo.path,
-            path: mediaInfo.path,
-            status: "completed" as const,
-            result: mediaInfo,
-            progress: 100,
-          }))
-          setFileOperations(operations)
-
-          // Обновляем isLoading если есть в updates
-          if (updates.isLoading !== undefined) {
-            setIsLoading(updates.isLoading)
-          }
-
-          return updates.mediaPool
-        }
-
-        // Обрабатываем isLoading/error даже если mediaPool не изменился
-        if (updates.isLoading !== undefined) {
-          setIsLoading(updates.isLoading)
-        }
-        if (updates.error !== undefined) {
-          setError(updates.error)
-        }
-
-        // Если обновлений mediaPool нет, возвращаем текущее состояние
-        return currentMediaPool
+        return prev
       })
-    })
-
-    return () => {
-      unsubscribe()
+      setIsLoading(newIsLoading)
+      setError(newError)
     }
-  }, [backendSync]) // Только backendSync в зависимостях - избегаем лишних переподписок
 
-  // Вспомогательная функция для определения типа медиа по пути файла
-  const getMediaTypeFromPath = (filePath: string): MediaType => {
-    const ext = filePath.split(".").pop()?.toLowerCase() || ""
+    // Первоначальная синхронизация
+    syncState()
 
-    const videoExts = ["mp4", "avi", "mkv", "mov", "webm", "m4v", "3gp", "flv"]
-    const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a", "wma"]
-    const imageExts = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff"]
+    // Синхронизация каждые 500ms для отслеживания изменений
+    const interval = setInterval(syncState, 500)
 
-    if (videoExts.includes(ext)) return "Video"
-    if (audioExts.includes(ext)) return "Audio"
-    if (imageExts.includes(ext)) return "Image"
+    return () => clearInterval(interval)
+  }, [orchestrator])
 
-    return "Unknown"
-  }
+  // Сервис делегирует все операции orchestrator
+  const importFiles = useCallback(
+    async (files: string[], options: MediaImportOptions = {}) => {
+      logger.info("[MediaManagementProvider] Importing files via orchestrator", { filesCount: files.length })
+      const result = await orchestrator.importFiles(files, options)
+      // Синхронизируем состояние после операции
+      setMediaPool(orchestrator.getMediaPool())
+      setIsLoading(orchestrator.isMediaLoading())
+      setError(orchestrator.getError())
+      return result
+    },
+    [orchestrator],
+  )
 
-  const mediaManagementService: MediaManagementService = {
-    importFiles: async (files: string[], _options: MediaImportOptions) => {
-      logger.info("[Media Management] Importing files", { filesCount: files.length })
+  const selectMediaFiles = useCallback(async () => {
+    return orchestrator.selectMediaFiles()
+  }, [orchestrator])
+
+  const selectAudioFiles = useCallback(async () => {
+    return orchestrator.selectAudioFiles()
+  }, [orchestrator])
+
+  const selectMediaDirectory = useCallback(async () => {
+    const result = await orchestrator.selectMediaDirectory()
+    // Синхронизируем состояние после операции
+    setMediaPool(orchestrator.getMediaPool())
+    return result
+  }, [orchestrator])
+
+  const getMediaInfo = useCallback(
+    async (path: string) => {
+      return orchestrator.getMediaInfo(path)
+    },
+    [orchestrator],
+  )
+
+  const extractMetadata = useCallback(
+    async (path: string) => {
       setIsLoading(true)
-      setError(null)
-      setMediaImportStatus("importing")
-
       try {
-        // Импортируем каждый файл через BackendSync
-        const importResults: any[] = []
-
-        for (const filePath of files) {
-          try {
-            // Определяем тип медиа на основе расширения файла
-            const mediaType = getMediaTypeFromPath(filePath)
-
-            // Используем AddMedia команду для импорта
-            const result = await backendSync.executeCommand(AppCommands.addMedia(filePath, mediaType))
-
-            if (result) {
-              importResults.push(result)
-            }
-          } catch (importError) {
-            logger.error("Failed to import file", { filePath, importError })
-            // Продолжаем импорт остальных файлов даже если один не удался
-          }
-        }
-
-        setMediaImportStatus("completed")
-        setIsLoading(false)
-        return importResults
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Import failed"
-        logger.error("[Media Management] Import failed:", { error: errorMessage })
-        setError(errorMessage)
-        setMediaImportStatus("failed")
-        setIsLoading(false)
-        throw error
+        const result = await orchestrator.extractMetadata(path)
+        setMediaPool(orchestrator.getMediaPool())
+        return result
+      } finally {
+        setIsLoading(orchestrator.isMediaLoading())
+        setError(orchestrator.getError())
       }
     },
+    [orchestrator],
+  )
 
-    selectMediaFiles: async () => {
-      return selectMediaFile()
-    },
+  const mediaManagementService: MediaManagementService = useMemo(
+    () => ({
+      importFiles,
+      selectMediaFiles,
+      selectAudioFiles,
+      selectMediaDirectory,
+      getMediaInfo,
+      extractMetadata,
+    }),
+    [importFiles, selectMediaFiles, selectAudioFiles, selectMediaDirectory, getMediaInfo, extractMetadata],
+  )
 
-    selectAudioFiles: async () => {
-      return selectAudioFile()
-    },
+  // Преобразование fileOperationsState для совместимости с существующим API
+  const formattedFileOperationsState = useMemo(() => {
+    const operations = [
+      ...fileOperationsState.activeOperations,
+      ...fileOperationsState.completedOperations,
+      ...fileOperationsState.failedOperations,
+    ]
+    return {
+      operations,
+      hasActiveOperations: fileOperationsState.activeOperations.length > 0,
+      completedOperations: fileOperationsState.completedOperations,
+      failedOperations: fileOperationsState.failedOperations,
+    }
+  }, [fileOperationsState])
 
-    selectMediaDirectory: async () => {
-      try {
-        const directory = await selectMediaDirectory()
-        if (!directory) {
-          return null
-        }
+  // Преобразование mediaImportState для совместимости с существующим API
+  // MediaImportContext имеет поля: files, options, operations, currentOperation, totalProgress, errors
+  const formattedMediaImportState = useMemo(() => {
+    // Определяем status на основе состояния контекста
+    let status: "idle" | "importing" | "completed" | "failed" = "idle"
 
-        // Получаем все медиафайлы из выбранной директории
-        const files = await getMediaFiles(directory)
+    if (mediaImportState.currentOperation) {
+      status = "importing"
+    } else if (mediaImportState.errors && mediaImportState.errors.length > 0) {
+      status = "failed"
+    } else if (mediaImportState.totalProgress >= 100 && mediaImportState.operations?.length > 0) {
+      status = "completed"
+    }
 
-        // Автоматически импортируем файлы из директории
-        if (files.length > 0) {
-          await mediaManagementService.importFiles(files, {})
-        }
+    return {
+      status,
+      isImporting: status === "importing",
+      isCompleted: status === "completed",
+      isFailed: status === "failed",
+    }
+  }, [mediaImportState])
 
-        return directory
-      } catch (error) {
-        logger.error("Failed to select directory", { error })
-        throw error
-      }
-    },
-
-    getMediaInfo: async (path: string) => {
-      try {
-        // Ищем в локальном media pool (синхронизирован через события)
-        const mediaEntry = Array.from(mediaPool.entries()).find(([, media]) => media.path === path)
-
-        if (mediaEntry) {
-          const [mediaId, mediaInfo] = mediaEntry
-          // Добавляем id если его еще нет
-          return mediaInfo.id ? mediaInfo : { ...mediaInfo, id: mediaId }
-        }
-
-        // Если не найдено локально, возвращаем базовую информацию
-        const name = path.split("/").pop() || path
-        const mediaType = getMediaTypeFromPath(path)
-
-        return {
-          path,
-          name,
-          type: mediaType,
-        }
-      } catch (error) {
-        logger.error("[Media Management] Failed to get media info:", { error: error })
-        // В случае ошибки возвращаем базовую информацию
-        const name = path.split("/").pop() || path
-        const mediaType = getMediaTypeFromPath(path)
-
-        return {
-          path,
-          name,
-          type: mediaType,
-        }
-      }
-    },
-
-    extractMetadata: async (path: string) => {
-      try {
-        setIsLoading(true)
-        setError(null)
-
-        const metadata = await metadataService.extractMetadata(path)
-
-        // Обновляем метаданные в backend через UpdateMedia команду
-        // Backend отправит MediaUpdated событие, которое обновит локальный state
-        if (metadata) {
-          const mediaInfo = Array.from(mediaPool.values()).find((media) => media.path === path)
-
-          if (mediaInfo) {
-            // Находим media ID в pool и обновляем через команду
-            const mediaId = Array.from(mediaPool.entries()).find(([, media]) => media.path === path)?.[0]
-
-            if (mediaId) {
-              await backendSync.executeCommand(AppCommands.updateMedia(mediaId, {}))
-              // НЕ обновляем state напрямую - ждем события MediaUpdated
-            }
-          }
-        }
-
-        setIsLoading(false)
-        return metadata
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Metadata extraction failed"
-        logger.error("[Media Management] Metadata extraction failed:", { error: errorMessage })
-        setError(errorMessage)
-        setIsLoading(false)
-        throw error
-      }
-    },
-  }
-
-  const value: MediaManagementContextValue = {
-    ...mediaManagementService,
-    mediaPool,
-    fileOperationsState: {
-      operations: fileOperations,
-      hasActiveOperations: fileOperations.some((op) => op.status === "in_progress"),
-      completedOperations: fileOperations.filter((op) => op.status === "completed"),
-      failedOperations: fileOperations.filter((op) => op.status === "failed"),
-    },
-    mediaImportState: {
-      status: mediaImportStatus,
-      isImporting: mediaImportStatus === "importing",
-      isCompleted: mediaImportStatus === "completed",
-      isFailed: mediaImportStatus === "failed",
-    },
-    isReady: true,
-    isLoading,
-    error,
-  }
+  const value: MediaManagementContextValue = useMemo(
+    () => ({
+      ...mediaManagementService,
+      mediaPool,
+      fileOperationsState: formattedFileOperationsState,
+      mediaImportState: formattedMediaImportState,
+      isReady: true,
+      isLoading,
+      error,
+    }),
+    [mediaManagementService, mediaPool, formattedFileOperationsState, formattedMediaImportState, isLoading, error],
+  )
 
   return <MediaManagementContext.Provider value={value}>{children}</MediaManagementContext.Provider>
 }

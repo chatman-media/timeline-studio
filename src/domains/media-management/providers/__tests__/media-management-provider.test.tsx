@@ -2,14 +2,88 @@
  * MediaManagementProvider Integration Tests
  *
  * Интеграционные тесты для MediaManagementProvider
+ * Теперь провайдер использует MediaManagementOrchestrator
  */
 
-import { act, renderHook, waitFor } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { mockVideoMetadata } from "../../__mocks__"
 import { useMediaManagement } from "../../hooks/use-media-management"
 import { MediaManagementProvider } from "../media-management-provider"
+
+// Mock orchestrator state
+const mockMediaPool = new Map<string, any>()
+const mockIsLoading = false
+const mockError: string | null = null
+const mockFileOperationsState = {
+  activeOperations: [],
+  completedOperations: [],
+  failedOperations: [],
+}
+const mockMediaImportState = {
+  files: [],
+  options: {},
+  operations: [],
+  currentOperation: null,
+  totalProgress: 0,
+  errors: [],
+}
+
+// Mock orchestrator methods
+const mockImportFiles = vi.fn().mockImplementation(async (files: string[]) => {
+  return files.map((path, index) => ({
+    id: `media-${index + 1}`,
+    path,
+    name: path.split("/").pop() || "",
+    type: "Video" as const,
+  }))
+})
+const mockSelectMediaFiles = vi.fn().mockResolvedValue(["/test/video.mp4"])
+const mockSelectAudioFiles = vi.fn().mockResolvedValue(["/test/audio.mp3"])
+const mockSelectMediaDirectory = vi.fn().mockResolvedValue("/test/directory")
+const mockGetMediaInfo = vi.fn().mockImplementation(async (path: string) => {
+  const name = path.split("/").pop() || ""
+  const ext = name.split(".").pop()?.toLowerCase() || ""
+
+  let type: string = "Unknown"
+  if (["mp4", "avi", "mkv", "mov", "webm"].includes(ext)) type = "Video"
+  else if (["mp3", "wav", "ogg", "flac", "aac"].includes(ext)) type = "Audio"
+  else if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) type = "Image"
+
+  return { path, name, type }
+})
+const mockExtractMetadata = vi.fn().mockResolvedValue({
+  type: "Video",
+  width: 1920,
+  height: 1080,
+  fps: 30,
+  duration: 120.5,
+  codec: "h264",
+  bitrate: 5_000_000,
+  hasAudio: true,
+  audioCodec: "aac",
+  audioChannels: 2,
+  audioSampleRate: 48000,
+})
+
+const mockSubscribeToFileOperations = vi.fn(() => ({ unsubscribe: vi.fn() }))
+const mockSubscribeToMediaImport = vi.fn(() => ({ unsubscribe: vi.fn() }))
+
+const mockOrchestrator = {
+  getMediaPool: vi.fn(() => mockMediaPool),
+  isMediaLoading: vi.fn(() => mockIsLoading),
+  getError: vi.fn(() => mockError),
+  getFileOperationsState: vi.fn(() => mockFileOperationsState),
+  getMediaImportState: vi.fn(() => mockMediaImportState),
+  subscribeToFileOperations: mockSubscribeToFileOperations,
+  subscribeToMediaImport: mockSubscribeToMediaImport,
+  importFiles: mockImportFiles,
+  selectMediaFiles: mockSelectMediaFiles,
+  selectAudioFiles: mockSelectAudioFiles,
+  selectMediaDirectory: mockSelectMediaDirectory,
+  getMediaInfo: mockGetMediaInfo,
+  extractMetadata: mockExtractMetadata,
+}
 
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
@@ -21,46 +95,13 @@ vi.mock("@/lib/tauri-logger", () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
+    debugSync: vi.fn(),
   })),
 }))
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: vi.fn(() => ({
-    onEvent: vi.fn(() => () => {}),
-    onStateChange: vi.fn(() => () => {}),
-    executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
-    getProjectState: vi.fn().mockResolvedValue({
-      project: {
-        media_pool: {
-          items: {},
-        },
-      },
-    }),
-  })),
-}))
-vi.mock("../../services/media-api", () => ({
-  selectMediaFile: vi.fn().mockResolvedValue(["/test/video.mp4"]),
-  selectAudioFile: vi.fn().mockResolvedValue(["/test/audio.mp3"]),
-  selectMediaDirectory: vi.fn().mockResolvedValue("/test/directory"),
-  getMediaFiles: vi.fn().mockResolvedValue(["/test/video.mp4"]),
-  restorePreviewCache: vi.fn().mockResolvedValue(0),
-}))
-// Mock должен возвращать тот же объект что и mockVideoMetadata
-vi.mock("../../services/media-metadata-service", () => ({
-  getMediaMetadataService: vi.fn(() => ({
-    extractMetadata: vi.fn().mockResolvedValue({
-      type: "Video",
-      width: 1920,
-      height: 1080,
-      fps: 30,
-      duration: 120.5,
-      codec: "h264",
-      bitrate: 5_000_000,
-      hasAudio: true,
-      audioCodec: "aac",
-      audioChannels: 2,
-      audioSampleRate: 48000,
-    }),
-  })),
+
+// Mock orchestrator
+vi.mock("../../services/media-management-orchestrator", () => ({
+  getMediaManagementOrchestrator: vi.fn(() => mockOrchestrator),
 }))
 
 describe("MediaManagementProvider", () => {
@@ -120,11 +161,11 @@ describe("MediaManagementProvider", () => {
       expect(importResults.length).toBeGreaterThan(0)
     })
 
-    it("should set loading state during import", async () => {
+    it("should call orchestrator importFiles", async () => {
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
-      act(() => {
-        result.current.importFiles(["/test/video.mp4"], {
+      await act(async () => {
+        await result.current.importFiles(["/test/video.mp4"], {
           copyToProject: true,
           createProxies: false,
           analyzeContent: true,
@@ -133,55 +174,34 @@ describe("MediaManagementProvider", () => {
         })
       })
 
-      // Should be loading
-      expect(result.current.isLoading).toBe(true)
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
-      })
+      // Verify orchestrator was called
+      expect(mockImportFiles).toHaveBeenCalledWith(["/test/video.mp4"], expect.any(Object))
     })
 
     it("should handle import errors", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn(() => () => {}),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn().mockRejectedValue(new Error("Import failed")),
-        getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
-      } as any)
+      // Mock orchestrator to return error
+      mockImportFiles.mockRejectedValueOnce(new Error("Import failed"))
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
-      // importFiles не выбрасывает ошибку - она продолжает импорт остальных файлов
-      // Проверим, что результат пустой массив при ошибке
-      const importResults = await result.current.importFiles(["/test/video.mp4"], {
-        copyToProject: true,
-        createProxies: false,
-        analyzeContent: true,
-        generateThumbnails: true,
-        preserveMetadata: true,
-      })
-
-      expect(importResults).toEqual([])
-      expect(result.current.error).toBe(null) // error сбрасывается при начале импорта
+      // importFiles может выбросить ошибку при полной неудаче
+      await expect(
+        result.current.importFiles(["/test/video.mp4"], {
+          copyToProject: true,
+          createProxies: false,
+          analyzeContent: true,
+          generateThumbnails: true,
+          preserveMetadata: true,
+        }),
+      ).rejects.toThrow("Import failed")
     })
 
-    it("should handle partial import failures", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-
-      let callCount = 0
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn(() => () => {}),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn().mockImplementation(() => {
-          callCount++
-          if (callCount === 2) {
-            return Promise.reject(new Error("Second file failed"))
-          }
-          return Promise.resolve({ id: `media-${callCount}`, path: `/test/video${callCount}.mp4` })
-        }),
-        getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
-      } as any)
+    it("should handle partial import failures via orchestrator", async () => {
+      // Mock orchestrator to return partial results
+      mockImportFiles.mockResolvedValueOnce([
+        { id: "media-1", path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
+        { id: "media-3", path: "/test/video3.mp4", name: "video3.mp4", type: "Video" },
+      ])
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
@@ -201,17 +221,7 @@ describe("MediaManagementProvider", () => {
       expect(importResults.length).toBe(2)
     })
 
-    it("should detect media type from file extension", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      const mockExecuteCommand = vi.fn().mockResolvedValue({ id: "media-1" })
-
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn(() => () => {}),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: mockExecuteCommand,
-        getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
-      } as any)
-
+    it("should delegate import to orchestrator", async () => {
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
       await act(async () => {
@@ -224,11 +234,7 @@ describe("MediaManagementProvider", () => {
         })
       })
 
-      expect(mockExecuteCommand).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: "AddMedia",
-        }),
-      )
+      expect(mockImportFiles).toHaveBeenCalled()
     })
   })
 
@@ -261,46 +267,8 @@ describe("MediaManagementProvider", () => {
   })
 
   describe("getMediaInfo", () => {
-    it("should get media info from local media pool (synced via events)", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      let eventCallback: any = null
-
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn((callback) => {
-          eventCallback = callback
-          return () => {}
-        }),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn(),
-        getProjectState: vi.fn().mockResolvedValue({
-          project: {
-            media_pool: {
-              items: {},
-            },
-          },
-        }),
-      } as any)
-
+    it("should get media info via orchestrator", async () => {
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
-
-      // Simulate backend MediaAdded event
-      act(() => {
-        if (eventCallback) {
-          eventCallback({
-            type: "MediaAdded",
-            payload: {
-              media: {
-                id: "media-1",
-                path: "/test/video.mp4",
-                name: "video.mp4",
-                media_type: "Video",
-                duration: 120.5,
-                thumbnail: "/tmp/thumb.jpg",
-              },
-            },
-          })
-        }
-      })
 
       let mediaInfo: any = null
 
@@ -308,17 +276,15 @@ describe("MediaManagementProvider", () => {
         mediaInfo = await result.current.getMediaInfo("/test/video.mp4")
       })
 
+      expect(mockGetMediaInfo).toHaveBeenCalledWith("/test/video.mp4")
       expect(mediaInfo).toEqual({
-        id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
         type: "Video",
-        duration: 120.5,
-        thumbnailPath: "/tmp/thumb.jpg",
       })
     })
 
-    it("should return basic info if file not in backend", async () => {
+    it("should return basic info for unknown file", async () => {
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
       let mediaInfo: any = null
@@ -335,47 +301,18 @@ describe("MediaManagementProvider", () => {
     })
 
     it("should handle errors gracefully", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn(() => () => {}),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn(),
-        getProjectState: vi.fn().mockRejectedValue(new Error("Backend error")),
-      } as any)
+      // Mock orchestrator to throw error
+      mockGetMediaInfo.mockRejectedValueOnce(new Error("Backend error"))
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
-      let mediaInfo: any = null
-
-      await act(async () => {
-        mediaInfo = await result.current.getMediaInfo("/test/video.mp4")
-      })
-
-      // Should still return basic info
-      expect(mediaInfo).toBeDefined()
-      expect(mediaInfo.path).toBe("/test/video.mp4")
+      // getMediaInfo через provider должен пробросить ошибку
+      await expect(result.current.getMediaInfo("/test/video.mp4")).rejects.toThrow("Backend error")
     })
   })
 
   describe("extractMetadata", () => {
-    beforeEach(async () => {
-      // Reset backend sync mock to default for this describe block
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn(() => () => {}),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn().mockResolvedValue({ id: "media-1", path: "/test/video.mp4" }),
-        getProjectState: vi.fn().mockResolvedValue({
-          project: {
-            media_pool: {
-              items: {},
-            },
-          },
-        }),
-      } as any)
-    })
-
-    it("should extract metadata successfully", async () => {
+    it("should extract metadata via orchestrator", async () => {
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
       let metadata: any = null
@@ -383,6 +320,9 @@ describe("MediaManagementProvider", () => {
       await act(async () => {
         metadata = await result.current.extractMetadata("/test/video.mp4")
       })
+
+      // Verify orchestrator was called
+      expect(mockExtractMetadata).toHaveBeenCalledWith("/test/video.mp4")
 
       // Verify metadata has expected structure
       expect(metadata).toBeDefined()
@@ -399,102 +339,40 @@ describe("MediaManagementProvider", () => {
       expect(metadata.audioSampleRate).toBe(48000)
     })
 
-    it("should set loading state during extraction", async () => {
-      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
-      vi.mocked(getMediaMetadataService).mockReturnValue({
-        extractMetadata: vi
-          .fn()
-          .mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(mockVideoMetadata), 100))),
-      } as any)
-
-      const { result } = renderHook(() => useMediaManagement(), { wrapper })
-
-      act(() => {
-        result.current.extractMetadata("/test/video.mp4")
-      })
-
-      expect(result.current.isLoading).toBe(true)
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
-      })
-    })
-
     it("should handle metadata extraction errors", async () => {
-      const { getMediaMetadataService } = await import("../../services/media-metadata-service")
-      vi.mocked(getMediaMetadataService).mockReturnValue({
-        extractMetadata: vi.fn().mockRejectedValue(new Error("Extraction failed")),
-      } as any)
+      // Mock orchestrator to throw error
+      mockExtractMetadata.mockRejectedValueOnce(new Error("Extraction failed"))
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })
 
       await expect(result.current.extractMetadata("/test/video.mp4")).rejects.toThrow("Extraction failed")
-
-      await waitFor(() => {
-        expect(result.current.error).toBe("Extraction failed")
-      })
     })
   })
 
-  describe("backend sync integration", () => {
-    it("should subscribe to backend state changes", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      const mockOnStateChange = vi.fn(() => () => {})
-
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: mockOnStateChange,
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn(),
-        getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
-      } as any)
-
+  describe("orchestrator integration", () => {
+    it("should subscribe to file operations via orchestrator", async () => {
       renderHook(() => useMediaManagement(), { wrapper })
 
-      expect(mockOnStateChange).toHaveBeenCalled()
+      // Verify provider subscribed to orchestrator events
+      expect(mockSubscribeToFileOperations).toHaveBeenCalled()
     })
 
-    it("should update file operations on backend MediaAdded event", async () => {
-      const getBackendSync = await import("@/features/app-state/services/backend-sync")
-      let eventCallback: any = null
+    it("should subscribe to media import via orchestrator", async () => {
+      renderHook(() => useMediaManagement(), { wrapper })
 
-      vi.mocked(getBackendSync.getBackendSync).mockReturnValue({
-        onEvent: vi.fn((callback) => {
-          eventCallback = callback
-          return () => {}
-        }),
-        onStateChange: vi.fn(() => () => {}),
-        executeCommand: vi.fn(),
-        getProjectState: vi.fn().mockResolvedValue({ project: { media_pool: { items: {} } } }),
-      } as any)
+      // Verify provider subscribed to orchestrator events
+      expect(mockSubscribeToMediaImport).toHaveBeenCalled()
+    })
 
-      const { result } = renderHook(() => useMediaManagement(), { wrapper })
+    it("should get initial state from orchestrator", async () => {
+      renderHook(() => useMediaManagement(), { wrapper })
 
-      // Trigger MediaAdded event
-      act(() => {
-        if (eventCallback) {
-          eventCallback({
-            type: "MediaAdded",
-            payload: {
-              media: {
-                id: "media-1",
-                path: "/test/video.mp4",
-                name: "video.mp4",
-                media_type: "Video",
-              },
-            },
-          })
-        }
-      })
-
-      await waitFor(() => {
-        expect(result.current.fileOperationsState.operations).toHaveLength(1)
-        expect(result.current.fileOperationsState.operations[0]).toEqual(
-          expect.objectContaining({
-            path: "/test/video.mp4",
-            status: "completed",
-          }),
-        )
-      })
+      // Verify provider got initial state from orchestrator
+      expect(mockOrchestrator.getMediaPool).toHaveBeenCalled()
+      expect(mockOrchestrator.isMediaLoading).toHaveBeenCalled()
+      expect(mockOrchestrator.getError).toHaveBeenCalled()
+      expect(mockOrchestrator.getFileOperationsState).toHaveBeenCalled()
+      expect(mockOrchestrator.getMediaImportState).toHaveBeenCalled()
     })
   })
 
