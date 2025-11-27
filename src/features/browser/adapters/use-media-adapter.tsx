@@ -18,9 +18,12 @@ type MediaListItem = MediaFile & ListItem
 
 /**
  * Компонент превью для медиафайлов - адаптер для MediaPreview
+ * Клик по видео обрабатывается внутри VideoStream (воспроизведение)
+ * Кнопка "+" обрабатывается в AddMediaButton (добавление в ресурсы)
+ * Drag & Drop используется для переноса на таймлайн
  */
-const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item: file, size, viewMode, onClick }) => {
-  // Используем DragDropManager для перетаскивания
+const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item: file, size, viewMode }) => {
+  // Используем DragDropManager для перетаскивания на таймлайн
   const dragProps = useDraggable(
     "media",
     () => file,
@@ -32,7 +35,7 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
   )
 
   return (
-    <div onClick={() => onClick?.(file)} {...dragProps} className="cursor-pointer">
+    <div {...dragProps} className="cursor-pointer">
       <MediaPreview
         file={file}
         size={typeof size === "number" ? size : size.width}

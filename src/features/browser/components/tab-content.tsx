@@ -1,8 +1,7 @@
-import { memo, useMemo } from "react"
+import { memo } from "react"
 
 import { TabsContent } from "@/components/ui/tabs"
 import { UniversalList } from "@/features/browser/components/universal-list"
-import { useTimelineActions } from "@/features/timeline/hooks"
 
 import { useEffectsAdapter } from "../adapters/use-effects-adapter"
 import { useFiltersAdapter } from "../adapters/use-filters-adapter"
@@ -21,68 +20,57 @@ interface TabContentProps {
   className: string
 }
 
-// Компонент для каждой вкладки с ленивой загрузкой
+// Компоненты для каждой вкладки с ленивой загрузкой
+// Клик по медиа обрабатывается внутри VideoPreview (воспроизведение в плеере)
+// Кнопка "+" добавляет в ресурсы, Drag & Drop переносит на таймлайн
 const MediaTabContent = memo(() => {
   const adapter = useMediaAdapter()
-  const { addSingleMediaToTimeline } = useTimelineActions()
-
-  const handleItemSelect = useMemo(() => (item: any) => addSingleMediaToTimeline(item), [addSingleMediaToTimeline])
-
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const MusicTabContent = memo(() => {
   const adapter = useMusicAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const EffectsTabContent = memo(() => {
   const adapter = useEffectsAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const FiltersTabContent = memo(() => {
   const adapter = useFiltersAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const TransitionsTabContent = memo(() => {
   const adapter = useTransitionsAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const SubtitlesTabContent = memo(() => {
   const adapter = useSubtitlesAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const TemplatesTabContent = memo(() => {
   const adapter = useTemplatesAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const StyleTemplatesTabContent = memo(() => {
   const adapter = useStyleTemplatesAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const ProjectsTabContent = memo(() => {
   const adapter = useProjectTemplatesAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 const ScenariosTabContent = memo(() => {
   const adapter = useScenariosAdapter()
-  const handleItemSelect = useMemo(() => () => {}, [])
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} />
 })
 
 // Компоненты с именами
