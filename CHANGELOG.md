@@ -1,3 +1,10 @@
+## [3.33.1](https://github.com/chatman-media/timeline-studio/compare/v3.33.0...v3.33.1) (2025-11-27)
+
+
+### Performance Improvements
+
+* optimize React re-renders and fix logger mocks ([e50f099](https://github.com/chatman-media/timeline-studio/commit/e50f0999c58b0956b14c63a4e809e845a2dc45cb))
+
 # [3.33.0](https://github.com/chatman-media/timeline-studio/compare/v3.32.5...v3.33.0) (2025-11-27)
 
 
