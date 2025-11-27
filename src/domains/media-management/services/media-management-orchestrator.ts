@@ -264,6 +264,28 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   }
 
   /**
+   * Lazy-получение backend из container
+   * Вызывается при каждой операции, требующей backend
+   */
+  private ensureBackend(): IBackendService | null {
+    if (!this.backend) {
+      try {
+        if (container.hasBackend()) {
+          this.backend = container.getBackend()
+          logger.info("[MediaManagementOrchestrator] Backend retrieved lazily")
+          // Настраиваем подписку на события если не настроена
+          if (!this.backendUnsubscribe) {
+            this.setupBackendSync()
+          }
+        }
+      } catch (error) {
+        logger.warn("[MediaManagementOrchestrator] Backend still not available", { error: String(error) })
+      }
+    }
+    return this.backend
+  }
+
+  /**
    * Вспомогательная функция для определения типа медиа по пути файла
    */
   private getMediaTypeFromPath(filePath: string): MediaType {
@@ -311,15 +333,25 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
       // Импортируем каждый файл через BackendSync
       const importResults: any[] = []
+      const backend = this.ensureBackend()
+
+      if (!backend) {
+        logger.error("[Media Management] Backend not available for import")
+        this.error = "Backend not available"
+        this.isLoading = false
+        return []
+      }
 
       for (const filePath of files) {
         try {
           const mediaType = this.getMediaTypeFromPath(filePath)
-          const result = await this.backend?.executeCommand({
+          logger.info("[Media Management] Sending AddImportedMedia command", { filePath, mediaType })
+          const result = await backend.executeCommand({
             type: "AddImportedMedia",
             params: { path: filePath, media_type: mediaType },
           } as any)
 
+          logger.info("[Media Management] AddImportedMedia result", { filePath, result })
           if (result) {
             importResults.push(result)
           }
