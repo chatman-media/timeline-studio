@@ -21,11 +21,11 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useBrowserState } from "@/domains/browser"
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
+import { RenderQueueDropdown } from "@/features/export"
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
 import { useModal } from "@/features/modals/services/modal-provider"
 import { AnalysisTasksDropdown } from "@/features/montage-planner"
-import { PublicationTasksDropdown } from "@/features/publication"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useUserSettings } from "@/features/user-settings"
 import { GpuStatusBadge, RenderJobsDropdown } from "@/features/video-compiler"
@@ -342,7 +342,7 @@ const TopBarComponent = function TopBar() {
         {/* Группа 5: Задачи и экспорт */}
         <div className="flex items-center justify-end">
           <AnalysisTasksDropdown />
-          <PublicationTasksDropdown />
+          <RenderQueueDropdown />
           <RenderJobsDropdown />
 
           <Button

@@ -4,6 +4,7 @@ export * from "./components/batch-export-tab"
 export * from "./components/detailed-export-interface"
 export * from "./components/export-modal"
 export * from "./components/export-presets"
+export { RenderQueueDropdown } from "./components/render-queue-dropdown"
 export * from "./components/section-export-tab"
 export * from "./components/social-export-tab"
 // Константы и типы
