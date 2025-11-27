@@ -64,7 +64,17 @@ export type { MediaMetadataService } from "./services/media-metadata-service"
 // Services
 export { getMediaMetadataService } from "./services/media-metadata-service"
 // Media Restoration
-export * from "./services/media-restoration-service"
+export type {
+  FileRestorationResult,
+  ProjectRestorationResult,
+} from "./services/media-restoration-service"
+export {
+  generateRestorationReport,
+  handleMissingFiles,
+  promptUserToFindFile,
+  restoreFile,
+  restoreProjectMedia,
+} from "./services/media-restoration-service"
 // Proxy Generator
 export type {
   ProxyGenerationOptions,
@@ -86,6 +96,29 @@ export { getSmartOrganization, SmartOrganizationService } from "./services/smart
 // Waveform Generator
 export type { WaveformData, WaveformOptions, WaveformResult } from "./services/waveform-generator"
 export { getWaveformGenerator, WaveformGeneratorService } from "./services/waveform-generator"
+// Tauri Commands (Advanced)
+export {
+  cancelMediaProcessing,
+  clearMediaPreviewData,
+  clearMediaPreviewDataForFile,
+  ejectDevice,
+  generateMediaThumbnail,
+  getCachedThumbnailPath,
+  getFilesWithPreviews,
+  getMediaFiles,
+  getMediaMetadata,
+  getMediaPreviewData,
+  getTimelineFrames,
+  hasCachedThumbnail,
+  loadPreviewData,
+  processMediaFile,
+  restorePreviewCache,
+  savePreviewData,
+  saveTimelineFrames,
+  saveTimelineFramesForFile,
+  scanMediaFolder,
+  scanMediaFolderWithThumbnails,
+} from "./tauri/media-commands"
 // Types
 export type {
   AudioMetadata,

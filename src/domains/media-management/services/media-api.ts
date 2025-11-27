@@ -3,6 +3,7 @@ import { open } from "@tauri-apps/plugin-dialog"
 
 import { formatDurationSeconds as formatDurationSecondsUtil } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
+import { getMediaFiles as getMediaFilesTauri, getMediaMetadata as getMediaMetadataTauri } from "../tauri/media-commands"
 
 const logger = createLogger("MediaApi")
 
@@ -70,7 +71,7 @@ export type MediaMetadata =
  */
 export async function getMediaMetadata(filePath: string): Promise<any> {
   try {
-    return await invoke("get_media_metadata", { filePath })
+    return await getMediaMetadataTauri(filePath)
   } catch (error) {
     logger.errorSync("Failed to get media metadata", { filePath, error })
     throw error
@@ -84,7 +85,7 @@ export async function getMediaMetadata(filePath: string): Promise<any> {
  */
 export async function getMediaFiles(directory: string): Promise<string[]> {
   try {
-    return await invoke<string[]>("get_media_files", { directory })
+    return await getMediaFilesTauri(directory)
   } catch (error) {
     logger.errorSync("Failed to get media files", { directory, error })
     throw error
