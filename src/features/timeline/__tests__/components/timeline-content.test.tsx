@@ -35,6 +35,11 @@ vi.mock("@/components/ui/resizable", () => ({
 const mockCurrentProject = {
   id: "test-project",
   name: "Test Project",
+  metadata: {
+    name: "Test Project",
+    file_path: null,
+    is_dirty: false,
+  },
 }
 
 const mockProjectSettings = {
