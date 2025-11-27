@@ -1,3 +1,10 @@
+## [3.32.3](https://github.com/chatman-media/timeline-studio/compare/v3.32.2...v3.32.3) (2025-11-27)
+
+
+### Bug Fixes
+
+* **promo:** replace react-helmet-async with native DOM API for React 19 compatibility ([83d66ba](https://github.com/chatman-media/timeline-studio/commit/83d66baa1e044cd7bc72b7d6cbbeaa90aba76402))
+
 ## [3.32.2](https://github.com/chatman-media/timeline-studio/compare/v3.32.1...v3.32.2) (2025-11-26)
 
 
