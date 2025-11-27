@@ -5,9 +5,11 @@
  */
 
 import { useMachine } from "@xstate/react"
-import React, { type ReactNode, useEffect } from "react"
+import React, { type ReactNode, useEffect, useCallback } from "react"
 // Используем машину из домена
 import { appMachine } from "@/domains/project-management/machines/app-machine"
+import { getBackendSync } from "./backend-sync"
+import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
 export interface AppContext {
   // Backend connection state
@@ -22,7 +24,7 @@ export interface AppContext {
   connect: () => void
   disconnect: () => void
   retryConnection: () => void
-  executeCommand: (command: any) => void
+  executeCommand: (command: ProjectCommand) => Promise<any>
 }
 
 const AppContextInternal = React.createContext<AppContext | null>(null)
@@ -54,9 +56,16 @@ export function AppProvider({ children }: AppProviderProps) {
     send({ type: "RETRY_CONNECTION" })
   }
 
-  const executeCommand = (command: any) => {
+  // Выполнение команды напрямую через backendSync для получения результата
+  const executeCommand = useCallback(async (command: ProjectCommand) => {
+    const backendSync = getBackendSync()
+    const result = await backendSync.executeCommand(command)
+
+    // Также уведомляем машину для синхронизации состояния
     send({ type: "EXECUTE_COMMAND", command })
-  }
+
+    return result
+  }, [send])
 
   // Context value with safe fallbacks
   const contextValue: AppContext = {
