@@ -3,10 +3,8 @@
  * Расширенный сервис для продвинутой детекции и анализа лиц
  */
 
-import { invoke } from "@tauri-apps/api/core"
-
+import * as PersonIdCmds from "@/domains/ai-services/tauri/person-identification-commands"
 import type { DetectedFace, FaceAttributes } from "@/features/person-identification/types/person"
-
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AdvancedFaceDetectionService")
@@ -187,20 +185,20 @@ export class AdvancedFaceDetectionService {
 
     try {
       // Инициализируем YOLO модель для детекции лиц
-      await invoke("init_yolo_processor", {
+      await PersonIdCmds.initYoloProcessor({
         modelType: "yolo-face-v8",
         confidenceThreshold: this.config.qualityThreshold,
       })
 
       // Инициализируем FaceNet модель для embeddings
       const facenetModel = this.config.recognitionModel === "arcface" ? "arcface-512d" : "facenet-512d"
-      await invoke("init_facenet_processor", {
+      await PersonIdCmds.initFacenetProcessor({
         modelType: facenetModel,
       })
 
       // Проверяем доступность GPU
       if (this.config.useGPU) {
-        const gpuAvailable = await invoke<boolean>("check_gpu_availability")
+        const gpuAvailable = await PersonIdCmds.checkGpuAvailability()
         if (!gpuAvailable) {
           logger.warn("GPU недоступен, переключаемся на CPU", { data: null })
           this.config.useGPU = false
@@ -237,14 +235,61 @@ export class AdvancedFaceDetectionService {
         base64Data = imageData
       }
 
-      const results = await invoke<AdvancedFaceDetection[]>("detect_faces_advanced", {
+      const results = await PersonIdCmds.detectFacesAdvanced({
         imageData: base64Data,
         returnEmbeddings: options?.returnEmbeddings || false,
         returnCroppedFaces: options?.returnCroppedFaces || false,
         minConfidence: options?.minConfidence || this.config.qualityThreshold,
       })
 
-      return results
+      // Конвертируем результаты из Tauri в локальный тип AdvancedFaceDetection
+      return results.map((face): AdvancedFaceDetection => {
+        // Создаем объект с базовыми полями DetectedFace
+        const detectedFace: AdvancedFaceDetection = {
+          id: face.id,
+          bbox: face.bbox,
+          confidence: face.confidence,
+          landmarks: face.landmarks
+            ? {
+                points: face.landmarks,
+                quality: face.confidence,
+              }
+            : undefined,
+          // Обязательные поля из DetectedFace
+          blur: face.imageQuality?.isBlurry ? 0.8 : 0.2,
+          occlusion: face.imageQuality?.isOccluded ? 0.8 : 0.2,
+          pose: face.pose3D
+            ? {
+                yaw: face.pose3D.yaw,
+                pitch: face.pose3D.pitch,
+                roll: face.pose3D.roll,
+              }
+            : { yaw: 0, pitch: 0, roll: 0 },
+          timestamp: { seconds: 0 },
+          // Опциональные поля из DetectedFace
+          clipId: undefined,
+          frameNumber: undefined,
+          // Расширенные поля из AdvancedFaceDetection
+          embedding: face.embedding,
+          // advancedAttributes конвертируем в совместимый формат
+          advancedAttributes: face.advancedAttributes
+            ? ({
+                detailedEmotions: face.advancedAttributes.detailedEmotions,
+                ageRange: face.advancedAttributes.ageRange,
+                genderConfidence: face.advancedAttributes.genderConfidence,
+                gazeDirection: face.advancedAttributes.gazeDirection,
+                facialHair: face.advancedAttributes.facialHair,
+                accessories: face.advancedAttributes.accessories,
+                makeup: face.advancedAttributes.makeup,
+              } as AdvancedFaceAttributes)
+            : undefined,
+          pose3D: face.pose3D,
+          imageQuality: face.imageQuality,
+          trackingId: face.trackingId,
+          trackingConfidence: face.trackingConfidence,
+        }
+        return detectedFace
+      })
     } catch (error) {
       logger.error("Ошибка продвинутой детекции лиц:", { error })
       return []
@@ -315,13 +360,7 @@ export class AdvancedFaceDetectionService {
         base64Data = faceImage
       }
 
-      const result = await invoke<{
-        vector: number[]
-        quality: number
-        dimension: number
-      }>("generate_face_embedding_from_base64", {
-        imageData: `data:image/jpeg;base64,${base64Data}`,
-      })
+      const result = await PersonIdCmds.generateFaceEmbeddingFromBase64(`data:image/jpeg;base64,${base64Data}`)
 
       return new Float32Array(result.vector)
     } catch (error) {
@@ -345,9 +384,12 @@ export class AdvancedFaceDetectionService {
         base64Data = faceImage
       }
 
-      const quality = await invoke<FaceImageQuality>("analyze_face_quality", {
-        faceImage: base64Data,
-      })
+      const quality = await PersonIdCmds.analyzeFaceQuality(base64Data)
+
+      // Проверяем, что качество определено
+      if (!quality) {
+        throw new Error("Не удалось получить результаты анализа качества")
+      }
 
       return quality
     } catch (error) {
@@ -383,7 +425,7 @@ export class AdvancedFaceDetectionService {
 
     try {
       // Запускаем real-time обработку в Tauri
-      await invoke("start_realtime_face_detection", {
+      await PersonIdCmds.startRealtimeFaceDetection({
         streamId,
         config: this.config,
       })
@@ -408,7 +450,7 @@ export class AdvancedFaceDetectionService {
     if (!this.realtimeStatus.isProcessing) return
 
     try {
-      await invoke("stop_realtime_face_detection")
+      await PersonIdCmds.stopRealtimeFaceDetection()
 
       this.realtimeStatus.isProcessing = false
 
@@ -436,9 +478,7 @@ export class AdvancedFaceDetectionService {
     this.config = { ...this.config, ...config }
 
     if (this.isInitialized) {
-      await invoke("update_face_detection_config", {
-        config: this.config,
-      })
+      await PersonIdCmds.updateFaceDetectionConfig(this.config)
     }
   }
 
@@ -486,7 +526,7 @@ export class AdvancedFaceDetectionService {
         base64Data = imageData
       }
 
-      const blurredImage = await invoke<string>("blur_faces_in_image", {
+      const blurredImage = await PersonIdCmds.blurFacesInImage({
         imageData: base64Data,
         blurIntensity: options?.blurIntensity || 15,
         blurType: options?.blurType || "gaussian",
@@ -509,7 +549,7 @@ export class AdvancedFaceDetectionService {
     }
 
     if (this.isInitialized) {
-      await invoke("cleanup_face_detection")
+      await PersonIdCmds.cleanupFaceDetection()
       this.isInitialized = false
     }
   }

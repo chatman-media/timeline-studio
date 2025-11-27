@@ -5,7 +5,6 @@
  * позволяя создавать планы монтажа через естественные промты.
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import { getVideoEditingOrchestrator } from "@/domains/video-editing"
 import type { TimelineClip } from "@/domains/video-editing/types"
@@ -19,6 +18,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedMoment } from "@/types/montage-planner-rust"
 import { MomentCategory as RustMomentCategory } from "@/types/montage-planner-rust"
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
+import { generateMontagePlan as generateMontagePlanTauri } from "../../../tauri/ai-tools-commands"
 import type { AIToolMetadata, IAITool } from "../../../types"
 
 const logger = createLogger({ module: "MontagePlanningTool" })
@@ -617,11 +617,7 @@ export class MontagePlanningTool extends BaseAITool implements IAITool {
             }
 
             // Вызываем backend для генерации плана
-            const plan = await invoke<MontagePlan>("generate_montage_plan", {
-              moments,
-              config,
-              sourceFiles,
-            })
+            const plan = await generateMontagePlanTauri(moments, config, sourceFiles)
 
             // Форматируем сводку
             const planSummary = formatPlanSummary(plan)
@@ -666,7 +662,10 @@ export class MontagePlanningTool extends BaseAITool implements IAITool {
               plan,
               planSummary,
               appliedToTimeline,
-              clipCount: plan.sequences.reduce((acc, seq) => acc + seq.clips.length, 0),
+              clipCount: plan.sequences.reduce(
+                (acc: number, seq: { clips: any[] }) => acc + seq.clips.length,
+                0,
+              ),
               totalDuration: plan.totalDuration,
               qualityScore: plan.qualityScore,
               message: baseMessage,

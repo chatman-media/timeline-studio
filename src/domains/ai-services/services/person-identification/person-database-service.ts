@@ -4,8 +4,7 @@
  * Обеспечивает CRUD операции, поиск по эмбеддингам, кластеризацию и синхронизацию.
  */
 
-import { invoke } from "@tauri-apps/api/core"
-
+import * as PersonIdCmds from "@/domains/ai-services/tauri/person-identification-commands"
 import type {
   DetectedFace,
   FaceEmbedding,
@@ -17,7 +16,6 @@ import type {
   PersonStats,
   PersonThumbnail,
 } from "@/features/person-identification/types/person"
-
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("PersonDatabaseService")
@@ -210,7 +208,7 @@ export class PersonDatabaseService {
    */
   private async initializeTauriDB(): Promise<void> {
     try {
-      await invoke("init_person_database")
+      await PersonIdCmds.initPersonDatabase()
       logger.debug("Tauri база данных инициализирована")
     } catch (error) {
       logger.error("Ошибка инициализации Tauri базы данных:", { error })
@@ -225,8 +223,8 @@ export class PersonDatabaseService {
     await this.ensureInitialized()
 
     if (this.config.storage === "tauri") {
-      const person = await invoke<PersonProfile>("create_person", {
-        name: personData.name,
+      const person = await PersonIdCmds.createPerson({
+        name: personData.name || "",
         tags: personData.tags,
         notes: personData.notes,
       })
@@ -273,7 +271,7 @@ export class PersonDatabaseService {
       let person: PersonProfile | null = null
 
       if (this.config.storage === "tauri") {
-        person = await invoke<PersonProfile | null>("get_person", { personId })
+        person = await PersonIdCmds.getPerson(personId)
       } else {
         person = await this.loadPerson(personId)
       }
@@ -329,7 +327,7 @@ export class PersonDatabaseService {
 
     try {
       if (this.config.storage === "tauri") {
-        await invoke("delete_person", { personId })
+        await PersonIdCmds.deletePerson(personId)
       } else {
         // Удаляем связанные данные
         // Обрабатываем ошибки для каждой операции отдельно
@@ -391,7 +389,7 @@ export class PersonDatabaseService {
     try {
       if (this.config.storage === "tauri") {
         // Используем Tauri базу данных
-        const searchResults = await invoke<SimilaritySearchResult[]>("search_similar_persons", {
+        const searchResults = await PersonIdCmds.searchSimilarPersons({
           embedding: Array.from(embedding),
           topK: limit,
           useCosine: true,
@@ -501,7 +499,7 @@ export class PersonDatabaseService {
 
     try {
       if (this.config.storage === "tauri") {
-        await invoke("add_face_embedding", {
+        await PersonIdCmds.addFaceEmbedding({
           personId,
           embedding: Array.from(embedding.vector),
           quality: embedding.quality,
@@ -542,7 +540,7 @@ export class PersonDatabaseService {
 
     try {
       if (this.config.storage === "tauri") {
-        await invoke("add_person_appearance", {
+        await PersonIdCmds.addPersonAppearance({
           personId,
           clipId: appearance.clipId,
           startTime: appearance.startTime,
@@ -824,7 +822,7 @@ export class PersonDatabaseService {
 
     try {
       if (this.config.storage === "tauri") {
-        return await invoke<DatabaseStats>("get_person_database_stats")
+        return await PersonIdCmds.getPersonDatabaseStats()
       }
       const persons = await this.getAllPersons()
       const totalEmbeddings = persons.reduce((sum, p) => sum + p.faceEmbeddings.length, 0)
@@ -1113,7 +1111,7 @@ export class PersonDatabaseService {
    */
   async setSimilarityThreshold(threshold: number): Promise<void> {
     if (this.config.storage === "tauri") {
-      await invoke("set_similarity_threshold", { threshold })
+      await PersonIdCmds.setSimilarityThreshold(threshold)
     }
     this.config.similarityThreshold = threshold
   }
@@ -1152,7 +1150,7 @@ export class PersonDatabaseService {
           }
         }
 
-        await invoke("add_person_thumbnail", {
+        await PersonIdCmds.addPersonThumbnail({
           personId,
           imageDataBase64: thumbnailData.imageData,
           width: thumbnailData.width,
