@@ -1,3 +1,10 @@
+## [3.32.5](https://github.com/chatman-media/timeline-studio/compare/v3.32.4...v3.32.5) (2025-11-27)
+
+
+### Bug Fixes
+
+* **app-state:** prevent double command execution breaking media import ([f49ea79](https://github.com/chatman-media/timeline-studio/commit/f49ea79f6ebfb4d122fb5dd3314c471f5a9d64c9))
+
 ## [3.32.4](https://github.com/chatman-media/timeline-studio/compare/v3.32.3...v3.32.4) (2025-11-27)
 
 
