@@ -1,4 +1,4 @@
-# Задача: Реализация 3 отдельных списков задач (Анализ, Рендеринг, Экспорт)
+# Задача: Реализация 3 отдельных списков задач (Анализ, Рендеринг, Публикация)
 
 **Статус:** 🟡 Active
 **Приоритет:** High
@@ -8,12 +8,14 @@
 
 ## 📋 Описание
 
-Создать 3 отдельных списка задач в топбаре Timeline Studio:
-1. **Analysis Tasks** - AI анализ видео (распознавание, моменты, монтажные планы)
-2. **Render Tasks** - рендеринг видео (уже существует, требует доработки)
-3. **Export Tasks** - экспорт в форматы (новый функционал)
+Организовать 3 списка задач в топбаре Timeline Studio:
+1. **Analysis Tasks** - AI анализ видео (распознавание, моменты, монтажные планы) - **НОВЫЙ**
+2. **Render Tasks** - рендеринг видео - **УЖЕ ЕСТЬ**
+3. **Publication Tasks** - экспорт и публикация на платформы - **УЖЕ ЕСТЬ**
 
 Все списки должны работать через backend orchestrators с единообразным UI/UX.
+
+**Важно:** Export и Publication - это одно и то же. Publication Tasks уже включает экспорт видео.
 
 ## 🎯 Цели
 
@@ -27,10 +29,11 @@
 ## 📊 Текущее состояние
 
 ### Уже есть:
-- ✅ **Publication Tasks** - публикация на платформы (YouTube, TikTok, etc.)
+- ✅ **Publication Tasks** - экспорт и публикация видео
   - Компонент: `publication-tasks-dropdown.tsx`
   - Хук: `use-publication-tasks.ts`
   - Backend: YouTube Plugin через system-integration
+  - **Включает:** экспорт в форматы + загрузка на платформы
 
 - ✅ **Render Tasks** - рендеринг видео
   - Компонент: `render-jobs-dropdown.tsx`
@@ -39,7 +42,10 @@
 
 ### Требуется создать:
 - ❌ **Analysis Tasks** - AI анализ (полностью новое)
-- ❌ **Export Tasks** - экспорт в форматы (полностью новое)
+
+### Требуется доработать:
+- 🔧 **Publication Tasks** - расширить для экспорта в локальные форматы (если нужно)
+- 🔧 **Render Tasks** - проверить консистентность UI
 
 ## 🏗️ Архитектура
 
@@ -94,34 +100,33 @@ enum AnalysisTaskStatus {
 }
 ```
 
-**Export Task:**
+**Publication Task (уже существует):**
 ```typescript
-interface ExportTask {
+interface PublicationTask {
   id: string
+  platform: PublicationPlatform // YouTube, TikTok, VK, Instagram, Facebook, Twitter, Local
   project_name: string
-  video_name: string
-  status: ExportTaskStatus
+  video_path: string
+  title: string
+  status: PublicationStatus
+  progress?: PublicationProgress
   created_at: string
   completed_at?: string
-  export_settings: ExportSettings
-  output_format: OutputFormat
-  target_platform?: 'youtube' | 'tiktok' | 'instagram' | 'local' | 'cloud'
-  progress: ExportProgress
-  output_path?: string
-  file_size?: number
   error_message?: string
+  video_url?: string // для онлайн платформ
+  output_path?: string // для локального экспорта
 }
 
-enum ExportTaskStatus {
-  Queued = "queued"
+enum PublicationStatus {
   Preparing = "preparing"
-  Encoding = "encoding"
-  PostProcessing = "post_processing"
   Uploading = "uploading"
+  Processing = "processing"
   Completed = "completed"
   Failed = "failed"
   Cancelled = "cancelled"
 }
+
+// Примечание: Publication включает как экспорт, так и загрузку
 ```
 
 ### Backend интеграция
@@ -137,15 +142,15 @@ Subscribe to DOMAIN_EVENTS.CONTENT_ANALYSIS_*
 Map workflow status → AnalysisTask
 ```
 
-**Export Tasks → Video Editing Domain:**
+**Publication Tasks → System Integration Domain (уже реализовано):**
 ```
-use-export-tasks hook
+use-publication-tasks hook
   ↓
-videoCompilerRenderService (расширить)
+sendPluginCommand()
   ↓
-invoke("get_export_jobs")
+YouTube/Platform Plugins
   ↓
-Tauri/Rust backend
+Tauri Plugin API
 ```
 
 ## 📝 План реализации
@@ -168,9 +173,9 @@ Tauri/Rust backend
 
 ---
 
-### Этап 2: Backend интеграция (2-3 дня)
+### Этап 2: Backend интеграция (2 дня)
 
-**Для Analysis Tasks:**
+**Для Analysis Tasks (единственная новая интеграция):**
 - [ ] Модифицировать `/src/domains/ai-services/services/unified-orchestrator.ts`
   - Экспортировать `getActiveWorkflows()` метод
   - Добавить `getWorkflowStatus(workflowId: string)`
@@ -181,25 +186,19 @@ Tauri/Rust backend
   - Подписка на события CONTENT_ANALYSIS_*
   - Кэширование результатов
 
-**Для Export Tasks:**
-- [ ] Расширить `/src/domains/video-editing/services/video-compiler-render-service.ts`
-  - Добавить `getExportJobs()` метод
-  - Добавить `startExport()` метод
-  - Добавить `cancelExport()` метод
-
-- [ ] Создать `/src/features/export/services/export-task-service.ts`
-  - Управление очередью экспорта
-  - Отслеживание прогресса
-  - Обработка ошибок
+**Проверить Publication Tasks (уже реализовано):**
+- [ ] Убедиться, что Publication Tasks поддерживает локальный экспорт
+- [ ] Проверить работу с YouTube Plugin
+- [ ] Добавить поддержку других платформ при необходимости
 
 **Задачи:**
-- [ ] Протестировать backend методы с mock данными
+- [ ] Протестировать Analysis backend с mock данными
 - [ ] Добавить логирование для debugging
 - [ ] Обработать edge cases (отмена, ошибки)
 
 ---
 
-### Этап 3: React hooks (2-3 дня)
+### Этап 3: React hooks (1-2 дня)
 
 **Создать:**
 - [ ] `/src/features/analysis-tasks/hooks/use-analysis-tasks.ts`
@@ -215,17 +214,9 @@ Tauri/Rust backend
   }
   ```
 
-- [ ] `/src/features/export/hooks/use-export-tasks.ts`
-  ```typescript
-  function useExportTasks(): {
-    tasks: ExportTask[]
-    isLoading: boolean
-    error: string | null
-    refreshTasks: () => Promise<void>
-    getTask: (taskId: string) => Promise<ExportTask | null>
-    cancelTask: (taskId: string) => Promise<boolean>
-  }
-  ```
+**Проверить существующие:**
+- [ ] `use-publication-tasks.ts` - убедиться в консистентности
+- [ ] `use-render-jobs.ts` - убедиться в консистентности
 
 **Паттерн реализации:**
 - useState для tasks, isLoading, error
@@ -241,9 +232,9 @@ Tauri/Rust backend
 
 ---
 
-### Этап 4: UI компоненты (3-4 дня)
+### Этап 4: UI компоненты (2-3 дня)
 
-**Analysis Tasks:**
+**Analysis Tasks (новое):**
 - [ ] `/src/features/analysis-tasks/components/analysis-tasks-dropdown.tsx`
   - DropdownMenu с иконкой Brain
   - Badge с количеством активных задач
@@ -262,23 +253,11 @@ Tauri/Rust backend
   - AI Director progress
   - Montage Planner progress
 
-**Export Tasks:**
-- [ ] `/src/features/export/components/export-tasks-dropdown.tsx`
-  - DropdownMenu с иконкой HardDrive
-  - Badge с количеством активных
-  - ScrollArea для списка
+**Проверить существующие UI:**
+- [ ] `publication-tasks-dropdown.tsx` - консистентность дизайна
+- [ ] `render-jobs-dropdown.tsx` - консистентность дизайна
 
-- [ ] `/src/features/export/components/export-task-item.tsx`
-  - Формат экспорта
-  - Target platform (если есть)
-  - Progress bar
-  - ETA и скорость
-
-- [ ] `/src/features/export/components/export-settings-summary.tsx`
-  - Краткое отображение настроек экспорта
-  - Разрешение, fps, codec
-
-**Общие компоненты:**
+**Общие требования:**
 - Использовать существующие: Badge, Progress, ScrollArea
 - Консистентный дизайн со всеми dropdown'ами
 - Пульсирующий индикатор для активных задач
@@ -300,10 +279,9 @@ Tauri/Rust backend
 ```tsx
 {/* Группа 5: Задачи и экспорт */}
 <div className="flex items-center justify-end">
-  <AnalysisTasksDropdown />      {/* НОВОЕ */}
-  <PublicationTasksDropdown />
-  <RenderJobsDropdown />
-  <ExportTasksDropdown />         {/* НОВОЕ */}
+  <AnalysisTasksDropdown />      {/* НОВОЕ - AI анализ */}
+  <PublicationTasksDropdown />   {/* УЖЕ ЕСТЬ - экспорт/публикация */}
+  <RenderJobsDropdown />         {/* УЖЕ ЕСТЬ - рендеринг */}
 
   <Button /* AI Director */ />
   <Button /* Export modal */ />
@@ -311,10 +289,9 @@ Tauri/Rust backend
 ```
 
 **Иконки:**
-- Analysis: Brain (уже используется для AI Director, разделить контексты)
-- Publication: Send
-- Render: ListTodo
-- Export: HardDrive
+- Analysis: Brain или Sparkles (AI анализ)
+- Publication: Send или Upload (экспорт/публикация)
+- Render: ListTodo или Clapperboard (рендеринг)
 
 **Задачи:**
 - [ ] Добавить импорты новых компонентов
@@ -333,7 +310,7 @@ Tauri/Rust backend
   "analysis": {
     "taskTitle": "AI Analysis Tasks",
     "noTasks": "No analysis tasks",
-    "activeTasks": "Active: {{count}}",
+    "activeTasks": "Analyzing: {{count}}",
     "status": {
       "pending": "Pending",
       "analyzing_video": "Analyzing Video",
@@ -350,24 +327,13 @@ Tauri/Rust backend
       "moments": "Moment Detection",
       "plan": "Montage Planning"
     }
-  },
-  "export": {
-    "taskTitle": "Export Tasks",
-    "noTasks": "No export tasks",
-    "activeTasks": "Exporting: {{count}}",
-    "status": {
-      "queued": "Queued",
-      "preparing": "Preparing",
-      "encoding": "Encoding",
-      "post_processing": "Post-Processing",
-      "uploading": "Uploading",
-      "completed": "Completed",
-      "failed": "Failed",
-      "cancelled": "Cancelled"
-    }
   }
 }
 ```
+
+**Проверить существующие переводы:**
+- [ ] `publication.*` - убедиться что все статусы переведены
+- [ ] `render.*` - убедиться что все статусы переведены
 
 **Языки для перевода:**
 - [ ] en - English
@@ -388,9 +354,9 @@ Tauri/Rust backend
 
 ---
 
-### Этап 7: Тестирование (2-3 дня)
+### Этап 7: Тестирование (1-2 дня)
 
-**Unit тесты:**
+**Unit тесты (только для Analysis Tasks):**
 - [ ] `/src/features/analysis-tasks/__tests__/hooks/use-analysis-tasks.test.ts`
   - Тест polling логики
   - Тест cancel task
@@ -401,21 +367,16 @@ Tauri/Rust backend
   - Рендер пустого состояния
   - Тест interactions
 
-- [ ] `/src/features/export/__tests__/hooks/use-export-tasks.test.ts`
-- [ ] `/src/features/export/__tests__/components/export-tasks-dropdown.test.tsx`
-
 **Mocks:**
 - [ ] `/src/features/analysis-tasks/__mocks__/analysis-tasks.ts`
   - Mock AnalysisTask данные
-  - Mock responses
-
-- [ ] `/src/features/export/__mocks__/export-tasks.ts`
+  - Mock UnifiedOrchestrator responses
 
 **E2E тесты:**
 - [ ] Тест создания и отслеживания Analysis Task
-- [ ] Тест создания и отслеживания Export Task
-- [ ] Тест отмены задачи
+- [ ] Тест отмены Analysis Task
 - [ ] Тест обработки ошибок
+- [ ] Интеграция всех 3 списков в top bar
 
 **Integration тесты:**
 - [ ] Проверить работу с UnifiedOrchestrator
@@ -432,8 +393,7 @@ Tauri/Rust backend
   - API хука
   - Примеры использования
   - Архитектура
-
-- [ ] `/src/features/export/README.md`
+  - Интеграция с UnifiedOrchestrator
 
 **Обновить:**
 - [ ] `/src/features/README.md` - добавить новые модули
@@ -449,7 +409,7 @@ Tauri/Rust backend
 - [ ] Согласовать дизайн UI с командой
 - [ ] Определить приоритеты (Analysis или Export первым)
 
-### Analysis Tasks Module
+### Analysis Tasks Module (НОВОЕ)
 - [ ] Типы и интерфейсы
 - [ ] Backend интеграция (UnifiedOrchestrator)
 - [ ] React hook (use-analysis-tasks)
@@ -457,13 +417,9 @@ Tauri/Rust backend
 - [ ] Unit тесты
 - [ ] i18n переводы
 
-### Export Tasks Module
-- [ ] Типы и интерфейсы
-- [ ] Backend интеграция (export-task-service)
-- [ ] React hook (use-export-tasks)
-- [ ] UI компоненты (dropdown, item, settings)
-- [ ] Unit тесты
-- [ ] i18n переводы
+### Существующие модули
+- [ ] Проверить Publication Tasks (экспорт уже включён)
+- [ ] Проверить Render Tasks (консистентность UI)
 
 ### Integration
 - [ ] Интеграция в top-bar.tsx
@@ -484,11 +440,12 @@ Tauri/Rust backend
 ```
 ┌─────────────────────────────────────────────────┐
 │ Top Bar                                         │
-│ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌────────┐│
-│ │ 🧠 1 │ │ 📤 2 │ │ 📋 3 │ │ 💾 1 │ │ Export ││
-│ └──────┘ └──────┘ └──────┘ └──────┘ └────────┘│
-│ Analysis Publication Render Export   Button    │
+│ ┌──────┐ ┌──────┐ ┌──────┐ ┌────────┐         │
+│ │ 🧠 1 │ │ 📤 2 │ │ 📋 3 │ │ Export │         │
+│ └──────┘ └──────┘ └──────┘ └────────┘         │
+│ Analysis Publication Render    Button           │
 └─────────────────────────────────────────────────┘
+Примечание: Publication = Export + Upload
 
 Analysis Tasks Dropdown:
 ┌────────────────────────────────────────┐
@@ -523,8 +480,8 @@ Analysis Tasks Dropdown:
 1. **UnifiedOrchestrator access**: Нужна публичная API
    - Решение: Экспортировать необходимые методы
 
-2. **Export vs Render разделение**: Где граница?
-   - Решение: Export = финальная обработка + загрузка
+2. **Publication Tasks scope**: Включает ли локальный экспорт?
+   - Решение: Да, Publication = Export + Upload (опционально)
 
 3. **Event subscriptions**: Как обрабатывать в React?
    - Решение: Custom hook с cleanup
