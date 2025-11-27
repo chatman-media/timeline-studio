@@ -1,5 +1,3 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { readTextFile } from "@tauri-apps/plugin-fs"
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
@@ -11,14 +9,32 @@ import { useStyleTemplatesImport } from "../../hooks/use-style-templates-import"
 const mockLoggerError = vi.hoisted(() => vi.fn())
 const mockLoggerInfo = vi.hoisted(() => vi.fn())
 
-// Мокаем Tauri dialog API
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn(),
-}))
+// Mock platform service
+const mockShowOpenDialog = vi.fn()
+const mockReadTextFile = vi.fn()
 
-// Мокаем Tauri fs API
-vi.mock("@tauri-apps/plugin-fs", () => ({
-  readTextFile: vi.fn(),
+const mockPlatform = {
+  showOpenDialog: mockShowOpenDialog,
+  showSaveDialog: vi.fn(),
+  readTextFile: mockReadTextFile,
+  writeTextFile: vi.fn(),
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: vi.fn((path: string) => path),
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
 }))
 
 // Мокаем tauri-logger для возврата мокированного logger
@@ -56,8 +72,7 @@ vi.mock("@/features/resources", async () => {
 })
 
 // Получаем мок функции
-const mockOpen = vi.mocked(open)
-const mockReadTextFile = vi.mocked(readTextFile)
+const mockOpen = mockShowOpenDialog
 
 describe("useStyleTemplatesImport", () => {
   beforeEach(() => {

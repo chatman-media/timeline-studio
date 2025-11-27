@@ -1,5 +1,3 @@
-import { invoke } from "@tauri-apps/api/core"
-import { save } from "@tauri-apps/plugin-dialog"
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -7,12 +5,23 @@ import { useTracks } from "@/features/timeline/hooks/use-tracks"
 
 import { useSubtitlesExport } from "../../hooks/use-subtitles-export"
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock subtitle commands
+const mockSaveSubtitleFile = vi.fn()
+
+vi.mock("@/domains/subtitles/tauri/subtitle-commands", () => ({
+  saveSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
 }))
 
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  save: vi.fn(),
+// Mock @/core container
+const mockShowSaveDialog = vi.fn()
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      showSaveDialog: mockShowSaveDialog,
+    })),
+  },
 }))
 
 vi.mock("@/features/timeline/hooks/use-tracks", () => ({
@@ -44,9 +53,10 @@ vi.mock("@/features/timeline/hooks/use-tracks", () => ({
   })),
 }))
 
-vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({
-    toast: vi.fn(),
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
   }),
 }))
 
@@ -57,8 +67,8 @@ describe("useSubtitlesExport", () => {
 
   it("should export subtitles to SRT format", async () => {
     const mockFilePath = "/path/to/output.srt"
-    vi.mocked(save).mockResolvedValueOnce(mockFilePath)
-    vi.mocked(invoke).mockResolvedValueOnce(undefined)
+    mockShowSaveDialog.mockResolvedValueOnce(mockFilePath)
+    mockSaveSubtitleFile.mockResolvedValueOnce(undefined)
 
     const { result } = renderHook(() => useSubtitlesExport())
 
@@ -66,7 +76,7 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSubtitleFile("srt")
     })
 
-    expect(save).toHaveBeenCalledWith({
+    expect(mockShowSaveDialog).toHaveBeenCalledWith({
       filters: [
         {
           name: "SRT Subtitles",
@@ -76,19 +86,17 @@ describe("useSubtitlesExport", () => {
       defaultPath: "subtitles.srt",
     })
 
-    expect(invoke).toHaveBeenCalledWith("save_subtitle_file", {
-      options: {
-        format: "srt",
-        content: expect.stringContaining("00:00:00,000 --> 00:00:02,000"),
-        output_path: mockFilePath,
-      },
+    expect(mockSaveSubtitleFile).toHaveBeenCalledWith({
+      format: "srt",
+      content: expect.stringContaining("00:00:00,000 --> 00:00:02,000"),
+      output_path: mockFilePath,
     })
   })
 
   it("should export subtitles to VTT format", async () => {
     const mockFilePath = "/path/to/output.vtt"
-    vi.mocked(save).mockResolvedValueOnce(mockFilePath)
-    vi.mocked(invoke).mockResolvedValueOnce(undefined)
+    mockShowSaveDialog.mockResolvedValueOnce(mockFilePath)
+    mockSaveSubtitleFile.mockResolvedValueOnce(undefined)
 
     const { result } = renderHook(() => useSubtitlesExport())
 
@@ -96,7 +104,7 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSubtitleFile("vtt")
     })
 
-    expect(save).toHaveBeenCalledWith({
+    expect(mockShowSaveDialog).toHaveBeenCalledWith({
       filters: [
         {
           name: "VTT Subtitles",
@@ -106,19 +114,17 @@ describe("useSubtitlesExport", () => {
       defaultPath: "subtitles.vtt",
     })
 
-    expect(invoke).toHaveBeenCalledWith("save_subtitle_file", {
-      options: {
-        format: "vtt",
-        content: expect.stringContaining("WEBVTT"),
-        output_path: mockFilePath,
-      },
+    expect(mockSaveSubtitleFile).toHaveBeenCalledWith({
+      format: "vtt",
+      content: expect.stringContaining("WEBVTT"),
+      output_path: mockFilePath,
     })
   })
 
   it("should export subtitles to ASS format", async () => {
     const mockFilePath = "/path/to/output.ass"
-    vi.mocked(save).mockResolvedValueOnce(mockFilePath)
-    vi.mocked(invoke).mockResolvedValueOnce(undefined)
+    mockShowSaveDialog.mockResolvedValueOnce(mockFilePath)
+    mockSaveSubtitleFile.mockResolvedValueOnce(undefined)
 
     const { result } = renderHook(() => useSubtitlesExport())
 
@@ -126,7 +132,7 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSubtitleFile("ass")
     })
 
-    expect(save).toHaveBeenCalledWith({
+    expect(mockShowSaveDialog).toHaveBeenCalledWith({
       filters: [
         {
           name: "ASS Subtitles",
@@ -136,12 +142,10 @@ describe("useSubtitlesExport", () => {
       defaultPath: "subtitles.ass",
     })
 
-    expect(invoke).toHaveBeenCalledWith("save_subtitle_file", {
-      options: {
-        format: "ass",
-        content: expect.stringContaining("[Script Info]"),
-        output_path: mockFilePath,
-      },
+    expect(mockSaveSubtitleFile).toHaveBeenCalledWith({
+      format: "ass",
+      content: expect.stringContaining("[Script Info]"),
+      output_path: mockFilePath,
     })
   })
 
@@ -193,12 +197,12 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSubtitleFile("srt")
     })
 
-    expect(save).not.toHaveBeenCalled()
-    expect(invoke).not.toHaveBeenCalled()
+    expect(mockShowSaveDialog).not.toHaveBeenCalled()
+    expect(mockSaveSubtitleFile).not.toHaveBeenCalled()
   })
 
   it("should handle cancelled save dialog", async () => {
-    vi.mocked(save).mockResolvedValueOnce(null)
+    mockShowSaveDialog.mockResolvedValueOnce(null)
 
     const { result } = renderHook(() => useSubtitlesExport())
 
@@ -206,13 +210,13 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSubtitleFile("srt")
     })
 
-    expect(invoke).not.toHaveBeenCalled()
+    expect(mockSaveSubtitleFile).not.toHaveBeenCalled()
   })
 
   it("should export selected subtitles", async () => {
     const mockFilePath = "/path/to/output.srt"
-    vi.mocked(save).mockResolvedValueOnce(mockFilePath)
-    vi.mocked(invoke).mockResolvedValueOnce(undefined)
+    mockShowSaveDialog.mockResolvedValueOnce(mockFilePath)
+    mockSaveSubtitleFile.mockResolvedValueOnce(undefined)
 
     const { result } = renderHook(() => useSubtitlesExport())
 
@@ -220,19 +224,17 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSelectedSubtitles(["sub-1"], "srt")
     })
 
-    expect(invoke).toHaveBeenCalledWith("save_subtitle_file", {
-      options: {
-        format: "srt",
-        content: expect.stringContaining("First subtitle"),
-        output_path: mockFilePath,
-      },
+    expect(mockSaveSubtitleFile).toHaveBeenCalledWith({
+      format: "srt",
+      content: expect.stringContaining("First subtitle"),
+      output_path: mockFilePath,
     })
   })
 
   it("should export subtitles by time range", async () => {
     const mockFilePath = "/path/to/output.srt"
-    vi.mocked(save).mockResolvedValueOnce(mockFilePath)
-    vi.mocked(invoke).mockResolvedValueOnce(undefined)
+    mockShowSaveDialog.mockResolvedValueOnce(mockFilePath)
+    mockSaveSubtitleFile.mockResolvedValueOnce(undefined)
 
     const { result } = renderHook(() => useSubtitlesExport())
 
@@ -240,19 +242,17 @@ describe("useSubtitlesExport", () => {
       await result.current.exportSubtitlesByTimeRange(2.5, 5, "srt")
     })
 
-    expect(invoke).toHaveBeenCalledWith("save_subtitle_file", {
-      options: {
-        format: "srt",
-        content: expect.stringContaining("Second subtitle"),
-        output_path: mockFilePath,
-      },
+    expect(mockSaveSubtitleFile).toHaveBeenCalledWith({
+      format: "srt",
+      content: expect.stringContaining("Second subtitle"),
+      output_path: mockFilePath,
     })
   })
 
   it("should handle export errors", async () => {
     const mockError = new Error("Failed to save file")
-    vi.mocked(save).mockResolvedValueOnce("/path/to/output.srt")
-    vi.mocked(invoke).mockRejectedValueOnce(mockError)
+    mockShowSaveDialog.mockResolvedValueOnce("/path/to/output.srt")
+    mockSaveSubtitleFile.mockRejectedValueOnce(mockError)
 
     const { result } = renderHook(() => useSubtitlesExport())
 

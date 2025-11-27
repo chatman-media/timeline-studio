@@ -225,7 +225,11 @@ describe("timelineToProjectSchema", () => {
       isMuted: true,
       isLocked: true,
       volume: 0.5,
-      trackEffects: [{ effectId: "effect-1" }, { effectId: "effect-2" }],
+      // ОБНОВЛЕНО: добавлены id для AppliedEffect (теперь используем e.id вместо e.effectId)
+      trackEffects: [
+        { id: "applied-effect-1", effectId: "effect-1", enabled: true, order: 0 },
+        { id: "applied-effect-2", effectId: "effect-2", enabled: true, order: 1 },
+      ],
     })
 
     const project = createMockProject({ globalTracks: [track] })
@@ -235,7 +239,8 @@ describe("timelineToProjectSchema", () => {
     expect(convertedTrack.enabled).toBe(false) // !isMuted
     expect(convertedTrack.locked).toBe(true)
     expect(convertedTrack.volume).toBe(0.5)
-    expect(convertedTrack.effects).toEqual(["effect-1", "effect-2"])
+    // Теперь используем ID применения (applied.id), а не ID базового эффекта
+    expect(convertedTrack.effects).toEqual(["applied-effect-1", "applied-effect-2"])
   })
 
   it("преобразует клипы", () => {

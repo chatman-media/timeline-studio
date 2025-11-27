@@ -9,7 +9,7 @@ import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-binding
 import { useVersionControl } from "../../hooks/use-version-control"
 
 // Mock dependencies
-vi.mock("../../services/backend-sync", () => ({
+vi.mock("@/adapters/tauri", () => ({
   getBackendSync: vi.fn(),
 }))
 const mockToast = vi.fn()
@@ -142,7 +142,7 @@ describe("useVersionControl", () => {
     }
 
     // Setup mocks
-    const { getBackendSync } = await import("../../services/backend-sync")
+    const { getBackendSync } = await import("@/adapters/tauri")
     ;(getBackendSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(mockBackendSync as any)
   })
 

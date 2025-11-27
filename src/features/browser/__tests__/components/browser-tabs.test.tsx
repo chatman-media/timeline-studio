@@ -63,7 +63,7 @@ describe("BrowserTabs", () => {
     vi.clearAllMocks()
   })
 
-  it("должен рендерить все вкладки", () => {
+  it("должен рендерить все активные вкладки", () => {
     renderWithProvider(<BrowserTabs {...defaultProps} />)
 
     expect(screen.getByTestId("media-tab")).toBeInTheDocument()
@@ -74,11 +74,12 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("transitions-tab")).toBeInTheDocument()
     expect(screen.getByTestId("templates-tab")).toBeInTheDocument()
     expect(screen.getByTestId("style-templates-tab")).toBeInTheDocument()
-    expect(screen.getByTestId("projects-tab")).toBeInTheDocument()
-    expect(screen.getByTestId("scenarios-tab")).toBeInTheDocument()
+    // projects and scenarios tabs are temporarily disabled
+    expect(screen.queryByTestId("projects-tab")).not.toBeInTheDocument()
+    expect(screen.queryByTestId("scenarios-tab")).not.toBeInTheDocument()
   })
 
-  it("должен отображать правильные иконки для каждой вкладки", () => {
+  it("должен отображать правильные иконки для каждой активной вкладки", () => {
     renderWithProvider(<BrowserTabs {...defaultProps} />)
 
     expect(screen.getByTestId("media-tab")).toContainElement(screen.getByTestId("icon-clapperboard"))
@@ -89,11 +90,9 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("transitions-tab")).toContainElement(screen.getByTestId("icon-flip"))
     expect(screen.getByTestId("templates-tab")).toContainElement(screen.getByTestId("icon-video"))
     expect(screen.getByTestId("style-templates-tab")).toContainElement(screen.getByTestId("icon-sticker"))
-    expect(screen.getByTestId("projects-tab")).toContainElement(screen.getByTestId("icon-layouttemplate"))
-    expect(screen.getByTestId("scenarios-tab")).toContainElement(screen.getByTestId("icon-wand2"))
   })
 
-  it("должен отображать правильные метки для каждой вкладки", () => {
+  it("должен отображать правильные метки для каждой активной вкладки", () => {
     renderWithProvider(<BrowserTabs {...defaultProps} />)
 
     expect(screen.getByTestId("media-tab")).toHaveTextContent("browser.tabs.media")
@@ -104,8 +103,6 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("transitions-tab")).toHaveTextContent("browser.tabs.transitions")
     expect(screen.getByTestId("templates-tab")).toHaveTextContent("browser.tabs.templates")
     expect(screen.getByTestId("style-templates-tab")).toHaveTextContent("browser.tabs.styleTemplates")
-    expect(screen.getByTestId("projects-tab")).toHaveTextContent("browser.tabs.projects")
-    expect(screen.getByTestId("scenarios-tab")).toHaveTextContent("browser.tabs.scenarios")
   })
 
   it("должен устанавливать правильные классы для активной вкладки", () => {
@@ -181,19 +178,8 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("media-tab")).toHaveClass("text-gray-600")
   })
 
-  it("должен обрабатывать все возможные вкладки", () => {
-    const tabs = [
-      "media",
-      "music",
-      "subtitles",
-      "effects",
-      "filters",
-      "transitions",
-      "templates",
-      "style-templates",
-      "projects",
-      "scenarios",
-    ]
+  it("должен обрабатывать все активные вкладки", () => {
+    const tabs = ["media", "music", "subtitles", "effects", "filters", "transitions", "templates", "style-templates"]
 
     tabs.forEach((tab) => {
       // Очищаем DOM перед каждым рендером

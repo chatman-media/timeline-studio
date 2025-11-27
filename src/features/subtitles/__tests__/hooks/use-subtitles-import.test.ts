@@ -1,27 +1,52 @@
-import { invoke } from "@tauri-apps/api/core"
-import { open } from "@tauri-apps/plugin-dialog"
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-// import { createWrapper } from "@/test/test-utils"
-
 import { useSubtitlesImport } from "../../hooks/use-subtitles-import"
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock subtitle commands
+const mockReadSubtitleFile = vi.fn()
+const mockShowOpenDialog = vi.fn()
+
+vi.mock("@/domains/subtitles/tauri/subtitle-commands", () => ({
+  readSubtitleFile: (...args: any[]) => mockReadSubtitleFile(...args),
 }))
 
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn(),
+// Mock core container
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      showOpenDialog: mockShowOpenDialog,
+    })),
+  },
 }))
 
 vi.mock("@/features/timeline/hooks/use-timeline", () => ({
-  useTimeline: () => ({}),
+  useTimeline: () => ({
+    project: { sections: [{ tracks: [] }] },
+    send: vi.fn(),
+  }),
 }))
 
-vi.mock("@/hooks/use-toast", () => ({
-  useToast: () => ({
-    toast: vi.fn(),
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+  }),
+}))
+
+vi.mock("../utils/subtitle-parsers", () => ({
+  parseSubtitleFile: vi.fn((content: string) => {
+    // Simple mock parser - returns one subtitle
+    return [
+      {
+        id: "test-1",
+        type: "subtitle" as const,
+        startTime: 0,
+        duration: 2,
+        text: "Test subtitle",
+      },
+    ]
   }),
 }))
 
@@ -36,8 +61,8 @@ describe("useSubtitlesImport", () => {
 00:00:00,000 --> 00:00:02,000
 Test subtitle`
 
-    vi.mocked(open).mockResolvedValueOnce(mockFilePath)
-    vi.mocked(invoke).mockResolvedValueOnce({
+    mockShowOpenDialog.mockResolvedValueOnce([mockFilePath])
+    mockReadSubtitleFile.mockResolvedValueOnce({
       content: mockContent,
       format: "srt",
       file_name: "subtitle.srt",
@@ -51,7 +76,7 @@ Test subtitle`
       await result.current.importSubtitleFile()
     })
 
-    expect(open).toHaveBeenCalledWith({
+    expect(mockShowOpenDialog).toHaveBeenCalledWith({
       multiple: false,
       filters: [
         {
@@ -61,9 +86,7 @@ Test subtitle`
       ],
     })
 
-    expect(invoke).toHaveBeenCalledWith("read_subtitle_file", {
-      file_path: mockFilePath,
-    })
+    expect(mockReadSubtitleFile).toHaveBeenCalledWith(mockFilePath)
   })
 
   it("should import multiple subtitle files", async () => {
@@ -76,8 +99,8 @@ First subtitle`
 00:00:03.000 --> 00:00:05.000
 Second subtitle`
 
-    vi.mocked(open).mockResolvedValueOnce(mockFilePaths)
-    vi.mocked(invoke)
+    mockShowOpenDialog.mockResolvedValueOnce(mockFilePaths)
+    mockReadSubtitleFile
       .mockResolvedValueOnce({
         content: mockContent1,
         format: "srt",
@@ -95,7 +118,7 @@ Second subtitle`
       await result.current.importSubtitleFiles()
     })
 
-    expect(open).toHaveBeenCalledWith({
+    expect(mockShowOpenDialog).toHaveBeenCalledWith({
       multiple: true,
       filters: [
         {
@@ -105,13 +128,13 @@ Second subtitle`
       ],
     })
 
-    expect(invoke).toHaveBeenCalledTimes(2)
+    expect(mockReadSubtitleFile).toHaveBeenCalledTimes(2)
   })
 
   it("should handle import errors gracefully", async () => {
     const mockError = new Error("Failed to read file")
-    vi.mocked(open).mockResolvedValueOnce("/path/to/subtitle.srt")
-    vi.mocked(invoke).mockRejectedValueOnce(mockError)
+    mockShowOpenDialog.mockResolvedValueOnce(["/path/to/subtitle.srt"])
+    mockReadSubtitleFile.mockRejectedValueOnce(mockError)
 
     const { result } = renderHook(() => useSubtitlesImport())
 
@@ -123,7 +146,7 @@ Second subtitle`
   })
 
   it("should handle cancelled file dialog", async () => {
-    vi.mocked(open).mockResolvedValueOnce(null)
+    mockShowOpenDialog.mockResolvedValueOnce(null)
 
     const { result } = renderHook(() => useSubtitlesImport())
 
@@ -131,7 +154,7 @@ Second subtitle`
       await result.current.importSubtitleFile()
     })
 
-    expect(invoke).not.toHaveBeenCalled()
+    expect(mockReadSubtitleFile).not.toHaveBeenCalled()
   })
 
   it("should set isImporting state correctly", async () => {
@@ -139,7 +162,7 @@ Second subtitle`
     const openPromise = new Promise((resolve) => {
       resolveOpen = resolve
     })
-    vi.mocked(open).mockReturnValueOnce(openPromise)
+    mockShowOpenDialog.mockReturnValueOnce(openPromise)
 
     const { result } = renderHook(() => useSubtitlesImport())
 

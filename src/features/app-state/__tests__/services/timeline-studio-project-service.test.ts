@@ -2,7 +2,6 @@
  * Тесты для TimelineStudioProjectService
  */
 
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { DEFAULT_PROJECT_SETTINGS } from "@/features/project-settings/types/project"
@@ -10,19 +9,38 @@ import type { TimelineStudioProject } from "@/features/project-settings/types/ti
 
 import { TimelineStudioProjectService } from "../../services/timeline-studio-project-service"
 
-// Мокаем Tauri API
-vi.mock("@tauri-apps/plugin-fs", () => ({
-  readTextFile: vi.fn(),
-  writeTextFile: vi.fn(),
+// Mock platform service
+const mockReadTextFile = vi.fn()
+const mockWriteTextFile = vi.fn()
+
+const mockPlatform = {
+  showOpenDialog: vi.fn(),
+  showSaveDialog: vi.fn(),
+  readTextFile: mockReadTextFile,
+  writeTextFile: mockWriteTextFile,
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: vi.fn((path: string) => path),
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
 }))
 
 // Мокаем nanoid
 vi.mock("nanoid", () => ({
   nanoid: () => `test-id-${Math.random().toString(36).substring(2, 11)}`,
 }))
-
-const mockReadTextFile = vi.mocked(readTextFile)
-const mockWriteTextFile = vi.mocked(writeTextFile)
 
 describe("TimelineStudioProjectService", () => {
   let service: TimelineStudioProjectService

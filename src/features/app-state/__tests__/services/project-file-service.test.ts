@@ -1,4 +1,3 @@
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { ProjectFile } from "@/features/project-settings/types/project"
@@ -15,10 +14,18 @@ import {
   updateProjectFavorites,
 } from "../../services/project-file-service"
 
-// Мокаем Tauri FS
-vi.mock("@tauri-apps/plugin-fs", () => ({
-  readTextFile: vi.fn(),
-  writeTextFile: vi.fn(),
+// Мокаем core container
+const mockReadTextFile = vi.fn()
+const mockWriteTextFile = vi.fn()
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      readTextFile: mockReadTextFile,
+      writeTextFile: mockWriteTextFile,
+    })),
+  },
 }))
 
 describe("ProjectFileService", () => {
@@ -260,16 +267,16 @@ describe("ProjectFileService", () => {
   describe("loadProject", () => {
     it("должен успешно загружать новый проект из файла", async () => {
       // Используем старый формат для валидации
-      vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(mockLegacyProject))
+      mockReadTextFile.mockResolvedValue(JSON.stringify(mockLegacyProject))
 
       const project = await loadProject(mockProjectPath)
 
       expect(project).toBeDefined()
-      expect(readTextFile).toHaveBeenCalledWith(mockProjectPath)
+      expect(mockReadTextFile).toHaveBeenCalledWith(mockProjectPath)
     })
 
     it("должен мигрировать старый проект в новый формат", async () => {
-      vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(mockLegacyProject))
+      mockReadTextFile.mockResolvedValue(JSON.stringify(mockLegacyProject))
 
       const project = await loadProject(mockProjectPath)
 
@@ -280,7 +287,7 @@ describe("ProjectFileService", () => {
     })
 
     it("должен выбрасывать ошибку при невалидном JSON", async () => {
-      vi.mocked(readTextFile).mockResolvedValue("invalid json")
+      mockReadTextFile.mockResolvedValue("invalid json")
 
       await expect(loadProject(mockProjectPath)).rejects.toThrow()
     })
@@ -290,7 +297,7 @@ describe("ProjectFileService", () => {
       // @ts-expect-error - намеренно удаляем обязательное поле
       invalidProject.settings = undefined
 
-      vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(invalidProject))
+      mockReadTextFile.mockResolvedValue(JSON.stringify(invalidProject))
 
       await expect(loadProject(mockProjectPath)).rejects.toThrow("Invalid project structure: missing settings")
     })
@@ -311,13 +318,13 @@ describe("ProjectFileService", () => {
         },
       }
 
-      expect(writeTextFile).toHaveBeenCalledWith(mockProjectPath, JSON.stringify(expectedProject, null, 2))
+      expect(mockWriteTextFile).toHaveBeenCalledWith(mockProjectPath, JSON.stringify(expectedProject, null, 2))
 
       vi.useRealTimers()
     })
 
     it("должен выбрасывать ошибку при неудачном сохранении", async () => {
-      vi.mocked(writeTextFile).mockRejectedValue(new Error("Write failed"))
+      mockWriteTextFile.mockRejectedValue(new Error("Write failed"))
 
       await expect(saveProject(mockProjectPath, mockLegacyProject)).rejects.toThrow(
         "Failed to save project: Error: Write failed",
@@ -540,7 +547,7 @@ describe("ProjectFileService", () => {
         },
       }
 
-      vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(projectWithEmptyId))
+      mockReadTextFile.mockResolvedValue(JSON.stringify(projectWithEmptyId))
 
       await expect(loadProject(mockProjectPath)).rejects.toThrow(
         "Invalid saved media file: id must be a non-empty string",
@@ -548,7 +555,7 @@ describe("ProjectFileService", () => {
     })
 
     it("должен проверять тип проекта", async () => {
-      vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(null))
+      mockReadTextFile.mockResolvedValue(JSON.stringify(null))
 
       await expect(loadProject(mockProjectPath)).rejects.toThrow("Invalid project structure: not an object")
     })
@@ -558,7 +565,7 @@ describe("ProjectFileService", () => {
       // @ts-expect-error - намеренно удаляем обязательное поле
       projectWithoutMeta.meta = undefined
 
-      vi.mocked(readTextFile).mockResolvedValue(JSON.stringify(projectWithoutMeta))
+      mockReadTextFile.mockResolvedValue(JSON.stringify(projectWithoutMeta))
 
       await expect(loadProject(mockProjectPath)).rejects.toThrow("Invalid project structure: missing meta")
     })

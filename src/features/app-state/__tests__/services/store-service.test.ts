@@ -1,10 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import {
-  type AppSettings,
-  type FavoritesType,
-  StoreService,
-} from "../../services/store-service"
+import { type AppSettings, type FavoritesType, StoreService } from "../../services/store-service"
 
 // Создаем моки для IStorageService
 const createMockStorage = () => ({
@@ -29,7 +25,6 @@ vi.mock("@/core", () => ({
 import { container } from "@/core"
 
 describe("StoreService", () => {
-
   const mockSettings: AppSettings = {
     userSettings: {
       previewSizes: {

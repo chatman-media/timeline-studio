@@ -22,10 +22,30 @@ vi.mock("../../hooks/use-render-queue", () => ({
   useRenderQueue: () => mockRenderQueue,
 }))
 
-// Mock dialog
-const mockOpen = vi.fn()
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: (options: any) => mockOpen(options),
+// Mock @/core container
+const mockShowOpenDialog = vi.fn()
+const mockPlatform = {
+  showOpenDialog: mockShowOpenDialog,
+  showSaveDialog: vi.fn(),
+  readTextFile: vi.fn(),
+  writeTextFile: vi.fn(),
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: vi.fn((path: string) => path),
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
 }))
 
 // Mock translations
@@ -106,7 +126,7 @@ describe("BatchExportTab", () => {
   })
 
   it("should choose output folder", async () => {
-    mockOpen.mockResolvedValue("/new/output/folder")
+    mockShowOpenDialog.mockResolvedValue(["/new/output/folder"])
 
     render(<BatchExportTab {...defaultProps} />)
 
@@ -115,7 +135,7 @@ describe("BatchExportTab", () => {
       fireEvent.click(chooseFolderButton)
     })
 
-    expect(mockOpen).toHaveBeenCalledWith({
+    expect(mockShowOpenDialog).toHaveBeenCalledWith({
       directory: true,
       title: "dialogs.export.selectOutputFolder",
     })
@@ -128,7 +148,7 @@ describe("BatchExportTab", () => {
 
   it("should start export with correct settings", async () => {
     // Set output folder first
-    mockOpen.mockResolvedValue("/output")
+    mockShowOpenDialog.mockResolvedValue(["/output"])
     render(<BatchExportTab {...defaultProps} />)
 
     const chooseFolderButton = screen.getByTestId("folder-icon").closest("button")!

@@ -3,7 +3,6 @@
  * Tests how Media Pool, Sequences, and Project Service work together
  */
 
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { TimelineStudioProjectService } from "@/features/app-state/services/timeline-studio-project-service"
@@ -18,19 +17,38 @@ import {
 import type { Sequence } from "@/features/timeline/types/sequence"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
-// Mock Tauri API
-vi.mock("@tauri-apps/plugin-fs", () => ({
-  readTextFile: vi.fn(),
-  writeTextFile: vi.fn(),
+// Mock platform service
+const mockReadTextFile = vi.fn()
+const mockWriteTextFile = vi.fn()
+
+const mockPlatform = {
+  showOpenDialog: vi.fn(),
+  showSaveDialog: vi.fn(),
+  readTextFile: mockReadTextFile,
+  writeTextFile: mockWriteTextFile,
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: vi.fn((path: string) => path),
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
 }))
 
 // Mock nanoid
 vi.mock("nanoid", () => ({
   nanoid: () => `test-id-${Math.random().toString(36).substring(2, 11)}`,
 }))
-
-const mockReadTextFile = vi.mocked(readTextFile)
-const mockWriteTextFile = vi.mocked(writeTextFile)
 
 describe("Project Architecture Integration", () => {
   let service: TimelineStudioProjectService

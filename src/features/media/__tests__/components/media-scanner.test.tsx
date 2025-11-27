@@ -5,9 +5,26 @@ import { renderWithProviders } from "@/test/test-utils"
 
 import { MediaScanner } from "../../components/media-scanner"
 
-// Мокаем Tauri dialog API
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn(),
+// Мокаем container с платформенным сервисом
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn().mockReturnValue(true),
+    getPlatform: vi.fn().mockReturnValue({
+      showOpenDialog: vi.fn(),
+    }),
+  },
+}))
+
+// Мокаем mediaProcessorService
+vi.mock("@/domains/media-management/services/media-processor-service", () => ({
+  mediaProcessorService: {
+    scanFolder: vi.fn(),
+    scanFolderWithThumbnails: vi.fn(),
+    processFiles: vi.fn(),
+    processFilesWithThumbnails: vi.fn(),
+    cancelProcessing: vi.fn(),
+    processFileSimple: vi.fn(),
+  },
 }))
 
 // Мокаем useMediaProcessor
@@ -16,8 +33,12 @@ vi.mock("../../hooks/use-media-processor", () => ({
 }))
 
 describe("MediaScanner", () => {
-  beforeEach(() => {
+  let mockShowOpenDialog: any
+
+  beforeEach(async () => {
     vi.clearAllMocks()
+    const { container } = await import("@/core")
+    mockShowOpenDialog = container.getPlatform().showOpenDialog as any
   })
 
   it("should render media scanner interface", async () => {
@@ -66,10 +87,9 @@ describe("MediaScanner", () => {
   })
 
   it("should handle folder selection", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
-    vi.mocked(open).mockResolvedValue("/path/to/test/folder")
+    mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
     vi.mocked(useMediaProcessor).mockReturnValue({
       scanFolder: vi.fn().mockResolvedValue([]),
       scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
@@ -88,7 +108,7 @@ describe("MediaScanner", () => {
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
 
     await waitFor(() => {
-      expect(open).toHaveBeenCalledWith({
+      expect(mockShowOpenDialog).toHaveBeenCalledWith({
         directory: true,
         multiple: false,
         title: "Выберите папку для сканирования",
@@ -106,10 +126,9 @@ describe("MediaScanner", () => {
   })
 
   it("should handle folder selection cancellation", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
-    vi.mocked(open).mockResolvedValue(null) // Пользователь отменил выбор
+    mockShowOpenDialog.mockResolvedValue(null) // Пользователь отменил выбор
     vi.mocked(useMediaProcessor).mockReturnValue({
       scanFolder: vi.fn().mockResolvedValue([]),
       scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
@@ -127,7 +146,7 @@ describe("MediaScanner", () => {
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
 
     await waitFor(() => {
-      expect(open).toHaveBeenCalled()
+      expect(mockShowOpenDialog).toHaveBeenCalled()
     })
 
     // Проверяем, что состояние не изменилось
@@ -157,10 +176,9 @@ describe("MediaScanner", () => {
       },
     ]
 
-    const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
-    vi.mocked(open).mockResolvedValue("/path/to/test/folder")
+    mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
     const mockScanFolderWithThumbnails = vi.fn().mockResolvedValue(mockFiles)
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -288,10 +306,9 @@ describe("MediaScanner", () => {
       },
     ]
 
-    const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
-    vi.mocked(open).mockResolvedValue("/path/to/test/folder")
+    mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
     const mockScanFolderWithThumbnails = vi.fn().mockResolvedValue(mockFiles)
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -329,7 +346,6 @@ describe("MediaScanner", () => {
   })
 
   it("should clear errors when selecting new folder", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
     const mockErrors = new Map([["file1", "Some error"]])
@@ -347,7 +363,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    vi.mocked(open).mockResolvedValue("/new/path")
+    mockShowOpenDialog.mockResolvedValue(["/new/path"])
 
     renderWithProviders(<MediaScanner />)
 
@@ -360,10 +376,9 @@ describe("MediaScanner", () => {
   })
 
   it("should handle scan errors gracefully", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
     const { useMediaProcessor } = await import("../../hooks/use-media-processor")
 
-    vi.mocked(open).mockResolvedValue("/path/to/test/folder")
+    mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
     const mockScanFolderWithThumbnails = vi.fn().mockRejectedValue(new Error("Scan failed"))
     vi.mocked(useMediaProcessor).mockReturnValue({

@@ -4,9 +4,19 @@ import { indexedDBCacheService } from "@/domains/media-management/services/index
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import type { MediaPreviewData, ThumbnailData } from "@/features/media/types/preview"
 
-// Mock Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock Tauri commands
+vi.mock("@/domains/media-management/tauri/media-commands", () => ({
+  getMediaPreviewData: vi.fn(),
+  generateMediaThumbnail: vi.fn(),
+  clearMediaPreviewDataForFile: vi.fn(),
+  getFilesWithPreviews: vi.fn(),
+  savePreviewData: vi.fn(),
+  loadPreviewData: vi.fn(),
+  restorePreviewCache: vi.fn(),
+  hasCachedThumbnail: vi.fn(),
+  getCachedThumbnailPath: vi.fn(),
+  saveTimelineFramesForFile: vi.fn(),
+  getTimelineFrames: vi.fn(),
 }))
 
 // Mock tauri-logger
@@ -14,6 +24,7 @@ vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     debugSync: vi.fn(),
     errorSync: vi.fn(),
+    infoSync: vi.fn(),
   })),
 }))
 
@@ -27,8 +38,16 @@ vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
   },
 }))
 
+const {
+  getMediaPreviewData,
+  generateMediaThumbnail,
+  clearMediaPreviewDataForFile,
+  getFilesWithPreviews,
+  savePreviewData,
+  loadPreviewData,
+} = await import("@/domains/media-management/tauri/media-commands")
+
 describe("useMediaPreview", () => {
-  let mockInvoke: ReturnType<typeof vi.fn>
   const mockIndexedDBCache = vi.mocked(indexedDBCacheService)
 
   const mockPreviewData: MediaPreviewData = {
@@ -76,10 +95,8 @@ describe("useMediaPreview", () => {
     last_updated: "2024-01-01T00:00:00Z",
   }
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks()
-    const { invoke } = await import("@tauri-apps/api/core")
-    mockInvoke = vi.mocked(invoke)
   })
 
   afterEach(() => {
@@ -99,7 +116,7 @@ describe("useMediaPreview", () => {
       })
 
       expect(mockIndexedDBCache.getCachedPreview).toHaveBeenCalledWith("test-file-123")
-      expect(mockInvoke).not.toHaveBeenCalled() // Should not call backend
+      expect(getMediaPreviewData).not.toHaveBeenCalled() // Should not call backend
       expect(previewData).toMatchObject({
         file_id: "test-file-123",
         browser_thumbnail: {
@@ -112,7 +129,7 @@ describe("useMediaPreview", () => {
     it("should fetch preview data successfully", async () => {
       mockIndexedDBCache.getCachedPreview.mockResolvedValue(null) // Not in cache
       mockIndexedDBCache.cachePreview.mockResolvedValue(undefined)
-      mockInvoke.mockResolvedValue(mockPreviewData)
+      vi.mocked(getMediaPreviewData).mockResolvedValue(mockPreviewData)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -122,7 +139,7 @@ describe("useMediaPreview", () => {
       })
 
       expect(mockIndexedDBCache.getCachedPreview).toHaveBeenCalledWith("test-file-123")
-      expect(mockInvoke).toHaveBeenCalledWith("get_media_preview_data", { fileId: "test-file-123" })
+      expect(getMediaPreviewData).toHaveBeenCalledWith("test-file-123")
       expect(mockIndexedDBCache.cachePreview).toHaveBeenCalledWith("test-file-123", "base64_thumbnail_data")
       expect(previewData).toEqual(mockPreviewData)
       expect(result.current.error).toBeNull()
@@ -130,7 +147,7 @@ describe("useMediaPreview", () => {
 
     it("should handle null preview data", async () => {
       mockIndexedDBCache.getCachedPreview.mockResolvedValue(null) // Not in cache
-      mockInvoke.mockResolvedValue(null)
+      vi.mocked(getMediaPreviewData).mockResolvedValue(null)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -146,7 +163,7 @@ describe("useMediaPreview", () => {
     it("should handle errors when fetching preview data", async () => {
       mockIndexedDBCache.getCachedPreview.mockResolvedValue(null) // Not in cache
       const error = new Error("Failed to fetch preview data")
-      mockInvoke.mockRejectedValue(error)
+      vi.mocked(getMediaPreviewData).mockRejectedValue(error)
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -163,7 +180,7 @@ describe("useMediaPreview", () => {
 
     it("should handle non-Error exceptions", async () => {
       mockIndexedDBCache.getCachedPreview.mockResolvedValue(null) // Not in cache
-      mockInvoke.mockRejectedValue("String error")
+      vi.mocked(getMediaPreviewData).mockRejectedValue("String error")
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -189,7 +206,7 @@ describe("useMediaPreview", () => {
         width: 320,
         height: 180,
       }
-      mockInvoke.mockResolvedValue(thumbnailData)
+      vi.mocked(generateMediaThumbnail).mockResolvedValue(thumbnailData)
       mockIndexedDBCache.cachePreview.mockResolvedValue(undefined)
 
       const onThumbnailGenerated = vi.fn()
@@ -208,13 +225,7 @@ describe("useMediaPreview", () => {
         )
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("generate_media_thumbnail", {
-        fileId: "test-file-123",
-        filePath: "/path/to/video.mp4",
-        width: 320,
-        height: 180,
-        timestamp: 5.5,
-      })
+      expect(generateMediaThumbnail).toHaveBeenCalledWith("test-file-123", "/path/to/video.mp4", 320, 180, 5.5)
 
       expect(mockIndexedDBCache.cachePreview).toHaveBeenCalledWith("test-file-123", base64Data)
       expect(generatedThumbnail).toEqual(thumbnailData)
@@ -228,7 +239,7 @@ describe("useMediaPreview", () => {
       const thumbnailPromise = new Promise<ThumbnailData>((resolve) => {
         resolveThumbnail = resolve
       })
-      mockInvoke.mockReturnValue(thumbnailPromise)
+      vi.mocked(generateMediaThumbnail).mockReturnValue(thumbnailPromise)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -269,7 +280,7 @@ describe("useMediaPreview", () => {
         width: 320,
         height: 180,
       }
-      mockInvoke.mockResolvedValue(thumbnailData)
+      vi.mocked(generateMediaThumbnail).mockResolvedValue(thumbnailData)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -277,18 +288,12 @@ describe("useMediaPreview", () => {
         await result.current.generateThumbnail("test-file", "/path/to/video.mp4", 320, 180)
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("generate_media_thumbnail", {
-        fileId: "test-file",
-        filePath: "/path/to/video.mp4",
-        width: 320,
-        height: 180,
-        timestamp: 0,
-      })
+      expect(generateMediaThumbnail).toHaveBeenCalledWith("test-file", "/path/to/video.mp4", 320, 180, 0)
     })
 
     it("should handle thumbnail generation errors", async () => {
       const error = new Error("Thumbnail generation failed")
-      mockInvoke.mockRejectedValue(error)
+      vi.mocked(generateMediaThumbnail).mockRejectedValue(error)
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -305,7 +310,7 @@ describe("useMediaPreview", () => {
     })
 
     it("should handle non-Error exceptions", async () => {
-      mockInvoke.mockRejectedValue("String error")
+      vi.mocked(generateMediaThumbnail).mockRejectedValue("String error")
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -323,7 +328,7 @@ describe("useMediaPreview", () => {
 
   describe("clearPreviewData", () => {
     it("should clear preview data successfully", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      vi.mocked(generateMediaThumbnail).mockResolvedValue(undefined)
       mockIndexedDBCache.deletePreview.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())
@@ -333,7 +338,7 @@ describe("useMediaPreview", () => {
         success = await result.current.clearPreviewData("test-file-123")
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("clear_media_preview_data", { fileId: "test-file-123" })
+      expect(clearMediaPreviewDataForFile).toHaveBeenCalledWith("test-file-123")
       expect(mockIndexedDBCache.deletePreview).toHaveBeenCalledWith("test-file-123")
       expect(success).toBe(true)
       expect(result.current.error).toBeNull()
@@ -341,7 +346,7 @@ describe("useMediaPreview", () => {
 
     it("should handle errors when clearing preview data", async () => {
       const error = new Error("Failed to clear data")
-      mockInvoke.mockRejectedValue(error)
+      vi.mocked(clearMediaPreviewDataForFile).mockRejectedValue(error)
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -360,7 +365,7 @@ describe("useMediaPreview", () => {
   describe("getFilesWithPreviews", () => {
     it("should get files with previews successfully", async () => {
       const fileIds = ["file1", "file2", "file3"]
-      mockInvoke.mockResolvedValue(fileIds)
+      vi.mocked(getFilesWithPreviews).mockResolvedValue(fileIds)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -369,14 +374,14 @@ describe("useMediaPreview", () => {
         files = await result.current.getFilesWithPreviews()
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("get_files_with_previews")
+      expect(getFilesWithPreviews).toHaveBeenCalledWith()
       expect(files).toEqual(fileIds)
       expect(result.current.error).toBeNull()
     })
 
     it("should handle errors and return empty array", async () => {
       const error = new Error("Failed to get files")
-      mockInvoke.mockRejectedValue(error)
+      vi.mocked(getFilesWithPreviews).mockRejectedValue(error)
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -394,7 +399,7 @@ describe("useMediaPreview", () => {
 
   describe("savePreviewData", () => {
     it("should save preview data successfully", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      vi.mocked(savePreviewData).mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -403,14 +408,14 @@ describe("useMediaPreview", () => {
         success = await result.current.savePreviewData("/path/to/save.json")
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("save_preview_data", { path: "/path/to/save.json" })
+      expect(savePreviewData).toHaveBeenCalledWith("/path/to/save.json")
       expect(success).toBe(true)
       expect(result.current.error).toBeNull()
     })
 
     it("should handle save errors", async () => {
       const error = new Error("Save failed")
-      mockInvoke.mockRejectedValue(error)
+      vi.mocked(savePreviewData).mockRejectedValue(error)
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -428,7 +433,7 @@ describe("useMediaPreview", () => {
 
   describe("loadPreviewData", () => {
     it("should load preview data successfully", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      vi.mocked(loadPreviewData).mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -437,14 +442,14 @@ describe("useMediaPreview", () => {
         success = await result.current.loadPreviewData("/path/to/load.json")
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("load_preview_data", { path: "/path/to/load.json" })
+      expect(loadPreviewData).toHaveBeenCalledWith("/path/to/load.json")
       expect(success).toBe(true)
       expect(result.current.error).toBeNull()
     })
 
     it("should handle load errors", async () => {
       const error = new Error("Load failed")
-      mockInvoke.mockRejectedValue(error)
+      vi.mocked(loadPreviewData).mockRejectedValue(error)
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -463,7 +468,7 @@ describe("useMediaPreview", () => {
   describe("error handling", () => {
     it("should reset error state on successful operations", async () => {
       const error = new Error("Previous error")
-      mockInvoke.mockRejectedValueOnce(error)
+      vi.mocked(generateMediaThumbnail).mockRejectedValueOnce(error)
       mockIndexedDBCache.cachePreview.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())
@@ -483,7 +488,7 @@ describe("useMediaPreview", () => {
         width: 320,
         height: 180,
       }
-      mockInvoke.mockResolvedValueOnce(thumbnailData)
+      vi.mocked(generateMediaThumbnail).mockResolvedValueOnce(thumbnailData)
 
       await act(async () => {
         await result.current.generateThumbnail("test-file", "/path/to/video.mp4", 320, 180)
@@ -506,12 +511,10 @@ describe("useMediaPreview", () => {
       mockIndexedDBCache.cachePreview.mockResolvedValue(undefined)
       mockIndexedDBCache.deletePreview.mockResolvedValue(undefined)
 
-      mockInvoke.mockImplementation((command: string) => {
-        if (command === "get_media_preview_data") return Promise.resolve(mockPreviewData)
-        if (command === "generate_media_thumbnail") return Promise.resolve(thumbnailData)
-        if (command === "clear_media_preview_data") return Promise.resolve(undefined)
-        return Promise.reject(new Error(`Unknown command: ${command}`))
-      })
+      // Mock Tauri commands
+      vi.mocked(getMediaPreviewData).mockResolvedValue(mockPreviewData)
+      vi.mocked(generateMediaThumbnail).mockResolvedValue(thumbnailData)
+      vi.mocked(clearMediaPreviewDataForFile).mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -527,7 +530,9 @@ describe("useMediaPreview", () => {
         expect(cleared).toBe(true)
       })
 
-      expect(mockInvoke).toHaveBeenCalledTimes(3)
+      expect(getMediaPreviewData).toHaveBeenCalledTimes(1)
+      expect(generateMediaThumbnail).toHaveBeenCalledTimes(1)
+      expect(clearMediaPreviewDataForFile).toHaveBeenCalledTimes(1)
     })
   })
 })

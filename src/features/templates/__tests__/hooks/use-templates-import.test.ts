@@ -3,18 +3,39 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useTemplatesImport } from "../../hooks/use-templates-import"
 
-// Мокаем Tauri dialog
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn(),
+// Mock platform service
+const mockShowOpenDialog = vi.fn()
+const mockReadTextFile = vi.fn()
+
+const mockPlatform = {
+  showOpenDialog: mockShowOpenDialog,
+  showSaveDialog: vi.fn(),
+  readTextFile: mockReadTextFile,
+  writeTextFile: vi.fn(),
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: vi.fn((path: string) => path),
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
 }))
 
 describe("useTemplatesImport", () => {
-  let mockOpen: any
+  const mockOpen = mockShowOpenDialog
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks()
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    mockOpen = vi.mocked(open)
   })
 
   it("should import templates import hook without errors", async () => {

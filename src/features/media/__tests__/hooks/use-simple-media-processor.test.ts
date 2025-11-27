@@ -1,4 +1,4 @@
-import { convertFileSrc, invoke } from "@tauri-apps/api/core"
+import { invoke } from "@tauri-apps/api/core"
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -6,13 +6,39 @@ import { useSimpleMediaProcessor } from "../../hooks/use-simple-media-processor"
 
 import type { MediaFile } from "../../types/media"
 
+// Mock convertFileSrc function
+const mockConvertFileSrc = vi.fn((path: string) => path)
+
+// Mock platform service
+const mockPlatform = {
+  showOpenDialog: vi.fn(),
+  showSaveDialog: vi.fn(),
+  readTextFile: vi.fn(),
+  writeTextFile: vi.fn(),
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: mockConvertFileSrc,
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
+}))
+
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
-  convertFileSrc: vi.fn((path: string) => path),
 }))
 
 const mockInvoke = vi.mocked(invoke)
-const mockConvertFileSrc = vi.mocked(convertFileSrc)
 
 describe("useSimpleMediaProcessor", () => {
   beforeEach(() => {
