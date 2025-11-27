@@ -1,26 +1,16 @@
 /**
  * Browser Provider
  *
- * Провайдер Browser домена с использованием BackendSync
- * Все состояние хранится на бэкенде и синхронизируется
+ * Провайдер Browser домена с использованием BrowserOrchestrator
  * Использует event-driven архитектуру для инкрементальных обновлений
  */
 
 import { useSelector } from "@xstate/react"
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef } from "react"
-import { createActor } from "xstate"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { createContext, type ReactNode, useCallback, useContext, useMemo } from "react"
 import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
 import { createLogger } from "@/lib/tauri-logger"
-import type {
-  BrowserEvent,
-  BrowserState,
-  BrowserTab,
-  ProjectEvent,
-  TabSettings,
-  ViewMode,
-} from "@/types/generated/tauri-bindings"
-import { browserMachine } from "../machines/browser-machine"
+import type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@/types/generated/tauri-bindings"
+import { getBrowserOrchestrator } from "../services/browser-orchestrator"
 
 const logger = createLogger("BrowserProvider")
 
@@ -77,19 +67,9 @@ const DEFAULT_TAB_SETTINGS: TabSettings = {
 }
 
 export function BrowserProvider({ children }: BrowserProviderProps) {
-  const backendSync = getBackendSync()
-
-  // ✅ НОВАЯ АРХИТЕКТУРА: Используем XState машину для кэширования состояния
-  const browserActorRef = useRef(createActor(browserMachine))
-  const browserActor = browserActorRef.current
-
-  // Запускаем актор при монтировании
-  useEffect(() => {
-    browserActor.start()
-    return () => {
-      browserActor.stop()
-    }
-  }, [browserActor])
+  // Используем orchestrator вместо создания собственного actor
+  const orchestrator = useMemo(() => getBrowserOrchestrator(), [])
+  const browserActor = orchestrator.getBrowserActor()
 
   // Получаем состояние из машины через useSelector
   const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
@@ -98,193 +78,6 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
   const favorites = useSelector(browserActor, (state) => state.context.favorites)
   const isLoading = useSelector(browserActor, (state) => state.context.isLoading)
   const error = useSelector(browserActor, (state) => state.context.error)
-
-  // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ (не на state changes)
-  useEffect(() => {
-    const handleBackendEvent = (event: ProjectEvent) => {
-      logger.info("[BrowserProvider] Received backend event, forwarding to machine", {
-        eventType: event.type,
-      })
-
-      // Проверяем, является ли это Browser событием
-      if (event.type === "Browser") {
-        const browserEvent = event.payload as BrowserEvent
-
-        // Отправляем событие напрямую в машину для инкрементальных обновлений
-        browserActor.send({
-          type: "BACKEND_EVENT",
-          event: browserEvent,
-        })
-      }
-    }
-
-    // Подписываемся на backend события
-    const unsubscribeEvents = backendSync.onEvent(handleBackendEvent)
-
-    // ✅ Подписываемся на state changes ТОЛЬКО для инициализации
-    // (когда проект открывается в первый раз)
-    const unsubscribeState = backendSync.onStateChange((state) => {
-      // Обновляем только если состояние браузера изменилось
-      if (state?.browser_state) {
-        logger.info("[BrowserProvider] Initializing from backend state", {
-          activeTab: state.browser_state.active_tab,
-          tabSettings: state.browser_state.tab_settings,
-          selectedFiles: state.browser_state.selected_files,
-        })
-
-        // Синхронизируем начальное состояние с машиной
-        if (state.browser_state.active_tab) {
-          browserActor.send({
-            type: "SWITCH_TAB",
-            tab: state.browser_state.active_tab,
-          })
-        }
-
-        // Синхронизируем tabSettings
-        if (state.browser_state.tab_settings) {
-          Object.entries(state.browser_state.tab_settings).forEach(([tab, settings]) => {
-            // Генерируем события для каждой настройки каждой вкладки
-            const browserTab = tab as BrowserTab
-
-            // Для инициализации отправляем события напрямую в машину
-            // Это эквивалентно событиям от бэкенда
-            if (settings.search_query !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "SearchQueryChanged",
-                  data: { tab: browserTab, query: settings.search_query },
-                },
-              })
-            }
-
-            if (settings.show_favorites_only !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "FavoritesToggled",
-                  data: { tab: browserTab, show_favorites: settings.show_favorites_only },
-                },
-              })
-            }
-
-            if (settings.sort_by !== undefined && settings.sort_order !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "SortChanged",
-                  data: { tab: browserTab, sort_by: settings.sort_by, sort_order: settings.sort_order },
-                },
-              })
-            }
-
-            if (settings.group_by !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "GroupByChanged",
-                  data: { tab: browserTab, group_by: settings.group_by },
-                },
-              })
-            }
-
-            if (settings.filter_type !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "FilterChanged",
-                  data: { tab: browserTab, filter_type: settings.filter_type },
-                },
-              })
-            }
-
-            if (settings.view_mode !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "ViewModeChanged",
-                  data: { tab: browserTab, view_mode: settings.view_mode },
-                },
-              })
-            }
-
-            if (settings.preview_size_index !== undefined) {
-              browserActor.send({
-                type: "BACKEND_EVENT",
-                event: {
-                  event_type: "PreviewSizeChanged",
-                  data: { tab: browserTab, size_index: settings.preview_size_index },
-                },
-              })
-            }
-          })
-        }
-
-        // Синхронизируем selectedFiles
-        if (state.browser_state.selected_files) {
-          Object.entries(state.browser_state.selected_files).forEach(([tab, fileIds]) => {
-            const browserTab = tab as BrowserTab
-            browserActor.send({
-              type: "BACKEND_EVENT",
-              event: {
-                event_type: "AllFilesSelected",
-                data: { tab: browserTab, file_ids: fileIds },
-              },
-            })
-          })
-        }
-
-        // Синхронизируем favorites (if present in backend state)
-        if (state.browser_state.favorites) {
-          // TODO: Add BrowserEvent for favorites sync when backend supports it
-          // For now, we'll just log that favorites exist
-          logger.info("[BrowserProvider] Favorites data available in backend", {
-            tabs: Object.keys(state.browser_state.favorites),
-          })
-        }
-      }
-    })
-
-    // Получаем начальное состояние (только при mount)
-    // Устанавливаем loading в true перед загрузкой
-    browserActor.send({ type: "SET_LOADING", isLoading: true })
-
-    backendSync
-      .getProjectState()
-      .then((state) => {
-        if (state?.browser_state) {
-          logger.info("[BrowserProvider] Initial state loaded", {
-            activeTab: state.browser_state.active_tab,
-          })
-
-          if (state.browser_state.active_tab) {
-            browserActor.send({
-              type: "SWITCH_TAB",
-              tab: state.browser_state.active_tab,
-            })
-          }
-        }
-      })
-      .catch((err) => {
-        logger.error("[BrowserProvider] Failed to load initial state:", err)
-        browserActor.send({ type: "SET_ERROR", error: err instanceof Error ? err.message : "Failed to load state" })
-      })
-      .finally(() => {
-        // Устанавливаем loading в false после загрузки
-        browserActor.send({ type: "SET_LOADING", isLoading: false })
-      })
-
-    return () => {
-      unsubscribeEvents()
-      unsubscribeState()
-    }
-  }, [backendSync, browserActor])
-
-  // ❌ УДАЛЕНО: refreshBrowserState - больше не нужен
-  // События обновляют состояние инкрементально через машину
-
-  // ❌ УДАЛЕНО: executeBrowserCommand - больше не нужен
-  // Все команды вызываются напрямую через commands.browserXxx() из tauri-bindings
 
   // Convenient getters из машины
   const currentTabSettings: TabSettings = useMemo(() => {
@@ -312,466 +105,178 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
     [activeTab, tabSettings, selectedFiles, favorites],
   )
 
-  // Browser actions implementation
-  const switchTab = async (tab: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Switching tab", { from: activeTab, to: tab })
+  // Browser actions - делегируем в orchestrator
+  const switchTab = useCallback(
+    async (tab: BrowserTab): Promise<void> => {
+      logger.info("[BrowserProvider] Switching tab via orchestrator", { tab })
+      return orchestrator.switchTab(tab)
+    },
+    [orchestrator],
+  )
 
-    // ✅ Оптимистичное обновление - обновляем машину сразу
-    browserActor.send({ type: "SWITCH_TAB", tab })
+  const setSearchQuery = useCallback(
+    async (query: string, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.setSearchQuery(query, tab)
+    },
+    [orchestrator],
+  )
 
-    try {
-      // Отправляем команду на backend
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSwitchTab(tab)
+  const toggleFavorites = useCallback(
+    async (tab?: BrowserTab): Promise<void> => {
+      return orchestrator.toggleFavorites(tab)
+    },
+    [orchestrator],
+  )
 
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
+  const setSort = useCallback(
+    async (sortBy: string, sortOrder: "asc" | "desc", tab?: BrowserTab): Promise<void> => {
+      return orchestrator.setSort(sortBy, sortOrder, tab)
+    },
+    [orchestrator],
+  )
 
-      logger.info("[BrowserProvider] Tab switch command sent successfully")
-      // Backend пришлет событие TabSwitched для подтверждения
-      // Если оно придет с другим значением, то перезапишет локальное
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to switch tab"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Tab switch failed", { error: err })
-      throw err
-    }
-  }
+  const setGroupBy = useCallback(
+    async (groupBy: string, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.setGroupBy(groupBy, tab)
+    },
+    [orchestrator],
+  )
 
-  const setSearchQuery = async (query: string, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Setting search query", { query, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSetSearchQuery(query, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "SearchQueryChanged",
-          data: { tab: targetTab, query },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to set search query"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Search query failed", { error: err })
-      throw err
-    }
-  }
+  const setFilter = useCallback(
+    async (filterType: string, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.setFilter(filterType, tab)
+    },
+    [orchestrator],
+  )
 
-  const toggleFavorites = async (tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Toggling favorites", { tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserToggleFavorites(tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Получаем текущее состояние и инвертируем
-      const currentSettings = tabSettings[targetTab] || DEFAULT_TAB_SETTINGS
-      const newShowFavorites = !currentSettings.show_favorites_only
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "FavoritesToggled",
-          data: { tab: targetTab, show_favorites: newShowFavorites },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to toggle favorites"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Toggle favorites failed", { error: err })
-      throw err
-    }
-  }
+  const setViewMode = useCallback(
+    async (viewMode: ViewMode, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.setViewMode(viewMode, tab)
+    },
+    [orchestrator],
+  )
 
-  const setSort = async (sortBy: string, sortOrder: "asc" | "desc", tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Setting sort", { sortBy, sortOrder, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSetSort(sortBy, sortOrder, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "SortChanged",
-          data: { tab: targetTab, sort_by: sortBy, sort_order: sortOrder },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to set sort"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Set sort failed", { error: err })
-      throw err
-    }
-  }
+  const setPreviewSize = useCallback(
+    async (sizeIndex: number, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.setPreviewSize(sizeIndex, tab)
+    },
+    [orchestrator],
+  )
 
-  const setGroupBy = async (groupBy: string, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Setting group by", { groupBy, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSetGroupBy(groupBy, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "GroupByChanged",
-          data: { tab: targetTab, group_by: groupBy },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to set group by"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Set group by failed", { error: err })
-      throw err
-    }
-  }
+  const resetTabSettings = useCallback(
+    async (tab: BrowserTab): Promise<void> => {
+      return orchestrator.resetTabSettings(tab)
+    },
+    [orchestrator],
+  )
 
-  const setFilter = async (filterType: string, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Setting filter", { filterType, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSetFilter(filterType, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "FilterChanged",
-          data: { tab: targetTab, filter_type: filterType },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to set filter"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Set filter failed", { error: err })
-      throw err
-    }
-  }
+  const selectFile = useCallback(
+    async (fileId: string, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.selectFile(fileId, tab)
+    },
+    [orchestrator],
+  )
 
-  const setViewMode = async (viewMode: ViewMode, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Setting view mode", { viewMode, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSetViewMode(viewMode, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "ViewModeChanged",
-          data: { tab: targetTab, view_mode: viewMode },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to set view mode"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Set view mode failed", { error: err })
-      throw err
-    }
-  }
+  const deselectFile = useCallback(
+    async (fileId: string, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.deselectFile(fileId, tab)
+    },
+    [orchestrator],
+  )
 
-  const setPreviewSize = async (sizeIndex: number, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Setting preview size", { sizeIndex, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSetPreviewSize(sizeIndex, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "PreviewSizeChanged",
-          data: { tab: targetTab, size_index: sizeIndex },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to set preview size"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Set preview size failed", { error: err })
-      throw err
-    }
-  }
+  const toggleFileSelection = useCallback(
+    async (fileId: string, tab?: BrowserTab): Promise<void> => {
+      return orchestrator.toggleFileSelection(fileId, tab)
+    },
+    [orchestrator],
+  )
 
-  const resetTabSettings = async (tab: BrowserTab): Promise<void> => {
-    logger.info("[BrowserProvider] Resetting tab settings", { tab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserResetTabSettings(tab)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Сбрасываем все настройки таба к дефолтным значениям
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "SearchQueryChanged", data: { tab, query: "" } },
-      })
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "FavoritesToggled", data: { tab, show_favorites: false } },
-      })
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "SortChanged", data: { tab, sort_by: "name", sort_order: "asc" } },
-      })
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "GroupByChanged", data: { tab, group_by: "none" } },
-      })
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "FilterChanged", data: { tab, filter_type: "all" } },
-      })
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "ViewModeChanged", data: { tab, view_mode: "thumbnails" } },
-      })
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: { event_type: "PreviewSizeChanged", data: { tab, size_index: DEFAULT_PREVIEW_SIZE_INDEX } },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to reset tab settings"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Reset tab settings failed", { error: err })
-      throw err
-    }
-  }
+  const selectAllFiles = useCallback(
+    async (fileIds: string[], tab?: BrowserTab): Promise<void> => {
+      return orchestrator.selectAllFiles(fileIds, tab)
+    },
+    [orchestrator],
+  )
 
-  const selectFile = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Selecting file", { fileId, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSelectFile(fileId, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "FileSelected",
-          data: { tab: targetTab, file_id: fileId },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to select file"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Select file failed", { error: err })
-      throw err
-    }
-  }
+  const deselectAllFiles = useCallback(
+    async (tab?: BrowserTab): Promise<void> => {
+      return orchestrator.deselectAllFiles(tab)
+    },
+    [orchestrator],
+  )
 
-  const deselectFile = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Deselecting file", { fileId, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserDeselectFile(fileId, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "FileDeselected",
-          data: { tab: targetTab, file_id: fileId },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to deselect file"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Deselect file failed", { error: err })
-      throw err
-    }
-  }
+  const isFileSelected = useCallback(
+    (fileId: string, tab?: BrowserTab): boolean => {
+      return orchestrator.isFileSelected(fileId, tab)
+    },
+    [orchestrator],
+  )
 
-  const toggleFileSelection = async (fileId: string, tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Toggling file selection", { fileId, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserToggleFileSelection(fileId, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Проверяем текущее состояние и отправляем противоположное событие
-      const currentFiles = selectedFiles[targetTab] || []
-      const isSelected = currentFiles.includes(fileId)
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: isSelected ? "FileDeselected" : "FileSelected",
-          data: { tab: targetTab, file_id: fileId },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to toggle file selection"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Toggle file selection failed", { error: err })
-      throw err
-    }
-  }
-
-  const selectAllFiles = async (fileIds: string[], tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Selecting all files", { count: fileIds.length, tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserSelectAllFiles(fileIds, tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "AllFilesSelected",
-          data: { tab: targetTab, file_ids: fileIds },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to select all files"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Select all files failed", { error: err })
-      throw err
-    }
-  }
-
-  const deselectAllFiles = async (tab?: BrowserTab): Promise<void> => {
-    const targetTab = tab || activeTab
-    logger.info("[BrowserProvider] Deselecting all files", { tab: targetTab })
-    try {
-      browserActor.send({ type: "SET_LOADING", isLoading: true })
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      const result = await commands.browserDeselectAllFiles(tab || null)
-      if (result.status === "error") {
-        throw new Error(result.error)
-      }
-      // Обновляем локальное состояние после успешного вызова бэкенда
-      browserActor.send({
-        type: "BACKEND_EVENT",
-        event: {
-          event_type: "AllFilesDeselected",
-          data: { tab: targetTab },
-        },
-      })
-      browserActor.send({ type: "CLEAR_ERROR" })
-      browserActor.send({ type: "SET_LOADING", isLoading: false })
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to deselect all files"
-      browserActor.send({ type: "SET_ERROR", error: errorMsg })
-      logger.error("[BrowserProvider] Deselect all files failed", { error: err })
-      throw err
-    }
-  }
-
-  const isFileSelected = (fileId: string, tab?: BrowserTab): boolean => {
-    const targetTab = tab || activeTab
-    const files = selectedFiles[targetTab] || []
-    return files.includes(fileId)
-  }
-
-  const clearBrowserState = () => {
+  const clearBrowserState = useCallback(() => {
     logger.info("Clearing browser state (no-op for backend-synced state)")
     // Backend-synced state doesn't use localStorage, so nothing to clear
     // This is here for compatibility with old API
-  }
+  }, [])
 
-  const contextValue: BrowserContextType = {
-    // Raw state
-    browserState,
-    isLoading,
-    error,
+  const contextValue: BrowserContextType = useMemo(
+    () => ({
+      // Raw state
+      browserState,
+      isLoading,
+      error,
 
-    // Convenient getters
-    activeTab,
-    currentTabSettings,
-    selectedFiles: selectedFilesSet,
-    previewSize,
+      // Convenient getters
+      activeTab,
+      currentTabSettings,
+      selectedFiles: selectedFilesSet,
+      previewSize,
 
-    // Actions
-    switchTab,
-    setSearchQuery,
-    toggleFavorites,
-    setSort,
-    setGroupBy,
-    setFilter,
-    setViewMode,
-    setPreviewSize,
-    resetTabSettings,
-    selectFile,
-    deselectFile,
-    toggleFileSelection,
-    selectAllFiles,
-    deselectAllFiles,
-    isFileSelected,
+      // Actions
+      switchTab,
+      setSearchQuery,
+      toggleFavorites,
+      setSort,
+      setGroupBy,
+      setFilter,
+      setViewMode,
+      setPreviewSize,
+      resetTabSettings,
+      selectFile,
+      deselectFile,
+      toggleFileSelection,
+      selectAllFiles,
+      deselectAllFiles,
+      isFileSelected,
 
-    // Backwards compatibility
-    clearBrowserState,
-  }
+      // Backwards compatibility
+      clearBrowserState,
+    }),
+    [
+      browserState,
+      isLoading,
+      error,
+      activeTab,
+      currentTabSettings,
+      selectedFilesSet,
+      previewSize,
+      switchTab,
+      setSearchQuery,
+      toggleFavorites,
+      setSort,
+      setGroupBy,
+      setFilter,
+      setViewMode,
+      setPreviewSize,
+      resetTabSettings,
+      selectFile,
+      deselectFile,
+      toggleFileSelection,
+      selectAllFiles,
+      deselectAllFiles,
+      isFileSelected,
+      clearBrowserState,
+    ],
+  )
 
   return <BrowserContext.Provider value={contextValue}>{children}</BrowserContext.Provider>
 }

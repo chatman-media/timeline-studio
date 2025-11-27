@@ -13,7 +13,6 @@
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { clearStateChangeHandlers, resetExecuteCommandMock, resetMockBrowserState } from "@/test/mocks/backend-sync"
 import { ALL_BROWSER_TABS } from "../../__mocks__"
 import { BrowserProvider, useBrowser } from "../../providers/browser-provider"
@@ -65,8 +64,7 @@ describe("BrowserProvider", () => {
       expect(result.current.error).toBeNull()
     })
 
-    it("should load browser state from backend on mount", async () => {
-      const backendSync = getBackendSync()
+    it("should provide browser state via orchestrator", async () => {
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -75,34 +73,36 @@ describe("BrowserProvider", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      expect(backendSync.getProjectState).toHaveBeenCalled()
+      // Browser state should be available via orchestrator
       expect(result.current.browserState).toBeDefined()
+      expect(result.current.browserState?.active_tab).toBeDefined()
     })
 
-    it("should subscribe to backend events", async () => {
-      const backendSync = getBackendSync()
-      renderHook(() => useBrowser(), {
-        wrapper: createWrapper(),
-      })
-
-      await waitFor(() => {
-        expect(backendSync.onEvent).toHaveBeenCalled()
-        expect(backendSync.onStateChange).toHaveBeenCalled()
-      })
-    })
-
-    it("should handle loading state correctly", async () => {
+    it("should provide reactive state updates", async () => {
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
 
-      // Initially loading
-      expect(result.current.isLoading).toBe(true)
-
-      // Wait for loading to complete
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false)
       })
+
+      // Provider should give us reactive state from orchestrator
+      expect(result.current.activeTab).toBeDefined()
+      expect(result.current.selectedFiles).toBeInstanceOf(Set)
+    })
+
+    it("should not be in loading state when initialized", async () => {
+      const { result } = renderHook(() => useBrowser(), {
+        wrapper: createWrapper(),
+      })
+
+      // Wait for initialization to complete
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false)
+      })
+
+      expect(result.current.error).toBeNull()
     })
   })
 
@@ -410,11 +410,15 @@ describe("BrowserProvider", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
+      // File is not selected initially, so toggle should select it
       await act(async () => {
         await result.current.toggleFileSelection("file-1")
       })
 
-      expect(commands.browserToggleFileSelection).toHaveBeenCalledWith("file-1", null)
+      // Orchestrator implements toggle via select/deselect based on current state
+      // Since file was not selected, it should call selectFile
+      // null is passed when no specific tab is provided (uses active tab internally)
+      expect(commands.browserSelectFile).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should select all files", async () => {
@@ -533,13 +537,10 @@ describe("BrowserProvider", () => {
       commands.browserSelectFile = originalMock
     })
 
-    // TODO: Обновить тест для новой архитектуры с backend events
+    // TODO: Обновить тест для новой архитектуры с orchestrator
     it.skip("should handle state loading errors", async () => {
-      const backendSync = getBackendSync()
-      // Replace the mock temporarily to simulate an error
-      const originalMock = backendSync.getProjectState
-      backendSync.getProjectState = vi.fn().mockRejectedValue(new Error("Failed to load state"))
-
+      // В новой архитектуре ошибки загрузки обрабатываются в orchestrator
+      // Тест нужно переписать для мокирования orchestrator
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),
       })
@@ -547,9 +548,6 @@ describe("BrowserProvider", () => {
       await waitFor(() => {
         expect(result.current.error).toBeDefined()
       })
-
-      // Restore the original mock
-      backendSync.getProjectState = originalMock
     })
 
     it("should clear errors after successful operation", async () => {
