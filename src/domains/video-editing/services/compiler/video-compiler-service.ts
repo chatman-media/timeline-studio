@@ -233,7 +233,7 @@ export async function updateCompilerSettings(settings: any) {
 /**
  * Проверка доступности GPU кодировщика
  */
-export async function checkGpuEncoderAvailability(encoder: string) {
+export async function checkGpuEncoderAvailability(_encoder: string) {
   try {
     return await checkGpuEncoderAvailabilityTauri()
   } catch (error) {

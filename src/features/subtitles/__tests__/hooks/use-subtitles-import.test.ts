@@ -36,7 +36,7 @@ vi.mock("@/domains/system-integration", () => ({
 }))
 
 vi.mock("../utils/subtitle-parsers", () => ({
-  parseSubtitleFile: vi.fn((content: string) => {
+  parseSubtitleFile: vi.fn((_content: string) => {
     // Simple mock parser - returns one subtitle
     return [
       {

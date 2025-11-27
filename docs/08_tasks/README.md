@@ -26,6 +26,20 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-27] Ports & Adapters (Hexagonal) Architecture - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** ports-and-adapters-architecture.md
+- **Action:** active/ → completed/
+- **Summary:**
+  - Core модуль: 4 порта (IBackendService, IPlatformService, IStorageService, IEventService)
+  - Tauri адаптеры: 4 реализации + initTauriApp()
+  - Mock адаптеры: 4 реализации + initMockApp() для тестов/браузера
+  - React интеграция: AppInitProvider с автодетектом среды
+  - Миграция: все оркестраторы, app-machine, 21+ hooks
+  - Документация: docs/03_architecture/frontend/ports-and-adapters.md
+  - Тесты: 67 unit тестов (container: 15, MockEventService: 16, MockPlatformService: 36)
+- **Result:** Frontend полностью абстрагирован от Tauri
+
 ### [2025-11-27] Multicam Module Improvements - COMPLETED ✅
 - **Status:** Завершено (100%)
 - **File:** multicam-improvements.md
@@ -203,4 +217,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-27*
+*Last updated: 2025-11-27 (Ports & Adapters Architecture completed)*
