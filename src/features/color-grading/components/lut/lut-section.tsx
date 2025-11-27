@@ -1,12 +1,11 @@
-import { open } from "@tauri-apps/plugin-dialog"
 import { RefreshCw, Upload, X } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { container } from "@/core"
 import { createLogger } from "@/lib/tauri-logger"
 import { useColorGrading } from "../../services/color-grading-provider"
 import { ParameterSlider } from "../controls/parameter-slider"
@@ -44,6 +43,13 @@ export function LUTSection() {
   const [selectedLUT, setSelectedLUT] = useState<string>(state.lut.file || "none")
   const [customLUTs, setCustomLUTs] = useState<Array<{ id: string; name: string; path: string }>>([])
   const [isLoading, setIsLoading] = useState(false)
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   // Объединяем предустановленные и кастомные LUT
   const allLUTs = useMemo(() => {
@@ -101,9 +107,14 @@ export function LUTSection() {
 
   // Импорт .cube файла
   const handleImportLUT = useCallback(async () => {
+    if (!platform) {
+      logger.error("Platform service not available", {})
+      return
+    }
+
     try {
       setIsLoading(true)
-      const selected = await open({
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -113,13 +124,14 @@ export function LUTSection() {
         ],
       })
 
-      if (selected) {
+      if (selected && selected.length > 0) {
+        const filePath = selected[0]
         // В реальном приложении здесь будет парсинг файла через Tauri команду
-        const fileName = selected.split("/").pop() || "Custom LUT"
+        const fileName = filePath.split("/").pop() || "Custom LUT"
         const newLUT = {
           id: `custom-${Date.now()}`,
           name: fileName.replace(/\.(cube|3dl|dat|look|mga|m3d)$/i, ""),
-          path: selected,
+          path: filePath,
         }
 
         setCustomLUTs([...customLUTs, newLUT])
@@ -130,7 +142,7 @@ export function LUTSection() {
     } finally {
       setIsLoading(false)
     }
-  }, [customLUTs, handleLUTChange])
+  }, [customLUTs, handleLUTChange, platform])
 
   // Удаление кастомного LUT
   const handleRemoveCustomLUT = useCallback(

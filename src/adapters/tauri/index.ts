@@ -8,6 +8,7 @@
 import { container } from "@/core/container"
 
 import { TauriBackendService } from "./backend"
+import { TauriEventService } from "./event"
 import { TauriPlatformService } from "./platform"
 import { TauriStorageService } from "./storage"
 
@@ -15,6 +16,7 @@ export { TauriBackendService } from "./backend"
 export type { EventHandler, StateChangeHandler } from "./backend-sync"
 // Re-export BackendSync for backwards compatibility
 export { BackendSync, getBackendSync } from "./backend-sync"
+export { TauriEventService } from "./event"
 export { TauriPlatformService } from "./platform"
 export { TauriStorageService } from "./storage"
 
@@ -33,10 +35,12 @@ export async function initTauriApp(options: { storeName?: string; autoConnect?: 
   const backend = new TauriBackendService()
   const platform = new TauriPlatformService()
   const storage = new TauriStorageService(storeName)
+  const event = new TauriEventService()
 
   container.registerBackend(backend)
   container.registerPlatform(platform)
   container.registerStorage(storage)
+  container.registerEvent(event)
 
   // Auto-connect to backend if requested
   if (autoConnect) {

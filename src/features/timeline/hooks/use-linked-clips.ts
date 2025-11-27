@@ -571,7 +571,18 @@ export function useLinkedClips(): UseLinkedClipsReturn {
       }
 
       addToGroup(clipId)
-      return group
+
+      // Сортируем по multicamOrder, затем по trackId для клипов без order
+      return group.sort((a, b) => {
+        const orderA = a.multicamOrder ?? Number.MAX_SAFE_INTEGER
+        const orderB = b.multicamOrder ?? Number.MAX_SAFE_INTEGER
+
+        if (orderA !== orderB) {
+          return orderA - orderB
+        }
+        // Fallback: сортировка по trackId
+        return a.trackId.localeCompare(b.trackId)
+      })
     },
     [getAllClips, linkedPairs],
   )

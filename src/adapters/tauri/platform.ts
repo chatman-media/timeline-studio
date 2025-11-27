@@ -134,4 +134,21 @@ export class TauriPlatformService implements IPlatformService {
     const { convertFileSrc } = require("@tauri-apps/api/core")
     return convertFileSrc(path)
   }
+
+  // === Path Utilities ===
+
+  async basename(path: string): Promise<string> {
+    const { basename } = await import("@tauri-apps/api/path")
+    return basename(path)
+  }
+
+  async dirname(path: string): Promise<string> {
+    const { dirname } = await import("@tauri-apps/api/path")
+    return dirname(path)
+  }
+
+  async join(...paths: string[]): Promise<string> {
+    const { join } = await import("@tauri-apps/api/path")
+    return join(...paths)
+  }
 }

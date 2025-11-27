@@ -6,6 +6,7 @@
  */
 
 export type { IBackendService, Unsubscribe } from "./backend.port"
+export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
 export type {
   IPlatformService,
   NotificationOptions,

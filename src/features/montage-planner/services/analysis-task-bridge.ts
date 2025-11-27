@@ -21,8 +21,8 @@ import type {
 } from "@/domains/shared/events"
 import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import { createLogger } from "@/lib/tauri-logger"
-import { AnalysisTaskStatus } from "../types/analysis-task"
 import type { AnalysisTask, AnalysisTaskOptions, AnalysisTaskProgress } from "../types/analysis-task"
+import { AnalysisTaskStatus } from "../types/analysis-task"
 
 const logger = createLogger({ module: "AnalysisTaskBridge" })
 

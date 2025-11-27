@@ -1,13 +1,12 @@
-import { open } from "@tauri-apps/plugin-dialog"
 import { CheckSquare, FileVideo, Folder, Loader2, Pause, RefreshCw, Square, Trash2, X } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { container } from "@/core"
 import { RenderStatus } from "@/domains/video-editing"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -32,6 +31,13 @@ interface ProjectExportConfig {
 
 export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps) {
   const { t } = useTranslation()
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
   const {
     renderJobs,
     isProcessing,
@@ -56,27 +62,33 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
   // Выбор папки для вывода
   const handleChooseOutputFolder = useCallback(async () => {
+    if (!platform) {
+      logger.error("Platform service not available")
+      return
+    }
+
     try {
-      const selected = await open({
+      const selected = await platform.showOpenDialog({
         directory: true,
         title: t("dialogs.export.selectOutputFolder"),
       })
 
-      if (selected) {
-        setOutputFolder(selected)
+      if (selected && selected.length > 0) {
+        const folder = selected[0]
+        setOutputFolder(folder)
 
         // Обновляем пути для всех ожидающих проектов
         setPendingProjects((prev) =>
           prev.map((project) => ({
             ...project,
-            outputPath: `${selected}/${project.projectName}_export.${project.settings.format}`,
+            outputPath: `${folder}/${project.projectName}_export.${project.settings.format}`,
           })),
         )
       }
     } catch (error) {
       logger.error(`Failed to select output folder: ${String(error)}`)
     }
-  }, [t])
+  }, [t, platform])
 
   // Добавление проектов
   const handleAddProjects = useCallback(async () => {

@@ -1,6 +1,6 @@
-import { convertFileSrc } from "@tauri-apps/api/core"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
@@ -45,6 +45,14 @@ export interface UseSimpleMediaProcessorOptions {
 export function useSimpleMediaProcessor(options: UseSimpleMediaProcessorOptions = {}) {
   const [isProcessing, setIsProcessing] = useState(false)
   const [progress, setProgress] = useState({ current: 0, total: 0 })
+
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   const processFiles = useCallback(
     async (filePaths: string[]): Promise<MediaFile[]> => {
@@ -183,9 +191,15 @@ export function useSimpleMediaProcessor(options: UseSimpleMediaProcessorOptions 
    * Получить URL для прямого доступа к файлу через Tauri
    * Вместо streaming сервера используем convertFileSrc
    */
-  const getFileUrl = useCallback((filePath: string): string => {
-    return convertFileSrc(filePath)
-  }, [])
+  const getFileUrl = useCallback(
+    (filePath: string): string => {
+      if (!platform) {
+        return `file://${filePath}`
+      }
+      return platform.convertFileSrc(filePath)
+    },
+    [platform],
+  )
 
   return {
     processFiles,

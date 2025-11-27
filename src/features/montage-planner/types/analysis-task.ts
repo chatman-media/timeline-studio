@@ -4,13 +4,7 @@
  * Типы для работы с задачами AI анализа видео
  */
 
-import type {
-  AnalysisPhase,
-  AudioContentAnalysis,
-  MomentScore,
-  MontagePlan,
-  VideoCompositionAnalysis,
-} from "./index"
+import type { AnalysisPhase, AudioContentAnalysis, MomentScore, MontagePlan, VideoCompositionAnalysis } from "./index"
 
 /**
  * Статус задачи анализа

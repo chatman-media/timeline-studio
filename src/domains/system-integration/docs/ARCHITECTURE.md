@@ -28,12 +28,23 @@ src/domains/system-integration/
 │   └── system-integration-provider.tsx # React context provider
 ├── services/
 │   ├── system-integration-orchestrator.ts # Main orchestrator
+│   ├── plugins/
+│   │   ├── index.ts
+│   │   └── plugin-service.ts         # Plugin management
+│   ├── language/
+│   │   ├── index.ts
+│   │   └── language-service.ts       # Language service
 │   ├── updates/
 │   │   ├── index.ts
-│   │   └── update-service.ts         # Tauri update service
+│   │   └── update-service.ts         # Update service
 │   └── workspace/
 │       ├── index.ts
 │       └── workspace-persistence-service.ts # Workspace state
+├── tauri/                            # Tauri Commands Layer
+│   ├── plugin-commands.ts            # Plugin Tauri commands
+│   ├── language-commands.ts          # Language Tauri commands
+│   ├── update-commands.ts            # Update Tauri commands
+│   └── workspace-commands.ts         # Workspace Tauri commands
 ├── types/
 │   └── index.ts                      # Domain types
 ├── __tests__/
@@ -333,3 +344,105 @@ bun run test src/domains/system-integration/__tests__/
 3. **Subscription Management** - Automatic unsubscription in hooks
 4. **Lazy Initialization** - Orchestrator created on first access
 5. **Actor-based State** - XState actors only update when state changes
+
+## Tauri Commands Layer
+
+### Architecture
+
+System Integration follows a layered architecture pattern:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   React Components                       │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                   React Hooks                            │
+│    useModals, useNotifications, useUpdates, etc.        │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│            SystemIntegrationOrchestrator                 │
+│              (Business Logic Layer)                      │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                  Service Layer                           │
+│    plugin-service, language-service, etc.               │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│              Tauri Commands Layer                        │
+│    plugin-commands, language-commands, etc.             │
+│           (invoke() calls only)                         │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                  Rust Backend                            │
+│            (Tauri Core Functions)                        │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Tauri Commands
+
+All Tauri `invoke()` calls are isolated in the `tauri/` directory:
+
+**plugin-commands.ts**
+- `sendPluginCommand(pluginId, command, params)` - Send command to plugin
+
+**language-commands.ts**
+- `getAppLanguage()` - Get current language
+- `setAppLanguage(lang)` - Set application language
+
+**update-commands.ts**
+- `checkForUpdate()` - Check for application updates
+- `downloadAndInstallUpdate()` - Download and install update
+
+**workspace-commands.ts**
+- `saveWorkspaceState(stateJson)` - Save workspace to backend
+- `loadWorkspaceState()` - Load workspace from backend
+
+### Benefits
+
+1. **Single Responsibility**: Tauri commands only handle IPC
+2. **Easier Testing**: Services can be tested without mocking Tauri
+3. **Better Logging**: Centralized logging for all backend calls
+4. **Error Handling**: Consistent error handling pattern
+5. **Type Safety**: Full TypeScript typing throughout stack
+
+### Usage Pattern
+
+```typescript
+// ❌ DON'T: Direct invoke in services
+import { invoke } from "@tauri-apps/api/core"
+const result = await invoke("command_name", { params })
+
+// ✅ DO: Use Tauri commands layer
+import { commandName } from "../tauri/commands"
+const result = await commandName(params)
+```
+
+### Migration from Direct invoke
+
+All services have been refactored to follow this pattern:
+
+```typescript
+// Before
+import { invoke } from "@tauri-apps/api/core"
+
+export async function doSomething() {
+  return invoke("command_name", { params })
+}
+
+// After
+import { commandName } from "../../tauri/commands"
+
+export async function doSomething() {
+  return commandName(params)
+}
+```

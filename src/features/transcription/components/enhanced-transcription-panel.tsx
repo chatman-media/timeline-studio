@@ -3,7 +3,6 @@
  * Совмещает существующую функциональность с новыми AI возможностями
  */
 
-import { open, save } from "@tauri-apps/plugin-dialog"
 import {
   AlertCircle,
   Brain,
@@ -20,7 +19,7 @@ import {
   Wand2,
   X,
 } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -33,6 +32,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { container } from "@/core"
 import { useNotifications } from "@/domains/system-integration"
 import { type EnhancedSubtitleOptions, useEnhancedSubtitleAutomation } from "../hooks/use-enhanced-subtitle-automation"
 // Импортируем существующие компоненты и хуки
@@ -50,6 +50,13 @@ interface EnhancedTranscriptionPanelProps {
 export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscriptionPanelProps) {
   const { t } = useTranslation()
   const { showError, showSuccess } = useNotifications()
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   // Базовая транскрипция
   const {
@@ -126,8 +133,13 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
    * Выбор файла
    */
   const handleSelectFile = async () => {
+    if (!platform) {
+      showError("Ошибка", "Platform service недоступен")
+      return
+    }
+
     try {
-      const selected = await open({
+      const selected = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -137,8 +149,8 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
         ],
       })
 
-      if (selected && typeof selected === "string") {
-        setSelectedFile(selected)
+      if (selected && selected.length > 0) {
+        setSelectedFile(selected[0])
         // Генерируем clipId из пути файла
         const clipId = `clip-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
         setSelectedClipId(clipId)
@@ -201,9 +213,13 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
    */
   const handleSaveSubtitles = async (format: SubtitleFormat = "srt") => {
     if (!currentResult) return
+    if (!platform) {
+      showError("Ошибка", "Platform service недоступен")
+      return
+    }
 
     try {
-      const filePath = await save({
+      const filePath = await platform.showSaveDialog({
         defaultPath: `subtitles.${format}`,
         filters: [
           {

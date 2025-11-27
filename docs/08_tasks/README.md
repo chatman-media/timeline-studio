@@ -26,6 +26,63 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-27] Multicam Module Improvements - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** multicam-improvements.md
+- **Action:** active/ → completed/
+- **Summary:**
+  - Фаза 1: TypeScript исправления (5 мест с `any` → правильные типы)
+  - Фаза 2: Audio Sync - создана Tauri команда `correlate_audio_files` (Rust, symphonia)
+  - Фаза 2b: Frontend интеграция через `@/domains/ai-services/tauri/audio-commands.ts`
+  - Фаза 3: Реализован `reorderAngles` с полем `multicamOrder` в TimelineClip
+  - Фаза 4: Исправлен logger в `use-multicam-shortcuts.ts`
+  - 297 тестов multicam проходят
+
+### [2025-11-27] Three Task Lists Implementation - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** implement-three-task-lists.md
+- **Action:** active/ → completed/
+- **Summary:**
+  - 3 списка задач в топбаре: Analysis, Render, Publication
+  - Analysis Tasks: analysis-tasks-dropdown.tsx, use-analysis-tasks.ts, analysis-task-bridge.ts
+  - 91+ тестов проходят (bridge: 29, hook: 31, dropdown: 31)
+  - i18n: 15 языков полностью переведены
+  - Интеграция с UnifiedOrchestrator
+
+### [2025-11-27] Effects Rendering Integration - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** effects-rendering-integration.md
+- **Action:** active/ → completed/
+- **Summary:**
+  - Frontend Preview: EffectsPreviewService (32 теста), EnhancedVideoPlayer (18 тестов)
+  - Backend Export: timelineToProjectSchema конвертер (21 тест)
+  - mapEffectIdToType: WebGL → FFmpeg маппинг типов
+  - generateFFmpegFromParams: генерация FFmpeg фильтров
+  - 71 тест проходит
+
+### [2025-11-27] Backend-Frontend Mapping Analysis - COMPLETED ✅
+- **Status:** Завершено (100%)
+- **File:** backend-frontend-mapping.md
+- **Action:** active/ → completed/
+- **Summary:**
+  - Анализ 150+ Rust Tauri команд и 361 Frontend invoke() вызовов
+  - Выявлена и исправлена проблема конвертации эффектов
+  - Обновлён timeline-to-project.ts с правильной конвертацией AppliedEffect
+
+### [2025-11-27] Browser & Effects Analysis - 34 Features at 100% ✅
+- **Status:** Завершено
+- **Action:** Анализ browser, effects, resources, recognition
+- **Summary:**
+  - Browser отключены Projects/Scenarios табы → теперь 100%
+  - Effects: 85% готов, создан план интеграции preview рендеринга
+  - Resources: 72% готов (type system, state management, display)
+  - Recognition: orphaned - готов, но не интегрирован (AI Director покрывает)
+  - Создан `docs/08_tasks/active/effects-rendering-integration.md`
+- **Updated:**
+  - `src/features/browser/components/browser-tabs.tsx` - отключены Projects/Scenarios
+  - `src/features/browser/README.md` и `README.ru.md` - обновлены на 100%
+  - `src/features/README.md` - актуальные проценты
+
 ### [2025-11-27] Feature Documentation Update - 33 Features at 100% ✅
 - **Status:** Завершено
 - **Action:** Обновление README файлов всех features

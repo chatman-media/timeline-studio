@@ -123,9 +123,7 @@ export function AnalysisTasksDropdown() {
                       <div className="flex items-center gap-2">
                         <span className={cn("flex items-center gap-1", getAnalysisTaskStatusColor(task.status))}>
                           {getStatusIcon(task.status)}
-                          <span className="text-xs font-medium">
-                            {getAnalysisTaskStatusLabel(task.status, t)}
-                          </span>
+                          <span className="text-xs font-medium">{getAnalysisTaskStatusLabel(task.status, t)}</span>
                         </span>
                         <span className="text-xs text-muted-foreground">
                           {formatAnalysisTaskDuration(task.created_at, task.completed_at)}

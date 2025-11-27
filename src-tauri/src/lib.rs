@@ -109,6 +109,7 @@ pub mod updates;
 // Модуль команд
 pub mod commands {
   pub mod audio_analysis;
+  pub mod audio_correlation;
   pub mod transcription;
 }
 

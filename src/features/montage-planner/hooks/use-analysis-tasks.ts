@@ -67,29 +67,26 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
   }, [])
 
   // Получить конкретную задачу по ID
-  const getTask = useCallback(
-    async (taskId: string): Promise<AnalysisTask | null> => {
-      void logger.info("Запрос задачи анализа по ID", { taskId })
+  const getTask = useCallback(async (taskId: string): Promise<AnalysisTask | null> => {
+    void logger.info("Запрос задачи анализа по ID", { taskId })
 
-      try {
-        const task = await analysisTaskBridge.getTask(taskId)
+    try {
+      const task = await analysisTaskBridge.getTask(taskId)
 
-        if (task) {
-          void logger.info("Задача анализа получена успешно", {
-            taskId,
-            status: task.status,
-          })
-        } else {
-          void logger.info("Задача анализа не найдена", { taskId })
-        }
-        return task
-      } catch (err) {
-        void logger.error("Ошибка получения задачи анализа", { error: err })
-        return null
+      if (task) {
+        void logger.info("Задача анализа получена успешно", {
+          taskId,
+          status: task.status,
+        })
+      } else {
+        void logger.info("Задача анализа не найдена", { taskId })
       }
-    },
-    [],
-  )
+      return task
+    } catch (err) {
+      void logger.error("Ошибка получения задачи анализа", { error: err })
+      return null
+    }
+  }, [])
 
   // Создать новую задачу анализа
   const createTask = useCallback(
@@ -157,10 +154,9 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
           const newTasks = [...prevTasks]
           newTasks[index] = updatedTask
           return newTasks
-        } else {
-          // Добавляем новую задачу
-          return [...prevTasks, updatedTask]
         }
+        // Добавляем новую задачу
+        return [...prevTasks, updatedTask]
       })
     })
 
@@ -245,11 +241,7 @@ export function getAnalysisTaskStatusColor(status: AnalysisTaskStatus): string {
 /**
  * Форматировать время задачи
  */
-export function formatAnalysisTaskDuration(
-  startTime: string,
-  endTime?: string,
-  t?: (key: string) => string,
-): string {
+export function formatAnalysisTaskDuration(startTime: string, endTime?: string, t?: (key: string) => string): string {
   const start = new Date(startTime).getTime()
   const end = endTime ? new Date(endTime).getTime() : Date.now()
   const duration = Math.floor((end - start) / 1000)

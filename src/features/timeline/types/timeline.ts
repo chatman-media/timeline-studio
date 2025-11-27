@@ -229,6 +229,9 @@ export interface TimelineClip {
   templateId?: string // ID шаблона для многокамерной раскладки
   templateCell?: number // Индекс ячейки в шаблоне (0-based)
 
+  // Порядок в мультикамерной группе
+  multicamOrder?: number // Порядок угла в мультикамерной группе (0-based)
+
   // Применяемые ресурсы
   effects: AppliedEffect[]
   filters: AppliedFilter[]

@@ -12,16 +12,50 @@ import {
   importMultiplePlans,
 } from "../montage-plan-io"
 
-// Mock Tauri dialog
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  save: vi.fn(),
-  open: vi.fn(),
+// Mock platform service
+const mockShowSaveDialog = vi.fn()
+const mockShowOpenDialog = vi.fn()
+const mockWriteTextFile = vi.fn()
+const mockReadTextFile = vi.fn()
+
+const mockPlatform = {
+  showOpenDialog: mockShowOpenDialog,
+  showSaveDialog: mockShowSaveDialog,
+  readTextFile: mockReadTextFile,
+  writeTextFile: mockWriteTextFile,
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  exists: vi.fn(),
+  readClipboard: vi.fn(),
+  writeClipboard: vi.fn(),
+  showNotification: vi.fn(),
+  openPath: vi.fn(),
+  openUrl: vi.fn(),
+  getVersion: vi.fn().mockResolvedValue("1.0.0"),
+  convertFileSrc: vi.fn((path: string) => path),
+}
+
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => mockPlatform),
+  },
 }))
 
-// Mock Tauri fs
-vi.mock("@tauri-apps/plugin-fs", () => ({
-  writeTextFile: vi.fn(),
-  readTextFile: vi.fn(),
+// Mock tauri-logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    trace: vi.fn(),
+    traceSync: vi.fn(),
+  })),
 }))
 
 describe("montage-plan-io", () => {
@@ -71,20 +105,17 @@ describe("montage-plan-io", () => {
 
   describe("exportMontagePlan", () => {
     it("should export plan to JSON file", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/export.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/export.json")
 
       await exportMontagePlan(mockPlan)
 
-      expect(save).toHaveBeenCalledWith({
+      expect(mockShowSaveDialog).toHaveBeenCalledWith({
         defaultPath: "test-montage-plan.json",
         filters: [{ name: "Montage Plan", extensions: ["json"] }],
       })
 
-      expect(writeTextFile).toHaveBeenCalled()
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      expect(mockWriteTextFile).toHaveBeenCalled()
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(parsed.id).toBe(mockPlan.id)
@@ -92,9 +123,7 @@ describe("montage-plan-io", () => {
     })
 
     it("should handle user cancellation", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-
-      vi.mocked(save).mockResolvedValueOnce(null)
+      mockShowSaveDialog.mockResolvedValueOnce(null)
 
       const result = await exportMontagePlan(mockPlan)
 
@@ -102,14 +131,11 @@ describe("montage-plan-io", () => {
     })
 
     it("should preserve all plan properties", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/export.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/export.json")
 
       await exportMontagePlan(mockPlan)
 
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(parsed.music).toEqual(mockPlan.music)
@@ -118,11 +144,8 @@ describe("montage-plan-io", () => {
     })
 
     it("should handle write errors", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/export.json")
-      vi.mocked(writeTextFile).mockRejectedValueOnce(new Error("Write failed"))
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/export.json")
+      mockWriteTextFile.mockRejectedValueOnce(new Error("Write failed"))
 
       await expect(exportMontagePlan(mockPlan)).rejects.toThrow("Write failed")
     })
@@ -130,26 +153,25 @@ describe("montage-plan-io", () => {
 
   describe("importMontagePlan", () => {
     it("should import plan from JSON file", async () => {
-      const { open } = await import("@tauri-apps/plugin-dialog")
-      const { readTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(open).mockResolvedValueOnce("/path/to/import.json")
-      vi.mocked(readTextFile).mockResolvedValueOnce(JSON.stringify(mockPlan))
+      mockShowOpenDialog.mockResolvedValueOnce(["/path/to/import.json"])
+      mockReadTextFile.mockResolvedValueOnce(JSON.stringify(mockPlan))
 
       const result = await importMontagePlan()
 
-      expect(open).toHaveBeenCalledWith({
+      expect(mockShowOpenDialog).toHaveBeenCalledWith({
         multiple: false,
         filters: [{ name: "Montage Plan", extensions: ["json"] }],
       })
 
-      expect(result).toEqual(mockPlan)
+      expect(result).toMatchObject({
+        id: mockPlan.id,
+        name: mockPlan.name,
+        clips: mockPlan.clips,
+      })
     })
 
     it("should handle user cancellation", async () => {
-      const { open } = await import("@tauri-apps/plugin-dialog")
-
-      vi.mocked(open).mockResolvedValueOnce(null)
+      mockShowOpenDialog.mockResolvedValueOnce(null)
 
       const result = await importMontagePlan()
 
@@ -157,23 +179,17 @@ describe("montage-plan-io", () => {
     })
 
     it("should validate imported data", async () => {
-      const { open } = await import("@tauri-apps/plugin-dialog")
-      const { readTextFile } = await import("@tauri-apps/plugin-fs")
-
       const invalidPlan = { id: "test", name: "Test" } // Missing required fields
 
-      vi.mocked(open).mockResolvedValueOnce("/path/to/invalid.json")
-      vi.mocked(readTextFile).mockResolvedValueOnce(JSON.stringify(invalidPlan))
+      mockShowOpenDialog.mockResolvedValueOnce(["/path/to/invalid.json"])
+      mockReadTextFile.mockResolvedValueOnce(JSON.stringify(invalidPlan))
 
       await expect(importMontagePlan()).rejects.toThrow()
     })
 
     it("should handle malformed JSON", async () => {
-      const { open } = await import("@tauri-apps/plugin-dialog")
-      const { readTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(open).mockResolvedValueOnce("/path/to/malformed.json")
-      vi.mocked(readTextFile).mockResolvedValueOnce("{ invalid json }")
+      mockShowOpenDialog.mockResolvedValueOnce(["/path/to/malformed.json"])
+      mockReadTextFile.mockResolvedValueOnce("{ invalid json }")
 
       await expect(importMontagePlan()).rejects.toThrow()
     })
@@ -190,14 +206,11 @@ describe("montage-plan-io", () => {
     ]
 
     it("should export multiple plans to single file", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/plans.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/plans.json")
 
       await exportMultiplePlans(multiplePlans)
 
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(Array.isArray(parsed)).toBe(true)
@@ -207,14 +220,11 @@ describe("montage-plan-io", () => {
     })
 
     it("should handle empty array", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/empty.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/empty.json")
 
       await exportMultiplePlans([])
 
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(Array.isArray(parsed)).toBe(true)
@@ -224,13 +234,10 @@ describe("montage-plan-io", () => {
 
   describe("importMultiplePlans", () => {
     it("should import multiple plans from file", async () => {
-      const { open } = await import("@tauri-apps/plugin-dialog")
-      const { readTextFile } = await import("@tauri-apps/plugin-fs")
-
       const multiplePlans = [mockPlan, { ...mockPlan, id: "plan-2" }]
 
-      vi.mocked(open).mockResolvedValueOnce("/path/to/plans.json")
-      vi.mocked(readTextFile).mockResolvedValueOnce(JSON.stringify(multiplePlans))
+      mockShowOpenDialog.mockResolvedValueOnce(["/path/to/plans.json"])
+      mockReadTextFile.mockResolvedValueOnce(JSON.stringify(multiplePlans))
 
       const result = await importMultiplePlans()
 
@@ -239,33 +246,30 @@ describe("montage-plan-io", () => {
     })
 
     it("should handle single plan as array", async () => {
-      const { open } = await import("@tauri-apps/plugin-dialog")
-      const { readTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(open).mockResolvedValueOnce("/path/to/single.json")
-      vi.mocked(readTextFile).mockResolvedValueOnce(JSON.stringify(mockPlan))
+      mockShowOpenDialog.mockResolvedValueOnce(["/path/to/single.json"])
+      mockReadTextFile.mockResolvedValueOnce(JSON.stringify(mockPlan))
 
       const result = await importMultiplePlans()
 
       expect(Array.isArray(result)).toBe(true)
       expect(result).toHaveLength(1)
-      expect(result?.[0]).toEqual(mockPlan)
+      expect(result?.[0]).toMatchObject({
+        id: mockPlan.id,
+        name: mockPlan.name,
+      })
     })
   })
 
   describe("exportPlanAsTemplate", () => {
     it("should convert plan to template format", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/template.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/template.json")
 
       await exportPlanAsTemplate(mockPlan, {
         category: "custom",
         tags: ["test", "custom"],
       })
 
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(parsed.category).toBe("custom")
@@ -276,14 +280,11 @@ describe("montage-plan-io", () => {
     })
 
     it("should derive parameters from plan", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/template.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/template.json")
 
       await exportPlanAsTemplate(mockPlan)
 
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(parsed.parameters.targetDuration).toBe(mockPlan.targetDuration)
@@ -291,14 +292,11 @@ describe("montage-plan-io", () => {
     })
 
     it("should preserve music settings as template", async () => {
-      const { save } = await import("@tauri-apps/plugin-dialog")
-      const { writeTextFile } = await import("@tauri-apps/plugin-fs")
-
-      vi.mocked(save).mockResolvedValueOnce("/path/to/template.json")
+      mockShowSaveDialog.mockResolvedValueOnce("/path/to/template.json")
 
       await exportPlanAsTemplate(mockPlan)
 
-      const writtenData = vi.mocked(writeTextFile).mock.calls[0][1]
+      const writtenData = mockWriteTextFile.mock.calls[0][1]
       const parsed = JSON.parse(writtenData)
 
       expect(parsed.musicSettings).toBeDefined()

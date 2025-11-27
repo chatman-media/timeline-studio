@@ -24,9 +24,7 @@ export {
 } from "@/domains/ai-services/services/montage-planning"
 // Re-export types
 export type { TimelineIntegrationOptions } from "@/domains/ai-services/services/montage-planning/timeline-integration-service"
-
-// Provider stays in features (UI layer)
-export { MontagePlannerProvider, useMontagePlanner as useMontagePlannerContext } from "./montage-planner-provider"
-
 // Analysis Task Bridge - connects frontend UI with backend UnifiedOrchestrator
 export { AnalysisTaskBridge, analysisTaskBridge } from "./analysis-task-bridge"
+// Provider stays in features (UI layer)
+export { MontagePlannerProvider, useMontagePlanner as useMontagePlannerContext } from "./montage-planner-provider"

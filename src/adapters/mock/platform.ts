@@ -111,6 +111,29 @@ export class MockPlatformService implements IPlatformService {
     return `file://${path}`
   }
 
+  // === Path Utilities ===
+
+  async basename(path: string): Promise<string> {
+    // Handle both Unix and Windows paths
+    const parts = path.split(/[/\\]/)
+    return parts[parts.length - 1] || ""
+  }
+
+  async dirname(path: string): Promise<string> {
+    // Handle both Unix and Windows paths
+    const parts = path.split(/[/\\]/)
+    parts.pop()
+    if (parts.length === 0) return "."
+    // Preserve leading slash for Unix absolute paths
+    if (parts.length === 1 && parts[0] === "") return "/"
+    return parts.join("/")
+  }
+
+  async join(...paths: string[]): Promise<string> {
+    // Simple path join - normalize slashes
+    return paths.filter(Boolean).join("/").replace(/\/+/g, "/")
+  }
+
   // === Test Helpers ===
 
   /**

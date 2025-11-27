@@ -1,5 +1,6 @@
-import { listen, type UnlistenFn } from "@tauri-apps/api/event"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { container } from "@/core"
+import type { UnlistenFn } from "@/core/ports"
 import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import { cacheMediaMetadata, getCachedMetadata } from "@/domains/video-editing/services/compiler"
 import type { MediaFile } from "@/features/media/types/media"
@@ -103,17 +104,28 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
   // Извлекаем callbacks из options для стабильных ссылок
   const { onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress } = options
 
+  // Получаем event service из container
+  const eventService = useMemo(() => {
+    try {
+      return container.hasEvent() ? container.getEvent() : null
+    } catch {
+      return null
+    }
+  }, [])
+
   // Храним unlisten функцию в ref для безопасной отписки
   const unlistenRef = useRef<UnlistenFn | null>(null)
   const isMountedRef = useRef(true)
 
   useEffect(() => {
+    if (!eventService) return
+
     isMountedRef.current = true
 
     // Подписываемся на события процессора асинхронно
     const setupListener = async () => {
       try {
-        const unlistenFn = await listen<ProcessorEvent>("media-processor", (event) => {
+        const unlistenFn = await eventService.listen<ProcessorEvent>("media-processor", (event) => {
           // Проверяем, что компонент ещё смонтирован
           if (!isMountedRef.current) return
 
@@ -195,7 +207,7 @@ export function useMediaProcessor(options: UseMediaProcessorOptions = {}) {
         }
       }
     }
-  }, [onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress])
+  }, [eventService, onFilesDiscovered, onMetadataReady, onThumbnailReady, onError, onProgress])
 
   const scanFolder = useCallback(async (folderPath: string): Promise<MediaFile[]> => {
     setIsProcessing(true)

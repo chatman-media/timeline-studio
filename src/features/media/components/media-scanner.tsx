@@ -1,10 +1,10 @@
-import { open } from "@tauri-apps/plugin-dialog"
 import { AlertCircle, FolderOpen, Loader2 } from "lucide-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { container } from "@/core"
 import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -15,6 +15,13 @@ const logger = createLogger("MediaScanner")
 export function MediaScanner() {
   const [scannedFiles, setScannedFiles] = useState<MediaFile[]>([])
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   const { scanFolderWithThumbnails, isProcessing, progress, errors, clearErrors } = useMediaProcessor({
     onFilesDiscovered: (files) => {
@@ -40,14 +47,19 @@ export function MediaScanner() {
   })
 
   const handleSelectFolder = async () => {
-    const selected = await open({
+    if (!platform) {
+      logger.errorSync("Platform service not available")
+      return
+    }
+
+    const selected = await platform.showOpenDialog({
       directory: true,
       multiple: false,
       title: "Выберите папку для сканирования",
     })
 
-    if (selected) {
-      setSelectedFolder(selected)
+    if (selected && selected.length > 0) {
+      setSelectedFolder(selected[0])
       clearErrors()
     }
   }

@@ -10,12 +10,12 @@ import type { MediaItem } from "@/types/generated/tauri-bindings"
  */
 export function mediaItemToMediaFile(item: MediaItem): MediaFile {
   // Map Tauri MediaType to our MediaType enum
-  // item.media_type is already a string that we can use directly
+  // item.media_type is "Video" | "Audio" | "Image"
   let type: MediaType
-  const mediaTypeStr = (item.media_type as any as string).toLowerCase()
-  const isVideo = mediaTypeStr.includes("video")
+  const mediaTypeStr = item.media_type.toLowerCase()
+  const isVideo = mediaTypeStr === "video"
   const isAudio = mediaTypeStr === "audio"
-  const isImage = mediaTypeStr.includes("image")
+  const isImage = mediaTypeStr === "image"
 
   if (isVideo) {
     type = MediaType.Video

@@ -59,7 +59,7 @@ export interface UseMulticamReturn extends MulticamState {
 export function useMulticam(baseClipId?: string): UseMulticamReturn {
   const { getMulticamPairs, getMulticamGroup, syncLinkedClips, linkClips, unlinkClips } = useLinkedClips()
 
-  const { currentTime, project } = useTimeline()
+  const { currentTime, project, updateClip } = useTimeline()
   const { playerSelectClip } = usePlayer()
 
   // Используем хук синхронизации камер
@@ -239,22 +239,37 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
   )
 
   // Изменение порядка углов
-  const reorderAngles = useCallback((fromIndex: number, toIndex: number) => {
-    // TODO: Требует расширения архитектуры
-    // Текущая реализация хранит мультикамерные связи как граф (каждый клип связан с каждым)
-    // Порядок определяется порядком обхода графа в getMulticamGroup
-    //
-    // Для реализации reorder нужно:
-    // 1. Добавить поле multicamOrder?: number в TimelineClip
-    // 2. Обновить getMulticamGroup для сортировки по multicamOrder
-    // 3. Реализовать логику перестановки здесь
-    //
-    // Альтернатива: использовать trackId для визуального порядка
-    // (клипы на разных треках сортируются по trackId)
+  const reorderAngles = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      // Проверяем валидность индексов
+      if (fromIndex < 0 || fromIndex >= angles.length) {
+        logger.warn("[useMulticam] Invalid fromIndex:", { fromIndex, anglesLength: angles.length })
+        return
+      }
+      if (toIndex < 0 || toIndex >= angles.length) {
+        logger.warn("[useMulticam] Invalid toIndex:", { toIndex, anglesLength: angles.length })
+        return
+      }
+      if (fromIndex === toIndex) {
+        return // Нет изменений
+      }
 
-    logger.info("[useMulticam] Reorder angles:", { fromIndex, toIndex })
-    logger.warn("[useMulticam] reorderAngles requires architecture extension (multicamOrder field)")
-  }, [])
+      logger.info("[useMulticam] Reorder angles:", { fromIndex, toIndex })
+
+      // Создаём новый порядок углов
+      const newAngles = [...angles]
+      const [movedAngle] = newAngles.splice(fromIndex, 1)
+      newAngles.splice(toIndex, 0, movedAngle)
+
+      // Обновляем multicamOrder для каждого клипа
+      newAngles.forEach((angle, index) => {
+        updateClip(angle.clipId, { multicamOrder: index })
+      })
+
+      logger.info("[useMulticam] Angles reordered successfully")
+    },
+    [angles, updateClip],
+  )
 
   // Получение угла по ID клипа
   const getAngleByClipId = useCallback(

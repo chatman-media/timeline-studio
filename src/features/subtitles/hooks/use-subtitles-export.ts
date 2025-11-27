@@ -1,6 +1,6 @@
-import { save } from "@tauri-apps/plugin-dialog"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import { subtitleService } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
@@ -18,6 +18,13 @@ export function useSubtitlesExport() {
   const [isExporting, setIsExporting] = useState(false)
   const { tracks } = useTracks()
   const { showSuccess, showError } = useNotifications()
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   /**
    * Проверяет, является ли клип субтитром
@@ -71,8 +78,13 @@ export function useSubtitlesExport() {
         }
 
         // Выбираем путь для сохранения
+        if (!platform) {
+          showError("Ошибка", "Platform service недоступен")
+          return
+        }
+
         const extension = getSubtitleFileExtension(format)
-        const filePath = await save({
+        const filePath = await platform.showSaveDialog({
           filters: [
             {
               name: `${format.toUpperCase()} Subtitles`,
@@ -105,7 +117,7 @@ export function useSubtitlesExport() {
         setIsExporting(false)
       }
     },
-    [isExporting, getSubtitlesFromTimeline],
+    [isExporting, getSubtitlesFromTimeline, platform, showError],
   )
 
   /**

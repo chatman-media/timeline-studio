@@ -23,7 +23,12 @@ vi.mock("../../services/multicam-manager", () => ({
 }))
 
 vi.mock("@/lib/tauri-logger", () => ({
-  logInfo: vi.fn(),
+  createLogger: vi.fn(() => ({
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  })),
 }))
 
 describe("useMulticamShortcuts", () => {

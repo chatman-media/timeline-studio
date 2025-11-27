@@ -81,8 +81,8 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
       setSyncProgress(50)
 
       // Выполняем синхронизацию
-      const mappedMediaFiles = mediaItemsToMediaFiles(mediaFiles as any)
-      const results = syncByTimecodeService(baseClip as any, clips as any, mappedMediaFiles)
+      const mappedMediaFiles = mediaItemsToMediaFiles(mediaFiles)
+      const results = syncByTimecodeService(baseClip, clips, mappedMediaFiles)
 
       // Преобразуем результаты в нужный формат
       const mappedResults: SyncResult[] = results.map((r) => ({
@@ -138,7 +138,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
         throw new Error("Нет связанных клипов для синхронизации")
       }
 
-      const otherClips = multicamGroup.filter((clip: any) => clip.id !== baseClipId)
+      const otherClips = multicamGroup.filter((clip) => clip.id !== baseClipId)
 
       const results: SyncResult[] = []
 
@@ -239,7 +239,7 @@ export function useCameraSync({ baseClipId }: UseCameraSyncProps): UseCameraSync
   const applySyncResults = useCallback(() => {
     // allClips уже доступен из useTimeline
     syncResults.forEach((result) => {
-      const clip = allClips.find((c: any) => c.id === result.clipId)
+      const clip = allClips.find((c) => c.id === result.clipId)
       if (clip) {
         // Применяем смещение к startTime клипа
         const newStartTime = clip.startTime + result.offset

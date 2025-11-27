@@ -63,7 +63,8 @@ export {
   ProjectManagementOrchestrator,
   resetProjectManagementOrchestrator,
 } from "./services/project-management-orchestrator"
-// Экспорт Tauri Commands для API Keys
+// Экспорт Tauri Commands (Advanced)
 export * from "./tauri/api-keys-commands"
+export * from "./tauri/project-commands"
 // Экспорт типов
 export * from "./types"

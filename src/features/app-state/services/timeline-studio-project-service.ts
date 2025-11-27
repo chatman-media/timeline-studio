@@ -2,10 +2,9 @@
  * Сервис для работы с новой структурой проекта Timeline Studio
  */
 
-import { getVersion } from "@tauri-apps/api/app"
-import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs"
 import { nanoid } from "nanoid"
 
+import { container, type IPlatformService } from "@/core"
 import { createEmptyMediaPool } from "@/features/media/utils/media-pool-utils"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/features/project-settings/types/project"
 import type {
@@ -32,6 +31,16 @@ export class TimelineStudioProjectService implements ProjectOperations {
       TimelineStudioProjectService.instance = new TimelineStudioProjectService()
     }
     return TimelineStudioProjectService.instance
+  }
+
+  /**
+   * Получить IPlatformService из DI container
+   */
+  private getPlatformService(): IPlatformService {
+    if (!container.hasPlatform()) {
+      throw new Error("Platform service not available")
+    }
+    return container.getPlatform()
   }
 
   /**
@@ -121,7 +130,8 @@ export class TimelineStudioProjectService implements ProjectOperations {
     const now = new Date()
 
     // Получаем актуальную версию приложения
-    const appVersion = await getVersion()
+    const platformService = this.getPlatformService()
+    const appVersion = await platformService.getVersion()
 
     // Создаем метаданные
     const metadata: ProjectMetadata = {
@@ -200,7 +210,8 @@ export class TimelineStudioProjectService implements ProjectOperations {
    */
   async openProject(path: string): Promise<TimelineStudioProject> {
     try {
-      const projectData = await readTextFile(path)
+      const platformService = this.getPlatformService()
+      const projectData = await platformService.readTextFile(path)
 
       // Проверяем что файл не пустой
       if (!projectData || projectData.trim() === "") {
@@ -230,6 +241,8 @@ export class TimelineStudioProjectService implements ProjectOperations {
    */
   async saveProject(project: TimelineStudioProject, path: string): Promise<void> {
     try {
+      const platformService = this.getPlatformService()
+
       // Обновляем метаданные
       project.metadata.modified = new Date()
       project.backup.lastSaved = new Date()
@@ -239,7 +252,7 @@ export class TimelineStudioProjectService implements ProjectOperations {
       const content = JSON.stringify(serialized, null, 2)
 
       // Сохраняем файл
-      await writeTextFile(path, content)
+      await platformService.writeTextFile(path, content)
 
       logger.info(`Project saved to ${path}`)
     } catch (error) {

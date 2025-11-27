@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
-import { container } from "@/core"
 import { MockPlatformService } from "@/adapters/mock/platform"
+import { container, resetContainer } from "@/core"
 import { AudioFileManager } from "../audio-file-manager"
 
 // Mock HTMLAudioElement
@@ -54,14 +53,16 @@ describe("AudioFileManager", () => {
   let manager: AudioFileManager
 
   beforeEach(() => {
-    container.setPlatform(mockPlatform)
+    container.registerPlatform(mockPlatform)
     manager = new AudioFileManager()
   })
 
   afterEach(() => {
-    manager.unloadAll()
+    if (manager) {
+      manager.unloadAll()
+    }
     vi.clearAllMocks()
-    container.reset()
+    resetContainer()
   })
 
   describe("Loading Audio Files", () => {

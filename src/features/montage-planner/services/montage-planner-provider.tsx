@@ -3,9 +3,9 @@
  * Simplified provider that works with the new BackendSync architecture
  */
 
-import { listen } from "@tauri-apps/api/event"
 import { useActor } from "@xstate/react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { container } from "@/core"
 import { type MontagePlannerEvent, montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
 import { createLogger } from "@/lib/tauri-logger"
 import { useAppSettings } from "../../app-state"
@@ -50,8 +50,19 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
   const [error, setError] = useState<string | null>(null)
   const { connectionError } = useAppSettings()
 
-  // Listen for Tauri events from montage planner
+  // Получаем event service из container
+  const eventService = useMemo(() => {
+    try {
+      return container.hasEvent() ? container.getEvent() : null
+    } catch {
+      return null
+    }
+  }, [])
+
+  // Listen for events from montage planner
   useEffect(() => {
+    if (!eventService) return
+
     let unsubscribeProgress: (() => void) | null = null
     let unsubscribeVideoAnalyzed: (() => void) | null = null
     let unsubscribeAudioAnalyzed: (() => void) | null = null
@@ -62,12 +73,12 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
     const setupListeners = async () => {
       try {
         // Progress updates
-        unsubscribeProgress = await listen<any>("montage-analysis-progress", (event) => {
+        unsubscribeProgress = await eventService.listen<any>("montage-analysis-progress", (event) => {
           send({ type: "ANALYSIS_PROGRESS", progress: event.payload })
         })
 
         // Video analysis results
-        unsubscribeVideoAnalyzed = await listen<{ videoId: string; analysis: any }>(
+        unsubscribeVideoAnalyzed = await eventService.listen<{ videoId: string; analysis: any }>(
           "montage-video-analyzed",
           (event) => {
             send({
@@ -79,7 +90,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
         )
 
         // Audio analysis results
-        unsubscribeAudioAnalyzed = await listen<{ videoId: string; analysis: any }>(
+        unsubscribeAudioAnalyzed = await eventService.listen<{ videoId: string; analysis: any }>(
           "montage-audio-analyzed",
           (event) => {
             send({
@@ -91,15 +102,18 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
         )
 
         // Fragment detection results
-        unsubscribeFragments = await listen<{ fragments: any[] }>("montage-fragments-detected", (event) => {
-          send({
-            type: "FRAGMENTS_DETECTED",
-            fragments: event.payload.fragments,
-          })
-        })
+        unsubscribeFragments = await eventService.listen<{ fragments: any[] }>(
+          "montage-fragments-detected",
+          (event) => {
+            send({
+              type: "FRAGMENTS_DETECTED",
+              fragments: event.payload.fragments,
+            })
+          },
+        )
 
         // Moment scoring results
-        unsubscribeMoments = await listen<{ scores: any[] }>("montage-moments-scored", (event) => {
+        unsubscribeMoments = await eventService.listen<{ scores: any[] }>("montage-moments-scored", (event) => {
           send({
             type: "MOMENTS_SCORED",
             scores: event.payload.scores,
@@ -128,7 +142,7 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
       safeUnlisten(unsubscribeFragments)
       safeUnlisten(unsubscribeMoments)
     }
-  }, [send])
+  }, [eventService, send])
 
   // Derived state
   const context = (state?.context as any) || {}

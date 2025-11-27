@@ -185,6 +185,11 @@ export interface TimelineClip {
   linkedClipId?: string
   isLinked?: boolean
 
+  // Multicam template support
+  templateId?: string // ID шаблона для многокамерной раскладки
+  templateCell?: number // Индекс ячейки в шаблоне (0-based)
+  multicamOrder?: number // Порядок угла в мультикамерной группе (0-based)
+
   // Video fade эффекты
   fadeIn?: {
     duration: number // Длительность fade-in в секундах

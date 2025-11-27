@@ -75,4 +75,14 @@ export interface IPlatformService {
    * In browser: uses file:// or blob URLs
    */
   convertFileSrc(path: string): string
+
+  /**
+   * Path utilities
+   */
+  /** Get the file name from a path */
+  basename(path: string): Promise<string>
+  /** Get the directory name from a path */
+  dirname(path: string): Promise<string>
+  /** Join path segments */
+  join(...paths: string[]): Promise<string>
 }

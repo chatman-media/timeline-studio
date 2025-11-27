@@ -4,6 +4,7 @@
  * Домен для системной интеграции: модальные окна, обновления, уведомления, workspace
  */
 
+// Экспорт хуков для использования
 export { useFeatures } from "./hooks/use-features"
 // Экспорт хуков
 export { useModals } from "./hooks/use-modals"
@@ -41,5 +42,24 @@ export {
   saveWorkspaceStateBackend,
   saveWorkspaceStateLocal,
 } from "./services/workspace"
+export {
+  getAppLanguage as getAppLanguageTauri,
+  type LanguageResponse as LanguageResponseTauri,
+  setAppLanguage as setAppLanguageTauri,
+} from "./tauri/language-commands"
+
+// Экспорт Tauri Commands (Advanced)
+export {
+  type PluginCommandResponse as PluginCommandResponseTauri,
+  sendPluginCommand as sendPluginCommandTauri,
+} from "./tauri/plugin-commands"
+export {
+  checkForUpdate as checkForUpdateTauri,
+  downloadAndInstallUpdate as downloadAndInstallUpdateTauri,
+} from "./tauri/update-commands"
+export {
+  loadWorkspaceState as loadWorkspaceStateTauri,
+  saveWorkspaceState as saveWorkspaceStateTauri,
+} from "./tauri/workspace-commands"
 // Экспорт типов
 export * from "./types"

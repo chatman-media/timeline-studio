@@ -25,6 +25,7 @@
 ### 🎨 Frontend архитектура
 - [**frontend/**](frontend/) - Обзор Frontend архитектуры
 - [**frontend/state-management.md**](frontend/state-management.md) - Управление состоянием с XState
+- [**frontend/ports-and-adapters.md**](frontend/ports-and-adapters.md) - Ports & Adapters (Hexagonal) Architecture
 
 ### 🦀 Backend архитектура
 - [**backend/**](backend/) - Обзор Backend архитектуры на Rust
@@ -67,6 +68,7 @@
 - **State Management**: XState для сложных состояний
 - **Component Architecture**: Feature-based организация
 - **Provider Architecture**: Event-Driven с BackendSync (17 провайдеров, 100% миграция завершена)
+- **Ports & Adapters**: Hexagonal Architecture для платформонезависимости (DI container)
 - **Type Safety**: Строгая типизация с TypeScript + Specta автогенерация
 - **Performance**: React 19 с оптимизациями
 - **AI Integration**: Seamless AI tools integration

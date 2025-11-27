@@ -2,7 +2,7 @@
  * Улучшенный видеоплеер с поддержкой пререндера
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
@@ -11,8 +11,10 @@ import { useNotifications } from "@/domains/system-integration"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import type { TimelineClip } from "@/features/timeline/types/timeline"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
 import { convertVideoSrc } from "@/lib/tauri-utils"
+import { getEffectsPreviewService } from "../services/effects-preview"
 import { usePlayer } from "../services/player-provider"
 import { PlayerControls } from "./player-controls"
 
@@ -34,12 +36,14 @@ export function EnhancedVideoPlayer() {
   const { showInfo } = useNotifications()
 
   const videoRef = useRef<HTMLVideoElement>(null)
+  const effectsCanvasRef = useRef<HTMLCanvasElement>(null)
   const [prerenderOptions, setPrerenderOptions] = useState<PrerenderOptions>({
     enabled: false,
     quality: 75,
     segmentDuration: 5,
     applyEffects: true,
   })
+  const [effectsEnabled, setEffectsEnabled] = useState(true)
 
   // Текущий пререндеренный сегмент
   const [currentSegment, setCurrentSegment] = useState<{
@@ -50,6 +54,68 @@ export function EnhancedVideoPlayer() {
 
   // Вычисляем соотношение сторон
   const aspectRatioValue = aspectRatio.value.width / aspectRatio.value.height
+
+  /**
+   * Найти текущий клип с эффектами на timeline
+   */
+  const currentClipWithEffects = useMemo((): TimelineClip | null => {
+    if (!project?.sections) return null
+
+    for (const section of project.sections) {
+      for (const track of section.tracks) {
+        for (const clip of track.clips) {
+          // Проверяем, что текущее время внутри клипа
+          const clipStart = clip.startTime
+          const clipEnd = clip.startTime + (clip.duration || 0)
+
+          if (currentTime >= clipStart && currentTime < clipEnd) {
+            // Проверяем наличие эффектов
+            if (clip.effects && clip.effects.length > 0) {
+              return clip
+            }
+          }
+        }
+      }
+    }
+    return null
+  }, [project, currentTime])
+
+  /**
+   * Управление realtime preview эффектов
+   */
+  useEffect(() => {
+    const videoElement = videoRef.current
+    const canvasElement = effectsCanvasRef.current
+
+    if (!videoElement || !canvasElement || !effectsEnabled) {
+      return
+    }
+
+    // Если нет клипа с эффектами - скрываем canvas
+    if (!currentClipWithEffects) {
+      canvasElement.style.display = "none"
+      return
+    }
+
+    // Показываем canvas и запускаем preview
+    canvasElement.style.display = "block"
+
+    const effectsService = getEffectsPreviewService()
+
+    // Запускаем realtime preview
+    effectsService.startRealTimePreview(videoElement, currentClipWithEffects, canvasElement, {
+      enabled: true,
+      quality: "medium",
+      realTime: true,
+      cacheResults: true,
+      maxFrameRate: 30,
+    })
+
+    // Cleanup при размонтировании или изменении клипа
+    return () => {
+      effectsService.stopRealTimePreview()
+    }
+  }, [currentClipWithEffects, effectsEnabled])
 
   /**
    * Проверить, нужен ли пререндер для текущего момента
@@ -198,6 +264,24 @@ export function EnhancedVideoPlayer() {
                     display: "block",
                   }}
                 />
+
+                {/* Canvas для realtime эффектов */}
+                <canvas
+                  ref={effectsCanvasRef}
+                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  style={{
+                    display: currentClipWithEffects && effectsEnabled ? "block" : "none",
+                  }}
+                />
+
+                {/* Индикатор активных эффектов */}
+                {currentClipWithEffects && effectsEnabled && (
+                  <div className="absolute right-4 bottom-20 rounded bg-purple-500/20 px-3 py-2">
+                    <span className="text-sm text-purple-400">
+                      Эффекты: {currentClipWithEffects.effects?.length || 0}
+                    </span>
+                  </div>
+                )}
 
                 {/* Индикатор пререндера */}
                 {isRendering && (

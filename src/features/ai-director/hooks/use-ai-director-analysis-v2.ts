@@ -6,12 +6,13 @@
  * - Детальный прогресс по каждому файлу и анализатору
  * - Пакетный анализ нескольких файлов
  *
- * Uses domain services for invoke() calls. Events use direct listen()
- * due to specialized event types not covered by useAIDirectorEvents.
+ * Uses domain services for invoke() calls. Events use container.getEvent()
+ * for platform-independent event handling.
  */
 
-import { listen, type UnlistenFn } from "@tauri-apps/api/event"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { container } from "@/core"
+import type { UnlistenFn } from "@/core/ports"
 import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@/domains/ai-director"
 import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
@@ -144,22 +145,33 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
   // Map для отслеживания какой файл сейчас анализируется
   const [currentFileIndex, setCurrentFileIndex] = useState(0)
 
+  // Получаем event service из container
+  const eventService = useMemo(() => {
+    try {
+      return container.hasEvent() ? container.getEvent() : null
+    } catch {
+      return null
+    }
+  }, [])
+
   // Event listeners
   useEffect(() => {
+    if (!eventService) return
+
     const unlistenFunctions: UnlistenFn[] = []
     let isMounted = true
 
     const setupEventListeners = async () => {
       try {
         // Analysis started
-        const unlistenStarted = await listen("analysis-started", (event) => {
+        const unlistenStarted = await eventService.listen("analysis-started", (event) => {
           logger.infoSync("[useAIDirectorAnalysisV2] Analysis started", event.payload as Record<string, unknown>)
           // Будет обработано в startBatchAnalysis
         })
         if (isMounted) unlistenFunctions.push(unlistenStarted)
 
         // 🆕 v2: File Analysis Started
-        const unlistenFileStarted = await listen("file-analysis-started", (event) => {
+        const unlistenFileStarted = await eventService.listen("file-analysis-started", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] File analysis started", payload)
 
@@ -181,7 +193,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenFileStarted)
 
         // 🆕 v2: File Analysis Progress
-        const unlistenFileProgress = await listen("file-analysis-progress", (event) => {
+        const unlistenFileProgress = await eventService.listen("file-analysis-progress", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] File analysis progress", payload)
 
@@ -205,7 +217,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenFileProgress)
 
         // 🆕 v2: File Analysis Completed
-        const unlistenFileCompleted = await listen("file-analysis-completed", (event) => {
+        const unlistenFileCompleted = await eventService.listen("file-analysis-completed", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] File analysis completed", payload)
 
@@ -231,7 +243,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenFileCompleted)
 
         // 🆕 Phase 2: Batch Analysis Started
-        const unlistenBatchStarted = await listen("batch-analysis-started", (event) => {
+        const unlistenBatchStarted = await eventService.listen("batch-analysis-started", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis started", payload)
 
@@ -248,7 +260,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenBatchStarted)
 
         // 🆕 Phase 2: Batch Analysis Progress
-        const unlistenBatchProgress = await listen("batch-analysis-progress", (event) => {
+        const unlistenBatchProgress = await eventService.listen("batch-analysis-progress", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis progress", payload)
 
@@ -267,7 +279,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenBatchProgress)
 
         // 🆕 Phase 2: Batch Analysis Completed
-        const unlistenBatchCompleted = await listen("batch-analysis-completed", (event) => {
+        const unlistenBatchCompleted = await eventService.listen("batch-analysis-completed", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis completed", payload)
 
@@ -291,7 +303,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenBatchCompleted)
 
         // 🆕 v2: Analyzer Started
-        const unlistenAnalyzerStarted = await listen("analyzer-started", (event) => {
+        const unlistenAnalyzerStarted = await eventService.listen("analyzer-started", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Analyzer started", payload)
 
@@ -316,7 +328,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenAnalyzerStarted)
 
         // 🆕 v2: Analyzer Progress
-        const unlistenAnalyzerProgress = await listen("analyzer-progress", (event) => {
+        const unlistenAnalyzerProgress = await eventService.listen("analyzer-progress", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Analyzer progress", payload)
 
@@ -341,7 +353,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenAnalyzerProgress)
 
         // 🆕 v2: Analyzer Completed
-        const unlistenAnalyzerCompleted = await listen("analyzer-completed", (event) => {
+        const unlistenAnalyzerCompleted = await eventService.listen("analyzer-completed", (event) => {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Analyzer completed", payload)
 
@@ -368,7 +380,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenAnalyzerCompleted)
 
         // Analysis progress - самое важное событие для обновления UI
-        const unlistenProgress = await listen("analysis-progress", (event) => {
+        const unlistenProgress = await eventService.listen("analysis-progress", (event) => {
           const progress = event.payload as unknown as AnalysisProgress
           logger.infoSync("[useAIDirectorAnalysisV2] Analysis progress", progress as unknown as Record<string, unknown>)
 
@@ -397,7 +409,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenProgress)
 
         // Analysis completed
-        const unlistenCompleted = await listen("analysis-completed", (event) => {
+        const unlistenCompleted = await eventService.listen("analysis-completed", (event) => {
           logger.infoSync("[useAIDirectorAnalysisV2] Analysis completed", event.payload as Record<string, unknown>)
 
           setFilesProgress((prev) => {
@@ -433,7 +445,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         if (isMounted) unlistenFunctions.push(unlistenCompleted)
 
         // Analysis errors
-        const unlistenError = await listen("analysis-error", (event) => {
+        const unlistenError = await eventService.listen("analysis-error", (event) => {
           const error = event.payload as unknown as AnalysisError
           logger.errorSync("[useAIDirectorAnalysisV2] Analysis error", error as unknown as Record<string, unknown>)
 
@@ -473,7 +485,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         }
       })
     }
-  }, [currentFileIndex])
+  }, [eventService, currentFileIndex])
 
   // Start batch analysis
   const startBatchAnalysis = useCallback(async (filePaths: string[], analyzers: Set<AnalyzerType>) => {

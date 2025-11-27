@@ -265,3 +265,6 @@ export function checkCompatibility(): { compatible: boolean; issues: string[] } 
     issues,
   }
 }
+
+// Экспорт Tauri Commands (Advanced)
+export * from "./tauri/ai-tools-commands"

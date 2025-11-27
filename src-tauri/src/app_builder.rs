@@ -436,6 +436,8 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     // Audio analysis commands
     crate::commands::audio_analysis::analyze_audio_peaks,
     crate::commands::audio_analysis::detect_speech_onsets,
+    // Audio correlation for multicam sync
+    crate::commands::audio_correlation::correlate_audio_files,
     // Faster Whisper transcription commands
     crate::commands::transcription::init_whisper_python,
     crate::commands::transcription::transcribe_with_faster_whisper,

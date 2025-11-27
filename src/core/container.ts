@@ -5,7 +5,7 @@
  * Позволяет подменять реализации для разных окружений (Tauri, Mock, HTTP).
  */
 
-import type { IBackendService, IPlatformService, IStorageService } from "./ports"
+import type { IBackendService, IEventService, IPlatformService, IStorageService } from "./ports"
 
 class ServiceContainer {
   private static instance: ServiceContainer | null = null
@@ -13,6 +13,7 @@ class ServiceContainer {
   private _backend: IBackendService | null = null
   private _platform: IPlatformService | null = null
   private _storage: IStorageService | null = null
+  private _event: IEventService | null = null
 
   private constructor() {}
 
@@ -86,6 +87,25 @@ class ServiceContainer {
   hasStorage(): boolean {
     return this._storage !== null
   }
+
+  // === Event Service ===
+
+  registerEvent(event: IEventService): void {
+    this._event = event
+  }
+
+  getEvent(): IEventService {
+    if (!this._event) {
+      throw new Error(
+        "[ServiceContainer] Event not registered. Call registerEvent() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._event
+  }
+
+  hasEvent(): boolean {
+    return this._event !== null
+  }
 }
 
 // Singleton instance
@@ -95,6 +115,7 @@ export const container = ServiceContainer.getInstance()
 export const getBackend = (): IBackendService => container.getBackend()
 export const getPlatform = (): IPlatformService => container.getPlatform()
 export const getStorage = (): IStorageService => container.getStorage()
+export const getEvent = (): IEventService => container.getEvent()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

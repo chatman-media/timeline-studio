@@ -4,6 +4,46 @@
 
 ---
 
+## [2024-11-27] Tauri Commands Layer Implementation
+
+**Status:** Completed
+
+### Changes
+
+**Architecture Refactoring:**
+- Added `tauri/` directory with dedicated Tauri commands layer
+- Created separation between service layer and Tauri backend calls
+- Implemented consistent architecture across all System Integration services
+
+**New Tauri Commands:**
+- `plugin-commands.ts` - Plugin system integration (`sendPluginCommand`)
+- `language-commands.ts` - Language management (`getAppLanguage`, `setAppLanguage`)
+- `update-commands.ts` - Application updates (`checkForUpdate`, `downloadAndInstallUpdate`)
+- `workspace-commands.ts` - Workspace persistence (`saveWorkspaceState`, `loadWorkspaceState`)
+
+**Updated Services:**
+- `plugin-service.ts` - Now delegates to plugin-commands
+- `language-service.ts` - Now delegates to language-commands
+- `update-service.ts` - Now delegates to update-commands
+- `workspace-persistence-service.ts` - Now delegates to workspace-commands
+
+**Exports:**
+- Added Tauri commands exports to index.ts for advanced usage
+- Maintained backward compatibility with existing service API
+
+### Benefits
+
+- **Consistent Architecture**: Matches pattern used in other domains (subtitles, ai-services)
+- **Single Responsibility**: Tauri commands isolated from business logic
+- **Better Testing**: Service logic can be tested independently
+- **Easier Maintenance**: Clear separation of concerns
+
+### Migration Notes
+
+No migration needed - all changes are internal. Public API remains unchanged.
+
+---
+
 ## [2024-11-26] Documentation Restructure
 
 **Status:** Completed

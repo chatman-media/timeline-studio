@@ -8,10 +8,12 @@
 import { container } from "@/core/container"
 
 import { MockBackendService } from "./backend"
+import { MockEventService } from "./event"
 import { MockPlatformService } from "./platform"
 import { MockStorageService } from "./storage"
 
 export { MockBackendService } from "./backend"
+export { MockEventService } from "./event"
 export { MockPlatformService } from "./platform"
 export { MockStorageService } from "./storage"
 
@@ -27,6 +29,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   backend: MockBackendService
   platform: MockPlatformService
   storage: MockStorageService
+  event: MockEventService
 } {
   const { useLocalStorage = false } = options
 
@@ -34,14 +37,16 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const backend = new MockBackendService()
   const platform = new MockPlatformService()
   const storage = new MockStorageService(useLocalStorage)
+  const event = new MockEventService()
 
   // Register in container
   container.registerBackend(backend)
   container.registerPlatform(platform)
   container.registerStorage(storage)
+  container.registerEvent(event)
 
   // Return services for test manipulation
-  return { backend, platform, storage }
+  return { backend, platform, storage, event }
 }
 
 /**
@@ -52,6 +57,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   backend: MockBackendService
   platform: MockPlatformService
   storage: MockStorageService
+  event: MockEventService
 } {
   const { useLocalStorage = false } = options
 
@@ -59,5 +65,6 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     backend: new MockBackendService(),
     platform: new MockPlatformService(),
     storage: new MockStorageService(useLocalStorage),
+    event: new MockEventService(),
   }
 }

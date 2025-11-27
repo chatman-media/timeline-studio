@@ -1,6 +1,5 @@
-import { open } from "@tauri-apps/plugin-dialog"
 import { Database, Folder, Save, X } from "lucide-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
@@ -9,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
+import { container } from "@/core"
 import { useLanguage } from "@/features/language"
 import { useModal } from "@/features/modals/services/modal-provider"
 import { type LanguageCode, SUPPORTED_LANGUAGES } from "@/i18n/constants"
@@ -40,6 +40,14 @@ export function GeneralSettingsTab() {
 
   // Локальное состояние для выбранного языка
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(currentLanguage)
+
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   /**
    * Обработчик изменения языка интерфейса
@@ -101,16 +109,24 @@ export function GeneralSettingsTab() {
             title={t("dialogs.userSettings.selectFolder")}
             onClick={() => {
               void (async () => {
+                if (!platform) {
+                  const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/screenshots")
+                  if (promptResult) {
+                    handleScreenshotsPathChange(promptResult.trim())
+                  }
+                  return
+                }
+
                 try {
-                  const selectedFolder = await open({
+                  const selectedFolders = await platform.showOpenDialog({
                     directory: true,
                     multiple: false,
                     title: t("dialogs.userSettings.selectFolder"),
                   })
 
-                  if (selectedFolder && !Array.isArray(selectedFolder)) {
-                    handleScreenshotsPathChange(selectedFolder)
-                    void logger.info("Screenshots path updated from folder dialog:", { path: selectedFolder })
+                  if (selectedFolders && selectedFolders.length > 0) {
+                    handleScreenshotsPathChange(selectedFolders[0])
+                    void logger.info("Screenshots path updated from folder dialog:", { path: selectedFolders[0] })
                   }
                 } catch (error) {
                   void logger.error("Ошибка при выборе директории:", { error: String(error) })
@@ -158,16 +174,26 @@ export function GeneralSettingsTab() {
             title={t("dialogs.userSettings.selectFolder")}
             onClick={() => {
               void (async () => {
+                if (!platform) {
+                  const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/media")
+                  if (promptResult) {
+                    handlePlayerScreenshotsPathChange(promptResult.trim())
+                  }
+                  return
+                }
+
                 try {
-                  const selectedFolder = await open({
+                  const selectedFolders = await platform.showOpenDialog({
                     directory: true,
                     multiple: false,
                     title: t("dialogs.userSettings.selectFolder"),
                   })
 
-                  if (selectedFolder && !Array.isArray(selectedFolder)) {
-                    handlePlayerScreenshotsPathChange(selectedFolder)
-                    void logger.info("Player screenshots path updated from folder dialog:", { path: selectedFolder })
+                  if (selectedFolders && selectedFolders.length > 0) {
+                    handlePlayerScreenshotsPathChange(selectedFolders[0])
+                    void logger.info("Player screenshots path updated from folder dialog:", {
+                      path: selectedFolders[0],
+                    })
                   }
                 } catch (error) {
                   void logger.error("Ошибка при выборе директории:", { error: String(error) })

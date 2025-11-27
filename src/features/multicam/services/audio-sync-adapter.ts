@@ -1,8 +1,9 @@
 /**
  * Адаптер для синхронизации двух аудиофайлов
- * Обертка над основной функцией syncByAudio для работы с путями файлов
+ * Использует Tauri команду correlate_audio_files для cross-correlation анализа
  */
 
+import { correlateAudioFiles } from "@/domains/ai-services/tauri/audio-commands"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AudioCorrelationResult } from "./audio-sync"
 
@@ -10,6 +11,7 @@ const logger = createLogger({ module: "AudioSyncAdapter" })
 
 /**
  * Синхронизирует два аудиофайла по их путям
+ * Использует cross-correlation алгоритм через Tauri backend
  */
 export async function syncByAudio(
   basePath: string,
@@ -17,32 +19,45 @@ export async function syncByAudio(
   options?: {
     onProgress?: (progress: number) => void
     signal?: AbortSignal
+    maxOffsetSeconds?: number
   },
 ): Promise<AudioCorrelationResult> {
-  // Заглушка для демонстрации
-  // В реальной реализации здесь должна быть интеграция с FFmpeg или Web Audio API
-
   logger.info(`[syncByAudio] Syncing ${targetPath} to ${basePath}`)
 
-  // Имитируем прогресс
-  if (options?.onProgress) {
-    for (let i = 0; i <= 100; i += 10) {
-      if (options.signal?.aborted) {
-        throw new Error("Синхронизация отменена")
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 100))
-      options.onProgress(i / 100)
-    }
+  // Проверяем отмену перед началом
+  if (options?.signal?.aborted) {
+    throw new Error("Синхронизация отменена")
   }
 
-  // Возвращаем случайный результат для демонстрации
-  const offset = (Math.random() - 0.5) * 10 // Случайное смещение от -5 до +5 секунд
-  const confidence = 0.7 + Math.random() * 0.3 // Уверенность от 0.7 до 1.0
+  // Начинаем анализ - прогресс будет обновляться поэтапно
+  options?.onProgress?.(0.1)
 
-  return {
-    offset,
-    confidence,
-    correlationPeak: confidence,
+  try {
+    // Вызываем Tauri команду для cross-correlation
+    const result = await correlateAudioFiles(basePath, targetPath, options?.maxOffsetSeconds ?? 30)
+
+    // Проверяем отмену после получения результата
+    if (options?.signal?.aborted) {
+      throw new Error("Синхронизация отменена")
+    }
+
+    options?.onProgress?.(1.0)
+
+    logger.info(`[syncByAudio] Result: offset=${result.offsetSeconds}s, confidence=${result.confidence}`)
+
+    // Преобразуем результат в формат AudioCorrelationResult
+    return {
+      offset: result.offsetSeconds,
+      confidence: result.confidence,
+      correlationPeak: result.correlationPeak,
+    }
+  } catch (error) {
+    // Проверяем, не была ли ошибка связана с отменой
+    if (options?.signal?.aborted) {
+      throw new Error("Синхронизация отменена")
+    }
+
+    logger.error(`[syncByAudio] Failed to correlate audio: ${error}`)
+    throw error
   }
 }
