@@ -8,9 +8,13 @@ import {
   getCacheStats,
 } from "@/domains/video-editing/services/compiler/cache-service"
 
-// Mock Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock Tauri compiler commands
+vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
+  getCacheStats: vi.fn(),
+  clearPreviewCache: vi.fn(),
+  clearAllCache: vi.fn(),
+  getCacheSize: vi.fn(),
+  configureCache: vi.fn(),
 }))
 
 // Mock Tauri Logger
@@ -20,10 +24,14 @@ vi.mock("@/lib/tauri-logger", () => ({
     warn: vi.fn(),
     info: vi.fn(),
     debug: vi.fn(),
+    errorSync: vi.fn(),
+    warnSync: vi.fn(),
+    infoSync: vi.fn(),
+    debugSync: vi.fn(),
   })),
 }))
 
-const mockInvoke = vi.mocked(await import("@tauri-apps/api/core")).invoke
+const mockCompilerCommands = vi.mocked(await import("@/domains/video-editing/tauri/compiler-commands"))
 
 describe("Cache Service", () => {
   beforeEach(() => {
@@ -61,24 +69,24 @@ describe("Cache Service", () => {
         cache_efficiency: 0.89,
       }
 
-      mockInvoke.mockResolvedValue(mockStats)
+      mockCompilerCommands.getCacheStats.mockResolvedValue(mockStats)
 
       const result = await getCacheStats()
 
-      expect(mockInvoke).toHaveBeenCalledWith("get_cache_stats")
+      expect(mockCompilerCommands.getCacheStats).toHaveBeenCalled()
       expect(result).toEqual(mockStats)
     })
 
     it("should handle and re-throw errors", async () => {
       const error = new Error("Failed to get cache stats from backend")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.getCacheStats.mockRejectedValue(error)
 
       await expect(getCacheStats()).rejects.toThrow("Failed to get cache stats from backend")
     })
 
     it("should handle Tauri communication errors", async () => {
       const tauriError = new Error("Tauri command not found")
-      mockInvoke.mockRejectedValue(tauriError)
+      mockCompilerCommands.getCacheStats.mockRejectedValue(tauriError)
 
       await expect(getCacheStats()).rejects.toThrow("Tauri command not found")
     })
@@ -86,23 +94,23 @@ describe("Cache Service", () => {
 
   describe("clearPreviewCache", () => {
     it("should clear preview cache successfully", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      mockCompilerCommands.clearPreviewCache.mockResolvedValue(undefined)
 
       await clearPreviewCache()
 
-      expect(mockInvoke).toHaveBeenCalledWith("clear_preview_cache")
+      expect(mockCompilerCommands.clearPreviewCache).toHaveBeenCalled()
     })
 
     it("should handle clear preview cache errors", async () => {
       const error = new Error("Failed to clear preview cache")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.clearPreviewCache.mockRejectedValue(error)
 
       await expect(clearPreviewCache()).rejects.toThrow("Failed to clear preview cache")
     })
 
     it("should handle permission errors", async () => {
       const permissionError = new Error("Permission denied")
-      mockInvoke.mockRejectedValue(permissionError)
+      mockCompilerCommands.clearPreviewCache.mockRejectedValue(permissionError)
 
       await expect(clearPreviewCache()).rejects.toThrow("Permission denied")
     })
@@ -110,23 +118,23 @@ describe("Cache Service", () => {
 
   describe("clearAllCache", () => {
     it("should clear all cache successfully", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      mockCompilerCommands.clearAllCache.mockResolvedValue(undefined)
 
       await clearAllCache()
 
-      expect(mockInvoke).toHaveBeenCalledWith("clear_all_cache")
+      expect(mockCompilerCommands.clearAllCache).toHaveBeenCalled()
     })
 
     it("should handle clear all cache errors", async () => {
       const error = new Error("Failed to clear all cache")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.clearAllCache.mockRejectedValue(error)
 
       await expect(clearAllCache()).rejects.toThrow("Failed to clear all cache")
     })
 
     it("should handle filesystem errors", async () => {
       const fsError = new Error("Disk full")
-      mockInvoke.mockRejectedValue(fsError)
+      mockCompilerCommands.clearAllCache.mockRejectedValue(fsError)
 
       await expect(clearAllCache()).rejects.toThrow("Disk full")
     })
@@ -135,17 +143,17 @@ describe("Cache Service", () => {
   describe("getCacheSize", () => {
     it("should return cache size in megabytes", async () => {
       const sizeInMB = 256.7
-      mockInvoke.mockResolvedValue(sizeInMB)
+      mockCompilerCommands.getCacheSize.mockResolvedValue(sizeInMB)
 
       const result = await getCacheSize()
 
-      expect(mockInvoke).toHaveBeenCalledWith("get_cache_size")
+      expect(mockCompilerCommands.getCacheSize).toHaveBeenCalled()
       expect(result).toBe(sizeInMB)
     })
 
     it("should return 0 on error and log error", async () => {
       const error = new Error("Cache size calculation failed")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.getCacheSize.mockRejectedValue(error)
 
       const result = await getCacheSize()
 
@@ -154,7 +162,7 @@ describe("Cache Service", () => {
 
     it("should handle very large cache sizes", async () => {
       const largeSize = 10240.5 // 10GB
-      mockInvoke.mockResolvedValue(largeSize)
+      mockCompilerCommands.getCacheSize.mockResolvedValue(largeSize)
 
       const result = await getCacheSize()
 
@@ -162,7 +170,7 @@ describe("Cache Service", () => {
     })
 
     it("should handle zero cache size", async () => {
-      mockInvoke.mockResolvedValue(0)
+      mockCompilerCommands.getCacheSize.mockResolvedValue(0)
 
       const result = await getCacheSize()
 
@@ -178,11 +186,11 @@ describe("Cache Service", () => {
         auto_cleanup: true,
       }
 
-      mockInvoke.mockResolvedValue(undefined)
+      mockCompilerCommands.configureCache.mockResolvedValue(undefined)
 
       await configureCacheSettings(settings)
 
-      expect(mockInvoke).toHaveBeenCalledWith("configure_cache", settings)
+      expect(mockCompilerCommands.configureCache).toHaveBeenCalledWith(settings)
     })
 
     it("should configure cache with partial settings", async () => {
@@ -190,11 +198,11 @@ describe("Cache Service", () => {
         max_memory_mb: 512,
       }
 
-      mockInvoke.mockResolvedValue(undefined)
+      mockCompilerCommands.configureCache.mockResolvedValue(undefined)
 
       await configureCacheSettings(settings)
 
-      expect(mockInvoke).toHaveBeenCalledWith("configure_cache", settings)
+      expect(mockCompilerCommands.configureCache).toHaveBeenCalledWith(settings)
     })
 
     it("should configure cache with auto cleanup only", async () => {
@@ -202,11 +210,11 @@ describe("Cache Service", () => {
         auto_cleanup: false,
       }
 
-      mockInvoke.mockResolvedValue(undefined)
+      mockCompilerCommands.configureCache.mockResolvedValue(undefined)
 
       await configureCacheSettings(settings)
 
-      expect(mockInvoke).toHaveBeenCalledWith("configure_cache", settings)
+      expect(mockCompilerCommands.configureCache).toHaveBeenCalledWith(settings)
     })
 
     it("should handle configuration errors", async () => {
@@ -217,7 +225,7 @@ describe("Cache Service", () => {
       }
 
       const error = new Error("Invalid cache configuration")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.configureCache.mockRejectedValue(error)
 
       await expect(configureCacheSettings(settings)).rejects.toThrow("Invalid cache configuration")
     })
@@ -228,7 +236,7 @@ describe("Cache Service", () => {
       }
 
       const error = new Error("Memory size must be positive")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.configureCache.mockRejectedValue(error)
 
       await expect(configureCacheSettings(settings)).rejects.toThrow("Memory size must be positive")
     })
@@ -239,7 +247,7 @@ describe("Cache Service", () => {
       }
 
       const error = new Error("Max entries must be greater than zero")
-      mockInvoke.mockRejectedValue(error)
+      mockCompilerCommands.configureCache.mockRejectedValue(error)
 
       await expect(configureCacheSettings(settings)).rejects.toThrow("Max entries must be greater than zero")
     })
@@ -248,7 +256,11 @@ describe("Cache Service", () => {
   describe("Error Handling Patterns", () => {
     it("should handle network-like errors from Tauri", async () => {
       const networkError = new Error("Connection to backend failed")
-      mockInvoke.mockRejectedValue(networkError)
+      mockCompilerCommands.getCacheStats.mockRejectedValue(networkError)
+      mockCompilerCommands.clearPreviewCache.mockRejectedValue(networkError)
+      mockCompilerCommands.clearAllCache.mockRejectedValue(networkError)
+      mockCompilerCommands.configureCache.mockRejectedValue(networkError)
+      mockCompilerCommands.getCacheSize.mockRejectedValue(networkError)
 
       await expect(getCacheStats()).rejects.toThrow("Connection to backend failed")
       await expect(clearPreviewCache()).rejects.toThrow("Connection to backend failed")
@@ -262,14 +274,14 @@ describe("Cache Service", () => {
 
     it("should handle timeout errors", async () => {
       const timeoutError = new Error("Operation timed out")
-      mockInvoke.mockRejectedValue(timeoutError)
+      mockCompilerCommands.getCacheStats.mockRejectedValue(timeoutError)
 
       await expect(getCacheStats()).rejects.toThrow("Operation timed out")
     })
 
     it("should handle serialization errors", async () => {
       const serializationError = new Error("Failed to serialize response")
-      mockInvoke.mockRejectedValue(serializationError)
+      mockCompilerCommands.getCacheStats.mockRejectedValue(serializationError)
 
       await expect(getCacheStats()).rejects.toThrow("Failed to serialize response")
     })
@@ -292,7 +304,7 @@ describe("Cache Service", () => {
         cache_size_mb: 125000.0,
       }
 
-      mockInvoke.mockResolvedValue(largeStats)
+      mockCompilerCommands.getCacheStats.mockResolvedValue(largeStats)
 
       const result = await getCacheStats()
 
@@ -302,14 +314,14 @@ describe("Cache Service", () => {
     })
 
     it("should handle rapid consecutive calls", async () => {
-      mockInvoke.mockResolvedValue(42.5)
+      mockCompilerCommands.getCacheSize.mockResolvedValue(42.5)
 
       const promises = Array.from({ length: 10 }, () => getCacheSize())
       const results = await Promise.all(promises)
 
       expect(results).toHaveLength(10)
       expect(results.every((size) => size === 42.5)).toBe(true)
-      expect(mockInvoke).toHaveBeenCalledTimes(10)
+      expect(mockCompilerCommands.getCacheSize).toHaveBeenCalledTimes(10)
     })
   })
 
@@ -340,7 +352,7 @@ describe("Cache Service", () => {
         cache_efficiency: 0.0,
       }
 
-      mockInvoke.mockResolvedValue(emptyStats)
+      mockCompilerCommands.getCacheStats.mockResolvedValue(emptyStats)
 
       const result = await getCacheStats()
 
@@ -348,20 +360,20 @@ describe("Cache Service", () => {
     })
 
     it("should handle configuration with empty settings object", async () => {
-      mockInvoke.mockResolvedValue(undefined)
+      mockCompilerCommands.configureCache.mockResolvedValue(undefined)
 
       await configureCacheSettings({})
 
-      expect(mockInvoke).toHaveBeenCalledWith("configure_cache", {})
+      expect(mockCompilerCommands.configureCache).toHaveBeenCalledWith({})
     })
 
-    it("should handle null/undefined responses gracefully", async () => {
-      mockInvoke.mockResolvedValue(null)
+    it("should handle zero cache size responses gracefully", async () => {
+      mockCompilerCommands.getCacheSize.mockResolvedValue(0)
 
       const size = await getCacheSize()
 
-      // Function returns whatever the backend returns, including null
-      expect(size).toBe(null)
+      // Function returns 0 for empty cache
+      expect(size).toBe(0)
     })
   })
 
@@ -392,17 +404,17 @@ describe("Cache Service", () => {
         },
         cache_efficiency: 0.85,
       }
-      mockInvoke.mockResolvedValueOnce(initialStats)
+      mockCompilerCommands.getCacheStats.mockResolvedValueOnce(initialStats)
 
       let stats = await getCacheStats()
       expect(stats.total_size_mb).toBe(200.0)
 
       // Configure cache
-      mockInvoke.mockResolvedValueOnce(undefined)
+      mockCompilerCommands.configureCache.mockResolvedValueOnce(undefined)
       await configureCacheSettings({ max_memory_mb: 1024, auto_cleanup: true })
 
       // Clear preview cache
-      mockInvoke.mockResolvedValueOnce(undefined)
+      mockCompilerCommands.clearPreviewCache.mockResolvedValueOnce(undefined)
       await clearPreviewCache()
 
       // Get updated stats
@@ -420,7 +432,7 @@ describe("Cache Service", () => {
         cache_size_mb: 150.0,
         total_size_mb: 150.0,
       }
-      mockInvoke.mockResolvedValueOnce(updatedStats)
+      mockCompilerCommands.getCacheStats.mockResolvedValueOnce(updatedStats)
 
       stats = await getCacheStats()
       expect(stats.preview_cache.entries).toBe(0)
@@ -454,7 +466,7 @@ describe("Cache Service", () => {
         cache_efficiency: 0.68, // Lower efficiency due to overflow
       }
 
-      mockInvoke.mockResolvedValue(fullCacheStats)
+      mockCompilerCommands.getCacheStats.mockResolvedValue(fullCacheStats)
 
       const stats = await getCacheStats()
       expect(stats.total_size_mb).toBeGreaterThan(1000)

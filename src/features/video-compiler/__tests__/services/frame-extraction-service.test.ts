@@ -10,9 +10,11 @@ import {
 import type { RecognitionFrame, TimelineFrame } from "@/domains/video-editing/services/compiler"
 import { ExtractionPurpose, frameExtractionService } from "@/domains/video-editing/services/compiler"
 
-// Мокаем Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Мокаем Tauri commands
+vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
+  extractTimelineFrames: vi.fn(),
+  extractRecognitionFrames: vi.fn(),
+  extractSubtitleFrames: vi.fn(),
 }))
 
 // Мокаем IndexedDB Cache Service
@@ -42,7 +44,9 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 describe("frameExtractionService", () => {
-  let mockInvoke: any
+  let mockExtractTimelineFrames: any
+  let mockExtractRecognitionFrames: any
+  let mockExtractSubtitleFrames: any
   let mockIndexedDBCacheService: any
 
   const mockTimelineFrames: TimelineFrame[] = [
@@ -106,8 +110,10 @@ describe("frameExtractionService", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const { invoke } = await import("@tauri-apps/api/core")
-    mockInvoke = invoke as any
+    const compilerCommands = await import("@/domains/video-editing/tauri/compiler-commands")
+    mockExtractTimelineFrames = compilerCommands.extractTimelineFrames as any
+    mockExtractRecognitionFrames = compilerCommands.extractRecognitionFrames as any
+    mockExtractSubtitleFrames = compilerCommands.extractSubtitleFrames as any
 
     const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
     mockIndexedDBCacheService = indexedDBCacheService as any
@@ -121,24 +127,22 @@ describe("frameExtractionService", () => {
         is_keyframe: frame.isKeyframe,
       }))
 
-      mockInvoke.mockResolvedValueOnce(mockResponse)
+      mockExtractTimelineFrames.mockResolvedValueOnce(mockResponse)
 
       const result = await frameExtractionService.extractTimelineFrames("/video.mp4", 10, 1.0, 100)
 
       expect(result).toEqual(mockTimelineFrames)
-      expect(mockInvoke).toHaveBeenCalledWith("extract_timeline_frames", {
-        request: {
-          video_path: "/video.mp4",
-          duration: 10,
-          interval: 1.0,
-          max_frames: 100,
-        },
+      expect(mockExtractTimelineFrames).toHaveBeenCalledWith({
+        video_path: "/video.mp4",
+        duration: 10,
+        interval: 1.0,
+        max_frames: 100,
       })
     })
 
     it("should handle extraction error", async () => {
       const errorMessage = "Failed to extract frames"
-      mockInvoke.mockRejectedValueOnce(new Error(errorMessage))
+      mockExtractTimelineFrames.mockRejectedValueOnce(new Error(errorMessage))
 
       await expect(frameExtractionService.extractTimelineFrames("/video.mp4", 10)).rejects.toThrow(errorMessage)
     })
@@ -154,7 +158,7 @@ describe("frameExtractionService", () => {
         is_keyframe: frame.isKeyframe,
       }))
 
-      mockInvoke.mockResolvedValueOnce(mockResponse)
+      mockExtractRecognitionFrames.mockResolvedValueOnce(mockResponse)
 
       const result = await frameExtractionService.extractRecognitionFrames(
         "/video.mp4",
@@ -163,23 +167,23 @@ describe("frameExtractionService", () => {
       )
 
       expect(result).toEqual(mockRecognitionFrames)
-      expect(mockInvoke).toHaveBeenCalledWith("extract_recognition_frames", {
-        video_path: "/video.mp4",
-        purpose: ExtractionPurpose.ObjectDetection.toString(),
-        interval: 1.0,
-      })
+      expect(mockExtractRecognitionFrames).toHaveBeenCalledWith(
+        "/video.mp4",
+        ExtractionPurpose.ObjectDetection.toString(),
+        1.0,
+      )
     })
 
     it("should handle different extraction purposes", async () => {
-      mockInvoke.mockResolvedValueOnce([])
+      mockExtractRecognitionFrames.mockResolvedValueOnce([])
 
       await frameExtractionService.extractRecognitionFrames("/video.mp4", ExtractionPurpose.SceneRecognition, 2.0)
 
-      expect(mockInvoke).toHaveBeenCalledWith("extract_recognition_frames", {
-        video_path: "/video.mp4",
-        purpose: ExtractionPurpose.SceneRecognition.toString(),
-        interval: 2.0,
-      })
+      expect(mockExtractRecognitionFrames).toHaveBeenCalledWith(
+        "/video.mp4",
+        ExtractionPurpose.SceneRecognition.toString(),
+        2.0,
+      )
     })
   })
 
@@ -204,7 +208,7 @@ describe("frameExtractionService", () => {
         },
       ]
 
-      mockInvoke.mockResolvedValueOnce(mockResponse)
+      mockExtractSubtitleFrames.mockResolvedValueOnce(mockResponse)
 
       const result = await frameExtractionService.extractSubtitleFrames("/video.mp4", mockSubtitles)
 
@@ -218,9 +222,9 @@ describe("frameExtractionService", () => {
         endTime: 2,
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("extract_subtitle_frames", {
-        video_path: "/video.mp4",
-        subtitles: mockSubtitles.map((subtitle) => ({
+      expect(mockExtractSubtitleFrames).toHaveBeenCalledWith(
+        "/video.mp4",
+        mockSubtitles.map((subtitle) => ({
           id: subtitle.id,
           text: subtitle.text,
           start_time: subtitle.start_time,
@@ -230,7 +234,7 @@ describe("frameExtractionService", () => {
           animations: subtitle.animations,
           enabled: subtitle.enabled,
         })),
-      })
+      )
     })
   })
 
@@ -363,7 +367,7 @@ describe("frameExtractionService", () => {
         is_keyframe: frame.isKeyframe,
       }))
 
-      mockInvoke.mockResolvedValueOnce(mockResponse)
+      mockExtractTimelineFrames.mockResolvedValueOnce(mockResponse)
 
       const result = await frameExtractionService.generateSmartTimelinePreviews(
         "/video.mp4",
@@ -373,18 +377,16 @@ describe("frameExtractionService", () => {
       )
 
       expect(result).toEqual(mockTimelineFrames)
-      expect(mockInvoke).toHaveBeenCalledWith("extract_timeline_frames", {
-        request: {
-          video_path: "/video.mp4",
-          duration: 60,
-          interval: 12, // 60 / (800/160) = 12
-          max_frames: 5, // 800 / 160 = 5
-        },
+      expect(mockExtractTimelineFrames).toHaveBeenCalledWith({
+        video_path: "/video.mp4",
+        duration: 60,
+        interval: 12, // 60 / (800/160) = 12
+        max_frames: 5, // 800 / 160 = 5
       })
     })
 
     it("should respect minimum interval", async () => {
-      mockInvoke.mockResolvedValueOnce([])
+      mockExtractTimelineFrames.mockResolvedValueOnce([])
 
       const result = await frameExtractionService.generateSmartTimelinePreviews(
         "/video.mp4",
@@ -394,13 +396,11 @@ describe("frameExtractionService", () => {
       )
 
       expect(result).toEqual([])
-      expect(mockInvoke).toHaveBeenCalledWith("extract_timeline_frames", {
-        request: {
-          video_path: "/video.mp4",
-          duration: 2,
-          interval: 0.5, // Minimum 0.5 seconds
-          max_frames: 5,
-        },
+      expect(mockExtractTimelineFrames).toHaveBeenCalledWith({
+        video_path: "/video.mp4",
+        duration: 2,
+        interval: 0.5, // Minimum 0.5 seconds
+        max_frames: 5,
       })
     })
   })

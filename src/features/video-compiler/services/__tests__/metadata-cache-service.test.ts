@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api/core"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaMetadata } from "@/domains/shared/types"
 import type { CacheMemoryUsage } from "../../types/cache"
@@ -6,18 +5,30 @@ import type { CacheMemoryUsage } from "../../types/cache"
 // Mock logger
 const mockLogger = {
   info: vi.fn(),
+  infoSync: vi.fn(),
   error: vi.fn(),
+  errorSync: vi.fn(),
   warn: vi.fn(),
+  warnSync: vi.fn(),
   debug: vi.fn(),
+  debugSync: vi.fn(),
   trace: vi.fn(),
+  traceSync: vi.fn(),
 }
 
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => mockLogger),
 }))
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock Tauri compiler commands
+const mockGetCachedMetadata = vi.fn()
+const mockCacheMediaMetadata = vi.fn()
+const mockGetCacheMemoryUsage = vi.fn()
+
+vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
+  getCachedMetadata: mockGetCachedMetadata,
+  cacheMediaMetadata: mockCacheMediaMetadata,
+  getCacheMemoryUsage: mockGetCacheMemoryUsage,
 }))
 
 // Import after mocking
@@ -58,10 +69,18 @@ describe("metadata-cache-service", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockLogger.error.mockClear()
+    mockLogger.errorSync.mockClear()
     mockLogger.info.mockClear()
+    mockLogger.infoSync.mockClear()
     mockLogger.warn.mockClear()
+    mockLogger.warnSync.mockClear()
     mockLogger.debug.mockClear()
+    mockLogger.debugSync.mockClear()
     mockLogger.trace.mockClear()
+    mockLogger.traceSync.mockClear()
+    mockGetCachedMetadata.mockClear()
+    mockCacheMediaMetadata.mockClear()
+    mockGetCacheMemoryUsage.mockClear()
   })
 
   afterEach(() => {
@@ -70,30 +89,26 @@ describe("metadata-cache-service", () => {
 
   describe("getCachedMetadata", () => {
     it("should return cached metadata when available", async () => {
-      vi.mocked(invoke).mockResolvedValueOnce(mockMetadata)
+      mockGetCachedMetadata.mockResolvedValueOnce(mockMetadata)
 
       const result = await getCachedMetadata("/path/to/test-video.mp4")
 
       expect(result).toEqual(mockMetadata)
-      expect(invoke).toHaveBeenCalledWith("get_cached_metadata", {
-        filePath: "/path/to/test-video.mp4",
-      })
+      expect(mockGetCachedMetadata).toHaveBeenCalledWith("/path/to/test-video.mp4")
     })
 
     it("should return null when metadata is not cached", async () => {
-      vi.mocked(invoke).mockResolvedValueOnce(null)
+      mockGetCachedMetadata.mockResolvedValueOnce(null)
 
       const result = await getCachedMetadata("/path/to/unknown-video.mp4")
 
       expect(result).toBeNull()
-      expect(invoke).toHaveBeenCalledWith("get_cached_metadata", {
-        filePath: "/path/to/unknown-video.mp4",
-      })
+      expect(mockGetCachedMetadata).toHaveBeenCalledWith("/path/to/unknown-video.mp4")
     })
 
     it("should handle errors gracefully and return null", async () => {
       const error = new Error("Failed to get metadata")
-      vi.mocked(invoke).mockRejectedValueOnce(error)
+      mockGetCachedMetadata.mockRejectedValueOnce(error)
 
       const result = await getCachedMetadata("/path/to/test-video.mp4")
 
@@ -104,11 +119,11 @@ describe("metadata-cache-service", () => {
 
   describe("cacheMediaMetadata", () => {
     it("should cache metadata successfully", async () => {
-      vi.mocked(invoke).mockResolvedValueOnce(undefined)
+      mockCacheMediaMetadata.mockResolvedValueOnce(undefined)
 
       await cacheMediaMetadata("/path/to/test-video.mp4", mockMetadata)
 
-      expect(invoke).toHaveBeenCalledWith("cache_media_metadata", {
+      expect(mockCacheMediaMetadata).toHaveBeenCalledWith({
         filePath: "/path/to/test-video.mp4",
         metadata: mockMetadata,
       })
@@ -116,7 +131,7 @@ describe("metadata-cache-service", () => {
 
     it("should throw error when caching fails", async () => {
       const error = new Error("Failed to cache metadata")
-      vi.mocked(invoke).mockRejectedValueOnce(error)
+      mockCacheMediaMetadata.mockRejectedValueOnce(error)
 
       await expect(cacheMediaMetadata("/path/to/test-video.mp4", mockMetadata)).rejects.toThrow(error)
 
@@ -126,17 +141,17 @@ describe("metadata-cache-service", () => {
 
   describe("getCacheMemoryUsage", () => {
     it("should return cache memory usage", async () => {
-      vi.mocked(invoke).mockResolvedValueOnce(mockCacheMemoryUsage)
+      mockGetCacheMemoryUsage.mockResolvedValueOnce(mockCacheMemoryUsage)
 
       const result = await getCacheMemoryUsage()
 
       expect(result).toEqual(mockCacheMemoryUsage)
-      expect(invoke).toHaveBeenCalledWith("get_cache_memory_usage")
+      expect(mockGetCacheMemoryUsage).toHaveBeenCalledWith()
     })
 
     it("should throw error when getting cache memory usage fails", async () => {
       const error = new Error("Failed to get cache memory usage")
-      vi.mocked(invoke).mockRejectedValueOnce(error)
+      mockGetCacheMemoryUsage.mockRejectedValueOnce(error)
 
       await expect(getCacheMemoryUsage()).rejects.toThrow(error)
 
@@ -151,16 +166,16 @@ describe("metadata-cache-service", () => {
         metadata: { ...mockMetadata, fileName: `video-${i}.mp4` },
       }))
 
-      vi.mocked(invoke).mockResolvedValue(undefined)
+      mockCacheMediaMetadata.mockResolvedValue(undefined)
 
       await cacheMultipleMetadata(files)
 
       // Should be called 25 times (once for each file)
-      expect(invoke).toHaveBeenCalledTimes(25)
+      expect(mockCacheMediaMetadata).toHaveBeenCalledTimes(25)
 
       // Check that files are cached with correct parameters
       files.forEach((file, index) => {
-        expect(invoke).toHaveBeenNthCalledWith(index + 1, "cache_media_metadata", {
+        expect(mockCacheMediaMetadata).toHaveBeenNthCalledWith(index + 1, {
           filePath: file.path,
           metadata: file.metadata,
         })
@@ -173,7 +188,7 @@ describe("metadata-cache-service", () => {
         metadata: { ...mockMetadata, fileName: `video-${i}.mp4` },
       }))
 
-      vi.mocked(invoke).mockImplementation(() => {
+      mockCacheMediaMetadata.mockImplementation(() => {
         return new Promise((resolve) => setTimeout(() => resolve(undefined), 10))
       })
 
@@ -183,7 +198,7 @@ describe("metadata-cache-service", () => {
 
       // Should process in parallel batches, so total time should be less than sequential
       expect(endTime - startTime).toBeLessThan(15 * 10)
-      expect(invoke).toHaveBeenCalledTimes(15)
+      expect(mockCacheMediaMetadata).toHaveBeenCalledTimes(15)
     })
 
     it("should handle errors in batch processing", async () => {
@@ -192,7 +207,7 @@ describe("metadata-cache-service", () => {
         { path: "/path/to/video-2.mp4", metadata: mockMetadata },
       ]
 
-      vi.mocked(invoke).mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error("Failed to cache"))
+      mockCacheMediaMetadata.mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error("Failed to cache"))
 
       await expect(cacheMultipleMetadata(files)).rejects.toThrow("Failed to cache")
     })
@@ -207,7 +222,7 @@ describe("metadata-cache-service", () => {
         "/path/to/not-cached-2.mp4",
       ]
 
-      vi.mocked(invoke)
+      mockGetCachedMetadata
         .mockResolvedValueOnce(mockMetadata) // cached-1
         .mockResolvedValueOnce(null) // not-cached-1
         .mockResolvedValueOnce(mockMetadata) // cached-2
@@ -217,7 +232,7 @@ describe("metadata-cache-service", () => {
 
       expect(result.cached).toEqual(["/path/to/cached-1.mp4", "/path/to/cached-2.mp4"])
       expect(result.notCached).toEqual(["/path/to/not-cached-1.mp4", "/path/to/not-cached-2.mp4"])
-      expect(invoke).toHaveBeenCalledTimes(4)
+      expect(mockGetCachedMetadata).toHaveBeenCalledTimes(4)
     })
 
     it("should handle empty file list", async () => {
@@ -225,13 +240,13 @@ describe("metadata-cache-service", () => {
 
       expect(result.cached).toEqual([])
       expect(result.notCached).toEqual([])
-      expect(invoke).not.toHaveBeenCalled()
+      expect(mockGetCachedMetadata).not.toHaveBeenCalled()
     })
 
     it("should handle all files being cached", async () => {
       const filePaths = ["/path/to/video-1.mp4", "/path/to/video-2.mp4"]
 
-      vi.mocked(invoke).mockResolvedValue(mockMetadata)
+      mockGetCachedMetadata.mockResolvedValue(mockMetadata)
 
       const result = await checkCachedFiles(filePaths)
 
@@ -242,7 +257,7 @@ describe("metadata-cache-service", () => {
     it("should handle all files being not cached", async () => {
       const filePaths = ["/path/to/video-1.mp4", "/path/to/video-2.mp4"]
 
-      vi.mocked(invoke).mockResolvedValue(null)
+      mockGetCachedMetadata.mockResolvedValue(null)
 
       const result = await checkCachedFiles(filePaths)
 
@@ -253,7 +268,7 @@ describe("metadata-cache-service", () => {
     it("should handle errors during checking", async () => {
       const filePaths = ["/path/to/video-1.mp4", "/path/to/video-2.mp4"]
 
-      vi.mocked(invoke).mockRejectedValueOnce(new Error("Check failed")).mockResolvedValueOnce(mockMetadata)
+      mockGetCachedMetadata.mockRejectedValueOnce(new Error("Check failed")).mockResolvedValueOnce(mockMetadata)
 
       const result = await checkCachedFiles(filePaths)
 
