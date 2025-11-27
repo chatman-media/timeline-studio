@@ -39,7 +39,11 @@ export function useTimelineAIIntegration() {
 
   const timeline = useTimeline() as any
 
-  // Функция для получения всех клипов
+  // Стабильная ссылка на timeline для использования в useEffect
+  const timelineRef = useRef(timeline)
+  timelineRef.current = timeline
+
+  // Функция для получения всех клипов (без логирования - вызывается часто)
   const getAllClips = useCallback((): TimelineClip[] => {
     if (!timeline.project) return []
 
@@ -61,11 +65,10 @@ export function useTimelineAIIntegration() {
       })
     })
 
-    logInfo("[useTimelineAIIntegration] Получено клипов", { count: clips.length })
     return clips
   }, [timeline.project])
 
-  // Функция для получения всех треков
+  // Функция для получения всех треков (без логирования - вызывается часто)
   const getAllTracks = useCallback((): TimelineTrack[] => {
     if (!timeline.project) return []
 
@@ -83,19 +86,16 @@ export function useTimelineAIIntegration() {
       }
     })
 
-    logInfo("[useTimelineAIIntegration] Получено треков", { count: tracks.length })
     return tracks
   }, [timeline.project])
 
-  // Функция для получения всех секций
+  // Функция для получения всех секций (без логирования - вызывается часто)
   const getAllSections = useCallback((): TimelineSection[] => {
     if (!timeline.project) return []
-    const sections = timeline.project.sections || []
-    logInfo("[useTimelineAIIntegration] Получено секций", { count: sections.length })
-    return sections
+    return timeline.project.sections || []
   }, [timeline.project])
 
-  // Функция для расчета общей длительности проекта
+  // Функция для расчета общей длительности проекта (без логирования - вызывается часто)
   const getProjectDuration = useCallback((): number => {
     if (!timeline.project) return 0
 
@@ -109,44 +109,40 @@ export function useTimelineAIIntegration() {
       }
     })
 
-    logInfo("[useTimelineAIIntegration] Длительность проекта", { duration: maxEndTime })
     return maxEndTime
   }, [timeline.project, getAllClips])
 
-  // Функция для получения выбранных клипов
+  // Функция для получения выбранных клипов (без логирования - вызывается часто)
   const getSelectedClips = useCallback((): TimelineClip[] => {
     if (!timeline.project) return []
 
     const selectedClipIds = timeline.selectedClipIds || []
     const allClips = getAllClips()
 
-    const selected = allClips.filter((clip) => selectedClipIds.includes(clip.id))
-    logInfo("[useTimelineAIIntegration] Выбранных клипов", { count: selected.length })
-    return selected
+    return allClips.filter((clip) => selectedClipIds.includes(clip.id))
   }, [timeline.project, timeline.selectedClipIds, getAllClips])
 
-  // Функция для получения клипов на определенном времени
+  // Функция для получения клипов на определенном времени (без логирования - вызывается часто)
   const getClipsAtTime = useCallback(
     (time: number): TimelineClip[] => {
       const allClips = getAllClips()
-      const clipsAtTime = allClips.filter((clip) => time >= clip.startTime && time < clip.startTime + clip.duration)
-      logInfo("[useTimelineAIIntegration] Клипов на времени", { time, count: clipsAtTime.length })
-      return clipsAtTime
+      return allClips.filter((clip) => time >= clip.startTime && time < clip.startTime + clip.duration)
     },
     [getAllClips],
   )
 
   // Эффект для установки доступа к состоянию timeline
-  // ОПТИМИЗИРОВАНО: теперь зависит только от timeline, функции создаются заново только при изменении timeline
+  // ОПТИМИЗИРОВАНО: используем ref и пустой массив зависимостей для предотвращения повторных setup/cleanup
   useEffect(() => {
-    // Создаем функции доступа к данным напрямую внутри effect
+    // Создаем функции доступа к данным, используя timelineRef для актуальных данных
     const getCurrentClips = (): TimelineClip[] => {
-      if (!timeline.project) return []
+      const tl = timelineRef.current
+      if (!tl.project) return []
       const clips: TimelineClip[] = []
-      timeline.project.globalTracks?.forEach((track: TimelineTrack) => {
+      tl.project.globalTracks?.forEach((track: TimelineTrack) => {
         if (track.clips) clips.push(...track.clips)
       })
-      timeline.project.sections?.forEach((section: TimelineSection) => {
+      tl.project.sections?.forEach((section: TimelineSection) => {
         section.tracks?.forEach((track: TimelineTrack) => {
           if (track.clips) clips.push(...track.clips)
         })
@@ -155,25 +151,26 @@ export function useTimelineAIIntegration() {
     }
 
     const getCurrentTracks = (): TimelineTrack[] => {
-      if (!timeline.project) return []
+      const tl = timelineRef.current
+      if (!tl.project) return []
       const tracks: TimelineTrack[] = []
-      if (timeline.project.globalTracks) tracks.push(...timeline.project.globalTracks)
-      timeline.project.sections?.forEach((section: TimelineSection) => {
+      if (tl.project.globalTracks) tracks.push(...tl.project.globalTracks)
+      tl.project.sections?.forEach((section: TimelineSection) => {
         if (section.tracks) tracks.push(...section.tracks)
       })
       return tracks
     }
 
     const getCurrentSections = (): TimelineSection[] => {
-      return timeline.project?.sections || []
+      return timelineRef.current.project?.sections || []
     }
 
     const timelineAccess: TimelineStateAccess = {
-      getCurrentProject: () => timeline.project,
+      getCurrentProject: () => timelineRef.current.project,
       createProject: async (project: any) => {
         logInfo("[useTimelineAIIntegration] Создание проекта", { projectName: project.name })
         try {
-          await timeline.createProject(project.name, project.settings || {})
+          await timelineRef.current.createProject(project.name, project.settings || {})
           logInfo("[useTimelineAIIntegration] Проект создан", { projectName: project.name })
         } catch (error) {
           logError("[useTimelineAIIntegration] Ошибка создания проекта", error as LogContext)
@@ -189,7 +186,7 @@ export function useTimelineAIIntegration() {
         logInfo("[useTimelineAIIntegration] Создание секции", { sectionName: section.name })
         try {
           const id = `section_${Date.now()}`
-          await timeline.addSection(section.name, section.startTime, section.duration)
+          await timelineRef.current.addSection(section.name, section.startTime, section.duration)
           logInfo("[useTimelineAIIntegration] Секция создана", { id })
           return { ...section, id }
         } catch (error) {
@@ -201,7 +198,7 @@ export function useTimelineAIIntegration() {
         logInfo("[useTimelineAIIntegration] Создание трека", { trackType: track.type })
         try {
           const id = `track_${Date.now()}`
-          await timeline.addTrack(track.type, undefined, track.name)
+          await timelineRef.current.addTrack(track.type, undefined, track.name)
           logInfo("[useTimelineAIIntegration] Трек создан", { id })
           return { ...track, id, clips: [] }
         } catch (error) {
@@ -227,7 +224,7 @@ export function useTimelineAIIntegration() {
         const tracks = getCurrentTracks()
         const sections = getCurrentSections()
 
-        const stats = {
+        return {
           totalDuration: clips.reduce((max, clip) => {
             const clipEnd = clip.startTime + clip.duration
             return clipEnd > max ? clipEnd : max
@@ -236,29 +233,27 @@ export function useTimelineAIIntegration() {
           totalTracks: tracks.length,
           totalSections: sections.length,
         }
-
-        logInfo("[useTimelineAIIntegration] Статистика проекта", stats)
-        return stats
       },
       sendTimelineCommand: async (command: string, params?: any) => {
         logInfo("[useTimelineAIIntegration] Команда timeline", { command, params })
         try {
+          const tl = timelineRef.current
           // Map commands to timeline actions
           switch (command) {
             case "play":
-              await timeline.play()
+              await tl.play()
               break
             case "pause":
-              await timeline.pause()
+              await tl.pause()
               break
             case "seek":
               if (params?.time !== undefined) {
-                await timeline.seek(params.time)
+                await tl.seek(params.time)
               }
               break
             case "selectClips":
               if (params?.clipIds) {
-                timeline.selectClips(params.clipIds)
+                tl.selectClips(params.clipIds)
               }
               break
             default:
@@ -281,7 +276,8 @@ export function useTimelineAIIntegration() {
       setTimelineStateAccess(null)
       logInfo("[useTimelineAIIntegration] Доступ к timeline очищен")
     }
-  }, [timeline]) // ОПТИМИЗИРОВАНО: только одна зависимость вместо 7!
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // ОПТИМИЗИРОВАНО: пустой массив - setup/cleanup только при mount/unmount
 
   // Мемоизируем результат, чтобы избежать лишних ре-рендеров
   // ОПТИМИЗИРОВАНО: убран лог из useMemo чтобы не логировать на каждый рендер

@@ -2,7 +2,7 @@
  * Hook для работы с пользовательскими настройками
  */
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { logInfo } from "@/lib/tauri-logger"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
@@ -12,11 +12,17 @@ export function useUserSettings() {
   const [orchestrator] = useState(() => getProjectManagementOrchestrator())
   const [settings, setSettings] = useState<UserSettingsContextType>(() => orchestrator.getUserSettings())
 
+  // ОПТИМИЗИРОВАНО: используем ref для одноразового логирования
+  const isInitialized = useRef(false)
+  useEffect(() => {
+    if (!isInitialized.current) {
+      logInfo("[useUserSettings] Инициализация хука")
+      isInitialized.current = true
+    }
+  }, [])
+
   // Подписка на изменения настроек
   useEffect(() => {
-    // Логируем только один раз при монтировании
-    logInfo("[useUserSettings] Инициализация хука")
-
     const subscription = orchestrator.subscribeToUserSettings((newSettings) => {
       setSettings(newSettings)
     })
