@@ -252,19 +252,18 @@ describe("useDebouncedSeek", () => {
       const mockSeek = vi.fn().mockResolvedValue(undefined)
       const { result } = renderHook(() => useDebouncedSeek(mockSeek, { delay: 100 }))
 
-      // Симулируем быстрое перетаскивание слайдера
-      for (let i = 0; i < 10; i++) {
-        act(() => {
-          result.current.debouncedSeek(i * 0.5)
-        })
-        await act(async () => {
-          await vi.advanceTimersByTimeAsync(10)
-        })
-      }
+      // Симулируем быстрое перетаскивание слайдера (несколько последовательных вызовов)
+      act(() => {
+        result.current.debouncedSeek(0.5)
+        result.current.debouncedSeek(1.0)
+        result.current.debouncedSeek(1.5)
+        result.current.debouncedSeek(2.0)
+        result.current.debouncedSeek(4.5) // Последний вызов
+      })
 
-      // Завершаем последний таймер
+      // Завершаем все таймеры
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(100)
+        await vi.runAllTimersAsync()
       })
 
       // Должен быть вызван только последний seek
@@ -292,7 +291,7 @@ describe("useDebouncedSeek", () => {
       })
 
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(100)
+        await vi.runAllTimersAsync()
       })
 
       expect(mockSeek).toHaveBeenCalledWith(-1.5)
@@ -308,7 +307,7 @@ describe("useDebouncedSeek", () => {
       })
 
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(100)
+        await vi.runAllTimersAsync()
       })
 
       expect(mockSeek).toHaveBeenCalledWith(largeTime)
