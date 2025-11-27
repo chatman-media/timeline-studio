@@ -2,11 +2,12 @@
  * App Machine - Project Management Domain
  *
  * Координирует все состояние приложения через backend
- * Перенесено из src/features/app-state/services/app-machine.ts
+ * Использует IBackendService из DI контейнера для независимости от платформы
  */
 
 import { assign, fromCallback, fromPromise, setup } from "xstate"
-import { type BackendSync, getBackendSync } from "@/features/app-state/services/backend-sync"
+import { getBackend } from "@/core"
+import type { IBackendService } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AppMachine")
@@ -23,7 +24,7 @@ import type {
 // Context for the app machine
 export interface AppMachineContext {
   projectState: ProjectState | null
-  backendSync: BackendSync
+  backend: IBackendService | null
   isConnected: boolean
   error: string | null
   commandQueue: ProjectCommand[]
@@ -79,61 +80,63 @@ export const appMachine = setup({
   },
 
   actors: {
-    backendConnection: fromCallback(({ sendBack, input }: { sendBack: any; input: { backendSync: BackendSync } }) => {
-      // Check if input and backendSync are available
-      if (!input || !input.backendSync) {
-        logger.errorSync("Backend sync service is not available")
-        sendBack({ type: "CONNECTION_ERROR", error: "Backend sync service is not available" })
-        return () => {}
-      }
+    backendConnection: fromCallback(
+      ({ sendBack, input }: { sendBack: any; input: { backend: IBackendService | null } }) => {
+        // Check if input and backend are available
+        if (!input || !input.backend) {
+          logger.errorSync("Backend service is not available")
+          sendBack({ type: "CONNECTION_ERROR", error: "Backend service is not available" })
+          return () => {}
+        }
 
-      const { backendSync } = input
+        const { backend } = input
 
-      // Additional safety check
-      if (!backendSync || typeof backendSync.connect !== "function") {
-        logger.errorSync("Backend sync service is not properly initialized")
-        sendBack({ type: "CONNECTION_ERROR", error: "Backend sync service is not properly initialized" })
-        return () => {}
-      }
+        // Additional safety check
+        if (!backend || typeof backend.connect !== "function") {
+          logger.errorSync("Backend service is not properly initialized")
+          sendBack({ type: "CONNECTION_ERROR", error: "Backend service is not properly initialized" })
+          return () => {}
+        }
 
-      // Subscribe to backend events
-      const unsubscribeEvent = backendSync.onEvent((event) => {
-        sendBack({ type: "BACKEND_EVENT", event })
-      })
+        // Subscribe to backend events
+        const unsubscribeEvent = backend.onEvent((event) => {
+          sendBack({ type: "BACKEND_EVENT", event })
+        })
 
-      // Subscribe to state changes
-      const unsubscribeState = backendSync.onStateChange((state) => {
-        sendBack({ type: "STATE_UPDATED", state })
-      })
+        // Subscribe to state changes
+        const unsubscribeState = backend.onStateChange((state) => {
+          sendBack({ type: "STATE_UPDATED", state })
+        })
 
-      // Connect to backend
-      try {
-        backendSync
-          .connect()
-          .then(() => {
-            logger.infoSync("Connected to backend")
-            sendBack({ type: "CONNECT" })
-          })
-          .catch((error: unknown) => {
-            const errorMessage = error instanceof Error ? error.message : String(error)
-            sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
-          })
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
-      }
+        // Connect to backend
+        try {
+          backend
+            .connect()
+            .then(() => {
+              logger.infoSync("Connected to backend")
+              sendBack({ type: "CONNECT" })
+            })
+            .catch((error: unknown) => {
+              const errorMessage = error instanceof Error ? error.message : String(error)
+              sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
+            })
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
+        }
 
-      // Cleanup function
-      return () => {
-        unsubscribeEvent()
-        unsubscribeState()
-        void backendSync.disconnect()
-      }
-    }),
+        // Cleanup function
+        return () => {
+          unsubscribeEvent()
+          unsubscribeState()
+          void backend.disconnect()
+        }
+      },
+    ),
 
-    executeCommand: fromPromise(async ({ input }: { input: { command: ProjectCommand; backendSync: BackendSync } }) => {
-      const { command, backendSync } = input
-      const result = await backendSync.executeCommand(command)
+    executeCommand: fromPromise(async ({ input }: { input: { command: ProjectCommand; backend: IBackendService } }) => {
+      const { command, backend } = input
+      const result = await backend.executeCommand(command)
 
       if (!result.success) {
         throw new Error(result.error || "Command failed")
@@ -150,12 +153,21 @@ export const appMachine = setup({
   id: "project-management-app",
   initial: "disconnected",
 
-  context: {
-    projectState: null,
-    backendSync: getBackendSync(),
-    isConnected: false,
-    error: null,
-    commandQueue: [],
+  context: () => {
+    // Lazy initialization - backend may not be available yet
+    let backend: IBackendService | null = null
+    try {
+      backend = getBackend()
+    } catch {
+      // Container not initialized yet, will be set later
+    }
+    return {
+      projectState: null,
+      backend,
+      isConnected: false,
+      error: null,
+      commandQueue: [],
+    }
   },
 
   // Global event handlers - work in all states
@@ -181,7 +193,7 @@ export const appMachine = setup({
       invoke: {
         id: "backendConnection",
         src: "backendConnection",
-        input: ({ context }) => ({ backendSync: context.backendSync }),
+        input: ({ context }) => ({ backend: context.backend }),
       },
 
       on: {
@@ -265,7 +277,7 @@ export const appMachine = setup({
             src: "executeCommand",
             input: ({ context }) => ({
               command: context.commandQueue[0],
-              backendSync: context.backendSync,
+              backend: context.backend!,
             }),
             onDone: {
               target: "idle",

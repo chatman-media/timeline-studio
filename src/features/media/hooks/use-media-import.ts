@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
+import { container } from "@/core"
 import { selectMediaDirectory, selectMediaFile } from "@/domains/media-management"
 import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import { type DiscoveredFile, useMediaProcessor } from "@/features/media/hooks/use-media-processor"
 import type { MediaFile } from "@/features/media/types/media"
@@ -51,7 +51,13 @@ interface ImportResult {
  */
 export function useMediaImport() {
   const { currentProject, setProjectDirty } = useCurrentProject()
-  const backendSync = getBackendSync()
+  const backend = useMemo(() => {
+    try {
+      return container.hasBackend() ? container.getBackend() : null
+    } catch {
+      return null
+    }
+  }, [])
   const [isImporting, setIsImporting] = useState(false)
   const [progress, setProgress] = useState(0)
 
@@ -122,7 +128,7 @@ export function useMediaImport() {
           })
 
           const rustMediaType = convertToRustMediaType(file.type)
-          void backendSync.executeCommand({
+          void backend?.executeCommand({
             type: "AddImportedMedia" as any,
             params: {
               path: file.path,
@@ -131,7 +137,7 @@ export function useMediaImport() {
           } as any)
         })
       },
-      [backendSync],
+      [backend],
     ),
 
     // Когда готовы метаданные - обновляем конкретный файл в imported_media
@@ -149,7 +155,7 @@ export function useMediaImport() {
         logger.debugSync(`Обновляем импортированный файл с метаданными: ${metadata.name}`)
 
         // Обновляем файл во временном хранилище imported_media
-        void backendSync.executeCommand({
+        void backend?.executeCommand({
           type: "UpdateImportedMedia" as any,
           params: {
             media_id: fileId,
@@ -161,7 +167,7 @@ export function useMediaImport() {
           },
         } as any)
       },
-      [backendSync],
+      [backend],
     ),
 
     // Когда готово превью - обновляем путь и генерируем через Preview Manager

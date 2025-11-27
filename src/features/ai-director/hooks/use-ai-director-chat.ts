@@ -3,9 +3,9 @@
  * Использует backend AI команды с контекстом анализа видео
  */
 
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { FileAnalysisProgress } from "../types/analysis-progress"
@@ -48,7 +48,13 @@ export function useAIDirectorChat(
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [lastMontagePlan, setLastMontagePlan] = useState<MontagePlan | null>(null)
-  const [backendSync] = useState(() => getBackendSync())
+  const backend = useMemo(() => {
+    try {
+      return container.hasBackend() ? container.getBackend() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   // Отправить сообщение в AI Director
   const sendMessage = useCallback(
@@ -86,7 +92,11 @@ export function useAIDirectorChat(
         }
 
         // Отправляем через backend AI proxy
-        const result = await backendSync.executeCommand({
+        if (!backend) {
+          throw new Error("Backend service not available")
+        }
+
+        const result = await backend.executeCommand({
           type: "SendChatMessage",
           params: {
             session_id: "ai-director-session",
@@ -163,7 +173,7 @@ export function useAIDirectorChat(
         setIsProcessing(false)
       }
     },
-    [filesProgress, backendSync, options],
+    [filesProgress, backend, options],
   )
 
   // Очистить историю сообщений

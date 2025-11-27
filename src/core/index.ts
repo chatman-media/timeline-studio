@@ -8,12 +8,18 @@
  * - Container: DI контейнер для управления зависимостями
  */
 
-// Ports (Interfaces)
-export type { IBackendService, IPlatformService, IStorageService, Unsubscribe } from "./ports"
-export type { NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "./ports"
-
 // Container (DI)
 export { container, getBackend, getPlatform, getStorage, resetContainer } from "./container"
+// Ports (Interfaces)
+export type {
+  IBackendService,
+  IPlatformService,
+  IStorageService,
+  NotificationOptions,
+  OpenDialogOptions,
+  SaveDialogOptions,
+  Unsubscribe,
+} from "./ports"
 
 // Types (re-exported from generated bindings for now)
 export type {

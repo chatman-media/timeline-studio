@@ -2,11 +2,12 @@
  * Media Management Orchestrator Service
  *
  * Координирует управление медиафайлами, импорт, операции с файлами
- * Интегрирован с BackendSync для синхронизации с Rust backend
+ * Использует IBackendService из DI контейнера для синхронизации
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core"
+import type { IBackendService } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import {
@@ -52,7 +53,7 @@ const logger = createLogger("MediaManagementOrchestrator")
 export class MediaManagementOrchestrator implements MediaManagementService {
   private fileOperationsActor: ActorRefFrom<typeof fileOperationsMachine>
   private mediaImportActor: ActorRefFrom<typeof mediaImportMachine>
-  private backendSync = getBackendSync()
+  private backend: IBackendService | null = null
   private backendUnsubscribe: (() => void) | null = null
 
   // Сервисы
@@ -79,6 +80,15 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     // Запускаем акторы
     this.fileOperationsActor.start()
     this.mediaImportActor.start()
+
+    // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
+    try {
+      if (container.hasBackend()) {
+        this.backend = container.getBackend()
+      }
+    } catch {
+      logger.warn("[MediaManagementOrchestrator] Backend not available yet")
+    }
 
     // Настраиваем синхронизацию
     this.setupSynchronization()
@@ -116,11 +126,16 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   }
 
   /**
-   * Настройка синхронизации с backend через BackendSync
+   * Настройка синхронизации с backend
    */
   private setupBackendSync() {
+    if (!this.backend) {
+      logger.warn("[MediaManagementOrchestrator] Backend not available, skipping sync setup")
+      return
+    }
+
     // Подписываемся на backend события
-    this.backendUnsubscribe = this.backendSync.onEvent((event: ProjectEvent) => {
+    this.backendUnsubscribe = this.backend.onEvent((event: ProjectEvent) => {
       logger.debug("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
 
       // Создаем контекст для event handler
@@ -152,7 +167,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     })
 
     // Подписываемся на изменения состояния для начальной загрузки
-    this.backendSync.onStateChange((state: any) => {
+    this.backend.onStateChange((state: any) => {
       this.loadInitialState(state)
     })
   }
@@ -284,7 +299,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
       for (const filePath of files) {
         try {
           const mediaType = this.getMediaTypeFromPath(filePath)
-          const result = await this.backendSync.executeCommand({
+          const result = await this.backend?.executeCommand({
             type: "AddMedia",
             params: { path: filePath, media_type: mediaType },
           } as any)
@@ -421,7 +436,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
         const mediaId = Array.from(this.mediaPool.entries()).find(([, media]) => media.path === path)?.[0]
 
         if (mediaId) {
-          await this.backendSync.executeCommand({
+          await this.backend?.executeCommand({
             type: "UpdateMedia",
             params: { media_id: mediaId, updates: {} },
           } as any)

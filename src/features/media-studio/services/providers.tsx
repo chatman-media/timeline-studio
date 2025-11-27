@@ -7,6 +7,7 @@
 "use client"
 
 import { type ReactNode } from "react"
+import { AppInitProvider } from "@/adapters/react"
 import { BrowserProvider } from "@/domains/browser"
 import { MediaManagementProvider } from "@/domains/media-management"
 import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
@@ -34,9 +35,10 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
 
 // Создаем единый провайдер из всех контекстов
 // ВАЖНО: Порядок провайдеров оптимизирован для новой архитектуры!
-// AppProvider должен быть рано в цепочке для инициализации backend
+// AppInitProvider регистрирует адаптеры в DI контейнере
 const AppProviderComposite = composeProviders(
-  TauriMockProvider, // Должен быть первым для инициализации моков
+  TauriMockProvider, // Должен быть первым для инициализации моков Tauri
+  AppInitProvider, // ✅ Инициализация DI контейнера с адаптерами (Tauri/Mock)
   I18nProvider, // Легкий провайдер для локализации (не блокирует рендер)
   ThemeProvider, // Легкий провайдер для темы
   ModalProvider, // Легкий провайдер для модальных окон

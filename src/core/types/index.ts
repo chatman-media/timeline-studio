@@ -9,20 +9,18 @@
 // Re-export types from generated bindings
 // These are the contract between frontend and any backend
 export type {
-  // Commands
-  CommandResult,
-  ProjectCommand,
-
-  // Events
-  EventEnvelope,
-  ProjectEvent,
-
   // State
   BrowserState,
   BrowserTab,
   Clip,
+  // Commands
+  CommandResult,
+  // Events
+  EventEnvelope,
   MediaItem,
   Project,
+  ProjectCommand,
+  ProjectEvent,
   ProjectSettings,
   ProjectState,
   TabSettings,

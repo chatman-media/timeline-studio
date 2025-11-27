@@ -3,7 +3,6 @@ import {
   FilePlus,
   FolderOpen,
   LayoutTemplate,
-  Mic,
   MonitorCog,
   PanelBottomClose,
   PanelBottomOpen,
@@ -14,7 +13,6 @@ import {
   Save,
   Upload,
   UserCog,
-  Webcam,
 } from "lucide-react"
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -172,8 +170,6 @@ const TopBarComponent = function TopBar() {
       openProject: t("topBar.openProject"),
       newProject: t("topBar.newProject"),
       save: currentProject?.metadata?.is_dirty ? t("topBar.saveChanges") : t("topBar.allChangesSaved"),
-      cameraCapture: t("topBar.cameraCapture"),
-      voiceRecording: t("topBar.voiceRecording"),
       publish: t("topBar.publish"),
       editingTasks: t("topBar.editingTasks"),
       aiDirector: t("topBar.aiDirector"),
@@ -337,31 +333,7 @@ const TopBarComponent = function TopBar() {
           </div>
         </div>
 
-        {/* Группа 4: Запись видео и голоса */}
-        <div className="flex items-center justify-end mr-[30%]">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={TOP_BAR_BUTTON_CLASS}
-            title={buttonTitles.cameraCapture}
-            onClick={() => handleOpenModal("camera-capture")}
-            data-testid="camera-capture-button"
-          >
-            <Webcam size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={TOP_BAR_BUTTON_CLASS}
-            title={buttonTitles.voiceRecording}
-            onClick={() => handleOpenModal("voice-recording")}
-            data-testid="voice-recording-button"
-          >
-            <Mic className="h-5 w-5" />
-          </Button>
-        </div>
-
-        {/* Группа 5: Публикация, задачи, настройки пользователя и экспорт */}
+        {/* Группа 4: Публикация, задачи, настройки пользователя и экспорт */}
         <div className="flex items-center justify-end">
           <GpuStatusBadge className="mr-2" />
 

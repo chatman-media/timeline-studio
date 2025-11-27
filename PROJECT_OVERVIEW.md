@@ -4,18 +4,18 @@
 
 ```
 📊 ВСЕГО:
-   • 42 фичи
+   • 40 фич (camera-capture, voice-recording - отключены)
    • 10 доменов
-   • 1647 файлов TypeScript/React
-   • 409 тестовых файлов
-   • 87.9% средняя готовность
+   • 1578 файлов TypeScript/React
+   • 360 тестовых файлов
+   • 99% средняя готовность (по 3 фичам с данными)
 
 📁 ФАЙЛЫ:
-   • 480 компонентов (.tsx)
-   • 233 хука (.ts)
-   • 286 сервисов (.ts)
-   • 115 типов (.ts)
-   • 31 state machine (.ts)
+   • 472 компонента (.tsx)
+   • 204 хука (.ts)
+   • 27 сервисов (.ts)
+   • 69 типов (.ts)
+   • 7 state machines (.ts)
 ```
 
 ## Готовность фич
@@ -36,11 +36,11 @@
 ### 🟡 50-74% готово (1 фича)
 - **73%** browser
 
-### 🔴 <50% готово (2 фичи)
-- **39%** camera-capture
-- **29%** voice-recording
+### ⏸️ Временно отключены (2 фичи)
+- **camera-capture** - захват камеры и экрана (39% готовность)
+- **voice-recording** - профессиональная запись голоса (29% готовность)
 
-### ❓ Без данных (18 фич)
+### ❓ Без данных (37 фич)
 `ai-chat` `ai-director` `drag-drop` `media-studio` `modals` `montage-planner` `motion-graphics` `multicam` `options` `person-identification` `preview` `project-templates` `publication` `recognition` `resources` `scenarios` `transcription` `updates`
 
 ## Топ-10 фич по тестам
@@ -145,5 +145,6 @@
 
 ---
 
-📄 Полный отчет: [project_stats.md](./project_stats.md)  
+📄 Полный отчет: [project_stats.md](./docs/00_project_manifest/project_stats.md)
 📅 Дата анализа: 2025-11-27
+⏸️ Временно отключены: camera-capture, voice-recording

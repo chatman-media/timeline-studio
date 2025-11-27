@@ -2,11 +2,12 @@
  * System Integration Orchestrator Service
  *
  * Координирует системные функции: модальные окна, обновления, уведомления
- * Интегрирован с BackendSync для синхронизации с Rust backend
+ * Использует IBackendService из DI контейнера для синхронизации
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core"
+import type { IBackendService } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectEvent } from "@/types/generated/tauri-bindings"
 import { type ModalData, type ModalType, modalMachine } from "../machines/modal-machine"
@@ -30,7 +31,7 @@ export class SystemIntegrationOrchestrator {
   private notifications: SystemNotification[] = []
   private features: Record<string, boolean> = {}
   private notificationCounter = 0
-  private backendSync = getBackendSync()
+  private backend: IBackendService | null = null
   private backendUnsubscribe: (() => void) | null = null
 
   constructor() {
@@ -43,6 +44,15 @@ export class SystemIntegrationOrchestrator {
     // Запускаем акторы
     this.modalActor.start()
     this.updateActor.start()
+
+    // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
+    try {
+      if (container.hasBackend()) {
+        this.backend = container.getBackend()
+      }
+    } catch {
+      logger.warn("[SystemIntegrationOrchestrator] Backend not available yet")
+    }
 
     // Настраиваем синхронизацию
     this.setupSynchronization()
@@ -83,11 +93,16 @@ export class SystemIntegrationOrchestrator {
   }
 
   /**
-   * Настройка синхронизации с backend через BackendSync
+   * Настройка синхронизации с backend
    */
   private setupBackendSync() {
+    if (!this.backend) {
+      logger.warn("[SystemIntegrationOrchestrator] Backend not available, skipping sync setup")
+      return
+    }
+
     // Подписываемся на backend события
-    this.backendUnsubscribe = this.backendSync.onEvent((event: ProjectEvent) => {
+    this.backendUnsubscribe = this.backend.onEvent((event: ProjectEvent) => {
       logger.info("[System Integration Orchestrator] Received backend event:", { eventType: event.type })
 
       // Обрабатываем события модальных окон
@@ -127,7 +142,7 @@ export class SystemIntegrationOrchestrator {
           },
         } as any
 
-        await this.backendSync.executeCommand(command)
+        await this.backend?.executeCommand(command)
         logger.info("[System Integration Orchestrator] Modal open command sent to backend")
       } catch (error) {
         logger.error("[System Integration Orchestrator] Failed to sync modal open with backend:", { error })
@@ -151,7 +166,7 @@ export class SystemIntegrationOrchestrator {
           type: "CloseModal" as any,
         } as any
 
-        await this.backendSync.executeCommand(command)
+        await this.backend?.executeCommand(command)
         logger.info("[System Integration Orchestrator] Modal close command sent to backend")
       } catch (error) {
         logger.error("[System Integration Orchestrator] Failed to sync modal close with backend:", { error })
@@ -180,7 +195,7 @@ export class SystemIntegrationOrchestrator {
           },
         } as any
 
-        await this.backendSync.executeCommand(command)
+        await this.backend?.executeCommand(command)
         logger.info("[System Integration Orchestrator] Modal submit command sent to backend")
       } catch (error) {
         logger.error("[System Integration Orchestrator] Failed to sync modal submit with backend:", { error })

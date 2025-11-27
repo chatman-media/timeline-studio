@@ -54,7 +54,9 @@ Timeline Studio не просто AI-помощник, а полноценная
 ## 📊 Продукт (Ноябрь 2025)
 
 ### Ключевые характеристики
-- **Покрытие тестами**: Frontend 5,000+ тестов, Backend полное покрытие
+- **Фичи и модули**: 40 активных фич (camera-capture, voice-recording временно отключены)
+- **Кодовая база**: 1,578 файлов (472 компонента, 204 хука, 27 сервисов, 7 state машин)
+- **Покрытие тестами**: Frontend 360+ unit тестов, 54 E2E теста, Backend 150+ тестов
 - **Производительность**: 60 FPS с 50+ клипами
 - **Поддержка языков**: 15 языков
 - **AI инструменты**: **102 с Function Calling** (абсолютное мировое лидерство)
@@ -62,11 +64,13 @@ Timeline Studio не просто AI-помощник, а полноценная
   - Analysis: 28 инструментов (video/audio analysis, content intelligence)
   - Automation: 6 инструментов (batch processing, workflows)
   - Integration: 12 инструментов (export, platform integration)
-- **Завершенные модули**: 23/26 (88% от основных модулей)
+- **Готовность фич**: 2 фичи 100%, 1 фича 97%, 37 фич в разработке
 - **Платформы**: Мультиплатформенный видеоредактор нового поколения
 - **🆕 Unified Audio System**: f64 precision с comprehensive error handling
 - **🆕 Real Analysis Engine**: ONNX + FFmpeg frame integration готов
 - **🆕 Function Calling Integration**: AI может самостоятельно использовать все 102 инструмента
+
+📈 **[Подробная статистика проекта](./project_stats.md)**
 
 ### Полноценные модули
 
@@ -98,11 +102,11 @@ Timeline Studio не просто AI-помощник, а полноценная
 - ✅ **Subtitles** - 72 стиля субтитров
 
 #### Дополнительные возможности
-- ✅ **Voice Recording** - профессиональная запись голоса
-- ✅ **Camera Capture** - захват с камеры и экрана
+- ⏸️ **Voice Recording** - профессиональная запись голоса (временно отключено)
+- ⏸️ **Camera Capture** - захват с камеры и экрана (временно отключено)
 - ✅ **Video Compiler** - высокопроизводительный рендеринг
 - ✅ **Media Management** - управление медиафайлами
-- ✅ **App State** - глобальное состояние приложения
+- ✅ **App State** - глобальное состояние приложения (97% готовности)
 - ✅ **User Settings** - пользовательские настройки
 
 ### Планируемые расширения
@@ -251,21 +255,21 @@ AI анализ: Распознает всех людей, присваивае�
 9. **🆕 Real ONNX Analysis Engine** - YOLO + FaceNet + FFmpeg frame integration
 10. **🆕 Systematic Error Handling** - 300+ compilation errors исправлено
 
-### Завершенные крупные модули (23 модуля)
+### Завершенные крупные модули (21 модуль)
 - ✅ **AI Content Intelligence** - 102 AI инструмента с Function Calling
-- ✅ **Fairlight Audio System** - профессиональный микшер
+- ✅ **Fairlight Audio System** - профессиональный микшер (105 файлов)
 - ✅ **Export to Social Networks** - прямая загрузка
 - ✅ **Timeline-Player Synchronization** - синхронизация
 - ✅ **Person Identification Core** - распознавание лиц
-- ✅ **Browser Architecture** - менеджер медиафайлов
+- ✅ **Browser Architecture** - менеджер медиафайлов (107 файлов, 30 тестов)
 - ✅ **Advanced Color Grading** - профессиональная цветокоррекция
 - ✅ **Subtitles System** - 72 стиля субтитров
-- ✅ **Advanced Timeline Features** - многодорожечный редактор
+- ✅ **Advanced Timeline Features** - многодорожечный редактор (289 файлов, 66 тестов)
 - ✅ **Video Compiler** - GPU рендеринг
 - ✅ **Motion Graphics** - система анимации
 - ✅ **Multicam System** - многокамерная съемка
-- ✅ **Voice Recording** - запись голоса
-- ✅ **Camera Capture** - захват камеры/экрана
+- ⏸️ **Voice Recording** - запись голоса (временно отключено)
+- ⏸️ **Camera Capture** - захват камеры/экрана (временно отключено)
 - ✅ **Recognition System** - YOLO v11 распознавание и именование людей
 - ✅ **Montage Planner** - автоматический монтаж
 - ✅ **Core Infrastructure** - DI, события, плагины
@@ -371,6 +375,8 @@ Timeline Studio - это open source проект, и мы приветству�
 
 ---
 
-*Последнее обновление: Ноябрь 2025*
+*Последнее обновление: 27 ноября 2025*
 *Версия: 0.85.0 (Alpha)*
-*Статус: 97% готовности, unified audio system завершен, подготовка к Beta-версии профессионального видеоредактора*
+*Статус: 40 активных фич (1,578 файлов, 360 тестов), unified audio system завершен, подготовка к Beta-версии*
+
+**Детальная статистика:** [project_stats.md](./project_stats.md)

@@ -2,11 +2,12 @@
  * Browser Orchestrator Service
  *
  * Координирует управление состоянием браузера медиафайлов
- * Интегрирован с BackendSync для синхронизации с Rust backend
+ * Использует IBackendService из DI контейнера для синхронизации
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core"
+import type { IBackendService } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   BrowserEvent,
@@ -22,7 +23,7 @@ const logger = createLogger("BrowserOrchestrator")
 
 export class BrowserOrchestrator {
   private browserActor: ActorRefFrom<typeof browserMachine>
-  private backendSync = getBackendSync()
+  private backend: IBackendService | null = null
   private unsubscribeEvents: (() => void) | null = null
   private unsubscribeState: (() => void) | null = null
 
@@ -35,6 +36,15 @@ export class BrowserOrchestrator {
     // Запускаем актор
     this.browserActor.start()
 
+    // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
+    try {
+      if (container.hasBackend()) {
+        this.backend = container.getBackend()
+      }
+    } catch {
+      logger.warn("[BrowserOrchestrator] Backend not available yet")
+    }
+
     // Настраиваем синхронизацию с backend
     this.setupBackendSync()
 
@@ -45,8 +55,13 @@ export class BrowserOrchestrator {
    * Настройка синхронизации с backend
    */
   private setupBackendSync() {
+    if (!this.backend) {
+      logger.warn("[BrowserOrchestrator] Backend not available, skipping sync setup")
+      return
+    }
+
     // Подписываемся на backend события
-    this.unsubscribeEvents = this.backendSync.onEvent((event: ProjectEvent) => {
+    this.unsubscribeEvents = this.backend.onEvent((event: ProjectEvent) => {
       // Проверяем, является ли это Browser событием
       if (event.type === "Browser") {
         const browserEvent = event.payload as BrowserEvent
@@ -64,7 +79,7 @@ export class BrowserOrchestrator {
     })
 
     // Подписываемся на state changes для инициализации
-    this.unsubscribeState = this.backendSync.onStateChange((state) => {
+    this.unsubscribeState = this.backend.onStateChange((state) => {
       if (state?.browser_state) {
         this.initializeFromBackendState(state.browser_state)
       }
@@ -78,10 +93,14 @@ export class BrowserOrchestrator {
    * Загрузка начального состояния из backend
    */
   private async loadInitialState() {
+    if (!this.backend) {
+      return
+    }
+
     this.browserActor.send({ type: "SET_LOADING", isLoading: true })
 
     try {
-      const state = await this.backendSync.getProjectState()
+      const state = await this.backend.getProjectState()
       if (state?.browser_state) {
         this.initializeFromBackendState(state.browser_state)
       }

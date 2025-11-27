@@ -1,0 +1,67 @@
+{
+  "timestamp": "2025-11-27T00:00:00Z",
+  "version": "0.85.0",
+  "excludedFeatures": ["camera-capture", "voice-recording"],
+  "summary": {
+    "totalFeatures": 40,
+    "totalFiles": 1578,
+    "totalTests": 360,
+    "averageReadiness": 99,
+    "featuresWithReadinessData": 3
+  },
+  "breakdown": {
+    "components": 472,
+    "hooks": 204,
+    "services": 27,
+    "machines": 7,
+    "types": 69
+  },
+  "readinessDistribution": {
+    "ready100": {
+      "count": 2,
+      "percent": 5.0,
+      "features": ["version-control", "video-player"]
+    },
+    "ready75_99": {
+      "count": 1,
+      "percent": 2.5,
+      "features": ["app-state"]
+    },
+    "ready50_74": {
+      "count": 0,
+      "percent": 0.0,
+      "features": []
+    },
+    "readyLess50": {
+      "count": 0,
+      "percent": 0.0,
+      "features": []
+    },
+    "noData": {
+      "count": 37,
+      "percent": 92.5
+    }
+  },
+  "topFeatures": {
+    "bySize": [
+      { "name": "timeline", "files": 289, "tests": 66 },
+      { "name": "browser", "files": 107, "tests": 30 },
+      { "name": "fairlight-audio", "files": 105, "tests": 0 },
+      { "name": "video-player", "files": 76, "tests": 2 },
+      { "name": "effects", "files": 71, "tests": 15 }
+    ],
+    "byTestCoverage": [
+      { "name": "person-identification", "tests": 15, "files": 29, "coverage": 51.7 },
+      { "name": "export", "tests": 23, "files": 54, "coverage": 42.6 },
+      { "name": "subtitles", "tests": 17, "files": 40, "coverage": 42.5 },
+      { "name": "app-state", "tests": 19, "files": 46, "coverage": 41.3 },
+      { "name": "media", "tests": 25, "files": 67, "coverage": 37.3 }
+    ]
+  },
+  "recommendations": [
+    "Add tests for features with 0 tests: fairlight-audio, media-studio, modals, montage-planner, publication, updates",
+    "Document readiness status in README.md for 37 features currently missing data",
+    "Increase XState state machine usage (currently only 7 machines for 40 features)",
+    "Standardize feature structure: ensure all features have __tests__/ and README.md"
+  ]
+}

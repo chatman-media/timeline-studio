@@ -1,0 +1,89 @@
+/**
+ * App Init Provider
+ *
+ * React провайдер для инициализации адаптеров.
+ * Определяет окружение (Tauri/Browser) и регистрирует соответствующие адаптеры в контейнере.
+ */
+
+"use client"
+
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
+
+import { container } from "@/core/container"
+import type { IBackendService, IPlatformService, IStorageService } from "@/core/ports"
+import { isDesktop } from "@/lib/environment"
+
+interface AppInitContextValue {
+  initialized: boolean
+  isDesktop: boolean
+  backend: IBackendService | null
+  platform: IPlatformService | null
+  storage: IStorageService | null
+}
+
+const AppInitContext = createContext<AppInitContextValue>({
+  initialized: false,
+  isDesktop: false,
+  backend: null,
+  platform: null,
+  storage: null,
+})
+
+interface AppInitProviderProps {
+  children: ReactNode
+}
+
+export function AppInitProvider({ children }: AppInitProviderProps) {
+  const [state, setState] = useState<AppInitContextValue>({
+    initialized: false,
+    isDesktop: false,
+    backend: null,
+    platform: null,
+    storage: null,
+  })
+
+  useEffect(() => {
+    const init = async () => {
+      // Determine environment
+      const desktop = isDesktop()
+
+      if (desktop) {
+        // Initialize Tauri adapters
+        const { initTauriApp } = await import("@/adapters/tauri")
+        await initTauriApp({ autoConnect: true })
+      } else {
+        // Initialize Mock adapters for browser
+        const { initMockApp } = await import("@/adapters/mock")
+        initMockApp({ useLocalStorage: true })
+      }
+
+      // Get services from container
+      setState({
+        initialized: true,
+        isDesktop: desktop,
+        backend: container.hasBackend() ? container.getBackend() : null,
+        platform: container.hasPlatform() ? container.getPlatform() : null,
+        storage: container.hasStorage() ? container.getStorage() : null,
+      })
+    }
+
+    init().catch(console.error)
+  }, [])
+
+  return <AppInitContext.Provider value={state}>{children}</AppInitContext.Provider>
+}
+
+/**
+ * Hook для доступа к состоянию инициализации
+ */
+export function useAppInit(): AppInitContextValue {
+  return useContext(AppInitContext)
+}
+
+/**
+ * Hook для проверки готовности приложения
+ */
+export function useAppReady(): boolean {
+  const { initialized } = useContext(AppInitContext)
+  return initialized
+}

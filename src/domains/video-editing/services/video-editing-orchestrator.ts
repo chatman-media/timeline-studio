@@ -78,8 +78,9 @@ const mockEventBus: EventBus = {
 
 const eventBus = mockEventBus
 
-// Import real BackendSync service
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+// Import core services
+import { container } from "@/core"
+import type { IBackendService } from "@/core/ports"
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
 import { playerMachine } from "../machines/player-machine"
@@ -96,7 +97,7 @@ export class VideoEditingOrchestrator {
   private timelineUIActor: ActorRefFrom<typeof timelineMachine> // Для UI состояния
 
   // Backend sync
-  private backendSync = getBackendSync()
+  private backend: IBackendService | null = null
   private backendUnsubscribe: (() => void) | null = null
 
   private constructor() {
@@ -111,6 +112,15 @@ export class VideoEditingOrchestrator {
     this.timelineExtendedActor.start()
     this.playerActor.start()
     this.timelineUIActor.start()
+
+    // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
+    try {
+      if (container.hasBackend()) {
+        this.backend = container.getBackend()
+      }
+    } catch {
+      logger.warn("[VideoEditingOrchestrator] Backend not available yet")
+    }
 
     // Настраиваем синхронизацию
     this.setupBackendSync()
@@ -130,8 +140,13 @@ export class VideoEditingOrchestrator {
    * Настройка синхронизации с backend
    */
   private setupBackendSync() {
+    if (!this.backend) {
+      logger.warn("[VideoEditingOrchestrator] Backend not available, skipping sync setup")
+      return
+    }
+
     // Подписка на изменения состояния backend
-    this.backendUnsubscribe = this.backendSync.onStateChange((state) => {
+    this.backendUnsubscribe = this.backend.onStateChange((state) => {
       logger.info("[Video Editing Orchestrator] Backend state updated")
 
       // Обновляем timeline машину
@@ -264,7 +279,7 @@ export class VideoEditingOrchestrator {
     logger.info("[Video Editing Orchestrator] Executing command:", { data: command.type })
 
     try {
-      await this.backendSync.executeCommand(command as any)
+      await this.backend?.executeCommand(command as any)
     } catch (error) {
       logger.error("[Video Editing Orchestrator] Command failed:", { error })
       throw error
