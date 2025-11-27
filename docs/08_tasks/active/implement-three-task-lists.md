@@ -40,10 +40,18 @@
   - Хук: `use-render-jobs.ts`
   - Backend: `videoCompilerRenderService`
 
-### Требуется создать:
-- ❌ **Analysis Tasks** - AI анализ (полностью новое)
+- 🟡 **Analysis Tasks** - AI анализ (frontend готов, backend нужен)
+  - ✅ Компонент: `analysis-tasks-dropdown.tsx` (223 строки)
+  - ✅ Хук: `use-analysis-tasks.ts` (265 строк, **пока localStorage**)
+  - ✅ Типы: `analysis-task.ts` (144 строки)
+  - ✅ i18n: переводы ru/en добавлены
+  - ✅ Интеграция: добавлен в top-bar.tsx Group 5
+  - ❌ **Backend: НЕТ ИНТЕГРАЦИИ** - требуется реализация
 
-### Требуется доработать:
+  **Коммит:** f2118a83002 (2025-11-27)
+
+### Требуется сделать:
+- ❌ **Backend интеграция для Analysis Tasks** - связать с UnifiedOrchestrator
 - 🔧 **Publication Tasks** - расширить для экспорта в локальные форматы (если нужно)
 - 🔧 **Render Tasks** - проверить консистентность UI
 
@@ -155,98 +163,124 @@ Tauri Plugin API
 
 ## 📝 План реализации
 
-### Этап 1: Типы и структуры (1-2 дня)
+### ✅ Этап 1: Типы и структуры (ЗАВЕРШЕН - 2025-11-27)
 
-**Создать файлы:**
-- [ ] `/src/features/analysis-tasks/types/analysis.ts`
-  - AnalysisTask, AnalysisTaskStatus, AnalysisProgress
-  - StageProgress для aiDirector и montagePlanner
-
-- [ ] `/src/features/export/types/export-task.ts`
-  - ExportTask, ExportTaskStatus, ExportProgress
-  - ExportSettings, OutputFormat
+**Создано:**
+- [x] `/src/features/montage-planner/types/analysis-task.ts` ✅
+  - AnalysisTask, AnalysisTaskStatus, AnalysisTaskProgress
+  - AnalysisResults, AnalysisTaskOptions, AnalysisTaskStatistics
+  - 144 строки, полная типизация
 
 **Задачи:**
-- [ ] Определить все enum статусов
-- [ ] Убедиться в совместимости с существующими типами
-- [ ] Документировать каждое поле
+- [x] Определить все enum статусов ✅
+- [x] Убедиться в совместимости с существующими типами ✅
+- [x] Документировать каждое поле ✅
 
 ---
 
-### Этап 2: Backend интеграция (2 дня)
+### 🔴 Этап 2: Backend интеграция (В РАБОТЕ - текущий этап)
 
-**Для Analysis Tasks (единственная новая интеграция):**
-- [ ] Модифицировать `/src/domains/ai-services/services/unified-orchestrator.ts`
-  - Экспортировать `getActiveWorkflows()` метод
-  - Добавить `getWorkflowStatus(workflowId: string)`
-  - Экспортировать interface для внешнего использования
+**Для Analysis Tasks (КРИТИЧНО - требуется реализация):**
 
-- [ ] Создать `/src/domains/ai-services/services/analysis-task-bridge.ts`
-  - Преобразование AnalysisWorkflow → AnalysisTask
-  - Подписка на события CONTENT_ANALYSIS_*
-  - Кэширование результатов
+#### Шаг 2.1: Изучить UnifiedOrchestrator
+- [ ] Прочитать `/src/domains/ai-services/services/unified-orchestrator.ts`
+  - Понять структуру workflow
+  - Найти методы получения активных workflow
+  - Определить события прогресса
 
-**Проверить Publication Tasks (уже реализовано):**
-- [ ] Убедиться, что Publication Tasks поддерживает локальный экспорт
-- [ ] Проверить работу с YouTube Plugin
-- [ ] Добавить поддержку других платформ при необходимости
-
-**Задачи:**
-- [ ] Протестировать Analysis backend с mock данными
-- [ ] Добавить логирование для debugging
-- [ ] Обработать edge cases (отмена, ошибки)
-
----
-
-### Этап 3: React hooks (1-2 дня)
-
-**Создать:**
-- [ ] `/src/features/analysis-tasks/hooks/use-analysis-tasks.ts`
+#### Шаг 2.2: Создать Analysis Task Bridge
+- [ ] Создать `/src/features/montage-planner/services/analysis-task-bridge.ts`
   ```typescript
-  function useAnalysisTasks(): {
-    tasks: AnalysisTask[]
-    isLoading: boolean
-    error: string | null
-    refreshTasks: () => Promise<void>
-    getTask: (taskId: string) => Promise<AnalysisTask | null>
-    cancelTask: (taskId: string) => Promise<boolean>
-    startAnalysis: (videoPath: string, options?: AnalysisOptions) => Promise<string>
+  interface AnalysisTaskBridge {
+    // Получить список активных задач анализа
+    getActiveTasks(): Promise<AnalysisTask[]>
+
+    // Получить конкретную задачу по ID
+    getTask(taskId: string): Promise<AnalysisTask | null>
+
+    // Запустить новый анализ
+    startAnalysis(videoPath: string, options?: AnalysisTaskOptions): Promise<string>
+
+    // Отменить задачу
+    cancelTask(taskId: string): Promise<boolean>
+
+    // Подписаться на обновления прогресса
+    subscribeToProgress(callback: (task: AnalysisTask) => void): () => void
   }
   ```
+  **Реализация:**
+  - Связать с UnifiedOrchestrator
+  - Преобразование Workflow → AnalysisTask
+  - Слушать события CONTENT_ANALYSIS_*, WORKFLOW_*
+  - Кэшировать результаты для оптимизации
+
+#### Шаг 2.3: Модифицировать UnifiedOrchestrator (если требуется)
+- [ ] Добавить методы экспорта (если не существуют):
+  - `getActiveWorkflows(): Workflow[]`
+  - `getWorkflowById(id: string): Workflow | null`
+  - `getWorkflowProgress(id: string): WorkflowProgress`
+  - `cancelWorkflow(id: string): Promise<boolean>`
+
+#### Шаг 2.4: Интеграция событий
+- [ ] Определить события backend для отслеживания:
+  ```typescript
+  // События от ai-services domain
+  DOMAIN_EVENTS.CONTENT_ANALYSIS_STARTED
+  DOMAIN_EVENTS.CONTENT_ANALYSIS_PROGRESS
+  DOMAIN_EVENTS.CONTENT_ANALYSIS_COMPLETED
+  DOMAIN_EVENTS.CONTENT_ANALYSIS_FAILED
+
+  // События workflow
+  WORKFLOW_STARTED
+  WORKFLOW_PROGRESS
+  WORKFLOW_STAGE_CHANGED
+  WORKFLOW_COMPLETED
+  WORKFLOW_CANCELLED
+  ```
+
+#### Шаг 2.5: Тестирование
+- [ ] Создать mock UnifiedOrchestrator для тестов
+- [ ] Протестировать преобразование данных
+- [ ] Протестировать подписку на события
+- [ ] Обработать edge cases (отмена, ошибки, timeout)
+
+---
+
+### 🟡 Этап 3: React hooks (ЧАСТИЧНО ЗАВЕРШЕН - 2025-11-27)
+
+**Создано:**
+- [x] `/src/features/montage-planner/hooks/use-analysis-tasks.ts` ✅
+  - 265 строк, полная реализация
+  - ❗ **НО: Использует localStorage вместо backend**
+  - Паттерн: useState, useRef, useEffect, useCallback
+  - Polling: 5 секунд с защитой от concurrent запросов
+  - Helper functions: getAnalysisTaskStatusLabel, getAnalysisTaskStatusColor, formatAnalysisTaskDuration
+
+**Требуется доработать:**
+- [ ] Заменить localStorage на analysisTaskBridge
+- [ ] Добавить подписку на события прогресса
+- [ ] Добавить retry механизм при ошибках
+- [ ] Добавить метод startAnalysis (сейчас только createTask в localStorage)
 
 **Проверить существующие:**
 - [ ] `use-publication-tasks.ts` - убедиться в консистентности
 - [ ] `use-render-jobs.ts` - убедиться в консистентности
 
-**Паттерн реализации:**
-- useState для tasks, isLoading, error
-- useRef для предотвращения concurrent запросов
-- useEffect с 5-сек polling
-- useCallback для всех handlers
-- Мемоизация через useMemo где необходимо
-
-**Задачи:**
-- [ ] Реализовать polling логику
-- [ ] Добавить retry механизм
-- [ ] Протестировать с mock backend
-
 ---
 
-### Этап 4: UI компоненты (2-3 дня)
+### ✅ Этап 4: UI компоненты (ЗАВЕРШЕН - 2025-11-27)
 
-**Analysis Tasks (новое):**
-- [ ] `/src/features/analysis-tasks/components/analysis-tasks-dropdown.tsx`
+**Analysis Tasks (создано):**
+- [x] `/src/features/montage-planner/components/analysis-tasks-dropdown.tsx` ✅
+  - 223 строки
   - DropdownMenu с иконкой Brain
   - Badge с количеством активных задач
   - ScrollArea для списка задач
-  - Skeleton loaders
-
-- [ ] `/src/features/analysis-tasks/components/analysis-task-item.tsx`
-  - Название видео
-  - Текущий stage (video/audio/moments/plan)
-  - Progress bar с процентами
-  - Кнопка отмены
-  - Детальная информация stages
+  - Progress bar с процентами и ETA
+  - Статистика: total/active/completed
+  - Кнопка отмены для running tasks
+  - Детальная информация по результатам (moments, sequences)
+  - Полностью локализован (ru, en)
 
 - [ ] `/src/features/analysis-tasks/components/analysis-progress-detail.tsx`
   - Детали по каждому stage
