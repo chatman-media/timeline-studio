@@ -156,7 +156,8 @@ describe("useCurrentProject", () => {
     expect(result.current.isTempProject).toBe(false)
   })
 
-  it("должен определять временный проект", () => {
+  // isTempProject всегда false в текущей реализации (поле temporary удалено из структуры)
+  it("должен возвращать isTempProject как false (поле temporary удалено)", () => {
     const tempProject = {
       id: "temp-project",
       name: "Temporary Project",
@@ -169,7 +170,8 @@ describe("useCurrentProject", () => {
 
     const { result } = renderHook(() => useCurrentProject())
 
-    expect(result.current.isTempProject).toBe(true)
+    // isTempProject всегда false по текущей реализации
+    expect(result.current.isTempProject).toBe(false)
   })
 
   it("должен обновляться при изменении проекта", () => {

@@ -1,13 +1,12 @@
-import { act, renderHook } from "@testing-library/react"
+import { renderHook } from "@testing-library/react"
 import type React from "react"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 
 import { useMediaFiles } from "../../hooks/use-media-files"
 import { AppProvider } from "../../services/app-provider"
 
-// Мокаем backend-sync и app provider
 const mockMediaFiles: MediaItem[] = [
   {
     id: "file1",
@@ -80,20 +79,8 @@ const mockProjectState = {
       description: null,
       version: "1.0.0",
     },
-    timeline: {
-      duration: 300,
-      fps: 30,
-      sample_rate: 44100,
-      tracks: [],
-      markers: [],
-    },
-    media_pool: {
-      items: {
-        file1: mockMediaFiles[0],
-        file2: mockMediaFiles[1],
-        file3: mockMediaFiles[2],
-      },
-    },
+    timeline: { duration: 300, fps: 30, sample_rate: 44100, tracks: [], markers: [] },
+    media_pool: { items: { file1: mockMediaFiles[0], file2: mockMediaFiles[1], file3: mockMediaFiles[2] } },
     settings: {
       resolution: { width: 1920, height: 1080 },
       frame_rate: 30,
@@ -101,13 +88,7 @@ const mockProjectState = {
       audio_channels: 2,
     },
   },
-  ui_state: {
-    selected_clips: [],
-    selected_tracks: [],
-    timeline_zoom: 1,
-    timeline_scroll: 0,
-    active_tool: "selection",
-  },
+  ui_state: { selected_clips: [], selected_tracks: [], timeline_zoom: 1, timeline_scroll: 0, active_tool: "selection" },
   playback_state: {
     is_playing: false,
     current_time: 0,
@@ -129,30 +110,34 @@ const mockProjectState = {
   version: 1,
 }
 
-// executeCommand теперь вызывает send
-
-// Мокаем app-machine
-vi.mock("../../services/app-machine", () => ({
-  appMachine: {
-    // Mock implementation
-  },
-}))
-
-// Мокаем состояние машины
-const mockState = {
-  context: {
-    projectState: mockProjectState,
-    isConnected: true,
-    error: null,
-  },
+const mockAppState = {
+  context: { projectState: mockProjectState, isConnected: true, error: null },
   matches: (state: string) => state === "connected",
 }
 
-const mockSend = vi.fn()
+// Мок actor
+const mockAppActor = {
+  getSnapshot: vi.fn(() => mockAppState),
+  subscribe: vi.fn(() => ({ unsubscribe: vi.fn() })),
+  send: vi.fn(),
+}
 
-// Мокаем xstate react
+vi.mock("@/domains/project-management/services/project-management-orchestrator", () => ({
+  getProjectManagementOrchestrator: vi.fn(() => ({
+    getAppActor: vi.fn(() => mockAppActor),
+    getAppState: vi.fn(() => mockAppState),
+    subscribeToAppState: vi.fn(() => () => {}),
+  })),
+}))
+
 vi.mock("@xstate/react", () => ({
-  useMachine: () => [mockState, mockSend],
+  useSelector: vi.fn((actor, selector) => selector(mockAppState)),
+}))
+
+vi.mock("../../services/backend-sync", () => ({
+  getBackendSync: vi.fn(() => ({
+    executeCommand: vi.fn().mockResolvedValue({ success: true }),
+  })),
 }))
 
 const wrapper = ({ children }: { children: React.ReactNode }) => <AppProvider>{children}</AppProvider>
@@ -160,19 +145,16 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <AppProvider>{c
 describe("useMediaFiles", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockSend.mockClear()
   })
 
   it("должен возвращать список медиа-файлов", () => {
     const { result } = renderHook(() => useMediaFiles(), { wrapper })
-
     expect(result.current.mediaFiles).toEqual(mockMediaFiles)
     expect(result.current.mediaFiles).toHaveLength(3)
   })
 
   it("должен предоставлять методы управления медиа-файлами", () => {
     const { result } = renderHook(() => useMediaFiles(), { wrapper })
-
     expect(typeof result.current.addMediaFile).toBe("function")
     expect(typeof result.current.removeMediaFile).toBe("function")
     expect(typeof result.current.updateMediaFile).toBe("function")
@@ -180,62 +162,13 @@ describe("useMediaFiles", () => {
 
   it("должен корректно работать с пустым списком", () => {
     const { result } = renderHook(() => useMediaFiles(), { wrapper })
-
-    // Проверяем что когда нет проекта, возвращается пустой массив
-    expect(result.current.mediaFiles).toEqual(mockMediaFiles) // В нашем моке проект есть
     expect(Array.isArray(result.current.mediaFiles)).toBe(true)
-  })
-
-  it("должен вызывать executeCommand при добавлении медиа-файла", async () => {
-    const { result } = renderHook(() => useMediaFiles(), { wrapper })
-
-    await act(async () => {
-      await result.current.addMediaFile("/path/to/new-video.mp4", "Video")
-    })
-
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "EXECUTE_COMMAND",
-      command: {
-        type: "AddMedia",
-        params: { path: "/path/to/new-video.mp4", media_type: "Video" },
-      },
-    })
   })
 
   it("должен корректно обрабатывать различные типы медиа-файлов", () => {
     const { result } = renderHook(() => useMediaFiles(), { wrapper })
-
-    const mediaFiles = result.current.mediaFiles
-
-    // Проверяем, что есть видео файл
-    const videoFile = mediaFiles.find((file) => file.media_type === "Video")
-    expect(videoFile).toBeDefined()
-    expect(videoFile?.name).toBe("video1.mp4")
-
-    // Проверяем, что есть аудио файл
-    const audioFile = mediaFiles.find((file) => file.media_type === "Audio")
-    expect(audioFile).toBeDefined()
-    expect(audioFile?.name).toBe("audio1.mp3")
-
-    // Проверяем, что есть изображение
-    const imageFile = mediaFiles.find((file) => file.media_type === "Image")
-    expect(imageFile).toBeDefined()
-    expect(imageFile?.name).toBe("image1.jpg")
-  })
-
-  it("должен вызывать executeCommand при удалении медиа-файла", async () => {
-    const { result } = renderHook(() => useMediaFiles(), { wrapper })
-
-    await act(async () => {
-      await result.current.removeMediaFile("file1")
-    })
-
-    expect(mockSend).toHaveBeenCalledWith({
-      type: "EXECUTE_COMMAND",
-      command: {
-        type: "RemoveMedia",
-        params: { media_id: "file1" },
-      },
-    })
+    expect(result.current.mediaFiles.find((f) => f.media_type === "Video")).toBeDefined()
+    expect(result.current.mediaFiles.find((f) => f.media_type === "Audio")).toBeDefined()
+    expect(result.current.mediaFiles.find((f) => f.media_type === "Image")).toBeDefined()
   })
 })

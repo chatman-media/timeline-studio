@@ -20,10 +20,18 @@ vi.mock("nanoid", () => ({
 
 // Mock useAppSettings to provide all methods needed by useCurrentProject
 const mockCurrentProject = {
-  path: null as string | null,
-  name: "Untitled Project",
-  isDirty: false,
-  isNew: true,
+  metadata: {
+    name: "Untitled Project",
+    file_path: null as string | null,
+    is_dirty: false,
+    description: null,
+    created_at: new Date().toISOString(),
+    modified_at: new Date().toISOString(),
+    version: "2.0.0",
+  },
+  timeline: { tracks: [], sections: [] },
+  media_pool: { items: {} },
+  settings: {},
 }
 
 // Import mocked function here to use in implementation
@@ -33,8 +41,8 @@ const mockAppSettings = {
   getCurrentProject: vi.fn(() => mockCurrentProject),
   createNewProject: vi.fn(),
   createTempProject: vi.fn().mockImplementation(async () => {
-    mockCurrentProject.path = "/app/backup/temp_project.tlsp"
-    mockCurrentProject.isDirty = true
+    mockCurrentProject.metadata.file_path = "/app/backup/temp_project.tlsp"
+    mockCurrentProject.metadata.is_dirty = true
     // Вызываем writeTextFile как в реальной реализации
     await mockWriteTextFile("/app/backup/temp_project.tlsp", JSON.stringify(mockCurrentProject))
     return mockCurrentProject
@@ -42,15 +50,15 @@ const mockAppSettings = {
   loadOrCreateTempProject: vi.fn(),
   openProject: vi.fn(),
   saveProject: vi.fn().mockImplementation(async (name: string) => {
-    mockCurrentProject.name = name
-    mockCurrentProject.path = "/user/my-project.tlsp"
-    mockCurrentProject.isDirty = false
+    mockCurrentProject.metadata.name = name
+    mockCurrentProject.metadata.file_path = "/user/my-project.tlsp"
+    mockCurrentProject.metadata.is_dirty = false
     return { path: "/user/my-project.tlsp", name }
   }),
   setProjectDirty: vi.fn().mockImplementation((dirty: boolean) => {
-    mockCurrentProject.isDirty = dirty
+    mockCurrentProject.metadata.is_dirty = dirty
   }),
-  isTempProject: vi.fn(() => mockCurrentProject.path?.includes("temp_project.tlsp") ?? false),
+  isTempProject: vi.fn(() => mockCurrentProject.metadata.file_path?.includes("temp_project.tlsp") ?? false),
 }
 
 vi.mock("@/features/app-state/hooks/use-app-settings", () => ({
@@ -64,7 +72,16 @@ vi.mock("@/features/app-state/hooks/use-current-project", async () => {
     ...actual,
     useCurrentProject: () => ({
       currentProject: mockCurrentProject,
-      ...mockAppSettings,
+      createNewProject: mockAppSettings.createNewProject,
+      createTempProject: mockAppSettings.createTempProject,
+      loadOrCreateTempProject: mockAppSettings.loadOrCreateTempProject,
+      openProject: mockAppSettings.openProject,
+      saveProject: mockAppSettings.saveProject,
+      setProjectDirty: mockAppSettings.setProjectDirty,
+      // isTempProject должен быть boolean, не функция
+      get isTempProject() {
+        return mockCurrentProject.metadata.file_path?.includes("temp_project.tlsp") ?? false
+      },
     }),
   }
 })
@@ -340,10 +357,9 @@ describe("Temporary Project Integration", () => {
     vi.clearAllMocks()
 
     // Reset mock project state
-    mockCurrentProject.path = null
-    mockCurrentProject.name = "Untitled Project"
-    mockCurrentProject.isDirty = false
-    mockCurrentProject.isNew = true
+    mockCurrentProject.metadata.file_path = null
+    mockCurrentProject.metadata.name = "Untitled Project"
+    mockCurrentProject.metadata.is_dirty = false
 
     // Mock app directories
     vi.mocked(invoke).mockImplementation((command) => {
@@ -382,10 +398,10 @@ describe("Temporary Project Integration", () => {
       })
 
       // Should have temp project path
-      expect(result.current.currentProject.path).toContain("temp_project.tlsp")
-      expect(result.current.currentProject.name).toBe("Untitled Project")
-      expect(result.current.currentProject.isDirty).toBe(true)
-      expect(result.current.isTempProject()).toBe(true)
+      expect(result.current.currentProject?.metadata.file_path).toContain("temp_project.tlsp")
+      expect(result.current.currentProject?.metadata.name).toBe("Untitled Project")
+      expect(result.current.currentProject?.metadata.is_dirty).toBe(true)
+      expect(result.current.isTempProject).toBe(true)
 
       // Should have called save
       expect(writeTextFile).toHaveBeenCalledWith("/app/backup/temp_project.tlsp", expect.any(String))
@@ -455,9 +471,8 @@ describe("Temporary Project Integration", () => {
 
       // Log initial state
       console.log("Test: initial state", {
-        path: result.current.currentProject.path,
-        name: result.current.currentProject.name,
-        isNew: result.current.currentProject.isNew,
+        path: result.current.currentProject?.metadata.file_path,
+        name: result.current.currentProject?.metadata.name,
       })
 
       // Wait for the async effect to complete
@@ -469,23 +484,21 @@ describe("Temporary Project Integration", () => {
       // Ждем загрузки проекта - используем polling для проверки изменения состояния
       await waitFor(
         () => {
-          const path = result.current.currentProject.path
-          const name = result.current.currentProject.name
-          const isNew = result.current.currentProject.isNew
-          console.log("Test: waiting for project load", { path, name, isNew })
+          const path = result.current.currentProject?.metadata.file_path
+          const name = result.current.currentProject?.metadata.name
+          console.log("Test: waiting for project load", { path, name })
 
-          // Проверяем, что проект загрузился (путь установлен и это не новый проект)
+          // Проверяем, что проект загрузился (путь установлен)
           expect(path).toBeTruthy()
           expect(path).toContain("temp_project.tlsp")
-          expect(isNew).toBe(false)
         },
         { timeout: 5000, interval: 100 },
       )
 
       // Проверяем имя проекта
-      expect(result.current.currentProject.name).toBe("Existing Temp Project")
-      expect(result.current.currentProject.isDirty).toBe(false)
-      expect(result.current.isTempProject()).toBe(true)
+      expect(result.current.currentProject?.metadata.name).toBe("Existing Temp Project")
+      expect(result.current.currentProject?.metadata.is_dirty).toBe(false)
+      expect(result.current.isTempProject).toBe(true)
     })
   })
 
@@ -506,13 +519,13 @@ describe("Temporary Project Integration", () => {
       })
 
       // Should be dirty by default
-      expect(result.current.currentProject.isDirty).toBe(true)
+      expect(result.current.currentProject?.metadata.is_dirty).toBe(true)
 
       // Trigger marking as dirty
       result.current.setProjectDirty(true)
 
       // Should still be dirty
-      expect(result.current.currentProject.isDirty).toBe(true)
+      expect(result.current.currentProject?.metadata.is_dirty).toBe(true)
 
       // NOTE: Auto-save is currently disabled to prevent file conflicts
       // as noted in the autoSaveTempProject function
@@ -574,8 +587,8 @@ describe("Temporary Project Integration", () => {
 
       // Should no longer be temp project
       await waitFor(() => {
-        expect(result.current.currentProject.isDirty).toBe(false)
-        expect(result.current.isTempProject()).toBe(false)
+        expect(result.current.currentProject?.metadata.is_dirty).toBe(false)
+        expect(result.current.isTempProject).toBe(false)
       })
     })
   })
@@ -597,13 +610,13 @@ describe("Temporary Project Integration", () => {
       })
 
       // Should detect temp project correctly
-      expect(result.current.isTempProject()).toBe(true)
+      expect(result.current.isTempProject).toBe(true)
 
       // Should have correct temp project name
-      expect(result.current.currentProject.name).toBe("Untitled Project")
+      expect(result.current.currentProject?.metadata.name).toBe("Untitled Project")
 
       // Should be marked as dirty (needs saving)
-      expect(result.current.currentProject.isDirty).toBe(true)
+      expect(result.current.currentProject?.metadata.is_dirty).toBe(true)
     })
 
     it("should create new temp project manually", async () => {
@@ -627,8 +640,8 @@ describe("Temporary Project Integration", () => {
       // Should have created and saved new temp project
       expect(writeTextFile).toHaveBeenCalledWith("/app/backup/temp_project.tlsp", expect.any(String))
 
-      expect(result.current.isTempProject()).toBe(true)
-      expect(result.current.currentProject.isDirty).toBe(true)
+      expect(result.current.isTempProject).toBe(true)
+      expect(result.current.currentProject?.metadata.is_dirty).toBe(true)
     })
   })
 
@@ -651,11 +664,11 @@ describe("Temporary Project Integration", () => {
 
       // Should fallback to regular new project
       await waitFor(() => {
-        expect(result.current.currentProject.isNew).toBe(true)
+        expect(result.current.currentProject?.metadata.file_path).toBeNull()
       })
 
       // Should not be a temp project
-      expect(result.current.isTempProject()).toBe(false)
+      expect(result.current.isTempProject).toBe(false)
     })
 
     it("should handle temp project save failures gracefully", async () => {
