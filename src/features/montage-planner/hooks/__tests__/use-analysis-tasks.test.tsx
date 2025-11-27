@@ -4,6 +4,7 @@
 
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { AnalysisPhase } from "../../types"
 import type { AnalysisTask } from "../../types/analysis-task"
 import { AnalysisTaskStatus } from "../../types/analysis-task"
 import {
@@ -46,7 +47,7 @@ const mockTask: AnalysisTask = {
   started_at: "2025-11-27T10:00:00Z",
   progress: {
     percentage: 50,
-    phase: "analyzing_video",
+    phase: AnalysisPhase.AnalyzingVideo,
     current_file: "/test/video.mp4",
     message: "Analyzing video frames...",
     eta: 120,
@@ -63,7 +64,7 @@ const mockCompletedTask: AnalysisTask = {
   completed_at: "2025-11-27T09:10:00Z",
   progress: {
     percentage: 100,
-    phase: "complete",
+    phase: AnalysisPhase.Complete,
     current_file: "/test/video2.mp4",
   },
 }

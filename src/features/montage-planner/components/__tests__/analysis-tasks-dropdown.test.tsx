@@ -6,7 +6,9 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useAnalysisTasks } from "../../hooks"
+import { AnalysisPhase } from "../../types"
 import type { AnalysisTask } from "../../types/analysis-task"
+import { AnalysisTaskStatus } from "../../types/analysis-task"
 import { AnalysisTasksDropdown } from "../analysis-tasks-dropdown"
 
 // Mock the hook
@@ -31,12 +33,12 @@ describe("AnalysisTasksDropdown", () => {
     id: "task-1",
     video_path: "/path/to/video.mp4",
     video_name: "video.mp4",
-    status: "analyzing_video",
+    status: AnalysisTaskStatus.AnalyzingVideo,
     created_at: "2025-01-27T10:00:00Z",
     started_at: "2025-01-27T10:00:00Z",
     progress: {
       percentage: 45,
-      phase: "analyzing_video",
+      phase: AnalysisPhase.AnalyzingVideo,
       current_file: "/path/to/video.mp4",
       message: "Analyzing video content",
       eta: 300,
@@ -47,13 +49,13 @@ describe("AnalysisTasksDropdown", () => {
     id: "task-2",
     video_path: "/path/to/completed.mp4",
     video_name: "completed.mp4",
-    status: "completed",
+    status: AnalysisTaskStatus.Completed,
     created_at: "2025-01-27T09:00:00Z",
     started_at: "2025-01-27T09:00:00Z",
     completed_at: "2025-01-27T09:30:00Z",
     progress: {
       percentage: 100,
-      phase: "complete",
+      phase: AnalysisPhase.Complete,
       current_file: "/path/to/completed.mp4",
     },
     results: {
@@ -70,13 +72,13 @@ describe("AnalysisTasksDropdown", () => {
     id: "task-3",
     video_path: "/path/to/failed.mp4",
     video_name: "failed.mp4",
-    status: "failed",
+    status: AnalysisTaskStatus.Failed,
     created_at: "2025-01-27T08:00:00Z",
     started_at: "2025-01-27T08:00:00Z",
     completed_at: "2025-01-27T08:05:00Z",
     progress: {
       percentage: 20,
-      phase: "initializing",
+      phase: AnalysisPhase.Initializing,
       current_file: "/path/to/failed.mp4",
     },
     error_message: "Failed to load video file",
@@ -549,13 +551,13 @@ describe("AnalysisTasksDropdown", () => {
       const pendingTask: AnalysisTask = {
         ...mockTask,
         id: "task-4",
-        status: "pending",
+        status: AnalysisTaskStatus.Pending,
       }
 
       const initializingTask: AnalysisTask = {
         ...mockTask,
         id: "task-5",
-        status: "initializing",
+        status: AnalysisTaskStatus.Initializing,
       }
 
       mockUseAnalysisTasks.mockReturnValue({
@@ -574,7 +576,7 @@ describe("AnalysisTasksDropdown", () => {
       const user = userEvent.setup()
       const pendingTask: AnalysisTask = {
         ...mockTask,
-        status: "pending",
+        status: AnalysisTaskStatus.Pending,
       }
 
       mockUseAnalysisTasks.mockReturnValue({
@@ -653,7 +655,7 @@ describe("AnalysisTasksDropdown", () => {
       const user = userEvent.setup()
       const cancelledTask: AnalysisTask = {
         ...mockTask,
-        status: "cancelled",
+        status: AnalysisTaskStatus.Cancelled,
       }
 
       mockUseAnalysisTasks.mockReturnValue({
