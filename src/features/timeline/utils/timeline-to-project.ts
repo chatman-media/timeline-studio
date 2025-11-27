@@ -62,6 +62,7 @@ type TemplateCell = {
 }
 
 import {
+  type AppliedEffect,
   type AppliedTransition,
   isSubtitleClip,
   type ProjectResources,
@@ -75,6 +76,37 @@ import {
  */
 export function timelineToProjectSchema(timeline: TimelineProject): ProjectSchema {
   const now = new Date().toISOString()
+
+  // Собираем все AppliedEffect со всех клипов и треков для конвертации
+  const appliedEffectsMap = new Map<string, { applied: AppliedEffect; baseEffect?: any }>()
+
+  // Функция для сбора эффектов с клипа
+  const collectClipEffects = (clip: TimelineClip) => {
+    clip.effects?.forEach((appliedEffect) => {
+      if (!appliedEffectsMap.has(appliedEffect.id)) {
+        // Найти базовый эффект из ресурсов
+        const baseEffect = timeline.resources?.effects?.find((e) => e.id === appliedEffect.effectId)
+        appliedEffectsMap.set(appliedEffect.id, { applied: appliedEffect, baseEffect })
+      }
+    })
+  }
+
+  // Функция для сбора эффектов с трека
+  const collectTrackEffects = (track: TimelineTrack) => {
+    track.trackEffects?.forEach((appliedEffect) => {
+      if (!appliedEffectsMap.has(appliedEffect.id)) {
+        const baseEffect = timeline.resources?.effects?.find((e) => e.id === appliedEffect.effectId)
+        appliedEffectsMap.set(appliedEffect.id, { applied: appliedEffect, baseEffect })
+      }
+    })
+    track.clips.forEach(collectClipEffects)
+  }
+
+  // Собираем эффекты из всех треков
+  timeline.sections?.forEach((section) => {
+    section.tracks.forEach(collectTrackEffects)
+  })
+  timeline.globalTracks?.forEach(collectTrackEffects)
 
   // Собираем все треки из секций и глобальные треки
   const tracks: BackendTrack[] = []
@@ -92,8 +124,8 @@ export function timelineToProjectSchema(timeline: TimelineProject): ProjectSchem
   })
 
   // Преобразуем ресурсы проекта в формат backend
-  // Правильная конвертация BaseEffect[] в формат, совместимый с ProjectSchema
-  const allEffects = convertEffects(timeline.resources?.effects || [])
+  // Конвертируем AppliedEffect с мерджем параметров базового эффекта и кастомных
+  const allEffects = convertAppliedEffects(appliedEffectsMap, timeline.resources?.effects || [])
   const allFilters: BackendFilter[] = convertFilters(timeline.resources?.filters || [])
   // FIXME: Frontend и backend Transition типы не совместимы
   const allTransitions = [] as any[]
@@ -163,7 +195,8 @@ function convertTrack(track: TimelineTrack, _resources: ProjectResources): any {
     locked: track.isLocked ?? false,
     volume: track.volume ?? 1.0,
     clips: track.clips.map((clip) => convertClip(clip)),
-    effects: track.trackEffects?.map((e) => e.effectId) || [],
+    // ИСПРАВЛЕНО: используем e.id для ссылки на AppliedEffect с кастомными параметрами
+    effects: track.trackEffects?.map((e) => e.id) || [],
     filters: [], // TODO: implement track filters when added to TimelineTrack type
   }
 }
@@ -184,7 +217,9 @@ function convertClip(clip: TimelineClip): BackendClip {
         : (clip.mediaStartTime !== null && clip.mediaStartTime !== undefined ? clip.mediaStartTime : 0) + clip.duration,
     speed: clip.speed || 1.0,
     volume: clip.volume ?? 1.0,
-    effects: clip.effects?.map((e) => e.effectId) || [],
+    // ИСПРАВЛЕНО: используем e.id (ID применения), а не e.effectId (ID базового эффекта)
+    // Это позволяет передать кастомные параметры для каждого применения эффекта
+    effects: clip.effects?.map((e) => e.id) || [],
     filters: clip.filters?.map((f) => f.filterId) || [],
     // transitions не является свойством Clip в backend
     // Оставляем закомментированным для совместимости
@@ -227,6 +262,195 @@ function convertEffects(effects: any[]): any[] {
           : effect.processors.ffmpeg.filter
         : undefined),
   }))
+}
+
+/**
+ * Преобразует AppliedEffect в формат backend с мерджем параметров
+ * Это ГЛАВНАЯ функция для конвертации эффектов с кастомными параметрами
+ */
+function convertAppliedEffects(
+  appliedEffectsMap: Map<string, { applied: AppliedEffect; baseEffect?: any }>,
+  baseEffects: any[],
+): any[] {
+  const result: any[] = []
+
+  // Сначала добавляем все базовые эффекты (для совместимости)
+  baseEffects.forEach((effect) => {
+    result.push({
+      id: effect.id,
+      effect_type: getEffectType(effect),
+      name: typeof effect.name === "string" ? effect.name : effect.name?.ru || "Unnamed Effect",
+      enabled: true,
+      parameters: convertEffectParameters(effect),
+      ffmpeg_command: getFFmpegCommand(effect, getDefaultParams(effect)),
+    })
+  })
+
+  // Затем добавляем все AppliedEffect с кастомными параметрами
+  appliedEffectsMap.forEach(({ applied, baseEffect }) => {
+    // Мерджим базовые параметры с кастомными
+    const baseParams = baseEffect ? convertEffectParameters(baseEffect) : {}
+    const customParams = applied.customParams || {}
+    const mergedParams = { ...baseParams, ...customParams }
+
+    // Генерируем FFmpeg команду с мерджеными параметрами
+    const ffmpegCommand = baseEffect
+      ? getFFmpegCommand(baseEffect, mergedParams)
+      : generateFFmpegFromParams(applied.effectId, mergedParams)
+
+    result.push({
+      id: applied.id, // Используем ID применения, не базового эффекта
+      effect_type: baseEffect ? getEffectType(baseEffect) : mapEffectIdToType(applied.effectId),
+      name: baseEffect
+        ? typeof baseEffect.name === "string"
+          ? baseEffect.name
+          : baseEffect.name?.ru || "Effect"
+        : "Applied Effect",
+      enabled: applied.enabled,
+      parameters: mergedParams,
+      ffmpeg_command: ffmpegCommand,
+    })
+  })
+
+  return result
+}
+
+/**
+ * Получает тип эффекта для backend
+ */
+function getEffectType(effect: any): string {
+  return effect.category ? toRustEnumCase(effect.category) : effect.type ? toRustEnumCase(effect.type) : "Custom"
+}
+
+/**
+ * Получает FFmpeg команду для эффекта
+ */
+function getFFmpegCommand(effect: any, params: Record<string, any>): string | undefined {
+  if (effect.ffmpegCommand) return effect.ffmpegCommand
+
+  if (effect.processors?.ffmpeg) {
+    const ffmpegProcessor = effect.processors.ffmpeg
+    if (typeof ffmpegProcessor.filter === "function") {
+      return ffmpegProcessor.filter(params)
+    }
+    return ffmpegProcessor.filter
+  }
+
+  return undefined
+}
+
+/**
+ * Маппинг ID эффекта на тип backend
+ * Используется когда базовый эффект не найден
+ */
+function mapEffectIdToType(effectId: string): string {
+  const effectTypeMap: Record<string, string> = {
+    // Color effects
+    "brightness-contrast": "ColorCorrection",
+    brightness: "ColorCorrection",
+    contrast: "ColorCorrection",
+    saturation: "ColorCorrection",
+    "color-correction": "ColorCorrection",
+    "color-grading": "ColorGrading",
+    "color-balance": "ColorCorrection",
+    temperature: "ColorCorrection",
+    tint: "ColorCorrection",
+    hue: "ColorCorrection",
+    vibrance: "ColorCorrection",
+
+    // Blur & Sharpen
+    blur: "Blur",
+    "gaussian-blur": "Blur",
+    "motion-blur": "Blur",
+    "radial-blur": "Blur",
+    sharpen: "Sharpen",
+    "unsharp-mask": "Sharpen",
+
+    // Stylize
+    vintage: "Custom",
+    retro: "Custom",
+    "film-grain": "Custom",
+    vignette: "Vignette",
+    sepia: "Custom",
+    "black-white": "Custom",
+    invert: "Custom",
+    posterize: "Custom",
+
+    // Distort
+    "lens-distortion": "Custom",
+    fisheye: "Custom",
+    wave: "Custom",
+    ripple: "Custom",
+    glitch: "Custom",
+    pixelate: "Custom",
+
+    // Keying
+    "chroma-key": "ChromaKey",
+    "luma-key": "Custom",
+    "color-key": "ChromaKey",
+
+    // Audio
+    "audio-fade": "AudioFade",
+    "audio-compressor": "AudioCompressor",
+    "audio-equalizer": "AudioEqualizer",
+  }
+
+  return effectTypeMap[effectId] || "Custom"
+}
+
+/**
+ * Генерирует FFmpeg команду на основе типа эффекта и параметров
+ */
+function generateFFmpegFromParams(effectId: string, params: Record<string, any>): string | undefined {
+  const ffmpegGenerators: Record<string, (p: Record<string, any>) => string> = {
+    // Color Correction
+    "brightness-contrast": (p) => `eq=brightness=${p.brightness || 0}:contrast=${p.contrast || 1}`,
+    brightness: (p) => `eq=brightness=${p.value || p.brightness || 0}`,
+    contrast: (p) => `eq=contrast=${p.value || p.contrast || 1}`,
+    saturation: (p) => `eq=saturation=${p.value || p.saturation || 1}`,
+    "color-correction": (p) =>
+      `eq=brightness=${p.brightness || 0}:contrast=${p.contrast || 1}:saturation=${p.saturation || 1}:gamma=${p.gamma || 1}`,
+
+    // Blur & Sharpen
+    blur: (p) => `gblur=sigma=${p.sigma || p.blurRadius || p.value || 5}`,
+    "gaussian-blur": (p) => `gblur=sigma=${p.sigma || p.value || 5}`,
+    sharpen: (p) => `unsharp=5:5:${p.amount || p.value || 1}:5:5:0`,
+    "unsharp-mask": (p) =>
+      `unsharp=${p.lumaX || 5}:${p.lumaY || 5}:${p.amount || 1}:${p.chromaX || 5}:${p.chromaY || 5}:0`,
+
+    // Stylize
+    vignette: (p) => `vignette=PI/${4 - (p.intensity || p.value || 0.5) * 3}`,
+    sepia: () => "colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131",
+    "black-white": () => "hue=s=0",
+    invert: () => "negate",
+
+    // Keying
+    "chroma-key": (p) => {
+      const color = p.color || p.keyColor || "0x00FF00"
+      const similarity = p.similarity || p.tolerance || 0.1
+      const blend = p.blend || p.softness || 0.1
+      return `chromakey=${color}:${similarity}:${blend}`
+    },
+
+    // Audio
+    "audio-fade": (p) => {
+      const type = p.type || "in"
+      const duration = p.duration || 1
+      return `afade=t=${type}:d=${duration}`
+    },
+    "audio-compressor": (p) =>
+      `acompressor=threshold=${p.threshold || 0.1}:ratio=${p.ratio || 4}:attack=${p.attack || 20}:release=${p.release || 250}`,
+    "audio-equalizer": (p) => {
+      const bands: string[] = []
+      if (p.bass !== undefined) bands.push(`equalizer=f=100:width_type=o:width=2:g=${p.bass}`)
+      if (p.mid !== undefined) bands.push(`equalizer=f=1000:width_type=o:width=2:g=${p.mid}`)
+      if (p.treble !== undefined) bands.push(`equalizer=f=10000:width_type=o:width=2:g=${p.treble}`)
+      return bands.length > 0 ? bands.join(",") : "equalizer=f=1000:width_type=o:width=2:g=0"
+    },
+  }
+
+  const generator = ffmpegGenerators[effectId]
+  return generator ? generator(params) : undefined
 }
 
 /**

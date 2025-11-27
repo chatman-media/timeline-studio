@@ -63,6 +63,35 @@ export {
   getVideoEditingOrchestrator,
   VideoEditingOrchestrator,
 } from "./services/video-editing-orchestrator"
+// Экспорт Tauri Commands (Advanced) - экспортируем только функции, не дублирующиеся с services/compiler
+export {
+  addEffectToClip,
+  addFilterToClip,
+  checkFfmpegCapabilities,
+  checkHardwareAccelerationSupport,
+  configureCache,
+  createEffect,
+  createFilter,
+  deleteUserEffect,
+  deleteUserEffectById,
+  extractRecognitionFrames,
+  extractSubtitleFrames,
+  extractTimelineFrames,
+  getCompilerSettingsAdvanced,
+  getGpuCapabilitiesFull,
+  getRenderProgress,
+  getSystemInfo,
+  getUserEffectsList,
+  loadEffectsCollection,
+  loadFile,
+  loadUserEffect,
+  removeEffectFromClip,
+  removeFilterFromClip,
+  saveEffectsCollection,
+  saveFile,
+  saveUserEffect,
+  setHardwareAcceleration,
+} from "./tauri/compiler-commands"
 // Экспорт типов
 export * from "./types"
 // Экспорт утилит

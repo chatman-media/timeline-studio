@@ -1,11 +1,21 @@
-import { basename, dirname, join } from "@tauri-apps/api/path"
-
+import { container } from "@/core"
 import { fileSystemService } from "@/domains/media-management/services/file-system-service"
 import type { MediaFile } from "@/features/media/types/media"
 import type { FileStatus, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("SavedMediaUtils")
+
+/**
+ * Получает platform service из container
+ */
+function getPlatformService() {
+  try {
+    return container.hasPlatform() ? container.getPlatform() : null
+  } catch {
+    return null
+  }
+}
 
 /**
  * Генерирует уникальный ID для медиафайла
@@ -32,8 +42,14 @@ export function generateFileId(filePath: string, metadata: any): string {
 export async function calculateRelativePath(filePath: string, projectPath: string | null): Promise<string | undefined> {
   if (!projectPath) return undefined
 
+  const platformService = getPlatformService()
+  if (!platformService) {
+    logger.warnSync("Platform service not available for relative path calculation")
+    return undefined
+  }
+
   try {
-    const projectDir = await dirname(projectPath)
+    const projectDir = await platformService.dirname(projectPath)
 
     // Простая проверка: если файл начинается с директории проекта
     if (filePath.startsWith(projectDir)) {
@@ -204,20 +220,27 @@ export function getExtensionsForFile(file: SavedMediaFile): string[] {
  */
 export async function generateAlternativePaths(originalPath: string, projectDir: string): Promise<string[]> {
   const alternatives: string[] = []
-  const fileName = await basename(originalPath)
+  const platformService = getPlatformService()
+
+  if (!platformService) {
+    logger.warnSync("Platform service not available for generating alternative paths")
+    return alternatives
+  }
+
+  const fileName = await platformService.basename(originalPath)
 
   try {
     // Добавляем путь в директории проекта
-    alternatives.push(await join(projectDir, fileName))
+    alternatives.push(await platformService.join(projectDir, fileName))
 
     // Добавляем путь в поддиректории 'media' проекта
-    alternatives.push(await join(projectDir, "media", fileName))
+    alternatives.push(await platformService.join(projectDir, "media", fileName))
 
     // Добавляем путь в поддиректории 'assets' проекта
-    alternatives.push(await join(projectDir, "assets", fileName))
+    alternatives.push(await platformService.join(projectDir, "assets", fileName))
 
     // Добавляем путь в поддиректории 'files' проекта
-    alternatives.push(await join(projectDir, "files", fileName))
+    alternatives.push(await platformService.join(projectDir, "files", fileName))
 
     // Используем системный поиск для более глубокого поиска
     try {
@@ -304,10 +327,13 @@ export async function validateFileIntegrity(
     }
 
     // Проверяем имя файла
-    const currentName = await basename(filePath)
-    if (currentName !== saved.name) {
-      issues.push(`Filename mismatch: expected ${saved.name}, got ${currentName}`)
-      confidence -= 0.1
+    const platformService = getPlatformService()
+    if (platformService) {
+      const currentName = await platformService.basename(filePath)
+      if (currentName !== saved.name) {
+        issues.push(`Filename mismatch: expected ${saved.name}, got ${currentName}`)
+        confidence -= 0.1
+      }
     }
   } catch (error) {
     issues.push(`Error validating file: ${String(error)}`)
