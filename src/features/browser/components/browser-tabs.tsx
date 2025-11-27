@@ -101,10 +101,12 @@ export const BrowserTabs = memo(({ activeTab, onTabChange }: BrowserTabsProps) =
         <LayoutTemplate className="h-4 w-4" />
         <span>{t("browser.tabs.projects")}</span>
       </TabButton>
+{/* Temporarily disabled - scenarios feature is 75% complete
       <TabButton value="scenarios" activeTab={activeTab} onClick={onTabChange} testId="scenarios-tab">
         <Wand2 className="h-4 w-4" />
         <span>{t("browser.tabs.scenarios")}</span>
       </TabButton>
+*/}
     </div>
   )
 })

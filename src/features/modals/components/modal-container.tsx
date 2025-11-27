@@ -36,8 +36,9 @@ export function ModalContainer() {
     switch (modalType) {
       case "project-settings":
         return <ProjectSettingsModal />
-      case "keyboard-shortcuts":
-        return <KeyboardShortcutsModal />
+      // Temporarily disabled - keyboard-shortcuts feature needs review
+      // case "keyboard-shortcuts":
+      //   return <KeyboardShortcutsModal />
       case "user-settings":
         return <UserSettingsModal />
       case "camera-capture":
