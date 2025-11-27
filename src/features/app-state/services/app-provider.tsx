@@ -57,15 +57,11 @@ export function AppProvider({ children }: AppProviderProps) {
   }
 
   // Выполнение команды напрямую через backendSync для получения результата
+  // НЕ отправляем в XState машину - это вызывает двойное выполнение команды
   const executeCommand = useCallback(async (command: ProjectCommand) => {
     const backendSync = getBackendSync()
-    const result = await backendSync.executeCommand(command)
-
-    // Также уведомляем машину для синхронизации состояния
-    send({ type: "EXECUTE_COMMAND", command })
-
-    return result
-  }, [send])
+    return backendSync.executeCommand(command)
+  }, [])
 
   // Context value with safe fallbacks
   const contextValue: AppContext = {
