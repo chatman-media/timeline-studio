@@ -1,6 +1,10 @@
-import { invoke } from "@tauri-apps/api/core"
-
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  clearAppCache as clearAppCacheTauri,
+  createAppDirectories as createAppDirectoriesTauri,
+  getAppDirectories as getAppDirectoriesTauri,
+  getDirectorySizes as getDirectorySizesTauri,
+} from "../tauri/project-commands"
 
 const logger = createLogger("AppDirectoriesService")
 
@@ -63,8 +67,12 @@ export class AppDirectoriesService {
     }
 
     try {
-      this.directories = await invoke<AppDirectories>("get_app_directories")
-      return this.directories
+      const directories = await getAppDirectoriesTauri()
+      if (!directories) {
+        throw new Error("Failed to get app directories: returned undefined")
+      }
+      this.directories = directories
+      return directories
     } catch (error) {
       logger.error("Failed to get app directories:", { error })
       throw error
@@ -76,8 +84,12 @@ export class AppDirectoriesService {
    */
   async createAppDirectories(): Promise<AppDirectories> {
     try {
-      this.directories = await invoke<AppDirectories>("create_app_directories")
-      return this.directories
+      const directories = await createAppDirectoriesTauri()
+      if (!directories) {
+        throw new Error("Failed to create app directories: returned undefined")
+      }
+      this.directories = directories
+      return directories
     } catch (error) {
       logger.error("Failed to create app directories:", { error })
       throw error
@@ -89,7 +101,7 @@ export class AppDirectoriesService {
    */
   async getDirectorySizes(): Promise<DirectorySizes> {
     try {
-      return await invoke<DirectorySizes>("get_directory_sizes")
+      return await getDirectorySizesTauri()
     } catch (error) {
       logger.error("Failed to get directory sizes:", { error })
       throw error
@@ -101,7 +113,7 @@ export class AppDirectoriesService {
    */
   async clearAppCache(): Promise<void> {
     try {
-      await invoke("clear_app_cache")
+      await clearAppCacheTauri()
     } catch (error) {
       logger.error("Failed to clear app cache:", { error })
       throw error

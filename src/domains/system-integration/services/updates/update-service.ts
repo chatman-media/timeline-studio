@@ -7,6 +7,10 @@ import { invoke } from "@tauri-apps/api/core"
 import { emit, listen } from "@tauri-apps/api/event"
 
 import { createLogger } from "@/lib/tauri-logger"
+import {
+  checkForUpdate as checkForUpdateTauri,
+  downloadAndInstallUpdate as downloadAndInstallUpdateTauri,
+} from "../../tauri/update-commands"
 
 import type { UpdateCheckResult, UpdateEventPayload, UpdateProgress, UpdateStatus } from "../../types"
 
@@ -72,7 +76,7 @@ export class UpdateService {
     try {
       this.updateStatus("checking")
 
-      const result = await invoke<UpdateCheckResult>("check_for_update")
+      const result = await checkForUpdateTauri()
 
       if (result.available && result.update_info) {
         this.updateStatus("available", { update_info: result.update_info })
@@ -95,7 +99,7 @@ export class UpdateService {
     try {
       this.updateStatus("downloading")
 
-      await invoke("download_and_install_update")
+      await downloadAndInstallUpdateTauri()
 
       this.updateStatus("installed")
     } catch (error) {
