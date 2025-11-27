@@ -83,11 +83,15 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
     // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
     try {
+      logger.info("[MediaManagementOrchestrator] Checking if backend is available")
       if (container.hasBackend()) {
         this.backend = container.getBackend()
+        logger.info("[MediaManagementOrchestrator] Backend retrieved successfully")
+      } else {
+        logger.warn("[MediaManagementOrchestrator] Backend is not registered in container")
       }
-    } catch {
-      logger.warn("[MediaManagementOrchestrator] Backend not available yet")
+    } catch (error) {
+      logger.warn("[MediaManagementOrchestrator] Backend not available yet", { error: String(error) })
     }
 
     // Настраиваем синхронизацию
@@ -129,14 +133,19 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Настройка синхронизации с backend
    */
   private setupBackendSync() {
+    logger.info("[MediaManagementOrchestrator] Setting up backend sync", {
+      hasBackend: !!this.backend,
+    })
+
     if (!this.backend) {
       logger.warn("[MediaManagementOrchestrator] Backend not available, skipping sync setup")
       return
     }
 
     // Подписываемся на backend события
+    logger.info("[MediaManagementOrchestrator] Subscribing to backend events")
     this.backendUnsubscribe = this.backend.onEvent((event: ProjectEvent) => {
-      logger.debug("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
+      logger.info("[Media Management Orchestrator] Received backend event:", { eventType: event.type })
 
       // Создаем контекст для event handler
       const context: MediaContext = {

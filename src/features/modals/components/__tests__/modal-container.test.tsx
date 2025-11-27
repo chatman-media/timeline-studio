@@ -148,7 +148,7 @@ describe("ModalContainer", () => {
   describe("Modal Types", () => {
     const modalTestCases: Array<[ModalType, string, string]> = [
       ["project-settings", "project-settings-modal", "modals.projectSettings.title"],
-      ["keyboard-shortcuts", "keyboard-shortcuts-modal", "modals.keyboardShortcuts.title"],
+      // keyboard-shortcuts modal is temporarily disabled
       ["user-settings", "user-settings-modal", "modals.userSettings.title"],
       ["camera-capture", "camera-capture-modal", "modals.cameraCapture.title"],
       ["voice-recording", "voice-recording-modal", "modals.voiceRecording.title"],
@@ -233,7 +233,7 @@ describe("ModalContainer", () => {
       ["export", "h-[max(700px,min(80vh,900px))]"],
       ["project-settings", "h-[450px]"],
       ["user-settings", "h-[800px]"],
-      ["keyboard-shortcuts", "h-[max(600px,min(70vh,1000px))]"],
+      // keyboard-shortcuts modal is temporarily disabled
       ["cache-settings", "h-[max(700px,min(80vh,900px))]"],
       ["cache-statistics", "h-[max(600px,min(70vh,800px))]"],
       ["subtitle-editor", "h-[max(600px,min(70vh,800px))]"],

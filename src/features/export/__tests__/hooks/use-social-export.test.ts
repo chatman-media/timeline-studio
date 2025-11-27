@@ -10,6 +10,17 @@ import type { SocialExportSettings } from "../../types/export-types"
 
 const mockShowError = vi.fn()
 const mockShowSuccess = vi.fn()
+const mockReadFile = vi.fn()
+
+// Mock @/core container
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      readFile: mockReadFile,
+    })),
+  },
+}))
 
 vi.mock("@/domains/system-integration", () => ({
   useNotifications: () => ({
@@ -31,6 +42,9 @@ describe("useSocialExport", () => {
     vi.clearAllMocks()
     mockShowError.mockClear()
     mockShowSuccess.mockClear()
+    mockReadFile.mockClear()
+    // Mock readFile to return a Uint8Array (simulating file data)
+    mockReadFile.mockResolvedValue(new Uint8Array([1, 2, 3, 4]))
     setTranslations({
       "dialogs.export.errors.loginFailed": "Failed to login to {{network}}",
       "dialogs.export.errors.uploadFailed": "Upload to {{network}} failed",
@@ -131,6 +145,9 @@ describe("useSocialExport", () => {
     })
 
     it("should handle file not found error when uploading to social network", async () => {
+      // Mock readFile to throw an error
+      mockReadFile.mockRejectedValueOnce(new Error("File not found: /path/to/video.mp4"))
+
       const { result } = renderHook(() => useSocialExport())
 
       await expect(

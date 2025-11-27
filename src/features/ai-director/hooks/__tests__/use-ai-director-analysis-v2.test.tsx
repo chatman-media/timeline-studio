@@ -28,16 +28,25 @@ vi.mock("@/domains/ai-director", () => ({
   aiDirectorAnalyzeBatch: vi.fn(),
 }))
 
-// Mock Tauri event API
-vi.mock("@tauri-apps/api/event", () => ({
-  listen: vi.fn(),
+// Create mock event service
+const mockUnlisten = vi.fn()
+const mockListen = vi.fn()
+
+// Mock @/core container
+vi.mock("@/core", () => ({
+  container: {
+    hasEvent: vi.fn(() => true),
+    getEvent: vi.fn(() => ({
+      listen: mockListen,
+      emit: vi.fn(),
+      once: vi.fn(),
+    })),
+  },
 }))
 
 // Import mocked functions
-import { listen } from "@tauri-apps/api/event"
 import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
 
-const mockListen = vi.mocked(listen)
 const mockAnalyzeBatch = vi.mocked(aiDirectorAnalyzeBatch)
 
 describe("useAIDirectorAnalysisV2", () => {
@@ -50,7 +59,7 @@ describe("useAIDirectorAnalysisV2", () => {
     // Mock listen to capture event handlers
     mockListen.mockImplementation((eventName: string, handler: (event: any) => void) => {
       eventHandlers[eventName] = handler
-      return Promise.resolve(() => {})
+      return Promise.resolve(mockUnlisten)
     })
   })
 
@@ -434,16 +443,13 @@ describe("useAIDirectorAnalysisV2", () => {
 
   describe("Cleanup", () => {
     it("should cleanup event listeners on unmount", async () => {
-      const unlistenMock = vi.fn()
-      mockListen.mockResolvedValue(unlistenMock)
-
       const { unmount } = renderHook(() => useAIDirectorAnalysisV2())
 
       await waitFor(() => expect(mockListen).toHaveBeenCalled())
 
       unmount()
 
-      expect(unlistenMock).toHaveBeenCalled()
+      expect(mockUnlisten).toHaveBeenCalled()
     })
   })
 })

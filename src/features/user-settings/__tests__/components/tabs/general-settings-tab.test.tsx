@@ -7,12 +7,20 @@ import { GeneralSettingsTab } from "../../../components/tabs/general-settings-ta
 import { useUserSettings } from "../../../hooks/use-user-settings"
 import { createMockUserSettings } from "../../test-utils"
 
+// Mock container with platform service
+const mockShowOpenDialog = vi.fn()
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      showOpenDialog: mockShowOpenDialog,
+    })),
+  },
+}))
+
 vi.mock("../../../hooks/use-user-settings")
 vi.mock("@/features/modals/services/modal-provider")
 vi.mock("@/features/language")
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn(),
-}))
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => ({
     info: (message: string, context?: unknown) => {
@@ -119,6 +127,7 @@ describe("GeneralSettingsTab", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockShowOpenDialog.mockReset()
 
     vi.mocked(useUserSettings).mockImplementation(() =>
       createMockUserSettings({
@@ -266,9 +275,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should handle folder selection for screenshots path", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockResolvedValue("selected/folder/path")
+    mockShowOpenDialog.mockResolvedValue(["selected/folder/path"])
 
     render(<GeneralSettingsTab />)
 
@@ -280,7 +287,7 @@ describe("GeneralSettingsTab", () => {
     })
 
     await waitFor(() => {
-      expect(mockOpen).toHaveBeenCalledWith({
+      expect(mockShowOpenDialog).toHaveBeenCalledWith({
         directory: true,
         multiple: false,
         title: "dialogs.userSettings.selectFolder",
@@ -293,9 +300,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should handle folder selection error with prompt fallback", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockRejectedValue(new Error("Permission denied"))
+    mockShowOpenDialog.mockRejectedValue(new Error("Permission denied"))
 
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("fallback/path")
     const consoleSpy = vi.spyOn(console, "error")
@@ -328,9 +333,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should handle folder selection error for player screenshots with prompt fallback", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockRejectedValue(new Error("Permission denied"))
+    mockShowOpenDialog.mockRejectedValue(new Error("Permission denied"))
 
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("player/fallback/path")
     const consoleSpy = vi.spyOn(console, "error")
@@ -363,9 +366,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should trim whitespace from prompt input", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockRejectedValue(new Error("Permission denied"))
+    mockShowOpenDialog.mockRejectedValue(new Error("Permission denied"))
 
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("  path/with/spaces  ")
 
@@ -386,9 +387,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should not update path when prompt is cancelled", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockRejectedValue(new Error("Permission denied"))
+    mockShowOpenDialog.mockRejectedValue(new Error("Permission denied"))
 
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue(null)
 
@@ -451,9 +450,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should log console message when folder is selected successfully", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockResolvedValue("new/selected/path")
+    mockShowOpenDialog.mockResolvedValue(["new/selected/path"])
 
     const consoleSpy = vi.spyOn(console, "info")
 
@@ -477,10 +474,8 @@ describe("GeneralSettingsTab", () => {
     })
   })
 
-  it("should not update path when folder selection returns array", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockResolvedValue(["path1", "path2"])
+  it("should not update path when folder selection returns empty array", async () => {
+    mockShowOpenDialog.mockResolvedValue([])
 
     render(<GeneralSettingsTab />)
 
@@ -492,7 +487,7 @@ describe("GeneralSettingsTab", () => {
     })
 
     await waitFor(() => {
-      expect(mockOpen).toHaveBeenCalled()
+      expect(mockShowOpenDialog).toHaveBeenCalled()
     })
 
     expect(mockHandleScreenshotsPathChange).not.toHaveBeenCalled()

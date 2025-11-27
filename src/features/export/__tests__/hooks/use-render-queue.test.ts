@@ -6,16 +6,42 @@ import { logError } from "@/lib/tauri-logger"
 
 import { useRenderQueue } from "../../hooks/use-render-queue"
 
-// Mock Tauri API
-const mockInvoke = vi.fn()
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: (cmd: string, args?: any) => mockInvoke(cmd, args),
+// Mock functions
+const mockGetActiveJobs = vi.fn()
+const mockCancelRender = vi.fn()
+const mockRenderProject = vi.fn()
+const mockShowOpenDialog = vi.fn()
+
+// Mock @/core container
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      showOpenDialog: mockShowOpenDialog,
+    })),
+  },
 }))
 
-// Mock dialog
-const mockOpen = vi.fn()
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: (options: any) => mockOpen(options),
+// Mock video-editing domain services
+vi.mock("@/domains/video-editing", () => ({
+  getActiveJobs: (args?: any) => mockGetActiveJobs(args),
+  cancelRender: (jobId: string) => mockCancelRender(jobId),
+  renderProject: (schema: any, path: string) => mockRenderProject(schema, path),
+  RenderStatus: {
+    Pending: "Pending",
+    Processing: "Processing",
+    Completed: "Completed",
+    Failed: "Failed",
+    Cancelled: "Cancelled",
+  },
+  OutputFormat: {
+    Mp4: "Mp4",
+    Mov: "Mov",
+    Mkv: "Mkv",
+    Avi: "Avi",
+    WebM: "WebM",
+    Gif: "Gif",
+  },
 }))
 
 // Get mocked logError
@@ -89,18 +115,10 @@ describe("useRenderQueue", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockInvoke.mockImplementation((cmd) => {
-      if (cmd === "get_active_jobs") {
-        return Promise.resolve(mockJobs)
-      }
-      if (cmd === "cancel_render") {
-        return Promise.resolve(true)
-      }
-      if (cmd === "compile_video") {
-        return Promise.resolve("job-3")
-      }
-      return Promise.resolve(null)
-    })
+    mockGetActiveJobs.mockResolvedValue(mockJobs)
+    mockCancelRender.mockResolvedValue(true)
+    mockRenderProject.mockResolvedValue("job-3")
+    mockShowOpenDialog.mockResolvedValue(null)
   })
 
   it("should load active jobs on mount", async () => {
@@ -112,7 +130,7 @@ describe("useRenderQueue", () => {
       expect(result.current.activeJobsCount).toBe(2)
     })
 
-    expect(mockInvoke).toHaveBeenCalledWith("get_active_jobs", undefined)
+    expect(mockGetActiveJobs).toHaveBeenCalled()
   })
 
   it("should refresh queue periodically when processing", async () => {
@@ -123,7 +141,7 @@ describe("useRenderQueue", () => {
     })
 
     // Clear the call count after initial load
-    mockInvoke.mockClear()
+    mockGetActiveJobs.mockClear()
 
     // Wait for interval to trigger
     await act(async () => {
@@ -131,19 +149,19 @@ describe("useRenderQueue", () => {
     })
 
     // Should have been called at least once by the interval
-    expect(mockInvoke).toHaveBeenCalledWith("get_active_jobs", undefined)
-    expect(mockInvoke.mock.calls.length).toBeGreaterThanOrEqual(1)
+    expect(mockGetActiveJobs).toHaveBeenCalled()
+    expect(mockGetActiveJobs.mock.calls.length).toBeGreaterThanOrEqual(1)
   })
 
   it("should add projects to queue", async () => {
     const mockFiles = ["/path/to/project1.tls", "/path/to/project2.tls"]
-    mockOpen.mockResolvedValue(mockFiles)
+    mockShowOpenDialog.mockResolvedValue(mockFiles)
 
     const { result } = renderHook(() => useRenderQueue())
 
     const selectedPaths = await result.current.addProjectsToQueue()
 
-    expect(mockOpen).toHaveBeenCalledWith({
+    expect(mockShowOpenDialog).toHaveBeenCalledWith({
       multiple: true,
       filters: [
         {
@@ -158,7 +176,7 @@ describe("useRenderQueue", () => {
   })
 
   it("should handle single file selection", async () => {
-    mockOpen.mockResolvedValue("/path/to/single.tls")
+    mockShowOpenDialog.mockResolvedValue(["/path/to/single.tls"])
 
     const { result } = renderHook(() => useRenderQueue())
 
@@ -168,7 +186,7 @@ describe("useRenderQueue", () => {
   })
 
   it("should return empty array when no files selected", async () => {
-    mockOpen.mockResolvedValue(null)
+    mockShowOpenDialog.mockResolvedValue(null)
 
     const { result } = renderHook(() => useRenderQueue())
 
@@ -182,11 +200,11 @@ describe("useRenderQueue", () => {
 
     // Ждём пока хук выполнит начальную загрузку
     await waitFor(() => {
-      expect(mockInvoke).toHaveBeenCalledWith("get_active_jobs", undefined)
+      expect(mockGetActiveJobs).toHaveBeenCalled()
     })
 
     // Сбрасываем счётчик вызовов после начальной загрузки
-    mockInvoke.mockClear()
+    mockGetActiveJobs.mockClear()
 
     const projects = [
       { path: "/path/to/project1.tls", outputPath: "/output/video1.mp4" },
@@ -197,18 +215,12 @@ describe("useRenderQueue", () => {
       await result.current.startRenderQueue(projects)
     })
 
-    expect(mockInvoke).toHaveBeenCalledWith("compile_video", {
-      projectSchema: expect.any(Object),
-      outputPath: "/output/video1.mp4",
-    })
+    expect(mockRenderProject).toHaveBeenCalledWith(expect.any(Object), "/output/video1.mp4")
 
-    expect(mockInvoke).toHaveBeenCalledWith("compile_video", {
-      projectSchema: expect.any(Object),
-      outputPath: "/output/video2.mp4",
-    })
+    expect(mockRenderProject).toHaveBeenCalledWith(expect.any(Object), "/output/video2.mp4")
 
     // Should refresh queue after starting renders
-    expect(mockInvoke).toHaveBeenCalledWith("get_active_jobs", undefined)
+    expect(mockGetActiveJobs).toHaveBeenCalled()
   })
 
   it("should cancel a specific job", async () => {
@@ -222,9 +234,9 @@ describe("useRenderQueue", () => {
       await result.current.cancelJob("job-1")
     })
 
-    expect(mockInvoke).toHaveBeenCalledWith("cancel_render", { jobId: "job-1" })
+    expect(mockCancelRender).toHaveBeenCalledWith("job-1")
     // Should refresh queue after canceling
-    expect(mockInvoke).toHaveBeenCalledWith("get_active_jobs", undefined)
+    expect(mockGetActiveJobs).toHaveBeenCalled()
   })
 
   it("should cancel all active jobs", async () => {
@@ -238,8 +250,8 @@ describe("useRenderQueue", () => {
       await result.current.cancelAllJobs()
     })
 
-    expect(mockInvoke).toHaveBeenCalledWith("cancel_render", { jobId: "job-1" })
-    expect(mockInvoke).toHaveBeenCalledWith("cancel_render", { jobId: "job-2" })
+    expect(mockCancelRender).toHaveBeenCalledWith("job-1")
+    expect(mockCancelRender).toHaveBeenCalledWith("job-2")
   })
 
   it("should clear completed jobs", async () => {
@@ -263,12 +275,7 @@ describe("useRenderQueue", () => {
       },
     ]
 
-    mockInvoke.mockImplementation((cmd) => {
-      if (cmd === "get_active_jobs") {
-        return Promise.resolve(jobsWithCompleted)
-      }
-      return Promise.resolve(null)
-    })
+    mockGetActiveJobs.mockResolvedValue(jobsWithCompleted)
 
     const { result } = renderHook(() => useRenderQueue())
 
@@ -285,7 +292,7 @@ describe("useRenderQueue", () => {
   })
 
   it("should handle errors when refreshing queue", async () => {
-    mockInvoke.mockRejectedValueOnce(new Error("Failed to get jobs"))
+    mockGetActiveJobs.mockRejectedValueOnce(new Error("Failed to get jobs"))
 
     const { result } = renderHook(() => useRenderQueue())
 
@@ -306,12 +313,7 @@ describe("useRenderQueue", () => {
       progress: { ...job.progress, status: RenderStatus.Completed },
     }))
 
-    mockInvoke.mockImplementation((cmd) => {
-      if (cmd === "get_active_jobs") {
-        return Promise.resolve(completedJobs)
-      }
-      return Promise.resolve(null)
-    })
+    mockGetActiveJobs.mockResolvedValue(completedJobs)
 
     const { result } = renderHook(() => useRenderQueue())
 

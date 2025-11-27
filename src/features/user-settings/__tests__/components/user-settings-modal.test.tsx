@@ -8,24 +8,15 @@ import { UserSettingsModal } from "../../components/user-settings-modal"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { useUserSettings } from "../../hooks/use-user-settings"
 
-// Мокаем Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn().mockImplementation((cmd) => {
-    if (cmd === "select_directory") {
-      return Promise.resolve("selected/directory/path")
-    }
-    return Promise.resolve(null)
-  }),
-}))
-
-// Мокаем Tauri Dialog Plugin
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn().mockImplementation((options) => {
-    if (options?.directory) {
-      return Promise.resolve("selected/directory/path")
-    }
-    return Promise.resolve(null)
-  }),
+// Mock container with platform service
+const mockShowOpenDialog = vi.fn()
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      showOpenDialog: mockShowOpenDialog,
+    })),
+  },
 }))
 
 // Мокаем хуки
@@ -82,6 +73,7 @@ describe("UserSettingsModal", () => {
   beforeEach(() => {
     // Очищаем моки перед каждым тестом
     vi.clearAllMocks()
+    mockShowOpenDialog.mockReset()
 
     // Устанавливаем моки по умолчанию
     vi.mocked(useUserSettings).mockImplementation(() =>
@@ -282,12 +274,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle folder selection button click using Tauri Dialog Plugin", async () => {
-    // Получаем мок функции open из плагина dialog
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-
-    // Очищаем историю вызовов мока
-    mockOpen.mockClear()
+    mockShowOpenDialog.mockResolvedValue(["selected/directory/path"])
 
     // Рендерим компонент
     const { rerender } = render(<UserSettingsModal />)
@@ -309,8 +296,8 @@ describe("UserSettingsModal", () => {
 
     // Ждем, пока асинхронные операции завершатся
     await vi.waitFor(() => {
-      // Проверяем, что open был вызван с правильными параметрами
-      expect(mockOpen).toHaveBeenCalledWith(
+      // Проверяем, что showOpenDialog был вызван с правильными параметрами
+      expect(mockShowOpenDialog).toHaveBeenCalledWith(
         expect.objectContaining({
           directory: true,
           multiple: false,
@@ -339,12 +326,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle player screenshots path selection", async () => {
-    // Получаем мок функции open из плагина dialog
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-
-    // Очищаем историю вызовов мока
-    mockOpen.mockClear()
+    mockShowOpenDialog.mockResolvedValue(["selected/directory/path"])
 
     // Рендерим компонент
     const { rerender } = render(<UserSettingsModal />)
@@ -366,8 +348,8 @@ describe("UserSettingsModal", () => {
 
     // Ждем, пока асинхронные операции завершатся
     await vi.waitFor(() => {
-      // Проверяем, что open был вызван с правильными параметрами
-      expect(mockOpen).toHaveBeenCalledWith(
+      // Проверяем, что showOpenDialog был вызван с правильными параметрами
+      expect(mockShowOpenDialog).toHaveBeenCalledWith(
         expect.objectContaining({
           directory: true,
           multiple: false,
@@ -396,11 +378,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should not update path when folder selection is cancelled", async () => {
-    // Получаем мок функции open из плагина dialog и настраиваем его, чтобы он возвращал null
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockClear()
-    mockOpen.mockResolvedValue(null)
+    mockShowOpenDialog.mockResolvedValue([])
 
     // Рендерим компонент
     render(<UserSettingsModal />)
@@ -422,8 +400,8 @@ describe("UserSettingsModal", () => {
 
     // Ждем, пока асинхронные операции завершатся
     await vi.waitFor(() => {
-      // Проверяем, что open был вызван с правильными параметрами
-      expect(mockOpen).toHaveBeenCalledWith(
+      // Проверяем, что showOpenDialog был вызван с правильными параметрами
+      expect(mockShowOpenDialog).toHaveBeenCalledWith(
         expect.objectContaining({
           directory: true,
           multiple: false,
@@ -438,11 +416,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle error when folder selection fails", async () => {
-    // Получаем мок функции open из плагина dialog и настраиваем его, чтобы он выбрасывал ошибку
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    const mockOpen = open as unknown as ReturnType<typeof vi.fn>
-    mockOpen.mockClear()
-    mockOpen.mockRejectedValue(new Error("Permission denied"))
+    mockShowOpenDialog.mockRejectedValue(new Error("Permission denied"))
 
     // Мокаем window.prompt
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("custom/path")
@@ -467,8 +441,8 @@ describe("UserSettingsModal", () => {
 
     // Ждем, пока асинхронные операции завершатся
     await vi.waitFor(() => {
-      // Проверяем, что open был вызван
-      expect(mockOpen).toHaveBeenCalled()
+      // Проверяем, что showOpenDialog был вызван
+      expect(mockShowOpenDialog).toHaveBeenCalled()
       // Проверяем, что был показан prompt
       expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", expect.any(String))
     })

@@ -1,5 +1,3 @@
-import { invoke } from "@tauri-apps/api/core"
-import { basename, dirname, join } from "@tauri-apps/api/path"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
@@ -19,23 +17,36 @@ import {
   validateFileIntegrity,
 } from "../../utils/saved-media-utils"
 
-// Импортируем моки
+// Мокаем @/core container с hoisted функциями
+const mockDirname = vi.hoisted(() => vi.fn())
+const mockBasename = vi.hoisted(() => vi.fn())
 
-// Мокаем Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      dirname: mockDirname,
+      basename: mockBasename,
+    })),
+  },
 }))
 
-vi.mock("@tauri-apps/api/path", () => ({
-  dirname: vi.fn(),
-  basename: vi.fn(),
-  join: vi.fn(),
-}))
+// Мокаем file system service с hoisted функциями
+const mockFileExists = vi.hoisted(() => vi.fn())
+const mockGetFileStats = vi.hoisted(() => vi.fn())
+const mockGetPlatform = vi.hoisted(() => vi.fn())
+const mockSearchFilesByName = vi.hoisted(() => vi.fn())
+const mockGetAbsolutePath = vi.hoisted(() => vi.fn())
 
-const mockInvoke = vi.mocked(invoke)
-const mockDirname = vi.mocked(dirname)
-const mockBasename = vi.mocked(basename)
-const mockJoin = vi.mocked(join)
+vi.mock("@/domains/media-management/services/file-system-service", () => ({
+  fileSystemService: {
+    fileExists: mockFileExists,
+    getFileStats: mockGetFileStats,
+    getPlatform: mockGetPlatform,
+    searchFilesByName: mockSearchFilesByName,
+    getAbsolutePath: mockGetAbsolutePath,
+  },
+}))
 
 describe("saved-media-utils", () => {
   beforeEach(() => {
@@ -116,18 +127,16 @@ describe("saved-media-utils", () => {
 
   describe("fileExists", () => {
     it("должен возвращать true для существующего файла", async () => {
-      mockInvoke.mockResolvedValue(true)
+      mockFileExists.mockResolvedValue(true)
 
       const result = await fileExists("/path/to/existing/file.mp4")
 
       expect(result).toBe(true)
-      expect(mockInvoke).toHaveBeenCalledWith("file_exists", {
-        path: "/path/to/existing/file.mp4",
-      })
+      expect(mockFileExists).toHaveBeenCalledWith("/path/to/existing/file.mp4")
     })
 
     it("должен возвращать false для несуществующего файла", async () => {
-      mockInvoke.mockResolvedValue(false)
+      mockFileExists.mockResolvedValue(false)
 
       const result = await fileExists("/path/to/missing/file.mp4")
 
@@ -135,7 +144,7 @@ describe("saved-media-utils", () => {
     })
 
     it("должен обрабатывать ошибки и возвращать false", async () => {
-      mockInvoke.mockRejectedValue(new Error("invoke error"))
+      mockFileExists.mockRejectedValue(new Error("invoke error"))
 
       const result = await fileExists("/path/to/file.mp4")
 
@@ -146,18 +155,16 @@ describe("saved-media-utils", () => {
   describe("getFileStats", () => {
     it("должен возвращать статистику файла", async () => {
       const mockStats = { size: 1024, lastModified: 1234567890 }
-      mockInvoke.mockResolvedValue(mockStats)
+      mockGetFileStats.mockResolvedValue(mockStats)
 
       const result = await getFileStats("/path/to/file.mp4")
 
       expect(result).toEqual(mockStats)
-      expect(mockInvoke).toHaveBeenCalledWith("get_file_stats", {
-        path: "/path/to/file.mp4",
-      })
+      expect(mockGetFileStats).toHaveBeenCalledWith("/path/to/file.mp4")
     })
 
     it("должен обрабатывать ошибки и возвращать null", async () => {
-      mockInvoke.mockRejectedValue(new Error("invoke error"))
+      mockGetFileStats.mockRejectedValue(new Error("invoke error"))
 
       const result = await getFileStats("/path/to/file.mp4")
 
@@ -318,20 +325,16 @@ describe("saved-media-utils", () => {
 
   describe("searchFilesByName", () => {
     it("должен искать файлы по имени", async () => {
-      mockInvoke.mockResolvedValue(["/path/to/found/file.mp4"])
+      mockSearchFilesByName.mockResolvedValue(["/path/to/found/file.mp4"])
 
       const result = await searchFilesByName("/search/dir", "file.mp4", 2)
 
       expect(result).toEqual(["/path/to/found/file.mp4"])
-      expect(mockInvoke).toHaveBeenCalledWith("search_files_by_name", {
-        directory: "/search/dir",
-        filename: "file.mp4",
-        maxDepth: 2,
-      })
+      expect(mockSearchFilesByName).toHaveBeenCalledWith("/search/dir", "file.mp4", 2)
     })
 
     it("должен обрабатывать ошибки поиска", async () => {
-      mockInvoke.mockRejectedValue(new Error("search error"))
+      mockSearchFilesByName.mockRejectedValue(new Error("search error"))
 
       const result = await searchFilesByName("/search/dir", "file.mp4")
 
@@ -341,18 +344,16 @@ describe("saved-media-utils", () => {
 
   describe("getAbsolutePath", () => {
     it("должен возвращать абсолютный путь", async () => {
-      mockInvoke.mockResolvedValue("/absolute/path/to/file.mp4")
+      mockGetAbsolutePath.mockResolvedValue("/absolute/path/to/file.mp4")
 
       const result = await getAbsolutePath("./relative/file.mp4")
 
       expect(result).toBe("/absolute/path/to/file.mp4")
-      expect(mockInvoke).toHaveBeenCalledWith("get_absolute_path", {
-        path: "./relative/file.mp4",
-      })
+      expect(mockGetAbsolutePath).toHaveBeenCalledWith("./relative/file.mp4")
     })
 
     it("должен обрабатывать ошибки", async () => {
-      mockInvoke.mockRejectedValue(new Error("path error"))
+      mockGetAbsolutePath.mockRejectedValue(new Error("path error"))
 
       const result = await getAbsolutePath("./invalid/path")
 
@@ -362,11 +363,11 @@ describe("saved-media-utils", () => {
 
   describe("validateFileIntegrity", () => {
     it("должен валидировать корректный файл", async () => {
-      mockInvoke.mockResolvedValueOnce(true) // file_exists
-      mockInvoke.mockResolvedValueOnce({
+      mockFileExists.mockResolvedValue(true)
+      mockGetFileStats.mockResolvedValue({
         size: 1024,
         lastModified: 1234567890,
-      }) // get_file_stats
+      })
       mockBasename.mockResolvedValue("test.mp4")
 
       const savedFile = {
@@ -383,7 +384,7 @@ describe("saved-media-utils", () => {
     })
 
     it("должен обнаруживать несуществующий файл", async () => {
-      mockInvoke.mockResolvedValue(false) // file_exists
+      mockFileExists.mockResolvedValue(false)
 
       const savedFile = { name: "test.mp4" } as any
 

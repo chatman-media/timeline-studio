@@ -5,13 +5,35 @@ import { type DiscoveredFile, useMediaProcessor } from "@/features/media/hooks/u
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 
-// Mock Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Create mock event service
+const mockUnlisten = vi.fn()
+const mockEventListen = vi.fn()
+
+// Mock @/core container
+vi.mock("@/core", () => ({
+  container: {
+    hasEvent: vi.fn(() => true),
+    getEvent: vi.fn(() => ({
+      listen: mockEventListen,
+      emit: vi.fn(),
+      once: vi.fn(),
+    })),
+    hasBackend: vi.fn(() => true),
+    getBackend: vi.fn(() => ({
+      invoke: vi.fn(),
+    })),
+  },
 }))
 
-vi.mock("@tauri-apps/api/event", () => ({
-  listen: vi.fn(),
+// Mock domain service
+vi.mock("@/domains/media-management/services/media-processor-service", () => ({
+  mediaProcessorService: {
+    scanFolder: vi.fn(),
+    scanFolderWithThumbnails: vi.fn(),
+    processFiles: vi.fn(),
+    processFilesWithThumbnails: vi.fn(),
+    cancelProcessing: vi.fn(),
+  },
 }))
 
 // Mock metadata cache service
@@ -40,9 +62,12 @@ vi.mock("@/lib/tauri-logger", () => {
   }
 })
 
+// Import mocked service
+import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
+
+const mockMediaProcessorService = vi.mocked(mediaProcessorService)
+
 describe("useMediaProcessor", () => {
-  let mockInvoke: ReturnType<typeof vi.fn>
-  let mockListen: ReturnType<typeof vi.fn>
   let mockCacheMediaMetadata: ReturnType<typeof vi.fn>
   let mockGetCachedMetadata: ReturnType<typeof vi.fn>
 
@@ -96,17 +121,13 @@ describe("useMediaProcessor", () => {
   beforeEach(async () => {
     vi.clearAllMocks()
 
-    const tauriCore = await import("@tauri-apps/api/core")
-    const tauriEvent = await import("@tauri-apps/api/event")
     const metadataCache = await import("@/domains/video-editing/services/compiler/metadata-cache-service")
 
-    mockInvoke = vi.mocked(tauriCore.invoke)
-    mockListen = vi.mocked(tauriEvent.listen)
     mockCacheMediaMetadata = vi.mocked(metadataCache.cacheMediaMetadata)
     mockGetCachedMetadata = vi.mocked(metadataCache.getCachedMetadata)
 
-    // Default mock return for listen
-    mockListen.mockReturnValue(Promise.resolve(() => {}))
+    // Default mock return for event listen
+    mockEventListen.mockImplementation(() => Promise.resolve(mockUnlisten))
   })
 
   afterEach(() => {
@@ -116,16 +137,19 @@ describe("useMediaProcessor", () => {
   describe("event handling", () => {
     it("should handle FilesDiscovered event", async () => {
       const onFilesDiscovered = vi.fn()
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       renderHook(() => useMediaProcessor({ onFilesDiscovered }))
+
+      // Wait for event listener setup
+      await waitFor(() => expect(mockEventListen).toHaveBeenCalled())
 
       // Simulate FilesDiscovered event
       await act(async () => {
@@ -145,13 +169,13 @@ describe("useMediaProcessor", () => {
 
     it("should handle MetadataReady event and cache metadata", async () => {
       const onMetadataReady = vi.fn()
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       renderHook(() => useMediaProcessor({ onMetadataReady }))
@@ -190,13 +214,13 @@ describe("useMediaProcessor", () => {
 
     it("should handle ThumbnailReady event", async () => {
       const onThumbnailReady = vi.fn()
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       renderHook(() => useMediaProcessor({ onThumbnailReady }))
@@ -225,13 +249,13 @@ describe("useMediaProcessor", () => {
 
     it("should handle ProcessingError event", async () => {
       const onError = vi.fn()
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       const { result } = renderHook(() => useMediaProcessor({ onError }))
@@ -256,13 +280,13 @@ describe("useMediaProcessor", () => {
 
     it("should handle ScanProgress event", async () => {
       const onProgress = vi.fn()
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       const { result } = renderHook(() => useMediaProcessor({ onProgress }))
@@ -286,7 +310,7 @@ describe("useMediaProcessor", () => {
 
     it("should cleanup event listener on unmount", async () => {
       const unlistenFn = vi.fn()
-      mockListen.mockResolvedValue(unlistenFn)
+      mockEventListen.mockResolvedValue(unlistenFn)
 
       const { unmount } = renderHook(() => useMediaProcessor())
 
@@ -301,7 +325,7 @@ describe("useMediaProcessor", () => {
   describe("scanFolder", () => {
     it("should scan folder successfully", async () => {
       const mockFiles: MediaFile[] = [mockMediaFile]
-      mockInvoke.mockResolvedValue(mockFiles)
+      mockMediaProcessorService.scanFolder.mockResolvedValue(mockFiles)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -312,9 +336,7 @@ describe("useMediaProcessor", () => {
         files = await result.current.scanFolder("/path/to/folder")
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("scan_media_folder", {
-        folderPath: "/path/to/folder",
-      })
+      expect(mockMediaProcessorService.scanFolder).toHaveBeenCalledWith("/path/to/folder")
       expect(files).toEqual(mockFiles)
       expect(result.current.isProcessing).toBe(false)
       expect(result.current.errors.size).toBe(0)
@@ -326,7 +348,7 @@ describe("useMediaProcessor", () => {
       const scanPromise = new Promise<MediaFile[]>((resolve) => {
         resolveScan = resolve
       })
-      mockInvoke.mockReturnValue(scanPromise)
+      mockMediaProcessorService.scanFolder.mockReturnValue(scanPromise)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -353,7 +375,7 @@ describe("useMediaProcessor", () => {
 
     it("should handle scan errors", async () => {
       const error = new Error("Scan failed")
-      mockInvoke.mockRejectedValue(error)
+      mockMediaProcessorService.scanFolder.mockRejectedValue(error)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -370,7 +392,7 @@ describe("useMediaProcessor", () => {
   describe("scanFolderWithThumbnails", () => {
     it("should scan folder with thumbnails successfully", async () => {
       const mockFiles: MediaFile[] = [mockMediaFile]
-      mockInvoke.mockResolvedValue(mockFiles)
+      mockMediaProcessorService.scanFolderWithThumbnails.mockResolvedValue(mockFiles)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -379,16 +401,12 @@ describe("useMediaProcessor", () => {
         files = await result.current.scanFolderWithThumbnails("/path/to/folder", 640, 360)
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("scan_media_folder_with_thumbnails", {
-        folderPath: "/path/to/folder",
-        width: 640,
-        height: 360,
-      })
+      expect(mockMediaProcessorService.scanFolderWithThumbnails).toHaveBeenCalledWith("/path/to/folder", 640, 360)
       expect(files).toEqual(mockFiles)
     })
 
     it("should use default thumbnail dimensions", async () => {
-      mockInvoke.mockResolvedValue([])
+      mockMediaProcessorService.scanFolderWithThumbnails.mockResolvedValue([])
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -396,11 +414,7 @@ describe("useMediaProcessor", () => {
         await result.current.scanFolderWithThumbnails("/path/to/folder")
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("scan_media_folder_with_thumbnails", {
-        folderPath: "/path/to/folder",
-        width: 320,
-        height: 180,
-      })
+      expect(mockMediaProcessorService.scanFolderWithThumbnails).toHaveBeenCalledWith("/path/to/folder", 320, 180)
     })
   })
 
@@ -410,7 +424,7 @@ describe("useMediaProcessor", () => {
       const filePaths = ["/path/to/file1.mp4", "/path/to/file2.mp4"]
 
       mockGetCachedMetadata.mockResolvedValue(null)
-      mockInvoke.mockResolvedValue(mockFiles)
+      mockMediaProcessorService.processFiles.mockResolvedValue(mockFiles)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -419,9 +433,7 @@ describe("useMediaProcessor", () => {
         files = await result.current.processFiles(filePaths)
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("process_media_files", {
-        filePaths,
-      })
+      expect(mockMediaProcessorService.processFiles).toHaveBeenCalledWith(filePaths)
       expect(files).toEqual(mockFiles)
       expect(result.current.progress.total).toBe(2)
     })
@@ -436,7 +448,7 @@ describe("useMediaProcessor", () => {
 
       mockGetCachedMetadata.mockResolvedValueOnce(cachedMetadata).mockResolvedValueOnce(null)
 
-      mockInvoke.mockResolvedValue([])
+      mockMediaProcessorService.processFiles.mockResolvedValue([])
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -451,7 +463,7 @@ describe("useMediaProcessor", () => {
 
     it("should handle process errors", async () => {
       const error = new Error("Process failed")
-      mockInvoke.mockRejectedValue(error)
+      mockMediaProcessorService.processFiles.mockRejectedValue(error)
       mockGetCachedMetadata.mockResolvedValue(null)
 
       const { result } = renderHook(() => useMediaProcessor())
@@ -471,7 +483,7 @@ describe("useMediaProcessor", () => {
       const mockFiles: MediaFile[] = [mockMediaFile]
       const filePaths = ["/path/to/file1.mp4"]
 
-      mockInvoke.mockResolvedValue(mockFiles)
+      mockMediaProcessorService.processFilesWithThumbnails.mockResolvedValue(mockFiles)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -480,24 +492,20 @@ describe("useMediaProcessor", () => {
         files = await result.current.processFilesWithThumbnails(filePaths, 640, 360)
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("process_media_files_with_thumbnails", {
-        filePaths,
-        width: 640,
-        height: 360,
-      })
+      expect(mockMediaProcessorService.processFilesWithThumbnails).toHaveBeenCalledWith(filePaths, 640, 360)
       expect(files).toEqual(mockFiles)
     })
   })
 
   describe("clearErrors", () => {
     it("should clear all errors", async () => {
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       const { result } = renderHook(() => useMediaProcessor())
@@ -539,13 +547,12 @@ describe("useMediaProcessor", () => {
 
   describe("cancelProcessing", () => {
     it("should cancel processing successfully", async () => {
-      // Mock invoke to return empty array for scan_media_folder and undefined for cancel
-      mockInvoke.mockImplementation((command: string) => {
-        if (command === "scan_media_folder") {
-          return Promise.resolve([])
-        }
-        return Promise.resolve(undefined)
+      let resolveScan: (value: MediaFile[]) => void
+      const scanPromise = new Promise<MediaFile[]>((resolve) => {
+        resolveScan = resolve
       })
+      mockMediaProcessorService.scanFolder.mockReturnValue(scanPromise)
+      mockMediaProcessorService.cancelProcessing.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -563,14 +570,14 @@ describe("useMediaProcessor", () => {
         await result.current.cancelProcessing()
       })
 
-      expect(mockInvoke).toHaveBeenCalledWith("cancel_media_processing")
+      expect(mockMediaProcessorService.cancelProcessing).toHaveBeenCalled()
       expect(result.current.isProcessing).toBe(false)
       expect(result.current.progress).toEqual({ current: 0, total: 0 })
     })
 
     it("should handle cancel errors gracefully", async () => {
       const error = new Error("Cancel failed")
-      mockInvoke.mockRejectedValue(error)
+      mockMediaProcessorService.cancelProcessing.mockRejectedValue(error)
 
       const { result } = renderHook(() => useMediaProcessor())
 
@@ -585,13 +592,13 @@ describe("useMediaProcessor", () => {
 
   describe("parseFrameRate helper", () => {
     it("should parse various frame rate formats", async () => {
-      let eventCallback: any
+      let eventCallback: (event: any) => void = () => {}
 
-      mockListen.mockImplementation((eventName, callback) => {
+      mockEventListen.mockImplementation((eventName: string, callback: (event: any) => void) => {
         if (eventName === "media-processor") {
           eventCallback = callback
         }
-        return Promise.resolve(() => {})
+        return Promise.resolve(mockUnlisten)
       })
 
       renderHook(() => useMediaProcessor())

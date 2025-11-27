@@ -73,11 +73,15 @@ vi.mock("@/features/timeline/hooks/use-timeline", () => ({
   }),
 }))
 
-vi.mock("@/domains/browser", () => ({
-  useBrowserState: () => ({
-    clearBrowserState: mockClearBrowserState,
-  }),
-}))
+vi.mock("@/domains/browser", async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    useBrowserState: () => ({
+      clearBrowserState: mockClearBrowserState,
+    }),
+  }
+})
 
 vi.mock("../theme/theme-toggle", () => ({
   ThemeToggle: () => <div data-testid="theme-toggle">Theme Toggle</div>,

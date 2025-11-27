@@ -13,9 +13,17 @@ const mockLogger = vi.hoisted(() => ({
   debug: vi.fn(),
 }))
 
-// Мокаем Tauri dialog
-vi.mock("@tauri-apps/plugin-dialog", () => ({
-  open: vi.fn(),
+// Mock showOpenDialog
+const mockShowOpenDialog = vi.fn()
+
+// Mock @/core container
+vi.mock("@/core", () => ({
+  container: {
+    hasPlatform: vi.fn(() => true),
+    getPlatform: vi.fn(() => ({
+      showOpenDialog: mockShowOpenDialog,
+    })),
+  },
 }))
 
 vi.mock("@/lib/tauri-logger", () => ({
@@ -115,6 +123,8 @@ describe("LUTSection", () => {
     mockLogger.error.mockClear()
     mockLogger.warn.mockClear()
     mockLogger.debug.mockClear()
+    mockShowOpenDialog.mockClear()
+    mockShowOpenDialog.mockResolvedValue(null)
     mockState.lut = {
       file: null,
       isEnabled: false,
@@ -245,8 +255,7 @@ describe("LUTSection", () => {
   })
 
   it("should handle file import", async () => {
-    const { open } = await import("@tauri-apps/plugin-dialog")
-    ;(open as any).mockResolvedValueOnce("/path/to/custom.cube")
+    mockShowOpenDialog.mockResolvedValueOnce(["/path/to/custom.cube"])
 
     const user = userEvent.setup()
     render(<LUTSection />)
@@ -255,7 +264,7 @@ describe("LUTSection", () => {
     await user.click(uploadButton)
 
     await waitFor(() => {
-      expect(open).toHaveBeenCalledWith({
+      expect(mockShowOpenDialog).toHaveBeenCalledWith({
         multiple: false,
         filters: [
           {

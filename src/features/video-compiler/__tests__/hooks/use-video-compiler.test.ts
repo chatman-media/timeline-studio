@@ -4,36 +4,46 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useVideoCompiler } from "../../hooks/use-video-compiler"
 import type { RenderStatus } from "../../types/render"
 
-// Мокаем Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
-}))
+// Мокаем notifications service
+const mockShowSuccess = vi.fn()
+const mockShowError = vi.fn()
+const mockShowInfo = vi.fn()
 
-// Мокаем @tauri-apps/api/event
-vi.mock("@tauri-apps/api/event", () => ({
-  listen: vi.fn(),
-  emit: vi.fn(),
-}))
-
-// Мокаем sonner
-vi.mock("sonner", () => ({
-  toast: {
-    error: vi.fn(),
-    success: vi.fn(),
-    info: vi.fn(),
-  },
+vi.mock("@/domains/system-integration", () => ({
+  useNotifications: () => ({
+    showSuccess: mockShowSuccess,
+    showError: mockShowError,
+    showInfo: mockShowInfo,
+  }),
 }))
 
 // Мокаем video compiler service
-vi.mock("@/domains/video-editing/services/compiler", () => ({
+vi.mock("@/domains/video-editing/services/compiler/video-compiler-service", () => ({
   renderProject: vi.fn(),
   trackRenderProgress: vi.fn(),
 }))
 
+// Мокаем video compiler render service
+vi.mock("@/domains/video-editing/services/video-compiler-render-service", () => ({
+  videoCompilerRenderService: {
+    cancelRender: vi.fn(),
+    generatePreview: vi.fn(),
+    getActiveJobs: vi.fn(),
+  },
+}))
+
+// Мокаем i18next
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}))
+
 describe("useVideoCompiler", () => {
-  let mockInvoke: any
   let mockRenderProject: any
   let mockTrackRenderProgress: any
+  let mockCancelRender: any
+  let mockGeneratePreview: any
 
   const mockProject: any = {
     version: "1.0.0",
@@ -74,11 +84,12 @@ describe("useVideoCompiler", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const { invoke } = await import("@tauri-apps/api/core")
-    const { renderProject, trackRenderProgress } = await import("@/domains/video-editing/services/compiler")
-    mockInvoke = vi.mocked(invoke)
-    mockRenderProject = vi.mocked(renderProject)
-    mockTrackRenderProgress = vi.mocked(trackRenderProgress)
+    const compilerService = await import("@/domains/video-editing/services/compiler/video-compiler-service")
+    const renderService = await import("@/domains/video-editing/services/video-compiler-render-service")
+    mockRenderProject = vi.mocked(compilerService.renderProject)
+    mockTrackRenderProgress = vi.mocked(compilerService.trackRenderProgress)
+    mockCancelRender = vi.mocked(renderService.videoCompilerRenderService.cancelRender)
+    mockGeneratePreview = vi.mocked(renderService.videoCompilerRenderService.generatePreview)
   })
 
   it("should initialize with default state", () => {
@@ -155,7 +166,7 @@ describe("useVideoCompiler", () => {
 
   it("should cancel render", async () => {
     const mockJobId = "job-123"
-    mockInvoke.mockResolvedValueOnce(true)
+    mockCancelRender.mockResolvedValueOnce(true)
 
     const { result } = renderHook(() => useVideoCompiler())
 
@@ -163,21 +174,19 @@ describe("useVideoCompiler", () => {
       await result.current.cancelRender(mockJobId)
     })
 
-    expect(mockInvoke).toHaveBeenCalledWith("cancel_render", { jobId: mockJobId })
+    expect(mockCancelRender).toHaveBeenCalledWith(mockJobId)
+    expect(mockShowInfo).toHaveBeenCalled()
   })
 
   it("should generate preview", async () => {
     const mockPreviewData = [1, 2, 3, 4]
-    mockInvoke.mockResolvedValueOnce(mockPreviewData)
+    mockGeneratePreview.mockResolvedValueOnce(mockPreviewData)
 
     const { result } = renderHook(() => useVideoCompiler())
 
     const preview = await result.current.generatePreview(mockProject, 10.5)
 
-    expect(mockInvoke).toHaveBeenCalledWith("generate_preview", {
-      projectSchema: mockProject,
-      timestamp: 10.5,
-    })
+    expect(mockGeneratePreview).toHaveBeenCalledWith(mockProject, 10.5)
 
     expect(preview).toBeInstanceOf(Blob)
     expect(preview.type).toBe("image/jpeg")

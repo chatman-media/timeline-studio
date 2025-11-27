@@ -29,7 +29,15 @@ interface MediaManagementProviderProps {
 
 export function MediaManagementProvider({ children }: MediaManagementProviderProps) {
   // Используем orchestrator вместо прямого управления состоянием
-  const orchestrator = useMemo(() => getMediaManagementOrchestrator(), [])
+  const orchestrator = useMemo(() => {
+    logger.info("[MediaManagementProvider] Creating orchestrator instance")
+    const instance = getMediaManagementOrchestrator()
+    logger.info("[MediaManagementProvider] Orchestrator created", {
+      hasMediaPool: instance.getMediaPool().size > 0,
+      poolSize: instance.getMediaPool().size,
+    })
+    return instance
+  }, [])
 
   // Локальное состояние для React-реактивности (синхронизируется с orchestrator)
   const [mediaPool, setMediaPool] = useState<Map<string, MediaInfo>>(() => orchestrator.getMediaPool())
