@@ -81,9 +81,10 @@ function calculateProgress(stages: AnalysisWorkflow["stages"]): number {
 
 /**
  * Получить имя видео из пути
+ * Поддерживает как Unix (/), так и Windows (\) разделители
  */
 function getVideoName(videoPath: string): string {
-  const parts = videoPath.split("/")
+  const parts = videoPath.split(/[/\\]/)
   return parts[parts.length - 1] || videoPath
 }
 
