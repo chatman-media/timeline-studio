@@ -2,9 +2,8 @@
  * Хук для импорта субтитров в Timeline
  */
 
-import { open } from "@tauri-apps/plugin-dialog"
-import { readTextFile } from "@tauri-apps/plugin-fs"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import { container } from "@/core"
 import { subtitleService } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
 import { MediaType } from "@/domains/video-editing/types/media"
@@ -32,6 +31,15 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
   const { showSuccess, showError } = useNotifications()
   const { project, addTrack, addClip } = useTimeline()
 
+  // Получаем platform service из DI контейнера
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
+
   /**
    * Открывает диалог выбора файла и импортирует субтитры
    */
@@ -41,8 +49,12 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
       setIsImporting(true)
       setImportProgress(0)
 
+      if (!platform) {
+        throw new Error("Platform service not available")
+      }
+
       // Открываем диалог выбора файла
-      const filePath = await open({
+      const filePaths = await platform.showOpenDialog({
         multiple: false,
         filters: [
           {
@@ -56,15 +68,16 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
         ],
       })
 
-      if (!filePath) {
+      if (!filePaths || filePaths.length === 0) {
         setIsImporting(false)
         return
       }
 
+      const filePath = filePaths[0]
       setImportProgress(10)
 
       // Читаем содержимое файла
-      const content = await readTextFile(filePath)
+      const content = await platform.readTextFile(filePath)
       setImportProgress(30)
 
       // Определяем формат
@@ -161,7 +174,7 @@ export function useSubtitleImport({ trackId, onImportComplete }: UseSubtitleImpo
       setIsImporting(false)
       setImportProgress(0)
     }
-  }, [trackId, addTrack, addClip, project, showSuccess, showError, onImportComplete])
+  }, [trackId, addTrack, addClip, project, showSuccess, showError, onImportComplete, platform])
 
   /**
    * Импортирует субтитры из строки

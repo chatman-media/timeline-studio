@@ -2991,6 +2991,32 @@
       "analysisInProgress": "Анализ выполняется, пожалуйста подождите...",
       "planReady": "План монтажа готов к применению",
       "timelineIntegrated": "План успешно применен к таймлайну"
+    },
+    "analysisTasks": "Задачи анализа",
+    "cancelTask": "Отменить задачу?",
+    "errorLoadingTasks": "Ошибка загрузки задач",
+    "noActiveTasks": "Нет активных задач",
+    "eta": "Осталось",
+    "minutes": "мин",
+    "momentsDetected": "Обнаружено моментов",
+    "sequences": "последовательностей",
+    "totalTasks": "Всего задач",
+    "activeTasks": "Активных задач",
+    "completedTasks": "Завершенных задач",
+    "status": {
+      "pending": "Ожидание",
+      "initializing": "Инициализация",
+      "analyzingVideo": "Анализ видео",
+      "analyzingAudio": "Анализ аудио",
+      "detectingMoments": "Обнаружение моментов",
+      "generatingPlan": "Генерация плана",
+      "completed": "Завершено",
+      "failed": "Ошибка",
+      "cancelled": "Отменено",
+      "unknown": "Неизвестно"
+    },
+    "duration": {
+      "seconds": "{{count}} сек"
     }
   }
 }

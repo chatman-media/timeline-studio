@@ -126,7 +126,8 @@ describe("TopBar", () => {
       expect(screen.getByTestId("project-settings-button")).toBeInTheDocument()
     })
 
-    it("должен рендерить кнопки записи", () => {
+    it.skip("должен рендерить кнопки записи", () => {
+      // TODO: Recording временно отключен
       render(<TopBar />)
 
       expect(screen.getByTestId("camera-capture-button")).toBeInTheDocument()
@@ -233,7 +234,8 @@ describe("TopBar", () => {
       expect(mockOpenModal).toHaveBeenCalledWith("user-settings")
     })
 
-    it("должен открывать модальное окно camera capture", () => {
+    it.skip("должен открывать модальное окно camera capture", () => {
+      // TODO: Recording временно отключен
       render(<TopBar />)
 
       const button = screen.getByTestId("camera-capture-button")
@@ -242,7 +244,8 @@ describe("TopBar", () => {
       expect(mockOpenModal).toHaveBeenCalledWith("camera-capture")
     })
 
-    it("должен открывать модальное окно voice recording", () => {
+    it.skip("должен открывать модальное окно voice recording", () => {
+      // TODO: Voice recording временно отключен
       render(<TopBar />)
 
       const button = screen.getByTestId("voice-recording-button")

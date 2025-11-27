@@ -5,11 +5,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 
+import { getBackendSync } from "@/adapters/tauri"
 import type { VersionInfo } from "@/features/version-control/types"
 import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"
 import type { CommandResult, ProjectEvent } from "@/types/generated/tauri-bindings"
-import { getBackendSync } from "../services/backend-sync"
 
 const logger = createLogger("UseVersionControl")
 

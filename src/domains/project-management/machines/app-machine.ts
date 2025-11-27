@@ -9,9 +9,6 @@ import { assign, fromCallback, fromPromise, setup } from "xstate"
 import { getBackend } from "@/core"
 import type { IBackendService } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
-
-const logger = createLogger("AppMachine")
-
 import type {
   JsonValue,
   PlayerSource,
@@ -21,10 +18,11 @@ import type {
   ProjectState,
 } from "@/types/generated/tauri-bindings"
 
+const logger = createLogger("AppMachine")
+
 // Context for the app machine
 export interface AppMachineContext {
   projectState: ProjectState | null
-  backend: IBackendService | null
   isConnected: boolean
   error: string | null
   commandQueue: ProjectCommand[]
@@ -80,62 +78,64 @@ export const appMachine = setup({
   },
 
   actors: {
-    backendConnection: fromCallback(
-      ({ sendBack, input }: { sendBack: any; input: { backend: IBackendService | null } }) => {
-        // Check if input and backend are available
-        if (!input || !input.backend) {
-          logger.errorSync("Backend service is not available")
-          sendBack({ type: "CONNECTION_ERROR", error: "Backend service is not available" })
-          return () => {}
-        }
+    backendConnection: fromCallback(({ sendBack }: { sendBack: any }) => {
+      // Get backend from container at connection time (not from context)
+      // This ensures we get the backend after AppInitProvider has initialized
+      let backend: IBackendService | null = null
+      try {
+        backend = getBackend()
+      } catch {
+        logger.warnSync("Backend service is not available yet, will retry")
+        sendBack({ type: "CONNECTION_ERROR", error: "Backend service is not available yet" })
+        return () => {}
+      }
 
-        const { backend } = input
+      // Additional safety check
+      if (!backend || typeof backend.connect !== "function") {
+        logger.errorSync("Backend service is not properly initialized")
+        sendBack({ type: "CONNECTION_ERROR", error: "Backend service is not properly initialized" })
+        return () => {}
+      }
 
-        // Additional safety check
-        if (!backend || typeof backend.connect !== "function") {
-          logger.errorSync("Backend service is not properly initialized")
-          sendBack({ type: "CONNECTION_ERROR", error: "Backend service is not properly initialized" })
-          return () => {}
-        }
+      // Subscribe to backend events
+      const unsubscribeEvent = backend.onEvent((event: ProjectEvent) => {
+        sendBack({ type: "BACKEND_EVENT", event })
+      })
 
-        // Subscribe to backend events
-        const unsubscribeEvent = backend.onEvent((event) => {
-          sendBack({ type: "BACKEND_EVENT", event })
-        })
+      // Subscribe to state changes
+      const unsubscribeState = backend.onStateChange((state: ProjectState) => {
+        sendBack({ type: "STATE_UPDATED", state })
+      })
 
-        // Subscribe to state changes
-        const unsubscribeState = backend.onStateChange((state) => {
-          sendBack({ type: "STATE_UPDATED", state })
-        })
+      // Connect to backend
+      try {
+        backend
+          .connect()
+          .then(() => {
+            logger.infoSync("Connected to backend")
+            sendBack({ type: "CONNECT" })
+          })
+          .catch((error: unknown) => {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
+          })
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
+      }
 
-        // Connect to backend
-        try {
-          backend
-            .connect()
-            .then(() => {
-              logger.infoSync("Connected to backend")
-              sendBack({ type: "CONNECT" })
-            })
-            .catch((error: unknown) => {
-              const errorMessage = error instanceof Error ? error.message : String(error)
-              sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
-            })
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : String(error)
-          sendBack({ type: "CONNECTION_ERROR", error: errorMessage })
-        }
+      // Cleanup function
+      return () => {
+        unsubscribeEvent()
+        unsubscribeState()
+        void backend.disconnect()
+      }
+    }),
 
-        // Cleanup function
-        return () => {
-          unsubscribeEvent()
-          unsubscribeState()
-          void backend.disconnect()
-        }
-      },
-    ),
-
-    executeCommand: fromPromise(async ({ input }: { input: { command: ProjectCommand; backend: IBackendService } }) => {
-      const { command, backend } = input
+    executeCommand: fromPromise(async ({ input }: { input: { command: ProjectCommand } }) => {
+      const { command } = input
+      // Get backend from container at execution time
+      const backend = getBackend()
       const result = await backend.executeCommand(command)
 
       if (!result.success) {
@@ -153,21 +153,11 @@ export const appMachine = setup({
   id: "project-management-app",
   initial: "disconnected",
 
-  context: () => {
-    // Lazy initialization - backend may not be available yet
-    let backend: IBackendService | null = null
-    try {
-      backend = getBackend()
-    } catch {
-      // Container not initialized yet, will be set later
-    }
-    return {
-      projectState: null,
-      backend,
-      isConnected: false,
-      error: null,
-      commandQueue: [],
-    }
+  context: {
+    projectState: null,
+    isConnected: false,
+    error: null,
+    commandQueue: [],
   },
 
   // Global event handlers - work in all states
@@ -193,7 +183,7 @@ export const appMachine = setup({
       invoke: {
         id: "backendConnection",
         src: "backendConnection",
-        input: ({ context }) => ({ backend: context.backend }),
+        // Backend is fetched from container inside the actor, not from context
       },
 
       on: {
@@ -277,7 +267,6 @@ export const appMachine = setup({
             src: "executeCommand",
             input: ({ context }) => ({
               command: context.commandQueue[0],
-              backend: context.backend!,
             }),
             onDone: {
               target: "idle",

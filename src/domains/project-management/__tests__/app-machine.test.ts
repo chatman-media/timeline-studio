@@ -9,19 +9,28 @@ import { createActor, waitFor } from "xstate"
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"
 
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: vi.fn(() => ({
-    connected: false,
-    connect: vi.fn().mockResolvedValue(undefined),
-    disconnect: vi.fn().mockResolvedValue(undefined),
-    executeCommand: vi.fn().mockResolvedValue({ success: true, data: null, error: null }),
-    getProjectState: vi.fn().mockResolvedValue(null),
-    onEvent: vi.fn(() => vi.fn()),
-    onStateChange: vi.fn(() => vi.fn()),
-  })),
+// Mock backend service
+const mockBackend = {
+  connected: false,
+  connect: vi.fn().mockResolvedValue(undefined),
+  disconnect: vi.fn().mockResolvedValue(undefined),
+  executeCommand: vi.fn().mockResolvedValue({ success: true, data: null, error: null }),
+  getProjectState: vi.fn().mockResolvedValue(null),
+  getEventHistory: vi.fn().mockResolvedValue([]),
+  onEvent: vi.fn(() => vi.fn()),
+  onStateChange: vi.fn(() => vi.fn()),
+}
+
+// Mock @/core to provide getBackend
+vi.mock("@/core", () => ({
+  getBackend: vi.fn(() => mockBackend),
+  container: {
+    hasBackend: vi.fn(() => true),
+    getBackend: vi.fn(() => mockBackend),
+  },
 }))
 
-// Mock logger
+// Mock logger with all methods
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     info: vi.fn(),
@@ -31,6 +40,9 @@ vi.mock("@/lib/tauri-logger", () => ({
     debug: vi.fn(),
     debugSync: vi.fn(),
     warn: vi.fn(),
+    warnSync: vi.fn(),
+    trace: vi.fn(),
+    traceSync: vi.fn(),
   })),
 }))
 

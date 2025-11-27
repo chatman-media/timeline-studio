@@ -24,6 +24,7 @@ import { useCurrentProject } from "@/features/app-state/hooks/use-current-projec
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
 import { useModal } from "@/features/modals/services/modal-provider"
+import { AnalysisTasksDropdown } from "@/features/montage-planner"
 import { PublicationTasksDropdown } from "@/features/publication"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useUserSettings } from "@/features/user-settings"
@@ -340,6 +341,7 @@ const TopBarComponent = function TopBar() {
 
         {/* Группа 5: Задачи и экспорт */}
         <div className="flex items-center justify-end">
+          <AnalysisTasksDropdown />
           <PublicationTasksDropdown />
           <RenderJobsDropdown />
 

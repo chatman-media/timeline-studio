@@ -3301,6 +3301,32 @@
       "analysisInProgress": "Analysis in progress, please wait...",
       "planReady": "Montage plan is ready to apply",
       "timelineIntegrated": "Plan successfully applied to timeline"
+    },
+    "analysisTasks": "Analysis Tasks",
+    "cancelTask": "Cancel task?",
+    "errorLoadingTasks": "Error loading tasks",
+    "noActiveTasks": "No active tasks",
+    "eta": "ETA",
+    "minutes": "min",
+    "momentsDetected": "Moments detected",
+    "sequences": "sequences",
+    "totalTasks": "Total tasks",
+    "activeTasks": "Active tasks",
+    "completedTasks": "Completed tasks",
+    "status": {
+      "pending": "Pending",
+      "initializing": "Initializing",
+      "analyzingVideo": "Analyzing video",
+      "analyzingAudio": "Analyzing audio",
+      "detectingMoments": "Detecting moments",
+      "generatingPlan": "Generating plan",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    },
+    "duration": {
+      "seconds": "{{count}} sec"
     }
   }
 }

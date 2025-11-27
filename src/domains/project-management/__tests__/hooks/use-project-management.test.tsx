@@ -10,17 +10,25 @@ import type { ProjectSettings } from "@/types/generated/tauri-bindings"
 import { useProjectManagement } from "../../hooks/use-project-management"
 import { resetProjectManagementOrchestrator } from "../../services/project-management-orchestrator"
 
-// Mock BackendSync
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: vi.fn(() => ({
-    connected: true,
-    connect: vi.fn().mockResolvedValue(undefined),
-    disconnect: vi.fn().mockResolvedValue(undefined),
-    executeCommand: vi.fn().mockResolvedValue({ success: true, data: null, error: null }),
-    getProjectState: vi.fn().mockResolvedValue(null),
-    onEvent: vi.fn(() => vi.fn()),
-    onStateChange: vi.fn(() => vi.fn()),
-  })),
+// Mock backend service
+const mockBackend = {
+  connected: true,
+  connect: vi.fn().mockResolvedValue(undefined),
+  disconnect: vi.fn().mockResolvedValue(undefined),
+  executeCommand: vi.fn().mockResolvedValue({ success: true, data: null, error: null }),
+  getProjectState: vi.fn().mockResolvedValue(null),
+  getEventHistory: vi.fn().mockResolvedValue([]),
+  onEvent: vi.fn(() => vi.fn()),
+  onStateChange: vi.fn(() => vi.fn()),
+}
+
+// Mock @/core - app-machine gets backend from here
+vi.mock("@/core", () => ({
+  getBackend: vi.fn(() => mockBackend),
+  container: {
+    hasBackend: vi.fn(() => true),
+    getBackend: vi.fn(() => mockBackend),
+  },
 }))
 
 // Mock logger

@@ -6,6 +6,9 @@
 // Main component
 export { MontagePlanner } from "./components"
 
+// Analysis Tasks dropdown for top bar
+export { AnalysisTasksDropdown } from "./components/analysis-tasks-dropdown"
+
 // Hooks
 export {
   useContentAnalysis,

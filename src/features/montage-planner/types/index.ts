@@ -890,3 +890,14 @@ export interface DetailedAnalysisProgress {
   totalVideos?: number
   currentOperation?: string
 }
+
+// Re-export analysis task types
+export type {
+  AnalysisResults,
+  AnalysisTask,
+  AnalysisTaskOptions,
+  AnalysisTaskProgress,
+  AnalysisTaskStatistics,
+  AnalysisTaskStatus,
+  CreateAnalysisTaskRequest,
+} from "./analysis-task"

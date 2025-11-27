@@ -3,6 +3,9 @@
  *
  * React провайдер для инициализации адаптеров.
  * Определяет окружение (Tauri/Browser) и регистрирует соответствующие адаптеры в контейнере.
+ *
+ * ВАЖНО: Этот провайдер блокирует рендеринг children до завершения инициализации,
+ * чтобы гарантировать доступность DI контейнера для downstream провайдеров.
  */
 
 "use client"
@@ -31,9 +34,11 @@ const AppInitContext = createContext<AppInitContextValue>({
 
 interface AppInitProviderProps {
   children: ReactNode
+  /** Показывать во время инициализации (по умолчанию null - ничего не показывать) */
+  fallback?: ReactNode
 }
 
-export function AppInitProvider({ children }: AppInitProviderProps) {
+export function AppInitProvider({ children, fallback = null }: AppInitProviderProps) {
   const [state, setState] = useState<AppInitContextValue>({
     initialized: false,
     isDesktop: false,
@@ -69,6 +74,12 @@ export function AppInitProvider({ children }: AppInitProviderProps) {
 
     init().catch(console.error)
   }, [])
+
+  // Блокируем рендеринг children до завершения инициализации
+  // Это гарантирует, что DI контейнер будет готов для downstream провайдеров
+  if (!state.initialized) {
+    return <AppInitContext.Provider value={state}>{fallback}</AppInitContext.Provider>
+  }
 
   return <AppInitContext.Provider value={state}>{children}</AppInitContext.Provider>
 }

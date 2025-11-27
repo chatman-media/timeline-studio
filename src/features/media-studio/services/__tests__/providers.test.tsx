@@ -33,6 +33,12 @@ vi.mock("@/features/media-studio/services/tauri-mock-provider", () => ({
   ),
 }))
 
+vi.mock("@/adapters/react", () => ({
+  AppInitProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="app-init-provider">{children}</div>
+  ),
+}))
+
 vi.mock("@/features/modals/services/modal-provider", () => ({
   ModalProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="modal-provider">{children}</div>,
 }))

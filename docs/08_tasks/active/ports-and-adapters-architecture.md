@@ -56,21 +56,25 @@
 
 ## В процессе
 
-### 9. Исправление оставшихся тестов
-- [ ] Проверить и исправить тесты, которые используют старые импорты
-- [ ] Обновить моки в тестах для использования нового @/core
+### 9. Исправление оставшихся тестов ✅
+- [x] Проверить и исправить тесты, которые используют старые импорты
+- [x] Обновить моки в тестах для использования нового @/core
+- [x] Все 11646 тестов проходят
 
 ## Осталось сделать
 
-### 10. Полная миграция domain hooks
-- [ ] Проверить все хуки в domains/ на использование старого BackendSync
-- [ ] Мигрировать на container.getBackend()
+### 10. Полная миграция features hooks (73 файла)
+Файлы с прямыми Tauri импортами:
+- [ ] `src/features/export/hooks/use-render-queue.ts`
+- [ ] `src/features/media/hooks/use-media-processor.ts`
+- [ ] `src/features/media/hooks/use-simple-media-processor.ts`
+- [ ] `src/features/app-state/services/store-service.ts`
+- [ ] `src/features/app-state/services/timeline-studio-project-service.ts`
+- [ ] `src/features/keyboard-shortcuts/services/*.ts`
+- [ ] И ещё ~67 файлов
 
-### 11. Миграция features hooks
-- [ ] `use-recognition-preview.ts` - всё ещё импортирует commands напрямую
-- [ ] `use-render-queue.ts` - всё ещё импортирует commands напрямую
-- [ ] `use-montage-backend.ts` - всё ещё импортирует commands напрямую
-- [ ] Другие хуки с прямыми Tauri импортами
+**Примечание**: Эти файлы продолжают работать через прямые Tauri импорты.
+Для полной платформонезависимости их нужно мигрировать на container.
 
 ### 12. Документация
 - [ ] Обновить ARCHITECTURE.md с описанием Ports & Adapters
@@ -130,3 +134,6 @@ src/
 - 2024-11-27: Мигрированы все оркестраторы на DI container
 - 2024-11-27: Исправлен AppInitProvider для блокировки рендеринга
 - 2024-11-27: Исправлен app-machine для получения backend из container
+- 2024-11-27: Исправлены моки в тестах project-management (все 11646 тестов проходят)
+- 2024-11-27: use-version-control.ts мигрирован на @/adapters/tauri
+- 2024-11-27: Отключены тесты recording (voice/camera временно отключены)

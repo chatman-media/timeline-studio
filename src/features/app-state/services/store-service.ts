@@ -1,4 +1,4 @@
-import { load, type Store } from "@tauri-apps/plugin-store"
+import { container, type IStorageService } from "@/core"
 import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import type { MediaFile } from "@/features/media"
 
@@ -73,19 +73,19 @@ export interface AppSettings {
 }
 
 /**
- * Сервис для работы с хранилищем Tauri Store
- * Предоставляет методы для сохранения и загрузки настроек приложения
+ * Сервис для работы с хранилищем настроек приложения
+ * Использует IStorageService из DI контейнера для платформонезависимости
  */
 export class StoreService {
   private static instance: StoreService
-  private store: Store | null = null
+  private storage: IStorageService | null = null
   private isInitialized = false
 
   /**
    * Приватный конструктор для реализации паттерна Singleton
    */
   private constructor() {
-    // Инициализация store будет выполнена в методе initialize
+    // Инициализация storage будет выполнена в методе initialize
   }
 
   /**
@@ -100,39 +100,34 @@ export class StoreService {
 
   /**
    * Инициализация хранилища
-   * Загружает данные из файла хранилища
+   * Получает IStorageService из DI контейнера
    */
   public async initialize(): Promise<void> {
     if (this.isInitialized) return
 
     try {
-      // Используем метод load вместо конструктора Store
-      this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
-      this.isInitialized = true
-      logger.info("[StoreService] Store initialized successfully")
+      // Получаем storage из DI контейнера
+      if (container.hasStorage()) {
+        this.storage = container.getStorage()
+        this.isInitialized = true
+        logger.info("[StoreService] Storage initialized successfully via DI container")
 
-      // Проверяем, что хранилище действительно работает
-      const testRead = await this.store.get<any>("app-settings")
-      if (testRead !== undefined) {
-        logger.info("[StoreService] Store is working correctly, found existing settings")
+        // Проверяем, что хранилище работает
+        const testRead = await this.storage.get<any>("app-settings")
+        if (testRead !== undefined) {
+          logger.info("[StoreService] Storage is working correctly, found existing settings")
+        } else {
+          logger.info("[StoreService] Storage is empty, will use default settings")
+        }
       } else {
-        logger.info("[StoreService] Store is empty, will use default settings")
+        logger.warn("[StoreService] Storage service not available in container")
+        this.storage = null
+        this.isInitialized = true
       }
     } catch (error) {
-      logger.error("[StoreService] Error initializing store:", { error })
-      // Попытаемся создать новое хранилище
-      try {
-        this.store = await load(USER_SETTINGS_STORE_PATH, { autoSave: true } as any)
-        if (this.store) {
-          await this.store.save()
-        }
-        this.isInitialized = true
-        logger.info("[StoreService] Created new store after initialization error")
-      } catch (createError) {
-        logger.error("[StoreService] Failed to create new store:", { error: createError })
-        this.store = null
-        this.isInitialized = true
-      }
+      logger.error("[StoreService] Error initializing storage:", { error })
+      this.storage = null
+      this.isInitialized = true
     }
   }
 
@@ -143,10 +138,9 @@ export class StoreService {
     await this.ensureInitialized()
 
     try {
-      if (!this.store) return null
+      if (!this.storage) return null
 
-      // Используем синхронный метод get
-      const settings = await this.store.get<AppSettings>("app-settings")
+      const settings = await this.storage.get<AppSettings>("app-settings")
       return settings ?? null
     } catch (error) {
       logger.error("[StoreService] Error getting settings:", { error })
@@ -161,7 +155,7 @@ export class StoreService {
     await this.ensureInitialized()
 
     try {
-      if (!this.store) return
+      if (!this.storage) return
 
       // Обновляем метаданные
       const updatedSettings = {
@@ -172,14 +166,8 @@ export class StoreService {
         },
       }
 
-      // Сохраняем настройки
-      await this.store.set("app-settings", updatedSettings)
-
-      // Явно сохраняем изменения на диск
-      await this.store.save()
-
-      // Убираем лог для уменьшения шума в консоли
-      // logger.info("[StoreService] Settings saved successfully")
+      // Сохраняем настройки (IStorageService автоматически персистит данные)
+      await this.storage.set("app-settings", updatedSettings)
     } catch (error) {
       logger.error("[StoreService] Error saving settings:", { error })
     }

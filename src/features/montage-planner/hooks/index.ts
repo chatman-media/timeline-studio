@@ -2,6 +2,12 @@
  * Export all hooks from the montage-planner module
  */
 
+export {
+  formatAnalysisTaskDuration,
+  getAnalysisTaskStatusColor,
+  getAnalysisTaskStatusLabel,
+  useAnalysisTasks,
+} from "./use-analysis-tasks"
 export { useContentAnalysis } from "./use-content-analysis"
 export type { UseIntegratedAnalysisReturn } from "./use-integrated-analysis"
 export { useIntegratedAnalysis } from "./use-integrated-analysis"

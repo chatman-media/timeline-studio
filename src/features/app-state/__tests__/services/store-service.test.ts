@@ -1,43 +1,34 @@
-import { load, Store } from "@tauri-apps/plugin-store"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import {
   type AppSettings,
   type FavoritesType,
   StoreService,
-  USER_SETTINGS_STORE_PATH,
 } from "../../services/store-service"
 
-// После vi.mock импортируем типы
-
-// Мокаем Tauri Store
-vi.mock("@tauri-apps/plugin-store", () => {
-  return {
-    load: vi.fn(),
-    Store: vi.fn(),
-  }
-})
-
-// Создаем моки для Store
-const createMockStore = () => ({
+// Создаем моки для IStorageService
+const createMockStorage = () => ({
   get: vi.fn(),
   set: vi.fn(),
-  save: vi.fn(),
-  has: vi.fn(),
   delete: vi.fn(),
-  clear: vi.fn(),
-  reset: vi.fn(),
+  has: vi.fn(),
   keys: vi.fn(),
-  values: vi.fn(),
-  entries: vi.fn(),
-  length: vi.fn(),
-  load: vi.fn(),
-  onKeyChange: vi.fn(),
-  close: vi.fn(),
+  clear: vi.fn(),
 })
 
+// Мокаем @/core
+const mockStorage = createMockStorage()
+vi.mock("@/core", () => ({
+  container: {
+    hasStorage: vi.fn(() => true),
+    getStorage: vi.fn(() => mockStorage),
+  },
+}))
+
+// Импорт для доступа к контейнеру в тестах
+import { container } from "@/core"
+
 describe("StoreService", () => {
-  let mockStore: ReturnType<typeof createMockStore>
 
   const mockSettings: AppSettings = {
     userSettings: {
@@ -151,13 +142,17 @@ describe("StoreService", () => {
     // @ts-expect-error - обращаемся к приватному свойству для тестов
     StoreService.instance = null
 
-    // Создаем новый экземпляр mockStore для каждого теста
-    mockStore = createMockStore()
+    // Сбрасываем моки storage
+    mockStorage.get.mockReset()
+    mockStorage.set.mockReset()
+    mockStorage.delete.mockReset()
+    mockStorage.has.mockReset()
+    mockStorage.keys.mockReset()
+    mockStorage.clear.mockReset()
 
-    // Настраиваем моки
-    vi.mocked(load).mockResolvedValue(mockStore as unknown as Store)
-    // @ts-expect-error - Store это конструктор
-    vi.mocked(Store).mockImplementation(() => mockStore)
+    // Настраиваем container mock по умолчанию
+    vi.mocked(container.hasStorage).mockReturnValue(true)
+    vi.mocked(container.getStorage).mockReturnValue(mockStorage)
   })
 
   afterEach(() => {
@@ -181,7 +176,8 @@ describe("StoreService", () => {
 
       await service.initialize()
 
-      expect(load).toHaveBeenCalledWith(USER_SETTINGS_STORE_PATH, { autoSave: true })
+      expect(container.hasStorage).toHaveBeenCalled()
+      expect(container.getStorage).toHaveBeenCalled()
     })
 
     it("должен инициализироваться только один раз", async () => {
@@ -190,21 +186,20 @@ describe("StoreService", () => {
       await service.initialize()
       await service.initialize()
 
-      expect(load).toHaveBeenCalledTimes(1)
+      // getStorage вызывается только один раз при первой инициализации
+      expect(container.getStorage).toHaveBeenCalledTimes(1)
     })
 
     it("должен обрабатывать ошибки при инициализации", async () => {
       const service = StoreService.getInstance()
 
-      // Первый вызов load должен провалиться
-      vi.mocked(load).mockRejectedValueOnce(new Error("Failed to load"))
-      // Второй вызов load (в блоке catch) тоже провалится
-      vi.mocked(load).mockRejectedValueOnce(new Error("Failed to create"))
+      // Делаем так, чтобы storage был недоступен
+      vi.mocked(container.hasStorage).mockReturnValue(false)
 
       // Не должно выбрасывать исключение, а обработать ошибку gracefully
       await expect(service.initialize()).resolves.not.toThrow()
 
-      // После ошибки store должен быть null и isInitialized должен быть true
+      // После ошибки storage должен быть null и isInitialized должен быть true
       // (проверяем через поведение - getSettings должен вернуть null)
       const settings = await service.getSettings()
       expect(settings).toBeNull()
@@ -214,17 +209,17 @@ describe("StoreService", () => {
   describe("getSettings", () => {
     it("должен возвращать настройки из хранилища", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       const settings = await service.getSettings()
 
       expect(settings).toEqual(mockSettings)
-      expect(mockStore.get).toHaveBeenCalledWith("app-settings")
+      expect(mockStorage.get).toHaveBeenCalledWith("app-settings")
     })
 
     it("должен возвращать null, если настройки не найдены", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       const settings = await service.getSettings()
 
@@ -234,20 +229,20 @@ describe("StoreService", () => {
     it("должен возвращать null при ошибке", async () => {
       const service = StoreService.getInstance()
 
-      // Настраиваем мок store с ошибкой при получении настроек
-      mockStore.get.mockRejectedValue(new Error("Failed to get"))
+      // Настраиваем мок storage с ошибкой при получении настроек
+      mockStorage.get.mockRejectedValue(new Error("Failed to get"))
 
       // Должен обработать ошибку gracefully и вернуть null
       const settings = await service.getSettings()
 
       expect(settings).toBeNull()
       // Проверяем, что метод get был вызван (подтверждает, что попытка получения была)
-      expect(mockStore.get).toHaveBeenCalledWith("app-settings")
+      expect(mockStorage.get).toHaveBeenCalledWith("app-settings")
     })
 
     it("должен возвращать null, если хранилище не инициализировано и не удалось инициализировать", async () => {
       const service = StoreService.getInstance()
-      vi.mocked(load).mockRejectedValue(new Error("Failed to initialize"))
+      vi.mocked(container.hasStorage).mockReturnValue(false)
 
       const settings = await service.getSettings()
 
@@ -264,14 +259,13 @@ describe("StoreService", () => {
 
       await service.saveSettings(settingsToSave)
 
-      expect(mockStore.set).toHaveBeenCalledWith("app-settings", {
+      expect(mockStorage.set).toHaveBeenCalledWith("app-settings", {
         ...settingsToSave,
         meta: {
           ...settingsToSave.meta,
           lastUpdated: now,
         },
       })
-      expect(mockStore.save).toHaveBeenCalled()
 
       vi.useRealTimers()
     })
@@ -279,13 +273,13 @@ describe("StoreService", () => {
     it("должен обрабатывать ошибки при сохранении", async () => {
       const service = StoreService.getInstance()
 
-      mockStore.set.mockRejectedValue(new Error("Failed to save"))
+      mockStorage.set.mockRejectedValue(new Error("Failed to save"))
 
       // Не должно выбрасывать исключение, а обработать ошибку gracefully
       await expect(service.saveSettings(mockSettings)).resolves.not.toThrow()
 
       // Проверяем, что метод set был вызван (подтверждает, что попытка сохранения была)
-      expect(mockStore.set).toHaveBeenCalledWith(
+      expect(mockStorage.set).toHaveBeenCalledWith(
         "app-settings",
         expect.objectContaining({
           ...mockSettings,
@@ -301,25 +295,21 @@ describe("StoreService", () => {
       // @ts-expect-error - обращаемся к приватному свойству для тестов
       StoreService.instance = null
 
-      // Оба способа создания store должны провалиться
-      vi.mocked(load).mockRejectedValue(new Error("Failed to initialize"))
-      // @ts-expect-error - Store это конструктор
-      vi.mocked(Store).mockImplementation(() => {
-        throw new Error("Failed to create store")
-      })
+      // Storage недоступен
+      vi.mocked(container.hasStorage).mockReturnValue(false)
 
       const service = StoreService.getInstance()
 
       await service.saveSettings(mockSettings)
 
-      expect(mockStore.set).not.toHaveBeenCalled()
+      expect(mockStorage.set).not.toHaveBeenCalled()
     })
   })
 
   describe("getUserSettings", () => {
     it("должен возвращать пользовательские настройки", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       const userSettings = await service.getUserSettings()
 
@@ -328,7 +318,7 @@ describe("StoreService", () => {
 
     it("должен возвращать null, если настройки не найдены", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       const userSettings = await service.getUserSettings()
 
@@ -339,7 +329,7 @@ describe("StoreService", () => {
   describe("saveUserSettings", () => {
     it("должен обновлять существующие настройки", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       const newUserSettings = {
         ...mockSettings.userSettings,
@@ -348,7 +338,7 @@ describe("StoreService", () => {
 
       await service.saveUserSettings(newUserSettings)
 
-      expect(mockStore.set).toHaveBeenCalledWith(
+      expect(mockStorage.set).toHaveBeenCalledWith(
         "app-settings",
         expect.objectContaining({
           ...mockSettings,
@@ -363,11 +353,11 @@ describe("StoreService", () => {
 
     it("должен создавать новые настройки, если их нет", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       await service.saveUserSettings(mockSettings.userSettings)
 
-      expect(mockStore.set).toHaveBeenCalledWith(
+      expect(mockStorage.set).toHaveBeenCalledWith(
         "app-settings",
         expect.objectContaining({
           userSettings: mockSettings.userSettings,
@@ -386,7 +376,7 @@ describe("StoreService", () => {
   describe("getRecentProjects", () => {
     it("должен возвращать список недавних проектов", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       const recentProjects = await service.getRecentProjects()
 
@@ -395,7 +385,7 @@ describe("StoreService", () => {
 
     it("должен возвращать пустой массив, если настройки не найдены", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       const recentProjects = await service.getRecentProjects()
 
@@ -406,11 +396,11 @@ describe("StoreService", () => {
   describe("addRecentProject", () => {
     it("должен добавлять проект в начало списка", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       await service.addRecentProject("/new-project.tls", "New Project")
 
-      expect(mockStore.set).toHaveBeenCalledWith(
+      expect(mockStorage.set).toHaveBeenCalledWith(
         "app-settings",
         expect.objectContaining({
           recentProjects: expect.arrayContaining([
@@ -425,11 +415,11 @@ describe("StoreService", () => {
 
     it("должен удалять дубликаты из списка", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       await service.addRecentProject("/project1.tls", "Updated Project 1")
 
-      const savedSettings = mockStore.set.mock.calls[0][1] as AppSettings
+      const savedSettings = mockStorage.set.mock.calls[0][1] as AppSettings
       const projectPaths = savedSettings.recentProjects.map((p) => p.path)
       const uniquePaths = new Set(projectPaths)
 
@@ -444,20 +434,20 @@ describe("StoreService", () => {
         lastOpened: Date.now() - i * 1000,
       }))
 
-      mockStore.get.mockResolvedValue({
+      mockStorage.get.mockResolvedValue({
         ...mockSettings,
         recentProjects: manyProjects,
       })
 
       await service.addRecentProject("/new-project.tls", "New Project")
 
-      const savedSettings = mockStore.set.mock.calls[0][1] as AppSettings
+      const savedSettings = mockStorage.set.mock.calls[0][1] as AppSettings
       expect(savedSettings.recentProjects).toHaveLength(10)
     })
 
     it("не должен падать, если настройки не найдены", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       await expect(service.addRecentProject("/new-project.tls", "New Project")).resolves.not.toThrow()
     })
@@ -472,7 +462,7 @@ describe("StoreService", () => {
         filter: [{ id: "2", name: "Sepia" }],
       }
 
-      mockStore.get.mockResolvedValue({
+      mockStorage.get.mockResolvedValue({
         ...mockSettings,
         favorites: customFavorites,
       })
@@ -484,7 +474,7 @@ describe("StoreService", () => {
 
     it("должен возвращать пустые избранные, если настройки не найдены", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       const favorites = await service.getFavorites()
 
@@ -503,7 +493,7 @@ describe("StoreService", () => {
   describe("saveFavorites", () => {
     it("должен сохранять избранные элементы", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(mockSettings)
+      mockStorage.get.mockResolvedValue(mockSettings)
 
       const newFavorites: FavoritesType = {
         ...mockSettings.favorites,
@@ -512,7 +502,7 @@ describe("StoreService", () => {
 
       await service.saveFavorites(newFavorites)
 
-      expect(mockStore.set).toHaveBeenCalledWith(
+      expect(mockStorage.set).toHaveBeenCalledWith(
         "app-settings",
         expect.objectContaining({
           favorites: newFavorites,
@@ -522,7 +512,7 @@ describe("StoreService", () => {
 
     it("не должен падать, если настройки не найдены", async () => {
       const service = StoreService.getInstance()
-      mockStore.get.mockResolvedValue(undefined)
+      mockStorage.get.mockResolvedValue(undefined)
 
       await expect(service.saveFavorites(mockSettings.favorites)).resolves.not.toThrow()
     })

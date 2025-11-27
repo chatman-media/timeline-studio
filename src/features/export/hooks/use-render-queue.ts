@@ -1,5 +1,5 @@
-import { open } from "@tauri-apps/plugin-dialog"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { container } from "@/core"
 import {
   cancelRender,
   getActiveJobs,
@@ -63,6 +63,13 @@ export function useRenderQueue(): UseRenderQueueReturn {
 
   const [renderJobs, setRenderJobs] = useState<RenderJob[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
+  const platform = useMemo(() => {
+    try {
+      return container.hasPlatform() ? container.getPlatform() : null
+    } catch {
+      return null
+    }
+  }, [])
 
   // Загрузка активных задач при монтировании
   useEffect(() => {
@@ -97,7 +104,12 @@ export function useRenderQueue(): UseRenderQueueReturn {
   // Добавление проектов в очередь (выбор файлов)
   const addProjectsToQueue = useCallback(async (): Promise<string[]> => {
     try {
-      const selected = await open({
+      if (!platform) {
+        logError("[useRenderQueue] Platform service not available")
+        return []
+      }
+
+      const selected = await platform.showOpenDialog({
         multiple: true,
         filters: [
           {
@@ -110,16 +122,12 @@ export function useRenderQueue(): UseRenderQueueReturn {
 
       if (!selected) return []
 
-      // Возвращаем массив путей
-      if (Array.isArray(selected)) {
-        return selected
-      }
-      return [selected]
+      return selected
     } catch (error) {
       logError(`[useRenderQueue] Ошибка выбора проектов: ${String(error)}`)
       return []
     }
-  }, [])
+  }, [platform])
 
   // Запуск рендеринга для списка проектов
   const startRenderQueue = useCallback(
