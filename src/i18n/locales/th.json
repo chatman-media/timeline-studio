@@ -2418,5 +2418,34 @@
       "timelineIntegrated": "นำแผนไปใช้กับไทม์ไลน์สำเร็จแล้ว"
     },
     "sequence": "ลำดับ"
+  },
+  "montagePlanner": {
+    "analysisTasks": "งานการวิเคราะห์",
+    "noActiveTasks": "ไม่มีงานที่ใช้งานอยู่",
+    "activeTasks": "งานที่ใช้งานอยู่",
+    "completedTasks": "งานที่เสร็จสมบูรณ์",
+    "totalTasks": "งานทั้งหมด",
+    "errorLoadingTasks": "เกิดข้อผิดพลาดในการโหลดงาน",
+    "cancelTask": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกงานนี้?",
+    "eta": "เวลาที่เหลือ",
+    "minutes": "นาที",
+    "momentsDetected": "ตรวจพบช่วงเวลา",
+    "planGenerated": "สร้างแผนแล้ว",
+    "sequences": "ลำดับ",
+    "status": {
+      "pending": "รอดำเนินการ",
+      "initializing": "กำลังเริ่มต้น",
+      "analyzingVideo": "กำลังวิเคราะห์วิดีโอ",
+      "analyzingAudio": "กำลังวิเคราะห์เสียง",
+      "detectingMoments": "กำลังตรวจจับช่วงเวลา",
+      "generatingPlan": "กำลังสร้างแผน",
+      "completed": "เสร็จสมบูรณ์",
+      "failed": "ล้มเหลว",
+      "cancelled": "ยกเลิกแล้ว",
+      "unknown": "ไม่ทราบ"
+    },
+    "duration": {
+      "seconds": "{{count}} วินาที"
+    }
   }
 }

@@ -2593,5 +2593,34 @@
       "timelineIntegrated": "योजना सफलतापूर्वक टाइमलाइन पर लागू की गई"
     },
     "sequence": "क्रम"
+  },
+  "montagePlanner": {
+    "analysisTasks": "विश्लेषण कार्य",
+    "noActiveTasks": "कोई सक्रिय कार्य नहीं",
+    "activeTasks": "सक्रिय कार्य",
+    "completedTasks": "पूर्ण कार्य",
+    "totalTasks": "कुल कार्य",
+    "errorLoadingTasks": "कार्य लोड करने में त्रुटि",
+    "cancelTask": "क्या आप वाकई इस कार्य को रद्द करना चाहते हैं?",
+    "eta": "शेष समय",
+    "minutes": "मिनट",
+    "momentsDetected": "पहचाने गए क्षण",
+    "planGenerated": "योजना बनाई गई",
+    "sequences": "अनुक्रम",
+    "status": {
+      "pending": "लंबित",
+      "initializing": "आरंभ हो रहा है",
+      "analyzingVideo": "वीडियो का विश्लेषण",
+      "analyzingAudio": "ऑडियो का विश्लेषण",
+      "detectingMoments": "क्षणों का पता लगाना",
+      "generatingPlan": "योजना बनाना",
+      "completed": "पूर्ण",
+      "failed": "विफल",
+      "cancelled": "रद्द किया गया",
+      "unknown": "अज्ञात"
+    },
+    "duration": {
+      "seconds": "{{count}} सेकंड"
+    }
   }
 }

@@ -1025,7 +1025,7 @@
       "empty_project_hint": "Проект пока пустой. Начните с:",
       "import_media": "Импортировать медиа",
       "ask_ai_import": "Спросить AI",
-    "copy": "Копировать"
+      "copy": "Копировать"
     }
   },
   "titles": {
@@ -3010,6 +3010,35 @@
       "analyzingAudio": "Анализ аудио",
       "detectingMoments": "Обнаружение моментов",
       "generatingPlan": "Генерация плана",
+      "completed": "Завершено",
+      "failed": "Ошибка",
+      "cancelled": "Отменено",
+      "unknown": "Неизвестно"
+    },
+    "duration": {
+      "seconds": "{{count}} сек"
+    }
+  },
+  "montagePlanner": {
+    "analysisTasks": "Задачи анализа",
+    "noActiveTasks": "Нет активных задач",
+    "activeTasks": "Активных задач",
+    "completedTasks": "Завершенных задач",
+    "totalTasks": "Всего задач",
+    "errorLoadingTasks": "Ошибка загрузки задач",
+    "cancelTask": "Вы уверены, что хотите отменить эту задачу?",
+    "eta": "Осталось",
+    "minutes": "мин",
+    "momentsDetected": "Обнаружено моментов",
+    "planGenerated": "Создан план",
+    "sequences": "секвенций",
+    "status": {
+      "pending": "Ожидание",
+      "initializing": "Инициализация",
+      "analyzingVideo": "Анализ видео",
+      "analyzingAudio": "Анализ аудио",
+      "detectingMoments": "Поиск моментов",
+      "generatingPlan": "Создание плана",
       "completed": "Завершено",
       "failed": "Ошибка",
       "cancelled": "Отменено",

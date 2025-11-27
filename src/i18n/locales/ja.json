@@ -2366,5 +2366,34 @@
       "timelineIntegrated": "プランがタイムラインに正常に適用されました"
     },
     "sequence": "シーケンス"
+  },
+  "montagePlanner": {
+    "analysisTasks": "分析タスク",
+    "noActiveTasks": "アクティブなタスクはありません",
+    "activeTasks": "アクティブなタスク",
+    "completedTasks": "完了したタスク",
+    "totalTasks": "全タスク数",
+    "errorLoadingTasks": "タスクの読み込みエラー",
+    "cancelTask": "このタスクをキャンセルしてもよろしいですか？",
+    "eta": "残り時間",
+    "minutes": "分",
+    "momentsDetected": "検出されたモーメント",
+    "planGenerated": "プラン生成済み",
+    "sequences": "シーケンス",
+    "status": {
+      "pending": "保留中",
+      "initializing": "初期化中",
+      "analyzingVideo": "ビデオ分析中",
+      "analyzingAudio": "オーディオ分析中",
+      "detectingMoments": "モーメント検出中",
+      "generatingPlan": "プラン生成中",
+      "completed": "完了",
+      "failed": "失敗",
+      "cancelled": "キャンセル済み",
+      "unknown": "不明"
+    },
+    "duration": {
+      "seconds": "{{count}}秒"
+    }
   }
 }

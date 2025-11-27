@@ -341,7 +341,7 @@ Tauri Plugin API
 
 ---
 
-### 🟡 Этап 6: i18n (ЧАСТИЧНО ЗАВЕРШЕН - 2025-11-27)
+### ✅ Этап 6: i18n (ЗАВЕРШЕН - 2025-11-27)
 
 **Добавить в `/src/i18n/locales/[lang].json`:**
 
@@ -371,27 +371,28 @@ Tauri Plugin API
 }
 ```
 
-**Завершено:**
-- [x] ru - Русский ✅ (коммит f2118a83002)
-- [x] en - English ✅ (коммит f2118a83002)
-- Секция `montagePlanner.*` полностью переведена
-- Все статусы (pending, analyzing_video, analyzing_audio, detecting_moments, generating_plan, completed, failed, cancelled)
-- Сообщения (noTasks, activeTasks, completedTasks, etc.)
+**Завершено (15 языков):**
+- [x] ru - Русский ✅
+- [x] en - English ✅
+- [x] es - Español ✅
+- [x] fr - Français ✅
+- [x] de - Deutsch ✅
+- [x] pt - Português ✅
+- [x] zh - 中文 ✅
+- [x] ja - 日本語 ✅
+- [x] ko - 한국어 ✅
+- [x] tr - Türkçe ✅
+- [x] it - Italiano ✅
+- [x] th - ไทย ✅
+- [x] hi - हिन्दी ✅
+- [x] ar - العربية ✅ (RTL)
+- [x] fa - فارسی ✅ (RTL)
 
-**Осталось перевести (13 языков):**
-- [ ] es - Español
-- [ ] fr - Français
-- [ ] de - Deutsch
-- [ ] pt - Português
-- [ ] zh - 中文
-- [ ] ja - 日本語
-- [ ] ko - 한국어
-- [ ] tr - Türkçe
-- [ ] it - Italiano
-- [ ] th - ไทย
-- [ ] hi - हिन्दी
-- [ ] ar - العربية
-- [ ] fa - فارسی
+**Полное покрытие:**
+- Секция `montagePlanner.*` полностью переведена на все 15 языков
+- Все статусы (pending, initializing, analyzing_video, analyzing_audio, detecting_moments, generating_plan, completed, failed, cancelled, unknown)
+- Сообщения (analysisTasks, noActiveTasks, activeTasks, completedTasks, totalTasks, errorLoadingTasks, cancelTask, eta, minutes, momentsDetected, planGenerated, sequences)
+- Duration форматирование (seconds)
 
 **Проверить существующие переводы:**
 - [ ] `publication.*` - убедиться что все статусы переведены

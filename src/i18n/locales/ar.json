@@ -1883,5 +1883,34 @@
     "closeMenu": "إغلاق القائمة",
     "loading": "جاري التحميل",
     "moreOptions": "المزيد من الخيارات"
+  },
+  "montagePlanner": {
+    "analysisTasks": "مهام التحليل",
+    "noActiveTasks": "لا توجد مهام نشطة",
+    "activeTasks": "المهام النشطة",
+    "completedTasks": "المهام المكتملة",
+    "totalTasks": "إجمالي المهام",
+    "errorLoadingTasks": "خطأ في تحميل المهام",
+    "cancelTask": "هل أنت متأكد من أنك تريد إلغاء هذه المهمة؟",
+    "eta": "الوقت المتبقي",
+    "minutes": "دقيقة",
+    "momentsDetected": "اللحظات المكتشفة",
+    "planGenerated": "تم إنشاء الخطة",
+    "sequences": "التسلسلات",
+    "status": {
+      "pending": "قيد الانتظار",
+      "initializing": "جاري التهيئة",
+      "analyzingVideo": "تحليل الفيديو",
+      "analyzingAudio": "تحليل الصوت",
+      "detectingMoments": "اكتشاف اللحظات",
+      "generatingPlan": "إنشاء الخطة",
+      "completed": "مكتمل",
+      "failed": "فشل",
+      "cancelled": "ملغى",
+      "unknown": "غير معروف"
+    },
+    "duration": {
+      "seconds": "{{count}} ثانية"
+    }
   }
 }

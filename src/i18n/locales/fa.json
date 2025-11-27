@@ -3104,5 +3104,34 @@
       "planReady": "برنامه مونتاژ آماده اجرا است",
       "timelineIntegrated": "برنامه با موفقیت به جدول زمانی اعمال شد"
     }
+  },
+  "montagePlanner": {
+    "analysisTasks": "وظایف تحلیل",
+    "noActiveTasks": "هیچ وظیفه فعالی وجود ندارد",
+    "activeTasks": "وظایف فعال",
+    "completedTasks": "وظایف تکمیل شده",
+    "totalTasks": "کل وظایف",
+    "errorLoadingTasks": "خطا در بارگذاری وظایف",
+    "cancelTask": "آیا مطمئن هستید که می‌خواهید این وظیفه را لغو کنید؟",
+    "eta": "زمان باقی‌مانده",
+    "minutes": "دقیقه",
+    "momentsDetected": "لحظات شناسایی شده",
+    "planGenerated": "برنامه ایجاد شد",
+    "sequences": "توالی‌ها",
+    "status": {
+      "pending": "در انتظار",
+      "initializing": "در حال راه‌اندازی",
+      "analyzingVideo": "تحلیل ویدیو",
+      "analyzingAudio": "تحلیل صدا",
+      "detectingMoments": "شناسایی لحظات",
+      "generatingPlan": "ایجاد برنامه",
+      "completed": "تکمیل شده",
+      "failed": "ناموفق",
+      "cancelled": "لغو شده",
+      "unknown": "ناشناخته"
+    },
+    "duration": {
+      "seconds": "{{count}} ثانیه"
+    }
   }
 }

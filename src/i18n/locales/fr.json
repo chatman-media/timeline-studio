@@ -2470,5 +2470,34 @@
       "timelineIntegrated": "Plan appliqué avec succès au timeline"
     },
     "sequence": "Séquence"
+  },
+  "montagePlanner": {
+    "analysisTasks": "Tâches d'Analyse",
+    "noActiveTasks": "Aucune tâche active",
+    "activeTasks": "Tâches actives",
+    "completedTasks": "Tâches terminées",
+    "totalTasks": "Total des tâches",
+    "errorLoadingTasks": "Erreur de chargement des tâches",
+    "cancelTask": "Êtes-vous sûr de vouloir annuler cette tâche ?",
+    "eta": "Temps restant",
+    "minutes": "min",
+    "momentsDetected": "Moments détectés",
+    "planGenerated": "Plan généré",
+    "sequences": "séquences",
+    "status": {
+      "pending": "En attente",
+      "initializing": "Initialisation",
+      "analyzingVideo": "Analyse Vidéo",
+      "analyzingAudio": "Analyse Audio",
+      "detectingMoments": "Détection de Moments",
+      "generatingPlan": "Génération du Plan",
+      "completed": "Terminé",
+      "failed": "Échec",
+      "cancelled": "Annulé",
+      "unknown": "Inconnu"
+    },
+    "duration": {
+      "seconds": "{{count}} sec"
+    }
   }
 }

@@ -1600,7 +1600,7 @@
       "empty_project_hint": "Project is empty. Start with:",
       "import_media": "Import Media",
       "ask_ai_import": "Ask AI",
-    "copy": "Copy"
+      "copy": "Copy"
     },
     "title": "Timeline",
     "noTracks": "No tracks",
@@ -3320,6 +3320,35 @@
       "analyzingAudio": "Analyzing audio",
       "detectingMoments": "Detecting moments",
       "generatingPlan": "Generating plan",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    },
+    "duration": {
+      "seconds": "{{count}} sec"
+    }
+  },
+  "montagePlanner": {
+    "analysisTasks": "Analysis Tasks",
+    "noActiveTasks": "No active tasks",
+    "activeTasks": "Active tasks",
+    "completedTasks": "Completed tasks",
+    "totalTasks": "Total tasks",
+    "errorLoadingTasks": "Error loading tasks",
+    "cancelTask": "Are you sure you want to cancel this task?",
+    "eta": "ETA",
+    "minutes": "min",
+    "momentsDetected": "Moments detected",
+    "planGenerated": "Plan generated",
+    "sequences": "sequences",
+    "status": {
+      "pending": "Pending",
+      "initializing": "Initializing",
+      "analyzingVideo": "Analyzing Video",
+      "analyzingAudio": "Analyzing Audio",
+      "detectingMoments": "Detecting Moments",
+      "generatingPlan": "Generating Plan",
       "completed": "Completed",
       "failed": "Failed",
       "cancelled": "Cancelled",

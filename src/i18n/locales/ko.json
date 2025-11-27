@@ -2366,5 +2366,34 @@
       "timelineIntegrated": "계획이 타임라인에 성공적으로 적용되었습니다"
     },
     "sequence": "시퀀스"
+  },
+  "montagePlanner": {
+    "analysisTasks": "분석 작업",
+    "noActiveTasks": "활성 작업 없음",
+    "activeTasks": "활성 작업",
+    "completedTasks": "완료된 작업",
+    "totalTasks": "전체 작업",
+    "errorLoadingTasks": "작업 로드 오류",
+    "cancelTask": "이 작업을 취소하시겠습니까?",
+    "eta": "남은 시간",
+    "minutes": "분",
+    "momentsDetected": "감지된 모멘트",
+    "planGenerated": "계획 생성됨",
+    "sequences": "시퀀스",
+    "status": {
+      "pending": "대기 중",
+      "initializing": "초기화 중",
+      "analyzingVideo": "비디오 분석 중",
+      "analyzingAudio": "오디오 분석 중",
+      "detectingMoments": "모멘트 감지 중",
+      "generatingPlan": "계획 생성 중",
+      "completed": "완료됨",
+      "failed": "실패",
+      "cancelled": "취소됨",
+      "unknown": "알 수 없음"
+    },
+    "duration": {
+      "seconds": "{{count}}초"
+    }
   }
 }

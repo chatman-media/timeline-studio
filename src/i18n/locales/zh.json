@@ -2362,5 +2362,34 @@
       "timelineIntegrated": "方案已成功应用到时间轴"
     },
     "sequence": "序列"
+  },
+  "montagePlanner": {
+    "analysisTasks": "分析任务",
+    "noActiveTasks": "没有活动任务",
+    "activeTasks": "活动任务",
+    "completedTasks": "已完成任务",
+    "totalTasks": "总任务数",
+    "errorLoadingTasks": "加载任务时出错",
+    "cancelTask": "您确定要取消此任务吗？",
+    "eta": "剩余时间",
+    "minutes": "分钟",
+    "momentsDetected": "检测到的时刻",
+    "planGenerated": "已生成计划",
+    "sequences": "序列",
+    "status": {
+      "pending": "待处理",
+      "initializing": "初始化中",
+      "analyzingVideo": "视频分析中",
+      "analyzingAudio": "音频分析中",
+      "detectingMoments": "检测时刻中",
+      "generatingPlan": "生成计划中",
+      "completed": "已完成",
+      "failed": "失败",
+      "cancelled": "已取消",
+      "unknown": "未知"
+    },
+    "duration": {
+      "seconds": "{{count}}秒"
+    }
   }
 }

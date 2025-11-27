@@ -2366,5 +2366,34 @@
       "timelineIntegrated": "Plan zaman çizelgesine başarıyla uygulandı"
     },
     "sequence": "Sekans"
+  },
+  "montagePlanner": {
+    "analysisTasks": "Analiz Görevleri",
+    "noActiveTasks": "Aktif görev yok",
+    "activeTasks": "Aktif görevler",
+    "completedTasks": "Tamamlanan görevler",
+    "totalTasks": "Toplam görevler",
+    "errorLoadingTasks": "Görevler yüklenirken hata",
+    "cancelTask": "Bu görevi iptal etmek istediğinizden emin misiniz?",
+    "eta": "Kalan süre",
+    "minutes": "dk",
+    "momentsDetected": "Tespit edilen anlar",
+    "planGenerated": "Plan oluşturuldu",
+    "sequences": "sekanslar",
+    "status": {
+      "pending": "Beklemede",
+      "initializing": "Başlatılıyor",
+      "analyzingVideo": "Video Analizi",
+      "analyzingAudio": "Ses Analizi",
+      "detectingMoments": "An Tespiti",
+      "generatingPlan": "Plan Oluşturma",
+      "completed": "Tamamlandı",
+      "failed": "Başarısız",
+      "cancelled": "İptal Edildi",
+      "unknown": "Bilinmiyor"
+    },
+    "duration": {
+      "seconds": "{{count}} sn"
+    }
   }
 }
