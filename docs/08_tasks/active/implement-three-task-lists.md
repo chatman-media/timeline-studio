@@ -1,9 +1,9 @@
 # Задача: Реализация 3 отдельных списков задач (Анализ, Рендеринг, Публикация)
 
-**Статус:** 🟡 Active
+**Статус:** 🟡 Active (Этапы 1-4 завершены, осталось: Этап 5-7)
 **Приоритет:** High
 **Создано:** 2025-11-27
-**Обновлено:** 2025-11-27
+**Обновлено:** 2025-11-27 22:20
 **Назначено:** Development Team
 
 ## 📋 Описание
@@ -40,20 +40,27 @@
   - Хук: `use-render-jobs.ts`
   - Backend: `videoCompilerRenderService`
 
-- 🟡 **Analysis Tasks** - AI анализ (frontend готов, backend нужен)
+- ✅ **Analysis Tasks** - AI анализ (полностью реализован!)
   - ✅ Компонент: `analysis-tasks-dropdown.tsx` (223 строки)
-  - ✅ Хук: `use-analysis-tasks.ts` (265 строк, **пока localStorage**)
+  - ✅ Хук: `use-analysis-tasks.ts` (265 строк, **интегрирован с backend**)
+  - ✅ Backend Bridge: `analysis-task-bridge.ts` (419 строк)
   - ✅ Типы: `analysis-task.ts` (144 строки)
+  - ✅ Тесты: `analysis-task-bridge.test.ts` (666 строк, 29 тестов ✅)
   - ✅ i18n: переводы ru/en добавлены
   - ✅ Интеграция: добавлен в top-bar.tsx Group 5
-  - ❌ **Backend: НЕТ ИНТЕГРАЦИИ** - требуется реализация
+  - ✅ **Backend: ПОЛНАЯ ИНТЕГРАЦИЯ** с UnifiedOrchestrator
 
-  **Коммит:** f2118a83002 (2025-11-27)
+  **Коммиты:**
+  - f2118a83002 - Frontend UI (2025-11-27)
+  - ab543d19c7b - Backend интеграция (2025-11-27)
+  - c4dc80f73ed - Comprehensive тесты (2025-11-27)
 
 ### Требуется сделать:
-- ❌ **Backend интеграция для Analysis Tasks** - связать с UnifiedOrchestrator
+- ✅ **Backend интеграция для Analysis Tasks** - ГОТОВО!
+- 🟡 **i18n** - добавить 13 языков (ru/en готовы)
 - 🔧 **Publication Tasks** - расширить для экспорта в локальные форматы (если нужно)
 - 🔧 **Render Tasks** - проверить консистентность UI
+- 🔧 **Тестирование** - добавить тесты для hooks и UI компонентов
 
 ## 🏗️ Архитектура
 
@@ -178,89 +185,82 @@ Tauri Plugin API
 
 ---
 
-### 🔴 Этап 2: Backend интеграция (В РАБОТЕ - текущий этап)
+### ✅ Этап 2: Backend интеграция (ЗАВЕРШЕН - 2025-11-27)
 
-**Для Analysis Tasks (КРИТИЧНО - требуется реализация):**
+**Для Analysis Tasks - полностью реализовано!**
 
 #### Шаг 2.1: Изучить UnifiedOrchestrator
-- [ ] Прочитать `/src/domains/ai-services/services/unified-orchestrator.ts`
-  - Понять структуру workflow
-  - Найти методы получения активных workflow
-  - Определить события прогресса
+- [x] Прочитать `/src/domains/ai-services/services/unified-orchestrator.ts` ✅
+  - Понял структуру workflow (AnalysisWorkflow)
+  - Нашел методы getActiveWorkflows(), getWorkflow(), analyzeComprehensive()
+  - Определил события прогресса (DOMAIN_EVENTS)
 
 #### Шаг 2.2: Создать Analysis Task Bridge
-- [ ] Создать `/src/features/montage-planner/services/analysis-task-bridge.ts`
-  ```typescript
-  interface AnalysisTaskBridge {
-    // Получить список активных задач анализа
-    getActiveTasks(): Promise<AnalysisTask[]>
+- [x] Создать `/src/features/montage-planner/services/analysis-task-bridge.ts` ✅
+  - **419 строк кода** - полная реализация
+  - Singleton pattern с getInstance()
+  - Все методы реализованы:
+    - `getActiveTasks()` - получение активных задач
+    - `getTask(taskId)` - получение задачи по ID
+    - `startAnalysis(videoPath, options)` - запуск анализа
+    - `cancelTask(taskId)` - отмена задачи
+    - `subscribeToProgress(callback)` - подписка на события
+  - **666 строк comprehensive тестов** (29 тестов, все проходят ✅)
+  - Кэширование результатов для оптимизации
+  - Преобразование AnalysisWorkflow → AnalysisTask
+  - Mapping статусов и прогресса
+  - Поддержка Windows/Unix путей
 
-    // Получить конкретную задачу по ID
-    getTask(taskId: string): Promise<AnalysisTask | null>
+  **Коммиты:**
+  - ab543d19c7b - backend интеграция
+  - c4dc80f73ed - comprehensive тесты
 
-    // Запустить новый анализ
-    startAnalysis(videoPath: string, options?: AnalysisTaskOptions): Promise<string>
-
-    // Отменить задачу
-    cancelTask(taskId: string): Promise<boolean>
-
-    // Подписаться на обновления прогресса
-    subscribeToProgress(callback: (task: AnalysisTask) => void): () => void
-  }
-  ```
-  **Реализация:**
-  - Связать с UnifiedOrchestrator
-  - Преобразование Workflow → AnalysisTask
-  - Слушать события CONTENT_ANALYSIS_*, WORKFLOW_*
-  - Кэшировать результаты для оптимизации
-
-#### Шаг 2.3: Модифицировать UnifiedOrchestrator (если требуется)
-- [ ] Добавить методы экспорта (если не существуют):
-  - `getActiveWorkflows(): Workflow[]`
-  - `getWorkflowById(id: string): Workflow | null`
-  - `getWorkflowProgress(id: string): WorkflowProgress`
-  - `cancelWorkflow(id: string): Promise<boolean>`
+#### Шаг 2.3: Модифицировать UnifiedOrchestrator
+- [x] Проверил методы экспорта - все уже есть! ✅
+  - `getActiveWorkflows(): AnalysisWorkflow[]` ✅
+  - `getWorkflow(id): AnalysisWorkflow | null` ✅
+  - `analyzeComprehensive()` ✅
+  - `cancelWorkflow(id): boolean` ✅
 
 #### Шаг 2.4: Интеграция событий
-- [ ] Определить события backend для отслеживания:
-  ```typescript
-  // События от ai-services domain
-  DOMAIN_EVENTS.CONTENT_ANALYSIS_STARTED
-  DOMAIN_EVENTS.CONTENT_ANALYSIS_PROGRESS
-  DOMAIN_EVENTS.CONTENT_ANALYSIS_COMPLETED
-  DOMAIN_EVENTS.CONTENT_ANALYSIS_FAILED
-
-  // События workflow
-  WORKFLOW_STARTED
-  WORKFLOW_PROGRESS
-  WORKFLOW_STAGE_CHANGED
-  WORKFLOW_COMPLETED
-  WORKFLOW_CANCELLED
-  ```
+- [x] Подписка на все необходимые события реализована ✅
+  - `AI_DIRECTOR_ANALYSIS_PROGRESS` - обновление прогресса в реальном времени
+  - `AI_DIRECTOR_STAGE_COMPLETED` - завершение stage
+  - `CONTENT_ANALYSIS_STARTED` - начало анализа
+  - `CONTENT_ANALYSIS_COMPLETED` - завершение анализа
+  - Автоматическое обновление кэша при получении событий
 
 #### Шаг 2.5: Тестирование
-- [ ] Создать mock UnifiedOrchestrator для тестов
-- [ ] Протестировать преобразование данных
-- [ ] Протестировать подписку на события
-- [ ] Обработать edge cases (отмена, ошибки, timeout)
+- [x] Создан comprehensive test suite ✅
+  - 29 тестов, все проходят (51/51 в montage-planner)
+  - Mock UnifiedOrchestrator
+  - Тесты преобразования данных (Workflow → Task)
+  - Тесты подписки на события
+  - Edge cases: отмена, ошибки, кэширование
+  - Status mapping (все 7 статусов)
+  - Progress calculation (0%, 33%, 67%, 100%)
 
 ---
 
-### 🟡 Этап 3: React hooks (ЧАСТИЧНО ЗАВЕРШЕН - 2025-11-27)
+### ✅ Этап 3: React hooks (ЗАВЕРШЕН - 2025-11-27)
 
 **Создано:**
 - [x] `/src/features/montage-planner/hooks/use-analysis-tasks.ts` ✅
   - 265 строк, полная реализация
-  - ❗ **НО: Использует localStorage вместо backend**
+  - ✅ **Интегрирован с analysisTaskBridge**
   - Паттерн: useState, useRef, useEffect, useCallback
-  - Polling: 5 секунд с защитой от concurrent запросов
+  - Polling: 30 секунд для синхронизации
+  - Real-time обновления через subscribeToProgress
   - Helper functions: getAnalysisTaskStatusLabel, getAnalysisTaskStatusColor, formatAnalysisTaskDuration
+  - Все методы реализованы:
+    - `refreshTasks()` - через analysisTaskBridge.getActiveTasks()
+    - `getTask(taskId)` - через analysisTaskBridge.getTask()
+    - `createTask(videoPath, videoName)` - через analysisTaskBridge.startAnalysis()
+    - `cancelTask(taskId)` - через analysisTaskBridge.cancelTask()
+  - Подписка на события прогресса в реальном времени
+  - Автоматическое обновление UI при изменении задач
 
-**Требуется доработать:**
-- [ ] Заменить localStorage на analysisTaskBridge
-- [ ] Добавить подписку на события прогресса
-- [ ] Добавить retry механизм при ошибках
-- [ ] Добавить метод startAnalysis (сейчас только createTask в localStorage)
+**Коммит:** ab543d19c7b - backend интеграция
 
 **Проверить существующие:**
 - [ ] `use-publication-tasks.ts` - убедиться в консистентности
@@ -304,16 +304,16 @@ Tauri Plugin API
 
 ---
 
-### Этап 5: Интеграция в Top Bar (1 день)
+### ✅ Этап 5: Интеграция в Top Bar (ЗАВЕРШЕН - 2025-11-27)
 
-**Модифицировать:**
-- [ ] `/src/features/media-studio/components/top-bar/top-bar.tsx`
+**Модифицировано:**
+- [x] `/src/features/media-studio/components/top-bar/top-bar.tsx` ✅
 
 **Изменения:**
 ```tsx
 {/* Группа 5: Задачи и экспорт */}
 <div className="flex items-center justify-end">
-  <AnalysisTasksDropdown />      {/* НОВОЕ - AI анализ */}
+  <AnalysisTasksDropdown />      {/* ДОБАВЛЕНО - AI анализ */}
   <PublicationTasksDropdown />   {/* УЖЕ ЕСТЬ - экспорт/публикация */}
   <RenderJobsDropdown />         {/* УЖЕ ЕСТЬ - рендеринг */}
 
@@ -323,19 +323,25 @@ Tauri Plugin API
 ```
 
 **Иконки:**
-- Analysis: Brain или Sparkles (AI анализ)
+- Analysis: Brain ✅ (AI анализ)
 - Publication: Send или Upload (экспорт/публикация)
 - Render: ListTodo или Clapperboard (рендеринг)
 
-**Задачи:**
-- [ ] Добавить импорты новых компонентов
-- [ ] Переорганизовать layout группы 5
-- [ ] Протестировать responsive behavior
-- [ ] Убедиться в правильном z-index для dropdown'ов
+**Завершено:**
+- [x] Добавлен импорт AnalysisTasksDropdown ✅
+- [x] Добавлен в layout группы 5 ✅
+- [x] Responsive behavior работает ✅
+- [x] z-index для dropdown'ов правильный ✅
+
+**Коммит:** f2118a83002 - Frontend UI
+
+**Осталось проверить:**
+- [ ] Консистентность UI между тремя dropdown'ами
+- [ ] Responsive behavior на маленьких экранах
 
 ---
 
-### Этап 6: i18n (1 день)
+### 🟡 Этап 6: i18n (ЧАСТИЧНО ЗАВЕРШЕН - 2025-11-27)
 
 **Добавить в `/src/i18n/locales/[lang].json`:**
 
@@ -365,13 +371,14 @@ Tauri Plugin API
 }
 ```
 
-**Проверить существующие переводы:**
-- [ ] `publication.*` - убедиться что все статусы переведены
-- [ ] `render.*` - убедиться что все статусы переведены
+**Завершено:**
+- [x] ru - Русский ✅ (коммит f2118a83002)
+- [x] en - English ✅ (коммит f2118a83002)
+- Секция `montagePlanner.*` полностью переведена
+- Все статусы (pending, analyzing_video, analyzing_audio, detecting_moments, generating_plan, completed, failed, cancelled)
+- Сообщения (noTasks, activeTasks, completedTasks, etc.)
 
-**Языки для перевода:**
-- [ ] en - English
-- [ ] ru - Русский
+**Осталось перевести (13 языков):**
 - [ ] es - Español
 - [ ] fr - Français
 - [ ] de - Deutsch
@@ -386,12 +393,29 @@ Tauri Plugin API
 - [ ] ar - العربية
 - [ ] fa - فارسی
 
+**Проверить существующие переводы:**
+- [ ] `publication.*` - убедиться что все статусы переведены
+- [ ] `render.*` - убедиться что все статусы переведены
+
 ---
 
-### Этап 7: Тестирование (1-2 дня)
+### 🟡 Этап 7: Тестирование (ЧАСТИЧНО ЗАВЕРШЕН - 2025-11-27)
 
-**Unit тесты (только для Analysis Tasks):**
-- [ ] `/src/features/analysis-tasks/__tests__/hooks/use-analysis-tasks.test.ts`
+**Unit тесты (AnalysisTaskBridge - ГОТОВО):**
+- [x] `/src/features/montage-planner/services/__tests__/analysis-task-bridge.test.ts` ✅
+  - **666 строк, 29 comprehensive тестов, все проходят ✅**
+  - Singleton pattern (2 теста)
+  - getActiveTasks, getTask (6 тестов)
+  - Status Mapping - все 7 статусов (7 тестов)
+  - Progress Calculation - 0%, 33%, 67%, 100% (4 теста)
+  - startAnalysis, cancelTask (4 теста)
+  - subscribeToProgress (3 теста)
+  - Video Name Extraction (1 тест)
+  - Error Handling (2 теста)
+  - **Коммит:** c4dc80f73ed
+
+**Unit тесты (use-analysis-tasks hook - TODO):**
+- [ ] `/src/features/montage-planner/hooks/__tests__/use-analysis-tasks.test.tsx`
   - Тест polling логики
   - Тест cancel task
   - Тест error handling
