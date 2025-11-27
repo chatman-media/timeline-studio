@@ -1,3 +1,11 @@
+## [3.32.4](https://github.com/chatman-media/timeline-studio/compare/v3.32.3...v3.32.4) (2025-11-27)
+
+
+### Bug Fixes
+
+* **app-state:** make executeCommand async to return result ([c683b3b](https://github.com/chatman-media/timeline-studio/commit/c683b3b7f2bea0fc8d89cd55c81f838321bf2ad7))
+* **browser:** click on video preview plays in player instead of adding to timeline ([8ec040e](https://github.com/chatman-media/timeline-studio/commit/8ec040e4f77ce657b0528ae1bdd886a78ac396d2))
+
 ## [3.32.3](https://github.com/chatman-media/timeline-studio/compare/v3.32.2...v3.32.3) (2025-11-27)
 
 
