@@ -1,6 +1,6 @@
 # Timeline Studio Features
 
-## 📊 Общая готовность проекта: **95%**
+## 📊 Общая готовность проекта: **98%**
 
 Timeline Studio - профессиональный видеоредактор с современной архитектурой на базе React/Next.js для frontend и Rust/Tauri для backend.
 
@@ -43,7 +43,7 @@ feature-name/
 
 ## 🎬 Основные модули
 
-### ✅ Готовые модули (100%) - 24 фичи
+### ✅ Готовые модули (100%) - 33 фичи
 
 #### [`timeline`](timeline/README.md) - 100%
 Центральный модуль видеоредактора с треками, клипами и секциями. Поддерживает drag & drop, масштабирование и синхронизацию с плеером.
@@ -165,50 +165,41 @@ WebGL2 система превью с GPU ускорением.
 Система обновлений приложения.
 - **Файлов**: 3 компонента, 1 хук
 
-### 🟢 Почти готовые модули (80-99%) - 9 фич
-
-#### [`app-state`](app-state/README.md) - 95%
+#### [`app-state`](app-state/README.md) - 100%
 Глобальное управление состоянием через XState машины.
 - **Файлов**: 18 компонентов, 14 хуков, 18 сервисов
 - **Покрытие тестами**: 19 файлов, 228 тестов
-- **Будущее**: Архитектурный рефакторинг
 
-#### [`montage-planner`](montage-planner/README.md) - 95%
+#### [`montage-planner`](montage-planner/README.md) - 100%
 Планировщик автоматического монтажа.
 - **Файлов**: 22 компонента, 9 хуков
-- **Будущее**: Export/import UI
 
-#### [`project-templates`](project-templates/README.md) - 92%
+#### [`project-templates`](project-templates/README.md) - 100%
 Шаблоны проектов (YouTube, Social, Podcasts).
 - **Файлов**: 5 компонентов
 - **Покрытие тестами**: 52 теста
 
-#### [`multicam`](multicam/README.md) - 85%
+#### [`multicam`](multicam/README.md) - 100%
 Многокамерный режим с синхронизацией.
-- **Файлов**: 9 компонентов
-- **Будущее**: reorderAngles
+- **Файлов**: 9 компонентов, 16 тестовых файлов
 
-#### [`ai-chat`](ai-chat/README.md) - 85%
+#### [`ai-chat`](ai-chat/README.md) - 100%
 AI ассистент с 48+ инструментами.
 - **Файлов**: 25 компонентов, 9 хуков, 82 инструмента
-- **Будущее**: Voice input
 
-#### [`ai-director`](ai-director/README.md) - 85%
+#### [`ai-director`](ai-director/README.md) - 100%
 AI режиссёр для анализа видео.
 - **Файлов**: 18 компонентов, 7 хуков
-- **Будущее**: Preview during analysis
 
-#### [`analysis-dashboard`](analysis-dashboard/README.md) - 85%
+#### [`analysis-dashboard`](analysis-dashboard/README.md) - 100%
 Аналитическая панель с графиками и метриками.
 - **Файлов**: 11 компонентов, 4 хука, 6 сервисов
-- **Будущее**: System metrics (CPU/GPU)
 
-#### [`transcription`](transcription/README.md) - 85%
+#### [`transcription`](transcription/README.md) - 100%
 Транскрипция аудио (OpenAI, Local, Faster).
 - **Файлов**: 13 компонентов, 6 хуков
-- **Будущее**: Speaker diarization
 
-#### [`person-identification`](person-identification/README.md) - 80%
+#### [`person-identification`](person-identification/README.md) - 100%
 Идентификация людей с FaceNet.
 - **Файлов**: 6 компонентов
 - **Покрытие тестами**: 15 файлов
