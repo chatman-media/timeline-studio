@@ -289,8 +289,9 @@ mod tests {
 
     let (offset, _) = cross_correlate(&signal1, &signal2, 20);
 
-    // Signal2 is shifted by 5 samples ahead
-    assert!((offset - 5).abs() <= 2);
+    // Signal2 starts at index 5, so signal1[5] = signal2[0]
+    // To align: sig1[i] with sig2[i + offset], we need offset = -5
+    assert!((offset + 5).abs() <= 2);
   }
 
   #[test]
