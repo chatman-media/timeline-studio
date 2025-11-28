@@ -2,9 +2,11 @@
  * Media Metadata Service - Media Management Domain
  *
  * Сервис для извлечения и анализа метаданных медиа файлов
+ *
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует IMediaService через container
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import { getMedia } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   MediaAnalysisResult,
@@ -24,9 +26,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
     logger.info("[Media Metadata] Extracting metadata from:", { filePath })
 
     try {
-      const metadata = await invoke<MediaMetadata>("extract_media_metadata", {
-        path: filePath,
-      })
+      const metadata = await getMedia().extractMediaMetadata(filePath)
 
       logger.debug("[Media Metadata] Extracted metadata:", { data: metadata })
       return metadata
@@ -43,10 +43,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
     logger.info(`[Media Metadata] Generating thumbnail for: ${filePath} at`, { time })
 
     try {
-      const thumbnailPath = await invoke<string>("generate_video_thumbnail", {
-        videoPath: filePath,
-        time,
-      })
+      const thumbnailPath = await getMedia().generateVideoThumbnail(filePath, time)
 
       logger.info("[Media Metadata] Generated thumbnail:", { thumbnailPath })
       return thumbnailPath
@@ -117,25 +114,10 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
     logger.info("[Media Metadata] Getting duration for:", { filePath })
 
     try {
-      const result = await invoke<{
-        success: boolean
-        data?: number
-        error?: string
-      }>("execute_command", {
-        command: {
-          type: "GetMediaDuration",
-          params: {
-            file_path: filePath,
-          },
-        },
-      })
+      const duration = await getMedia().getMediaDuration(filePath)
 
-      if (!result.success || result.data === undefined) {
-        throw new Error(result.error || "Failed to get duration")
-      }
-
-      logger.info("[Media Metadata] Duration:", { duration: result.data })
-      return result.data
+      logger.info("[Media Metadata] Duration:", { duration })
+      return duration
     } catch (error) {
       logger.error("[Media Metadata] Failed to get duration:", { error })
       throw new Error(`Failed to get media duration: ${error}`)
@@ -147,12 +129,10 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    */
   private async detectScenes(filePath: string): Promise<SceneDetectionResult[]> {
     try {
-      const scenes = await invoke<SceneDetectionResult[]>("detect_video_scenes", {
-        path: filePath,
-      })
+      const scenes = await getMedia().detectVideoScenes(filePath)
 
       logger.info("[Media Metadata] Detected scenes", { scenesCount: scenes.length })
-      return scenes
+      return scenes as SceneDetectionResult[]
     } catch (error) {
       logger.error("[Media Metadata] Scene detection failed:", { error })
       return []
@@ -164,9 +144,7 @@ class MediaMetadataServiceImpl implements MediaMetadataService {
    */
   private async generateWaveform(filePath: string): Promise<Float32Array> {
     try {
-      const waveformData = await invoke<number[]>("generate_audio_waveform", {
-        path: filePath,
-      })
+      const waveformData = await getMedia().generateAudioWaveform(filePath)
 
       logger.info("[Media Metadata] Generated waveform with samples", { samplesCount: waveformData.length })
       return new Float32Array(waveformData)

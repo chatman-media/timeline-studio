@@ -4,12 +4,10 @@
  * Сервис для генерации визуализации аудио волны (waveform)
  * Используется для отображения аудио на таймлайне
  *
- * ✅ ОБНОВЛЕНО (2025-11-19): Использует реальную Tauri команду
- * Backend: src-tauri/src/video_compiler/commands/preview/commands.rs:219
- * Команда: generate_waveform_preview
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует IMediaService через container
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import { getMedia } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
 
@@ -107,10 +105,8 @@ export class WaveformGeneratorService {
       // ✅ Генерируем временный путь для PNG файла
       const outputPath = `/tmp/waveform_${Date.now()}.png`
 
-      // ✅ Вызываем реальную Tauri команду generate_waveform_preview
-      const resultPath = await invoke<string>("generate_waveform_preview", {
-        audioPath: sourcePath,
-        outputPath,
+      // ✅ Используем IMediaService для генерации waveform
+      const resultPath = await getMedia().generateWaveformPreview(sourcePath, outputPath, {
         width,
         height,
         color,

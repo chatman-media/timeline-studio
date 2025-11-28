@@ -11,7 +11,7 @@
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { getBackendSync } from "@/adapters/tauri"
 import { resetExecuteCommandMock, resetMockBrowserState } from "@/test/mocks/backend-sync"
 import { MOCK_FILE_IDS } from "../__mocks__"
 import { BrowserProvider, useBrowser } from "../providers/browser-provider"

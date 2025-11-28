@@ -3,9 +3,11 @@
  *
  * Сервис для интеллектуальной организации медиафайлов
  * Группировка по дате, камере, событиям и другим критериям
+ *
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует IPlatformService через container
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import { getPlatform } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
 import { getMediaMetadataService } from "./media-metadata-service"
@@ -370,13 +372,11 @@ export class SmartOrganizationService {
         }
       }
 
-      // 3. Получаем статистику файла через Tauri
-      const fileStats = await invoke<{ size: number; lastModified: number }>("get_file_stats", {
-        path: file.path,
-      })
+      // 3. Получаем статистику файла через platform service
+      const fileStats = await getPlatform().getFileStats(file.path)
 
       // Используем дату модификации если включена или как fallback
-      if (fileStats.lastModified && (useModificationDate || useCreationDate)) {
+      if (fileStats?.lastModified && (useModificationDate || useCreationDate)) {
         return new Date(fileStats.lastModified)
       }
 

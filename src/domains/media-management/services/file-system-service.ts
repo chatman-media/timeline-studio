@@ -3,22 +3,23 @@
  *
  * Domain service for file system operations.
  * Handles all backend calls related to file management.
+ *
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует IPlatformService через container
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import { getPlatform as getPlatformService } from "@/core/container"
+import type { FileStats } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("FileSystemService")
 
-export interface FileStats {
-  size: number
-  lastModified: number
-}
+// Re-export FileStats for backwards compatibility
+export type { FileStats } from "@/core/ports"
 
 /**
  * File System Service
  *
- * Handles file system operations through Tauri backend commands.
+ * Handles file system operations through platform service.
  */
 export class FileSystemService {
   /**
@@ -30,7 +31,7 @@ export class FileSystemService {
   async fileExists(path: string): Promise<boolean> {
     try {
       logger.debugSync("Checking file existence", { path })
-      const result = await invoke<boolean>("file_exists", { path })
+      const result = await getPlatformService().exists(path)
       return result
     } catch (error) {
       logger.errorSync("Failed to check file existence", { path, error })
@@ -47,7 +48,7 @@ export class FileSystemService {
   async getFileStats(path: string): Promise<FileStats | null> {
     try {
       logger.debugSync("Getting file stats", { path })
-      const stats = await invoke<FileStats>("get_file_stats", { path })
+      const stats = await getPlatformService().getFileStats(path)
       return stats
     } catch (error) {
       logger.errorSync("Failed to get file stats", { path, error })
@@ -62,7 +63,7 @@ export class FileSystemService {
    */
   async getPlatform(): Promise<string> {
     try {
-      const platform = await invoke<string>("get_platform")
+      const platform = await getPlatformService().getPlatform()
       logger.debugSync("Got platform", { platform })
       return platform
     } catch (error) {
@@ -82,11 +83,7 @@ export class FileSystemService {
   async searchFilesByName(directory: string, filename: string, maxDepth = 3): Promise<string[]> {
     try {
       logger.debugSync("Searching for files", { directory, filename, maxDepth })
-      const result = await invoke<string[]>("search_files_by_name", {
-        directory,
-        filename,
-        maxDepth,
-      })
+      const result = await getPlatformService().searchFilesByName(directory, filename, maxDepth)
       logger.debugSync("Found files", { count: result.length })
       return result
     } catch (error) {
@@ -104,7 +101,7 @@ export class FileSystemService {
   async getAbsolutePath(path: string): Promise<string | null> {
     try {
       logger.debugSync("Getting absolute path", { path })
-      const result = await invoke<string>("get_absolute_path", { path })
+      const result = await getPlatformService().getAbsolutePath(path)
       return result
     } catch (error) {
       logger.errorSync("Failed to get absolute path", { path, error })

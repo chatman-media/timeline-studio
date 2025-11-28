@@ -3,9 +3,12 @@
  *
  * Сервис для генерации прокси-файлов через FFmpeg
  * Создает оптимизированные версии медиафайлов для более плавного редактирования
+ *
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует IMediaService через container
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import { getMedia } from "@/core/container"
+import type { ProxyGenerationResult } from "@/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
 
@@ -41,21 +44,8 @@ export interface ProxyGenerationOptions {
   onProgress?: (progress: number) => void
 }
 
-/**
- * Результат генерации прокси
- */
-export interface ProxyGenerationResult {
-  /** Путь к сгенерированному прокси-файлу */
-  proxyPath: string
-  /** Путь к исходному файлу */
-  sourcePath: string
-  /** Размер прокси-файла в байтах */
-  size: number
-  /** Разрешение прокси */
-  resolution: { width: number; height: number }
-  /** Время генерации в миллисекундах */
-  generationTime: number
-}
+// Re-export ProxyGenerationResult from ports for backwards compatibility
+export type { ProxyGenerationResult } from "@/core/ports"
 
 /**
  * Сервис для генерации прокси-файлов
@@ -128,9 +118,8 @@ export class ProxyGeneratorService {
       const controller = new AbortController()
       this.activeGenerations.set(sourcePath, controller)
 
-      // Вызываем Tauri команду для генерации прокси
-      const result = await invoke<ProxyGenerationResult>("generate_proxy_command", {
-        sourcePath,
+      // Вызываем media service для генерации прокси
+      const result = await getMedia().generateProxy(sourcePath, {
         width: targetResolution.width,
         height: targetResolution.height,
         codec,
