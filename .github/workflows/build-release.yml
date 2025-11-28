@@ -484,13 +484,8 @@ jobs:
           cd src-tauri
           cargo build --release
 
-      - name: Generate TypeScript bindings (Unix)
-        if: runner.os != 'Windows'
-        env:
-          PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig
-        run: |
-          cd src-tauri
-          cargo run --bin generate_types
+      # TypeScript bindings are generated during development only
+      # generate_types binary is commented out in Cargo.toml for release builds
 
       - name: Build Rust dependencies (Windows)
         if: runner.os == 'Windows'
@@ -507,18 +502,8 @@ jobs:
           cd src-tauri
           cargo build --release
 
-      - name: Generate TypeScript bindings (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        env:
-          FFMPEG_DIR: C:\vcpkg\installed\x64-windows
-          FFMPEG_INCLUDE_DIR: C:\vcpkg\installed\x64-windows\include
-          FFMPEG_LIB_DIR: C:\vcpkg\installed\x64-windows\lib
-          FFMPEG_NO_PKG_CONFIG: 1
-          RUSTFLAGS: -C link-arg=/LIBPATH:C:\vcpkg\installed\x64-windows\lib
-        run: |
-          cd src-tauri
-          cargo run --bin generate_types
+      # TypeScript bindings are generated during development only
+      # generate_types binary is commented out in Cargo.toml for release builds
 
       - name: Install Tauri CLI (Unix)
         if: runner.os != 'Windows'
@@ -642,24 +627,27 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: |
           cd src-tauri
-          # Remove any existing test_specta binaries from previous builds
-          find target -name "*test_specta*" -type f -delete 2>/dev/null || true
-          find target -name "test_specta" -type f -delete 2>/dev/null || true
+          # Remove any existing development binaries from previous builds
+          echo "🧹 Cleaning development binaries from cached target directory..."
+
+          # List of development-only binaries that should never be bundled
+          DEV_BINARIES="test_specta generate_types export_types"
+
+          for binary in $DEV_BINARIES; do
+            echo "Removing $binary binaries and related files..."
+            find target -name "$binary" -type f -delete 2>/dev/null || true
+            find target -name "$binary.exe" -type f -delete 2>/dev/null || true
+            find target -name "*$binary*" -type f \( -name "*.d" -o -name "*.pdb" -o -name "*.rlib" \) -delete 2>/dev/null || true
+          done
+
           # Remove bundle directory to ensure clean bundling
           rm -rf target/release/bundle target/universal-apple-darwin/release/bundle
-          cd ..
 
-      - name: Remove development binaries before build (macOS)
-        if: matrix.platform == 'macos-latest'
-        run: |
-          cd src-tauri
-          # Remove development-only binaries that shouldn't be bundled
-          rm -f target/universal-apple-darwin/release/generate_types
-          rm -f target/universal-apple-darwin/release/export_types
-          rm -f target/x86_64-apple-darwin/release/generate_types
-          rm -f target/x86_64-apple-darwin/release/export_types
-          rm -f target/aarch64-apple-darwin/release/generate_types
-          rm -f target/aarch64-apple-darwin/release/export_types
+          # Remove Cargo metadata that might reference old binaries
+          rm -rf target/.rustc_info.json 2>/dev/null || true
+          rm -rf target/universal-apple-darwin/.rustc_info.json 2>/dev/null || true
+
+          echo "✅ Target directory cleaned"
           cd ..
 
       - name: Build Next.js app (macOS)

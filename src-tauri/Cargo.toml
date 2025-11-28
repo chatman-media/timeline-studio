@@ -7,6 +7,9 @@ license = "MIT WITH Commons-Clause"
 repository = "https://github.com/chatman-media/timeline-studio"
 edition = "2021"
 default-run = "timeline-studio"
+# Disable auto-detection of binaries in src/bin/
+# This prevents development-only binaries (generate_types, export_types) from being included in release builds
+autobins = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
