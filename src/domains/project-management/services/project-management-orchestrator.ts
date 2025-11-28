@@ -5,13 +5,13 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { storeService } from "./store-service"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"
 import { type UserSettingsContextType, userSettingsMachine } from "../machines/user-settings-machine"
 import { getPerformanceMetricsTracker } from "./performance-metrics"
+import { storeService } from "./store-service"
 
 const logger = createLogger("ProjectManagementOrchestrator")
 
