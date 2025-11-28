@@ -9,19 +9,53 @@
 // Types
 // ============================================================================
 
-export interface MediaMetadata {
-  duration: number
-  width: number
-  height: number
-  fps: number
-  codec: string
-  bitrate: number
-  audioCodec?: string
-  audioChannels?: number
-  audioSampleRate?: number
-  fileSize: number
-  format: string
+/**
+ * Video metadata
+ */
+export interface VideoMetadataFields {
+  duration?: number
+  width?: number
+  height?: number
+  fps?: number
+  codec?: string
+  bitrate?: number
+  size?: number
+  creation_time?: string
 }
+
+/**
+ * Audio metadata
+ */
+export interface AudioMetadataFields {
+  duration?: number
+  codec?: string
+  bitrate?: number
+  sample_rate?: number
+  channels?: number
+  size?: number
+  creation_time?: string
+}
+
+/**
+ * Image metadata
+ */
+export interface ImageMetadataFields {
+  width?: number
+  height?: number
+  format?: string
+  size?: number
+  creation_time?: string
+}
+
+/**
+ * Discriminated union for media metadata
+ * Matches the format returned by Rust backend
+ */
+export type MediaMetadata =
+  | ({ type: "Video" } & VideoMetadataFields)
+  | ({ type: "Audio" } & AudioMetadataFields)
+  | ({ type: "Image" } & ImageMetadataFields)
+  | { type: "Unknown" }
 
 export interface ProcessMediaOptions {
   generateThumbnail?: boolean
@@ -69,6 +103,23 @@ export interface SceneDetectionResult {
   startTime: number
   endTime: number
   confidence: number
+}
+
+export interface ProxyGenerationOptions {
+  width: number
+  height: number
+  codec?: string
+  bitrate?: string
+  preserveAudio?: boolean
+  fps?: number
+}
+
+export interface ProxyGenerationResult {
+  proxyPath: string
+  sourcePath: string
+  size: number
+  resolution: { width: number; height: number }
+  generationTime: number
 }
 
 export interface MediaPreviewData {
@@ -229,4 +280,49 @@ export interface IMediaService {
     thumbnailWidth: number,
     thumbnailHeight: number,
   ): Promise<ScannedMediaFile[]>
+
+  // === Audio Analysis ===
+
+  /**
+   * Generate waveform preview image for audio file
+   */
+  generateWaveformPreview(
+    audioPath: string,
+    outputPath: string,
+    options?: WaveformOptions,
+  ): Promise<string>
+
+  /**
+   * Generate waveform data for audio file
+   */
+  generateAudioWaveform(filePath: string): Promise<number[]>
+
+  // === Video Analysis ===
+
+  /**
+   * Detect scenes in video file
+   */
+  detectVideoScenes(filePath: string): Promise<SceneDetectionResult[]>
+
+  /**
+   * Generate video thumbnail at specific time
+   */
+  generateVideoThumbnail(videoPath: string, time: number): Promise<string>
+
+  /**
+   * Extract detailed media metadata
+   */
+  extractMediaMetadata(filePath: string): Promise<MediaMetadata>
+
+  /**
+   * Get media duration
+   */
+  getMediaDuration(filePath: string): Promise<number>
+
+  // === Proxy Generation ===
+
+  /**
+   * Generate proxy file for media
+   */
+  generateProxy(sourcePath: string, options: ProxyGenerationOptions): Promise<ProxyGenerationResult>
 }

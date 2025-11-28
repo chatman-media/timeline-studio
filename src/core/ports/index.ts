@@ -15,12 +15,17 @@ export type {
   MediaPreviewData,
   ProcessMediaOptions,
   ProcessMediaResult,
+  ProxyGenerationOptions,
+  ProxyGenerationResult,
   ScanFolderOptions,
   ScannedMediaFile,
+  SceneDetectionResult,
   ThumbnailOptions,
   WaveformData,
+  WaveformOptions,
 } from "./media.port"
 export type {
+  FileStats,
   IPlatformService,
   NotificationOptions,
   OpenDialogOptions,

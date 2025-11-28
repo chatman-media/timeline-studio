@@ -32,6 +32,10 @@ const createMockPlatform = (): IPlatformService => ({
   basename: vi.fn(),
   dirname: vi.fn(),
   join: vi.fn(),
+  getFileStats: vi.fn(),
+  getPlatform: vi.fn(),
+  searchFilesByName: vi.fn(),
+  getAbsolutePath: vi.fn(),
 })
 
 const createMockStorage = (): IStorageService => ({

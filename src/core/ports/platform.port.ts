@@ -85,4 +85,21 @@ export interface IPlatformService {
   dirname(path: string): Promise<string>
   /** Join path segments */
   join(...paths: string[]): Promise<string>
+
+  /**
+   * Extended File System operations
+   */
+  /** Get file statistics (size, last modified time) */
+  getFileStats(path: string): Promise<FileStats | null>
+  /** Get operating system platform */
+  getPlatform(): Promise<string>
+  /** Search for files by name in a directory */
+  searchFilesByName(directory: string, filename: string, maxDepth?: number): Promise<string[]>
+  /** Get absolute path for a file */
+  getAbsolutePath(path: string): Promise<string | null>
+}
+
+export interface FileStats {
+  size: number
+  lastModified: number
 }
