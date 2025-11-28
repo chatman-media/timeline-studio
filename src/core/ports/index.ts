@@ -5,6 +5,37 @@
  * Домены и фичи используют только эти интерфейсы, не зная о конкретных реализациях.
  */
 
+export type {
+  AIDirectorConfig,
+  AIDirectorHealthCheckResult,
+  AnalysisOptions,
+  AnalysisProgress,
+  AudioCorrelationResult,
+  AudioFormat,
+  AudioFormatInfo,
+  AudioPeakData,
+  ComprehensiveAnalysisResult,
+  ConfigValidationResult,
+  FaceDetectionResult,
+  Fragment,
+  IAIService,
+  MCPConfig,
+  MomentScore,
+  MontagePlan,
+  PersonData,
+  PlanGenerationOptions,
+  PlanStatistics,
+  PlanValidation,
+  SaveAudioParams,
+  SaveAudioResult,
+  SpeechOnsetData,
+  SubtitleSegment,
+  SystemCapabilities,
+  TranscriptionResult,
+  TranslationResult,
+  VideoRecognitionResult,
+  YOLODetectionResult,
+} from "./ai.port"
 export type { IBackendService, Unsubscribe } from "./backend.port"
 export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
 export type {

@@ -7,6 +7,7 @@
 
 import { container } from "@/core/container"
 
+import { MockAIService } from "./ai"
 import { MockBackendService } from "./backend"
 import { MockEventService } from "./event"
 import { MockMediaService } from "./media"
@@ -14,6 +15,7 @@ import { MockPlatformService } from "./platform"
 import { MockStorageService } from "./storage"
 import { MockVideoService } from "./video"
 
+export { MockAIService } from "./ai"
 export { MockBackendService } from "./backend"
 export { MockEventService } from "./event"
 export { MockMediaService } from "./media"
@@ -36,6 +38,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   event: MockEventService
   media: MockMediaService
   video: MockVideoService
+  ai: MockAIService
 } {
   const { useLocalStorage = false } = options
 
@@ -46,6 +49,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const event = new MockEventService()
   const media = new MockMediaService()
   const video = new MockVideoService()
+  const ai = new MockAIService()
 
   // Register in container
   container.registerBackend(backend)
@@ -54,9 +58,10 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerEvent(event)
   container.registerMedia(media)
   container.registerVideo(video)
+  container.registerAI(ai)
 
   // Return services for test manipulation
-  return { backend, platform, storage, event, media, video }
+  return { backend, platform, storage, event, media, video, ai }
 }
 
 /**
@@ -70,6 +75,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   event: MockEventService
   media: MockMediaService
   video: MockVideoService
+  ai: MockAIService
 } {
   const { useLocalStorage = false } = options
 
@@ -80,5 +86,6 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     event: new MockEventService(),
     media: new MockMediaService(),
     video: new MockVideoService(),
+    ai: new MockAIService(),
   }
 }

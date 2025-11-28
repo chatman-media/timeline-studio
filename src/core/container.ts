@@ -6,6 +6,7 @@
  */
 
 import type {
+  IAIService,
   IBackendService,
   IEventService,
   IMediaService,
@@ -23,6 +24,7 @@ class ServiceContainer {
   private _event: IEventService | null = null
   private _media: IMediaService | null = null
   private _video: IVideoService | null = null
+  private _ai: IAIService | null = null
 
   private constructor() {}
 
@@ -44,6 +46,7 @@ class ServiceContainer {
       ServiceContainer.instance._event = null
       ServiceContainer.instance._media = null
       ServiceContainer.instance._video = null
+      ServiceContainer.instance._ai = null
     }
   }
 
@@ -160,6 +163,25 @@ class ServiceContainer {
   hasVideo(): boolean {
     return this._video !== null
   }
+
+  // === AI Service ===
+
+  registerAI(ai: IAIService): void {
+    this._ai = ai
+  }
+
+  getAI(): IAIService {
+    if (!this._ai) {
+      throw new Error(
+        "[ServiceContainer] AI not registered. Call registerAI() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._ai
+  }
+
+  hasAI(): boolean {
+    return this._ai !== null
+  }
 }
 
 // Singleton instance
@@ -172,6 +194,7 @@ export const getStorage = (): IStorageService => container.getStorage()
 export const getEvent = (): IEventService => container.getEvent()
 export const getMedia = (): IMediaService => container.getMedia()
 export const getVideo = (): IVideoService => container.getVideo()
+export const getAI = (): IAIService => container.getAI()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

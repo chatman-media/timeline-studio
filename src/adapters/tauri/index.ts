@@ -7,6 +7,7 @@
 
 import { container } from "@/core/container"
 
+import { TauriAIService } from "./ai"
 import { TauriBackendService } from "./backend"
 import { TauriEventService } from "./event"
 import { TauriMediaService } from "./media"
@@ -14,6 +15,7 @@ import { TauriPlatformService } from "./platform"
 import { TauriStorageService } from "./storage"
 import { TauriVideoService } from "./video"
 
+export { TauriAIService } from "./ai"
 export { TauriBackendService } from "./backend"
 export type { EventHandler, StateChangeHandler } from "./backend-sync"
 // Re-export BackendSync for backwards compatibility
@@ -42,6 +44,7 @@ export async function initTauriApp(options: { storeName?: string; autoConnect?: 
   const event = new TauriEventService()
   const media = new TauriMediaService()
   const video = new TauriVideoService()
+  const ai = new TauriAIService()
 
   container.registerBackend(backend)
   container.registerPlatform(platform)
@@ -49,6 +52,7 @@ export async function initTauriApp(options: { storeName?: string; autoConnect?: 
   container.registerEvent(event)
   container.registerMedia(media)
   container.registerVideo(video)
+  container.registerAI(ai)
 
   // Auto-connect to backend if requested
   if (autoConnect) {
