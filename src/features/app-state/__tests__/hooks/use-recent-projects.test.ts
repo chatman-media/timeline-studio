@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useRecentProjects } from "../../hooks/use-recent-projects"
 
 // Мокаем storeService
-vi.mock("../../services/store-service", () => ({
+vi.mock("@/domains/project-management/services/store-service", () => ({
   storeService: {
     getRecentProjects: vi.fn(),
     addRecentProject: vi.fn(),
@@ -14,7 +14,7 @@ vi.mock("../../services/store-service", () => ({
 }))
 
 // Импортируем после мока
-import { storeService } from "../../services/store-service"
+import { storeService } from "@/domains/project-management/services/store-service"
 
 const mockStoreService = storeService as any
 

@@ -12,10 +12,10 @@ import {
 } from "@/domains/project-management/machines/user-settings-machine"
 import { DEFAULT_CONTENT_SIZES } from "@/features/media/utils/preview-sizes"
 import { useUserSettings } from "../../hooks/use-user-settings"
-import { storeService } from "../../services/store-service"
+import { storeService } from "@/domains/project-management/services/store-service"
 
 // Mock storeService
-vi.mock("../../services/store-service", () => ({
+vi.mock("@/domains/project-management/services/store-service", () => ({
   storeService: {
     getUserSettings: vi.fn(),
     saveUserSettings: vi.fn(),

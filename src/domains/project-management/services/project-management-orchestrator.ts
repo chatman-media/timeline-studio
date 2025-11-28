@@ -5,7 +5,7 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { storeService } from "@/features/app-state/services/store-service"
+import { storeService } from "./store-service"
 import { createLogger } from "@/lib/tauri-logger"
 import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
