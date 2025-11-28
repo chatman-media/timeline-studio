@@ -10,7 +10,7 @@ import type { VersionInfo } from "../../types"
 
 // Mock the useVersionControl hook
 const mockUseVersionControl = vi.fn()
-vi.mock("@/features/app-state/hooks/use-version-control", () => ({
+vi.mock("@/features/version-control/hooks", () => ({
   useVersionControl: () => mockUseVersionControl(),
 }))
 

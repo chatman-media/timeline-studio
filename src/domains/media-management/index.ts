@@ -96,7 +96,16 @@ export { getSmartOrganization, SmartOrganizationService } from "./services/smart
 // Waveform Generator
 export type { WaveformData, WaveformOptions, WaveformResult } from "./services/waveform-generator"
 export { getWaveformGenerator, WaveformGeneratorService } from "./services/waveform-generator"
-// Tauri Commands (Advanced)
+/**
+ * Tauri Commands (DEPRECATED)
+ *
+ * Эти функции устарели. Используйте вместо них container.getMedia() из @/core/container
+ *
+ * @deprecated Используйте getMedia() из @/core/container
+ * @example
+ * import { getMedia } from "@/core/container"
+ * const metadata = await getMedia().getMetadata(filePath)
+ */
 export {
   cancelMediaProcessing,
   clearMediaPreviewData,

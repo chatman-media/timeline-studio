@@ -5,7 +5,7 @@
  * Позволяет подменять реализации для разных окружений (Tauri, Mock, HTTP).
  */
 
-import type { IBackendService, IEventService, IPlatformService, IStorageService } from "./ports"
+import type { IBackendService, IEventService, IMediaService, IPlatformService, IStorageService } from "./ports"
 
 class ServiceContainer {
   private static instance: ServiceContainer | null = null
@@ -14,6 +14,7 @@ class ServiceContainer {
   private _platform: IPlatformService | null = null
   private _storage: IStorageService | null = null
   private _event: IEventService | null = null
+  private _media: IMediaService | null = null
 
   private constructor() {}
 
@@ -33,6 +34,7 @@ class ServiceContainer {
       ServiceContainer.instance._platform = null
       ServiceContainer.instance._storage = null
       ServiceContainer.instance._event = null
+      ServiceContainer.instance._media = null
     }
   }
 
@@ -111,6 +113,25 @@ class ServiceContainer {
   hasEvent(): boolean {
     return this._event !== null
   }
+
+  // === Media Service ===
+
+  registerMedia(media: IMediaService): void {
+    this._media = media
+  }
+
+  getMedia(): IMediaService {
+    if (!this._media) {
+      throw new Error(
+        "[ServiceContainer] Media not registered. Call registerMedia() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._media
+  }
+
+  hasMedia(): boolean {
+    return this._media !== null
+  }
 }
 
 // Singleton instance
@@ -121,6 +142,7 @@ export const getBackend = (): IBackendService => container.getBackend()
 export const getPlatform = (): IPlatformService => container.getPlatform()
 export const getStorage = (): IStorageService => container.getStorage()
 export const getEvent = (): IEventService => container.getEvent()
+export const getMedia = (): IMediaService => container.getMedia()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

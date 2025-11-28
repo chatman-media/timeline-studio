@@ -1,9 +1,8 @@
-import { invoke } from "@tauri-apps/api/core"
 import { open } from "@tauri-apps/plugin-dialog"
 
+import { getMedia } from "@/core/container"
 import { formatDurationSeconds as formatDurationSecondsUtil } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
-import { getMediaFiles as getMediaFilesTauri, getMediaMetadata as getMediaMetadataTauri } from "../tauri/media-commands"
 
 const logger = createLogger("MediaApi")
 
@@ -71,7 +70,7 @@ export type MediaMetadata =
  */
 export async function getMediaMetadata(filePath: string): Promise<any> {
   try {
-    return await getMediaMetadataTauri(filePath)
+    return await getMedia().getMetadata(filePath)
   } catch (error) {
     logger.errorSync("Failed to get media metadata", { filePath, error })
     throw error
@@ -85,7 +84,7 @@ export async function getMediaMetadata(filePath: string): Promise<any> {
  */
 export async function getMediaFiles(directory: string): Promise<string[]> {
   try {
-    return await getMediaFilesTauri(directory)
+    return await getMedia().getMediaFiles(directory)
   } catch (error) {
     logger.errorSync("Failed to get media files", { directory, error })
     throw error
@@ -224,7 +223,7 @@ export function formatDuration(seconds?: number): string {
  */
 export async function restorePreviewCache(): Promise<number> {
   try {
-    const restoredCount = await invoke<number>("restore_preview_cache")
+    const restoredCount = await getMedia().restorePreviewCache()
     logger.debugSync(`Preview cache restored: ${restoredCount} thumbnails`)
     return restoredCount
   } catch (error) {
@@ -243,7 +242,7 @@ export async function restorePreviewCache(): Promise<number> {
  */
 export async function hasCachedThumbnail(fileId: string, width: number, height: number): Promise<boolean> {
   try {
-    return await invoke<boolean>("has_cached_thumbnail", { fileId, width, height })
+    return await getMedia().hasCachedThumbnail(fileId, width, height)
   } catch {
     return false
   }
@@ -258,7 +257,7 @@ export async function hasCachedThumbnail(fileId: string, width: number, height: 
  */
 export async function getCachedThumbnailPath(fileId: string, width: number, height: number): Promise<string> {
   try {
-    return await invoke<string>("get_cached_thumbnail_path", { fileId, width, height })
+    return await getMedia().getCachedThumbnailPath(fileId, width, height)
   } catch {
     return ""
   }

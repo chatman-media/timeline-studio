@@ -16,18 +16,40 @@
  *
  * // Для тестов
  * import { initMockApp } from "@/adapters/mock"
- * const { backend, platform, storage } = initMockApp()
+ * const { backend, platform, storage, media } = initMockApp()
+ *
+ * // Для Node.js CLI
+ * import { initNodeApp } from "@/adapters/node"
+ * const { media } = initNodeApp()
  *
  * // Далее используйте container для доступа к сервисам
- * import { getBackend, getPlatform, getStorage } from "@/core"
+ * import { getBackend, getPlatform, getStorage, getMedia } from "@/core"
  * const state = await getBackend().getProjectState()
+ * const metadata = await getMedia().getMetadata(filePath)
  * ```
  */
 
 // Mock adapters
-export { createMockServices, initMockApp, MockBackendService, MockPlatformService, MockStorageService } from "./mock"
+export {
+  createMockServices,
+  initMockApp,
+  MockBackendService,
+  MockMediaService,
+  MockPlatformService,
+  MockStorageService,
+} from "./mock"
+
+// Node.js adapters
+export { initNodeApp, NodeMediaService } from "./node"
+
 // React provider (main entry point for apps)
 export { AppInitProvider, useAppInit, useAppReady } from "./react"
 
 // Tauri adapters
-export { initTauriApp, TauriBackendService, TauriPlatformService, TauriStorageService } from "./tauri"
+export {
+  initTauriApp,
+  TauriBackendService,
+  TauriMediaService,
+  TauriPlatformService,
+  TauriStorageService,
+} from "./tauri"

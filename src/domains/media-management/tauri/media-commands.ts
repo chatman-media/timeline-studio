@@ -1,8 +1,18 @@
 /**
  * Media Management Tauri Commands
  *
- * All media-related Tauri backend operations.
- * This is the only place where invoke() is called for media operations.
+ * @deprecated Используйте container.getMedia() из @/core/container вместо этих функций.
+ * Этот файл сохранён для обратной совместимости, но все новые сервисы должны использовать
+ * IMediaService через DI контейнер.
+ *
+ * @example
+ * // Старый способ (deprecated):
+ * import { getMediaMetadata } from "./tauri/media-commands"
+ * const metadata = await getMediaMetadata(filePath)
+ *
+ * // Новый способ:
+ * import { getMedia } from "@/core/container"
+ * const metadata = await getMedia().getMetadata(filePath)
  */
 
 import { invoke } from "@tauri-apps/api/core"

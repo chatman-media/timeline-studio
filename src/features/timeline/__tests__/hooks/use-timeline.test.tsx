@@ -49,6 +49,18 @@ vi.mock("@/features/app-state/services/backend-sync", () => {
 })
 
 // Мокаем AppProvider для избежания проблем с машиной состояний
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
+  AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useApp: vi.fn(() => ({
+    projectState: { project: null },
+    executeCommand: vi.fn(),
+    isConnected: true,
+    isConnecting: false,
+    connectionError: null,
+  })),
+}))
+
+// Также мокаем старый путь для совместимости
 vi.mock("@/features/app-state/services/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useApp: vi.fn(() => ({
@@ -333,6 +345,12 @@ const mockUIState = {
 
 vi.mock("@xstate/react", () => ({
   useMachine: vi.fn(() => [mockUIState, mockUISend]),
+  useSelector: vi.fn((_actor, selector) =>
+    selector({
+      context: { isConnected: true, error: null, projectState: null },
+      matches: () => false,
+    }),
+  ),
 }))
 
 // Импортируем моки из мокированного модуля

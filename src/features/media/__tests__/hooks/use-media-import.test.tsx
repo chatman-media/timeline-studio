@@ -1,4 +1,5 @@
 import { renderHook, waitFor } from "@testing-library/react"
+import type React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { selectMediaDirectory, selectMediaFile } from "@/domains/media-management"
@@ -6,23 +7,29 @@ import { TimelineProviders } from "@/test/test-utils"
 
 import { useMediaImport } from "../../hooks/use-media-import"
 
-// Импорты для моков
+// Мокаем AppProvider для избежания проблем с XState
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
+  AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useApp: vi.fn(() => ({
+    projectState: { project: null },
+    executeCommand: vi.fn(),
+    isConnected: true,
+    isConnecting: false,
+    connectionError: null,
+  })),
+}))
 
 // Мокаем зависимости
 const mockAddMedia = vi.fn()
 const mockSetProjectDirty = vi.fn()
 
 // Re-mock these functions with test-specific implementations
-vi.mock("@/features/app-state", async () => {
-  const actual = await vi.importActual("@/features/app-state")
-  return {
-    ...actual,
-    useCurrentProject: vi.fn(() => ({
-      currentProject: { path: "/test/project", name: "Test", isDirty: false, isNew: false },
-      setProjectDirty: mockSetProjectDirty,
-    })),
-  }
-})
+vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+  useCurrentProject: vi.fn(() => ({
+    currentProject: { path: "/test/project", name: "Test", isDirty: false, isNew: false },
+    setProjectDirty: mockSetProjectDirty,
+  })),
+}))
 
 vi.mock("../../hooks/use-media-preview", () => ({
   useMediaPreview: vi.fn(() => ({

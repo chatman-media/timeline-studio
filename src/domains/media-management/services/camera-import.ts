@@ -6,8 +6,8 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
+import { getMedia } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
-import { ejectDevice as ejectDeviceCommand } from "../tauri/media-commands"
 import type { MediaImportOptions, MediaInfo } from "../types"
 
 const logger = createLogger("CameraImport")
@@ -247,10 +247,12 @@ export class CameraImportService {
     logger.info("Ejecting device", { deviceId: device.id, deviceName: device.name })
 
     try {
-      // TODO: Реализовать безопасное извлечение через Tauri
-      await ejectDeviceCommand(device.id).catch(() => {
-        logger.warn("Eject command not implemented yet")
-      })
+      // Используем media сервис для извлечения устройства
+      await getMedia()
+        .ejectDevice(device.id)
+        .catch(() => {
+          logger.warn("Eject command not implemented yet")
+        })
 
       logger.info("Device ejected", { deviceId: device.id })
     } catch (error) {

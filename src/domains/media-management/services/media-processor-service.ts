@@ -2,19 +2,13 @@
  * Media Processor Service
  *
  * Domain service for media file processing operations.
- * This service encapsulates all Tauri command calls for media processing,
+ * This service encapsulates all backend calls for media processing,
  * keeping features layer independent from backend implementation.
  */
 
-import { invoke } from "@tauri-apps/api/core"
+import { getMedia } from "@/core/container"
 import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
-import {
-  cancelMediaProcessing,
-  processMediaFile,
-  scanMediaFolder,
-  scanMediaFolderWithThumbnails,
-} from "../tauri/media-commands"
 
 const logger = createLogger("MediaProcessorService")
 
@@ -33,8 +27,8 @@ export class MediaProcessorService {
    */
   async scanFolder(folderPath: string): Promise<MediaFile[]> {
     try {
-      const files = await scanMediaFolder(folderPath)
-      return files as MediaFile[]
+      const files = await getMedia().scanFolder(folderPath)
+      return files as unknown as MediaFile[]
     } catch (error) {
       logger.errorSync("Failed to scan folder", { folderPath, error })
       throw error
@@ -51,8 +45,8 @@ export class MediaProcessorService {
    */
   async scanFolderWithThumbnails(folderPath: string, width = 320, height = 180): Promise<MediaFile[]> {
     try {
-      const files = await scanMediaFolderWithThumbnails(folderPath, width, height)
-      return files as MediaFile[]
+      const files = await getMedia().scanFolderWithThumbnails(folderPath, width, height)
+      return files as unknown as MediaFile[]
     } catch (error) {
       logger.errorSync("Failed to scan folder with thumbnails", { folderPath, width, height, error })
       throw error
@@ -68,11 +62,9 @@ export class MediaProcessorService {
   async processFiles(filePaths: string[]): Promise<MediaFile[]> {
     try {
       logger.infoSync("Processing media files", { filesCount: filePaths.length })
-      const files = await invoke<MediaFile[]>("process_media_files", {
-        filePaths,
-      })
+      const files = await getMedia().processFiles(filePaths)
       logger.infoSync("Files processed successfully", { filesCount: files.length })
-      return files
+      return files as unknown as MediaFile[]
     } catch (error) {
       logger.errorSync("Failed to process files", { filesCount: filePaths.length, error })
       throw error
@@ -90,13 +82,9 @@ export class MediaProcessorService {
   async processFilesWithThumbnails(filePaths: string[], width = 320, height = 180): Promise<MediaFile[]> {
     try {
       logger.infoSync("Processing files with thumbnails", { filesCount: filePaths.length, width, height })
-      const files = await invoke<MediaFile[]>("process_media_files_with_thumbnails", {
-        filePaths,
-        width,
-        height,
-      })
+      const files = await getMedia().processFilesWithThumbnails(filePaths, width, height)
       logger.infoSync("Files processed with thumbnails successfully", { filesCount: files.length })
-      return files
+      return files as unknown as MediaFile[]
     } catch (error) {
       logger.errorSync("Failed to process files with thumbnails", {
         filesCount: filePaths.length,
@@ -115,7 +103,7 @@ export class MediaProcessorService {
    */
   async cancelProcessing(): Promise<void> {
     try {
-      await cancelMediaProcessing("")
+      await getMedia().cancelProcessing("")
     } catch (error) {
       logger.errorSync("Failed to cancel processing", { error })
       throw error
@@ -133,7 +121,7 @@ export class MediaProcessorService {
   async processFileSimple(filePath: string, generateThumbnail = false): Promise<any> {
     try {
       logger.infoSync("Processing file (simple mode)", { filePath, generateThumbnail })
-      const result = await processMediaFile(filePath, generateThumbnail, false)
+      const result = await getMedia().processFile(filePath, { generateThumbnail, extractAudio: false })
       logger.infoSync("File processed successfully (simple mode)", { filePath })
       return result
     } catch (error) {

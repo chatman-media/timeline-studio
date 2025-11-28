@@ -28,6 +28,19 @@ export interface ProcessMediaOptions {
   extractAudio?: boolean
 }
 
+export interface MediaImportOptions {
+  copyToProject?: boolean
+  createProxies?: boolean
+  analyzeContent?: boolean
+  generateThumbnails?: boolean
+  preserveMetadata?: boolean
+}
+
+export interface MediaImportResult {
+  imported: string[]
+  failed: Array<{ path: string; error: string }>
+}
+
 export interface ProcessMediaResult {
   thumbnailPath?: string
   audioPath?: string
@@ -44,6 +57,18 @@ export interface WaveformData {
   peaks: number[]
   duration: number
   sampleRate: number
+}
+
+export interface WaveformOptions {
+  width?: number
+  height?: number
+  color?: string
+}
+
+export interface SceneDetectionResult {
+  startTime: number
+  endTime: number
+  confidence: number
 }
 
 export interface MediaPreviewData {
@@ -101,11 +126,7 @@ export interface IMediaService {
   /**
    * Generate thumbnail for media file
    */
-  generateThumbnail(
-    fileId: string,
-    filePath: string,
-    options?: ThumbnailOptions
-  ): Promise<string>
+  generateThumbnail(fileId: string, filePath: string, options?: ThumbnailOptions): Promise<string>
 
   /**
    * Check if cached thumbnail exists
@@ -164,7 +185,7 @@ export interface IMediaService {
   scanFolderWithThumbnails(
     folderPath: string,
     thumbnailWidth: number,
-    thumbnailHeight: number
+    thumbnailHeight: number,
   ): Promise<ScannedMediaFile[]>
 
   // === Cache Management ===
@@ -185,4 +206,27 @@ export interface IMediaService {
    * Eject removable device
    */
   ejectDevice(deviceId: string): Promise<void>
+
+  // === Import Operations ===
+
+  /**
+   * Import media files into project
+   */
+  importFiles(paths: string[], options?: MediaImportOptions): Promise<MediaImportResult>
+
+  // === Batch Processing ===
+
+  /**
+   * Process multiple media files
+   */
+  processFiles(filePaths: string[]): Promise<ScannedMediaFile[]>
+
+  /**
+   * Process multiple media files with thumbnail generation
+   */
+  processFilesWithThumbnails(
+    filePaths: string[],
+    thumbnailWidth: number,
+    thumbnailHeight: number,
+  ): Promise<ScannedMediaFile[]>
 }

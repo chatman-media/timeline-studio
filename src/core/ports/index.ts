@@ -9,12 +9,14 @@ export type { IBackendService, Unsubscribe } from "./backend.port"
 export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
 export type {
   IMediaService,
+  MediaImportOptions,
+  MediaImportResult,
   MediaMetadata,
   MediaPreviewData,
   ProcessMediaOptions,
   ProcessMediaResult,
-  ScannedMediaFile,
   ScanFolderOptions,
+  ScannedMediaFile,
   ThumbnailOptions,
   WaveformData,
 } from "./media.port"

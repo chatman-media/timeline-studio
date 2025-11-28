@@ -4,8 +4,8 @@
  * Управляет процессом импорта медиа файлов в проект
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { assign, fromPromise, setup } from "xstate"
+import { getMedia } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFileOperation, MediaImportContext, MediaImportEvent, MediaImportOptions } from "../types"
 
@@ -33,16 +33,13 @@ const importFilesActor = fromPromise(async ({ input }: { input: { files: string[
   logger.info("[Media Import] Importing files", { filesCount: input.files.length })
 
   try {
-    // Call Tauri command to import files
-    const result = await invoke("import_media_files", {
-      paths: input.files,
-      options: {
-        copy_to_project: input.options.copyToProject,
-        create_proxies: input.options.createProxies,
-        analyze_content: input.options.analyzeContent,
-        generate_thumbnails: input.options.generateThumbnails,
-        preserve_metadata: input.options.preserveMetadata,
-      },
+    // Call media service to import files
+    const result = await getMedia().importFiles(input.files, {
+      copyToProject: input.options.copyToProject,
+      createProxies: input.options.createProxies,
+      analyzeContent: input.options.analyzeContent,
+      generateThumbnails: input.options.generateThumbnails,
+      preserveMetadata: input.options.preserveMetadata,
     })
 
     return result
