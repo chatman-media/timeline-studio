@@ -238,8 +238,8 @@ vi.mock("@/features/resources", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/features/app-state")>()
+vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/project-management/hooks")>()
   return {
     ...actual,
     useCurrentProject: () => ({
@@ -385,8 +385,8 @@ vi.mock("@/domains/project-management", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state/services", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/features/app-state/services")>()
+vi.mock("@/domains/project-management/services/app-directories-service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/project-management/services/app-directories-service")>()
   return {
     ...actual,
     appDirectoriesService: {

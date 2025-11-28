@@ -80,7 +80,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { AppProvider } = await import("@/features/app-state/services/app-provider")
+    const { AppProvider } = await import("@/domains/project-management/providers/app-provider")
     providers.AppSettingsProvider = AppProvider
   } catch (_e) {
     // Provider not available
