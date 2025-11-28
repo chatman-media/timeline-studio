@@ -1,3 +1,18 @@
+# [3.34.0](https://github.com/chatman-media/timeline-studio/compare/v3.33.2...v3.34.0) (2025-11-28)
+
+
+### Bug Fixes
+
+* **build:** prevent auto-discovery of dev binaries in release builds ([d3cc475](https://github.com/chatman-media/timeline-studio/commit/d3cc475dd665e4cc56d19a5f87114cca636f7327))
+* **tests:** resolve TypeScript errors and improve test mocks ([28ebece](https://github.com/chatman-media/timeline-studio/commit/28ebece5eab9b50cf31babd8fa85596ad1be325f))
+* **tests:** update test mocks for architecture migration ([e241c2b](https://github.com/chatman-media/timeline-studio/commit/e241c2bf8952783f9b275770860c4e939754f565))
+* **top-bar:** fix test for null currentProject using mutable reference ([d2af330](https://github.com/chatman-media/timeline-studio/commit/d2af330122791a98144285f2fc95847888b58811))
+
+
+### Features
+
+* **ai-director:** implement Phase 3 parallel batch processing ([cabf5a0](https://github.com/chatman-media/timeline-studio/commit/cabf5a0f9357003350af9be6017f945cf19374fc))
+
 ## [3.33.2](https://github.com/chatman-media/timeline-studio/compare/v3.33.1...v3.33.2) (2025-11-27)
 
 
