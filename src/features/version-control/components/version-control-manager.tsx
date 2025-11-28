@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useVersionControl } from "@/features/app-state/hooks/use-version-control"
+import { useVersionControl } from "@/features/version-control/hooks"
 
 import { VersionHistoryPanel } from "./version-history-panel"
 

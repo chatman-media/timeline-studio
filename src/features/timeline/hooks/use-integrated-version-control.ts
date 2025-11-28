@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { useVersionControl } from "@/features/app-state/hooks/use-version-control"
+import { useVersionControl } from "@/features/version-control/hooks"
 import {
   type VersionControlIntegrationConfig,
   versionControlIntegration,
