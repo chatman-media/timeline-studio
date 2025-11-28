@@ -27,6 +27,19 @@ const mockSetProjectDirty = vi.hoisted(() => vi.fn())
 const mockCreateTimelineProject = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const mockClearBrowserState = vi.hoisted(() => vi.fn())
 
+// Mutable reference for currentProject to allow changing in tests
+const mockCurrentProjectRef = vi.hoisted(() => ({
+  value: {
+    name: "Test Project",
+    isDirty: false,
+    metadata: {
+      name: "Test Project",
+      file_path: null,
+      is_dirty: false,
+    },
+  } as any,
+}))
+
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => mockLogger,
   logInfo: vi.fn(),
@@ -63,15 +76,7 @@ vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
   return {
     ...actual,
     useCurrentProject: () => ({
-      currentProject: {
-        name: "Test Project",
-        isDirty: false,
-        metadata: {
-          name: "Test Project",
-          file_path: null,
-          is_dirty: false,
-        },
-      },
+      currentProject: mockCurrentProjectRef.value,
       openProject: mockOpenProject,
       saveProject: mockSaveProject,
       setProjectDirty: mockSetProjectDirty,
@@ -122,6 +127,16 @@ vi.mock("@/components/ui/popover", () => ({
 describe("TopBar", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset currentProject to default value
+    mockCurrentProjectRef.value = {
+      name: "Test Project",
+      isDirty: false,
+      metadata: {
+        name: "Test Project",
+        file_path: null,
+        is_dirty: false,
+      },
+    }
   })
 
   describe("рендеринг", () => {
@@ -371,9 +386,10 @@ describe("TopBar", () => {
   })
 
   describe("edge cases", () => {
-    it.skip("должен обрабатывать отсутствие текущего проекта", () => {
-      // SKIP: vi.mock() внутри it() блока не работает в vitest
-      // Для проверки этого кейса нужен отдельный тестовый файл с другим моком
+    it("должен обрабатывать отсутствие текущего проекта", () => {
+      // Set currentProject to null for this test
+      mockCurrentProjectRef.value = null
+
       render(<TopBar />)
 
       // Должно отобразиться дефолтное название
