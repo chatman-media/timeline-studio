@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
-import { createLogger } from "@/lib/tauri-logger"
 import { storeService } from "@/domains/project-management/services/store-service"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseUserSettings")
 

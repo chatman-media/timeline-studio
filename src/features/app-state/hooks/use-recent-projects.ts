@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { createLogger } from "@/lib/tauri-logger"
 import { storeService } from "@/domains/project-management/services/store-service"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseRecentProjects")
 
