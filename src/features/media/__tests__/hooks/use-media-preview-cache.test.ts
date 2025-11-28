@@ -1,21 +1,24 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
+import { mediaPreviewService } from "@/domains/media-management/services/media-preview-service"
 import { useMediaPreview } from "../../hooks/use-media-preview"
 
-// Mock Tauri commands
-vi.mock("@/domains/media-management/tauri/media-commands", () => ({
-  getMediaPreviewData: vi.fn(),
-  generateMediaThumbnail: vi.fn(),
-  clearMediaPreviewDataForFile: vi.fn(),
-  getFilesWithPreviews: vi.fn(),
-  savePreviewData: vi.fn(),
-  loadPreviewData: vi.fn(),
-  restorePreviewCache: vi.fn(),
-  hasCachedThumbnail: vi.fn(),
-  getCachedThumbnailPath: vi.fn(),
-  saveTimelineFramesForFile: vi.fn(),
-  getTimelineFrames: vi.fn(),
+// Mock mediaPreviewService
+vi.mock("@/domains/media-management/services/media-preview-service", () => ({
+  mediaPreviewService: {
+    getPreviewData: vi.fn(),
+    generateThumbnail: vi.fn(),
+    clearPreviewData: vi.fn(),
+    getFilesWithPreviews: vi.fn(),
+    savePreviewData: vi.fn(),
+    loadPreviewData: vi.fn(),
+    restorePreviewCache: vi.fn(),
+    hasCachedThumbnail: vi.fn(),
+    getCachedThumbnailPath: vi.fn(),
+    saveTimelineFrames: vi.fn(),
+    getTimelineFrames: vi.fn(),
+  },
 }))
 
 // Mock IndexedDB cache service
@@ -28,13 +31,31 @@ vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
   },
 }))
 
-const { getMediaPreviewData, generateMediaThumbnail, clearMediaPreviewDataForFile } = await import(
-  "@/domains/media-management/tauri/media-commands"
-)
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
+  })),
+}))
+
+// Get typed mock references
+const mockGetPreviewData = vi.mocked(mediaPreviewService.getPreviewData)
+const mockGenerateThumbnail = vi.mocked(mediaPreviewService.generateThumbnail)
+const mockClearPreviewData = vi.mocked(mediaPreviewService.clearPreviewData)
 
 describe("useMediaPreview with IndexedDB cache", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockGetPreviewData.mockReset()
+    mockGenerateThumbnail.mockReset()
+    mockClearPreviewData.mockReset()
   })
 
   describe("getPreviewData", () => {
@@ -51,7 +72,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       })
 
       expect(indexedDBCacheService.getCachedPreview).toHaveBeenCalledWith(fileId)
-      expect(getMediaPreviewData).not.toHaveBeenCalled() // Should not call backend
+      expect(mockGetPreviewData).not.toHaveBeenCalled() // Should not call backend
       expect(data).toEqual({
         file_id: fileId,
         file_path: "",
@@ -85,7 +106,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       }
 
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue(null)
-      vi.mocked(getMediaPreviewData).mockResolvedValue(backendData)
+      mockGetPreviewData.mockResolvedValue(backendData)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -94,7 +115,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       })
 
       expect(indexedDBCacheService.getCachedPreview).toHaveBeenCalledWith(fileId)
-      expect(getMediaPreviewData).toHaveBeenCalledWith(fileId)
+      expect(mockGetPreviewData).toHaveBeenCalledWith(fileId)
       expect(indexedDBCacheService.cachePreview).toHaveBeenCalledWith(fileId, "backend-base64-data")
       expect(data).toEqual(backendData)
     })
@@ -104,7 +125,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       const errorMsg = "Failed to fetch preview"
 
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue(null)
-      vi.mocked(getMediaPreviewData).mockRejectedValue(new Error(errorMsg))
+      mockGetPreviewData.mockRejectedValue(new Error(errorMsg))
 
       const onError = vi.fn()
       const { result } = renderHook(() => useMediaPreview({ onError }))
@@ -130,7 +151,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
         height: 90,
       }
 
-      vi.mocked(generateMediaThumbnail).mockResolvedValue(thumbnailData)
+      mockGenerateThumbnail.mockResolvedValue(thumbnailData)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -138,7 +159,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
         return result.current.generateThumbnail(fileId, "/path/to/file.mp4", 160, 90)
       })
 
-      expect(generateMediaThumbnail).toHaveBeenCalledWith(fileId, "/path/to/file.mp4", 160, 90, 0)
+      expect(mockGenerateThumbnail).toHaveBeenCalledWith(fileId, "/path/to/file.mp4", 160, 90, 0)
       expect(indexedDBCacheService.cachePreview).toHaveBeenCalledWith(fileId, "generated-base64-data")
       expect(thumbnail).toEqual(thumbnailData)
     })
@@ -153,7 +174,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
         height: 90,
       }
 
-      vi.mocked(generateMediaThumbnail).mockResolvedValue(thumbnailData)
+      mockGenerateThumbnail.mockResolvedValue(thumbnailData)
       const onThumbnailGenerated = vi.fn()
 
       const { result } = renderHook(() => useMediaPreview({ onThumbnailGenerated }))
@@ -170,7 +191,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
     it("should clear preview from backend and IndexedDB", async () => {
       const fileId = "test-file-clear"
 
-      vi.mocked(clearMediaPreviewDataForFile).mockResolvedValue(undefined)
+      mockClearPreviewData.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -178,7 +199,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
         return result.current.clearPreviewData(fileId)
       })
 
-      expect(clearMediaPreviewDataForFile).toHaveBeenCalledWith(fileId)
+      expect(mockClearPreviewData).toHaveBeenCalledWith(fileId)
       expect(indexedDBCacheService.deletePreview).toHaveBeenCalledWith(fileId)
       expect(success).toBe(true)
     })
@@ -187,7 +208,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       const fileId = "test-file-clear-error"
       const errorMsg = "Failed to clear"
 
-      vi.mocked(clearMediaPreviewDataForFile).mockRejectedValue(new Error(errorMsg))
+      mockClearPreviewData.mockRejectedValue(new Error(errorMsg))
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -211,7 +232,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
         height: 90,
       }
 
-      vi.mocked(generateMediaThumbnail).mockResolvedValue(thumbnailData)
+      mockGenerateThumbnail.mockResolvedValue(thumbnailData)
 
       const { result } = renderHook(() => useMediaPreview())
 
@@ -236,7 +257,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       // Verify cache was checked
       expect(indexedDBCacheService.getCachedPreview).toHaveBeenCalledWith(fileId)
       // Verify backend was NOT called (cache hit)
-      expect(getMediaPreviewData).not.toHaveBeenCalled()
+      expect(mockGetPreviewData).not.toHaveBeenCalled()
       // Verify we got the cached data
       expect(cachedResult?.browser_thumbnail?.base64_data).toBe("cached-data")
 
@@ -245,7 +266,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
 
       // Test cache miss - should call backend and cache the result
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue(null)
-      vi.mocked(getMediaPreviewData).mockResolvedValue({
+      mockGetPreviewData.mockResolvedValue({
         file_id: fileId,
         browser_thumbnail: { base64_data: "new-data" },
       })
@@ -257,7 +278,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       // Verify cache was checked
       expect(indexedDBCacheService.getCachedPreview).toHaveBeenCalledWith(fileId)
       // Verify backend WAS called (cache miss)
-      expect(getMediaPreviewData).toHaveBeenCalledWith(fileId)
+      expect(mockGetPreviewData).toHaveBeenCalledWith(fileId)
       // Verify result was cached
       expect(indexedDBCacheService.cachePreview).toHaveBeenCalledWith(fileId, "new-data")
       // Verify we got the backend data

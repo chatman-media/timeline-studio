@@ -1,48 +1,68 @@
-import { invoke } from "@tauri-apps/api/core"
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import { useSimpleMediaProcessor } from "../../hooks/use-simple-media-processor"
 
 import type { MediaFile } from "../../types/media"
 
-// Mock convertFileSrc function
-const mockConvertFileSrc = vi.fn((path: string) => path)
-
-// Mock platform service
-const mockPlatform = {
-  showOpenDialog: vi.fn(),
-  showSaveDialog: vi.fn(),
-  readTextFile: vi.fn(),
-  writeTextFile: vi.fn(),
-  readFile: vi.fn(),
-  writeFile: vi.fn(),
-  exists: vi.fn(),
-  readClipboard: vi.fn(),
-  writeClipboard: vi.fn(),
-  showNotification: vi.fn(),
-  openPath: vi.fn(),
-  openUrl: vi.fn(),
-  getVersion: vi.fn().mockResolvedValue("1.0.0"),
-  convertFileSrc: mockConvertFileSrc,
-}
-
 vi.mock("@/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
-    getPlatform: vi.fn(() => mockPlatform),
+    getPlatform: vi.fn(() => ({
+      showOpenDialog: vi.fn(),
+      showSaveDialog: vi.fn(),
+      readTextFile: vi.fn(),
+      writeTextFile: vi.fn(),
+      readFile: vi.fn(),
+      writeFile: vi.fn(),
+      exists: vi.fn(),
+      readClipboard: vi.fn(),
+      writeClipboard: vi.fn(),
+      showNotification: vi.fn(),
+      openPath: vi.fn(),
+      openUrl: vi.fn(),
+      getVersion: vi.fn().mockResolvedValue("1.0.0"),
+      convertFileSrc: vi.fn((path: string) => path),
+      basename: vi.fn(),
+      dirname: vi.fn(),
+      join: vi.fn(),
+      getFileStats: vi.fn(),
+      getPlatform: vi.fn(),
+      searchFilesByName: vi.fn(),
+      getAbsolutePath: vi.fn(),
+    })),
   },
 }))
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock mediaProcessorService - use hoisted mock
+vi.mock("@/domains/media-management/services/media-processor-service", () => ({
+  mediaProcessorService: {
+    processFileSimple: vi.fn(),
+  },
 }))
 
-const mockInvoke = vi.mocked(invoke)
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
+  })),
+}))
+
+// Get typed mock reference
+const mockProcessFileSimple = vi.mocked(mediaProcessorService.processFileSimple)
 
 describe("useSimpleMediaProcessor", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockProcessFileSimple.mockReset()
   })
 
   it("should initialize with default state", () => {
@@ -70,7 +90,7 @@ describe("useSimpleMediaProcessor", () => {
       },
     }
 
-    mockInvoke.mockResolvedValueOnce(mockProcessedFile)
+    mockProcessFileSimple.mockResolvedValueOnce(mockProcessedFile)
 
     const { result } = renderHook(() => useSimpleMediaProcessor())
 
@@ -93,7 +113,7 @@ describe("useSimpleMediaProcessor", () => {
   })
 
   it("should handle processing errors gracefully", async () => {
-    mockInvoke.mockRejectedValueOnce(new Error("Failed to process"))
+    mockProcessFileSimple.mockRejectedValueOnce(new Error("Failed to process"))
 
     const { result } = renderHook(() => useSimpleMediaProcessor())
 
@@ -117,7 +137,7 @@ describe("useSimpleMediaProcessor", () => {
     const onProgress = vi.fn()
     const { result } = renderHook(() => useSimpleMediaProcessor({ onProgress }))
 
-    mockInvoke
+    mockProcessFileSimple
       .mockResolvedValueOnce({
         id: "file-1",
         path: "/path/to/video1.mp4",
@@ -148,7 +168,7 @@ describe("useSimpleMediaProcessor", () => {
     ]
 
     for (const testFile of testFiles) {
-      mockInvoke.mockResolvedValueOnce({
+      mockProcessFileSimple.mockResolvedValueOnce({
         id: `file-${Date.now()}`,
         path: testFile.path,
         name: testFile.path.split("/").pop(),
@@ -184,7 +204,7 @@ describe("useSimpleMediaProcessor", () => {
       },
     }
 
-    mockInvoke.mockResolvedValueOnce(mockProcessedFile)
+    mockProcessFileSimple.mockResolvedValueOnce(mockProcessedFile)
 
     const { result } = renderHook(() => useSimpleMediaProcessor({ generateThumbnails: true }))
 
@@ -200,7 +220,7 @@ describe("useSimpleMediaProcessor", () => {
     const files = ["/video1.mp4", "/video2.mp4", "/video3.mp4"]
 
     files.forEach((file, index) => {
-      mockInvoke.mockResolvedValueOnce({
+      mockProcessFileSimple.mockResolvedValueOnce({
         id: `file-${index}`,
         path: file,
         name: file.split("/").pop(),
