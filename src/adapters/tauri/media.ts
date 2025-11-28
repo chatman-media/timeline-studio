@@ -15,8 +15,12 @@ import type {
   MediaPreviewData,
   ProcessMediaOptions,
   ProcessMediaResult,
+  ProxyGenerationOptions,
+  ProxyGenerationResult,
   ScannedMediaFile,
+  SceneDetectionResult,
   ThumbnailOptions,
+  WaveformOptions,
 } from "@/core/ports"
 import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "@/lib/tauri-logger"
@@ -353,6 +357,149 @@ export class TauriMediaService implements IMediaService {
       return files as unknown as ScannedMediaFile[]
     } catch (error) {
       logger.errorSync("Failed to process media files with thumbnails", { error })
+      throw error
+    }
+  }
+
+  // ============================================================================
+  // Audio Analysis
+  // ============================================================================
+
+  async generateWaveformPreview(
+    audioPath: string,
+    outputPath: string,
+    options?: WaveformOptions,
+  ): Promise<string> {
+    const width = options?.width ?? 1000
+    const height = options?.height ?? 100
+    const color = options?.color ?? "#3b82f6"
+
+    logger.infoSync("Generating waveform preview", { audioPath, outputPath, width, height })
+    try {
+      const resultPath = await invoke<string>("generate_waveform_preview", {
+        audioPath,
+        outputPath,
+        width,
+        height,
+        color,
+      })
+      logger.infoSync("Waveform preview generated", { resultPath })
+      return resultPath
+    } catch (error) {
+      logger.errorSync("Failed to generate waveform preview", { audioPath, error })
+      throw error
+    }
+  }
+
+  async generateAudioWaveform(filePath: string): Promise<number[]> {
+    logger.infoSync("Generating audio waveform", { filePath })
+    try {
+      const waveformData = await invoke<number[]>("generate_audio_waveform", {
+        path: filePath,
+      })
+      logger.infoSync("Audio waveform generated", { samplesCount: waveformData.length })
+      return waveformData
+    } catch (error) {
+      logger.errorSync("Failed to generate audio waveform", { filePath, error })
+      throw error
+    }
+  }
+
+  // ============================================================================
+  // Video Analysis
+  // ============================================================================
+
+  async detectVideoScenes(filePath: string): Promise<SceneDetectionResult[]> {
+    logger.infoSync("Detecting video scenes", { filePath })
+    try {
+      const scenes = await invoke<SceneDetectionResult[]>("detect_video_scenes", {
+        path: filePath,
+      })
+      logger.infoSync("Video scenes detected", { scenesCount: scenes.length })
+      return scenes
+    } catch (error) {
+      logger.errorSync("Failed to detect video scenes", { filePath, error })
+      throw error
+    }
+  }
+
+  async generateVideoThumbnail(videoPath: string, time: number): Promise<string> {
+    logger.infoSync("Generating video thumbnail", { videoPath, time })
+    try {
+      const thumbnailPath = await invoke<string>("generate_video_thumbnail", {
+        videoPath,
+        time,
+      })
+      logger.infoSync("Video thumbnail generated", { thumbnailPath })
+      return thumbnailPath
+    } catch (error) {
+      logger.errorSync("Failed to generate video thumbnail", { videoPath, error })
+      throw error
+    }
+  }
+
+  async extractMediaMetadata(filePath: string): Promise<MediaMetadata> {
+    logger.infoSync("Extracting media metadata", { filePath })
+    try {
+      const metadata = await invoke<MediaMetadata>("extract_media_metadata", {
+        path: filePath,
+      })
+      logger.infoSync("Media metadata extracted", { filePath })
+      return metadata
+    } catch (error) {
+      logger.errorSync("Failed to extract media metadata", { filePath, error })
+      throw error
+    }
+  }
+
+  async getMediaDuration(filePath: string): Promise<number> {
+    logger.infoSync("Getting media duration", { filePath })
+    try {
+      const result = await invoke<{
+        success: boolean
+        data?: number
+        error?: string
+      }>("execute_command", {
+        command: {
+          type: "GetMediaDuration",
+          params: {
+            file_path: filePath,
+          },
+        },
+      })
+
+      if (!result.success || result.data === undefined) {
+        throw new Error(result.error || "Failed to get duration")
+      }
+
+      logger.infoSync("Media duration retrieved", { duration: result.data })
+      return result.data
+    } catch (error) {
+      logger.errorSync("Failed to get media duration", { filePath, error })
+      throw error
+    }
+  }
+
+  // ============================================================================
+  // Proxy Generation
+  // ============================================================================
+
+  async generateProxy(sourcePath: string, options: ProxyGenerationOptions): Promise<ProxyGenerationResult> {
+    logger.infoSync("Generating proxy", { sourcePath, options })
+    try {
+      const result = await invoke<ProxyGenerationResult>("generate_proxy_command", {
+        sourcePath,
+        width: options.width,
+        height: options.height,
+        codec: options.codec || "h264",
+        bitrate: options.bitrate || "3M",
+        preserveAudio: options.preserveAudio ?? true,
+        fps: options.fps,
+      })
+      logger.infoSync("Proxy generated", { proxyPath: result.proxyPath })
+      return result
+    } catch (error) {
+      logger.errorSync("Failed to generate proxy", { sourcePath, error })
       throw error
     }
   }

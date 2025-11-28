@@ -13,8 +13,12 @@ import type {
   MediaPreviewData,
   ProcessMediaOptions,
   ProcessMediaResult,
+  ProxyGenerationOptions,
+  ProxyGenerationResult,
   ScannedMediaFile,
+  SceneDetectionResult,
   ThumbnailOptions,
+  WaveformOptions,
 } from "@/core/ports"
 
 export class MockMediaService implements IMediaService {
@@ -39,22 +43,44 @@ export class MockMediaService implements IMediaService {
     const ext = filePath.split(".").pop()?.toLowerCase() || ""
     const isVideo = ["mp4", "mov", "avi", "mkv", "webm"].includes(ext)
     const isAudio = ["mp3", "wav", "ogg", "flac", "aac"].includes(ext)
+    const isImage = ["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext)
 
-    const metadata: MediaMetadata = {
-      duration: 120.5,
-      width: isVideo ? 1920 : 0,
-      height: isVideo ? 1080 : 0,
-      fps: isVideo ? 30 : 0,
-      codec: isVideo ? "h264" : isAudio ? "aac" : "unknown",
-      bitrate: 5000000,
-      audioCodec: "aac",
-      audioChannels: 2,
-      audioSampleRate: 48000,
-      fileSize: 50000000,
-      format: ext,
+    if (isVideo) {
+      return {
+        type: "Video",
+        duration: 120.5,
+        width: 1920,
+        height: 1080,
+        fps: 30,
+        codec: "h264",
+        bitrate: 5000000,
+        size: 50000000,
+      }
     }
 
-    return metadata
+    if (isAudio) {
+      return {
+        type: "Audio",
+        duration: 120.5,
+        codec: "aac",
+        bitrate: 320000,
+        sample_rate: 48000,
+        channels: 2,
+        size: 5000000,
+      }
+    }
+
+    if (isImage) {
+      return {
+        type: "Image",
+        width: 1920,
+        height: 1080,
+        format: ext,
+        size: 2000000,
+      }
+    }
+
+    return { type: "Unknown" }
   }
 
   async getMediaFiles(directory: string): Promise<string[]> {
@@ -250,6 +276,63 @@ export class MockMediaService implements IMediaService {
       ...file,
       thumbnailBase64: "data:image/jpeg;base64,/9j/4AAQ...", // Mock base64
     }))
+  }
+
+  // ============================================================================
+  // Audio Analysis
+  // ============================================================================
+
+  async generateWaveformPreview(
+    _audioPath: string,
+    outputPath: string,
+    _options?: WaveformOptions,
+  ): Promise<string> {
+    return outputPath
+  }
+
+  async generateAudioWaveform(_filePath: string): Promise<number[]> {
+    // Return mock waveform data
+    return new Array(1000).fill(0).map(() => Math.random())
+  }
+
+  // ============================================================================
+  // Video Analysis
+  // ============================================================================
+
+  async detectVideoScenes(_filePath: string): Promise<SceneDetectionResult[]> {
+    // Return mock scenes
+    return [
+      { startTime: 0, endTime: 5, confidence: 0.95 },
+      { startTime: 5, endTime: 12, confidence: 0.87 },
+      { startTime: 12, endTime: 20, confidence: 0.92 },
+    ]
+  }
+
+  async generateVideoThumbnail(_videoPath: string, _time: number): Promise<string> {
+    return `/tmp/thumbnail_${Date.now()}.jpg`
+  }
+
+  async extractMediaMetadata(filePath: string): Promise<MediaMetadata> {
+    return this.getMetadata(filePath)
+  }
+
+  async getMediaDuration(_filePath: string): Promise<number> {
+    return 120.5 // Mock duration in seconds
+  }
+
+  // ============================================================================
+  // Proxy Generation
+  // ============================================================================
+
+  async generateProxy(sourcePath: string, options: ProxyGenerationOptions): Promise<ProxyGenerationResult> {
+    // Mock proxy generation
+    return {
+      proxyPath: `/tmp/proxy_${Date.now()}.mp4`,
+      sourcePath,
+      size: 10000000, // Mock size ~10MB
+      resolution: { width: options.width, height: options.height },
+      generationTime: 5000, // Mock 5 seconds
+    }
   }
 
   // ============================================================================

@@ -5,7 +5,9 @@
  * Использует Tauri плагины для платформо-зависимых операций.
  */
 
-import type { IPlatformService, NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "@/core/ports"
+import { invoke } from "@tauri-apps/api/core"
+
+import type { FileStats, IPlatformService, NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "@/core/ports"
 
 export class TauriPlatformService implements IPlatformService {
   // === File Dialogs ===
@@ -150,5 +152,44 @@ export class TauriPlatformService implements IPlatformService {
   async join(...paths: string[]): Promise<string> {
     const { join } = await import("@tauri-apps/api/path")
     return join(...paths)
+  }
+
+  // === Extended File System Operations ===
+
+  async getFileStats(path: string): Promise<FileStats | null> {
+    try {
+      const stats = await invoke<FileStats>("get_file_stats", { path })
+      return stats
+    } catch {
+      return null
+    }
+  }
+
+  async getPlatform(): Promise<string> {
+    try {
+      return await invoke<string>("get_platform")
+    } catch {
+      return "unknown"
+    }
+  }
+
+  async searchFilesByName(directory: string, filename: string, maxDepth = 3): Promise<string[]> {
+    try {
+      return await invoke<string[]>("search_files_by_name", {
+        directory,
+        filename,
+        maxDepth,
+      })
+    } catch {
+      return []
+    }
+  }
+
+  async getAbsolutePath(path: string): Promise<string | null> {
+    try {
+      return await invoke<string>("get_absolute_path", { path })
+    } catch {
+      return null
+    }
   }
 }

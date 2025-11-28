@@ -18,8 +18,12 @@ import type {
   MediaPreviewData,
   ProcessMediaOptions,
   ProcessMediaResult,
+  ProxyGenerationOptions,
+  ProxyGenerationResult,
   ScannedMediaFile,
+  SceneDetectionResult,
   ThumbnailOptions,
+  WaveformOptions,
 } from "@/core/ports"
 
 export class NodeMediaService implements IMediaService {
@@ -171,5 +175,56 @@ export class NodeMediaService implements IMediaService {
   async processFilesWithThumbnails(filePaths: string[], _width: number, _height: number): Promise<ScannedMediaFile[]> {
     // TODO: Implement using fluent-ffmpeg + sharp for batch processing with thumbnails
     throw new Error(`NodeMediaService.processFilesWithThumbnails not implemented for: ${filePaths.length} files`)
+  }
+
+  // ============================================================================
+  // Audio Analysis
+  // ============================================================================
+
+  async generateWaveformPreview(
+    audioPath: string,
+    _outputPath: string,
+    _options?: WaveformOptions,
+  ): Promise<string> {
+    // TODO: Implement using ffmpeg for waveform generation
+    throw new Error(`NodeMediaService.generateWaveformPreview not implemented for: ${audioPath}`)
+  }
+
+  async generateAudioWaveform(filePath: string): Promise<number[]> {
+    // TODO: Implement using ffmpeg for audio analysis
+    throw new Error(`NodeMediaService.generateAudioWaveform not implemented for: ${filePath}`)
+  }
+
+  // ============================================================================
+  // Video Analysis
+  // ============================================================================
+
+  async detectVideoScenes(filePath: string): Promise<SceneDetectionResult[]> {
+    // TODO: Implement using ffmpeg scene detection
+    throw new Error(`NodeMediaService.detectVideoScenes not implemented for: ${filePath}`)
+  }
+
+  async generateVideoThumbnail(videoPath: string, _time: number): Promise<string> {
+    // TODO: Implement using ffmpeg
+    throw new Error(`NodeMediaService.generateVideoThumbnail not implemented for: ${videoPath}`)
+  }
+
+  async extractMediaMetadata(filePath: string): Promise<MediaMetadata> {
+    // TODO: Implement using ffprobe
+    throw new Error(`NodeMediaService.extractMediaMetadata not implemented for: ${filePath}`)
+  }
+
+  async getMediaDuration(filePath: string): Promise<number> {
+    // TODO: Implement using ffprobe
+    throw new Error(`NodeMediaService.getMediaDuration not implemented for: ${filePath}`)
+  }
+
+  // ============================================================================
+  // Proxy Generation
+  // ============================================================================
+
+  async generateProxy(sourcePath: string, _options: ProxyGenerationOptions): Promise<ProxyGenerationResult> {
+    // TODO: Implement using fluent-ffmpeg
+    throw new Error(`NodeMediaService.generateProxy not implemented for: ${sourcePath}`)
   }
 }

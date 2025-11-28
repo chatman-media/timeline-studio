@@ -5,7 +5,7 @@
  * Использует browser APIs или in-memory заглушки.
  */
 
-import type { IPlatformService, NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "@/core/ports"
+import type { FileStats, IPlatformService, NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "@/core/ports"
 
 export class MockPlatformService implements IPlatformService {
   // Mock storage for file system simulation
@@ -132,6 +132,47 @@ export class MockPlatformService implements IPlatformService {
   async join(...paths: string[]): Promise<string> {
     // Simple path join - normalize slashes
     return paths.filter(Boolean).join("/").replace(/\/+/g, "/")
+  }
+
+  // === Extended File System Operations ===
+
+  async getFileStats(path: string): Promise<FileStats | null> {
+    const data = this._files.get(path)
+    if (!data) return null
+    return {
+      size: data.length,
+      lastModified: Date.now(),
+    }
+  }
+
+  async getPlatform(): Promise<string> {
+    // Detect platform from browser userAgent
+    if (typeof navigator !== "undefined") {
+      const ua = navigator.userAgent.toLowerCase()
+      if (ua.includes("mac")) return "macos"
+      if (ua.includes("win")) return "windows"
+      if (ua.includes("linux")) return "linux"
+    }
+    return "unknown"
+  }
+
+  async searchFilesByName(directory: string, filename: string, _maxDepth?: number): Promise<string[]> {
+    // Search in mock files
+    const results: string[] = []
+    for (const path of this._files.keys()) {
+      if (path.startsWith(directory) && path.includes(filename)) {
+        results.push(path)
+      }
+    }
+    return results
+  }
+
+  async getAbsolutePath(path: string): Promise<string | null> {
+    // In mock, just return the path as is
+    if (path.startsWith("/") || path.match(/^[A-Za-z]:/)) {
+      return path
+    }
+    return `/mock/${path}`
   }
 
   // === Test Helpers ===
