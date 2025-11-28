@@ -117,7 +117,7 @@ bun run scripts/count-features-stats.ts
 - media-studio
 - modals
 - montage-planner
-- publication
+- export
 - updates
 
 ### Приоритет 2: Документация

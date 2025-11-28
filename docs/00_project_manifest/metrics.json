@@ -59,7 +59,7 @@
     ]
   },
   "recommendations": [
-    "Add tests for features with 0 tests: fairlight-audio, media-studio, modals, montage-planner, publication, updates",
+    "Add tests for features with 0 tests: fairlight-audio, media-studio, modals, montage-planner, export, updates",
     "Document readiness status in README.md for 37 features currently missing data",
     "Increase XState state machine usage (currently only 7 machines for 40 features)",
     "Standardize feature structure: ensure all features have __tests__/ and README.md"

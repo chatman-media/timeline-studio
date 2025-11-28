@@ -102,7 +102,7 @@ Task movements and status changes are logged here.
 - **File:** implement-three-task-lists.md
 - **Action:** active/ → completed/
 - **Summary:**
-  - 3 списка задач в топбаре: Analysis, Render, Publication
+  - 3 списка задач в топбаре: Analysis, Render, Export
   - Analysis Tasks: analysis-tasks-dropdown.tsx, use-analysis-tasks.ts, analysis-task-bridge.ts
   - 91+ тестов проходят (bridge: 29, hook: 31, dropdown: 31)
   - i18n: 15 языков полностью переведены
@@ -149,7 +149,7 @@ Task movements and status changes are logged here.
   - Проведён полный аудит 41 фичи с 8 параллельными агентами
   - 33 фичи отмечены как 100% готовые (основной функционал)
   - 4 фичи в разработке (75%): browser, effects, recognition, scenarios
-  - 2 фичи требуют доработки (<50%): resources, publication
+  - 2 фичи требуют доработки (<50%): resources, export
   - 4 фичи временно отключены: camera-capture, voice-recording, keyboard-shortcuts, scenarios
   - Все секции "Not Implemented" переименованы в "Future Improvements"
   - Общая готовность проекта: **98%**

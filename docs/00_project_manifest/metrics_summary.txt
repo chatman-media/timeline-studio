@@ -59,7 +59,7 @@ No Data:                37 features  (92.5%)
 📝 RECOMMENDATIONS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 1. Add tests for: fairlight-audio, media-studio, modals, 
-   montage-planner, publication, updates (0 tests each)
+   montage-planner, export, updates (0 tests each)
 
 2. Document readiness status in README.md for all 37 features
    currently missing readiness data
