@@ -10,9 +10,15 @@ import {
   selectMediaFile,
 } from "@/domains/media-management"
 
-// Мокаем Tauri API
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock media service
+const mockMediaService = vi.hoisted(() => ({
+  getMetadata: vi.fn(),
+  getMediaFiles: vi.fn(),
+}))
+
+// Mock container
+vi.mock("@/core/container", () => ({
+  getMedia: vi.fn(() => mockMediaService),
 }))
 
 vi.mock("@tauri-apps/plugin-dialog", () => ({
@@ -53,22 +59,18 @@ describe("media-api", () => {
         creation_time: "2023-01-01T00:00:00Z",
       }
 
-      const { invoke } = await import("@tauri-apps/api/core")
-      vi.mocked(invoke).mockResolvedValue(mockMetadata)
+      mockMediaService.getMetadata.mockResolvedValue(mockMetadata)
 
       const result = await getMediaMetadata("/path/to/video.mp4")
 
-      expect(invoke).toHaveBeenCalledWith("get_media_metadata", {
-        filePath: "/path/to/video.mp4",
-      })
+      expect(mockMediaService.getMetadata).toHaveBeenCalledWith("/path/to/video.mp4")
       expect(result).toEqual(mockMetadata)
     })
 
     it("should handle errors when getting metadata", async () => {
-      const { invoke } = await import("@tauri-apps/api/core")
       const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("Failed to read metadata")
-      vi.mocked(invoke).mockRejectedValue(error)
+      mockMediaService.getMetadata.mockRejectedValue(error)
 
       await expect(getMediaMetadata("/path/to/invalid.mp4")).rejects.toThrow("Failed to read metadata")
 
@@ -84,22 +86,18 @@ describe("media-api", () => {
     it("should get media files from directory successfully", async () => {
       const mockFiles = ["/dir/video1.mp4", "/dir/video2.avi", "/dir/audio1.mp3", "/dir/image1.jpg"]
 
-      const { invoke } = await import("@tauri-apps/api/core")
-      vi.mocked(invoke).mockResolvedValue(mockFiles)
+      mockMediaService.getMediaFiles.mockResolvedValue(mockFiles)
 
       const result = await getMediaFiles("/dir")
 
-      expect(invoke).toHaveBeenCalledWith("get_media_files", {
-        directory: "/dir",
-      })
+      expect(mockMediaService.getMediaFiles).toHaveBeenCalledWith("/dir")
       expect(result).toEqual(mockFiles)
     })
 
     it("should handle errors when getting media files", async () => {
-      const { invoke } = await import("@tauri-apps/api/core")
       const { createLogger } = await import("@/lib/tauri-logger")
       const error = new Error("Directory not found")
-      vi.mocked(invoke).mockRejectedValue(error)
+      mockMediaService.getMediaFiles.mockRejectedValue(error)
 
       await expect(getMediaFiles("/invalid/dir")).rejects.toThrow("Directory not found")
 

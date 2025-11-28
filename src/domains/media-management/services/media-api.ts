@@ -262,3 +262,255 @@ export async function getCachedThumbnailPath(fileId: string, width: number, heig
     return ""
   }
 }
+
+// ============================================================================
+// Media Processing
+// ============================================================================
+
+/**
+ * Process media file (generate thumbnail, extract metadata)
+ */
+export async function processMediaFile(
+  filePath: string,
+  generateThumbnail: boolean,
+  extractAudio: boolean,
+): Promise<any> {
+  logger.infoSync("Processing media file", { filePath, generateThumbnail, extractAudio })
+  try {
+    const result = await getMedia().processFile(filePath, { generateThumbnail, extractAudio })
+    logger.infoSync("Media file processed", { filePath })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to process media file", { filePath, error })
+    throw error
+  }
+}
+
+/**
+ * Cancel media processing
+ */
+export async function cancelMediaProcessing(filePath: string): Promise<void> {
+  logger.infoSync("Cancelling media processing", { filePath })
+  try {
+    await getMedia().cancelProcessing(filePath)
+    logger.infoSync("Media processing cancelled", { filePath })
+  } catch (error) {
+    logger.errorSync("Failed to cancel media processing", { filePath, error })
+    throw error
+  }
+}
+
+// ============================================================================
+// Preview Data
+// ============================================================================
+
+/**
+ * Save preview data for media file
+ */
+export async function savePreviewData(path: string): Promise<void> {
+  logger.debugSync("Saving preview data", { path })
+  try {
+    await getMedia().savePreviewData(path)
+    logger.debugSync("Preview data saved", { path })
+  } catch (error) {
+    logger.errorSync("Failed to save preview data", { path, error })
+    throw error
+  }
+}
+
+/**
+ * Load preview data for media file
+ */
+export async function loadPreviewData(path: string): Promise<any> {
+  logger.debugSync("Loading preview data", { path })
+  try {
+    const result = await getMedia().loadPreviewData(path)
+    logger.debugSync("Preview data loaded", { path })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to load preview data", { path, error })
+    throw error
+  }
+}
+
+/**
+ * Get media preview data by file ID
+ */
+export async function getMediaPreviewData(fileId: string): Promise<any | null> {
+  logger.debugSync("Getting media preview data", { fileId })
+  try {
+    const result = await getMedia().getPreviewData(fileId)
+    logger.debugSync("Media preview data retrieved", { fileId })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to get media preview data", { fileId, error })
+    throw error
+  }
+}
+
+/**
+ * Clear preview data cache
+ */
+export async function clearMediaPreviewData(): Promise<void> {
+  logger.infoSync("Clearing media preview data")
+  try {
+    await getMedia().clearPreviewData()
+    logger.infoSync("Media preview data cleared")
+  } catch (error) {
+    logger.errorSync("Failed to clear media preview data", { error })
+    throw error
+  }
+}
+
+/**
+ * Clear media preview data for specific file
+ */
+export async function clearMediaPreviewDataForFile(fileId: string): Promise<void> {
+  logger.debugSync("Clearing media preview data for file", { fileId })
+  try {
+    await getMedia().clearPreviewData(fileId)
+    logger.debugSync("Media preview data cleared for file", { fileId })
+  } catch (error) {
+    logger.errorSync("Failed to clear media preview data for file", { fileId, error })
+    throw error
+  }
+}
+
+// ============================================================================
+// Timeline Frames
+// ============================================================================
+
+/**
+ * Save timeline frames for specific file
+ */
+export async function saveTimelineFrames(fileId: string, frames: string[]): Promise<void> {
+  logger.debugSync("Saving timeline frames for file", { fileId, count: frames.length })
+  try {
+    await getMedia().saveTimelineFrames(fileId, frames)
+    logger.debugSync("Timeline frames saved for file", { fileId, count: frames.length })
+  } catch (error) {
+    logger.errorSync("Failed to save timeline frames for file", { fileId, error })
+    throw error
+  }
+}
+
+/**
+ * Save timeline frames (alias for saveTimelineFrames)
+ */
+export async function saveTimelineFramesForFile(fileId: string, frames: string[]): Promise<void> {
+  return saveTimelineFrames(fileId, frames)
+}
+
+/**
+ * Get timeline frames for specific file
+ */
+export async function getTimelineFrames(fileId: string): Promise<string[]> {
+  logger.debugSync("Getting timeline frames for file", { fileId })
+  try {
+    const result = await getMedia().getTimelineFrames(fileId)
+    logger.debugSync("Timeline frames retrieved for file", { fileId, count: result.length })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to get timeline frames for file", { fileId, error })
+    throw error
+  }
+}
+
+// ============================================================================
+// Folder Scanning
+// ============================================================================
+
+/**
+ * Scan folder for media files
+ */
+export async function scanMediaFolder(folderPath: string): Promise<any[]> {
+  logger.infoSync("Scanning folder", { folderPath })
+  try {
+    const result = await getMedia().scanFolder(folderPath)
+    logger.infoSync("Folder scanned successfully", { folderPath, filesCount: result.length })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to scan folder", { folderPath, error })
+    throw error
+  }
+}
+
+/**
+ * Scan folder for media files with thumbnails
+ */
+export async function scanMediaFolderWithThumbnails(
+  folderPath: string,
+  width: number,
+  height: number,
+): Promise<any[]> {
+  logger.infoSync("Scanning folder with thumbnails", { folderPath, width, height })
+  try {
+    const result = await getMedia().scanFolderWithThumbnails(folderPath, width, height)
+    logger.infoSync("Folder scanned with thumbnails successfully", {
+      folderPath,
+      filesCount: result.length,
+    })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to scan folder with thumbnails", { folderPath, width, height, error })
+    throw error
+  }
+}
+
+// ============================================================================
+// Thumbnails
+// ============================================================================
+
+/**
+ * Generate media thumbnail
+ */
+export async function generateMediaThumbnail(
+  fileId: string,
+  filePath: string,
+  width: number,
+  height: number,
+  timestamp: number,
+): Promise<string> {
+  logger.debugSync("Generating media thumbnail", { fileId, width, height, timestamp })
+  try {
+    const result = await getMedia().generateThumbnail(fileId, filePath, { width, height, timestamp })
+    logger.debugSync("Media thumbnail generated", { fileId })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to generate media thumbnail", { fileId, error })
+    throw error
+  }
+}
+
+// ============================================================================
+// Cache & Files
+// ============================================================================
+
+/**
+ * Get files with previews
+ */
+export async function getFilesWithPreviews(): Promise<string[]> {
+  logger.debugSync("Getting files with previews")
+  try {
+    const result = await getMedia().getFilesWithPreviews()
+    logger.debugSync("Files with previews retrieved", { count: result.length })
+    return result
+  } catch (error) {
+    logger.errorSync("Failed to get files with previews", { error })
+    throw error
+  }
+}
+
+/**
+ * Eject device
+ */
+export async function ejectDevice(deviceId: string): Promise<void> {
+  logger.infoSync("Ejecting device", { deviceId })
+  try {
+    await getMedia().ejectDevice(deviceId)
+    logger.infoSync("Device ejected", { deviceId })
+  } catch (error) {
+    logger.errorSync("Failed to eject device", { deviceId, error })
+    throw error
+  }
+}

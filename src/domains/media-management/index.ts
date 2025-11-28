@@ -96,38 +96,8 @@ export { getSmartOrganization, SmartOrganizationService } from "./services/smart
 // Waveform Generator
 export type { WaveformData, WaveformOptions, WaveformResult } from "./services/waveform-generator"
 export { getWaveformGenerator, WaveformGeneratorService } from "./services/waveform-generator"
-/**
- * Tauri Commands (DEPRECATED)
- *
- * Эти функции устарели. Используйте вместо них container.getMedia() из @/core/container
- *
- * @deprecated Используйте getMedia() из @/core/container
- * @example
- * import { getMedia } from "@/core/container"
- * const metadata = await getMedia().getMetadata(filePath)
- */
-export {
-  cancelMediaProcessing,
-  clearMediaPreviewData,
-  clearMediaPreviewDataForFile,
-  ejectDevice,
-  generateMediaThumbnail,
-  getCachedThumbnailPath,
-  getFilesWithPreviews,
-  getMediaFiles,
-  getMediaMetadata,
-  getMediaPreviewData,
-  getTimelineFrames,
-  hasCachedThumbnail,
-  loadPreviewData,
-  processMediaFile,
-  restorePreviewCache,
-  savePreviewData,
-  saveTimelineFrames,
-  saveTimelineFramesForFile,
-  scanMediaFolder,
-  scanMediaFolderWithThumbnails,
-} from "./tauri/media-commands"
+// Note: All media functions are now exported from "./services/media-api"
+// which uses container.getMedia() internally for proper DI support
 // Types
 export type {
   AudioMetadata,
