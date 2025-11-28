@@ -30,9 +30,10 @@ path = "src/main.rs"
 # name = "generate_types"
 # path = "src/bin/generate_types.rs"
 
-[[bin]]
-name = "export_types"
-path = "src/bin/export_types.rs"
+# Commented out for release builds - development tool only
+# [[bin]]
+# name = "export_types"
+# path = "src/bin/export_types.rs"
 
 [build-dependencies]
 tauri-build = { version = "2.5", features = [] }
