@@ -7,6 +7,8 @@ vi.mock("@/domains/browser", () => ({
   BrowserProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="browser-provider">{children}</div>
   ),
+  DEFAULT_TAB: "media",
+  BROWSER_TABS: ["media", "effects", "filters", "transitions", "templates", "style_templates"],
 }))
 
 vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({

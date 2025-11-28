@@ -103,6 +103,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
         },
         timeline_previews: [],
         recognition_frames: [],
+        last_updated: new Date().toISOString(),
       }
 
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue(null)
@@ -226,7 +227,7 @@ describe("useMediaPreview with IndexedDB cache", () => {
       const fileId = "test-no-base64"
       const thumbnailData = {
         path: "/cache/generated.jpg",
-        base64_data: null, // No base64 data
+        base64_data: undefined, // No base64 data
         timestamp: 0,
         width: 160,
         height: 90,
@@ -268,7 +269,17 @@ describe("useMediaPreview with IndexedDB cache", () => {
       vi.mocked(indexedDBCacheService.getCachedPreview).mockResolvedValue(null)
       mockGetPreviewData.mockResolvedValue({
         file_id: fileId,
-        browser_thumbnail: { base64_data: "new-data" },
+        file_path: "/path/to/file.mp4",
+        browser_thumbnail: {
+          path: "/cache/thumb.jpg",
+          base64_data: "new-data",
+          timestamp: 0,
+          width: 320,
+          height: 180,
+        },
+        timeline_previews: [],
+        recognition_frames: [],
+        last_updated: new Date().toISOString(),
       })
 
       const backendResult = await act(async () => {

@@ -286,11 +286,7 @@ export interface IMediaService {
   /**
    * Generate waveform preview image for audio file
    */
-  generateWaveformPreview(
-    audioPath: string,
-    outputPath: string,
-    options?: WaveformOptions,
-  ): Promise<string>
+  generateWaveformPreview(audioPath: string, outputPath: string, options?: WaveformOptions): Promise<string>
 
   /**
    * Generate waveform data for audio file

@@ -4,14 +4,21 @@
  * Тесты для media import state machine
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
 import { mediaImportMachine } from "../media-import-machine"
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock media service
+const mockMediaService = vi.hoisted(() => ({
+  importFiles: vi.fn(),
+  getMetadata: vi.fn(),
+  getMediaFiles: vi.fn(),
 }))
+
+vi.mock("@/core/container", () => ({
+  getMedia: vi.fn(() => mockMediaService),
+}))
+
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     trace: vi.fn(),
@@ -226,8 +233,7 @@ describe("MediaImportMachine", () => {
     })
 
     it("should transition to importing state with files", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue([{ path: "/project/video1.mp4" }])
+      mockMediaService.importFiles.mockResolvedValue([{ path: "/project/video1.mp4" }])
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -250,8 +256,7 @@ describe("MediaImportMachine", () => {
     })
 
     it("should create operations for each file", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue([])
+      mockMediaService.importFiles.mockResolvedValue([])
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -277,8 +282,9 @@ describe("MediaImportMachine", () => {
 
   describe("importing state", () => {
     it("should transition to completed on successful import", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue([{ path: "/project/video1.mp4", thumbnail: "/project/cache/video1-thumb.jpg" }])
+      mockMediaService.importFiles.mockResolvedValue([
+        { path: "/project/video1.mp4", thumbnail: "/project/cache/video1-thumb.jpg" },
+      ])
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -302,8 +308,7 @@ describe("MediaImportMachine", () => {
     })
 
     it("should transition to failed on import error", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockRejectedValue(new Error("Import failed"))
+      mockMediaService.importFiles.mockRejectedValue(new Error("Import failed"))
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -326,9 +331,10 @@ describe("MediaImportMachine", () => {
     })
 
     it("should handle CANCEL_IMPORT event", async () => {
-      const mockInvoke = vi.mocked(invoke)
       // Mock a long-running import
-      mockInvoke.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve([]), 1000)))
+      mockMediaService.importFiles.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve([]), 1000)),
+      )
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -356,8 +362,7 @@ describe("MediaImportMachine", () => {
 
   describe("IMPORT_PROGRESS event", () => {
     it("should update operation progress", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockImplementation(() => new Promise(() => {})) // Never resolves
+      mockMediaService.importFiles.mockImplementation(() => new Promise(() => {})) // Never resolves
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -391,8 +396,7 @@ describe("MediaImportMachine", () => {
     })
 
     it("should calculate total progress correctly", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockImplementation(() => new Promise(() => {}))
+      mockMediaService.importFiles.mockImplementation(() => new Promise(() => {}))
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -432,8 +436,7 @@ describe("MediaImportMachine", () => {
 
   describe("RESET event", () => {
     it("should reset to idle from completed", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue([])
+      mockMediaService.importFiles.mockResolvedValue([])
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -461,8 +464,7 @@ describe("MediaImportMachine", () => {
     })
 
     it("should reset to idle from failed", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockRejectedValue(new Error("Import failed"))
+      mockMediaService.importFiles.mockRejectedValue(new Error("Import failed"))
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -489,10 +491,8 @@ describe("MediaImportMachine", () => {
 
   describe("retry from failed state", () => {
     it("should allow retry after failure", async () => {
-      const mockInvoke = vi.mocked(invoke)
-
       // First call fails
-      mockInvoke.mockRejectedValueOnce(new Error("Network error"))
+      mockMediaService.importFiles.mockRejectedValueOnce(new Error("Network error"))
 
       const actor = createActor(mediaImportMachine)
       actor.start()
@@ -507,7 +507,7 @@ describe("MediaImportMachine", () => {
       await waitFor(actor, (state) => state.value === "failed")
 
       // Second call succeeds
-      mockInvoke.mockResolvedValueOnce([{ path: "/project/video1.mp4" }])
+      mockMediaService.importFiles.mockResolvedValueOnce([{ path: "/project/video1.mp4" }])
 
       actor.send({ type: "START_IMPORT" })
 

@@ -181,11 +181,7 @@ export class NodeMediaService implements IMediaService {
   // Audio Analysis
   // ============================================================================
 
-  async generateWaveformPreview(
-    audioPath: string,
-    _outputPath: string,
-    _options?: WaveformOptions,
-  ): Promise<string> {
+  async generateWaveformPreview(audioPath: string, _outputPath: string, _options?: WaveformOptions): Promise<string> {
     // TODO: Implement using ffmpeg for waveform generation
     throw new Error(`NodeMediaService.generateWaveformPreview not implemented for: ${audioPath}`)
   }

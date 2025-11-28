@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { container } from "@/core"
+import { loadProject } from "@/domains/project-management/services/project-file-service"
 import {
   cancelRender,
   getActiveJobs,
@@ -9,7 +10,6 @@ import {
   RenderStatus,
   renderProject,
 } from "@/domains/video-editing"
-import { loadProject } from "@/domains/project-management/services/project-file-service"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
 import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 

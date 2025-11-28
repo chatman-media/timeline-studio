@@ -535,9 +535,7 @@ impl AIDirectorWithEvents {
         );
 
         // Выполняем анализ
-        let result = inner
-          .analyze_media_comprehensive(&path, config_opt)
-          .await;
+        let result = inner.analyze_media_comprehensive(&path, config_opt).await;
 
         // Увеличиваем counters
         let current_completed = completed_count.fetch_add(1, Ordering::SeqCst) + 1;
@@ -587,19 +585,17 @@ impl AIDirectorWithEvents {
 
     for task_result in task_results {
       match task_result {
-        Ok((index, file_path, result)) => {
-          match result {
-            Ok(analysis) => {
-              indexed_results.push((index, file_path, Ok(analysis)));
-            }
-            Err(e) => {
-              let error_msg = format!("File {} failed: {}", file_path, e);
-              errors.push(error_msg.clone());
-              error!("{}", error_msg);
-              indexed_results.push((index, file_path, Err(e)));
-            }
+        Ok((index, file_path, result)) => match result {
+          Ok(analysis) => {
+            indexed_results.push((index, file_path, Ok(analysis)));
           }
-        }
+          Err(e) => {
+            let error_msg = format!("File {} failed: {}", file_path, e);
+            errors.push(error_msg.clone());
+            error!("{}", error_msg);
+            indexed_results.push((index, file_path, Err(e)));
+          }
+        },
         Err(e) => {
           let error_msg = format!("Task join error: {}", e);
           errors.push(error_msg.clone());

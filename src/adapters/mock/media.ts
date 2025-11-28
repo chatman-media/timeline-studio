@@ -282,11 +282,7 @@ export class MockMediaService implements IMediaService {
   // Audio Analysis
   // ============================================================================
 
-  async generateWaveformPreview(
-    _audioPath: string,
-    outputPath: string,
-    _options?: WaveformOptions,
-  ): Promise<string> {
+  async generateWaveformPreview(_audioPath: string, outputPath: string, _options?: WaveformOptions): Promise<string> {
     return outputPath
   }
 

@@ -365,11 +365,7 @@ export class TauriMediaService implements IMediaService {
   // Audio Analysis
   // ============================================================================
 
-  async generateWaveformPreview(
-    audioPath: string,
-    outputPath: string,
-    options?: WaveformOptions,
-  ): Promise<string> {
+  async generateWaveformPreview(audioPath: string, outputPath: string, options?: WaveformOptions): Promise<string> {
     const width = options?.width ?? 1000
     const height = options?.height ?? 100
     const color = options?.color ?? "#3b82f6"

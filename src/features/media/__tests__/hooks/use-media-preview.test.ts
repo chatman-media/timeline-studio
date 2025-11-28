@@ -342,7 +342,7 @@ describe("useMediaPreview", () => {
 
   describe("clearPreviewData", () => {
     it("should clear preview data successfully", async () => {
-      mockGenerateThumbnail.mockResolvedValue(undefined)
+      mockClearPreviewData.mockResolvedValue(undefined)
       mockIndexedDBCache.deletePreview.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useMediaPreview())

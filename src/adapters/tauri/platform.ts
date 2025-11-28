@@ -7,7 +7,13 @@
 
 import { invoke } from "@tauri-apps/api/core"
 
-import type { FileStats, IPlatformService, NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "@/core/ports"
+import type {
+  FileStats,
+  IPlatformService,
+  NotificationOptions,
+  OpenDialogOptions,
+  SaveDialogOptions,
+} from "@/core/ports"
 
 export class TauriPlatformService implements IPlatformService {
   // === File Dialogs ===

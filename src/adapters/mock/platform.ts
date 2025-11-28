@@ -5,7 +5,13 @@
  * Использует browser APIs или in-memory заглушки.
  */
 
-import type { FileStats, IPlatformService, NotificationOptions, OpenDialogOptions, SaveDialogOptions } from "@/core/ports"
+import type {
+  FileStats,
+  IPlatformService,
+  NotificationOptions,
+  OpenDialogOptions,
+  SaveDialogOptions,
+} from "@/core/ports"
 
 export class MockPlatformService implements IPlatformService {
   // Mock storage for file system simulation

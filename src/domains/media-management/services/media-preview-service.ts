@@ -6,39 +6,13 @@
  */
 
 import { getMedia } from "@/core/container"
+import type { MediaPreviewData, ThumbnailData, TimelineFrame } from "@/features/media/types/preview"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaPreviewService")
 
-export interface MediaPreviewData {
-  file_id: string
-  file_path: string
-  browser_thumbnail?: {
-    path: string
-    base64_data: string
-    timestamp: number
-    width: number
-    height: number
-  }
-  last_updated: string
-  timeline_previews: Array<any>
-  recognition_frames: Array<any>
-  recognition_results?: any // Optional recognition results in RecognitionResults format
-}
-
-export interface ThumbnailData {
-  path: string
-  base64_data: string
-  timestamp: number
-  width: number
-  height: number
-}
-
-export interface TimelineFrame {
-  timestamp: number
-  base64_data: string
-  is_keyframe: boolean
-}
+// Re-export types for backwards compatibility
+export type { MediaPreviewData, ThumbnailData, TimelineFrame }
 
 /**
  * Media Preview Service
@@ -88,7 +62,7 @@ export class MediaPreviewService {
       // Return ThumbnailData format expected by callers
       return {
         path: thumbnailPath,
-        base64_data: "", // Will be populated by caller if needed
+        base64_data: undefined, // Will be populated by caller if needed
         timestamp,
         width,
         height,

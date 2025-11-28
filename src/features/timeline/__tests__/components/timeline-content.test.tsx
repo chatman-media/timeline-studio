@@ -5,6 +5,55 @@ import { useProjectSettings } from "@/features/project-settings/hooks/use-projec
 
 import { TimelineContent } from "../../components/timeline-content"
 
+// Hoisted mocks for proper initialization order
+const mockCurrentProject = vi.hoisted(() => ({
+  id: "test-project",
+  name: "Test Project",
+  metadata: {
+    name: "Test Project",
+    file_path: null,
+    is_dirty: false,
+  },
+}))
+
+const mockProjectSettings = vi.hoisted(() => ({
+  aspectRatio: {
+    value: { width: 1920, height: 1080 },
+  },
+  frameRate: "30",
+}))
+
+const mockTimelineState = vi.hoisted(() => ({
+  project: null as any,
+  uiState: {
+    timeScale: 10,
+    selectedTrackIds: [] as string[],
+  },
+  currentTime: 0,
+  createProject: vi.fn().mockResolvedValue(undefined),
+  addSection: vi.fn().mockResolvedValue(undefined),
+  addTrack: vi.fn(),
+  updateTrack: vi.fn(),
+  selectTracks: vi.fn(),
+  seek: vi.fn(),
+  error: null as string | null,
+  clearError: vi.fn(),
+  send: vi.fn(),
+}))
+
+const mockTracks = vi.hoisted(() => ({
+  tracks: [] as any[],
+  setTrackHeight: vi.fn(),
+}))
+
+const mockClips = vi.hoisted(() => ({
+  clips: [] as any[],
+}))
+
+const mockDragState = vi.hoisted(() => ({
+  dragState: { isDragging: false },
+}))
+
 // Mock все внешние зависимости
 vi.mock("@/components/ui/badge", () => ({
   Badge: ({ children, variant }: any) => <span data-variant={variant}>{children}</span>,
@@ -31,61 +80,33 @@ vi.mock("@/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children }: any) => <div>{children}</div>,
 }))
 
-// Mock hooks
-const mockCurrentProject = {
-  id: "test-project",
-  name: "Test Project",
-  metadata: {
-    name: "Test Project",
-    file_path: null,
-    is_dirty: false,
-  },
-}
-
-const mockProjectSettings = {
-  aspectRatio: {
-    value: { width: 1920, height: 1080 },
-  },
-  frameRate: "30",
-}
-
-const mockTimelineState = {
-  project: null as any,
-  uiState: {
-    timeScale: 10,
-    selectedTrackIds: [] as string[],
-  },
-  currentTime: 0,
-  createProject: vi.fn().mockResolvedValue(undefined),
-  addSection: vi.fn().mockResolvedValue(undefined),
-  addTrack: vi.fn(),
-  updateTrack: vi.fn(),
-  selectTracks: vi.fn(),
-  seek: vi.fn(),
-  error: null as string | null,
-  clearError: vi.fn(),
-  send: vi.fn(),
-}
-
-const mockTracks = {
-  tracks: [] as any[],
-  setTrackHeight: vi.fn(),
-}
-
-const mockClips = {
-  clips: [] as any[],
-}
-
-const mockDragState = {
-  dragState: { isDragging: false },
-}
-
-vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
-  useCurrentProject: () => ({ currentProject: mockCurrentProject }),
-}))
+vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/project-management/hooks")>()
+  return {
+    ...actual,
+    useCurrentProject: () => ({
+      currentProject: {
+        id: "test-project",
+        name: "Test Project",
+        metadata: {
+          name: "Test Project",
+          file_path: null,
+          is_dirty: false,
+        },
+      },
+    }),
+  }
+})
 
 vi.mock("@/features/project-settings/hooks/use-project-settings", () => ({
-  useProjectSettings: vi.fn(() => ({ settings: mockProjectSettings })),
+  useProjectSettings: vi.fn(() => ({
+    settings: {
+      aspectRatio: {
+        value: { width: 1920, height: 1080 },
+      },
+      frameRate: "30",
+    },
+  })),
 }))
 
 vi.mock("../../hooks/use-timeline", () => ({
