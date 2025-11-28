@@ -26,6 +26,18 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-28] Domains Adapters Migration - PLANNED 🟡
+- **Status:** Запланировано
+- **File:** domains-adapters-migration.md
+- **Action:** Создана задача в planned/
+- **Priority:** High
+- **Summary:**
+  - 20 файлов в `domains/*/tauri/` с прямыми `invoke()` (235 вызовов)
+  - Нужно мигрировать на Ports & Adapters архитектуру
+  - План: создать IAIService, IVideoService и использовать IBackendService для остальных
+  - Оценка: 5-7 дней
+- **Goal:** Domains должны использовать `container.get*()` вместо прямых `invoke()`
+
 ### [2025-11-28] Audio Analysis Architecture Refactoring - COMPLETED ✅
 - **Status:** Завершено (100%)
 - **File:** audio-analysis-architecture-refactoring.md
@@ -262,4 +274,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-28 (AI Director Phase 3 Parallel Processing completed)*
+*Last updated: 2025-11-28 (Domains Adapters Migration task created)*

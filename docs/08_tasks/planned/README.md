@@ -2,7 +2,7 @@
 
 Tasks planned for future development.
 
-## Tasks (24)
+## Tasks (25)
 
 ### AI & Analysis
 - [AI Analysis Integration Plan](ai-analysis-integration-plan.md)
@@ -26,6 +26,9 @@ Tasks planned for future development.
 - [Mobile Apps](mobile-apps.md)
 - [Telegram Mini App](telegram-mini-app.md)
 
+### Architecture
+- [Domains Adapters Migration](domains-adapters-migration.md) 🔴 **HIGH**
+
 ### Platform & Infrastructure
 - [Plugin System](plugin-system.md)
 - [EventBus API Extensions](eventbus-api-extensions.md)
@@ -42,4 +45,4 @@ Tasks planned for future development.
 
 ---
 
-*Last updated: 2025-11-25*
+*Last updated: 2025-11-28*
