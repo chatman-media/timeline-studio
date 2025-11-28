@@ -45,7 +45,7 @@ const mockFavorites = {
   "style-template": [] as MediaFile[],
 }
 
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: () => ({
     addToFavorites: mockAddToFavorites,
     removeFromFavorites: mockRemoveFromFavorites,

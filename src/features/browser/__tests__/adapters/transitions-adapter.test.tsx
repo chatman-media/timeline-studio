@@ -26,7 +26,7 @@ const mockUnifiedAdapterReturn: any = {
 }
 
 // Mock модулей
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
     addFavorite: vi.fn(),
@@ -404,7 +404,9 @@ describe("useTransitionsAdapter", () => {
         complexity: "basic",
       }
 
-      const { useFavorites } = await vi.importMock<typeof import("@/features/app-state")>("@/features/app-state")
+      const { useFavorites } = await vi.importMock<typeof import("@/domains/project-management/hooks")>(
+        "@/domains/project-management/hooks",
+      )
       const mockIsItemFavorite = vi.fn(() => true)
 
       vi.mocked(useFavorites).mockReturnValue({

@@ -1,7 +1,7 @@
 import { vi } from "vitest"
 
 // Мокаем зависимости для тестов фильтров
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn((item: any, type: string) => type === "filter" && item.id === "favorite-filter"),
   })),

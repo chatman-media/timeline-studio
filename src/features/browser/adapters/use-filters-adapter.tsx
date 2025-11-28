@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { useFiltersAdapter as useUnifiedFiltersAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { FilterPreview } from "@/features/filters/components/filter-preview"

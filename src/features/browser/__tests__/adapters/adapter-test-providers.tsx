@@ -11,9 +11,8 @@ export const AdapterTestProviders = ({ children }: { children: ReactNode }) => {
 
 // Моки для всех необходимых провайдеров без их реального импорта
 export const setupAdapterMocks = () => {
-  // Mock AppSettingsProvider
-  vi.mock("@/features/app-state", () => ({
-    AppSettingsProvider: ({ children }: { children: React.ReactNode }) => children,
+  // Mock hooks from project-management domain
+  vi.mock("@/domains/project-management/hooks", () => ({
     useFavorites: vi.fn(() => ({
       isItemFavorite: vi.fn(() => false),
     })),

@@ -68,7 +68,7 @@ vi.mock("@/features/timeline/hooks", () => ({
 }))
 
 // Моки для useCurrentProject
-vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: null,
     openProject: vi.fn(),
@@ -96,7 +96,7 @@ vi.mock("@/features/browser/hooks/use-music-import", () => ({
 }))
 
 // Моки для useMusicFiles
-vi.mock("@/features/app-state/hooks/use-music-files", () => ({
+vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
   useMusicFiles: () => ({
     musicFiles: [],
     addMusicFile: vi.fn(),

@@ -12,8 +12,8 @@ export const mockI18n = {
   },
 }
 
-// Мок для app-state
-export const mockAppState = {
+// Мок для project-management hooks
+export const mockProjectManagementHooks = {
   useAppSettings: vi.fn(() => ({
     isLoading: false,
     getError: vi.fn(() => null),
@@ -27,9 +27,21 @@ export const mockAppState = {
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),
-  AppSettingsProvider: ({ children }: { children: any }) => children,
-  UserSettingsProvider: ({ children }: { children: any }) => children,
-  ModalProvider: ({ children }: { children: any }) => children,
+  useMusicFiles: vi.fn(() => ({
+    musicFiles: [],
+    updateMusicFiles: vi.fn(),
+  })),
+  useCurrentProject: vi.fn(() => ({
+    currentProject: null,
+    openProject: vi.fn(),
+    saveProject: vi.fn(),
+    createNewProject: vi.fn(),
+  })),
+}
+
+// Мок для project-management providers
+export const mockProjectManagementProviders = {
+  AppProvider: ({ children }: { children: any }) => children,
 }
 
 // Мок для timeline
@@ -113,7 +125,8 @@ export const mockAudio = {
 // Экспорт всех моков
 export const allMocks = {
   "@/i18n": mockI18n,
-  "@/features/app-state": mockAppState,
+  "@/domains/project-management/hooks": mockProjectManagementHooks,
+  "@/domains/project-management/providers/app-provider": mockProjectManagementProviders,
   "@/features/timeline": mockTimeline,
   "@/features/media": mockMedia,
   "@/features/effects": mockEffects,

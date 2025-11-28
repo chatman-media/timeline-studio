@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { useStyleTemplatesAdapter as useUnifiedStyleTemplatesAdapter } from "@/features/browser/hooks/use-resources"
 import { StyleTemplateDragSource } from "@/features/style-templates/components/style-template-drag-source"
 import { StyleTemplatePreview } from "@/features/style-templates/components/style-template-preview"

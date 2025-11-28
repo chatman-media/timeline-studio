@@ -1,7 +1,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { useProjectSettings } from "@/features/project-settings"
 import { TemplatePreview } from "@/features/templates/components/template-preview"
 import { type MediaTemplate, TEMPLATE_MAP } from "@/features/templates/lib/templates"

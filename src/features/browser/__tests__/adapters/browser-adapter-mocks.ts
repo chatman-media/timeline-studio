@@ -26,7 +26,7 @@ vi.mock("@/features/modals/services/modal-provider", () => ({
 }))
 
 // Мокаем AppProvider и связанные хуки
-vi.mock("@/features/app-state/services/app-provider", () => ({
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: any) => children,
   useApp: vi.fn(() => ({
     projectState: { project: null },
@@ -37,13 +37,13 @@ vi.mock("@/features/app-state/services/app-provider", () => ({
   })),
 }))
 
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),
 }))
 
-vi.mock("@/features/app-state/hooks/use-music-files", () => ({
+vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
   useMusicFiles: vi.fn(() => ({
     musicFiles: [],
     addMusicFile: vi.fn(),

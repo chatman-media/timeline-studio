@@ -2,7 +2,7 @@ import type React from "react"
 import { useMemo } from "react"
 
 import { useMediaManagement } from "@/domains/media-management"
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
 import { parseFileSize } from "@/features/browser/utils"
 import { useDraggable } from "@/features/drag-drop"

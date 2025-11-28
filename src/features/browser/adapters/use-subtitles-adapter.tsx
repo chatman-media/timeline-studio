@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { SubtitlePreview } from "@/features/subtitles/components/subtitle-preview"
 import { useSubtitles } from "@/features/subtitles/hooks/use-subtitle-styles"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types/subtitles"

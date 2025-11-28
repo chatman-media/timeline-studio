@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getMediaFiles, getMediaMetadata, selectAudioFile, selectMediaDirectory } from "@/domains/media-management"
-import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
-import { useMusicFiles } from "@/features/app-state/hooks/use-music-files"
+import { useCurrentProject, useMusicFiles } from "@/domains/project-management/hooks"
 import { convertToSavedMusicFile } from "@/features/media"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"

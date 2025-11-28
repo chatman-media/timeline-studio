@@ -32,7 +32,7 @@ vi.mock("../../components/browser-content", () => ({
   BrowserContent: () => <div data-testid="browser-content">Browser Content</div>,
 }))
 
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useAppSettings: () => ({
     getUserSettings: vi.fn(() => ({})),
     updateUserSettings: vi.fn(),
@@ -40,7 +40,6 @@ vi.mock("@/features/app-state", () => ({
       appSettings: {},
     },
   }),
-  AppSettingsProvider: ({ children }: { children: any }) => children,
 }))
 
 // Мокаем AI интеграцию

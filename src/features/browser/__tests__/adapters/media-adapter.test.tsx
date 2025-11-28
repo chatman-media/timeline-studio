@@ -21,8 +21,7 @@ vi.mock("@/lib/duration-formatter", () => ({
 }))
 
 // Мокаем все зависимости напрямую
-vi.mock("@/features/app-state", () => ({
-  AppSettingsProvider: ({ children }: any) => children,
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),

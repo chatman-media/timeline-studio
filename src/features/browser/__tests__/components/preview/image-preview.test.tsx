@@ -13,7 +13,7 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state/hooks/use-app-settings", () => ({
+vi.mock("@/domains/project-management/hooks/use-app-settings", () => ({
   useAppSettings: () => ({
     getMediaFiles: () => ({
       allFiles: [],
@@ -34,7 +34,7 @@ vi.mock("@/features/app-state/hooks/use-app-settings", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: () => ({
     favorites: {
       transition: [],

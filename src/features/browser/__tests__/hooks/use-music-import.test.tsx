@@ -9,7 +9,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
-vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: vi.fn(() => ({
     currentProject: {
       path: "/test/project",
@@ -20,7 +20,7 @@ vi.mock("@/features/app-state/hooks/use-current-project", () => ({
   })),
 }))
 
-vi.mock("@/features/app-state/hooks/use-music-files", () => ({
+vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
   useMusicFiles: vi.fn(() => ({
     musicFiles: [],
     updateMusicFiles: vi.fn(),

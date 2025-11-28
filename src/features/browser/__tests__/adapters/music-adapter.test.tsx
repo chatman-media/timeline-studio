@@ -7,7 +7,7 @@ import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
 import { MediaType } from "@/features/media/types/media"
 
 // Mock модулей
-vi.mock("@/features/app-state", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
     addFavorite: vi.fn(),
@@ -48,7 +48,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Import mocked modules after vi.mock
-const { useMusicFiles } = await import("@/features/app-state")
+const { useMusicFiles } = await import("@/domains/project-management/hooks")
 const { useMusicImport } = await import("@/features/browser/hooks/use-music-import")
 
 describe("useMusicAdapter", () => {
