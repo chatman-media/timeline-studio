@@ -2,7 +2,7 @@ import { Check, Plus, X } from "lucide-react"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { useResources } from "@/features/resources"
 import type { ResourceType, TimelineResource } from "@/features/resources/types"
 import { createLogger } from "@/lib/tauri-logger"
@@ -42,7 +42,7 @@ export const AddMediaButton = memo(function AddMediaButton({
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const prevIsAddedRef = useRef(false)
 
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
   const {
     addMedia,
     addMusic,

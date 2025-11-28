@@ -8,16 +8,19 @@ import type React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { ChatProvider, useChat } from "../chat-provider"
 
-// Mock BackendSync
+// Mock Backend via container
 const mockExecuteCommand = vi.fn()
 const mockOnStateChange = vi.fn()
-const mockGetBackendSync = vi.fn(() => ({
-  executeCommand: mockExecuteCommand,
-  onStateChange: mockOnStateChange,
-}))
 
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: () => mockGetBackendSync(),
+vi.mock("@/core/container", () => ({
+  container: {
+    getBackend: vi.fn(() => ({
+      executeCommand: mockExecuteCommand,
+      onStateChange: mockOnStateChange,
+    })),
+    hasBackend: vi.fn(() => true),
+    registerBackend: vi.fn(),
+  },
 }))
 
 // Mock logger

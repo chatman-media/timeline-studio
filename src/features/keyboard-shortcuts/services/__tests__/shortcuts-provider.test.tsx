@@ -37,13 +37,17 @@ vi.mock("../tauri-global-shortcuts", () => ({
   },
 }))
 
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: vi.fn(() => ({
-    connected: false,
-    onStateChange: vi.fn(() => vi.fn()),
-    onEvent: vi.fn(() => vi.fn()),
-    executeCommand: vi.fn(),
-  })),
+vi.mock("@/core/container", () => ({
+  container: {
+    getBackend: vi.fn(() => ({
+      connected: false,
+      onStateChange: vi.fn(() => vi.fn()),
+      onEvent: vi.fn(() => vi.fn()),
+      executeCommand: vi.fn(),
+    })),
+    hasBackend: vi.fn(() => true),
+    registerBackend: vi.fn(),
+  },
 }))
 
 vi.mock("@/features/modals/services/modal-provider", () => ({

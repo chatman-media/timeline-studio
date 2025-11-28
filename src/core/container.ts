@@ -28,7 +28,12 @@ class ServiceContainer {
    * Сброс контейнера (для тестов)
    */
   static reset(): void {
-    ServiceContainer.instance = null
+    if (ServiceContainer.instance) {
+      ServiceContainer.instance._backend = null
+      ServiceContainer.instance._platform = null
+      ServiceContainer.instance._storage = null
+      ServiceContainer.instance._event = null
+    }
   }
 
   // === Backend Service ===

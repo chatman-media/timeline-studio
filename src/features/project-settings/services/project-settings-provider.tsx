@@ -7,7 +7,7 @@
 
 import React, { createContext, useCallback, useEffect, useState } from "react"
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "../types/project"
@@ -35,7 +35,7 @@ interface ProjectSettingsProviderProps {
 }
 
 export function ProjectSettingsProvider({ children }: ProjectSettingsProviderProps) {
-  const [backendSync] = useState(() => getBackendSync())
+  const [backendSync] = useState(() => container.getBackend())
   const [backendState, setBackendState] = useState<ProjectState | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

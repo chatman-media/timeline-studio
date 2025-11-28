@@ -1,6 +1,6 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { useModal } from "@/features/modals/services/modal-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { ShortcutHandler } from "../components/shortcut-handler"
@@ -67,7 +67,7 @@ interface ShortcutsProviderProps {
  */
 export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   const { openModal } = useModal()
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
   const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
   const [shortcuts, setShortcuts] = useState<ShortcutDefinition[]>([])
   const [activeShortcuts, setActiveShortcuts] = useState<ShortcutDefinition[]>([])

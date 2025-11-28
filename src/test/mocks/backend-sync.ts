@@ -791,14 +791,14 @@ export function clearStateChangeHandlers() {
   eventHandlers.length = 0
 }
 
-// Mock getBackendSync to always return the mock instance
+// Register mock backend with container
+import { container } from "@/core/container"
+
+// Register the mock backend in the container so it's available to all components
+container.registerBackend(mockBackendSync as any)
+
+// Export for backward compatibility (some tests might still use getBackendSync)
 export const getBackendSync = vi.fn(() => mockBackendSync)
 
 // Mock BackendSync class constructor
 export const BackendSync = vi.fn().mockImplementation(() => mockBackendSync)
-
-// Auto-mock the module
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync,
-  BackendSync,
-}))

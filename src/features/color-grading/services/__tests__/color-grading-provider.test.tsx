@@ -3,15 +3,19 @@ import { describe, expect, it, vi } from "vitest"
 
 import { ColorGradingProvider, useColorGradingContext } from "../color-grading-provider"
 
-// Mock backend-sync first
+// Mock container.getBackend first
 const mockExecuteCommand = vi.fn()
 const mockOnEvent = vi.fn()
 
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: vi.fn(() => ({
-    executeCommand: mockExecuteCommand,
-    onEvent: mockOnEvent,
-  })),
+vi.mock("@/core/container", () => ({
+  container: {
+    getBackend: vi.fn(() => ({
+      executeCommand: mockExecuteCommand,
+      onEvent: mockOnEvent,
+    })),
+    hasBackend: vi.fn(() => true),
+    registerBackend: vi.fn(),
+  },
 }))
 
 // Mock the useColorGrading hook

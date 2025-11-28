@@ -18,7 +18,7 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import type React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 import { useDebouncedSeek } from "@/features/video-player/hooks/use-debounced-seek"
@@ -108,12 +108,12 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <PlayerProvider
 
 describe("Video Player Advanced Tests", () => {
   let mockVideoElement: HTMLVideoElement
-  let backend: ReturnType<typeof getBackendSync>
+  let backend: ReturnType<typeof container.getBackend>
 
   beforeEach(() => {
     mockVideoElement = createMockVideoElement()
     document.body.appendChild(mockVideoElement)
-    backend = getBackendSync()
+    backend = container.getBackend()
     vi.clearAllMocks()
     // Setup backend mock to resolve successfully
     ;(backend.executeCommand as any).mockResolvedValue({ success: true })

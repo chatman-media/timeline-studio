@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { ResourceType } from "@/features/resources/types"
@@ -101,7 +101,7 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
     resourcesUpdate: [],
     error: [],
   }
-  private backendSync = getBackendSync()
+  private backendSync = container.getBackend()
   private isBackendConnected = false
 
   // Кэш для мемоизации результатов getResources
@@ -961,7 +961,7 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
   const [isInitialized, setIsInitialized] = useState(false)
   const [isBackendConnected, setIsBackendConnected] = useState(false)
   const apiRef = useRef<BrowserResourcesProviderImpl | null>(null)
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   // Создаем API инстанс
   if (!apiRef.current) {

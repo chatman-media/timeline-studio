@@ -26,7 +26,7 @@ type TimelineProject = Timeline
 type TimelineTrack = Track
 type TimelineSection = Section
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import type { ProjectState as BackendProjectState } from "@/types/generated/tauri-bindings"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import { transformProjectStateToTimeline } from "../utils/project-transform"
@@ -52,7 +52,7 @@ const TimelineProjectContext = createContext<TimelineProjectContext | null>(null
 export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const project = useSelector(timelineActor, (state) => state.context.project)
   const isLoading = useSelector(timelineActor, (state) => state.context.isLoading)
@@ -194,7 +194,7 @@ const TimelinePlaybackContext = createContext<TimelinePlaybackContext | null>(nu
 export function TimelinePlaybackProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const playerActor = orchestrator.getActors().player
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const isPlaying = useSelector(playerActor, (state) => state.matches({ ready: "playing" }))
   const currentTime = useSelector(playerActor, (state) => state.context.currentTime)
@@ -304,7 +304,7 @@ const TimelineTracksContext = createContext<TimelineTracksContext | null>(null)
 export function TimelineTracksProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const project = useSelector(timelineActor, (state) => state.context.project)
   const activeTrackId = useSelector(timelineActor, (state) => state.context.activeTrackId)
@@ -409,7 +409,7 @@ const TimelineClipsContext = createContext<TimelineClipsContext | null>(null)
 export function TimelineClipsProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const project = useSelector(timelineActor, (state) => state.context.project)
 
@@ -565,7 +565,7 @@ const TimelineSelectionContext = createContext<TimelineSelectionContext | null>(
 export function TimelineSelectionProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const selectedClipIds = useSelector(timelineActor, (state) => state.context.selectedClipIds)
   const selectedTrackIds = useSelector(timelineActor, (state) => state.context.selectedTrackIds)
@@ -727,7 +727,7 @@ const TimelineEffectsContext = createContext<TimelineEffectsContext | null>(null
 export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const contextValue: TimelineEffectsContext = {
     applyEffect: async (clipId: string, effectId: string, params?: any) => {
@@ -843,7 +843,7 @@ const TimelineMarkersContext = createContext<TimelineMarkersContext | null>(null
 export function TimelineMarkersProvider({ children }: { children: ReactNode }) {
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
 
   const project = useSelector(timelineActor, (state) => state.context.project)
 
@@ -958,7 +958,7 @@ interface TimelineKeyframesContext {
 const TimelineKeyframesContext = createContext<TimelineKeyframesContext | null>(null)
 
 export function TimelineKeyframesProvider({ children }: { children: ReactNode }) {
-  const backendSync = getBackendSync()
+  const backendSync = container.getBackend()
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
   const project = useSelector(timelineActor, (state) => state.context.project)

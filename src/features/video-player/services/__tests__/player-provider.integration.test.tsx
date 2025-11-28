@@ -96,13 +96,16 @@ const mockBackendSync = {
   },
 }
 
-vi.mock("@/features/app-state/services/backend-sync", () => ({
-  getBackendSync: vi.fn(() => mockBackendSync),
-  BackendSync: vi.fn().mockImplementation(() => mockBackendSync),
+vi.mock("@/core/container", () => ({
+  container: {
+    getBackend: vi.fn(() => mockBackendSync),
+    hasBackend: vi.fn(() => true),
+    registerBackend: vi.fn(),
+  },
 }))
 
 // Import after mocks are set up
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { MockBackendProvider, type MockProjectState } from "@/features/app-state/testing/mock-backend-provider"
 
 // Import the real PlayerProvider implementation (bypass global mocks in setup)
@@ -135,7 +138,7 @@ const TestWrapper = ({ children, mockState }: { children: React.ReactNode; mockS
 
 describe("PlayerProvider Integration Tests", () => {
   it("should sync backend playback state", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync = container.getBackend()
     const mockState: Partial<MockProjectState> = {
       playback_state: {
         is_playing: true,
@@ -169,7 +172,7 @@ describe("PlayerProvider Integration Tests", () => {
   })
 
   it("should execute backend commands for play/pause", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync = container.getBackend()
 
     const { result } = renderHook(() => usePlayer(), {
       wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
@@ -197,7 +200,7 @@ describe("PlayerProvider Integration Tests", () => {
   })
 
   it("should execute seek command", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync = container.getBackend()
 
     const { result } = renderHook(() => usePlayer(), {
       wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
@@ -243,7 +246,7 @@ describe("PlayerProvider Integration Tests", () => {
   })
 
   it("should handle player-specific backend commands", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync = container.getBackend()
 
     const { result } = renderHook(() => usePlayer(), {
       wrapper: ({ children }) => <TestWrapper>{children}</TestWrapper>,
@@ -368,7 +371,7 @@ describe("PlayerProvider Integration Tests", () => {
   })
 
   it("should handle backend command failures gracefully", async () => {
-    const mockBackendSync = getBackendSync()
+    const mockBackendSync = container.getBackend()
     ;(mockBackendSync.executeCommand as any).mockRejectedValueOnce(new Error("Backend command failed"))
 
     const { result } = renderHook(() => usePlayer(), {

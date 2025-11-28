@@ -8,10 +8,26 @@ import { beforeEach, describe, expect, it, type Mock, vi } from "vitest"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { useVersionControl } from "../../hooks/use-version-control"
 
-// Mock dependencies
-vi.mock("@/adapters/tauri", () => ({
-  getBackendSync: vi.fn(),
+// Mock getBackendSync
+const mockBackendSync = {
+  getProjectState: vi.fn(),
+  onEvent: vi.fn((_handler: (event: ProjectEvent) => void) => () => {}) as Mock,
+  createSnapshot: vi.fn(),
+  restoreVersion: vi.fn(),
+  getVersionHistory: vi.fn(),
+  compareVersions: vi.fn(),
+  createBranch: vi.fn(),
+  mergeBranch: vi.fn(),
+  switchBranch: vi.fn(),
+  setAutoSaveInterval: vi.fn(),
+  enableAutoSave: vi.fn(),
+}
+
+vi.mock("@/adapters/tauri/backend-sync", () => ({
+  getBackendSync: () => mockBackendSync,
 }))
+
+// Mock dependencies
 const mockToast = vi.fn()
 vi.mock("@/hooks/use-toast", () => ({
   useToast: () => ({
@@ -27,20 +43,6 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 describe("useVersionControl", () => {
-  let mockBackendSync: {
-    getProjectState: ReturnType<typeof vi.fn>
-    onEvent: Mock
-    createSnapshot: ReturnType<typeof vi.fn>
-    restoreVersion: ReturnType<typeof vi.fn>
-    getVersionHistory: ReturnType<typeof vi.fn>
-    compareVersions: ReturnType<typeof vi.fn>
-    createBranch: ReturnType<typeof vi.fn>
-    mergeBranch: ReturnType<typeof vi.fn>
-    switchBranch: ReturnType<typeof vi.fn>
-    setAutoSaveInterval: ReturnType<typeof vi.fn>
-    enableAutoSave: ReturnType<typeof vi.fn>
-  }
-
   const mockProjectState: ProjectState = {
     project: {
       id: "test-project",
@@ -124,26 +126,20 @@ describe("useVersionControl", () => {
     imported_media: {},
   }
 
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks()
 
-    mockBackendSync = {
-      getProjectState: vi.fn().mockResolvedValue(mockProjectState),
-      onEvent: vi.fn((_handler: (event: ProjectEvent) => void) => () => {}) as Mock,
-      createSnapshot: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      restoreVersion: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      getVersionHistory: vi.fn().mockResolvedValue({ success: true, error: null, data: { versions: [] } }),
-      compareVersions: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      createBranch: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      mergeBranch: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      switchBranch: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      setAutoSaveInterval: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-      enableAutoSave: vi.fn().mockResolvedValue({ success: true, error: null, data: null }),
-    }
-
-    // Setup mocks
-    const { getBackendSync } = await import("@/adapters/tauri")
-    ;(getBackendSync as unknown as ReturnType<typeof vi.fn>).mockReturnValue(mockBackendSync as any)
+    // Set default mock return values
+    mockBackendSync.getProjectState.mockResolvedValue(mockProjectState)
+    mockBackendSync.createSnapshot.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.restoreVersion.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.getVersionHistory.mockResolvedValue({ success: true, error: null, data: { versions: [] } })
+    mockBackendSync.compareVersions.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.createBranch.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.mergeBranch.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.switchBranch.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.setAutoSaveInterval.mockResolvedValue({ success: true, error: null, data: null })
+    mockBackendSync.enableAutoSave.mockResolvedValue({ success: true, error: null, data: null })
   })
 
   describe("Initialization", () => {

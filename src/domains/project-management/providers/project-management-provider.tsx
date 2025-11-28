@@ -7,7 +7,7 @@
 
 import { useSelector } from "@xstate/react"
 import { createContext, type ReactNode, useContext, useState } from "react"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"
@@ -42,12 +42,12 @@ const ProjectContext = createContext<ProjectContext | null>(null)
 export function ProjectProvider({ children }: { children: ReactNode }) {
   const orchestrator = getProjectManagementOrchestrator()
   const appActor = orchestrator.getAppActor()
-  const backendSync = getBackendSync()
+  const backend = container.getBackend()
 
   // Используем ТОЛЬКО состояние из актора оркестратора
   const projectState = useSelector(appActor, (state) => state.context.projectState)
   const isLoading = useSelector(appActor, (state) => state.matches({ connected: "executing" }))
-  const isBackendConnected = backendSync.connected
+  const isBackendConnected = backend.connected
 
   // Локальное состояние только для dirty flags (не связанных с backend)
   const [dirtyState, setDirtyState] = useState({
@@ -61,7 +61,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (!isBackendConnected) return
 
     try {
-      await backendSync.getProjectState()
+      await backend.getProjectState()
       logger.info("[ProjectProvider] Project state synced with backend")
     } catch (error) {
       logger.error("[ProjectProvider] Failed to sync project state:", { error })
@@ -199,12 +199,12 @@ const UserSettingsContext = createContext<UserSettingsContext | null>(null)
 export function UserSettingsProvider({ children }: { children: ReactNode }) {
   const orchestrator = getProjectManagementOrchestrator()
   const userSettingsActor = orchestrator.getUserSettingsActor()
-  const backendSync = getBackendSync()
+  const backend = container.getBackend()
 
   // Используем ТОЛЬКО состояние из актора оркестратора
   const settings = useSelector(userSettingsActor, (state) => state.context)
   const isLoading = useSelector(userSettingsActor, (state) => !state.context.isLoaded)
-  const isBackendConnected = backendSync.connected
+  const isBackendConnected = backend.connected
 
   // Все обновления идут через оркестратор
   const updateSettings = (newSettings: Partial<UserSettingsContextType>) => {
@@ -291,7 +291,7 @@ const AppStateContext = createContext<AppStateContext | null>(null)
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const orchestrator = getProjectManagementOrchestrator()
   const appActor = orchestrator.getAppActor()
-  const backendSync = getBackendSync()
+  const backend = container.getBackend()
 
   // Используем ТОЛЬКО состояние из актора оркестратора
   const isConnected = useSelector(appActor, (state) => state.context.isConnected)
@@ -300,7 +300,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   // Статус backend - простая проверка без локального состояния
   const backendStatus = {
-    connected: backendSync.connected,
+    connected: backend.connected,
     lastSync: new Date(),
     syncErrors: 0,
   }
@@ -309,8 +309,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     appActor.send({ type: "RETRY_CONNECTION" })
 
     // Также пытаемся переподключить backend
-    if (!backendSync.connected) {
-      backendSync.connect().catch((error) => logger.error("Failed to connect backend sync", { error }))
+    if (!backend.connected) {
+      backend.connect().catch((error) => logger.error("Failed to connect backend sync", { error }))
     }
   }
 

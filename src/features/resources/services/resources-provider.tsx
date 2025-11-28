@@ -6,8 +6,8 @@
 
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 
+import { container } from "@/core/container"
 import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { FfprobeData } from "@/features/media/types/ffprobe"
@@ -110,7 +110,7 @@ interface ResourcesProviderProps {
 }
 
 export function ResourcesProvider({ children }: ResourcesProviderProps) {
-  const [backendSync] = useState(() => getBackendSync())
+  const [backendSync] = useState(() => container.getBackend())
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

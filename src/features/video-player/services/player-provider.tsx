@@ -7,8 +7,8 @@
 import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 
+import { container } from "@/core/container"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
 import type { MediaFile } from "@/features/media/types/media"
 import { useUserSettings } from "@/features/user-settings"
 import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-time-sync"
@@ -118,7 +118,7 @@ interface PlayerProviderProps {
 
 export function PlayerProvider({ children }: PlayerProviderProps) {
   const userSettings = useUserSettings()
-  const [backendSync] = useState(() => getBackendSync())
+  const [backendSync] = useState(() => container.getBackend())
   const isVideoPlayerServiceEnabled = isServiceEnabled("VIDEO_PLAYER")
 
   // Создаем CommandQueue для гарантированного порядка выполнения команд

@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { getBackendSync } from "@/adapters/tauri"
+import { getBackendSync } from "@/adapters/tauri/backend-sync"
 import type { VersionInfo } from "@/features/version-control/types"
 import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"

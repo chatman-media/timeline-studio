@@ -1,6 +1,6 @@
 import { render, waitFor } from "@testing-library/react"
 import { vi } from "vitest"
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 
 let PlayerProvider: any
 let usePlayer: any
@@ -31,7 +31,7 @@ describe("PlayerProvider integration", () => {
     PlayerProvider = mod.PlayerProvider
     usePlayer = mod.usePlayer
 
-    const backend = getBackendSync()
+    const backend = container.getBackend()
     // Setup mock to resolve successfully with proper success response
     ;(backend.executeCommand as any).mockResolvedValue({ success: true })
 

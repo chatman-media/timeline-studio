@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { useColorGrading } from "../hooks/use-color-grading"
@@ -61,7 +61,7 @@ const ColorGradingContext = createContext<ColorGradingContextValue | null>(null)
  */
 export function ColorGradingProvider({ children }: { children: ReactNode }) {
   const colorGrading = useColorGrading()
-  const [backendSync] = useState(() => getBackendSync())
+  const [backendSync] = useState(() => container.getBackend())
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

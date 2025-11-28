@@ -7,7 +7,7 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { container } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import { UndoRedoHelpers, useUndoRedo } from "../hooks/use-undo-redo"
 import {
@@ -68,8 +68,8 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
   const [error, setError] = useState<string | null>(null)
   const [undoState, setUndoState] = useState<UndoRedoState>(createInitialUndoState())
 
-  // Получаем backend sync
-  const backendSync = getBackendSync()
+  // Получаем backend
+  const backend = container.getBackend()
 
   // Подключение к backend и подписка на события
   useEffect(() => {
@@ -77,14 +77,14 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
 
     const connectAndSubscribe = async () => {
       try {
-        await backendSync.connect()
+        await backend.connect()
 
         if (!mounted) return
 
         setIsConnected(true)
 
         // Загружаем историю из backend
-        const result = await backendSync.executeCommand({
+        const result = await backend.executeCommand({
           type: "GetUndoHistory",
         } as any)
 
@@ -106,11 +106,11 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
     return () => {
       mounted = false
     }
-  }, [backendSync])
+  }, [backend])
 
   // Подписка на события backend
   useEffect(() => {
-    const unsubscribe = backendSync.onEvent((event: any) => {
+    const unsubscribe = backend.onEvent((event: any) => {
       // Обрабатываем только Undo/Redo события
       if (
         event.type === "UndoPerformed" ||
@@ -124,14 +124,14 @@ export function UndoRedoProvider({ children }: UndoRedoProviderProps) {
     })
 
     return unsubscribe
-  }, [backendSync, undoState])
+  }, [backend, undoState])
 
   // Оборачиваем registerAction для синхронизации с backend
   const registerActionWithBackend: typeof undoRedo.registerAction = (action) => {
     const actionId = undoRedo.registerAction(action)
 
     // Синхронизируем действие с backend через событие
-    backendSync
+    backend
       .executeCommand({
         type: "RegisterUndoAction",
         action: {
