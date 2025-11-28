@@ -4,12 +4,14 @@
  * Отправляет progress события через Tauri event system
  */
 use anyhow::Result;
+use futures::future::join_all;
 use log::{error, info};
 use std::path::Path;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Instant;
 use tauri::{AppHandle, Emitter};
-use tokio::sync::RwLock;
+use tokio::sync::{RwLock, Semaphore};
 use uuid::Uuid;
 
 use crate::analysis::database::AnalysisDatabase;
@@ -424,6 +426,220 @@ impl AIDirectorWithEvents {
     info!(
       "Batch analysis completed: batch_id={}, successful={}/{}, duration={}ms",
       batch_id, successful_files, total_files, total_duration
+    );
+
+    if results.is_empty() && !errors.is_empty() {
+      return Err(anyhow::anyhow!(
+        "All batch analyses failed: {}",
+        errors.join("; ")
+      ));
+    }
+
+    Ok(results)
+  }
+
+  /// 🆕 Phase 3: Параллельная batch обработка с real-time событиями
+  ///
+  /// Обрабатывает несколько файлов одновременно для ускорения анализа.
+  /// Использует Semaphore для ограничения количества параллельных задач.
+  pub async fn analyze_batch_parallel_with_events(
+    &self,
+    file_paths: Vec<String>,
+    config_opt: Option<AIDirectorConfig>,
+  ) -> Result<Vec<ComprehensiveAnalysisResult>> {
+    let config = config_opt.clone().unwrap_or_default();
+    let batch_id = Uuid::new_v4().to_string();
+    let total_files = file_paths.len();
+    let batch_start = Instant::now();
+
+    if file_paths.is_empty() {
+      return Err(anyhow::anyhow!("No files provided for batch analysis"));
+    }
+
+    // Определяем количество параллельных задач
+    let max_parallel = config
+      .max_parallel_files
+      .unwrap_or_else(|| num_cpus::get().min(4));
+
+    // Определяем config mode для события
+    let config_mode = if !config.enable_video_analysis {
+      "fast"
+    } else if config.enable_emotion_analysis && config.enable_mood_analysis {
+      "quality"
+    } else {
+      "balanced"
+    };
+
+    info!(
+      "Starting PARALLEL batch analysis: batch_id={}, files={}, mode={}, max_parallel={}",
+      batch_id, total_files, config_mode, max_parallel
+    );
+
+    // 1. Emit BatchAnalysisStarted
+    self
+      .emit_batch_analysis_started(&batch_id, total_files, config_mode)
+      .await;
+
+    // Создаем semaphore для ограничения параллелизма
+    let semaphore = Arc::new(Semaphore::new(max_parallel));
+
+    // Atomic counters для прогресс-трекинга
+    let completed_count = Arc::new(AtomicUsize::new(0));
+    let success_count = Arc::new(AtomicUsize::new(0));
+
+    // Собираем все задачи
+    let mut handles = Vec::new();
+
+    for (index, file_path) in file_paths.into_iter().enumerate() {
+      let semaphore = semaphore.clone();
+      let config_opt = config_opt.clone();
+      let batch_id = batch_id.clone();
+      let completed_count = completed_count.clone();
+      let success_count = success_count.clone();
+      let app_handle = self.app_handle.clone();
+      let inner = self.inner.clone();
+
+      let handle = tokio::spawn(async move {
+        // Ждем свободный слот
+        let _permit = semaphore.acquire().await.unwrap();
+
+        let path = std::path::PathBuf::from(&file_path);
+
+        if !path.exists() {
+          let error_msg = format!("File not found: {}", file_path);
+          error!("{}", error_msg);
+
+          // Увеличиваем completed_count
+          let current_completed = completed_count.fetch_add(1, Ordering::SeqCst) + 1;
+
+          // Emit progress
+          let progress = current_completed as f32 / total_files as f32;
+          let event = AppEvent::BatchAnalysisProgress {
+            batch_id: batch_id.clone(),
+            completed_files: current_completed,
+            total_files,
+            progress,
+            current_file_path: Some(file_path.clone()),
+            estimated_time_remaining: None,
+          };
+          let _ = app_handle.emit("batch-analysis-progress", &event);
+
+          return (index, file_path, Err(anyhow::anyhow!(error_msg)));
+        }
+
+        info!(
+          "Parallel batch: processing file {}/{}: {} (worker acquired)",
+          index + 1,
+          total_files,
+          file_path
+        );
+
+        // Выполняем анализ
+        let result = inner
+          .analyze_media_comprehensive(&path, config_opt)
+          .await;
+
+        // Увеличиваем counters
+        let current_completed = completed_count.fetch_add(1, Ordering::SeqCst) + 1;
+        if result.is_ok() {
+          success_count.fetch_add(1, Ordering::SeqCst);
+        }
+
+        // Emit progress
+        let progress = current_completed as f32 / total_files as f32;
+        let remaining = total_files - current_completed;
+        // Примерная оценка ETA: оставшиеся файлы / max_parallel * среднее время (60 сек)
+        let eta = if remaining > 0 {
+          Some((remaining as f64 / max_parallel as f64 * 60.0) as u64)
+        } else {
+          Some(0)
+        };
+
+        let event = AppEvent::BatchAnalysisProgress {
+          batch_id: batch_id.clone(),
+          completed_files: current_completed,
+          total_files,
+          progress,
+          current_file_path: Some(file_path.clone()),
+          estimated_time_remaining: eta,
+        };
+        let _ = app_handle.emit("batch-analysis-progress", &event);
+
+        info!(
+          "Parallel batch: file {}/{} completed (success: {})",
+          current_completed,
+          total_files,
+          result.is_ok()
+        );
+
+        (index, file_path, result)
+      });
+
+      handles.push(handle);
+    }
+
+    // Ждем завершения всех задач
+    let task_results = join_all(handles).await;
+
+    // Собираем результаты с сортировкой по original index
+    let mut indexed_results: Vec<(usize, String, Result<ComprehensiveAnalysisResult>)> = Vec::new();
+    let mut errors = Vec::new();
+
+    for task_result in task_results {
+      match task_result {
+        Ok((index, file_path, result)) => {
+          match result {
+            Ok(analysis) => {
+              indexed_results.push((index, file_path, Ok(analysis)));
+            }
+            Err(e) => {
+              let error_msg = format!("File {} failed: {}", file_path, e);
+              errors.push(error_msg.clone());
+              error!("{}", error_msg);
+              indexed_results.push((index, file_path, Err(e)));
+            }
+          }
+        }
+        Err(e) => {
+          let error_msg = format!("Task join error: {}", e);
+          errors.push(error_msg.clone());
+          error!("{}", error_msg);
+        }
+      }
+    }
+
+    // Сортируем по original index для сохранения порядка
+    indexed_results.sort_by_key(|(idx, _, _)| *idx);
+
+    // Извлекаем успешные результаты
+    let results: Vec<ComprehensiveAnalysisResult> = indexed_results
+      .into_iter()
+      .filter_map(|(_, _, r)| r.ok())
+      .collect();
+
+    let successful_files = results.len();
+    let failed_files = total_files - successful_files;
+    let total_duration = batch_start.elapsed().as_millis() as u64;
+
+    // Emit BatchAnalysisCompleted
+    self
+      .emit_batch_analysis_completed(
+        &batch_id,
+        total_files,
+        successful_files,
+        failed_files,
+        total_duration,
+        errors.clone(),
+      )
+      .await;
+
+    info!(
+      "PARALLEL batch analysis completed: batch_id={}, successful={}/{}, duration={}ms, speedup vs sequential: ~{:.1}x",
+      batch_id,
+      successful_files,
+      total_files,
+      total_duration,
+      (total_files as f64 / max_parallel as f64).max(1.0)
     );
 
     if results.is_empty() && !errors.is_empty() {

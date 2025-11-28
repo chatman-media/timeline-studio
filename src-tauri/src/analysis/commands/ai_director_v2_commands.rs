@@ -144,6 +144,53 @@ pub async fn ai_director_v2_analyze_batch(
   }
 }
 
+/// 🆕 Phase 3: Параллельный batch анализ с real-time events
+///
+/// Обрабатывает несколько файлов одновременно для значительного ускорения.
+/// Количество параллельных задач ограничено через max_parallel_files в config.
+#[tauri::command]
+#[specta::specta]
+pub async fn ai_director_v2_analyze_batch_parallel(
+  file_paths: Vec<String>,
+  config: Option<AIDirectorConfig>,
+  state: State<'_, AIDirectorV2State>,
+) -> Result<Vec<ComprehensiveAnalysisResult>, String> {
+  let file_count = file_paths.len();
+  let max_parallel = config
+    .as_ref()
+    .and_then(|c| c.max_parallel_files)
+    .unwrap_or_else(|| num_cpus::get().min(4));
+
+  log::info!(
+    "AI Director v2 PARALLEL batch analysis request for {} files (max_parallel: {})",
+    file_count,
+    max_parallel
+  );
+
+  if file_paths.is_empty() {
+    return Err("No files provided for batch analysis".to_string());
+  }
+
+  match state
+    .director
+    .analyze_batch_parallel_with_events(file_paths, config)
+    .await
+  {
+    Ok(results) => {
+      log::info!(
+        "AI Director v2 PARALLEL batch analysis completed: {}/{} files successful",
+        results.len(),
+        file_count
+      );
+      Ok(results)
+    }
+    Err(e) => {
+      log::error!("AI Director v2 PARALLEL batch analysis failed: {}", e);
+      Err(format!("Parallel batch analysis failed: {}", e))
+    }
+  }
+}
+
 #[cfg(test)]
 mod tests {
   #[test]

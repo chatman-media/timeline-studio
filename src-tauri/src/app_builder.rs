@@ -535,6 +535,8 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::ai_director_v2_analyze_comprehensive,
     crate::analysis::commands::ai_director_v2_analyze_quick,
     crate::analysis::commands::ai_director_v2_analyze_batch,
+    // 🆕 Phase 3: Parallel batch processing
+    crate::analysis::commands::ai_director_v2_analyze_batch_parallel,
     // Content Classification commands
     crate::analysis::commands::classify_video_content,
     crate::analysis::commands::quick_classify_content,

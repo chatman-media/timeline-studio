@@ -310,6 +310,12 @@ pub struct AIDirectorConfig {
 
   /// 🆕 Max tokens для VLM
   pub vlm_max_tokens: u32,
+
+  /// 🆕 Phase 3: Включить параллельную обработку файлов
+  pub enable_parallel_processing: bool,
+
+  /// 🆕 Phase 3: Максимальное количество параллельных файлов (None = auto, на основе CPU cores)
+  pub max_parallel_files: Option<usize>,
 }
 
 impl Default for AIDirectorConfig {
@@ -347,11 +353,15 @@ impl Default for AIDirectorConfig {
       vlm_num_frames: 5,
       vlm_temperature: 0.7,
       vlm_max_tokens: 1024,
+      // Phase 3: Parallel processing
+      enable_parallel_processing: true, // Включено по умолчанию для ускорения
+      max_parallel_files: None,         // Auto: min(CPU cores, 4)
     }
   }
 }
 
 /// AI Director - главный координатор анализа
+#[derive(Clone)]
 pub struct AIDirector {
   /// Unified audio analyzer
   unified_audio_analyzer: Arc<UnifiedAudioAnalyzer>,

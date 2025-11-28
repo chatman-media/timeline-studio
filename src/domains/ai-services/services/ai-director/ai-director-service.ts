@@ -11,6 +11,7 @@ import {
   type AIDirectorHealthCheckResult,
   type AIDirectorVideoAnalysisOptions,
   aiDirectorAnalyzeBatch,
+  aiDirectorAnalyzeBatchParallel,
   aiDirectorAnalyzeComprehensive,
   aiDirectorAnalyzeQuick,
   aiDirectorGetCapabilities,
@@ -57,10 +58,45 @@ export class AIDirectorService {
   }
 
   /**
-   * Запустить batch analysis нескольких файлов
+   * Запустить batch analysis нескольких файлов (последовательно)
    */
   async analyzeBatch(filePaths: string[], config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult[]> {
     return aiDirectorAnalyzeBatch(filePaths, config)
+  }
+
+  /**
+   * 🆕 Phase 3: Запустить ПАРАЛЛЕЛЬНЫЙ batch analysis нескольких файлов
+   *
+   * Обрабатывает несколько файлов одновременно для значительного ускорения.
+   * По умолчанию использует min(CPU cores, 4) параллельных воркеров.
+   *
+   * @param filePaths - Пути к файлам для анализа
+   * @param config - Конфигурация с опциями параллельной обработки
+   * @param maxParallel - Максимальное количество параллельных задач (default: 4)
+   * @returns Результаты анализа в исходном порядке файлов
+   */
+  async analyzeBatchParallel(
+    filePaths: string[],
+    config?: Partial<AIDirectorConfig>,
+    maxParallel?: number,
+  ): Promise<ComprehensiveAnalysisResult[]> {
+    logger.info("Starting parallel batch analysis", {
+      fileCount: filePaths.length,
+      maxParallel: maxParallel ?? 4,
+    })
+    return aiDirectorAnalyzeBatchParallel(filePaths, {
+      performance_mode: config?.performance_mode ?? "balanced",
+      enable_audio_analysis: config?.enable_audio_analysis ?? true,
+      enable_scene_detection: config?.enable_scene_detection ?? true,
+      enable_video_analysis: config?.enable_video_analysis ?? true,
+      enable_object_detection: config?.enable_object_detection ?? true,
+      enable_face_recognition: config?.enable_face_recognition ?? true,
+      enable_transcription: config?.enable_transcription ?? false,
+      timeout_seconds: config?.timeout_seconds ?? 300,
+      max_memory_mb: config?.max_memory_mb ?? 4096,
+      enable_parallel_processing: true,
+      max_parallel_files: maxParallel ?? 4,
+    })
   }
 
   /**

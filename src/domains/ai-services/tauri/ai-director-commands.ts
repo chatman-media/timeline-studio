@@ -124,6 +124,38 @@ export async function aiDirectorAnalyzeBatch(
 }
 
 /**
+ * 🆕 Phase 3: Parallel Batch Analysis
+ *
+ * Processes multiple files simultaneously for significant speedup.
+ * Concurrency is controlled via enable_parallel_processing and max_parallel_files in config.
+ *
+ * @param filePaths - Array of file paths to analyze
+ * @param config - Optional configuration with parallel processing options
+ * @returns Array of analysis results (order preserved)
+ */
+export async function aiDirectorAnalyzeBatchParallel(
+  filePaths: string[],
+  config?: AIDirectorConfig & {
+    enable_parallel_processing?: boolean
+    max_parallel_files?: number
+  },
+): Promise<ComprehensiveAnalysisResult[]> {
+  const maxParallel = config?.max_parallel_files ?? 4
+  logger.info("Running PARALLEL batch analysis", {
+    fileCount: filePaths.length,
+    maxParallel,
+  })
+  return invoke("ai_director_v2_analyze_batch_parallel", {
+    filePaths,
+    config: {
+      ...config,
+      enable_parallel_processing: true,
+      max_parallel_files: maxParallel,
+    },
+  })
+}
+
+/**
  * System Capabilities and Configuration Commands
  */
 export async function aiDirectorGetCapabilities(): Promise<SystemCapabilities> {
