@@ -1,6 +1,6 @@
 "use client"
 
-import { useApp } from "../services/app-provider"
+import { useApp } from "@/domains/project-management/providers/app-provider"
 
 export function ProjectLoadingOverlay() {
   const { isConnecting, connectionError } = useApp()

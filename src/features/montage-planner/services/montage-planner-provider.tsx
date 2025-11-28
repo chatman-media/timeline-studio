@@ -8,7 +8,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { container } from "@/core"
 import { type MontagePlannerEvent, montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
 import { createLogger } from "@/lib/tauri-logger"
-import { useAppSettings } from "../../app-state"
+import { useAppSettings } from "@/domains/project-management/hooks"
 
 const logger = createLogger("MontagePlannerProvider")
 

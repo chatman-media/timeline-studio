@@ -2,17 +2,28 @@
  * Media Metadata Service Tests
  *
  * Тесты для MediaMetadataService
+ *
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует mock для container.getMedia()
  */
 
-import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { mockAudioMetadata, mockImageMetadata, mockSceneDetectionResults, mockVideoMetadata } from "../../__mocks__"
 import type { MediaMetadata } from "../../types"
 import { getMediaMetadataService } from "../media-metadata-service"
 
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+// Mock media service
+const mockMediaService = {
+  extractMediaMetadata: vi.fn(),
+  generateVideoThumbnail: vi.fn(),
+  detectVideoScenes: vi.fn(),
+  generateAudioWaveform: vi.fn(),
+  getMediaDuration: vi.fn(),
+}
+
+vi.mock("@/core/container", () => ({
+  getMedia: vi.fn(() => mockMediaService),
 }))
+
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     trace: vi.fn(),
@@ -28,27 +39,27 @@ describe("MediaMetadataService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(invoke).mockReset()
+    mockMediaService.extractMediaMetadata.mockReset()
+    mockMediaService.generateVideoThumbnail.mockReset()
+    mockMediaService.detectVideoScenes.mockReset()
+    mockMediaService.generateAudioWaveform.mockReset()
+    mockMediaService.getMediaDuration.mockReset()
     service = getMediaMetadataService()
   })
 
   describe("extractMetadata", () => {
     it("should extract metadata from video file", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue(mockVideoMetadata)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockVideoMetadata)
 
       const result = await service.extractMetadata("/test/video.mp4")
 
-      expect(mockInvoke).toHaveBeenCalledWith("extract_media_metadata", {
-        path: "/test/video.mp4",
-      })
+      expect(mockMediaService.extractMediaMetadata).toHaveBeenCalledWith("/test/video.mp4")
       expect(result).toEqual(mockVideoMetadata)
       expect(result.type).toBe("Video")
     })
 
     it("should extract metadata from audio file", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue(mockAudioMetadata)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockAudioMetadata)
 
       const result = await service.extractMetadata("/test/audio.mp3")
 
@@ -57,8 +68,7 @@ describe("MediaMetadataService", () => {
     })
 
     it("should extract metadata from image file", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValue(mockImageMetadata)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockImageMetadata)
 
       const result = await service.extractMetadata("/test/image.jpg")
 
@@ -67,8 +77,7 @@ describe("MediaMetadataService", () => {
     })
 
     it("should handle extraction errors", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockRejectedValue(new Error("File not found"))
+      mockMediaService.extractMediaMetadata.mockRejectedValue(new Error("File not found"))
 
       await expect(service.extractMetadata("/invalid/path.mp4")).rejects.toThrow("Failed to extract metadata")
     })
@@ -76,36 +85,27 @@ describe("MediaMetadataService", () => {
 
   describe("generateThumbnail", () => {
     it("should generate thumbnail at default time (0)", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const thumbnailPath = "/tmp/thumbnail.jpg"
-      mockInvoke.mockResolvedValue(thumbnailPath)
+      mockMediaService.generateVideoThumbnail.mockResolvedValue(thumbnailPath)
 
       const result = await service.generateThumbnail("/test/video.mp4")
 
-      expect(mockInvoke).toHaveBeenCalledWith("generate_video_thumbnail", {
-        videoPath: "/test/video.mp4",
-        time: 0,
-      })
+      expect(mockMediaService.generateVideoThumbnail).toHaveBeenCalledWith("/test/video.mp4", 0)
       expect(result).toBe(thumbnailPath)
     })
 
     it("should generate thumbnail at specific time", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const thumbnailPath = "/tmp/thumbnail-10s.jpg"
-      mockInvoke.mockResolvedValue(thumbnailPath)
+      mockMediaService.generateVideoThumbnail.mockResolvedValue(thumbnailPath)
 
       const result = await service.generateThumbnail("/test/video.mp4", 10.5)
 
-      expect(mockInvoke).toHaveBeenCalledWith("generate_video_thumbnail", {
-        videoPath: "/test/video.mp4",
-        time: 10.5,
-      })
+      expect(mockMediaService.generateVideoThumbnail).toHaveBeenCalledWith("/test/video.mp4", 10.5)
       expect(result).toBe(thumbnailPath)
     })
 
     it("should handle thumbnail generation errors", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockRejectedValue(new Error("FFmpeg error"))
+      mockMediaService.generateVideoThumbnail.mockRejectedValue(new Error("FFmpeg error"))
 
       await expect(service.generateThumbnail("/test/video.mp4")).rejects.toThrow("Failed to generate thumbnail")
     })
@@ -113,16 +113,12 @@ describe("MediaMetadataService", () => {
 
   describe("analyzeMedia", () => {
     it("should analyze video file completely", async () => {
-      const mockInvoke = vi.mocked(invoke)
-
       // Mock metadata extraction
-      mockInvoke.mockResolvedValueOnce(mockVideoMetadata)
-
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockVideoMetadata)
       // Mock thumbnail generation
-      mockInvoke.mockResolvedValueOnce("/tmp/thumbnail.jpg")
-
+      mockMediaService.generateVideoThumbnail.mockResolvedValue("/tmp/thumbnail.jpg")
       // Mock scene detection
-      mockInvoke.mockResolvedValueOnce(mockSceneDetectionResults)
+      mockMediaService.detectVideoScenes.mockResolvedValue(mockSceneDetectionResults)
 
       const result = await service.analyzeMedia("/test/video.mp4")
 
@@ -134,14 +130,12 @@ describe("MediaMetadataService", () => {
     })
 
     it("should analyze audio file with waveform", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const mockWaveform = [0.1, 0.5, 0.8, 0.3, -0.2, -0.6]
 
       // Mock metadata extraction
-      mockInvoke.mockResolvedValueOnce(mockAudioMetadata)
-
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockAudioMetadata)
       // Mock waveform generation
-      mockInvoke.mockResolvedValueOnce(mockWaveform)
+      mockMediaService.generateAudioWaveform.mockResolvedValue(mockWaveform)
 
       const result = await service.analyzeMedia("/test/audio.mp3")
 
@@ -153,16 +147,12 @@ describe("MediaMetadataService", () => {
     })
 
     it("should handle partial analysis failures gracefully", async () => {
-      const mockInvoke = vi.mocked(invoke)
-
       // Mock successful metadata extraction
-      mockInvoke.mockResolvedValueOnce(mockVideoMetadata)
-
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockVideoMetadata)
       // Mock failed thumbnail generation
-      mockInvoke.mockRejectedValueOnce(new Error("Thumbnail failed"))
-
+      mockMediaService.generateVideoThumbnail.mockRejectedValue(new Error("Thumbnail failed"))
       // Mock successful scene detection (service continues after thumbnail failure)
-      mockInvoke.mockResolvedValueOnce(mockSceneDetectionResults)
+      mockMediaService.detectVideoScenes.mockResolvedValue(mockSceneDetectionResults)
 
       const result = await service.analyzeMedia("/test/video.mp4")
 
@@ -174,8 +164,7 @@ describe("MediaMetadataService", () => {
     })
 
     it("should throw error if metadata extraction fails", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockRejectedValue(new Error("Invalid file"))
+      mockMediaService.extractMediaMetadata.mockRejectedValue(new Error("Invalid file"))
 
       await expect(service.analyzeMedia("/test/invalid.mp4")).rejects.toThrow("Media analysis failed")
     })
@@ -183,36 +172,17 @@ describe("MediaMetadataService", () => {
 
   describe("getMediaDuration", () => {
     it("should get duration for media file", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const duration = 120.5
-
-      // Мокаем execute_command с правильной структурой
-      mockInvoke.mockResolvedValueOnce({
-        success: true,
-        data: duration,
-      })
+      mockMediaService.getMediaDuration.mockResolvedValue(duration)
 
       const result = await service.getMediaDuration("/test/video.mp4")
 
-      expect(mockInvoke).toHaveBeenCalledWith("execute_command", {
-        command: {
-          type: "GetMediaDuration",
-          params: {
-            file_path: "/test/video.mp4",
-          },
-        },
-      })
+      expect(mockMediaService.getMediaDuration).toHaveBeenCalledWith("/test/video.mp4")
       expect(result).toBe(duration)
     })
 
     it("should handle duration extraction errors", async () => {
-      const mockInvoke = vi.mocked(invoke)
-
-      // Мокаем неуспешный ответ
-      mockInvoke.mockResolvedValueOnce({
-        success: false,
-        error: "Cannot read file",
-      })
+      mockMediaService.getMediaDuration.mockRejectedValue(new Error("Cannot read file"))
 
       await expect(service.getMediaDuration("/test/invalid.mp4")).rejects.toThrow("Failed to get media duration")
     })
@@ -220,7 +190,6 @@ describe("MediaMetadataService", () => {
 
   describe("quality score calculation", () => {
     it("should calculate high quality score for 4K video", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const highQualityMetadata: MediaMetadata = {
         type: "Video",
         width: 3840,
@@ -231,7 +200,9 @@ describe("MediaMetadataService", () => {
         bitrate: 50_000_000,
       }
 
-      mockInvoke.mockResolvedValue(highQualityMetadata)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(highQualityMetadata)
+      mockMediaService.generateVideoThumbnail.mockResolvedValue("/tmp/thumb.jpg")
+      mockMediaService.detectVideoScenes.mockResolvedValue([])
 
       const result = await service.analyzeMedia("/test/4k-video.mp4")
 
@@ -240,7 +211,6 @@ describe("MediaMetadataService", () => {
     })
 
     it("should calculate lower quality score for SD video", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const lowQualityMetadata: MediaMetadata = {
         type: "Video",
         width: 640,
@@ -251,7 +221,9 @@ describe("MediaMetadataService", () => {
         bitrate: 1_000_000,
       }
 
-      mockInvoke.mockResolvedValue(lowQualityMetadata)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(lowQualityMetadata)
+      mockMediaService.generateVideoThumbnail.mockResolvedValue("/tmp/thumb.jpg")
+      mockMediaService.detectVideoScenes.mockResolvedValue([])
 
       const result = await service.analyzeMedia("/test/sd-video.mp4")
 
@@ -261,10 +233,9 @@ describe("MediaMetadataService", () => {
 
   describe("scene detection", () => {
     it("should detect scenes in video", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValueOnce(mockVideoMetadata)
-      mockInvoke.mockResolvedValueOnce("/tmp/thumb.jpg")
-      mockInvoke.mockResolvedValueOnce(mockSceneDetectionResults)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockVideoMetadata)
+      mockMediaService.generateVideoThumbnail.mockResolvedValue("/tmp/thumb.jpg")
+      mockMediaService.detectVideoScenes.mockResolvedValue(mockSceneDetectionResults)
 
       const result = await service.analyzeMedia("/test/video.mp4")
 
@@ -274,16 +245,12 @@ describe("MediaMetadataService", () => {
     })
 
     it("should return empty array if scene detection fails", async () => {
-      const mockInvoke = vi.mocked(invoke)
-
       // Successful metadata extraction
-      mockInvoke.mockResolvedValueOnce(mockVideoMetadata)
-
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockVideoMetadata)
       // Successful thumbnail generation
-      mockInvoke.mockResolvedValueOnce("/tmp/thumb.jpg")
-
+      mockMediaService.generateVideoThumbnail.mockResolvedValue("/tmp/thumb.jpg")
       // Failed scene detection - метод detectScenes перехватывает ошибку и возвращает []
-      mockInvoke.mockRejectedValueOnce(new Error("Scene detection error"))
+      mockMediaService.detectVideoScenes.mockRejectedValue(new Error("Scene detection error"))
 
       const result = await service.analyzeMedia("/test/video.mp4")
 
@@ -298,11 +265,10 @@ describe("MediaMetadataService", () => {
 
   describe("waveform generation", () => {
     it("should generate waveform for audio file", async () => {
-      const mockInvoke = vi.mocked(invoke)
       const mockWaveform = Array.from({ length: 1000 }, (_, i) => Math.sin(i * 0.1))
 
-      mockInvoke.mockResolvedValueOnce(mockAudioMetadata)
-      mockInvoke.mockResolvedValueOnce(mockWaveform)
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockAudioMetadata)
+      mockMediaService.generateAudioWaveform.mockResolvedValue(mockWaveform)
 
       const result = await service.analyzeMedia("/test/audio.mp3")
 
@@ -311,9 +277,8 @@ describe("MediaMetadataService", () => {
     })
 
     it("should return empty waveform if generation fails", async () => {
-      const mockInvoke = vi.mocked(invoke)
-      mockInvoke.mockResolvedValueOnce(mockAudioMetadata)
-      mockInvoke.mockRejectedValueOnce(new Error("Waveform error"))
+      mockMediaService.extractMediaMetadata.mockResolvedValue(mockAudioMetadata)
+      mockMediaService.generateAudioWaveform.mockRejectedValue(new Error("Waveform error"))
 
       const result = await service.analyzeMedia("/test/audio.mp3")
 

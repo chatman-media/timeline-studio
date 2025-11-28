@@ -41,7 +41,7 @@ vi.mock("@/features/media-studio/hooks", () => ({
 }))
 
 // Мокаем useCurrentProject
-vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: { name: "Test Project" },
     openProject: vi.fn(),

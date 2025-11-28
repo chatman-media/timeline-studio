@@ -68,7 +68,7 @@ vi.mock("@/features/app-state/services/backend-sync", () => {
 })
 
 // AppProvider mock
-vi.mock("@/features/app-state/services/app-provider", () => ({
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useApp: vi.fn(() => ({
     projectState: { project: null },

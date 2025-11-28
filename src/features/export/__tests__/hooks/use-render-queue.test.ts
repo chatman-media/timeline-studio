@@ -48,7 +48,7 @@ vi.mock("@/domains/video-editing", () => ({
 const mockLogError = vi.mocked(logError)
 
 // Mock loadProject function
-vi.mock("@/features/app-state/services/project-file-service", () => ({
+vi.mock("@/domains/project-management/services/project-file-service", () => ({
   loadProject: vi.fn().mockResolvedValue({
     id: "test-project",
     settings: {

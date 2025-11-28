@@ -144,7 +144,7 @@ vi.mock("@/features/multicam/hooks/use-multicam", () => ({
 }))
 
 // Мокаем useApp
-vi.mock("@/features/app-state/services/app-provider", () => ({
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
   useApp: () => ({
     mediaFiles: [],
     setMediaFiles: vi.fn(),
