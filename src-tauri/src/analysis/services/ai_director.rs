@@ -315,7 +315,7 @@ pub struct AIDirectorConfig {
   pub enable_parallel_processing: bool,
 
   /// 🆕 Phase 3: Максимальное количество параллельных файлов (None = auto, на основе CPU cores)
-  pub max_parallel_files: Option<usize>,
+  pub max_parallel_files: Option<u32>,
 }
 
 impl Default for AIDirectorConfig {

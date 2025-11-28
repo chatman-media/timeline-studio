@@ -459,6 +459,7 @@ impl AIDirectorWithEvents {
     // Определяем количество параллельных задач
     let max_parallel = config
       .max_parallel_files
+      .map(|n| n as usize)
       .unwrap_or_else(|| num_cpus::get().min(4));
 
     // Определяем config mode для события

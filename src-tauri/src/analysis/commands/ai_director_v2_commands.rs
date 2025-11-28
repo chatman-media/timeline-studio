@@ -159,6 +159,7 @@ pub async fn ai_director_v2_analyze_batch_parallel(
   let max_parallel = config
     .as_ref()
     .and_then(|c| c.max_parallel_files)
+    .map(|n| n as usize)
     .unwrap_or_else(|| num_cpus::get().min(4));
 
   log::info!(
