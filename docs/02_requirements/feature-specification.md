@@ -1,646 +1,421 @@
-# 03. Функциональность Timeline Studio
+# Функциональность Timeline Studio
 
 [← Назад к оглавлению](../README.md)
 
-## 📋 Содержание
+## Содержание
 
+- [Обзор](#обзор)
+- [Быстрая статистика](#быстрая-статистика)
 - [Основные модули](#основные-модули)
-- [Эффекты и визуализация](#эффекты-и-визуализация)
-- [Продвинутые функции](#продвинутые-функции)
+- [AI и автоматизация](#ai-и-автоматизация)
+- [Domain Layer](#domain-layer)
 - [Статус разработки](#статус-разработки)
 
-## 🎯 Обзор
-
-Timeline Studio включает **46 функциональных модулей**, организованных по категориям. Каждый модуль имеет свою документацию, тесты и примеры использования. Для ключевых модулей доступна подробная техническая документация.
-
-**Общая готовность проекта: 80%** 🎯 (37 модулей готовы, 1 в разработке, 8 планируются)
-
-## 🏗️ Основные модули
-
-Ядро функциональности Timeline Studio для базового видеоредактирования.
-
-### [Timeline](core/timeline.md)
-**Статус**: ✅ Готов (90%)  
-Центральный компонент для редактирования видео
-- Многодорожечный редактор
-- Drag & drop операции
-- Покадровая точность
-- Масштабирование и навигация
-
-📖 **[Техническая документация модуля](../../src/features/timeline/README.md)**
-
-### [Video Player](core/video-player.md)
-**Статус**: ✅ Готов (100%)  
-Кастомный видео плеер с расширенными возможностями
-- Покадровое воспроизведение
-- Переменная скорость (0.25x - 4x)
-- Полноэкранный режим
-- Синхронизация с таймлайном
-
-📖 **[Техническая документация модуля](../../src/features/video-player/README.md)**
-
-### [Browser](core/browser.md)
-**Статус**: ✅ Готов (100%)  
-Менеджер медиафайлов с табами
-- Просмотр файлов и папок
-- Превью медиа в реальном времени
-- Поиск и фильтрация
-- Избранные файлы
-
-📖 **[Техническая документация модуля](../../src/features/browser/README.md)**
-
-### [Export](core/export.md)
-**Статус**: ✅ Готов (100%)  
-Экспорт готовых видео с продвинутыми возможностями
-- Пресеты для всех платформ (YouTube, TikTok, Vimeo, Telegram)
-- Настраиваемые параметры и валидация в реальном времени
-- GPU ускорение и оптимизация настроек
-- Пакетный экспорт и экспорт секций по времени
-- Автоматическая оценка времени экспорта
-- Умная оптимизация для разных платформ
-
-📖 **[Техническая документация модуля](../../src/features/export/README.md)**
-
-## 🎨 Эффекты и визуализация
-
-Инструменты для улучшения и стилизации видео.
-
-### [Effects](effects/effects.md)
-**Статус**: ✅ Готов (80%)  
-Визуальные эффекты на базе CSS и WebGL
-- 50+ встроенных эффектов
-- Реал-тайм превью
-- Анимируемые параметры
-- GPU ускорение
-
-📖 **[Техническая документация модуля](../../src/features/effects/README.md)**
-
-### [Filters](effects/filters.md)
-**Статус**: ✅ Готов (80%)  
-Цветокоррекция и фильтры
-- Базовые настройки (яркость, контраст)
-- LUT поддержка
-- Цветовые пресеты
-- HSL коррекция
-
-📖 **[Техническая документация модуля](../../src/features/filters/README.md)**
-
-### [Transitions](effects/transitions.md)
-**Статус**: ✅ Готов (75%)  
-Переходы между клипами
-- 30+ типов переходов
-- Настраиваемая длительность
-- Кривые анимации
-- 3D переходы
-
-📖 **[Техническая документация модуля](../../src/features/transitions/README.md)**
-
-### [Templates](effects/templates.md)
-**Статус**: ⚠️ В разработке (70%)  
-Многокамерные шаблоны
-- Split-screen макеты
-- Picture-in-picture
-- Grid композиции
-- Анимированные шаблоны
-
-📖 **[Техническая документация модуля](../../src/features/templates/README.md)**
-
-### [Style Templates](effects/style-templates.md)
-**Статус**: ✅ Готов (85%)  
-Стилистические шаблоны
-- Intro/Outro анимации
-- Титры и заставки
-- Нижние трети
-- Переходы сцен
-
-📖 **[Техническая документация модуля](../../src/features/style-templates/README.md)**
-
-## 🚀 Продвинутые функции
-
-Инновационные возможности на базе AI и ML для захвата новых рынков.
-
-### [AI Chat](advanced/ai-chat.md)
-**Статус**: ✅ Готов (100%)  
-Интегрированный AI ассистент с **257 AI инструментом**
-- Claude/GPT интеграция
-- Контекстная помощь
-- Генерация сценариев
-- Умные подсказки
-- **8 категорий AI инструментов** для полной автоматизации
-
-📖 **[Техническая документация модуля](../../src/features/ai-chat/README.md)**
-
-### [AI Models Integration](advanced/ai-models-integration.md)
-**Статус**: ✅ Готов (100%)
-**Расположение**: Domain layer (`/src/domains/ai-tools/`)
-Полная AI платформа для автоматизации
-- **257 AI инструмент** - абсолютное лидерство на рынке AI-powered видеоредакторов
-- **4 AI движка** в ai-content-intelligence:
-  - Content Classification Engine - классификация контента
-  - Scene Analysis Engine - анализ сцен и видео
-  - Script Generation Engine - генерация скриптов
-  - Multi-Platform Engine - адаптация под платформы
-- Export Management Tools (12 инструментов)
-- Effects & Filters Tools (10 инструментов)
-- Audio Processing Tools (12 инструментов)
-- Render & Performance Tools (8 инструментов)
-- Template & Layout Tools (10 инструментов)
-- Settings & Configuration Tools (8 инструментов)
-- Color & Style Tools (6 инструментов)
-- Media Processing Tools (6 инструментов)
-- 35+ Rust команд для интеграции
-
-📖 **[Детальная документация](../08_tasks/completed/ai-chat-tools-expansion-to-151.md)**
-
-### [Recognition](advanced/recognition.md)
-**Статус**: ✅ Готов (100%)  
-ML распознавание объектов
-- YOLO v11 интеграция
-- Распознавание объектов
-- Трекинг движения
-- Автоматические метки
-
-📖 **[Техническая документация модуля](../../src/features/recognition/README.md)**
-
-### [AI Content Intelligence](advanced/ai-content-intelligence.md)
-**Статус**: ✅ Готов (100%)
-**Расположение**: Domain layer (`/src/domains/ai-services/`)
-Интеллектуальный анализ контента
-- Анализ видео и аудио
-- Распознавание сцен и объектов
-- Генерация скриптов
-- Адаптация под платформы
-
-📖 **[Техническая документация модуля](../../src/domains/ai-services/README.md)**
-
-### [Montage Planner](advanced/montage-planner.md)
-**Статус**: ✅ Готов (100%)  
-Автоматическое планирование монтажа
-- AI-анализ материалов
-- Генерация монтажных планов
-- Синхронизация с музыкой
-- Оптимизация под стиль
-
-📖 **[Техническая документация модуля](../../src/features/montage-planner/README.md)**
-
-### [Person Identification](advanced/person-identification.md)
-**Статус**: ✅ Готов (100%)  
-Распознавание и идентификация персонажей
-- Детекция лиц (YOLO/FaceNet)
-- Кластеризация DBSCAN
-- Присвоение имен персонам
-- Трекинг в видео
-
-📖 **[Техническая документация модуля](../../src/features/person-identification/README.md)**
-
-### [Voice Recording](advanced/voice-recording.md)
-**Статус**: ✅ Готов (100%)  
-Профессиональная запись голоса
-- Запись с микрофона
-- Шумоподавление AI
-- Эффекты голоса
-- Синхронизация с видео
-
-📖 **[Техническая документация модуля](../../src/features/voice-recording/README.md)**
-
-### [Camera Capture](advanced/camera-capture.md)
-**Статус**: ✅ Готов (100%)  
-Захват с камеры и экрана
-- Захват видео с камеры
-- Запись экрана
-- Фильтры в реальном времени
-- WebRTC стриминг
-
-📖 **[Техническая документация модуля](../../src/features/camera-capture/README.md)**
-
-### [Fairlight Audio](advanced/fairlight-audio.md)
-**Статус**: ✅ Готов (100%)  
-Профессиональный аудио микшер
-- Микшер до 128 каналов
-- Web Audio API эффекты
-- MIDI поддержка
-- Surround Sound (5.1, 7.1)
-- VST/AU плагины
-
-📖 **[Техническая документация модуля](../../src/features/fairlight-audio/README.md)**
-
-### [Color Grading](advanced/color-grading.md)
-**Статус**: ✅ Готов (100%)  
-Профессиональная цветокоррекция
-- Color Wheels и Curves
-- LUT обработка
-- Профессиональные скоупы
-- GPU ускорение
-
-📖 **[Техническая документация модуля](../../src/features/color-grading/README.md)**
-
-### [Motion Graphics](advanced/motion-graphics.md)
-**Статус**: ✅ Готов (100%)  
-Система анимации и графики
-- Ключевые кадры
-- Expression Engine
-- Кривые анимации
-- Шаблоны движения
-
-📖 **[Техническая документация модуля](../../src/features/motion-graphics/README.md)**
-
-### [Multicam](advanced/multicam.md)
-**Статус**: ✅ Готов (100%)  
-Многокамерная съемка
-- Синхронизация по таймкоду
-- Синхронизация по аудио
-- Переключение камер
-- Предварительный просмотр
-
-📖 **[Техническая документация модуля](../../src/features/multicam/README.md)**
-
-### [Subtitles](advanced/subtitles.md)
-**Статус**: ✅ Готов (100%)  
-Система профессиональных субтитров
-- 72 стиля субтитров в 6 категориях
-- CSS анимации и эффекты
-- Полная интернационализация
-- Интеграция с браузером ресурсов
-
-📖 **[Техническая документация модуля](../../src/features/subtitles/README.md)**
-
-### [Video Compiler](advanced/video-compiler.md)
-**Статус**: ✅ Готов (100%)  
-Система рендеринга и компиляции видео
-- GPU ускорение (NVIDIA, Intel, AMD, Apple)
-- Многоуровневое кеширование
-- Извлечение кадров для превью
-- Управление задачами рендеринга
-
-📖 **[Техническая документация модуля](../../src/features/video-compiler/README.md)**
-
-### [Meme Machine](advanced/meme-machine.md)
-**Статус**: 📋 Планируется (0%)
-AI-powered создание вирусных мемов
-- Автоматическое распознавание смешных моментов
-- 500+ шаблонов мемов (Drake, Distracted Boyfriend, etc)
-- Трендовая аналитика в реальном времени
-- Предсказание виральности с точностью 80%
-- Мультиязычная адаптация юмора
-- Генерация видео-мемов и реакций
-
-📖 **[Техническая документация модуля](../08_tasks/planned/meme-machine.md)**
-
-### [Live Streaming](advanced/live-streaming.md)
-**Статус**: 📋 Планируется (0%)
-Упрощенная альтернатива OBS Studio
-- Готовые многокамерные шаблоны (подкаст, интервью, презентация)
-- AI автопереключение камер по голосу
-- Встроенная музыкальная библиотека с автоматическим ducking
-- Интеграция с YouTube/Twitch/TikTok/VK Live
-- Виртуальные фоны без green screen
-- Мобильное приложение для удаленного управления
-
-📖 **[Техническая документация модуля](../08_tasks/planned/live-streaming.md)**
-
-### [Avatar Generation](advanced/avatar-generation.md)
-**Статус**: 📋 Планируется (0%)
-Генерация и анимация AI аватаров
-- Локальная генерация для приватности
-- Обучение на собственных видео пользователя
-- Реалистичная синхронизация губ с аудио
-- Замена лиц в существующих видео (deepfake)
-- Интеграция с timeline для бесшовного использования
-- Поддержка ONNX/CoreML для оффлайн работы
-
-📖 **[Техническая документация модуля](../08_tasks/planned/avatar-generation.md)**
-
-### [Video Generation](advanced/video-generation.md)
-**Статус**: 📋 Планируется (0%)
-Полная AI генерация видео контента
-- Text-to-Video генерация (Runway Gen-3, Stable Video Diffusion)
-- Image-to-Video анимация статичных изображений
-- Video-to-Video стилизация и изменение стиля
-- Генерация motion graphics и инфографики
-- Создание переходов и фоновых видео
-- Локальные модели + облачные провайдеры
-
-📖 **[Техническая документация модуля](../08_tasks/planned/video-generation.md)**
-
-### [Mobile Apps](advanced/mobile-apps.md)
-**Статус**: 📋 Планируется (0%)
-Нативные мобильные приложения на Tauri v2
-- **iOS App** - полнофункциональный видеоредактор для iPhone/iPad
-- **Android App** - нативное приложение для всех Android устройств
-- **Telegram Mini App** - Web App интеграция в мессенджер
-- Единая кодовая база с десктопной версией (Tauri v2)
-- Облачная синхронизация проектов между устройствами
-- Touch-оптимизированный интерфейс для мобильных экранов
-- Оффлайн редактирование с автосинхронизацией
-- Монетизация через App Store, Google Play и Telegram Stars
-
-📖 **[Техническая документация модуля](../08_tasks/planned/mobile-apps.md)**
-
-### [AI Director](advanced/ai-director.md)
-**Статус**: ✅ Готов (98%)
-Автоматический монтаж с AI
-- Unified Audio Analysis с f64 precision
-- Whisper integration для транскрипции
-- Автоматическая генерация timeline
-- 6 Workflow templates (TikTok, Highlight Reel, Documentary и др.)
-- 361 тест (300 проходят - 83%)
-- Интеграция с Montage Planner
-
-📖 **[Техническая документация модуля](../../docs/ru/03_architecture/ai-director.md)**
-
-### [Transcription](advanced/transcription.md)
-**Статус**: ✅ Готов (100%)
-Профессиональная транскрипция речи
-- OpenAI Whisper, локальный Whisper, Faster Whisper
-- 6 размеров моделей (tiny → large-v3)
-- 20+ языков с автоопределением
+## Обзор
+
+Timeline Studio - профессиональный видеоредактор с современной архитектурой на базе React/Next.js для frontend и Rust/Tauri для backend.
+
+**Общая готовность проекта: 98%**
+
+**Временно отключены:** camera-capture, voice-recording, keyboard-shortcuts, scenarios
+
+## Быстрая статистика
+
+```
+ПРОЕКТ:
+   • 41 фича (4 отключены), 10 доменов
+   • 1578 файлов TypeScript/React
+   • 360 тестовых файлов
+   • 11649+ unit тестов
+   • 150+ Rust тестов
+   • 79 E2E тестов (54 web + 25 Tauri)
+
+СТРУКТУРА:
+   • 472 компонента (.tsx)
+   • 204 хука (.ts)
+   • 27 сервисов (.ts)
+   • 69 типов (.ts)
+   • 7 state machines (.ts)
+```
+
+## Основные модули
+
+### Готовые модули (100%) - 34 фичи
+
+#### Timeline - 100%
+Центральный модуль видеоредактора с треками, клипами и секциями.
+- **109 компонентов**, 37 хуков, 31 сервис
+- **1793 unit теста**
+- Drag & drop, масштабирование, синхронизация с плеером
+- 📖 [Документация](../../src/features/timeline/README.md)
+
+#### Video Player - 100%
+Кастомный видеоплеер с покадровой навигацией.
+- 29 компонентов, 12 хуков, 16 сервисов
+- **629 тестов**, HDR support
+- Переменная скорость (0.25x - 4x), полноэкранный режим
+- 📖 [Документация](../../src/features/video-player/README.md)
+
+#### Fairlight Audio - 100%
+Профессиональный аудио микшер с AI шумоподавлением. **PRODUCTION READY**.
+- 52 компонента, 23 хука, 27 сервисов
+- **781 тест**
+- MIDI, Surround 5.1/7.1, LUFS метры, AudioWorklet API
+- 📖 [Документация](../../src/features/fairlight-audio/README.md)
+
+#### Color Grading - 100%
+Профессиональная цветокоррекция уровня DaVinci Resolve.
+- 38 компонентов, 8 хуков, 12 сервисов
+- **271 тест**
+- Color Wheels, RGB Curves, LUT, Scopes
+- 📖 [Документация](../../src/features/color-grading/README.md)
+
+#### Video Compiler - 100%
+Система рендеринга через FFmpeg с GPU-ускорением.
+- 14 компонентов, 4 хука, 9 сервисов
+- **193 теста**
+- NVENC, QuickSync, VideoToolbox, кэширование
+- 📖 [Документация](../../src/features/video-compiler/README.md)
+
+#### Browser - 100%
+Браузер медиафайлов с 8 табами.
+- 39 компонентов, 12 хуков, 15 сервисов
+- **535 тестов**
+- Media, Music, Effects, Filters, Transitions, Subtitles, Templates, Style Templates
+- 📖 [Документация](../../src/features/browser/README.md)
+
+#### Export - 100%
+Экспорт с поддержкой социальных сетей.
+- 19 компонентов, 7 хуков, 11 сервисов
+- OAuth интеграция, пресеты устройств, batch экспорт
+- 📖 [Документация](../../src/features/export/README.md)
+
+#### Transitions - 100%
+30+ типов переходов между клипами.
+- 18 компонентов, 6 хуков, 9 сервисов
+- **298 тестов**
+- 📖 [Документация](../../src/features/transitions/README.md)
+
+#### Templates - 100%
+159 многокамерных шаблонов для split-screen.
+- 14 компонентов, 5 хуков, 7 сервисов
+- **227 тестов**
+- 📖 [Документация](../../src/features/templates/README.md)
+
+#### Subtitles - 100%
+72 профессиональных стиля субтитров с анимациями.
+- 15 компонентов, 6 хуков, 6 сервисов
+- 📖 [Документация](../../src/features/subtitles/README.md)
+
+#### Style Templates - 100%
+Анимированные intro/outro и титры.
+- 17 компонентов, 5 хуков, 8 сервисов
+- 📖 [Документация](../../src/features/style-templates/README.md)
+
+#### Filters - 100%
+Фильтры изображения (яркость, контраст, цветокоррекция).
+- 16 компонентов, 4 хука, 7 сервисов
+- 📖 [Документация](../../src/features/filters/README.md)
+
+#### App State - 100%
+Глобальное управление состоянием через XState машины.
+- 18 компонентов, 14 хуков, 18 сервисов
+- **228 тестов**
+- 📖 [Документация](../../src/features/app-state/README.md)
+
+#### User Settings - 100%
+Пользовательские настройки и персонализация.
+- 14 компонентов, 6 хуков, 7 сервисов
+- **126 тестов**
+- 📖 [Документация](../../src/features/user-settings/README.md)
+
+#### Project Settings - 100%
+Настройки проекта (разрешение, FPS, аудио).
+- 12 компонентов, 5 хуков, 6 сервисов
+- **48 тестов**
+- 📖 [Документация](../../src/features/project-settings/README.md)
+
+#### Media - 100%
+Сервисы для работы с медиафайлами и метаданными.
+- 21 компонент, 9 хуков, 13 сервисов
+- 📖 [Документация](../../src/features/media/README.md)
+
+#### Language - 100%
+Система интернационализации с поддержкой 15 языков и RTL.
+- 5 компонентов, 4 хука
+- English, Russian, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, Turkish, Italian, Thai, Hindi, Arabic, Persian
+- 📖 [Документация](../../src/features/language/README.md)
+
+#### Version Control - 100%
+Система версионирования проектов.
+- 9 компонентов, 4 хука, 3 сервиса
+- Snapshots, branches, auto-save
+- 📖 [Документация](../../src/features/version-control/README.md)
+
+#### Workspace - 100%
+Управление рабочими областями.
+- 7 компонентов, 3 хука, 4 сервиса
+- 4 preset лейаута, drag & drop
+- 📖 [Документация](../../src/features/workspace/README.md)
+
+#### Motion Graphics - 100%
+Моушн графика и анимации.
+- 14 компонентов
+- Ключевые кадры, Expression Engine, кривые анимации
+- 📖 [Документация](../../src/features/motion-graphics/README.md)
+
+#### Multicam - 100%
+Многокамерный режим с синхронизацией.
+- 9 компонентов, 16 тестовых файлов
+- Синхронизация по таймкоду и аудио
+- 📖 [Документация](../../src/features/multicam/README.md)
+
+#### Preview - 100%
+WebGL2 система превью с GPU ускорением.
+- 18 компонентов, 7 хуков
+- 📖 [Документация](../../src/features/preview/README.md)
+
+#### Drag Drop - 100%
+Система drag & drop.
+- 12 компонентов, 8 хуков
+- 📖 [Документация](../../src/features/drag-drop/README.md)
+
+#### Media Studio - 100%
+Главный интерфейс редактора.
+- 31 компонент, 14 хуков
+- 📖 [Документация](../../src/features/media-studio/README.md)
+
+#### Modals - 100%
+Система модальных окон (20 типов).
+- 16 компонентов, 5 хуков
+- 📖 [Документация](../../src/features/modals/README.md)
+
+#### Options - 100%
+Настройки клипов (аудио, скорость, информация).
+- 7 компонентов
+- 📖 [Документация](../../src/features/options/README.md)
+
+#### Updates - 100%
+Система обновлений приложения.
+- 3 компонента, 1 хук
+- 📖 [Документация](../../src/features/updates/README.md)
+
+#### Project Templates - 100%
+Шаблоны проектов (YouTube, Social, Podcasts).
+- 5 компонентов
+- **52 теста**
+- 📖 [Документация](../../src/features/project-templates/README.md)
+
+### В разработке (70-95%) - 2 фичи
+
+#### Effects - 95%
+39+ видеоэффектов с WebGL2 рендерингом.
+- 16 компонентов, 5 хуков, 8 сервисов
+- **66 тестов**
+- Realtime preview в VideoPlayer
+- **TODO**: FFmpeg export с эффектами
+- 📖 [Документация](../../src/features/effects/README.md)
+
+#### Resources - 72%
+Управление ресурсами проекта.
+- 11 компонентов, 5 хуков
+- **511 тестов**
+- **TODO**: Parameter editing UI, search & filtering
+- 📖 [Документация](../../src/features/resources/README.md)
+
+### Требует доработки - 1 фича
+
+#### Publication - 35%
+Публикация контента в соцсети.
+- 8 компонентов
+- **TODO**: TikTok, VK, отмена загрузок
+- 📖 [Документация](../../src/features/publication/README.md)
+
+### Временно отключены - 4 фичи
+
+#### Keyboard Shortcuts - 100% ⏸️
+Система горячих клавиш с предустановками.
+- 8 компонентов, 4 хука, 5 сервисов
+- **126 тестов**
+- 📖 [Документация](../../src/features/keyboard-shortcuts/README.md)
+
+#### Camera Capture - 73% ⏸️
+Захват видео с веб-камеры.
+- 8 компонентов, 3 хука, 4 сервиса
+- **68 тестов**
+- 📖 [Документация](../../src/features/camera-capture/README.md)
+
+#### Voice Recording - 100% ⏸️
+Запись голоса для озвучки.
+- 5 компонентов, 2 хука, 3 сервиса
+- **89 тестов**
+- 📖 [Документация](../../src/features/voice-recording/README.md)
+
+#### Scenarios - 75% ⏸️
+Сценарии для автоматизации.
+- 4 компонента
+- **30 тестов**
+- 📖 [Документация](../../src/features/scenarios/README.md)
+
+## AI и автоматизация
+
+### AI Chat - 100%
+AI ассистент с 48+ инструментами.
+- 25 компонентов, 9 хуков, 82 инструмента
+- Интеграция с Claude, OpenAI, **Ollama (локальный AI)**
+- 📖 [Документация](../../src/features/ai-chat/README.md)
+
+### AI Director - 100%
+AI режиссёр для анализа видео.
+- 18 компонентов, 7 хуков
+- Unified Audio Analysis, Whisper транскрипция
+- 6 Workflow templates (TikTok, Highlight Reel, Documentary)
+- 📖 [Документация](../../src/features/ai-director/README.md)
+
+### Transcription - 100%
+Транскрипция аудио.
+- 13 компонентов, 6 хуков
+- OpenAI Whisper, Local Whisper, Faster Whisper
+- 6 размеров моделей, 20+ языков
 - Экспорт в SRT, VTT, ASS
+- 📖 [Документация](../../src/features/transcription/README.md)
 
-📖 **[Техническая документация модуля](../../src/features/transcription/README.md)**
+### Analysis Dashboard - 100%
+Аналитическая панель с графиками и метриками.
+- 11 компонентов, 4 хука, 6 сервисов
+- 📖 [Документация](../../src/features/analysis-dashboard/README.md)
 
-### [Workspace](advanced/workspace.md)
-**Статус**: ✅ Готов (75%)
-Виджетная система рабочего пространства
-- 4 готовых preset лейаута
-- Drag & Drop с @dnd-kit
-- Кастомизация layout
-- XState v5 управление состоянием
+### Montage Planner - 100%
+Планировщик автоматического монтажа.
+- 22 компонента, 9 хуков
+- AI-анализ материалов, синхронизация с музыкой
+- 📖 [Документация](../../src/features/montage-planner/README.md)
 
-📖 **[Техническая документация модуля](../../src/features/workspace/README.md)**
+### Person Identification - 100%
+Идентификация людей с FaceNet.
+- 6 компонентов
+- 15 тестовых файлов
+- Детекция лиц (YOLO/FaceNet), кластеризация DBSCAN
+- 📖 [Документация](../../src/features/person-identification/README.md)
 
-### [Version Control](advanced/version-control.md)
-**Статус**: ✅ Готов (75%)
-Система контроля версий проектов
-- Snapshots и branches
-- Auto-save functionality
-- Version history
-- i18n поддержка (15 языков)
+### Recognition - 100% (не интегрирован в UI)
+Визуализация YOLO детекции объектов.
+- 9 компонентов
+- **43 теста**
+- AI Director обрабатывает detection напрямую через backend
+- 📖 [Документация](../../src/features/recognition/README.md)
 
-📖 **[Техническая документация модуля](../../src/features/version-control/README.md)**
+## Domain Layer
 
-### [Analysis Dashboard](advanced/analysis-dashboard.md)
-**Статус**: ⚠️ В разработке (70%)
-Dashboard для анализа контента
-- Real-time progress monitoring
-- Performance metrics
-- Visual analytics
-- Integration с AI Director
+Timeline Studio использует **Orchestrator Pattern** для всех доменов. Миграция завершена в 2025 году.
 
-### [Publication](advanced/publication.md)
-**Статус**: ⚠️ В разработке (40%)
-Публикация контента на платформы
-- Прямая публикация на YouTube, TikTok
-- Управление метаданными
-- Scheduled publishing
-- Analytics integration
+### Архитектурные домены - 10 штук
 
-### Дополнительные модули
+#### Project Management
+Single source of truth для состояния проекта.
+- **228 тестов**, 100% готовность
+- BackendSync для синхронизации с Rust backend
+- 📖 [Документация](../../src/domains/project-management/README.md)
 
-#### [Media](advanced/media.md)
-**Статус**: ✅ Готов (90%)
-Управление медиафайлами и кеширование
-- Импорт и обработка медиа
-- Кеширование превью в IndexedDB
-- Метаданные и анализ файлов
-- Восстановление отсутствующих файлов
+#### Media Management
+Orchestrator pattern для управления медиафайлами.
+- **15 сервисов**, 5 state machines
+- MediaManagementOrchestrator (613 строк)
+- 📖 [Документация](../../src/domains/media-management/README.md)
 
-📖 **[Техническая документация модуля](../../src/features/media/README.md)**
+#### Video Editing
+Логика видеоредактирования, компиляции, рендеринга.
+- **22 сервиса**, 5 state machines
+- Интеграция с FFmpeg через Tauri
+- 📖 [Документация](../../src/domains/video-editing/README.md)
 
-#### [App State](core/app-state.md)
-**Статус**: ✅ Готов (85%)
-Глобальное состояние приложения
-- Настройки приложения
-- Управление проектами
-- Избранные файлы
-- Последние проекты
+#### AI Services
+Интеграция с AI провайдерами.
+- **55 сервисов**, 6 state machines
+- UnifiedOrchestrator (рейтинг 9/10)
+- Claude, OpenAI, Azure, **Ollama**
+- 📖 [Документация](../../src/domains/ai-services/README.md)
 
-📖 **[Техническая документация модуля](../../src/features/app-state/README.md)**
+#### AI Tools
+82 инструмента для AI ассистента.
+- Категории: analysis, automation, content, editing, project, timeline
+- **MCP Integration** (Model Context Protocol)
+- 📖 [Документация](../../src/domains/ai-tools/README.md)
 
-#### [User Settings](core/user-settings.md)
-**Статус**: ✅ Готов (90%)
-Пользовательские настройки
-- Персонализация интерфейса
-- API ключи для AI сервисов
-- Настройки производительности
-- Локализация
+#### AI Director
+AI-powered анализ и режиссура видео.
+- **7 сервисов**, анализ контента
+- 📖 [Документация](../../src/domains/ai-director/README.md)
 
-📖 **[Техническая документация модуля](../../src/features/user-settings/README.md)**
+#### System Integration
+Интеграция с системными API.
+- Нотификации, файлы, clipboard
+- BackendSync для двусторонней синхронизации
+- 📖 [Документация](../../src/domains/system-integration/README.md)
 
-## 📊 Статус разработки
+#### Browser
+Backend логика для медиа браузера.
+- 📖 [Документация](../../src/domains/browser/README.md)
+
+#### Subtitles
+Обработка субтитров, генерация, синхронизация.
+- 📖 [Документация](../../src/domains/subtitles/README.md)
+
+#### Shared
+Общие утилиты и типы для всех доменов.
+- Domain Event Bus
+- Контракты между доменами
+- 📖 [Документация](../../src/domains/shared/README.md)
+
+## Статус разработки
 
 ### Готовность модулей
 
-| Категория | Готовых | В разработке | Планируется |
-|-----------|---------|--------------|-------------|
-| Основные | 7/7 (100%) | 0/7 | 0/7 |
-| Эффекты | 5/5 (100%) | 0/5 | 0/5 |
-| Продвинутые | 25/29 (86%) | 1/29 | 3/29 |
-| **Новые рынки** | 0/5 (0%) | 0/5 | 5/5 |
-| **Всего** | **37/46 (80%)** | **1/46 (2%)** | **8/46 (17%)** |
+| Категория | Готовых | В разработке | Отключены |
+|-----------|---------|--------------|-----------|
+| Основные (core) | 28/28 (100%) | 0 | 0 |
+| AI и анализ | 6/7 (86%) | 0 | 1 (scenarios) |
+| Эффекты | 4/5 (80%) | 1 (effects 95%) | 0 |
+| Запись | 0/2 (0%) | 0 | 2 |
+| Публикация | 0/1 (0%) | 1 (35%) | 0 |
+| **Всего** | **38/43 (88%)** | **2 (5%)** | **4 (9%)** |
 
-### Новые рынки для захвата
+### Топ-10 модулей по тестам
 
-| Рынок | Модуль | Размер рынка | Статус |
-|-------|--------|--------------|--------|
-| Мемы и вирусный контент | Meme Machine | $8.2 млрд | 📋 Планируется |
-| Стриминг | Live Streaming | $15.3 млрд | 📋 Планируется |
-| AI аватары | Avatar Generation | $3.8 млрд | 📋 Планируется |
-| AI видео генерация | Video Generation | $2.1 млрд | 📋 Планируется |
-| Мобильные платформы | Mobile Apps (iOS/Android/Telegram) | $15.7 млрд | 📋 Планируется |
-| **Общий потенциал** | **5 модулей** | **$45.1 млрд** | **Новые возможности** |
+| # | Модуль | Тестов | Готовность |
+|---|--------|--------|------------|
+| 1 | timeline | 1793 | ✅ 100% |
+| 2 | fairlight-audio | 781 | ✅ 100% |
+| 3 | video-player | 629 | ✅ 100% |
+| 4 | browser | 535 | ✅ 100% |
+| 5 | resources | 511 | 🟡 72% |
+| 6 | transitions | 298 | ✅ 100% |
+| 7 | color-grading | 271 | ✅ 100% |
+| 8 | app-state | 228 | ✅ 100% |
+| 9 | templates | 227 | ✅ 100% |
+| 10 | video-compiler | 193 | ✅ 100% |
 
-### Покрытие тестами
+### Ключевые достижения 2025
 
-- **Отличное (>80%)**: Timeline, Video Player, Browser, Export, Effects, Filters, Recognition, **Transcription**, Subtitles, Video Compiler, Media, App State, User Settings, **AI Chat (257 инструмент)**, AI Models Integration, AI Content Intelligence, Montage Planner, Person Identification, Voice Recording, Camera Capture, Fairlight Audio, Color Grading, Motion Graphics, Multicam, **Version Control**, **Workspace**
-- **Хорошее (60-80%)**: Transitions, Style Templates, **AI Director**, **Analysis Dashboard**
-- **Требует улучшения (<60%)**: Templates, **Publication**
+- **Общая готовность 98%** - 34 из 41 активных фич на 100%
+- **11649+ unit тестов** - высокое покрытие кода
+- **Orchestrator Pattern** - завершена миграция всех доменов
+- **Ollama + MCP** - локальный AI с инструментами
+- **15 языков** - полная интернационализация с RTL
+- **BackendSync** - двусторонняя синхронизация с Tauri
 
-### 🏆 Важные достижения 2025 года
+## Планируемые модули
 
-- **17 июля 2025**: Достигнуто **257 AI инструмент** - абсолютное лидерство на рынке AI-powered видеоредакторов
-- **17 июля 2025**: Завершена **унификация системы ресурсов** - все 8 типов ресурсов объединены единым API
-- **17 июля 2025**: Добавлены масштабные задачи для развития в **профессиональный уровень**:
-  - Comprehensive Resources Database (5000+ ресурсов)
-  - Cloud Storage & Sync (мультиплатформенная экосистема)
-- **17 июля 2025**: Продолжается развитие **Advanced Timeline Features** для профессиональных пользователей
-- **Ноябрь 2025**: Реализованы новые ключевые модули:
-  - **AI Director** - Автоматический монтаж с unified audio analysis (75%)
-  - **Transcription** - Полная интеграция Whisper для транскрипции (100%)
-  - **Workspace** - Виджетная система с @dnd-kit (75%)
-  - **Version Control** - Система контроля версий проектов (75%)
-  - **Analysis Dashboard** - Dashboard для мониторинга анализа (70%)
-- **19 ноября 2025**: Масштабная доработка модулей - 5 агентов параллельно:
-  - **Style Templates** доведен до 95% (124 теста, 100% pass)
-  - **Transitions** доведен до 100% (298 тестов, 94% pass)
-  - **Workspace** доведен до 100% (88 тестов, persistence + dock + resize)
-  - **Version Control** доведен до 100% (76 тестов, i18n для 15 языков)
-  - **AI Director** доведен до 98% (361 тест, 83% pass)
-- **19 ноября 2025**: Общая готовность проекта достигла **80%** 🎯 (37 из 46 модулей готовы)
+### Новые рынки ($45.1 млрд потенциал)
 
-## 🛠️ Архитектура модулей
-
-Каждый модуль следует единой структуре:
-
-```
-feature-name/
-├── components/      # React компоненты
-├── hooks/          # Custom hooks
-├── services/       # Бизнес-логика и XState
-├── types/          # TypeScript типы  
-├── utils/          # Вспомогательные функции
-├── __tests__/      # Тесты
-├── __mocks__/      # Моки
-└── README.md       # Документация
-```
-
-## 🔧 Использование модулей
-
-### Импорт функциональности
-
-```typescript
-// Импорт компонентов
-import { Timeline } from '@/features/timeline'
-import { VideoPlayer } from '@/features/video-player'
-import { EffectsPanel } from '@/features/effects'
-
-// Импорт хуков
-import { useTimeline } from '@/features/timeline/hooks'
-import { useVideoPlayer } from '@/features/video-player/hooks'
-
-// Импорт сервисов
-import { timelineMachine } from '@/features/timeline/services'
-import { recognitionService } from '@/features/recognition/services'
-```
-
-### Композиция в приложении
-
-```tsx
-export function App() {
-  return (
-    <TimelineProvider>
-      <VideoPlayerProvider>
-        <EffectsProvider>
-          <div className="app-layout">
-            <VideoPlayer />
-            <Timeline />
-            <EffectsPanel />
-          </div>
-        </EffectsProvider>
-      </VideoPlayerProvider>
-    </TimelineProvider>
-  )
-}
-```
-
-## 🔮 Планируемые модули
-
-Следующие модули находятся в стадии планирования и имеют подробную техническую документацию:
-
-### [Scene Analyzer](../../src/features/scene-analyzer/README.md)
-**Статус**: 📋 Планируется (0%)  
-Анализ видеосцен с использованием ML
-- Анализ кадров через ffmpeg-rs
-- Распознавание объектов YOLOv11
-- Идентификация персон
-- Интеграция с субтитрами
-
-📖 **[Техническая документация модуля](../../src/features/scene-analyzer/README.md)**
-
-### [Script Generator](../../src/features/script-generator/README.md)
-**Статус**: 📋 Планируется (0%)  
-AI генерация видеосценариев
-- Анализ субтитров
-- Обработка пользовательских инструкций
-- Выбор видеофрагментов
-- Интеграция с Timeline
-
-📖 **[Техническая документация модуля](../../src/features/script-generator/README.md)**
-
-### [Comprehensive Resources Database](../../docs/ru/08_tasks/planned/comprehensive-resources-database.md)
-**Статус**: 📋 Планируется (0%)  
-Обширная база ресурсов уровня Filmora
-- **5000+ ресурсов** для всех категорий
-- Effects Library (1000+ эффектов)
-- Filters Collection (800+ фильтров)
-- Transitions Library (600+ переходов)
-- Audio Resources (2000+ треков)
-- CDN система доставки
-- Freemium модель монетизации
-
-### [Cloud Storage & Sync](../../docs/ru/08_tasks/planned/cloud-storage-sync.md)
-**Статус**: 📋 Планируется (0%)  
-Мультиплатформенная синхронизация
-- **Облачное хранение** и синхронизация проектов
-- **Collaborative editing** в реальном времени
-- **Мобильные версии** (iOS, Android, Telegram Mini App)
-- **End-to-end шифрование** всех данных
-- **Offline-first** подход с автосинхронизацией
-
-### Дополнительные планируемые модули
-📖 **[Полный список планируемых модулей (10 модулей)](../08_tasks/planned/README.md)**
-
-## 🔧 Backend модули
-
-Серверная часть Timeline Studio построена на Rust с использованием Tauri v2 и включает следующие core модули:
-
-### [Core Infrastructure](../../../src-tauri/src/core/README.md)
-**Статус**: ✅ Готов (100%)  
-Основная инфраструктура backend приложения
-- **Dependency Injection** - Type-safe управление зависимостями
-- **Event System** - Асинхронная система событий
-- **Plugin System** - WebAssembly плагины с sandbox изоляцией
-- **Telemetry** - OpenTelemetry мониторинг и метрики
-- **Performance** - Worker pools, кэширование, zero-copy операции
-
-📖 **[Подробная документация Core модулей](../../../src-tauri/src/core/README.md)**
-
-### [Video Compiler Backend](../../../src-tauri/src/video_compiler/README.md)
-**Статус**: ✅ Готов (100%)  
-Rust backend для видео обработки
-- FFmpeg интеграция через rust-ffmpeg
-- GPU ускорение (NVIDIA NVENC, Intel QuickSync, AMD AMF)
-- Многоуровневое кэширование
-- Управление задачами рендеринга
-- WebAssembly preview генерация
-
-### [Plugin System](../08-plugins/README.md)
-**Статус**: ✅ Готов (100%)  
-Система расширений с WebAssembly
-- Безопасное выполнение в WASM sandbox
-- Granular permissions система
-- Resource limits и timeouts
-- Hot-swappable плагины
-
-📖 **[Руководство разработчика плагинов](../08-plugins/development-guide.md)**
-
-### [Telemetry System](../09-telemetry/README.md)
-**Статус**: ✅ Готов (100%)  
-Комплексный мониторинг приложения
-- OpenTelemetry стандарты
-- Real-time метрики и трейсинг
-- Health checks системы
-- Export в Prometheus, Jaeger, Grafana
-
-📖 **[Настройка и конфигурация телеметрии](../09-telemetry/configuration.md)**
-
-### Backend сервисы по модулям
-
-| Frontend модуль | Backend сервисы | Документация |
-|----------------|-----------------|--------------|
-| Timeline | `timeline_schema_commands.rs` | [Schema API](../../../src-tauri/src/video_compiler/commands/timeline_schema_commands.rs) |
-| Video Player | `frame_extraction_commands.rs` | [Frame API](../../../src-tauri/src/video_compiler/commands/frame_extraction_commands.rs) |
-| Export | `rendering.rs`, `ffmpeg_builder_commands.rs` | [Render API](../../../src-tauri/src/video_compiler/commands/rendering.rs) |
-| Effects/Filters | `ffmpeg_utilities_commands.rs` | [Effects API](../../../src-tauri/src/video_compiler/commands/ffmpeg_utilities_commands.rs) |
-| Recognition | `recognition_advanced_commands.rs` | [Recognition API](../../../src-tauri/src/video_compiler/commands/recognition_advanced_commands.rs) |
-| AI Integration | `multimodal_commands.rs`, `whisper_commands.rs` | [AI API](../../../src-tauri/src/video_compiler/commands/multimodal_commands.rs) |
-| GPU Acceleration | `gpu.rs`, `platform_optimization_commands.rs` | [GPU API](../../../src-tauri/src/video_compiler/commands/gpu.rs) |
-
-## 📚 Дополнительные ресурсы
-
-- [Руководство по созданию модулей](../05-development/creating-features.md)
-- [Стандарты тестирования](../05-development/testing.md)
-- [Примеры интеграции](../07-guides/feature-integration.md)
+| Модуль | Рынок | Статус |
+|--------|-------|--------|
+| Meme Machine | Мемы и вирусный контент ($8.2 млрд) | 📋 Планируется |
+| Live Streaming | Стриминг ($15.3 млрд) | 📋 Планируется |
+| Avatar Generation | AI аватары ($3.8 млрд) | 📋 Планируется |
+| Video Generation | AI видео генерация ($2.1 млрд) | 📋 Планируется |
+| Mobile Apps | iOS/Android/Telegram ($15.7 млрд) | 📋 Планируется |
 
 ---
 
-[← Архитектура](../02-architecture/README.md) | [Далее: Timeline →](core/timeline.md)
+*Последнее обновление: 28 ноября 2025*

@@ -26,6 +26,24 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-28] AI Director Phase 3: Parallel Processing - ACTIVE 🟡
+- **Status:** В работе
+- **File:** ai-director-v2-phase3-plan.md
+- **Action:** planned/ → active/
+- **Priority:** Medium
+- **Summary:**
+  - Параллельная обработка нескольких файлов одновременно
+  - Ожидаемое ускорение: 2-4x для batch анализа
+  - Использование tokio tasks + Semaphore
+
+### [2025-11-28] AI Director v2 Concept - COMPLETED ✅
+- **Status:** Завершено (реализовано в Phase 1 + Phase 2)
+- **File:** ai-director-v2-concept.md
+- **Action:** planned/ → completed/
+- **Summary:**
+  - Изначальная концепция AI Director 2.0
+  - Все ключевые возможности реализованы: real-time events, batch processing, гибкий выбор анализаторов
+
 ### [2025-11-28] Performance: Re-render Optimization - PLANNED 🔴
 - **Status:** Запланировано
 - **File:** performance-rerender-optimization.md
