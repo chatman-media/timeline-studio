@@ -32,3 +32,20 @@ export type {
   SaveDialogOptions,
 } from "./platform.port"
 export type { IStorageService } from "./storage.port"
+export type {
+  CacheConfig,
+  CacheMemoryUsage,
+  CacheStats,
+  CompilerSettings,
+  ExtractedFrame,
+  FfmpegCapabilities,
+  FrameExtractionRequest,
+  GpuCapabilities,
+  IVideoService,
+  PrerenderCacheInfo,
+  PrerenderRequest,
+  PrerenderResult,
+  RenderJob,
+  RenderProgress,
+  SystemInfo,
+} from "./video.port"

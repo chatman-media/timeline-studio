@@ -12,12 +12,14 @@ import { MockEventService } from "./event"
 import { MockMediaService } from "./media"
 import { MockPlatformService } from "./platform"
 import { MockStorageService } from "./storage"
+import { MockVideoService } from "./video"
 
 export { MockBackendService } from "./backend"
 export { MockEventService } from "./event"
 export { MockMediaService } from "./media"
 export { MockPlatformService } from "./platform"
 export { MockStorageService } from "./storage"
+export { MockVideoService } from "./video"
 
 /**
  * Инициализация приложения с Mock адаптерами.
@@ -33,6 +35,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   storage: MockStorageService
   event: MockEventService
   media: MockMediaService
+  video: MockVideoService
 } {
   const { useLocalStorage = false } = options
 
@@ -42,6 +45,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const storage = new MockStorageService(useLocalStorage)
   const event = new MockEventService()
   const media = new MockMediaService()
+  const video = new MockVideoService()
 
   // Register in container
   container.registerBackend(backend)
@@ -49,9 +53,10 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerStorage(storage)
   container.registerEvent(event)
   container.registerMedia(media)
+  container.registerVideo(video)
 
   // Return services for test manipulation
-  return { backend, platform, storage, event, media }
+  return { backend, platform, storage, event, media, video }
 }
 
 /**
@@ -64,6 +69,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   storage: MockStorageService
   event: MockEventService
   media: MockMediaService
+  video: MockVideoService
 } {
   const { useLocalStorage = false } = options
 
@@ -73,5 +79,6 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     storage: new MockStorageService(useLocalStorage),
     event: new MockEventService(),
     media: new MockMediaService(),
+    video: new MockVideoService(),
   }
 }

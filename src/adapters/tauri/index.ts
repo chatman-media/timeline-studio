@@ -12,6 +12,7 @@ import { TauriEventService } from "./event"
 import { TauriMediaService } from "./media"
 import { TauriPlatformService } from "./platform"
 import { TauriStorageService } from "./storage"
+import { TauriVideoService } from "./video"
 
 export { TauriBackendService } from "./backend"
 export type { EventHandler, StateChangeHandler } from "./backend-sync"
@@ -21,6 +22,7 @@ export { TauriEventService } from "./event"
 export { TauriMediaService } from "./media"
 export { TauriPlatformService } from "./platform"
 export { TauriStorageService } from "./storage"
+export { TauriVideoService } from "./video"
 
 /**
  * Инициализация приложения с Tauri адаптерами.
@@ -39,12 +41,14 @@ export async function initTauriApp(options: { storeName?: string; autoConnect?: 
   const storage = new TauriStorageService(storeName)
   const event = new TauriEventService()
   const media = new TauriMediaService()
+  const video = new TauriVideoService()
 
   container.registerBackend(backend)
   container.registerPlatform(platform)
   container.registerStorage(storage)
   container.registerEvent(event)
   container.registerMedia(media)
+  container.registerVideo(video)
 
   // Auto-connect to backend if requested
   if (autoConnect) {

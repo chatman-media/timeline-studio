@@ -5,7 +5,14 @@
  * Позволяет подменять реализации для разных окружений (Tauri, Mock, HTTP).
  */
 
-import type { IBackendService, IEventService, IMediaService, IPlatformService, IStorageService } from "./ports"
+import type {
+  IBackendService,
+  IEventService,
+  IMediaService,
+  IPlatformService,
+  IStorageService,
+  IVideoService,
+} from "./ports"
 
 class ServiceContainer {
   private static instance: ServiceContainer | null = null
@@ -15,6 +22,7 @@ class ServiceContainer {
   private _storage: IStorageService | null = null
   private _event: IEventService | null = null
   private _media: IMediaService | null = null
+  private _video: IVideoService | null = null
 
   private constructor() {}
 
@@ -35,6 +43,7 @@ class ServiceContainer {
       ServiceContainer.instance._storage = null
       ServiceContainer.instance._event = null
       ServiceContainer.instance._media = null
+      ServiceContainer.instance._video = null
     }
   }
 
@@ -132,6 +141,25 @@ class ServiceContainer {
   hasMedia(): boolean {
     return this._media !== null
   }
+
+  // === Video Service ===
+
+  registerVideo(video: IVideoService): void {
+    this._video = video
+  }
+
+  getVideo(): IVideoService {
+    if (!this._video) {
+      throw new Error(
+        "[ServiceContainer] Video not registered. Call registerVideo() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._video
+  }
+
+  hasVideo(): boolean {
+    return this._video !== null
+  }
 }
 
 // Singleton instance
@@ -143,6 +171,7 @@ export const getPlatform = (): IPlatformService => container.getPlatform()
 export const getStorage = (): IStorageService => container.getStorage()
 export const getEvent = (): IEventService => container.getEvent()
 export const getMedia = (): IMediaService => container.getMedia()
+export const getVideo = (): IVideoService => container.getVideo()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()
