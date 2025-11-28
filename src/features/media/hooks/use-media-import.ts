@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react"
 
 import { container } from "@/core"
 import { selectMediaDirectory, selectMediaFile } from "@/domains/media-management"
-import { useCurrentProject } from "@/features/app-state/hooks/use-current-project"
+import { useCurrentProject } from "@/domains/project-management/hooks"
 import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
 import { type DiscoveredFile, useMediaProcessor } from "@/features/media/hooks/use-media-processor"
 import type { MediaFile } from "@/features/media/types/media"

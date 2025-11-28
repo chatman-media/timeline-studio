@@ -9,7 +9,7 @@ import {
   RenderStatus,
   renderProject,
 } from "@/domains/video-editing"
-import { loadProject } from "@/features/app-state/services/project-file-service"
+import { loadProject } from "@/domains/project-management/services/project-file-service"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
 import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 

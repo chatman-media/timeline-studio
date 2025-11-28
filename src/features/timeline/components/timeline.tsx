@@ -2,7 +2,7 @@ import type React from "react"
 import { useState } from "react"
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { useUserSettings } from "@/features/app-state/hooks/use-user-settings"
+import { useUserSettings } from "@/domains/project-management/hooks"
 import { ResourcesPanel } from "@/features/resources"
 import { cn } from "@/lib/utils"
 
@@ -24,10 +24,10 @@ interface TimelineProps {
  */
 export function Timeline({ className, style }: TimelineProps = {}) {
   const [activeView, setActiveView] = useState<WorkspaceView>("timeline")
-  const { userSettings } = useUserSettings()
+  const settings = useUserSettings()
 
   // Выбираем компонент Timeline в зависимости от настроек виртуализации
-  const TimelineComponent = userSettings?.timelineVirtualizationEnabled ? VirtualizedTimelineContent : TimelineContent
+  const TimelineComponent = settings?.timelineVirtualizationEnabled ? VirtualizedTimelineContent : TimelineContent
 
   return (
     <ResizablePanelGroup

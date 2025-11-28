@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { analyzeAudioPeaks } from "@/domains/subtitles"
 import { useNotifications } from "@/domains/system-integration"
-import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
+import { useMediaFiles } from "@/domains/project-management/hooks"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
 import type { TrackType } from "@/features/timeline/types/timeline"

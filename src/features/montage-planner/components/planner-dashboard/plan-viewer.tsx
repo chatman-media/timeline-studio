@@ -13,7 +13,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { MediaFile } from "@/domains/video-editing/types/media"
-import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
+import { useMediaFiles } from "@/domains/project-management/hooks"
 import { MediaType } from "@/features/media/types/media"
 import { formatTime } from "@/lib/date"
 

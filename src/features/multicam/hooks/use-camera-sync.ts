@@ -5,7 +5,7 @@
 
 import { useCallback, useRef, useState } from "react"
 
-import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
+import { useMediaFiles } from "@/domains/project-management/hooks"
 import { useLinkedClips } from "@/features/timeline/hooks/use-linked-clips"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { createLogger } from "@/lib/tauri-logger"

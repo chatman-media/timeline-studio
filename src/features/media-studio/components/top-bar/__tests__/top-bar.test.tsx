@@ -58,7 +58,7 @@ vi.mock("@/features/user-settings", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: {
       name: "Test Project",
@@ -363,7 +363,7 @@ describe("TopBar", () => {
 
   describe("edge cases", () => {
     it("должен обрабатывать отсутствие текущего проекта", () => {
-      vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+      vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
         useCurrentProject: () => ({
           currentProject: null,
           openProject: mockOpenProject,

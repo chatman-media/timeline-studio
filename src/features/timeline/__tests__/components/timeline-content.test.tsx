@@ -80,7 +80,7 @@ const mockDragState = {
   dragState: { isDragging: false },
 }
 
-vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({ currentProject: mockCurrentProject }),
 }))
 

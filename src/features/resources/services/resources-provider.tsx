@@ -7,7 +7,7 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { container } from "@/core/container"
-import { useAppSettings } from "@/features/app-state/hooks/use-app-settings"
+import { useApp } from "@/domains/project-management/providers"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { FfprobeData } from "@/features/media/types/ffprobe"
@@ -119,7 +119,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const metadataCacheRef = useRef<Map<string, FfprobeData>>(new Map())
 
   // Используем projectState из appMachine вместо прямой подписки на backendSync
-  const { projectState } = useAppSettings()
+  const { projectState } = useApp()
   const backendState = projectState
 
   // State для инкрементальных обновлений через события

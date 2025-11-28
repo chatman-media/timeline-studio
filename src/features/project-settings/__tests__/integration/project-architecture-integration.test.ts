@@ -5,7 +5,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { TimelineStudioProjectService } from "@/features/app-state/services/timeline-studio-project-service"
+import { TimelineStudioProjectService } from "@/domains/project-management/services/timeline-studio-project-service"
 import type { MediaPoolItem } from "@/features/media/types/media-pool"
 import {
   addItemToPool,

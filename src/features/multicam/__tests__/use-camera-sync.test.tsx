@@ -62,7 +62,7 @@ vi.mock("@/features/timeline/hooks/use-linked-clips", () => ({
   }),
 }))
 
-vi.mock("@/features/app-state/hooks/use-media-files", () => ({
+vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
   useMediaFiles: () => ({
     getMediaFileById: vi.fn((id: string) => ({
       id,

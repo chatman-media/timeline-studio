@@ -16,7 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AIDirectorProgress } from "@/features/ai-director/components/ai-director-progress"
 import { useAIDirectorAnalysis } from "@/features/ai-director/hooks/use-ai-director-analysis"
-import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
+import { useMediaFiles } from "@/domains/project-management/hooks"
 import type { LogContext } from "@/lib/tauri-logger"
 import { createLogger } from "@/lib/tauri-logger"
 

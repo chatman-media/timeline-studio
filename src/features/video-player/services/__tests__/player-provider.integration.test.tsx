@@ -106,7 +106,7 @@ vi.mock("@/core/container", () => ({
 
 // Import after mocks are set up
 import { container } from "@/core/container"
-import { MockBackendProvider, type MockProjectState } from "@/features/app-state/testing/mock-backend-provider"
+import { MockBackendProvider, type MockProjectState } from "@/domains/project-management/testing/mock-backend-provider"
 
 // Import the real PlayerProvider implementation (bypass global mocks in setup)
 let PlayerProvider: any

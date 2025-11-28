@@ -123,7 +123,7 @@ export function CameraCaptureModal() {
       // Импортируем файл в медиабиблиотеку
       // Так как useMediaImport работает с диалогом выбора файлов,
       // нам нужно скопировать файл и обновить медиабиблиотеку напрямую
-      const { useMediaFiles } = await import("@/features/app-state")
+      const { useMediaFiles } = await import("@/domains/project-management/hooks")
 
       // Создаем медиафайл
       const mediaFile = {

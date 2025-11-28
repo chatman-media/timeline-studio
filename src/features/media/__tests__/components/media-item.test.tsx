@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { MediaType } from "@/features/media/types/media"
 import { fireEvent, renderWithProviders, screen } from "@/test/test-utils"
 
@@ -35,7 +35,7 @@ vi.mock("../../components/file-metadata", () => ({
 }))
 
 // Мокаем useFavorites
-vi.mock("@/features/app-state", async (importOriginal) => {
+vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
   const actual: any = await importOriginal()
   return {
     ...actual,

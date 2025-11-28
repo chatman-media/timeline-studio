@@ -24,7 +24,7 @@ const mockAddMedia = vi.fn()
 const mockSetProjectDirty = vi.fn()
 
 // Re-mock these functions with test-specific implementations
-vi.mock("@/features/app-state/hooks/use-current-project", () => ({
+vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: vi.fn(() => ({
     currentProject: { path: "/test/project", name: "Test", isDirty: false, isNew: false },
     setProjectDirty: mockSetProjectDirty,

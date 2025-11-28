@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react"
 
-import { useFavorites } from "@/features/app-state"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { MediaPreview } from "@/features/browser"
 import type { MediaFile } from "@/features/media"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"

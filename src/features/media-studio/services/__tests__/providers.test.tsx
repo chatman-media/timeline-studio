@@ -19,7 +19,7 @@ vi.mock("@/features/ai-chat/services/chat-provider", () => ({
   ChatProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="chat-provider">{children}</div>,
 }))
 
-vi.mock("@/features/app-state/services/app-provider", () => ({
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="app-provider">{children}</div>,
 }))
 

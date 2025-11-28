@@ -28,7 +28,7 @@ vi.mock("@/features/user-settings", () => ({
 }))
 
 // Мокаем useMediaFiles
-vi.mock("@/features/app-state/hooks/use-media-files", () => ({
+vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
   useMediaFiles: vi.fn(() => ({
     mediaFiles: [],
     selectedFiles: [],

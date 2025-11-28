@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useTimelineProject } from "@/domains/video-editing"
 
 // Мокаем backend-sync ДО импорта компонентов
-vi.mock("@/features/app-state/services/backend-sync", () => {
+vi.mock("@/adapters/tauri", () => {
   // Создаем моки внутри фабрики
   const createMockFn = () => vi.fn()
 
@@ -61,7 +61,7 @@ vi.mock("@/domains/project-management/providers/app-provider", () => ({
 }))
 
 // Также мокаем старый путь для совместимости
-vi.mock("@/features/app-state/services/app-provider", () => ({
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useApp: vi.fn(() => ({
     projectState: { project: null },
@@ -355,7 +355,7 @@ vi.mock("@xstate/react", () => ({
 
 // Импортируем моки из мокированного модуля
 // Используем vi.mocked чтобы получить доступ к мокам
-import * as backendSyncModule from "@/features/app-state/services/backend-sync"
+import * as backendSyncModule from "@/adapters/tauri"
 import type { MediaFile, MediaType } from "@/features/media/types/media"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTimeline } from "../../hooks/use-timeline"

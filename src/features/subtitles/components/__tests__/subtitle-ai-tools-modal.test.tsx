@@ -29,7 +29,7 @@ vi.mock("@/features/timeline/hooks/use-timeline", () => ({
   })),
 }))
 
-vi.mock("@/features/app-state/hooks/use-media-files", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useMediaFiles: vi.fn(() => ({
     mediaFiles: [],
   })),
@@ -59,7 +59,7 @@ vi.mock("sonner", () => ({
 }))
 
 import { WhisperService } from "@/domains/ai-services/services/whisper-service"
-import { useMediaFiles } from "@/features/app-state/hooks/use-media-files"
+import { useMediaFiles } from "@/domains/project-management/hooks"
 import { useModal } from "@/features/modals/services"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 
