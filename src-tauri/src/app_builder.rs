@@ -527,6 +527,11 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::get_unified_audio_analysis_status,
     crate::analysis::commands::analyze_audio_transcription_unified,
     crate::analysis::commands::check_whisper_availability_unified,
+    // Unified Audio API aliases for frontend compatibility
+    crate::analysis::commands::unified_audio_analyze_comprehensive,
+    crate::analysis::commands::unified_audio_analyze_quick,
+    crate::analysis::commands::unified_audio_analyze_batch,
+    crate::analysis::commands::unified_audio_get_capabilities,
     // AI Director commands - главные команды для полного анализа медиа
     crate::analysis::commands::ai_director_analyze_comprehensive,
     crate::analysis::commands::ai_director_analyze_quick,

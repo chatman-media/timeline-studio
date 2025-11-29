@@ -374,3 +374,35 @@ pub async fn check_whisper_availability_unified() -> Result<String, String> {
     }
   }
 }
+
+// ===== Aliases for frontend compatibility =====
+
+/// Alias: unified_audio_analyze_comprehensive -> analyze_audio_unified
+#[command]
+pub async fn unified_audio_analyze_comprehensive(
+  file_path: String,
+  config: Option<String>,
+) -> Result<String, String> {
+  analyze_audio_unified(file_path, config).await
+}
+
+/// Alias: unified_audio_analyze_quick -> analyze_audio_quick
+#[command]
+pub async fn unified_audio_analyze_quick(file_path: String) -> Result<String, String> {
+  analyze_audio_quick(file_path).await
+}
+
+/// Alias: unified_audio_analyze_batch -> analyze_audio_batch
+#[command]
+pub async fn unified_audio_analyze_batch(
+  file_paths: Vec<String>,
+  config: Option<String>,
+) -> Result<String, String> {
+  analyze_audio_batch(file_paths, config).await
+}
+
+/// Alias: unified_audio_get_capabilities -> get_audio_system_capabilities
+#[command]
+pub async fn unified_audio_get_capabilities() -> Result<String, String> {
+  get_audio_system_capabilities().await
+}

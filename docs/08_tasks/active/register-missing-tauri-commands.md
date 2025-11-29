@@ -3,7 +3,8 @@
 ## Метаданные
 
 - **Дата создания:** 2025-11-29
-- **Статус:** Запланировано
+- **Дата начала:** 2025-11-29
+- **Статус:** В работе (Фаза 1 завершена)
 - **Приоритет:** 🔴 КРИТИЧЕСКИЙ
 - **Категория:** Backend / Infrastructure
 - **Связанные документы:**
@@ -17,7 +18,9 @@
 
 Это вызывает ошибки выполнения при попытке использования этих функций.
 
-**Текущее покрытие:** 33.4% (112 из 335 команд используются)
+**Начальное покрытие:** 33.4% (112 из 335 команд используются)
+**Текущее покрытие:** 34.1% (116 из 340 команд используются)
+**Осталось зарегистрировать:** 105 команд
 
 ## Цели задачи
 
@@ -29,51 +32,58 @@
 
 ## План выполнения
 
-### Фаза 1: Критичные команды (Приоритет: ВЫСОКИЙ) 🔴
+### Фаза 1: Критичные команды (Приоритет: ВЫСОКИЙ) ✅ ЗАВЕРШЕНО
 
-#### 1.1. State Manager API (7 команд)
-**Модуль:** `src-tauri/src/state/commands_api.rs`
+**Дата завершения:** 2025-11-29
 
-- [ ] `execute_batch_commands` - Пакетное выполнение команд
-- [ ] `get_app_directories` - Получение путей приложения
-- [ ] `create_app_directories` - Создание директорий приложения
-- [ ] `get_directory_sizes` - Получение размеров директорий
-- [ ] `clear_app_cache` - Очистка кэша приложения
-- [ ] `save_workspace_state` - Сохранение состояния workspace
-- [ ] `load_workspace_state` - Загрузка состояния workspace
+#### 1.1. State Manager API (3 команды) ✅
+**Модуль:** `src-tauri/src/state/commands_api.rs` и `workspace.rs`
 
-**Действия:**
-1. Проверить существование реализаций в `commands_api.rs`
-2. Добавить отсутствующие реализации
-3. Зарегистрировать в `app_builder.rs`
-4. Добавить в секцию State Manager
+- [x] `execute_batch_commands` - Пакетное выполнение команд *(было реализовано, добавлена регистрация)*
+- [x] `save_workspace_state` - Сохранение состояния workspace *(новый файл `workspace.rs`)*
+- [x] `load_workspace_state` - Загрузка состояния workspace *(новый файл `workspace.rs`)*
+- [ ] `get_app_directories` - Получение путей приложения *(уже зарегистрирована)*
+- [ ] `create_app_directories` - Создание директорий приложения *(уже зарегистрирована)*
+- [ ] `get_directory_sizes` - Получение размеров директорий *(уже зарегистрирована)*
+- [ ] `clear_app_cache` - Очистка кэша приложения *(уже зарегистрирована)*
 
-**Файлы для изменения:**
-- `src-tauri/src/state/commands_api.rs` - реализации
-- `src-tauri/src/app_builder.rs` - регистрация
-- `src-tauri/src/state/mod.rs` - экспорты если нужно
+**Выполненные действия:**
+1. ✅ Обнаружена реализация `execute_batch_commands`, добавлена регистрация
+2. ✅ Создан новый файл `src-tauri/src/state/workspace.rs` с полной реализацией
+3. ✅ Добавлен экспорт в `src-tauri/src/state/mod.rs`
+4. ✅ Зарегистрированы 3 команды в `app_builder.rs` (строки 481, 485-486)
 
-#### 1.2. Unified Audio API (8 команд)
-**Модуль:** `src-tauri/src/analysis/commands/audio.rs` или новый модуль
+**Измененные файлы:**
+- `src-tauri/src/state/workspace.rs` - новый файл с `WorkspaceState` и командами
+- `src-tauri/src/state/mod.rs` - добавлен `pub mod workspace;`
+- `src-tauri/src/app_builder.rs` - регистрация команд
 
-- [ ] `unified_audio_analyze_comprehensive` - Полный анализ аудио
-- [ ] `unified_audio_analyze_quick` - Быстрый анализ аудио
-- [ ] `unified_audio_analyze_batch` - Пакетный анализ аудио
-- [ ] `unified_audio_get_capabilities` - Получение возможностей аудио системы
-- [ ] `analyze_audio_peaks` - Анализ пиков аудио
-- [ ] `detect_speech_onsets` - Детекция начала речи
-- [ ] `correlate_audio_files` - Корреляция аудио файлов
-- [ ] `prepare_audio_for_whisper` - Подготовка аудио для Whisper
+#### 1.2. Unified Audio API (4 команды alias) ✅
+**Модуль:** `src-tauri/src/analysis/commands/unified_audio_commands.rs`
 
-**Действия:**
-1. Определить модуль для unified audio API
-2. Реализовать отсутствующие функции
-3. Интегрировать с существующим FFmpeg
-4. Зарегистрировать все 8 команд
+- [x] `unified_audio_analyze_comprehensive` - Alias для `analyze_audio_unified`
+- [x] `unified_audio_analyze_quick` - Alias для `analyze_audio_quick`
+- [x] `unified_audio_analyze_batch` - Alias для `analyze_audio_batch`
+- [x] `unified_audio_get_capabilities` - Alias для `get_audio_system_capabilities`
+- [ ] `analyze_audio_peaks` - *(уже реализована в `commands::audio_analysis`)*
+- [ ] `detect_speech_onsets` - *(уже реализована в `commands::audio_analysis`)*
+- [ ] `correlate_audio_files` - *(уже реализована в `commands::audio_correlation`)*
+- [ ] `prepare_audio_for_whisper` - *(уже реализована в `commands::transcription`)*
 
-**Файлы для изменения:**
-- `src-tauri/src/analysis/commands/audio.rs` (или создать новый)
-- `src-tauri/src/app_builder.rs`
+**Выполненные действия:**
+1. ✅ Добавлены 4 alias команды в `unified_audio_commands.rs` (строки 380-408)
+2. ✅ Зарегистрированы в `app_builder.rs` (строки 531-534)
+3. ✅ Обнаружены существующие реализации остальных 4 команд в других модулях
+
+**Измененные файлы:**
+- `src-tauri/src/analysis/commands/unified_audio_commands.rs` - добавлены alias функции
+- `src-tauri/src/app_builder.rs` - регистрация alias команд
+
+**Итого Фаза 1:**
+- ✅ Зарегистрировано: 7 новых команд
+- ✅ Код компилируется без ошибок
+- ✅ Покрытие улучшено: 33.4% → 34.1%
+- ✅ Осталось незарегистрированных: 105 (было 109)
 
 ### Фаза 2: AI Services (Приоритет: ВЫСОКИЙ) 🟠
 

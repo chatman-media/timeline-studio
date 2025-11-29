@@ -5,10 +5,8 @@
 /// - Panel layouts
 /// - Recent projects
 /// - UI preferences specific to workspace
-
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use tauri::State;
 
 /// Workspace state structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -88,8 +86,8 @@ impl Default for WorkspaceState {
 impl WorkspaceState {
   /// Get workspace state file path
   fn get_state_file_path() -> Result<PathBuf, String> {
-    let config_dir = dirs::config_dir()
-      .ok_or_else(|| "Failed to get config directory".to_string())?;
+    let config_dir =
+      dirs::config_dir().ok_or_else(|| "Failed to get config directory".to_string())?;
 
     let app_config_dir = config_dir.join("Timeline Studio");
     std::fs::create_dir_all(&app_config_dir)
@@ -107,8 +105,8 @@ impl WorkspaceState {
       return Ok(Self::default());
     }
 
-    let content = std::fs::read_to_string(&path)
-      .map_err(|e| format!("Failed to read workspace state: {e}"))?;
+    let content =
+      std::fs::read_to_string(&path).map_err(|e| format!("Failed to read workspace state: {e}"))?;
 
     let state: WorkspaceState = serde_json::from_str(&content)
       .map_err(|e| format!("Failed to parse workspace state: {e}"))?;
@@ -124,8 +122,7 @@ impl WorkspaceState {
     let content = serde_json::to_string_pretty(self)
       .map_err(|e| format!("Failed to serialize workspace state: {e}"))?;
 
-    std::fs::write(&path, content)
-      .map_err(|e| format!("Failed to write workspace state: {e}"))?;
+    std::fs::write(&path, content).map_err(|e| format!("Failed to write workspace state: {e}"))?;
 
     log::info!("Saved workspace state to {:?}", path);
     Ok(())
@@ -169,7 +166,10 @@ mod tests {
 
     let deserialized: WorkspaceState = serde_json::from_str(&json).unwrap();
     assert_eq!(deserialized.window.width, state.window.width);
-    assert_eq!(deserialized.ui_preferences.theme, state.ui_preferences.theme);
+    assert_eq!(
+      deserialized.ui_preferences.theme,
+      state.ui_preferences.theme
+    );
   }
 
   #[tokio::test]

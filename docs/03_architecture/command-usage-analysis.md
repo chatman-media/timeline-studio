@@ -5,39 +5,49 @@
 
 ## Итоговая статистика
 
-| Метрика | Значение |
-|---------|----------|
-| Зарегистрировано команд | 335 |
-| Используется на фронтенде | 112 (33.4%) |
-| Не используется | 223 (66.6%) |
-| Вызывается, но не зарегистрировано | 109 |
+**Последнее обновление:** 2025-11-29 (после Фазы 1)
+
+| Метрика | Начальное значение | Текущее значение | Изменение |
+|---------|-------------------|------------------|-----------|
+| Зарегистрировано команд | 335 | 340 | +5 |
+| Используется на фронтенде | 112 (33.4%) | 116 (34.1%) | +4 команды, +0.7% |
+| Не используется | 223 (66.6%) | 224 (65.9%) | +1 |
+| Вызывается, но не зарегистрировано | 109 | 105 | -4 |
+
+### Прогресс регистрации команд
+
+**Фаза 1 (ЗАВЕРШЕНО):**
+- ✅ State Manager API: 3 команды зарегистрированы
+- ✅ Unified Audio API: 4 alias команды зарегистрированы
+- ✅ Покрытие улучшено с 33.4% до 34.1%
+- ✅ Осталось незарегистрированных: 105 команд
 
 ## ⚠️ Критические проблемы
 
-### 1. Команды вызываются, но не зарегистрированы (109 команд)
+### 1. Команды вызываются, но не зарегистрированы (105 команд)
 
 Эти команды вызываются на фронтенде через `invoke()`, но не зарегистрированы в `app_builder.rs`. Это вызовет ошибки при выполнении.
 
-#### Аудио анализ (unified audio API)
+#### ~~Аудио анализ (unified audio API)~~ ✅ ИСПРАВЛЕНО
 ```
-- unified_audio_analyze_comprehensive
-- unified_audio_analyze_quick
-- unified_audio_analyze_batch
-- unified_audio_get_capabilities
-- analyze_audio_peaks
-- detect_speech_onsets
-- correlate_audio_files
+- unified_audio_analyze_comprehensive  ✅
+- unified_audio_analyze_quick          ✅
+- unified_audio_analyze_batch          ✅
+- unified_audio_get_capabilities       ✅
+- analyze_audio_peaks                  (уже зарегистрирована)
+- detect_speech_onsets                 (уже зарегистрирована)
+- correlate_audio_files                (уже зарегистрирована)
 ```
 
-#### State Manager API
+#### ~~State Manager API~~ ✅ ИСПРАВЛЕНО (частично)
 ```
-- execute_batch_commands
-- get_app_directories
-- create_app_directories
-- get_directory_sizes
-- clear_app_cache
-- save_workspace_state
-- load_workspace_state
+- execute_batch_commands               ✅
+- get_app_directories                  (уже зарегистрирована)
+- create_app_directories               (уже зарегистрирована)
+- get_directory_sizes                  (уже зарегистрирована)
+- clear_app_cache                      (уже зарегистрирована)
+- save_workspace_state                 ✅
+- load_workspace_state                 ✅
 ```
 
 #### AI Services

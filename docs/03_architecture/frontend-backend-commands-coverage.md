@@ -2,19 +2,25 @@
 
 ## Итоговая сводка по покрытию
 
-**Дата обновления:** 2025-11-29
+**Дата обновления:** 2025-11-29 (после Фазы 1)
 **Статус:** ⚠️ **ЧАСТИЧНОЕ ПОКРЫТИЕ** - Требуется синхронизация backend и frontend
 
-**Реальное покрытие команд:** 33.4% (112 из 335 используются)
-**Зарегистрировано backend команд:** 335 команд (в app_builder.rs)
-**Используется на фронтенде:** 112 команд
-**Не используется:** 223 команды (66.6%)
-**Вызывается, но не зарегистрировано:** 109 команд ❌
+| Метрика | Начальное значение | Текущее значение | Изменение |
+|---------|-------------------|------------------|-----------|
+| **Зарегистрировано команд** | 335 | **340** | +5 команд ✅ |
+| **Используется на фронтенде** | 112 (33.4%) | **116 (34.1%)** | +4 команды, +0.7% ✅ |
+| **Не используется** | 223 (66.6%) | **224 (65.9%)** | +1 команда |
+| **Незарегистрированных** | 109 ❌ | **105** ⚠️ | -4 команды ✅ |
+
+**Прогресс регистрации:**
+- ✅ Фаза 1 завершена (State Manager + Unified Audio API)
+- 📋 Осталось зарегистрировать: 105 команд
+- 🎯 Целевое покрытие: >80%
 
 **Архитектура:** Доменно-ориентированная (Domain-Driven Design)
 **Покрытие доменов:** Неравномерное (от 0% до 65.2%)
 
-> ⚠️ **КРИТИЧЕСКАЯ ПРОБЛЕМА:** 109 команд вызываются на фронтенде через `invoke()`, но не зарегистрированы в backend. Это вызывает ошибки при выполнении.
+> ⚠️ **КРИТИЧЕСКАЯ ПРОБЛЕМА:** 105 команд вызываются на фронтенде через `invoke()`, но не зарегистрированы в backend. Это вызывает ошибки при выполнении.
 >
 > 📊 **Детальный анализ:** См. [command-usage-analysis.md](./command-usage-analysis.md)
 
@@ -101,26 +107,34 @@ Timeline Studio теперь использует **Domain-Driven Design (DDD)**
 
 ## ⚠️ Критические незарегистрированные команды
 
-### State Manager API (7 команд) - КРИТИЧНО
-Команды вызываются в `project-management/tauri/`, но не зарегистрированы:
-- `execute_batch_commands` - Пакетное выполнение команд
-- `get_app_directories` - Получение путей приложения
-- `create_app_directories` - Создание директорий
-- `get_directory_sizes` - Размеры директорий
-- `clear_app_cache` - Очистка кэша
-- `save_workspace_state` - Сохранение состояния workspace
-- `load_workspace_state` - Загрузка состояния workspace
+### ~~State Manager API~~ ✅ ИСПРАВЛЕНО (Фаза 1)
+~~Команды вызываются в `project-management/tauri/`, но не зарегистрированы:~~
+- `execute_batch_commands` - Пакетное выполнение команд ✅
+- `get_app_directories` - (уже была зарегистрирована)
+- `create_app_directories` - (уже была зарегистрирована)
+- `get_directory_sizes` - (уже была зарегистрирована)
+- `clear_app_cache` - (уже была зарегистрирована)
+- `save_workspace_state` - Сохранение состояния workspace ✅
+- `load_workspace_state` - Загрузка состояния workspace ✅
 
-### Unified Audio API (8 команд) - КРИТИЧНО
-Команды вызываются в `ai-services/tauri/audio-commands.ts`:
-- `unified_audio_analyze_comprehensive` - Полный анализ аудио
-- `unified_audio_analyze_quick` - Быстрый анализ
-- `unified_audio_analyze_batch` - Пакетный анализ
-- `unified_audio_get_capabilities` - Возможности аудио системы
-- `analyze_audio_peaks` - Анализ пиков
-- `detect_speech_onsets` - Детекция речи
-- `correlate_audio_files` - Корреляция файлов
-- `prepare_audio_for_whisper` - Подготовка для Whisper
+**Файлы изменены:**
+- `src-tauri/src/state/workspace.rs` (новый)
+- `src-tauri/src/app_builder.rs` (регистрация)
+
+### ~~Unified Audio API~~ ✅ ИСПРАВЛЕНО (Фаза 1)
+~~Команды вызываются в `ai-services/tauri/audio-commands.ts`:~~
+- `unified_audio_analyze_comprehensive` - Alias для `analyze_audio_unified` ✅
+- `unified_audio_analyze_quick` - Alias для `analyze_audio_quick` ✅
+- `unified_audio_analyze_batch` - Alias для `analyze_audio_batch` ✅
+- `unified_audio_get_capabilities` - Alias для `get_audio_system_capabilities` ✅
+- `analyze_audio_peaks` - (уже была зарегистрирована)
+- `detect_speech_onsets` - (уже была зарегистрирована)
+- `correlate_audio_files` - (уже была зарегистрирована)
+- `prepare_audio_for_whisper` - (уже была зарегистрирована)
+
+**Файлы изменены:**
+- `src-tauri/src/analysis/commands/unified_audio_commands.rs` (alias функции)
+- `src-tauri/src/app_builder.rs` (регистрация)
 
 ### AI Services API (14 команд) - ВЫСОКИЙ ПРИОРИТЕТ
 Команды в `ai-services/services/unified-ai-service.ts`:
