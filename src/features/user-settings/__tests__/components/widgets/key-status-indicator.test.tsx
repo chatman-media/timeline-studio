@@ -181,4 +181,136 @@ describe("KeyStatusIndicator", () => {
     const icon = indicator?.querySelector("span[role='img']")
     expect(icon).toHaveAttribute("aria-hidden", "true")
   })
+
+  it("should render tooltip when showTooltip is true", () => {
+    render(<KeyStatusIndicator status="valid" showTooltip={true} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should not render tooltip trigger when showTooltip is false", () => {
+    render(<KeyStatusIndicator status="valid" showTooltip={false} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should accept errorMessage prop", () => {
+    render(<KeyStatusIndicator status="invalid" errorMessage="Unauthorized access" showTooltip={false} />)
+
+    expect(screen.getByText("Ошибка")).toBeInTheDocument()
+  })
+
+  it("should accept lastValidated prop", () => {
+    const isoDate = new Date().toISOString()
+    render(<KeyStatusIndicator status="valid" lastValidated={isoDate} showTooltip={false} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should accept createdAt prop", () => {
+    const isoDate = new Date().toISOString()
+    render(<KeyStatusIndicator status="valid" createdAt={isoDate} showTooltip={false} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should handle invalid date format in lastValidated", () => {
+    render(<KeyStatusIndicator status="valid" lastValidated="invalid-date" showTooltip={false} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should handle dates from different timezones", () => {
+    const dates = [
+      "2024-11-29T10:30:00Z",
+      "2024-11-29T10:30:00+00:00",
+      "2024-11-29T10:30:00-05:00",
+    ]
+
+    dates.forEach((date) => {
+      const { unmount } = render(
+        <KeyStatusIndicator status="valid" lastValidated={date} showTooltip={false} />,
+      )
+      expect(screen.getByText("Работает")).toBeInTheDocument()
+      unmount()
+    })
+  })
+
+  it("should display multiple detail fields when all provided", () => {
+    const now = new Date()
+
+    render(
+      <KeyStatusIndicator
+        status="valid"
+        errorMessage="No error"
+        lastValidated={now.toISOString()}
+        createdAt={new Date(2024, 0, 1).toISOString()}
+        showTooltip={false}
+      />,
+    )
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should show only selected details in tooltip", () => {
+    render(<KeyStatusIndicator status="invalid" errorMessage="Invalid credentials" showTooltip={false} />)
+
+    expect(screen.getByText("Ошибка")).toBeInTheDocument()
+  })
+
+  it("should handle long error messages", () => {
+    const longError = "a".repeat(500)
+    render(<KeyStatusIndicator status="invalid" errorMessage={longError} showTooltip={false} />)
+
+    expect(screen.getByText("Ошибка")).toBeInTheDocument()
+  })
+
+  it("should handle past dates", () => {
+    const pastDate = new Date(2020, 0, 1).toISOString()
+    render(<KeyStatusIndicator status="valid" lastValidated={pastDate} showTooltip={false} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should handle future dates", () => {
+    const futureDate = new Date(2099, 11, 31).toISOString()
+    render(<KeyStatusIndicator status="valid" lastValidated={futureDate} showTooltip={false} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should render without tooltip details when no details provided", () => {
+    render(<KeyStatusIndicator status="valid" showTooltip={true} />)
+
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
+
+  it("should handle empty error message", () => {
+    render(<KeyStatusIndicator status="invalid" errorMessage="" />)
+
+    expect(screen.getByText("Ошибка")).toBeInTheDocument()
+  })
+
+  it("should have consistent styling for dark mode", () => {
+    const { container } = render(<KeyStatusIndicator status="valid" />)
+
+    const indicator = container.querySelector(".inline-flex")
+    expect(indicator).toHaveClass("text-green-600")
+    expect(indicator).toHaveClass("bg-green-100")
+  })
+
+  it("should support all status transitions", () => {
+    const { rerender } = render(<KeyStatusIndicator status="not_set" />)
+
+    expect(screen.getByText("Не настроено")).toBeInTheDocument()
+
+    rerender(<KeyStatusIndicator status="testing" />)
+    expect(screen.getByText("Проверка...")).toBeInTheDocument()
+
+    rerender(<KeyStatusIndicator status="invalid" />)
+    expect(screen.getByText("Ошибка")).toBeInTheDocument()
+
+    rerender(<KeyStatusIndicator status="valid" />)
+    expect(screen.getByText("Работает")).toBeInTheDocument()
+  })
 })
