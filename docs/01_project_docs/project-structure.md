@@ -466,3 +466,8 @@ npx ts-node src/cli/index.ts --help
 ---
 
 [← Первый проект](first-project.md) | [Далее: Архитектура →](../03_architecture/README.md)
+
+---
+
+*Создано: 2024-07-31*
+*Обновлено: 2025-11-29*
