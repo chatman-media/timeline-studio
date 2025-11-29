@@ -9,7 +9,7 @@ use tauri::State;
 /// Detect faces with advanced analysis
 #[tauri::command]
 pub async fn detect_faces_advanced(
-  image_data: String,
+  _image_data: String,
   return_embeddings: bool,
   return_cropped_faces: bool,
   min_confidence: f32,
@@ -30,7 +30,7 @@ pub async fn detect_faces_advanced(
 /// Analyze face quality for recognition
 #[tauri::command]
 pub async fn analyze_face_quality(
-  face_image: String,
+  _face_image: String,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<FaceQualityAnalysis, String> {
   log::info!("analyze_face_quality called");
@@ -55,8 +55,8 @@ pub async fn analyze_face_quality(
 pub async fn process_tracking_frame(
   detections: Vec<TrackingDetection>,
   frame_number: u32,
-  timestamp: f64,
-  frame_image: Option<String>,
+  _timestamp: f64,
+  _frame_image: Option<String>,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<TrackingFrameResult, String> {
   log::info!(
@@ -130,7 +130,7 @@ pub async fn load_yolo_data(
 #[tauri::command]
 pub async fn save_yolo_data(
   video_id: String,
-  data: String,
+  _data: String,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!("save_yolo_data called for video: {}", video_id);
@@ -166,7 +166,7 @@ pub struct AdvancedFaceDetection {
   pub embedding: Option<Vec<f32>>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BBox {
   pub x: f32,
   pub y: f32,

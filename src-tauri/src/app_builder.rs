@@ -476,6 +476,15 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::recognition::commands::realtime_face_detection_commands::cleanup_face_detection,
     crate::recognition::commands::realtime_face_detection_commands::get_realtime_detection_stats,
     crate::recognition::commands::realtime_face_detection_commands::configure_detection_alerts,
+    // Missing recognition commands (Phase 2)
+    crate::recognition::commands::missing_commands::detect_faces_advanced,
+    crate::recognition::commands::missing_commands::analyze_face_quality,
+    crate::recognition::commands::missing_commands::process_tracking_frame,
+    crate::recognition::commands::missing_commands::predict_track_positions,
+    crate::recognition::commands::missing_commands::interpolate_track_positions,
+    crate::recognition::commands::missing_commands::load_yolo_data,
+    crate::recognition::commands::missing_commands::save_yolo_data,
+    crate::recognition::commands::missing_commands::analyze_video_with_yolo,
     // State management commands
     crate::state::commands_api::execute_command,
     crate::state::commands_api::execute_batch_commands,
