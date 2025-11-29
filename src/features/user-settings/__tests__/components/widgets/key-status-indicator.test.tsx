@@ -221,16 +221,10 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should handle dates from different timezones", () => {
-    const dates = [
-      "2024-11-29T10:30:00Z",
-      "2024-11-29T10:30:00+00:00",
-      "2024-11-29T10:30:00-05:00",
-    ]
+    const dates = ["2024-11-29T10:30:00Z", "2024-11-29T10:30:00+00:00", "2024-11-29T10:30:00-05:00"]
 
     dates.forEach((date) => {
-      const { unmount } = render(
-        <KeyStatusIndicator status="valid" lastValidated={date} showTooltip={false} />,
-      )
+      const { unmount } = render(<KeyStatusIndicator status="valid" lastValidated={date} showTooltip={false} />)
       expect(screen.getByText("Работает")).toBeInTheDocument()
       unmount()
     })

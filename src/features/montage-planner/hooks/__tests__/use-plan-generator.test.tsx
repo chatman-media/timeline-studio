@@ -622,7 +622,7 @@ describe("usePlanGenerator", () => {
     })
 
     it("should suggest using more fragments when many are unused", async () => {
-      mockContext.fragments = Array.from({ length: 10 }, (_, i) => ({ id: `f${i}` } as Fragment))
+      mockContext.fragments = Array.from({ length: 10 }, (_, i) => ({ id: `f${i}` }) as Fragment)
       mockContext.currentPlan = {
         id: "plan-1",
         sequences: [
@@ -657,7 +657,7 @@ describe("usePlanGenerator", () => {
     })
 
     it("should return empty suggestions when plan is optimal", async () => {
-      mockContext.fragments = Array.from({ length: 5 }, (_, i) => ({ id: `f${i}` } as Fragment))
+      mockContext.fragments = Array.from({ length: 5 }, (_, i) => ({ id: `f${i}` }) as Fragment)
       mockContext.currentPlan = {
         id: "plan-1",
         sequences: [
@@ -665,7 +665,7 @@ describe("usePlanGenerator", () => {
             id: "seq-1",
             type: "main",
             duration: 120,
-            clips: Array.from({ length: 4 }, (_, i) => ({ fragmentId: `f${i}` } as PlannedClip)),
+            clips: Array.from({ length: 4 }, (_, i) => ({ fragmentId: `f${i}` }) as PlannedClip),
             transitions: [],
             energyLevel: 70,
             purpose: "Main",

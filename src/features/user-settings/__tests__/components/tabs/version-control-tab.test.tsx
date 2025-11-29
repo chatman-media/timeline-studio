@@ -4,9 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 import { VersionControlTab } from "../../../components/tabs/version-control-tab"
 
 vi.mock("@/features/version-control/components/version-control-manager", () => ({
-  VersionControlManager: () => (
-    <div data-testid="version-control-manager">Version Control Manager</div>
-  ),
+  VersionControlManager: () => <div data-testid="version-control-manager">Version Control Manager</div>,
 }))
 
 describe("VersionControlTab", () => {

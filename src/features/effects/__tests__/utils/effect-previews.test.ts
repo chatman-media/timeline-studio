@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest"
 import {
-  getEffectPreview,
-  hasEffectPreview,
   getAllEffectPreviews,
+  getEffectPreview,
   getEffectThumbnail,
+  hasEffectPreview,
 } from "../../utils/effect-previews"
 
 describe("effect-previews", () => {
@@ -320,7 +320,7 @@ describe("effect-previews", () => {
     it("should have matching video and thumbnail paths", () => {
       const allPreviews = getAllEffectPreviews()
 
-      Object.entries(allPreviews).forEach(([effectId, preview]) => {
+      Object.entries(allPreviews).forEach(([_effectId, preview]) => {
         if (preview.thumbnailPath) {
           // Video path should match thumbnail path pattern
           const videoBaseName = preview.videoPath.replace("/preview-videos/effects/", "").replace(".mp4", "")
@@ -390,11 +390,11 @@ describe("effect-previews", () => {
 
       // Note: The spread operator creates a shallow copy, so nested objects can still be mutated
       // This test verifies that calling getAllEffectPreviews() returns consistent data
-      const originalPath = allPreviews["brightness"].videoPath
+      const originalPath = allPreviews.brightness.videoPath
 
       const newPreviews = getAllEffectPreviews()
-      expect(newPreviews["brightness"].videoPath).toBe(originalPath)
-      expect(newPreviews["brightness"].videoPath).toBe("/preview-videos/effects/brightness.mp4")
+      expect(newPreviews.brightness.videoPath).toBe(originalPath)
+      expect(newPreviews.brightness.videoPath).toBe("/preview-videos/effects/brightness.mp4")
     })
   })
 })

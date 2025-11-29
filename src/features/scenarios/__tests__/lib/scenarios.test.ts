@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest"
 
 import {
   allScenarios,
-  scenariosByCategory,
-  scenariosByDifficulty,
+  getAiScenarios,
   getScenarioById,
   getScenariosByCategory,
   getScenariosByDifficulty,
-  getAiScenarios,
+  scenariosByCategory,
+  scenariosByDifficulty,
 } from "../../lib/scenarios"
 
 describe("Scenarios library", () => {
@@ -203,9 +203,7 @@ describe("Scenarios library", () => {
       const intermediate = getScenariosByDifficulty("intermediate")
       const advanced = getScenariosByDifficulty("advanced")
 
-      expect(
-        beginner.length + intermediate.length + advanced.length,
-      ).toBe(allScenarios.length)
+      expect(beginner.length + intermediate.length + advanced.length).toBe(allScenarios.length)
     })
   })
 

@@ -26,7 +26,7 @@ vi.mock("lucide-react", () => ({
 
 // Mock Dialog components
 vi.mock("@/components/ui/dialog", () => ({
-  Dialog: ({ open, children }: any) => open ? <div>{children}</div> : null,
+  Dialog: ({ open, children }: any) => (open ? <div>{children}</div> : null),
   DialogContent: ({ children }: any) => <div>{children}</div>,
   DialogHeader: ({ children }: any) => <div>{children}</div>,
   DialogTitle: ({ children }: any) => <div>{children}</div>,

@@ -16,8 +16,12 @@ const setupMocks = () => {
     ScrollArea: ({ children, ...props }: any) => <div {...props}>{children}</div>,
   }
 
-  Object.entries(components).forEach(([name, component]) => {
-    const path = `@/components/ui/${name.toLowerCase().replace(/([A-Z])/g, "-$1").toLowerCase().slice(1)}`
+  Object.entries(components).forEach(([name, _component]) => {
+    const path = `@/components/ui/${name
+      .toLowerCase()
+      .replace(/([A-Z])/g, "-$1")
+      .toLowerCase()
+      .slice(1)}`
     // Component mocks already in vi.mock calls below
   })
 }
@@ -99,7 +103,9 @@ describe("ScenarioPreview", () => {
   it("должен отображать описание сценария", () => {
     render(<ScenarioPreview scenario={mockScenario} />)
 
-    expect(screen.getByText("Автоматически добавляет выбранные шаблоны интро и аутро к вашему видео")).toBeInTheDocument()
+    expect(
+      screen.getByText("Автоматически добавляет выбранные шаблоны интро и аутро к вашему видео"),
+    ).toBeInTheDocument()
   })
 
   it("должен отображать категорию", () => {

@@ -79,12 +79,7 @@ describe("AnalyzerPresetSelector", () => {
         estimatedTime: 60,
       }
 
-      render(
-        <AnalyzerPresetSelector
-          {...defaultProps}
-          customPresets={[...mockCustomPresets, matchingPreset]}
-        />,
-      )
+      render(<AnalyzerPresetSelector {...defaultProps} customPresets={[...mockCustomPresets, matchingPreset]} />)
 
       // Matching preset should be highlighted somehow
       expect(screen.getByText("Matching Preset")).toBeInTheDocument()

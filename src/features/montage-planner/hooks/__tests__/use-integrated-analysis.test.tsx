@@ -3,7 +3,7 @@
  * @vitest-environment jsdom
  */
 
-import { act, renderHook, waitFor } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
@@ -224,7 +224,6 @@ describe("useIntegratedAnalysis", () => {
     it("should update progress during analysis", async () => {
       vi.useFakeTimers()
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const mediaFiles: MediaFile[] = [
@@ -269,7 +268,6 @@ describe("useIntegratedAnalysis", () => {
     })
 
     it("should set analysis results after completion", async () => {
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const mediaFiles: MediaFile[] = [
@@ -324,7 +322,6 @@ describe("useIntegratedAnalysis", () => {
         throw new Error("Analysis failed")
       })
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const mediaFiles: MediaFile[] = [
@@ -361,7 +358,6 @@ describe("useIntegratedAnalysis", () => {
     it("should extract metadata and analyze files", async () => {
       mockGetMediaDuration.mockResolvedValueOnce(120).mockResolvedValueOnce(180)
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const filePaths = ["/test/video1.mp4", "/test/audio1.mp3"]
@@ -378,7 +374,6 @@ describe("useIntegratedAnalysis", () => {
     it("should handle metadata extraction errors gracefully", async () => {
       mockGetMediaDuration.mockRejectedValueOnce(new Error("Failed to extract metadata"))
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const filePaths = ["/test/broken-video.mp4"]
@@ -394,7 +389,6 @@ describe("useIntegratedAnalysis", () => {
     it("should detect file types by extension", async () => {
       mockGetMediaDuration.mockResolvedValue(60)
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const filePaths = ["/test/video.mp4", "/test/audio.mp3", "/test/video.mkv", "/test/audio.wav"]
@@ -434,7 +428,6 @@ describe("useIntegratedAnalysis", () => {
 
       mockContext.fragments = fragments as any
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const moments = await result.current.detectMomentsFromAnalysis()
@@ -447,7 +440,6 @@ describe("useIntegratedAnalysis", () => {
     it("should return empty array when no fragments", async () => {
       mockContext.fragments = []
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const moments = await result.current.detectMomentsFromAnalysis()
@@ -469,7 +461,6 @@ describe("useIntegratedAnalysis", () => {
         coherenceScore: 82,
       }
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const generatePromise = act(async () => {
@@ -508,7 +499,6 @@ describe("useIntegratedAnalysis", () => {
         coherenceScore: 82,
       }
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       await act(async () => {
@@ -537,7 +527,6 @@ describe("useIntegratedAnalysis", () => {
         coherenceScore: 82,
       }
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const generatePromise = act(async () => {
@@ -568,7 +557,6 @@ describe("useIntegratedAnalysis", () => {
         }
       })
 
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       const plan = await act(async () => {
@@ -582,7 +570,6 @@ describe("useIntegratedAnalysis", () => {
 
   describe("State management", () => {
     it("should reset error on new analysis", async () => {
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       // Set initial error
@@ -611,7 +598,6 @@ describe("useIntegratedAnalysis", () => {
     })
 
     it("should track analysis progress independently from generation", async () => {
-      
       const { result } = renderHook(() => useIntegratedAnalysis())
 
       expect(result.current.analysisProgress).toBe(0)

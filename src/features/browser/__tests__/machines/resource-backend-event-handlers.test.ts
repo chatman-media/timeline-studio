@@ -1,9 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import {
-  handleBackendEvent,
-  type BrowserResourcesContext,
-  type EventHandlerResult,
-} from "../../machines/resource-backend-event-handlers"
+import { type BrowserResourcesContext, handleBackendEvent } from "../../machines/resource-backend-event-handlers"
 import type { Resource } from "../../types/browser-resources-provider"
 
 // Mock logger
@@ -63,9 +59,7 @@ describe("Resource Backend Event Handlers", () => {
       })
 
       it("should not add duplicate effects", () => {
-        context.resources.set("effect:imported", [
-          { id: "effect-1", name: "Blur Effect", type: "effect" } as Resource,
-        ])
+        context.resources.set("effect:imported", [{ id: "effect-1", name: "Blur Effect", type: "effect" } as Resource])
 
         const event = {
           type: "EffectAdded" as const,
@@ -149,9 +143,7 @@ describe("Resource Backend Event Handlers", () => {
       })
 
       it("should not add duplicate filters", () => {
-        context.resources.set("filter:imported", [
-          { id: "filter-1", name: "Cinematic", type: "filter" } as Resource,
-        ])
+        context.resources.set("filter:imported", [{ id: "filter-1", name: "Cinematic", type: "filter" } as Resource])
 
         const event = {
           type: "FilterAdded" as const,
@@ -165,9 +157,7 @@ describe("Resource Backend Event Handlers", () => {
 
     describe("FilterRemoved", () => {
       it("should remove filter from resources", () => {
-        context.resources.set("filter:imported", [
-          { id: "filter-1", name: "Cinematic", type: "filter" } as Resource,
-        ])
+        context.resources.set("filter:imported", [{ id: "filter-1", name: "Cinematic", type: "filter" } as Resource])
 
         const event = {
           type: "FilterRemoved" as const,
@@ -484,12 +474,8 @@ describe("Resource Backend Event Handlers", () => {
     })
 
     it("should preserve existing resources when adding new ones", () => {
-      context.resources.set("effect:imported", [
-        { id: "effect-1", name: "Blur", type: "effect" } as Resource,
-      ])
-      context.resources.set("filter:imported", [
-        { id: "filter-1", name: "Cinematic", type: "filter" } as Resource,
-      ])
+      context.resources.set("effect:imported", [{ id: "effect-1", name: "Blur", type: "effect" } as Resource])
+      context.resources.set("filter:imported", [{ id: "filter-1", name: "Cinematic", type: "filter" } as Resource])
 
       const event = {
         type: "EffectAdded" as const,
@@ -505,7 +491,7 @@ describe("Resource Backend Event Handlers", () => {
 
   describe("Multiple Resources", () => {
     it("should handle adding multiple different resource types", () => {
-      let currentContext = { ...context }
+      const currentContext = { ...context }
 
       const events = [
         { type: "EffectAdded" as const, payload: { effect_id: "effect-1", name: "Blur" } },
@@ -535,9 +521,7 @@ describe("Resource Backend Event Handlers", () => {
         { id: "effect-1", name: "Blur", type: "effect" } as Resource,
         { id: "effect-2", name: "Sharpen", type: "effect" } as Resource,
       ])
-      context.resources.set("filter:imported", [
-        { id: "filter-1", name: "Cinematic", type: "filter" } as Resource,
-      ])
+      context.resources.set("filter:imported", [{ id: "filter-1", name: "Cinematic", type: "filter" } as Resource])
 
       const removeEvent = {
         type: "EffectRemoved" as const,

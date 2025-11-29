@@ -1,7 +1,7 @@
-import { renderHook, act, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi, beforeEach } from "vitest"
-import { useUserPresets } from "../../hooks/use-user-presets"
+import { act, renderHook, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { UserPreset } from "@/domains/video-editing/services/effects/user-presets-service"
+import { useUserPresets } from "../../hooks/use-user-presets"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({
@@ -154,18 +154,28 @@ describe("useUserPresets", () => {
       const { result } = renderHook(() => useUserPresets({ autoLoad: false }))
 
       await act(async () => {
-        await result.current.savePreset("effect-1", "New Preset", { saturation: 80 }, {
+        await result.current.savePreset(
+          "effect-1",
+          "New Preset",
+          { saturation: 80 },
+          {
+            description: "With options",
+            tags: ["test"],
+            favorite: true,
+          },
+        )
+      })
+
+      expect(mockSaveUserPreset).toHaveBeenCalledWith(
+        "effect-1",
+        "New Preset",
+        { saturation: 80 },
+        {
           description: "With options",
           tags: ["test"],
           favorite: true,
-        })
-      })
-
-      expect(mockSaveUserPreset).toHaveBeenCalledWith("effect-1", "New Preset", { saturation: 80 }, {
-        description: "With options",
-        tags: ["test"],
-        favorite: true,
-      })
+        },
+      )
     })
 
     it("should handle save error", async () => {

@@ -243,7 +243,13 @@ export function parseUserIntent(userMessage: string): {
   const msg = userMessage.toLowerCase()
 
   // Рекомендации (check first, before analyze)
-  if (msg.includes("посоветуй") || msg.includes("предложи") || msg.includes("как лучше") || msg.includes("дай идеи") || msg.includes("идеи")) {
+  if (
+    msg.includes("посоветуй") ||
+    msg.includes("предложи") ||
+    msg.includes("как лучше") ||
+    msg.includes("дай идеи") ||
+    msg.includes("идеи")
+  ) {
     return {
       intent: "suggest",
       params: {},
@@ -278,7 +284,7 @@ export function parseUserIntent(userMessage: string): {
     msg.includes("качество") ||
     (msg.includes("что") && msg.includes("?")) || // вопросы со словом "что"
     msg.includes("какое") || // вопросы с "какое"
-    msg.includes("какой")    // вопросы с "какой"
+    msg.includes("какой") // вопросы с "какой"
   ) {
     return {
       intent: "analyze",

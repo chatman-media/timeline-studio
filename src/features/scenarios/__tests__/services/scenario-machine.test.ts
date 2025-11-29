@@ -1,9 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
+import { describe, expect, it, vi } from "vitest"
 
 import { scenarioMachine } from "../../services/scenario-machine"
-import type { Scenario } from "../../types/scenario"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({

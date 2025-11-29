@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { useEffectsAdapter } from "../../adapters/use-effects-adapter"
 import type { BaseEffect } from "@/features/effects/types"
+import { useEffectsAdapter } from "../../adapters/use-effects-adapter"
 
 // Mock dependencies
 vi.mock("@/domains/project-management/hooks", () => ({
@@ -489,15 +489,7 @@ describe("useEffectsAdapter", () => {
     it("should handle all supported categories", () => {
       const { result } = renderHook(() => useEffectsAdapter())
 
-      const categories = [
-        "color-correction",
-        "artistic",
-        "vintage",
-        "cinematic",
-        "creative",
-        "technical",
-        "distortion",
-      ]
+      const categories = ["color-correction", "artistic", "vintage", "cinematic", "creative", "technical", "distortion"]
 
       categories.forEach((category) => {
         const effect: BaseEffect = {

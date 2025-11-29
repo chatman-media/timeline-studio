@@ -230,11 +230,7 @@ describe("director-prompts", () => {
 
   describe("parseUserIntent", () => {
     it("should recognize create_montage intent", () => {
-      const tests = [
-        "создай монтаж",
-        "сделай ролик на 2 минуты",
-        "смонтируй видео",
-      ]
+      const tests = ["создай монтаж", "сделай ролик на 2 минуты", "смонтируй видео"]
 
       tests.forEach((text) => {
         const result = parseUserIntent(text)
@@ -259,11 +255,7 @@ describe("director-prompts", () => {
     })
 
     it("should recognize find_moments intent", () => {
-      const tests = [
-        "найди лучшие моменты",
-        "покажи highlights",
-        "найди 10 сцен",
-      ]
+      const tests = ["найди лучшие моменты", "покажи highlights", "найди 10 сцен"]
 
       tests.forEach((text) => {
         const result = parseUserIntent(text)
@@ -286,12 +278,7 @@ describe("director-prompts", () => {
     })
 
     it("should recognize analyze intent", () => {
-      const tests = [
-        "покажи статистику",
-        "какое качество?",
-        "анализ видео",
-        "что нашел?",
-      ]
+      const tests = ["покажи статистику", "какое качество?", "анализ видео", "что нашел?"]
 
       tests.forEach((text) => {
         const result = parseUserIntent(text)
@@ -300,12 +287,7 @@ describe("director-prompts", () => {
     })
 
     it("should recognize suggest intent", () => {
-      const tests = [
-        "посоветуй что сделать",
-        "предложи варианты",
-        "как лучше смонтировать",
-        "дай идеи",
-      ]
+      const tests = ["посоветуй что сделать", "предложи варианты", "как лучше смонтировать", "дай идеи"]
 
       tests.forEach((text) => {
         const result = parseUserIntent(text)
@@ -348,9 +330,7 @@ describe("director-prompts", () => {
     })
 
     it("should have varied prompts", () => {
-      const highlightsCategory = DIRECTOR_PROMPT_EXAMPLES.find(
-        (ex) => ex.category === "Highlights",
-      )
+      const highlightsCategory = DIRECTOR_PROMPT_EXAMPLES.find((ex) => ex.category === "Highlights")
 
       expect(highlightsCategory).toBeTruthy()
       expect(highlightsCategory!.prompts.length).toBeGreaterThan(2)

@@ -1,6 +1,5 @@
 import { DndContext } from "@dnd-kit/core"
 import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 import { EffectDragSource } from "../../components/effect-drag-source"
 import type { BaseEffect } from "../../types"

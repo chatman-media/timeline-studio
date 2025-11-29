@@ -169,9 +169,7 @@ describe("useAIDirectorChat", () => {
       })
 
       const onMontagePlanCreated = vi.fn()
-      const { result } = renderHook(() =>
-        useAIDirectorChat(mockFilesProgress, { onMontagePlanCreated }),
-      )
+      const { result } = renderHook(() => useAIDirectorChat(mockFilesProgress, { onMontagePlanCreated }))
 
       await act(async () => {
         await result.current.sendMessage("Create a montage")

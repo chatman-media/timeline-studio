@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { useFiltersAdapter } from "../../adapters/use-filters-adapter"
 import type { VideoFilter } from "@/features/filters/types/filters"
+import { useFiltersAdapter } from "../../adapters/use-filters-adapter"
 
 // Mock dependencies
 vi.mock("@/domains/project-management/hooks", () => ({

@@ -419,9 +419,7 @@ describe("useMontagePlanner", () => {
         ]),
       }
 
-      vi.mocked(
-        await import("../../services/montage-planner-provider"),
-      ).useMontagePlanner.mockReturnValueOnce({
+      vi.mocked(await import("../../services/montage-planner-provider")).useMontagePlanner.mockReturnValueOnce({
         state: { value: "idle", context: mockContextWithFiles },
         send: mockSend,
         isAnalyzing: false,
@@ -451,9 +449,7 @@ describe("useMontagePlanner", () => {
         ],
       }
 
-      vi.mocked(
-        await import("../../services/montage-planner-provider"),
-      ).useMontagePlanner.mockReturnValueOnce({
+      vi.mocked(await import("../../services/montage-planner-provider")).useMontagePlanner.mockReturnValueOnce({
         state: { value: "idle", context: mockContextWithFragments },
         send: mockSend,
         isAnalyzing: false,
@@ -483,9 +479,7 @@ describe("useMontagePlanner", () => {
         ],
       }
 
-      vi.mocked(
-        await import("../../services/montage-planner-provider"),
-      ).useMontagePlanner.mockReturnValueOnce({
+      vi.mocked(await import("../../services/montage-planner-provider")).useMontagePlanner.mockReturnValueOnce({
         state: { value: "idle", context: mockContextWithBoth },
         send: mockSend,
         isAnalyzing: false,
@@ -541,9 +535,7 @@ describe("useMontagePlanner", () => {
         videoIds: ["video-1", "video-2", "video-3"],
       }
 
-      vi.mocked(
-        await import("../../services/montage-planner-provider"),
-      ).useMontagePlanner.mockReturnValueOnce({
+      vi.mocked(await import("../../services/montage-planner-provider")).useMontagePlanner.mockReturnValueOnce({
         state: { value: "idle", context: mockContextWithStats },
         send: mockSend,
         isAnalyzing: false,
@@ -569,9 +561,7 @@ describe("useMontagePlanner", () => {
         fragments: [{}, {}, {}, {}],
       }
 
-      vi.mocked(
-        await import("../../services/montage-planner-provider"),
-      ).useMontagePlanner.mockReturnValueOnce({
+      vi.mocked(await import("../../services/montage-planner-provider")).useMontagePlanner.mockReturnValueOnce({
         state: { value: "idle", context: mockContextWithStats },
         send: mockSend,
         isAnalyzing: false,
@@ -597,9 +587,7 @@ describe("useMontagePlanner", () => {
         currentPlan: { totalDuration: 180 },
       }
 
-      vi.mocked(
-        await import("../../services/montage-planner-provider"),
-      ).useMontagePlanner.mockReturnValueOnce({
+      vi.mocked(await import("../../services/montage-planner-provider")).useMontagePlanner.mockReturnValueOnce({
         state: { value: "idle", context: mockContextWithPlan },
         send: mockSend,
         isAnalyzing: false,

@@ -223,9 +223,7 @@ describe("Automation Scenarios", () => {
 
   describe("Опциональные шаги", () => {
     it("сценарии могут содержать опциональные шаги", () => {
-      const hasOptional = automationScenarios.some((scenario) =>
-        scenario.steps.some((step) => step.optional === true),
-      )
+      const hasOptional = automationScenarios.some((scenario) => scenario.steps.some((step) => step.optional === true))
 
       expect(typeof hasOptional).toBe("boolean")
     })

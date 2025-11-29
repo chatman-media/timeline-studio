@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
-import type { AgentType, DashboardStats, WorkflowTemplate } from "../../types/dashboard"
+import type { AgentType, DashboardStats } from "../../types/dashboard"
 import { AIDirectorDashboard } from "../ai-director-dashboard"
 
 describe("AIDirectorDashboard", () => {

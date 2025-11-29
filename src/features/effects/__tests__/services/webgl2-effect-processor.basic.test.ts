@@ -4,7 +4,7 @@
  * without requiring full WebGL context setup
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { WebGL2EffectProcessor } from "../../services/webgl2-effect-processor"
 import type { AppliedEffect } from "../../types"
 
@@ -25,10 +25,6 @@ vi.mock("@/lib/webgl", () => ({
     protected textures = new Map()
     protected framebuffers = new Map()
     protected viewport = { width: 1920, height: 1080 }
-
-    constructor(_options?: any) {
-      // Mock constructor
-    }
 
     protected async onInitialize(): Promise<void> {
       // Mock initialize
