@@ -27,32 +27,11 @@ export class CommandQueue {
   async enqueue<T>(execute: () => Promise<T>, priority = 0): Promise<T> {
     const id = `cmd-${Date.now()}-${this.commandCounter++}`
 
-    const command: QueuedCommand<T> = {
-      id,
-      execute,
-      priority,
-      timestamp: Date.now(),
-    }
-
-    // Добавляем в очередь с учетом приоритета
-    const insertIndex = this.queue.findIndex((cmd) => (cmd.priority ?? 0) < priority)
-    if (insertIndex === -1) {
-      this.queue.push(command)
-    } else {
-      this.queue.splice(insertIndex, 0, command)
-    }
-
-    logger.debug("Command enqueued", { id, queueLength: this.queue.length, priority })
-
-    // Запускаем обработку очереди
-    this.processQueue()
-
-    // Возвращаем promise который резолвится когда команда выполнится
+    // Создаём promise ПЕРЕД добавлением команды в очередь
     return new Promise<T>((resolve, reject) => {
-      const originalExecute = command.execute
-      command.execute = async () => {
+      const wrappedExecute = async () => {
         try {
-          const result = await originalExecute()
+          const result = await execute()
           resolve(result)
           return result
         } catch (error) {
@@ -60,6 +39,26 @@ export class CommandQueue {
           throw error
         }
       }
+
+      const command: QueuedCommand<T> = {
+        id,
+        execute: wrappedExecute,
+        priority,
+        timestamp: Date.now(),
+      }
+
+      // Добавляем в очередь с учетом приоритета
+      const insertIndex = this.queue.findIndex((cmd) => (cmd.priority ?? 0) < priority)
+      if (insertIndex === -1) {
+        this.queue.push(command)
+      } else {
+        this.queue.splice(insertIndex, 0, command)
+      }
+
+      logger.debug("Command enqueued", { id, queueLength: this.queue.length, priority })
+
+      // Запускаем обработку очереди
+      this.processQueue()
     })
   }
 
@@ -128,8 +127,10 @@ export function debounceCommand<T extends (...args: any[]) => Promise<any>>(
   delay: number,
 ): (...args: Parameters<T>) => Promise<ReturnType<T>> {
   let timeoutId: NodeJS.Timeout | null = null
-  let latestResolve: ((value: any) => void) | null = null
-  let latestReject: ((error: any) => void) | null = null
+  let pendingResolvers: Array<{
+    resolve: (value: any) => void
+    reject: (error: any) => void
+  }> = []
 
   return (...args: Parameters<T>): Promise<ReturnType<T>> => {
     // Отменяем предыдущий таймер
@@ -138,15 +139,20 @@ export function debounceCommand<T extends (...args: any[]) => Promise<any>>(
     }
 
     return new Promise<ReturnType<T>>((resolve, reject) => {
-      latestResolve = resolve
-      latestReject = reject
+      // Добавляем resolve/reject в список ожидающих
+      pendingResolvers.push({ resolve, reject })
 
       timeoutId = setTimeout(async () => {
+        const resolvers = pendingResolvers
+        pendingResolvers = []
+
         try {
           const result = await fn(...args)
-          latestResolve?.(result)
+          // Резолвим все ожидающие промисы
+          resolvers.forEach(({ resolve }) => resolve(result))
         } catch (error) {
-          latestReject?.(error)
+          // Отклоняем все ожидающие промисы
+          resolvers.forEach(({ reject }) => reject(error))
         }
       }, delay)
     })
@@ -172,9 +178,9 @@ export function throttleCommand<T extends (...args: any[]) => Promise<any>>(
       return pendingPromise
     }
 
-    // Возвращаем pending promise если есть
+    // Возвращаем pending promise если есть, но обрабатываем ошибки
     if (pendingPromise) {
-      return pendingPromise.then(() => undefined)
+      return pendingPromise.then(() => undefined).catch(() => undefined)
     }
 
     return Promise.resolve(undefined)

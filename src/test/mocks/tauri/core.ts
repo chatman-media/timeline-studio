@@ -27,129 +27,148 @@ vi.mock("@tauri-apps/api/app", () => ({
   getTauriVersion: vi.fn().mockResolvedValue("2.0.0"),
 }))
 
-// Import getBackendSync to integrate with backend-sync mock
-import { getBackendSync } from "@/test/mocks/backend-sync"
+// Import types - these are safe as long as tauri-bindings is empty
 import type { BrowserTab, SortOrder, ViewMode } from "@/types/generated/tauri-bindings"
 
-// Mock generated Tauri bindings
-vi.mock("@/types/generated/tauri-bindings", () => ({
-  commands: {
-    greet: vi.fn().mockResolvedValue("Hello from Tauri!"),
-    getActiveJobs: vi.fn().mockResolvedValue([]),
-    compileVideo: vi.fn().mockResolvedValue(null),
-    cancelRender: vi.fn().mockResolvedValue(true),
-    // Browser commands that integrate with backend-sync
-    browserSwitchTab: vi.fn(async (tab: string) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({ type: "BrowserSwitchTab", params: { tab: tab as BrowserTab } })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSetSearchQuery: vi.fn(async (query: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSetSearchQuery",
-        params: { query, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserToggleFavorites: vi.fn(async (tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({ type: "BrowserToggleFavorites", params: { tab: tab as BrowserTab | null } })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSetSort: vi.fn(async (sortBy: string, sortOrder: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSetSort",
-        params: { sort_by: sortBy, sort_order: sortOrder as SortOrder, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSetGroupBy: vi.fn(async (groupBy: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSetGroupBy",
-        params: { group_by: groupBy, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSetFilter: vi.fn(async (filterType: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSetFilter",
-        params: { filter_type: filterType, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSetViewMode: vi.fn(async (viewMode: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSetViewMode",
-        params: { view_mode: viewMode as ViewMode, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSetPreviewSize: vi.fn(async (sizeIndex: number, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSetPreviewSize",
-        params: { size_index: sizeIndex, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserResetTabSettings: vi.fn(async (tab: string) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({ type: "BrowserResetTabSettings", params: { tab: tab as BrowserTab } })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSelectFile: vi.fn(async (fileId: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSelectFile",
-        params: { file_id: fileId, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserDeselectFile: vi.fn(async (fileId: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserDeselectFile",
-        params: { file_id: fileId, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserToggleFileSelection: vi.fn(async (fileId: string, tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserToggleFileSelection",
-        params: { file_id: fileId, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserSelectAllFiles: vi.fn(async (fileIds: string[], tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserSelectAllFiles",
-        params: { file_ids: fileIds, tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    browserDeselectAllFiles: vi.fn(async (tab: string | null) => {
-      const backendSync = getBackendSync()
-      await backendSync.executeCommand({
-        type: "BrowserDeselectAllFiles",
-        params: { tab: tab as BrowserTab | null },
-      })
-      return { status: "ok", data: { success: true } }
-    }),
-    // Add other commands as needed
-  },
-  events: {
-    onProgressUpdate: vi.fn(),
-    onJobComplete: vi.fn(),
-    // Add other events as needed
-  },
-}))
+// Import getBackendSync AFTER type imports but before using it
+// Note: This is executed after vi.mock declarations are processed
+import { getBackendSync } from "@/test/mocks/backend-sync"
+
+// Create mutable mock commands object
+const mockCommands = {
+  greet: vi.fn().mockResolvedValue("Hello from Tauri!"),
+  getActiveJobs: vi.fn().mockResolvedValue([]),
+  compileVideo: vi.fn().mockResolvedValue(null),
+  cancelRender: vi.fn().mockResolvedValue(true),
+  // Browser commands that integrate with backend-sync
+  browserSwitchTab: vi.fn(async (tab: string) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({ type: "BrowserSwitchTab", params: { tab: tab as BrowserTab } })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSetSearchQuery: vi.fn(async (query: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSetSearchQuery",
+      params: { query, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserToggleFavorites: vi.fn(async (tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({ type: "BrowserToggleFavorites", params: { tab: tab as BrowserTab | null } })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSetSort: vi.fn(async (sortBy: string, sortOrder: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSetSort",
+      params: { sort_by: sortBy, sort_order: sortOrder as SortOrder, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSetGroupBy: vi.fn(async (groupBy: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSetGroupBy",
+      params: { group_by: groupBy, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSetFilter: vi.fn(async (filterType: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSetFilter",
+      params: { filter_type: filterType, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSetViewMode: vi.fn(async (viewMode: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSetViewMode",
+      params: { view_mode: viewMode as ViewMode, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSetPreviewSize: vi.fn(async (sizeIndex: number, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSetPreviewSize",
+      params: { size_index: sizeIndex, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserResetTabSettings: vi.fn(async (tab: string) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({ type: "BrowserResetTabSettings", params: { tab: tab as BrowserTab } })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSelectFile: vi.fn(async (fileId: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSelectFile",
+      params: { file_id: fileId, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserDeselectFile: vi.fn(async (fileId: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserDeselectFile",
+      params: { file_id: fileId, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserToggleFileSelection: vi.fn(async (fileId: string, tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserToggleFileSelection",
+      params: { file_id: fileId, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserSelectAllFiles: vi.fn(async (fileIds: string[], tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserSelectAllFiles",
+      params: { file_ids: fileIds, tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  browserDeselectAllFiles: vi.fn(async (tab: string | null) => {
+    const backendSync = getBackendSync()
+    await backendSync.executeCommand({
+      type: "BrowserDeselectAllFiles",
+      params: { tab: tab as BrowserTab | null },
+    })
+    return { status: "ok", data: { success: true } }
+  }),
+  // Add other commands as needed
+}
+
+// Mock events object
+const mockEvents = {
+  onProgressUpdate: vi.fn(),
+  onJobComplete: vi.fn(),
+  // Add other events as needed
+}
+
+// Export mock commands and events for access in tests
+export const mockTauriCommands = mockCommands
+export const mockTauriEvents = mockEvents
+
+// Create a mutable wrapper that will be returned by the mock
+const tauriBindings = {
+  commands: mockCommands,
+  events: mockEvents,
+}
+
+// Mock generated Tauri bindings with a factory that returns a mutable object
+vi.mock("@/types/generated/tauri-bindings", () => {
+  // Return the same object so mutations work
+  return tauriBindings
+})
 
 // Helper for setting up command responses
 export function setupTauriCommand(command: string, response: unknown) {
