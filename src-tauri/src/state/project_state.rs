@@ -22,8 +22,7 @@ pub struct ProjectState {
   pub browser_state: BrowserState,
   /// Clipboard for copy/paste operations
   pub clipboard: Option<ClipboardData>,
-  /// Imported media files (temporary storage before adding to media_pool)
-  pub imported_media: HashMap<String, MediaItem>,
+  // Note: imported_media removed - all media now goes directly to project.media_pool
 }
 
 /// Main project structure
@@ -177,6 +176,18 @@ pub enum MarkerType {
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct MediaPool {
   pub items: HashMap<String, MediaItem>,
+  /// Bins/folders for organizing media (bin_id -> list of media_ids)
+  #[serde(default)]
+  pub bins: HashMap<String, MediaBin>,
+}
+
+/// Media bin for organizing files
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct MediaBin {
+  pub id: String,
+  pub name: String,
+  pub parent_id: Option<String>,
+  pub color: Option<String>,
 }
 
 /// Resource pools for effects, filters, transitions, etc.
@@ -261,6 +272,15 @@ pub struct MediaItem {
   pub metadata: MediaMetadata,
   pub thumbnail: Option<String>,
   pub usage_count: u32,
+  /// Is this media used on the timeline
+  #[serde(default)]
+  pub in_timeline: bool,
+  /// Bin/folder for organization (None = root)
+  #[serde(default)]
+  pub bin: Option<String>,
+  /// Timestamp when media was added to pool (Unix timestamp)
+  #[serde(default)]
+  pub added_at: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]
@@ -584,6 +604,7 @@ impl ProjectState {
       },
       media_pool: MediaPool {
         items: HashMap::new(),
+        bins: HashMap::new(),
       },
       settings,
       // Initialize empty resource pools
@@ -603,9 +624,6 @@ impl ProjectState {
     for tab in BrowserState::all_tabs() {
       self.browser_state.selected_files.insert(tab, Vec::new());
     }
-
-    // Очищаем imported_media (временное хранилище файлов браузера)
-    self.imported_media.clear();
 
     // Очищаем chat_sessions (историю чата)
     self.chat_sessions.clear();

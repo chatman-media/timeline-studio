@@ -197,33 +197,30 @@ impl CommandHandler {
         self.media_commands.update_media(media_id, updates).await
       }
 
-      // Imported media commands - delegated to ImportedMediaCommands
+      // Legacy imported media commands - now redirect to MediaCommands
+      // All media now goes directly to media_pool (unified architecture)
       ProjectCommand::AddImportedMedia { path, media_type } => {
-        self
-          .imported_media_commands
-          .add_imported_media(path, media_type)
-          .await
+        // Redirect to add_media - saves directly to media_pool
+        self.media_commands.add_media(path, media_type).await
       }
       ProjectCommand::UpdateImportedMedia { media_id, updates } => {
+        // Redirect to update_media in media_pool
         self
           .imported_media_commands
           .update_imported_media(media_id, updates)
           .await
       }
       ProjectCommand::RemoveImportedMedia { media_id } => {
-        self
-          .imported_media_commands
-          .remove_imported_media(media_id)
-          .await
+        // Redirect to remove_media from media_pool
+        self.media_commands.remove_media(media_id).await
       }
-      ProjectCommand::MoveToMediaPool { media_id } => {
-        self
-          .imported_media_commands
-          .move_to_media_pool(media_id)
-          .await
+      ProjectCommand::MoveToMediaPool { media_id: _ } => {
+        // No-op: media already in media_pool with unified architecture
+        CommandResult::success(None)
       }
       ProjectCommand::ClearImportedMedia => {
-        self.imported_media_commands.clear_imported_media().await
+        // No-op: no separate imported_media storage anymore
+        CommandResult::success(None)
       }
 
       // Media Management commands

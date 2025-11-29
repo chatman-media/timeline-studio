@@ -2,7 +2,10 @@ use super::types::CommandResult;
 use crate::state::project_state::*;
 use crate::state::{EventBus, ProjectEvent, ProjectState};
 use crate::types_export::MediaUpdates;
+use crate::video_compiler::core::ffmpeg::analysis::get_video_metadata;
+use std::path::Path;
 use std::sync::Arc;
+use std::time::{SystemTime, UNIX_EPOCH};
 use tokio::sync::RwLock;
 
 /// Media commands implementation
@@ -16,17 +19,8 @@ impl MediaCommands {
     Self { state, event_bus }
   }
 
+  /// Add media directly to project's media_pool with full metadata extraction
   pub async fn add_media(&self, path: String, media_type: MediaType) -> CommandResult {
-    use crate::state::project_state::{MediaItem, MediaMetadata};
-    use std::path::Path;
-
-    let mut state = self.state.write().await;
-
-    let project = match state.project.as_mut() {
-      Some(p) => p,
-      None => return CommandResult::error("No project open".to_string()),
-    };
-
     // Generate unique ID for the media item
     let media_id = uuid::Uuid::new_v4().to_string();
 
@@ -37,28 +31,73 @@ impl MediaCommands {
       .unwrap_or("Unknown")
       .to_string();
 
-    // Create media item
+    // Get current timestamp
+    let added_at = SystemTime::now()
+      .duration_since(UNIX_EPOCH)
+      .map(|d| d.as_secs() as i64)
+      .unwrap_or(0);
+
+    // Extract video metadata if this is a video file
+    let (codec, duration, resolution, frame_rate, bitrate) = if media_type == MediaType::Video {
+      match get_video_metadata(Path::new(&path)).await {
+        Ok(metadata) => {
+          log::info!(
+            "Extracted video metadata for {}: codec={}",
+            file_name,
+            metadata.codec
+          );
+          (
+            Some(metadata.codec),
+            Some(metadata.duration),
+            Some(Resolution {
+              width: metadata.width,
+              height: metadata.height,
+            }),
+            Some(metadata.fps),
+            Some(metadata.bitrate as u32),
+          )
+        }
+        Err(e) => {
+          log::warn!("Failed to extract video metadata for {}: {}", path, e);
+          (None, None, None, None, None)
+        }
+      }
+    } else {
+      (None, None, None, None, None)
+    };
+
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Create media item with full metadata
     let media_item = MediaItem {
       id: media_id.clone(),
       path: path.clone(),
       name: file_name.clone(),
       media_type: media_type.clone(),
-      duration: None, // Will be set by frontend after media loading
+      duration,
       metadata: MediaMetadata {
         format: String::new(),
-        codec: None,
-        resolution: None,
-        frame_rate: None,
-        bitrate: None,
+        codec: codec.clone(),
+        resolution,
+        frame_rate,
+        bitrate,
         audio_channels: None,
         sample_rate: None,
         creation_time: None,
       },
       thumbnail: None,
       usage_count: 0,
+      in_timeline: false,
+      bin: None,
+      added_at,
     };
 
-    // Add to media pool
+    // Add directly to media pool (persisted with project)
     project
       .media_pool
       .items
@@ -67,7 +106,7 @@ impl MediaCommands {
 
     let version = state.version;
 
-    // Publish event
+    // Publish event with full metadata including codec for H.265 detection
     self
       .event_bus
       .publish(
@@ -81,8 +120,8 @@ impl MediaCommands {
               MediaType::Audio => "Audio".to_string(),
               MediaType::Image => "Image".to_string(),
             },
-            duration: None,
-            codec: None, // Codec will be set via MediaUpdated event after metadata extraction
+            duration,
+            codec,
           },
         },
         "command_handler".to_string(),

@@ -1,13 +1,12 @@
 use super::types::CommandResult;
 use crate::state::project_state::*;
 use crate::state::{EventBus, ProjectEvent, ProjectState};
-use crate::video_compiler::core::ffmpeg::analysis::get_video_metadata;
-use std::path::Path;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-/// Imported Media commands implementation
-/// Manages temporary imported media storage before adding to media_pool
+/// Legacy Imported Media commands implementation
+/// NOTE: With unified architecture (2025-11), all media goes directly to media_pool
+/// This struct is kept for backward compatibility but operates on media_pool
 pub struct ImportedMediaCommands {
   state: Arc<RwLock<ProjectState>>,
   event_bus: Arc<EventBus>,
@@ -18,103 +17,10 @@ impl ImportedMediaCommands {
     Self { state, event_bus }
   }
 
-  /// Add media to temporary imported storage
-  pub async fn add_imported_media(&self, path: String, media_type: MediaType) -> CommandResult {
-    // Generate unique ID for the media item
-    let media_id = uuid::Uuid::new_v4().to_string();
+  // NOTE: add_imported_media is no longer used
+  // AddImportedMedia command is redirected to MediaCommands::add_media in handler.rs
 
-    // Extract file name from path
-    let file_name = Path::new(&path)
-      .file_name()
-      .and_then(|n| n.to_str())
-      .unwrap_or("Unknown")
-      .to_string();
-
-    // Extract video codec if this is a video file
-    let (codec, duration, resolution, frame_rate, bitrate) = if media_type == MediaType::Video {
-      match get_video_metadata(Path::new(&path)).await {
-        Ok(metadata) => {
-          log::info!(
-            "Extracted video metadata for {}: codec={}",
-            file_name,
-            metadata.codec
-          );
-          (
-            Some(metadata.codec),
-            Some(metadata.duration),
-            Some(Resolution {
-              width: metadata.width,
-              height: metadata.height,
-            }),
-            Some(metadata.fps),
-            Some(metadata.bitrate as u32),
-          )
-        }
-        Err(e) => {
-          log::warn!("Failed to extract video metadata for {}: {}", path, e);
-          (None, None, None, None, None)
-        }
-      }
-    } else {
-      (None, None, None, None, None)
-    };
-
-    let mut state = self.state.write().await;
-
-    // Create media item
-    let media_item = MediaItem {
-      id: media_id.clone(),
-      path: path.clone(),
-      name: file_name.clone(),
-      media_type: media_type.clone(),
-      duration,
-      metadata: MediaMetadata {
-        format: String::new(),
-        codec: codec.clone(),
-        resolution,
-        frame_rate,
-        bitrate,
-        audio_channels: None,
-        sample_rate: None,
-        creation_time: None,
-      },
-      thumbnail: None,
-      usage_count: 0,
-    };
-
-    // Add to imported media (temporary storage)
-    state.imported_media.insert(media_id.clone(), media_item);
-
-    let version = state.version;
-
-    // Publish event with codec info for immediate H.265 detection on frontend
-    self
-      .event_bus
-      .publish(
-        ProjectEvent::ImportedMediaAdded {
-          media: crate::state::events::MediaData {
-            id: media_id.clone(),
-            path: path.clone(),
-            name: file_name.clone(),
-            media_type: match media_type {
-              MediaType::Video => "Video".to_string(),
-              MediaType::Audio => "Audio".to_string(),
-              MediaType::Image => "Image".to_string(),
-            },
-            duration,
-            codec, // Now includes codec for H.265/HEVC detection
-          },
-        },
-        "command_handler".to_string(),
-        version,
-      )
-      .await
-      .ok();
-
-    CommandResult::success(Some(serde_json::json!({ "media_id": media_id })))
-  }
-
-  /// Update imported media metadata
+  /// Update media metadata (now operates on media_pool)
   pub async fn update_imported_media(
     &self,
     media_id: String,
@@ -122,10 +28,15 @@ impl ImportedMediaCommands {
   ) -> CommandResult {
     let mut state = self.state.write().await;
 
-    // Get media item and apply updates
-    let media_item = match state.imported_media.get_mut(&media_id) {
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Get media item from media_pool (unified storage)
+    let media_item = match project.media_pool.items.get_mut(&media_id) {
       Some(item) => item,
-      None => return CommandResult::error(format!("Imported media item not found: {}", media_id)),
+      None => return CommandResult::error(format!("Media item not found: {}", media_id)),
     };
 
     // Apply updates from JSON
@@ -172,11 +83,31 @@ impl ImportedMediaCommands {
       }
     }
 
+    // Mark project as dirty since we modified media_pool
+    state.mark_dirty();
+
     // Get codec after extraction to include in event
     let codec = media_item.metadata.codec.clone();
     let version = state.version;
 
-    // Publish event with codec info for H.265 detection on frontend
+    // Publish MediaUpdated event (unified event for media_pool)
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaUpdated {
+          media_id: media_id.clone(),
+          changes: crate::state::events::MediaChanges {
+            name: None,
+            thumbnail: None,
+          },
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    // Also publish legacy event for backward compatibility
     self
       .event_bus
       .publish(
@@ -193,115 +124,7 @@ impl ImportedMediaCommands {
     CommandResult::success(None)
   }
 
-  /// Remove media from imported storage
-  pub async fn remove_imported_media(&self, media_id: String) -> CommandResult {
-    let mut state = self.state.write().await;
-
-    if !state.imported_media.contains_key(&media_id) {
-      return CommandResult::error(format!("Imported media item not found: {}", media_id));
-    }
-
-    state.imported_media.remove(&media_id);
-
-    let version = state.version;
-
-    // Publish event
-    self
-      .event_bus
-      .publish(
-        ProjectEvent::ImportedMediaRemoved {
-          media_id: media_id.clone(),
-        },
-        "command_handler".to_string(),
-        version,
-      )
-      .await
-      .ok();
-
-    CommandResult::success(None)
-  }
-
-  /// Move imported media to media_pool (when user clicks green checkmark)
-  pub async fn move_to_media_pool(&self, media_id: String) -> CommandResult {
-    let mut state = self.state.write().await;
-
-    // Get media item from imported storage first (before borrowing project)
-    let media_item = match state.imported_media.remove(&media_id) {
-      Some(item) => item,
-      None => return CommandResult::error(format!("Imported media item not found: {}", media_id)),
-    };
-
-    let project = match state.project.as_mut() {
-      Some(p) => p,
-      None => return CommandResult::error("No project open".to_string()),
-    };
-
-    let media_data = crate::state::events::MediaData {
-      id: media_item.id.clone(),
-      path: media_item.path.clone(),
-      name: media_item.name.clone(),
-      media_type: match media_item.media_type {
-        MediaType::Video => "Video".to_string(),
-        MediaType::Audio => "Audio".to_string(),
-        MediaType::Image => "Image".to_string(),
-      },
-      duration: media_item.duration,
-      codec: media_item.metadata.codec.clone(),
-    };
-
-    // Add to media pool
-    project
-      .media_pool
-      .items
-      .insert(media_item.id.clone(), media_item);
-    state.mark_dirty();
-
-    let version = state.version;
-
-    // Publish events
-    self
-      .event_bus
-      .publish(
-        ProjectEvent::ImportedMediaRemoved {
-          media_id: media_id.clone(),
-        },
-        "command_handler".to_string(),
-        version,
-      )
-      .await
-      .ok();
-
-    self
-      .event_bus
-      .publish(
-        ProjectEvent::MediaAdded { media: media_data },
-        "command_handler".to_string(),
-        version,
-      )
-      .await
-      .ok();
-
-    CommandResult::success(None)
-  }
-
-  /// Clear all imported media
-  pub async fn clear_imported_media(&self) -> CommandResult {
-    let mut state = self.state.write().await;
-    state.imported_media.clear();
-
-    let version = state.version;
-
-    // Publish event
-    self
-      .event_bus
-      .publish(
-        ProjectEvent::ImportedMediaCleared,
-        "command_handler".to_string(),
-        version,
-      )
-      .await
-      .ok();
-
-    CommandResult::success(None)
-  }
+  // NOTE: remove_imported_media is redirected to MediaCommands::remove_media in handler.rs
+  // NOTE: move_to_media_pool is now a no-op (media already in media_pool)
+  // NOTE: clear_imported_media is now a no-op (no separate imported_media storage)
 }

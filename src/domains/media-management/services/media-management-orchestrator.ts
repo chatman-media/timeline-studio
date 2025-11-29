@@ -196,7 +196,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
     const initialMediaPool = new Map<string, MediaInfo>()
 
-    // Загружаем из project.media_pool
+    // Загружаем из project.media_pool (unified storage - all media here)
     if (state.project?.media_pool?.items) {
       const mediaPoolItems = state.project.media_pool.items
       Object.entries(mediaPoolItems).forEach(([mediaId, mediaItem]: [string, any]) => {
@@ -217,27 +217,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
       })
     }
 
-    // Загружаем из imported_media (временное хранилище)
-    if (state.imported_media) {
-      Object.entries(state.imported_media).forEach(([mediaId, mediaItem]: [string, any]) => {
-        if (!initialMediaPool.has(mediaId)) {
-          initialMediaPool.set(mediaId, {
-            id: mediaId,
-            path: mediaItem.path,
-            name: mediaItem.name,
-            type: mediaItem.media_type as MediaType,
-            duration: mediaItem.duration ?? undefined,
-            thumbnailPath: mediaItem.thumbnail ?? undefined,
-            metadata: mediaItem.metadata?.codec
-              ? {
-                  type: mediaItem.media_type as "Video" | "Audio" | "Image",
-                  codec: mediaItem.metadata.codec,
-                }
-              : undefined,
-          })
-        }
-      })
-    }
+    // NOTE: imported_media removed (2025-11) - all media now in media_pool
 
     this.mediaPool = initialMediaPool
     logger.info("[Media Management] Initial media pool loaded", {
@@ -345,13 +325,14 @@ export class MediaManagementOrchestrator implements MediaManagementService {
       for (const filePath of files) {
         try {
           const mediaType = this.getMediaTypeFromPath(filePath)
-          logger.info("[Media Management] Sending AddImportedMedia command", { filePath, mediaType })
+          // AddMedia saves directly to media_pool (unified architecture)
+          logger.info("[Media Management] Sending AddMedia command", { filePath, mediaType })
           const result = await backend.executeCommand({
-            type: "AddImportedMedia",
+            type: "AddMedia",
             params: { path: filePath, media_type: mediaType },
           } as any)
 
-          logger.info("[Media Management] AddImportedMedia result", { filePath, result })
+          logger.info("[Media Management] AddMedia result", { filePath, result })
           if (result) {
             importResults.push(result)
           }

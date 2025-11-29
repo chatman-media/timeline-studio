@@ -29,6 +29,10 @@ type ProjectEvent =
   | { type: "StyleTemplateRemoved"; payload: { template_id: string } }
   | { type: "SubtitleAdded"; payload: { subtitle_id: string; name: string } }
   | { type: "SubtitleRemoved"; payload: { subtitle_id: string } }
+  // Media events (unified architecture 2025-11)
+  | { type: "MediaAdded"; payload: { media: { id: string; name: string } } }
+  | { type: "MediaRemoved"; payload: { media_id: string } }
+  // Legacy ImportedMedia events - kept for backward compatibility
   | { type: "ImportedMediaAdded"; payload: { media: { id: string; name: string } } }
   | { type: "ImportedMediaRemoved"; payload: { media_id: string } }
   | { type: "ImportedMediaUpdated"; payload: { media_id: string } }
@@ -98,7 +102,13 @@ export function handleBackendEvent(context: BrowserResourcesContext, event: Proj
     case "SubtitleRemoved":
       return handleSubtitleRemoved(context, event)
 
-    // Media events (для импортированных медиа файлов)
+    // Media events (unified architecture 2025-11)
+    case "MediaAdded":
+      return handleMediaAdded(context, event)
+    case "MediaRemoved":
+      return handleMediaRemoved(context, event)
+
+    // Legacy ImportedMedia events - redirect to Media handlers
     case "ImportedMediaAdded":
       return handleImportedMediaAdded(context, event)
     case "ImportedMediaRemoved":
@@ -106,7 +116,8 @@ export function handleBackendEvent(context: BrowserResourcesContext, event: Proj
     case "ImportedMediaUpdated":
       return handleImportedMediaUpdated(context, event)
     case "ImportedMediaCleared":
-      return handleImportedMediaCleared(context, event)
+      // No-op: imported_media storage removed
+      return {}
 
     default:
       logger.debugSync("Unhandled backend event type", { type: event.type })
@@ -455,7 +466,63 @@ function handleSubtitleRemoved(context: BrowserResourcesContext, event: ProjectE
 }
 
 // ============================================================================
-// Imported Media Handlers
+// Media Handlers (unified architecture 2025-11)
+// ============================================================================
+
+function handleMediaAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "MediaAdded") return {}
+  const { media } = event.payload
+
+  logger.info("Adding media to browser library", { mediaId: media.id, name: media.name })
+
+  const source: ResourceSource = "imported"
+  const key = `media:${source}`
+
+  const currentResources = context.resources.get(key) || []
+
+  const exists = currentResources.some((r) => r.id === media.id)
+  if (exists) {
+    logger.debugSync("Media already exists in browser library, skipping", { mediaId: media.id })
+    return {}
+  }
+
+  const newResource: Resource = {
+    id: media.id,
+    name: media.name,
+    type: "media",
+  } as Resource
+
+  const newResources = new Map(context.resources)
+  newResources.set(key, [...currentResources, newResource])
+
+  return {
+    resources: newResources,
+    loadedSources: new Set([...context.loadedSources, source]),
+  }
+}
+
+function handleMediaRemoved(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
+  if (event.type !== "MediaRemoved") return {}
+  const { media_id } = event.payload
+
+  logger.info("Removing media from browser library", { mediaId: media_id })
+
+  const source: ResourceSource = "imported"
+  const key = `media:${source}`
+
+  const currentResources = context.resources.get(key) || []
+  const filteredResources = currentResources.filter((r) => r.id !== media_id)
+
+  const newResources = new Map(context.resources)
+  newResources.set(key, filteredResources)
+
+  return {
+    resources: newResources,
+  }
+}
+
+// ============================================================================
+// Legacy Imported Media Handlers (backward compatibility)
 // ============================================================================
 
 function handleImportedMediaAdded(context: BrowserResourcesContext, event: ProjectEvent): EventHandlerResult {
@@ -523,16 +590,5 @@ function handleImportedMediaUpdated(_context: BrowserResourcesContext, event: Pr
   }
 }
 
-function handleImportedMediaCleared(context: BrowserResourcesContext, _event: ProjectEvent): EventHandlerResult {
-  logger.info("Clearing all imported media from browser library")
-
-  const source: ResourceSource = "imported"
-  const key = `media:${source}`
-
-  const newResources = new Map(context.resources)
-  newResources.set(key, [])
-
-  return {
-    resources: newResources,
-  }
-}
+// NOTE (2025-11): handleImportedMediaCleared removed - no longer needed
+// imported_media storage removed in unified architecture

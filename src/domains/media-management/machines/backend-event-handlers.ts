@@ -45,15 +45,19 @@ export function handleMediaBackendEvent(
     case "MediaUpdated":
       return handleMediaUpdated(context, event)
 
-    // Imported Media Events (imported_media - временное хранилище браузера)
+    // Legacy Imported Media Events - redirect to Media handlers
+    // NOTE (2025-11): With unified architecture, AddImportedMedia → AddMedia in backend
+    // These events are kept for backward compatibility during transition
     case "ImportedMediaAdded":
+      // Treat as MediaAdded - same behavior
       return handleImportedMediaAdded(context, event)
     case "ImportedMediaRemoved":
       return handleImportedMediaRemoved(context, event)
     case "ImportedMediaUpdated":
       return handleImportedMediaUpdated(context, event)
     case "ImportedMediaCleared":
-      return handleImportedMediaCleared(context)
+      // No-op: imported_media storage removed
+      return {}
 
     default:
       logger.debug("Unhandled media event type:", { type: event.type })
@@ -338,19 +342,5 @@ function handleImportedMediaUpdated(
   }
 }
 
-/**
- * Обработка события ImportedMediaCleared
- * Очищает все импортированные медиа файлы из pool
- * Примечание: это очищает ВСЕ файлы из mediaPool, что может быть не желаемым поведением
- * если нужно очищать только imported, а не media_pool
- */
-function handleImportedMediaCleared(_context: MediaManagementContext): Partial<MediaManagementContext> {
-  logger.info("All imported media cleared from pool")
-
-  // При очистке imported_media мы НЕ очищаем mediaPool полностью,
-  // так как там могут быть файлы из media_pool проекта.
-  // Вместо этого нужно отфильтровать только imported файлы,
-  // но для этого нужно хранить метаданные об источнике файла.
-  // Пока оставляем как есть - бэкенд сам управляет состоянием.
-  return {}
-}
+// NOTE (2025-11): handleImportedMediaCleared removed - no longer needed
+// imported_media storage removed in unified architecture
