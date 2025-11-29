@@ -23,8 +23,10 @@ pub async fn init_yolo_processor(
     _ => return Err(format!("Unknown model type: {}", model_type)),
   };
 
-  let mut processing_config = ProcessingConfig::default();
-  processing_config.confidence_threshold = confidence_threshold;
+  let processing_config = ProcessingConfig {
+    confidence_threshold,
+    ..Default::default()
+  };
 
   let config = ProcessorConfig {
     model,

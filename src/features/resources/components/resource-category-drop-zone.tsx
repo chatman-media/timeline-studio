@@ -229,7 +229,7 @@ export function ResourceCategoryDropZone({
                 {t("timeline.resources.dropHere", "Добавить в {{category}}", { category: categoryName })}
               </>
             ) : (
-              <>{t("timeline.resources.incompatibleType", "Несовместимый тип")}</>
+              t("timeline.resources.incompatibleType", "Несовместимый тип")
             )}
           </div>
         </div>

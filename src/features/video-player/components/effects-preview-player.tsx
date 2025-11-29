@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import type { TimelineClip } from "@/features/timeline/types/timeline"

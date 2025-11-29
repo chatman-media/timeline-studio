@@ -532,7 +532,7 @@ pub enum TimelineChange {
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub enum MediaPoolChange {
   MediaAdded {
-    media: MediaItem,
+    media: Box<MediaItem>,
   },
   MediaRemoved {
     media_id: String,

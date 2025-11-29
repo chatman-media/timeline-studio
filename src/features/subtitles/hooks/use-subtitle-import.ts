@@ -4,8 +4,8 @@
 
 import { useCallback, useMemo, useState } from "react"
 import { container } from "@/core"
+import { useNotifications } from "@/core/hooks"
 import { subtitleService } from "@/domains/subtitles"
-import { useNotifications } from "@/domains/system-integration"
 import { MediaType } from "@/domains/video-editing/types/media"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"

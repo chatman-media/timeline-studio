@@ -186,6 +186,7 @@ pub async fn analyze_video_comprehensive(
 // Type Definitions
 // ============================================================================
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct ScannedMediaFileWithThumbnail {
   pub path: String,
@@ -228,6 +229,7 @@ pub struct ExtractedFrameInfo {
   pub height: u32,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 pub struct AiPerformanceMetric {
   pub operation: String,

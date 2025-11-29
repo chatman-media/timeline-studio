@@ -17,7 +17,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
 

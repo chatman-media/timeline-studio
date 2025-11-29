@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { useModal } from "@/features/modals/services"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"

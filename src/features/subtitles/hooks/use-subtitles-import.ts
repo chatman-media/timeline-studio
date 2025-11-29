@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from "react"
 
 import { container } from "@/core"
+import { useNotifications } from "@/core/hooks"
 import { readSubtitleFile } from "@/domains/subtitles"
-import { useNotifications } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
