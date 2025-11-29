@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { container } from "@/core"
-import { RenderStatus } from "@/domains/video-editing"
+import type { RenderStatus } from "@/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useRenderQueue } from "../hooks/use-render-queue"
@@ -167,10 +167,10 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
   // Получение статистики
   const getStats = () => {
-    const completed = renderJobs.filter((job) => job.status === RenderStatus.Completed).length
-    const failed = renderJobs.filter((job) => job.status === RenderStatus.Failed).length
-    const queued = renderJobs.filter((job) => job.status === RenderStatus.Pending).length
-    const processing = renderJobs.filter((job) => job.status === RenderStatus.Processing).length
+    const completed = renderJobs.filter((job) => (job.status as any) === "Completed").length
+    const failed = renderJobs.filter((job) => (job.status as any) === "Failed").length
+    const queued = renderJobs.filter((job) => (job.status as any) === "Pending").length
+    const processing = renderJobs.filter((job) => (job.status as any) === "Processing").length
 
     return { total: renderJobs.length, completed, failed, queued, processing }
   }
@@ -179,16 +179,16 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
   // Получение иконки статуса
   const getStatusIcon = (status: RenderStatus) => {
-    switch (status) {
-      case RenderStatus.Pending:
+    switch (status as any) {
+      case "Pending":
         return <Square className="h-4 w-4 text-muted-foreground" />
-      case RenderStatus.Processing:
+      case "Processing":
         return <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />
-      case RenderStatus.Completed:
+      case "Completed":
         return <CheckSquare className="h-4 w-4 text-green-500" />
-      case RenderStatus.Failed:
+      case "Failed":
         return <X className="h-4 w-4 text-red-500" />
-      case RenderStatus.Cancelled:
+      case "Cancelled":
         return <Square className="h-4 w-4 text-orange-500" />
       default:
         return <Square className="h-4 w-4 text-muted-foreground" />
@@ -300,9 +300,9 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
                     key={job.id}
                     className={cn(
                       "flex items-center gap-3 p-3 rounded-lg border transition-colors",
-                      job.status === RenderStatus.Processing && "border-blue-500/50",
-                      job.status === RenderStatus.Completed && "border-green-500/50",
-                      job.status === RenderStatus.Failed && "border-red-500/50",
+                      (job.status as any) === "Processing" && "border-blue-500/50",
+                      (job.status as any) === "Completed" && "border-green-500/50",
+                      (job.status as any) === "Failed" && "border-red-500/50",
                     )}
                   >
                     {getStatusIcon(job.status)}
@@ -311,7 +311,7 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
                       <div className="font-medium truncate">{job.project_name}</div>
                       <div className="text-sm text-muted-foreground truncate">{job.output_path}</div>
 
-                      {job.status === RenderStatus.Processing && job.progress && (
+                      {(job.status as any) === "Processing" && job.progress && (
                         <div className="mt-2 space-y-1">
                           <Progress value={job.progress.percentage} className="h-1" />
                           <div className="text-xs text-muted-foreground">
@@ -320,12 +320,12 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
                         </div>
                       )}
 
-                      {job.status === RenderStatus.Failed && job.progress?.message && (
+                      {(job.status as any) === "Failed" && job.progress?.message && (
                         <div className="mt-1 text-xs text-red-500">{job.progress.message}</div>
                       )}
                     </div>
 
-                    {job.status === RenderStatus.Processing && (
+                    {(job.status as any) === "Processing" && (
                       <Button variant="ghost" size="icon" onClick={() => void cancelJob(job.id)}>
                         <Pause className="h-4 w-4" />
                       </Button>

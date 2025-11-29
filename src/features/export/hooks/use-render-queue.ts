@@ -1,15 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { container } from "@/core"
-import { loadProject } from "@/domains/project-management/services/project-file-service"
-import {
-  cancelRender,
-  getActiveJobs,
-  OutputFormat,
-  ProjectSchema,
-  RenderJob,
-  RenderStatus,
-  renderProject,
-} from "@/domains/video-editing"
+import { useProjectLoader, useRenderQueue as useCoreRenderQueue } from "@/core/hooks"
+import { OutputFormat } from "@/core/types"
+import type { ProjectSchema, RenderJob, RenderStatus } from "@/core/types"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
 import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 
@@ -70,6 +63,24 @@ export function useRenderQueue(): UseRenderQueueReturn {
       return null
     }
   }, [])
+  const { loadProject } = useProjectLoader()
+  const { renderProject, cancelRender, getActiveJobs } = useCoreRenderQueue()
+
+  // Обновление списка задач
+  const refreshQueue = useCallback(async () => {
+    try {
+      const jobs = (await getActiveJobs()) as RenderJob[]
+      setRenderJobs(jobs)
+
+      // Проверяем, есть ли активные задачи
+      const hasActiveJobs = jobs.some(
+        (job) => (job.status as any) === "Processing" || (job.status as any) === "Pending",
+      )
+      setIsProcessing(hasActiveJobs)
+    } catch (error) {
+      logError(`[useRenderQueue] Ошибка получения задач рендеринга: ${String(error)}`)
+    }
+  }, [getActiveJobs])
 
   // Загрузка активных задач при монтировании
   useEffect(() => {
@@ -83,23 +94,7 @@ export function useRenderQueue(): UseRenderQueueReturn {
     }, 500)
 
     return () => clearInterval(interval)
-  }, [isProcessing])
-
-  // Обновление списка задач
-  const refreshQueue = useCallback(async () => {
-    try {
-      const jobs = (await getActiveJobs()) as RenderJob[]
-      setRenderJobs(jobs)
-
-      // Проверяем, есть ли активные задачи
-      const hasActiveJobs = jobs.some(
-        (job) => job.status === RenderStatus.Processing || job.status === RenderStatus.Pending,
-      )
-      setIsProcessing(hasActiveJobs)
-    } catch (error) {
-      logError(`[useRenderQueue] Ошибка получения задач рендеринга: ${String(error)}`)
-    }
-  }, [])
+  }, [isProcessing, refreshQueue])
 
   // Добавление проектов в очередь (выбор файлов)
   const addProjectsToQueue = useCallback(async (): Promise<string[]> => {
@@ -213,13 +208,13 @@ export function useRenderQueue(): UseRenderQueueReturn {
         logError(`[useRenderQueue] Ошибка отмены задачи ${jobId}: ${String(error)}`)
       }
     },
-    [refreshQueue],
+    [cancelRender, refreshQueue],
   )
 
   // Отмена всех активных задач
   const cancelAllJobs = useCallback(async () => {
     const activeJobs = renderJobs.filter(
-      (job) => job.status === RenderStatus.Processing || job.status === RenderStatus.Pending,
+      (job) => (job.status as any) === "Processing" || (job.status as any) === "Pending",
     )
 
     for (const job of activeJobs) {
@@ -230,12 +225,12 @@ export function useRenderQueue(): UseRenderQueueReturn {
   // Очистка завершенных задач
   const clearCompleted = useCallback(() => {
     setRenderJobs((prev) =>
-      prev.filter((job) => job.status === RenderStatus.Processing || job.status === RenderStatus.Pending),
+      prev.filter((job) => (job.status as any) === "Processing" || (job.status as any) === "Pending"),
     )
   }, [])
 
   const activeJobsCount = renderJobs.filter(
-    (job) => job.status === RenderStatus.Processing || job.status === RenderStatus.Pending,
+    (job) => (job.status as any) === "Processing" || (job.status as any) === "Pending",
   ).length
 
   return {

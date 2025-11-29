@@ -578,6 +578,35 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::classify_video_content,
     crate::analysis::commands::quick_classify_content,
     crate::analysis::commands::get_default_classification_options,
+    // ============================================================================
+    // Phase 5: Media & Compiler Commands (6 новых команд)
+    // ============================================================================
+    // Media Management commands (3 новые)
+    crate::media::phase5_commands::eject_device,
+    crate::media::phase5_commands::detect_camera_devices,
+    crate::media::phase5_commands::list_camera_files,
+    // Video Compiler commands (2 новые)
+    crate::media::phase5_commands::save_file,
+    crate::media::phase5_commands::load_file,
+    // FFmpeg Platform Optimization (1 новая)
+    crate::media::phase5_commands::ffmpeg_extract_frame,
+    // Utility commands (1 новая)
+    crate::media::phase5_commands::analyze_video_comprehensive,
+    // Примечание: остальные 9 команд Фазы 5 УЖЕ зарегистрированы:
+    // - cancel_media_processing (person_commands.rs:162) ✅
+    // - scan_media_folder_with_thumbnails (lib.rs:148) ✅
+    // - log_ai_performance_metric (person_commands.rs:174) ✅
+    // - ffmpeg_generate_thumbnail (person_commands.rs:197) ✅
+    // - generate_preview (video_compiler/commands/frame_extraction/commands.rs:108) ✅
+    // - get_cache_size (video_compiler/commands/cache/commands.rs:67) ✅
+    // - set_hardware_acceleration (video_compiler/commands/gpu/commands.rs:76) ✅
+    // - get_render_job (video_compiler/commands/rendering/commands.rs:72) ✅
+    // Итого: 6 новых + 9 существующих = 15 команд Фазы 5 ✅
+    // ============================================================================
+    // Phase 6: Final 2 Commands for 100% Coverage (2 команды) 🎯
+    // ============================================================================
+    crate::commands::init_yolo::init_yolo_processor,
+    crate::video_compiler::commands::check_gpu_availability,
     // MCP (Model Context Protocol) commands
     crate::mcp::commands::mcp_initialize,
     crate::mcp::commands::mcp_update_config,

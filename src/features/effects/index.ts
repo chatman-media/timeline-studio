@@ -60,21 +60,6 @@ export type {
 // СЕРВИСЫ
 // ============================================================================
 
-// Реэкспорт сервисов из домена
-export type { PresetsCollection, UserPreset } from "@/domains/video-editing/services/effects"
-export {
-  clearAllPresets,
-  convertUserPresetToEffectPreset,
-  deleteUserPreset,
-  exportPresets,
-  getAllUserPresets,
-  getFavoritePresets,
-  importPresets,
-  loadPresetsForEffect,
-  loadUserPreset,
-  saveUserPreset,
-  updateUserPreset,
-} from "@/domains/video-editing/services/effects"
 export { EffectManager } from "./services/effect-manager"
 export { WebGL2EffectProcessor } from "./services/webgl2-effect-processor"
 export {

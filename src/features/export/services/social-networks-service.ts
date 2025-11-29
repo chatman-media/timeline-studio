@@ -10,7 +10,7 @@ import * as VimeoService from "./vimeo-service"
 import * as YouTubeService from "./youtube-service"
 
 const logger = createLogger({ module: "SocialNetworksService" })
-const orchestrator = getSystemIntegrationOrchestrator()
+const getOrchestrator = () => getSystemIntegrationOrchestrator()
 
 export interface SocialUploadResult {
   success: boolean
@@ -21,7 +21,7 @@ export interface SocialUploadResult {
 
 export async function login(network: string): Promise<boolean> {
   try {
-    orchestrator.showNotification({
+    getOrchestrator().showNotification({
       type: "info",
       notification_type: "info",
       title: "Connecting",
@@ -42,7 +42,7 @@ export async function login(network: string): Promise<boolean> {
       localStorage.setItem(`${network}_user_info`, JSON.stringify(userInfo))
     }
 
-    orchestrator.showNotification({
+    getOrchestrator().showNotification({
       type: "success",
       notification_type: "success",
       title: "Connected",
@@ -52,7 +52,7 @@ export async function login(network: string): Promise<boolean> {
     return true
   } catch (error) {
     logger.error(`Login failed for ${network}: ${String(error)}`)
-    orchestrator.showNotification({
+    getOrchestrator().showNotification({
       type: "error",
       notification_type: "error",
       title: "Connection Failed",
@@ -64,7 +64,7 @@ export async function login(network: string): Promise<boolean> {
 
 export async function logout(network: string): Promise<void> {
   await OAuthService.logout(network)
-  orchestrator.showNotification({
+  getOrchestrator().showNotification({
     type: "info",
     notification_type: "info",
     title: "Disconnected",

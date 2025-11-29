@@ -1,7 +1,7 @@
 import type React from "react"
 import { useMemo } from "react"
 
-import { useFavorites } from "@/domains/project-management/hooks"
+import { useFavorites } from "@/core/hooks"
 import { allScenarios } from "@/features/scenarios"
 import type { Scenario } from "@/features/scenarios/types"
 

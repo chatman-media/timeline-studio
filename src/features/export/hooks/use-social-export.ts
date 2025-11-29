@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { container } from "@/core"
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { SOCIAL_NETWORKS } from "../constants/export-constants"

@@ -134,23 +134,3 @@ export function mergeEffectsCollections(collection1: any, collection2: any) {
     updatedAt: new Date().toISOString(),
   }
 }
-
-// ============================================================================
-// РЕЭКСПОРТ ИЗ ДОМЕНА (для обратной совместимости)
-// ============================================================================
-
-export type { UserEffect, UserEffectsCollection } from "@/domains/video-editing/services/effects"
-export {
-  addEffectToClip,
-  addFilterToClip,
-  createEffect,
-  createFilter,
-  deleteUserEffect,
-  getUserEffectsList,
-  loadEffectsCollection,
-  loadUserEffect,
-  removeEffectFromClip,
-  removeFilterFromClip,
-  saveEffectsCollection,
-  saveUserEffect,
-} from "@/domains/video-editing/services/effects"

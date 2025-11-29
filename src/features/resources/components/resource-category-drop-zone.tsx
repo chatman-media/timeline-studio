@@ -3,8 +3,8 @@
  * Позволяет перетаскивать элементы из браузера в панель ресурсов
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
 import { Upload } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import type { DraggableItem } from "@/features/drag-drop/services/drag-drop-manager"
@@ -15,7 +15,9 @@ import { useResources } from "../services/resources-provider"
 interface ResourceCategoryDropZoneProps {
   categoryId: string
   categoryName: string
-  acceptedTypes: Array<"media" | "music" | "effect" | "filter" | "transition" | "template" | "style-template" | "subtitle-style">
+  acceptedTypes: Array<
+    "media" | "music" | "effect" | "filter" | "transition" | "template" | "style-template" | "subtitle-style"
+  >
   children: React.ReactNode
 }
 
@@ -30,16 +32,8 @@ export function ResourceCategoryDropZone({
   const [isDragOver, setIsDragOver] = useState(false)
   const [canAcceptDrag, setCanAcceptDrag] = useState(false)
 
-  const {
-    addMedia,
-    addMusic,
-    addEffect,
-    addFilter,
-    addTransition,
-    addTemplate,
-    addStyleTemplate,
-    addSubtitle,
-  } = useResources()
+  const { addMedia, addMusic, addEffect, addFilter, addTransition, addTemplate, addStyleTemplate, addSubtitle } =
+    useResources()
 
   // Обработчик drop
   const handleDrop = useCallback(
@@ -81,7 +75,17 @@ export function ResourceCategoryDropZone({
         console.error("Error adding resource:", error)
       }
     },
-    [canAcceptDrag, addMedia, addMusic, addEffect, addFilter, addTransition, addTemplate, addStyleTemplate, addSubtitle],
+    [
+      canAcceptDrag,
+      addMedia,
+      addMusic,
+      addEffect,
+      addFilter,
+      addTransition,
+      addTemplate,
+      addStyleTemplate,
+      addSubtitle,
+    ],
   )
 
   // Обработчик drag enter
@@ -139,20 +143,22 @@ export function ResourceCategoryDropZone({
   }, [categoryId, acceptedTypes, handleDragEnter, handleDragOver, handleDragLeave, handleDrop])
 
   // Fallback для обычных HTML drag events
-  const handleNativeDragOver = useCallback((event: React.DragEvent) => {
-    event.preventDefault()
+  const handleNativeDragOver = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault()
 
-    // Проверяем тип перетаскиваемых данных
-    const hasAcceptedType = acceptedTypes.some(type =>
-      event.dataTransfer.types.includes(type) ||
-      event.dataTransfer.types.includes("application/json")
-    )
+      // Проверяем тип перетаскиваемых данных
+      const hasAcceptedType = acceptedTypes.some(
+        (type) => event.dataTransfer.types.includes(type) || event.dataTransfer.types.includes("application/json"),
+      )
 
-    if (hasAcceptedType) {
-      setIsDragOver(true)
-      event.dataTransfer.dropEffect = "copy"
-    }
-  }, [acceptedTypes])
+      if (hasAcceptedType) {
+        setIsDragOver(true)
+        event.dataTransfer.dropEffect = "copy"
+      }
+    },
+    [acceptedTypes],
+  )
 
   const handleNativeDragLeave = useCallback((event: React.DragEvent) => {
     // Проверяем, что курсор действительно покинул элемент

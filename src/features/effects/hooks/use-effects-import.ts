@@ -1,11 +1,10 @@
 import { useCallback, useMemo, useState } from "react"
 
 import { container } from "@/core"
+import { loadEffectsCollection, loadUserEffect } from "@/domains/video-editing/services/effects"
 import type { BaseEffect } from "@/features/effects/types"
 import { createLogger } from "@/lib/tauri-logger"
-
 import { EffectManager } from "../services/effect-manager"
-import { loadEffectsCollection, loadUserEffect } from "../utils/user-effects"
 
 const logger = createLogger("useEffectsImport")
 

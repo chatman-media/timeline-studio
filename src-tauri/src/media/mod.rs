@@ -19,6 +19,9 @@ pub mod media_analyzer;
 pub mod metadata_extractor;
 pub mod thumbnail_generator;
 
+// Phase 5: Media & Compiler Commands
+pub mod phase5_commands;
+
 // Performance configuration for tests
 #[cfg(test)]
 pub mod performance_limits;

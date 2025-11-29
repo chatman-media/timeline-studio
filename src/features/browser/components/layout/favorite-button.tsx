@@ -2,7 +2,7 @@ import { Star, StarOff } from "lucide-react"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { useFavorites } from "@/domains/project-management/hooks"
+import { useFavorites } from "@/core/hooks"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import type { MediaFile } from "@/features/media/types/media"
 import { cn } from "@/lib/utils"

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { RenderStatus } from "@/domains/video-editing"
+import type { RenderStatus } from "@/core/types"
 import { cn } from "@/lib/utils"
 
 import { useRenderQueue } from "../hooks/use-render-queue"
@@ -24,16 +24,16 @@ export function RenderQueueDropdown() {
 
   // Вспомогательная функция для получения цвета статуса
   const getStatusColor = (status: RenderStatus) => {
-    switch (status) {
-      case RenderStatus.Pending:
+    switch (status as any) {
+      case "Pending":
         return "text-yellow-500"
-      case RenderStatus.Processing:
+      case "Processing":
         return "text-blue-500"
-      case RenderStatus.Completed:
+      case "Completed":
         return "text-green-500"
-      case RenderStatus.Failed:
+      case "Failed":
         return "text-red-500"
-      case RenderStatus.Cancelled:
+      case "Cancelled":
         return "text-gray-500"
       default:
         return "text-muted-foreground"
@@ -42,16 +42,16 @@ export function RenderQueueDropdown() {
 
   // Вспомогательная функция для получения метки статуса
   const getStatusLabel = (status: RenderStatus, t: any) => {
-    switch (status) {
-      case RenderStatus.Pending:
+    switch (status as any) {
+      case "Pending":
         return t("export.status.pending")
-      case RenderStatus.Processing:
+      case "Processing":
         return t("export.status.processing")
-      case RenderStatus.Completed:
+      case "Completed":
         return t("export.status.completed")
-      case RenderStatus.Failed:
+      case "Failed":
         return t("export.status.failed")
-      case RenderStatus.Cancelled:
+      case "Cancelled":
         return t("export.status.cancelled")
       default:
         return t("export.status.unknown")
@@ -78,16 +78,16 @@ export function RenderQueueDropdown() {
 
   // Иконка для статуса задачи
   const getStatusIcon = (status: RenderStatus) => {
-    switch (status) {
-      case RenderStatus.Pending:
+    switch (status as any) {
+      case "Pending":
         return <Clock className="h-4 w-4" />
-      case RenderStatus.Processing:
+      case "Processing":
         return <Loader2 className="h-4 w-4 animate-spin" />
-      case RenderStatus.Completed:
+      case "Completed":
         return <CheckCircle2 className="h-4 w-4" />
-      case RenderStatus.Failed:
+      case "Failed":
         return <XCircle className="h-4 w-4" />
-      case RenderStatus.Cancelled:
+      case "Cancelled":
         return <StopCircle className="h-4 w-4" />
       default:
         return <AlertCircle className="h-4 w-4" />
@@ -120,7 +120,7 @@ export function RenderQueueDropdown() {
               {activeJobsCount}
             </Badge>
           )}
-          {renderJobs.some((job) => job.status === RenderStatus.Processing) && (
+          {renderJobs.some((job) => (job.status as any) === "Processing") && (
             <div className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-teal animate-pulse" />
           )}
         </Button>
@@ -159,7 +159,7 @@ export function RenderQueueDropdown() {
                         </p>
                       )}
                     </div>
-                    {(job.status === RenderStatus.Pending || job.status === RenderStatus.Processing) && (
+                    {((job.status as any) === "Pending" || (job.status as any) === "Processing") && (
                       <Button
                         size="sm"
                         variant="ghost"
@@ -171,7 +171,7 @@ export function RenderQueueDropdown() {
                     )}
                   </div>
 
-                  {job.status === RenderStatus.Processing && job.progress && (
+                  {(job.status as any) === "Processing" && job.progress && (
                     <div className="space-y-1">
                       <Progress value={job.progress.percentage} className="h-2" />
                       <div className="flex justify-between text-xs text-muted-foreground">
@@ -184,7 +184,7 @@ export function RenderQueueDropdown() {
                     </div>
                   )}
 
-                  {job.status === RenderStatus.Failed && job.error_message && (
+                  {(job.status as any) === "Failed" && job.error_message && (
                     <p className="text-xs text-red-500 line-clamp-2">{job.error_message}</p>
                   )}
                 </div>
@@ -207,7 +207,7 @@ export function RenderQueueDropdown() {
               </div>
               <div className="flex justify-between">
                 <span>{t("export.completedJobs")}:</span>
-                <span>{renderJobs.filter((j) => j.status === RenderStatus.Completed).length}</span>
+                <span>{renderJobs.filter((j) => (j.status as any) === "Completed").length}</span>
               </div>
             </div>
           </>

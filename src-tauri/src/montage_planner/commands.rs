@@ -626,11 +626,13 @@ pub async fn export_montage_plan(
     }
     ExportFormat::Csv => {
       // TODO: Implement CSV export
-      Ok("plan_id,name,duration,quality_score\n".to_string()
-        + &format!(
-          "{},{},{},{}\n",
-          plan.id, plan.name, plan.total_duration, plan.quality_score
-        ))
+      Ok(
+        "plan_id,name,duration,quality_score\n".to_string()
+          + &format!(
+            "{},{},{},{}\n",
+            plan.id, plan.name, plan.total_duration, plan.quality_score
+          ),
+      )
     }
     ExportFormat::Xml => {
       // TODO: Implement XML/EDL export

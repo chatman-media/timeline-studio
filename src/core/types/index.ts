@@ -28,3 +28,6 @@ export type {
   Track,
   ViewMode,
 } from "@/types/generated/tauri-bindings"
+
+// Re-export commonly used domain types for features
+export * from "./video-editing"

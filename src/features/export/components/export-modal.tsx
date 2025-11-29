@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { useModal } from "@/features/modals/services"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useVideoCompiler } from "@/features/video-compiler/hooks/use-video-compiler"

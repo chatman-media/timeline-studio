@@ -6,7 +6,7 @@ import { OAuthToken } from "../types/export-types"
 import { SecureTokenStorage } from "./secure-token-storage"
 
 const logger = createLogger({ module: "OauthService" })
-const orchestrator = getSystemIntegrationOrchestrator()
+const getOrchestrator = () => getSystemIntegrationOrchestrator()
 
 interface OAuthConfig {
   clientId: string
@@ -49,7 +49,7 @@ export async function loginToNetwork(network: string): Promise<OAuthToken | null
   }
 
   if (!config.clientId) {
-    orchestrator.showNotification({
+    getOrchestrator().showNotification({
       type: "error",
       notification_type: "error",
       title: "OAuth Configuration Error",
@@ -214,7 +214,7 @@ async function refreshVimeoToken(refreshToken: string): Promise<OAuthToken> {
 export async function logout(network: string): Promise<void> {
   // Очищаем сохраненные токены через безопасное хранилище
   await SecureTokenStorage.removeToken(network)
-  orchestrator.showNotification({
+  getOrchestrator().showNotification({
     type: "success",
     notification_type: "success",
     title: "Logged Out",

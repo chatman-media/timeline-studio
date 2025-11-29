@@ -89,7 +89,10 @@ pub async fn predict_track_positions(
   track_ids: Vec<String>,
   _state: State<'_, crate::recognition::commands::RecognitionState>,
 ) -> Result<Vec<TrackPrediction>, String> {
-  log::info!("predict_track_positions called for {} tracks", track_ids.len());
+  log::info!(
+    "predict_track_positions called for {} tracks",
+    track_ids.len()
+  );
 
   // TODO: Implement actual track position prediction
   Ok(vec![])

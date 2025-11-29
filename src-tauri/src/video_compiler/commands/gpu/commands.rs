@@ -44,6 +44,12 @@ pub async fn check_hardware_acceleration_support(
   gpu_service.check_hardware_acceleration().await
 }
 
+/// Проверить доступность GPU (алиас для check_hardware_acceleration_support)
+#[tauri::command]
+pub async fn check_gpu_availability(state: State<'_, VideoCompilerState>) -> Result<bool> {
+  check_hardware_acceleration_support(state).await
+}
+
 /// Получить рекомендуемый GPU для рендеринга
 #[tauri::command]
 pub async fn get_recommended_gpu(state: State<'_, VideoCompilerState>) -> Result<Option<GpuInfo>> {

@@ -1,18 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
-import type { BaseEffect } from "../../types/unified-effects"
-
 import {
   deleteUserEffect,
   getUserEffectsList,
   loadEffectsCollection,
   loadUserEffect,
-  prepareEffectForExport,
   saveEffectsCollection,
   saveUserEffect,
   type UserEffect,
   type UserEffectsCollection,
-} from "../../utils/user-effects"
+} from "@/domains/video-editing/services/effects"
+import type { BaseEffect } from "../../types/unified-effects"
+import { prepareEffectForExport } from "../../utils/user-effects"
 
 // Mock Tauri invoke
 vi.mock("@tauri-apps/api/core", () => ({
