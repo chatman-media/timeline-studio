@@ -6,7 +6,6 @@
  */
 
 import { exec } from "node:child_process"
-import fs from "node:fs"
 import fsPromises from "node:fs/promises"
 import os from "node:os"
 import nodePath from "node:path"

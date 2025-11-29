@@ -184,9 +184,9 @@ export class NodeAIService implements IAIService {
 
   async calculateCosineSimilarity(embedding1: number[], embedding2: number[]): Promise<number> {
     if (embedding1.length !== embedding2.length || embedding1.length === 0) return 0
-    let dot = 0,
-      norm1 = 0,
-      norm2 = 0
+    let dot = 0
+    let norm1 = 0
+    let norm2 = 0
     for (let i = 0; i < embedding1.length; i++) {
       dot += embedding1[i] * embedding2[i]
       norm1 += embedding1[i] * embedding1[i]
@@ -376,7 +376,7 @@ export class NodeAIService implements IAIService {
 
   async analyzeAudioPeaks(
     audioPath: string,
-    options?: { windowSize?: number; hopSize?: number; threshold?: number },
+    _options?: { windowSize?: number; hopSize?: number; threshold?: number },
   ): Promise<AudioPeakData> {
     try {
       const { stdout } = await execAsync(`ffprobe -v quiet -show_entries format=duration -of csv=p=0 "${audioPath}"`)
@@ -679,9 +679,9 @@ export class NodeAIService implements IAIService {
   // ============================================================================
 
   async correlateAudioFiles(
-    basePath: string,
-    targetPath: string,
-    maxOffsetSeconds?: number,
+    _basePath: string,
+    _targetPath: string,
+    _maxOffsetSeconds?: number,
   ): Promise<AudioCorrelationResult> {
     // Simplified correlation using ffmpeg
     // In production, would use proper cross-correlation algorithm
@@ -698,7 +698,7 @@ export class NodeAIService implements IAIService {
 
   async aiDirectorAnalyzeComprehensive(
     videoPath: string,
-    config?: AIDirectorConfig,
+    _config?: AIDirectorConfig,
   ): Promise<ComprehensiveAnalysisResult> {
     const startTime = Date.now()
 
