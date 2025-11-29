@@ -3,9 +3,8 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { useNotifications } from "@/domains/system-integration"
+import { useModals, useNotifications } from "@/domains/system-integration"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
-import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,

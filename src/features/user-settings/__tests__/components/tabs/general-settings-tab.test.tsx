@@ -19,8 +19,21 @@ vi.mock("@/core", () => ({
 }))
 
 vi.mock("../../../hooks/use-user-settings")
-vi.mock("@/features/modals/services/modal-provider")
 vi.mock("@/features/language")
+
+// Mock System Integration Orchestrator
+const mockOrchestrator = {
+  openModal: vi.fn().mockResolvedValue(undefined),
+  closeModal: vi.fn().mockResolvedValue(undefined),
+  submitModal: vi.fn().mockResolvedValue(undefined),
+  getActiveModal: vi.fn().mockReturnValue("none"),
+  getModalData: vi.fn().mockReturnValue(null),
+  subscribeToModals: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
+}
+
+vi.mock("@/domains/system-integration/services/system-integration-orchestrator", () => ({
+  getSystemIntegrationOrchestrator: vi.fn(() => mockOrchestrator),
+}))
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => ({
     info: (message: string, context?: unknown) => {
@@ -122,13 +135,13 @@ Element.prototype.scrollIntoView = vi.fn()
 describe("GeneralSettingsTab", () => {
   const mockHandleScreenshotsPathChange = vi.fn()
   const mockHandlePlayerScreenshotsPathChange = vi.fn()
-  const mockOpenModal = vi.fn().mockResolvedValue(undefined)
-  const mockCloseModal = vi.fn().mockResolvedValue(undefined)
   const mockChangeLanguage = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
     mockShowOpenDialog.mockReset()
+    mockOrchestrator.openModal.mockClear()
+    mockOrchestrator.closeModal.mockClear()
 
     vi.mocked(useUserSettings).mockImplementation(() =>
       createMockUserSettings({
@@ -136,23 +149,6 @@ describe("GeneralSettingsTab", () => {
         handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
       }),
     )
-
-    vi.mocked(useModal).mockImplementation(() => ({
-      activeModal: "none",
-      modalData: null,
-      isModalOpen: false,
-      openModal: mockOpenModal,
-      closeModal: mockCloseModal,
-      submitModal: vi.fn().mockResolvedValue(undefined),
-      openCameraCapture: vi.fn().mockResolvedValue(undefined),
-      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
-      openExport: vi.fn().mockResolvedValue(undefined),
-      openProjectSettings: vi.fn().mockResolvedValue(undefined),
-      openUserSettings: vi.fn().mockResolvedValue(undefined),
-      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
-      openColorGrading: vi.fn().mockResolvedValue(undefined),
-      openEffectDetail: vi.fn().mockResolvedValue(undefined),
-    }))
 
     vi.mocked(useLanguage).mockImplementation(() => ({
       currentLanguage: "ru",
@@ -424,7 +420,7 @@ describe("GeneralSettingsTab", () => {
       fireEvent.click(cacheStatsButton)
     })
 
-    expect(mockOpenModal).toHaveBeenCalledWith("cache-statistics", { returnTo: "user-settings" })
+    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-statistics", { returnTo: "user-settings" })
   })
 
   it("should open cache settings modal", () => {
@@ -435,7 +431,7 @@ describe("GeneralSettingsTab", () => {
       fireEvent.click(cacheSettingsButton)
     })
 
-    expect(mockOpenModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
+    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
   })
 
   it("should render all language options", async () => {

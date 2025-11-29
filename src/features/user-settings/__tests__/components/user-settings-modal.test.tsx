@@ -23,7 +23,20 @@ vi.mock("@/core", () => ({
 vi.mock("@/features/language")
 vi.mock("../../hooks/use-user-settings")
 vi.mock("../../hooks/use-api-keys")
-vi.mock("@/features/modals/services/modal-provider")
+
+// Mock System Integration Orchestrator
+const mockOrchestrator = {
+  openModal: vi.fn().mockResolvedValue(undefined),
+  closeModal: vi.fn().mockResolvedValue(undefined),
+  submitModal: vi.fn().mockResolvedValue(undefined),
+  getActiveModal: vi.fn().mockReturnValue("none"),
+  getModalData: vi.fn().mockReturnValue(null),
+  subscribeToModals: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
+}
+
+vi.mock("@/domains/system-integration/services/system-integration-orchestrator", () => ({
+  getSystemIntegrationOrchestrator: vi.fn(() => mockOrchestrator),
+}))
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -68,13 +81,13 @@ describe("UserSettingsModal", () => {
   const mockToggleTimelineVisibility = vi.fn()
   const mockToggleOptionsVisibility = vi.fn()
   const mockChangeLanguage = vi.fn()
-  const mockCloseModal = vi.fn().mockResolvedValue(undefined)
-  const mockOpenModal = vi.fn().mockResolvedValue(undefined)
 
   beforeEach(() => {
     // Очищаем моки перед каждым тестом
     vi.clearAllMocks()
     mockShowOpenDialog.mockReset()
+    mockOrchestrator.openModal.mockClear()
+    mockOrchestrator.closeModal.mockClear()
 
     // Устанавливаем моки по умолчанию
     vi.mocked(useUserSettings).mockImplementation(() =>
@@ -98,23 +111,6 @@ describe("UserSettingsModal", () => {
       isLoading: false,
       error: null,
       refreshLanguage: vi.fn(),
-    }))
-
-    vi.mocked(useModal).mockImplementation(() => ({
-      activeModal: "none",
-      modalData: null,
-      isModalOpen: false,
-      openModal: mockOpenModal,
-      closeModal: mockCloseModal,
-      submitModal: vi.fn().mockResolvedValue(undefined),
-      openCameraCapture: vi.fn().mockResolvedValue(undefined),
-      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
-      openExport: vi.fn().mockResolvedValue(undefined),
-      openProjectSettings: vi.fn().mockResolvedValue(undefined),
-      openUserSettings: vi.fn().mockResolvedValue(undefined),
-      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
-      openColorGrading: vi.fn().mockResolvedValue(undefined),
-      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
 
     vi.mocked(useApiKeys).mockImplementation(() => createMockApiKeys())
@@ -199,7 +195,7 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что closeModal был вызван
-    expect(mockCloseModal).toHaveBeenCalled()
+    expect(mockOrchestrator.closeModal).toHaveBeenCalled()
   })
 
   it("should clear screenshots path when X button is clicked", () => {
@@ -517,24 +513,6 @@ describe("UserSettingsModal", () => {
   })
 
   it("should open cache statistics modal when button is clicked", () => {
-    const localMockOpenModal = vi.fn().mockResolvedValue(undefined)
-    vi.mocked(useModal).mockImplementation(() => ({
-      activeModal: "none",
-      modalData: null,
-      isModalOpen: false,
-      openModal: localMockOpenModal,
-      closeModal: mockCloseModal,
-      submitModal: vi.fn().mockResolvedValue(undefined),
-      openCameraCapture: vi.fn().mockResolvedValue(undefined),
-      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
-      openExport: vi.fn().mockResolvedValue(undefined),
-      openProjectSettings: vi.fn().mockResolvedValue(undefined),
-      openUserSettings: vi.fn().mockResolvedValue(undefined),
-      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
-      openColorGrading: vi.fn().mockResolvedValue(undefined),
-      openEffectDetail: vi.fn().mockResolvedValue(undefined),
-    }))
-
     render(<UserSettingsModal />)
 
     // Находим кнопку статистики кэша
@@ -546,28 +524,10 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что openModal был вызван с правильными параметрами
-    expect(localMockOpenModal).toHaveBeenCalledWith("cache-statistics", { returnTo: "user-settings" })
+    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-statistics", { returnTo: "user-settings" })
   })
 
   it("should open cache settings modal when button is clicked", () => {
-    const localMockOpenModal = vi.fn().mockResolvedValue(undefined)
-    vi.mocked(useModal).mockImplementation(() => ({
-      activeModal: "none",
-      modalData: null,
-      isModalOpen: false,
-      openModal: localMockOpenModal,
-      closeModal: mockCloseModal,
-      submitModal: vi.fn().mockResolvedValue(undefined),
-      openCameraCapture: vi.fn().mockResolvedValue(undefined),
-      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
-      openExport: vi.fn().mockResolvedValue(undefined),
-      openProjectSettings: vi.fn().mockResolvedValue(undefined),
-      openUserSettings: vi.fn().mockResolvedValue(undefined),
-      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
-      openColorGrading: vi.fn().mockResolvedValue(undefined),
-      openEffectDetail: vi.fn().mockResolvedValue(undefined),
-    }))
-
     render(<UserSettingsModal />)
 
     // Находим кнопку настроек кэша
@@ -579,6 +539,6 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что openModal был вызван с правильными параметрами
-    expect(localMockOpenModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
+    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
   })
 })

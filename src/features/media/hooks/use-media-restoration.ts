@@ -5,9 +5,9 @@ import {
   type ProjectRestorationResult,
   restoreProjectMedia as restoreProjectMediaService,
 } from "@/domains/media-management/services/media-restoration-service"
+import { useModals } from "@/domains/system-integration"
 import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
-import { useModals } from "@/domains/system-integration"
 
 import { createLogger } from "@/lib/tauri-logger"
 

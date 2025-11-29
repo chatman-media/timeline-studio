@@ -13,7 +13,20 @@ import { createMockApiKeys, createMockUserSettings } from "../test-utils"
 vi.mock("../../hooks/use-user-settings")
 vi.mock("../../hooks/use-api-keys")
 vi.mock("@/features/language")
-vi.mock("@/features/modals/services/modal-provider")
+
+// Mock System Integration Orchestrator
+const mockOrchestrator = {
+  openModal: vi.fn().mockResolvedValue(undefined),
+  closeModal: vi.fn().mockResolvedValue(undefined),
+  submitModal: vi.fn().mockResolvedValue(undefined),
+  getActiveModal: vi.fn().mockReturnValue("none"),
+  getModalData: vi.fn().mockReturnValue(null),
+  subscribeToModals: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
+}
+
+vi.mock("@/domains/system-integration/services/system-integration-orchestrator", () => ({
+  getSystemIntegrationOrchestrator: vi.fn(() => mockOrchestrator),
+}))
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -28,6 +41,8 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
 describe("UserSettingsModalTabs", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockOrchestrator.openModal.mockClear()
+    mockOrchestrator.closeModal.mockClear()
 
     // Мок для useUserSettings
     vi.mocked(useUserSettings).mockImplementation(() => createMockUserSettings())
@@ -36,7 +51,6 @@ describe("UserSettingsModalTabs", () => {
     vi.mocked(useApiKeys).mockImplementation(() => createMockApiKeys())
 
     // Мок для useLanguage
-
     vi.mocked(useLanguage).mockImplementation(() => ({
       currentLanguage: "ru",
       changeLanguage: vi.fn(),
@@ -44,24 +58,6 @@ describe("UserSettingsModalTabs", () => {
       isLoading: false,
       error: null,
       refreshLanguage: vi.fn(),
-    }))
-
-    // Мок для useModal
-    vi.mocked(useModal).mockImplementation(() => ({
-      activeModal: "none",
-      modalData: null,
-      isModalOpen: false,
-      openModal: vi.fn().mockResolvedValue(undefined),
-      closeModal: vi.fn().mockResolvedValue(undefined),
-      submitModal: vi.fn().mockResolvedValue(undefined),
-      openCameraCapture: vi.fn().mockResolvedValue(undefined),
-      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
-      openExport: vi.fn().mockResolvedValue(undefined),
-      openProjectSettings: vi.fn().mockResolvedValue(undefined),
-      openUserSettings: vi.fn().mockResolvedValue(undefined),
-      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
-      openColorGrading: vi.fn().mockResolvedValue(undefined),
-      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
   })
 

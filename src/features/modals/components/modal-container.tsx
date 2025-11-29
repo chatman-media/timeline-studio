@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { type ModalData, type ModalType, useModals } from "@/domains/system-integration"
 import { AIDirectorModal } from "@/features/ai-director"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"
@@ -20,8 +21,6 @@ import { SubtitleEditorModal } from "@/features/timeline/components/subtitle-edi
 import { UserSettingsModal } from "@/features/user-settings"
 import { CacheStatisticsModal } from "@/features/video-compiler/components/cache-statistics-modal"
 import { VoiceRecordModal } from "@/features/voice-recording"
-
-import { type ModalData, type ModalType, useModals } from "@/domains/system-integration"
 
 /**
  * Контейнер для модальных окон
