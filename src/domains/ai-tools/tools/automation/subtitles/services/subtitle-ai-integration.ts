@@ -18,7 +18,6 @@ const logger = createLogger("SubtitleAiIntegration")
 // Импортируем сервисы AI Content Intelligence
 import { IVisionService } from "@/domains/ai-services/types/interfaces"
 import { WhisperIntegrationService } from "@/domains/ai-tools/tools/analysis/whisper/services/whisper-integration"
-import { getAIContainer } from "@/shared/services/ai/di-container"
 import { SubtitleSynchronizationService, type SynchronizationOptions } from "./subtitle-synchronization"
 
 /**
@@ -50,11 +49,8 @@ export class SubtitleAIIntegrationService {
     if (this.isInitialized) return
 
     try {
-      // Получаем AI контейнер
-      const aiContainer = getAIContainer()
-      const visionService = (await aiContainer.resolve("VisionService")) as IVisionService
-
-      this.visionService = visionService
+      // VisionService пока не реализован - используем null
+      this.visionService = null
 
       // Инициализируем Whisper сервис
       this.whisperService = WhisperIntegrationService.getInstance()
