@@ -433,6 +433,16 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::montage_planner::commands::generate_montage_plan,
     crate::montage_planner::commands::get_analysis_progress,
     crate::montage_planner::commands::update_composition_weights,
+    crate::montage_planner::commands::analyze_montage_videos,
+    crate::montage_planner::commands::optimize_montage_plan,
+    crate::montage_planner::commands::validate_montage_plan,
+    crate::montage_planner::commands::calculate_plan_statistics,
+    // Phase 3: Additional Montage commands
+    crate::montage_planner::commands::apply_montage_plan,
+    crate::montage_planner::commands::export_montage_plan,
+    crate::montage_planner::commands::analyze_video_quality,
+    crate::montage_planner::commands::analyze_frame_quality,
+    crate::montage_planner::commands::analyze_audio_content,
     // Audio analysis commands
     crate::commands::audio_analysis::analyze_audio_peaks,
     crate::commands::audio_analysis::detect_speech_onsets,

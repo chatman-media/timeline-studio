@@ -580,6 +580,195 @@ pub async fn update_composition_weights(
   Ok(())
 }
 
+// Missing commands (Phase 3) - Stub implementations
+
+/// Apply montage plan to timeline
+#[tauri::command]
+#[specta::specta]
+pub async fn apply_montage_plan(
+  plan: MontagePlan,
+  _timeline_id: String,
+  _state: tauri::State<'_, MontageState>,
+) -> Result<TimelineApplication, String> {
+  log::info!("Applying montage plan {} to timeline", plan.id);
+
+  // TODO: Implement actual timeline application logic
+  // This should:
+  // 1. Validate the montage plan
+  // 2. Create timeline clips from montage clips
+  // 3. Apply transitions between clips
+  // 4. Return statistics about applied changes
+
+  Ok(TimelineApplication {
+    success: true,
+    clips_added: plan.clips.len() as u32,
+    transitions_added: plan.transitions.len() as u32,
+    total_duration: plan.total_duration,
+    errors: vec![],
+    warnings: vec!["Timeline application not yet implemented".to_string()],
+  })
+}
+
+/// Export montage plan to file
+#[tauri::command]
+#[specta::specta]
+pub async fn export_montage_plan(
+  plan: MontagePlan,
+  format: ExportFormat,
+  _output_path: Option<String>,
+) -> Result<String, String> {
+  log::info!("Exporting montage plan {} as {:?}", plan.id, format);
+
+  // TODO: Implement actual export logic for different formats
+  match format {
+    ExportFormat::Json => {
+      serde_json::to_string_pretty(&plan).map_err(|e| format!("JSON export failed: {}", e))
+    }
+    ExportFormat::Csv => {
+      // TODO: Implement CSV export
+      Ok("plan_id,name,duration,quality_score\n".to_string()
+        + &format!(
+          "{},{},{},{}\n",
+          plan.id, plan.name, plan.total_duration, plan.quality_score
+        ))
+    }
+    ExportFormat::Xml => {
+      // TODO: Implement XML/EDL export
+      Ok(format!(
+        "<?xml version=\"1.0\"?>\n<montage_plan id=\"{}\" name=\"{}\"></montage_plan>",
+        plan.id, plan.name
+      ))
+    }
+    ExportFormat::Markdown => {
+      // TODO: Implement Markdown export
+      Ok(format!(
+        "# Montage Plan: {}\n\n- Duration: {:.2}s\n- Clips: {}\n- Quality: {:.1}%\n",
+        plan.name,
+        plan.total_duration,
+        plan.clips.len(),
+        plan.quality_score
+      ))
+    }
+  }
+}
+
+/// Analyze video quality metrics
+#[tauri::command]
+#[specta::specta]
+pub async fn analyze_video_quality(
+  video_path: String,
+  _state: tauri::State<'_, MontageState>,
+) -> Result<VideoQualityMetrics, String> {
+  log::info!("Analyzing video quality for: {}", video_path);
+
+  let path = PathBuf::from(&video_path);
+  if !path.exists() {
+    return Err(format!("Video file not found: {}", video_path));
+  }
+
+  // TODO: Implement actual video quality analysis
+  // This should:
+  // 1. Load video file
+  // 2. Analyze sharpness, brightness, contrast, etc.
+  // 3. Check compression artifacts
+  // 4. Verify frame rate consistency
+  // 5. Calculate overall quality score
+
+  Ok(VideoQualityMetrics {
+    overall_quality: 75.0,
+    sharpness: 80.0,
+    brightness: 70.0,
+    contrast: 75.0,
+    saturation: 65.0,
+    stability: 85.0,
+    noise_level: 15.0,
+    compression_artifacts: 10.0,
+    frame_rate_consistency: 95.0,
+    duration: 0.0,
+    resolution: (1920, 1080),
+    average_bitrate: 5000,
+  })
+}
+
+/// Analyze frame quality metrics
+#[tauri::command]
+#[specta::specta]
+pub async fn analyze_frame_quality(
+  video_path: String,
+  timestamp: f64,
+  _state: tauri::State<'_, MontageState>,
+) -> Result<FrameQualityMetrics, String> {
+  log::info!(
+    "Analyzing frame quality at timestamp {} for: {}",
+    timestamp,
+    video_path
+  );
+
+  let path = PathBuf::from(&video_path);
+  if !path.exists() {
+    return Err(format!("Video file not found: {}", video_path));
+  }
+
+  // TODO: Implement actual frame quality analysis
+  // This should:
+  // 1. Extract frame at given timestamp
+  // 2. Analyze sharpness, brightness, contrast
+  // 3. Calculate composition score
+  // 4. Detect blur
+  // 5. Determine if keyframe
+
+  Ok(FrameQualityMetrics {
+    timestamp,
+    frame_number: (timestamp * 30.0) as u32, // Assuming 30fps
+    sharpness: 80.0,
+    brightness: 70.0,
+    contrast: 75.0,
+    saturation: 65.0,
+    noise_level: 15.0,
+    blur_score: 20.0,
+    composition_score: CompositionScore::default(),
+    is_keyframe: false,
+  })
+}
+
+/// Analyze audio content
+#[tauri::command]
+#[specta::specta]
+pub async fn analyze_audio_content(
+  audio_path: String,
+  _state: tauri::State<'_, MontageState>,
+) -> Result<AudioContentAnalysis, String> {
+  log::info!("Analyzing audio content for: {}", audio_path);
+
+  let path = PathBuf::from(&audio_path);
+  if !path.exists() {
+    return Err(format!("Audio file not found: {}", audio_path));
+  }
+
+  // TODO: Implement actual audio content analysis
+  // This should:
+  // 1. Load audio file
+  // 2. Analyze volume levels and dynamic range
+  // 3. Detect silence, speech, music segments
+  // 4. Find audio peaks
+  // 5. Calculate clarity score
+
+  Ok(AudioContentAnalysis {
+    duration: 0.0,
+    sample_rate: 48000,
+    channels: 2,
+    average_volume: 60.0,
+    peak_volume: 90.0,
+    dynamic_range: 30.0,
+    silence_percentage: 10.0,
+    speech_percentage: 50.0,
+    music_percentage: 30.0,
+    noise_percentage: 10.0,
+    clarity_score: 75.0,
+    peaks: vec![],
+  })
+}
+
 /// Command registry implementation for Montage Planner module
 pub struct MontageCommandRegistry;
 
@@ -594,7 +783,13 @@ impl CommandRegistry for MontageCommandRegistry {
       validate_montage_plan,
       calculate_plan_statistics,
       get_analysis_progress,
-      update_composition_weights
+      update_composition_weights,
+      // Phase 3 commands
+      apply_montage_plan,
+      export_montage_plan,
+      analyze_video_quality,
+      analyze_frame_quality,
+      analyze_audio_content,
     ])
   }
 }

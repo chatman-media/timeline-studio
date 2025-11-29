@@ -60,7 +60,7 @@ pub struct BoundingBox {
 }
 
 /// Composition analysis score
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, specta::Type)]
 pub struct CompositionScore {
   pub rule_of_thirds: f32,  // 0-100: adherence to rule of thirds
   pub balance: f32,         // 0-100: visual balance
@@ -435,3 +435,82 @@ impl std::fmt::Display for MontageError {
 }
 
 impl std::error::Error for MontageError {}
+
+// Additional types for missing commands (Phase 3)
+
+/// Video quality metrics for quality analysis
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct VideoQualityMetrics {
+  pub overall_quality: f32,     // 0-100: overall video quality score
+  pub sharpness: f32,            // 0-100: image sharpness
+  pub brightness: f32,           // 0-100: brightness level
+  pub contrast: f32,             // 0-100: contrast level
+  pub saturation: f32,           // 0-100: color saturation
+  pub stability: f32,            // 0-100: video stability (low shaking)
+  pub noise_level: f32,          // 0-100: noise/grain level
+  pub compression_artifacts: f32, // 0-100: compression quality
+  pub frame_rate_consistency: f32, // 0-100: consistent frame rate
+  pub duration: f64,             // total video duration in seconds
+  pub resolution: (u32, u32),    // (width, height)
+  pub average_bitrate: u32,      // average bitrate in kbps
+}
+
+/// Frame quality metrics for individual frame analysis
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct FrameQualityMetrics {
+  pub timestamp: f64,           // frame timestamp
+  pub frame_number: u32,        // frame index
+  pub sharpness: f32,           // 0-100: image sharpness
+  pub brightness: f32,          // 0-100: brightness level
+  pub contrast: f32,            // 0-100: contrast level
+  pub saturation: f32,          // 0-100: color saturation
+  pub noise_level: f32,         // 0-100: noise/grain level
+  pub blur_score: f32,          // 0-100: blur amount (inverse of sharpness)
+  pub composition_score: CompositionScore, // composition analysis
+  pub is_keyframe: bool,        // whether this is a keyframe
+}
+
+/// Audio content analysis results
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct AudioContentAnalysis {
+  pub duration: f64,            // total audio duration in seconds
+  pub sample_rate: u32,         // audio sample rate in Hz
+  pub channels: u32,            // number of audio channels
+  pub average_volume: f32,      // 0-100: average volume level
+  pub peak_volume: f32,         // 0-100: peak volume level
+  pub dynamic_range: f32,       // 0-100: difference between quietest and loudest
+  pub silence_percentage: f32,  // 0-100: percentage of silent segments
+  pub speech_percentage: f32,   // 0-100: estimated percentage with speech
+  pub music_percentage: f32,    // 0-100: estimated percentage with music
+  pub noise_percentage: f32,    // 0-100: estimated percentage with noise
+  pub clarity_score: f32,       // 0-100: overall audio clarity
+  pub peaks: Vec<AudioPeak>,    // detected audio peaks
+}
+
+/// Audio peak detection
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct AudioPeak {
+  pub timestamp: f64,           // peak timestamp
+  pub amplitude: f32,           // peak amplitude 0-100
+  pub duration: f64,            // peak duration in seconds
+}
+
+/// Timeline application result (for apply_montage_plan)
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct TimelineApplication {
+  pub success: bool,
+  pub clips_added: u32,
+  pub transitions_added: u32,
+  pub total_duration: f64,
+  pub errors: Vec<String>,
+  pub warnings: Vec<String>,
+}
+
+/// Export format for montage plans
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub enum ExportFormat {
+  Json,      // JSON format
+  Csv,       // CSV format
+  Xml,       // XML format (EDL-like)
+  Markdown,  // Human-readable markdown
+}
