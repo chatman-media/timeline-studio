@@ -26,6 +26,19 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-29] AI Chat Architecture Refactoring - PLANNED 📋
+- **Status:** Запланировано
+- **File:** ai-chat-architecture-refactoring.md
+- **Action:** Создана задача в planned/
+- **Priority:** High
+- **Summary:**
+  - Устранение прямых зависимостей от domains (~30+ импортов)
+  - Перенос типов в core/types
+  - Создание портов для AI chat
+  - Вынос хуков в core/hooks
+  - 8 фаз рефакторинга (10-12 дней, 7-9 при параллелизации)
+- **Goal:** Соответствие Ports & Adapters, возможность тестирования с mock адаптерами
+
 ### [2025-11-29] Monorepo Packages Migration - PLANNED 📋
 - **Status:** Запланировано
 - **File:** monorepo-packages-migration.md
