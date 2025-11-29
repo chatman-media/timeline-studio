@@ -5,8 +5,8 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectFile } from "@/features/project-settings/types/project"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
+import type { ProjectFile } from "@/features/project-settings/types/project"
 import {
   createNewProject,
   getProjectStats,
@@ -153,16 +153,9 @@ describe("ProjectFileService", () => {
 
   describe("saveProject", () => {
     it("should save project with updated metadata", async () => {
-      vi.setSystemTime(new Date("2024-01-01"))
-
       await saveProject("/path/to/project.tls", mockProjectData)
 
-      expect(mockWriteTextFile).toHaveBeenCalledWith(
-        "/path/to/project.tls",
-        expect.stringContaining('"lastModified":'),
-      )
-
-      vi.useRealTimers()
+      expect(mockWriteTextFile).toHaveBeenCalledWith("/path/to/project.tls", expect.stringContaining('"lastModified":'))
     })
 
     it("should format JSON with indentation", async () => {
@@ -206,14 +199,10 @@ describe("ProjectFileService", () => {
     })
 
     it("should set creation timestamp", () => {
-      vi.setSystemTime(new Date("2024-01-01"))
-
       const project = createNewProject("My Project")
 
       expect(project.meta.createdAt).toBeDefined()
       expect(project.meta.lastModified).toBeDefined()
-
-      vi.useRealTimers()
     })
   })
 
@@ -241,13 +230,9 @@ describe("ProjectFileService", () => {
     })
 
     it("should update lastUpdated timestamp", () => {
-      vi.setSystemTime(new Date("2024-01-01"))
-
       const updated = updateMediaLibrary(mockProjectData, [], [])
 
       expect(updated.mediaPool.lastUpdated).toBeDefined()
-
-      vi.useRealTimers()
     })
   })
 
@@ -289,10 +274,7 @@ describe("ProjectFileService", () => {
         ...mockProjectData,
         mediaPool: {
           ...mockProjectData.mediaPool,
-          mediaFiles: [
-            { id: "1", size: 1024 } as SavedMediaFile,
-            { id: "2", size: 2048 } as SavedMediaFile,
-          ],
+          mediaFiles: [{ id: "1", size: 1024 } as SavedMediaFile, { id: "2", size: 2048 } as SavedMediaFile],
           musicFiles: [{ id: "3", size: 512 } as SavedMusicFile],
         },
       }

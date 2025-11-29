@@ -104,9 +104,7 @@ describe("MediaPreviewService", () => {
     it("should throw error when thumbnail generation fails", async () => {
       mockMediaService.generateThumbnail.mockRejectedValue(new Error("FFmpeg error"))
 
-      await expect(service.generateThumbnail("file-1", "/test/video.mp4", 320, 180)).rejects.toThrow(
-        "FFmpeg error",
-      )
+      await expect(service.generateThumbnail("file-1", "/test/video.mp4", 320, 180)).rejects.toThrow("FFmpeg error")
     })
   })
 

@@ -7,6 +7,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useRecentProjects } from "../../hooks/use-recent-projects"
+import { storeService } from "../../services/store-service"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({
@@ -19,13 +20,10 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 // Mock storeService
-const mockGetRecentProjects = vi.fn()
-const mockAddRecentProject = vi.fn()
-
 vi.mock("../../services/store-service", () => ({
   storeService: {
-    getRecentProjects: mockGetRecentProjects,
-    addRecentProject: mockAddRecentProject,
+    getRecentProjects: vi.fn(),
+    addRecentProject: vi.fn(),
   },
 }))
 
@@ -35,6 +33,9 @@ describe("useRecentProjects Hook", () => {
     { path: "/project2.tls", name: "Project 2", lastOpened: Date.now() - 2000 },
     { path: "/project3.tls", name: "Project 3", lastOpened: Date.now() - 3000 },
   ]
+
+  const mockGetRecentProjects = vi.mocked(storeService.getRecentProjects)
+  const mockAddRecentProject = vi.mocked(storeService.addRecentProject)
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -82,10 +83,7 @@ describe("useRecentProjects Hook", () => {
         expect(result.current.recentProjects).toEqual(mockProjects)
       })
 
-      const newProjects = [
-        { path: "/new-project.tls", name: "New Project", lastOpened: Date.now() },
-        ...mockProjects,
-      ]
+      const newProjects = [{ path: "/new-project.tls", name: "New Project", lastOpened: Date.now() }, ...mockProjects]
       mockGetRecentProjects.mockResolvedValueOnce(newProjects)
 
       await result.current.addRecentProject("/new-project.tls", "New Project")

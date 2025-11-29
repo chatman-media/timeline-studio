@@ -49,7 +49,9 @@ vi.mock("../../services/media-api", () => ({
 }))
 
 describe("useMediaManagement", () => {
-  const wrapper = ({ children }: { children: ReactNode }) => <MediaManagementProvider>{children}</MediaManagementProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <MediaManagementProvider>{children}</MediaManagementProvider>
+  )
 
   beforeEach(() => {
     vi.clearAllMocks()

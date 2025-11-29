@@ -17,9 +17,7 @@ describe("AI Services Events", () => {
 
     it("should have correct content intelligence event types", () => {
       expect(AI_SERVICES_EVENTS.CONTENT_ANALYSIS_STARTED).toBe("ai-services.content.analysis-started")
-      expect(AI_SERVICES_EVENTS.CONTENT_ANALYSIS_COMPLETED).toBe(
-        "ai-services.content.analysis-completed",
-      )
+      expect(AI_SERVICES_EVENTS.CONTENT_ANALYSIS_COMPLETED).toBe("ai-services.content.analysis-completed")
       expect(AI_SERVICES_EVENTS.SCRIPT_GENERATED).toBe("ai-services.content.script-generated")
     })
 
@@ -34,21 +32,11 @@ describe("AI Services Events", () => {
     })
 
     it("should have correct AI Director event types", () => {
-      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_ANALYSIS_PROGRESS).toBe(
-        "ai-services.ai-director.analysis-progress",
-      )
-      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_ANALYSIS_COMPLETED).toBe(
-        "ai-services.ai-director.analysis-completed",
-      )
-      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_ANALYSIS_ERROR).toBe(
-        "ai-services.ai-director.analysis-error",
-      )
-      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_STAGE_COMPLETED).toBe(
-        "ai-services.ai-director.stage-completed",
-      )
-      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_BATCH_COMPLETED).toBe(
-        "ai-services.ai-director.batch-completed",
-      )
+      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_ANALYSIS_PROGRESS).toBe("ai-services.ai-director.analysis-progress")
+      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_ANALYSIS_COMPLETED).toBe("ai-services.ai-director.analysis-completed")
+      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_ANALYSIS_ERROR).toBe("ai-services.ai-director.analysis-error")
+      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_STAGE_COMPLETED).toBe("ai-services.ai-director.stage-completed")
+      expect(AI_SERVICES_EVENTS.AI_DIRECTOR_BATCH_COMPLETED).toBe("ai-services.ai-director.batch-completed")
     })
 
     it("should have all events prefixed with domain name", () => {
@@ -82,37 +70,27 @@ describe("AI Services Events", () => {
 
   describe("Event Grouping", () => {
     it("should have chat events grouped", () => {
-      const chatEvents = Object.values(AI_SERVICES_EVENTS).filter((event) =>
-        event.includes(".chat."),
-      )
+      const chatEvents = Object.values(AI_SERVICES_EVENTS).filter((event) => event.includes(".chat."))
       expect(chatEvents).toHaveLength(3)
     })
 
     it("should have content events grouped", () => {
-      const contentEvents = Object.values(AI_SERVICES_EVENTS).filter((event) =>
-        event.includes(".content."),
-      )
+      const contentEvents = Object.values(AI_SERVICES_EVENTS).filter((event) => event.includes(".content."))
       expect(contentEvents).toHaveLength(3)
     })
 
     it("should have montage events grouped", () => {
-      const montageEvents = Object.values(AI_SERVICES_EVENTS).filter((event) =>
-        event.includes(".montage."),
-      )
+      const montageEvents = Object.values(AI_SERVICES_EVENTS).filter((event) => event.includes(".montage."))
       expect(montageEvents).toHaveLength(2)
     })
 
     it("should have recognition events grouped", () => {
-      const recognitionEvents = Object.values(AI_SERVICES_EVENTS).filter((event) =>
-        event.includes(".recognition."),
-      )
+      const recognitionEvents = Object.values(AI_SERVICES_EVENTS).filter((event) => event.includes(".recognition."))
       expect(recognitionEvents).toHaveLength(2)
     })
 
     it("should have AI Director events grouped", () => {
-      const aiDirectorEvents = Object.values(AI_SERVICES_EVENTS).filter((event) =>
-        event.includes(".ai-director."),
-      )
+      const aiDirectorEvents = Object.values(AI_SERVICES_EVENTS).filter((event) => event.includes(".ai-director."))
       expect(aiDirectorEvents).toHaveLength(5)
     })
   })

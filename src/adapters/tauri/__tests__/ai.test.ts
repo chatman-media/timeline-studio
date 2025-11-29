@@ -432,7 +432,11 @@ describe("TauriAIService", () => {
     })
 
     it("clusters faces with default options", async () => {
-      const embeddings = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]]
+      const embeddings = [
+        [0.1, 0.2],
+        [0.3, 0.4],
+        [0.5, 0.6],
+      ]
       mockInvoke.mockResolvedValueOnce([0, 0, 1])
       const result = await aiService.clusterFaces("engine-123", embeddings)
       expect(mockInvoke).toHaveBeenCalledWith("cluster_faces", {
@@ -509,7 +513,10 @@ describe("TauriAIService", () => {
     })
 
     it("extracts face mesh landmarks", async () => {
-      const landmarks = [{ x: 0.1, y: 0.2, z: 0.3 }, { x: 0.4, y: 0.5, z: 0.6 }]
+      const landmarks = [
+        { x: 0.1, y: 0.2, z: 0.3 },
+        { x: 0.4, y: 0.5, z: 0.6 },
+      ]
       mockInvoke.mockResolvedValueOnce(landmarks)
       const result = await aiService.extractFaceMeshLandmarks("proc-123", "/face.jpg")
       expect(mockInvoke).toHaveBeenCalledWith("extract_face_mesh_landmarks", {
@@ -612,7 +619,13 @@ describe("TauriAIService", () => {
 
     it("adds person appearance", async () => {
       mockInvoke.mockResolvedValueOnce(undefined)
-      await aiService.addPersonAppearance("person-123", "/video.mp4", 5.5, { x: 10, y: 20, width: 50, height: 60 }, 0.95)
+      await aiService.addPersonAppearance(
+        "person-123",
+        "/video.mp4",
+        5.5,
+        { x: 10, y: 20, width: 50, height: 60 },
+        0.95,
+      )
       expect(mockInvoke).toHaveBeenCalledWith("add_person_appearance", {
         personId: "person-123",
         videoPath: "/video.mp4",

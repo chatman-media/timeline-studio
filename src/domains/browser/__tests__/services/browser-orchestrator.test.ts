@@ -9,11 +9,15 @@
  * - Error handling
  */
 
-import { waitFor } from "xstate"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { waitFor } from "xstate"
 import type { BrowserState, BrowserTab } from "@/types/generated/tauri-bindings"
 import { createMockBrowserState, DEFAULT_TAB_SETTINGS } from "../../__mocks__"
-import { BrowserOrchestrator, getBrowserOrchestrator, resetBrowserOrchestrator } from "../../services/browser-orchestrator"
+import {
+  BrowserOrchestrator,
+  getBrowserOrchestrator,
+  resetBrowserOrchestrator,
+} from "../../services/browser-orchestrator"
 
 // Mock Tauri commands
 vi.mock("@/types/generated/tauri-bindings", async () => {
@@ -588,9 +592,9 @@ describe("BrowserOrchestrator", () => {
       const { commands } = await import("@/types/generated/tauri-bindings")
 
       // Mock slow command
-      commands.browserSetSearchQuery = vi.fn().mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ status: "ok" }), 100)),
-      )
+      commands.browserSetSearchQuery = vi
+        .fn()
+        .mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve({ status: "ok" }), 100)))
 
       const searchPromise = orchestrator.setSearchQuery("test")
 

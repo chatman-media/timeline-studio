@@ -622,7 +622,7 @@ describe("Type Validation Utilities", () => {
         media_id: "media-1",
         name: "test.mp4",
         timeline_in: 0,
-        timeline_out: Infinity,
+        timeline_out: Number.POSITIVE_INFINITY,
         source_in: 0,
         source_out: 10,
         playback_rate: 1.0,

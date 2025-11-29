@@ -9,11 +9,11 @@
  * - Context updates
  */
 
-import { createActor, waitFor } from "xstate"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { createActor, waitFor } from "xstate"
 import type { BrowserEvent, BrowserTab, TabSettings } from "@/types/generated/tauri-bindings"
 import { DEFAULT_TAB_SETTINGS } from "../../__mocks__"
-import { browserMachine, createBrowserActor, type BrowserMachineContext } from "../../machines/browser-machine"
+import { type BrowserMachineContext, browserMachine, createBrowserActor } from "../../machines/browser-machine"
 
 describe("BrowserMachine", () => {
   let actor: ReturnType<typeof createActor<typeof browserMachine>>

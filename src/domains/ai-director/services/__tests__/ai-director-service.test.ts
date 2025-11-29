@@ -2,7 +2,6 @@
  * Тесты для AI Director Service
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { AIDirectorService } from "../ai-director-service"
 import type {
   AIDirectorConfig,
   ComprehensiveAnalysisResult,
@@ -10,6 +9,7 @@ import type {
   HealthCheckResult,
   SystemCapabilities,
 } from "../../types"
+import { AIDirectorService } from "../ai-director-service"
 
 // Mock Tauri commands
 const mockTauriCommands = {
@@ -298,10 +298,9 @@ describe("AI Director Service", () => {
           performanceMode: "fast",
         })
 
-        expect(mockTauriCommands.unifiedAudioAnalyzeBatch).toHaveBeenCalledWith(
-          ["/video1.mp4", "/video2.mp4"],
-          { performance_mode: "fast" },
-        )
+        expect(mockTauriCommands.unifiedAudioAnalyzeBatch).toHaveBeenCalledWith(["/video1.mp4", "/video2.mp4"], {
+          performance_mode: "fast",
+        })
         expect(result).toEqual(audioResults)
       })
 

@@ -5,28 +5,34 @@
  */
 
 import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AudioWaveform, AudioWaveformCompact } from "../audio-waveform"
+import { usePeaksWaveform } from "../../hooks/use-peaks-waveform"
 
 // Mock peaks waveform hook
-const mockPlay = vi.fn()
-const mockPause = vi.fn()
-
 vi.mock("../../hooks/use-peaks-waveform", () => ({
-  usePeaksWaveform: vi.fn(() => ({
-    overviewRef: { current: null },
-    zoomviewRef: { current: null },
-    isLoading: false,
-    error: null,
-    isReady: true,
-    play: mockPlay,
-    pause: mockPause,
-  })),
+  usePeaksWaveform: vi.fn(),
 }))
 
+const mockUsePeaksWaveform = vi.mocked(usePeaksWaveform)
+
 describe("AudioWaveform", () => {
+  const mockPlay = vi.fn()
+  const mockPause = vi.fn()
+
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset to default mock implementation
+    mockUsePeaksWaveform.mockReturnValue({
+      overviewRef: { current: null },
+      zoomviewRef: { current: null },
+      isLoading: false,
+      error: null,
+      isReady: true,
+      play: mockPlay,
+      pause: mockPause,
+    })
   })
 
   it("should render with default props", () => {
@@ -37,8 +43,7 @@ describe("AudioWaveform", () => {
   })
 
   it("should show loading state", () => {
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    usePeaksWaveform.mockReturnValue({
+    mockUsePeaksWaveform.mockReturnValue({
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: true,
@@ -54,9 +59,8 @@ describe("AudioWaveform", () => {
   })
 
   it("should show error state", () => {
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
     const testError = new Error("Test error")
-    usePeaksWaveform.mockReturnValue({
+    mockUsePeaksWaveform.mockReturnValue({
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: false,
@@ -103,25 +107,23 @@ describe("AudioWaveform", () => {
   })
 
   it("should call play when Play button is clicked", async () => {
-    const { user } = await import("@testing-library/user-event")
-    const userEvent = user.setup()
+    const user = userEvent.setup()
 
     render(<AudioWaveform audioUrl="/test/audio.mp3" showControls={true} />)
 
     const playButton = screen.getByRole("button", { name: /play/i })
-    await userEvent.click(playButton)
+    await user.click(playButton)
 
     expect(mockPlay).toHaveBeenCalledTimes(1)
   })
 
   it("should call pause when Pause button is clicked", async () => {
-    const { user } = await import("@testing-library/user-event")
-    const userEvent = user.setup()
+    const user = userEvent.setup()
 
     render(<AudioWaveform audioUrl="/test/audio.mp3" showControls={true} />)
 
     const pauseButton = screen.getByRole("button", { name: /pause/i })
-    await userEvent.click(pauseButton)
+    await user.click(pauseButton)
 
     expect(mockPause).toHaveBeenCalledTimes(1)
   })
@@ -139,8 +141,7 @@ describe("AudioWaveform", () => {
 
     // Note: The actual callback is passed to usePeaksWaveform
     // This test verifies the prop is passed correctly
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    expect(usePeaksWaveform).toHaveBeenCalledWith(
+    expect(mockUsePeaksWaveform).toHaveBeenCalledWith(
       expect.objectContaining({
         audioUrl: "/test/audio.mp3",
         onReady,
@@ -153,8 +154,7 @@ describe("AudioWaveform", () => {
 
     render(<AudioWaveform audioUrl="/test/audio.mp3" onError={onError} />)
 
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    expect(usePeaksWaveform).toHaveBeenCalledWith(
+    expect(mockUsePeaksWaveform).toHaveBeenCalledWith(
       expect.objectContaining({
         audioUrl: "/test/audio.mp3",
         onError,
@@ -163,12 +163,9 @@ describe("AudioWaveform", () => {
   })
 
   it("should use custom waveform colors", () => {
-    render(
-      <AudioWaveform audioUrl="/test/audio.mp3" waveformColor="#ff0000" playedWaveformColor="#00ff00" />,
-    )
+    render(<AudioWaveform audioUrl="/test/audio.mp3" waveformColor="#ff0000" playedWaveformColor="#00ff00" />)
 
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    expect(usePeaksWaveform).toHaveBeenCalledWith(
+    expect(mockUsePeaksWaveform).toHaveBeenCalledWith(
       expect.objectContaining({
         waveformColor: "#ff0000",
         playedWaveformColor: "#00ff00",
@@ -177,9 +174,7 @@ describe("AudioWaveform", () => {
   })
 
   it("should use custom heights", () => {
-    const { container } = render(
-      <AudioWaveform audioUrl="/test/audio.mp3" overviewHeight={100} zoomviewHeight={300} />,
-    )
+    const { container } = render(<AudioWaveform audioUrl="/test/audio.mp3" overviewHeight={100} zoomviewHeight={300} />)
 
     const overviewEl = container.querySelector('[style*="height: 100px"]')
     const zoomviewEl = container.querySelector('[style*="height: 300px"]')
@@ -189,8 +184,7 @@ describe("AudioWaveform", () => {
   })
 
   it("should show initializing state when not ready", () => {
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    usePeaksWaveform.mockReturnValue({
+    mockUsePeaksWaveform.mockReturnValue({
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: false,
@@ -208,8 +202,21 @@ describe("AudioWaveform", () => {
 })
 
 describe("AudioWaveformCompact", () => {
+  const mockPlay = vi.fn()
+  const mockPause = vi.fn()
+
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset to default mock implementation
+    mockUsePeaksWaveform.mockReturnValue({
+      overviewRef: { current: null },
+      zoomviewRef: { current: null },
+      isLoading: false,
+      error: null,
+      isReady: true,
+      play: mockPlay,
+      pause: mockPause,
+    })
   })
 
   it("should render compact version", () => {
@@ -250,8 +257,7 @@ describe("AudioWaveformCompact", () => {
   it("should use custom waveform color", () => {
     render(<AudioWaveformCompact audioUrl="/test/audio.mp3" waveformColor="#123456" />)
 
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    expect(usePeaksWaveform).toHaveBeenCalledWith(
+    expect(mockUsePeaksWaveform).toHaveBeenCalledWith(
       expect.objectContaining({
         waveformColor: "#123456",
       }),
@@ -263,8 +269,7 @@ describe("AudioWaveformCompact", () => {
 
     render(<AudioWaveformCompact audioUrl="/test/audio.mp3" onReady={onReady} />)
 
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    expect(usePeaksWaveform).toHaveBeenCalledWith(
+    expect(mockUsePeaksWaveform).toHaveBeenCalledWith(
       expect.objectContaining({
         onReady,
       }),
@@ -274,8 +279,7 @@ describe("AudioWaveformCompact", () => {
   it("should pass dataUri when provided", () => {
     render(<AudioWaveformCompact audioUrl="/test/audio.mp3" dataUri="/test/waveform.json" />)
 
-    const { usePeaksWaveform } = require("../../hooks/use-peaks-waveform")
-    expect(usePeaksWaveform).toHaveBeenCalledWith(
+    expect(mockUsePeaksWaveform).toHaveBeenCalledWith(
       expect.objectContaining({
         audioUrl: "/test/audio.mp3",
         dataUri: "/test/waveform.json",

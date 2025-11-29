@@ -1,9 +1,9 @@
 /**
  * Тесты для AI Director XState Machine
  */
-import { createActor, waitFor } from "xstate"
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { aiDirectorMachine } from "../ai-director-machine"
+import { createActor, waitFor } from "xstate"
 import type {
   AIDirectorConfig,
   AnalysisError,
@@ -13,6 +13,7 @@ import type {
   HealthCheckResult,
   SystemCapabilities,
 } from "../../types"
+import { aiDirectorMachine } from "../ai-director-machine"
 
 // Mock Tauri commands
 const mockTauriCommands = {
@@ -272,10 +273,7 @@ describe("AI Director Machine", () => {
 
       await waitFor(actor, (state) => state.matches("idle") && state.context.results.length === 2)
 
-      expect(mockTauriCommands.aiDirectorAnalyzeBatch).toHaveBeenCalledWith(
-        ["/video1.mp4", "/video2.mp4"],
-        mockConfig,
-      )
+      expect(mockTauriCommands.aiDirectorAnalyzeBatch).toHaveBeenCalledWith(["/video1.mp4", "/video2.mp4"], mockConfig)
       expect(actor.getSnapshot().context.results).toHaveLength(2)
     })
 

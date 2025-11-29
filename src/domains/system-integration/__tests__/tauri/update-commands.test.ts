@@ -318,11 +318,7 @@ describe("Update Tauri Commands", () => {
         update_info: undefined,
       })
 
-      const [result1, result2, result3] = await Promise.all([
-        checkForUpdate(),
-        checkForUpdate(),
-        checkForUpdate(),
-      ])
+      const [result1, result2, result3] = await Promise.all([checkForUpdate(), checkForUpdate(), checkForUpdate()])
 
       expect(result1).toEqual(result2)
       expect(result2).toEqual(result3)

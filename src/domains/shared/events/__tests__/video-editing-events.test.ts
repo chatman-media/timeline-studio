@@ -78,44 +78,32 @@ describe("Video Editing Events", () => {
 
   describe("Event Grouping", () => {
     it("should have timeline events grouped", () => {
-      const timelineEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) =>
-        event.includes(".timeline."),
-      )
+      const timelineEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) => event.includes(".timeline."))
       expect(timelineEvents).toHaveLength(10)
     })
 
     it("should have playback events grouped", () => {
-      const playbackEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) =>
-        event.includes(".playback."),
-      )
+      const playbackEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) => event.includes(".playback."))
       expect(playbackEvents).toHaveLength(5)
     })
 
     it("should have effect events grouped", () => {
-      const effectEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) =>
-        event.includes(".effect."),
-      )
+      const effectEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) => event.includes(".effect."))
       expect(effectEvents).toHaveLength(2)
     })
 
     it("should have filter events grouped", () => {
-      const filterEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) =>
-        event.includes(".filter."),
-      )
+      const filterEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) => event.includes(".filter."))
       expect(filterEvents).toHaveLength(1)
     })
 
     it("should have export events grouped", () => {
-      const exportEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) =>
-        event.includes(".export."),
-      )
+      const exportEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) => event.includes(".export."))
       expect(exportEvents).toHaveLength(3)
     })
 
     it("should have player events grouped", () => {
-      const playerEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) =>
-        event.includes(".player."),
-      )
+      const playerEvents = Object.values(VIDEO_EDITING_EVENTS).filter((event) => event.includes(".player."))
       expect(playerEvents).toHaveLength(2)
     })
   })

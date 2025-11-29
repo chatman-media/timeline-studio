@@ -2,13 +2,8 @@
  * Tests for SubtitleService
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import type { AudioAnalysisOptions, AudioPeaksResult, SubtitleExportOptions, SubtitleImportResult } from "../../types"
 import { SubtitleService } from "../subtitle-service"
-import type {
-  AudioAnalysisOptions,
-  AudioPeaksResult,
-  SubtitleExportOptions,
-  SubtitleImportResult,
-} from "../../types"
 
 // Hoist mock functions
 const { mockReadSubtitleFile, mockAnalyzeAudioPeaks, mockSaveSubtitleFile, mockUpdateTimelineSubtitles } = vi.hoisted(
@@ -401,7 +396,11 @@ describe("SubtitleService", () => {
     })
 
     it("should export large content", async () => {
-      const largeContent = Array.from({ length: 1000 }, (_, i) => `${i + 1}\n00:00:${String(i).padStart(2, "0")},000 --> 00:00:${String(i + 1).padStart(2, "0")},000\nSubtitle ${i + 1}`).join("\n\n")
+      const largeContent = Array.from(
+        { length: 1000 },
+        (_, i) =>
+          `${i + 1}\n00:00:${String(i).padStart(2, "0")},000 --> 00:00:${String(i + 1).padStart(2, "0")},000\nSubtitle ${i + 1}`,
+      ).join("\n\n")
 
       const options: SubtitleExportOptions = {
         format: "srt",

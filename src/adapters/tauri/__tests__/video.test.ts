@@ -168,7 +168,10 @@ describe("TauriVideoService", () => {
 
   describe("Render Jobs", () => {
     it("gets active render jobs", async () => {
-      const jobs = [{ id: "job-1", status: "rendering" }, { id: "job-2", status: "queued" }] as any
+      const jobs = [
+        { id: "job-1", status: "rendering" },
+        { id: "job-2", status: "queued" },
+      ] as any
       mockInvoke.mockResolvedValueOnce(jobs)
 
       const result = await service.getActiveJobs()

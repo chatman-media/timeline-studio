@@ -71,28 +71,20 @@ describe("Media Management Events", () => {
     })
 
     it("should have metadata events grouped", () => {
-      const metadataEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".metadata."),
-      )
+      const metadataEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) => event.includes(".metadata."))
       expect(metadataEvents).toHaveLength(1)
 
-      const thumbnailEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".thumbnail."),
-      )
+      const thumbnailEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) => event.includes(".thumbnail."))
       expect(thumbnailEvents).toHaveLength(1)
     })
 
     it("should have browser events grouped", () => {
-      const browserEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".browser."),
-      )
+      const browserEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) => event.includes(".browser."))
       expect(browserEvents).toHaveLength(3)
     })
 
     it("should have import events grouped", () => {
-      const importEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".import."),
-      )
+      const importEvents = Object.values(MEDIA_MANAGEMENT_EVENTS).filter((event) => event.includes(".import."))
       expect(importEvents).toHaveLength(3)
     })
   })

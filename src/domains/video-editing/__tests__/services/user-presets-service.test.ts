@@ -16,8 +16,8 @@ import {
   loadPresetsForEffect,
   loadUserPreset,
   saveUserPreset,
-  updateUserPreset,
   type UserPreset,
+  updateUserPreset,
 } from "../../services/effects/user-presets-service"
 
 // Mock Tauri logger
@@ -72,11 +72,16 @@ describe("User Presets Service", () => {
     })
 
     it("should save preset with optional fields", async () => {
-      const preset = await saveUserPreset("effect-1", "Preset 1", {}, {
-        description: "Test description",
-        tags: ["tag1", "tag2"],
-        favorite: true,
-      })
+      const preset = await saveUserPreset(
+        "effect-1",
+        "Preset 1",
+        {},
+        {
+          description: "Test description",
+          tags: ["tag1", "tag2"],
+          favorite: true,
+        },
+      )
 
       expect(preset.description).toBe("Test description")
       expect(preset.tags).toEqual(["tag1", "tag2"])

@@ -60,7 +60,9 @@ describe("useFavorites Hook", () => {
 
       await result.current.addToFavorites(item, "effect")
 
-      expect(result.current.favorites.effect).toContainEqual(item)
+      await waitFor(() => {
+        expect(result.current.favorites.effect).toContainEqual(item)
+      })
     })
 
     it("should execute backend command with correct parameters", async () => {
@@ -126,11 +128,15 @@ describe("useFavorites Hook", () => {
 
       // Add first
       await result.current.addToFavorites(item, "effect")
-      expect(result.current.favorites.effect).toContainEqual(item)
+      await waitFor(() => {
+        expect(result.current.favorites.effect).toContainEqual(item)
+      })
 
       // Then remove
       await result.current.removeFromFavorites(item, "effect")
-      expect(result.current.favorites.effect).not.toContainEqual(item)
+      await waitFor(() => {
+        expect(result.current.favorites.effect).not.toContainEqual(item)
+      })
     })
 
     it("should execute backend command with correct parameters", async () => {
@@ -188,7 +194,9 @@ describe("useFavorites Hook", () => {
 
       await result.current.addToFavorites(item, "effect")
 
-      expect(result.current.isItemFavorite(item, "effect")).toBe(true)
+      await waitFor(() => {
+        expect(result.current.isItemFavorite(item, "effect")).toBe(true)
+      })
     })
 
     it("should return false after item is removed", async () => {
@@ -198,7 +206,9 @@ describe("useFavorites Hook", () => {
       await result.current.addToFavorites(item, "effect")
       await result.current.removeFromFavorites(item, "effect")
 
-      expect(result.current.isItemFavorite(item, "effect")).toBe(false)
+      await waitFor(() => {
+        expect(result.current.isItemFavorite(item, "effect")).toBe(false)
+      })
     })
 
     it("should distinguish between different types", async () => {
@@ -207,8 +217,10 @@ describe("useFavorites Hook", () => {
 
       await result.current.addToFavorites(item, "effect")
 
-      expect(result.current.isItemFavorite(item, "effect")).toBe(true)
-      expect(result.current.isItemFavorite(item, "filter")).toBe(false)
+      await waitFor(() => {
+        expect(result.current.isItemFavorite(item, "effect")).toBe(true)
+        expect(result.current.isItemFavorite(item, "filter")).toBe(false)
+      })
     })
 
     it("should handle undefined type gracefully", () => {
@@ -232,7 +244,9 @@ describe("useFavorites Hook", () => {
         await result.current.addToFavorites(item, "effect")
       }
 
-      expect(result.current.favorites.effect).toHaveLength(3)
+      await waitFor(() => {
+        expect(result.current.favorites.effect).toHaveLength(3)
+      })
     })
 
     it("should handle concurrent add/remove operations", async () => {
@@ -245,7 +259,9 @@ describe("useFavorites Hook", () => {
         result.current.addToFavorites(item2, "effect"),
       ])
 
-      expect(result.current.favorites.effect).toHaveLength(2)
+      await waitFor(() => {
+        expect(result.current.favorites.effect).toHaveLength(2)
+      })
     })
 
     it("should not add duplicate items", async () => {
@@ -255,8 +271,10 @@ describe("useFavorites Hook", () => {
       await result.current.addToFavorites(item, "effect")
       await result.current.addToFavorites(item, "effect")
 
-      // Should have duplicates because state is optimistic
-      expect(result.current.favorites.effect.length).toBeGreaterThan(0)
+      await waitFor(() => {
+        // Should have duplicates because state is optimistic
+        expect(result.current.favorites.effect.length).toBeGreaterThan(0)
+      })
     })
   })
 

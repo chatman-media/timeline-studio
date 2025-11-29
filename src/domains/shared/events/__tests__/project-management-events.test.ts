@@ -18,9 +18,7 @@ describe("Project Management Events", () => {
 
     it("should have correct settings event types", () => {
       expect(PROJECT_MANAGEMENT_EVENTS.USER_SETTINGS_CHANGED).toBe("project.settings.user-changed")
-      expect(PROJECT_MANAGEMENT_EVENTS.PROJECT_SETTINGS_CHANGED).toBe(
-        "project.settings.project-changed",
-      )
+      expect(PROJECT_MANAGEMENT_EVENTS.PROJECT_SETTINGS_CHANGED).toBe("project.settings.project-changed")
       expect(PROJECT_MANAGEMENT_EVENTS.LANGUAGE_CHANGED).toBe("project.settings.language-changed")
       expect(PROJECT_MANAGEMENT_EVENTS.THEME_CHANGED).toBe("project.settings.theme-changed")
     })
@@ -33,9 +31,7 @@ describe("Project Management Events", () => {
     it("should have correct backend event types", () => {
       expect(PROJECT_MANAGEMENT_EVENTS.BACKEND_CONNECTED).toBe("project.backend.connected")
       expect(PROJECT_MANAGEMENT_EVENTS.BACKEND_DISCONNECTED).toBe("project.backend.disconnected")
-      expect(PROJECT_MANAGEMENT_EVENTS.BACKEND_COMMAND_EXECUTED).toBe(
-        "project.backend.command-executed",
-      )
+      expect(PROJECT_MANAGEMENT_EVENTS.BACKEND_COMMAND_EXECUTED).toBe("project.backend.command-executed")
     })
 
     it("should have all events prefixed with domain name", () => {
@@ -70,29 +66,27 @@ describe("Project Management Events", () => {
   describe("Event Grouping", () => {
     it("should have project lifecycle events grouped", () => {
       const projectEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter(
-        (event) => event.startsWith("project.") && !event.includes(".settings.") && !event.includes(".api-key.") && !event.includes(".backend."),
+        (event) =>
+          event.startsWith("project.") &&
+          !event.includes(".settings.") &&
+          !event.includes(".api-key.") &&
+          !event.includes(".backend."),
       )
       expect(projectEvents).toHaveLength(4)
     })
 
     it("should have settings events grouped", () => {
-      const settingsEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".settings."),
-      )
+      const settingsEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter((event) => event.includes(".settings."))
       expect(settingsEvents).toHaveLength(4)
     })
 
     it("should have API key events grouped", () => {
-      const apiKeyEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".api-key."),
-      )
+      const apiKeyEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter((event) => event.includes(".api-key."))
       expect(apiKeyEvents).toHaveLength(2)
     })
 
     it("should have backend events grouped", () => {
-      const backendEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter((event) =>
-        event.includes(".backend."),
-      )
+      const backendEvents = Object.values(PROJECT_MANAGEMENT_EVENTS).filter((event) => event.includes(".backend."))
       expect(backendEvents).toHaveLength(3)
     })
   })

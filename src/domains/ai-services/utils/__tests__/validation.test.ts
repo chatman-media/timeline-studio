@@ -11,19 +11,19 @@
 
 import { describe, expect, it } from "vitest"
 import {
-  FileSizeError,
   FileNotFoundError,
+  FileSizeError,
   InputTooLargeError,
   InvalidFormatError,
   MAX_FILE_SIZE_BYTES,
   MAX_MESSAGE_LENGTH,
   MAX_MESSAGES_COUNT,
-  sanitizeTextInput,
   SUPPORTED_AUDIO_FORMATS,
   SUPPORTED_VIDEO_FORMATS,
+  sanitizeTextInput,
+  ValidationError,
   validateAIMessages,
   validateBatchSize,
-  ValidationError,
 } from "../validation"
 
 describe("Validation Utilities", () => {
@@ -231,4 +231,3 @@ describe("Validation Utilities", () => {
   // NOTE: Video batch validation тесты пропущены, так как они также требуют server-side
   // Эти функции используют validateVideoFile внутри, который выбрасывает ошибку в jsdom
 })
-

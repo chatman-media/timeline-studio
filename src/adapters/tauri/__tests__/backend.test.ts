@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { TauriBackendService } from "../backend"
 import type { ProjectCommand, ProjectEvent, ProjectState } from "@/core/types"
+import { TauriBackendService } from "../backend"
 
 // Mock BackendSync
 const mockBackendSync = {

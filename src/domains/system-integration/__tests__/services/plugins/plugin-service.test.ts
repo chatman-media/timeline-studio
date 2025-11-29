@@ -3,7 +3,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { sendPluginCommand, isPluginLoaded } from "../../../services/plugins/plugin-service"
+import { isPluginLoaded, sendPluginCommand } from "../../../services/plugins/plugin-service"
 
 // Mock Tauri plugin commands
 vi.mock("../../../tauri/plugin-commands", () => ({

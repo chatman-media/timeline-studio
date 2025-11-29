@@ -18,12 +18,8 @@ describe("System Integration Events", () => {
     it("should have correct update event types", () => {
       expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_CHECK_STARTED).toBe("system.update.check-started")
       expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_AVAILABLE).toBe("system.update.available")
-      expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_DOWNLOAD_STARTED).toBe(
-        "system.update.download-started",
-      )
-      expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_DOWNLOAD_PROGRESS).toBe(
-        "system.update.download-progress",
-      )
+      expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_DOWNLOAD_STARTED).toBe("system.update.download-started")
+      expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_DOWNLOAD_PROGRESS).toBe("system.update.download-progress")
       expect(SYSTEM_INTEGRATION_EVENTS.UPDATE_INSTALLED).toBe("system.update.installed")
     })
 
@@ -75,23 +71,17 @@ describe("System Integration Events", () => {
 
   describe("Event Grouping", () => {
     it("should have modal events grouped", () => {
-      const modalEvents = Object.values(SYSTEM_INTEGRATION_EVENTS).filter((event) =>
-        event.includes(".modal."),
-      )
+      const modalEvents = Object.values(SYSTEM_INTEGRATION_EVENTS).filter((event) => event.includes(".modal."))
       expect(modalEvents).toHaveLength(3)
     })
 
     it("should have update events grouped", () => {
-      const updateEvents = Object.values(SYSTEM_INTEGRATION_EVENTS).filter((event) =>
-        event.includes(".update."),
-      )
+      const updateEvents = Object.values(SYSTEM_INTEGRATION_EVENTS).filter((event) => event.includes(".update."))
       expect(updateEvents).toHaveLength(5)
     })
 
     it("should have shortcut events grouped", () => {
-      const shortcutEvents = Object.values(SYSTEM_INTEGRATION_EVENTS).filter((event) =>
-        event.includes(".shortcut."),
-      )
+      const shortcutEvents = Object.values(SYSTEM_INTEGRATION_EVENTS).filter((event) => event.includes(".shortcut."))
       expect(shortcutEvents).toHaveLength(2)
     })
 

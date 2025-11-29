@@ -181,10 +181,9 @@ describe("LanguageService", () => {
 
   describe("Language Service Integration", () => {
     it("should handle language switching flow", async () => {
-      const {
-        getAppLanguage: getAppLanguageTauri,
-        setAppLanguage: setAppLanguageTauri,
-      } = await import("../../../tauri/language-commands")
+      const { getAppLanguage: getAppLanguageTauri, setAppLanguage: setAppLanguageTauri } = await import(
+        "../../../tauri/language-commands"
+      )
       const mockedGet = vi.mocked(getAppLanguageTauri)
       const mockedSet = vi.mocked(setAppLanguageTauri)
 
@@ -248,11 +247,7 @@ describe("LanguageService", () => {
         system_language: "en-US",
       })
 
-      const [result1, result2, result3] = await Promise.all([
-        getAppLanguage(),
-        getAppLanguage(),
-        getAppLanguage(),
-      ])
+      const [result1, result2, result3] = await Promise.all([getAppLanguage(), getAppLanguage(), getAppLanguage()])
 
       expect(result1).toEqual(result2)
       expect(result2).toEqual(result3)

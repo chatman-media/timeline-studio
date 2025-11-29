@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MockBackendService } from "../backend"
 import type { ProjectEvent, ProjectState } from "@/core/types"
+import { MockBackendService } from "../backend"
 
 describe("MockBackendService", () => {
   let service: MockBackendService

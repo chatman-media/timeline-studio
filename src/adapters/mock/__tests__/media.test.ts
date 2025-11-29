@@ -163,20 +163,17 @@ describe("MockMediaService", () => {
 
   describe("Waveforms", () => {
     it("generates waveform preview", async () => {
-      const path = await service.generateWaveformPreview(
-        "/audio.mp3",
-        "/output/wave.png"
-      )
+      const path = await service.generateWaveformPreview("/audio.mp3", "/output/wave.png")
 
       expect(path).toBe("/output/wave.png")
     })
 
     it("generates waveform preview with custom options", async () => {
-      const path = await service.generateWaveformPreview(
-        "/audio.mp3",
-        "/output/wave.png",
-        { width: 800, height: 120, color: "#ff0000" }
-      )
+      const path = await service.generateWaveformPreview("/audio.mp3", "/output/wave.png", {
+        width: 800,
+        height: 120,
+        color: "#ff0000",
+      })
 
       expect(path).toBe("/output/wave.png")
     })
@@ -314,11 +311,7 @@ describe("MockMediaService", () => {
     })
 
     it("processes files with thumbnails", async () => {
-      const files = await service.processFilesWithThumbnails(
-        ["/video.mp4"],
-        320,
-        180
-      )
+      const files = await service.processFilesWithThumbnails(["/video.mp4"], 320, 180)
 
       expect(Array.isArray(files)).toBe(true)
       expect(files.length).toBe(1)

@@ -264,11 +264,7 @@ describe("Language Tauri Commands", () => {
         system_language: "en-US",
       })
 
-      const [result1, result2, result3] = await Promise.all([
-        getAppLanguage(),
-        getAppLanguage(),
-        getAppLanguage(),
-      ])
+      const [result1, result2, result3] = await Promise.all([getAppLanguage(), getAppLanguage(), getAppLanguage()])
 
       expect(result1).toEqual(result2)
       expect(result2).toEqual(result3)

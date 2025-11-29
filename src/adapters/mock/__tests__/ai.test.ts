@@ -267,7 +267,11 @@ describe("MockAIService", () => {
 
     it("clusters faces", async () => {
       const engineId = await service.initClusteringEngine()
-      const embeddings = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]]
+      const embeddings = [
+        [0.1, 0.2],
+        [0.3, 0.4],
+        [0.5, 0.6],
+      ]
       const labels = await service.clusterFaces(engineId, embeddings)
       expect(Array.isArray(labels)).toBe(true)
     })

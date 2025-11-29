@@ -65,9 +65,7 @@ describe("MediaProcessorService", () => {
 
   describe("scanFolderWithThumbnails", () => {
     it("should scan folder with thumbnails", async () => {
-      const mockFiles = [
-        { id: "file-1", path: "/test/video1.mp4", thumbnailPath: "/cache/thumb1.jpg" },
-      ]
+      const mockFiles = [{ id: "file-1", path: "/test/video1.mp4", thumbnailPath: "/cache/thumb1.jpg" }]
       mockMediaService.scanFolderWithThumbnails.mockResolvedValue(mockFiles)
 
       const result = await service.scanFolderWithThumbnails("/test", 320, 180)

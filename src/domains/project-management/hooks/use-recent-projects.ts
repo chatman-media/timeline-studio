@@ -15,7 +15,12 @@ export function useRecentProjects() {
 
   useEffect(() => {
     // Загружаем список при монтировании
-    void storeService.getRecentProjects().then(setRecentProjects)
+    void storeService
+      .getRecentProjects()
+      .then(setRecentProjects)
+      .catch((error) => {
+        logger.error("Failed to load recent projects:", error)
+      })
   }, [])
 
   const addRecentProject = async (path: string, name: string) => {

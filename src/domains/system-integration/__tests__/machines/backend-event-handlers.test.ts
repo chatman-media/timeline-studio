@@ -3,11 +3,8 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest"
-import {
-  handleBackendEvent,
-  type SystemIntegrationContext,
-} from "../../machines/backend-event-handlers"
-import type { ProjectEvent, SystemNotification as BackendSystemNotification } from "@/types/generated/tauri-bindings"
+import type { SystemNotification as BackendSystemNotification, ProjectEvent } from "@/types/generated/tauri-bindings"
+import { handleBackendEvent, type SystemIntegrationContext } from "../../machines/backend-event-handlers"
 
 describe("Backend Event Handlers", () => {
   let mockContext: SystemIntegrationContext

@@ -7,6 +7,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useCurrentProject } from "../../hooks/use-current-project"
+import * as appProvider from "../../providers/app-provider"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({
@@ -56,10 +57,10 @@ describe("useCurrentProject Hook", () => {
     })
 
     it("should return null when no project state", () => {
-      vi.mocked(require("../../providers/app-provider").useApp).mockReturnValueOnce({
+      vi.mocked(appProvider.useApp).mockReturnValueOnce({
         projectState: null,
         executeCommand: mockExecuteCommand,
-      })
+      } as any)
 
       const { result } = renderHook(() => useCurrentProject())
 
@@ -67,10 +68,10 @@ describe("useCurrentProject Hook", () => {
     })
 
     it("should return null when project is not in state", () => {
-      vi.mocked(require("../../providers/app-provider").useApp).mockReturnValueOnce({
+      vi.mocked(appProvider.useApp).mockReturnValueOnce({
         projectState: {},
         executeCommand: mockExecuteCommand,
-      })
+      } as any)
 
       const { result } = renderHook(() => useCurrentProject())
 

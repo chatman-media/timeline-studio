@@ -137,10 +137,7 @@ describe("TauriMediaService", () => {
     it("generates waveform preview", async () => {
       mockInvoke.mockResolvedValueOnce("/cache/waveform.png")
 
-      const result = await service.generateWaveformPreview(
-        "/audio.mp3",
-        "/output/wave.png"
-      )
+      const result = await service.generateWaveformPreview("/audio.mp3", "/output/wave.png")
 
       expect(mockInvoke).toHaveBeenCalledWith("generate_waveform_preview", {
         audioPath: "/audio.mp3",
@@ -271,8 +268,6 @@ describe("TauriMediaService", () => {
       })
     })
   })
-
-
 
   describe("Processing Cancellation", () => {
     it("cancels file processing", async () => {
@@ -415,11 +410,7 @@ describe("TauriMediaService", () => {
       const files = [{ path: "/video.mp4", thumbnail: "/thumb.jpg" }]
       mockInvoke.mockResolvedValueOnce(files)
 
-      const result = await service.processFilesWithThumbnails(
-        ["/video.mp4"],
-        320,
-        180
-      )
+      const result = await service.processFilesWithThumbnails(["/video.mp4"], 320, 180)
 
       expect(mockInvoke).toHaveBeenCalledWith("process_media_files_with_thumbnails", {
         filePaths: ["/video.mp4"],

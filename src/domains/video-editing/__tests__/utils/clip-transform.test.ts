@@ -6,13 +6,13 @@
 
 import { describe, expect, it } from "vitest"
 import type { Clip, ClipData } from "@/types/generated/tauri-bindings"
+import type { TimelineClip } from "../../types"
 import {
   convertClipDataToTimelineClip,
   convertClipsToTimelineClips,
   convertClipToTimelineClip,
   updateTimelineClipFromBackend,
 } from "../../utils/clip-transform"
-import type { TimelineClip } from "../../types"
 
 describe("Clip Transform Utilities", () => {
   const mockRustClip: Clip = {

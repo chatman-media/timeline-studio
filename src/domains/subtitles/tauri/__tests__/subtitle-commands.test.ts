@@ -2,18 +2,13 @@
  * Tests for Subtitle Tauri Commands
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import {
-  analyzeAudioPeaks,
-  readSubtitleFile,
-  saveSubtitleFile,
-  updateTimelineSubtitles,
-} from "../subtitle-commands"
 import type {
   AudioPeaksResult,
   SubtitleExportOptions,
   SubtitleImportResult,
   UpdateTimelineSubtitlesParams,
 } from "../../types"
+import { analyzeAudioPeaks, readSubtitleFile, saveSubtitleFile, updateTimelineSubtitles } from "../subtitle-commands"
 
 // Hoist mock function declaration
 const { mockInvoke } = vi.hoisted(() => ({
@@ -173,7 +168,11 @@ describe("Subtitle Tauri Commands", () => {
 
     it("should handle large subtitle file", async () => {
       const filePath = "/path/to/large.srt"
-      const largeContent = Array.from({ length: 1000 }, (_, i) => `${i + 1}\n00:00:${String(i).padStart(2, "0")},000 --> 00:00:${String(i + 1).padStart(2, "0")},000\nSubtitle ${i + 1}`).join("\n\n")
+      const largeContent = Array.from(
+        { length: 1000 },
+        (_, i) =>
+          `${i + 1}\n00:00:${String(i).padStart(2, "0")},000 --> 00:00:${String(i + 1).padStart(2, "0")},000\nSubtitle ${i + 1}`,
+      ).join("\n\n")
 
       const mockResult: SubtitleImportResult = {
         content: largeContent,
@@ -191,7 +190,7 @@ describe("Subtitle Tauri Commands", () => {
     it("should handle special characters in content", async () => {
       const filePath = "/path/to/special.srt"
       const mockResult: SubtitleImportResult = {
-        content: "1\n00:00:01,000 --> 00:00:04,000\n<i>Hello</i> & \"World\" 你好",
+        content: '1\n00:00:01,000 --> 00:00:04,000\n<i>Hello</i> & "World" 你好',
         format: "srt",
         file_name: "special.srt",
       }
@@ -452,7 +451,11 @@ describe("Subtitle Tauri Commands", () => {
     })
 
     it("should handle large content", async () => {
-      const largeContent = Array.from({ length: 1000 }, (_, i) => `${i + 1}\n00:00:${String(i).padStart(2, "0")},000 --> 00:00:${String(i + 1).padStart(2, "0")},000\nSubtitle ${i + 1}`).join("\n\n")
+      const largeContent = Array.from(
+        { length: 1000 },
+        (_, i) =>
+          `${i + 1}\n00:00:${String(i).padStart(2, "0")},000 --> 00:00:${String(i + 1).padStart(2, "0")},000\nSubtitle ${i + 1}`,
+      ).join("\n\n")
 
       const options: SubtitleExportOptions = {
         format: "srt",
@@ -702,7 +705,11 @@ describe("Subtitle Tauri Commands", () => {
 
       mockInvoke.mockResolvedValue(mockResult)
 
-      const calls = [analyzeAudioPeaks("/audio1.mp3"), analyzeAudioPeaks("/audio2.mp3"), analyzeAudioPeaks("/audio3.mp3")]
+      const calls = [
+        analyzeAudioPeaks("/audio1.mp3"),
+        analyzeAudioPeaks("/audio2.mp3"),
+        analyzeAudioPeaks("/audio3.mp3"),
+      ]
 
       const results = await Promise.all(calls)
 
