@@ -26,6 +26,18 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-29] Node.js Adapters Implementation - PLANNED 📋
+- **Status:** Запланировано
+- **File:** node-adapters-implementation.md
+- **Action:** Создана задача в planned/
+- **Priority:** Medium
+- **Summary:**
+  - Реализация всех 7 портов для Node.js
+  - CLI инструмент: info, transcribe, render
+  - Серверный рендеринг и batch processing
+  - Зависимости: fluent-ffmpeg, sharp, onnxruntime-node, openai
+- **Goal:** Использование Timeline Studio логики вне Tauri (CLI, Electron, сервер)
+
 ### [2025-11-29] Domains Adapters Migration - COMPLETED ✅
 - **Status:** Завершено (100%)
 - **File:** domains-adapters-migration.md
@@ -284,4 +296,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-29 (Domains Adapters Migration task completed)*
+*Last updated: 2025-11-29 (Node.js Adapters task planned)*
