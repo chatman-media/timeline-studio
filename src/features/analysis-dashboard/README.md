@@ -10,29 +10,20 @@ Analysis Dashboard is a module for visualizing and managing the AI video analysi
 
 **🎉 100% Complete** - All core functionality is fully implemented and tested.
 
-- ✅ **Components**: Dashboard v1 (simple), Dashboard v2 (advanced with detailed progress)
-- ✅ **Hooks**: Analysis management, performance monitoring, visual analytics
+- ✅ **Components**: AI Analysis Dashboard with detailed progress monitoring
 - ✅ **Services**: Integration with AI Director
-- ✅ **Tests**: 27+ tests (use-performance-monitoring: 12, visual-analytics: 15)
+- ✅ **Architecture**: Clean, minimal dependencies, uses AI Director components
 
 ## Structure
 
 ```
 analysis-dashboard/
 ├── components/
-│   ├── ai-analysis-dashboard.tsx         # Dashboard v1
-│   ├── ai-analysis-dashboard-v2.tsx      # Dashboard v2 (recommended)
-│   ├── performance-metrics.tsx           # Performance visualization
-│   └── visual-analytics.tsx              # Analytics visualization
-├── hooks/
-│   ├── use-performance-monitoring.ts     # Performance metrics
-│   └── use-analysis-metrics.ts          # Analysis-specific metrics
-└── __tests__/
-    ├── hooks/
-    │   └── use-performance-monitoring.test.ts
-    └── components/
-        ├── visual-analytics.test.tsx
-        └── performance-metrics.test.tsx
+│   ├── ai-analysis-dashboard.tsx         # Main dashboard component
+│   └── index.ts                          # Component exports
+├── index.ts                              # Module exports
+├── README.md                             # English documentation
+└── README.ru.md                          # Russian documentation
 ```
 
 ## Features
@@ -61,13 +52,13 @@ The core functionality is complete. The following features are optional enhancem
 
 ## Usage
 
-### AIAnalysisDashboard v2 (Recommended)
+### AIAnalysisDashboard
 
 ```typescript
-import { AIAnalysisDashboardV2 } from "@/features/analysis-dashboard"
+import { AIAnalysisDashboard } from "@/features/analysis-dashboard"
 
 function AnalysisPage() {
-  return <AIAnalysisDashboardV2 />
+  return <AIAnalysisDashboard />
 }
 ```
 
@@ -100,55 +91,20 @@ function AnalysisPage() {
 
 ## Testing
 
-- **Total tests**: 27+ tests
-- **Coverage**: Hooks and visualization components
-
-### Test Suites
-
-- `use-performance-monitoring.test.ts` (12 tests) - Performance metrics calculation, ETA, monitoring lifecycle
-- `visual-analytics.test.tsx` (15 tests) - Scenes timeline, quality charts, moments distribution
-- `performance-metrics.test.tsx` - Performance visualization components
-
-### Running Tests
-
-```bash
-# Run all analysis-dashboard tests
-bun run test src/features/analysis-dashboard
-
-# Run with coverage
-bun run test:coverage src/features/analysis-dashboard
-
-# Run in watch mode
-bun run test:watch src/features/analysis-dashboard
-```
+The Analysis Dashboard is a thin wrapper around AI Director components, so testing is primarily handled by the AI Director module. Integration testing is performed at the page level.
 
 ## TODO / Roadmap
 
-### High Priority
-- [ ] Write comprehensive tests for Dashboard components (>80% coverage target)
+### Future Enhancements
 - [ ] Add analysis results persistence
-
-### Medium Priority
-- [ ] Integrate with `@/domains/system-integration` for system metrics (get_system_info)
-- [ ] Improve error handling
 - [ ] Add export functionality for analysis results
-
-### Low Priority
 - [ ] Analysis comparison tools
 - [ ] Analysis history tracking
-- [ ] Custom analyzer configuration UI
-
-### System Integration (Separate Task)
-- [ ] Implement Tauri command `get_system_info` in backend (Rust)
-- [ ] Create service in `src/domains/system-integration/services/performance/`
-- [ ] Uncomment invoke call in `use-performance-monitoring.ts`
-- [ ] Connect PerformanceMetrics components in Dashboard v2
 
 ## Known Limitations
 
-1. **System Metrics**: CPU/GPU/Memory usage not tracked (waiting for `get_system_info` implementation)
-2. **Tests**: Missing unit and integration tests for Dashboard components (hooks and utils are covered)
-3. **Persistence**: Analysis results are not saved between sessions
+1. **Persistence**: Analysis results are not saved between sessions
+2. **Architecture Dependencies**: Currently depends on domains (will be refactored to use core layer)
 
 ## Documentation
 

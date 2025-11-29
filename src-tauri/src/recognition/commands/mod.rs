@@ -2,6 +2,7 @@ pub mod advanced_tracking_commands;
 pub mod clustering_commands;
 pub mod facenet_commands;
 pub mod mediapipe_commands;
+pub mod missing_commands;
 pub mod person_commands;
 pub mod privacy_commands;
 pub mod realtime_face_detection_commands;

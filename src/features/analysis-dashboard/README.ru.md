@@ -10,29 +10,20 @@ Analysis Dashboard - это модуль для визуализации и уп
 
 **🎉 100% Готов** - Весь основной функционал полностью реализован и протестирован.
 
-- ✅ **Компоненты**: Dashboard v1 (простой), Dashboard v2 (продвинутый с детальным прогрессом)
-- ✅ **Хуки**: Управление анализом, мониторинг производительности, визуальная аналитика
+- ✅ **Компоненты**: AI Analysis Dashboard с детальным мониторингом прогресса
 - ✅ **Сервисы**: Интеграция с AI Director
-- ✅ **Тесты**: 27+ тестов (use-performance-monitoring: 12, visual-analytics: 15)
+- ✅ **Архитектура**: Чистая, минимальные зависимости, использует компоненты AI Director
 
 ## Структура
 
 ```
 analysis-dashboard/
 ├── components/
-│   ├── ai-analysis-dashboard.tsx         # Dashboard v1
-│   ├── ai-analysis-dashboard-v2.tsx      # Dashboard v2 (рекомендуется)
-│   ├── performance-metrics.tsx           # Визуализация производительности
-│   └── visual-analytics.tsx              # Визуализация аналитики
-├── hooks/
-│   ├── use-performance-monitoring.ts     # Метрики производительности
-│   └── use-analysis-metrics.ts          # Метрики анализа
-└── __tests__/
-    ├── hooks/
-    │   └── use-performance-monitoring.test.ts
-    └── components/
-        ├── visual-analytics.test.tsx
-        └── performance-metrics.test.tsx
+│   ├── ai-analysis-dashboard.tsx         # Основной компонент дашборда
+│   └── index.ts                          # Экспорт компонентов
+├── index.ts                              # Экспорт модуля
+├── README.md                             # Английская документация
+└── README.ru.md                          # Русская документация
 ```
 
 ## Возможности
@@ -61,13 +52,13 @@ analysis-dashboard/
 
 ## Использование
 
-### AIAnalysisDashboard v2 (Рекомендуется)
+### AIAnalysisDashboard
 
 ```typescript
-import { AIAnalysisDashboardV2 } from "@/features/analysis-dashboard"
+import { AIAnalysisDashboard } from "@/features/analysis-dashboard"
 
 function AnalysisPage() {
-  return <AIAnalysisDashboardV2 />
+  return <AIAnalysisDashboard />
 }
 ```
 
@@ -100,55 +91,20 @@ function AnalysisPage() {
 
 ## Тестирование
 
-- **Всего тестов**: 27+ тестов
-- **Покрытие**: Хуки и компоненты визуализации
-
-### Тестовые наборы
-
-- `use-performance-monitoring.test.ts` (12 тестов) - Расчет метрик производительности, ETA, жизненный цикл мониторинга
-- `visual-analytics.test.tsx` (15 тестов) - Timeline сцен, графики качества, распределение моментов
-- `performance-metrics.test.tsx` - Компоненты визуализации производительности
-
-### Запуск тестов
-
-```bash
-# Запустить все тесты analysis-dashboard
-bun run test src/features/analysis-dashboard
-
-# Запустить с покрытием
-bun run test:coverage src/features/analysis-dashboard
-
-# Запустить в watch режиме
-bun run test:watch src/features/analysis-dashboard
-```
+Analysis Dashboard является тонкой оболочкой над компонентами AI Director, поэтому тестирование в основном выполняется в модуле AI Director. Интеграционное тестирование выполняется на уровне страниц.
 
 ## TODO / Дорожная карта
 
-### Высокий приоритет
-- [ ] Написать комплексные тесты для Dashboard компонентов (цель >80% покрытия)
+### Будущие улучшения
 - [ ] Добавить персистентность результатов анализа
-
-### Средний приоритет
-- [ ] Интегрировать с `@/domains/system-integration` для системных метрик (get_system_info)
-- [ ] Улучшить обработку ошибок
 - [ ] Добавить функциональность экспорта результатов анализа
-
-### Низкий приоритет
 - [ ] Инструменты сравнения анализов
 - [ ] Отслеживание истории анализов
-- [ ] UI для пользовательской настройки анализаторов
-
-### Интеграция с system-integration (Отдельная задача)
-- [ ] Реализовать Tauri команду `get_system_info` в backend (Rust)
-- [ ] Создать сервис в `src/domains/system-integration/services/performance/`
-- [ ] Раскомментировать вызов invoke в `use-performance-monitoring.ts`
-- [ ] Подключить компоненты PerformanceMetrics в Dashboard v2
 
 ## Известные ограничения
 
-1. **Системные метрики**: CPU/GPU/Memory usage не отслеживаются (ждет реализации `get_system_info`)
-2. **Тесты**: Отсутствуют unit и integration тесты для Dashboard компонентов (hooks и utils покрыты)
-3. **Персистентность**: Результаты анализа не сохраняются между сессиями
+1. **Персистентность**: Результаты анализа не сохраняются между сессиями
+2. **Зависимости архитектуры**: В данный момент зависит от domains (будет рефакторено для использования core слоя)
 
 ## Документация
 

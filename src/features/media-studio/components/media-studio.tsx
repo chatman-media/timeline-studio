@@ -1,11 +1,11 @@
 "use client"
 
-import { ProjectLoadingOverlay } from "./project-loading-overlay"
 import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
 import { useUserSettings } from "@/features/user-settings"
 import { createLogger } from "@/lib/tauri-logger"
 import { ChatLayout, DefaultLayout, OptionsLayout, VerticalLayout } from "./layout"
+import { ProjectLoadingOverlay } from "./project-loading-overlay"
 import { TopBar } from "./top-bar/top-bar"
 
 const logger = createLogger({ module: "MediaStudio" })
