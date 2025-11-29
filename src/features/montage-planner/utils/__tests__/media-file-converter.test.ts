@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 import type { Fragment } from "../../types"
+import { MomentCategory } from "../../types"
 import { convertFragmentForAIServices, convertToAIServicesMediaFile } from "../media-file-converter"
 
 describe("media-file-converter", () => {
@@ -21,11 +22,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 10485760, // 10MB
         duration: 120,
-        format: "mp4",
-        codec: "h264",
         width: 1920,
         height: 1080,
-        frameRate: 30,
+        fps: 30,
         bitrate: 5000000,
         probeData: {
           format: {
@@ -62,11 +61,6 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 5242880, // 5MB
         duration: 180,
-        format: "mp3",
-        codec: "mp3",
-        width: 0,
-        height: 0,
-        frameRate: 0,
         bitrate: 320000,
       }
 
@@ -88,18 +82,14 @@ describe("media-file-converter", () => {
         id: "image-1",
         path: "/test/images/photo.jpg",
         name: "photo.jpg",
-        type: MediaType.Image,
+        type: MediaType.StillImage,
         isVideo: false,
         isAudio: false,
         isImage: true,
         size: 2097152, // 2MB
         duration: 0,
-        format: "jpeg",
-        codec: "",
         width: 4000,
         height: 3000,
-        frameRate: 0,
-        bitrate: 0,
       }
 
       const result = convertToAIServicesMediaFile(featureMediaFile)
@@ -126,11 +116,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: undefined as any,
         duration: 60,
-        format: "mp4",
-        codec: "h264",
         width: 1280,
         height: 720,
-        frameRate: 30,
+        fps: 30,
         bitrate: 2000000,
       }
 
@@ -150,11 +138,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 1000000,
         duration: 30,
-        format: "mp4",
-        codec: "h264",
         width: 1920,
         height: 1080,
-        frameRate: 30,
+        fps: 30,
         bitrate: 5000000,
       }
 
@@ -174,11 +160,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 15000000,
         duration: 90,
-        format: "mkv",
-        codec: "h265",
         width: 3840,
         height: 2160,
-        frameRate: 60,
+        fps: 60,
         bitrate: 10000000,
         probeData: {
           format: {
@@ -206,7 +190,7 @@ describe("media-file-converter", () => {
         endTime: 20,
         duration: 10,
         objects: ["person", "car"],
-        people: ["John Doe"],
+        people: [{ id: "p1", name: "John Doe", confidence: 0.9 }],
         score: {
           timestamp: 10,
           duration: 10,
@@ -219,7 +203,7 @@ describe("media-file-converter", () => {
             composition: 82,
           },
           totalScore: 83,
-          category: "action",
+          category: MomentCategory.Action,
         },
       }
 
@@ -232,7 +216,7 @@ describe("media-file-converter", () => {
         endTime: 20,
         duration: 10,
         objects: ["person", "car"],
-        people: ["John Doe"],
+        people: [{ id: "p1", name: "John Doe", confidence: 0.9 }],
       })
 
       expect(result.analysis).toBeDefined()
@@ -285,11 +269,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 5000000,
         duration: 60,
-        format: "mp4",
-        codec: "h264",
         width: 1920,
         height: 1080,
-        frameRate: 30,
+        fps: 30,
         bitrate: 5000000,
       }
 
@@ -314,7 +296,7 @@ describe("media-file-converter", () => {
             composition: 78,
           },
           totalScore: 78,
-          category: "highlight",
+          category: MomentCategory.Highlight,
         },
       }
 
@@ -364,7 +346,7 @@ describe("media-file-converter", () => {
             composition: 78,
           },
           totalScore: 78,
-          category: "highlight",
+          category: MomentCategory.Highlight,
         },
       }
 
@@ -390,7 +372,7 @@ describe("media-file-converter", () => {
             composition: 78,
           },
           totalScore: 78,
-          category: "scenic",
+          category: MomentCategory.BRoll,
         },
       }
 
@@ -428,11 +410,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 0,
         duration: 0,
-        format: "",
-        codec: "",
         width: 0,
         height: 0,
-        frameRate: 0,
+        fps: 0,
         bitrate: 0,
         probeData: undefined,
       }
@@ -461,11 +441,9 @@ describe("media-file-converter", () => {
         isImage: false,
         size: 0,
         duration: 0,
-        format: "",
-        codec: "",
         width: 0,
         height: 0,
-        frameRate: 0,
+        fps: 0,
         bitrate: 0,
       }
 
@@ -491,7 +469,7 @@ describe("media-file-converter", () => {
             composition: 0,
           },
           totalScore: 0,
-          category: "filler",
+          category: MomentCategory.Transition,
         },
       }
 
@@ -518,7 +496,7 @@ describe("media-file-converter", () => {
             composition: 100,
           },
           totalScore: 100,
-          category: "highlight",
+          category: MomentCategory.Highlight,
         },
       }
 

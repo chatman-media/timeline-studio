@@ -277,7 +277,7 @@ describe("ProjectFileService", () => {
     it("should calculate project statistics", () => {
       const projectWithMedia = {
         ...mockProjectData,
-        mediaLibrary: {
+        mediaPool: {
           ...mockProjectData.mediaLibrary,
           mediaFiles: [{ id: "1", size: 1024 } as SavedMediaFile, { id: "2", size: 2048 } as SavedMediaFile],
           musicFiles: [{ id: "3", size: 512 } as SavedMusicFile],
@@ -303,7 +303,7 @@ describe("ProjectFileService", () => {
     it("should handle invalid file sizes", () => {
       const projectWithInvalidSizes = {
         ...mockProjectData,
-        mediaLibrary: {
+        mediaPool: {
           ...mockProjectData.mediaLibrary,
           mediaFiles: [{ id: "1", size: null } as any],
         },
@@ -373,7 +373,7 @@ describe("ProjectFileService", () => {
     it("should handle invalid mediaLibrary structure", async () => {
       const projectWithInvalidMedia = {
         ...mockProjectData,
-        mediaLibrary: {
+        mediaPool: {
           mediaFiles: "not an array",
           musicFiles: [],
         },
@@ -387,7 +387,7 @@ describe("ProjectFileService", () => {
     it("should handle missing required fields in media files", async () => {
       const projectWithInvalidFiles = {
         ...mockProjectData,
-        mediaLibrary: {
+        mediaPool: {
           mediaFiles: [{ invalidField: true }],
           musicFiles: [],
         },

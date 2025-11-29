@@ -213,6 +213,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 80,
             endEnergy: 70,
             peakPosition: 0.5,
+            variability: 40,
           },
         },
       ]
@@ -327,6 +328,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 60,
             endEnergy: 50,
             peakPosition: 0.5,
+            variability: 30,
           },
         },
         {
@@ -342,6 +344,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 90,
             endEnergy: 70,
             peakPosition: 0.7,
+            variability: 50,
           },
         },
         {
@@ -357,6 +360,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 55,
             endEnergy: 30,
             peakPosition: 0.3,
+            variability: 20,
           },
         },
       ]
@@ -411,6 +415,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 60,
             endEnergy: 50,
             peakPosition: 0.5,
+            variability: 30,
           },
         },
       ]
@@ -473,6 +478,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 80,
             endEnergy: 70,
             peakPosition: 0.5,
+            variability: 40,
           },
         },
       ]
@@ -511,6 +517,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 60,
             endEnergy: 50,
             peakPosition: 0.5,
+            variability: 30,
           },
         },
         {
@@ -526,6 +533,7 @@ describe("usePlanGenerator", () => {
             peakEnergy: 100,
             endEnergy: 80,
             peakPosition: 0.7,
+            variability: 60,
           },
         },
       ]

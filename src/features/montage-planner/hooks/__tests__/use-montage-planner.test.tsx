@@ -7,7 +7,7 @@ import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
-import { MONTAGE_STYLES } from "../../types"
+import { ExportFormat, MONTAGE_STYLES } from "../../types"
 import { useMontagePlanner } from "../use-montage-planner"
 
 // Mock the provider context
@@ -122,11 +122,9 @@ describe("useMontagePlanner", () => {
         isVideo: true,
         isAudio: false,
         duration: 120,
-        format: "mp4",
-        codec: "h264",
         width: 1920,
         height: 1080,
-        frameRate: 30,
+        fps: 30,
         bitrate: 5000000,
       }
 
@@ -204,7 +202,9 @@ describe("useMontagePlanner", () => {
     it("should update analysis options", () => {
       const { result } = renderHook(() => useMontagePlanner())
 
-      const options = { quality_threshold: 0.8 }
+      const options = {
+        videoAnalysis: { enableSceneDetection: true },
+      }
 
       act(() => {
         result.current.updateAnalysisOptions(options)
@@ -219,7 +219,9 @@ describe("useMontagePlanner", () => {
     it("should update generation options", () => {
       const { result } = renderHook(() => useMontagePlanner())
 
-      const options = { maxClips: 20 }
+      const options = {
+        preferences: { minClipDuration: 2, maxClipDuration: 10 },
+      }
 
       act(() => {
         result.current.updateGenerationOptions(options)
@@ -321,12 +323,12 @@ describe("useMontagePlanner", () => {
       const { result } = renderHook(() => useMontagePlanner())
 
       act(() => {
-        result.current.exportPlan("json")
+        result.current.exportPlan(ExportFormat.JSON)
       })
 
       expect(mockSend).toHaveBeenCalledWith({
         type: "EXPORT_PLAN",
-        format: "json",
+        format: ExportFormat.JSON,
       })
     })
 

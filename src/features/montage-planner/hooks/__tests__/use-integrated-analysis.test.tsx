@@ -7,6 +7,7 @@ import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
+import { MomentCategory } from "../../types"
 import { useContentAnalysis } from "../use-content-analysis"
 import { useIntegratedAnalysis } from "../use-integrated-analysis"
 import { useMontagePlanner } from "../use-montage-planner"
@@ -23,8 +24,22 @@ vi.mock("@/domains/media-management/services/media-metadata-service", () => ({
 const mockSend = vi.fn()
 const mockStartAnalysis = vi.fn()
 const mockContext = {
+  mediaFiles: new Map(),
   fragments: [],
+  videoIds: [],
   currentPlan: null,
+  instructions: "",
+  selectedStyle: "dynamic",
+  targetDuration: null,
+  error: null,
+  planValidation: null,
+  planStatistics: null,
+  videoAnalyses: new Map(),
+  audioAnalyses: new Map(),
+  momentScores: [],
+  analysisOptions: {},
+  generationOptions: {},
+  planHistory: [],
 }
 
 vi.mock("../use-montage-planner", () => ({
@@ -118,12 +133,59 @@ describe("useIntegratedAnalysis", () => {
 
     // Setup mock hook implementations
     vi.mocked(useMontagePlanner).mockReturnValue({
-      send: mockSend,
+      state: { value: "idle", context: mockContext } as any,
       context: mockContext,
+      send: mockSend,
+      currentPlan: mockContext.currentPlan,
+      fragments: mockContext.fragments,
+      videos: [],
+      instructions: mockContext.instructions,
+      selectedStyle: mockContext.selectedStyle,
+      targetDuration: mockContext.targetDuration,
+      error: mockContext.error,
       isAnalyzing: false,
       isGenerating: false,
+      isOptimizing: false,
+      hasVideos: false,
+      hasFragments: false,
+      hasPlan: false,
+      canGeneratePlan: false,
+      canOptimizePlan: false,
+      isBusy: false,
+      isReady: false,
+      progress: 0,
+      progressMessage: "",
+      videoCount: 0,
+      fragmentCount: 0,
+      totalVideoDuration: 0,
+      totalFragmentsDuration: 0,
+      utilizationRate: 0,
+      planDuration: 0,
+      addVideo: vi.fn(),
+      removeVideo: vi.fn(),
+      updateInstructions: vi.fn(),
+      selectStyle: vi.fn(),
+      setTargetDuration: vi.fn(),
+      updateAnalysisOptions: vi.fn(),
+      updateGenerationOptions: vi.fn(),
       startAnalysis: mockStartAnalysis,
-    })
+      cancelAnalysis: vi.fn(),
+      generatePlan: vi.fn(),
+      optimizePlan: vi.fn(),
+      editFragment: vi.fn(),
+      reorderFragments: vi.fn(),
+      applyPlanToTimeline: vi.fn(),
+      exportPlan: vi.fn(),
+      validatePlan: vi.fn(),
+      calculateStatistics: vi.fn(),
+      reset: vi.fn(),
+      clearError: vi.fn(),
+      formatDuration: vi.fn((s) => `${s}s`),
+      getStyleName: vi.fn((id) => id),
+      planValidation: null,
+      planStatistics: null,
+      availableStyles: Object.keys({}) as string[],
+    } as any)
 
     vi.mocked(useContentAnalysis).mockReturnValue(mockContentAnalysis)
     vi.mocked(usePlanGenerator).mockReturnValue(mockPlanGenerator)
@@ -177,11 +239,9 @@ describe("useIntegratedAnalysis", () => {
           isAudio: false,
           isImage: false,
           duration: 120,
-          format: "mp4",
-          codec: "h264",
           width: 1920,
           height: 1080,
-          frameRate: 30,
+          fps: 30,
           bitrate: 5000000,
         },
         {
@@ -193,11 +253,6 @@ describe("useIntegratedAnalysis", () => {
           isAudio: true,
           isImage: false,
           duration: 180,
-          format: "mp3",
-          codec: "mp3",
-          width: 0,
-          height: 0,
-          frameRate: 0,
           bitrate: 320000,
         },
       ]
@@ -234,11 +289,9 @@ describe("useIntegratedAnalysis", () => {
           isAudio: false,
           isImage: false,
           duration: 60,
-          format: "mp4",
-          codec: "h264",
           width: 1920,
           height: 1080,
-          frameRate: 30,
+          fps: 30,
           bitrate: 5000000,
         },
       ]
@@ -264,11 +317,9 @@ describe("useIntegratedAnalysis", () => {
           isAudio: false,
           isImage: false,
           duration: 60,
-          format: "mp4",
-          codec: "h264",
           width: 1920,
           height: 1080,
-          frameRate: 30,
+          fps: 30,
           bitrate: 5000000,
         },
         {
@@ -280,11 +331,6 @@ describe("useIntegratedAnalysis", () => {
           isAudio: true,
           isImage: false,
           duration: 180,
-          format: "mp3",
-          codec: "mp3",
-          width: 0,
-          height: 0,
-          frameRate: 0,
           bitrate: 320000,
         },
       ]
@@ -318,11 +364,9 @@ describe("useIntegratedAnalysis", () => {
           isAudio: false,
           isImage: false,
           duration: 60,
-          format: "mp4",
-          codec: "h264",
           width: 1920,
           height: 1080,
-          frameRate: 30,
+          fps: 30,
           bitrate: 5000000,
         },
       ]
@@ -399,7 +443,7 @@ describe("useIntegratedAnalysis", () => {
             duration: 10,
             scores: { visual: 80, technical: 85, emotional: 70, narrative: 75, action: 82, composition: 78 },
             totalScore: 78,
-            category: "highlight" as const,
+            category: MomentCategory.Highlight,
           },
         },
         {
@@ -409,7 +453,7 @@ describe("useIntegratedAnalysis", () => {
             duration: 10,
             scores: { visual: 90, technical: 88, emotional: 85, narrative: 87, action: 92, composition: 89 },
             totalScore: 88,
-            category: "action" as const,
+            category: MomentCategory.Action,
           },
         },
       ]
@@ -440,12 +484,32 @@ describe("useIntegratedAnalysis", () => {
     it("should update settings and generate plan", async () => {
       mockContext.currentPlan = {
         id: "plan-1",
+        name: "Test Plan",
+        metadata: {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          version: 1,
+        },
         sequences: [],
         totalDuration: 120,
+        style: {
+          id: "test",
+          name: "Test",
+          description: "Test",
+          cutting: { averageShotLength: 3, variability: 50, rhythmComplexity: 60 },
+          transitions: { preferredTypes: [], frequency: 50, complexity: 30 },
+          emotionalArc: { startEnergy: 50, peakPosition: 0.5, peakEnergy: 80, endEnergy: 60, variability: 40 },
+        },
+        pacing: {
+          type: "steady" as const,
+          averageCutDuration: 3,
+          cutDurationRange: [1, 5],
+          rhythmComplexity: 50,
+        },
         qualityScore: 85,
         engagementScore: 88,
         coherenceScore: 82,
-      }
+      } as any
 
       const { result } = renderHook(() => useIntegratedAnalysis())
 
@@ -469,12 +533,32 @@ describe("useIntegratedAnalysis", () => {
     it("should use default parameters when not provided", async () => {
       mockContext.currentPlan = {
         id: "plan-1",
+        name: "Test Plan",
+        metadata: {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          version: 1,
+        },
         sequences: [],
         totalDuration: 120,
+        style: {
+          id: "test",
+          name: "Test",
+          description: "Test",
+          cutting: { averageShotLength: 3, variability: 50, rhythmComplexity: 60 },
+          transitions: { preferredTypes: [], frequency: 50, complexity: 30 },
+          emotionalArc: { startEnergy: 50, peakPosition: 0.5, peakEnergy: 80, endEnergy: 60, variability: 40 },
+        },
+        pacing: {
+          type: "steady" as const,
+          averageCutDuration: 3,
+          cutDurationRange: [1, 5],
+          rhythmComplexity: 50,
+        },
         qualityScore: 85,
         engagementScore: 88,
         coherenceScore: 82,
-      }
+      } as any
 
       const { result } = renderHook(() => useIntegratedAnalysis())
 
@@ -495,12 +579,32 @@ describe("useIntegratedAnalysis", () => {
     it("should update generation progress", async () => {
       mockContext.currentPlan = {
         id: "plan-1",
+        name: "Test Plan",
+        metadata: {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          version: 1,
+        },
         sequences: [],
         totalDuration: 120,
+        style: {
+          id: "test",
+          name: "Test",
+          description: "Test",
+          cutting: { averageShotLength: 3, variability: 50, rhythmComplexity: 60 },
+          transitions: { preferredTypes: [], frequency: 50, complexity: 30 },
+          emotionalArc: { startEnergy: 50, peakPosition: 0.5, peakEnergy: 80, endEnergy: 60, variability: 40 },
+        },
+        pacing: {
+          type: "steady" as const,
+          averageCutDuration: 3,
+          cutDurationRange: [1, 5],
+          rhythmComplexity: 50,
+        },
         qualityScore: 85,
         engagementScore: 88,
         coherenceScore: 82,
-      }
+      } as any
 
       const { result } = renderHook(() => useIntegratedAnalysis())
 
