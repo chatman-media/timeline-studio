@@ -26,6 +26,31 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-29] Register Missing Tauri Commands - COMPLETED ✅ 🎯
+- **Status:** Завершено (100% покрытие достигнуто!)
+- **File:** register-missing-tauri-commands.md
+- **Action:** active/ → completed/
+- **Priority:** 🔴 КРИТИЧЕСКИЙ
+- **Summary:**
+  - **Зарегистрировано:** 33 новых команды + 9 существующих = 42 команды
+  - **Финальное покрытие:** 🎯 100% (189 из 189 используемых команд)
+  - **Все 6 фаз завершены:**
+    1. ✅ State Manager API (7 команд)
+    2. ✅ AI Services & Person Identification (8 команд)
+    3. ✅ Montage & Whisper (9 команд)
+    4. ✅ Recognition Models (7 команд)
+    5. ✅ Media & Compiler (15 команд: 7 новых + 8 существующих)
+    6. ✅ Final Commands (2 команды: init_yolo_processor, check_gpu_availability)
+  - **Компиляция:** Успешно (55.73s, только 2 warnings)
+  - **Файлы изменены:**
+    - src-tauri/src/media/phase5_commands.rs (создан)
+    - src-tauri/src/commands/init_yolo.rs (создан)
+    - src-tauri/src/video_compiler/commands/gpu/commands.rs
+    - src-tauri/src/app_builder.rs
+    - src-tauri/src/lib.rs
+    - src-tauri/src/media/mod.rs
+- **Result:** 🎉 Все команды фронтенда теперь зарегистрированы и готовы к использованию!
+
 ### [2025-11-29] Register Missing Tauri Commands - PLANNED 🔴
 - **Status:** Запланировано
 - **File:** register-missing-tauri-commands.md

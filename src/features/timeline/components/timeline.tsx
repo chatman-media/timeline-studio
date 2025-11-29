@@ -50,7 +50,7 @@ export function Timeline({ className, style }: TimelineProps = {}) {
           </div>
 
           {/* Основная часть - Timeline контент или Audio Mixer */}
-          <div className="w-full flex-grow overflow-hidden">
+          <div className="w-full grow overflow-hidden">
             {activeView === "timeline" ? <TimelineComponent /> : <AudioMixerView />}
           </div>
         </div>

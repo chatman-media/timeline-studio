@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { container } from "@/core"
-import { useProjectLoader, useRenderQueue as useCoreRenderQueue } from "@/core/hooks"
-import { OutputFormat } from "@/core/types"
+import { useRenderQueue as useCoreRenderQueue, useProjectLoader } from "@/core/hooks"
 import type { ProjectSchema, RenderJob, RenderStatus } from "@/core/types"
+import { OutputFormat } from "@/core/types"
 import { calculateAspectRatio } from "@/features/project-settings/utils/aspect-ratio-utils"
 import { createLogger, logError, logInfo } from "@/lib/tauri-logger"
 

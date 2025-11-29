@@ -110,8 +110,8 @@ pub mod updates;
 pub mod commands {
   pub mod audio_analysis;
   pub mod audio_correlation;
-  pub mod transcription;
-  pub mod init_yolo; // Legacy init_yolo_processor command
+  pub mod init_yolo;
+  pub mod transcription; // Legacy init_yolo_processor command
 }
 
 // Модуль команд для эффектов

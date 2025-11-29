@@ -428,7 +428,7 @@ pub async fn get_yolo_class_names_advanced() -> Result<Vec<serde_json::Value>, S
 
   // TODO: Implement advanced class names with metadata
   // For now, return basic class names with additional info
-  let class_names = vec![
+  let class_names = [
     "person",
     "bicycle",
     "car",

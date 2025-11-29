@@ -2,9 +2,9 @@
 //!
 //! Standalone command for initializing YOLO processor from legacy yolo_commands module.
 
-use crate::recognition::{YoloModel, YoloProcessor};
-use crate::recognition::yolo_processor_refactored::ProcessorConfig;
 use crate::recognition::frame_processor::ProcessingConfig;
+use crate::recognition::yolo_processor_refactored::ProcessorConfig;
+use crate::recognition::{YoloModel, YoloProcessor};
 use tauri::State;
 use tokio::sync::Mutex;
 
@@ -37,7 +37,7 @@ pub async fn init_yolo_processor(
     Ok(processor) => {
       let mut state = yolo_state.lock().await;
       *state = Some(processor);
-      Ok(format!("YOLO processor initialized successfully"))
+      Ok("YOLO processor initialized successfully".to_string())
     }
     Err(e) => Err(format!("Failed to create YOLO processor: {}", e)),
   }

@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import { useNotifications } from "@/core/hooks"
 import {
   type CacheStatistics,
   indexedDBCacheService,
 } from "@/domains/media-management/services/indexeddb-cache-service"
-import { useNotifications } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { formatFileSize } from "@/lib/utils"
 

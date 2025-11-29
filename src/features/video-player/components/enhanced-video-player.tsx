@@ -229,7 +229,16 @@ export function EnhancedVideoPlayer() {
         </div>
         <PlayerControls
           currentTime={0}
-          file={video || { id: "", path: "", name: "Нет видео", type: MediaType.Video, size: 0, isVideo: true }}
+          file={
+            video || {
+              id: "",
+              path: "",
+              name: "Нет видео",
+              type: MediaType.Video,
+              size: 0,
+              isVideo: true,
+            }
+          }
         />
       </div>
     )
@@ -239,7 +248,7 @@ export function EnhancedVideoPlayer() {
     <div className="media-player-container relative flex h-full flex-col">
       <div className="relative flex-1 bg-black">
         <div className="flex h-full w-full items-center justify-center">
-          <div className="max-h-[calc(100%-85px)] w-full max-w-[100%]">
+          <div className="max-h-[calc(100%-85px)] w-full max-w-full">
             <AspectRatio ratio={aspectRatioValue} className="bg-black">
               <div className="relative h-full w-full">
                 <video

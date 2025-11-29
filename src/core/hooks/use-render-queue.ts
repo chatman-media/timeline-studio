@@ -20,12 +20,9 @@ import {
  * ```
  */
 export function useRenderQueue() {
-  const renderProject = useCallback(
-    async (schema: any, outputPath: string): Promise<string> => {
-      return await renderProjectFn(schema, outputPath)
-    },
-    [],
-  )
+  const renderProject = useCallback(async (schema: any, outputPath: string): Promise<string> => {
+    return await renderProjectFn(schema, outputPath)
+  }, [])
 
   const cancelRender = useCallback(async (jobId: string): Promise<boolean> => {
     return await cancelRenderFn(jobId)
