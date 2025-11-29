@@ -1,3 +1,19 @@
+# [3.35.0](https://github.com/chatman-media/timeline-studio/compare/v3.34.0...v3.35.0) (2025-11-29)
+
+
+### Bug Fixes
+
+* **adapters:** fix invoke() argument types in TauriVideoService ([41265be](https://github.com/chatman-media/timeline-studio/commit/41265be1651f63203ff3aea2e9b61f085613c174))
+* **ai-director:** use u32 for max_parallel_files serialization ([ea429ef](https://github.com/chatman-media/timeline-studio/commit/ea429ef5ee032f2063f5323fd65595b774f737c0))
+
+
+### Features
+
+* **adapters:** implement Node.js adapters for all core services ([8e68014](https://github.com/chatman-media/timeline-studio/commit/8e680147ad379101314ddd6fb0f2ec53860c597e))
+* **cli:** add Timeline Studio CLI with info, transcribe, and render commands ([6fc1d86](https://github.com/chatman-media/timeline-studio/commit/6fc1d86be052a0fe3dd1f1959fb7222c245dfc2d))
+* **ports:** add IAIService port and adapters ([31204c5](https://github.com/chatman-media/timeline-studio/commit/31204c51e6d5a05f0b041bb42ef5aa02c597c845))
+* **ports:** add IVideoService port and adapters ([bd24fd8](https://github.com/chatman-media/timeline-studio/commit/bd24fd8dac80aeb70b5db01915bf13448d5dcc0a))
+
 # [3.34.0](https://github.com/chatman-media/timeline-studio/compare/v3.33.2...v3.34.0) (2025-11-28)
 
 
