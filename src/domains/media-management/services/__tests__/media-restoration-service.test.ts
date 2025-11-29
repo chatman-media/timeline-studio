@@ -5,6 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { MediaType } from "@/domains/video-editing/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
 import {
   convertFromSavedMediaFile,
@@ -66,9 +67,16 @@ describe("MediaRestorationService", () => {
     originalPath: "/original/path/video.mp4",
     relativePath: "media/video.mp4",
     size: 1024000,
-    type: "Video",
-    duration: 120,
-    createdAt: new Date("2024-01-01"),
+    lastModified: Date.now(),
+    isVideo: true,
+    isAudio: false,
+    isImage: false,
+    metadata: {
+      duration: 120,
+      createdAt: "2024-01-01T00:00:00.000Z",
+    },
+    status: "available",
+    lastChecked: Date.now(),
   }
 
   const mockProjectPath = "/project/path/project.tls"
@@ -90,7 +98,7 @@ describe("MediaRestorationService", () => {
         id: "file-1",
         path: mockSavedFile.originalPath,
         name: mockSavedFile.name,
-        type: "Video",
+        type: MediaType.Video,
       })
 
       const result = await restoreFile(mockSavedFile, mockProjectDir)
@@ -131,7 +139,7 @@ describe("MediaRestorationService", () => {
         id: "file-1",
         path: "/project/path/media/video.mp4",
         name: mockSavedFile.name,
-        type: "Video",
+        type: MediaType.Video,
       })
 
       const result = await restoreFile(mockSavedFile, mockProjectDir)
@@ -159,7 +167,7 @@ describe("MediaRestorationService", () => {
         id: "file-1",
         path: "/alternative/path1/video.mp4",
         name: mockSavedFile.name,
-        type: "Video",
+        type: MediaType.Video,
       })
 
       const result = await restoreFile(mockSavedFile, mockProjectDir)
@@ -210,9 +218,20 @@ describe("MediaRestorationService", () => {
           originalPath: "/music/song.mp3",
           relativePath: "music/song.mp3",
           size: 5000000,
-          type: "Audio",
-          duration: 180,
-          createdAt: new Date("2024-01-01"),
+          lastModified: Date.now(),
+          isVideo: false,
+          isAudio: true,
+          isImage: false,
+          metadata: {
+            duration: 180,
+            createdAt: "2024-01-01T00:00:00.000Z",
+          },
+          status: "available",
+          lastChecked: Date.now(),
+          musicMetadata: {
+            artist: "Test Artist",
+            title: "Test Song",
+          },
         },
       ]
 
@@ -226,7 +245,7 @@ describe("MediaRestorationService", () => {
         id: file.id,
         path: file.originalPath,
         name: file.name,
-        type: file.type,
+        type: file.isVideo ? MediaType.Video : file.isAudio ? MediaType.Audio : MediaType.StillImage,
       }))
 
       const result = await restoreProjectMedia(mediaFiles, musicFiles, mockProjectPath)
@@ -269,7 +288,7 @@ describe("MediaRestorationService", () => {
         id: "file-1",
         path: mockSavedFile.originalPath,
         name: mockSavedFile.name,
-        type: "Video",
+        type: MediaType.Video,
       })
 
       const result = await restoreProjectMedia(mediaFiles, [], mockProjectPath)
@@ -302,7 +321,7 @@ describe("MediaRestorationService", () => {
         id: "file-1",
         path: "/project/path/media/video.mp4",
         name: mockSavedFile.name,
-        type: "Video",
+        type: MediaType.Video,
       })
 
       const result = await restoreProjectMedia([mockSavedFile], [], mockProjectPath)
@@ -422,7 +441,7 @@ describe("MediaRestorationService", () => {
         id: "file-1",
         path: "/found/video.mp4",
         name: mockSavedFile.name,
-        type: "Video",
+        type: MediaType.Video,
       })
 
       const result = await handleMissingFiles(missingFiles, onProgress)
@@ -453,7 +472,7 @@ describe("MediaRestorationService", () => {
             id: "1",
             path: "/path/video1.mp4",
             name: "video1.mp4",
-            type: "Video" as const,
+            type: MediaType.Video,
           },
         ],
         restoredMusic: [],
@@ -463,9 +482,16 @@ describe("MediaRestorationService", () => {
             name: "missing.mp4",
             originalPath: "/missing/file.mp4",
             size: 1000,
-            type: "Video" as const,
-            duration: 100,
-            createdAt: new Date(),
+            lastModified: Date.now(),
+            isVideo: true,
+            isAudio: false,
+            isImage: false,
+            metadata: {
+              duration: 100,
+              createdAt: new Date().toISOString(),
+            },
+            status: "missing",
+            lastChecked: Date.now(),
           },
         ],
         relocatedFiles: [
@@ -484,7 +510,7 @@ describe("MediaRestorationService", () => {
         },
       }
 
-      const report = generateRestorationReport(restorationResult)
+      const report = generateRestorationReport(restorationResult as any)
 
       expect(report).toContain("Восстановление медиафайлов завершено")
       expect(report).toContain("Всего файлов: 3")
@@ -511,7 +537,7 @@ describe("MediaRestorationService", () => {
         },
       }
 
-      const report = generateRestorationReport(restorationResult)
+      const report = generateRestorationReport(restorationResult as any)
 
       expect(report).toContain("Поврежденные файлы")
       expect(report).toContain(mockSavedFile.name)

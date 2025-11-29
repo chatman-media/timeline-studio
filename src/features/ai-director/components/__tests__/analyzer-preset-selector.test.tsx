@@ -21,7 +21,7 @@ describe("AnalyzerPresetSelector", () => {
       analyzers: new Set<AnalyzerType>(["scene_detection", "face_detection"]),
       isDefault: false,
       category: "custom",
-      estimatedTime: 120,
+      estimatedTime: "2 min",
     },
   ]
 
@@ -76,7 +76,7 @@ describe("AnalyzerPresetSelector", () => {
         analyzers: mockSelectedAnalyzers,
         isDefault: false,
         category: "custom",
-        estimatedTime: 60,
+        estimatedTime: "1 min",
       }
 
       render(<AnalyzerPresetSelector {...defaultProps} customPresets={[...mockCustomPresets, matchingPreset]} />)

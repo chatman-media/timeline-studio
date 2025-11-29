@@ -30,7 +30,7 @@ describe("Browser helpers - доступ к состоянию браузера"
 
   beforeEach(() => {
     mockAccess = {
-      getCurrentTab: vi.fn(() => "media"),
+      getCurrentTab: vi.fn(() => "media" as const),
       getFiles: vi.fn(() => []),
       getSelectedFiles: vi.fn(() => []),
       getFilters: vi.fn(() => ({})),

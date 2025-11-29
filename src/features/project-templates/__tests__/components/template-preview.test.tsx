@@ -259,7 +259,7 @@ describe("TemplatePreview", () => {
     it("should not show placeholders section if no placeholders", () => {
       const template = {
         ...mockTemplate,
-        placeholders: undefined,
+        placeholders: {},
       }
 
       render(<TemplatePreview template={template} showDetails={true} />)

@@ -48,38 +48,77 @@ vi.mock("@/components/ui/alert", () => ({
 }))
 
 describe("ScenarioWizard", () => {
-  const mockProject: TimelineStudioProject = {
+  const mockProject = {
     metadata: {
       id: "test-project",
       name: "Test Project",
       version: "1.0.0",
       created: new Date(),
       modified: new Date(),
+      platform: "macos" as const,
+      appVersion: "1.0.0",
     },
     settings: {
-      resolution: { width: 1920, height: 1080 },
-      frameRate: 30,
-      aspectRatio: "16:9",
+      resolution: "1920x1080",
+      frameRate: "30" as const,
+      colorSpace: "sdr" as const,
+      aspectRatio: {
+        label: "16:9",
+        textLabel: "Широкоэкранный",
+        description: "YouTube",
+        value: {
+          width: 1920,
+          height: 1080,
+          name: "16:9",
+        },
+      },
       audio: {
         sampleRate: 48000,
         bitDepth: 16,
         channels: 2,
         masterVolume: 1,
-        panLaw: "-3dB",
+        panLaw: "-3dB" as const,
       },
       preview: {
-        resolution: "full",
-        quality: "best",
+        resolution: "full" as const,
+        quality: "best" as const,
         renderDuringPlayback: true,
         useGPU: true,
       },
+      exportPresets: [],
     },
-    timeline: {
-      tracks: [],
-      duration: 0,
-      fps: 30,
+    mediaPool: {
+      bins: new Map(),
+      items: new Map(),
+      smartCollections: [],
+      viewSettings: {
+        sortBy: "name" as const,
+        sortOrder: "asc" as const,
+        viewMode: "thumbnails" as const,
+        thumbnailSize: "medium" as const,
+        showOfflineMedia: true,
+        showProxyBadge: true,
+      },
+      stats: {
+        totalItems: 0,
+        totalSize: 0,
+        onlineItems: 0,
+        offlineItems: 0,
+        proxyItems: 0,
+        unusedItems: 0,
+      },
     },
-  }
+    sequences: new Map(),
+    activeSequenceId: "",
+    cache: {
+      thumbnails: new Map(),
+      waveforms: new Map(),
+      proxies: new Map(),
+      sceneAnalysis: new Map(),
+      totalSize: 0,
+      lastCleaned: new Date(),
+    },
+  } as unknown as TimelineStudioProject
 
   const mockScenario: Scenario = {
     id: "add-intro-outro",

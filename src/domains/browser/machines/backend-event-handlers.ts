@@ -50,6 +50,10 @@ export function handleBrowserBackendEvent(
       return handleAllFilesSelected(context, event)
     case "AllFilesDeselected":
       return handleAllFilesDeselected(context, event)
+    case "FavoriteAdded":
+      return handleFavoriteAdded(context, event)
+    case "FavoriteRemoved":
+      return handleFavoriteRemoved(context, event)
     default: {
       // Exhaustiveness check - TypeScript will error if we miss a case
       const _exhaustive: never = event
@@ -357,6 +361,50 @@ function handleAllFilesDeselected(
 
   return {
     selectedFiles: updatedSelectedFiles,
+  }
+}
+
+// ============================================================================
+// Favorites Handlers
+// ============================================================================
+
+function handleFavoriteAdded(
+  context: BrowserMachineContext,
+  event: Extract<BrowserEvent, { event_type: "FavoriteAdded" }>,
+): Partial<BrowserMachineContext> {
+  const { tab, file_id } = event.data
+
+  logger.debug("Favorite added:", { tab, file_id })
+
+  const updatedFavorites = { ...context.favorites }
+  if (!updatedFavorites[tab]) {
+    updatedFavorites[tab] = []
+  }
+
+  if (!updatedFavorites[tab].includes(file_id)) {
+    updatedFavorites[tab] = [...updatedFavorites[tab], file_id]
+  }
+
+  return {
+    favorites: updatedFavorites,
+  }
+}
+
+function handleFavoriteRemoved(
+  context: BrowserMachineContext,
+  event: Extract<BrowserEvent, { event_type: "FavoriteRemoved" }>,
+): Partial<BrowserMachineContext> {
+  const { tab, file_id } = event.data
+
+  logger.debug("Favorite removed:", { tab, file_id })
+
+  const updatedFavorites = { ...context.favorites }
+  if (updatedFavorites[tab]) {
+    updatedFavorites[tab] = updatedFavorites[tab].filter((id) => id !== file_id)
+  }
+
+  return {
+    favorites: updatedFavorites,
   }
 }
 

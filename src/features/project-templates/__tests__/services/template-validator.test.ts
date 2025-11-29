@@ -153,9 +153,9 @@ describe("TemplateValidator", () => {
         ...validTemplate,
         structure: {
           ...validTemplate.structure,
-          tracks: [{ id: "track-1", type: "audio", name: "Audio Only" }],
+          tracks: [{ id: "track-1", type: "audio" as const, name: "Audio Only" }],
         },
-      }
+      } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
       expect(result.warnings.some((w) => w.field === "structure.tracks")).toBe(true)
@@ -337,9 +337,9 @@ describe("TemplateValidator", () => {
         ...validTemplate,
         structure: {
           ...validTemplate.structure,
-          tracks: [{ id: "", type: "video", name: "Test" }],
+          tracks: [{ id: "", type: "video" as const, name: "Test" }],
         },
-      }
+      } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
       expect(result.valid).toBe(false)
@@ -352,11 +352,11 @@ describe("TemplateValidator", () => {
         structure: {
           ...validTemplate.structure,
           tracks: [
-            { id: "duplicate", type: "video", name: "Track 1" },
-            { id: "duplicate", type: "audio", name: "Track 2" },
+            { id: "duplicate", type: "video" as const, name: "Track 1" },
+            { id: "duplicate", type: "audio" as const, name: "Track 2" },
           ],
         },
-      }
+      } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
       expect(result.valid).toBe(false)
@@ -368,9 +368,9 @@ describe("TemplateValidator", () => {
         ...validTemplate,
         structure: {
           ...validTemplate.structure,
-          tracks: [{ id: "track-1", type: "", name: "Test" }],
+          tracks: [{ id: "track-1", type: "" as any, name: "Test" }],
         },
-      }
+      } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
       expect(result.valid).toBe(false)
@@ -382,9 +382,9 @@ describe("TemplateValidator", () => {
         ...validTemplate,
         structure: {
           ...validTemplate.structure,
-          tracks: [{ id: "track-1", type: "video", name: "" }],
+          tracks: [{ id: "track-1", type: "video" as const, name: "" }],
         },
-      }
+      } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
       expect(result.valid).toBe(false)

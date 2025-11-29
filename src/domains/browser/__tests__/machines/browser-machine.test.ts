@@ -126,7 +126,7 @@ describe("BrowserMachine", () => {
 
       const snapshot = actor.getSnapshot()
       expect(snapshot.context.activeTab).toBe("media")
-      expect(snapshot.context.tabSettings.media.search_query).toBe("test")
+      expect(snapshot.context.tabSettings.media!.search_query).toBe("test")
     })
   })
 
@@ -140,7 +140,7 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.search_query).toBe("test query")
+      expect(snapshot.context.tabSettings.media!.search_query).toBe("test query")
     })
 
     it("should handle FavoritesToggled event", () => {
@@ -152,7 +152,7 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.show_favorites_only).toBe(true)
+      expect(snapshot.context.tabSettings.media!.show_favorites_only).toBe(true)
     })
 
     it("should handle SortChanged event", () => {
@@ -164,8 +164,8 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.sort_by).toBe("date")
-      expect(snapshot.context.tabSettings.media.sort_order).toBe("desc")
+      expect(snapshot.context.tabSettings.media!.sort_by).toBe("date")
+      expect(snapshot.context.tabSettings.media!.sort_order).toBe("desc")
     })
 
     it("should handle GroupByChanged event", () => {
@@ -177,7 +177,7 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.group_by).toBe("type")
+      expect(snapshot.context.tabSettings.media!.group_by).toBe("type")
     })
 
     it("should handle FilterChanged event", () => {
@@ -189,7 +189,7 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.filter_type).toBe("video")
+      expect(snapshot.context.tabSettings.media!.filter_type).toBe("video")
     })
 
     it("should handle ViewModeChanged event", () => {
@@ -201,7 +201,7 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.view_mode).toBe("grid")
+      expect(snapshot.context.tabSettings.media!.view_mode).toBe("grid")
     })
 
     it("should handle PreviewSizeChanged event", () => {
@@ -213,7 +213,7 @@ describe("BrowserMachine", () => {
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.preview_size_index).toBe(4)
+      expect(snapshot.context.tabSettings.media!.preview_size_index).toBe(4)
     })
 
     it("should handle TabSettingsReset event", () => {
@@ -463,8 +463,8 @@ describe("BrowserMachine", () => {
       })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.search_query).toBe("test")
-      expect(snapshot.context.tabSettings.media.view_mode).toBe("grid")
+      expect(snapshot.context.tabSettings.media!.search_query).toBe("test")
+      expect(snapshot.context.tabSettings.media!.view_mode).toBe("grid")
       expect(snapshot.context.selectedFiles.media).toContain("file-1")
     })
 
@@ -486,8 +486,8 @@ describe("BrowserMachine", () => {
       })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media.search_query).toBe("media query")
-      expect(snapshot.context.tabSettings.effects.search_query).toBe("effects query")
+      expect(snapshot.context.tabSettings.media!.search_query).toBe("media query")
+      expect(snapshot.context.tabSettings.effects!.search_query).toBe("effects query")
     })
   })
 
@@ -538,7 +538,7 @@ describe("BrowserMachine", () => {
 
       const snapshot = actor.getSnapshot()
       expect(snapshot.context.tabSettings.music).toBeDefined()
-      expect(snapshot.context.tabSettings.music.search_query).toBe("test")
+      expect(snapshot.context.tabSettings.music!.search_query).toBe("test")
     })
 
     it("should handle file deselection when file not selected", () => {

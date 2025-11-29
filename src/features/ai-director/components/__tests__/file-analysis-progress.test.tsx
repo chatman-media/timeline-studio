@@ -16,7 +16,7 @@ describe("FileAnalysisProgress", () => {
     filePath: "/path/to/video.mp4",
     status: "analyzing",
     progress: 50,
-    startTime: Date.now(),
+    startTime: new Date().toISOString(),
     analyzers: [
       {
         type: "scene_detection",

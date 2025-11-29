@@ -427,7 +427,7 @@ describe("Backend Event Handlers", () => {
         messageCount: 1,
         lastMessage: "Новое сообщение",
       })
-      expect(result.sessions?.[0].lastMessageAt.toISOString()).toBe("2024-01-02T00:00:00.000Z")
+      expect(result.sessions?.[0].lastMessageAt?.toISOString()).toBe("2024-01-02T00:00:00.000Z")
     })
 
     it("должен обновить только метаданные для не-текущей сессии", () => {

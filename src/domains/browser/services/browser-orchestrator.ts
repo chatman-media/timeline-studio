@@ -692,7 +692,23 @@ export class BrowserOrchestrator {
   getTabSettings(tab?: BrowserTab): TabSettings {
     const context = this.browserActor.getSnapshot().context
     const targetTab = tab || context.activeTab
-    return context.tabSettings[targetTab]
+    const settings = context.tabSettings[targetTab]
+
+    if (!settings) {
+      // Возвращаем дефолтные настройки, если их нет
+      return {
+        search_query: "",
+        show_favorites_only: false,
+        sort_by: "name",
+        sort_order: "asc",
+        group_by: "none",
+        filter_type: "all",
+        view_mode: "thumbnails",
+        preview_size_index: 2,
+      }
+    }
+
+    return settings
   }
 
   /**

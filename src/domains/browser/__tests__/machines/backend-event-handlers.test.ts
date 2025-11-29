@@ -40,6 +40,16 @@ describe("Backend Event Handlers", () => {
         music: [],
         subtitles: [],
       },
+      favorites: {
+        media: [],
+        effects: [],
+        filters: [],
+        transitions: [],
+        templates: [],
+        style_templates: [],
+        music: [],
+        subtitles: [],
+      },
       isLoading: false,
       error: null,
     }
@@ -84,7 +94,7 @@ describe("Backend Event Handlers", () => {
       const updates = handleBrowserBackendEvent(baseContext, event)
 
       expect(updates.tabSettings).toBeDefined()
-      expect(updates.tabSettings!.media.search_query).toBe("test query")
+      expect(updates.tabSettings!.media!.search_query).toBe("test query")
     })
 
     it("should update search query for specific tab", () => {
@@ -95,14 +105,14 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.effects.search_query).toBe("blur effect")
+      expect(updates.tabSettings!.effects!.search_query).toBe("blur effect")
       // Other tab settings should remain unchanged in base context
-      expect(baseContext.tabSettings.media.search_query).toBe("")
+      expect(baseContext.tabSettings.media!.search_query).toBe("")
     })
 
     it("should preserve other tab settings when changing search query", () => {
-      baseContext.tabSettings.media.view_mode = "grid"
-      baseContext.tabSettings.media.sort_by = "date"
+      baseContext.tabSettings.media!.view_mode = "grid"
+      baseContext.tabSettings.media!.sort_by = "date"
 
       const event: BrowserEvent = {
         event_type: "SearchQueryChanged",
@@ -111,9 +121,9 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.search_query).toBe("new query")
-      expect(updates.tabSettings!.media.view_mode).toBe("grid")
-      expect(updates.tabSettings!.media.sort_by).toBe("date")
+      expect(updates.tabSettings!.media!.search_query).toBe("new query")
+      expect(updates.tabSettings!.media!.view_mode).toBe("grid")
+      expect(updates.tabSettings!.media!.sort_by).toBe("date")
     })
   })
 
@@ -126,7 +136,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.show_favorites_only).toBe(true)
+      expect(updates.tabSettings!.media!.show_favorites_only).toBe(true)
     })
 
     it("should toggle favorites for specific tab", () => {
@@ -137,7 +147,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.filters.show_favorites_only).toBe(true)
+      expect(updates.tabSettings!.filters!.show_favorites_only).toBe(true)
     })
   })
 
@@ -150,8 +160,8 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.sort_by).toBe("date")
-      expect(updates.tabSettings!.media.sort_order).toBe("desc")
+      expect(updates.tabSettings!.media!.sort_by).toBe("date")
+      expect(updates.tabSettings!.media!.sort_order).toBe("desc")
     })
 
     it("should update sort for specific tab", () => {
@@ -162,8 +172,8 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.effects.sort_by).toBe("name")
-      expect(updates.tabSettings!.effects.sort_order).toBe("asc")
+      expect(updates.tabSettings!.effects!.sort_by).toBe("name")
+      expect(updates.tabSettings!.effects!.sort_order).toBe("asc")
     })
   })
 
@@ -176,7 +186,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.group_by).toBe("type")
+      expect(updates.tabSettings!.media!.group_by).toBe("type")
     })
 
     it("should update group_by for specific tab", () => {
@@ -187,7 +197,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.transitions.group_by).toBe("category")
+      expect(updates.tabSettings!.transitions!.group_by).toBe("category")
     })
   })
 
@@ -200,7 +210,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.filter_type).toBe("video")
+      expect(updates.tabSettings!.media!.filter_type).toBe("video")
     })
 
     it("should update filter for specific tab", () => {
@@ -211,7 +221,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.filter_type).toBe("image")
+      expect(updates.tabSettings!.media!.filter_type).toBe("image")
     })
   })
 
@@ -224,7 +234,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.view_mode).toBe("grid")
+      expect(updates.tabSettings!.media!.view_mode).toBe("grid")
     })
 
     it("should update view mode for specific tab", () => {
@@ -235,7 +245,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.effects.view_mode).toBe("list")
+      expect(updates.tabSettings!.effects!.view_mode).toBe("list")
     })
 
     it("should handle all view modes", () => {
@@ -248,7 +258,7 @@ describe("Backend Event Handlers", () => {
         }
 
         const updates = handleBrowserBackendEvent(baseContext, event)
-        expect(updates.tabSettings!.media.view_mode).toBe(viewMode)
+        expect(updates.tabSettings!.media!.view_mode).toBe(viewMode)
       })
     })
   })
@@ -262,7 +272,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.preview_size_index).toBe(4)
+      expect(updates.tabSettings!.media!.preview_size_index).toBe(4)
     })
 
     it("should update preview size for specific tab", () => {
@@ -273,7 +283,7 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.filters.preview_size_index).toBe(3)
+      expect(updates.tabSettings!.filters!.preview_size_index).toBe(3)
     })
 
     it("should handle all size indices", () => {
@@ -286,7 +296,7 @@ describe("Backend Event Handlers", () => {
         }
 
         const updates = handleBrowserBackendEvent(baseContext, event)
-        expect(updates.tabSettings!.media.preview_size_index).toBe(sizeIndex)
+        expect(updates.tabSettings!.media!.preview_size_index).toBe(sizeIndex)
       })
     })
   })
@@ -294,9 +304,9 @@ describe("Backend Event Handlers", () => {
   describe("Tab Settings Reset", () => {
     it("should handle TabSettingsReset event", () => {
       // Modify settings first
-      baseContext.tabSettings.media.search_query = "test"
-      baseContext.tabSettings.media.view_mode = "list"
-      baseContext.tabSettings.media.sort_by = "date"
+      baseContext.tabSettings.media!.search_query = "test"
+      baseContext.tabSettings.media!.view_mode = "list"
+      baseContext.tabSettings.media!.sort_by = "date"
 
       const event: BrowserEvent = {
         event_type: "TabSettingsReset",
@@ -314,8 +324,8 @@ describe("Backend Event Handlers", () => {
     })
 
     it("should reset only specific tab settings", () => {
-      baseContext.tabSettings.media.search_query = "media query"
-      baseContext.tabSettings.effects.search_query = "effects query"
+      baseContext.tabSettings.media!.search_query = "media query"
+      baseContext.tabSettings.effects!.search_query = "effects query"
 
       const event: BrowserEvent = {
         event_type: "TabSettingsReset",
@@ -324,9 +334,9 @@ describe("Backend Event Handlers", () => {
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media.search_query).toBe("")
+      expect(updates.tabSettings!.media!.search_query).toBe("")
       // Effects tab should not be reset
-      expect(baseContext.tabSettings.effects.search_query).toBe("effects query")
+      expect(baseContext.tabSettings.effects!.search_query).toBe("effects query")
     })
   })
 
@@ -574,7 +584,7 @@ describe("Backend Event Handlers", () => {
       const updates = handleBrowserBackendEvent(contextWithMissingTab, event)
 
       expect(updates.tabSettings!.music).toBeDefined()
-      expect(updates.tabSettings!.music.search_query).toBe("test")
+      expect(updates.tabSettings!.music!.search_query).toBe("test")
     })
 
     it("should create empty selected files array if missing", () => {
@@ -608,7 +618,7 @@ describe("Backend Event Handlers", () => {
       handleBrowserBackendEvent(baseContext, event)
 
       // Original context should not be modified
-      expect(baseContext.tabSettings.media.search_query).toBe(originalContext.tabSettings.media.search_query)
+      expect(baseContext.tabSettings.media!.search_query).toBe(originalContext.tabSettings.media!.search_query)
     })
   })
 
@@ -627,10 +637,10 @@ describe("Backend Event Handlers", () => {
         context = { ...context, ...updates }
       })
 
-      expect(context.tabSettings.media.search_query).toBe("test")
-      expect(context.tabSettings.media.view_mode).toBe("grid")
-      expect(context.tabSettings.media.sort_by).toBe("date")
-      expect(context.tabSettings.media.sort_order).toBe("desc")
+      expect(context.tabSettings.media!.search_query).toBe("test")
+      expect(context.tabSettings.media!.view_mode).toBe("grid")
+      expect(context.tabSettings.media!.sort_by).toBe("date")
+      expect(context.tabSettings.media!.sort_order).toBe("desc")
     })
 
     it("should handle multiple file operations", () => {

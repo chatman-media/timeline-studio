@@ -24,19 +24,41 @@ vi.mock("@/lib/tauri-logger", () => ({
   }),
 }))
 
+// Helper to create a valid Clip with required fields
+const createMockClip = (overrides: Partial<Clip> = {}): Clip => ({
+  id: "clip-1",
+  media_id: "media-1",
+  name: "test.mp4",
+  timeline_in: 0,
+  timeline_out: 10,
+  source_in: 0,
+  source_out: 10,
+  playback_rate: 1.0,
+  enabled: true,
+  effects: [],
+  transitions: [],
+  keyframes: [],
+  ...overrides,
+})
+
+// Helper to create a valid Track with required fields
+const createMockTrack = (overrides: Partial<RustTrack> = {}): RustTrack => ({
+  id: "track-1",
+  name: "Video Track 1",
+  track_type: "Video",
+  enabled: true,
+  locked: false,
+  height: 100,
+  clips: [],
+  effects: [],
+  volume: 1.0,
+  pan: 0,
+  ...overrides,
+})
+
 describe("Type Validation Utilities", () => {
   describe("validateClip", () => {
-    const validClip: Clip = {
-      id: "clip-1",
-      media_id: "media-1",
-      name: "test.mp4",
-      timeline_in: 0,
-      timeline_out: 10,
-      source_in: 0,
-      source_out: 10,
-      playback_rate: 1.0,
-      enabled: true,
-    }
+    const validClip = createMockClip()
 
     it("should validate correct clip", () => {
       expect(validateClip(validClip)).toBe(true)
@@ -131,13 +153,22 @@ describe("Type Validation Utilities", () => {
       source_out: 10,
       playback_rate: 1.0,
       enabled: true,
+      effects: [],
+      transitions: [],
+      keyframes: [],
     }
 
     const validTrack: RustTrack = {
       id: "track-1",
       name: "Video Track 1",
       track_type: "Video",
+      enabled: true,
+      locked: false,
+      height: 100,
       clips: [validClip],
+      effects: [],
+      volume: 1.0,
+      pan: 0.0,
     }
 
     it("should validate correct track", () => {
@@ -225,20 +256,58 @@ describe("Type Validation Utilities", () => {
       source_out: 10,
       playback_rate: 1.0,
       enabled: true,
+      effects: [],
+      transitions: [],
+      keyframes: [],
     }
 
     const validTrack: RustTrack = {
       id: "track-1",
       name: "Video Track 1",
       track_type: "Video",
+      enabled: true,
+      locked: false,
+      height: 100,
       clips: [validClip],
+      effects: [],
+      volume: 1.0,
+      pan: 0.0,
     }
 
     const validProject: Project = {
       id: "project-1",
-      timeline: {
-        tracks: [validTrack],
+      metadata: {
+        name: "Test Project",
+        description: null,
+        created_at: new Date().toISOString(),
+        modified_at: new Date().toISOString(),
+        file_path: null,
+        is_dirty: false,
+        version: "1.0.0",
       },
+      timeline: {
+        duration: 100,
+        fps: 30,
+        sample_rate: 48000,
+        tracks: [validTrack],
+        markers: [],
+      },
+      media_pool: {
+        items: {},
+      },
+      settings: {
+        resolution: { width: 1920, height: 1080 },
+        frame_rate: 30,
+        audio_sample_rate: 48000,
+        audio_channels: 2,
+      },
+      effects_pool: {} as any,
+      filters_pool: {} as any,
+      transitions_pool: {} as any,
+      templates_pool: {} as any,
+      style_templates_pool: {} as any,
+      subtitles_pool: {} as any,
+      color_grading_presets_pool: {} as any,
     }
 
     it("should validate correct project", () => {
@@ -304,13 +373,22 @@ describe("Type Validation Utilities", () => {
       source_out: 10,
       playback_rate: 1.0,
       enabled: true,
+      effects: [],
+      transitions: [],
+      keyframes: [],
     }
 
     const validTrack: RustTrack = {
       id: "track-1",
       name: "Video Track 1",
       track_type: "Video",
+      enabled: true,
+      locked: false,
+      height: 100,
       clips: [],
+      effects: [],
+      volume: 1.0,
+      pan: 0.0,
     }
 
     it("should reject non-object values", () => {
@@ -437,6 +515,7 @@ describe("Type Validation Utilities", () => {
           type: "ClipDeleted",
           payload: {
             clip_id: "clip-1",
+            track_id: "track-1",
           },
         }
         expect(validateProjectEvent(event)).toBe(true)
@@ -463,10 +542,16 @@ describe("Type Validation Utilities", () => {
 
     describe("TrackAdded event", () => {
       it("should validate correct TrackAdded event", () => {
+        const trackData = {
+          id: validTrack.id,
+          name: validTrack.name,
+          track_type: validTrack.track_type,
+          index: 0,
+        }
         const event: ProjectEvent = {
           type: "TrackAdded",
           payload: {
-            track: validTrack,
+            track: trackData,
           },
         }
         expect(validateProjectEvent(event)).toBe(true)
@@ -481,7 +566,12 @@ describe("Type Validation Utilities", () => {
       })
 
       it("should reject TrackAdded with invalid track", () => {
-        const invalidTrack = { ...validTrack, id: "" }
+        const invalidTrack = {
+          id: "",
+          name: validTrack.name,
+          track_type: validTrack.track_type,
+          index: 0,
+        }
         const event = {
           type: "TrackAdded",
           payload: {
@@ -519,6 +609,9 @@ describe("Type Validation Utilities", () => {
       source_out: 10,
       playback_rate: 1.0,
       enabled: true,
+      effects: [],
+      transitions: [],
+      keyframes: [],
     }
 
     it("should not throw for valid value", () => {
@@ -546,7 +639,13 @@ describe("Type Validation Utilities", () => {
         id: "track-1",
         name: "Track 1",
         track_type: "Video",
+        enabled: true,
+        locked: false,
+        height: 100,
         clips: [],
+        effects: [],
+        volume: 1.0,
+        pan: 0.0,
       }
 
       expect(() => {

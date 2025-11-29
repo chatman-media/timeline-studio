@@ -19,7 +19,6 @@ describe("MontagePlanEditor", () => {
     actualDuration: 115,
     clips: [
       {
-        id: "clip-1",
         fileId: "file-1",
         filePath: "/path/to/video1.mp4",
         startTime: 10,
@@ -29,7 +28,6 @@ describe("MontagePlanEditor", () => {
         qualityScore: 0.9,
       },
       {
-        id: "clip-2",
         fileId: "file-2",
         filePath: "/path/to/video2.mp4",
         startTime: 30,

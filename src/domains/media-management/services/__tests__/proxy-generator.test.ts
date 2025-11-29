@@ -43,9 +43,9 @@ describe("ProxyGeneratorService", () => {
     // Default mock implementation to resolve successfully
     mockMediaService.generateProxy.mockResolvedValue({
       proxyPath: "/tmp/proxy.mp4",
-      originalSize: 100_000_000,
-      proxySize: 10_000_000,
-      compressionRatio: 10,
+      sourcePath: "/original/video.mp4",
+      size: 10_000_000,
+      resolution: { width: 1920, height: 1080 },
       generationTime: 5000,
     })
   })
@@ -59,9 +59,9 @@ describe("ProxyGeneratorService", () => {
     it("should generate proxy with default options", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: mockMediaInfo.path,
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -89,9 +89,9 @@ describe("ProxyGeneratorService", () => {
     it("should generate proxy with custom resolution", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy-4k.mp4",
-        originalSize: 200_000_000,
-        proxySize: 50_000_000,
-        compressionRatio: 4,
+        sourcePath: "/test/video.mp4",
+        size: 20_000_000,
+        resolution: { width: 3840, height: 2160 },
         generationTime: 10000,
       }
 
@@ -117,9 +117,9 @@ describe("ProxyGeneratorService", () => {
     it("should generate proxy with custom dimensions", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy-custom.mp4",
-        originalSize: 100_000_000,
-        proxySize: 20_000_000,
-        compressionRatio: 5,
+        sourcePath: "/test/video.mp4",
+        size: 15_000_000,
+        resolution: { width: 960, height: 540 },
         generationTime: 7000,
       }
 
@@ -142,9 +142,9 @@ describe("ProxyGeneratorService", () => {
     it("should handle MediaInfo object input", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -158,9 +158,9 @@ describe("ProxyGeneratorService", () => {
     it("should call progress callback", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 100,
       }
 
@@ -183,9 +183,9 @@ describe("ProxyGeneratorService", () => {
     it("should support different codecs", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -206,9 +206,9 @@ describe("ProxyGeneratorService", () => {
     it("should support custom FPS", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -229,9 +229,9 @@ describe("ProxyGeneratorService", () => {
     it("should support audio preservation setting", async () => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -259,9 +259,9 @@ describe("ProxyGeneratorService", () => {
 
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -278,9 +278,9 @@ describe("ProxyGeneratorService", () => {
 
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 100,
       }
 
@@ -298,9 +298,9 @@ describe("ProxyGeneratorService", () => {
 
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -316,9 +316,6 @@ describe("ProxyGeneratorService", () => {
         files[0],
         expect.objectContaining({
           proxyPath: mockResult.proxyPath,
-          originalSize: mockResult.originalSize,
-          proxySize: mockResult.proxySize,
-          compressionRatio: mockResult.compressionRatio,
         }),
       )
     })
@@ -343,9 +340,9 @@ describe("ProxyGeneratorService", () => {
 
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -404,9 +401,9 @@ describe("ProxyGeneratorService", () => {
               () =>
                 resolve({
                   proxyPath: "/tmp/proxy.mp4",
-                  originalSize: 100_000_000,
-                  proxySize: 10_000_000,
-                  compressionRatio: 10,
+                  sourcePath: "/test/video.mp4",
+                  size: 10_000_000,
+                  resolution: { width: 1920, height: 1080 },
                   generationTime: 5000,
                 }),
               100,
@@ -437,9 +434,9 @@ describe("ProxyGeneratorService", () => {
               () =>
                 resolve({
                   proxyPath: "/tmp/proxy.mp4",
-                  originalSize: 100_000_000,
-                  proxySize: 10_000_000,
-                  compressionRatio: 10,
+                  sourcePath: "/test/video.mp4",
+                  size: 10_000_000,
+                  resolution: { width: 1920, height: 1080 },
                   generationTime: 5000,
                 }),
               100,
@@ -470,9 +467,9 @@ describe("ProxyGeneratorService", () => {
     ])("should use correct resolution for %s preset", async (resolution, width, height) => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 
@@ -500,9 +497,9 @@ describe("ProxyGeneratorService", () => {
     ])("should use correct bitrate for %s quality", async (quality, bitrate) => {
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
-        originalSize: 100_000_000,
-        proxySize: 10_000_000,
-        compressionRatio: 10,
+        sourcePath: "/test/video.mp4",
+        size: 10_000_000,
+        resolution: { width: 1920, height: 1080 },
         generationTime: 5000,
       }
 

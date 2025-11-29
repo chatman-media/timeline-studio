@@ -38,6 +38,14 @@ export const createMockBrowserState = (overrides?: Partial<BrowserState>): Brows
     templates: [],
     style_templates: [],
   },
+  favorites: {
+    media: [],
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    style_templates: [],
+  },
   ...overrides,
 })
 

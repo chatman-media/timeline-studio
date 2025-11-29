@@ -6,6 +6,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { AudioAnalysis, Fragment, MomentScore, VideoAnalysis } from "../../types"
+import { CameraMovement, EmotionalTone, FlowDirection, LightingCondition, MomentCategory, SceneType } from "../../types"
 
 // Mock useMontagePlanner hook
 const mockSend = vi.fn()
@@ -71,6 +72,9 @@ describe("useContentAnalysis", () => {
     it("should get video analysis by ID", async () => {
       const mockVideoAnalysis: VideoAnalysis = {
         quality: {
+          resolution: { width: 1920, height: 1080 },
+          frameRate: 30,
+          bitrate: 5000000,
           sharpness: 85,
           stability: 90,
           exposure: -5,
@@ -78,9 +82,19 @@ describe("useContentAnalysis", () => {
         },
         content: {
           actionLevel: 70,
-          sceneChanges: 10,
-          facesDetected: 2,
-          objectsDetected: 5,
+          faces: [{ box: [0, 0, 100, 100], confidence: 0.95 }],
+          objects: [
+            { label: "person", confidence: 0.9, box: [0, 0, 100, 100] },
+            { label: "car", confidence: 0.85, box: [100, 100, 200, 200] },
+          ],
+          sceneType: SceneType.Outdoor,
+          lighting: LightingCondition.Bright,
+        },
+        motion: {
+          cameraMovement: CameraMovement.Pan,
+          subjectMovement: 70,
+          flowDirection: FlowDirection.LeftToRight,
+          cutFriendliness: 85,
         },
       }
 
@@ -108,13 +122,17 @@ describe("useContentAnalysis", () => {
     it("should get audio analysis by ID", async () => {
       const mockAudioAnalysis: AudioAnalysis = {
         quality: {
-          clarity: 85,
+          sampleRate: 48000,
+          bitDepth: 16,
           noiseLevel: 15,
+          clarity: 85,
+          dynamicRange: 60,
         },
         content: {
           speechPresence: 80,
           musicPresence: 60,
-          silenceRatio: 10,
+          ambientLevel: 30,
+          emotionalTone: EmotionalTone.Energetic,
         },
       }
 
@@ -142,22 +160,56 @@ describe("useContentAnalysis", () => {
     it("should calculate average video quality from analyses", async () => {
       const analysis1: VideoAnalysis = {
         quality: {
+          resolution: { width: 1920, height: 1080 },
+          frameRate: 30,
+          bitrate: 5000000,
           sharpness: 80,
           stability: 90,
           exposure: -10, // will be normalized to (100 + (-10)) / 2 = 45
           colorGrading: 70,
         },
-        content: { actionLevel: 50, sceneChanges: 5, facesDetected: 0, objectsDetected: 0 },
+        content: {
+          actionLevel: 50,
+          faces: [],
+          objects: [],
+          sceneType: SceneType.Indoor,
+          lighting: LightingCondition.Normal,
+        },
+        motion: {
+          cameraMovement: CameraMovement.Static,
+          subjectMovement: 20,
+          flowDirection: FlowDirection.Center,
+          cutFriendliness: 75,
+        },
       }
 
       const analysis2: VideoAnalysis = {
         quality: {
+          resolution: { width: 1920, height: 1080 },
+          frameRate: 30,
+          bitrate: 5000000,
           sharpness: 90,
           stability: 85,
           exposure: 0, // will be normalized to (100 + 0) / 2 = 50
           colorGrading: 80,
         },
-        content: { actionLevel: 60, sceneChanges: 8, facesDetected: 1, objectsDetected: 3 },
+        content: {
+          actionLevel: 60,
+          faces: [{ box: [0, 0, 100, 100], confidence: 0.9 }],
+          objects: [
+            { label: "person", confidence: 0.85, box: [0, 0, 100, 100] },
+            { label: "car", confidence: 0.8, box: [100, 100, 200, 200] },
+            { label: "tree", confidence: 0.75, box: [200, 200, 300, 300] },
+          ],
+          sceneType: SceneType.Outdoor,
+          lighting: LightingCondition.Bright,
+        },
+        motion: {
+          cameraMovement: CameraMovement.Pan,
+          subjectMovement: 60,
+          flowDirection: FlowDirection.LeftToRight,
+          cutFriendliness: 80,
+        },
       }
 
       mockContext.videoAnalyses.set("video-1", analysis1)
@@ -184,13 +236,35 @@ describe("useContentAnalysis", () => {
   describe("Average audio quality calculation", () => {
     it("should calculate average audio quality from analyses", async () => {
       const analysis1: AudioAnalysis = {
-        quality: { clarity: 80, noiseLevel: 20 },
-        content: { speechPresence: 70, musicPresence: 50, silenceRatio: 10 },
+        quality: {
+          sampleRate: 48000,
+          bitDepth: 16,
+          noiseLevel: 20,
+          clarity: 80,
+          dynamicRange: 50,
+        },
+        content: {
+          speechPresence: 70,
+          musicPresence: 50,
+          ambientLevel: 20,
+          emotionalTone: EmotionalTone.Calm,
+        },
       }
 
       const analysis2: AudioAnalysis = {
-        quality: { clarity: 90, noiseLevel: 10 },
-        content: { speechPresence: 80, musicPresence: 60, silenceRatio: 5 },
+        quality: {
+          sampleRate: 48000,
+          bitDepth: 16,
+          noiseLevel: 10,
+          clarity: 90,
+          dynamicRange: 60,
+        },
+        content: {
+          speechPresence: 80,
+          musicPresence: 60,
+          ambientLevel: 15,
+          emotionalTone: EmotionalTone.Energetic,
+        },
       }
 
       mockContext.audioAnalyses.set("video-1", analysis1)
@@ -228,7 +302,7 @@ describe("useContentAnalysis", () => {
           composition: 80 + i,
         },
         totalScore: 80 + i,
-        category: "highlight" as const,
+        category: MomentCategory.Highlight,
       }))
 
       mockContext.momentScores = moments
@@ -254,8 +328,9 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 95, technical: 90, emotional: 85, narrative: 88, action: 92, composition: 90 },
             totalScore: 90,
-            category: "highlight",
+            category: MomentCategory.Highlight,
           },
+          tags: [],
           objects: [],
           people: [],
         },
@@ -270,8 +345,9 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 80, technical: 75, emotional: 70, narrative: 78, action: 82, composition: 75 },
             totalScore: 75,
-            category: "transition",
+            category: MomentCategory.Transition,
           },
+          tags: [],
           objects: [],
           people: [],
         },
@@ -303,28 +379,28 @@ describe("useContentAnalysis", () => {
           duration: 5,
           scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
           totalScore: 80,
-          category: "highlight",
+          category: MomentCategory.Highlight,
         },
         {
           timestamp: 10,
           duration: 5,
           scores: { visual: 75, technical: 70, emotional: 65, narrative: 80, action: 85, composition: 75 },
           totalScore: 75,
-          category: "highlight",
+          category: MomentCategory.Highlight,
         },
         {
           timestamp: 20,
           duration: 5,
           scores: { visual: 90, technical: 85, emotional: 80, narrative: 88, action: 95, composition: 88 },
           totalScore: 88,
-          category: "action",
+          category: MomentCategory.Action,
         },
         {
           timestamp: 30,
           duration: 5,
           scores: { visual: 70, technical: 65, emotional: 85, narrative: 75, action: 60, composition: 70 },
           totalScore: 71,
-          category: "emotional",
+          category: MomentCategory.Drama,
         },
       ]
 
@@ -334,9 +410,9 @@ describe("useContentAnalysis", () => {
       const { result } = renderHook(() => useContentAnalysis())
 
       expect(result.current.momentCategoryCounts).toEqual({
-        highlight: 2,
-        action: 1,
-        emotional: 1,
+        [MomentCategory.Highlight]: 2,
+        [MomentCategory.Action]: 1,
+        [MomentCategory.Drama]: 1,
       })
     })
 
@@ -362,10 +438,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 90, technical: 85, emotional: 80, narrative: 88, action: 92, composition: 88 },
             totalScore: 88,
-            category: "action",
+            category: MomentCategory.Action,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f2",
@@ -378,10 +455,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 85, technical: 80, emotional: 75, narrative: 83, action: 87, composition: 83 },
             totalScore: 82,
-            category: "action",
+            category: MomentCategory.Action,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f3",
@@ -394,10 +472,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 75, technical: 70, emotional: 85, narrative: 78, action: 65, composition: 75 },
             totalScore: 75,
-            category: "emotional",
+            category: MomentCategory.Drama,
           },
           objects: [],
           people: [],
+          tags: [],
         },
       ]
 
@@ -407,8 +486,8 @@ describe("useContentAnalysis", () => {
       const { result } = renderHook(() => useContentAnalysis())
 
       expect(result.current.fragmentCategories).toEqual({
-        action: 2,
-        emotional: 1,
+        [MomentCategory.Action]: 2,
+        [MomentCategory.Drama]: 1,
       })
     })
   })
@@ -427,10 +506,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 96, technical: 95, emotional: 94, narrative: 95, action: 96, composition: 95 },
             totalScore: 96,
-            category: "highlight",
+            category: MomentCategory.Highlight,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f2",
@@ -443,10 +523,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 85, technical: 82, emotional: 80, narrative: 84, action: 86, composition: 83 },
             totalScore: 85,
-            category: "action",
+            category: MomentCategory.Action,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f3",
@@ -459,10 +540,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 65, technical: 60, emotional: 62, narrative: 64, action: 66, composition: 63 },
             totalScore: 65,
-            category: "transition",
+            category: MomentCategory.Transition,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f4",
@@ -475,10 +557,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 55, technical: 50, emotional: 52, narrative: 54, action: 56, composition: 53 },
             totalScore: 55,
-            category: "filler",
+            category: MomentCategory.BRoll,
           },
           objects: [],
           people: [],
+          tags: [],
         },
       ]
 
@@ -516,15 +599,73 @@ describe("useContentAnalysis", () => {
         [
           "video-1",
           {
-            quality: { sharpness: 80, stability: 85, exposure: 0, colorGrading: 75 },
-            content: { actionLevel: 70, sceneChanges: 10, facesDetected: 2, objectsDetected: 5 },
+            quality: {
+              resolution: { width: 1920, height: 1080 },
+              frameRate: 30,
+              bitrate: 5000000,
+              sharpness: 80,
+              stability: 85,
+              exposure: 0,
+              colorGrading: 75,
+            },
+            content: {
+              actionLevel: 70,
+              faces: [
+                { box: [0, 0, 100, 100], confidence: 0.9 },
+                { box: [100, 100, 200, 200], confidence: 0.85 },
+              ],
+              objects: [
+                { label: "person", confidence: 0.9, box: [0, 0, 100, 100] },
+                { label: "car", confidence: 0.85, box: [100, 100, 200, 200] },
+                { label: "tree", confidence: 0.8, box: [200, 200, 300, 300] },
+                { label: "building", confidence: 0.75, box: [300, 300, 400, 400] },
+                { label: "dog", confidence: 0.7, box: [400, 400, 500, 500] },
+              ],
+              sceneType: SceneType.Outdoor,
+              lighting: LightingCondition.Bright,
+            },
+            motion: {
+              cameraMovement: CameraMovement.Pan,
+              subjectMovement: 60,
+              flowDirection: FlowDirection.LeftToRight,
+              cutFriendliness: 80,
+            },
           },
         ],
         [
           "video-2",
           {
-            quality: { sharpness: 90, stability: 80, exposure: -5, colorGrading: 85 },
-            content: { actionLevel: 80, sceneChanges: 15, facesDetected: 1, objectsDetected: 8 },
+            quality: {
+              resolution: { width: 1920, height: 1080 },
+              frameRate: 30,
+              bitrate: 5000000,
+              sharpness: 90,
+              stability: 80,
+              exposure: -5,
+              colorGrading: 85,
+            },
+            content: {
+              actionLevel: 80,
+              faces: [{ box: [0, 0, 100, 100], confidence: 0.95 }],
+              objects: [
+                { label: "person", confidence: 0.95, box: [0, 0, 100, 100] },
+                { label: "car", confidence: 0.9, box: [100, 100, 200, 200] },
+                { label: "bike", confidence: 0.85, box: [200, 200, 300, 300] },
+                { label: "tree", confidence: 0.8, box: [300, 300, 400, 400] },
+                { label: "building", confidence: 0.75, box: [400, 400, 500, 500] },
+                { label: "bench", confidence: 0.7, box: [500, 500, 600, 600] },
+                { label: "lamp", confidence: 0.65, box: [600, 600, 700, 700] },
+                { label: "sign", confidence: 0.6, box: [700, 700, 800, 800] },
+              ],
+              sceneType: SceneType.Urban,
+              lighting: LightingCondition.Bright,
+            },
+            motion: {
+              cameraMovement: CameraMovement.Dolly,
+              subjectMovement: 75,
+              flowDirection: FlowDirection.RightToLeft,
+              cutFriendliness: 85,
+            },
           },
         ],
       ])
@@ -533,15 +674,37 @@ describe("useContentAnalysis", () => {
         [
           "video-1",
           {
-            quality: { clarity: 85, noiseLevel: 15 },
-            content: { speechPresence: 70, musicPresence: 50, silenceRatio: 10 },
+            quality: {
+              sampleRate: 48000,
+              bitDepth: 16,
+              noiseLevel: 15,
+              clarity: 85,
+              dynamicRange: 55,
+            },
+            content: {
+              speechPresence: 70,
+              musicPresence: 50,
+              ambientLevel: 25,
+              emotionalTone: EmotionalTone.Calm,
+            },
           },
         ],
         [
           "video-2",
           {
-            quality: { clarity: 90, noiseLevel: 10 },
-            content: { speechPresence: 80, musicPresence: 60, silenceRatio: 5 },
+            quality: {
+              sampleRate: 48000,
+              bitDepth: 16,
+              noiseLevel: 10,
+              clarity: 90,
+              dynamicRange: 60,
+            },
+            content: {
+              speechPresence: 80,
+              musicPresence: 60,
+              ambientLevel: 20,
+              emotionalTone: EmotionalTone.Energetic,
+            },
           },
         ],
       ])
@@ -584,8 +747,37 @@ describe("useContentAnalysis", () => {
         [
           "video-1",
           {
-            quality: { sharpness: 80, stability: 85, exposure: 0, colorGrading: 75 },
-            content: { actionLevel: 70, sceneChanges: 10, facesDetected: 2, objectsDetected: 5 },
+            quality: {
+              resolution: { width: 1920, height: 1080 },
+              frameRate: 30,
+              bitrate: 5000000,
+              sharpness: 80,
+              stability: 85,
+              exposure: 0,
+              colorGrading: 75,
+            },
+            content: {
+              actionLevel: 70,
+              faces: [
+                { box: [0, 0, 100, 100], confidence: 0.9 },
+                { box: [100, 100, 200, 200], confidence: 0.85 },
+              ],
+              objects: [
+                { label: "person", confidence: 0.9, box: [0, 0, 100, 100] },
+                { label: "car", confidence: 0.85, box: [100, 100, 200, 200] },
+                { label: "tree", confidence: 0.8, box: [200, 200, 300, 300] },
+                { label: "building", confidence: 0.75, box: [300, 300, 400, 400] },
+                { label: "dog", confidence: 0.7, box: [400, 400, 500, 500] },
+              ],
+              sceneType: SceneType.Outdoor,
+              lighting: LightingCondition.Bright,
+            },
+            motion: {
+              cameraMovement: CameraMovement.Pan,
+              subjectMovement: 60,
+              flowDirection: FlowDirection.LeftToRight,
+              cutFriendliness: 80,
+            },
           },
         ],
       ])
@@ -612,10 +804,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
             totalScore: 80,
-            category: "highlight",
+            category: MomentCategory.Highlight,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f2",
@@ -628,10 +821,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 85, technical: 80, emotional: 75, narrative: 83, action: 87, composition: 83 },
             totalScore: 82,
-            category: "action",
+            category: MomentCategory.Action,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f3",
@@ -644,10 +838,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 75, technical: 70, emotional: 65, narrative: 78, action: 82, composition: 75 },
             totalScore: 75,
-            category: "transition",
+            category: MomentCategory.Transition,
           },
           objects: [],
           people: [],
+          tags: [],
         },
       ] as Fragment[]
 
@@ -670,10 +865,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
             totalScore: 80,
-            category: "highlight",
+            category: MomentCategory.Highlight,
           },
           objects: [],
           people: [],
+          tags: [],
         },
         {
           id: "f2",
@@ -686,10 +882,11 @@ describe("useContentAnalysis", () => {
             duration: 10,
             scores: { visual: 90, technical: 85, emotional: 80, narrative: 88, action: 92, composition: 88 },
             totalScore: 90,
-            category: "action",
+            category: MomentCategory.Action,
           },
           objects: [],
           people: [],
+          tags: [],
         },
       ]
 

@@ -125,7 +125,6 @@ function triggerStateChange() {
     browser_state: mockBrowserState,
     clipboard: null,
     project: null,
-    imported_media: {},
     ui_state: {
       selected_clips: [],
       selected_tracks: [],
@@ -465,7 +464,6 @@ export const mockBackendSync = {
     browser_state: mockBrowserState,
     clipboard: null,
     project: null,
-    imported_media: {},
     ui_state: {
       selected_clips: [],
       selected_tracks: [],
@@ -541,7 +539,6 @@ export const mockBackendSync = {
           browser_state: mockBrowserState,
           clipboard: null,
           project: null,
-          imported_media: {},
           ui_state: {
             selected_clips: [],
             selected_tracks: [],
@@ -670,7 +667,6 @@ export function resetExecuteCommandMock() {
     browser_state: mockBrowserState,
     clipboard: null,
     project: null,
-    imported_media: {},
     ui_state: {
       selected_clips: [],
       selected_tracks: [],
@@ -739,7 +735,6 @@ export function resetExecuteCommandMock() {
           browser_state: mockBrowserState,
           clipboard: null,
           project: null,
-          imported_media: {},
           ui_state: {
             selected_clips: [],
             selected_tracks: [],

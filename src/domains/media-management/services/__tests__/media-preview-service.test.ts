@@ -240,8 +240,8 @@ describe("MediaPreviewService", () => {
   describe("saveTimelineFrames", () => {
     it("should save timeline frames successfully", async () => {
       const frames = [
-        { timestamp: 0, path: "/frame1.jpg", width: 160, height: 90 },
-        { timestamp: 1, path: "/frame2.jpg", width: 160, height: 90 },
+        { timestamp: 0, base64_data: "data:image/jpeg;base64,frame1", is_keyframe: true },
+        { timestamp: 1, base64_data: "data:image/jpeg;base64,frame2", is_keyframe: false },
       ]
       mockMediaService.saveTimelineFrames.mockResolvedValue(undefined)
 
@@ -254,7 +254,7 @@ describe("MediaPreviewService", () => {
     })
 
     it("should throw error when save fails", async () => {
-      const frames = [{ timestamp: 0, path: "/frame1.jpg", width: 160, height: 90 }]
+      const frames = [{ timestamp: 0, base64_data: "data:image/jpeg;base64,frame1", is_keyframe: true }]
       mockMediaService.saveTimelineFrames.mockRejectedValue(new Error("Save failed"))
 
       await expect(service.saveTimelineFrames("file-1", frames)).rejects.toThrow("Save failed")

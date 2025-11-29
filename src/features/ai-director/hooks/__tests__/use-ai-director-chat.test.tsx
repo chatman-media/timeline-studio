@@ -35,14 +35,17 @@ describe("useAIDirectorChat", () => {
       filePath: "/path/to/video1.mp4",
       status: "completed",
       progress: 100,
-      startTime: Date.now(),
+      startTime: new Date().toISOString(),
       analyzers: [
         {
           type: "scene_detection",
           status: "completed",
           progress: 100,
           result: {
+            success: true,
+            type: "scene_detection",
             metadata: {
+              processingTime: 100,
               itemsFound: 5,
               confidence: 0.9,
             },
@@ -270,7 +273,7 @@ describe("useAIDirectorChat", () => {
           filePath: "/path/to/video1.mp4",
           status: "analyzing",
           progress: 50,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
       ]
@@ -288,7 +291,7 @@ describe("useAIDirectorChat", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed",
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
         {
@@ -297,7 +300,7 @@ describe("useAIDirectorChat", () => {
           filePath: "/path/to/video2.mp4",
           status: "analyzing",
           progress: 50,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
       ]

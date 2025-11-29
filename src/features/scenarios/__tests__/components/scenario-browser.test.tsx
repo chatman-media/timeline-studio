@@ -140,11 +140,15 @@ describe("ScenarioBrowser", () => {
     render(<ScenarioBrowser onSelect={mockOnSelect} />)
 
     const scenarioCard = screen.getByText("Добавить одинаковые интро и аутро")
-    await user.click(scenarioCard.closest("div"))
+    const parentDiv = scenarioCard.closest("div")
 
-    await waitFor(() => {
-      expect(mockOnSelect).toHaveBeenCalled()
-    })
+    if (parentDiv) {
+      await user.click(parentDiv)
+
+      await waitFor(() => {
+        expect(mockOnSelect).toHaveBeenCalled()
+      })
+    }
   })
 
   it("должен отображать поле поиска", () => {

@@ -386,6 +386,7 @@ describe("useTemplatePicker", () => {
         total: 3,
         byCategory: { youtube: 1, social: 2 },
         byPlatform: { youtube: 1, instagram: 1, tiktok: 1 },
+        byAspectRatio: { "16:9": 1, "9:16": 2 },
       }
       vi.spyOn(projectTemplateManager, "getStatistics").mockReturnValue(mockStats)
 

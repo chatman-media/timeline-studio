@@ -49,7 +49,7 @@ describe("director-prompts", () => {
           filePath: "/path/to/video1.mp4",
           status: "analyzing",
           progress: 50,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
       ]
@@ -67,7 +67,7 @@ describe("director-prompts", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed",
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           duration: 5000,
           analyzers: [
             {
@@ -75,7 +75,10 @@ describe("director-prompts", () => {
               status: "completed",
               progress: 100,
               result: {
+                success: true,
+                type: "scene_detection",
                 metadata: {
+                  processingTime: 100,
                   itemsFound: 5,
                   confidence: 0.9,
                 },
@@ -102,7 +105,7 @@ describe("director-prompts", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed",
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [
             {
               type: "scene_detection",
@@ -138,7 +141,7 @@ describe("director-prompts", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed",
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
         {
@@ -147,7 +150,7 @@ describe("director-prompts", () => {
           filePath: "/path/to/video2.mp4",
           status: "error",
           progress: 0,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
       ]
@@ -166,14 +169,17 @@ describe("director-prompts", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed",
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [
             {
               type: "object_detection",
               status: "completed",
               progress: 100,
               result: {
+                success: true,
+                type: "object_detection",
                 metadata: {
+                  processingTime: 100,
                   itemsFound: 10,
                   confidence: 0.85,
                 },

@@ -169,7 +169,7 @@ describe("useAIDirectorDashboard", () => {
           filePath: "/path/to/video1.mp4",
           status: "analyzing" as const,
           progress: 50,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
       ]
@@ -191,7 +191,7 @@ describe("useAIDirectorDashboard", () => {
               filePath: "/path/to/video1.mp4",
               status: "analyzing" as const,
               progress: 50,
-              startTime: Date.now(),
+              startTime: new Date().toISOString(),
               analyzers: [],
             },
           ],
@@ -208,7 +208,7 @@ describe("useAIDirectorDashboard", () => {
             filePath: "/path/to/video1.mp4",
             status: "analyzing" as const,
             progress: 75,
-            startTime: Date.now(),
+            startTime: new Date().toISOString(),
             analyzers: [],
           },
         ],
@@ -225,7 +225,7 @@ describe("useAIDirectorDashboard", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed" as const,
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
         {
@@ -234,7 +234,7 @@ describe("useAIDirectorDashboard", () => {
           filePath: "/path/to/video2.mp4",
           status: "completed" as const,
           progress: 100,
-          startTime: Date.now(),
+          startTime: new Date().toISOString(),
           analyzers: [],
         },
       ]
@@ -253,7 +253,7 @@ describe("useAIDirectorDashboard", () => {
           filePath: "/path/to/video1.mp4",
           status: "completed" as const,
           progress: 100,
-          startTime: today.getTime(),
+          startTime: today.toISOString(),
           analyzers: [],
         },
       ]
@@ -275,8 +275,12 @@ describe("useAIDirectorDashboard", () => {
         category: "social",
         icon: "🎬",
         agents: ["analysis", "montage"],
+        parameters: {
+          format: "horizontal",
+          platform: "universal",
+        },
         tags: ["test"],
-        estimatedTime: 120,
+        isBuiltIn: false,
       }
 
       await act(async () => {

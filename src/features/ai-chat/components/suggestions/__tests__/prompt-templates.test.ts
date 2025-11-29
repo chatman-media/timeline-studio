@@ -231,7 +231,7 @@ describe("Prompt Templates", () => {
     it("приоритеты должны помогать правильной сортировке", () => {
       // Контекстные промпты обычно имеют более высокий приоритет
       const allPrompts = [...UNIVERSAL_PROMPTS, ...CONTEXTUAL_PROMPTS]
-      const sortedByPriority = [...allPrompts].sort((a, b) => b.priority - a.priority)
+      const sortedByPriority = [...allPrompts].sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0))
 
       // Проверяем, что приоритеты являются числами и различаются
       expect(sortedByPriority.every((p) => typeof p.priority === "number")).toBe(true)

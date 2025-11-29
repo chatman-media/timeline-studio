@@ -356,7 +356,7 @@ describe("ErrorTrackerService", () => {
       const stats = service.getOperationStats()
 
       expect(stats).toBeInstanceOf(Map)
-      expect(stats.size).toBeGreaterThan(0)
+      expect((stats as Map<ErrorType, any>).size).toBeGreaterThan(0)
     })
 
     it("should return stats for specific type", () => {

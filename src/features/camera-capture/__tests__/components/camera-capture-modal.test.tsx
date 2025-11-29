@@ -135,7 +135,7 @@ vi.mock("../../components/recording-controls", () => ({
   ),
 }))
 
-// Мокируем хук useModals
+// Мокируем хук useModals и useNotifications
 vi.mock("@/domains/system-integration", () => ({
   useModals: () => ({
     activeModal: "camera-capture",
@@ -152,6 +152,12 @@ vi.mock("@/domains/system-integration", () => ({
     openKeyboardShortcuts: vi.fn(),
     openColorGrading: vi.fn(),
     openEffectDetail: vi.fn(),
+  }),
+  useNotifications: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+    showInfo: vi.fn(),
+    showWarning: vi.fn(),
   }),
 }))
 

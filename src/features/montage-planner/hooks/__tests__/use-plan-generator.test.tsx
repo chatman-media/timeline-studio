@@ -6,6 +6,57 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { Fragment, MontagePlan, PlannedClip, Sequence } from "../../types"
+import { ClipRole, PacingType, SequencePurpose, SequenceType, SuggestionType, TargetPlatform } from "../../types"
+
+// Helper function to create a valid MontagePlan
+function createMontagePlan(
+  overrides: Partial<MontagePlan> & { sequences: Sequence[]; totalDuration: number },
+): MontagePlan {
+  return {
+    id: overrides.id || "plan-1",
+    name: overrides.name || "Test Plan",
+    metadata: overrides.metadata || {
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      version: 1,
+    },
+    sequences: overrides.sequences,
+    totalDuration: overrides.totalDuration,
+    style: overrides.style || {
+      id: "test-style",
+      name: "Test Style",
+      description: "Test style description",
+      cutting: {
+        averageShotLength: 3,
+        variability: 50,
+        rhythmComplexity: 60,
+      },
+      transitions: {
+        preferredTypes: ["cut", "fade"],
+        frequency: 50,
+        complexity: 30,
+      },
+      emotionalArc: {
+        startEnergy: 50,
+        peakPosition: 0.5,
+        peakEnergy: 80,
+        endEnergy: 60,
+        variability: 40,
+      },
+    },
+    pacing: overrides.pacing || {
+      type: PacingType.Steady,
+      averageCutDuration: 3,
+      cutDurationRange: [1, 5],
+      rhythmComplexity: 50,
+    },
+    qualityScore: overrides.qualityScore ?? 85,
+    engagementScore: overrides.engagementScore ?? 88,
+    coherenceScore: overrides.coherenceScore ?? 82,
+    transitions: overrides.transitions,
+    musicSync: overrides.musicSync,
+  }
+}
 
 // Mock useMontagePlanner hook
 const mockGeneratePlan = vi.fn()
@@ -20,7 +71,7 @@ const mockContext = {
   generationOptions: {},
   selectedStyle: "dynamic",
   instructions: "",
-  planHistory: [],
+  planHistory: [] as MontagePlan[],
 }
 
 vi.mock("../use-montage-planner", () => ({
@@ -76,44 +127,42 @@ describe("usePlanGenerator", () => {
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "intro",
+          type: SequenceType.Intro,
           duration: 10,
           clips: [],
           transitions: [],
           energyLevel: 50,
-          purpose: "Introduction",
+          purpose: SequencePurpose.Hook,
           emotionalArc: {
             startEnergy: 40,
             peakEnergy: 60,
             endEnergy: 50,
             peakPosition: 0.5,
+            variability: 30,
           },
         },
         {
           id: "seq-2",
-          type: "main",
+          type: SequenceType.Main,
           duration: 60,
           clips: [],
           transitions: [],
           energyLevel: 80,
-          purpose: "Main content",
+          purpose: SequencePurpose.Development,
           emotionalArc: {
             startEnergy: 60,
             peakEnergy: 90,
             endEnergy: 70,
             peakPosition: 0.7,
+            variability: 50,
           },
         },
       ]
 
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 70,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -122,18 +171,14 @@ describe("usePlanGenerator", () => {
 
       expect(sequence).toEqual(sequences[0])
       expect(sequence?.id).toBe("seq-1")
-      expect(sequence?.type).toBe("intro")
+      expect(sequence?.type).toBe(SequenceType.Intro)
     })
 
     it("should return undefined for non-existent sequence", async () => {
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [],
         totalDuration: 0,
-        qualityScore: 0,
-        engagementScore: 0,
-        coherenceScore: 0,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -148,23 +193,21 @@ describe("usePlanGenerator", () => {
     it("should get clip by fragment ID", async () => {
       const clip: PlannedClip = {
         fragmentId: "fragment-1",
-        startTime: 0,
-        duration: 5,
-        trimStart: 0,
-        trimEnd: 5,
-        volumeAdjustment: 1.0,
-        speedAdjustment: 1.0,
+        sequenceOrder: 0,
+        role: ClipRole.Hero,
+        importance: 90,
+        suggestions: [],
       }
 
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "main",
+          type: SequenceType.Main,
           duration: 5,
           clips: [clip],
           transitions: [],
           energyLevel: 70,
-          purpose: "Main content",
+          purpose: SequencePurpose.Development,
           emotionalArc: {
             startEnergy: 60,
             peakEnergy: 80,
@@ -174,14 +217,10 @@ describe("usePlanGenerator", () => {
         },
       ]
 
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 5,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -193,14 +232,10 @@ describe("usePlanGenerator", () => {
     })
 
     it("should return undefined for non-existent clip", async () => {
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [],
         totalDuration: 0,
-        qualityScore: 0,
-        engagementScore: 0,
-        coherenceScore: 0,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -213,65 +248,59 @@ describe("usePlanGenerator", () => {
     it("should search across multiple sequences", async () => {
       const clip1: PlannedClip = {
         fragmentId: "fragment-1",
-        startTime: 0,
-        duration: 5,
-        trimStart: 0,
-        trimEnd: 5,
-        volumeAdjustment: 1.0,
-        speedAdjustment: 1.0,
+        sequenceOrder: 0,
+        role: ClipRole.Hero,
+        importance: 85,
+        suggestions: [],
       }
 
       const clip2: PlannedClip = {
         fragmentId: "fragment-2",
-        startTime: 5,
-        duration: 5,
-        trimStart: 0,
-        trimEnd: 5,
-        volumeAdjustment: 1.0,
-        speedAdjustment: 1.0,
+        sequenceOrder: 1,
+        role: ClipRole.Supporting,
+        importance: 75,
+        suggestions: [],
       }
 
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "intro",
+          type: SequenceType.Intro,
           duration: 5,
           clips: [clip1],
           transitions: [],
           energyLevel: 50,
-          purpose: "Intro",
+          purpose: SequencePurpose.Hook,
           emotionalArc: {
             startEnergy: 40,
             peakEnergy: 60,
             endEnergy: 50,
             peakPosition: 0.5,
+            variability: 30,
           },
         },
         {
           id: "seq-2",
-          type: "main",
+          type: SequenceType.Main,
           duration: 5,
           clips: [clip2],
           transitions: [],
           energyLevel: 80,
-          purpose: "Main",
+          purpose: SequencePurpose.Development,
           emotionalArc: {
             startEnergy: 60,
             peakEnergy: 90,
             endEnergy: 70,
             peakPosition: 0.7,
+            variability: 50,
           },
         },
       ]
 
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 10,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -287,12 +316,12 @@ describe("usePlanGenerator", () => {
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "intro",
+          type: SequenceType.Intro,
           duration: 10,
           clips: [{}, {}] as PlannedClip[],
           transitions: [],
           energyLevel: 50,
-          purpose: "Intro",
+          purpose: SequencePurpose.Hook,
           emotionalArc: {
             startEnergy: 40,
             peakEnergy: 60,
@@ -302,12 +331,12 @@ describe("usePlanGenerator", () => {
         },
         {
           id: "seq-2",
-          type: "main",
+          type: SequenceType.Main,
           duration: 60,
           clips: [{}, {}, {}] as PlannedClip[],
           transitions: [],
           energyLevel: 80,
-          purpose: "Main",
+          purpose: SequencePurpose.Development,
           emotionalArc: {
             startEnergy: 60,
             peakEnergy: 90,
@@ -317,12 +346,12 @@ describe("usePlanGenerator", () => {
         },
         {
           id: "seq-3",
-          type: "outro",
+          type: SequenceType.Outro,
           duration: 10,
           clips: [{}] as PlannedClip[],
           transitions: [],
           energyLevel: 40,
-          purpose: "Outro",
+          purpose: SequencePurpose.CallToAction,
           emotionalArc: {
             startEnergy: 50,
             peakEnergy: 55,
@@ -332,14 +361,10 @@ describe("usePlanGenerator", () => {
         },
       ]
 
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 80,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -357,7 +382,7 @@ describe("usePlanGenerator", () => {
       expect(result.current.planStats?.energyProfile).toHaveLength(3)
       expect(result.current.planStats?.energyProfile[0]).toMatchObject({
         sequenceId: "seq-1",
-        type: "intro",
+        type: SequenceType.Intro,
         energy: 50,
       })
     })
@@ -375,12 +400,12 @@ describe("usePlanGenerator", () => {
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "intro",
+          type: SequenceType.Intro,
           duration: 10,
           clips: [{}, {}] as PlannedClip[],
           transitions: [{}] as any[],
           energyLevel: 50,
-          purpose: "Introduction",
+          purpose: SequencePurpose.Hook,
           emotionalArc: {
             startEnergy: 40,
             peakEnergy: 60,
@@ -390,14 +415,10 @@ describe("usePlanGenerator", () => {
         },
       ]
 
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 10,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -405,11 +426,11 @@ describe("usePlanGenerator", () => {
       expect(result.current.sequenceBreakdown).toHaveLength(1)
       expect(result.current.sequenceBreakdown[0]).toEqual({
         id: "seq-1",
-        type: "intro",
+        type: SequenceType.Intro,
         duration: 10,
         clipCount: 2,
         energyLevel: 50,
-        purpose: "Introduction",
+        purpose: SequencePurpose.Hook,
         transitionCount: 1,
       })
     })
@@ -441,12 +462,12 @@ describe("usePlanGenerator", () => {
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "main",
+          type: SequenceType.Main,
           duration: 20,
           clips,
           transitions: [],
           energyLevel: 70,
-          purpose: "Main",
+          purpose: SequencePurpose.Development,
           emotionalArc: {
             startEnergy: 60,
             peakEnergy: 80,
@@ -457,14 +478,10 @@ describe("usePlanGenerator", () => {
       ]
 
       mockContext.fragments = fragments
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 20,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -483,12 +500,12 @@ describe("usePlanGenerator", () => {
       const sequences: Sequence[] = [
         {
           id: "seq-1",
-          type: "intro",
+          type: SequenceType.Intro,
           duration: 10,
           clips: [],
           transitions: [],
           energyLevel: 50,
-          purpose: "Intro",
+          purpose: SequencePurpose.Hook,
           emotionalArc: {
             startEnergy: 40,
             peakEnergy: 60,
@@ -498,12 +515,12 @@ describe("usePlanGenerator", () => {
         },
         {
           id: "seq-2",
-          type: "climax",
+          type: SequenceType.Climax,
           duration: 20,
           clips: [],
           transitions: [],
           energyLevel: 95,
-          purpose: "Climax",
+          purpose: SequencePurpose.Climax,
           emotionalArc: {
             startEnergy: 70,
             peakEnergy: 100,
@@ -513,14 +530,10 @@ describe("usePlanGenerator", () => {
         },
       ]
 
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences,
         totalDuration: 30,
-        qualityScore: 85,
-        engagementScore: 88,
-        coherenceScore: 82,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -552,14 +565,13 @@ describe("usePlanGenerator", () => {
 
   describe("Improvement suggestions", () => {
     it("should suggest improving quality when score is low", async () => {
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [],
         totalDuration: 60,
-        qualityScore: 65, // Below 70
+        qualityScore: 65,
         engagementScore: 80,
         coherenceScore: 75,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -570,14 +582,13 @@ describe("usePlanGenerator", () => {
     })
 
     it("should suggest improving engagement when score is low", async () => {
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [],
         totalDuration: 60,
         qualityScore: 85,
-        engagementScore: 55, // Below 60
+        engagementScore: 55,
         coherenceScore: 75,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -586,14 +597,13 @@ describe("usePlanGenerator", () => {
     })
 
     it("should suggest trimming when plan is too long", async () => {
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [],
         totalDuration: 140,
         qualityScore: 85,
         engagementScore: 80,
         coherenceScore: 75,
-      }
+      })
       mockContext.targetDuration = 120 // Difference > 10
 
       const { usePlanGenerator } = await import("../use-plan-generator")
@@ -603,14 +613,13 @@ describe("usePlanGenerator", () => {
     })
 
     it("should suggest adding content when plan is too short", async () => {
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [],
         totalDuration: 100,
         qualityScore: 85,
         engagementScore: 80,
         coherenceScore: 75,
-      }
+      })
       mockContext.targetDuration = 120 // Difference > 10
 
       const { usePlanGenerator } = await import("../use-plan-generator")
@@ -623,30 +632,27 @@ describe("usePlanGenerator", () => {
 
     it("should suggest using more fragments when many are unused", async () => {
       mockContext.fragments = Array.from({ length: 10 }, (_, i) => ({ id: `f${i}` }) as Fragment)
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [
           {
             id: "seq-1",
-            type: "main",
+            type: SequenceType.Main,
             duration: 20,
             clips: [{ fragmentId: "f1" }, { fragmentId: "f2" }] as PlannedClip[], // Only 2 used out of 10
             transitions: [],
             energyLevel: 70,
-            purpose: "Main",
+            purpose: SequencePurpose.Development,
             emotionalArc: {
               startEnergy: 60,
               peakEnergy: 80,
               endEnergy: 70,
               peakPosition: 0.5,
+              variability: 40,
             },
           },
         ],
         totalDuration: 20,
-        qualityScore: 85,
-        engagementScore: 80,
-        coherenceScore: 75,
-      }
+      })
 
       const { usePlanGenerator } = await import("../use-plan-generator")
       const { result } = renderHook(() => usePlanGenerator())
@@ -658,30 +664,27 @@ describe("usePlanGenerator", () => {
 
     it("should return empty suggestions when plan is optimal", async () => {
       mockContext.fragments = Array.from({ length: 5 }, (_, i) => ({ id: `f${i}` }) as Fragment)
-      mockContext.currentPlan = {
-        id: "plan-1",
+      mockContext.currentPlan = createMontagePlan({
         sequences: [
           {
             id: "seq-1",
-            type: "main",
+            type: SequenceType.Main,
             duration: 120,
             clips: Array.from({ length: 4 }, (_, i) => ({ fragmentId: `f${i}` }) as PlannedClip),
             transitions: [],
             energyLevel: 70,
-            purpose: "Main",
+            purpose: SequencePurpose.Development,
             emotionalArc: {
               startEnergy: 60,
               peakEnergy: 80,
               endEnergy: 70,
               peakPosition: 0.5,
+              variability: 40,
             },
           },
         ],
         totalDuration: 120,
-        qualityScore: 85,
-        engagementScore: 80,
-        coherenceScore: 75,
-      }
+      })
       mockContext.targetDuration = 120
 
       const { usePlanGenerator } = await import("../use-plan-generator")

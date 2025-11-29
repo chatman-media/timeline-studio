@@ -42,7 +42,10 @@ describe("handleMediaBackendEvent", () => {
 
       const event: ProjectEvent = {
         type: "ProjectCreated",
-        payload: {},
+        payload: {
+          project_id: "test-project",
+          name: "Test Project",
+        },
       }
 
       const updates = handleMediaBackendEvent(context, event)
@@ -63,7 +66,9 @@ describe("handleMediaBackendEvent", () => {
 
       const event: ProjectEvent = {
         type: "ProjectClosed",
-        payload: {},
+        payload: {
+          project_id: "test-project",
+        },
       }
 
       const updates = handleMediaBackendEvent(context, event)
@@ -84,7 +89,7 @@ describe("handleMediaBackendEvent", () => {
             name: "video.mp4",
             media_type: "Video",
             duration: 120,
-            codec: "h264",
+            codec: null,
           },
         },
       }
@@ -102,7 +107,6 @@ describe("handleMediaBackendEvent", () => {
         thumbnailPath: undefined,
         metadata: {
           type: "Video",
-          codec: "h264",
         },
       })
     })
@@ -116,7 +120,8 @@ describe("handleMediaBackendEvent", () => {
             path: "/test/video.mp4",
             name: "video.mp4",
             media_type: "Video",
-            codec: "hevc",
+            duration: null,
+            codec: null,
           },
         },
       }
@@ -125,7 +130,6 @@ describe("handleMediaBackendEvent", () => {
 
       expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
-        codec: "hevc",
       })
     })
 
@@ -188,6 +192,7 @@ describe("handleMediaBackendEvent", () => {
           media_id: "non-existent",
           changes: {
             name: "new_name.mp4",
+            thumbnail: null,
           },
         },
       }
@@ -209,7 +214,7 @@ describe("handleMediaBackendEvent", () => {
             name: "video.mp4",
             media_type: "Video",
             duration: 120,
-            codec: "h264",
+            codec: null,
           },
         },
       }
@@ -220,7 +225,6 @@ describe("handleMediaBackendEvent", () => {
       expect(updates.mediaPool!.size).toBe(1)
       expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
-        codec: "h264",
       })
     })
 
@@ -266,7 +270,6 @@ describe("handleMediaBackendEvent", () => {
       expect(updates.mediaPool).toBeDefined()
       expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
-        codec: "hevc",
       })
     })
 
@@ -282,6 +285,7 @@ describe("handleMediaBackendEvent", () => {
         type: "ImportedMediaUpdated",
         payload: {
           media_id: "media-1",
+          codec: null,
         },
       }
 
@@ -293,7 +297,6 @@ describe("handleMediaBackendEvent", () => {
     it("should handle ImportedMediaCleared as no-op", () => {
       const event: ProjectEvent = {
         type: "ImportedMediaCleared",
-        payload: {},
       }
 
       const updates = handleMediaBackendEvent(context, event)
@@ -305,8 +308,19 @@ describe("handleMediaBackendEvent", () => {
   describe("Unhandled Events", () => {
     it("should return empty object for unhandled event types", () => {
       const event: ProjectEvent = {
-        type: "TimelineClipAdded" as any,
-        payload: {},
+        type: "ClipAdded",
+        payload: {
+          track_id: "track-1",
+          clip: {
+            id: "clip-1",
+            media_id: "media-1",
+            name: "test.mp4",
+            timeline_in: 0,
+            timeline_out: 10,
+            source_in: 0,
+            source_out: 10,
+          },
+        },
       }
 
       const updates = handleMediaBackendEvent(context, event)
@@ -327,6 +341,8 @@ describe("handleMediaBackendEvent", () => {
             path: "/test/video.mp4",
             name: "video.mp4",
             media_type: "Video",
+            duration: null,
+            codec: null,
           },
         },
       }
