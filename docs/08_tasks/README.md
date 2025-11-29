@@ -26,17 +26,27 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
-### [2025-11-28] Domains Adapters Migration - PLANNED 🟡
-- **Status:** Запланировано
+### [2025-11-29] Domains Adapters Migration - COMPLETED ✅
+- **Status:** Завершено (100%)
 - **File:** domains-adapters-migration.md
-- **Action:** Создана задача в planned/
+- **Action:** active/ → completed/
 - **Priority:** High
 - **Summary:**
-  - 20 файлов в `domains/*/tauri/` с прямыми `invoke()` (235 вызовов)
-  - Нужно мигрировать на Ports & Adapters архитектуру
-  - План: создать IAIService, IVideoService и использовать IBackendService для остальных
-  - Оценка: 5-7 дней
-- **Goal:** Domains должны использовать `container.get*()` вместо прямых `invoke()`
+  - Фаза 1: media-management → container.getMedia() ✅
+  - Фаза 2: IVideoService создан (40+ методов) ✅
+  - Фаза 3: IAIService создан (80+ методов) ✅
+  - Фаза 4: остальные domains используют существующие сервисы ✅
+  - Документация: src/core/README.md, src/adapters/README.md ✅
+- **Result:**
+  - 7 портов: IBackendService, IPlatformService, IStorageService, IEventService, IMediaService, IVideoService, IAIService
+  - Tauri и Mock адаптеры для всех сервисов
+  - 11,563 тестов проходят
+- **Commits:**
+  1. refactor(media): migrate media-api to use container.getMedia()
+  2. feat(ports): add IVideoService port and adapters
+  3. feat(ports): add IAIService port and adapters
+  4. fix(adapters): fix invoke() argument types in TauriVideoService
+  5. docs: add README documentation for core and adapters
 
 ### [2025-11-28] Audio Analysis Architecture Refactoring - COMPLETED ✅
 - **Status:** Завершено (100%)
@@ -274,4 +284,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-28 (Domains Adapters Migration task created)*
+*Last updated: 2025-11-29 (Domains Adapters Migration task completed)*
