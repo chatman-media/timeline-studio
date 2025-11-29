@@ -242,46 +242,95 @@
 3. ✅ Python интеграция уже реализована
 4. ✅ Все команды уже зарегистрированы
 
-### Фаза 4: Recognition Models (Приоритет: СРЕДНИЙ) 🟡
+### Фаза 4: Recognition Models (Приоритет: СРЕДНИЙ) ✅
 
-#### 4.1. YOLO & Recognition Models (28 команд)
+**Статус:** Завершено
+**Дата завершения:** 2025-11-29
 
-**YOLO Commands:**
-- [ ] `detect_objects_in_image` - Детекция объектов
-- [ ] `get_yolo_class_names_advanced` - Расширенные имена классов
-- [ ] `update_yolo_confidence_threshold` - Обновление порога уверенности
-- [ ] `get_available_yolo_models` - Доступные YOLO модели
+#### Итог Фазы 4:
+- ✅ Большинство Recognition команд УЖЕ были зарегистрированы ранее
+- ✅ Добавлено 3 новые YOLO команды
+- ✅ Добавлено 4 недостающие clustering команды
+- ✅ Всего зарегистрировано: 7 команд
+- ✅ Код компилируется без ошибок
 
-**Face Recognition:**
-- [ ] `init_retinaface_processor` - Инициализация RetinaFace
-- [ ] `detect_faces_with_landmarks` - Детекция с ориентирами
-- [ ] `generate_face_embedding` - Генерация embedding лица
-- [ ] `calculate_cosine_similarity` - Расчёт косинусной схожести
+#### 4.1. YOLO Commands ✅
 
-**MediaPipe:**
-- [ ] `init_mediapipe_processor` - Инициализация MediaPipe
-- [ ] `detect_faces_blazeface` - Детекция через BlazeFace
-- [ ] `extract_face_mesh_landmarks` - Извлечение mesh ориентиров
-- [ ] `analyze_facial_expressions` - Анализ выражений лица
+**Ранее зарегистрированные (13 команд):**
+- [x] `create_yolo_processor` *(app_builder.rs:81)*
+- [x] `process_image_with_yolo` *(app_builder.rs:82)*
+- [x] `process_video_file_with_yolo` *(app_builder.rs:83)*
+- [x] `process_image_sequence_with_yolo` *(app_builder.rs:84)*
+- [x] `save_yolo_results` *(app_builder.rs:85)*
+- [x] `update_yolo_config` *(app_builder.rs:86)*
+- [x] `get_yolo_config` *(app_builder.rs:87)*
+- [x] `extract_frames_for_yolo` *(app_builder.rs:88)*
+- [x] `get_available_yolo_models` *(app_builder.rs:89)*
+- [x] `remove_yolo_processor` *(app_builder.rs:90)*
+- [x] `list_active_yolo_processors` *(app_builder.rs:91)*
+- [x] `cleanup_yolo_processors` *(app_builder.rs:92)*
+- [x] `create_yolo_processor_with_builder` *(app_builder.rs:93)*
 
-**Privacy & Clustering:**
-- [ ] `init_privacy_processor` - Инициализация privacy процессора
-- [ ] `blur_faces_in_video_frames` - Размытие лиц в видео
-- [ ] `init_clustering_engine` - Инициализация кластеризации
-- [ ] `cluster_faces` - Кластеризация лиц
-- [ ] `auto_cluster_video_faces` - Автоматическая кластеризация видео
+**Новые команды Фазы 4 (3 команды):**
+- [x] `detect_objects_in_image` - Детекция объектов (alias для process_image_with_yolo) *(yolo_commands.rs:397)*
+- [x] `get_yolo_class_names_advanced` - Расширенные имена классов с метаданными *(yolo_commands.rs:426)*
+- [x] `update_yolo_confidence_threshold` - Обновление порога уверенности *(yolo_commands.rs:463)*
 
-**Действия:**
-1. Расширить recognition модуль
-2. Добавить поддержку MediaPipe
-3. Реализовать clustering engine
-4. Зарегистрировать все команды
+#### 4.2. Face Recognition (RetinaFace + FaceNet) ✅
 
-**Файлы для изменения:**
-- `src-tauri/src/recognition/yolo.rs`
-- `src-tauri/src/recognition/mediapipe.rs` (создать)
-- `src-tauri/src/recognition/clustering.rs` (создать)
-- `src-tauri/src/app_builder.rs`
+**Все команды УЖЕ были зарегистрированы:**
+- [x] `init_retinaface_processor` *(app_builder.rs:101)*
+- [x] `detect_faces_with_landmarks` *(app_builder.rs:102)*
+- [x] `detect_faces_with_landmarks_from_base64` *(app_builder.rs:103)*
+- [x] `get_aligned_face` *(app_builder.rs:104)*
+- [x] `configure_retinaface_thresholds` *(app_builder.rs:105)*
+- [x] `get_retinaface_processor_info` *(app_builder.rs:106)*
+- [x] `init_facenet_processor` *(app_builder.rs:95)*
+- [x] `generate_face_embedding` *(app_builder.rs:96)*
+- [x] `generate_face_embedding_from_base64` *(app_builder.rs:97)*
+- [x] `calculate_cosine_similarity` *(app_builder.rs:98)*
+- [x] `get_facenet_processor_info` *(app_builder.rs:99)*
+
+#### 4.3. MediaPipe ✅
+
+**Все команды УЖЕ были зарегистрированы:**
+- [x] `init_mediapipe_processor` *(app_builder.rs:108)*
+- [x] `detect_faces_blazeface` *(app_builder.rs:109)*
+- [x] `extract_face_mesh_landmarks` *(app_builder.rs:110)*
+- [x] `analyze_facial_expressions` *(app_builder.rs:111)*
+- [x] `configure_mediapipe_settings` *(app_builder.rs:112)*
+- [x] `get_mediapipe_processor_info` *(app_builder.rs:113)*
+
+#### 4.4. Privacy ✅
+
+**Все команды УЖЕ были зарегистрированы:**
+- [x] `init_privacy_processor` *(app_builder.rs:115)*
+- [x] `blur_faces_in_image` *(app_builder.rs:116)*
+- [x] `update_privacy_settings` *(app_builder.rs:117)*
+- [x] `blur_faces_in_video_frames` *(app_builder.rs:118)*
+- [x] `get_privacy_processor_info` *(app_builder.rs:119)*
+
+#### 4.5. Clustering ✅
+
+**Ранее зарегистрированные (8 команд):**
+- [x] `init_clustering_engine` *(app_builder.rs:125)*
+- [x] `cluster_faces` *(app_builder.rs:126)*
+- [x] `find_nearest_cluster` *(app_builder.rs:127)*
+- [x] `update_clustering_params` *(app_builder.rs:128)*
+- [x] `get_clustering_engine_info` *(app_builder.rs:129)*
+- [x] `merge_clusters` *(app_builder.rs:130)*
+- [x] `analyze_clustering_quality` *(app_builder.rs:131)*
+- [x] `auto_cluster_video_faces` *(app_builder.rs:132)*
+
+**Новые команды Фазы 4 (4 команды):**
+- [x] `integrate_clusters_with_db` - Интеграция кластеров с БД персон *(app_builder.rs:134)*
+- [x] `split_cluster` - Разделение кластера *(app_builder.rs:135)*
+- [x] `get_clustering_stats` - Статистика кластеризации *(app_builder.rs:136)*
+- [x] `get_cluster_persons` - Получение персон кластера *(app_builder.rs:137)*
+
+**Файлы изменены:**
+1. ✅ `src-tauri/src/recognition/commands/yolo_commands.rs` - добавлены 3 новые команды
+2. ✅ `src-tauri/src/app_builder.rs` - зарегистрировано 7 команд (строки 95-97, 134-137)
 
 ### Фаза 5: Media & Compiler (Приоритет: НИЗКИЙ) 🟢
 
