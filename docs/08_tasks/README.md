@@ -26,6 +26,19 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-29] Monorepo Packages Migration - PLANNED 📋
+- **Status:** Запланировано
+- **File:** monorepo-packages-migration.md
+- **Action:** Создана задача в planned/
+- **Priority:** High
+- **Summary:**
+  - Разбиение на пакеты: core, domains, adapters, ui
+  - Миграция на bun workspaces
+  - Инверсия зависимостей (UI → core only)
+  - 7 фаз миграции (15-20 дней)
+  - Автоматизация через codemod
+- **Goal:** Улучшить модульность, тестируемость, независимость UI от адаптеров
+
 ### [2025-11-29] Node.js Adapters Implementation - PLANNED 📋
 - **Status:** Запланировано
 - **File:** node-adapters-implementation.md
