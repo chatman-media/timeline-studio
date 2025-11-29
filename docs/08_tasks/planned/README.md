@@ -2,7 +2,7 @@
 
 Tasks planned for future development.
 
-## Tasks (25)
+## Tasks (26)
 
 ### AI & Analysis
 - [AI Analysis Integration Plan](ai-analysis-integration-plan.md)
@@ -27,6 +27,7 @@ Tasks planned for future development.
 - [Telegram Mini App](telegram-mini-app.md)
 
 ### Architecture
+- [Monorepo Packages Migration](monorepo-packages-migration.md) 🔴 **HIGH**
 - [Domains Adapters Migration](domains-adapters-migration.md) 🔴 **HIGH**
 
 ### Platform & Infrastructure
@@ -45,4 +46,4 @@ Tasks planned for future development.
 
 ---
 
-*Last updated: 2025-11-28*
+*Last updated: 2025-11-29*
