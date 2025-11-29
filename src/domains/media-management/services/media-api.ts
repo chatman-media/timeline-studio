@@ -438,11 +438,7 @@ export async function scanMediaFolder(folderPath: string): Promise<any[]> {
 /**
  * Scan folder for media files with thumbnails
  */
-export async function scanMediaFolderWithThumbnails(
-  folderPath: string,
-  width: number,
-  height: number,
-): Promise<any[]> {
+export async function scanMediaFolderWithThumbnails(folderPath: string, width: number, height: number): Promise<any[]> {
   logger.infoSync("Scanning folder with thumbnails", { folderPath, width, height })
   try {
     const result = await getMedia().scanFolderWithThumbnails(folderPath, width, height)
