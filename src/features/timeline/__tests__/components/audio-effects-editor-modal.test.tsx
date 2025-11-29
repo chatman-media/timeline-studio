@@ -5,8 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { AudioEffectsEditorModal } from "@/features/timeline/components/audio-effects-editor-modal"
 
 // Mock the modal service
-vi.mock("@/features/modals/services", () => ({
-  useModal: vi.fn(),
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(),
 }))
 
 // Mock UI components
@@ -93,23 +93,35 @@ vi.mock("@/components/ui/tabs", () => ({
 describe("AudioEffectsEditorModal", () => {
   const mockCloseModal = vi.fn()
   const mockOnApplyEffects = vi.fn()
-  const mockUseModal = vi.fn()
+  const mockUseModals = vi.fn()
 
   beforeEach(async () => {
     vi.clearAllMocks()
     activeTab = "basic" // Reset tab state
 
-    const { useModal } = await import("@/features/modals/services")
-    vi.mocked(useModal).mockImplementation(mockUseModal)
+    const { useModals } = await import("@/domains/system-integration")
+    vi.mocked(useModals).mockImplementation(mockUseModals)
 
-    mockUseModal.mockReturnValue({
+    mockUseModals.mockReturnValue({
+      activeModal: "audio-effects-editor",
+      isModalOpen: true,
       modalData: {
         clip: { id: "test-clip" },
         track: { id: "test-track" },
         onApplyEffects: mockOnApplyEffects,
         activeEffects: {},
       },
+      openModal: vi.fn(),
       closeModal: mockCloseModal,
+      submitModal: vi.fn(),
+      openCameraCapture: vi.fn(),
+      openVoiceRecording: vi.fn(),
+      openExport: vi.fn(),
+      openProjectSettings: vi.fn(),
+      openUserSettings: vi.fn(),
+      openKeyboardShortcuts: vi.fn(),
+      openColorGrading: vi.fn(),
+      openEffectDetail: vi.fn(),
     })
   })
 
@@ -143,7 +155,9 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should load active effects from modal data", () => {
-      mockUseModal.mockReturnValue({
+      mockUseModals.mockReturnValue({
+        activeModal: "audio-effects-editor",
+        isModalOpen: true,
         modalData: {
           activeEffects: {
             "fade-in": {
@@ -156,7 +170,17 @@ describe("AudioEffectsEditorModal", () => {
           },
           onApplyEffects: mockOnApplyEffects,
         },
+        openModal: vi.fn(),
         closeModal: mockCloseModal,
+        submitModal: vi.fn(),
+        openCameraCapture: vi.fn(),
+        openVoiceRecording: vi.fn(),
+        openExport: vi.fn(),
+        openProjectSettings: vi.fn(),
+        openUserSettings: vi.fn(),
+        openKeyboardShortcuts: vi.fn(),
+        openColorGrading: vi.fn(),
+        openEffectDetail: vi.fn(),
       })
 
       render(<AudioEffectsEditorModal />)
@@ -448,12 +472,24 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should not call onApplyEffects if not provided", () => {
-      mockUseModal.mockReturnValue({
+      mockUseModals.mockReturnValue({
+        activeModal: "audio-effects-editor",
+        isModalOpen: true,
         modalData: {
           clip: { id: "test-clip" },
           onApplyEffects: undefined,
         },
+        openModal: vi.fn(),
         closeModal: mockCloseModal,
+        submitModal: vi.fn(),
+        openCameraCapture: vi.fn(),
+        openVoiceRecording: vi.fn(),
+        openExport: vi.fn(),
+        openProjectSettings: vi.fn(),
+        openUserSettings: vi.fn(),
+        openKeyboardShortcuts: vi.fn(),
+        openColorGrading: vi.fn(),
+        openEffectDetail: vi.fn(),
       })
 
       render(<AudioEffectsEditorModal />)
@@ -479,9 +515,21 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("edge cases", () => {
     it("should handle missing modal data", () => {
-      mockUseModal.mockReturnValue({
+      mockUseModals.mockReturnValue({
+        activeModal: "audio-effects-editor",
+        isModalOpen: true,
         modalData: null,
+        openModal: vi.fn(),
         closeModal: mockCloseModal,
+        submitModal: vi.fn(),
+        openCameraCapture: vi.fn(),
+        openVoiceRecording: vi.fn(),
+        openExport: vi.fn(),
+        openProjectSettings: vi.fn(),
+        openUserSettings: vi.fn(),
+        openKeyboardShortcuts: vi.fn(),
+        openColorGrading: vi.fn(),
+        openEffectDetail: vi.fn(),
       })
 
       render(<AudioEffectsEditorModal />)
@@ -490,12 +538,24 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should handle empty active effects", () => {
-      mockUseModal.mockReturnValue({
+      mockUseModals.mockReturnValue({
+        activeModal: "audio-effects-editor",
+        isModalOpen: true,
         modalData: {
           activeEffects: null,
           onApplyEffects: mockOnApplyEffects,
         },
+        openModal: vi.fn(),
         closeModal: mockCloseModal,
+        submitModal: vi.fn(),
+        openCameraCapture: vi.fn(),
+        openVoiceRecording: vi.fn(),
+        openExport: vi.fn(),
+        openProjectSettings: vi.fn(),
+        openUserSettings: vi.fn(),
+        openKeyboardShortcuts: vi.fn(),
+        openColorGrading: vi.fn(),
+        openEffectDetail: vi.fn(),
       })
 
       render(<AudioEffectsEditorModal />)

@@ -54,11 +54,28 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  useModal: () => ({
-    openModal: mockOpenModal,
-  }),
-}))
+vi.mock("@/domains/system-integration", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/system-integration")>()
+  return {
+    ...actual,
+    useModals: () => ({
+      activeModal: "none",
+      modalData: null,
+      isModalOpen: false,
+      openModal: mockOpenModal,
+      closeModal: vi.fn(),
+      submitModal: vi.fn(),
+      openCameraCapture: vi.fn(),
+      openVoiceRecording: vi.fn(),
+      openExport: vi.fn(),
+      openProjectSettings: vi.fn(),
+      openUserSettings: vi.fn(),
+      openKeyboardShortcuts: vi.fn(),
+      openColorGrading: vi.fn(),
+      openEffectDetail: vi.fn(),
+    }),
+  }
+})
 
 vi.mock("@/features/user-settings", () => ({
   useUserSettings: () => ({

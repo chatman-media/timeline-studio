@@ -16,10 +16,22 @@ const mockModalData = {
   ],
 }
 
-vi.mock("@/features/modals/services", () => ({
-  useModal: () => ({
+vi.mock("@/domains/system-integration", () => ({
+  useModals: () => ({
+    activeModal: "subtitle-editor",
+    isModalOpen: true,
     modalData: mockModalData,
+    openModal: vi.fn(),
     closeModal: mockCloseModal,
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   }),
 }))
 

@@ -29,11 +29,22 @@ vi.mock("../../hooks/use-project-settings", () => ({
   })),
 }))
 
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  useModal: vi.fn(() => ({
-    closeModal: mockCloseModal,
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(() => ({
+    activeModal: "project-settings",
+    modalData: null,
+    isModalOpen: true,
     openModal: vi.fn(),
-    isModalOpen: vi.fn(),
+    closeModal: mockCloseModal,
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   })),
 }))
 

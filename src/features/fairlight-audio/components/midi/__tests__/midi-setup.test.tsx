@@ -55,10 +55,25 @@ vi.mock("@/components/ui/select", () => ({
   SelectValue: ({ placeholder }: any) => <span>{placeholder}</span>,
 }))
 
-// Mock useModal hook
+// Mock useModals hook
 const mockOpenModal = vi.fn()
-vi.mock("@/features/modals/services", () => ({
-  useModal: () => ({ openModal: mockOpenModal }),
+vi.mock("@/domains/system-integration", () => ({
+  useModals: () => ({
+    activeModal: "none",
+    modalData: null,
+    isModalOpen: false,
+    openModal: mockOpenModal,
+    closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
+  }),
 }))
 
 vi.mock("../midi-mapping-editor", () => ({

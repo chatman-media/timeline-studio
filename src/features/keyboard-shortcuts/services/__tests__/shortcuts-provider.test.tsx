@@ -50,9 +50,22 @@ vi.mock("@/core/container", () => ({
   },
 }))
 
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  useModal: vi.fn(() => ({
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(() => ({
+    activeModal: "none",
+    modalData: null,
+    isModalOpen: false,
     openModal: vi.fn(),
+    closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   })),
 }))
 

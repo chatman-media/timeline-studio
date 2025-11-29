@@ -51,12 +51,29 @@ vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   }),
 }))
 
-// Мокаем useModal
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  useModal: () => ({
-    openModal: vi.fn(),
-  }),
-}))
+// Мокаем useModals
+vi.mock("@/domains/system-integration", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/system-integration")>()
+  return {
+    ...actual,
+    useModals: () => ({
+      activeModal: "none",
+      modalData: null,
+      isModalOpen: false,
+      openModal: vi.fn(),
+      closeModal: vi.fn(),
+      submitModal: vi.fn(),
+      openCameraCapture: vi.fn(),
+      openVoiceRecording: vi.fn(),
+      openExport: vi.fn(),
+      openProjectSettings: vi.fn(),
+      openUserSettings: vi.fn(),
+      openKeyboardShortcuts: vi.fn(),
+      openColorGrading: vi.fn(),
+      openEffectDetail: vi.fn(),
+    }),
+  }
+})
 
 // Мокаем TopBar из media-studio
 vi.mock("./top-bar/top-bar", () => ({

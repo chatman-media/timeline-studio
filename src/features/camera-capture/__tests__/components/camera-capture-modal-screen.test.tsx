@@ -92,11 +92,26 @@ vi.mock("../../hooks", () => ({
   })),
 }))
 
-vi.mock("@/features/modals", () => ({
-  useModal: vi.fn(() => ({
-    isOpen: true,
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(() => ({
+    activeModal: "camera-capture",
+    modalData: null,
+    isModalOpen: true,
+    openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   })),
+}))
+
+vi.mock("@/features/modals", () => ({
   ModalProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 

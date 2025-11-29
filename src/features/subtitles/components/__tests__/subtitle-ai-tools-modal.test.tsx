@@ -15,10 +15,22 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock dependencies
-vi.mock("@/features/modals/services", () => ({
-  useModal: vi.fn(() => ({
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(() => ({
+    activeModal: "none",
     modalData: null,
+    isModalOpen: false,
+    openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   })),
 }))
 
@@ -60,12 +72,12 @@ vi.mock("sonner", () => ({
 
 import { WhisperService } from "@/domains/ai-services/services/whisper-service"
 import { useMediaFiles } from "@/domains/project-management/hooks"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 
 import { SubtitleAIToolsModal } from "../subtitle-ai-tools-modal"
 
-const mockedUseModal = vi.mocked(useModal)
+const mockedUseModals = vi.mocked(useModals)
 const mockedUseTimeline = vi.mocked(useTimeline)
 const mockedUseMediaFiles = vi.mocked(useMediaFiles)
 const mockedWhisperService = vi.mocked(WhisperService.getInstance)
@@ -129,9 +141,21 @@ describe("SubtitleAIToolsModal", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    ;(mockedUseModal as any).mockReturnValue({
+    ;(mockedUseModals as any).mockReturnValue({
+      activeModal: "none",
       modalData: null,
+      isModalOpen: false,
+      openModal: vi.fn(),
       closeModal: mockCloseModal,
+      submitModal: vi.fn(),
+      openCameraCapture: vi.fn(),
+      openVoiceRecording: vi.fn(),
+      openExport: vi.fn(),
+      openProjectSettings: vi.fn(),
+      openUserSettings: vi.fn(),
+      openKeyboardShortcuts: vi.fn(),
+      openColorGrading: vi.fn(),
+      openEffectDetail: vi.fn(),
     })
 
     mockedUseTimeline.mockReturnValue({

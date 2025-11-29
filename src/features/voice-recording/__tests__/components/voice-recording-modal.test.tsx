@@ -118,10 +118,22 @@ vi.mock("../../hooks/use-voice-recording", () => ({
 }))
 
 // Мокаем модальную систему
-vi.mock("@/features/modals", () => ({
-  useModal: vi.fn(() => ({
-    isOpen: true,
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(() => ({
+    activeModal: "voice-recording",
+    modalData: null,
+    isModalOpen: true,
+    openModal: vi.fn(),
     closeModal: mockCloseModal,
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   })),
 }))
 

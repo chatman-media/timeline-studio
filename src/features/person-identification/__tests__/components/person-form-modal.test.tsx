@@ -8,15 +8,27 @@ import { PersonFormModal } from "../../components/person-form-modal"
 // Import lucide-react mocks
 import "@/test/mocks/libraries/lucide-react"
 
-// Mock useModal hook
+// Mock useModals hook
 const mockCloseModal = vi.fn()
 const mockModalData = vi.fn()
 const mockOnSave = vi.fn()
 
-vi.mock("@/features/modals/services", () => ({
-  useModal: () => ({
+vi.mock("@/domains/system-integration", () => ({
+  useModals: () => ({
+    activeModal: "person-form",
+    isModalOpen: true,
     modalData: mockModalData(),
+    openModal: vi.fn(),
     closeModal: mockCloseModal,
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   }),
 }))
 

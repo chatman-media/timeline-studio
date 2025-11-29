@@ -135,11 +135,23 @@ vi.mock("../../components/recording-controls", () => ({
   ),
 }))
 
-// Мокируем хук useModal
-vi.mock("@/features/modals", () => ({
-  useModal: () => ({
-    isOpen: true,
+// Мокируем хук useModals
+vi.mock("@/domains/system-integration", () => ({
+  useModals: () => ({
+    activeModal: "camera-capture",
+    modalData: null,
+    isModalOpen: true,
+    openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   }),
 }))
 

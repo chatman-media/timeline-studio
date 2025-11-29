@@ -12,9 +12,22 @@ vi.mock("react-i18next", () => ({
 }))
 
 const mockCloseModal = vi.fn()
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  useModal: () => ({
+vi.mock("@/domains/system-integration", () => ({
+  useModals: () => ({
+    activeModal: "keyboard-shortcuts",
+    modalData: null,
+    isModalOpen: true,
+    openModal: vi.fn(),
     closeModal: () => mockCloseModal(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   }),
 }))
 

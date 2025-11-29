@@ -41,8 +41,8 @@ vi.mock("@/adapters/react", () => ({
   ),
 }))
 
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  ModalProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="modal-provider">{children}</div>,
+vi.mock("@/domains/system-integration/providers/modals-provider", () => ({
+  ModalsProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="modals-provider">{children}</div>,
 }))
 
 vi.mock("@/features/project-settings/services/project-settings-provider", () => ({
@@ -142,7 +142,7 @@ describe("Providers", () => {
       expect(container.querySelector('[data-testid="tauri-mock-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="i18n-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="theme-provider"]')).toBeInTheDocument()
-      expect(container.querySelector('[data-testid="modal-provider"]')).toBeInTheDocument()
+      expect(container.querySelector('[data-testid="modals-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="app-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="project-settings-provider"]')).toBeInTheDocument()
       expect(container.querySelector('[data-testid="resources-provider"]')).toBeInTheDocument()
@@ -226,7 +226,7 @@ describe("Providers", () => {
         "tauri-mock-provider",
         "i18n-provider",
         "theme-provider",
-        "modal-provider",
+        "modals-provider",
         "app-provider",
         "project-settings-provider",
         "resources-provider",
