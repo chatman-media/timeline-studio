@@ -2,7 +2,7 @@
 
 Tasks planned for future development.
 
-## Tasks (27)
+## Tasks (28)
 
 ### 🔴 CRITICAL
 - [Register Missing Tauri Commands](register-missing-tauri-commands.md) 🔴 **КРИТИЧЕСКИЙ** - 109 незарегистрированных команд
@@ -32,6 +32,7 @@ Tasks planned for future development.
 ### Architecture
 - [Register Missing Tauri Commands](register-missing-tauri-commands.md) 🔴 **КРИТИЧЕСКИЙ** - 109 команд
 - [AI Features Architecture Refactoring](ai-features-architecture-refactoring.md) 🔴 **HIGH**
+- [Browser Architecture Refactoring](browser-architecture-refactoring.md) 🟡 **MEDIUM** - 19 импортов
 - [Monorepo Packages Migration](monorepo-packages-migration.md) 🔴 **HIGH**
 - [Node.js Adapters Implementation](node-adapters-implementation.md) 🟡 **MEDIUM**
 
@@ -51,4 +52,4 @@ Tasks planned for future development.
 
 ---
 
-*Last updated: 2025-11-29 (Register Missing Tauri Commands task added)*
+*Last updated: 2025-11-29 (Browser Architecture Refactoring task added)*

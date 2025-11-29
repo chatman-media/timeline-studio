@@ -44,6 +44,20 @@ Task movements and status changes are logged here.
   - Инструменты: `scripts/analyze-command-usage.ts`
 - **Goal:** Зарегистрировать все 109 команд, покрытие > 80%, исправить критические ошибки выполнения
 
+### [2025-11-29] Browser Architecture Refactoring - PLANNED 📋
+- **Status:** Запланировано
+- **File:** browser-architecture-refactoring.md
+- **Action:** Создана задача для рефакторинга browser feature
+- **Priority:** Medium
+- **Summary:**
+  - 17 файлов с прямыми импортами из domains (24% файлов)
+  - 19 импортов: project-management (12), browser (5), media-management (2)
+  - Основная проблема: массовое использование useFavorites (11 адаптеров)
+  - use-music-import требует создания MediaPort
+  - 7 фаз рефакторинга (5 дней, 4 при параллелизации)
+  - Legacy файлы уже помечены @deprecated
+- **Goal:** Соответствие Ports & Adapters, использование core/hooks вместо прямых импортов
+
 ### [2025-11-29] AI Features Architecture Refactoring - PLANNED 📋
 - **Status:** Запланировано
 - **File:** ai-features-architecture-refactoring.md
