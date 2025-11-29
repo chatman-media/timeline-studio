@@ -83,11 +83,11 @@ impl ImportedMediaCommands {
       }
     }
 
+    // Get codec after extraction to include in event (before mark_dirty)
+    let codec = media_item.metadata.codec.clone();
+
     // Mark project as dirty since we modified media_pool
     state.mark_dirty();
-
-    // Get codec after extraction to include in event
-    let codec = media_item.metadata.codec.clone();
     let version = state.version;
 
     // Publish MediaUpdated event (unified event for media_pool)

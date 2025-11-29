@@ -2,7 +2,10 @@
 
 Tasks planned for future development.
 
-## Tasks (26)
+## Tasks (27)
+
+### 🔴 CRITICAL
+- [Register Missing Tauri Commands](register-missing-tauri-commands.md) 🔴 **КРИТИЧЕСКИЙ** - 109 незарегистрированных команд
 
 ### AI & Analysis
 - [AI Analysis Integration Plan](ai-analysis-integration-plan.md)
@@ -27,9 +30,10 @@ Tasks planned for future development.
 - [Telegram Mini App](telegram-mini-app.md)
 
 ### Architecture
+- [Register Missing Tauri Commands](register-missing-tauri-commands.md) 🔴 **КРИТИЧЕСКИЙ** - 109 команд
 - [AI Features Architecture Refactoring](ai-features-architecture-refactoring.md) 🔴 **HIGH**
 - [Monorepo Packages Migration](monorepo-packages-migration.md) 🔴 **HIGH**
-- [Domains Adapters Migration](domains-adapters-migration.md) 🔴 **HIGH**
+- [Node.js Adapters Implementation](node-adapters-implementation.md) 🟡 **MEDIUM**
 
 ### Platform & Infrastructure
 - [Plugin System](plugin-system.md)
@@ -47,4 +51,4 @@ Tasks planned for future development.
 
 ---
 
-*Last updated: 2025-11-29*
+*Last updated: 2025-11-29 (Register Missing Tauri Commands task added)*

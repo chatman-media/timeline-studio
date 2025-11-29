@@ -4,6 +4,7 @@ pub mod commands;
 pub mod commands_api;
 pub mod events;
 pub mod persistence;
+pub mod workspace;
 /// State management module for Timeline Studio
 ///
 /// This module implements a centralized state management system

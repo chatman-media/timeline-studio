@@ -1,6 +1,6 @@
 "use client"
 
-import { ProjectLoadingOverlay } from "@/features/app-state/components/project-loading-overlay"
+import { ProjectLoadingOverlay } from "./project-loading-overlay"
 import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
 import { useUserSettings } from "@/features/user-settings"

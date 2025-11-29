@@ -478,8 +478,12 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::recognition::commands::realtime_face_detection_commands::configure_detection_alerts,
     // State management commands
     crate::state::commands_api::execute_command,
+    crate::state::commands_api::execute_batch_commands,
     crate::state::commands_api::get_project_state,
     crate::state::commands_api::get_event_history,
+    // Workspace state commands
+    crate::state::workspace::save_workspace_state,
+    crate::state::workspace::load_workspace_state,
     // Browser commands
     crate::state::commands_api::browser_switch_tab,
     crate::state::commands_api::browser_set_search_query,

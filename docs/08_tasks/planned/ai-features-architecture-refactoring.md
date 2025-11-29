@@ -53,6 +53,29 @@ ai-director → domains/ai-director
            → domains/system-integration
 ```
 
+### Analysis Dashboard
+
+| Метрика | Значение |
+|---------|----------|
+| Импортов из domains | 3 |
+| Файлов с нарушениями | 2 |
+| Прямых созданий сервисов | 0 |
+| Зависимостей от domains | 2 домена |
+| Версий компонента | 2 (v1, v2) |
+
+**Зависимости:**
+```
+analysis-dashboard → domains/browser
+                  → domains/media-management
+                  → domains/project-management
+```
+
+**Примечание:** Есть 2 версии дашборда:
+- `ai-analysis-dashboard.tsx` (v1) - используется в `/analysis` странице
+- `ai-analysis-dashboard-v2.tsx` (v2) - не используется, более новая
+
+**План:** Удалить v1, переключить на v2, рефакторить v2
+
 ## 🔴 Общие проблемы
 
 ### 1. Прямой импорт хуков из domains
@@ -369,6 +392,15 @@ const aiService = getAI()
 - [ ] Обновить `types/ai-director.ts`
 - [ ] Удалить прямые вызовы fileSystemService
 
+### Phase 6.5: Рефакторинг Analysis Dashboard (0.5 дня)
+
+- [ ] Удалить старую версию `ai-analysis-dashboard.tsx`
+- [ ] Переключить импорт в `/analysis` странице на V2
+- [ ] Обновить импорты в `ai-analysis-dashboard-v2.tsx`
+  - `useBrowser` → `@/core/hooks`
+  - `useMediaManagement` → `@/core/hooks`
+- [ ] Переименовать V2 в основную версию (убрать суффикс V2)
+
 **Ключевые файлы AI Director:**
 
 | Категория | Файлы | Приоритет |
@@ -504,16 +536,29 @@ test("ai-director works with mock adapter", () => {
 - [ ] `types/ai-director.ts`
 - [ ] `services/ai-director-machine.ts`
 
+### Analysis Dashboard (2 файла → 1 после cleanup)
+
+**Компоненты (2 → 1):**
+- [ ] `components/ai-analysis-dashboard.tsx` - **УДАЛИТЬ** (старая версия)
+- [ ] `components/ai-analysis-dashboard-v2.tsx` - **РЕФАКТОРИТЬ** и переименовать
+
+**План:**
+1. Удалить v1
+2. Переключить `/analysis` страницу на v2
+3. Рефакторить v2: `useBrowser`, `useMediaManagement` → `@/core/hooks`
+4. Переименовать v2 → основная версия
+
 ## ✅ Критерии успеха
 
 1. ✅ Нет импортов `@/domains/*` в `src/features/ai-chat`
 2. ✅ Нет импортов `@/domains/*` в `src/features/ai-director`
-3. ✅ Все типы импортируются из `@/core/types`
-4. ✅ Все хуки импортируются из `@/core/hooks`
-5. ✅ Все сервисы получаются через `@/core/container`
-6. ✅ Тесты проходят с mock адаптерами
-7. ✅ TypeScript компилируется без ошибок
-8. ✅ AI features работают в dev и production
+3. ✅ Нет импортов `@/domains/*` в `src/features/analysis-dashboard`
+4. ✅ Все типы импортируются из `@/core/types`
+5. ✅ Все хуки импортируются из `@/core/hooks`
+6. ✅ Все сервисы получаются через `@/core/container`
+7. ✅ Тесты проходят с mock адаптерами
+8. ✅ TypeScript компилируется без ошибок
+9. ✅ AI features работают в dev и production
 
 ## 🔍 Скрипт проверки
 
@@ -523,7 +568,7 @@ test("ai-director works with mock adapter", () => {
 
 echo "Checking AI features architecture compliance..."
 
-FEATURES=("ai-chat" "ai-director")
+FEATURES=("ai-chat" "ai-director" "analysis-dashboard")
 TOTAL_VIOLATIONS=0
 
 for FEATURE in "${FEATURES[@]}"; do
@@ -609,6 +654,7 @@ Phase 9 (1 день) → последовательно
 - Phase 4: 3 дня
 - Phase 5: 4 дня (AI Chat)
 - Phase 6: 3 дня (AI Director)
+- Phase 6.5: 0.5 дня (Analysis Dashboard)
 - Phase 7: 1 день
 - Phase 8: 3 дня
 - Phase 9: 1 день
@@ -627,9 +673,14 @@ Phase 9 (1 день) → последовательно
 - Прямые создания сервисов: 1
 - Зависимостей от domains: 3
 
+**Analysis Dashboard:**
+- Импорты из domains: 3
+- Файлов с нарушениями: 2
+- Зависимостей от domains: 2
+
 **Всего:**
-- Импорты: 44+
-- Файлов с нарушениями: 29+
+- Импорты: 47+
+- Файлов с нарушениями: 31+
 - Зависимостей: 8 доменов
 
 ### После рефакторинга:

@@ -69,7 +69,7 @@ vi.mock("@/features/modals/components", () => ({
 }))
 
 // Мокаем ProjectLoadingOverlay
-vi.mock("@/features/app-state/components/project-loading-overlay", () => ({
+vi.mock("./project-loading-overlay", () => ({
   ProjectLoadingOverlay: () => <div data-testid="project-loading-overlay">ProjectLoadingOverlay</div>,
 }))
 

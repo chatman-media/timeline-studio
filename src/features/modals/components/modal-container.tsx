@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { AIDirectorModal } from "@/features/ai-director"
-import { MissingFilesModal } from "@/features/app-state/components/missing-files-modal"
+import { MissingFilesModal } from "@/features/media/components/missing-files-modal"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"
 import { EffectDetailModal } from "@/features/effects/components/effect-detail-modal"

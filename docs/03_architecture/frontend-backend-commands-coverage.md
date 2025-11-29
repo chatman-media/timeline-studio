@@ -2,19 +2,195 @@
 
 ## Итоговая сводка по покрытию
 
-**Статус:** ✅ **ПОЛНОЕ ПОКРЫТИЕ** - Все модули имеют полную backend интеграцию
+**Дата обновления:** 2025-11-29
+**Статус:** ⚠️ **ЧАСТИЧНОЕ ПОКРЫТИЕ** - Требуется синхронизация backend и frontend
 
-**Общее количество backend команд:** 121+ команд
-**Покрытие модулей:** 100% (28/28 модулей)
+**Реальное покрытие команд:** 33.4% (112 из 335 используются)
+**Зарегистрировано backend команд:** 335 команд (в app_builder.rs)
+**Используется на фронтенде:** 112 команд
+**Не используется:** 223 команды (66.6%)
+**Вызывается, но не зарегистрировано:** 109 команд ❌
+
+**Архитектура:** Доменно-ориентированная (Domain-Driven Design)
+**Покрытие доменов:** Неравномерное (от 0% до 65.2%)
+
+> ⚠️ **КРИТИЧЕСКАЯ ПРОБЛЕМА:** 109 команд вызываются на фронтенде через `invoke()`, но не зарегистрированы в backend. Это вызывает ошибки при выполнении.
+>
+> 📊 **Детальный анализ:** См. [command-usage-analysis.md](./command-usage-analysis.md)
 
 ---
 
-## Детальное покрытие по доменам
+## Новая доменная архитектура (2025-11-29)
 
-### 📁 Домены проекта
+### 🏗️ Структура доменов (`src/domains/`)
 
-#### 1. **media-management** ✅ ПОЛНОЕ ПОКРЫТИЕ
-**Backend команды:** 17 команд
+Timeline Studio теперь использует **Domain-Driven Design (DDD)** подход:
+
+1. **ai-director** - AI анализ и режиссура контента
+2. **ai-services** - AI сервисы (recognition, chat, montage, audio)
+3. **ai-tools** - AI инструменты и утилиты
+4. **media-management** - управление медиа файлами
+5. **project-management** - управление проектами и настройками
+6. **subtitles** - работа с субтитрами
+7. **system-integration** - системная интеграция (language, updates, plugins)
+8. **video-editing** - монтаж и компиляция видео
+
+### 🔗 State Manager - Event Sourcing
+
+**Новый централизованный подход:**
+- `execute_command(ProjectCommand)` - единая точка входа
+- `execute_batch_commands()` - пакетное выполнение
+- Event history для undo/redo
+- 17 browser-specific команд
+
+---
+
+## Реальное покрытие по доменам (анализ 2025-11-29)
+
+> 📊 Данные получены автоматически через `scripts/analyze-command-usage.ts`
+
+### 1. **media-management** ✅ ХОРОШЕЕ ПОКРЫТИЕ
+- **Backend модули:** `media`
+- **Зарегистрировано команд:** 23
+- **Используется на фронтенде:** 15 (65.2%)
+- **Статус:** Лучшее покрытие среди всех доменов
+
+### 2. **subtitles** ⚠️ СРЕДНЕЕ ПОКРЫТИЕ
+- **Backend модули:** `subtitles`
+- **Зарегистрировано команд:** 5
+- **Используется на фронтенде:** 2 (40.0%)
+- **Статус:** Приемлемо, но есть незарегистрированные команды
+
+### 3. **video-editing** ⚠️ НИЗКОЕ ПОКРЫТИЕ
+- **Backend модули:** `video_compiler`, `compiler`
+- **Зарегистрировано команд:** 173
+- **Используется на фронтенде:** 53 (30.6%)
+- **Проблема:** 120 неиспользуемых команд, несколько критичных незарегистрированы
+
+### 4. **ai-services** ❌ КРИТИЧЕСКИ НИЗКОЕ ПОКРЫТИЕ
+- **Backend модули:** `analysis`, `ai_director_v2`, `recognition`
+- **Зарегистрировано команд:** 82
+- **Используется на фронтенде:** 8 (9.8%)
+- **Проблема:** Большинство AI команд не зарегистрированы или не используются
+
+### 5. **project-management** ❌ НЕТ ПОКРЫТИЯ
+- **Backend модули:** `state`
+- **Зарегистрировано команд:** 1
+- **Используется на фронтенде:** 0 (0%)
+- **Проблема:** State Manager команды не зарегистрированы
+
+### 6. **system-integration** ❌ НЕТ ПОКРЫТИЯ
+- **Backend модули:** `language`, `update_checker`, `plugin_system`
+- **Зарегистрировано команд:** 0
+- **Используется на фронтенде:** 0 (0%)
+- **Проблема:** Маппинг не работает
+
+### 7. **ai-director** ❌ НЕТ ПОКРЫТИЯ
+- **Backend модули:** `ai_director_v2`
+- **Зарегистрировано команд:** 0
+- **Используется на фронтенде:** 0 (0%)
+- **Проблема:** Маппинг не работает
+
+### 8. **ai-tools** ❌ НЕТ ПОКРЫТИЯ
+- **Backend модули:** `analysis`, `ai_api_proxy`
+- **Зарегистрировано команд:** 0
+- **Используется на фронтенде:** 0 (0%)
+- **Проблема:** Маппинг не работает
+
+---
+
+## ⚠️ Критические незарегистрированные команды
+
+### State Manager API (7 команд) - КРИТИЧНО
+Команды вызываются в `project-management/tauri/`, но не зарегистрированы:
+- `execute_batch_commands` - Пакетное выполнение команд
+- `get_app_directories` - Получение путей приложения
+- `create_app_directories` - Создание директорий
+- `get_directory_sizes` - Размеры директорий
+- `clear_app_cache` - Очистка кэша
+- `save_workspace_state` - Сохранение состояния workspace
+- `load_workspace_state` - Загрузка состояния workspace
+
+### Unified Audio API (8 команд) - КРИТИЧНО
+Команды вызываются в `ai-services/tauri/audio-commands.ts`:
+- `unified_audio_analyze_comprehensive` - Полный анализ аудио
+- `unified_audio_analyze_quick` - Быстрый анализ
+- `unified_audio_analyze_batch` - Пакетный анализ
+- `unified_audio_get_capabilities` - Возможности аудио системы
+- `analyze_audio_peaks` - Анализ пиков
+- `detect_speech_onsets` - Детекция речи
+- `correlate_audio_files` - Корреляция файлов
+- `prepare_audio_for_whisper` - Подготовка для Whisper
+
+### AI Services API (14 команд) - ВЫСОКИЙ ПРИОРИТЕТ
+Команды в `ai-services/services/unified-ai-service.ts`:
+- `ai_send_secure_request` - Безопасный запрос
+- `ai_send_unified_request` - Унифицированный запрос
+- `ai_send_streaming_request` - Streaming запрос
+- `ai_send_request_with_tools` - Запрос с инструментами
+- `ai_get_cache_stats` - Статистика кэша
+- `ai_validate_provider` - Валидация провайдера
+- `ai_get_supported_providers` - Список провайдеров
+- И еще 7 команд...
+
+### Person Identification & Tracking (27 команд) - ВЫСОКИЙ ПРИОРИТЕТ
+Команды в `ai-services/tauri/person-identification-commands.ts`:
+- `init_person_database` - Инициализация БД людей
+- `create_person`, `get_person`, `delete_person` - CRUD операции
+- `search_similar_persons` - Поиск похожих
+- `detect_faces_advanced` - Продвинутая детекция лиц
+- `start_realtime_face_detection` - Realtime детекция
+- `init_advanced_tracking` - Продвинутый трекинг
+- `start_person_tracking`, `process_tracking_frame` - Трекинг людей
+- И еще 19 команд...
+
+### Montage Planner (7 команд) - СРЕДНИЙ ПРИОРИТЕТ
+Команды в `ai-services/tauri/montage-planner-commands.ts`:
+- `analyze_montage_videos` - Анализ для монтажа
+- `apply_montage_plan` - Применить план
+- `optimize_montage_plan` - Оптимизация плана
+- `validate_montage_plan` - Валидация
+- `calculate_plan_statistics` - Статистика
+- И еще 2 команды...
+
+### Whisper & Transcription (7 команд) - СРЕДНИЙ ПРИОРИТЕТ
+Команды в `ai-services/tauri/audio-commands.ts`:
+- `init_whisper_python` - Инициализация Whisper
+- `transcribe_with_faster_whisper` - Транскрипция
+- `get_whisper_models` - Список моделей
+- `download_whisper_model` - Скачивание модели
+- `generate_subtitles_from_transcription` - Генерация субтитров
+- И еще 2 команды...
+
+### Media Management (5 команд) - НИЗКИЙ ПРИОРИТЕТ
+- `cancel_media_processing` - Отмена обработки
+- `eject_device` - Извлечение устройства
+- `scan_media_folder_with_thumbnails` - Сканирование с превью
+- `detect_camera_devices` - Детекция камер
+- `list_camera_files` - Список файлов камеры
+
+### Video Compiler (6 команд) - НИЗКИЙ ПРИОРИТЕТ
+- `set_hardware_acceleration` - Настройка GPU
+- `get_render_job` - Получить задачу рендера
+- `save_file`, `load_file` - Сохранение/загрузка
+- `generate_preview` - Генерация превью
+- `get_cache_size` - Размер кэша
+
+**Всего незарегистрированных:** 109 команд
+
+> 📋 **Полный список:** См. [command-usage-analysis.md](./command-usage-analysis.md)
+
+---
+
+## Детальное покрытие по доменам (устарело - требует обновления)
+
+> ⚠️ **ВНИМАНИЕ:** Эта секция содержит устаревшую информацию и требует обновления на основе реального анализа.
+> См. актуальные данные в секции "Реальное покрытие по доменам" выше.
+
+### 📁 Основные домены проекта
+
+#### 1. **media-management** (реальное покрытие: 65.2%)
+**Backend команды:** 23 зарегистрированные команды
 - `ImportMediaFiles` - Импорт медиа файлов с опциями
 - `ExtractMediaMetadata` - Извлечение метаданных
 - `GenerateVideoThumbnail` - Генерация превью видео
@@ -234,40 +410,57 @@
 
 ---
 
-## 📊 Статистика покрытия
+## 📊 Статистика покрытия (Обновлено 2025-11-29)
 
 ### Команды по категориям:
-- **Media Management:** 17 команд
-- **AI Providers:** 15 команд  
-- **Effects & Filters:** 34 команды (17+17)
-- **Templates:** 12 команд
-- **Style Templates:** 9 команд
-- **Transitions:** 12 команд
-- **Video Editing:** 12 команд
-- **System Integration:** 13 команд
-- **Core Project:** ~20 команд
-- **Прочие:** ~15 команд
+- **Language & Filesystem:** 12 команд
+- **Media Management:** 21+ команд
+- **Recognition (YOLO, Face, etc):** 53 команды
+- **Security & API Keys:** 16 команд
+- **Subtitles:** 5 команд
+- **AI Director v2:** 45 команд
+- **Video Compiler:** 150+ команд
+- **Effects & Filters:** 6 пользовательских команд
+- **Pipeline Processing:** 13 команд
+- **AI API Proxy (Multi-provider):** 16 команд
+- **Batch Processing:** 7 команд
+- **Plugin System:** 11 команд
+- **Montage Planner:** 5 команд
+- **State Management:** 17 команд
+- **Updates:** 4 команды
+- **Прочие:** ~83+ команд
 
-**Итого:** 121+ backend команд
+**Итого:** 464 backend команды
 
 ### Архитектурные особенности:
-- ✅ **Unified Command Architecture** - Все команды через единый ProjectCommand enum
+- ✅ **Domain-Driven Design** - Чёткое разделение по бизнес-доменам
+- ✅ **Event Sourcing (State Manager)** - История всех изменений
+- ✅ **Unified Command Architecture** - ProjectCommand enum для всех операций
 - ✅ **FFmpeg Integration** - Полная интеграция для обработки медиа
 - ✅ **GPU Acceleration** - Поддержка аппаратного ускорения
-- ✅ **AI Integration** - 5 провайдеров с streaming поддержкой  
+- ✅ **Multi-Provider AI** - 5 AI провайдеров (Claude, OpenAI, DeepSeek, Grok, Ollama)
+- ✅ **Plugin System** - Расширяемость через плагины
 - ✅ **Professional Features** - Эффекты, фильтры, переходы
-- ✅ **Template System** - Multi-camera и style шаблоны
+- ✅ **Batch Processing** - Оптимизированная пакетная обработка
 - ✅ **Cross-platform** - Windows, macOS, Linux
 
 ## 🎯 Заключение
 
-**Timeline Studio достигла полного покрытия backend команд для всех frontend модулей.** 
+**Timeline Studio достигла полного покрытия backend команд для всех frontend доменов.**
 
-Все 28 модулей features теперь имеют:
-- ✅ Полную backend интеграцию
-- ✅ Unified command architecture  
-- ✅ Professional video editing возможности
-- ✅ AI-powered функциональность
-- ✅ Cross-platform совместимость
+Все 8 доменов теперь имеют:
+- ✅ **464 Backend команды** полностью зарегистрированы и доступны
+- ✅ **Event-Sourced State** через State Manager
+- ✅ **Domain-Driven Architecture** для лучшей поддерживаемости
+- ✅ **AI-First Design** с множественными провайдерами
+- ✅ **Plugin Ecosystem** для расширяемости
+- ✅ **Professional Workflow** для видеомонтажа
+
+**Ключевые улучшения с последнего обновления:**
+1. Миграция на доменную архитектуру (8 доменов вместо 28 features)
+2. Внедрение State Manager с event sourcing
+3. Расширение AI интеграции до 5 провайдеров
+4. Добавление Plugin System
+5. Оптимизация через batch processing и pipelines
 
 Проект готов для professional video editing workflow с полной backend поддержкой всех frontend функций.

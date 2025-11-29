@@ -26,20 +26,39 @@ This directory contains task documentation for Timeline Studio development:
 
 Task movements and status changes are logged here.
 
+### [2025-11-29] Register Missing Tauri Commands - PLANNED 🔴
+- **Status:** Запланировано
+- **File:** register-missing-tauri-commands.md
+- **Action:** Создана задача в planned/
+- **Priority:** 🔴 КРИТИЧЕСКИЙ
+- **Summary:**
+  - 109 команд вызываются на фронтенде, но не зарегистрированы в backend
+  - Текущее покрытие: 33.4% (112 из 335 команд используются)
+  - 5 фаз разработки:
+    1. State Manager API (7 команд) - КРИТИЧНО
+    2. Unified Audio API (8 команд) - КРИТИЧНО
+    3. AI Services API (14 команд) + Person Identification (27 команд) - ВЫСОКИЙ
+    4. Montage Planner (7 команд) + Whisper (7 команд) - СРЕДНИЙ
+    5. Recognition Models (28 команд) + Media/Compiler (13 команд) - НИЗКИЙ
+  - Оценка: 17-24 дня (3-5 недель)
+  - Инструменты: `scripts/analyze-command-usage.ts`
+- **Goal:** Зарегистрировать все 109 команд, покрытие > 80%, исправить критические ошибки выполнения
+
 ### [2025-11-29] AI Features Architecture Refactoring - PLANNED 📋
 - **Status:** Запланировано
 - **File:** ai-features-architecture-refactoring.md
-- **Action:** Создана объединённая задача для ai-chat и ai-director в planned/
+- **Action:** Создана объединённая задача для ai-chat, ai-director и analysis-dashboard
 - **Priority:** High
 - **Summary:**
   - **AI Chat**: ~30+ импортов из domains, 5+ прямых созданий сервисов
   - **AI Director**: 14 импортов из domains, 9 файлов с нарушениями
-  - **Всего**: 44+ импортов, 29+ файлов, 8 доменов
+  - **Analysis Dashboard**: 3 импорта из domains, 2 файла, 2 версии (удалить v1)
+  - **Всего**: 47+ импортов, 31+ файлов, 8 доменов
   - Перенос типов в core/types (ai, tools, analysis)
   - Расширение портов (IAIService, INotificationService)
   - Вынос хуков в core/hooks
   - 9 фаз рефакторинга (18-20 дней, 13 при параллелизации)
-- **Goal:** Соответствие Ports & Adapters для обоих AI модулей, тестирование с mock адаптерами
+- **Goal:** Соответствие Ports & Adapters для трёх AI модулей, тестирование с mock адаптерами
 
 ### [2025-11-29] Monorepo Packages Migration - PLANNED 📋
 - **Status:** Запланировано
@@ -324,4 +343,4 @@ Template for new entries:
 
 ---
 
-*Last updated: 2025-11-29 (Node.js Adapters task planned)*
+*Last updated: 2025-11-29 (Register Missing Tauri Commands task added - CRITICAL)*
