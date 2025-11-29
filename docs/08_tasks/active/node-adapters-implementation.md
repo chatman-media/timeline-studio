@@ -1,8 +1,9 @@
 # Node.js Adapters Implementation
 
-**Статус:** 📋 Запланировано
+**Статус:** 🔄 В работе (80%)
 **Приоритет:** 🟡 Средний
 **Дата создания:** 2025-11-29
+**Обновлено:** 2025-11-29
 
 ## Описание
 
@@ -29,11 +30,11 @@ src/adapters/node/
 
 ## Фазы реализации
 
-### Фаза 1: Базовая инфраструктура
+### Фаза 1: Базовая инфраструктура ✅
 
-- [ ] Создать `src/adapters/node/index.ts` с `initNodeApp()`
-- [ ] Настроить package.json для Node.js зависимостей
-- [ ] Добавить условный экспорт в `@/adapters`
+- [x] Создать `src/adapters/node/index.ts` с `initNodeApp()`
+- [ ] Настроить package.json для Node.js зависимостей (опционально, используем нативные модули)
+- [x] Добавить условный экспорт в `@/adapters`
 
 **Зависимости:**
 ```json
@@ -49,9 +50,9 @@ src/adapters/node/
 }
 ```
 
-### Фаза 2: Простые сервисы
+### Фаза 2: Простые сервисы ✅
 
-#### NodeStorageService
+#### NodeStorageService ✅
 ```typescript
 import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
@@ -71,7 +72,7 @@ export class NodeStorageService implements IStorageService {
 }
 ```
 
-#### NodeEventService
+#### NodeEventService ✅
 ```typescript
 import { EventEmitter } from 'events'
 
@@ -89,7 +90,7 @@ export class NodeEventService implements IEventService {
 }
 ```
 
-#### NodePlatformService
+#### NodePlatformService ✅
 ```typescript
 import fs from 'fs/promises'
 import path from 'path'
@@ -117,9 +118,9 @@ export class NodePlatformService implements IPlatformService {
 }
 ```
 
-### Фаза 3: Media сервисы
+### Фаза 3: Media сервисы ✅
 
-#### NodeMediaService
+#### NodeMediaService ✅
 ```typescript
 import ffmpeg from 'fluent-ffmpeg'
 import sharp from 'sharp'
@@ -154,7 +155,7 @@ export class NodeMediaService implements IMediaService {
 }
 ```
 
-#### NodeVideoService
+#### NodeVideoService ✅
 ```typescript
 import ffmpeg from 'fluent-ffmpeg'
 
@@ -185,9 +186,9 @@ export class NodeVideoService implements IVideoService {
 }
 ```
 
-### Фаза 4: AI сервисы
+### Фаза 4: AI сервисы ✅
 
-#### NodeAIService
+#### NodeAIService ✅ (с заглушками для ONNX)
 ```typescript
 import OpenAI from 'openai'
 import * as ort from 'onnxruntime-node'
@@ -234,9 +235,9 @@ export class NodeAIService implements IAIService {
 }
 ```
 
-### Фаза 5: Backend сервис
+### Фаза 5: Backend сервис ✅
 
-#### NodeBackendService
+#### NodeBackendService ✅
 ```typescript
 export class NodeBackendService implements IBackendService {
   private projectState: ProjectState | null = null
@@ -357,9 +358,9 @@ describe('NodeMediaService', () => {
 
 ## Критерии успеха
 
-- [ ] Все 7 портов реализованы для Node.js
-- [ ] `initNodeApp()` инициализирует все сервисы
-- [ ] CLI работает: info, transcribe, render
+- [x] Все 7 портов реализованы для Node.js
+- [x] `initNodeApp()` инициализирует все сервисы
+- [ ] CLI работает: info, transcribe, render (Фаза 6)
 - [ ] Тесты проходят
 - [ ] Документация обновлена
 
