@@ -1,3 +1,85 @@
+# [3.34.0](https://github.com/chatman-media/timeline-studio/compare/v3.33.2...v3.34.0) (2025-11-28)
+
+
+### Bug Fixes
+
+* **build:** prevent auto-discovery of dev binaries in release builds ([d3cc475](https://github.com/chatman-media/timeline-studio/commit/d3cc475dd665e4cc56d19a5f87114cca636f7327))
+* **tests:** resolve TypeScript errors and improve test mocks ([28ebece](https://github.com/chatman-media/timeline-studio/commit/28ebece5eab9b50cf31babd8fa85596ad1be325f))
+* **tests:** update test mocks for architecture migration ([e241c2b](https://github.com/chatman-media/timeline-studio/commit/e241c2bf8952783f9b275770860c4e939754f565))
+* **top-bar:** fix test for null currentProject using mutable reference ([d2af330](https://github.com/chatman-media/timeline-studio/commit/d2af330122791a98144285f2fc95847888b58811))
+
+
+### Features
+
+* **ai-director:** implement Phase 3 parallel batch processing ([cabf5a0](https://github.com/chatman-media/timeline-studio/commit/cabf5a0f9357003350af9be6017f945cf19374fc))
+
+## [3.33.2](https://github.com/chatman-media/timeline-studio/compare/v3.33.1...v3.33.2) (2025-11-27)
+
+
+### Bug Fixes
+
+* **backend:** use BackendSync singleton in TauriBackendService ([5e41725](https://github.com/chatman-media/timeline-studio/commit/5e417258f0f8c36aae41dd03c3d864740240e9f7))
+* **media-management:** ensure backend is available before import ([aa5b74c](https://github.com/chatman-media/timeline-studio/commit/aa5b74c0208dd08b707934f7928f6d414405180f))
+
+
+### Performance Improvements
+
+* **browser:** reduce BrowserMachine and event handlers log verbosity ([fa46704](https://github.com/chatman-media/timeline-studio/commit/fa46704324760a5c89b4469e69bdf48da51c76f8)), closes [hi#frequency](https://github.com/hi/issues/frequency)
+* further optimize logging in AI integration and settings hooks ([2900e36](https://github.com/chatman-media/timeline-studio/commit/2900e36244809336b43ebb85a35f0fd0fdbf7e9e))
+* reduce BrowserMachine log verbosity ([ff34301](https://github.com/chatman-media/timeline-studio/commit/ff34301c463692a87086c3076c6b46ff5cd79e62))
+
+## [3.33.1](https://github.com/chatman-media/timeline-studio/compare/v3.33.0...v3.33.1) (2025-11-27)
+
+
+### Performance Improvements
+
+* optimize React re-renders and fix logger mocks ([e50f099](https://github.com/chatman-media/timeline-studio/commit/e50f0999c58b0956b14c63a4e809e845a2dc45cb))
+
+# [3.33.0](https://github.com/chatman-media/timeline-studio/compare/v3.32.5...v3.33.0) (2025-11-27)
+
+
+### Bug Fixes
+
+* **ai-services:** Исправить ошибки TypeScript в AI Services ([4f48440](https://github.com/chatman-media/timeline-studio/commit/4f4844017d71588214f0b5e66af363fd8856cc9b))
+* **media-management:** fix provider tests and update provider ([5b5d95a](https://github.com/chatman-media/timeline-studio/commit/5b5d95a39958673a854d6ab52067f5e385b9d77d))
+* **media-management:** Исправить ошибки TypeScript в Media Management ([1aa7d41](https://github.com/chatman-media/timeline-studio/commit/1aa7d41d4775219590633d18de8698f9601f3de7))
+* **montage-planner:** Remove unused imports ([a1c4948](https://github.com/chatman-media/timeline-studio/commit/a1c4948b8b5c9ffc959ea008c577942785efa8af))
+* **montage-planner:** Replace string literals with enum values in tests ([d780a48](https://github.com/chatman-media/timeline-studio/commit/d780a48abc1e14d2f766f767a09b8a336e6e7ccb))
+* **tests:** fix lint warnings for unused parameters ([0d0b587](https://github.com/chatman-media/timeline-studio/commit/0d0b587d68758d5adceb5f2e685bded03cfa188e))
+* **tests:** Исправить ошибки TypeScript в тестах video-compiler ([144982a](https://github.com/chatman-media/timeline-studio/commit/144982aff1ee65ae685aed1ee38238268efe8132))
+* **typescript:** Исправить ошибки TypeScript в модулях Video Editing ([36def52](https://github.com/chatman-media/timeline-studio/commit/36def522b7a91cbe2edab2811ae43cfd055ffd8f))
+* Исправить TypeScript ошибки в System & Project Management ([1c3b63c](https://github.com/chatman-media/timeline-studio/commit/1c3b63cca95d0324e81fd307509fcc576a20d557))
+* Исправить ошибки TypeScript в тестах ([65611b1](https://github.com/chatman-media/timeline-studio/commit/65611b19d5d7ec99b2ebf1eb47953715c2dbeeb7))
+
+
+### Features
+
+* **analysis-tasks:** Add backend integration via AnalysisTaskBridge ([ab543d1](https://github.com/chatman-media/timeline-studio/commit/ab543d19c7b2c4505719783ef780aae60ec47393)), closes [#implement-three-task-lists](https://github.com/chatman-media/timeline-studio/issues/implement-three-task-lists)
+* Временно отключить camera-capture и voice-recording ([0e6dec2](https://github.com/chatman-media/timeline-studio/commit/0e6dec2093831a9a43eb2a2e5d12f80a3a490fd9))
+* Добавить Analysis Tasks dropdown в топбар ([f2118a8](https://github.com/chatman-media/timeline-studio/commit/f2118a83002a0f4029b1090a3e189a2240451a88))
+
+## [3.32.5](https://github.com/chatman-media/timeline-studio/compare/v3.32.4...v3.32.5) (2025-11-27)
+
+
+### Bug Fixes
+
+* **app-state:** prevent double command execution breaking media import ([f49ea79](https://github.com/chatman-media/timeline-studio/commit/f49ea79f6ebfb4d122fb5dd3314c471f5a9d64c9))
+
+## [3.32.4](https://github.com/chatman-media/timeline-studio/compare/v3.32.3...v3.32.4) (2025-11-27)
+
+
+### Bug Fixes
+
+* **app-state:** make executeCommand async to return result ([c683b3b](https://github.com/chatman-media/timeline-studio/commit/c683b3b7f2bea0fc8d89cd55c81f838321bf2ad7))
+* **browser:** click on video preview plays in player instead of adding to timeline ([8ec040e](https://github.com/chatman-media/timeline-studio/commit/8ec040e4f77ce657b0528ae1bdd886a78ac396d2))
+
+## [3.32.3](https://github.com/chatman-media/timeline-studio/compare/v3.32.2...v3.32.3) (2025-11-27)
+
+
+### Bug Fixes
+
+* **promo:** replace react-helmet-async with native DOM API for React 19 compatibility ([83d66ba](https://github.com/chatman-media/timeline-studio/commit/83d66baa1e044cd7bc72b7d6cbbeaa90aba76402))
+
 ## [3.32.2](https://github.com/chatman-media/timeline-studio/compare/v3.32.1...v3.32.2) (2025-11-26)
 
 
