@@ -91,6 +91,10 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::recognition::commands::yolo_commands::list_active_yolo_processors,
     crate::recognition::commands::yolo_commands::cleanup_yolo_processors,
     crate::recognition::commands::yolo_commands::create_yolo_processor_with_builder,
+    // Phase 4: Additional YOLO commands
+    crate::recognition::commands::yolo_commands::detect_objects_in_image,
+    crate::recognition::commands::yolo_commands::get_yolo_class_names_advanced,
+    crate::recognition::commands::yolo_commands::update_yolo_confidence_threshold,
     // FaceNet commands
     crate::recognition::commands::facenet_commands::init_facenet_processor,
     crate::recognition::commands::facenet_commands::generate_face_embedding,
@@ -126,6 +130,11 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::recognition::commands::clustering_commands::merge_clusters,
     crate::recognition::commands::clustering_commands::analyze_clustering_quality,
     crate::recognition::commands::clustering_commands::auto_cluster_video_faces,
+    // Phase 4: Additional clustering commands
+    crate::recognition::commands::clustering_commands::integrate_clusters_with_db,
+    crate::recognition::commands::clustering_commands::split_cluster,
+    crate::recognition::commands::clustering_commands::get_clustering_stats,
+    crate::recognition::commands::clustering_commands::get_cluster_persons,
     // Recognition advanced commands
     crate::video_compiler::commands::recognition_advanced_commands::get_frame_processor_class_names,
     crate::video_compiler::commands::recognition_advanced_commands::get_recognition_results_by_time_range,

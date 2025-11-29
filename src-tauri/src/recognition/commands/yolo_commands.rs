@@ -390,6 +390,98 @@ pub async fn create_yolo_processor_with_builder(
   }
 }
 
+// Phase 4: Additional YOLO commands (aliases and convenience functions)
+
+/// Detect objects in a single image (alias for process_image_with_yolo)
+#[tauri::command]
+pub async fn detect_objects_in_image(
+  image_path: String,
+  confidence_threshold: Option<f32>,
+  state: State<'_, YoloProcessorState>,
+) -> Result<serde_json::Value, String> {
+  log::info!("detect_objects_in_image called for: {}", image_path);
+
+  // Use default processor or create temporary one
+  let processor_id = "default".to_string();
+
+  // Update confidence threshold if provided
+  if let Some(threshold) = confidence_threshold {
+    let config = ProcessorConfigDto {
+      model: "yolov11-detection".to_string(),
+      confidence_threshold: threshold,
+      nms_threshold: 0.4,
+      frame_interval: 1,
+      max_concurrent_tasks: 1,
+    };
+
+    update_yolo_config(processor_id.clone(), config, state.clone()).await?;
+  }
+
+  // Process image and return results
+  process_image_with_yolo(processor_id, image_path, state).await
+}
+
+/// Get advanced YOLO class names with metadata
+#[tauri::command]
+pub async fn get_yolo_class_names_advanced() -> Result<Vec<serde_json::Value>, String> {
+  log::info!("get_yolo_class_names_advanced called");
+
+  // TODO: Implement advanced class names with metadata
+  // For now, return basic class names with additional info
+  let class_names = vec![
+    "person",
+    "bicycle",
+    "car",
+    "motorcycle",
+    "airplane",
+    "bus",
+    "train",
+    "truck",
+    "boat",
+    "traffic light",
+  ];
+
+  Ok(
+    class_names
+      .iter()
+      .enumerate()
+      .map(|(id, name)| {
+        serde_json::json!({
+          "id": id,
+          "name": name,
+          "category": "object",
+          "supercategory": "thing",
+          "color": format!("#{:06x}", id * 12345 % 0xFFFFFF),
+        })
+      })
+      .collect(),
+  )
+}
+
+/// Update YOLO confidence threshold for a specific processor
+#[tauri::command]
+pub async fn update_yolo_confidence_threshold(
+  processor_id: String,
+  threshold: f32,
+  state: State<'_, YoloProcessorState>,
+) -> Result<(), String> {
+  log::info!(
+    "update_yolo_confidence_threshold called for processor {} with threshold {}",
+    processor_id,
+    threshold
+  );
+
+  if !(0.0..=1.0).contains(&threshold) {
+    return Err("Confidence threshold must be between 0.0 and 1.0".to_string());
+  }
+
+  // Get current config and update only confidence threshold
+  let mut current_config = get_yolo_config(processor_id.clone(), state.clone()).await?;
+  current_config.confidence_threshold = threshold;
+
+  update_yolo_config(processor_id, current_config, state).await
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;

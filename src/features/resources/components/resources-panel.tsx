@@ -19,6 +19,7 @@ import { MediaPreview } from "@/features/browser/components/preview/media-previe
 import { type DraggableType, useDraggable } from "@/features/drag-drop"
 import { useResources } from "@/features/resources/services/resources-provider"
 import type { TimelineResource } from "@/features/resources/types"
+import { ResourceCategoryDropZone } from "./resource-category-drop-zone"
 
 /**
  * Компонент для отдельного ресурса с поддержкой drag
@@ -244,48 +245,56 @@ export function ResourcesPanel() {
       name: t("browser.tabs.media"),
       icon: <Clapperboard className="h-3.5 w-3.5 text-gray-400" />,
       resources: mediaResources,
+      acceptedTypes: ["media" as const],
     },
     {
       id: "music",
       name: t("browser.tabs.music"),
       icon: <Music className="h-3.5 w-3.5 text-gray-400" />,
       resources: musicResources,
+      acceptedTypes: ["music" as const],
     },
     {
       id: "subtitles",
       name: t("browser.tabs.subtitles"),
       icon: <Type className="h-3.5 w-3.5 text-gray-400" />,
       resources: subtitleResources,
+      acceptedTypes: ["subtitle-style" as const],
     },
     {
       id: "effects",
       name: t("browser.tabs.effects"),
       icon: <Sparkles className="h-3.5 w-3.5 text-gray-400" />,
       resources: effectResources,
+      acceptedTypes: ["effect" as const],
     },
     {
       id: "filters",
       name: t("browser.tabs.filters"),
       icon: <Blend className="h-3.5 w-3.5 text-gray-400" />,
       resources: filterResources,
+      acceptedTypes: ["filter" as const],
     },
     {
       id: "transitions",
       name: t("browser.tabs.transitions"),
       icon: <FlipHorizontal2 className="h-3.5 w-3.5 text-gray-400" />,
       resources: transitionResources,
+      acceptedTypes: ["transition" as const],
     },
     {
       id: "templates",
       name: t("browser.tabs.templates"),
       icon: <Video className="h-3.5 w-3.5 text-gray-400" />,
       resources: templateResources,
+      acceptedTypes: ["template" as const],
     },
     {
       id: "styleTemplates",
       name: t("browser.tabs.styleTemplates"),
       icon: <Sticker className="h-3.5 w-3.5 text-gray-400" />,
       resources: styleTemplateResources,
+      acceptedTypes: ["style-template" as const],
     },
   ]
 
@@ -327,26 +336,33 @@ export function ResourcesPanel() {
       <div className="scrollbar-thin scrollbar-thumb-[#444] scrollbar-track-transparent flex-1 overflow-y-auto">
         <div className="space-y-2 p-1.5">
           {categories.map((category) => (
-            <div key={category.id} className="space-y-1">
-              {/* Заголовок категории */}
-              <div className="flex items-center gap-1.5 border-b border-[#333] pb-1 text-[11px] font-medium">
-                {category.icon}
-                {category.name}
-                {category.resources.length > 0 && (
-                  <span className="ml-1 text-[9px]">({category.resources.length})</span>
+            <ResourceCategoryDropZone
+              key={category.id}
+              categoryId={category.id}
+              categoryName={category.name}
+              acceptedTypes={category.acceptedTypes}
+            >
+              <div className="space-y-1 min-h-[80px]">
+                {/* Заголовок категории */}
+                <div className="flex items-center gap-1.5 border-b border-[#333] pb-1 text-[11px] font-medium">
+                  {category.icon}
+                  {category.name}
+                  {category.resources.length > 0 && (
+                    <span className="ml-1 text-[9px]">({category.resources.length})</span>
+                  )}
+                </div>
+
+                {/* Список ресурсов категории */}
+                {renderResourceList(category.resources)}
+
+                {/* Сообщение, если нет ресурсов */}
+                {category.resources.length === 0 && (
+                  <div className="pl-1 text-[10px] text-muted-foreground">
+                    {t("timeline.resources.noResources", "Нет добавленных ресурсов")}
+                  </div>
                 )}
               </div>
-
-              {/* Список ресурсов категории */}
-              {renderResourceList(category.resources)}
-
-              {/* Сообщение, если нет ресурсов */}
-              {category.resources.length === 0 && (
-                <div className="pl-1 text-[10px] text-muted-foreground">
-                  {t("timeline.resources.noResources", "Нет добавленных ресурсов")}
-                </div>
-              )}
-            </div>
+            </ResourceCategoryDropZone>
           ))}
         </div>
       </div>
