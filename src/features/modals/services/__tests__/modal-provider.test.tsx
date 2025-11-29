@@ -36,9 +36,9 @@ describe("ModalProvider", () => {
       const modal = useModal()
       return (
         <div>
-          <div data-testid="modal-type">{modal.modalType}</div>
+          <div data-testid="modal-type">{modal.activeModal}</div>
           <div data-testid="modal-data">{JSON.stringify(modal.modalData)}</div>
-          <div data-testid="is-open">{modal.isOpen.toString()}</div>
+          <div data-testid="is-open">{modal.isModalOpen.toString()}</div>
         </div>
       )
     }
@@ -60,8 +60,8 @@ describe("ModalProvider", () => {
       return (
         <div>
           <button onClick={() => modal.openModal("project-settings")}>Open Modal</button>
-          <div data-testid="modal-type">{modal.modalType}</div>
-          <div data-testid="is-open">{modal.isOpen.toString()}</div>
+          <div data-testid="modal-type">{modal.activeModal}</div>
+          <div data-testid="is-open">{modal.isModalOpen.toString()}</div>
         </div>
       )
     }
@@ -132,7 +132,7 @@ describe("ModalProvider", () => {
         <div>
           <button onClick={() => modal.openModal("export")}>Open</button>
           <button onClick={() => modal.closeModal()}>Close</button>
-          <div data-testid="is-open">{modal.isOpen.toString()}</div>
+          <div data-testid="is-open">{modal.isModalOpen.toString()}</div>
         </div>
       )
     }
@@ -213,7 +213,7 @@ describe("ModalProvider", () => {
         <div>
           <button onClick={() => modal.openModal("keyboard-shortcuts")}>Open Shortcuts</button>
           <button onClick={() => modal.openModal("voice-recording")}>Open Voice</button>
-          <div data-testid="modal-type">{modal.modalType}</div>
+          <div data-testid="modal-type">{modal.activeModal}</div>
         </div>
       )
     }
@@ -247,15 +247,14 @@ describe("ModalProvider", () => {
   })
 
   describe("useModal hook", () => {
-    it("должен выбрасывать ошибку если используется вне провайдера", () => {
-      // Подавляем вывод ошибки в консоль для этого теста
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    it("должен работать без провайдера (использует SystemIntegrationOrchestrator)", () => {
+      // useModal теперь является alias для useModals из домена
+      // и работает без провайдера через глобальный orchestrator
+      const { result } = renderHook(() => useModal())
 
-      expect(() => {
-        renderHook(() => useModal())
-      }).toThrow("useModal must be used within a ModalProvider")
-
-      consoleErrorSpy.mockRestore()
+      expect(result.current).toBeDefined()
+      expect(result.current.activeModal).toBe("none")
+      expect(result.current.isModalOpen).toBe(false)
     })
 
     it("должен сохранять состояние между ререндерами", async () => {
@@ -268,16 +267,16 @@ describe("ModalProvider", () => {
       })
 
       await waitFor(() => {
-        expect(result.current.modalType).toBe("cache-statistics")
+        expect(result.current.activeModal).toBe("cache-statistics")
         expect(result.current.modalData).toEqual({ testValue: 123 })
-        expect(result.current.isOpen).toBe(true)
+        expect(result.current.isModalOpen).toBe(true)
       })
 
       rerender()
 
-      expect(result.current.modalType).toBe("cache-statistics")
+      expect(result.current.activeModal).toBe("cache-statistics")
       expect(result.current.modalData).toEqual({ testValue: 123 })
-      expect(result.current.isOpen).toBe(true)
+      expect(result.current.isModalOpen).toBe(true)
     })
   })
 
@@ -293,7 +292,7 @@ describe("ModalProvider", () => {
               {type}
             </button>
           ))}
-          <div data-testid="current-modal">{modal.modalType}</div>
+          <div data-testid="current-modal">{modal.activeModal}</div>
         </div>
       )
     }

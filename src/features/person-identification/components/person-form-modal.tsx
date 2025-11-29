@@ -11,12 +11,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import type { PersonProfile } from "../types/person"
 
 export function PersonFormModal() {
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
 
   const person = modalData?.person as PersonProfile | undefined
   const onSave = modalData?.onSave as ((personData: Partial<PersonProfile>) => Promise<void>) | undefined

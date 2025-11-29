@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
-import { useModal } from "@/features/modals"
+import { useModals } from "@/domains/system-integration"
 import { useResources } from "@/features/resources"
 import { createLogger } from "@/lib/tauri-logger"
 import { useAudioDevices } from "../hooks/use-audio-devices"
@@ -31,7 +31,7 @@ export function VoiceRecordModal() {
   const [isMuted] = useState<boolean>(true)
   const [selectedFormat, setSelectedFormat] = useState<AudioFormat>("webm")
   const [audioFormats, setAudioFormats] = useState<AudioFormatInfo[]>([])
-  const { isOpen, closeModal } = useModal()
+  const { isModalOpen, closeModal } = useModals()
   const { addMedia } = useResources()
 
   // Проверяем поддержку MediaDevices API
@@ -137,7 +137,7 @@ export function VoiceRecordModal() {
 
   // Загружаем поддерживаемые форматы при открытии
   useEffect(() => {
-    if (isOpen) {
+    if (isModalOpen) {
       void getSupportedAudioFormats().then((formats) => {
         // Фильтруем форматы, которые поддерживаются MediaRecorder
         const supportedFormats = formats.filter((format) => isFormatSupportedByMediaRecorder(format.format))
@@ -149,23 +149,23 @@ export function VoiceRecordModal() {
         }
       })
     }
-  }, [isOpen, selectedFormat])
+  }, [isModalOpen, selectedFormat])
 
   // Запрашиваем устройства и запускаем микрофон при открытии модального окна
   useEffect(() => {
-    if (isOpen) {
+    if (isModalOpen) {
       void getDevicesAfterPermissions()
     } else {
       cleanup()
     }
-  }, [isOpen, getDevicesAfterPermissions, cleanup])
+  }, [isModalOpen, getDevicesAfterPermissions, cleanup])
 
   // Инициализируем микрофон при изменении устройства
   useEffect(() => {
-    if (isOpen && selectedAudioDevice) {
+    if (isModalOpen && selectedAudioDevice) {
       void initAudio()
     }
-  }, [isOpen, selectedAudioDevice, initAudio])
+  }, [isModalOpen, selectedAudioDevice, initAudio])
 
   // Если MediaDevices не поддерживается, показываем сообщение
   if (!isMediaDevicesSupported) {

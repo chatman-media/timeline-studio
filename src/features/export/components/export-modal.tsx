@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useNotifications } from "@/core/hooks"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useVideoCompiler } from "@/features/video-compiler/hooks/use-video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
@@ -24,7 +24,7 @@ export function ExportModal() {
   const { showError, showSuccess } = useNotifications()
   const { project } = useTimeline()
   const { startRender, isRendering, renderProgress, cancelRender } = useVideoCompiler()
-  const { closeModal } = useModal()
+  const { closeModal } = useModals()
   const { uploadToSocialNetwork } = useSocialExport()
 
   const { getCurrentSettings, updateSettings, handleChooseFolder, getExportConfig } = useExportSettings()

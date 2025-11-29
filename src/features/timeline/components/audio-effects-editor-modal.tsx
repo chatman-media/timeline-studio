@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import type { AppliedEffect } from "../types"
 
@@ -79,7 +79,7 @@ const audioEffectPresets = {
 }
 
 export function AudioEffectsEditorModal() {
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
 
   // Получаем данные из modalData
   const clip = modalData?.clip

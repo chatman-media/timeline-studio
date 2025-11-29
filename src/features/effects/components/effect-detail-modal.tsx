@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { saveUserEffect } from "@/domains/video-editing/services/effects"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect } from "../types"
 import { prepareEffectForExport } from "../utils/user-effects"
@@ -22,7 +22,7 @@ const logger = createLogger("EffectDetailModal")
  * Компонент для детального просмотра эффекта с возможностью настройки параметров
  */
 export function EffectDetailModal() {
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
   const { effect, onApplyEffect } = (modalData as { effect?: BaseEffect; onApplyEffect?: any }) || {}
 
   const { i18n, t } = useTranslation()

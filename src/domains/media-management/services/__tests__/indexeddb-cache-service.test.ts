@@ -5,12 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type {
-  CachedFrames,
-  CachedPreview,
-  CachedRecognition,
-  CachedSubtitles,
-} from "../indexeddb-cache-service"
+import type { CachedFrames, CachedPreview, CachedRecognition, CachedSubtitles } from "../indexeddb-cache-service"
 import { IndexedDBCacheService } from "../indexeddb-cache-service"
 
 // Mock idb-keyval

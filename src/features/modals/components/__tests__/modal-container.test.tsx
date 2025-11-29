@@ -4,20 +4,26 @@ import type { ModalType } from "@/domains/system-integration/machines/modal-mach
 import { BaseProviders } from "@/test/test-utils"
 import { ModalContainer } from "../modal-container"
 
-// Mock useModal hook
+// Mock useModals hook from system-integration domain
 const mockCloseModal = vi.fn()
-const mockModalType = vi.fn()
+const mockActiveModal = vi.fn()
 const mockModalData = vi.fn()
-const mockIsOpen = vi.fn()
+const mockIsModalOpen = vi.fn()
 
-vi.mock("../../services", () => ({
-  useModal: () => ({
-    modalType: mockModalType(),
-    modalData: mockModalData(),
-    isOpen: mockIsOpen(),
-    closeModal: mockCloseModal,
-  }),
-}))
+vi.mock("@/domains/system-integration", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/system-integration")>()
+  return {
+    ...actual,
+    useModals: () => ({
+      activeModal: mockActiveModal(),
+      modalData: mockModalData(),
+      isModalOpen: mockIsModalOpen(),
+      closeModal: mockCloseModal,
+      openModal: vi.fn(),
+      submitModal: vi.fn(),
+    }),
+  }
+})
 
 // Mock all modal components
 vi.mock("@/features/app-state/components/missing-files-modal", () => ({
@@ -99,9 +105,9 @@ vi.mock("@/features/voice-recording", () => ({
 describe("ModalContainer", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockModalType.mockReturnValue("none")
+    mockActiveModal.mockReturnValue("none")
     mockModalData.mockReturnValue(null)
-    mockIsOpen.mockReturnValue(false)
+    mockIsModalOpen.mockReturnValue(false)
   })
 
   it("should not render dialog when closed", () => {
@@ -115,8 +121,8 @@ describe("ModalContainer", () => {
   })
 
   it("should render dialog when opened", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("project-settings")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("project-settings")
 
     render(
       <BaseProviders>
@@ -129,8 +135,8 @@ describe("ModalContainer", () => {
   })
 
   it("should close modal on backdrop click", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("project-settings")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("project-settings")
 
     render(
       <BaseProviders>
@@ -170,8 +176,8 @@ describe("ModalContainer", () => {
     ]
 
     it.each(modalTestCases)("should render %s modal with correct title", (modalType, testId, title) => {
-      mockIsOpen.mockReturnValue(true)
-      mockModalType.mockReturnValue(modalType)
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue(modalType)
 
       render(
         <BaseProviders>
@@ -185,8 +191,8 @@ describe("ModalContainer", () => {
   })
 
   it("should handle subtitle editor with edit mode", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("subtitle-editor")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("subtitle-editor")
     mockModalData.mockReturnValue({ subtitle: { id: "1", text: "Test" } })
 
     render(
@@ -200,8 +206,8 @@ describe("ModalContainer", () => {
 
   // SKIP: person-form modal causes test hang
   it.skip("should handle person form with edit mode", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("person-form")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("person-form")
     mockModalData.mockReturnValue({ person: { id: "1", name: "John" } })
 
     render(
@@ -214,8 +220,8 @@ describe("ModalContainer", () => {
   })
 
   it("should apply custom dialog class from modalData", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("project-settings")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("project-settings")
     mockModalData.mockReturnValue({ dialogClass: "custom-class" })
 
     render(
@@ -253,8 +259,8 @@ describe("ModalContainer", () => {
     ]
 
     it.each(classTestCases)("should apply correct class for %s modal", (modalType, expectedClass) => {
-      mockIsOpen.mockReturnValue(true)
-      mockModalType.mockReturnValue(modalType)
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue(modalType)
 
       render(
         <BaseProviders>
@@ -268,8 +274,8 @@ describe("ModalContainer", () => {
   })
 
   it("should render nothing for unknown modal type", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("unknown-type" as ModalType)
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("unknown-type" as ModalType)
 
     render(
       <BaseProviders>
@@ -283,8 +289,8 @@ describe("ModalContainer", () => {
   })
 
   it("should handle none modal type", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("none")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("none")
 
     render(
       <BaseProviders>
@@ -299,8 +305,8 @@ describe("ModalContainer", () => {
   })
 
   it("should apply dark mode classes", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("project-settings")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("project-settings")
 
     render(
       <BaseProviders>
@@ -313,8 +319,8 @@ describe("ModalContainer", () => {
   })
 
   it("should have scrollable content area", () => {
-    mockIsOpen.mockReturnValue(true)
-    mockModalType.mockReturnValue("project-settings")
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("project-settings")
 
     render(
       <BaseProviders>

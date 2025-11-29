@@ -6,7 +6,7 @@ import { Copy, Music, Scissors, Sparkles, Trash2, Volume2 } from "lucide-react"
 import React from "react"
 
 import { Button } from "@/components/ui/button"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"
@@ -36,7 +36,7 @@ interface AudioClipProps {
 export function AudioClip({ clip, track, onUpdate, onRemove }: AudioClipProps) {
   const [isHovered, setIsHovered] = React.useState(false)
   const { updateClip } = useClips()
-  const { openModal } = useModal()
+  const { openModal } = useModals()
 
   const handleSelect = () => {
     const newIsSelected = !clip.isSelected

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { DialogFooter } from "@/components/ui/dialog"
-import { useModal } from "@/features/modals/services/modal-provider"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { UserSettingsModalTabs } from "./user-settings-modal-tabs"
 
@@ -19,7 +19,7 @@ const logger = createLogger({ module: "UserSettingsModal" })
  * @returns {JSX.Element} Компонент модального окна настроек пользователя
  */
 export function UserSettingsModal() {
-  const { closeModal } = useModal()
+  const { closeModal } = useModals()
   const { t } = useTranslation()
 
   return (

@@ -1,7 +1,7 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import { container } from "@/core/container"
-import { useModal } from "@/features/modals/services/modal-provider"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { ShortcutHandler } from "../components/shortcut-handler"
 
@@ -66,7 +66,7 @@ interface ShortcutsProviderProps {
  * не требуют полной event-driven sync как timeline/media data
  */
 export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
-  const { openModal } = useModal()
+  const { openModal } = useModals()
   const backendSync = container.getBackend()
   const [isBackendConnected, setIsBackendConnected] = useState(backendSync.connected)
   const [shortcuts, setShortcuts] = useState<ShortcutDefinition[]>([])

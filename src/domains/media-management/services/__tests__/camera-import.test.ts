@@ -104,9 +104,7 @@ describe("CameraImportService", () => {
     it("should throw error if mount path not available", async () => {
       const cameraWithoutMount = { ...mockCamera, mountPath: undefined }
 
-      await expect(service.listCameraFiles(cameraWithoutMount)).rejects.toThrow(
-        "Device mount path is not available",
-      )
+      await expect(service.listCameraFiles(cameraWithoutMount)).rejects.toThrow("Device mount path is not available")
     })
 
     it("should handle listing errors", async () => {
@@ -122,9 +120,8 @@ describe("CameraImportService", () => {
 
   describe("importFromCamera", () => {
     it("should import all files from camera", async () => {
-      mockInvoke
-        .mockResolvedValueOnce([mockCameraFile]) // listCameraFiles
-      
+      mockInvoke.mockResolvedValueOnce([mockCameraFile]) // listCameraFiles
+
       const result = await service.importFromCamera(mockCamera)
 
       expect(result.imported).toHaveLength(1)

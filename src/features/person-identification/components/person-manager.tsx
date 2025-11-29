@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import type { PersonAppearance, PersonProfile } from "../types/person"
 import { PersonDetail } from "./person-detail"
@@ -27,7 +27,7 @@ export function PersonManager({ className }: PersonManagerProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { openModal } = useModal()
+  const { openModal } = useModals()
   const personDatabase = PersonDatabaseService.getInstance()
 
   // Загрузка всех персон при монтировании

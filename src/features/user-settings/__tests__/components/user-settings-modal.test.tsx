@@ -68,7 +68,8 @@ describe("UserSettingsModal", () => {
   const mockToggleTimelineVisibility = vi.fn()
   const mockToggleOptionsVisibility = vi.fn()
   const mockChangeLanguage = vi.fn()
-  const mockCloseModal = vi.fn()
+  const mockCloseModal = vi.fn().mockResolvedValue(undefined)
+  const mockOpenModal = vi.fn().mockResolvedValue(undefined)
 
   beforeEach(() => {
     // Очищаем моки перед каждым тестом
@@ -100,14 +101,20 @@ describe("UserSettingsModal", () => {
     }))
 
     vi.mocked(useModal).mockImplementation(() => ({
-      openModal: vi.fn(),
-      closeModal: mockCloseModal,
-      modalType: "none",
+      activeModal: "none",
       modalData: null,
-      isOpen: false,
-      submitModal: vi.fn(),
-      isLoading: false,
-      error: null,
+      isModalOpen: false,
+      openModal: mockOpenModal,
+      closeModal: mockCloseModal,
+      submitModal: vi.fn().mockResolvedValue(undefined),
+      openCameraCapture: vi.fn().mockResolvedValue(undefined),
+      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
+      openExport: vi.fn().mockResolvedValue(undefined),
+      openProjectSettings: vi.fn().mockResolvedValue(undefined),
+      openUserSettings: vi.fn().mockResolvedValue(undefined),
+      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
+      openColorGrading: vi.fn().mockResolvedValue(undefined),
+      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
 
     vi.mocked(useApiKeys).mockImplementation(() => createMockApiKeys())
@@ -510,16 +517,22 @@ describe("UserSettingsModal", () => {
   })
 
   it("should open cache statistics modal when button is clicked", () => {
-    const mockOpenModal = vi.fn()
+    const localMockOpenModal = vi.fn().mockResolvedValue(undefined)
     vi.mocked(useModal).mockImplementation(() => ({
-      openModal: mockOpenModal,
-      closeModal: mockCloseModal,
-      modalType: "none",
+      activeModal: "none",
       modalData: null,
-      isOpen: false,
-      submitModal: vi.fn(),
-      isLoading: false,
-      error: null,
+      isModalOpen: false,
+      openModal: localMockOpenModal,
+      closeModal: mockCloseModal,
+      submitModal: vi.fn().mockResolvedValue(undefined),
+      openCameraCapture: vi.fn().mockResolvedValue(undefined),
+      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
+      openExport: vi.fn().mockResolvedValue(undefined),
+      openProjectSettings: vi.fn().mockResolvedValue(undefined),
+      openUserSettings: vi.fn().mockResolvedValue(undefined),
+      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
+      openColorGrading: vi.fn().mockResolvedValue(undefined),
+      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
 
     render(<UserSettingsModal />)
@@ -533,20 +546,26 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что openModal был вызван с правильными параметрами
-    expect(mockOpenModal).toHaveBeenCalledWith("cache-statistics", { returnTo: "user-settings" })
+    expect(localMockOpenModal).toHaveBeenCalledWith("cache-statistics", { returnTo: "user-settings" })
   })
 
   it("should open cache settings modal when button is clicked", () => {
-    const mockOpenModal = vi.fn()
+    const localMockOpenModal = vi.fn().mockResolvedValue(undefined)
     vi.mocked(useModal).mockImplementation(() => ({
-      openModal: mockOpenModal,
-      closeModal: mockCloseModal,
-      modalType: "none",
+      activeModal: "none",
       modalData: null,
-      isOpen: false,
-      submitModal: vi.fn(),
-      isLoading: false,
-      error: null,
+      isModalOpen: false,
+      openModal: localMockOpenModal,
+      closeModal: mockCloseModal,
+      submitModal: vi.fn().mockResolvedValue(undefined),
+      openCameraCapture: vi.fn().mockResolvedValue(undefined),
+      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
+      openExport: vi.fn().mockResolvedValue(undefined),
+      openProjectSettings: vi.fn().mockResolvedValue(undefined),
+      openUserSettings: vi.fn().mockResolvedValue(undefined),
+      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
+      openColorGrading: vi.fn().mockResolvedValue(undefined),
+      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
 
     render(<UserSettingsModal />)
@@ -560,6 +579,6 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что openModal был вызван с правильными параметрами
-    expect(mockOpenModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
+    expect(localMockOpenModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
   })
 })

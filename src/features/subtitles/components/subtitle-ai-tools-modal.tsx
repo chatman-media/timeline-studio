@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 
 import { useNotifications } from "@/core/hooks"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { EnhancedTranscriptionPanel } from "@/features/transcription/components/enhanced-transcription-panel"
@@ -11,7 +11,7 @@ const generateSubtitleId = () => `subtitle-${Date.now()}-${Math.random().toStrin
 
 export function SubtitleAIToolsModal() {
   const { t } = useTranslation()
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
   const { project, send } = useTimeline()
   const { showSuccess } = useNotifications()
 

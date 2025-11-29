@@ -48,14 +48,20 @@ describe("UserSettingsModalTabs", () => {
 
     // Мок для useModal
     vi.mocked(useModal).mockImplementation(() => ({
-      openModal: vi.fn(),
-      closeModal: vi.fn(),
-      modalType: "none",
+      activeModal: "none",
       modalData: null,
-      isOpen: false,
-      submitModal: vi.fn(),
-      isLoading: false,
-      error: null,
+      isModalOpen: false,
+      openModal: vi.fn().mockResolvedValue(undefined),
+      closeModal: vi.fn().mockResolvedValue(undefined),
+      submitModal: vi.fn().mockResolvedValue(undefined),
+      openCameraCapture: vi.fn().mockResolvedValue(undefined),
+      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
+      openExport: vi.fn().mockResolvedValue(undefined),
+      openProjectSettings: vi.fn().mockResolvedValue(undefined),
+      openUserSettings: vi.fn().mockResolvedValue(undefined),
+      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
+      openColorGrading: vi.fn().mockResolvedValue(undefined),
+      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
   })
 

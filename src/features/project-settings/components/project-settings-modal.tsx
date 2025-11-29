@@ -7,7 +7,7 @@ import { DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useModal } from "@/features/modals/services/modal-provider"
+import { useModals } from "@/domains/system-integration"
 import {
   ASPECT_RATIOS,
   COLOR_SPACES,
@@ -36,7 +36,7 @@ const logger = createLogger({ module: "ProjectSettingsModal" })
  */
 export function ProjectSettingsModal() {
   const { t } = useTranslation() // Хук для интернационализации
-  const { closeModal } = useModal() // Хук для управления модальными окнами
+  const { closeModal } = useModals() // Хук для управления модальными окнами
   const { settings, updateSettings } = useProjectSettings() // Хук для доступа к настройкам проекта
 
   // Состояние для хранения доступных разрешений для выбранного соотношения сторон

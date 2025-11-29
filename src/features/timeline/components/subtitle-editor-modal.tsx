@@ -6,12 +6,12 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import type { SubtitleClip } from "@/features/subtitles/types"
 
 export function SubtitleEditorModal() {
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
 
   const subtitle = modalData?.subtitle as SubtitleClip | undefined
   const onSave = modalData?.onSave as ((subtitle: Partial<SubtitleClip>) => void) | undefined

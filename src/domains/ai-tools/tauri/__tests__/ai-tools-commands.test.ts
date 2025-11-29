@@ -1,12 +1,8 @@
 /**
  * Тесты для AI Tools Tauri Commands
  */
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest"
-import {
-  detectKeyMoments,
-  generateMontagePlan,
-  mcpExecuteTool,
-} from "../ai-tools-commands"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { detectKeyMoments, generateMontagePlan, mcpExecuteTool } from "../ai-tools-commands"
 
 // Hoist mock function declaration
 const { mockInvoke } = vi.hoisted(() => ({
@@ -79,9 +75,7 @@ describe("AI Tools Tauri Commands", () => {
 
       mockInvoke.mockRejectedValueOnce(new Error("Tauri error"))
 
-      await expect(detectKeyMoments(videoPaths, config)).rejects.toThrow(
-        "Tauri error"
-      )
+      await expect(detectKeyMoments(videoPaths, config)).rejects.toThrow("Tauri error")
     })
 
     it("should pass complex config", async () => {
@@ -200,9 +194,7 @@ describe("AI Tools Tauri Commands", () => {
 
       mockInvoke.mockRejectedValueOnce(new Error("Planning failed"))
 
-      await expect(
-        generateMontagePlan(moments, config, sourceFiles)
-      ).rejects.toThrow("Planning failed")
+      await expect(generateMontagePlan(moments, config, sourceFiles)).rejects.toThrow("Planning failed")
     })
 
     it("should handle large number of moments", async () => {
@@ -308,13 +300,7 @@ describe("AI Tools Tauri Commands", () => {
     })
 
     it("should handle various tool names", async () => {
-      const toolNames = [
-        "analyze_video",
-        "detect_scenes",
-        "extract_audio",
-        "apply_filters",
-        "generate_subtitles",
-      ]
+      const toolNames = ["analyze_video", "detect_scenes", "extract_audio", "apply_filters", "generate_subtitles"]
 
       for (const toolName of toolNames) {
         mockInvoke.mockResolvedValueOnce({ success: true })
@@ -335,25 +321,19 @@ describe("AI Tools Tauri Commands", () => {
     it("should propagate network errors", async () => {
       mockInvoke.mockRejectedValueOnce(new Error("Network error"))
 
-      await expect(
-        detectKeyMoments(["video.mp4"], {})
-      ).rejects.toThrow("Network error")
+      await expect(detectKeyMoments(["video.mp4"], {})).rejects.toThrow("Network error")
     })
 
     it("should propagate timeout errors", async () => {
       mockInvoke.mockRejectedValueOnce(new Error("Request timeout"))
 
-      await expect(
-        generateMontagePlan([], {}, [])
-      ).rejects.toThrow("Request timeout")
+      await expect(generateMontagePlan([], {}, [])).rejects.toThrow("Request timeout")
     })
 
     it("should propagate permission errors", async () => {
       mockInvoke.mockRejectedValueOnce(new Error("Permission denied"))
 
-      await expect(
-        mcpExecuteTool({ tool_name: "test", arguments: {} })
-      ).rejects.toThrow("Permission denied")
+      await expect(mcpExecuteTool({ tool_name: "test", arguments: {} })).rejects.toThrow("Permission denied")
     })
   })
 

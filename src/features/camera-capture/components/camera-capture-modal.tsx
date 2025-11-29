@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { useNotifications } from "@/domains/system-integration"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
-import { useModal } from "@/features/modals"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,
@@ -27,7 +27,7 @@ export function CameraCaptureModal() {
   const { t } = useTranslation()
   const { showSuccess, showError } = useNotifications()
 
-  const { isOpen, closeModal } = useModal()
+  const { isModalOpen, closeModal } = useModals()
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const [errorMessage, setErrorMessage] = useState<string>("")
@@ -198,7 +198,7 @@ export function CameraCaptureModal() {
 
   // Запрашиваем разрешения при открытии модального окна и останавливаем камеру при закрытии
   useEffect(() => {
-    if (isOpen) {
+    if (isModalOpen) {
       void requestPermissions()
     } else {
       logger.info("Закрытие модального окна - полная очистка ресурсов")
@@ -230,7 +230,7 @@ export function CameraCaptureModal() {
       setCaptureMode("camera") // Сбрасываем на камеру
       setErrorMessage("") // Очищаем ошибки
     }
-  }, [isOpen, requestPermissions, streamRef, isScreenSharing, stopScreenCapture, isRecording, stopRecording])
+  }, [isModalOpen, requestPermissions, streamRef, isScreenSharing, stopScreenCapture, isRecording, stopRecording])
 
   // Обработчик изменения устройства
   const handleDeviceChange = (deviceId: string) => {

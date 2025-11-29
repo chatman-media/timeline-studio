@@ -21,18 +21,18 @@ import { UserSettingsModal } from "@/features/user-settings"
 import { CacheStatisticsModal } from "@/features/video-compiler/components/cache-statistics-modal"
 import { VoiceRecordModal } from "@/features/voice-recording"
 
-import { type ModalType, useModal } from "../services"
+import { type ModalData, type ModalType, useModals } from "@/domains/system-integration"
 
 /**
  * Контейнер для модальных окон
  */
 export function ModalContainer() {
-  const { modalType, modalData, isOpen, closeModal } = useModal()
+  const { activeModal, modalData, isModalOpen, closeModal } = useModals()
   const { t } = useTranslation() // Получаем функцию перевода
 
   // Рендерим только активное модальное окно с помощью switch
   const renderAllModals = () => {
-    switch (modalType) {
+    switch (activeModal) {
       case "project-settings":
         return <ProjectSettingsModal />
       // Temporarily disabled - keyboard-shortcuts feature needs review
@@ -128,7 +128,7 @@ export function ModalContainer() {
 
   // Функция для получения заголовка модального окна с использованием i18n
   const getModalTitle = () => {
-    switch (modalType) {
+    switch (activeModal) {
       case "project-settings":
         return t("modals.projectSettings.title", "Настройки проекта")
       case "keyboard-shortcuts":
@@ -180,10 +180,10 @@ export function ModalContainer() {
     }
   }
 
-  const dialogClass = modalData?.dialogClass ?? getDialogClassForType(modalType)
+  const dialogClass = modalData?.dialogClass ?? getDialogClassForType(activeModal)
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && closeModal()}>
+    <Dialog open={isModalOpen} onOpenChange={(open) => !open && closeModal()}>
       <DialogContent
         aria-describedby="modal"
         className={`${dialogClass} bg-[#dfdfdf] dark:bg-[#1e1e1e] [&>button]:cursor-pointer p-4 flex flex-col`}

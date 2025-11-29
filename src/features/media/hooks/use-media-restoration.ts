@@ -7,7 +7,7 @@ import {
 } from "@/domains/media-management/services/media-restoration-service"
 import type { MediaFile } from "@/features/media/types/media"
 import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -37,7 +37,7 @@ export function useMediaRestoration() {
   const [restorationResult, setRestorationResult] = useState<ProjectRestorationResult | null>(null)
   const [showMissingFilesDialog, setShowMissingFilesDialog] = useState(false)
 
-  const { closeModal } = useModal()
+  const { closeModal } = useModals()
 
   /**
    * Обновляет состояние восстановления

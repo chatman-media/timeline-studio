@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { promptUserToFindFile } from "@/domains/media-management/services/media-restoration-service"
 import type { SavedMediaFile } from "@/features/media/types/saved-media"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -21,7 +21,7 @@ interface FileResolution {
 }
 
 export function MissingFilesModal() {
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
 
   const missingFiles = (modalData?.missingFiles as SavedMediaFile[]) || []
   const onResolve = modalData?.onResolve as

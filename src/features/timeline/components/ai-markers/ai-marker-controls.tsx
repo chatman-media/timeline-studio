@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelineAIAnalysis } from "../../hooks/use-timeline-ai-analysis"
@@ -25,7 +25,7 @@ interface AIMarkerControlsProps {
 export function AIMarkerControls({ className }: AIMarkerControlsProps) {
   const aiAnalysis = useTimelineAIAnalysis()
   const { send } = useTimeline()
-  const { openModal } = useModal()
+  const { openModal } = useModals()
 
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)

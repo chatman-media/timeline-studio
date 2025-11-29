@@ -27,12 +27,11 @@ vi.mock("@tauri-apps/api/app", () => ({
   getTauriVersion: vi.fn().mockResolvedValue("2.0.0"),
 }))
 
-// Import types - these are safe as long as tauri-bindings is empty
-import type { BrowserTab, SortOrder, ViewMode } from "@/types/generated/tauri-bindings"
-
 // Import getBackendSync AFTER type imports but before using it
 // Note: This is executed after vi.mock declarations are processed
 import { getBackendSync } from "@/test/mocks/backend-sync"
+// Import types - these are safe as long as tauri-bindings is empty
+import type { BrowserTab, SortOrder, ViewMode } from "@/types/generated/tauri-bindings"
 
 // Create mutable mock commands object
 const mockCommands = {

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 interface SavePresetModalData {
   onSave?: (presetName: string) => void
@@ -13,7 +13,7 @@ interface SavePresetModalData {
 
 export function ColorGradingSavePresetModal() {
   const { t } = useTranslation()
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
   const { onSave } = (modalData as SavePresetModalData) || {}
   const presetNameId = useId()
 

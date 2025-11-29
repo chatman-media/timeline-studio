@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import type { AppliedEffect } from "../types"
 
@@ -70,7 +70,7 @@ const audioEffectPresets = {
 }
 
 export function AudioEffectsEditor({ clip, onApplyEffects }: AudioEffectsEditorProps) {
-  const { openModal } = useModal()
+  const { openModal } = useModals()
 
   const handleOpen = () => {
     openModal("audio-effects", {

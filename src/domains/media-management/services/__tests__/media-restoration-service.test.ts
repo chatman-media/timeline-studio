@@ -147,10 +147,7 @@ describe("MediaRestorationService", () => {
         .mockResolvedValueOnce(false) // relative
         .mockResolvedValueOnce(true) // alternative
 
-      mockGenerateAlternativePaths.mockResolvedValue([
-        "/alternative/path1/video.mp4",
-        "/alternative/path2/video.mp4",
-      ])
+      mockGenerateAlternativePaths.mockResolvedValue(["/alternative/path1/video.mp4", "/alternative/path2/video.mp4"])
 
       mockValidateFileIntegrity.mockResolvedValue({
         isValid: true,

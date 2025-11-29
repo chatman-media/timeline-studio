@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 
 export function AIMarkerSettingsModal() {
-  const { modalData, closeModal } = useModal()
+  const { modalData, closeModal } = useModals()
 
   const initialConfig = modalData?.config as AIMarkerConfig | undefined
   const onSave = modalData?.onSave as ((config: AIMarkerConfig) => void) | undefined

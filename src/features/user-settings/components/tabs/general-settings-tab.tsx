@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { container } from "@/core"
 import { useLanguage } from "@/features/language"
-import { useModal } from "@/features/modals/services/modal-provider"
+import { useModals } from "@/domains/system-integration"
 import { type LanguageCode, SUPPORTED_LANGUAGES } from "@/i18n/constants"
 import { createLogger } from "@/lib/tauri-logger"
 import { useUserSettings } from "../../hooks/use-user-settings"
@@ -33,7 +33,7 @@ export function GeneralSettingsTab() {
     handleAutoSaveIntervalChange,
   } = useUserSettings()
 
-  const { openModal } = useModal()
+  const { openModal } = useModals()
   const { t } = useTranslation()
 
   const { currentLanguage, changeLanguage } = useLanguage()

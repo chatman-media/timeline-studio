@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 export function MidiConfigurationModal() {
-  const { openModal } = useModal()
+  const { openModal } = useModals()
 
   const handleOpen = () => {
     openModal("midi-configuration")

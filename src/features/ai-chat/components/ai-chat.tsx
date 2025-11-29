@@ -10,7 +10,7 @@ import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/ch
 import { useTimeline } from "@/domains/video-editing/hooks"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
-import { useModal } from "@/features/modals"
+import { useModals } from "@/domains/system-integration"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -78,7 +78,7 @@ export function AiChat() {
     clearMessages,
   } = useChat()
   const { getApiKeyInfo } = useApiKeys()
-  const { openModal } = useModal()
+  const { openModal } = useModals()
   const { importFile } = useMediaImport()
 
   // Получаем контекст Timeline (если доступен)

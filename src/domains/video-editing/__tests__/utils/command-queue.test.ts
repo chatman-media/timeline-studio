@@ -4,7 +4,7 @@
  * Тесты для очереди команд с предотвращением race conditions
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { CommandQueue, debounceCommand, throttleCommand } from "../../utils/command-queue"
 
 describe("CommandQueue", () => {

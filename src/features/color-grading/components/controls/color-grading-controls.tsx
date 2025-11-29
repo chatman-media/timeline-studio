@@ -10,14 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 import { useColorGradingContext } from "../../services/color-grading-provider"
 import { getAllPresetCategories } from "../../types/presets"
 
 export function ColorGradingControls() {
   const { t } = useTranslation()
-  const { openModal } = useModal()
+  const { openModal } = useModals()
   const {
     state,
     hasChanges,

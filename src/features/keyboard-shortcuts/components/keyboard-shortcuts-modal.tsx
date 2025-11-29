@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useModal } from "@/features/modals/services/modal-provider"
+import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { createPresets, type PresetType } from "../presets"
 import { useShortcuts } from "../services/shortcuts-provider"
@@ -14,7 +14,7 @@ const logger = createLogger({ module: "KeyboardShortcutsModal" })
 
 export function KeyboardShortcutsModal() {
   const { t } = useTranslation()
-  const { closeModal } = useModal()
+  const { closeModal } = useModals()
   const { exportSettings, importSettings } = useShortcuts()
 
   // Создаем предустановки с локализацией

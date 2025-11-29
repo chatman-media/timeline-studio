@@ -2,7 +2,7 @@ import { Mic } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { useModal } from "@/features/modals/services"
+import { useModals } from "@/domains/system-integration"
 
 /**
  * Инструменты AI для работы с субтитрами
@@ -10,7 +10,7 @@ import { useModal } from "@/features/modals/services"
  */
 export function SubtitleAITools() {
   const { t } = useTranslation()
-  const { openModal } = useModal()
+  const { openModal } = useModals()
 
   const handleOpen = () => {
     openModal("subtitle-ai-tools")

@@ -122,7 +122,8 @@ Element.prototype.scrollIntoView = vi.fn()
 describe("GeneralSettingsTab", () => {
   const mockHandleScreenshotsPathChange = vi.fn()
   const mockHandlePlayerScreenshotsPathChange = vi.fn()
-  const mockOpenModal = vi.fn()
+  const mockOpenModal = vi.fn().mockResolvedValue(undefined)
+  const mockCloseModal = vi.fn().mockResolvedValue(undefined)
   const mockChangeLanguage = vi.fn()
 
   beforeEach(() => {
@@ -137,14 +138,20 @@ describe("GeneralSettingsTab", () => {
     )
 
     vi.mocked(useModal).mockImplementation(() => ({
-      openModal: mockOpenModal,
-      closeModal: vi.fn(),
-      modalType: "none",
+      activeModal: "none",
       modalData: null,
-      isOpen: false,
-      submitModal: vi.fn(),
-      isLoading: false,
-      error: null,
+      isModalOpen: false,
+      openModal: mockOpenModal,
+      closeModal: mockCloseModal,
+      submitModal: vi.fn().mockResolvedValue(undefined),
+      openCameraCapture: vi.fn().mockResolvedValue(undefined),
+      openVoiceRecording: vi.fn().mockResolvedValue(undefined),
+      openExport: vi.fn().mockResolvedValue(undefined),
+      openProjectSettings: vi.fn().mockResolvedValue(undefined),
+      openUserSettings: vi.fn().mockResolvedValue(undefined),
+      openKeyboardShortcuts: vi.fn().mockResolvedValue(undefined),
+      openColorGrading: vi.fn().mockResolvedValue(undefined),
+      openEffectDetail: vi.fn().mockResolvedValue(undefined),
     }))
 
     vi.mocked(useLanguage).mockImplementation(() => ({

@@ -24,7 +24,7 @@ import { useCurrentProject } from "@/domains/project-management/hooks"
 import { RenderQueueDropdown } from "@/features/export"
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
-import { useModal } from "@/features/modals/services/modal-provider"
+import { useModals } from "@/domains/system-integration"
 import { AnalysisTasksDropdown } from "@/features/montage-planner"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useUserSettings } from "@/features/user-settings"
@@ -39,7 +39,7 @@ export const TOP_BAR_BUTTON_CLASS = "hover:bg-[#D1D1D1] dark:hover:bg-[#464747] 
 
 const TopBarComponent = function TopBar() {
   const { t } = useTranslation()
-  const { openModal } = useModal()
+  const { openModal } = useModals()
   const { isBrowserVisible, toggleBrowserVisibility } = useUserSettings()
   const { isTimelineVisible, toggleTimelineVisibility } = useUserSettings()
   const { isOptionsVisible, toggleOptionsVisibility } = useUserSettings()
