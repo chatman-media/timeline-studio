@@ -55,7 +55,7 @@ export class TauriVideoService implements IVideoService {
 
   async configureCache(config: CacheConfig): Promise<void> {
     logger.infoSync("Configuring cache")
-    return invoke("configure_cache", config)
+    return invoke("configure_cache", { config })
   }
 
   async getCacheStats(): Promise<CacheStats> {
@@ -170,7 +170,7 @@ export class TauriVideoService implements IVideoService {
 
   async updateCompilerSettings(settings: CompilerSettings): Promise<void> {
     logger.infoSync("Updating compiler settings")
-    return invoke("update_compiler_settings_advanced", settings)
+    return invoke("update_compiler_settings_advanced", { settings })
   }
 
   // ============================================================================
