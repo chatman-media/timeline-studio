@@ -242,6 +242,14 @@ export function parseUserIntent(userMessage: string): {
 } {
   const msg = userMessage.toLowerCase()
 
+  // Рекомендации (check first, before analyze)
+  if (msg.includes("посоветуй") || msg.includes("предложи") || msg.includes("как лучше") || msg.includes("дай идеи") || msg.includes("идеи")) {
+    return {
+      intent: "suggest",
+      params: {},
+    }
+  }
+
   // Создать монтаж
   if (
     msg.includes("создай") ||
@@ -252,35 +260,25 @@ export function parseUserIntent(userMessage: string): {
   ) {
     // Попытка извлечь длительность
     const durationMatch = msg.match(/(\d+)\s*(минут|мин|секунд|сек|m|s)/i)
-    const duration = durationMatch ? Number.parseInt(durationMatch[1], 10) : null
+    const duration = durationMatch ? Number.parseInt(durationMatch[1], 10) : undefined
 
     return {
       intent: "create_montage",
       params: {
-        duration,
+        ...(duration !== undefined && { duration }),
         style: msg.includes("динамич") ? "dynamic" : msg.includes("спокой") ? "calm" : "balanced",
       },
     }
   }
 
-  // Найти моменты
-  if (msg.includes("найди") || msg.includes("покажи") || msg.includes("моменты") || msg.includes("highlights")) {
-    const countMatch = msg.match(/(\d+)\s*(лучш|момент|сцен)/i)
-    const count = countMatch ? Number.parseInt(countMatch[1], 10) : 10
-
-    return {
-      intent: "find_moments",
-      params: { count },
-    }
-  }
-
-  // Анализ
+  // Анализ (специфичные слова для анализа)
   if (
     msg.includes("статистик") ||
     msg.includes("анализ") ||
     msg.includes("качество") ||
-    msg.includes("как") ||
-    msg.includes("что")
+    (msg.includes("что") && msg.includes("?")) || // вопросы со словом "что"
+    msg.includes("какое") || // вопросы с "какое"
+    msg.includes("какой")    // вопросы с "какой"
   ) {
     return {
       intent: "analyze",
@@ -288,11 +286,14 @@ export function parseUserIntent(userMessage: string): {
     }
   }
 
-  // Рекомендации
-  if (msg.includes("посоветуй") || msg.includes("предложи") || msg.includes("как лучше") || msg.includes("идеи")) {
+  // Найти моменты
+  if (msg.includes("найди") || msg.includes("лучш") || msg.includes("highlights")) {
+    const countMatch = msg.match(/(\d+)\s*(лучш|момент|сцен)/i)
+    const count = countMatch ? Number.parseInt(countMatch[1], 10) : 10
+
     return {
-      intent: "suggest",
-      params: {},
+      intent: "find_moments",
+      params: { count },
     }
   }
 

@@ -24,8 +24,10 @@ export const Activity = createMockIcon("Activity")
 export const AlertCircle = createMockIcon("AlertCircle")
 export const AlertTriangle = createMockIcon("AlertTriangle")
 export const AlignCenter = createMockIcon("AlignCenter")
+export const ArrowDown = createMockIcon("ArrowDown")
 export const ArrowLeftRight = createMockIcon("ArrowLeftRight")
 export const ArrowRight = createMockIcon("ArrowRight")
+export const ArrowUp = createMockIcon("ArrowUp")
 export const AudioLines = createMockIcon("AudioLines")
 export const Blend = createMockIcon("Blend")
 export const Bookmark = createMockIcon("Bookmark")
@@ -194,8 +196,10 @@ vi.mock("lucide-react", () => ({
   AlertCircle,
   AlertTriangle,
   AlignCenter,
+  ArrowDown,
   ArrowLeftRight,
   ArrowRight,
+  ArrowUp,
   AudioLines,
   Blend,
   Bookmark,

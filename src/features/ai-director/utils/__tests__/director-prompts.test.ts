@@ -246,6 +246,7 @@ describe("director-prompts", () => {
       const result = parseUserIntent("создай ролик на 3 минуты")
 
       expect(result.intent).toBe("create_montage")
+      expect(result.params.duration).toBeDefined()
       expect(result.params.duration).toBe(3)
     })
 

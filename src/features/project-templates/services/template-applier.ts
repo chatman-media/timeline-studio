@@ -293,7 +293,12 @@ export class TemplateApplier {
     }
 
     // Проверка структуры
-    if (!template.structure || !template.structure.sections || !template.structure.tracks) {
+    if (!template.structure) {
+      errors.push("Invalid structure: template.structure is missing")
+      return { valid: false, errors }
+    }
+
+    if (!template.structure.sections || !template.structure.tracks) {
       errors.push("Invalid structure: missing sections or tracks")
     }
 

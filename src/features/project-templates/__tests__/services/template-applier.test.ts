@@ -247,7 +247,8 @@ describe("TemplateApplier", () => {
       const result = applier.validateTemplate(invalidTemplate)
 
       expect(result.valid).toBe(false)
-      expect(result.errors.some((e) => e.includes("structure"))).toBe(true)
+      expect(result.errors.length).toBeGreaterThan(0)
+      expect(result.errors.some((e) => e.toLowerCase().includes("structure"))).toBe(true)
     })
 
     it("should detect empty sections", () => {

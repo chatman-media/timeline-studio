@@ -600,7 +600,56 @@ describe("useContentAnalysis", () => {
     })
 
     it("should provide totalFragments count", async () => {
-      mockContext.fragments = [{}, {}, {}] as Fragment[]
+      mockContext.fragments = [
+        {
+          id: "f1",
+          videoId: "v1",
+          startTime: 0,
+          endTime: 10,
+          duration: 10,
+          score: {
+            timestamp: 0,
+            duration: 10,
+            scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
+            totalScore: 80,
+            category: "highlight",
+          },
+          objects: [],
+          people: [],
+        },
+        {
+          id: "f2",
+          videoId: "v1",
+          startTime: 10,
+          endTime: 20,
+          duration: 10,
+          score: {
+            timestamp: 10,
+            duration: 10,
+            scores: { visual: 85, technical: 80, emotional: 75, narrative: 83, action: 87, composition: 83 },
+            totalScore: 82,
+            category: "action",
+          },
+          objects: [],
+          people: [],
+        },
+        {
+          id: "f3",
+          videoId: "v1",
+          startTime: 20,
+          endTime: 30,
+          duration: 10,
+          score: {
+            timestamp: 20,
+            duration: 10,
+            scores: { visual: 75, technical: 70, emotional: 65, narrative: 78, action: 82, composition: 75 },
+            totalScore: 75,
+            category: "transition",
+          },
+          objects: [],
+          people: [],
+        },
+      ] as Fragment[]
 
       const { useContentAnalysis } = await import("../use-content-analysis")
       const { result } = renderHook(() => useContentAnalysis())

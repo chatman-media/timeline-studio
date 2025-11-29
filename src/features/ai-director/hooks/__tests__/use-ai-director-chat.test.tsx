@@ -215,9 +215,11 @@ describe("useAIDirectorChat", () => {
       )
     })
 
-    it("should handle missing backend", async () => {
-      const { container } = await import("@/core")
-      vi.mocked(container.hasBackend).mockReturnValueOnce(false)
+    it("should handle error responses from backend", async () => {
+      mockExecuteCommand.mockResolvedValueOnce({
+        success: false,
+        error: "Backend connection error",
+      })
 
       const { result } = renderHook(() => useAIDirectorChat(mockFilesProgress))
 
@@ -226,7 +228,7 @@ describe("useAIDirectorChat", () => {
       })
 
       await waitFor(() => {
-        expect(result.current.error).toBeTruthy()
+        expect(result.current.error).toContain("Backend connection error")
       })
     })
   })

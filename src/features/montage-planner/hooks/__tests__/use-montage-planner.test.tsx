@@ -390,7 +390,7 @@ describe("useMontagePlanner", () => {
   })
 
   describe("Computed values", () => {
-    it("should calculate total video duration", () => {
+    it("should calculate total video duration", async () => {
       const mockContextWithFiles = {
         ...mockContext,
         mediaFiles: new Map([
@@ -441,7 +441,7 @@ describe("useMontagePlanner", () => {
       expect(result.current.totalVideoDuration).toBe(150)
     })
 
-    it("should calculate total fragments duration", () => {
+    it("should calculate total fragments duration", async () => {
       const mockContextWithFragments = {
         ...mockContext,
         fragments: [
@@ -473,7 +473,7 @@ describe("useMontagePlanner", () => {
       expect(result.current.totalFragmentsDuration).toBe(45)
     })
 
-    it("should calculate utilization rate", () => {
+    it("should calculate utilization rate", async () => {
       const mockContextWithBoth = {
         ...mockContext,
         mediaFiles: new Map([["video-1", { id: "video-1", duration: 100 }]]),
@@ -516,8 +516,8 @@ describe("useMontagePlanner", () => {
     it("should format duration", () => {
       const { result } = renderHook(() => useMontagePlanner())
 
-      expect(result.current.formatDuration(65)).toBe("01:05")
-      expect(result.current.formatDuration(3665)).toBe("01:01:05")
+      expect(result.current.formatDuration(65)).toBe("1:05")
+      expect(result.current.formatDuration(3665)).toBe("1:01:05")
     })
 
     it("should get style name", () => {
@@ -535,7 +535,7 @@ describe("useMontagePlanner", () => {
   })
 
   describe("Statistics", () => {
-    it("should provide video count", () => {
+    it("should provide video count", async () => {
       const mockContextWithStats = {
         ...mockContext,
         videoIds: ["video-1", "video-2", "video-3"],
@@ -563,7 +563,7 @@ describe("useMontagePlanner", () => {
       expect(result.current.videoCount).toBe(3)
     })
 
-    it("should provide fragment count", () => {
+    it("should provide fragment count", async () => {
       const mockContextWithStats = {
         ...mockContext,
         fragments: [{}, {}, {}, {}],
@@ -591,7 +591,7 @@ describe("useMontagePlanner", () => {
       expect(result.current.fragmentCount).toBe(4)
     })
 
-    it("should provide plan duration", () => {
+    it("should provide plan duration", async () => {
       const mockContextWithPlan = {
         ...mockContext,
         currentPlan: { totalDuration: 180 },

@@ -183,14 +183,14 @@ describe("AIDirectorDashboard", () => {
       const workflowsTab = screen.getByRole("tab", { name: /шаблоны/i })
       await user.click(workflowsTab)
 
-      // Find and click a workflow card
-      const workflowCards = screen.getAllByRole("heading", { level: 3 })
-      if (workflowCards.length > 0) {
-        const firstWorkflow = workflowCards[0].closest("div[role='button'], div")
-        if (firstWorkflow) {
-          await user.click(firstWorkflow)
-          expect(onWorkflowSelect).toHaveBeenCalled()
-        }
+      // Workflow cards are Card components - find by workflow name
+      const tiktokWorkflow = screen.getByText("TikTok/Reels")
+      const card = tiktokWorkflow.closest('[data-slot="card"]')
+
+      expect(card).toBeInTheDocument()
+      if (card) {
+        await user.click(card)
+        expect(onWorkflowSelect).toHaveBeenCalled()
       }
     })
   })

@@ -25,8 +25,8 @@ export function useBrowserAIIntegration() {
 
   // Получаем медиафайлы из project state
   // Note: MediaItem and MediaFile are different types - this needs conversion
-  const mediaFiles = projectState?.imported_media
-    ? (Object.values(projectState.imported_media).filter(Boolean) as any[])
+  const mediaFiles = projectState?.project?.media_pool?.items
+    ? (Object.values(projectState.project.media_pool.items).filter(Boolean) as any[])
     : []
   const isLoading = false
 

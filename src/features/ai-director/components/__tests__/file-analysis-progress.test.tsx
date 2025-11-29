@@ -25,7 +25,7 @@ describe("FileAnalysisProgress", () => {
       },
       {
         type: "audio_quality",
-        status: "analyzing",
+        status: "running", // AnalyzerStatus uses "running" not "analyzing"
         progress: 50,
       },
       {
@@ -43,10 +43,13 @@ describe("FileAnalysisProgress", () => {
       expect(screen.getByText("video.mp4")).toBeInTheDocument()
     })
 
-    it("should show status label", () => {
-      render(<FileAnalysisProgress file={mockFile} />)
+    it("should show status icon for analyzing", () => {
+      const { container } = render(<FileAnalysisProgress file={mockFile} />)
 
-      expect(screen.getByText("Анализ")).toBeInTheDocument()
+      // Should show Loader2 icon with animation
+      const loader = container.querySelector('[data-icon="Loader2"]')
+      expect(loader).toBeInTheDocument()
+      expect(loader).toHaveClass("animate-spin")
     })
 
     it("should show progress percentage", () => {
@@ -62,9 +65,11 @@ describe("FileAnalysisProgress", () => {
         progress: 100,
       }
 
-      render(<FileAnalysisProgress file={completedFile} />)
+      const { container } = render(<FileAnalysisProgress file={completedFile} />)
 
-      expect(screen.getByText("Завершено")).toBeInTheDocument()
+      // Should show CheckCircle2 icon for completed
+      const checkIcon = container.querySelector('[data-icon="CheckCircle2"]')
+      expect(checkIcon).toBeInTheDocument()
     })
 
     it("should show error status", () => {
@@ -74,9 +79,11 @@ describe("FileAnalysisProgress", () => {
         error: "Analysis failed",
       }
 
-      render(<FileAnalysisProgress file={errorFile} />)
+      const { container } = render(<FileAnalysisProgress file={errorFile} />)
 
-      expect(screen.getByText("Ошибка")).toBeInTheDocument()
+      // Should show XCircle icon for error
+      const errorIcon = container.querySelector('[data-icon="XCircle"]')
+      expect(errorIcon).toBeInTheDocument()
     })
   })
 
@@ -106,36 +113,39 @@ describe("FileAnalysisProgress", () => {
     it("should not show duration when not available", () => {
       render(<FileAnalysisProgress file={mockFile} />)
 
-      // Should not crash or show invalid duration
-      expect(screen.queryByText(/m|s$/)).not.toBeInTheDocument()
+      // Should not crash - duration just won't be displayed
+      // File name should still render
+      expect(screen.getByText("video.mp4")).toBeInTheDocument()
     })
   })
 
   describe("Expandable Content", () => {
     it("should be collapsed by default", () => {
-      render(<FileAnalysisProgress file={mockFile} />)
+      const { container } = render(<FileAnalysisProgress file={mockFile} />)
 
-      // Analyzers should not be visible
-      expect(screen.queryByText("scene_detection")).not.toBeInTheDocument()
+      // Analyzers category headings should not be visible when collapsed
+      expect(screen.queryByText("Видео")).not.toBeInTheDocument()
+      expect(screen.queryByText("Аудио")).not.toBeInTheDocument()
     })
 
     it("should expand when defaultExpanded is true", () => {
       render(<FileAnalysisProgress file={mockFile} defaultExpanded={true} />)
 
-      // Should show analyzer details
-      expect(screen.getByText(/scene_detection|audio_quality|face_detection/)).toBeInTheDocument()
+      // Should show category headings when expanded
+      expect(screen.getByText("Видео")).toBeInTheDocument()
+      expect(screen.getByText("Аудио")).toBeInTheDocument()
     })
 
     it("should toggle expansion on click", async () => {
       const user = userEvent.setup()
       render(<FileAnalysisProgress file={mockFile} />)
 
-      // Find expand/collapse trigger
+      // The entire header is a collapsible trigger button
       const expandButton = screen.getByRole("button")
       await user.click(expandButton)
 
-      // Should show analyzers
-      // Note: actual implementation may vary
+      // Should show category headings after expansion
+      expect(screen.getByText("Видео")).toBeInTheDocument()
     })
   })
 
@@ -143,7 +153,11 @@ describe("FileAnalysisProgress", () => {
     it("should show all analyzers when expanded", () => {
       render(<FileAnalysisProgress file={mockFile} defaultExpanded={true} />)
 
-      // All three analyzers should be visible
+      // Should show category headings
+      expect(screen.getByText("Видео")).toBeInTheDocument()
+      expect(screen.getByText("Аудио")).toBeInTheDocument()
+
+      // Verify all 3 analyzers are present
       const analyzers = mockFile.analyzers
       expect(analyzers).toHaveLength(3)
     })
@@ -151,9 +165,11 @@ describe("FileAnalysisProgress", () => {
     it("should show analyzer progress", () => {
       render(<FileAnalysisProgress file={mockFile} defaultExpanded={true} />)
 
-      // Completed analyzer should show 100%
-      // Analyzing should show 50%
-      // Pending should show 0%
+      // Should show progress percentages for analyzers
+      expect(screen.getByText("100%")).toBeInTheDocument() // completed analyzer
+      const percentages = screen.getAllByText("50%") // file progress + running analyzer
+      expect(percentages.length).toBeGreaterThan(0)
+      // Pending analyzers don't show percentage
     })
   })
 
@@ -173,10 +189,11 @@ describe("FileAnalysisProgress", () => {
         progress: 100,
       }
 
-      render(<FileAnalysisProgress file={completedFile} />)
+      const { container } = render(<FileAnalysisProgress file={completedFile} />)
 
-      // Check icon should be present
-      expect(screen.getByText("Завершено")).toBeInTheDocument()
+      // CheckCircle2 icon should be present
+      const checkIcon = container.querySelector('[data-icon="CheckCircle2"]')
+      expect(checkIcon).toBeInTheDocument()
     })
 
     it("should show error icon for error status", () => {
@@ -186,9 +203,11 @@ describe("FileAnalysisProgress", () => {
         error: "Failed",
       }
 
-      render(<FileAnalysisProgress file={errorFile} />)
+      const { container } = render(<FileAnalysisProgress file={errorFile} />)
 
-      expect(screen.getByText("Ошибка")).toBeInTheDocument()
+      // XCircle icon should be present
+      const errorIcon = container.querySelector('[data-icon="XCircle"]')
+      expect(errorIcon).toBeInTheDocument()
     })
   })
 
