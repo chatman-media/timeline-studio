@@ -1,31 +1,128 @@
 /**
  * Node.js Adapters
  *
- * Реализации сервисов для Node.js окружения (CLI, тесты, серверы).
- * Использует нативные Node.js модули и CLI инструменты.
+ * Реализации сервисов для Node.js окружения (CLI, серверы, Electron).
+ * Использует нативные Node.js модули и CLI инструменты (ffmpeg, whisper).
  */
 
 import { container } from "@/core/container"
 
-import { NodeMediaService } from "./media"
+import { type NodeAIOptions, NodeAIService } from "./ai"
+import { type NodeBackendOptions, NodeBackendService } from "./backend"
+import { NodeEventService } from "./event"
+import { type NodeMediaOptions, NodeMediaService } from "./media"
+import { type NodePlatformOptions, NodePlatformService } from "./platform"
+import { type NodeStorageOptions, NodeStorageService } from "./storage"
+import { type NodeVideoOptions, NodeVideoService } from "./video"
 
-export { NodeMediaService } from "./media"
+// Re-exports
+export { type NodeAIOptions, NodeAIService } from "./ai"
+export { type NodeBackendOptions, NodeBackendService } from "./backend"
+export { NodeEventService } from "./event"
+export { type NodeMediaOptions, NodeMediaService } from "./media"
+export { type NodePlatformOptions, NodePlatformService } from "./platform"
+export { type NodeStorageOptions, NodeStorageService } from "./storage"
+export { type NodeVideoOptions, NodeVideoService } from "./video"
+
+export interface NodeAppOptions {
+  /** Опции для Storage сервиса */
+  storage?: NodeStorageOptions
+  /** Опции для Platform сервиса */
+  platform?: NodePlatformOptions
+  /** Опции для Media сервиса */
+  media?: NodeMediaOptions
+  /** Опции для Video сервиса */
+  video?: NodeVideoOptions
+  /** Опции для AI сервиса */
+  ai?: NodeAIOptions
+  /** Опции для Backend сервиса */
+  backend?: NodeBackendOptions
+  /** Автоматически подключаться к бэкенду */
+  autoConnect?: boolean
+}
+
+export interface NodeAppServices {
+  backend: NodeBackendService
+  platform: NodePlatformService
+  storage: NodeStorageService
+  event: NodeEventService
+  media: NodeMediaService
+  video: NodeVideoService
+  ai: NodeAIService
+}
 
 /**
  * Инициализация приложения с Node.js адаптерами.
- * Используется для CLI инструментов и серверного окружения.
+ * Используется для CLI инструментов, серверного окружения и Electron.
  *
- * @returns Объект с сервисами для программного доступа
+ * @param options Опции инициализации
+ * @returns Объект со всеми сервисами для программного доступа
+ *
+ * @example
+ * ```typescript
+ * import { initNodeApp } from "@/adapters/node"
+ *
+ * const services = await initNodeApp({
+ *   ai: { openaiApiKey: process.env.OPENAI_API_KEY },
+ *   autoConnect: true,
+ * })
+ *
+ * // Использование сервисов
+ * const metadata = await services.media.getMetadata("/path/to/video.mp4")
+ * ```
  */
-export function initNodeApp(): {
-  media: NodeMediaService
-} {
-  // Create Node.js services
-  const media = new NodeMediaService()
+export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeAppServices> {
+  const { autoConnect = true } = options
+
+  // Create services
+  const backend = new NodeBackendService(options.backend)
+  const platform = new NodePlatformService(options.platform)
+  const storage = new NodeStorageService(options.storage)
+  const event = new NodeEventService()
+  const media = new NodeMediaService(options.media)
+  const video = new NodeVideoService(options.video)
+  const ai = new NodeAIService(options.ai)
 
   // Register in container
+  container.registerBackend(backend)
+  container.registerPlatform(platform)
+  container.registerStorage(storage)
+  container.registerEvent(event)
   container.registerMedia(media)
+  container.registerVideo(video)
+  container.registerAI(ai)
 
-  // Return services for programmatic access
-  return { media }
+  // Auto-connect if requested
+  if (autoConnect) {
+    await backend.connect()
+  }
+
+  return {
+    backend,
+    platform,
+    storage,
+    event,
+    media,
+    video,
+    ai,
+  }
+}
+
+/**
+ * Создание изолированных Node.js сервисов без регистрации в контейнере.
+ * Полезно для unit-тестов и изолированных операций.
+ *
+ * @param options Опции для сервисов
+ * @returns Объект со всеми сервисами
+ */
+export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
+  return {
+    backend: new NodeBackendService(options.backend),
+    platform: new NodePlatformService(options.platform),
+    storage: new NodeStorageService(options.storage),
+    event: new NodeEventService(),
+    media: new NodeMediaService(options.media),
+    video: new NodeVideoService(options.video),
+    ai: new NodeAIService(options.ai),
+  }
 }
