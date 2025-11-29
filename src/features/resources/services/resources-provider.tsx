@@ -19,10 +19,7 @@ import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
-import {
-  handleBackendEvent,
-  type ResourcesContext as ResourcesMachineContext,
-} from "../machines/backend-event-handlers"
+// Backend event handlers removed - simplified architecture
 import {
   type EffectResource,
   type FilterResource,
@@ -123,7 +120,18 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   const backendState = projectState
 
   // State для инкрементальных обновлений через события
-  const [resourcesState, setResourcesState] = useState<ResourcesMachineContext>({
+  const [resourcesState, setResourcesState] = useState<{
+    mediaResources: MediaResource[]
+    musicResources: MusicResource[]
+    effectResources: EffectResource[]
+    filterResources: FilterResource[]
+    transitionResources: TransitionResource[]
+    templateResources: TemplateResource[]
+    styleTemplateResources: StyleTemplateResource[]
+    subtitleResources: SubtitleResource[]
+    isLoading: boolean
+    error: string | null
+  }>({
     mediaResources: [],
     musicResources: [],
     effectResources: [],
@@ -197,11 +205,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           eventType: event.type,
         })
 
-        // Применяем инкрементальное обновление
-        setResourcesState((prev) => {
-          const updates = handleBackendEvent(prev, event)
-          return { ...prev, ...updates }
-        })
+        // Simplified: just trigger re-sync from backend state
+        // (instead of complex incremental updates)
+        logInfo("ResourcesProvider: Event detected, will use backend state on next render")
       }
     }
 

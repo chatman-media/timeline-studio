@@ -64,11 +64,7 @@ export function ResourcesPanel() {
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <h2 className="text-sm font-medium text-foreground">
           {t("timeline.resources.title", "Ресурсы")}
-          {totalCount > 0 && (
-            <span className="ml-2 text-xs text-muted-foreground">
-              ({totalCount})
-            </span>
-          )}
+          {totalCount > 0 && <span className="ml-2 text-xs text-muted-foreground">({totalCount})</span>}
         </h2>
       </div>
 
@@ -78,10 +74,7 @@ export function ResourcesPanel() {
           // Empty state
           <div className="flex h-full items-center justify-center px-4">
             <p className="text-center text-sm text-muted-foreground">
-              {t(
-                "timeline.resources.empty",
-                "Перетащите сюда эффекты, фильтры, переходы или медиафайлы"
-              )}
+              {t("timeline.resources.empty", "Перетащите сюда эффекты, фильтры, переходы или медиафайлы")}
             </p>
           </div>
         ) : (
@@ -94,11 +87,7 @@ export function ResourcesPanel() {
             }}
           >
             {allResources.map((resource) => (
-              <ResourceThumbnail
-                key={resource.id}
-                resource={resource}
-                onRemove={removeResource}
-              />
+              <ResourceThumbnail key={resource.id} resource={resource} onRemove={removeResource} />
             ))}
           </div>
         )}

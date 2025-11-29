@@ -1,9 +1,8 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
-
-import type { EffectResource, MediaResource } from "../../types"
 import { ResourceThumbnail } from "../../components/resource-thumbnail"
+import type { EffectResource, MediaResource } from "../../types"
 
 // Mock dependencies
 vi.mock("@/features/browser/components/preview/media-preview", () => ({
@@ -55,7 +54,8 @@ describe("ResourceThumbnail", () => {
 
     render(<ResourceThumbnail resource={mediaResource} onRemove={mockOnRemove} />)
 
-    expect(screen.getByText("Video.mp4")).toBeInTheDocument()
+    // File name appears both in preview mock and as resource name
+    expect(screen.getAllByText("Video.mp4").length).toBeGreaterThan(0)
     expect(screen.getByText("VID")).toBeInTheDocument() // Type badge
     expect(screen.getByTestId("media-preview")).toBeInTheDocument()
   })
@@ -105,17 +105,25 @@ describe("ResourceThumbnail", () => {
 
   it("displays correct badge for each resource type", () => {
     const types = [
-      { type: "media", badge: "VID" },
-      { type: "music", badge: "MUS" },
-      { type: "effect", badge: "EFX" },
-      { type: "filter", badge: "FLT" },
-      { type: "transition", badge: "TRN" },
-      { type: "template", badge: "TPL" },
-      { type: "styleTemplate", badge: "STY" },
-      { type: "subtitle", badge: "SUB" },
+      {
+        type: "media",
+        badge: "VID",
+        extra: { file: { id: "1", name: "test.mp4", path: "/test.mp4", type: "video", size: 100, duration: 10 } },
+      },
+      {
+        type: "music",
+        badge: "MUS",
+        extra: { file: { id: "1", name: "test.mp3", path: "/test.mp3", type: "audio", size: 100, duration: 10 } },
+      },
+      { type: "effect", badge: "EFX", extra: { effect: { id: "1", name: "Effect", type: "blur" } } },
+      { type: "filter", badge: "FLT", extra: { filter: { id: "1", name: "Filter" } } },
+      { type: "transition", badge: "TRN", extra: { transition: { id: "1" } } },
+      { type: "template", badge: "TPL", extra: { template: { id: "1" } } },
+      { type: "styleTemplate", badge: "STY", extra: { template: { id: "1", name: { ru: "Template" } } } },
+      { type: "subtitle", badge: "SUB", extra: { style: { id: "1", name: "Style" } } },
     ] as const
 
-    types.forEach(({ type, badge }) => {
+    types.forEach(({ type, badge, extra }) => {
       const resource = {
         id: `${type}-1`,
         type,
@@ -123,6 +131,7 @@ describe("ResourceThumbnail", () => {
         resourceId: `${type}-id`,
         addedAt: Date.now(),
         params: {},
+        ...extra,
       } as any
 
       const { unmount } = render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} />)
