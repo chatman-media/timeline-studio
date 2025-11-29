@@ -70,8 +70,6 @@ Timeline Studio не просто AI-помощник, а полноценная
 - **🆕 Real Analysis Engine**: ONNX + FFmpeg frame integration готов
 - **🆕 Function Calling Integration**: AI может самостоятельно использовать все 102 инструмента
 
-📈 **[Подробная статистика проекта](./project_stats.md)**
-
 ### Полноценные модули
 
 #### Основные модули
@@ -376,7 +374,5 @@ Timeline Studio - это open source проект, и мы приветству�
 ---
 
 *Последнее обновление: 27 ноября 2025*
-*Версия: 0.85.0 (Alpha)*
+*Версия: 3.31.0 (Alpha)*
 *Статус: 40 активных фич (1,578 файлов, 360 тестов), unified audio system завершен, подготовка к Beta-версии*
-
-**Детальная статистика:** [project_stats.md](./project_stats.md)
