@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import type { YoloVideoData } from "@/features/recognition/types/yolo"
 
 interface YoloTrackOverlayProps {
