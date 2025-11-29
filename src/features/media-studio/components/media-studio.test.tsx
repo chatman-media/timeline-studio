@@ -68,11 +68,7 @@ vi.mock("@/features/modals/components", () => ({
   ModalContainer: () => <div data-testid="modal-container">ModalContainer</div>,
 }))
 
-// Мокаем AppStateGuard и ProjectLoadingOverlay
-vi.mock("@/features/app-state/components/app-state-guard", () => ({
-  AppStateGuard: ({ children }: { children: React.ReactNode }) => <div data-testid="app-state-guard">{children}</div>,
-}))
-
+// Мокаем ProjectLoadingOverlay
 vi.mock("@/features/app-state/components/project-loading-overlay", () => ({
   ProjectLoadingOverlay: () => <div data-testid="project-loading-overlay">ProjectLoadingOverlay</div>,
 }))
@@ -251,11 +247,7 @@ describe("MediaStudio", () => {
   it("имеет правильную структуру DOM", () => {
     const { container } = render(<MediaStudio />)
 
-    // AppStateGuard обернут в контейнер
-    const appStateGuard = container.querySelector('[data-testid="app-state-guard"]')
-    expect(appStateGuard).toBeInTheDocument()
-
-    const mainDiv = appStateGuard?.querySelector(".flex.flex-col.h-screen.w-screen")
+    const mainDiv = container.querySelector(".flex.flex-col.h-screen.w-screen")
     expect(mainDiv).toBeInTheDocument()
 
     const contentDiv = mainDiv?.querySelector(".flex-1")
