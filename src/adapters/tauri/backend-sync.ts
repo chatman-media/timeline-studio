@@ -29,7 +29,8 @@ export class BackendSync {
   private stateChangeHandlers = new Set<StateChangeHandler>()
   private unlisten: UnlistenFn | null = null
   private isConnected = false
-  private lastVersion = 0
+  /** @internal Exposed for testing only */
+  public lastVersion = 0
   private connectPromise: Promise<void> | null = null
 
   /**
@@ -321,8 +322,9 @@ export class BackendSync {
 
   /**
    * Handle incoming backend event
+   * @internal Exposed for testing only
    */
-  private handleBackendEvent(envelope: EventEnvelope) {
+  public handleBackendEvent(envelope: EventEnvelope) {
     logger.info("BackendSync: Received event", { envelope })
     // Update last version
     this.lastVersion = envelope.metadata.version
@@ -348,8 +350,9 @@ export class BackendSync {
   /**
    * Notify state change handlers
    * Используется ТОЛЬКО для инициализации при первой загрузке
+   * @internal Exposed for testing only
    */
-  private notifyStateChange(state: ProjectState) {
+  public notifyStateChange(state: ProjectState) {
     logger.info("BackendSync: Notifying state change to handlers", { handlersCount: this.stateChangeHandlers.size })
     this.stateChangeHandlers.forEach((handler) => {
       try {

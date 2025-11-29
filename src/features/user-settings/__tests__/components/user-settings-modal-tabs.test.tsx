@@ -2,7 +2,6 @@ import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useLanguage } from "@/features/language"
-import { useModal } from "@/features/modals/services/modal-provider"
 
 import { UserSettingsModalTabs } from "../../components/user-settings-modal-tabs"
 import { useApiKeys } from "../../hooks/use-api-keys"

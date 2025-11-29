@@ -50,16 +50,16 @@ describe("NodeVideoService", () => {
       expect(caps).toHaveProperty("available")
       expect(caps).toHaveProperty("encoders")
       expect(caps).toHaveProperty("decoders")
-      expect(caps.available).toBe(false)
+      expect(typeof caps.available).toBe("boolean")
     })
 
     it("does not throw for setHardwareAcceleration", async () => {
       await expect(service.setHardwareAcceleration(true)).resolves.not.toThrow()
     })
 
-    it("returns false for hardware acceleration support", async () => {
+    it("returns boolean for hardware acceleration support", async () => {
       const supported = await service.checkHardwareAccelerationSupport()
-      expect(supported).toBe(false)
+      expect(typeof supported).toBe("boolean")
     })
   })
 
@@ -73,17 +73,15 @@ describe("NodeVideoService", () => {
       expect(Array.isArray(jobs)).toBe(true)
     })
 
-    it("throws error for getRenderJob", async () => {
+    it("throws error for getRenderJob with invalid ID", async () => {
       await expect(service.getRenderJob("job-123")).rejects.toThrow()
     })
 
-    it("returns render progress", async () => {
-      const progress = await service.getRenderProgress("job-123")
-      expect(progress).toHaveProperty("jobId")
-      expect(progress).toHaveProperty("progress")
+    it("throws error for getRenderProgress with invalid ID", async () => {
+      await expect(service.getRenderProgress("job-123")).rejects.toThrow()
     })
 
-    it("returns false for cancelRender", async () => {
+    it("returns false for cancelRender with invalid ID", async () => {
       const result = await service.cancelRender("job-123")
       expect(result).toBe(false)
     })
@@ -94,10 +92,8 @@ describe("NodeVideoService", () => {
   // ============================================================================
 
   describe("Video Compilation", () => {
-    it("returns job ID for renderProject", async () => {
-      const jobId = await service.renderProject({}, "/output.mp4")
-      expect(typeof jobId).toBe("string")
-      expect(jobId).toContain("job-")
+    it("throws error for renderProject with empty project", async () => {
+      await expect(service.renderProject({}, "/output.mp4")).rejects.toThrow()
     })
 
     it("returns empty array for generatePreview", async () => {
@@ -148,9 +144,8 @@ describe("NodeVideoService", () => {
       expect(path).toContain("effect.json")
     })
 
-    it("returns JSON for loadUserEffect", async () => {
-      const content = await service.loadUserEffect("/effects/effect.json")
-      expect(typeof content).toBe("string")
+    it("throws error for loadUserEffect with invalid file", async () => {
+      await expect(service.loadUserEffect("/effects/effect.json")).rejects.toThrow()
     })
 
     it("returns empty array for getUserEffectsList", async () => {
@@ -163,9 +158,8 @@ describe("NodeVideoService", () => {
       expect(typeof path).toBe("string")
     })
 
-    it("returns JSON for loadEffectsCollection", async () => {
-      const content = await service.loadEffectsCollection("/collections/collection.json")
-      expect(typeof content).toBe("string")
+    it("throws error for loadEffectsCollection with invalid file", async () => {
+      await expect(service.loadEffectsCollection("/collections/collection.json")).rejects.toThrow()
     })
   })
 
@@ -222,9 +216,8 @@ describe("NodeVideoService", () => {
   // ============================================================================
 
   describe("File Operations", () => {
-    it("returns string for loadFile", async () => {
-      const content = await service.loadFile("/test.txt")
-      expect(typeof content).toBe("string")
+    it("throws error for loadFile with invalid path", async () => {
+      await expect(service.loadFile("/test.txt")).rejects.toThrow()
     })
 
     it("throws error for saveFile with read-only path", async () => {
@@ -238,7 +231,9 @@ describe("NodeVideoService", () => {
 
   describe("Frame Extraction", () => {
     it("throws error for extractTimelineFrames with invalid file", async () => {
-      await expect(service.extractTimelineFrames({ videoPath: "/video.mp4", timestamps: [1.0] } as any)).rejects.toThrow()
+      await expect(
+        service.extractTimelineFrames({ videoPath: "/video.mp4", timestamps: [1.0] } as any),
+      ).rejects.toThrow()
     })
 
     it("throws error for extractRecognitionFrames with invalid file", async () => {

@@ -16,37 +16,61 @@ import { useAnalysisStorage } from "../use-analysis-storage"
 const mockComprehensiveAnalysis: ComprehensiveAnalysisResult = {
   analysis_id: "test-analysis-123",
   status: "Completed",
-  audio_analysis: {} as any,
-  scene_analysis: {} as any,
-  vision_analysis: {} as any,
-  moment_analysis: {} as any,
-  content_analysis: {} as any,
-  combined_insights: {} as any,
-  performance_metrics: {} as any,
-  editing_recommendations: [],
+  audio_analysis: {
+    duration: 120,
+    loudness: -12,
+    tempo: 120,
+    silence_percentage: 0.1,
+  },
+  scene_analysis: {
+    scenes: [],
+    scene_count: 0,
+  },
+  video_analysis: {
+    width: 1920,
+    height: 1080,
+    fps: 30,
+    duration: 120,
+    bitrate: 5000000,
+    codec: "h264",
+  },
+  started_at: new Date().toISOString(),
+  completed_at: new Date().toISOString(),
+  total_duration_ms: 1000,
   errors: [],
-  metadata: {} as any,
 }
 
 const mockMontageAnalysis: MontageAnalysisResult = {
   video_id: "/test/video.mp4",
-  fragments: [],
-  metadata: {
-    total_fragments: 0,
-    total_duration: 0,
-    analysis_version: "1.0",
-  },
+  duration: 120,
+  quality_score: 0.8,
+  motion_score: 0.6,
+  faces_detected: 2,
+  objects_detected: ["person", "car"],
+  audio_quality: 0.9,
+  key_moments: [],
+  analysis_id: "test-analysis-123",
 }
 
 const mockUnifiedAnalysis: UnifiedContentAnalysis = {
-  videoPath: "/test/video.mp4",
   analysisId: "test-123",
-  scenes: [],
-  moments: [],
-  metadata: {
-    aiDirectorVersion: "1.0",
-    montagePlannerVersion: "1.0",
-    processingTime: 1000,
+  videoPath: "/test/video.mp4",
+  status: "completed",
+  createdAt: new Date().toISOString(),
+  processingTimeMs: 1000,
+  videoInfo: {
+    duration: 120,
+    fps: 30,
+    resolution: { width: 1920, height: 1080 },
+    codec: "h264",
+    fileSize: 1024000,
+  },
+  keyMoments: [],
+  qualityMetrics: {
+    overall: 0.8,
+    video: 0.85,
+    audio: 0.75,
+    technical: 0.8,
   },
 }
 

@@ -295,7 +295,7 @@ describe("ApiKeysService", () => {
     })
 
     it("should validate Claude key format", () => {
-      const validKey = "sk-ant-api03-" + "a".repeat(95)
+      const validKey = `sk-ant-api03-${"a".repeat(95)}`
       expect(service.validateKeyFormat("claude", validKey)).toBe(true)
       expect(service.validateKeyFormat("claude", "sk-ant-api03-short")).toBe(false)
     })
@@ -359,19 +359,25 @@ describe("ApiKeysService", () => {
     })
 
     it("should return valid when key is valid", () => {
-      const keyInfo = { key_type: "openai", has_value: true, is_valid: true }
+      const keyInfo = { key_type: "openai", has_value: true, is_oauth: false, has_access_token: false, is_valid: true }
       const status = service.getKeyStatus(keyInfo, false)
       expect(status).toBe("valid")
     })
 
     it("should return invalid when key is invalid", () => {
-      const keyInfo = { key_type: "openai", has_value: true, is_valid: false }
+      const keyInfo = { key_type: "openai", has_value: true, is_oauth: false, has_access_token: false, is_valid: false }
       const status = service.getKeyStatus(keyInfo, false)
       expect(status).toBe("invalid")
     })
 
     it("should return not_set when has no value", () => {
-      const keyInfo = { key_type: "openai", has_value: false, is_valid: undefined }
+      const keyInfo = {
+        key_type: "openai",
+        has_value: false,
+        is_oauth: false,
+        has_access_token: false,
+        is_valid: undefined,
+      }
       const status = service.getKeyStatus(keyInfo, false)
       expect(status).toBe("not_set")
     })

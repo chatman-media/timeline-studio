@@ -34,8 +34,8 @@ impl MediaCommands {
     // Get current timestamp
     let added_at = SystemTime::now()
       .duration_since(UNIX_EPOCH)
-      .map(|d| d.as_secs() as i64)
-      .unwrap_or(0);
+      .map(|d| d.as_secs() as f64)
+      .unwrap_or(0.0);
 
     // Extract video metadata if this is a video file
     let (codec, duration, resolution, frame_rate, bitrate) = if media_type == MediaType::Video {

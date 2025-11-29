@@ -13,30 +13,36 @@ describe("MockMediaService", () => {
       const metadata = await service.getMetadata("/path/to/video.mp4")
 
       expect(metadata.type).toBe("Video")
-      expect(metadata.duration).toBe(120.5)
-      expect(metadata.width).toBe(1920)
-      expect(metadata.height).toBe(1080)
-      expect(metadata.fps).toBe(30)
-      expect(metadata.codec).toBe("h264")
+      if (metadata.type === "Video") {
+        expect(metadata.duration).toBe(120.5)
+        expect(metadata.width).toBe(1920)
+        expect(metadata.height).toBe(1080)
+        expect(metadata.fps).toBe(30)
+        expect(metadata.codec).toBe("h264")
+      }
     })
 
     it("returns audio metadata for audio files", async () => {
       const metadata = await service.getMetadata("/path/to/audio.mp3")
 
       expect(metadata.type).toBe("Audio")
-      expect(metadata.duration).toBe(120.5)
-      expect(metadata.codec).toBe("aac")
-      expect(metadata.sample_rate).toBe(48000)
-      expect(metadata.channels).toBe(2)
+      if (metadata.type === "Audio") {
+        expect(metadata.duration).toBe(120.5)
+        expect(metadata.codec).toBe("aac")
+        expect(metadata.sample_rate).toBe(48000)
+        expect(metadata.channels).toBe(2)
+      }
     })
 
     it("returns image metadata for image files", async () => {
       const metadata = await service.getMetadata("/path/to/image.jpg")
 
       expect(metadata.type).toBe("Image")
-      expect(metadata.width).toBe(1920)
-      expect(metadata.height).toBe(1080)
-      expect(metadata.format).toBe("jpg")
+      if (metadata.type === "Image") {
+        expect(metadata.width).toBe(1920)
+        expect(metadata.height).toBe(1080)
+        expect(metadata.format).toBe("jpg")
+      }
     })
 
     it("supports various video formats", async () => {
@@ -207,8 +213,8 @@ describe("MockMediaService", () => {
 
     it("saves and loads preview data", async () => {
       const previewData = {
-        thumbnails: ["/thumb1.jpg", "/thumb2.jpg"],
-        waveform: "/wave.png",
+        thumbnailPath: "/thumb1.jpg",
+        timelineFrames: ["/frame1.jpg", "/frame2.jpg"],
       }
 
       service.setPreviewData("file-1", previewData)
@@ -219,7 +225,7 @@ describe("MockMediaService", () => {
     })
 
     it("clears preview data for specific file", async () => {
-      service.setPreviewData("file-1", { thumbnails: [], waveform: "" })
+      service.setPreviewData("file-1", { thumbnailPath: "/thumb.jpg" })
 
       await service.clearPreviewData("file-1")
 
@@ -229,8 +235,8 @@ describe("MockMediaService", () => {
     })
 
     it("clears all preview data", async () => {
-      service.setPreviewData("file-1", { thumbnails: [], waveform: "" })
-      service.setPreviewData("file-2", { thumbnails: [], waveform: "" })
+      service.setPreviewData("file-1", { thumbnailPath: "/thumb1.jpg" })
+      service.setPreviewData("file-2", { thumbnailPath: "/thumb2.jpg" })
 
       await service.clearPreviewData()
 
@@ -276,7 +282,10 @@ describe("MockMediaService", () => {
 
   describe("Proxy Generation", () => {
     it("generates proxy", async () => {
-      const result = await service.generateProxy("/video.mp4", {})
+      const result = await service.generateProxy("/video.mp4", {
+        width: 1920,
+        height: 1080,
+      })
 
       expect(result).toBeDefined()
       expect(result.proxyPath).toBeDefined()
@@ -334,7 +343,7 @@ describe("MockMediaService", () => {
 
     it("resets all data", async () => {
       service.setMetadata("/test.mp4", { type: "Video", duration: 60 })
-      service.setPreviewData("file-1", { thumbnails: [], waveform: "" })
+      service.setPreviewData("file-1", { thumbnailPath: "/thumb.jpg" })
       await service.saveTimelineFrames("file-1", ["/frame.jpg"])
 
       service.reset()

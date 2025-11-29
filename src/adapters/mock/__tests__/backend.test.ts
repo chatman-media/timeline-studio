@@ -30,7 +30,15 @@ describe("MockBackendService", () => {
     it("executes command successfully", async () => {
       const result = await service.executeCommand({
         type: "CreateProject",
-        payload: { name: "Test" },
+        params: {
+          name: "Test",
+          settings: {
+            resolution: { width: 1920, height: 1080 },
+            frame_rate: 30,
+            audio_sample_rate: 48000,
+            audio_channels: 2,
+          },
+        },
       })
 
       expect(result.success).toBe(true)
@@ -90,8 +98,25 @@ describe("MockBackendService", () => {
     })
 
     it("returns all events without version filter", async () => {
-      const event1: ProjectEvent = { type: "ProjectCreated", payload: {} }
-      const event2: ProjectEvent = { type: "ClipAdded", payload: {} }
+      const event1: ProjectEvent = {
+        type: "ProjectCreated",
+        payload: { project_id: "test-1", name: "Test Project" },
+      }
+      const event2: ProjectEvent = {
+        type: "ClipAdded",
+        payload: {
+          track_id: "track-1",
+          clip: {
+            id: "clip-1",
+            media_id: "media-1",
+            name: "Clip 1",
+            timeline_in: 0,
+            timeline_out: 10,
+            source_in: 0,
+            source_out: 10,
+          },
+        },
+      }
 
       service.emitEvent(event1)
       service.emitEvent(event2)
@@ -104,9 +129,29 @@ describe("MockBackendService", () => {
     })
 
     it("returns events since version", async () => {
-      service.emitEvent({ type: "ProjectCreated", payload: {} })
-      service.emitEvent({ type: "ClipAdded", payload: {} })
-      service.emitEvent({ type: "ClipRemoved", payload: {} })
+      service.emitEvent({
+        type: "ProjectCreated",
+        payload: { project_id: "test-1", name: "Test Project" },
+      })
+      service.emitEvent({
+        type: "ClipAdded",
+        payload: {
+          track_id: "track-1",
+          clip: {
+            id: "clip-1",
+            media_id: "media-1",
+            name: "Clip 1",
+            timeline_in: 0,
+            timeline_out: 10,
+            source_in: 0,
+            source_out: 10,
+          },
+        },
+      })
+      service.emitEvent({
+        type: "ClipDeleted",
+        payload: { clip_id: "clip-1", track_id: "track-1" },
+      })
 
       const events = await service.getEventHistory(1)
 
@@ -114,7 +159,10 @@ describe("MockBackendService", () => {
     })
 
     it("includes proper metadata in events", async () => {
-      service.emitEvent({ type: "ProjectCreated", payload: {} })
+      service.emitEvent({
+        type: "ProjectCreated",
+        payload: { project_id: "test-1", name: "Test Project" },
+      })
 
       const events = await service.getEventHistory()
 
@@ -132,7 +180,10 @@ describe("MockBackendService", () => {
       const handler = vi.fn()
       service.onEvent(handler)
 
-      const event: ProjectEvent = { type: "ProjectCreated", payload: {} }
+      const event: ProjectEvent = {
+        type: "ProjectCreated",
+        payload: { project_id: "test-1", name: "Test Project" },
+      }
       service.emitEvent(event)
 
       expect(handler).toHaveBeenCalledWith(event)
@@ -145,7 +196,21 @@ describe("MockBackendService", () => {
       service.onEvent(handler1)
       service.onEvent(handler2)
 
-      const event: ProjectEvent = { type: "ClipAdded", payload: {} }
+      const event: ProjectEvent = {
+        type: "ClipAdded",
+        payload: {
+          track_id: "track-1",
+          clip: {
+            id: "clip-1",
+            media_id: "media-1",
+            name: "Clip 1",
+            timeline_in: 0,
+            timeline_out: 10,
+            source_in: 0,
+            source_out: 10,
+          },
+        },
+      }
       service.emitEvent(event)
 
       expect(handler1).toHaveBeenCalledWith(event)
@@ -158,7 +223,10 @@ describe("MockBackendService", () => {
 
       unsubscribe()
 
-      service.emitEvent({ type: "ProjectCreated", payload: {} })
+      service.emitEvent({
+        type: "ProjectCreated",
+        payload: { project_id: "test-1", name: "Test Project" },
+      })
 
       expect(handler).not.toHaveBeenCalled()
     })
@@ -168,7 +236,10 @@ describe("MockBackendService", () => {
     it("resets all state", async () => {
       await service.connect()
       service.setState({ version: 1, project: {} } as any)
-      service.emitEvent({ type: "ProjectCreated", payload: {} })
+      service.emitEvent({
+        type: "ProjectCreated",
+        payload: { project_id: "test-1", name: "Test Project" },
+      })
 
       const handler = vi.fn()
       service.onEvent(handler)
@@ -180,7 +251,21 @@ describe("MockBackendService", () => {
       expect(await service.getProjectState()).toBeNull()
       expect(await service.getEventHistory()).toEqual([])
 
-      service.emitEvent({ type: "ClipAdded", payload: {} })
+      service.emitEvent({
+        type: "ClipAdded",
+        payload: {
+          track_id: "track-1",
+          clip: {
+            id: "clip-1",
+            media_id: "media-1",
+            name: "Clip 1",
+            timeline_in: 0,
+            timeline_out: 10,
+            source_in: 0,
+            source_out: 10,
+          },
+        },
+      })
       expect(handler).not.toHaveBeenCalled()
     })
   })

@@ -56,13 +56,13 @@ describe("ProjectFileService", () => {
       frameRate: "30",
       colorSpace: "sdr",
     },
-    mediaPool: {
+    mediaLibrary: {
       mediaFiles: [],
       musicFiles: [],
       lastUpdated: Date.now(),
       version: "1.0.0",
     },
-    workspaceSettings: {
+    browserState: {
       media: {
         viewMode: "grid",
         sortBy: "name",
@@ -81,7 +81,7 @@ describe("ProjectFileService", () => {
         showFavoritesOnly: false,
       },
     },
-    favoriteFiles: {
+    projectFavorites: {
       mediaFiles: [],
       musicFiles: [],
     },
@@ -178,17 +178,17 @@ describe("ProjectFileService", () => {
       const project = createNewProject("My Project")
 
       expect(project.settings).toBeDefined()
-      expect(project.mediaPool).toBeDefined()
-      expect(project.workspaceSettings).toBeDefined()
-      expect(project.favoriteFiles).toBeDefined()
+      expect(project.mediaLibrary).toBeDefined()
+      expect(project.browserState).toBeDefined()
+      expect(project.projectFavorites).toBeDefined()
       expect(project.meta).toBeDefined()
     })
 
     it("should initialize empty media files", () => {
       const project = createNewProject("My Project")
 
-      expect(project.mediaPool.mediaFiles).toEqual([])
-      expect(project.mediaPool.musicFiles).toEqual([])
+      expect(project.mediaLibrary?.mediaFiles).toEqual([])
+      expect(project.mediaLibrary?.musicFiles).toEqual([])
     })
 
     it("should set default resolution", () => {
@@ -214,25 +214,30 @@ describe("ProjectFileService", () => {
           originalPath: "/path/to/video.mp4",
           name: "video.mp4",
           size: 1024000,
+          lastModified: Date.now(),
           isVideo: true,
           isAudio: false,
           isImage: false,
-          duration: 10,
-        } as SavedMediaFile,
+          metadata: {
+            duration: 10,
+          },
+          status: "available",
+          lastChecked: Date.now(),
+        },
       ]
 
       const musicFiles: SavedMusicFile[] = []
 
       const updated = updateMediaLibrary(mockProjectData, mediaFiles, musicFiles)
 
-      expect(updated.mediaPool.mediaFiles).toEqual(mediaFiles)
-      expect(updated.mediaPool.musicFiles).toEqual(musicFiles)
+      expect(updated.mediaLibrary?.mediaFiles).toEqual(mediaFiles)
+      expect(updated.mediaLibrary?.musicFiles).toEqual(musicFiles)
     })
 
     it("should update lastUpdated timestamp", () => {
       const updated = updateMediaLibrary(mockProjectData, [], [])
 
-      expect(updated.mediaPool.lastUpdated).toBeDefined()
+      expect(updated.mediaLibrary?.lastUpdated).toBeDefined()
     })
   })
 
@@ -251,7 +256,7 @@ describe("ProjectFileService", () => {
 
       const updated = updateBrowserState(mockProjectData, newSettings)
 
-      expect(updated.workspaceSettings).toEqual(newSettings)
+      expect(updated.browserState).toEqual(newSettings)
     })
   })
 
@@ -264,7 +269,7 @@ describe("ProjectFileService", () => {
 
       const updated = updateProjectFavorites(mockProjectData, newFavorites)
 
-      expect(updated.favoriteFiles).toEqual(newFavorites)
+      expect(updated.projectFavorites).toEqual(newFavorites)
     })
   })
 
@@ -272,8 +277,8 @@ describe("ProjectFileService", () => {
     it("should calculate project statistics", () => {
       const projectWithMedia = {
         ...mockProjectData,
-        mediaPool: {
-          ...mockProjectData.mediaPool,
+        mediaLibrary: {
+          ...mockProjectData.mediaLibrary,
           mediaFiles: [{ id: "1", size: 1024 } as SavedMediaFile, { id: "2", size: 2048 } as SavedMediaFile],
           musicFiles: [{ id: "3", size: 512 } as SavedMusicFile],
         },
@@ -298,8 +303,8 @@ describe("ProjectFileService", () => {
     it("should handle invalid file sizes", () => {
       const projectWithInvalidSizes = {
         ...mockProjectData,
-        mediaPool: {
-          ...mockProjectData.mediaPool,
+        mediaLibrary: {
+          ...mockProjectData.mediaLibrary,
           mediaFiles: [{ id: "1", size: null } as any],
         },
       }
@@ -328,8 +333,8 @@ describe("ProjectFileService", () => {
     it("should detect changes in file IDs", () => {
       const projectWithFiles = {
         ...mockProjectData,
-        mediaPool: {
-          ...mockProjectData.mediaPool,
+        mediaLibrary: {
+          ...mockProjectData.mediaLibrary,
           mediaFiles: [{ id: "old-id" } as SavedMediaFile],
         },
       }
@@ -365,10 +370,10 @@ describe("ProjectFileService", () => {
       await expect(loadProject("/path/to/project.tls")).rejects.toThrow("Platform service not available")
     })
 
-    it("should handle invalid mediaPool structure", async () => {
+    it("should handle invalid mediaLibrary structure", async () => {
       const projectWithInvalidMedia = {
         ...mockProjectData,
-        mediaPool: {
+        mediaLibrary: {
           mediaFiles: "not an array",
           musicFiles: [],
         },
@@ -382,7 +387,7 @@ describe("ProjectFileService", () => {
     it("should handle missing required fields in media files", async () => {
       const projectWithInvalidFiles = {
         ...mockProjectData,
-        mediaPool: {
+        mediaLibrary: {
           mediaFiles: [{ invalidField: true }],
           musicFiles: [],
         },

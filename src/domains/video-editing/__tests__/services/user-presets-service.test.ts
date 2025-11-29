@@ -37,7 +37,10 @@ vi.mock("../../tauri/compiler-commands", () => ({
 }))
 
 // Import mocked functions after mocking
-import { loadFile as mockLoadFile, saveFile as mockSaveFile } from "../../tauri/compiler-commands"
+import { loadFile, saveFile } from "../../tauri/compiler-commands"
+
+const mockLoadFile = vi.mocked(loadFile)
+const mockSaveFile = vi.mocked(saveFile)
 
 describe("User Presets Service", () => {
   beforeEach(() => {

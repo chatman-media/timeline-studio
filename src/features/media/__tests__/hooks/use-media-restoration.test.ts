@@ -11,10 +11,23 @@ vi.mock("@/domains/media-management/services/media-restoration-service", () => (
   generateRestorationReport: vi.fn(),
 }))
 
-// Мокаем useModal
-vi.mock("@/features/modals/services", () => ({
-  useModal: vi.fn(() => ({
+// Мокаем useModals from new modal architecture
+vi.mock("@/domains/system-integration", () => ({
+  useModals: vi.fn(() => ({
+    activeModal: "none",
+    modalData: null,
+    isModalOpen: false,
+    openModal: vi.fn(),
     closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
   })),
 }))
 

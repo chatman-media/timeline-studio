@@ -80,7 +80,7 @@ vi.mock("./top-bar/top-bar", () => ({
   TopBar: () => <div data-testid="top-bar">TopBar</div>,
 }))
 
-// Мокаем ModalContainer
+// Мокаем ModalContainer - still using old path but component uses new architecture internally
 vi.mock("@/features/modals/components", () => ({
   ModalContainer: () => <div data-testid="modal-container">ModalContainer</div>,
 }))

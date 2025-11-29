@@ -25,6 +25,9 @@ describe("Clip Transform Utilities", () => {
     source_out: 15,
     playback_rate: 1.5,
     enabled: true,
+    effects: [],
+    transitions: [],
+    keyframes: [],
   }
 
   const mockClipData: ClipData = {
@@ -259,7 +262,7 @@ describe("Clip Transform Utilities", () => {
         scaleX: 1.5,
         scaleY: 2.0,
       },
-      effects: [{ id: "effect-1", name: "Blur", params: {} }], // Should be preserved
+      effects: [{ id: "effect-1", effectId: "blur", name: "Blur", enabled: true, order: 0 }], // Should be preserved
       filters: [],
       transitions: [],
       createdAt: new Date("2024-01-01"),
@@ -276,6 +279,9 @@ describe("Clip Transform Utilities", () => {
       source_out: 17,
       playback_rate: 2.0,
       enabled: false,
+      effects: [],
+      transitions: [],
+      keyframes: [],
     }
 
     it("should update backend-controlled fields", () => {

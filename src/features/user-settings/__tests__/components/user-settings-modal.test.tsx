@@ -2,7 +2,6 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useLanguage } from "@/features/language"
-import { useModal } from "@/features/modals/services/modal-provider"
 import { createMockApiKeys, createMockUserSettings } from "../../__tests__/test-utils"
 import { UserSettingsModal } from "../../components/user-settings-modal"
 import { useApiKeys } from "../../hooks/use-api-keys"

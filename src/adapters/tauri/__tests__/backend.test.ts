@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectCommand, ProjectEvent, ProjectState } from "@/core/types"
+import type { ProjectCommand, ProjectState } from "@/core/types"
 import { TauriBackendService } from "../backend"
 
 // Mock BackendSync
@@ -56,9 +56,17 @@ describe("TauriBackendService", () => {
     it("delegates to backend sync with command", async () => {
       const command: ProjectCommand = {
         type: "CreateProject",
-        payload: { name: "Test" },
+        params: {
+          name: "Test",
+          settings: {
+            resolution: { width: 1920, height: 1080 },
+            frame_rate: 30,
+            audio_sample_rate: 48000,
+            audio_channels: 2,
+          },
+        },
       }
-      const result = { success: true, version: 1 }
+      const result = { success: true, error: null, data: null }
 
       mockBackendSync.executeCommand.mockResolvedValueOnce(result)
 

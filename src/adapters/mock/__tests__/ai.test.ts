@@ -329,12 +329,12 @@ describe("MockAIService", () => {
 
   describe("Whisper Transcription", () => {
     it("transcribes with OpenAI", async () => {
-      const result = await service.whisperTranscribeOpenAI("/audio.mp3", "openai-key")
+      const result = await service.whisperTranscribeOpenAI("/audio.mp3", { model: "whisper-1" })
       expect(result).toHaveProperty("text")
     })
 
     it("translates with OpenAI", async () => {
-      const result = await service.whisperTranslateOpenAI("/audio.mp3", "en")
+      const result = await service.whisperTranslateOpenAI("/audio.mp3", "en", { model: "whisper-1" })
       expect(result).toHaveProperty("translatedText")
       expect(result).toHaveProperty("originalText")
     })

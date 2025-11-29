@@ -4,7 +4,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { AnalysisCompleted, AnalysisError, AnalysisProgress, AnalysisStageCompleted } from "../../types"
-import type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "../use-ai-director-events"
+import type { AIDirectorEventCallbacks } from "../use-ai-director-events"
 import { AI_DIRECTOR_EVENTS, useAIDirectorEvents } from "../use-ai-director-events"
 
 // Mock listen function

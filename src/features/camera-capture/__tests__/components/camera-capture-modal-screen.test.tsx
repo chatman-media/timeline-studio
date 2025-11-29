@@ -1,8 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { ModalProvider } from "@/features/modals"
-
 import { CameraCaptureModal } from "../../components/camera-capture-modal"
 
 // Мокируем useToast
@@ -109,11 +107,15 @@ vi.mock("@/domains/system-integration", () => ({
     openColorGrading: vi.fn(),
     openEffectDetail: vi.fn(),
   })),
+  useNotifications: vi.fn(() => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+    showInfo: vi.fn(),
+    showWarning: vi.fn(),
+  })),
 }))
 
-vi.mock("@/features/modals", () => ({
-  ModalProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}))
+// ModalProvider is no longer needed - using new modal architecture
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -158,11 +160,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
   })
 
   it("should render mode switch buttons", () => {
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     expect(screen.getByText("Camera")).toBeInTheDocument()
     expect(screen.getByText("Screen")).toBeInTheDocument()
@@ -182,11 +180,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       getSourceInfo: vi.fn(() => null),
     })
 
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     const screenButton = screen.getByText("Screen")
     fireEvent.click(screenButton)
@@ -200,11 +194,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
   })
 
   it("should show screen settings when in screen mode", async () => {
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     const screenButton = screen.getByText("Screen")
     fireEvent.click(screenButton)
@@ -216,11 +206,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
   })
 
   it("should hide camera settings when in screen mode", async () => {
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     // Сначала проверяем что настройки камеры видны (ищем элемент по роли)
     expect(screen.getAllByRole("combobox").length).toBeGreaterThan(2) // Камера, микрофон, разрешение и т.д.
@@ -261,11 +247,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       })),
     })
 
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     // Переключаемся на экран
     const screenButton = screen.getByText("Screen")
@@ -291,11 +273,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       getSourceInfo: vi.fn(() => null),
     })
 
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     const screenButton = screen.getByText("Screen")
     fireEvent.click(screenButton)
@@ -318,11 +296,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       formatRecordingTime: vi.fn((time: number) => `00:${time.toString().padStart(2, "0")}`),
     })
 
-    render(
-      <ModalProvider>
-        <CameraCaptureModal />
-      </ModalProvider>,
-    )
+    render(<CameraCaptureModal />)
 
     const cameraButton = screen.getByText("Camera")
     const screenButton = screen.getByText("Screen")

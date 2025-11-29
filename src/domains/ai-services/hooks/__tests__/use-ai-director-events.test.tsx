@@ -11,8 +11,6 @@ import type {
   AIDirectorAnalysisCompletedEvent,
   AIDirectorAnalysisErrorEvent,
   AIDirectorAnalysisProgressEvent,
-  AIDirectorBatchCompletedEvent,
-  AIDirectorStageCompletedEvent,
 } from "@/domains/shared/events/ai-services-events"
 import {
   useAIDirectorAnalysisCompleted,
@@ -155,10 +153,9 @@ describe("useAIDirectorEvents", () => {
         progress: 0.5,
         stage: "audio_analysis",
         message: "Processing audio...",
-        timestamp: new Date().toISOString(),
       }
 
-      capturedCallback?.({ payload: mockEvent })
+      capturedCallback!({ payload: mockEvent })
 
       await waitFor(() => {
         expect(onProgress).toHaveBeenCalledWith(mockEvent)
@@ -177,12 +174,14 @@ describe("useAIDirectorEvents", () => {
 
       const mockEvent: AIDirectorAnalysisCompletedEvent = {
         analysisId: "test-123",
+        videoPath: "/test/video.mp4",
         success: true,
-        result: {} as any,
-        timestamp: new Date().toISOString(),
+        totalDuration: 1000,
+        stagesCompleted: ["audio", "video"],
+        errors: [],
       }
 
-      capturedCallback?.({ payload: mockEvent })
+      capturedCallback!({ payload: mockEvent })
 
       await waitFor(() => {
         expect(onCompleted).toHaveBeenCalledWith(mockEvent)
@@ -203,10 +202,10 @@ describe("useAIDirectorEvents", () => {
         analysisId: "test-123",
         error: "Analysis failed",
         stage: "vision_analysis",
-        timestamp: new Date().toISOString(),
+        timestamp: Date.now(),
       }
 
-      capturedCallback?.({ payload: mockEvent })
+      capturedCallback!({ payload: mockEvent })
 
       await waitFor(() => {
         expect(onError).toHaveBeenCalledWith(mockEvent)
@@ -269,7 +268,6 @@ describe("useAIDirectorAnalysisProgress", () => {
       progress: 0.5,
       stage: "audio_analysis",
       message: "Processing...",
-      timestamp: new Date().toISOString(),
     }
 
     // Событие для другого анализа
@@ -278,11 +276,10 @@ describe("useAIDirectorAnalysisProgress", () => {
       progress: 0.7,
       stage: "audio_analysis",
       message: "Processing...",
-      timestamp: new Date().toISOString(),
     }
 
-    capturedCallback?.({ payload: targetEvent })
-    capturedCallback?.({ payload: otherEvent })
+    capturedCallback!({ payload: targetEvent })
+    capturedCallback!({ payload: otherEvent })
 
     await waitFor(() => {
       expect(onProgress).toHaveBeenCalledTimes(1)
@@ -334,21 +331,25 @@ describe("useAIDirectorAnalysisCompleted", () => {
     // Событие для целевого анализа
     const targetEvent: AIDirectorAnalysisCompletedEvent = {
       analysisId: targetAnalysisId,
+      videoPath: "/test/video1.mp4",
       success: true,
-      result: {} as any,
-      timestamp: new Date().toISOString(),
+      totalDuration: 1000,
+      stagesCompleted: ["audio", "video"],
+      errors: [],
     }
 
     // Событие для другого анализа
     const otherEvent: AIDirectorAnalysisCompletedEvent = {
       analysisId: "other-456",
+      videoPath: "/test/video2.mp4",
       success: true,
-      result: {} as any,
-      timestamp: new Date().toISOString(),
+      totalDuration: 1500,
+      stagesCompleted: ["audio", "video"],
+      errors: [],
     }
 
-    capturedCallback?.({ payload: targetEvent })
-    capturedCallback?.({ payload: otherEvent })
+    capturedCallback!({ payload: targetEvent })
+    capturedCallback!({ payload: otherEvent })
 
     await waitFor(() => {
       expect(onCompleted).toHaveBeenCalledTimes(1)
@@ -376,12 +377,14 @@ describe("useAIDirectorAnalysisCompleted", () => {
 
     const successEvent: AIDirectorAnalysisCompletedEvent = {
       analysisId: "test-123",
+      videoPath: "/test/video.mp4",
       success: true,
-      result: {} as any,
-      timestamp: new Date().toISOString(),
+      totalDuration: 1000,
+      stagesCompleted: ["audio", "video"],
+      errors: [],
     }
 
-    capturedCallback?.({ payload: successEvent })
+    capturedCallback!({ payload: successEvent })
 
     await waitFor(() => {
       expect(onCompleted).toHaveBeenCalledWith(successEvent)
@@ -400,12 +403,14 @@ describe("useAIDirectorAnalysisCompleted", () => {
 
     const failureEvent: AIDirectorAnalysisCompletedEvent = {
       analysisId: "test-123",
+      videoPath: "/test/video.mp4",
       success: false,
+      totalDuration: 1000,
+      stagesCompleted: [],
       errors: ["Analysis failed"],
-      timestamp: new Date().toISOString(),
     }
 
-    capturedCallback?.({ payload: failureEvent })
+    capturedCallback!({ payload: failureEvent })
 
     await waitFor(() => {
       expect(onCompleted).toHaveBeenCalledWith(failureEvent)

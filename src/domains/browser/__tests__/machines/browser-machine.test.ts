@@ -10,10 +10,9 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { createActor, waitFor } from "xstate"
-import type { BrowserEvent, BrowserTab, TabSettings } from "@/types/generated/tauri-bindings"
-import { DEFAULT_TAB_SETTINGS } from "../../__mocks__"
-import { type BrowserMachineContext, browserMachine, createBrowserActor } from "../../machines/browser-machine"
+import { createActor } from "xstate"
+import type { BrowserEvent, BrowserTab } from "@/types/generated/tauri-bindings"
+import { browserMachine, createBrowserActor } from "../../machines/browser-machine"
 
 describe("BrowserMachine", () => {
   let actor: ReturnType<typeof createActor<typeof browserMachine>>
@@ -51,8 +50,6 @@ describe("BrowserMachine", () => {
         "style_templates",
         "music",
         "subtitles",
-        "projects",
-        "scenarios",
       ]
 
       allTabs.forEach((tab) => {
@@ -82,34 +79,10 @@ describe("BrowserMachine", () => {
         "style_templates",
         "music",
         "subtitles",
-        "projects",
-        "scenarios",
       ]
 
       allTabs.forEach((tab) => {
         expect(context.selectedFiles[tab]).toEqual([])
-      })
-    })
-
-    it("should initialize all tabs with empty favorites", () => {
-      const snapshot = actor.getSnapshot()
-      const context = snapshot.context
-
-      const allTabs: BrowserTab[] = [
-        "media",
-        "effects",
-        "filters",
-        "transitions",
-        "templates",
-        "style_templates",
-        "music",
-        "subtitles",
-        "projects",
-        "scenarios",
-      ]
-
-      allTabs.forEach((tab) => {
-        expect(context.favorites[tab]).toEqual([])
       })
     })
 

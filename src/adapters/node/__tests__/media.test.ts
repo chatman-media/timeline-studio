@@ -9,17 +9,18 @@ describe("NodeMediaService", () => {
   // ============================================================================
 
   describe("Basic Methods", () => {
-    it("throws error for getMetadata (not implemented)", async () => {
-      await expect(service.getMetadata("/test.mp4")).rejects.toThrow("not implemented")
+    it("returns metadata for getMetadata", async () => {
+      const result = await service.getMetadata("/test.mp4")
+      expect(result).toHaveProperty("type")
     })
 
-    it("returns array for getMediaFiles", async () => {
-      const result = await service.getMediaFiles("/test/dir")
-      expect(Array.isArray(result)).toBe(true)
+    it("throws error for getMediaFiles with invalid directory", async () => {
+      await expect(service.getMediaFiles("/test/dir")).rejects.toThrow()
     })
 
-    it("throws error for processFile (not implemented)", async () => {
-      await expect(service.processFile("/test.mp4")).rejects.toThrow("not implemented")
+    it("returns result for processFile", async () => {
+      const result = await service.processFile("/test.mp4")
+      expect(result).toHaveProperty("metadata")
     })
 
     it("does not throw for cancelProcessing", async () => {
@@ -32,8 +33,8 @@ describe("NodeMediaService", () => {
   // ============================================================================
 
   describe("Thumbnail Operations", () => {
-    it("throws error for generateThumbnail (not implemented)", async () => {
-      await expect(service.generateThumbnail("file-1", "/test.mp4")).rejects.toThrow("not implemented")
+    it("throws error for generateThumbnail with invalid file", async () => {
+      await expect(service.generateThumbnail("file-1", "/test.mp4")).rejects.toThrow()
     })
 
     it("returns false for hasCachedThumbnail", async () => {
@@ -94,14 +95,12 @@ describe("NodeMediaService", () => {
   // ============================================================================
 
   describe("Scanning", () => {
-    it("returns array for scanFolder", async () => {
-      const result = await service.scanFolder("/test/folder")
-      expect(Array.isArray(result)).toBe(true)
+    it("throws error for scanFolder with invalid directory", async () => {
+      await expect(service.scanFolder("/test/folder")).rejects.toThrow()
     })
 
-    it("returns array for scanFolderWithThumbnails", async () => {
-      const result = await service.scanFolderWithThumbnails("/test/folder", 320, 180)
-      expect(Array.isArray(result)).toBe(true)
+    it("throws error for scanFolderWithThumbnails with invalid directory", async () => {
+      await expect(service.scanFolderWithThumbnails("/test/folder", 320, 180)).rejects.toThrow()
     })
 
     it("returns empty array for getFilesWithPreviews", async () => {
@@ -139,8 +138,8 @@ describe("NodeMediaService", () => {
   // ============================================================================
 
   describe("Audio/Video Analysis", () => {
-    it("throws error for generateWaveformPreview (not implemented)", async () => {
-      await expect(service.generateWaveformPreview("/audio.mp3", "/out.png")).rejects.toThrow("not implemented")
+    it("throws error for generateWaveformPreview with invalid file", async () => {
+      await expect(service.generateWaveformPreview("/audio.mp3", "/out.png")).rejects.toThrow()
     })
 
     it("returns empty array for generateAudioWaveform", async () => {
@@ -153,8 +152,8 @@ describe("NodeMediaService", () => {
       expect(Array.isArray(result)).toBe(true)
     })
 
-    it("throws error for generateVideoThumbnail (not implemented)", async () => {
-      await expect(service.generateVideoThumbnail("/video.mp4", 5.0)).rejects.toThrow("not implemented")
+    it("throws error for generateVideoThumbnail with invalid file", async () => {
+      await expect(service.generateVideoThumbnail("/video.mp4", 5.0)).rejects.toThrow()
     })
   })
 
@@ -163,8 +162,9 @@ describe("NodeMediaService", () => {
   // ============================================================================
 
   describe("Metadata", () => {
-    it("throws error for extractMediaMetadata (not implemented)", async () => {
-      await expect(service.extractMediaMetadata("/video.mp4")).rejects.toThrow("not implemented")
+    it("returns metadata for extractMediaMetadata", async () => {
+      const result = await service.extractMediaMetadata("/video.mp4")
+      expect(result).toHaveProperty("type")
     })
 
     it("returns 0 for getMediaDuration", async () => {
@@ -178,9 +178,9 @@ describe("NodeMediaService", () => {
   // ============================================================================
 
   describe("Proxy Generation", () => {
-    it("throws error for generateProxy (not implemented)", async () => {
+    it("throws error for generateProxy with invalid file", async () => {
       const options = { width: 1280, height: 720 } as any
-      await expect(service.generateProxy("/video.mp4", options)).rejects.toThrow("not implemented")
+      await expect(service.generateProxy("/video.mp4", options)).rejects.toThrow()
     })
   })
 })

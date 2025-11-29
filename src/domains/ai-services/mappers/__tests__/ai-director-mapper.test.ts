@@ -21,25 +21,17 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
+        completed_at: "2024-01-01T00:00:05Z",
         total_duration_ms: 5000,
-        video_path: "/test/video.mp4",
-        audio_analysis: undefined,
-        scene_analysis: undefined,
-        vision_analysis: undefined,
-        moment_analysis: undefined,
-        content_analysis: undefined,
-        combined_insights: undefined,
-        performance_metrics: undefined,
-        editing_recommendations: [],
         errors: [],
-        metadata: {} as any,
         video_analysis: {
           duration: 60,
           fps: 30,
           width: 1920,
           height: 1080,
           codec: "h264",
-        } as any,
+          bitrate: 5000000,
+        },
       }
 
       const result = mapComprehensiveAnalysisToUnified(input)
@@ -55,7 +47,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
         video_analysis: {
           duration: 120,
           fps: 60,
@@ -88,7 +79,6 @@ describe("AI Director Mapper", () => {
           analysis_id: "test",
           status: input,
           started_at: "2024-01-01T00:00:00Z",
-          video_path: "/test/video.mp4",
         } as any)
 
         expect(result.status).toBe(expected)
@@ -100,7 +90,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test",
         status: "UnknownStatus",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
       } as any)
 
       expect(result.status).toBe("completed")
@@ -111,7 +100,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
         audio_analysis: {
           duration: 60,
           transcription: "Hello world",
@@ -133,7 +121,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
         audio_analysis: undefined,
       } as any
 
@@ -147,7 +134,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
         scene_analysis: {
           scenes: [
             {
@@ -180,7 +166,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
         video_analysis: {
           duration: 60,
           fps: 30,
@@ -207,7 +192,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test-123",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
       } as any
 
       const result = mapComprehensiveAnalysisToUnified(input)
@@ -227,12 +211,8 @@ describe("AI Director Mapper", () => {
         motion_score: 75,
         audio_quality: 90,
         key_moments: [],
-        fragments: [],
-        metadata: {
-          total_fragments: 0,
-          total_duration: 0,
-          analysis_version: "1.0",
-        },
+        faces_detected: 0,
+        objects_detected: [],
       }
 
       const result = mapMontageAnalysisToUnified(input)
@@ -251,6 +231,8 @@ describe("AI Director Mapper", () => {
         quality_score: 85,
         motion_score: 75,
         audio_quality: 90,
+        faces_detected: 0,
+        objects_detected: [],
         key_moments: [
           {
             timestamp: 5,
@@ -269,12 +251,6 @@ describe("AI Director Mapper", () => {
             tags: ["speech", "calm"],
           },
         ] as any,
-        fragments: [],
-        metadata: {
-          total_fragments: 0,
-          total_duration: 0,
-          analysis_version: "1.0",
-        },
       }
 
       const result = mapMontageAnalysisToUnified(input)
@@ -294,13 +270,9 @@ describe("AI Director Mapper", () => {
         quality_score: 85,
         motion_score: 75,
         audio_quality: 90,
+        faces_detected: 0,
+        objects_detected: [],
         key_moments: [],
-        fragments: [],
-        metadata: {
-          total_fragments: 0,
-          total_duration: 0,
-          analysis_version: "1.0",
-        },
       }
 
       const result = mapMontageAnalysisToUnified(input)
@@ -320,13 +292,9 @@ describe("AI Director Mapper", () => {
         quality_score: 85,
         motion_score: 75,
         audio_quality: 90,
+        faces_detected: 0,
+        objects_detected: [],
         key_moments: [],
-        fragments: [],
-        metadata: {
-          total_fragments: 0,
-          total_duration: 0,
-          analysis_version: "1.0",
-        },
       }
 
       const result = mapMontageAnalysisToUnified(input)
@@ -341,7 +309,6 @@ describe("AI Director Mapper", () => {
         const valid = {
           analysis_id: "test-123",
           status: "Completed",
-          video_path: "/test/video.mp4",
         }
 
         expect(isComprehensiveAnalysisResult(valid)).toBe(true)
@@ -388,7 +355,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
       } as any
 
       const result = mapComprehensiveAnalysisToUnified(minimal)
@@ -406,13 +372,9 @@ describe("AI Director Mapper", () => {
         quality_score: 50,
         motion_score: 50,
         audio_quality: 50,
+        faces_detected: 0,
+        objects_detected: [],
         key_moments: [],
-        fragments: [],
-        metadata: {
-          total_fragments: 0,
-          total_duration: 0,
-          analysis_version: "1.0",
-        },
       }
 
       const result = mapMontageAnalysisToUnified(minimal)
@@ -427,7 +389,6 @@ describe("AI Director Mapper", () => {
         analysis_id: "test",
         status: "Completed",
         started_at: "2024-01-01T00:00:00Z",
-        video_path: "/test/video.mp4",
         video_analysis: {
           duration: 0,
           fps: 0,

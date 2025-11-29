@@ -7,8 +7,8 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { AudioWaveform, AudioWaveformCompact } from "../audio-waveform"
 import { usePeaksWaveform } from "../../hooks/use-peaks-waveform"
+import { AudioWaveform, AudioWaveformCompact } from "../audio-waveform"
 
 // Mock peaks waveform hook
 vi.mock("../../hooks/use-peaks-waveform", () => ({
@@ -25,11 +25,17 @@ describe("AudioWaveform", () => {
     vi.clearAllMocks()
     // Reset to default mock implementation
     mockUsePeaksWaveform.mockReturnValue({
+      peaks: null,
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: false,
       error: null,
       isReady: true,
+      addSegment: vi.fn(),
+      addPoint: vi.fn(),
+      clearSegments: vi.fn(),
+      clearPoints: vi.fn(),
+      seek: vi.fn(),
       play: mockPlay,
       pause: mockPause,
     })
@@ -44,11 +50,17 @@ describe("AudioWaveform", () => {
 
   it("should show loading state", () => {
     mockUsePeaksWaveform.mockReturnValue({
+      peaks: null,
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: true,
       error: null,
       isReady: false,
+      addSegment: vi.fn(),
+      addPoint: vi.fn(),
+      clearSegments: vi.fn(),
+      clearPoints: vi.fn(),
+      seek: vi.fn(),
       play: mockPlay,
       pause: mockPause,
     })
@@ -61,11 +73,17 @@ describe("AudioWaveform", () => {
   it("should show error state", () => {
     const testError = new Error("Test error")
     mockUsePeaksWaveform.mockReturnValue({
+      peaks: null,
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: false,
       error: testError,
       isReady: false,
+      addSegment: vi.fn(),
+      addPoint: vi.fn(),
+      clearSegments: vi.fn(),
+      clearPoints: vi.fn(),
+      seek: vi.fn(),
       play: mockPlay,
       pause: mockPause,
     })
@@ -185,11 +203,17 @@ describe("AudioWaveform", () => {
 
   it("should show initializing state when not ready", () => {
     mockUsePeaksWaveform.mockReturnValue({
+      peaks: null,
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: false,
       error: null,
       isReady: false,
+      addSegment: vi.fn(),
+      addPoint: vi.fn(),
+      clearSegments: vi.fn(),
+      clearPoints: vi.fn(),
+      seek: vi.fn(),
       play: mockPlay,
       pause: mockPause,
     })
@@ -209,11 +233,17 @@ describe("AudioWaveformCompact", () => {
     vi.clearAllMocks()
     // Reset to default mock implementation
     mockUsePeaksWaveform.mockReturnValue({
+      peaks: null,
       overviewRef: { current: null },
       zoomviewRef: { current: null },
       isLoading: false,
       error: null,
       isReady: true,
+      addSegment: vi.fn(),
+      addPoint: vi.fn(),
+      clearSegments: vi.fn(),
+      clearPoints: vi.fn(),
+      seek: vi.fn(),
       play: mockPlay,
       pause: mockPause,
     })

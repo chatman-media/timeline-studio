@@ -180,44 +180,9 @@ vi.mock("@/features/ai-chat/__mocks__/api-key-loader", () => ({
   },
 }))
 
-vi.mock("@/features/modals", () => ({
-  useModal: () => ({
-    openModal: vi.fn(),
-    closeModal: vi.fn(),
-    submitModal: vi.fn(),
-    isOpen: false,
-    modalData: null,
-    modalType: "none",
-    isConnected: false,
-  }),
-  ModalProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
-
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  ModalProvider: ({ children }: { children: React.ReactNode }) => children,
-  useModal: () => ({
-    openModal: vi.fn(),
-    closeModal: vi.fn(),
-    submitModal: vi.fn(),
-    isOpen: false,
-    modalData: null,
-    modalType: "none",
-    isConnected: false,
-  }),
-}))
-
-vi.mock("@/features/modals/services", () => ({
-  useModal: () => ({
-    openModal: vi.fn(),
-    closeModal: vi.fn(),
-    submitModal: vi.fn(),
-    isOpen: false,
-    modalData: null,
-    modalType: "none",
-    isConnected: false,
-  }),
-  ModalProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
+// Modal mocks removed - tests should control their own modal mocks using the new architecture
+// from @/domains/system-integration via useModals hook
+// Each test can mock useModals individually as needed
 
 // Mock ResourcesProvider and useResources
 vi.mock("@/features/resources", () => ({

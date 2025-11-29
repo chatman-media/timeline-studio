@@ -4,7 +4,7 @@
  * Тесты для runtime валидации типов на границах Rust ↔ TypeScript
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import type { Clip, Project, ProjectEvent, Track as RustTrack } from "@/types/generated/tauri-bindings"
 import {
   assertValid,

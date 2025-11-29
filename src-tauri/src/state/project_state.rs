@@ -278,9 +278,9 @@ pub struct MediaItem {
   /// Bin/folder for organization (None = root)
   #[serde(default)]
   pub bin: Option<String>,
-  /// Timestamp when media was added to pool (Unix timestamp)
+  /// Timestamp when media was added to pool (Unix timestamp in milliseconds)
   #[serde(default)]
-  pub added_at: i64,
+  pub added_at: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]

@@ -147,6 +147,7 @@ describe("Backend Event Handlers", () => {
       mockContext.notifications = [
         {
           id: "notif-1",
+          notification_type: "info",
           title: "Old Title",
           message: "Old message",
           type: "info",
@@ -184,6 +185,7 @@ describe("Backend Event Handlers", () => {
       mockContext.notifications = [
         {
           id: "notif-1",
+          notification_type: "info",
           title: "First",
           message: "Message 1",
           type: "info",
@@ -191,6 +193,7 @@ describe("Backend Event Handlers", () => {
         },
         {
           id: "notif-2",
+          notification_type: "success",
           title: "Second",
           message: "Message 2",
           type: "success",
@@ -213,6 +216,7 @@ describe("Backend Event Handlers", () => {
       mockContext.notifications = [
         {
           id: "notif-1",
+          notification_type: "info",
           title: "First",
           message: "Message 1",
           type: "info",
@@ -220,6 +224,7 @@ describe("Backend Event Handlers", () => {
         },
         {
           id: "notif-2",
+          notification_type: "success",
           title: "Second",
           message: "Message 2",
           type: "success",
@@ -229,7 +234,6 @@ describe("Backend Event Handlers", () => {
 
       const event: ProjectEvent = {
         type: "NotificationsCleared",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -245,7 +249,7 @@ describe("Backend Event Handlers", () => {
         notification_type: "info",
         timestamp: new Date().toISOString(),
         duration: 5000,
-        actions: [{ label: "Dismiss", action: "dismiss" }],
+        actions: [{ label: "Dismiss", action: "dismiss", style: null }],
       }
 
       const event: ProjectEvent = {
@@ -264,7 +268,6 @@ describe("Backend Event Handlers", () => {
     it("should handle UpdateCheckStarted event", () => {
       const event: ProjectEvent = {
         type: "UpdateCheckStarted",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -298,10 +301,9 @@ describe("Backend Event Handlers", () => {
     it("should handle UpdateAvailable event", () => {
       const updateInfo = {
         version: "2.0.0",
-        pub_date: "2025-01-01",
-        notes: "New version",
-        signature: "sig",
-        url: "https://example.com",
+        release_notes: "New version",
+        download_url: "https://example.com",
+        size: 1024000,
       }
 
       const event: ProjectEvent = {
@@ -318,7 +320,6 @@ describe("Backend Event Handlers", () => {
     it("should handle UpdateDownloadStarted event", () => {
       const event: ProjectEvent = {
         type: "UpdateDownloadStarted",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -329,7 +330,6 @@ describe("Backend Event Handlers", () => {
     it("should handle UpdateDownloadCompleted event", () => {
       const event: ProjectEvent = {
         type: "UpdateDownloadCompleted",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -340,7 +340,6 @@ describe("Backend Event Handlers", () => {
     it("should handle UpdateInstallStarted event", () => {
       const event: ProjectEvent = {
         type: "UpdateInstallStarted",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -354,7 +353,6 @@ describe("Backend Event Handlers", () => {
 
       const event: ProjectEvent = {
         type: "UpdateDismissed",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -378,7 +376,6 @@ describe("Backend Event Handlers", () => {
     it("should handle AutoUpdateDisabled event", () => {
       const event: ProjectEvent = {
         type: "AutoUpdateDisabled",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -393,7 +390,7 @@ describe("Backend Event Handlers", () => {
         type: "ModalOpened",
         payload: {
           modal_type: "export",
-          data: null,
+          modal_data: null,
         },
       }
 
@@ -406,7 +403,6 @@ describe("Backend Event Handlers", () => {
     it("should handle ModalClosed event", () => {
       const event: ProjectEvent = {
         type: "ModalClosed",
-        payload: {},
       }
 
       const result = handleBackendEvent(mockContext, event)
@@ -460,6 +456,7 @@ describe("Backend Event Handlers", () => {
       mockContext.notifications = [
         {
           id: "notif-1",
+          notification_type: "info",
           title: "Test",
           message: "Message",
           type: "info",

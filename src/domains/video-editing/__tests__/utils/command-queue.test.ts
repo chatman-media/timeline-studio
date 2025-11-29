@@ -451,7 +451,7 @@ describe("throttleCommand", () => {
   it("should return pending promise during throttle", async () => {
     let resolvePromise: (value: number) => void
     const fn = vi.fn(
-      async (value: number) =>
+      async (_value: number) =>
         new Promise<number>((resolve) => {
           resolvePromise = resolve
         }),

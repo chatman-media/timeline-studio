@@ -10,9 +10,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { waitFor } from "xstate"
-import type { BrowserState, BrowserTab } from "@/types/generated/tauri-bindings"
-import { createMockBrowserState, DEFAULT_TAB_SETTINGS } from "../../__mocks__"
+import type { BrowserTab } from "@/types/generated/tauri-bindings"
 import {
   BrowserOrchestrator,
   getBrowserOrchestrator,

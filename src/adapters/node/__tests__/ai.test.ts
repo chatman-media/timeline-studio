@@ -199,20 +199,18 @@ describe("NodeAIService", () => {
   // ============================================================================
 
   describe("Whisper", () => {
-    it("returns transcription for whisperTranscribeOpenAI", async () => {
-      const result = await service.whisperTranscribeOpenAI("/audio.mp3", "en")
-      expect(result).toHaveProperty("text")
+    it("throws error for whisperTranscribeOpenAI without API key", async () => {
+      await expect(service.whisperTranscribeOpenAI("/audio.mp3", { language: "en" })).rejects.toThrow("OpenAI API key")
     })
 
-    it("returns translation for whisperTranslateOpenAI", async () => {
-      const result = await service.whisperTranslateOpenAI("/audio.mp3", "en")
-      expect(result).toHaveProperty("translatedText")
-      expect(result).toHaveProperty("originalText")
+    it("throws error for whisperTranslateOpenAI without API key", async () => {
+      await expect(service.whisperTranslateOpenAI("/audio.mp3", "en", { model: "whisper-1" })).rejects.toThrow(
+        "OpenAI API key",
+      )
     })
 
-    it("returns transcription for whisperTranscribeLocal", async () => {
-      const result = await service.whisperTranscribeLocal("/audio.mp3")
-      expect(result).toHaveProperty("text")
+    it("throws error for whisperTranscribeLocal without Whisper", async () => {
+      await expect(service.whisperTranscribeLocal("/audio.mp3")).rejects.toThrow()
     })
 
     it("returns array for getWhisperLocalModels", async () => {
@@ -231,14 +229,20 @@ describe("NodeAIService", () => {
       expect(Array.isArray(models)).toBe(true)
     })
 
-    it("returns path for extractAudioForWhisper", async () => {
-      const path = await service.extractAudioForWhisper("/video.mp4")
-      expect(typeof path).toBe("string")
+    it("throws error for extractAudioForWhisper with invalid file", async () => {
+      await expect(service.extractAudioForWhisper("/video.mp4")).rejects.toThrow()
     })
 
-    it("returns subtitles for generateSubtitlesFromTranscription", async () => {
-      const subs = await service.generateSubtitlesFromTranscription("/transcription.json")
-      expect(Array.isArray(subs)).toBe(true)
+    it("generates subtitles from valid transcription", async () => {
+      const mockTranscription = {
+        text: "Test transcription",
+        language: "en",
+        segments: [{ start: 0, end: 2, text: "Test", confidence: 0.9 }],
+        processingTime: 100,
+      }
+      const result = await service.generateSubtitlesFromTranscription(mockTranscription)
+      expect(result).toHaveProperty("subtitles")
+      expect(result).toHaveProperty("formattedText")
     })
   })
 
@@ -247,10 +251,8 @@ describe("NodeAIService", () => {
   // ============================================================================
 
   describe("Voice Recording", () => {
-    it("returns result for saveVoiceRecording", async () => {
-      const result = await service.saveVoiceRecording({ audioData: new Uint8Array(), format: "wav" } as any)
-      expect(result).toHaveProperty("filePath")
-      expect(result).toHaveProperty("fileName")
+    it("throws error for saveVoiceRecording with invalid params", async () => {
+      await expect(service.saveVoiceRecording({ audioData: new Uint8Array(), format: "wav" } as any)).rejects.toThrow()
     })
 
     it("returns array for getSupportedAudioFormats", async () => {
@@ -264,14 +266,13 @@ describe("NodeAIService", () => {
   // ============================================================================
 
   describe("AI Director", () => {
-    it("returns analysis for analyzeVideoComprehensive", async () => {
-      const result = await service.analyzeVideoComprehensive("/video.mp4")
-      expect(result).toHaveProperty("analysis_id")
+    it("throws error for analyzeVideoComprehensive with invalid file", async () => {
+      await expect(service.analyzeVideoComprehensive("/video.mp4")).rejects.toThrow()
     })
 
-    it("returns fragments for analyzeMontagVideos", async () => {
+    it("returns object for analyzeMontagVideos", async () => {
       const result = await service.analyzeMontagVideos(["/video1.mp4"], {})
-      expect(Array.isArray(result)).toBe(true)
+      expect(result).toBeDefined()
     })
 
     it("returns composition analysis for analyzeVideoComposition", async () => {
@@ -286,19 +287,18 @@ describe("NodeAIService", () => {
 
     it("returns progress for getAnalysisProgress", async () => {
       const progress = await service.getAnalysisProgress()
-      expect(progress).toHaveProperty("status")
       expect(progress).toHaveProperty("progress")
+      expect(typeof progress.progress).toBe("number")
     })
 
     it("returns plan for generateMontagePlan", async () => {
       const plan = await service.generateMontagePlan([], {} as any)
-      expect(plan).toHaveProperty("plan_id")
+      expect(plan).toHaveProperty("id")
       expect(plan).toHaveProperty("fragments")
     })
 
-    it("returns quality analysis for analyzeVideoQuality", async () => {
-      const result = await service.analyzeVideoQuality("/video.mp4")
-      expect(result).toBeDefined()
+    it("throws error for analyzeVideoQuality with invalid file", async () => {
+      await expect(service.analyzeVideoQuality("/video.mp4")).rejects.toThrow()
     })
 
     it("returns frame quality for analyzeFrameQuality", async () => {

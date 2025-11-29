@@ -20,10 +20,8 @@ vi.mock("@/features/top-bar/components/theme/theme-context", () => ({
   ThemeProvider: ({ children }: any) => children,
 }))
 
-// Мокаем ModalProvider
-vi.mock("@/features/modals/services/modal-provider", () => ({
-  ModalProvider: ({ children }: any) => children,
-}))
+// ModalProvider is no longer needed with new modal architecture
+// Modal state is now managed via useModals hook from @/domains/system-integration
 
 // Мокаем AppProvider и связанные хуки
 vi.mock("@/domains/project-management/providers/app-provider", () => ({

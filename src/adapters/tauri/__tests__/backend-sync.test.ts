@@ -420,7 +420,7 @@ describe("BackendSync", () => {
 
       // Handler should not be called after unsubscribe
       const mockEvent = { type: "TestEvent" } as any
-      backendSync["handleBackendEvent"]({ event: mockEvent, metadata: { version: 1 } } as any)
+      backendSync.handleBackendEvent({ event: mockEvent, metadata: { version: 1 } } as any)
 
       expect(handler).not.toHaveBeenCalled()
     })
@@ -430,7 +430,7 @@ describe("BackendSync", () => {
       backendSync.onEvent(handler)
 
       const mockEvent = { type: "ProjectCreated" } as any
-      backendSync["handleBackendEvent"]({ event: mockEvent, metadata: { version: 1 } } as any)
+      backendSync.handleBackendEvent({ event: mockEvent, metadata: { version: 1 } } as any)
 
       expect(handler).toHaveBeenCalledWith(mockEvent)
     })
@@ -443,7 +443,7 @@ describe("BackendSync", () => {
       backendSync.onEvent(handler2)
 
       const mockEvent = { type: "ProjectCreated" } as any
-      backendSync["handleBackendEvent"]({ event: mockEvent, metadata: { version: 1 } } as any)
+      backendSync.handleBackendEvent({ event: mockEvent, metadata: { version: 1 } } as any)
 
       expect(handler1).toHaveBeenCalledWith(mockEvent)
       expect(handler2).toHaveBeenCalledWith(mockEvent)
@@ -463,15 +463,15 @@ describe("BackendSync", () => {
       unsubscribe()
 
       const mockState = { version: 1, project: {}, dirty: false } as any
-      backendSync["notifyStateChange"](mockState)
+      backendSync.notifyStateChange(mockState)
 
       expect(handler).not.toHaveBeenCalled()
     })
 
     it("updates last version when receiving events", () => {
-      backendSync["handleBackendEvent"]({ event: { type: "Test" } as any, metadata: { version: 5 } } as any)
+      backendSync.handleBackendEvent({ event: { type: "Test" } as any, metadata: { version: 5 } } as any)
 
-      expect(backendSync["lastVersion"]).toBe(5)
+      expect(backendSync.lastVersion).toBe(5)
     })
 
     it("handles handler errors gracefully", () => {
@@ -484,7 +484,7 @@ describe("BackendSync", () => {
       backendSync.onEvent(normalHandler)
 
       const mockEvent = { type: "ProjectCreated" } as any
-      backendSync["handleBackendEvent"]({ event: mockEvent, metadata: { version: 1 } } as any)
+      backendSync.handleBackendEvent({ event: mockEvent, metadata: { version: 1 } } as any)
 
       expect(throwingHandler).toHaveBeenCalled()
       expect(normalHandler).toHaveBeenCalled()

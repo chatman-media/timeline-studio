@@ -50,9 +50,12 @@ export function handleBrowserBackendEvent(
       return handleAllFilesSelected(context, event)
     case "AllFilesDeselected":
       return handleAllFilesDeselected(context, event)
-    default:
-      logger.debug("Unhandled browser backend event type:", { type: event.event_type })
+    default: {
+      // Exhaustiveness check - TypeScript will error if we miss a case
+      const _exhaustive: never = event
+      logger.debug("Unhandled browser backend event type")
       return {}
+    }
   }
 }
 
