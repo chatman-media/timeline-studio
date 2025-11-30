@@ -20,11 +20,9 @@ describe("useProjectLoader", () => {
   describe("loadProject", () => {
     it("should call loadProject from service and return project data", async () => {
       const mockProjectData = {
-        name: "Test Project",
-        timeline: { tracks: [] },
-        settings: { fps: 30 },
+        settings: { fps: 30, resolution: { width: 1920, height: 1080 } },
       }
-      vi.mocked(mockLoadProject).mockResolvedValue(mockProjectData)
+      vi.mocked(mockLoadProject).mockResolvedValue(mockProjectData as any)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -45,7 +43,7 @@ describe("useProjectLoader", () => {
     })
 
     it("should handle loading different project paths", async () => {
-      vi.mocked(mockLoadProject).mockResolvedValue({ name: "Project 1" })
+      vi.mocked(mockLoadProject).mockResolvedValue({ settings: { fps: 30 } } as any)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -100,8 +98,8 @@ describe("useProjectLoader", () => {
       const { result } = renderHook(() => useProjectLoader())
 
       const path = "/projects/test.tlsp"
-      const data1 = { name: "Version 1" }
-      const data2 = { name: "Version 2" }
+      const data1 = { settings: { fps: 30 } }
+      const data2 = { settings: { fps: 60 } }
 
       await result.current.saveProject(path, data1)
       await result.current.saveProject(path, data2)
@@ -145,10 +143,10 @@ describe("useProjectLoader", () => {
 
   describe("integration scenarios", () => {
     it("should support load-modify-save workflow", async () => {
-      const initialData = { name: "Original Project", timeline: {} }
-      const modifiedData = { name: "Modified Project", timeline: {} }
+      const initialData = { settings: { fps: 30 } }
+      const modifiedData = { settings: { fps: 60 } }
 
-      vi.mocked(mockLoadProject).mockResolvedValue(initialData)
+      vi.mocked(mockLoadProject).mockResolvedValue(initialData as any)
       vi.mocked(mockSaveProject).mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useProjectLoader())
@@ -168,16 +166,14 @@ describe("useProjectLoader", () => {
 
     it("should handle concurrent load and save operations", async () => {
       vi.mocked(mockLoadProject).mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ name: "Project" }), 10)),
+        () => new Promise((resolve) => setTimeout(() => resolve({ settings: { fps: 30 } } as any), 10)),
       )
-      vi.mocked(mockSaveProject).mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve(), 10)),
-      )
+      vi.mocked(mockSaveProject).mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(), 10)))
 
       const { result } = renderHook(() => useProjectLoader())
 
       const loadPromise = result.current.loadProject("/path/project.tlsp")
-      const savePromise = result.current.saveProject("/path/project.tlsp", { name: "New" })
+      const savePromise = result.current.saveProject("/path/project.tlsp", { settings: { fps: 60 } })
 
       await Promise.all([loadPromise, savePromise])
 
