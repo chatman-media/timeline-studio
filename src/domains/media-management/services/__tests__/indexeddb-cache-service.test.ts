@@ -32,7 +32,7 @@ const mockClear = vi.mocked(idbModule.clear)
 const mockCreateStore = vi.mocked(idbModule.createStore)
 
 // Setup default return values for mocks
-mockCreateStore.mockImplementation((dbName: string, storeName: string) => {
+mockCreateStore.mockImplementation((_dbName: string, _storeName: string) => {
   // UseStore is a function type: <T>(txMode: IDBTransactionMode, callback: (store: IDBObjectStore) => T | PromiseLike<T>) => Promise<T>
   return vi.fn() as any
 })

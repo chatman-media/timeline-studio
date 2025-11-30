@@ -6,7 +6,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { Fragment, MontagePlan, PlannedClip, Sequence } from "../../types"
-import { ClipRole, PacingType, SequencePurpose, SequenceType, SuggestionType, TargetPlatform } from "../../types"
+import { ClipRole, PacingType, SequencePurpose, SequenceType } from "../../types"
 
 // Helper function to create a valid MontagePlan
 function createMontagePlan(
