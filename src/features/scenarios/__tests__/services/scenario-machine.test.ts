@@ -1,11 +1,10 @@
-import { createActor } from "xstate"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { createActor } from "xstate"
 
 import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
-
+import type { StepExecutionResult } from "../../services/scenario-executor"
 import { createScenarioActor, scenarioMachine } from "../../services/scenario-machine"
 import type { Scenario, ScenarioResult } from "../../types/scenario"
-import type { StepExecutionResult } from "../../services/scenario-executor"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({

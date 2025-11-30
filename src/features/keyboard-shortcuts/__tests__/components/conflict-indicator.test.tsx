@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { ConflictInfo } from "../../services/shortcuts-conflicts"
 import { ConflictIndicator } from "../../components/conflict-indicator"
+import type { ConflictInfo } from "../../services/shortcuts-conflicts"
 
 // Mock dependencies
 vi.mock("react-i18next", () => ({

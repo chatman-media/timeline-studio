@@ -45,8 +45,12 @@ vi.mock("@/domains/system-integration", () => ({
 }))
 
 // Mock all modal components
-vi.mock("@/features/app-state/components/missing-files-modal", () => ({
+vi.mock("@/features/media/components/missing-files-modal", () => ({
   MissingFilesModal: () => <div data-testid="missing-files-modal">Missing Files Modal</div>,
+}))
+
+vi.mock("@/features/ai-director", () => ({
+  AIDirectorModal: () => <div data-testid="ai-director-modal">AI Director Modal</div>,
 }))
 
 vi.mock("@/features/camera-capture", () => ({
@@ -183,8 +187,18 @@ describe("ModalContainer", () => {
       ["project-settings", "project-settings-modal", "modals.projectSettings.title"],
       ["user-settings", "user-settings-modal", "modals.userSettings.title"],
       ["camera-capture", "camera-capture-modal", "modals.cameraCapture.title"],
-      // Temporary: Reduced test cases to prevent memory exhaustion
-      // Full list will be restored after fixing memory leak
+      ["voice-recording", "voice-recording-modal", "modals.voiceRecording.title"],
+      ["export", "export-modal", "modals.export.title"],
+      ["cache-settings", "cache-settings-modal", "modals.cacheSettings.title"],
+      ["cache-statistics", "cache-statistics-modal", "modals.cacheStatistics.title"],
+      ["subtitle-ai-tools", "subtitle-ai-tools-modal", "modals.subtitleAITools.title"],
+      ["ai-marker-settings", "ai-marker-settings-modal", "modals.aiMarkerSettings.title"],
+      ["audio-effects", "audio-effects-modal", "modals.audioEffects.title"],
+      ["midi-learn", "midi-learn-modal", "modals.midiLearn.title"],
+      ["midi-mapping", "midi-mapping-modal", "modals.midiMapping.title"],
+      ["midi-configuration", "midi-configuration-modal", "modals.midiConfiguration.title"],
+      ["effect-detail", "effect-detail-modal", "modals.effectDetail.title"],
+      ["color-grading", "color-grading-modal", "modals.colorGrading.title"],
     ]
 
     it.each(modalTestCases)("should render %s modal with correct title", (modalType, testId, title) => {
@@ -216,6 +230,20 @@ describe("ModalContainer", () => {
     expect(screen.getByText("modals.subtitleEditor.titleEdit")).toBeInTheDocument()
   })
 
+  it("should handle subtitle editor with add mode", () => {
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("subtitle-editor")
+    mockModalData.mockReturnValue(null)
+
+    render(
+      <TestWrapper>
+        <ModalContainer />
+      </TestWrapper>,
+    )
+
+    expect(screen.getByText("modals.subtitleEditor.titleAdd")).toBeInTheDocument()
+  })
+
   // SKIP: person-form modal causes test hang
   it.skip("should handle person form with edit mode", () => {
     mockIsModalOpen.mockReturnValue(true)
@@ -229,6 +257,20 @@ describe("ModalContainer", () => {
     )
 
     expect(screen.getByText("modals.personForm.titleEdit")).toBeInTheDocument()
+  })
+
+  it.skip("should handle person form with add mode", () => {
+    mockIsModalOpen.mockReturnValue(true)
+    mockActiveModal.mockReturnValue("person-form")
+    mockModalData.mockReturnValue(null)
+
+    render(
+      <TestWrapper>
+        <ModalContainer />
+      </TestWrapper>,
+    )
+
+    expect(screen.getByText("modals.personForm.titleAdd")).toBeInTheDocument()
   })
 
   it("should apply custom dialog class from modalData", () => {
@@ -249,9 +291,25 @@ describe("ModalContainer", () => {
   describe("Dialog Classes", () => {
     const classTestCases: Array<[ModalType, string]> = [
       ["camera-capture", "h-[max(600px,min(70vh,800px))]"],
+      ["voice-recording", "h-[max(500px,min(60vh,700px))]"],
+      ["export", "h-[max(700px,min(80vh,900px))]"],
       ["project-settings", "h-[450px]"],
       ["user-settings", "h-[800px]"],
-      // Temporary: Reduced test cases to prevent memory exhaustion
+      ["keyboard-shortcuts", "h-[max(600px,min(70vh,1000px))]"],
+      ["cache-settings", "h-[max(700px,min(80vh,900px))]"],
+      ["cache-statistics", "h-[max(600px,min(70vh,800px))]"],
+      ["subtitle-editor", "h-[max(600px,min(70vh,800px))]"],
+      ["person-form", "h-[max(500px,min(60vh,700px))]"],
+      ["missing-files", "h-[max(600px,min(70vh,800px))]"],
+      ["ai-marker-settings", "h-[max(600px,min(70vh,700px))]"],
+      ["subtitle-ai-tools", "h-[max(500px,min(60vh,600px))]"],
+      ["audio-effects", "max-w-3xl"],
+      ["midi-learn", "sm:max-w-md"],
+      ["midi-mapping", "sm:max-w-md"],
+      ["midi-configuration", "max-w-2xl"],
+      ["effect-detail", "max-w-4xl"],
+      ["color-grading", "h-[max(400px,min(50vh,500px))]"],
+      ["ai-director", "h-[max(800px,min(90vh,1000px))]"],
     ]
 
     it.each(classTestCases)("should apply correct class for %s modal", (modalType, expectedClass) => {
@@ -326,5 +384,96 @@ describe("ModalContainer", () => {
 
     const contentArea = screen.getByTestId("project-settings-modal").parentElement
     expect(contentArea).toHaveClass("overflow-auto")
+  })
+
+  describe("Additional Modal Types", () => {
+    it("should render missing-files modal", () => {
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue("missing-files")
+
+      render(
+        <TestWrapper>
+          <ModalContainer />
+        </TestWrapper>,
+      )
+
+      expect(screen.getByTestId("missing-files-modal")).toBeInTheDocument()
+      expect(screen.getByText("modals.missingFiles.title")).toBeInTheDocument()
+    })
+
+    it("should render ai-director modal", () => {
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue("ai-director")
+
+      render(
+        <TestWrapper>
+          <ModalContainer />
+        </TestWrapper>,
+      )
+
+      expect(screen.getByTestId("ai-director-modal")).toBeInTheDocument()
+      expect(screen.getByText("modals.aiDirector.title")).toBeInTheDocument()
+    })
+  })
+
+  describe("Dialog Structure", () => {
+    it("should have fixed header height", () => {
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue("export")
+
+      render(
+        <TestWrapper>
+          <ModalContainer />
+        </TestWrapper>,
+      )
+
+      const header = screen.getByRole("heading").parentElement
+      expect(header).toHaveClass("h-[50px]")
+    })
+
+    it("should have flex-col layout", () => {
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue("export")
+
+      render(
+        <TestWrapper>
+          <ModalContainer />
+        </TestWrapper>,
+      )
+
+      const dialog = screen.getByRole("dialog")
+      expect(dialog).toHaveClass("flex-col")
+    })
+
+    it("should have p-4 padding", () => {
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue("export")
+
+      render(
+        <TestWrapper>
+          <ModalContainer />
+        </TestWrapper>,
+      )
+
+      const dialog = screen.getByRole("dialog")
+      expect(dialog).toHaveClass("p-4")
+    })
+  })
+
+  describe("Default Dialog Class", () => {
+    it("should apply default class when modalType not recognized", () => {
+      mockIsModalOpen.mockReturnValue(true)
+      mockActiveModal.mockReturnValue("unknown-modal" as ModalType)
+      mockModalData.mockReturnValue(null)
+
+      render(
+        <TestWrapper>
+          <ModalContainer />
+        </TestWrapper>,
+      )
+
+      const dialog = screen.getByRole("dialog")
+      expect(dialog).toHaveClass("h-[max(600px,min(50vh,800px))]")
+    })
   })
 })

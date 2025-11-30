@@ -330,5 +330,146 @@ describe("useRecognitionPreview", () => {
       expect(data?.frames.length).toBeGreaterThan(0)
       expect(data?.metadata).toBeDefined()
     })
+
+    it("должен обработать отсутствующие bounding boxes", async () => {
+      const resultsWithoutBoxes = {
+        objects: [
+          {
+            class: "person",
+            confidence: 0.95,
+            timestamps: [0, 5, 10],
+            bounding_boxes: [{ x: 0.1, y: 0.2, width: 0.3, height: 0.6 }], // Только один bbox для трех timestamps
+          },
+        ],
+        processed_at: new Date().toISOString(),
+      }
+
+      mockGetPreviewData.mockResolvedValue({
+        file_path: "/path/to/video.mp4",
+        recognition_results: resultsWithoutBoxes,
+      })
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      const data = await result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
+
+      expect(data).toBeDefined()
+      expect(data?.frames.length).toBe(3)
+      // Проверяем, что для кадров без bbox используется default значение
+      expect(data?.frames[1].detections[0].bbox).toEqual({ x: 0, y: 0, width: 0, height: 0 })
+      expect(data?.frames[2].detections[0].bbox).toEqual({ x: 0, y: 0, width: 0, height: 0 })
+    })
+
+    it("должен извлечь имя файла из пути", async () => {
+      mockGetPreviewData.mockResolvedValue({
+        file_path: "/long/path/to/my-video.mp4",
+        recognition_results: mockRecognitionResults,
+      })
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      const data = await result.current.processVideoRecognition("test-video", "/long/path/to/my-video.mp4")
+
+      expect(data?.videoName).toBe("my-video.mp4")
+    })
+
+    it("должен использовать fileId как fallback для videoName", async () => {
+      mockGetPreviewData.mockResolvedValue({
+        file_path: "", // Пустой путь
+        recognition_results: mockRecognitionResults,
+      })
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      const data = await result.current.processVideoRecognition("test-video-id", "")
+
+      expect(data?.videoName).toBe("test-video-id")
+    })
+  })
+
+  describe("error handling", () => {
+    it("должен обработать ошибку с non-Error объектом", async () => {
+      mockGetPreviewData.mockResolvedValue(null)
+      mockInvoke.mockRejectedValue("String error")
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      const data = await result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
+
+      expect(data).toBeNull()
+      await waitFor(() => {
+        expect(result.current.error).toBe("Failed to process video recognition")
+      })
+    })
+
+    it("должен вызвать onError callback с правильным сообщением", async () => {
+      mockInvoke.mockRejectedValue(new Error("Custom error"))
+
+      const onError = vi.fn()
+      const { result } = renderHook(() => useRecognitionPreview({ onError }))
+
+      await result.current.getPreviewWithRecognition("test-video")
+
+      await waitFor(() => {
+        expect(onError).toHaveBeenCalledWith("Custom error")
+      })
+    })
+
+    it("должен очистить error при успешной операции", async () => {
+      // Сначала вызываем ошибку
+      mockGetPreviewData.mockResolvedValue(null)
+      mockInvoke.mockRejectedValueOnce(new Error("First error"))
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      await result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
+
+      await waitFor(() => {
+        expect(result.current.error).toBe("First error")
+      })
+
+      // Теперь успешная операция
+      mockInvoke.mockResolvedValueOnce(mockYoloData)
+
+      await result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
+
+      await waitFor(() => {
+        expect(result.current.error).toBeNull()
+      })
+    })
+  })
+
+  describe("state management", () => {
+    it("должен обновить isProcessing в начале и конце операции", async () => {
+      mockGetPreviewData.mockResolvedValue(null)
+      mockInvoke.mockResolvedValue(mockYoloData)
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      expect(result.current.isProcessing).toBe(false)
+
+      const promise = result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
+
+      await promise
+
+      await waitFor(() => {
+        expect(result.current.isProcessing).toBe(false)
+      })
+    })
+
+    it("должен сбросить isProcessing после ошибки", async () => {
+      mockGetPreviewData.mockResolvedValue(null)
+      mockInvoke.mockRejectedValue(new Error("Processing failed"))
+
+      const { result } = renderHook(() => useRecognitionPreview())
+
+      expect(result.current.isProcessing).toBe(false)
+
+      await result.current.processVideoRecognition("test-video", "/path/to/video.mp4")
+
+      await waitFor(() => {
+        expect(result.current.isProcessing).toBe(false)
+      })
+    })
   })
 })

@@ -128,4 +128,63 @@ describe("LayoutPreviews", () => {
     // Возвращаем обратно
     mockLayoutMode = "default"
   })
+
+  describe("интеграция с разными layout modes", () => {
+    it("должен корректно работать с options layout", () => {
+      mockLayoutMode = "options"
+
+      render(<LayoutPreviews />)
+
+      expect(screen.getByTestId("options-layout")).toHaveAttribute("data-active", "true")
+      expect(screen.getByTestId("default-layout")).toHaveAttribute("data-active", "false")
+    })
+
+    it("должен корректно работать с chat layout", () => {
+      mockLayoutMode = "chat"
+
+      render(<LayoutPreviews />)
+
+      expect(screen.getByTestId("chat-layout")).toHaveAttribute("data-active", "true")
+      expect(screen.getByTestId("vertical-layout")).toHaveAttribute("data-active", "false")
+    })
+  })
+
+  describe("обработка кликов", () => {
+    it("должен вызывать handleLayoutChange только один раз при клике", () => {
+      render(<LayoutPreviews />)
+
+      fireEvent.click(screen.getByTestId("default-layout"))
+
+      expect(mockHandleLayoutChange).toHaveBeenCalledTimes(1)
+      expect(mockHandleLayoutChange).toHaveBeenCalledWith("default")
+    })
+
+    it("должен обрабатывать множественные клики", () => {
+      render(<LayoutPreviews />)
+
+      fireEvent.click(screen.getByTestId("default-layout"))
+      fireEvent.click(screen.getByTestId("options-layout"))
+      fireEvent.click(screen.getByTestId("vertical-layout"))
+
+      expect(mockHandleLayoutChange).toHaveBeenCalledTimes(3)
+    })
+  })
+
+  describe("структура компонента", () => {
+    it("должен использовать правильные CSS классы для контейнера", () => {
+      const { container } = render(<LayoutPreviews />)
+
+      const mainContainer = container.firstChild as HTMLElement
+      expect(mainContainer.className).toBe("flex flex-col gap-2")
+    })
+
+    it("должен использовать правильные CSS классы для рядов", () => {
+      const { container } = render(<LayoutPreviews />)
+
+      const rows = container.querySelectorAll(".flex.justify-around.gap-2")
+      rows.forEach((row) => {
+        expect(row).toHaveClass("flex", "justify-around", "gap-2")
+      })
+    })
+  })
 })

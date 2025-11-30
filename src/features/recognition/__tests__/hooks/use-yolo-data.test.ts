@@ -338,6 +338,147 @@ describe("useYoloData", () => {
 
       expect(context).toBe("В кадре не обнаружено объектов.")
     })
+
+    it("должен определять верхнюю левую позицию", async () => {
+      mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.1 },
+        },
+      ])
+      const { result } = renderHook(() => useYoloData())
+
+      const context = await result.current.getSceneContext("test-video", 5)
+
+      expect(context).toContain("верх-лево")
+    })
+
+    it("должен определять центральную позицию", async () => {
+      mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.4, y: 0.4, width: 0.2, height: 0.2 },
+        },
+      ])
+      const { result } = renderHook(() => useYoloData())
+
+      const context = await result.current.getSceneContext("test-video", 5)
+
+      expect(context).toContain("центр-центр")
+    })
+
+    it("должен определять нижнюю правую позицию", async () => {
+      mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.7, y: 0.7, width: 0.2, height: 0.2 },
+        },
+      ])
+      const { result } = renderHook(() => useYoloData())
+
+      const context = await result.current.getSceneContext("test-video", 5)
+
+      expect(context).toContain("низ-право")
+    })
+
+    it("должен объединять уникальные позиции", async () => {
+      mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.1 },
+        },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.7, y: 0.1, width: 0.1, height: 0.1 },
+        },
+      ])
+      const { result } = renderHook(() => useYoloData())
+
+      const context = await result.current.getSceneContext("test-video", 5)
+
+      expect(context).toContain("2 person")
+      expect(context).toMatch(/верх-лево.*верх-право|в/)
+    })
+
+    it("должен использовать 'в разных частях кадра' для многих позиций", async () => {
+      mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValue([
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.1 },
+        },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.5, y: 0.5, width: 0.1, height: 0.1 },
+        },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.8, y: 0.8, width: 0.1, height: 0.1 },
+        },
+      ])
+      const { result } = renderHook(() => useYoloData())
+
+      const context = await result.current.getSceneContext("test-video", 5)
+
+      expect(context).toContain("3 person")
+      expect(context).toContain("в разных частях кадра")
+    })
+  })
+
+  describe("integration with Preview Manager", () => {
+    it("должен использовать processVideoRecognition когда нет локальных данных", async () => {
+      mockYoloDataService.loadYoloData.mockResolvedValueOnce(null)
+      const mockProcessVideoRecognition = vi.fn().mockResolvedValue(createMockYoloData())
+
+      vi.mocked(await import("../../hooks/use-recognition-preview")).useRecognitionPreview = vi.fn(() => ({
+        processVideoRecognition: mockProcessVideoRecognition,
+        getRecognitionAtTimestamp: vi.fn().mockResolvedValue([]),
+        getPreviewWithRecognition: vi.fn(),
+        processBatchRecognition: vi.fn(),
+        clearRecognitionResults: vi.fn(),
+        isProcessing: false,
+        error: null,
+      }))
+
+      const { result } = renderHook(() => useYoloData())
+
+      await result.current.loadYoloData("test-video", "/path/to/video.mp4")
+
+      await waitFor(() => {
+        expect(mockProcessVideoRecognition).toHaveBeenCalledWith("test-video", "/path/to/video.mp4")
+      })
+    })
+
+    it("должен использовать getRecognitionFromCache когда нет локальных данных для timestamp", async () => {
+      mockYoloDataService.getYoloDataAtTimestamp.mockResolvedValueOnce([])
+      const mockGetRecognitionAtTimestamp = vi.fn().mockResolvedValue(mockDetections)
+
+      vi.mocked(await import("../../hooks/use-recognition-preview")).useRecognitionPreview = vi.fn(() => ({
+        processVideoRecognition: vi.fn(),
+        getRecognitionAtTimestamp: mockGetRecognitionAtTimestamp,
+        getPreviewWithRecognition: vi.fn(),
+        processBatchRecognition: vi.fn(),
+        clearRecognitionResults: vi.fn(),
+        isProcessing: false,
+        error: null,
+      }))
+
+      const { result } = renderHook(() => useYoloData())
+
+      const detections = await result.current.getYoloDataAtTimestamp("test-video", 5)
+
+      expect(detections).toEqual(mockDetections)
+      await waitFor(() => {
+        expect(mockGetRecognitionAtTimestamp).toHaveBeenCalledWith("test-video", 5)
+      })
+    })
   })
 
   describe("loading and error states", () => {

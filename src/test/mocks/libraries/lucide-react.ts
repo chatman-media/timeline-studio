@@ -47,6 +47,7 @@ export const ChevronLast = createMockIcon("ChevronLast")
 export const ChevronLeft = createMockIcon("ChevronLeft")
 export const ChevronRight = createMockIcon("ChevronRight")
 export const ChevronRightIcon = createMockIcon("ChevronRightIcon")
+export const ChevronUp = createMockIcon("ChevronUp")
 export const ChevronUpIcon = createMockIcon("ChevronUpIcon")
 export const CircleDot = createMockIcon("CircleDot")
 export const CircleIcon = createMockIcon("CircleIcon")
@@ -73,6 +74,7 @@ export const FlipHorizontal2 = createMockIcon("FlipHorizontal2")
 export const Folder = createMockIcon("Folder")
 export const FolderClosed = createMockIcon("FolderClosed")
 export const FolderOpen = createMockIcon("FolderOpen")
+export const Frown = createMockIcon("Frown")
 export const Gauge = createMockIcon("Gauge")
 export const GitBranch = createMockIcon("GitBranch")
 export const GitCommit = createMockIcon("GitCommit")
@@ -86,6 +88,7 @@ export const GripVerticalIcon = createMockIcon("GripVerticalIcon")
 export const HardDrive = createMockIcon("HardDrive")
 export const Hash = createMockIcon("Hash")
 export const Headphones = createMockIcon("Headphones")
+export const Heart = createMockIcon("Heart")
 export const HelpCircle = createMockIcon("HelpCircle")
 export const History = createMockIcon("History")
 export const Image = createMockIcon("Image")
@@ -107,6 +110,7 @@ export const Mic = createMockIcon("Mic")
 export const Minimize2 = createMockIcon("Minimize2")
 export const Minus = createMockIcon("Minus")
 export const MessageSquare = createMockIcon("MessageSquare")
+export const MoreVertical = createMockIcon("MoreVertical")
 export const Monitor = createMockIcon("Monitor")
 export const MonitorCog = createMockIcon("MonitorCog")
 export const Moon = createMockIcon("Moon")
@@ -116,6 +120,7 @@ export const MoveHorizontal = createMockIcon("MoveHorizontal")
 export const Music = createMockIcon("Music")
 export const Music2 = createMockIcon("Music2")
 export const Package = createMockIcon("Package")
+export const Paintbrush = createMockIcon("Paintbrush")
 export const Palette = createMockIcon("Palette")
 export const PanelBottomClose = createMockIcon("PanelBottomClose")
 export const PanelBottomOpen = createMockIcon("PanelBottomOpen")
@@ -178,8 +183,10 @@ export const VolumeX = createMockIcon("VolumeX")
 export const Waves = createMockIcon("Waves")
 export const RadioIcon = createMockIcon("RadioIcon")
 export const Shuffle = createMockIcon("Shuffle")
+export const Smile = createMockIcon("Smile")
 export const Wand2 = createMockIcon("Wand2")
 export const Webcam = createMockIcon("Webcam")
+export const Wrench = createMockIcon("Wrench")
 export const X = createMockIcon("X")
 export const XCircle = createMockIcon("XCircle")
 export const XIcon = createMockIcon("XIcon")
@@ -219,6 +226,7 @@ vi.mock("lucide-react", () => ({
   ChevronLeft,
   ChevronRight,
   ChevronRightIcon,
+  ChevronUp,
   ChevronUpIcon,
   CircleDot,
   CircleIcon,
@@ -245,6 +253,7 @@ vi.mock("lucide-react", () => ({
   Folder,
   FolderClosed,
   FolderOpen,
+  Frown,
   Gauge,
   GitBranch,
   GitCommit,
@@ -258,6 +267,7 @@ vi.mock("lucide-react", () => ({
   HardDrive,
   Hash,
   Headphones,
+  Heart,
   HelpCircle,
   History,
   Image,
@@ -279,6 +289,7 @@ vi.mock("lucide-react", () => ({
   Minimize2,
   Minus,
   MessageSquare,
+  MoreVertical,
   Monitor,
   MonitorCog,
   Moon,
@@ -288,6 +299,7 @@ vi.mock("lucide-react", () => ({
   Music,
   Music2,
   Package,
+  Paintbrush,
   Palette,
   PanelBottomClose,
   PanelBottomOpen,
@@ -315,6 +327,7 @@ vi.mock("lucide-react", () => ({
   Settings2,
   Shuffle,
   Sliders,
+  Smile,
   Speaker,
   Circle,
   Sparkles,
@@ -352,6 +365,7 @@ vi.mock("lucide-react", () => ({
   Waves,
   Wand2,
   Webcam,
+  Wrench,
   X,
   XCircle,
   XIcon,
