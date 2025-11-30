@@ -2,6 +2,28 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { type ShortcutSettings, ShortcutsPersistence, shortcutsPersistence } from "../shortcuts-persistence"
 import type { ShortcutDefinition } from "../shortcuts-registry"
 
+// Setup localStorage mock
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
+  return {
+    getItem: (key: string) => store[key] ?? null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString()
+    },
+    removeItem: (key: string) => {
+      store = Object.fromEntries(Object.entries(store).filter(([k]) => k !== key))
+    },
+    clear: () => {
+      store = {}
+    },
+  }
+})()
+
+Object.defineProperty(global, "localStorage", {
+  value: localStorageMock,
+  writable: true,
+})
+
 // Mock Tauri Store
 const mockStore = {
   set: vi.fn(),
@@ -74,8 +96,8 @@ describe("ShortcutsPersistence", () => {
     mockStore.save.mockResolvedValue(undefined)
 
     // Mock isDesktop to return false by default
-    const { isDesktop } = await import("@/lib/environment")
-    vi.mocked(isDesktop).mockReturnValue(false)
+    const env = await import("@/lib/environment")
+    ;(env.isDesktop as any).mockReturnValue(false)
   })
 
   afterEach(() => {

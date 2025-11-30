@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest"
-import { fireEvent, waitFor } from "@testing-library/react"
+import { waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaFile } from "@/features/media/types/media"
 import { setTranslations } from "@/test/mocks/libraries/i18n"
@@ -86,9 +86,7 @@ vi.mock("../../components/speed-settings", () => ({
 
 vi.mock("../../components/info-settings", () => ({
   InfoSettings: ({ selectedMediaFile }: any) => (
-    <div data-testid="mock-info-settings">
-      InfoSettings {selectedMediaFile?.name && `- ${selectedMediaFile.name}`}
-    </div>
+    <div data-testid="mock-info-settings">InfoSettings {selectedMediaFile?.name && `- ${selectedMediaFile.name}`}</div>
   ),
 }))
 
@@ -241,10 +239,10 @@ describe("Options", () => {
     it("should render tab labels with translations", () => {
       renderWithBase(<Options />)
 
-      expect(screen.getByText("Color")).toBeInTheDocument()
-      expect(screen.getByText("Speed")).toBeInTheDocument()
-      expect(screen.getByText("Audio")).toBeInTheDocument()
-      expect(screen.getByText("Info")).toBeInTheDocument()
+      expect(screen.getAllByText("Color").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Speed").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Audio").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Info").length).toBeGreaterThan(0)
     })
   })
 

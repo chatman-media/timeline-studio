@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { ColorGradingControls } from "../../components/controls/color-grading-controls"
 
@@ -19,52 +19,15 @@ const mockLoadPreset = vi.fn()
 const mockSavePreset = vi.fn()
 const mockAutoCorrect = vi.fn()
 
+const mockUseModals = vi.fn()
+const mockUseColorGradingContext = vi.fn()
+
 vi.mock("@/domains/system-integration", () => ({
-  useModals: () => ({
-    openModal: mockOpenModal,
-  }),
+  useModals: () => mockUseModals(),
 }))
 
 vi.mock("../../services/color-grading-provider", () => ({
-  useColorGradingContext: () => ({
-    state: {
-      previewEnabled: true,
-      selectedClip: "clip-123",
-    },
-    hasChanges: true,
-    resetAll: mockResetAll,
-    togglePreview: mockTogglePreview,
-    applyToClip: mockApplyToClip,
-    loadPreset: mockLoadPreset,
-    savePreset: mockSavePreset,
-    autoCorrect: mockAutoCorrect,
-    availablePresets: [
-      {
-        id: "preset-1",
-        name: "Cinematic",
-        category: "cinematic",
-        description: "Film look",
-        isBuiltIn: true,
-        data: {},
-      },
-      {
-        id: "preset-2",
-        name: "Warm",
-        category: "creative",
-        description: "Warm tones",
-        isBuiltIn: true,
-        data: {},
-      },
-      {
-        id: "preset-3",
-        name: "My Custom",
-        category: "custom",
-        isBuiltIn: false,
-        data: {},
-      },
-    ],
-    dispatch: vi.fn(),
-  }),
+  useColorGradingContext: () => mockUseColorGradingContext(),
 }))
 
 vi.mock("../../types/presets", () => ({
@@ -74,6 +37,51 @@ vi.mock("../../types/presets", () => ({
 describe("ColorGradingControls", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+
+    // Default mock implementations
+    mockUseModals.mockReturnValue({
+      openModal: mockOpenModal,
+    })
+
+    mockUseColorGradingContext.mockReturnValue({
+      state: {
+        previewEnabled: true,
+        selectedClip: "clip-123",
+      },
+      hasChanges: true,
+      resetAll: mockResetAll,
+      togglePreview: mockTogglePreview,
+      applyToClip: mockApplyToClip,
+      loadPreset: mockLoadPreset,
+      savePreset: mockSavePreset,
+      autoCorrect: mockAutoCorrect,
+      availablePresets: [
+        {
+          id: "preset-1",
+          name: "Cinematic",
+          category: "cinematic",
+          description: "Film look",
+          isBuiltIn: true,
+          data: {},
+        },
+        {
+          id: "preset-2",
+          name: "Warm",
+          category: "creative",
+          description: "Warm tones",
+          isBuiltIn: true,
+          data: {},
+        },
+        {
+          id: "preset-3",
+          name: "My Custom",
+          category: "custom",
+          isBuiltIn: false,
+          data: {},
+        },
+      ],
+      dispatch: vi.fn(),
+    })
   })
 
   it("should render controls container", () => {
@@ -97,7 +105,7 @@ describe("ColorGradingControls", () => {
     })
 
     it("should be disabled when no changes", () => {
-      vi.mocked(require("../../services/color-grading-provider").useColorGradingContext).mockReturnValueOnce({
+      mockUseColorGradingContext.mockReturnValueOnce({
         state: { previewEnabled: true, selectedClip: "clip-123" },
         hasChanges: false,
         resetAll: mockResetAll,
@@ -210,7 +218,7 @@ describe("ColorGradingControls", () => {
     })
 
     it("should be disabled when no changes", () => {
-      vi.mocked(require("../../services/color-grading-provider").useColorGradingContext).mockReturnValueOnce({
+      mockUseColorGradingContext.mockReturnValueOnce({
         state: { previewEnabled: true, selectedClip: "clip-123" },
         hasChanges: false,
         resetAll: mockResetAll,
@@ -236,7 +244,7 @@ describe("ColorGradingControls", () => {
     })
 
     it("should render EyeOff icon when preview disabled", () => {
-      vi.mocked(require("../../services/color-grading-provider").useColorGradingContext).mockReturnValueOnce({
+      mockUseColorGradingContext.mockReturnValueOnce({
         state: { previewEnabled: false, selectedClip: "clip-123" },
         hasChanges: true,
         resetAll: mockResetAll,
@@ -278,7 +286,7 @@ describe("ColorGradingControls", () => {
     })
 
     it("should be disabled when no clip selected", () => {
-      vi.mocked(require("../../services/color-grading-provider").useColorGradingContext).mockReturnValueOnce({
+      mockUseColorGradingContext.mockReturnValueOnce({
         state: { previewEnabled: true, selectedClip: null },
         hasChanges: true,
         resetAll: mockResetAll,
@@ -296,7 +304,7 @@ describe("ColorGradingControls", () => {
     })
 
     it("should be disabled when no changes", () => {
-      vi.mocked(require("../../services/color-grading-provider").useColorGradingContext).mockReturnValueOnce({
+      mockUseColorGradingContext.mockReturnValueOnce({
         state: { previewEnabled: true, selectedClip: "clip-123" },
         hasChanges: false,
         resetAll: mockResetAll,

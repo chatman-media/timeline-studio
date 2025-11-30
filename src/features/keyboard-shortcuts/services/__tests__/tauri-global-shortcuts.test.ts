@@ -77,10 +77,10 @@ describe("TauriGlobalShortcuts", () => {
     instance = TauriGlobalShortcuts.getInstance()
 
     // Reset all mocks to default successful state
-    const { register, unregister, isRegistered } = await import("@tauri-apps/plugin-global-shortcut")
-    vi.mocked(register).mockResolvedValue(undefined)
-    vi.mocked(unregister).mockResolvedValue(undefined)
-    vi.mocked(isRegistered).mockResolvedValue(false)
+    const tauriShortcut = await import("@tauri-apps/plugin-global-shortcut")
+    ;(tauriShortcut.register as any).mockResolvedValue(undefined)
+    ;(tauriShortcut.unregister as any).mockResolvedValue(undefined)
+    ;(tauriShortcut.isRegistered as any).mockResolvedValue(false)
 
     vi.clearAllMocks()
     vi.spyOn(console, "log").mockImplementation(() => {})

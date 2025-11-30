@@ -8,7 +8,7 @@ import type { StyleTemplate } from "../../types"
 import { StyleTemplateDragSource } from "../style-template-drag-source"
 
 // Mock useDraggable
-let mockUseDraggable = vi.fn()
+const mockUseDraggable = vi.fn()
 
 // Мок для @dnd-kit/core
 vi.mock("@dnd-kit/core", () => ({

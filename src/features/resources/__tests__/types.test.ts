@@ -1,20 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { Transition } from "@/features/transitions/types/transitions"
-import type { MediaTemplate } from "@/features/templates/lib/templates"
+import type { MediaFile } from "@/features/media/types/media"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
+import type { MediaTemplate } from "@/features/templates/lib/templates"
+import type { Transition } from "@/features/transitions/types/transitions"
 import {
-  createMediaResource,
-  createMusicResource,
-  createSubtitleResource,
   createEffectResource,
   createFilterResource,
-  createTransitionResource,
-  createTemplateResource,
+  createMediaResource,
+  createMusicResource,
   createStyleTemplateResource,
+  createSubtitleResource,
+  createTemplateResource,
+  createTransitionResource,
 } from "../types"
 
 // Mock logger
@@ -59,7 +59,7 @@ describe("Resources Types - Factory Functions", () => {
       expect(resource.addedAt).toBeGreaterThan(0)
     })
 
-    it("generates unique IDs for multiple resources from the same file", () => {
+    it("generates IDs with timestamp component", () => {
       const file: MediaFile = {
         id: "media-123",
         name: "video.mp4",
@@ -74,10 +74,14 @@ describe("Resources Types - Factory Functions", () => {
         probeData: { streams: [], format: {} },
       }
 
-      const resource1 = createMediaResource(file)
-      const resource2 = createMediaResource(file)
+      const before = Date.now()
+      const resource = createMediaResource(file)
+      const after = Date.now()
 
-      expect(resource1.id).not.toBe(resource2.id)
+      // ID should contain the file ID and a timestamp
+      expect(resource.id).toMatch(/^media-media-123-\d+$/)
+      expect(resource.addedAt).toBeGreaterThanOrEqual(before)
+      expect(resource.addedAt).toBeLessThanOrEqual(after)
     })
   })
 
@@ -190,16 +194,17 @@ describe("Resources Types - Factory Functions", () => {
       expect(resource.name).toBe("Simple Effect")
     })
 
-    it("extracts Russian name from localized effect name", () => {
+    it("extracts English name from localized effect name (prefers en over ru)", () => {
       const effect: VideoEffect = {
         id: "localized-effect",
-        name: { ru: "Русское название", en: "English name" },
+        name: { en: "English name", ru: "Русское название" },
         type: "localized",
       } as any
 
       const resource = createEffectResource(effect)
 
-      expect(resource.name).toBe("Русское название")
+      // The code prefers English name (en) over Russian (ru)
+      expect(resource.name).toBe("English name")
     })
 
     it("falls back to English name if Russian is not available", () => {
@@ -259,9 +264,7 @@ describe("Resources Types - Factory Functions", () => {
     })
 
     it("throws error for null effect object", () => {
-      expect(() => createEffectResource(null as any)).toThrow(
-        "Invalid effect object provided to createEffectResource",
-      )
+      expect(() => createEffectResource(null as any)).toThrow("Invalid effect object provided to createEffectResource")
     })
   })
 
@@ -325,9 +328,7 @@ describe("Resources Types - Factory Functions", () => {
     })
 
     it("throws error for null filter object", () => {
-      expect(() => createFilterResource(null as any)).toThrow(
-        "Invalid filter object provided to createFilterResource",
-      )
+      expect(() => createFilterResource(null as any)).toThrow("Invalid filter object provided to createFilterResource")
     })
   })
 

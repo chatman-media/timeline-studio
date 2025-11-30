@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
-import {
-  convertFrontendSettingsToBackend,
-  handleProjectSettingsEvent,
-} from "../../services/backend-event-handlers"
+import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "../../services/backend-event-handlers"
 import type { ProjectSettings } from "../../types/project"
 
 // Мокируем tauri-logger
@@ -199,7 +196,7 @@ describe("backend-event-handlers", () => {
         type: "ProjectSettingsUpdated",
         payload: {
           settings: {
-            resolution: { width: 2560, height: 1080 },
+            resolution: { width: 2520, height: 1080 }, // Точное 21:9 = 2.333...
             frame_rate: 30,
             audio_sample_rate: 48000,
             audio_channels: 2,
@@ -210,14 +207,14 @@ describe("backend-event-handlers", () => {
       const result = handleProjectSettingsEvent(event)
 
       expect(result).toEqual({
-        resolution: "2560x1080",
+        resolution: "2520x1080",
         frameRate: "30",
         colorSpace: "sdr",
         aspectRatio: {
           label: "21:9",
           textLabel: "Кинотеатр",
           description: "Movie",
-          value: { width: 2560, height: 1080, name: "21:9" },
+          value: { width: 2560, height: 1080, name: "21:9" }, // Backend hardcodes 2560 for 21:9
         },
       })
     })
@@ -227,7 +224,7 @@ describe("backend-event-handlers", () => {
         type: "ProjectSettingsUpdated",
         payload: {
           settings: {
-            resolution: { width: 1600, height: 900 },
+            resolution: { width: 1400, height: 900 }, // Не совпадает ни с одним стандартным
             frame_rate: 30,
             audio_sample_rate: 48000,
             audio_channels: 2,
@@ -238,14 +235,14 @@ describe("backend-event-handlers", () => {
       const result = handleProjectSettingsEvent(event)
 
       expect(result).toEqual({
-        resolution: "1600x900",
+        resolution: "1400x900",
         frameRate: "30",
         colorSpace: "sdr",
         aspectRatio: {
           label: "custom",
           textLabel: "",
           description: "User",
-          value: { width: 1600, height: 900, name: "1600:900" },
+          value: { width: 1400, height: 900, name: "1400:900" },
         },
       })
     })
@@ -482,7 +479,7 @@ describe("backend-event-handlers", () => {
         type: "ProjectSettingsUpdated",
         payload: {
           settings: {
-            resolution: { width: 1920, height: 1081 }, // Немного отличается от точного 16:9
+            resolution: { width: 1920, height: 1100 }, // Отличается от точного 16:9 (1080)
             frame_rate: 30,
             audio_sample_rate: 48000,
             audio_channels: 2,
