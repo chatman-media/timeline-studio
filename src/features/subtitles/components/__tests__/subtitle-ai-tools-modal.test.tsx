@@ -32,6 +32,12 @@ vi.mock("@/domains/system-integration", () => ({
     openColorGrading: vi.fn(),
     openEffectDetail: vi.fn(),
   })),
+  useNotifications: vi.fn(() => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+    showInfo: vi.fn(),
+    showWarning: vi.fn(),
+  })),
 }))
 
 vi.mock("@/features/timeline/hooks/use-timeline", () => ({

@@ -32,6 +32,14 @@ export default defineConfig({
     testTimeout: 10000,
     // Быстрая параллельная конфигурация с threads pool
     pool: "threads",
+    // @ts-expect-error - poolOptions is valid in Vitest 4.x but types are not yet updated
+    poolOptions: {
+      threads: {
+        // Ограничиваем количество воркеров для предотвращения утечки памяти
+        maxThreads: 4,
+        minThreads: 1,
+      },
+    },
     // Включаем параллельное выполнение для скорости
     fileParallelism: true,
     isolate: true,

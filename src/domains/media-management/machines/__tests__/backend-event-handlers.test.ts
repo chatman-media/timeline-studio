@@ -270,6 +270,7 @@ describe("handleMediaBackendEvent", () => {
       expect(updates.mediaPool).toBeDefined()
       expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
+        codec: "hevc",
       })
     })
 

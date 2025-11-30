@@ -546,6 +546,7 @@ describe("Type Validation Utilities", () => {
           id: validTrack.id,
           name: validTrack.name,
           track_type: validTrack.track_type,
+          clips: [],
           index: 0,
         }
         const event: ProjectEvent = {

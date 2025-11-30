@@ -64,7 +64,7 @@ const mockProjectState = {
           size: 200000,
           lastCheckedAt: Date.now(),
         } as MediaFile,
-      },
+      } as Record<string, MediaFile>,
     },
   },
 }
@@ -128,40 +128,8 @@ describe("useBrowserAIIntegration", () => {
   })
 
   it("должен вернуть isReady: false если нет файлов", () => {
-    mockProjectState.project.media_pool.items = {
-      "media-1": {
-        id: "media-1",
-        name: "video.mp4",
-        path: "/path/to/video.mp4",
-        isVideo: true,
-        isAudio: false,
-        isImage: false,
-        size: 1000000,
-        duration: 60,
-        lastCheckedAt: Date.now(),
-      } as MediaFile,
-      "media-2": {
-        id: "media-2",
-        name: "audio.mp3",
-        path: "/path/to/audio.mp3",
-        isVideo: false,
-        isAudio: true,
-        isImage: false,
-        size: 500000,
-        duration: 180,
-        lastCheckedAt: Date.now(),
-      } as MediaFile,
-      "media-3": {
-        id: "media-3",
-        name: "image.jpg",
-        path: "/path/to/image.jpg",
-        isVideo: false,
-        isAudio: false,
-        isImage: true,
-        size: 200000,
-        lastCheckedAt: Date.now(),
-      } as MediaFile,
-    }
+    // Очищаем media pool - нет файлов
+    mockProjectState.project.media_pool.items = {}
 
     const { result } = renderHook(() => useBrowserAIIntegration())
 

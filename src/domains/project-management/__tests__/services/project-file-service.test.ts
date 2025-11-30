@@ -56,13 +56,13 @@ describe("ProjectFileService", () => {
       frameRate: "30",
       colorSpace: "sdr",
     },
-    mediaLibrary: {
+    mediaPool: {
       mediaFiles: [],
       musicFiles: [],
       lastUpdated: Date.now(),
       version: "1.0.0",
     },
-    browserState: {
+    workspaceSettings: {
       media: {
         viewMode: "grid",
         sortBy: "name",
@@ -81,7 +81,7 @@ describe("ProjectFileService", () => {
         showFavoritesOnly: false,
       },
     },
-    projectFavorites: {
+    favoriteFiles: {
       mediaFiles: [],
       musicFiles: [],
     },
@@ -178,17 +178,17 @@ describe("ProjectFileService", () => {
       const project = createNewProject("My Project")
 
       expect(project.settings).toBeDefined()
-      expect(project.mediaLibrary).toBeDefined()
-      expect(project.browserState).toBeDefined()
-      expect(project.projectFavorites).toBeDefined()
+      expect(project.mediaPool).toBeDefined()
+      expect(project.workspaceSettings).toBeDefined()
+      expect(project.favoriteFiles).toBeDefined()
       expect(project.meta).toBeDefined()
     })
 
     it("should initialize empty media files", () => {
       const project = createNewProject("My Project")
 
-      expect(project.mediaLibrary?.mediaFiles).toEqual([])
-      expect(project.mediaLibrary?.musicFiles).toEqual([])
+      expect(project.mediaPool?.mediaFiles).toEqual([])
+      expect(project.mediaPool?.musicFiles).toEqual([])
     })
 
     it("should set default resolution", () => {
@@ -230,14 +230,14 @@ describe("ProjectFileService", () => {
 
       const updated = updateMediaLibrary(mockProjectData, mediaFiles, musicFiles)
 
-      expect(updated.mediaLibrary?.mediaFiles).toEqual(mediaFiles)
-      expect(updated.mediaLibrary?.musicFiles).toEqual(musicFiles)
+      expect(updated.mediaPool?.mediaFiles).toEqual(mediaFiles)
+      expect(updated.mediaPool?.musicFiles).toEqual(musicFiles)
     })
 
     it("should update lastUpdated timestamp", () => {
       const updated = updateMediaLibrary(mockProjectData, [], [])
 
-      expect(updated.mediaLibrary?.lastUpdated).toBeDefined()
+      expect(updated.mediaPool?.lastUpdated).toBeDefined()
     })
   })
 
@@ -256,7 +256,7 @@ describe("ProjectFileService", () => {
 
       const updated = updateBrowserState(mockProjectData, newSettings)
 
-      expect(updated.browserState).toEqual(newSettings)
+      expect(updated.workspaceSettings).toEqual(newSettings)
     })
   })
 
@@ -269,7 +269,7 @@ describe("ProjectFileService", () => {
 
       const updated = updateProjectFavorites(mockProjectData, newFavorites)
 
-      expect(updated.projectFavorites).toEqual(newFavorites)
+      expect(updated.favoriteFiles).toEqual(newFavorites)
     })
   })
 
@@ -278,7 +278,7 @@ describe("ProjectFileService", () => {
       const projectWithMedia = {
         ...mockProjectData,
         mediaPool: {
-          ...mockProjectData.mediaLibrary,
+          ...mockProjectData.mediaPool,
           mediaFiles: [{ id: "1", size: 1024 } as SavedMediaFile, { id: "2", size: 2048 } as SavedMediaFile],
           musicFiles: [{ id: "3", size: 512 } as SavedMusicFile],
         },
@@ -304,7 +304,7 @@ describe("ProjectFileService", () => {
       const projectWithInvalidSizes = {
         ...mockProjectData,
         mediaPool: {
-          ...mockProjectData.mediaLibrary,
+          ...mockProjectData.mediaPool,
           mediaFiles: [{ id: "1", size: null } as any],
         },
       }

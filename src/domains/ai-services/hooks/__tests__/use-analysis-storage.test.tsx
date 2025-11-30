@@ -397,9 +397,11 @@ describe("useAnalysisStorage", () => {
         expect(mockStorageService.loadUnifiedAnalysis).toHaveBeenCalledWith("/test/video.mp4")
       })
 
-      expect(result.current.comprehensiveAnalysis).toEqual(mockComprehensiveAnalysis)
-      expect(result.current.montageAnalysis).toEqual(mockMontageAnalysis)
-      expect(result.current.unifiedAnalysis).toEqual(mockUnifiedAnalysis)
+      await waitFor(() => {
+        expect(result.current.comprehensiveAnalysis).toEqual(mockComprehensiveAnalysis)
+        expect(result.current.montageAnalysis).toEqual(mockMontageAnalysis)
+        expect(result.current.unifiedAnalysis).toEqual(mockUnifiedAnalysis)
+      })
     })
 
     it("не должен автоматически загружать если autoLoad = false", () => {
@@ -430,19 +432,34 @@ describe("useAnalysisStorage", () => {
     it("должен устанавливать isLoading во время операций", async () => {
       const { result } = renderHook(() => useAnalysisStorage())
 
-      let loadingDuringOperation = false
+      const loadingStates: boolean[] = []
 
       mockStorageService.loadComprehensiveAnalysis.mockImplementation(async () => {
-        loadingDuringOperation = result.current.isLoading
+        // Небольшая задержка для проверки состояния загрузки
+        await new Promise((resolve) => setTimeout(resolve, 10))
         return { success: true, data: mockComprehensiveAnalysis }
       })
 
-      await act(async () => {
-        await result.current.loadComprehensive("/test/video.mp4")
+      // Запускаем операцию без await
+      let promise: Promise<any>
+      act(() => {
+        promise = result.current.loadComprehensive("/test/video.mp4")
       })
 
-      expect(loadingDuringOperation).toBe(true)
+      // Проверяем isLoading асинхронно после запуска
+      await waitFor(() => {
+        loadingStates.push(result.current.isLoading)
+        expect(result.current.isLoading).toBe(true)
+      })
+
+      // Ждем завершения
+      await act(async () => {
+        await promise!
+      })
+
       expect(result.current.isLoading).toBe(false)
+      // Проверяем, что хотя бы раз был true
+      expect(loadingStates).toContain(true)
     })
   })
 

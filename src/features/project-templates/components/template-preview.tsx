@@ -232,57 +232,59 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, show
           </Card>
 
           {/* Placeholders */}
-          {template.placeholders && showDetails && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Плейсхолдеры</CardTitle>
-                <CardDescription>Места для добавления контента</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {template.placeholders.intro && (
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Intro</span>
-                        <Badge variant={template.placeholders.intro.required ? "default" : "outline"}>
-                          {template.placeholders.intro.required ? "Обязательно" : "Опционально"}
-                        </Badge>
+          {template.placeholders &&
+            showDetails &&
+            (template.placeholders.intro || template.placeholders.outro || template.placeholders.mainContent) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Плейсхолдеры</CardTitle>
+                  <CardDescription>Места для добавления контента</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {template.placeholders.intro && (
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Intro</span>
+                          <Badge variant={template.placeholders.intro.required ? "default" : "outline"}>
+                            {template.placeholders.intro.required ? "Обязательно" : "Опционально"}
+                          </Badge>
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          Длительность: {formatDuration(template.placeholders.intro.duration)}
+                        </div>
                       </div>
-                      <div className="text-muted-foreground text-xs">
-                        Длительность: {formatDuration(template.placeholders.intro.duration)}
+                    )}
+                    {template.placeholders.outro && (
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Outro</span>
+                          <Badge variant={template.placeholders.outro.required ? "default" : "outline"}>
+                            {template.placeholders.outro.required ? "Обязательно" : "Опционально"}
+                          </Badge>
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          Длительность: {formatDuration(template.placeholders.outro.duration)}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {template.placeholders.outro && (
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Outro</span>
-                        <Badge variant={template.placeholders.outro.required ? "default" : "outline"}>
-                          {template.placeholders.outro.required ? "Обязательно" : "Опционально"}
-                        </Badge>
+                    )}
+                    {template.placeholders.mainContent && (
+                      <div className="space-y-1">
+                        <span className="text-sm font-medium">Основной контент</span>
+                        <div className="text-muted-foreground text-xs">
+                          {template.placeholders.mainContent.minDuration && (
+                            <div>Минимум: {formatDuration(template.placeholders.mainContent.minDuration)}</div>
+                          )}
+                          {template.placeholders.mainContent.maxDuration && (
+                            <div>Максимум: {formatDuration(template.placeholders.mainContent.maxDuration)}</div>
+                          )}
+                        </div>
                       </div>
-                      <div className="text-muted-foreground text-xs">
-                        Длительность: {formatDuration(template.placeholders.outro.duration)}
-                      </div>
-                    </div>
-                  )}
-                  {template.placeholders.mainContent && (
-                    <div className="space-y-1">
-                      <span className="text-sm font-medium">Основной контент</span>
-                      <div className="text-muted-foreground text-xs">
-                        {template.placeholders.mainContent.minDuration && (
-                          <div>Минимум: {formatDuration(template.placeholders.mainContent.minDuration)}</div>
-                        )}
-                        {template.placeholders.mainContent.maxDuration && (
-                          <div>Максимум: {formatDuration(template.placeholders.mainContent.maxDuration)}</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
         </div>
       </ScrollArea>
     </div>

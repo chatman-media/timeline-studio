@@ -208,8 +208,8 @@ describe("AnalyzerPresetSelector", () => {
     it("should show estimated time", () => {
       render(<AnalyzerPresetSelector {...defaultProps} />)
 
-      // estimatedTime 120 is rendered directly (see component line 236)
-      expect(screen.getByText("120")).toBeInTheDocument()
+      // estimatedTime 120 seconds is formatted as "2 min"
+      expect(screen.getByText("2 min")).toBeInTheDocument()
     })
   })
 

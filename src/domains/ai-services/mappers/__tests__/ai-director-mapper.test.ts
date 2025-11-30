@@ -309,6 +309,7 @@ describe("AI Director Mapper", () => {
         const valid = {
           analysis_id: "test-123",
           status: "Completed",
+          video_path: "/test/video.mp4",
         }
 
         expect(isComprehensiveAnalysisResult(valid)).toBe(true)

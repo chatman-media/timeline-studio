@@ -137,12 +137,41 @@ export interface ProjectFile {
   /** Настройки проекта (разрешение, FPS, цветовое пространство) */
   settings: ProjectSettings
 
+  /** Медиа пул - новое название для mediaLibrary */
+  mediaPool?: {
+    mediaFiles: import("../../media/types/saved-media").SavedMediaFile[]
+    musicFiles: import("../../media/types/saved-media").SavedMusicFile[]
+    lastUpdated: number
+    version: string
+  }
+
   /** @deprecated Используйте mediaPool в новой структуре */
   mediaLibrary?: {
     mediaFiles: import("../../media/types/saved-media").SavedMediaFile[]
     musicFiles: import("../../media/types/saved-media").SavedMusicFile[]
     lastUpdated: number
     version: string
+  }
+
+  /** Настройки рабочего пространства - новое название для browserState */
+  workspaceSettings?: {
+    media: {
+      viewMode: "list" | "grid" | "thumbnails"
+      sortBy: string
+      sortOrder: "asc" | "desc"
+      searchQuery: string
+      filterType: string
+      groupBy: string
+    }
+    music: {
+      viewMode: "list" | "thumbnails"
+      sortBy: string
+      sortOrder: "asc" | "desc"
+      searchQuery: string
+      filterType: string
+      groupBy: "none" | "artist" | "genre" | "album"
+      showFavoritesOnly: boolean
+    }
   }
 
   /** @deprecated Перенесено в workspace настройки */
@@ -164,6 +193,12 @@ export interface ProjectFile {
       groupBy: "none" | "artist" | "genre" | "album"
       showFavoritesOnly: boolean
     }
+  }
+
+  /** Избранные файлы - новое название для projectFavorites */
+  favoriteFiles?: {
+    mediaFiles: string[]
+    musicFiles: string[]
   }
 
   /** @deprecated Интегрировано в mediaPool */

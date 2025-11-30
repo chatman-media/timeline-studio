@@ -125,13 +125,11 @@ function handleMediaAdded(
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
     thumbnailPath: media.thumbnail ?? undefined,
-    // Добавляем metadata с codec для H.265 детекции
-    metadata: media.codec
-      ? {
-          type: media.media_type as "Video" | "Audio" | "Image",
-          codec: media.codec,
-        }
-      : undefined,
+    // Добавляем metadata с типом, codec опционально для H.265 детекции
+    metadata: {
+      type: media.media_type as "Video" | "Audio" | "Image",
+      ...(media.codec ? { codec: media.codec } : {}),
+    },
   }
 
   // Добавляем в pool
@@ -248,13 +246,11 @@ function handleImportedMediaAdded(
     name: media.name,
     type: media.media_type as MediaType,
     duration: media.duration ?? undefined,
-    // Добавляем metadata с codec для H.265 детекции
-    metadata: media.codec
-      ? {
-          type: media.media_type as "Video" | "Audio" | "Image",
-          codec: media.codec,
-        }
-      : undefined,
+    // Добавляем metadata с типом, codec опционально для H.265 детекции
+    metadata: {
+      type: media.media_type as "Video" | "Audio" | "Image",
+      ...(media.codec ? { codec: media.codec } : {}),
+    },
   }
 
   // Добавляем в pool

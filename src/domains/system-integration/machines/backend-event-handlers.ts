@@ -33,7 +33,13 @@ function convertBackendNotification(backendNotification: BackendSystemNotificati
     type,
     timestamp: new Date(backendNotification.timestamp),
     duration: backendNotification.duration ?? undefined,
-    actions: backendNotification.actions ? (backendNotification.actions as any) : undefined,
+    actions: backendNotification.actions
+      ? backendNotification.actions.map((action) => {
+          const { style, ...rest } = action as any
+          // Удаляем null/undefined поля
+          return style !== null && style !== undefined ? { ...rest, style } : rest
+        })
+      : undefined,
   }
 }
 
