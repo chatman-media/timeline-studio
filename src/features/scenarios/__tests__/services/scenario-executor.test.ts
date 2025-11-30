@@ -277,4 +277,286 @@ describe("ScenarioExecutor", () => {
       expect(scenarioExecutor).toBe(scenarioExecutor)
     })
   })
+
+  describe("step validation", () => {
+    it("should fail when step has no handler registered", async () => {
+      const scenarioWithUnknownStep: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "unknown",
+            type: "non-existent-step" as any,
+            name: { en: "Unknown", ru: "Неизвестный" },
+            config: {},
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenarioWithUnknownStep, mockProject)
+
+      expect(result.status).toBe("failed")
+      expect(result.errors).toBeDefined()
+      expect(result.errors![0].message).toContain("No handler registered")
+    })
+
+    it("should validate step with custom validator", async () => {
+      const scenarioWithValidation: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "validated-step",
+            type: "select-clips",
+            name: { en: "Validated", ru: "С валидацией" },
+            config: {},
+            validation: {
+              required: true,
+              validator: () => false,
+              errorMessage: { en: "Validation failed", ru: "Валидация не прошла" },
+            },
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenarioWithValidation, mockProject)
+
+      expect(result.status).toBe("failed")
+      expect(result.errors).toBeDefined()
+    })
+
+    it("should pass validation with custom validator returning true", async () => {
+      const scenarioWithValidation: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "validated-step",
+            type: "select-clips",
+            name: { en: "Validated", ru: "С валидацией" },
+            config: {},
+            validation: {
+              required: true,
+              validator: () => true,
+            },
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenarioWithValidation, mockProject)
+
+      expect(result.status).toBe("success")
+    })
+
+    it("should handle validator returning error string", async () => {
+      const scenarioWithValidation: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "validated-step",
+            type: "select-clips",
+            name: { en: "Validated", ru: "С валидацией" },
+            config: {},
+            validation: {
+              validator: () => "Custom error message",
+            },
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenarioWithValidation, mockProject)
+
+      expect(result.status).toBe("failed")
+      expect(result.errors).toBeDefined()
+      expect(result.errors![0].message).toBe("Custom error message")
+    })
+  })
+
+  describe("step execution results", () => {
+    it("should collect step data in context", async () => {
+      const onStepComplete = vi.fn()
+
+      const result = await executor.executeScenario(mockScenario, mockProject, {
+        onStepComplete,
+      })
+
+      expect(result.output).toBeDefined()
+      expect(result.output.projectData).toBe(mockProject)
+      expect(result.output.metadata).toBeDefined()
+    })
+
+    it("should handle step that throws an exception", async () => {
+      executor.registerStepHandler("throwing-step", async () => {
+        throw new Error("Step execution error")
+      })
+
+      const scenarioWithError: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "throwing",
+            type: "throwing-step" as any,
+            name: { en: "Throwing", ru: "С ошибкой" },
+            config: {},
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenarioWithError, mockProject)
+
+      expect(result.status).toBe("failed")
+      expect(result.errors).toBeDefined()
+      expect(result.errors![0].message).toBe("Step execution error")
+    })
+
+    it("should mark step as skipped when skipped is true in result", async () => {
+      executor.registerStepHandler("skippable-step", async () => ({
+        success: true,
+        skipped: true,
+      }))
+
+      const scenarioWithSkip: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "skipped",
+            type: "skippable-step" as any,
+            name: { en: "Skipped", ru: "Пропущен" },
+            config: {},
+            optional: true,
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenarioWithSkip, mockProject)
+
+      expect(result.status).toBe("partial")
+      expect(result.skippedSteps).toBeDefined()
+      expect(result.skippedSteps).toContain("skipped")
+    })
+  })
+
+  describe("status determination", () => {
+    it("should return 'success' when all steps complete successfully", async () => {
+      const result = await executor.executeScenario(mockScenario, mockProject)
+      expect(result.status).toBe("success")
+    })
+
+    it("should return 'failed' when less than half steps succeed", async () => {
+      executor.registerStepHandler("failing-step", async () => ({
+        success: false,
+        error: "Failed",
+      }))
+
+      const scenario: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "fail-1",
+            type: "failing-step" as any,
+            name: { en: "Fail 1", ru: "Ошибка 1" },
+            config: {},
+          },
+          {
+            id: "fail-2",
+            type: "failing-step" as any,
+            name: { en: "Fail 2", ru: "Ошибка 2" },
+            config: {},
+          },
+          {
+            id: "success",
+            type: "select-clips",
+            name: { en: "Success", ru: "Успех" },
+            config: {},
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenario, mockProject, {
+        stopOnError: false,
+      })
+
+      expect(result.status).toBe("failed")
+    })
+
+    it("should return 'partial' when some steps are skipped", async () => {
+      executor.registerStepHandler("skip-step", async () => ({
+        success: true,
+        skipped: true,
+      }))
+
+      const scenario: Scenario = {
+        ...mockScenario,
+        steps: [
+          {
+            id: "normal",
+            type: "select-clips",
+            name: { en: "Normal", ru: "Обычный" },
+            config: {},
+          },
+          {
+            id: "skipped",
+            type: "skip-step" as any,
+            name: { en: "Skipped", ru: "Пропущен" },
+            config: {},
+          },
+        ],
+      }
+
+      const result = await executor.executeScenario(scenario, mockProject)
+
+      expect(result.status).toBe("partial")
+      expect(result.skippedSteps).toContain("skipped")
+    })
+  })
+
+  describe("execution control methods", () => {
+    it("should call cancelExecution without errors", async () => {
+      await expect(executor.cancelExecution()).resolves.toBeUndefined()
+    })
+
+    it("should call pauseExecution without errors", async () => {
+      await expect(executor.pauseExecution()).resolves.toBeUndefined()
+    })
+
+    it("should call resumeExecution without errors", async () => {
+      await expect(executor.resumeExecution()).resolves.toBeUndefined()
+    })
+  })
+
+  describe("all default step handlers", () => {
+    const defaultHandlers = [
+      { type: "select-clips", expectedData: { selectedClips: [] } },
+      { type: "add-intro", expectedData: { introAdded: true } },
+      { type: "add-outro", expectedData: { outroAdded: true } },
+      { type: "add-cuts", expectedData: { cutsCount: 0 } },
+      { type: "add-music", expectedData: { musicAdded: false } },
+      { type: "analyze-audio", expectedData: { beats: [], bpm: 0 } },
+      { type: "analyze-video", expectedData: { scenes: [], moments: [] } },
+      { type: "apply-transitions", expectedData: { transitionsApplied: 0 } },
+      { type: "apply-effects", expectedData: { effectsApplied: 0 } },
+      { type: "sync-beats", expectedData: { syncedClips: 0 } },
+      { type: "auto-montage", expectedData: { montageCreated: false } },
+      { type: "add-chapters", expectedData: { chaptersAdded: 0 } },
+      { type: "preview", expectedData: { previewReady: true } },
+    ]
+
+    defaultHandlers.forEach(({ type, expectedData }) => {
+      it(`should execute ${type} handler successfully`, async () => {
+        const scenario: Scenario = {
+          ...mockScenario,
+          steps: [
+            {
+              id: `test-${type}`,
+              type: type as any,
+              name: { en: type, ru: type },
+              config: { templateType: "graphics" },
+            },
+          ],
+        }
+
+        const result = await executor.executeScenario(scenario, mockProject)
+
+        expect(result.status).toBe("success")
+        expect(result.output.metadata[`test-${type}`]).toEqual(expectedData)
+      })
+    })
+  })
 })

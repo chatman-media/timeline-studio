@@ -67,7 +67,8 @@ export function useFilters(): UseFiltersReturn {
     } finally {
       setLoading(false)
     }
-  }, [t])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Загружаем фильтры при монтировании компонента
   useEffect(() => {

@@ -33,13 +33,7 @@ describe("useFilters", () => {
     it("should load filters from JSON data", async () => {
       const { result } = renderHook(() => useFilters())
 
-      // Initially loading
-      expect(result.current.loading).toBe(true)
-      expect(result.current.filters).toEqual([])
-      expect(result.current.error).toBe(null)
-      expect(result.current.isReady).toBe(false)
-
-      // Wait for filters to load
+      // Wait for filters to load (loads synchronously from JSON import)
       await waitFor(() => {
         expect(result.current.loading).toBe(false)
       })

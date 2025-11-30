@@ -250,32 +250,28 @@ describe("Audio Sync Service", () => {
       expect(results).toEqual([])
     })
 
-    it(
-      "should skip clips without audio",
-      async () => {
-        const baseClip = createMockClip("base", "media-base")
-        const clips = [createMockClip("clip1", "media-no-audio"), createMockClip("clip2", "media2")]
-        const mediaFiles = [
-          createMockMediaFile("media-base", true),
-          createMockMediaFile("media-no-audio", false),
-          createMockMediaFile("media2", true),
-        ]
+    it("should skip clips without audio", async () => {
+      const baseClip = createMockClip("base", "media-base")
+      const clips = [createMockClip("clip1", "media-no-audio"), createMockClip("clip2", "media2")]
+      const mediaFiles = [
+        createMockMediaFile("media-base", true),
+        createMockMediaFile("media-no-audio", false),
+        createMockMediaFile("media2", true),
+      ]
 
-        const results = await syncByAudio(baseClip, clips, mediaFiles)
+      const results = await syncByAudio(baseClip, clips, mediaFiles)
 
-        expect(results).toHaveLength(2)
-        expect(results[0]).toMatchObject({
-          clipId: "clip1",
-          method: "none",
-          confidence: 0,
-        })
-        expect(results[1]).toMatchObject({
-          clipId: "clip2",
-          method: "audio",
-        })
-      },
-      15000,
-    )
+      expect(results).toHaveLength(2)
+      expect(results[0]).toMatchObject({
+        clipId: "clip1",
+        method: "none",
+        confidence: 0,
+      })
+      expect(results[1]).toMatchObject({
+        clipId: "clip2",
+        method: "audio",
+      })
+    }, 15000)
 
     it("should skip base clip in results", async () => {
       vi.useFakeTimers()
@@ -313,31 +309,27 @@ describe("Audio Sync Service", () => {
       vi.useRealTimers()
     })
 
-    it(
-      "should report progress phases correctly",
-      async () => {
-        vi.useFakeTimers()
-        const baseClip = createMockClip("base", "media-base")
-        const clips = [createMockClip("clip1", "media1")]
-        const mediaFiles = [createMockMediaFile("media-base", true), createMockMediaFile("media1", true)]
+    it("should report progress phases correctly", async () => {
+      vi.useFakeTimers()
+      const baseClip = createMockClip("base", "media-base")
+      const clips = [createMockClip("clip1", "media1")]
+      const mediaFiles = [createMockMediaFile("media-base", true), createMockMediaFile("media1", true)]
 
-        const onProgress = vi.fn()
+      const onProgress = vi.fn()
 
-        const promise = syncByAudio(baseClip, clips, mediaFiles, onProgress)
-        await vi.runAllTimersAsync()
-        await promise
+      const promise = syncByAudio(baseClip, clips, mediaFiles, onProgress)
+      await vi.runAllTimersAsync()
+      await promise
 
-        const calls = onProgress.mock.calls.map((call) => call[0])
-        const phases = calls.map((c: any) => c.phase)
+      const calls = onProgress.mock.calls.map((call) => call[0])
+      const phases = calls.map((c: any) => c.phase)
 
-        expect(phases).toContain("loading")
-        expect(phases).toContain("analyzing")
-        expect(phases).toContain("correlating")
-        expect(phases).toContain("complete")
-        vi.useRealTimers()
-      },
-      15000,
-    )
+      expect(phases).toContain("loading")
+      expect(phases).toContain("analyzing")
+      expect(phases).toContain("correlating")
+      expect(phases).toContain("complete")
+      vi.useRealTimers()
+    }, 15000)
   })
 
   describe("analyzeAudioSyncQuality", () => {
