@@ -387,4 +387,338 @@ describe("ExpressionEngine", () => {
       expect(typeof result).toBe("number")
     })
   })
+
+  describe("Error handling and edge cases", () => {
+    const evaluator = new ExpressionEvaluator()
+
+    it("handles context without value property", () => {
+      const context = createMockContext({ value: undefined as any })
+      const result = evaluator.evaluate("value + 10", context)
+
+      expect(result).toBeDefined()
+    })
+
+    it("handles wiggle with different parameters", () => {
+      const context = createMockContext({ time: 2 })
+
+      const result1 = evaluator.evaluate("wiggle(5, 100)", context)
+      expect(typeof result1).toBe("number")
+
+      const result2 = evaluator.evaluate("wiggle(1, 10, 3)", context)
+      expect(typeof result2).toBe("number")
+
+      const result3 = evaluator.evaluate("wiggle(2, 20, 2, 0.3)", context)
+      expect(typeof result3).toBe("number")
+
+      const result4 = evaluator.evaluate("wiggle(3, 30, 1, 0.5, 1.5)", context)
+      expect(typeof result4).toBe("number")
+    })
+
+    it("handles loopIn with different types", () => {
+      const context = createMockContext()
+
+      expect(evaluator.evaluate("loopIn('cycle')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopIn('pingpong')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopIn('offset')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopIn('continue')", context)).toBeDefined()
+    })
+
+    it("handles loopOut with different types", () => {
+      const context = createMockContext()
+
+      expect(evaluator.evaluate("loopOut('cycle')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopOut('pingpong')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopOut('offset')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopOut('continue')", context)).toBeDefined()
+    })
+
+    it("handles loopIn pingpong with even cycles", () => {
+      const context = createMockContext({
+        time: 4, // Even cycles
+        property: {
+          id: "prop-1",
+          name: "Test",
+          path: "test",
+          type: "number",
+          keyframes: [{ id: "kf-1", time: 2, value: 100, interpolation: "linear" }],
+          enabled: true,
+        },
+      })
+
+      const result = evaluator.evaluate("loopIn('pingpong')", context)
+      expect(result).toBeDefined()
+    })
+
+    it("handles loopIn pingpong with odd cycles", () => {
+      const context = createMockContext({
+        time: 3, // Odd cycles
+        property: {
+          id: "prop-1",
+          name: "Test",
+          path: "test",
+          type: "number",
+          keyframes: [
+            { id: "kf-1", time: 2, value: 100, interpolation: "linear" },
+            { id: "kf-2", time: 4, value: 200, interpolation: "linear" },
+          ],
+          enabled: true,
+        },
+      })
+
+      const result = evaluator.evaluate("loopIn('pingpong')", context)
+      expect(result).toBeDefined()
+    })
+
+    it("handles loopOut pingpong with even cycles", () => {
+      const context = createMockContext({
+        time: 4,
+        property: {
+          id: "prop-1",
+          name: "Test",
+          path: "test",
+          type: "number",
+          keyframes: [{ id: "kf-1", time: 2, value: 100, interpolation: "linear" }],
+          enabled: true,
+        },
+      })
+
+      const result = evaluator.evaluate("loopOut('pingpong')", context)
+      expect(result).toBeDefined()
+    })
+
+    it("handles loopOut pingpong with odd cycles", () => {
+      const context = createMockContext({
+        time: 3,
+        property: {
+          id: "prop-1",
+          name: "Test",
+          path: "test",
+          type: "number",
+          keyframes: [
+            { id: "kf-1", time: 2, value: 100, interpolation: "linear" },
+            { id: "kf-2", time: 4, value: 200, interpolation: "linear" },
+          ],
+          enabled: true,
+        },
+      })
+
+      const result = evaluator.evaluate("loopOut('pingpong')", context)
+      expect(result).toBeDefined()
+    })
+
+    it("handles loopIn/Out with numKeyframes parameter", () => {
+      const context = createMockContext()
+
+      expect(evaluator.evaluate("loopIn('cycle', 5)", context)).toBeDefined()
+      expect(evaluator.evaluate("loopOut('pingpong', 3)", context)).toBeDefined()
+    })
+
+    it("includes helper functions in safe context", () => {
+      const context = createMockContext()
+      // Wiggle helper is available in expressions
+      const result = evaluator.evaluate("wiggle(1, 10)", context)
+      expect(typeof result).toBe("number")
+    })
+
+    it("includes loop functions in safe context", () => {
+      const context = createMockContext()
+      // loopIn/loopOut are available
+      expect(evaluator.evaluate("loopIn('cycle')", context)).toBeDefined()
+      expect(evaluator.evaluate("loopOut('cycle')", context)).toBeDefined()
+    })
+
+    it("handles normalize with zero-length vector", () => {
+      const context = createMockContext()
+      const result = evaluator.evaluate("normalize([0, 0])", context) as number[]
+
+      expect(result).toEqual([0, 0])
+    })
+
+    it("handles dot product with different length vectors", () => {
+      const context = createMockContext()
+      const result = evaluator.evaluate("dot([1, 2, 3], [4, 5])", context)
+
+      expect(result).toBe(14) // 1*4 + 2*5 + 3*0
+    })
+
+    it("handles hsl with edge values", () => {
+      const context = createMockContext()
+
+      const result1 = evaluator.evaluate("hsl(0, 0, 0)", context)
+      expect(result1).toMatch(/^#[0-9a-f]{6}$/)
+
+      const result2 = evaluator.evaluate("hsl(360, 1, 1)", context)
+      expect(result2).toMatch(/^#[0-9a-f]{6}$/)
+    })
+
+    it("handles hsl with different hue ranges", () => {
+      const context = createMockContext()
+
+      // Test different hue sections
+      const result1 = evaluator.evaluate("hsl(30, 0.5, 0.5)", context) // < 1/6
+      expect(result1).toMatch(/^#[0-9a-f]{6}$/)
+
+      const result2 = evaluator.evaluate("hsl(120, 0.5, 0.5)", context) // < 1/2
+      expect(result2).toMatch(/^#[0-9a-f]{6}$/)
+
+      const result3 = evaluator.evaluate("hsl(240, 0.5, 0.5)", context) // < 2/3
+      expect(result3).toMatch(/^#[0-9a-f]{6}$/)
+
+      const result4 = evaluator.evaluate("hsl(300, 0.5, 0.5)", context) // > 2/3
+      expect(result4).toMatch(/^#[0-9a-f]{6}$/)
+    })
+
+    it("handles hsl with l < 0.5 and l >= 0.5", () => {
+      const context = createMockContext()
+
+      const result1 = evaluator.evaluate("hsl(180, 0.5, 0.3)", context)
+      expect(result1).toMatch(/^#[0-9a-f]{6}$/)
+
+      const result2 = evaluator.evaluate("hsl(180, 0.5, 0.7)", context)
+      expect(result2).toMatch(/^#[0-9a-f]{6}$/)
+    })
+
+    it("handles vec4 creation", () => {
+      const context = createMockContext()
+      const result = evaluator.evaluate("vec4(1, 2, 3, 4)", context) as [number, number, number, number]
+
+      expect(result).toEqual([1, 2, 3, 4])
+    })
+
+    it("handles sawtooth with different periods", () => {
+      const context = createMockContext({ time: 2.5 })
+
+      const result1 = evaluator.evaluate("sawtooth(time)", context)
+      expect(typeof result1).toBe("number")
+
+      const result2 = evaluator.evaluate("sawtooth(time, 2)", context)
+      expect(typeof result2).toBe("number")
+    })
+
+    it("handles triangle with different periods", () => {
+      const context = createMockContext({ time: 1.5 })
+
+      const result1 = evaluator.evaluate("triangle(time)", context)
+      expect(typeof result1).toBe("number")
+
+      const result2 = evaluator.evaluate("triangle(time, 3)", context)
+      expect(typeof result2).toBe("number")
+    })
+
+    it("handles triangle wave first and second half", () => {
+      const context = createMockContext()
+
+      // First half (p < period/2)
+      const result1 = evaluator.evaluate("triangle(0.25, 1)", context)
+      expect(typeof result1).toBe("number")
+
+      // Second half (p >= period/2)
+      const result2 = evaluator.evaluate("triangle(0.75, 1)", context)
+      expect(typeof result2).toBe("number")
+    })
+
+    it("handles square wave", () => {
+      const context = createMockContext({ time: 1.5 })
+
+      const result1 = evaluator.evaluate("square(time)", context)
+      expect([0, 1]).toContain(result1)
+
+      const result2 = evaluator.evaluate("square(time, 2)", context)
+      expect([0, 1]).toContain(result2)
+    })
+
+    it("handles layer index extraction", () => {
+      const context = createMockContext({
+        layer: {
+          id: "layer-5",
+          name: "Test",
+          properties: [],
+          enabled: true,
+          solo: false,
+          locked: false,
+          opacity: 1,
+          blendMode: "normal",
+        },
+      })
+
+      const result = evaluator.evaluate("index", context)
+      expect(result).toBe(5)
+    })
+
+    it("handles layer without numeric id", () => {
+      const context = createMockContext({
+        layer: {
+          id: "layer-abc",
+          name: "Test",
+          properties: [],
+          enabled: true,
+          solo: false,
+          locked: false,
+          opacity: 1,
+          blendMode: "normal",
+        },
+      })
+
+      const result = evaluator.evaluate("index", context)
+      expect(typeof result).toBe("number")
+    })
+
+    it("handles expression with multiple operations", () => {
+      const context = createMockContext({ time: 1, value: 50 })
+      const result = evaluator.evaluate("value * 2 + sin(time) * 10 + random() * 5", context)
+
+      expect(typeof result).toBe("number")
+    })
+
+    it("validates expression with runtime error", () => {
+      const result = evaluator.validateExpression("1 / 0")
+
+      // Division by zero should still compile but might have issues
+      expect(result.valid).toBe(true)
+    })
+
+    it("returns suggestions for empty partial", () => {
+      const suggestions = evaluator.getSuggestions("")
+
+      expect(suggestions.length).toBeGreaterThan(0)
+      expect(suggestions.length).toBeLessThanOrEqual(10)
+    })
+
+    it("returns function-specific suggestions", () => {
+      const suggestions = evaluator.getSuggestions("co")
+
+      expect(suggestions).toContain("cos")
+    })
+
+    it("handles noise with seed parameter", () => {
+      const context = createMockContext({ time: 1 })
+
+      const result1 = evaluator.evaluate("noise(time, 0)", context)
+      const result2 = evaluator.evaluate("noise(time, 1)", context)
+
+      expect(typeof result1).toBe("number")
+      expect(typeof result2).toBe("number")
+      // Different seeds should produce different results
+      expect(result1).not.toBe(result2)
+    })
+
+    it("handles easeInOut with different t values", () => {
+      const context = createMockContext()
+
+      const result1 = evaluator.evaluate("easeInOut(0.25)", context)
+      expect(typeof result1).toBe("number")
+
+      const result2 = evaluator.evaluate("easeInOut(0.75)", context)
+      expect(typeof result2).toBe("number")
+    })
+
+    it("handles compilation error gracefully", () => {
+      const context = createMockContext({ value: 42 })
+      // Expression that causes compilation error
+      const result = evaluator.evaluate("this is not valid javascript", context)
+
+      // Should return current value on error
+      expect(result).toBe(42)
+    })
+  })
 })

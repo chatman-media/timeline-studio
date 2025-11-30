@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 
-import { useCameraSync } from "../hooks/use-camera-sync"
+import { useCameraSync } from "../use-camera-sync"
 
 // Мокаем зависимости
 vi.mock("@/features/timeline/hooks/use-linked-clips", () => ({
@@ -64,19 +64,30 @@ vi.mock("@/features/timeline/hooks/use-linked-clips", () => ({
 
 vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
   useMediaFiles: () => ({
-    getMediaFileById: vi.fn((id: string) => ({
-      id,
-      name: `media-${id}.mp4`,
-      path: `/media/${id}.mp4`,
-      probeData: {
-        streams: [{ index: 0, timecode: "10:00:00:00" }],
-        format: {},
+    mediaFiles: [
+      {
+        id: "media-clip1",
+        name: "media-clip1.mp4",
+        path: "/media/media-clip1.mp4",
+        probeData: {
+          streams: [{ index: 0, timecode: "10:00:00:00" }],
+          format: {},
+        },
       },
-    })),
+      {
+        id: "media-clip2",
+        name: "media-clip2.mp4",
+        path: "/media/media-clip2.mp4",
+        probeData: {
+          streams: [{ index: 0, timecode: "10:00:05:00" }],
+          format: {},
+        },
+      },
+    ],
   }),
 }))
 
-vi.mock("../services/timecode-sync", () => ({
+vi.mock("../../services/timecode-sync", () => ({
   syncByTimecode: vi.fn(() => [
     {
       clipId: "clip2",
@@ -87,7 +98,7 @@ vi.mock("../services/timecode-sync", () => ({
   ]),
 }))
 
-vi.mock("../services/audio-sync-adapter", () => ({
+vi.mock("../../services/audio-sync-adapter", () => ({
   syncByAudio: vi.fn(() =>
     Promise.resolve({
       offset: -2.5,
@@ -96,7 +107,7 @@ vi.mock("../services/audio-sync-adapter", () => ({
   ),
 }))
 
-vi.mock("../utils/media-mapper", () => ({
+vi.mock("../../utils/media-mapper", () => ({
   mediaItemsToMediaFiles: vi.fn((items) => items),
 }))
 
@@ -285,5 +296,39 @@ describe("useCameraSync", () => {
     expect(result.current.syncStatus).toBe("idle")
     expect(result.current.syncProgress).toBe(0)
     expect(result.current.syncError).toBeNull()
+  })
+
+  it("should cancel sync operation", () => {
+    const { result } = renderHook(() => useCameraSync({ baseClipId: "clip1" }), {
+      wrapper: TimelineProvider,
+    })
+
+    act(() => {
+      result.current.syncManual("clip2", 1.0)
+    })
+
+    act(() => {
+      result.current.cancelSync()
+    })
+
+    expect(result.current.syncStatus).toBe("idle")
+    expect(result.current.syncProgress).toBe(0)
+  })
+
+  it("should apply sync results to clips", () => {
+    const { result } = renderHook(() => useCameraSync({ baseClipId: "clip1" }), {
+      wrapper: TimelineProvider,
+    })
+
+    act(() => {
+      result.current.syncManual("clip2", 2.5)
+    })
+
+    act(() => {
+      result.current.applySyncResults()
+    })
+
+    // Проверяем что функция не падает
+    expect(result.current.syncResults).toHaveLength(1)
   })
 })

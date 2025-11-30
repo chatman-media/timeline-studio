@@ -533,6 +533,60 @@ describe("DragDropManager", () => {
       expect(mockDocument.body.removeChild).toHaveBeenCalledWith(mockElement)
     })
 
+    it("should clean up active drop target on drag end", () => {
+      const mockDropTarget: DropTarget = {
+        id: "test-target",
+        accepts: ["media"],
+        element: mockElement as unknown as HTMLElement,
+        onDragLeave: vi.fn(),
+      }
+
+      manager.registerDropTarget(mockDropTarget)
+      mockDocument.elementFromPoint.mockReturnValue(mockElement)
+      mockElement.contains.mockReturnValue(true)
+
+      manager.startDrag(testItem, mockDragEvent)
+
+      // Trigger updateDrag to activate the drop target
+      manager.updateDrag(mockDragEvent)
+
+      // Verify target is active
+      const currentDrag = (manager as any).currentDrag
+      expect(currentDrag.activeDropTarget).toBe("test-target")
+
+      // End drag - should call onDragLeave
+      manager.endDrag(mockDragEvent)
+
+      expect(mockDropTarget.onDragLeave).toHaveBeenCalledWith(testItem)
+    })
+
+    it("should clean up active drop target on drag cancel", () => {
+      const mockDropTarget: DropTarget = {
+        id: "test-target",
+        accepts: ["media"],
+        element: mockElement as unknown as HTMLElement,
+        onDragLeave: vi.fn(),
+      }
+
+      manager.registerDropTarget(mockDropTarget)
+      mockDocument.elementFromPoint.mockReturnValue(mockElement)
+      mockElement.contains.mockReturnValue(true)
+
+      manager.startDrag(testItem, mockDragEvent)
+
+      // Trigger updateDrag to activate the drop target
+      manager.updateDrag(mockDragEvent)
+
+      // Verify target is active
+      const currentDrag = (manager as any).currentDrag
+      expect(currentDrag.activeDropTarget).toBe("test-target")
+
+      // Cancel drag - should call onDragLeave
+      manager.cancelDrag()
+
+      expect(mockDropTarget.onDragLeave).toHaveBeenCalledWith(testItem)
+    })
+
     it("should not create ghost image without preview", () => {
       const itemWithoutPreview = { ...testItem, preview: undefined }
 
@@ -559,6 +613,83 @@ describe("DragDropManager", () => {
       expect(mockDocument.addEventListener).toHaveBeenCalledWith("drop", expect.any(Function))
       expect(mockDocument.addEventListener).toHaveBeenCalledWith("dragend", expect.any(Function))
       expect(mockDocument.addEventListener).toHaveBeenCalledWith("keydown", expect.any(Function))
+    })
+
+    it("should trigger cleanup on dragend event", () => {
+      const testItem: DraggableItem = { type: "media", data: {} }
+      const mockDragEvent = {
+        clientX: 100,
+        clientY: 200,
+        dataTransfer: mockDataTransfer,
+      } as unknown as DragEvent
+
+      manager.startDrag(testItem, mockDragEvent)
+
+      // Get the dragend handler
+      const dragendCall = mockDocument.addEventListener.mock.calls.find((call) => call[0] === "dragend")
+      const dragendHandler = dragendCall?.[1]
+
+      // Trigger dragend
+      dragendHandler?.()
+
+      expect(manager.getCurrentDrag()).toBeNull()
+    })
+
+    it("should trigger updateDrag on dragover event", () => {
+      const testItem: DraggableItem = { type: "media", data: {} }
+      const mockStartEvent = {
+        clientX: 100,
+        clientY: 200,
+        dataTransfer: mockDataTransfer,
+      } as unknown as DragEvent
+
+      manager.startDrag(testItem, mockStartEvent)
+
+      // Get the dragover handler
+      const dragoverCall = mockDocument.addEventListener.mock.calls.find((call) => call[0] === "dragover")
+      const dragoverHandler = dragoverCall?.[1]
+
+      const mockDragOverEvent = {
+        clientX: 150,
+        clientY: 250,
+        preventDefault: vi.fn(),
+      } as unknown as DragEvent
+
+      // Trigger dragover
+      dragoverHandler?.(mockDragOverEvent)
+
+      expect(mockDragOverEvent.preventDefault).toHaveBeenCalled()
+
+      const currentDrag = (manager as any).currentDrag
+      expect(currentDrag.currentX).toBe(150)
+      expect(currentDrag.currentY).toBe(250)
+    })
+
+    it("should trigger endDrag on drop event", () => {
+      const testItem: DraggableItem = { type: "media", data: {} }
+      const mockDragEvent = {
+        clientX: 100,
+        clientY: 200,
+        dataTransfer: mockDataTransfer,
+      } as unknown as DragEvent
+
+      manager.startDrag(testItem, mockDragEvent)
+
+      // Get the drop handler
+      const dropCall = mockDocument.addEventListener.mock.calls.find((call) => call[0] === "drop")
+      const dropHandler = dropCall?.[1]
+
+      const mockDropEvent = {
+        clientX: 100,
+        clientY: 200,
+        preventDefault: vi.fn(),
+      } as unknown as DragEvent
+
+      // Trigger drop
+      dropHandler?.(mockDropEvent)
+
+      expect(mockDropEvent.preventDefault).toHaveBeenCalled()
+      expect(manager.getCurrentDrag()).toBeNull()
     })
 
     it("should handle escape key to cancel drag", () => {

@@ -1,4 +1,5 @@
-import { act, renderHook } from "@testing-library/react"
+import { act, render, renderHook } from "@testing-library/react"
+import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { DraggableItem } from "../../services/drag-drop-manager"
@@ -209,6 +210,138 @@ describe("useDropZone", () => {
     expect(result.current.ref).toBeDefined()
     expect(typeof result.current.onDragOver).toBe("function")
     expect(typeof result.current.onDrop).toBe("function")
+  })
+
+  it("should register drop target when element ref is set", () => {
+    // Create a test component that uses the drop zone
+    function TestDropZone() {
+      const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+    }
+
+    render(<TestDropZone />)
+
+    // The manager should have registered the drop target
+    expect(mockManager.registerDropTarget).toHaveBeenCalled()
+
+    // Get the registered config
+    const registerCall = mockManager.registerDropTarget.mock.calls[0]
+    const dropTargetConfig = registerCall?.[0]
+
+    expect(dropTargetConfig).toBeDefined()
+    expect(dropTargetConfig?.id).toBe("test-zone")
+    expect(dropTargetConfig?.accepts).toEqual(["media"])
+  })
+
+  it("should call onDragEnter and add CSS classes when drag enters", () => {
+    function TestDropZone() {
+      const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+    }
+
+    const { getByTestId } = render(<TestDropZone />)
+    const element = getByTestId("drop-zone")
+
+    // Get the registered drop target config
+    const registerCall = mockManager.registerDropTarget.mock.calls[0]
+    const dropTargetConfig = registerCall?.[0]
+
+    const testItem: DraggableItem = { type: "media", data: { id: "test" } }
+
+    // Trigger onDragEnter
+    act(() => {
+      dropTargetConfig?.onDragEnter?.(testItem)
+    })
+
+    // Check that CSS classes were added
+    expect(element.classList.contains("bg-primary/10")).toBe(true)
+    expect(element.classList.contains("border-primary")).toBe(true)
+    expect(element.classList.contains("border-dashed")).toBe(true)
+    expect(element.classList.contains("border-2")).toBe(true)
+  })
+
+  it("should call onDragLeave and remove CSS classes when drag leaves", () => {
+    function TestDropZone() {
+      const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+    }
+
+    const { getByTestId } = render(<TestDropZone />)
+    const element = getByTestId("drop-zone")
+
+    // Get the registered drop target config
+    const registerCall = mockManager.registerDropTarget.mock.calls[0]
+    const dropTargetConfig = registerCall?.[0]
+
+    const testItem: DraggableItem = { type: "media", data: { id: "test" } }
+
+    // First add classes
+    act(() => {
+      dropTargetConfig?.onDragEnter?.(testItem)
+    })
+
+    expect(element.classList.contains("bg-primary/10")).toBe(true)
+
+    // Then trigger onDragLeave
+    act(() => {
+      dropTargetConfig?.onDragLeave?.()
+    })
+
+    // Check that CSS classes were removed
+    expect(element.classList.contains("bg-primary/10")).toBe(false)
+    expect(element.classList.contains("border-primary")).toBe(false)
+    expect(element.classList.contains("border-dashed")).toBe(false)
+    expect(element.classList.contains("border-2")).toBe(false)
+  })
+
+  it("should call onDragOver and prevent default", () => {
+    function TestDropZone() {
+      const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+    }
+
+    render(<TestDropZone />)
+
+    // Get the registered drop target config
+    const registerCall = mockManager.registerDropTarget.mock.calls[0]
+    const dropTargetConfig = registerCall?.[0]
+
+    const testItem: DraggableItem = { type: "media", data: { id: "test" } }
+    const mockEvent = { preventDefault: vi.fn() } as unknown as DragEvent
+
+    // Trigger onDragOver
+    act(() => {
+      dropTargetConfig?.onDragOver?.(testItem, mockEvent)
+    })
+
+    expect(mockEvent.preventDefault).toHaveBeenCalled()
+  })
+
+  it("should unregister and cleanup on unmount", () => {
+    function TestDropZone() {
+      const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+    }
+
+    const { unmount, getByTestId } = render(<TestDropZone />)
+    const element = getByTestId("drop-zone")
+
+    // Add classes first
+    const registerCall = mockManager.registerDropTarget.mock.calls[0]
+    const dropTargetConfig = registerCall?.[0]
+    const testItem: DraggableItem = { type: "media", data: { id: "test" } }
+
+    act(() => {
+      dropTargetConfig?.onDragEnter?.(testItem)
+    })
+
+    expect(element.classList.contains("bg-primary/10")).toBe(true)
+
+    // Unmount
+    unmount()
+
+    // Check that unregister was called
+    expect(mockUnregister).toHaveBeenCalled()
   })
 
   // TODO: Тест пропущен - требуется проверка
@@ -439,5 +572,176 @@ describe("useDragDropState", () => {
       })
       expect(result.current).toBeNull()
     })
+  })
+})
+
+describe("Drag & Drop Integration", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    // Ensure window is available
+    if (!global.window) {
+      Object.defineProperty(global, "window", {
+        value: { addEventListener: vi.fn(), removeEventListener: vi.fn() },
+        writable: true,
+        configurable: true,
+      })
+    }
+  })
+
+  it("should handle complete drag and drop workflow", () => {
+    const mockGetData = vi.fn(() => ({ id: "media-1", name: "Test Video" }))
+    const mockOnDrop = vi.fn()
+    const mockUnregister = vi.fn()
+
+    mockManager.registerDropTarget.mockReturnValue(mockUnregister)
+
+    // Setup draggable and drop zone
+    const { result: draggableResult } = renderHook(() => useDraggable("media", mockGetData))
+    const { result: dropZoneResult } = renderHook(() => useDropZone("timeline", ["media"], mockOnDrop))
+
+    // Simulate drag start
+    const mockNativeEvent = {
+      clientX: 100,
+      clientY: 200,
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: "",
+        setDragImage: vi.fn(),
+      },
+    } as unknown as DragEvent
+
+    const mockEvent = {
+      nativeEvent: mockNativeEvent,
+    } as React.DragEvent
+
+    act(() => {
+      draggableResult.current.onDragStart(mockEvent)
+    })
+
+    expect(mockManager.startDrag).toHaveBeenCalled()
+
+    // Simulate drag over
+    const mockDragOverEvent = {
+      preventDefault: vi.fn(),
+      dataTransfer: { dropEffect: "" },
+    } as unknown as React.DragEvent
+
+    act(() => {
+      dropZoneResult.current.onDragOver(mockDragOverEvent)
+    })
+
+    expect(mockDragOverEvent.preventDefault).toHaveBeenCalled()
+
+    // Simulate drop
+    const mockDropEvent = {
+      preventDefault: vi.fn(),
+    } as unknown as React.DragEvent
+
+    act(() => {
+      dropZoneResult.current.onDrop(mockDropEvent)
+    })
+
+    expect(mockDropEvent.preventDefault).toHaveBeenCalled()
+  })
+
+  it("should handle drag state changes across multiple hooks", () => {
+    const mockGetData = vi.fn(() => ({ id: "effect-1" }))
+    const mockUnregister = vi.fn()
+
+    mockManager.registerDropTarget.mockReturnValue(mockUnregister)
+
+    const { result: draggableResult } = renderHook(() => useDraggable("effect", mockGetData))
+    const { result: stateResult } = renderHook(() => useDragDropState())
+
+    expect(stateResult.current).toBeNull()
+
+    // Get the dragStart handler from state hook
+    const dragStartCall = mockManager.on.mock.calls.find((call) => call[0] === "dragStart")
+    const dragStartHandler = dragStartCall?.[1]
+
+    // Simulate drag start
+    const mockNativeEvent = {
+      clientX: 100,
+      clientY: 200,
+      dataTransfer: {
+        setData: vi.fn(),
+        effectAllowed: "",
+        setDragImage: vi.fn(),
+      },
+    } as unknown as DragEvent
+
+    const mockEvent = {
+      nativeEvent: mockNativeEvent,
+    } as React.DragEvent
+
+    act(() => {
+      draggableResult.current.onDragStart(mockEvent)
+    })
+
+    // Trigger the state handler with the same item
+    const testItem: DraggableItem = {
+      type: "effect",
+      data: { id: "effect-1" },
+      preview: undefined,
+    }
+
+    act(() => {
+      dragStartHandler?.(testItem)
+    })
+
+    expect(stateResult.current).toEqual(testItem)
+  })
+
+  it("should support multiple drop zones with different accept types", () => {
+    const mockOnDropTimeline = vi.fn()
+    const mockOnDropEffects = vi.fn()
+    const mockUnregister = vi.fn()
+
+    mockManager.registerDropTarget.mockReturnValue(mockUnregister)
+
+    // Setup multiple drop zones
+    const { result: timelineZone } = renderHook(() => useDropZone("timeline", ["media", "music"], mockOnDropTimeline))
+    const { result: effectsZone } = renderHook(() => useDropZone("effects", ["effect", "filter"], mockOnDropEffects))
+
+    expect(timelineZone.current.ref).toBeDefined()
+    expect(effectsZone.current.ref).toBeDefined()
+
+    // Both handlers should be available
+    expect(typeof timelineZone.current.onDragOver).toBe("function")
+    expect(typeof effectsZone.current.onDragOver).toBe("function")
+  })
+
+  it("should handle drag cancel workflow", () => {
+    const mockGetData = vi.fn(() => ({ id: "media-1" }))
+
+    const { result: draggableResult } = renderHook(() => useDraggable("media", mockGetData))
+    const { result: stateResult } = renderHook(() => useDragDropState())
+
+    // Get the dragStart and dragCancel handlers
+    const dragStartCall = mockManager.on.mock.calls.find((call) => call[0] === "dragStart")
+    const dragCancelCall = mockManager.on.mock.calls.find((call) => call[0] === "dragCancel")
+    const dragStartHandler = dragStartCall?.[1]
+    const dragCancelHandler = dragCancelCall?.[1]
+
+    const testItem: DraggableItem = {
+      type: "media",
+      data: { id: "media-1" },
+      preview: undefined,
+    }
+
+    // Start drag
+    act(() => {
+      dragStartHandler?.(testItem)
+    })
+
+    expect(stateResult.current).toEqual(testItem)
+
+    // Cancel drag
+    act(() => {
+      dragCancelHandler?.()
+    })
+
+    expect(stateResult.current).toBeNull()
   })
 })
