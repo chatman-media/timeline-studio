@@ -1041,7 +1041,7 @@ export function AiChat() {
                         ? `Доступно ${resourceStats.totalMedia} файлов. Попробуйте: 'создай монтаж', 'анализируй видео', 'адаптируй для TikTok'`
                         : "@ mention, ⌘L select. Команды: 'анализируй видео', 'создай сценарий', 'адаптируй для TikTok'..."
                   }
-                  className="min-h-[40px] w-full resize-none rounded-lg border border-border bg-muted p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-teal focus:outline-none"
+                  className="min-h-10 w-full resize-none rounded-lg border border-border bg-muted p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-teal focus:outline-none"
                   disabled={isProcessing || isStreaming}
                   rows={1}
                   data-testid="chat-input-with-messages"

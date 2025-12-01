@@ -13,7 +13,7 @@
     "@studio-freight/lenis": "^1.0.42",
     "buffer": "^6.0.3",
     "caniuse-lite": "^1.0.30001757",
-    "framer-motion": "^12.23.24",
+    "framer-motion": "^12.23.25",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.555.0",
     "react": "^19.2.0",
@@ -38,7 +38,7 @@
     "tailwindcss": "4.1.17",
     "terser": "^5.44.1",
     "typescript": "~5.9.3",
-    "vite": "7.2.4",
+    "vite": "7.2.6",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-static-copy": "^3.1.4",
     "vite-ssg": "^28.2.2"
