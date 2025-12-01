@@ -1,3 +1,44 @@
+# [3.36.0](https://github.com/chatman-media/timeline-studio/compare/v3.35.0...v3.36.0) (2025-12-01)
+
+
+### Bug Fixes
+
+* **test:** linted code ([4623f49](https://github.com/chatman-media/timeline-studio/commit/4623f49358655cb9e92f48f71dc4bbbd73aa2b5b))
+* **tests:** fix 40 failing tests across features ([41772d1](https://github.com/chatman-media/timeline-studio/commit/41772d12a6fabe03df24eaff5731bbeae4434e62))
+* **tests:** fix all failing tests and type errors ([ff08f2d](https://github.com/chatman-media/timeline-studio/commit/ff08f2dad7501cccdd7d117b7e6d7e97662587a0))
+* **tests:** fix domain tests in ai-tools, media-management, and browser ([8c5ad1b](https://github.com/chatman-media/timeline-studio/commit/8c5ad1bd985a551c30142f49b42cd4ccb6536b7c))
+* **tests:** fix failing tests and improve coverage across 5 features ([1839de2](https://github.com/chatman-media/timeline-studio/commit/1839de2bd139d3dbfbae50dd03aea97a1cb060b7))
+* **tests:** fix hanging useFilters test ([ab1140b](https://github.com/chatman-media/timeline-studio/commit/ab1140b25fe2ed38b1a774224625a2470e4fa4ac))
+* **tests:** fix TypeScript errors and linting in core tests ([0ffe278](https://github.com/chatman-media/timeline-studio/commit/0ffe278b284fff3ad923e754672b6dad0a72f1c2))
+* **tests:** resolve memory leak in modal-container tests ([12b82f9](https://github.com/chatman-media/timeline-studio/commit/12b82f9d62e10692971e78d5e8b788a935c22e32))
+* **tests:** revert problematic wave 2 tests causing failures ([189ce5f](https://github.com/chatman-media/timeline-studio/commit/189ce5fd2b6dc47d840bf99e1b4041315e379f43))
+* **types:** fix 591 TypeScript errors across domains and features ([dbf0433](https://github.com/chatman-media/timeline-studio/commit/dbf04332b8721f8c2482271473d0357e0d3d4f0c))
+* **types:** fix final 52 TypeScript errors - zero errors remaining ([67164d4](https://github.com/chatman-media/timeline-studio/commit/67164d46949fe58c413f7d61a0ede346c52e568c))
+
+
+### Features
+
+* Phase 1 - Register State Manager and Unified Audio API commands ([79c3152](https://github.com/chatman-media/timeline-studio/commit/79c315286789da8b2190ac6fe3aafe6b32302291))
+* Phase 2 - Register Person Identification & Recognition commands ([ed2905c](https://github.com/chatman-media/timeline-studio/commit/ed2905c64b5b8c62f0c5bc1ee1c56aff34a4c7a4))
+* **resources:** add drag & drop to resources panel ([b3bae44](https://github.com/chatman-media/timeline-studio/commit/b3bae440de58313b8f91719b15fe0fbd96928531))
+* **tauri:** register Phase 3 Montage & Whisper commands ([e31693f](https://github.com/chatman-media/timeline-studio/commit/e31693f7603dad48fef7156628506c189b06f39e))
+
+# [3.35.0](https://github.com/chatman-media/timeline-studio/compare/v3.34.0...v3.35.0) (2025-11-29)
+
+
+### Bug Fixes
+
+* **adapters:** fix invoke() argument types in TauriVideoService ([41265be](https://github.com/chatman-media/timeline-studio/commit/41265be1651f63203ff3aea2e9b61f085613c174))
+* **ai-director:** use u32 for max_parallel_files serialization ([ea429ef](https://github.com/chatman-media/timeline-studio/commit/ea429ef5ee032f2063f5323fd65595b774f737c0))
+
+
+### Features
+
+* **adapters:** implement Node.js adapters for all core services ([8e68014](https://github.com/chatman-media/timeline-studio/commit/8e680147ad379101314ddd6fb0f2ec53860c597e))
+* **cli:** add Timeline Studio CLI with info, transcribe, and render commands ([6fc1d86](https://github.com/chatman-media/timeline-studio/commit/6fc1d86be052a0fe3dd1f1959fb7222c245dfc2d))
+* **ports:** add IAIService port and adapters ([31204c5](https://github.com/chatman-media/timeline-studio/commit/31204c51e6d5a05f0b041bb42ef5aa02c597c845))
+* **ports:** add IVideoService port and adapters ([bd24fd8](https://github.com/chatman-media/timeline-studio/commit/bd24fd8dac80aeb70b5db01915bf13448d5dcc0a))
+
 # [3.34.0](https://github.com/chatman-media/timeline-studio/compare/v3.33.2...v3.34.0) (2025-11-28)
 
 
