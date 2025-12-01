@@ -4,7 +4,7 @@
  * Тесты для взаимодействия браузера медиафайлов с управлением медиа
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/features/media/types/media"
 
 // Mock Tauri commands
@@ -122,7 +122,7 @@ describe("Browser + Media Integration", () => {
       mockBrowserState.currentTabSettings.search_query = "video"
 
       const filteredFiles = Object.values(mockMediaFiles).filter((file) =>
-        file.name.toLowerCase().includes(mockBrowserState.currentTabSettings.search_query.toLowerCase())
+        file.name.toLowerCase().includes(mockBrowserState.currentTabSettings.search_query.toLowerCase()),
       )
 
       expect(filteredFiles).toHaveLength(2)
@@ -133,7 +133,7 @@ describe("Browser + Media Integration", () => {
       mockBrowserState.currentTabSettings.show_favorites_only = true
 
       const filteredFiles = Object.values(mockMediaFiles).filter((file) =>
-        mockBrowserState.currentTabSettings.show_favorites_only ? file.favorite : true
+        mockBrowserState.currentTabSettings.show_favorites_only ? file.favorite : true,
       )
 
       expect(filteredFiles).toHaveLength(1)
@@ -154,9 +154,7 @@ describe("Browser + Media Integration", () => {
       mockBrowserState.currentTabSettings.sort_by = "name"
       mockBrowserState.currentTabSettings.sort_order = "asc"
 
-      const sortedFiles = Object.values(mockMediaFiles).sort((a, b) =>
-        a.name.localeCompare(b.name)
-      )
+      const sortedFiles = Object.values(mockMediaFiles).sort((a, b) => a.name.localeCompare(b.name))
 
       expect(sortedFiles[0].name).toBe("audio.mp3")
       expect(sortedFiles[1].name).toBe("video-a.mp4")
@@ -178,9 +176,7 @@ describe("Browser + Media Integration", () => {
       mockBrowserState.currentTabSettings.sort_by = "duration"
       mockBrowserState.currentTabSettings.sort_order = "asc"
 
-      const sortedFiles = Object.values(mockMediaFiles).sort(
-        (a, b) => (a.duration || 0) - (b.duration || 0)
-      )
+      const sortedFiles = Object.values(mockMediaFiles).sort((a, b) => (a.duration || 0) - (b.duration || 0))
 
       expect(sortedFiles[0].duration).toBe(60)
       expect(sortedFiles[1].duration).toBe(120)
@@ -242,7 +238,7 @@ describe("Browser + Media Integration", () => {
       // Apply search
       if (mockBrowserState.currentTabSettings.search_query) {
         files = files.filter((file) =>
-          file.name.toLowerCase().includes(mockBrowserState.currentTabSettings.search_query.toLowerCase())
+          file.name.toLowerCase().includes(mockBrowserState.currentTabSettings.search_query.toLowerCase()),
         )
       }
 
@@ -264,7 +260,7 @@ describe("Browser + Media Integration", () => {
       // Search
       if (mockBrowserState.currentTabSettings.search_query) {
         files = files.filter((file) =>
-          file.name.toLowerCase().includes(mockBrowserState.currentTabSettings.search_query.toLowerCase())
+          file.name.toLowerCase().includes(mockBrowserState.currentTabSettings.search_query.toLowerCase()),
         )
       }
 

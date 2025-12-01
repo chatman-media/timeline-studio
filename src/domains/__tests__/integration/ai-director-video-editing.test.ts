@@ -4,8 +4,8 @@
  * Тесты для взаимодействия между AI анализом и видеомонтажом
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
-import type { Track, Clip, Section } from "@/domains/video-editing/types"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { Clip, Section, Track } from "@/domains/video-editing/types"
 
 // Mock Tauri commands
 vi.mock("@tauri-apps/api/core", () => ({
@@ -152,9 +152,7 @@ describe("AI Director + Video Editing Integration", () => {
   describe("Quality-Based Editing", () => {
     it("should filter low-quality moments", () => {
       const minScore = 75
-      const highQualityMoments = mockAnalysisResult.key_moments.filter(
-        (moment) => moment.total_score >= minScore
-      )
+      const highQualityMoments = mockAnalysisResult.key_moments.filter((moment) => moment.total_score >= minScore)
 
       expect(highQualityMoments).toHaveLength(2)
       expect(highQualityMoments[0].total_score).toBe(95)
@@ -162,9 +160,7 @@ describe("AI Director + Video Editing Integration", () => {
     })
 
     it("should sort moments by score", () => {
-      const sortedMoments = [...mockAnalysisResult.key_moments].sort(
-        (a, b) => b.total_score - a.total_score
-      )
+      const sortedMoments = [...mockAnalysisResult.key_moments].sort((a, b) => b.total_score - a.total_score)
 
       expect(sortedMoments[0].total_score).toBe(95)
       expect(sortedMoments[1].total_score).toBe(80)
@@ -172,12 +168,8 @@ describe("AI Director + Video Editing Integration", () => {
     })
 
     it("should categorize moments for different editing styles", () => {
-      const actionMoments = mockAnalysisResult.key_moments.filter(
-        (m) => m.category === "action"
-      )
-      const dialogueMoments = mockAnalysisResult.key_moments.filter(
-        (m) => m.category === "dialogue"
-      )
+      const actionMoments = mockAnalysisResult.key_moments.filter((m) => m.category === "action")
+      const dialogueMoments = mockAnalysisResult.key_moments.filter((m) => m.category === "dialogue")
 
       expect(actionMoments).toHaveLength(1)
       expect(dialogueMoments).toHaveLength(1)
@@ -189,14 +181,10 @@ describe("AI Director + Video Editing Integration", () => {
       const sections: Section[] = []
       const categories = new Set(mockAnalysisResult.key_moments.map((m) => m.category))
 
-      categories.forEach((category, index) => {
-        const categoryMoments = mockAnalysisResult.key_moments.filter(
-          (m) => m.category === category
-        )
+      categories.forEach((category, _index) => {
+        const categoryMoments = mockAnalysisResult.key_moments.filter((m) => m.category === category)
         const startTime = Math.min(...categoryMoments.map((m) => m.timestamp))
-        const endTime = Math.max(
-          ...categoryMoments.map((m) => m.timestamp + m.duration)
-        )
+        const endTime = Math.max(...categoryMoments.map((m) => m.timestamp + m.duration))
 
         sections.push({
           id: `section-${category}`,
@@ -251,10 +239,7 @@ describe("AI Director + Video Editing Integration", () => {
     })
 
     it("should calculate total duration of edited sequence", () => {
-      const totalDuration = mockAnalysisResult.key_moments.reduce(
-        (sum, moment) => sum + moment.duration,
-        0
-      )
+      const totalDuration = mockAnalysisResult.key_moments.reduce((sum, moment) => sum + moment.duration, 0)
 
       expect(totalDuration).toBe(9) // 3 + 2 + 4
     })
@@ -271,7 +256,7 @@ describe("AI Director + Video Editing Integration", () => {
           const m1End = m1.timestamp + m1.duration
           const m2End = m2.timestamp + m2.duration
           return m1.timestamp < m2End && m2.timestamp < m1End
-        })
+        }),
       )
 
       expect(hasOverlaps).toBe(true)

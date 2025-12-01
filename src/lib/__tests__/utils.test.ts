@@ -5,17 +5,17 @@
  */
 
 import { describe, expect, it } from "vitest"
+import type { MediaFile } from "@/features/media/types/media"
 import {
   cn,
-  formatResolution,
   formatBitrate,
+  formatFileSize,
+  formatResolution,
+  generateId,
   generateVideoId,
   isVideoAvailable,
   parseFileNameDateTime,
-  formatFileSize,
-  generateId,
 } from "../utils"
-import type { MediaFile } from "@/features/media/types/media"
 
 describe("lib/utils", () => {
   describe("cn - CSS class merger", () => {

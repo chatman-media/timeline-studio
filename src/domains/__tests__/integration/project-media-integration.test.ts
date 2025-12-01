@@ -4,7 +4,7 @@
  * Тесты для взаимодействия между доменами управления проектами и медиафайлами
  */
 
-import { describe, expect, it, vi, beforeEach } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { ProjectState } from "@/domains/project-management/types"
 import type { MediaFile } from "@/features/media/types/media"
 
@@ -141,12 +141,8 @@ describe("Project + Media Integration", () => {
       expect(Object.keys(mockProjectState.media_pool.items)).toHaveLength(3)
 
       // Filter by type
-      const videoFiles = Object.values(mockProjectState.media_pool.items).filter(
-        (file) => file.isVideo
-      )
-      const audioFiles = Object.values(mockProjectState.media_pool.items).filter(
-        (file) => file.isAudio
-      )
+      const videoFiles = Object.values(mockProjectState.media_pool.items).filter((file) => file.isVideo)
+      const audioFiles = Object.values(mockProjectState.media_pool.items).filter((file) => file.isAudio)
 
       expect(videoFiles).toHaveLength(2)
       expect(audioFiles).toHaveLength(1)
@@ -221,9 +217,7 @@ describe("Project + Media Integration", () => {
       mockProjectState.media_pool.items[mediaFile.id] = mediaFile
 
       // Find missing files
-      const missingFiles = Object.values(mockProjectState.media_pool.items).filter(
-        (file) => file.isMissing
-      )
+      const missingFiles = Object.values(mockProjectState.media_pool.items).filter((file) => file.isMissing)
 
       expect(missingFiles).toHaveLength(1)
       expect(missingFiles[0].id).toBe("media-1")
