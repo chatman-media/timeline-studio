@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaStudio } from "./media-studio"
+import { MediaStudio } from "../"
 
 // Мокаем tauri-logger
 const mockLogger = vi.hoisted(() => ({
@@ -76,7 +76,7 @@ vi.mock("@/domains/system-integration", async (importOriginal) => {
 })
 
 // Мокаем TopBar из media-studio
-vi.mock("./top-bar/top-bar", () => ({
+vi.mock("../top-bar/top-bar", () => ({
   TopBar: () => <div data-testid="top-bar">TopBar</div>,
 }))
 
@@ -86,12 +86,12 @@ vi.mock("@/features/modals/components", () => ({
 }))
 
 // Мокаем ProjectLoadingOverlay
-vi.mock("./project-loading-overlay", () => ({
+vi.mock("../project-loading-overlay", () => ({
   ProjectLoadingOverlay: () => <div data-testid="project-loading-overlay">ProjectLoadingOverlay</div>,
 }))
 
 // Мокаем layouts
-vi.mock("./layout", () => ({
+vi.mock("../layout", () => ({
   DefaultLayout: () => <div data-testid="default-layout">DefaultLayout</div>,
   OptionsLayout: () => <div data-testid="options-layout">OptionsLayout</div>,
   VerticalLayout: () => <div data-testid="vertical-layout">VerticalLayout</div>,
