@@ -1,3 +1,10 @@
+## [3.36.1](https://github.com/chatman-media/timeline-studio/compare/v3.36.0...v3.36.1) (2025-12-03)
+
+
+### Bug Fixes
+
+* **deps:** up deps ([884b0c0](https://github.com/chatman-media/timeline-studio/commit/884b0c04944297225cdd0a596ed6a6dad730ca2d))
+
 # [3.36.0](https://github.com/chatman-media/timeline-studio/compare/v3.35.0...v3.36.0) (2025-12-01)
 
 
