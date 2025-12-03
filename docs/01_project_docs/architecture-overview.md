@@ -6,32 +6,32 @@ Timeline Studio построен на **Hexagonal Architecture** (Ports & Adapte
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                          Timeline Studio                                 │
+│                          Timeline Studio                                │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
+│                                                                         │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                    UI Layer (src/features/)                        │  │
+│  │                    UI Layer (src/features/)                       │  │
 │  │         React 19, XState v5, shadcn/ui, Tailwind CSS v4           │  │
 │  └─────────────────────────────┬─────────────────────────────────────┘  │
-│                                │                                         │
+│                                │                                        │
 │  ┌─────────────────────────────▼─────────────────────────────────────┐  │
-│  │                  Domain Layer (src/domains/)                       │  │
-│  │    ai-director, media-management, project-management, browser      │  │
+│  │                  Domain Layer (src/domains/)                      │  │
+│  │    ai-director, media-management, project-management, browser     │  │
 │  └─────────────────────────────┬─────────────────────────────────────┘  │
-│                                │                                         │
+│                                │                                        │
 │  ┌─────────────────────────────▼─────────────────────────────────────┐  │
-│  │                   Core Layer (src/core/)                           │  │
-│  │    Ports (interfaces) + DI Container                               │  │
-│  │    IMediaService, IVideoService, IAIService, IStorageService...    │  │
+│  │                   Core Layer (src/core/)                          │  │
+│  │    Ports (interfaces) + DI Container                              │  │
+│  │    IMediaService, IVideoService, IAIService, IStorageService...   │  │
 │  └─────────────────────────────┬─────────────────────────────────────┘  │
-│                                │                                         │
+│                                │                                        │
 │  ┌─────────────────────────────▼─────────────────────────────────────┐  │
-│  │                 Adapters Layer (src/adapters/)                     │  │
+│  │                 Adapters Layer (src/adapters/)                    │  │
 │  ├───────────────┬─────────────────┬─────────────────────────────────┤  │
 │  │ Tauri (Rust)  │   Node.js       │           Mock                  │  │
 │  │ Desktop App   │   CLI/Server    │          Testing                │  │
 │  └───────────────┴─────────────────┴─────────────────────────────────┘  │
-│                                                                          │
+│                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 

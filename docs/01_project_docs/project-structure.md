@@ -46,23 +46,23 @@ Timeline Studio использует **Hexagonal Architecture** (Ports & Adapter
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        UI Layer (Features)                       │
-│                  React компоненты, хуки, XState                  │
+│                        UI Layer (Features)                      │
+│                  React компоненты, хуки, XState                 │
 └─────────────────────────────┬───────────────────────────────────┘
                               │
 ┌─────────────────────────────▼───────────────────────────────────┐
-│                      Domain Layer (Domains)                      │
-│              Бизнес-логика, сервисы, машины состояний            │
+│                      Domain Layer (Domains)                     │
+│              Бизнес-логика, сервисы, машины состояний           │
 └─────────────────────────────┬───────────────────────────────────┘
                               │ использует
 ┌─────────────────────────────▼───────────────────────────────────┐
-│                       Core Layer (Ports)                         │
-│           Интерфейсы сервисов + DI Container                     │
-│   IMediaService, IVideoService, IAIService, IStorageService...   │
+│                       Core Layer (Ports)                        │
+│           Интерфейсы сервисов + DI Container                    │
+│   IMediaService, IVideoService, IAIService, IStorageService...  │
 └─────────────────────────────┬───────────────────────────────────┘
                               │ реализуют
 ┌─────────────────────────────▼───────────────────────────────────┐
-│                    Adapters Layer (Adapters)                     │
+│                    Adapters Layer (Adapters)                    │
 ├─────────────────┬─────────────────┬─────────────────────────────┤
 │  Tauri Adapters │  Node Adapters  │       Mock Adapters         │
 │  (Desktop App)  │  (CLI, Server)  │       (Testing)             │
