@@ -15,11 +15,11 @@ import { TimelineProvider } from "@/domains/video-editing/providers/timeline-pro
 import { ChatProvider } from "@/features/ai-chat/services/chat-provider"
 import { MCPProvider } from "@/features/ai-chat/services/mcp-provider"
 import { ThemeProvider } from "@/features/media-studio/components/top-bar/theme/theme-context"
-import { TauriMockProvider } from "@/features/media-studio/services/tauri-mock-provider"
 import { ModalProvider } from "@/features/modals/services/modal-provider"
 import { ProjectSettingsProvider } from "@/features/project-settings/services/project-settings-provider"
 import { ResourcesProvider } from "@/features/resources/services/resources-provider"
 import { PlayerProvider } from "@/features/video-player/services/player-provider"
+import { TauriMockProvider } from "@/global/tauri-mock-provider"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
 
 interface ProvidersProps {
@@ -66,5 +66,3 @@ const AppProviderComposite = composeProviders(
 export function Providers({ children }: ProvidersProps) {
   return <AppProviderComposite>{children}</AppProviderComposite>
 }
-
-// Экспорт для обратной совместимости
