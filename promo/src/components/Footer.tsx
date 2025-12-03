@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Three columns on the right */}
-            <div className="mt-10 grid grid-cols-1 gap-8 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 md:mb-[120px] md:mt-0 lg:flex lg:flex-row lg:gap-[60px] xl:gap-[80px]">
+            <div className="mt-10 grid grid-cols-1 gap-8 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-4 md:mb-[120px] md:mt-0 lg:flex lg:flex-row lg:gap-[60px] xl:gap-80">
               {/* Product Column */}
               <div>
                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-6">
@@ -291,7 +291,9 @@ export const Footer: React.FC = () => {
                 </Link>
               </div>
             </div>
-            <div className="text-xs sm:text-sm text-gray-400 text-center">{t("footer.copyright")}</div>
+            <div className="text-xs sm:text-sm text-gray-400 text-center">
+              {t("footer.copyright")}
+            </div>
           </div>
         </div>
       </div>

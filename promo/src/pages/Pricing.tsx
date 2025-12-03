@@ -214,7 +214,7 @@ export const Pricing: React.FC = () => {
                         <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
 
                         {/* Kiro-style spreading effect on hover */}
-                        <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+                        <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220" />
 
                         {/* Text */}
                         <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
@@ -313,7 +313,7 @@ export const Pricing: React.FC = () => {
                       <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
 
                       {/* Kiro-style spreading effect on hover */}
-                      <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+                      <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220" />
 
                       {/* Text */}
                       <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">

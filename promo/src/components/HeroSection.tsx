@@ -1,47 +1,47 @@
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
-import { Link } from "react-router-dom"
-import { Sparkles, Zap, Lock } from "lucide-react"
-import { useReducedMotion } from "../hooks/useReducedMotion"
-import { useTranslation } from "../hooks/useTranslation"
-import { GITHUB_RELEASES_URL, GITHUB_REPO_URL } from "../constants"
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { Sparkles, Zap, Lock } from "lucide-react";
+import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useTranslation } from "../hooks/useTranslation";
+import { GITHUB_RELEASES_URL, GITHUB_REPO_URL } from "../constants";
 
 export function HeroSection() {
-  const { t } = useTranslation()
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [, setShowCanvas] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const prefersReducedMotion = useReducedMotion()
+  const { t } = useTranslation();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [, setShowCanvas] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
-  })
+  });
 
-  const y = useTransform(scrollYProgress, [0, 1], [0, 300])
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.5, 0])
+  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.5, 0]);
 
   useEffect(() => {
     // Check if mobile and disable 3D on mobile for performance
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+      setIsMobile(window.innerWidth < 768);
+    };
 
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
 
     // Delay loading 3D content for better initial page load
     const timer = setTimeout(() => {
       if (!isMobile) {
-        setShowCanvas(true)
+        setShowCanvas(true);
       }
-    }, 100)
+    }, 100);
 
     return () => {
-      window.removeEventListener("resize", checkMobile)
-      clearTimeout(timer)
-    }
-  }, [isMobile])
+      window.removeEventListener("resize", checkMobile);
+      clearTimeout(timer);
+    };
+  }, [isMobile]);
 
   return (
     <section
@@ -90,7 +90,10 @@ export function HeroSection() {
       )}
 
       {/* Content */}
-      <motion.div style={{ y, opacity }} className="relative z-10 text-center px-6 max-w-6xl mx-auto">
+      <motion.div
+        style={{ y, opacity }}
+        className="relative z-10 text-center px-6 max-w-6xl mx-auto"
+      >
         {/* GitHub Badge & Beta Badge */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -104,15 +107,25 @@ export function HeroSection() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm rounded-full border border-white/10 transition-all"
           >
-            <svg className="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            <svg
+              className="w-5 h-5 text-gray-300"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
             </svg>
-            <span className="text-sm text-gray-300 font-medium">{t("mainPage.hero.openSource")}</span>
+            <span className="text-sm text-gray-300 font-medium">
+              {t("mainPage.hero.openSource")}
+            </span>
           </a>
 
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 backdrop-blur-sm rounded-full border border-blue-500/20">
-            <span className="text-sm text-blue-300 font-semibold">{t("mainPage.hero.betaBadge")}</span>
-            <span className="text-xs text-blue-200">{t("mainPage.hero.betaFree")}</span>
+            <span className="text-sm text-blue-300 font-semibold">
+              {t("mainPage.hero.betaBadge")}
+            </span>
+            <span className="text-xs text-blue-200">
+              {t("mainPage.hero.betaFree")}
+            </span>
           </div>
 
           <Link
@@ -123,14 +136,22 @@ export function HeroSection() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-sm text-green-300 font-medium">{t("mainPage.hero.raisingSeed")}</span>
+            <span className="text-sm text-green-300 font-medium">
+              {t("mainPage.hero.raisingSeed")}
+            </span>
           </Link>
         </motion.div>
 
         <motion.h1
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }}
+          initial={
+            prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 30 }
+          }
           animate={{ opacity: 1, y: 0 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8, delay: 0.3 }}
+          transition={
+            prefersReducedMotion
+              ? { duration: 0 }
+              : { duration: 0.8, delay: 0.3 }
+          }
           className="text-4xl md:text-6xl font-semibold mb-6"
         >
           {t("mainPage.hero.title")}
@@ -144,7 +165,11 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto"
         >
-          {t("mainPage.hero.description.local")} <span className="text-green-400 font-semibold">{t("mainPage.hero.description.free")}</span>. {t("mainPage.hero.description.localAI")}
+          {t("mainPage.hero.description.local")}{" "}
+          <span className="text-green-400 font-semibold">
+            {t("mainPage.hero.description.free")}
+          </span>
+          . {t("mainPage.hero.description.localAI")}
         </motion.p>
 
         {/* Key Stats */}
@@ -199,12 +224,22 @@ export function HeroSection() {
             <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
 
             {/* Kiro-style spreading effect on hover */}
-            <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+            <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220" />
 
             {/* Text */}
             <span className="relative z-20 flex items-center gap-2 group-hover:text-[#8b5cf6] transition-colors duration-500">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
               </svg>
               {t("mainPage.hero.downloadFree")}
             </span>
@@ -219,7 +254,7 @@ export function HeroSection() {
             <div className="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <span className="relative z-10 flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
               </svg>
               {t("mainPage.hero.viewGithub")}
             </span>
@@ -243,5 +278,5 @@ export function HeroSection() {
         </motion.div>
       </motion.div>
     </section>
-  )
+  );
 }

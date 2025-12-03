@@ -1,17 +1,17 @@
-import { motion } from "framer-motion"
-import type React from "react"
-import versionData from "../../version.json"
-import { Footer } from "./components/Footer"
-import { HeroSection } from "./components/HeroSection"
-import { Navigation } from "./components/Navigation"
-import { SearchDemo } from "./components/SearchDemo"
-import { SEO } from "./components/SEO"
-import { VideoDemos } from "./components/VideoDemos"
-import { WhatYouCanDo } from "./components/WhatYouCanDo"
-import { useTranslation } from "./hooks/useTranslation"
+import { motion } from "framer-motion";
+import type React from "react";
+import versionData from "../../version.json";
+import { Footer } from "./components/Footer";
+import { HeroSection } from "./components/HeroSection";
+import { Navigation } from "./components/Navigation";
+import { SearchDemo } from "./components/SearchDemo";
+import { SEO } from "./components/SEO";
+import { VideoDemos } from "./components/VideoDemos";
+import { WhatYouCanDo } from "./components/WhatYouCanDo";
+import { useTranslation } from "./hooks/useTranslation";
 
 const App: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-[#12192C] flex flex-col">
       <SEO />
@@ -37,7 +37,10 @@ const App: React.FC = () => {
               className="text-center mb-12"
             >
               <h2 className="section-title">
-                {t("mainPage.interface.title")} <span className="text-gradient">{t("mainPage.interface.titleHighlight")}</span>
+                {t("mainPage.interface.title")}{" "}
+                <span className="text-gradient">
+                  {t("mainPage.interface.titleHighlight")}
+                </span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 {t("mainPage.interface.description")}
@@ -84,12 +87,16 @@ const App: React.FC = () => {
               style={{ position: "relative" }}
             >
               <h2 className="section-title">
-                <span className="text-gradient">{t("mainPage.download.title")}</span>
+                <span className="text-gradient">
+                  {t("mainPage.download.title")}
+                </span>
               </h2>
               <p className="text-xl md:text-2xl text-gray-300 mb-4 max-w-3xl mx-auto">
                 {t("mainPage.download.subtitle")}
               </p>
-              <p className="text-lg text-gray-400 mb-12">{t("mainPage.download.description")} ⚡</p>
+              <p className="text-lg text-gray-400 mb-12">
+                {t("mainPage.download.description")} ⚡
+              </p>
               <div className="flex flex-col sm:flex-row justify-center gap-8">
                 <DownloadButton platform="Windows" icon="windows" />
                 <DownloadButton platform="macOS" icon="apple" />
@@ -122,27 +129,29 @@ const App: React.FC = () => {
       {/* Footer */}
       <Footer />
     </div>
-  )
-}
+  );
+};
 
 // Компонент кнопки загрузки
-const DownloadButton: React.FC<{ platform: string; icon: string }> = ({ platform }) => {
-  const { t } = useTranslation()
-  const version = versionData.version // Версия из version.json
+const DownloadButton: React.FC<{ platform: string; icon: string }> = ({
+  platform,
+}) => {
+  const { t } = useTranslation();
+  const version = versionData.version; // Версия из version.json
 
   // Определяем правильный путь к файлу в зависимости от платформы
   const getDownloadPath = () => {
     switch (platform.toLowerCase()) {
       case "windows":
-        return `timeline-studio_${version}_x64-setup.exe`
+        return `timeline-studio_${version}_x64-setup.exe`;
       case "macos":
-        return `timeline-studio_${version}_universal.dmg`
+        return `timeline-studio_${version}_universal.dmg`;
       case "linux":
-        return `timeline-studio_${version}_amd64.AppImage`
+        return `timeline-studio_${version}_amd64.AppImage`;
       default:
-        return `timeline-studio-${platform.toLowerCase()}.zip`
+        return `timeline-studio-${platform.toLowerCase()}.zip`;
     }
-  }
+  };
 
   return (
     <motion.a
@@ -156,7 +165,7 @@ const DownloadButton: React.FC<{ platform: string; icon: string }> = ({ platform
       <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
 
       {/* Kiro-style spreading effect on hover */}
-      <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-[150%] group-hover:scale-y-[220%]" />
+      <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220" />
 
       {/* Text */}
       <div className="relative z-20 flex items-center justify-center gap-3 group-hover:text-[#8b5cf6] transition-colors duration-500">
@@ -178,7 +187,7 @@ const DownloadButton: React.FC<{ platform: string; icon: string }> = ({ platform
         {t("mainPage.download.downloadFor")} {platform}
       </div>
     </motion.a>
-  )
-}
+  );
+};
 
-export default App
+export default App;
