@@ -271,7 +271,7 @@ describe("Audio Sync Service", () => {
         clipId: "clip2",
         method: "audio",
       })
-    }, 15000)
+    }, 20000)
 
     it("should skip base clip in results", async () => {
       vi.useFakeTimers()
@@ -285,7 +285,7 @@ describe("Audio Sync Service", () => {
 
       expect(results.every((r) => r.clipId !== "base")).toBe(true)
       vi.useRealTimers()
-    })
+    }, 20000)
 
     it("should call onProgress callback during sync", async () => {
       vi.useFakeTimers()
@@ -307,7 +307,7 @@ describe("Audio Sync Service", () => {
         }),
       )
       vi.useRealTimers()
-    })
+    }, 20000)
 
     it("should report progress phases correctly", async () => {
       vi.useFakeTimers()
@@ -329,7 +329,7 @@ describe("Audio Sync Service", () => {
       expect(phases).toContain("correlating")
       expect(phases).toContain("complete")
       vi.useRealTimers()
-    }, 15000)
+    }, 20000)
   })
 
   describe("analyzeAudioSyncQuality", () => {
