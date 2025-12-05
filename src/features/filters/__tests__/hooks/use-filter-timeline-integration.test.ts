@@ -3,9 +3,23 @@
  */
 
 import { renderHook } from "@testing-library/react"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { useFilterTimelineIntegration } from "../../hooks/use-filter-timeline-integration"
 import type { VideoFilter } from "../../types/filters"
+
+// Mock hooks
+vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+  useTimeline: () => ({
+    updateClip: vi.fn().mockResolvedValue(undefined),
+    project: null,
+  }),
+}))
+
+vi.mock("@/features/timeline/hooks/use-clips", () => ({
+  useClips: () => ({
+    findClip: vi.fn().mockReturnValue(null),
+  }),
+}))
 
 describe("useFilterTimelineIntegration", () => {
   const mockFilter: VideoFilter = {
@@ -91,7 +105,9 @@ describe("useFilterTimelineIntegration", () => {
       const { result } = renderHook(() => useFilterTimelineIntegration())
 
       expect(() => {
-        result.current.updateFilterParams("clip-1", "filter-1", { brightness: 0.5 })
+        result.current.updateFilterParams("clip-1", "filter-1", {
+          brightness: 0.5,
+        })
       }).not.toThrow()
     })
   })

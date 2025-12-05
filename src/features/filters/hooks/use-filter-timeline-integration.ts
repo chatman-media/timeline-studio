@@ -6,6 +6,8 @@
 
 import { useCallback, useRef } from "react"
 
+import { useClips } from "@/features/timeline/hooks/use-clips"
+import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import type { AppliedFilter } from "@/features/timeline/types/timeline"
 import type { VideoFilter } from "../types/filters"
 
@@ -43,8 +45,22 @@ interface UseFilterTimelineIntegrationReturn {
  * It works with the timeline-machine to update clip state.
  */
 export function useFilterTimelineIntegration(): UseFilterTimelineIntegrationReturn {
+  const { updateClip } = useTimeline()
+  const { findClip } = useClips()
+
   // Counter for generating unique IDs
   const counterRef = useRef(0)
+
+  /**
+   * Get all filters applied to a specific clip
+   */
+  const getClipFilters = useCallback(
+    (clipId: string): AppliedFilter[] => {
+      const clip = findClip(clipId)
+      return clip?.filters || []
+    },
+    [findClip],
+  )
 
   /**
    * Create an AppliedFilter instance from a VideoFilter
@@ -72,15 +88,17 @@ export function useFilterTimelineIntegration(): UseFilterTimelineIntegrationRetu
     (clipId: string, filter: VideoFilter, customParams?: Record<string, any>): AppliedFilter => {
       const appliedFilter = createAppliedFilter(filter, customParams)
 
-      // TODO: Integrate with timeline-machine or timeline state management
-      // For now, we just return the created filter
-      // In production, this would:
-      // 1. Get the clip from timeline state
-      // 2. Add the filter to clip.filters array
-      // 3. Update the clip in timeline state
-      // 4. Trigger re-render of timeline
+      // Get current clip filters
+      const currentFilters = getClipFilters(clipId)
 
-      console.info("[Filter Timeline Integration] Apply filter to clip", {
+      // Add new filter to the clip
+      updateClip(clipId, {
+        filters: [...currentFilters, appliedFilter],
+      }).catch((error) => {
+        console.error("[Filter Timeline Integration] Failed to apply filter:", error)
+      })
+
+      console.info("[Filter Timeline Integration] Applied filter to clip", {
         clipId,
         filterId: filter.id,
         filterName: filter.name,
@@ -89,40 +107,60 @@ export function useFilterTimelineIntegration(): UseFilterTimelineIntegrationRetu
 
       return appliedFilter
     },
-    [createAppliedFilter],
+    [createAppliedFilter, updateClip, getClipFilters],
   )
 
   /**
    * Remove a filter from a timeline clip
    */
-  const removeFilterFromClip = useCallback((clipId: string, filterId: string) => {
-    // TODO: Integrate with timeline-machine
-    console.info("[Filter Timeline Integration] Remove filter from clip", {
-      clipId,
-      filterId,
-    })
-  }, [])
+  const removeFilterFromClip = useCallback(
+    (clipId: string, filterId: string) => {
+      const currentFilters = getClipFilters(clipId)
+      const updatedFilters = currentFilters.filter((f) => f.id !== filterId)
+
+      updateClip(clipId, {
+        filters: updatedFilters,
+      }).catch((error) => {
+        console.error("[Filter Timeline Integration] Failed to remove filter:", error)
+      })
+
+      console.info("[Filter Timeline Integration] Removed filter from clip", {
+        clipId,
+        filterId,
+      })
+    },
+    [updateClip, getClipFilters],
+  )
 
   /**
    * Update filter parameters on a clip
    */
-  const updateFilterParams = useCallback((clipId: string, filterId: string, params: Record<string, any>) => {
-    // TODO: Integrate with timeline-machine
-    console.info("[Filter Timeline Integration] Update filter params", {
-      clipId,
-      filterId,
-      params,
-    })
-  }, [])
+  const updateFilterParams = useCallback(
+    (clipId: string, filterId: string, params: Record<string, any>) => {
+      const currentFilters = getClipFilters(clipId)
+      const updatedFilters = currentFilters.map((f) =>
+        f.id === filterId
+          ? {
+              ...f,
+              customParams: { ...f.customParams, ...params },
+            }
+          : f,
+      )
 
-  /**
-   * Get all filters applied to a specific clip
-   */
-  const getClipFilters = useCallback((clipId: string): AppliedFilter[] => {
-    // TODO: Get from timeline state
-    console.info("[Filter Timeline Integration] Get clip filters", { clipId })
-    return []
-  }, [])
+      updateClip(clipId, {
+        filters: updatedFilters,
+      }).catch((error) => {
+        console.error("[Filter Timeline Integration] Failed to update filter params:", error)
+      })
+
+      console.info("[Filter Timeline Integration] Updated filter params", {
+        clipId,
+        filterId,
+        params,
+      })
+    },
+    [updateClip, getClipFilters],
+  )
 
   return {
     applyFilterToClip,
