@@ -1,0 +1,31 @@
+/**
+ * Global CSS Variables
+ *
+ * Базовые переменные которые используются везде в приложении.
+ * Подключается автоматически через layout.
+ *
+ * НЕ импортируйте этот файл напрямую!
+ * Он подключается один раз в root layout.
+ */
+
+:root {
+  /* Effects */
+  --effects-blur-max: 20px;
+  --effects-blur-min: 0px;
+
+  /* Transitions */
+  --transition-duration: 0.3s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index layers */
+  --z-modal: 1000;
+  --z-dropdown: 900;
+  --z-sticky: 800;
+  --z-fixed: 700;
+  --z-overlay: 600;
+
+  /* Animation durations */
+  --animation-fast: 150ms;
+  --animation-normal: 300ms;
+  --animation-slow: 500ms;
+}
