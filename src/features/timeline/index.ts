@@ -29,3 +29,6 @@ export { isSubtitleClip } from "./types"
 export * from "./types/factories"
 // Timeline transition types
 export * from "./types/timeline-transition"
+// useLinkedClips временно отключен
+// Utils
+export { getTrackTypeForMediaFile } from "./utils/drag-calculations"

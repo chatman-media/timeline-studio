@@ -1,7 +1,8 @@
 import { useRef, useState } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import { usePlayerAIIntegration } from "@/features/ai-chat/hooks/use-player-ai-integration"
+import { usePlayer } from "@/domains/video-editing/providers"
+import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import { TimelinePreview } from "@/features/timeline/components/preview/timeline-preview"
@@ -10,7 +11,6 @@ import { useTimelineEffects } from "@/features/timeline/hooks/use-timeline-effec
 import { createLogger } from "@/lib/tauri-logger"
 import { convertVideoSrc } from "@/lib/tauri-utils"
 import { useVideoEvents } from "../hooks/use-video-events"
-import { usePlayer } from "../services/player-provider"
 import { PlayerAIOverlay } from "./player-ai-overlay"
 import { PlayerControls } from "./player-controls"
 

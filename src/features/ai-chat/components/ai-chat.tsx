@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { backendAI } from "@/domains/ai-services/services/backend-ai-service"
 import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/chat"
 import { useModals } from "@/domains/system-integration"
 import { useTimeline } from "@/domains/video-editing/hooks"
@@ -14,7 +15,6 @@ import { useMediaImport } from "@/features/media/hooks/use-media-import"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { backendAI } from "@/shared/services/ai/backend-ai-service"
 
 // AI types are not exported from tauri-bindings yet, using placeholders
 type AIMessage = { role: string; content: string }
@@ -24,7 +24,7 @@ import { allAITools } from "@/domains/ai-tools"
 
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
-import { chatStorageService } from "../services/chat-storage-service"
+// История чата управляется через backend в ChatProvider (useChat hook)
 import { compressContext, isContextOverLimit } from "../utils/context-manager"
 import { convertToolsToUnifiedFormat, executeToolByName } from "../utils/convert-tools"
 import { createTimelineContextPrompt } from "../utils/timeline-context"
@@ -226,34 +226,7 @@ export function AiChat() {
     setProcessingStage("analyzing")
     setToolsInUse([])
 
-    // Сохраняем сообщение пользователя в историю
-    if (currentSessionId) {
-      // Проверяем, существует ли сессия в storage (для новых чатов может не существовать)
-      const performSave = async () => {
-        try {
-          let session = await chatStorageService.getSession(currentSessionId)
-          if (!session) {
-            // Если сессия не существует, создаем ее с нужным ID
-            session = {
-              id: currentSessionId,
-              title: "Новый чат",
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              messages: [],
-              agent: (selectedAgentId || "claude-4-sonnet") as AgentId,
-            }
-            if (session) {
-              await chatStorageService.saveSession(session)
-            }
-          }
-          // Добавляем сообщение
-          await chatStorageService.addMessage(currentSessionId, userMessage)
-        } catch (error) {
-          logger.error("Failed to save message:", { error: String(error) })
-        }
-      }
-      void performSave()
-    }
+    // Сообщение автоматически сохраняется через backend в sendChatMessage
 
     // Сбрасываем высоту textarea после очистки
     setTimeout(autoResizeTextarea, 0)
@@ -533,16 +506,7 @@ export function AiChat() {
 
           receiveChatMessage(finalAgentMessage.content)
 
-          // Сохраняем финальное сообщение в историю
-          if (currentSessionId) {
-            try {
-              await chatStorageService.addMessage(currentSessionId, finalAgentMessage)
-            } catch (error) {
-              logger.error("Failed to save assistant message:", {
-                error: String(error),
-              })
-            }
-          }
+          // Финальное сообщение автоматически сохраняется через backend в receiveChatMessage
         } else {
           // Обычный ответ без tool calls
           const agentMessage: ChatMessage = {
@@ -555,16 +519,7 @@ export function AiChat() {
 
           receiveChatMessage(agentMessage.content)
 
-          // Сохраняем сообщение в историю
-          if (currentSessionId) {
-            try {
-              await chatStorageService.addMessage(currentSessionId, agentMessage)
-            } catch (error) {
-              logger.error("Failed to save assistant message:", {
-                error: String(error),
-              })
-            }
-          }
+          // Сообщение автоматически сохраняется через backend в receiveChatMessage
         }
       } catch (error) {
         logger.error("Error sending message to AI:", { error: String(error) })
@@ -1154,39 +1109,15 @@ export function AiChat() {
                 isCreatingNew={isCreatingNewChat}
                 onSelectSession={(sessionId) => void switchSession(sessionId)}
                 onDeleteSession={async (id) => {
-                  await chatStorageService.deleteSession(id)
+                  // Backend автоматически удаляет сессию через deleteSession
                   void deleteSession(id)
                   void updateSessions()
                 }}
                 onCopySession={async (id) => {
-                  try {
-                    const session = await chatStorageService.getSession(id)
-                    if (session) {
-                      // Создаем новую сессию с копией данных
-                      const newSession = await chatStorageService.createSession(`${session.title} (${t("chat.copy")})`)
-
-                      // Копируем все сообщения в новую сессию
-                      for (const message of session.messages) {
-                        await chatStorageService.addMessage(newSession.id, {
-                          role: message.role,
-                          content: message.content,
-                          agent: message.agent,
-                          error: message.error,
-                          metadata: message.metadata,
-                        })
-                      }
-
-                      // Обновляем список сессий
-                      void updateSessions()
-
-                      // Переключаемся на скопированную сессию
-                      await switchSession(newSession.id)
-                    }
-                  } catch (error) {
-                    logger.error("Failed to copy session:", {
-                      error: String(error),
-                    })
-                  }
+                  // TODO: Implement copy session via backend API
+                  logger.warn("Copy session not implemented via backend yet", {
+                    sessionId: id,
+                  })
                 }}
               />
             </div>

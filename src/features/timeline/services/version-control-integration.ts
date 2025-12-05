@@ -3,9 +3,9 @@
  * Объединяет краткосрочные операции отмены с долгосрочным управлением версиями
  */
 
+import { isServiceEnabled } from "@/config/service-config"
 import type { VersionInfo } from "@/features/version-control/types"
 import { createLogger } from "@/lib/tauri-logger"
-import { isServiceEnabled } from "@/shared/config/service-config"
 import type { UndoRedoService } from "./undo-redo-service"
 
 const logger = createLogger("VersionControlIntegration")

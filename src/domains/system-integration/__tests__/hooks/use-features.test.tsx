@@ -9,7 +9,7 @@ import { useFeatures } from "../../hooks/use-features"
 import { resetSystemIntegrationOrchestrator } from "../../services/system-integration-orchestrator"
 
 // Mock service config
-vi.mock("@/shared/config/service-config", () => ({
+vi.mock("@/config/service-config", () => ({
   isServiceEnabled: vi.fn(() => true),
 }))
 
@@ -331,7 +331,7 @@ describe.skip("useFeatures", () => {
 
   describe("Service Disabled", () => {
     it("should handle features when service is disabled", async () => {
-      const { isServiceEnabled } = await import("@/shared/config/service-config")
+      const { isServiceEnabled } = await import("@/config/service-config")
       vi.mocked(isServiceEnabled).mockReturnValue(false)
 
       const { result } = renderHook(() => useFeatures())

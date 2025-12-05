@@ -1,5 +1,5 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { AiChat } from "@/features/ai-chat/components/ai-chat"
+import { AiChat } from "@/features/ai-chat"
 import { Browser } from "@/features/browser/components"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"

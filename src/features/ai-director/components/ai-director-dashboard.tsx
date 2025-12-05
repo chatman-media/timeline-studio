@@ -1,390 +1,291 @@
 "use client"
 
 /**
- * AI Director Dashboard - Центральная панель управления AI функциями
- * Показывает активные агенты, workflow templates, статистику
+ * AI Director v3 Dashboard
+ * Главный компонент для AI Director с minimalist design
  */
 
-import { Activity, BarChart3, Sparkles, Zap } from "lucide-react"
-import { useState } from "react"
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { Settings, Zap } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
+import { useCallback, useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useMediaManagement } from "@/domains/media-management"
+import { useNotifications } from "@/domains/system-integration"
+import { createLogger } from "@/lib/tauri-logger"
+import { useAIDirectorAnalysisV2 } from "../hooks/use-ai-director-analysis-v2"
+import type { AnalysisSettings as AnalysisSettingsType } from "./analysis-settings"
+import { AnalysisSettings } from "./analysis-settings"
+import { EmptyState } from "./empty-state"
+import { FileAnalysisCard, type FileAnalysisCardData } from "./file-analysis-card"
+import { OverallProgressCard } from "./overall-progress-card"
 
-import type { AgentType, AIAgent, DashboardStats, WorkflowTemplate } from "../types/dashboard"
-import { AGENT_TYPE_DESCRIPTIONS, AGENT_TYPE_ICONS, AGENT_TYPE_NAMES, BUILT_IN_WORKFLOWS } from "../types/dashboard"
+const logger = createLogger("AIDirectorV3Dashboard")
 
-interface AIDirectorDashboardProps {
-  agents?: AIAgent[]
-  stats?: DashboardStats
-  onWorkflowSelect?: (workflow: WorkflowTemplate) => void
-  className?: string
+export interface AIDirectorV3DashboardProps {
+  /** Опционально: начальные файлы */
+  initialFiles?: string[]
 }
 
-export function AIDirectorDashboard({ agents = [], stats, onWorkflowSelect, className }: AIDirectorDashboardProps) {
-  const [activeTab, setActiveTab] = useState<string>("overview")
+export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
+  // State
+  const [analysisSettings, setAnalysisSettings] = useState<AnalysisSettingsType>({
+    mode: "balanced",
+    analyzers: ["scene_detection", "audio_quality"],
+  })
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [selectedFileIds, setSelectedFileIds] = useState<Set<string>>(new Set())
 
-  // Фильтруем активные агенты
-  const activeAgents = agents.filter((a) => a.status === "running")
-  const completedAgents = agents.filter((a) => a.status === "completed")
-  const errorAgents = agents.filter((a) => a.status === "error")
+  // Hooks
+  const { mediaPool } = useMediaManagement()
+  const { showInfo, showSuccess, showWarning, showError } = useNotifications()
+  const { isAnalyzing, filesProgress, batchProgress, startBatchAnalysis, cancelAnalysis, reset } =
+    useAIDirectorAnalysisV2()
 
-  // Статистика по умолчанию
-  const defaultStats: DashboardStats = stats || {
-    totalAnalysis: 0,
-    totalMontages: 0,
-    totalRecognitions: 0,
-    totalExports: 0,
-    totalProcessingTime: 0,
-    averageProcessingTime: 0,
-    todayAnalysis: 0,
-    todayMontages: 0,
+  // Convert analyzers array to Set for backward compatibility
+  const selectedAnalyzers = useMemo(() => new Set(analysisSettings.analyzers), [analysisSettings.analyzers])
+
+  // Convert filesProgress to card data
+  const fileCardsData = useMemo((): FileAnalysisCardData[] => {
+    return filesProgress.map((file) => ({
+      filePath: file.filePath,
+      fileName: file.filePath.split("/").pop() || file.filePath,
+      status: file.status as FileAnalysisCardData["status"],
+      progress: file.progress,
+      currentStage: file.currentStage,
+      analyzers: file.analyzers.map((analyzer) => ({
+        name: analyzer.type,
+        status: analyzer.status as "pending" | "analyzing" | "completed" | "error",
+      })),
+      eta: file.eta,
+      error: file.error,
+    }))
+  }, [filesProgress])
+
+  // File statistics for overall card
+  const fileStatistics = useMemo(() => {
+    return {
+      completed: filesProgress.filter((f) => f.status === "completed").length,
+      analyzing: filesProgress.filter((f) => f.status === "analyzing").length,
+      pending: filesProgress.filter((f) => f.status === "pending").length,
+      error: filesProgress.filter((f) => f.status === "error").length,
+    }
+  }, [filesProgress])
+
+  // Handlers
+  const handleOpenMediaPool = useCallback(() => {
+    logger.infoSync("[Dashboard v3] Opening Browser for import")
+    showInfo("Импортируйте файлы через Browser", "Используйте вкладку Media в Browser для импорта файлов")
+  }, [showInfo])
+
+  const handleSelectionChange = useCallback((newSelection: Set<string>) => {
+    setSelectedFileIds(newSelection)
+  }, [])
+
+  const handleStartAnalysisFromEmptyState = useCallback(
+    async (fileIds: Set<string>) => {
+      // Get paths from IDs
+      const paths: string[] = []
+      fileIds.forEach((fileId) => {
+        const mediaFile = mediaPool.get(fileId)
+        if (mediaFile) {
+          paths.push(mediaFile.path)
+        }
+      })
+
+      if (paths.length === 0) {
+        showWarning("Файлы не выбраны", "Выберите файлы из медиапула")
+        return
+      }
+
+      if (analysisSettings.analyzers.length === 0) {
+        showWarning("Анализаторы не выбраны", "Выберите хотя бы один анализатор в настройках")
+        return
+      }
+
+      try {
+        logger.infoSync("[Dashboard v3] Starting batch analysis", {
+          filesCount: paths.length,
+          analyzers: analysisSettings.analyzers,
+        })
+
+        showSuccess("Анализ запущен", `Обработка ${paths.length} файл${paths.length > 1 ? "ов" : "а"}`)
+
+        await startBatchAnalysis(paths, selectedAnalyzers)
+        logger.infoSync("[Dashboard v3] Analysis started successfully")
+      } catch (error) {
+        logger.errorSync("[Dashboard v3] Error starting analysis", error as Record<string, unknown>)
+        showError("Ошибка запуска анализа", error instanceof Error ? error.message : "Неизвестная ошибка")
+      }
+    },
+    [mediaPool, analysisSettings.analyzers, selectedAnalyzers, startBatchAnalysis, showSuccess, showError, showWarning],
+  )
+
+  const handleReset = () => {
+    logger.infoSync("[Dashboard v3] Resetting dashboard")
+    reset()
+    showInfo("Dashboard reset", "Ready for new analysis")
   }
 
+  const handleCancel = () => {
+    logger.infoSync("[Dashboard v3] Cancelling analysis")
+
+    // Cancel ongoing analysis
+    cancelAnalysis()
+
+    showInfo("Analysis cancelled", "You can start a new analysis")
+  }
+
+  // UI State
+  const hasFiles = filesProgress.length > 0
+  const showEmptyState = !hasFiles
+
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Заголовок Dashboard */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <Sparkles className="h-8 w-8 text-primary" />
-            AI Director
-          </h2>
-          <p className="text-muted-foreground mt-1">Центр управления AI ассистентами</p>
-        </div>
-
-        {/* Статус активности */}
-        <div className="flex items-center gap-4">
-          {activeAgents.length > 0 && (
-            <div className="flex items-center gap-2 text-sm">
-              <Activity className="h-4 w-4 text-green-500 animate-pulse" />
-              <span className="font-medium">{activeAgents.length} активных агентов</span>
+    <TooltipProvider>
+      <div className="flex h-full w-full flex-col p-6 space-y-6">
+        {/* Header */}
+        <motion.div
+          className="flex items-center justify-between"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex items-center gap-3">
+            <motion.div
+              animate={{ rotate: isAnalyzing ? 360 : 0 }}
+              transition={{ duration: 2, repeat: isAnalyzing ? Number.POSITIVE_INFINITY : 0, ease: "linear" }}
+            >
+              <Zap className="h-8 w-8 text-primary" />
+            </motion.div>
+            <div>
+              <h1 className="text-3xl font-bold">AI Director v3</h1>
+              <p className="text-sm text-muted-foreground">Batch analysis with real-time progress</p>
             </div>
+          </div>
+
+          <Popover open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Configure analysis settings</p>
+              </TooltipContent>
+            </Tooltip>
+            <PopoverContent className="w-96" align="end">
+              <AnalysisSettings
+                settings={analysisSettings}
+                onSettingsChange={setAnalysisSettings}
+                disabled={isAnalyzing}
+              />
+            </PopoverContent>
+          </Popover>
+        </motion.div>
+
+        {/* Empty State */}
+        <AnimatePresence mode="wait">
+          {showEmptyState && (
+            <motion.div
+              key="empty-state"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <EmptyState
+                onSelectFiles={handleOpenMediaPool}
+                onStartAnalysis={handleStartAnalysisFromEmptyState}
+                mediaPool={mediaPool}
+                selectedFileIds={selectedFileIds}
+                onSelectionChange={handleSelectionChange}
+                currentSettings={analysisSettings}
+                isAnalyzing={isAnalyzing}
+              />
+            </motion.div>
           )}
-        </div>
-      </div>
+        </AnimatePresence>
 
-      {/* Статистика */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <StatsCard title="Анализы" value={defaultStats.totalAnalysis} change={defaultStats.todayAnalysis} icon="🔍" />
-        <StatsCard title="Монтажи" value={defaultStats.totalMontages} change={defaultStats.todayMontages} icon="✂️" />
-        <StatsCard title="Распознавания" value={defaultStats.totalRecognitions} icon="👁️" />
-        <StatsCard title="Экспорты" value={defaultStats.totalExports} icon="📤" />
-      </div>
+        {/* Analysis Progress */}
+        {hasFiles && (
+          <motion.div
+            className="flex flex-col gap-6 flex-1 min-h-0"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Files Section Header */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                📁 Selected Files ({filesProgress.length})
+              </h2>
+              {!isAnalyzing && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" onClick={handleReset}>
+                      New Analysis
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Clear current results and start over</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
 
-      {/* Основной контент */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview">Обзор</TabsTrigger>
-          <TabsTrigger value="agents">
-            Агенты
-            {activeAgents.length > 0 && (
-              <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-primary text-primary-foreground">
-                {activeAgents.length}
-              </span>
+            {/* Files List */}
+            <ScrollArea className="flex-1">
+              <div className="space-y-3 pr-4">
+                <AnimatePresence mode="popLayout">
+                  {fileCardsData.map((file, index) => (
+                    <motion.div
+                      key={file.filePath}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      layout
+                    >
+                      <FileAnalysisCard file={file} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </ScrollArea>
+
+            {/* Overall Progress */}
+            {batchProgress && (
+              <OverallProgressCard
+                progressData={{
+                  progress: batchProgress.progress || 0,
+                  completedFiles: batchProgress.completedFiles || 0,
+                  totalFiles: batchProgress.totalFiles || 0,
+                  estimatedTimeRemaining: batchProgress.estimatedTimeRemaining,
+                  status: isAnalyzing ? "analyzing" : "completed",
+                }}
+                fileStatistics={fileStatistics}
+                onCancel={isAnalyzing ? handleCancel : undefined}
+              />
             )}
-          </TabsTrigger>
-          <TabsTrigger value="workflows">Шаблоны</TabsTrigger>
-        </TabsList>
 
-        {/* Обзор */}
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Активные агенты */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5" />
-                  Активные задачи
-                </CardTitle>
-                <CardDescription>Текущие операции AI агентов</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {activeAgents.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Zap className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>Нет активных задач</p>
-                    <p className="text-sm mt-1">Выберите шаблон для начала работы</p>
-                  </div>
-                ) : (
-                  <ScrollArea className="h-[300px]">
-                    <div className="space-y-3">
-                      {activeAgents.map((agent) => (
-                        <AgentCard key={agent.id} agent={agent} />
-                      ))}
-                    </div>
-                  </ScrollArea>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Быстрые действия */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5" />
-                  Быстрые действия
-                </CardTitle>
-                <CardDescription>Запустить AI ассистента одним кликом</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  <QuickActionButton icon="🔍" label="Анализ видео" description="Полный анализ" />
-                  <QuickActionButton icon="✂️" label="Smart Montage" description="Автомонтаж" />
-                  <QuickActionButton icon="👁️" label="Распознавание" description="Объекты и лица" />
-                  <QuickActionButton icon="💬" label="Транскрипция" description="Речь в текст" />
-                  <QuickActionButton icon="🎨" label="Цветокоррекция" description="Авто-грейдинг" />
-                  <QuickActionButton icon="📤" label="Экспорт" description="Оптимизация" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Последние результаты */}
-          {completedAgents.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  Последние результаты
-                </CardTitle>
-                <CardDescription>Завершенные задачи</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[200px]">
-                  <div className="space-y-2">
-                    {completedAgents.slice(0, 5).map((agent) => (
-                      <CompletedAgentItem key={agent.id} agent={agent} />
-                    ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        {/* Агенты */}
-        <TabsContent value="agents" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Все AI агенты</CardTitle>
-              <CardDescription>Статус и возможности каждого агента</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(AGENT_TYPE_NAMES).map(([type, name]) => {
-                  const agentType = type as AgentType
-                  return (
-                    <AgentTypeCard
-                      key={type}
-                      type={agentType}
-                      name={name}
-                      description={AGENT_TYPE_DESCRIPTIONS[agentType]}
-                      icon={AGENT_TYPE_ICONS[agentType]}
-                      isActive={activeAgents.some((a) => a.type === agentType)}
-                    />
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Workflow Templates */}
-        <TabsContent value="workflows" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Workflow Templates</CardTitle>
-              <CardDescription>Готовые сценарии для разных задач</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {BUILT_IN_WORKFLOWS.map((workflow) => (
-                  <WorkflowCard key={workflow.id} workflow={workflow} onSelect={() => onWorkflowSelect?.(workflow)} />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
-}
-
-/**
- * Карточка статистики
- */
-interface StatsCardProps {
-  title: string
-  value: number
-  change?: number
-  icon: string
-}
-
-function StatsCard({ title, value, change, icon }: StatsCardProps) {
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <span className="text-2xl">{icon}</span>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value.toLocaleString()}</div>
-        {change !== undefined && change > 0 && <p className="text-xs text-muted-foreground">+{change} сегодня</p>}
-      </CardContent>
-    </Card>
-  )
-}
-
-/**
- * Карточка активного агента
- */
-function AgentCard({ agent }: { agent: AIAgent }) {
-  const icon = AGENT_TYPE_ICONS[agent.type]
-
-  return (
-    <div className="flex items-start gap-3 p-3 rounded-lg border bg-card">
-      <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-xl">
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm">{agent.name}</p>
-        <p className="text-xs text-muted-foreground truncate">{agent.description}</p>
-        {agent.progress !== undefined && (
-          <div className="mt-2 space-y-1">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Прогресс</span>
-              <span className="font-medium">{agent.progress}%</span>
-            </div>
-            <Progress value={agent.progress} className="h-1" />
-          </div>
+            {/* Active Analyzers Info */}
+            <motion.div
+              className="text-sm text-muted-foreground text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              ⚡ Mode: {analysisSettings.mode} • {analysisSettings.analyzers.length} analyzer
+              {analysisSettings.analyzers.length !== 1 ? "s" : ""} active
+            </motion.div>
+          </motion.div>
         )}
-        {agent.task?.currentFile && <p className="text-xs text-muted-foreground mt-1">{agent.task.currentFile}</p>}
       </div>
-    </div>
-  )
-}
-
-/**
- * Быстрая кнопка действия
- */
-interface QuickActionButtonProps {
-  icon: string
-  label: string
-  description: string
-  onClick?: () => void
-}
-
-function QuickActionButton({ icon, label, description, onClick }: QuickActionButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center gap-2 p-4 rounded-lg border bg-card hover:bg-accent transition-colors text-center"
-    >
-      <span className="text-3xl">{icon}</span>
-      <div>
-        <p className="font-medium text-sm">{label}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-    </button>
-  )
-}
-
-/**
- * Элемент завершенного агента
- */
-function CompletedAgentItem({ agent }: { agent: AIAgent }) {
-  const icon = AGENT_TYPE_ICONS[agent.type]
-  const duration =
-    agent.completedAt && agent.startedAt
-      ? Math.round((agent.completedAt.getTime() - agent.startedAt.getTime()) / 1000)
-      : 0
-
-  return (
-    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50 transition-colors">
-      <span className="text-xl">{icon}</span>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{agent.name}</p>
-        <p className="text-xs text-muted-foreground">
-          {agent.results?.filesAnalyzed && `${agent.results.filesAnalyzed} файлов • `}
-          {duration > 0 && `${duration}s`}
-        </p>
-      </div>
-      <span className="text-green-500 text-xs">✓</span>
-    </div>
-  )
-}
-
-/**
- * Карточка типа агента
- */
-interface AgentTypeCardProps {
-  type: string
-  name: string
-  description: string
-  icon: string
-  isActive: boolean
-}
-
-function AgentTypeCard({ name, description, icon, isActive }: AgentTypeCardProps) {
-  return (
-    <Card className={cn("relative", isActive && "ring-2 ring-primary")}>
-      {isActive && <div className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-green-500 animate-pulse" />}
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">{icon}</span>
-          <div>
-            <CardTitle className="text-base">{name}</CardTitle>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
-  )
-}
-
-/**
- * Карточка workflow
- */
-interface WorkflowCardProps {
-  workflow: WorkflowTemplate
-  onSelect?: () => void
-}
-
-function WorkflowCard({ workflow, onSelect }: WorkflowCardProps) {
-  const categoryColors = {
-    social: "text-pink-500",
-    professional: "text-blue-500",
-    cinematic: "text-purple-500",
-    tutorial: "text-green-500",
-  }
-
-  return (
-    <Card className="cursor-pointer hover:shadow-md transition-all" onClick={onSelect}>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">{workflow.icon}</span>
-            <CardTitle className="text-base">{workflow.name}</CardTitle>
-          </div>
-          <span className={cn("text-xs font-medium", categoryColors[workflow.category])}>{workflow.category}</span>
-        </div>
-        <CardDescription className="text-xs">{workflow.description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-1">
-          {workflow.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="text-xs px-2 py-0.5 rounded-full bg-muted">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    </TooltipProvider>
   )
 }

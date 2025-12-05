@@ -136,9 +136,11 @@ vi.mock("@/features/user-settings", async (importOriginal) => {
   }
 })
 
-// Mock PlayerProvider and usePlayer
-vi.mock("@/features/video-player/services/player-provider", () => ({
+// Mock PlayerProvider, ResourcesProvider, and usePlayer
+vi.mock("@/domains/video-editing/providers", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
+  ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+  TimelineProvider: ({ children }: { children: React.ReactNode }) => children,
   usePlayer: () => ({
     playerSetSource: vi.fn().mockResolvedValue(undefined),
     playerSetMedia: vi.fn().mockResolvedValue(undefined),
@@ -153,6 +155,20 @@ vi.mock("@/features/video-player/services/player-provider", () => ({
     setVolume: vi.fn(),
     setPlaybackRate: vi.fn(),
     setPreviewMedia: vi.fn(),
+  }),
+  useResources: () => ({
+    effects: [],
+    filters: [],
+    transitions: [],
+    templates: [],
+    addMedia: vi.fn(),
+    removeMedia: vi.fn(),
+    getEffectById: vi.fn(),
+    getFilterById: vi.fn(),
+    getTransitionById: vi.fn(),
+    getTemplateById: vi.fn(),
+    loadResources: vi.fn(),
+    isLoading: false,
   }),
 }))
 

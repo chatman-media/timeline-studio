@@ -1,9 +1,8 @@
 import { assign, setup } from "xstate"
 import type { ChatEvent } from "@/domains/ai-services/types/chat-events"
-import { handleBackendChatEvent } from "@/features/ai-chat/machines/backend-event-handlers"
 import { createLogger } from "@/lib/tauri-logger"
-
 import type { ChatListItem, ChatMessage } from "../types/chat"
+import { handleBackendChatEvent } from "./backend-event-handlers"
 
 const logger = createLogger("ChatMachine")
 

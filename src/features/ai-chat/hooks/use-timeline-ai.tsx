@@ -7,7 +7,7 @@
 
 import { useCallback } from "react"
 import { TimelineAIService } from "@/domains/ai-services/services/timeline-ai-service"
-import { useResources } from "@/features/resources/services/resources-provider"
+import { useResources } from "@/domains/video-editing/providers"
 
 import { createLogger } from "@/lib/tauri-logger"
 

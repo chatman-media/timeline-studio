@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { useCurrentProject } from "@/domains/project-management/hooks"
-import { useTimelineAIIntegration } from "@/features/ai-chat/hooks/use-timeline-ai-integration"
+import { useTimelineAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 
 import { useClips } from "../hooks/use-clips"

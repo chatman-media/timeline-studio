@@ -4,10 +4,9 @@
  */
 
 import { useCallback, useEffect, useRef } from "react"
-
+import { usePlayer } from "@/domains/video-editing/providers"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTimelineSelection } from "@/features/timeline/hooks/use-timeline-selection"
-import { usePlayer } from "@/features/video-player/services/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import type { EffectPipelineManager } from "../services/effect-pipeline-manager"
 import type { WebGL2PreviewRenderer } from "../services/webgl2-preview-renderer"

@@ -1,8 +1,6 @@
 import { useCallback } from "react"
-
+import { usePlayer } from "@/domains/video-editing/providers"
 import { logInfo } from "@/lib/tauri-logger"
-
-import { usePlayer } from "../services/player-provider"
 
 export interface UsePlayerSpeedRampingReturn {
   // Состояние

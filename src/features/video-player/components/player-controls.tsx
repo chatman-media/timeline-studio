@@ -28,9 +28,9 @@ import { cn } from "@/lib/utils"
 
 const logger = createLogger("video-player:player-controls")
 
+import { usePlayer } from "@/domains/video-editing/providers"
 import { useDebouncedSeek } from "../hooks/use-debounced-seek"
 import { useFullscreen } from "../hooks/use-fullscreen"
-import { usePlayer } from "../services/player-provider"
 import { PlaybackSpeedControl } from "./playback-speed-control"
 import { PlayerAIControls } from "./player-ai-controls"
 import { PrerenderControls } from "./prerender-controls"

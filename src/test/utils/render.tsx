@@ -3,7 +3,7 @@ import type React from "react"
 
 // Provider imports
 
-import { ThemeProvider } from "@/features/media-studio/components/top-bar/theme/theme-context"
+import { ThemeProvider } from "@/config/providers"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
 
 // Type-safe provider configuration
@@ -73,7 +73,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { PlayerProvider } = await import("@/features/video-player/services/player-provider")
+    const { PlayerProvider } = await import("@/domains/video-editing/providers")
     providers.PlayerProvider = PlayerProvider
   } catch (_e) {
     // Provider not available
@@ -95,14 +95,14 @@ const getProviders = async () => {
   }
 
   try {
-    const { ProjectSettingsProvider } = await import("@/features/project-settings/services/project-settings-provider")
+    const { ProjectSettingsProvider } = await import("@/domains/project-management/providers")
     providers.ProjectSettingsProvider = ProjectSettingsProvider
   } catch (_e) {
     // Provider not available
   }
 
   try {
-    const { ResourcesProvider } = await import("@/features/resources/services/resources-provider")
+    const { ResourcesProvider } = await import("@/domains/video-editing/providers")
     providers.ResourcesProvider = ResourcesProvider
   } catch (_e) {
     // Provider not available

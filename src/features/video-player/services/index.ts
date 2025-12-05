@@ -1,5 +1,11 @@
 // Export from player-machine with renamed type to avoid conflict
 
+export type { PlayerContextType } from "@/domains/video-editing/providers"
+// Export from player-provider
+export {
+  PlayerProvider,
+  usePlayer,
+} from "@/domains/video-editing/providers"
 export type { CodecProfile, FormatDetectionResult, OptimizationSettings } from "./codec-support"
 // Export new services
 // Lazy initialization functions for SSR compatibility
@@ -17,12 +23,6 @@ export type {
   PlayerEvent,
 } from "./player-machine"
 export { playerMachine } from "./player-machine"
-export type { PlayerContextType } from "./player-provider"
-// Export from player-provider
-export {
-  PlayerProvider,
-  usePlayer,
-} from "./player-provider"
 export type { EasingFunction, TransitionParams, TransitionShader } from "./transitions-preview"
 export { getTransitionsPreviewService } from "./transitions-preview"
 export type { VideoFrame } from "./webgl-video-renderer"

@@ -14,6 +14,8 @@ export type { UseIntegratedVersionControlReturn } from "./use-integrated-version
 export { useIntegratedVersionControl } from "./use-integrated-version-control"
 export type { UseKeyframeAnimationReturn } from "./use-keyframe-animation"
 export { useKeyframeAnimation } from "./use-keyframe-animation"
+export type { UseLinkedClipsReturn } from "./use-linked-clips"
+export { useLinkedClips } from "./use-linked-clips"
 export type { UseSlipSlideReturn } from "./use-slip-slide"
 export { useSlipSlide } from "./use-slip-slide"
 export { useTimeline } from "./use-timeline"

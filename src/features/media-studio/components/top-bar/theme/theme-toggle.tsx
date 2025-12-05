@@ -4,9 +4,8 @@ import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
-
+import { useTheme } from "@/config/providers"
 import { TOP_BAR_BUTTON_CLASS } from "../top-bar"
-import { useTheme } from "./theme-context"
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false)

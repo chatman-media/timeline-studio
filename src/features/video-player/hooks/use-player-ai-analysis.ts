@@ -6,10 +6,9 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
+import { usePlayer } from "@/domains/video-editing/providers"
 import { createLogger } from "@/lib/tauri-logger"
-
 import { FrameCaptureService } from "../services/frame-capture-service"
-import { usePlayer } from "../services/player-provider"
 
 const logger = createLogger("video-player:use-player-ai-analysis")
 

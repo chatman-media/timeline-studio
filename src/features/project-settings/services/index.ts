@@ -1,1 +1,1 @@
-export * from "./project-settings-provider"
+export * from "@/domains/project-management/providers"

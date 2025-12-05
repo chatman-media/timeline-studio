@@ -1,6 +1,5 @@
+import type { ChatContextType } from "@/domains/ai-services/providers/chat-provider"
 import { logInfo } from "@/lib/tauri-logger"
-
-import type { ChatContextType } from "../services/chat-provider"
 import { useChat } from "./use-chat"
 
 /**

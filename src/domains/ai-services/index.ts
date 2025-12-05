@@ -39,6 +39,8 @@ export {
   mapComprehensiveAnalysisToUnified,
   mapMontageAnalysisToUnified,
 } from "./mappers/ai-director-mapper"
+// Providers (for App Layer)
+export { ChatProvider, MCPProvider } from "./providers"
 
 export type {
   AIDirectorConfig,

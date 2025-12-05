@@ -19,12 +19,12 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { useNotifications } from "@/core/hooks"
+import { usePlayer } from "@/domains/video-editing/providers"
 import { MediaType } from "@/features/media/types/media"
 import { useProjectSettings } from "@/features/project-settings"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 import { convertVideoSrc } from "@/lib/tauri-utils"
 import { type EffectPreviewOptions, getEffectsPreviewService } from "../services/effects-preview"
-import { usePlayer } from "../services/player-provider"
 import { PlayerControls } from "./player-controls"
 
 interface EffectParameter {

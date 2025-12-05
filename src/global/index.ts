@@ -1,28 +1,21 @@
-// Global: Доступно везде без импорта (shims, vars, env)
-
 /**
- * Tauri shims (mock в browser dev)
+ * Global Layer - FEOD Architecture
+ *
+ * ⚠️ ВАЖНО: Этот файл НЕ ДОЛЖЕН содержать экспортов!
+ *
+ * Global layer работает через side-effects:
+ * - Type declarations в /types/ подключаются через tsconfig.json
+ * - CSS переменные в /styles/ подключаются в root layout
+ * - Polyfills в /setup/ выполняются при инициализации
+ *
+ * Если вам нужно что-то экспортировать - это НЕ Global layer!
+ * Переместите в:
+ * - /src/lib/ для утилит и хелперов (Common layer)
+ * - /src/components/ для компонентов (Common layer)
+ * - /src/features/ для бизнес-логики (Modules layer)
+ *
+ * См. README.md в этой папке для подробностей.
  */
-export const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
 
-/**
- * CSS vars (импорт в globals.css)
- */
-export const themeVars = {
-  "--primary": "#3b82f6",
-  "--effects-blur-max": "20px",
-  "--transition-duration": "0.3s",
-} as const
-
-/**
- * Env shim (из .env.local)
- */
-declare global {
-  const APP_ENV: {
-    openaiApiKey?: string
-    ffmpegPath?: string
-    onnxPath?: string
-  }
-}
-
-export * from "./tauri-mock-provider"
+// Этот файл намеренно оставлен пустым
+// Не добавляйте сюда экспорты!

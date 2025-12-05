@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { backendAI } from "@/domains/ai-services/services/backend-ai-service"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { backendAI } from "@/shared/services/ai/backend-ai-service"
 
 // CacheStats type is not exported from tauri-bindings yet, using placeholder
 type CacheStats = {
@@ -68,7 +68,9 @@ export function CacheStatsPanel({ className, compact = false }: CacheStatsPanelP
       logger.info("Expired cache cleaned:", { cleaned })
       await loadStats()
     } catch (error) {
-      logger.error("Failed to cleanup expired cache:", { error: String(error) })
+      logger.error("Failed to cleanup expired cache:", {
+        error: String(error),
+      })
     } finally {
       setCleaning(false)
     }

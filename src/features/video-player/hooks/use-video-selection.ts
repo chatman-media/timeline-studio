@@ -1,8 +1,7 @@
 import { useCallback } from "react"
+import { usePlayer } from "@/domains/video-editing/providers"
 import type { MediaFile } from "@/features/media/types/media"
 import { logInfo } from "@/lib/tauri-logger"
-
-import { usePlayer } from "../services/player-provider"
 
 // Моковые импорты для браузера и таймлайна - нужно заменить на реальные
 // import { useMedia } from "@/features/browser/hooks/use-media"

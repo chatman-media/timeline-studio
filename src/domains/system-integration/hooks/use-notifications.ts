@@ -3,8 +3,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import { isServiceEnabled } from "@/config/service-config"
 import { createLogger } from "@/lib/tauri-logger"
-import { isServiceEnabled } from "@/shared/config/service-config"
 import { getSystemIntegrationOrchestrator } from "../services/system-integration-orchestrator"
 import type { NotificationAction, SystemNotification } from "../types"
 

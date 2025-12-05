@@ -4,7 +4,7 @@
 
 import { useEffect } from "react"
 
-import { usePlayer } from "@/features/video-player/services/player-provider"
+import { usePlayer } from "@/domains/video-editing/providers"
 import { timelinePlayerSync } from "../services/timeline-player-sync"
 import { useTimeline } from "./use-timeline"
 import { useTimelineSelection } from "./use-timeline-selection"

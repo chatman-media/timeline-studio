@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { useResources } from "@/features/resources/services/resources-provider"
+import { useResources } from "@/domains/video-editing/providers"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 
 // Временная заглушка для setResourcesStateAccess

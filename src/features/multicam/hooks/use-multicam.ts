@@ -4,10 +4,9 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-
-import { useLinkedClips } from "@/features/timeline/hooks/use-linked-clips"
+import { usePlayer } from "@/domains/video-editing/providers"
+import { useLinkedClips } from "@/features/timeline/hooks"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import { usePlayer } from "@/features/video-player/services/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { multicamManager } from "../services/multicam-manager"
 import type { MulticamAngle } from "../types/multicam"
@@ -79,7 +78,7 @@ export function useMulticam(baseClipId?: string): UseMulticamReturn {
 
   // Преобразуем клипы в углы камер
   const angles = useMemo((): MulticamAngle[] => {
-    return multicamClips.map((clip, index) => {
+    return multicamClips.map((clip: any, index: any) => {
       // Находим медиафайл для клипа
       const mediaFile = project?.resources.media.find((m) => m.id === clip.mediaId)
 

@@ -93,6 +93,18 @@ export interface ChatTimelineContext {
   filters?: string[]
 }
 
+/**
+ * @deprecated
+ *
+ * ChatStorageService больше не используется.
+ * История чатов управляется через backend в ChatProvider.
+ *
+ * Используйте:
+ * - ChatProvider из @/domains/ai-services для управления чатами
+ * - IBackendService для персистентности (через DI контейнер)
+ *
+ * Этот интерфейс оставлен для обратной совместимости и будет удалён.
+ */
 export interface ChatStorageService {
   // Session management
   createSession(title?: string): Promise<ChatSession>

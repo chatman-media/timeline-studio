@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Label } from "@/components/ui/label"
 import type { MediaFile } from "@/features/media/types/media"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useTimeline } from "@/features/timeline"
 
 interface InfoSettingsState {
   mediaInfo: boolean

@@ -1,6 +1,6 @@
 import { useContext } from "react"
 
-import { ProjectSettingsContext, type ProjectSettingsProviderType } from "../services/project-settings-provider"
+import { ProjectSettingsContext, type ProjectSettingsProviderType } from "@/domains/project-management/providers"
 
 /**
  * Хук для доступа к настройкам проекта
