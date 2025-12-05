@@ -13,8 +13,8 @@ vi.mock("@/features/app-state/services/backend-sync", () => ({
   }),
 }))
 
+import { ProjectSettingsProvider } from "@/domains/project-management/providers"
 import { useProjectSettings } from "../../hooks/use-project-settings"
-import { ProjectSettingsProvider } from "../../services/project-settings-provider"
 import { DEFAULT_PROJECT_SETTINGS } from "../../types/project"
 
 describe("useProjectSettings - интеграционные тесты", () => {

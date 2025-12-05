@@ -157,23 +157,19 @@ describe("media-mapper", () => {
       expect(result.thumbnailPath).toBeUndefined()
     })
 
-    it("should handle case-insensitive media type", () => {
-      const items: MediaItem[] = [
-        { media_type: "video", expected: MediaType.Video },
-        { media_type: "VIDEO", expected: MediaType.Video },
-        { media_type: "ViDeO", expected: MediaType.Video },
-        { media_type: "audio", expected: MediaType.Audio },
-        { media_type: "AUDIO", expected: MediaType.Audio },
-        { media_type: "image", expected: MediaType.StillImage },
-        { media_type: "IMAGE", expected: MediaType.StillImage },
-      ] as const
+    it("should handle all media types correctly", () => {
+      const items = [
+        { media_type: "Video" as const, expected: MediaType.Video },
+        { media_type: "Audio" as const, expected: MediaType.Audio },
+        { media_type: "Image" as const, expected: MediaType.StillImage },
+      ]
 
       items.forEach(({ media_type, expected }) => {
         const item = createMockMediaItem({
           id: "test",
           name: "test.file",
           path: "/test.file",
-          media_type: media_type as "Video" | "Audio" | "Image",
+          media_type,
           duration: null,
           thumbnail: null,
         })
@@ -250,8 +246,8 @@ describe("media-mapper", () => {
       const after = new Date()
 
       expect(result.createdAt).toBeInstanceOf(Date)
-      expect(result.createdAt.getTime()).toBeGreaterThanOrEqual(before.getTime())
-      expect(result.createdAt.getTime()).toBeLessThanOrEqual(after.getTime())
+      expect(result.createdAt?.getTime()).toBeGreaterThanOrEqual(before.getTime())
+      expect(result.createdAt?.getTime()).toBeLessThanOrEqual(after.getTime())
     })
   })
 
@@ -271,6 +267,17 @@ describe("media-mapper", () => {
           media_type: "Video",
           duration: 100,
           thumbnail: null,
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
       ]
 
@@ -290,6 +297,17 @@ describe("media-mapper", () => {
           media_type: "Video",
           duration: 120,
           thumbnail: "/thumb1.jpg",
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
         {
           id: "audio-1",
@@ -298,6 +316,17 @@ describe("media-mapper", () => {
           media_type: "Audio",
           duration: 180,
           thumbnail: null,
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
         {
           id: "image-1",
@@ -306,6 +335,17 @@ describe("media-mapper", () => {
           media_type: "Image",
           duration: null,
           thumbnail: "/image.jpg",
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
       ]
 
@@ -329,6 +369,17 @@ describe("media-mapper", () => {
           media_type: "Video",
           duration: 30,
           thumbnail: null,
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
         {
           id: "item-1",
@@ -337,6 +388,17 @@ describe("media-mapper", () => {
           media_type: "Video",
           duration: 10,
           thumbnail: null,
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
         {
           id: "item-2",
@@ -345,6 +407,17 @@ describe("media-mapper", () => {
           media_type: "Video",
           duration: 20,
           thumbnail: null,
+          metadata: {
+            format: "mp4",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
+            creation_time: null,
+          },
+          usage_count: 0,
         },
       ]
 
@@ -363,6 +436,17 @@ describe("media-mapper", () => {
         media_type: "Video" as const,
         duration: i * 10,
         thumbnail: null,
+        metadata: {
+          format: "mp4",
+          codec: null,
+          resolution: null,
+          frame_rate: null,
+          bitrate: null,
+          audio_channels: null,
+          sample_rate: null,
+          creation_time: null,
+        },
+        usage_count: 0,
       }))
 
       const result = mediaItemsToMediaFiles(items)

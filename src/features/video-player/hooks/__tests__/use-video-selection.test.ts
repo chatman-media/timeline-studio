@@ -47,8 +47,8 @@ vi.mock("@/features/timeline/hooks/use-timeline", () => ({
 }))
 
 // Мокаем usePlayer для возврата нужного состояния
-vi.mock("@/features/video-player/services/player-provider", async () => {
-  const actual = await vi.importActual("@/features/video-player/services/player-provider")
+vi.mock("@/domains/video-editing/providers", async () => {
+  const actual = await vi.importActual("@/domains/video-editing/providers")
   return {
     ...actual,
     usePlayer: () => ({
@@ -69,9 +69,9 @@ vi.mock("@/features/video-player/services/player-provider", async () => {
   }
 })
 
+import { PlayerProvider } from "@/domains/video-editing/providers"
 // Импортируем после определения моков
 import { useVideoSelection } from "@/features/video-player/hooks/use-video-selection"
-import { PlayerProvider } from "@/features/video-player/services/player-provider"
 
 // Типы для тестирования
 const createMockMediaFile = (name: string): MediaFile => ({

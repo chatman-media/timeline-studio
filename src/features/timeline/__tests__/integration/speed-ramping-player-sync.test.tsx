@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { usePlayer } from "@/features/video-player/services/player-provider"
+import { usePlayer } from "@/domains/video-editing/providers"
 
 import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelinePlayerSync } from "../../hooks/use-timeline-player-sync"
@@ -11,7 +11,7 @@ import { createMockClip } from "../test-utils"
 
 vi.mock("../../hooks/use-timeline")
 vi.mock("../../hooks/use-timeline-selection")
-vi.mock("@/features/video-player/services/player-provider")
+vi.mock("@/domains/video-editing/providers")
 vi.mock("../../services/timeline-player-sync", () => ({
   timelinePlayerSync: {
     setPlayerContext: vi.fn(),

@@ -29,7 +29,7 @@ vi.mock("../../components/resource-thumbnail", () => ({
 
 // Mock useResources hook
 const mockUseResources = vi.fn()
-vi.mock("@/features/resources/services/resources-provider", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   useResources: () => mockUseResources(),
 }))
 

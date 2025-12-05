@@ -1,7 +1,7 @@
 import { fireEvent } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
+import type { ChatListItem } from "@/domains/ai-services/types/chat"
 import { render } from "@/test/test-utils"
-import { ChatListItem } from "../../services"
 import { ChatList } from "../chat-list"
 
 const mockSessions: ChatListItem[] = [

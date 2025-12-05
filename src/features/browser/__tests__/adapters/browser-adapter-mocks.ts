@@ -91,7 +91,7 @@ vi.mock("@/features/resources", () => ({
 }))
 
 // Мокаем ResourcesProvider альтернативный путь
-vi.mock("@/features/resources/services/resources-provider", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   ResourcesProvider: ({ children }: any) => children,
 }))
 
@@ -106,7 +106,7 @@ vi.mock("@/features/video-player/services/player-provider", () => ({
 }))
 
 // Мокаем ChatProvider
-vi.mock("@/features/ai-chat/services/chat-provider", () => ({
+vi.mock("@/domains/ai-services/providers/chat-provider", () => ({
   ChatProvider: ({ children }: any) => children,
 }))
 

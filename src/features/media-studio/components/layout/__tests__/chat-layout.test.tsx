@@ -86,7 +86,7 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
   PrerenderControls: () => null,
 }))
 
-vi.mock("@/features/video-player/services/player-provider", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="player-provider">{children}</div>,
   usePlayer: () => ({
     video: null,

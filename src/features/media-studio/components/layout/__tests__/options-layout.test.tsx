@@ -59,7 +59,7 @@ vi.mock("@/features/project-settings/hooks", () => ({
   }),
 }))
 
-vi.mock("@/features/video-player/services/player-provider", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="player-provider">{children}</div>,
   usePlayer: () => ({
     video: null,

@@ -37,11 +37,20 @@ vi.mock("../../hooks/use-media-preview", () => ({
   })),
 }))
 
-vi.mock("@/features/resources/services/resources-provider", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+  PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
+  TimelineProvider: ({ children }: { children: React.ReactNode }) => children,
   useResources: vi.fn(() => ({
     addMedia: mockAddMedia,
   })),
+  usePlayer: () => ({
+    playerSetSource: vi.fn(),
+    playerSetMedia: vi.fn(),
+    currentTime: 0,
+    duration: 0,
+    isPlaying: false,
+  }),
 }))
 
 vi.mock("../../hooks/use-media-processor", () => ({
@@ -88,6 +97,12 @@ vi.mock("../../hooks/use-media-processor", () => ({
 vi.mock("@/domains/media-management", () => ({
   selectMediaFile: vi.fn(),
   selectMediaDirectory: vi.fn(),
+  MediaManagementProvider: ({ children }: { children: React.ReactNode }) => children,
+  useMediaManagement: () => ({
+    mediaFiles: [],
+    addMedia: vi.fn(),
+    removeMedia: vi.fn(),
+  }),
 }))
 
 // Мокаем модули

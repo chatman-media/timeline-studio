@@ -19,13 +19,13 @@ import type React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { container } from "@/core/container"
+import { PlayerProvider, usePlayer } from "@/domains/video-editing/providers"
 import type { MediaFile } from "@/features/media/types/media"
 import { MediaType } from "@/features/media/types/media"
 import { useDebouncedSeek } from "@/features/video-player/hooks/use-debounced-seek"
 import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-time-sync"
 import { useVideoElement } from "@/features/video-player/hooks/use-video-element"
 import { useVideoEvents } from "@/features/video-player/hooks/use-video-events"
-import { PlayerProvider, usePlayer } from "@/features/video-player/services/player-provider"
 
 // Mock dependencies
 vi.mock("@/shared/config/service-config", () => ({
