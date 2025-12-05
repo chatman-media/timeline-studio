@@ -321,8 +321,18 @@ export class TauriMediaService implements IMediaService {
           preserve_metadata: options?.preserveMetadata ?? true,
         },
       })
-      logger.infoSync("Media files imported", { imported: result.imported.length, failed: result.failed.length })
-      return result
+
+      // Ensure result has expected structure
+      const safeResult: MediaImportResult = {
+        imported: result?.imported ?? [],
+        failed: result?.failed ?? [],
+      }
+
+      logger.infoSync("Media files imported", {
+        imported: safeResult.imported.length,
+        failed: safeResult.failed.length,
+      })
+      return safeResult
     } catch (error) {
       logger.errorSync("Failed to import media files", { error })
       throw error
