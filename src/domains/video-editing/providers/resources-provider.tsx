@@ -12,13 +12,6 @@ import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { FfprobeData } from "@/features/media/types/ffprobe"
 import { MediaType as LocalMediaType, type MediaFile } from "@/features/media/types/media"
-import type { StyleTemplate } from "@/features/style-templates/types"
-import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
-import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { Transition } from "@/features/transitions/types/transitions"
-import { logError, logInfo } from "@/lib/tauri-logger"
-import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
-
 // Backend event handlers removed - simplified architecture
 import {
   type EffectResource,
@@ -30,7 +23,13 @@ import {
   type TemplateResource,
   type TimelineResource,
   type TransitionResource,
-} from "../types"
+} from "@/features/resources/types"
+import type { StyleTemplate } from "@/features/style-templates/types"
+import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
+import type { MediaTemplate } from "@/features/templates/lib/templates"
+import type { Transition } from "@/features/transitions/types/transitions"
+import { logError, logInfo } from "@/lib/tauri-logger"
+import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
 /**
  * Convert local MediaType enum to Rust MediaType

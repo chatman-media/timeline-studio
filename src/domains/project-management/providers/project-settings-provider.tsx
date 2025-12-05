@@ -8,10 +8,10 @@
 import React, { createContext, useCallback, useEffect, useState } from "react"
 
 import { container } from "@/core/container"
+import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/features/project-settings/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
-import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "../types/project"
-import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "./backend-event-handlers"
+import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "./project-settings-backend-handlers"
 
 const logger = createLogger({ module: "ProjectSettingsProvider" })
 

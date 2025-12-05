@@ -6,7 +6,7 @@
 
 import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
-
+import { isServiceEnabled } from "@/config/service-config"
 import { container } from "@/core/container"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import type { MediaFile } from "@/features/media/types/media"
@@ -15,7 +15,6 @@ import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-
 import { type CommandPriority, CommandQueue } from "@/features/video-player/services/command-queue"
 import { defaultShouldRetry, retryWithBackoff } from "@/features/video-player/utils/retry-helper"
 import { createLogger } from "@/lib/tauri-logger"
-import { isServiceEnabled } from "@/shared/config/service-config"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("video-player:player-provider")

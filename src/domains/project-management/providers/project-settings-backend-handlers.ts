@@ -5,9 +5,9 @@
  * Используется паттерн Command-Event для синхронизации
  */
 
+import type { ProjectSettings } from "@/features/project-settings/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
-import type { ProjectSettings } from "../types/project"
 
 const logger = createLogger({ module: "ProjectSettingsEventHandlers" })
 
