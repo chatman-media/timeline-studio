@@ -1,10 +1,9 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
+import { usePlayer } from "@/domains/video-editing/providers"
 // Import mocked modules
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
-import { usePlayer } from "@/features/video-player/services/player-provider"
 
 import { PrerenderControls } from "../prerender-controls"
 
@@ -30,7 +29,7 @@ vi.mock("@/domains/system-integration", () => ({
 
 vi.mock("@/features/timeline/hooks/use-timeline")
 vi.mock("@/features/video-compiler/hooks/use-prerender")
-vi.mock("@/features/video-player/services/player-provider")
+vi.mock("@/domains/video-editing/providers")
 
 const mockUseTimeline = vi.mocked(useTimeline)
 const mockUsePrerender = vi.mocked(usePrerender)

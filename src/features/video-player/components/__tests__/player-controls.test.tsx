@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { usePlayer } from "@/domains/video-editing/providers"
 import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
 import { type MediaFile, MediaType } from "@/features/media/types/media"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
-import { usePlayer } from "@/features/video-player/services/player-provider"
 import { PlayerControls } from "../player-controls"
 
 // Создаем мок функции для logger используя vi.hoisted
@@ -272,7 +272,7 @@ const createMockPlayerContext = (overrides = {}) => ({
 })
 
 // Мокаем хуки
-vi.mock("@/features/video-player/services/player-provider", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   usePlayer: vi.fn(() => createMockPlayerContext()),
 }))
 
