@@ -1,10 +1,11 @@
 import type React from "react"
 
-import "@/styles/globals.css"
+import "@/global/styles/variables.css"
+import "@/domains/shared/styles/globals.css"
 
 import type { Metadata } from "next"
 import { AppErrorBoundary } from "@/components/error-boundary"
-import { Providers } from "@/features/media-studio/services/providers"
+import { Providers } from "@/config/providers/app-providers"
 
 export const metadata: Metadata = {
   title: "Timeline Studio",
