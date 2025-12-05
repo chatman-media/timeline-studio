@@ -12,8 +12,9 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useBrowserState } from "@/domains/browser"
 import { useMediaManagement } from "@/domains/media-management"
-import { useNotifications } from "@/domains/system-integration"
+import { useModals, useNotifications } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import { useAIDirectorAnalysisV2 } from "../hooks/use-ai-director-analysis-v2"
 import type { AnalysisSettings as AnalysisSettingsType } from "./analysis-settings"
@@ -41,6 +42,8 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
   // Hooks
   const { mediaPool } = useMediaManagement()
   const { showInfo, showSuccess, showWarning, showError } = useNotifications()
+  const { closeModal } = useModals()
+  const { switchTab } = useBrowserState()
   const { isAnalyzing, filesProgress, batchProgress, startBatchAnalysis, cancelAnalysis, reset } =
     useAIDirectorAnalysisV2()
 
@@ -77,8 +80,10 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
   // Handlers
   const handleOpenMediaPool = useCallback(() => {
     logger.infoSync("[Dashboard v3] Opening Browser for import")
-    showInfo("Импортируйте файлы через Browser", "Используйте вкладку Media в Browser для импорта файлов")
-  }, [showInfo])
+    // Закрываем модалку и переключаем на вкладку Media в Browser
+    closeModal()
+    switchTab("media")
+  }, [closeModal, switchTab])
 
   const handleSelectionChange = useCallback((newSelection: Set<string>) => {
     setSelectedFileIds(newSelection)
