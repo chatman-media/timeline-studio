@@ -75,7 +75,7 @@ describe("AI Director Service", () => {
   }
 
   const mockConfig: AIDirectorConfig = {
-    performance_mode: "balanced",
+    performance_mode: "Balanced",
     enable_audio_analysis: true,
     enable_scene_detection: true,
     enable_video_analysis: true,
@@ -258,7 +258,7 @@ describe("AI Director Service", () => {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           enable_transcription: false,
-          performance_mode: "balanced",
+          performance_mode: "Balanced",
         })
         expect(result).toEqual(audioResult)
       })
@@ -272,7 +272,7 @@ describe("AI Director Service", () => {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           enable_transcription: false,
-          performance_mode: "balanced",
+          performance_mode: "Balanced",
         })
       })
     })
@@ -299,7 +299,7 @@ describe("AI Director Service", () => {
         })
 
         expect(mockTauriCommands.unifiedAudioAnalyzeBatch).toHaveBeenCalledWith(["/video1.mp4", "/video2.mp4"], {
-          performance_mode: "fast",
+          performance_mode: "Fast",
         })
         expect(result).toEqual(audioResults)
       })
@@ -392,7 +392,7 @@ describe("AI Director Service", () => {
 
     describe("updateConfiguration", () => {
       it("should update configuration", async () => {
-        await service.updateConfiguration({ performance_mode: "fast" })
+        await service.updateConfiguration({ performance_mode: "Fast" })
 
         // TODO: Verify when backend command is implemented
       })
