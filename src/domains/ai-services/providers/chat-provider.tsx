@@ -637,19 +637,22 @@ export function ChatProvider({ children }: ChatProviderProps) {
     error,
 
     // История сессий - конвертируем в ChatListItem для обратной совместимости
-    sessions: sessions.map((s) => {
-      const item: any = {
-        id: s.id,
-        title: s.name,
-        lastMessageAt: s.updatedAt,
-        messageCount: s.messages.length,
-      }
-      // Добавляем lastMessage только если есть сообщения
-      if (s.messages.length > 0) {
-        item.lastMessage = s.messages[s.messages.length - 1]?.content
-      }
-      return item
-    }),
+    // Фильтруем сессии с 0 сообщений - пустые сессии не должны отображаться в списке
+    sessions: sessions
+      .filter((s) => s.messages.length > 0)
+      .map((s) => {
+        const item: any = {
+          id: s.id,
+          title: s.name,
+          lastMessageAt: s.updatedAt,
+          messageCount: s.messages.length,
+        }
+        // Добавляем lastMessage только если есть сообщения
+        if (s.messages.length > 0) {
+          item.lastMessage = s.messages[s.messages.length - 1]?.content
+        }
+        return item
+      }),
 
     // UI состояние
     isOpen,

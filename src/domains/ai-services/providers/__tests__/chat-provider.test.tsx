@@ -63,7 +63,14 @@ describe("ChatProvider", () => {
         {
           id: "session-1",
           name: "Test Session",
-          messages: [],
+          messages: [
+            {
+              id: "msg-1",
+              role: "user",
+              content: "Test message",
+              timestamp: new Date().toISOString(),
+            },
+          ],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -438,7 +445,8 @@ describe("ChatProvider", () => {
 
       await waitFor(() => {
         expect(result.current.currentSession?.id).toBe("non-existent")
-        expect(result.current.sessions.find((s: any) => s.id === "non-existent")).toBeDefined()
+        // Пустая сессия не показывается в списке до первого сообщения
+        expect(result.current.currentSession?.messages).toEqual([])
       })
     })
   })
@@ -493,17 +501,21 @@ describe("ChatProvider", () => {
 
       const { result } = renderHook(() => useChat(), { wrapper })
 
+      let sessions: any[]
       await act(async () => {
-        await Promise.all([
+        sessions = await Promise.all([
           result.current.createSession("Session 1"),
           result.current.createSession("Session 2"),
           result.current.createSession("Session 3"),
         ])
       })
 
-      await waitFor(() => {
-        expect(result.current.sessions.length).toBeGreaterThanOrEqual(3)
-      })
+      // Проверяем что все 3 сессии были созданы
+      expect(sessions!).toHaveLength(3)
+      expect(sessions![0].id).toBe("session-1")
+      expect(sessions![1].id).toBe("session-2")
+      expect(sessions![2].id).toBe("session-3")
+      // Пустые сессии не показываются в списке до первого сообщения
     })
   })
 
@@ -603,16 +615,19 @@ describe("ChatProvider", () => {
 
       const { result } = renderHook(() => useChat(), { wrapper })
 
+      let session: any
       await act(async () => {
         try {
-          await result.current.createSession("Fail")
+          session = await result.current.createSession("Fail")
         } catch (e) {
           // Ожидаем ошибку
         }
       })
 
       // Даже при ошибке должна создаться локальная сессия (fallback)
-      expect(result.current.sessions.length).toBeGreaterThan(0)
+      expect(session).toBeDefined()
+      expect(session.id).toContain("session_")
+      // Пустая fallback сессия не показывается в списке до первого сообщения
     })
 
     it("должен сбросить isLoading после ошибки", async () => {
