@@ -25,6 +25,8 @@ const mockSetGroupBy = vi.fn()
 const mockSetFilter = vi.fn()
 const mockSetViewMode = vi.fn()
 const mockSetPreviewSize = vi.fn()
+const mockSelectAllFiles = vi.fn()
+const mockDeselectAllFiles = vi.fn()
 
 // Мокаем все зависимости
 const mockBrowserState = {
@@ -46,6 +48,9 @@ const mockBrowserState = {
   setFilter: mockSetFilter,
   setViewMode: mockSetViewMode,
   setPreviewSize: mockSetPreviewSize,
+  selectAllFiles: mockSelectAllFiles,
+  deselectAllFiles: mockDeselectAllFiles,
+  selectedFiles: new Set<string>(),
 }
 
 vi.mock("@/domains/browser", async () => {
@@ -101,6 +106,17 @@ vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
     musicFiles: [],
     addMusicFile: vi.fn(),
     removeMusicFile: vi.fn(),
+  }),
+}))
+
+// Мок для useMediaManagement
+vi.mock("@/domains/media-management", () => ({
+  useMediaManagement: () => ({
+    mediaPool: new Map(),
+    isLoading: false,
+    error: null,
+    removeMedia: vi.fn(),
+    removeMultipleMedia: vi.fn().mockResolvedValue(undefined),
   }),
 }))
 

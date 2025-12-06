@@ -1,6 +1,7 @@
-import { memo, useCallback } from "react"
+import { memo, useCallback, useEffect } from "react"
 
 import { useBrowserState } from "@/domains/browser"
+import { useMediaManagement } from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
 import { useMediaImport } from "@/features/media/hooks/use-media-import"
 
@@ -37,7 +38,13 @@ export const BrowserContent = memo(() => {
     setFilter,
     setViewMode,
     setPreviewSize,
+    selectAllFiles,
+    deselectAllFiles,
+    selectedFiles,
   } = useBrowserState()
+
+  // Получаем mediaPool для Cmd+A и removeMultipleMedia для Delete
+  const { mediaPool, removeMultipleMedia } = useMediaManagement()
 
   // Извлекаем настройки для текущей вкладки
   const {
@@ -64,6 +71,46 @@ export const BrowserContent = memo(() => {
     importDirectory: importMusicFolder,
     isImporting: isImportingMusic,
   } = useMusicImport()
+
+  // Keyboard shortcuts для Browser
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Проверяем, что фокус не в поле ввода
+      const activeElement = document.activeElement
+      const isInInput =
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement ||
+        activeElement?.getAttribute("contenteditable") === "true"
+
+      if (isInInput) return
+
+      // Cmd+A (macOS) или Ctrl+A (Windows/Linux) - выбрать все
+      if ((event.metaKey || event.ctrlKey) && event.key === "a") {
+        // Только для вкладки media
+        if (activeTab === "media" && mediaPool.size > 0) {
+          event.preventDefault()
+          const allFileIds = Array.from(mediaPool.keys())
+          void selectAllFiles(allFileIds)
+        }
+      }
+
+      // Delete или Backspace - удалить выбранные файлы
+      if (event.key === "Delete" || event.key === "Backspace") {
+        // Только для вкладки media и если есть выбранные файлы
+        if (activeTab === "media" && selectedFiles.size > 0) {
+          event.preventDefault()
+          const selectedIds = Array.from(selectedFiles)
+          void removeMultipleMedia(selectedIds).then(() => {
+            // Очищаем выбор после удаления
+            void deselectAllFiles()
+          })
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [activeTab, mediaPool, selectAllFiles, selectedFiles, removeMultipleMedia, deselectAllFiles])
 
   // Используем useCallback для стабильных ссылок на функции
   const handleSearch = useCallback((query: string) => setSearchQuery(query), [setSearchQuery])

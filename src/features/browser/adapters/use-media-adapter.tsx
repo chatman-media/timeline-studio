@@ -1,6 +1,14 @@
+import { Trash2 } from "lucide-react"
 import type React from "react"
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
+import { useTranslation } from "react-i18next"
 
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu"
 import { useFavorites } from "@/core/hooks"
 import { useMediaManagement } from "@/domains/media-management"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
@@ -21,8 +29,12 @@ type MediaListItem = MediaFile & ListItem
  * Клик по видео обрабатывается внутри VideoStream (воспроизведение)
  * Кнопка "+" обрабатывается в AddMediaButton (добавление в ресурсы)
  * Drag & Drop используется для переноса на таймлайн
+ * Контекстное меню используется для удаления файла
  */
 const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item: file, size, viewMode }) => {
+  const { t } = useTranslation()
+  const { removeMedia } = useMediaManagement()
+
   // Используем DragDropManager для перетаскивания на таймлайн
   const dragProps = useDraggable(
     "media",
@@ -34,14 +46,30 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
     }),
   )
 
+  const handleDelete = useCallback(async () => {
+    if (file.id) {
+      await removeMedia(file.id)
+    }
+  }, [file.id, removeMedia])
+
   return (
-    <div {...dragProps} className="cursor-pointer">
-      <MediaPreview
-        file={file}
-        size={typeof size === "number" ? size : size.width}
-        showFileName={viewMode === "list"}
-      />
-    </div>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div {...dragProps} className="cursor-pointer">
+          <MediaPreview
+            file={file}
+            size={typeof size === "number" ? size : size.width}
+            showFileName={viewMode === "list"}
+          />
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem variant="destructive" onClick={handleDelete}>
+          <Trash2 className="size-4" />
+          {t("common.delete", "Удалить")}
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 }
 

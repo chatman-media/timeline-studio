@@ -43,6 +43,17 @@ vi.mock("@/domains/system-integration", () => ({
     showWarning: mockShowWarning,
     showError: mockShowError,
   })),
+  useModals: vi.fn(() => ({
+    closeModal: vi.fn(),
+    openModal: vi.fn(),
+  })),
+}))
+
+vi.mock("@/domains/browser", () => ({
+  useBrowserState: vi.fn(() => ({
+    switchTab: vi.fn(),
+    activeTab: "media",
+  })),
 }))
 
 import { useMediaManagement } from "@/domains/media-management"
@@ -106,6 +117,8 @@ describe("AIDirectorV3Dashboard", () => {
 
     mockUseMediaManagement.mockReturnValue({
       mediaPool: defaultMocks.mediaPool,
+      removeMedia: vi.fn(),
+      removeMultipleMedia: vi.fn(),
     } as any)
 
     mockUseAIDirectorAnalysisV2.mockReturnValue(defaultMocks.analysisHook as any)

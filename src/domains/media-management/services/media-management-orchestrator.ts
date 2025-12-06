@@ -649,6 +649,45 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   }
 
   /**
+   * Удаление медиафайла из пула
+   */
+  async removeMedia(mediaId: string): Promise<void> {
+    logger.info("[Media Management] Removing media", { mediaId })
+
+    if (!this.backend) {
+      logger.error("[Media Management] Backend not available for remove media")
+      throw new Error("Backend not available")
+    }
+
+    try {
+      await this.backend.executeCommand({
+        type: "RemoveMedia",
+        params: { media_id: mediaId },
+      } as any)
+
+      // Локально удаляем из пула (синхронизация через событие MediaRemoved)
+      this.mediaPool.delete(mediaId)
+
+      logger.info("[Media Management] Media removed successfully", { mediaId })
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to remove media"
+      logger.error("[Media Management] Failed to remove media", { mediaId, error: errorMessage })
+      throw error
+    }
+  }
+
+  /**
+   * Удаление нескольких медиафайлов
+   */
+  async removeMultipleMedia(mediaIds: string[]): Promise<void> {
+    logger.info("[Media Management] Removing multiple media", { count: mediaIds.length })
+
+    for (const mediaId of mediaIds) {
+      await this.removeMedia(mediaId)
+    }
+  }
+
+  /**
    * Очистка ресурсов
    */
   dispose() {

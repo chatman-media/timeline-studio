@@ -21,6 +21,8 @@ interface MediaManagementContextValue extends MediaManagementService {
   isReady: boolean
   isLoading: boolean
   error: string | null
+  removeMedia: (mediaId: string) => Promise<void>
+  removeMultipleMedia: (mediaIds: string[]) => Promise<void>
 }
 
 export const MediaManagementContext = createContext<MediaManagementContextValue | null>(null)
@@ -166,6 +168,26 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     [orchestrator],
   )
 
+  const removeMedia = useCallback(
+    async (mediaId: string) => {
+      logger.infoSync("[MediaManagementProvider] Removing media via orchestrator", { mediaId })
+      await orchestrator.removeMedia(mediaId)
+      // Синхронизируем состояние после операции
+      setMediaPool(orchestrator.getMediaPool())
+    },
+    [orchestrator],
+  )
+
+  const removeMultipleMedia = useCallback(
+    async (mediaIds: string[]) => {
+      logger.infoSync("[MediaManagementProvider] Removing multiple media via orchestrator", { count: mediaIds.length })
+      await orchestrator.removeMultipleMedia(mediaIds)
+      // Синхронизируем состояние после операции
+      setMediaPool(orchestrator.getMediaPool())
+    },
+    [orchestrator],
+  )
+
   const mediaManagementService: MediaManagementService = useMemo(
     () => ({
       importFiles,
@@ -224,8 +246,10 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       isReady: true,
       isLoading,
       error,
+      removeMedia,
+      removeMultipleMedia,
     }),
-    [mediaManagementService, mediaPool, formattedFileOperationsState, formattedMediaImportState, isLoading, error],
+    [mediaManagementService, mediaPool, formattedFileOperationsState, formattedMediaImportState, isLoading, error, removeMedia, removeMultipleMedia],
   )
 
   return <MediaManagementContext.Provider value={value}>{children}</MediaManagementContext.Provider>
