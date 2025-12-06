@@ -73,6 +73,28 @@ impl MediaCommands {
       None => return CommandResult::error("No project open".to_string()),
     };
 
+    // Check if media with this path already exists in media_pool (prevent duplicates)
+    let existing_media = project
+      .media_pool
+      .items
+      .values()
+      .find(|item| item.path == path);
+
+    if let Some(existing) = existing_media {
+      log::info!(
+        "Media already exists in pool, skipping: {} (id: {})",
+        path,
+        existing.id
+      );
+      // Return success with existing media ID instead of creating duplicate
+      return CommandResult::success(serde_json::json!({
+        "id": existing.id,
+        "path": existing.path,
+        "name": existing.name,
+        "already_exists": true
+      }));
+    }
+
     // Create media item with full metadata
     let media_item = MediaItem {
       id: media_id.clone(),

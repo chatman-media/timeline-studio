@@ -18,7 +18,7 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
 }))
 
 // Мокаем утилиты
-vi.mock("../../utils/saved-media-utils", () => ({
+vi.mock("@/domains/media-management/utils/saved-media-utils", () => ({
   fileExists: vi.fn(),
   validateFileIntegrity: vi.fn(),
   generateAlternativePaths: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock("../../utils/saved-media-utils", () => ({
 
 // Импортируем замоканные функции
 const { fileExists, validateFileIntegrity, generateAlternativePaths, convertFromSavedMediaFile, getExtensionsForFile } =
-  await import("../../utils/saved-media-utils")
+  await import("@/domains/media-management/utils/saved-media-utils")
 const mockFileExists = fileExists as any
 const mockValidateFileIntegrity = validateFileIntegrity as any
 const mockGenerateAlternativePaths = generateAlternativePaths as any

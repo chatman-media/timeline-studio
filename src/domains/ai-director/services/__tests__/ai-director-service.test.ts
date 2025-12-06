@@ -80,7 +80,7 @@ describe("AI Director Service", () => {
     enable_scene_detection: true,
     enable_video_analysis: true,
     enable_object_detection: true,
-    enable_face_recognition: false,
+    enable_face_detection: false,
     enable_transcription: false,
   }
 

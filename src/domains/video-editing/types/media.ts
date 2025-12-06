@@ -4,17 +4,18 @@
  * Профессиональные типы медиафайлов по аналогии с DaVinci Resolve
  */
 
+// IMPORTANT: Backend expects "Video", "Audio", "Image" (capitalized)
 export enum MediaType {
   // Video formats
-  Video = "video",
+  Video = "Video",
   VideoWithAudio = "video_with_audio",
 
   // Image formats
-  StillImage = "still_image",
+  StillImage = "Image",
   ImageSequence = "image_sequence",
 
   // Audio formats
-  Audio = "audio",
+  Audio = "Audio",
   Music = "music",
   Voiceover = "voiceover",
   SFX = "sfx",

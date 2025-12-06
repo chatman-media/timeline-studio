@@ -4898,8 +4898,34 @@ impl CommandHandler {
 
         // Generate thumbnail if requested
         if options.generate_thumbnails && is_video {
-          // TODO: Generate thumbnail asynchronously
-          log::info!("Thumbnail generation requested for: {}", path);
+          log::info!("Generating thumbnail for: {}", path);
+
+          // Запускаем генерацию thumbnail асинхронно через PreviewDataManager
+          let media_id_clone = media_id.clone();
+          let path_clone = path.clone();
+          let app_handle = self.app_handle.clone();
+
+          tokio::spawn(async move {
+            // Получаем PreviewDataManager из state
+            if let Ok(preview_state) = app_handle.try_state::<crate::media::commands::PreviewManagerState>() {
+              match preview_state.manager.generate_browser_thumbnail(
+                media_id_clone.clone(),
+                std::path::PathBuf::from(&path_clone),
+                200, // width
+                112, // height (16:9)
+                0.0, // timestamp - первый кадр
+              ).await {
+                Ok(_) => {
+                  log::info!("✅ Thumbnail generated successfully for: {}", path_clone);
+                }
+                Err(e) => {
+                  log::error!("❌ Failed to generate thumbnail for {}: {}", path_clone, e);
+                }
+              }
+            } else {
+              log::error!("PreviewManagerState not found in app state");
+            }
+          });
         }
 
         // Extract metadata if requested
