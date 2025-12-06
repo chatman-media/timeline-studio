@@ -200,7 +200,8 @@ describe("NodePlatformService", () => {
       await expect(service.openPath(tempDir)).resolves.not.toThrow()
     })
 
-    it("does not throw when opening URL", async () => {
+    it.skip("does not throw when opening URL", async () => {
+      // Skipped to prevent real network requests during tests
       // May fail in headless environment, but shouldn't throw
       await expect(service.openUrl("https://example.com")).resolves.not.toThrow()
     })

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MockPlatformService } from "../platform"
 
 describe("MockPlatformService", () => {
@@ -137,7 +137,14 @@ describe("MockPlatformService", () => {
     })
 
     it("openUrl does not throw", async () => {
+      // Mock window.open to prevent actual navigation
+      const originalOpen = window.open
+      window.open = vi.fn()
+
       await expect(platform.openUrl("https://example.com")).resolves.not.toThrow()
+
+      // Restore original window.open
+      window.open = originalOpen
     })
   })
 
