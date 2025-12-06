@@ -1,3 +1,24 @@
+# [3.38.0](https://github.com/chatman-media/timeline-studio/compare/v3.37.0...v3.38.0) (2025-12-06)
+
+
+### Bug Fixes
+
+* effect preview shows first frame, plays on hover ([c0c06a7](https://github.com/chatman-media/timeline-studio/commit/c0c06a7afbfafeeeb3f4b59eb1324ae696952b2b))
+* improve WebGL effect rendering in preview ([74ea099](https://github.com/chatman-media/timeline-studio/commit/74ea099f3dc1d10b7b6a906aaabf94e4e671a60f))
+* remove convertVideoSrc for static transition preview videos ([b0d4b1b](https://github.com/chatman-media/timeline-studio/commit/b0d4b1b8fce09e3d72f53faf30a4fa186c8c3157))
+* remove hover requirement for effect previews ([c1c4899](https://github.com/chatman-media/timeline-studio/commit/c1c489922b008dc75163d8d136c901abf2ae4ef5))
+* **video-compiler:** исправлена ошибка missing field name в prerender_segment ([436849b](https://github.com/chatman-media/timeline-studio/commit/436849b0aa28057d641fc8768d18857fd0006c28))
+* использование текущего видео для превью эффектов ([f48f1a1](https://github.com/chatman-media/timeline-studio/commit/f48f1a1f40ea2368d2d5b0a9da019f667067561f))
+* исправлен дубликат ProjectManagementProvider и рекурсивный вызов ([be618fe](https://github.com/chatman-media/timeline-studio/commit/be618feb61b8f46fcdd9f12ac309ea6dc335aa62))
+
+
+### Features
+
+* add effect preview video generation system ([517bd9b](https://github.com/chatman-media/timeline-studio/commit/517bd9be6c016e1e89c5a7adefef056e539bb13e))
+* add WebGL shader rendering for effects preview ([8417252](https://github.com/chatman-media/timeline-studio/commit/8417252b56fbecb97f1104c1988637a4d2166dc9))
+* **browser:** добавлена кнопка "Очистить всё" для медиафайлов ([bbbac10](https://github.com/chatman-media/timeline-studio/commit/bbbac10bd837998b54cf5575960618eea455468a))
+* добавлены нотификации для создания проекта и завершения импорта ([df66344](https://github.com/chatman-media/timeline-studio/commit/df66344106b23a66a7d0a1775a0c0e669ace913e))
+
 # [3.37.0](https://github.com/chatman-media/timeline-studio/compare/v3.36.1...v3.37.0) (2025-12-06)
 
 
