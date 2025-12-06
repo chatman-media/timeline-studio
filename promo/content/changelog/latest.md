@@ -1,3 +1,23 @@
+# [3.37.0](https://github.com/chatman-media/timeline-studio/compare/v3.36.1...v3.37.0) (2025-12-06)
+
+
+### Bug Fixes
+
+* **ai-director:** close modal and switch to Media tab on import ([61ac637](https://github.com/chatman-media/timeline-studio/commit/61ac63795a24c3fdd8bfeff1d3781fd86793b952))
+* **chat:** filter empty sessions from chat history ([5ad2580](https://github.com/chatman-media/timeline-studio/commit/5ad25802924e964172269937555432c3f3c54905))
+* **media:** handle undefined result in importFiles ([0b4ed35](https://github.com/chatman-media/timeline-studio/commit/0b4ed35729266df1e8f1d11d6b3e09f5a37c68f7))
+* **multicam:** increase test timeouts for audio-sync ([d443f1f](https://github.com/chatman-media/timeline-studio/commit/d443f1fc95c782aaa7fb0a380663c62fe4a25cab))
+* remove unused TempDir import in workspace.rs tests ([6b548de](https://github.com/chatman-media/timeline-studio/commit/6b548de0278fe93b6c6aa91db17b83998aa0b3ec))
+* **test:** add missing refreshMediaPool mock in media-management-provider test ([e424014](https://github.com/chatman-media/timeline-studio/commit/e4240146f0d3b69075b83e1ac9b2ae0fad1bd9f8))
+* автоматическая очистка дублей в media_pool при загрузке checkpoint ([edaa235](https://github.com/chatman-media/timeline-studio/commit/edaa235f403d76093d49c0da98e9e02cdaa03d9e))
+* исправлены тесты с неправильным интервалом обновления ([0819b03](https://github.com/chatman-media/timeline-studio/commit/0819b0301e898bf857e180e656ac837988f802d4))
+
+
+### Features
+
+* **browser:** add bulk operations (select all & delete) ([34f76cb](https://github.com/chatman-media/timeline-studio/commit/34f76cb24b8a6dcd3774b3350e383322c1f58ef2))
+* **filters:** implement real timeline integration ([2eb29f6](https://github.com/chatman-media/timeline-studio/commit/2eb29f651746e5782c6c1b18caba362f6abd65ee))
+
 ## [3.36.1](https://github.com/chatman-media/timeline-studio/compare/v3.36.0...v3.36.1) (2025-12-03)
 
 
