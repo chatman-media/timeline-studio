@@ -159,14 +159,22 @@ export function EffectPreview({
    * Определяем использует ли эффект WebGL
    */
   const useWebGL = useMemo(() => {
-    return !!(processedEffect?.processors?.webgl?.fragmentShader)
+    const hasWebGL = !!(processedEffect?.processors?.webgl?.fragmentShader)
+    if (processedEffect) {
+      void logger.info("Effect rendering mode", {
+        effectId: processedEffect.id,
+        useWebGL: hasWebGL,
+        hasFragmentShader: !!processedEffect?.processors?.webgl?.fragmentShader,
+      })
+    }
+    return hasWebGL
   }, [processedEffect])
 
   /**
-   * Применение эффекта к видео (WebGL или CSS)
+   * Применение CSS-эффекта к видео (только для эффектов без WebGL)
    */
   useEffect(() => {
-    if (!effect) return
+    if (!effect || useWebGL) return // Пропускаем если используем WebGL
     if (!videoSrc || !videoRef.current) return
     const videoElement = videoRef.current
 
@@ -184,72 +192,148 @@ export function EffectPreview({
     videoElement.playbackRate = playbackRate
     videoElement.loop = true
 
-    // WebGL рендеринг
-    if (useWebGL && canvasRef.current) {
-      const canvas = canvasRef.current
-      canvas.width = width
-      canvas.height = height
+    // Применяем CSS фильтры
+    const cssFilter = generateCSSFilterForEffect(processedEffect || effect, effectParams)
+    if (cssFilter) {
+      videoElement.style.filter = cssFilter
+    }
 
-      // Функция рендеринга кадра
-      const renderFrame = async () => {
-        if (!videoElement || !canvas || videoElement.paused || videoElement.ended) {
-          return
-        }
+    // Специальные эффекты через box-shadow
+    if (
+      processedEffect?.id === "vignette" ||
+      (processedEffect?.category === "lighting" && processedEffect?.id.includes("vignette"))
+    ) {
+      const intensity = customParams?.intensity ?? effectParams?.intensity ?? 0.3
+      const radius = customParams?.radius ?? effectParams?.radius ?? 0.8
+      const shadowSize = Math.round(Math.min(width, height) * (1 - radius) * 0.5)
+      const shadowBlur = Math.round(shadowSize * intensity * 2)
+      videoElement.style.boxShadow = `inset 0 0 ${shadowBlur}px ${shadowSize}px rgba(0,0,0,${intensity})`
+    } else {
+      videoElement.style.boxShadow = ""
+    }
 
-        try {
-          await getEffectsPreviewService().applyEffect(
-            videoElement,
-            processedEffect!.id,
-            effectParams,
-            canvas,
-          )
-        } catch (error) {
-          void logger.error("WebGL effect rendering failed", { error })
-        }
+    return () => {
+      videoElement.style.filter = ""
+      videoElement.style.boxShadow = ""
+    }
+  }, [processedEffect, width, height, customParams, videoSrc, effect, useWebGL])
 
-        // Следующий кадр
-        animationFrameRef.current = requestAnimationFrame(renderFrame)
+  /**
+   * Рендеринг первого кадра с WebGL эффектом
+   */
+  useEffect(() => {
+    if (!useWebGL || !videoRef.current || !canvasRef.current || !processedEffect) return
+
+    const videoElement = videoRef.current
+    const canvas = canvasRef.current
+
+    // Устанавливаем размеры canvas
+    canvas.width = width
+    canvas.height = height
+
+    // Устанавливаем скорость воспроизведения
+    const playbackRate = getPlaybackRate(processedEffect)
+    videoElement.playbackRate = playbackRate
+    videoElement.loop = true
+
+    // Функция рендеринга одного кадра
+    const renderSingleFrame = async () => {
+      if (videoElement.readyState < 2) return // Видео ещё не готово
+
+      const effectParams: Record<string, any> = {}
+      if (processedEffect.parameters) {
+        processedEffect.parameters.forEach((param) => {
+          effectParams[param.id] = param.currentValue ?? param.defaultValue
+        })
       }
+      Object.assign(effectParams, customParams)
 
-      // Начинаем рендеринг при hover
-      if (isHovering && !videoElement.paused) {
-        animationFrameRef.current = requestAnimationFrame(renderFrame)
-      }
-
-      return () => {
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current)
-          animationFrameRef.current = null
-        }
+      try {
+        await getEffectsPreviewService().applyEffect(
+          videoElement,
+          processedEffect.id,
+          effectParams,
+          canvas,
+        )
+      } catch (error) {
+        void logger.error("WebGL effect rendering failed", { error })
       }
     }
-    // CSS фильтры (fallback)
-    else {
-      const cssFilter = generateCSSFilterForEffect(processedEffect || effect, effectParams)
-      if (cssFilter) {
-        videoElement.style.filter = cssFilter
+
+    // Рендерим первый кадр когда видео готово
+    const handleLoadedData = () => {
+      void logger.info("Rendering first frame with WebGL", {
+        effectId: processedEffect.id,
+        readyState: videoElement.readyState,
+      })
+      void renderSingleFrame()
+    }
+
+    if (videoElement.readyState >= 2) {
+      void logger.info("Video ready, rendering first frame immediately", {
+        effectId: processedEffect.id,
+        readyState: videoElement.readyState,
+      })
+      void renderSingleFrame()
+    } else {
+      void logger.info("Waiting for video to load", {
+        effectId: processedEffect.id,
+        readyState: videoElement.readyState,
+      })
+      videoElement.addEventListener("loadeddata", handleLoadedData)
+    }
+
+    return () => {
+      videoElement.removeEventListener("loadeddata", handleLoadedData)
+    }
+  }, [useWebGL, processedEffect, width, height, customParams, videoSrc])
+
+  /**
+   * Непрерывный WebGL рендеринг при hover
+   */
+  useEffect(() => {
+    if (!useWebGL || !isHovering || !videoRef.current || !canvasRef.current || !processedEffect) return
+
+    const videoElement = videoRef.current
+    const canvas = canvasRef.current
+
+    if (videoElement.paused || videoElement.ended) return
+
+    const effectParams: Record<string, any> = {}
+    if (processedEffect.parameters) {
+      processedEffect.parameters.forEach((param) => {
+        effectParams[param.id] = param.currentValue ?? param.defaultValue
+      })
+    }
+    Object.assign(effectParams, customParams)
+
+    // Функция рендеринга кадра в цикле
+    const renderFrame = async () => {
+      if (videoElement.paused || videoElement.ended) return
+
+      try {
+        await getEffectsPreviewService().applyEffect(
+          videoElement,
+          processedEffect.id,
+          effectParams,
+          canvas,
+        )
+      } catch (error) {
+        void logger.error("WebGL continuous rendering failed", { error })
       }
 
-      // Специальные эффекты через box-shadow
-      if (
-        processedEffect?.id === "vignette" ||
-        (processedEffect?.category === "lighting" && processedEffect?.id.includes("vignette"))
-      ) {
-        const intensity = customParams?.intensity ?? effectParams?.intensity ?? 0.3
-        const radius = customParams?.radius ?? effectParams?.radius ?? 0.8
-        const shadowSize = Math.round(Math.min(width, height) * (1 - radius) * 0.5)
-        const shadowBlur = Math.round(shadowSize * intensity * 2)
-        videoElement.style.boxShadow = `inset 0 0 ${shadowBlur}px ${shadowSize}px rgba(0,0,0,${intensity})`
-      } else {
-        videoElement.style.boxShadow = ""
-      }
+      animationFrameRef.current = requestAnimationFrame(renderFrame)
+    }
 
-      return () => {
-        videoElement.style.filter = ""
-        videoElement.style.boxShadow = ""
+    animationFrameRef.current = requestAnimationFrame(renderFrame)
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
       }
     }
-  }, [processedEffect, width, height, customParams, videoSrc, effect, useWebGL, isHovering])
+  }, [useWebGL, isHovering, processedEffect, customParams, videoSrc])
 
   /**
    * Управление воспроизведением при наведении
@@ -268,30 +352,8 @@ export function EffectPreview({
       // Без наведения - останавливаем и возвращаем на первый кадр
       videoElement.pause()
       videoElement.currentTime = 0
-
-      // Для WebGL эффектов - рендерим первый кадр
-      if (useWebGL && canvasRef.current && processedEffect) {
-        const effectParams: Record<string, any> = {}
-        if (processedEffect.parameters) {
-          processedEffect.parameters.forEach((param) => {
-            effectParams[param.id] = param.currentValue ?? param.defaultValue
-          })
-        }
-        Object.assign(effectParams, customParams)
-
-        // Рендерим один кадр
-        setTimeout(() => {
-          if (canvasRef.current && videoElement.readyState >= 2) {
-            getEffectsPreviewService()
-              .applyEffect(videoElement, processedEffect.id, effectParams, canvasRef.current)
-              .catch((err) => {
-                void logger.error("Failed to render first frame", { error: err })
-              })
-          }
-        }, 50)
-      }
     }
-  }, [isHovering, videoSrc, useWebGL, processedEffect, customParams])
+  }, [isHovering, videoSrc])
 
   return (
     <div className="flex flex-col items-center">
