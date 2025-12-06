@@ -4,11 +4,10 @@
  * Comprehensive tests for the undo/redo system hook
  */
 
-import { renderHook, act } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { type ActionType, UndoRedoService } from "../../services/undo-redo-service"
 import { useUndoRedo } from "../use-undo-redo"
-import { UndoRedoService, type ActionType } from "../../services/undo-redo-service"
-import { getVideoEditingOrchestrator } from "../../services/video-editing-orchestrator"
 
 // Hoisted mocks
 const { mockOrchestrator, mockTimelineActor, mockService } = vi.hoisted(() => {
@@ -35,23 +34,32 @@ const { mockOrchestrator, mockTimelineActor, mockService } = vi.hoisted(() => {
     canUndo: vi.fn(() => false),
     canRedo: vi.fn(() => false),
     getHistoryStats: vi.fn(() => ({
-      undoStackSize: 0,
-      redoStackSize: 0,
       totalActions: 0,
+      undoCount: 0,
+      redoableActions: 0,
+      redoCount: 0,
+      historySize: 0,
+      currentIndex: 0,
+      actionsByType: {},
       memoryUsage: 0,
+      maxHistorySize: 1000,
     })),
-    getUndoableActions: vi.fn(() => []),
-    getRedoableActions: vi.fn(() => []),
-    undo: vi.fn(() => ({ success: false })),
-    redo: vi.fn(() => ({ success: false })),
-    undoMultiple: vi.fn(() => []),
-    redoMultiple: vi.fn(() => []),
-    undoToAction: vi.fn(() => ({ success: false })),
-    undoByType: vi.fn(() => []),
-    undoByEntity: vi.fn(() => []),
+    getUndoableActions: vi.fn<any>(() => []),
+    getRedoableActions: vi.fn<any>(() => []),
+    undo: vi.fn<any>(() => ({ success: false })),
+    redo: vi.fn<any>(() => ({ success: false })),
+    undoMultiple: vi.fn<any>(() => []),
+    redoMultiple: vi.fn<any>(() => []),
+    undoToAction: vi.fn<any>(() => ({
+      success: false,
+    })),
+    undoByType: vi.fn<any>(() => []),
+    undoByEntity: vi.fn<any>(() => []),
     startGrouping: vi.fn(() => "group-1"),
     endGrouping: vi.fn(),
-    undoGroup: vi.fn(() => ({ success: false })),
+    undoGroup: vi.fn<any>(() => ({
+      success: false,
+    })),
     addAction: vi.fn(() => "action-1"),
     clearHistory: vi.fn(),
     optimizeHistory: vi.fn(),
@@ -91,10 +99,15 @@ describe("useUndoRedo", () => {
     mockService.canUndo.mockReturnValue(false)
     mockService.canRedo.mockReturnValue(false)
     mockService.getHistoryStats.mockReturnValue({
-      undoStackSize: 0,
-      redoStackSize: 0,
       totalActions: 0,
+      undoCount: 0,
+      redoableActions: 0,
+      redoCount: 0,
+      historySize: 0,
+      currentIndex: 0,
+      actionsByType: {},
       memoryUsage: 0,
+      maxHistorySize: 1000,
     })
     mockService.getUndoableActions.mockReturnValue([])
     mockService.getRedoableActions.mockReturnValue([])
@@ -557,10 +570,15 @@ describe("useUndoRedo", () => {
 
     it("should get history stats", () => {
       const mockStats = {
-        undoStackSize: 5,
-        redoStackSize: 3,
         totalActions: 8,
+        undoCount: 5,
+        redoableActions: 3,
+        redoCount: 3,
+        historySize: 8,
+        currentIndex: 5,
+        actionsByType: { ADD_CLIP: 3, REMOVE_CLIP: 2 },
         memoryUsage: 1024,
+        maxHistorySize: 1000,
       }
 
       mockService.getHistoryStats.mockReturnValue(mockStats)
@@ -622,18 +640,23 @@ describe("useUndoRedo", () => {
 
     it("should provide current history stats", () => {
       const stats = {
-        undoStackSize: 10,
-        redoStackSize: 5,
         totalActions: 15,
+        undoCount: 10,
+        redoableActions: 5,
+        redoCount: 5,
+        historySize: 15,
+        currentIndex: 10,
+        actionsByType: {},
         memoryUsage: 2048,
+        maxHistorySize: 1000,
       }
 
       mockService.getHistoryStats.mockReturnValue(stats)
 
       const { result } = renderHook(() => useUndoRedo())
 
-      expect(result.current.historyStats.undoStackSize).toBe(10)
-      expect(result.current.historyStats.redoStackSize).toBe(5)
+      expect(result.current.historyStats.undoCount).toBe(10)
+      expect(result.current.historyStats.redoableActions).toBe(5)
       expect(result.current.historyStats.totalActions).toBe(15)
       expect(result.current.historyStats.memoryUsage).toBe(2048)
     })

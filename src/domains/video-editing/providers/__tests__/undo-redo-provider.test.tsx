@@ -145,7 +145,7 @@ describe("UndoRedoProvider", () => {
     it("should load undo history from backend", async () => {
       mockBackend.executeCommand.mockResolvedValue({
         success: true,
-        data: { undoHistory: [], redoHistory: [] },
+        data: null,
       })
 
       renderHook(() => useUndoRedoContext(), { wrapper })
@@ -258,7 +258,11 @@ describe("UndoRedoProvider", () => {
     it("should register update clip action", () => {
       const { result } = renderHook(() => useClipUndoRedo(), { wrapper })
 
-      const actionId = result.current.registerUpdateClip("clip-1", { volume: 1.0 }, { volume: 0.5 })
+      const actionId = result.current.registerUpdateClip(
+        "clip-1",
+        { startTime: 0, endTime: 10 },
+        { startTime: 2, endTime: 8 },
+      )
 
       expect(actionId).toMatch(/^action-/)
       expect(typeof actionId).toBe("string")

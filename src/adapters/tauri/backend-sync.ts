@@ -86,9 +86,12 @@ export class BackendSync {
       logger.info("Backend sync connecting...")
 
       // Subscribe to backend events
+      logger.info("🔵 REGISTERING listener for 'project:event'...")
       this.unlisten = await listen<EventEnvelope>("project:event", (event) => {
+        logger.info("🟢 RECEIVED event from Tauri:", { eventType: event.payload.event.type })
         this.handleBackendEvent(event.payload)
       })
+      logger.info("✅ LISTENER registered successfully")
 
       // Get initial state
       const state = await this.getProjectState()

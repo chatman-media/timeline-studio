@@ -54,6 +54,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-123",
+          action_type: "ADD_CLIP",
           description: "Undo add clip",
         },
       }
@@ -69,6 +70,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-456",
+          action_type: "CUSTOM",
           description: "Undo remove track",
         },
       }
@@ -89,6 +91,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-789",
+          action_type: "CUSTOM",
           description: "Undo action",
         },
       }
@@ -103,6 +106,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-1",
+          action_type: "CUSTOM",
           description: "First undo",
         },
       }
@@ -111,6 +115,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-2",
+          action_type: "CUSTOM",
           description: "Second undo",
         },
       }
@@ -128,6 +133,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-complex-op",
+          action_type: "CUSTOM",
           description: "Undo complex operation with multiple steps",
         },
       }
@@ -144,6 +150,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-123",
+          action_type: "CUSTOM",
           description: "Redo add clip",
         },
       }
@@ -159,6 +166,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-456",
+          action_type: "CUSTOM",
           description: "Redo remove track",
         },
       }
@@ -179,6 +187,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-789",
+          action_type: "CUSTOM",
           description: "Redo action",
         },
       }
@@ -193,6 +202,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-1",
+          action_type: "CUSTOM",
           description: "First redo",
         },
       }
@@ -201,6 +211,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-2",
+          action_type: "CUSTOM",
           description: "Second redo",
         },
       }
@@ -218,6 +229,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-complex-redo",
+          action_type: "CUSTOM",
           description: "Redo complex operation",
         },
       }
@@ -236,6 +248,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-123",
           action_type: "ADD_CLIP",
           description: "Add clip to timeline",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -259,6 +272,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-456",
           action_type: "REMOVE_TRACK",
           description: "Remove track",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -275,6 +289,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-789",
           action_type: "MOVE_CLIP",
           description: "Move clip to new position",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -290,6 +305,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-1",
           action_type: "ADD_CLIP",
           description: "Action 1",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -299,6 +315,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-2",
           action_type: "ADD_CLIP",
           description: "Action 2",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -325,7 +342,6 @@ describe("Undo Backend Event Handlers", () => {
 
       const event: Extract<ProjectEvent, { type: "UndoHistoryCleared" }> = {
         type: "UndoHistoryCleared",
-        payload: {},
       }
 
       const updates = handleUndoBackendEvent(stateWithHistory, event)
@@ -353,7 +369,6 @@ describe("Undo Backend Event Handlers", () => {
 
       const event: Extract<ProjectEvent, { type: "UndoHistoryCleared" }> = {
         type: "UndoHistoryCleared",
-        payload: {},
       }
 
       const updates = handleUndoBackendEvent(stateWithData, event)
@@ -464,6 +479,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-123",
           action_type: "ADD_CLIP",
           description: "Test action",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -477,6 +493,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "",
+          action_type: "CUSTOM",
           description: "Empty action ID",
         },
       }
@@ -495,6 +512,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-123",
           action_type: "ADD_CLIP",
           description: longDescription,
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -519,6 +537,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-1",
           action_type: "ADD_CLIP",
           description: "Add clip",
+          timestamp: new Date().toISOString(),
         },
       }
 
@@ -532,6 +551,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "UndoPerformed",
         payload: {
           action_id: "action-1",
+          action_type: "CUSTOM",
           description: "Undo add clip",
         },
       }
@@ -545,6 +565,7 @@ describe("Undo Backend Event Handlers", () => {
         type: "RedoPerformed",
         payload: {
           action_id: "action-1",
+          action_type: "CUSTOM",
           description: "Redo add clip",
         },
       }
@@ -569,6 +590,7 @@ describe("Undo Backend Event Handlers", () => {
           action_id: "action-new",
           action_type: "ADD_TRACK",
           description: "Add new track",
+          timestamp: new Date().toISOString(),
         },
       }
 

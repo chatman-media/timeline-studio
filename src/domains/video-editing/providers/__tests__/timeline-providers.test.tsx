@@ -1,14 +1,13 @@
-import { renderHook, waitFor, act } from "@testing-library/react"
+import { act, renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
 import {
   TimelineProvider,
-  useTimelineProject,
   useTimelineClips,
-  useTimelineTracks,
-  useTimelineSelection,
   useTimelinePlayback,
+  useTimelineProject,
+  useTimelineSelection,
+  useTimelineTracks,
 } from "../timeline-providers"
 
 // Hoisted mocks - define variables that will be used in vi.mock() calls

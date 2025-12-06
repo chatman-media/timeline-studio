@@ -3,6 +3,7 @@ import { resetEventMocks } from "./event"
 import { mockFileSystem } from "./fs"
 import { resetPathMocks } from "./path"
 import { resetStoreMocks } from "./store"
+import { resetNotificationMocks } from "./plugins/notification"
 
 // Import all Tauri mocks to ensure they're initialized
 import "./core"
@@ -21,6 +22,14 @@ export { mockEmit, mockListen, mockOnce, resetEventMocks, setupEventListener, si
 export { MockFileSystem, mockFileSystem, mockFs } from "./fs"
 export { mockPath, pathPresets, resetPathMocks } from "./path"
 export { MockStore, mockStore, resetStoreMocks, storePresets } from "./store"
+export {
+  resetNotificationMocks,
+  sendNotification,
+  isPermissionGranted,
+  requestPermission,
+  setPermissionDenied,
+  setPermissionGranted,
+} from "./plugins/notification"
 
 // Helper to reset all Tauri mocks
 export function resetAllTauriMocks() {
@@ -28,5 +37,6 @@ export function resetAllTauriMocks() {
   resetEventMocks()
   resetPathMocks()
   resetStoreMocks()
+  resetNotificationMocks()
   mockFileSystem.reset()
 }

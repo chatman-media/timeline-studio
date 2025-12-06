@@ -393,10 +393,19 @@ impl EventBus {
     }
 
     // Emit to frontend
+    log::info!(
+      "🔵 EMITTING EVENT to frontend: event={:?}, envelope_id={}",
+      event,
+      envelope.metadata.id
+    );
     self
       .app_handle
       .emit("project:event", &envelope)
-      .map_err(|e| format!("Failed to emit event: {}", e))?;
+      .map_err(|e| {
+        log::error!("❌ FAILED to emit event: {}", e);
+        format!("Failed to emit event: {}", e)
+      })?;
+    log::info!("✅ EVENT EMITTED successfully: {:?}", event);
 
     // Log event
     log::debug!("Published event: {:?}", event);

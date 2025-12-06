@@ -13,11 +13,94 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AutoProxy")
 
-// Локальный кэш для proxy путей (fileId -> proxyPath)
+// Локальный кэш для proxy путей (filePath -> proxyPath)
+// 🔧 FIX: Используем путь к файлу вместо fileId, т.к. fileId меняется
 const proxyCache = new Map<string, string>()
 
-// Файлы в процессе генерации
-const generatingFiles = new Set<string>()
+// Файлы в процессе генерации (filePath -> Promise)
+// 🔧 FIX: Храним промис, чтобы несколько вызовов ждали один и тот же результат
+const generatingFiles = new Map<string, Promise<string | null>>()
+
+// Очередь ожидающих генерацию файлов
+const generationQueue: Array<{ file: MediaFile; resolve: (path: string | null) => void }> = []
+
+// Максимальное количество одновременных генераций
+const MAX_CONCURRENT_GENERATIONS = 2
+
+// Счётчик активных генераций
+let activeGenerations = 0
+
+/**
+ * Обработка очереди генерации прокси
+ * Запускает следующую генерацию из очереди, если есть свободные слоты
+ */
+async function processQueue() {
+  // Если достигнут лимит или очередь пуста - выходим
+  if (activeGenerations >= MAX_CONCURRENT_GENERATIONS || generationQueue.length === 0) {
+    return
+  }
+
+  // Берём первый файл из очереди
+  const item = generationQueue.shift()
+  if (!item) return
+
+  const { file, resolve } = item
+  const filePath = file.path
+
+  logger.infoSync(
+    `[AutoProxy Queue] Starting generation from queue (${activeGenerations}/${MAX_CONCURRENT_GENERATIONS})`,
+    {
+      filePath,
+      fileName: file.name,
+      queueSize: generationQueue.length,
+    },
+  )
+
+  // Увеличиваем счётчик
+  activeGenerations++
+
+  // Запускаем генерацию
+  try {
+    const proxyGenerator = getProxyGenerator()
+    const result = await proxyGenerator.generateProxy(file.path, {
+      resolution: "720p",
+      quality: "medium",
+      codec: "h264",
+      preserveAudio: true,
+    })
+
+    const proxyPath = result.proxyPath
+    proxyCache.set(filePath, proxyPath)
+
+    logger.infoSync("✅ Proxy generation completed", {
+      fileId: file.id,
+      filePath,
+      fileName: file.name,
+      proxyPath,
+      generationTime: result.generationTime,
+      queueRemaining: generationQueue.length,
+    })
+
+    resolve(proxyPath)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    logger.errorSync("❌ Proxy generation failed", {
+      fileId: file.id,
+      filePath,
+      fileName: file.name,
+      error: errorMessage,
+    })
+
+    resolve(null)
+  } finally {
+    // Убираем из генерируемых и уменьшаем счётчик
+    generatingFiles.delete(filePath)
+    activeGenerations--
+
+    // Обрабатываем следующий файл из очереди
+    processQueue()
+  }
+}
 
 export interface UseAutoProxyOptions {
   /** Включить автоматическую генерацию прокси */
@@ -31,11 +114,11 @@ export interface UseAutoProxyOptions {
 export interface AutoProxyResult {
   /** Запустить генерацию прокси для файла */
   generateProxy: (file: MediaFile) => Promise<string | null>
-  /** Получить прокси путь из кэша */
-  getProxyPath: (fileId: string) => string | null
-  /** Проверить, генерируется ли прокси для файла */
-  isGenerating: (fileId: string) => boolean
-  /** Файлы, для которых идет генерация */
+  /** Получить прокси путь из кэша (принимает путь к файлу) */
+  getProxyPath: (filePath: string) => string | null
+  /** Проверить, генерируется ли прокси для файла (принимает путь к файлу) */
+  isGenerating: (filePath: string) => boolean
+  /** Файлы, для которых идет генерация (пути к файлам) */
   generatingFileIds: string[]
 }
 
@@ -59,21 +142,25 @@ export function useAutoProxy(options: UseAutoProxyOptions = {}): AutoProxyResult
     async (file: MediaFile): Promise<string | null> => {
       // Проверяем, нужна ли генерация
       if (!enabled) {
-        logger.debugSync("Auto proxy disabled", { fileId: file.id })
+        logger.debugSync("Auto proxy disabled", { filePath: file.path })
         return null
       }
 
+      // 🔧 FIX: Используем путь к файлу для кэширования
+      const filePath = file.path
+
       // Проверяем, уже есть ли прокси в кэше
-      const cachedProxy = proxyCache.get(file.id)
+      const cachedProxy = proxyCache.get(filePath)
       if (cachedProxy) {
-        logger.debugSync("Proxy found in cache", { fileId: file.id, proxyPath: cachedProxy })
+        logger.debugSync("Proxy found in cache", { filePath, proxyPath: cachedProxy })
         return cachedProxy
       }
 
-      // Проверяем, не генерируется ли уже
-      if (generatingFiles.has(file.id)) {
-        logger.debugSync("Proxy already generating", { fileId: file.id })
-        return null
+      // Проверяем, не генерируется ли уже - если да, ждём результат
+      const existingPromise = generatingFiles.get(filePath)
+      if (existingPromise) {
+        logger.infoSync("🔄 Proxy already generating, waiting for result", { filePath, fileName: file.name })
+        return existingPromise
       }
 
       // Проверяем, нужен ли прокси
@@ -82,66 +169,40 @@ export function useAutoProxy(options: UseAutoProxyOptions = {}): AutoProxyResult
         return null
       }
 
-      logger.infoSync("Starting auto proxy generation", {
-        fileId: file.id,
-        fileName: file.name,
-        codec: file.videoCodec || file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
+      // 🔧 QUEUE: Добавляем файл в очередь генерации
+      // Создаём Promise, который будет resolved когда генерация завершится
+      const generationPromise = new Promise<string | null>((resolve) => {
+        // Добавляем в очередь
+        generationQueue.push({ file, resolve })
+
+        logger.infoSync(`[AutoProxy Queue] Added to queue (queue size: ${generationQueue.length})`, {
+          filePath,
+          fileName: file.name,
+          activeGenerations,
+          maxConcurrent: MAX_CONCURRENT_GENERATIONS,
+        })
+
+        // Запускаем обработку очереди (если есть свободные слоты)
+        processQueue()
       })
 
-      // Отмечаем файл как генерируемый
-      generatingFiles.add(file.id)
-      setGeneratingFileIds(Array.from(generatingFiles))
+      // Сохраняем Promise в Map для дедупликации
+      generatingFiles.set(filePath, generationPromise)
+      setGeneratingFileIds(Array.from(generatingFiles.keys()))
 
-      try {
-        const proxyGenerator = getProxyGenerator()
-        const result = await proxyGenerator.generateProxy(file.path, {
-          resolution: "720p",
-          quality: "medium",
-          codec: "h264",
-          preserveAudio: true,
-        })
-
-        const proxyPath = result.proxyPath
-
-        // Сохраняем в кэш
-        proxyCache.set(file.id, proxyPath)
-
-        logger.infoSync("Proxy generation completed", {
-          fileId: file.id,
-          fileName: file.name,
-          proxyPath,
-          generationTime: result.generationTime,
-        })
-
-        // Уведомляем о готовности
-        onProxyReadyRef.current?.(file.id, proxyPath)
-
-        return proxyPath
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        logger.errorSync("Proxy generation failed", {
-          fileId: file.id,
-          fileName: file.name,
-          error: errorMessage,
-        })
-
-        onErrorRef.current?.(file.id, errorMessage)
-        return null
-      } finally {
-        // Убираем из генерируемых
-        generatingFiles.delete(file.id)
-        setGeneratingFileIds(Array.from(generatingFiles))
-      }
+      return generationPromise
     },
     [enabled],
   )
 
-  const getProxyPath = useCallback((fileId: string): string | null => {
-    return proxyCache.get(fileId) || null
+  // 🔧 FIX: Принимаем filePath вместо fileId
+  const getProxyPath = useCallback((filePath: string): string | null => {
+    return proxyCache.get(filePath) || null
   }, [])
 
-  const isGenerating = useCallback((fileId: string): boolean => {
-    return generatingFiles.has(fileId)
+  // 🔧 FIX: Принимаем filePath вместо fileId
+  const isGenerating = useCallback((filePath: string): boolean => {
+    return generatingFiles.has(filePath)
   }, [])
 
   return {
@@ -194,7 +255,8 @@ export function useAutoProxyOnImport(
 
   // Добавляем proxy к файлам
   const filesWithProxy = files.map((file) => {
-    const cachedProxyPath = getProxyPath(file.id) || proxyPaths.get(file.id)
+    // 🔧 FIX: Используем file.path для получения прокси из кэша
+    const cachedProxyPath = getProxyPath(file.path) || proxyPaths.get(file.id)
     if (cachedProxyPath && !file.proxy) {
       return {
         ...file,

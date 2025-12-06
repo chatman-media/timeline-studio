@@ -189,6 +189,26 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   }
 
   /**
+   * Публичный метод для ре-синхронизации mediaPool с backend
+   * 🔧 WORKAROUND: Используется для обхода проблемы с event-driven обновлением
+   */
+  public async refreshMediaPool(): Promise<void> {
+    if (!this.backend) {
+      logger.warn("[Media Management] Cannot refresh media pool - backend not available")
+      return
+    }
+
+    logger.info("[Media Management] 🔧 FORCE REFRESH: Fetching current state from backend...")
+    const state = await this.backend.getProjectState()
+    if (state) {
+      this.loadInitialState(state)
+      logger.info("[Media Management] 🔧 FORCE REFRESH: Media pool updated", {
+        poolSize: this.mediaPool.size,
+      })
+    }
+  }
+
+  /**
    * Загрузка начального состояния из backend
    */
   private loadInitialState(state: any) {

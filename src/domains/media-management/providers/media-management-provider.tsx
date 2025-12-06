@@ -122,8 +122,18 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     async (files: string[], options: MediaImportOptions = {}) => {
       logger.infoSync("[MediaManagementProvider] Importing files via orchestrator", { filesCount: files.length })
       const result = await orchestrator.importFiles(files, options)
-      // Синхронизируем состояние после операции
-      setMediaPool(orchestrator.getMediaPool())
+
+      // 🔧 WORKAROUND: Явно синхронизируем mediaPool после импорта из backend
+      // Обходим проблему с event-driven обновлением (события не доходят)
+      logger.infoSync("[MediaManagementProvider] 🔧 Refreshing mediaPool from backend after import...")
+      await orchestrator.refreshMediaPool()
+
+      const newMediaPool = orchestrator.getMediaPool()
+      logger.infoSync("[MediaManagementProvider] 🔧 FORCE SYNC mediaPool after import", {
+        poolSize: newMediaPool.size,
+        poolKeys: Array.from(newMediaPool.keys()),
+      })
+      setMediaPool(new Map(newMediaPool)) // Создаем новый Map для триггера React re-render
       setIsLoading(orchestrator.isMediaLoading())
       setError(orchestrator.getError())
       return result

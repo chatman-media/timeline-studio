@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { container } from "@/core/container"
 import { videoCompilerRenderService } from "@/domains/video-editing/services/video-compiler-render-service"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
@@ -96,19 +97,62 @@ export function useRenderJobs(): UseRenderJobsReturn {
     [refreshJobs],
   )
 
-  // Автоматическое обновление списка задач
+  // Подписка на события рендеринга и периодическое обновление
   useEffect(() => {
     void logger.info("Инициализация useRenderJobs хука")
     void refreshJobs()
 
-    // Обновляем список каждые 5 секунд (увеличено с 2 для снижения нагрузки)
-    const interval = setInterval(() => {
+    const backend = container.getBackend()
+    const unsubscribers: Array<() => void> = []
+
+    // Подписка на события рендеринга
+    const setupEventListeners = async () => {
+      try {
+        // RenderStarted - новая задача началась
+        const unsubRenderStarted = await backend.onEvent("RenderStarted", async (event) => {
+          void logger.info("Получено событие RenderStarted", event)
+          await refreshJobs()
+        })
+        unsubscribers.push(unsubRenderStarted)
+
+        // RenderProgress - обновление прогресса
+        const unsubRenderProgress = await backend.onEvent("RenderProgress", async (event) => {
+          void logger.debug("Получено событие RenderProgress", event)
+          await refreshJobs()
+        })
+        unsubscribers.push(unsubRenderProgress)
+
+        // RenderCompleted - задача завершена
+        const unsubRenderCompleted = await backend.onEvent("RenderCompleted", async (event) => {
+          void logger.info("Получено событие RenderCompleted", event)
+          await refreshJobs()
+        })
+        unsubscribers.push(unsubRenderCompleted)
+
+        // RenderFailed - задача провалилась
+        const unsubRenderFailed = await backend.onEvent("RenderFailed", async (event) => {
+          void logger.info("Получено событие RenderFailed", event)
+          await refreshJobs()
+        })
+        unsubscribers.push(unsubRenderFailed)
+
+        void logger.info("Подписки на события рендеринга установлены")
+      } catch (err) {
+        void logger.error("Ошибка установки подписок на события", { error: err })
+      }
+    }
+
+    void setupEventListeners()
+
+    // Fallback polling - обновляем список раз в минуту на случай пропущенных событий
+    const fallbackInterval = setInterval(() => {
       void refreshJobs()
-    }, 5000)
+    }, 60000) // 1 минута
 
     return () => {
       void logger.info("Размонтирование useRenderJobs хука")
-      clearInterval(interval)
+      unsubscribers.forEach((unsub) => unsub())
+      clearInterval(fallbackInterval)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

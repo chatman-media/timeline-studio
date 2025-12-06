@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { SERVICE_CONFIG, isServiceEnabled } from "../service-config"
+import { isServiceEnabled, SERVICE_CONFIG } from "../service-config"
 
 describe("SERVICE_CONFIG", () => {
   it("should have DISABLE_ALL_DOMAIN_SERVICES flag", () => {
@@ -142,11 +142,7 @@ describe("isServiceEnabled", () => {
 
   describe("Return type", () => {
     it("should always return a boolean", () => {
-      const services: Array<keyof typeof SERVICE_CONFIG.SERVICES> = [
-        "AUTO_SAVE",
-        "NOTIFICATIONS",
-        "VIDEO_PLAYER",
-      ]
+      const services: Array<keyof typeof SERVICE_CONFIG.SERVICES> = ["AUTO_SAVE", "NOTIFICATIONS", "VIDEO_PLAYER"]
 
       services.forEach((service) => {
         const result = isServiceEnabled(service)

@@ -8,7 +8,9 @@ import { ThemeProvider, useTheme } from "../theme-provider"
 
 // Mock next-themes
 vi.mock("next-themes", () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="next-theme-provider">{children}</div>,
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="next-theme-provider">{children}</div>
+  ),
   useTheme: vi.fn(() => ({
     theme: "dark",
     setTheme: vi.fn(),

@@ -245,9 +245,10 @@ describe("TopBar", () => {
 
       // Ждем завершения асинхронных операций
       await vi.waitFor(() => {
-        expect(mockClearBrowserState).toHaveBeenCalledTimes(1)
-        expect(mockCreateNewProject).toHaveBeenCalled()
+        // Проверяем, что вызван только createTimelineProject
+        // Backend автоматически очистит все состояние при создании проекта
         expect(mockCreateTimelineProject).toHaveBeenCalled()
+        expect(mockClearBrowserState).not.toHaveBeenCalled()
       })
     })
 
@@ -375,30 +376,20 @@ describe("TopBar", () => {
 
       // Ждем завершения асинхронных операций и проверяем финальный лог
       await vi.waitFor(() => {
-        expect(mockLogger.info).toHaveBeenCalledWith("New project created successfully - COMPLETE")
+        expect(mockLogger.info).toHaveBeenCalledWith("New project created successfully")
       })
     })
   })
 
   describe("интеграция с браузером", () => {
-    it("должен очищать browser state перед открытием проекта", async () => {
+    it("должен корректно обрабатывать открытие проекта", async () => {
       render(<TopBar />)
 
       const button = screen.getByTestId("open-project-button")
       fireEvent.click(button)
 
-      // clearBrowserState должен быть вызван перед openProject
-      // (проверяем, что функция была вызвана)
-      expect(mockClearBrowserState).not.toHaveBeenCalled() // Пока не выбран файл
-    })
-
-    it("должен очищать browser state перед созданием нового проекта", () => {
-      render(<TopBar />)
-
-      const button = screen.getByTestId("new-project-button")
-      fireEvent.click(button)
-
-      expect(mockClearBrowserState).toHaveBeenCalledTimes(1)
+      // Backend автоматически загрузит browser state из проекта
+      expect(mockClearBrowserState).not.toHaveBeenCalled()
     })
   })
 

@@ -2,7 +2,6 @@
  * Tests for info command
  */
 
-import fs from "node:fs/promises"
 import path from "node:path"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { IMediaService, IPlatformService, MediaMetadata } from "@/core/ports"

@@ -130,15 +130,15 @@ export const VideoPreview = memo(
 
     // Эффект для запуска генерации прокси если нужно
     useEffect(() => {
-      // Проверяем, есть ли уже прокси в кэше
-      const cachedProxy = getProxyPath(file.id)
+      // Проверяем, есть ли уже прокси в кэше (используем file.path вместо file.id)
+      const cachedProxy = getProxyPath(file.path)
       if (cachedProxy) {
         setProxyPath(cachedProxy)
         return
       }
 
-      // Запускаем генерацию если нужен прокси и не генерируется
-      if (proxyNeeded && !isGenerating(file.id)) {
+      // Запускаем генерацию если нужен прокси и не генерируется (используем file.path)
+      if (proxyNeeded && !isGenerating(file.path)) {
         logger.infoSync(`[VideoPreview] Starting proxy generation for H.265 video: ${file.name}`)
         void generateProxy(file)
       }
@@ -152,7 +152,7 @@ export const VideoPreview = memo(
       if (proxyNeeded && !proxyPath) {
         logger.debugSync(`[VideoPreview] Proxy needed for H.265 video: ${file.name}`, {
           codec: file.videoCodec || file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
-          isGenerating: isGenerating(file.id),
+          isGenerating: isGenerating(file.path),
         })
       }
 

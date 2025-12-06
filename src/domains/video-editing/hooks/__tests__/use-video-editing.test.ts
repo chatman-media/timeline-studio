@@ -138,8 +138,7 @@ describe("useVideoEditing", () => {
 
       expect(result.current.timeline).toBeDefined()
       expect(result.current.timeline.project).toBeNull()
-      expect(result.current.timeline.tracks).toEqual([])
-      expect(result.current.timeline.clips).toEqual([])
+      expect(result.current.hasProject).toBe(false)
     })
 
     it("should provide initial player state", () => {
@@ -489,13 +488,25 @@ describe("useVideoEditing", () => {
       const { result, rerender } = renderHook(() => useVideoEditing())
 
       // Initial state
-      expect(result.current.timeline.tracks).toEqual([])
+      expect(result.current.timeline.project).toBeNull()
 
-      // Simulate state update
+      // Simulate state update with a project
+      const mockProject = {
+        id: "project-1",
+        metadata: { name: "Test Project", created_at: new Date().toISOString(), version: "1.0" },
+        timeline: { tracks: [{ id: "track-1", name: "Track 1" }], duration: 100, fps: 30, sample_rate: 48000 },
+        settings: {
+          resolution: { width: 1920, height: 1080 },
+          frame_rate: 30,
+          audio_sample_rate: 48000,
+          audio_channels: 2,
+        },
+      }
+
       const updatedState = {
         context: {
           ...result.current.timeline,
-          tracks: [{ id: "track-1", name: "Track 1" }],
+          project: mockProject,
         },
       }
 
@@ -509,7 +520,8 @@ describe("useVideoEditing", () => {
       rerender()
 
       await waitFor(() => {
-        expect(result.current.timeline.tracks).toHaveLength(1)
+        expect(result.current.timeline.project).toBeDefined()
+        expect(result.current.hasProject).toBe(true)
       })
     })
 

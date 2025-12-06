@@ -14,12 +14,23 @@ const logger = createLogger("BrowserEventHandlers")
 /**
  * Главный обработчик backend событий для Browser
  */
+let lastLogTime = 0
+const eventCounter = new Map<string, number>()
+
 export function handleBrowserBackendEvent(
   context: BrowserMachineContext,
   event: BrowserEvent,
 ): Partial<BrowserMachineContext> {
-  // ОПТИМИЗИРОВАНО: debug вместо info - много событий при начальной синхронизации
-  logger.debug("Handling browser backend event:", { event: event.event_type })
+  // 🔧 DEBUG: Логируем только раз в секунду со статистикой
+  const now = Date.now()
+  eventCounter.set(event.event_type, (eventCounter.get(event.event_type) || 0) + 1)
+
+  if (now - lastLogTime > 1000) {
+    const stats = Array.from(eventCounter.entries()).map(([type, count]) => `${type}: ${count}`)
+    console.warn("🔄 BrowserEvents/sec:", stats.join(", "))
+    lastLogTime = now
+    eventCounter.clear()
+  }
 
   switch (event.event_type) {
     case "TabSwitched":

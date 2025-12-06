@@ -19,7 +19,6 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { useBrowserState } from "@/domains/browser"
 import { useCurrentProject } from "@/domains/project-management/hooks"
 import { useModals } from "@/domains/system-integration"
 import { RenderQueueDropdown } from "@/features/export"
@@ -43,9 +42,8 @@ const TopBarComponent = function TopBar() {
   const { isBrowserVisible, toggleBrowserVisibility } = useUserSettings()
   const { isTimelineVisible, toggleTimelineVisibility } = useUserSettings()
   const { isOptionsVisible, toggleOptionsVisibility } = useUserSettings()
-  const { currentProject, openProject, saveProject, setProjectDirty, createNewProject } = useCurrentProject()
+  const { currentProject, openProject, saveProject, setProjectDirty } = useCurrentProject()
   const { createProject: createTimelineProject } = useTimeline()
-  const { clearBrowserState } = useBrowserState()
   const [isEditing, setIsEditing] = useState(false)
   const [projectName, setProjectName] = useState(currentProject?.metadata?.name || "Новый проект")
   const projectNameInputId = useId()
@@ -102,10 +100,7 @@ const TopBarComponent = function TopBar() {
       })
 
       if (selected && typeof selected === "string") {
-        // ВАЖНО: Очищаем browser state перед открытием проекта
-        clearBrowserState()
-
-        // Открываем выбранный проект
+        // Открываем выбранный проект - backend автоматически загрузит все состояние
         void openProject(selected)
         logger.info("Project opened successfully", { path: selected })
       }
@@ -115,28 +110,18 @@ const TopBarComponent = function TopBar() {
         context: "handleOpenProject",
       })
     }
-  }, [openProject, clearBrowserState])
+  }, [openProject])
 
   const handleCreateNewProject = useCallback(async () => {
     try {
       // Создаем новый проект с настройками по умолчанию
       const projectName = "Untitled Project"
 
-      logger.info("Creating new project - BEFORE clearBrowserState", {
-        projectName,
-      })
+      logger.info("Creating new project", { projectName })
 
-      // ВАЖНО: Сначала очищаем browser state
-      clearBrowserState()
-
-      logger.info("Creating new project - AFTER clearBrowserState, BEFORE createNewProject")
-
-      // Создаем проект в app-settings (для управления состоянием приложения)
-      await createNewProject(projectName)
-
-      logger.info("Creating new project - AFTER createNewProject, BEFORE createTimelineProject")
-
-      // Создаем timeline проект с теми же настройками
+      // Создаем timeline проект - это отправит команду CreateProject в backend
+      // Backend автоматически очистит все состояние (media_pool, timeline, browser_state, etc.)
+      // и опубликует событие ProjectCreated
       await createTimelineProject(projectName, {
         resolution: { width: 1920, height: 1080 },
         fps: 30,
@@ -151,14 +136,14 @@ const TopBarComponent = function TopBar() {
         autoSaveInterval: 300,
       })
 
-      logger.info("New project created successfully - COMPLETE")
+      logger.info("New project created successfully")
     } catch (error) {
       logger.error("Error creating new project", {
         error,
         context: "handleCreateNewProject",
       })
     }
-  }, [createNewProject, createTimelineProject, clearBrowserState])
+  }, [createTimelineProject])
 
   // Мемоизируем заголовки для кнопок
   const buttonTitles = useMemo(
