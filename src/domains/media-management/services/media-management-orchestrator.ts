@@ -765,24 +765,26 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   private showImportSuccessNotification(count: number) {
     try {
       // Используем динамический импорт чтобы избежать циклических зависимостей
-      import("@/domains/system-integration").then(({ getSystemIntegrationOrchestrator }) => {
-        const systemOrchestrator = getSystemIntegrationOrchestrator()
+      import("@/domains/system-integration")
+        .then(({ getSystemIntegrationOrchestrator }) => {
+          const systemOrchestrator = getSystemIntegrationOrchestrator()
 
-        const title = count === 1 ? "Файл импортирован" : `Файлов импортировано: ${count}`
-        const message = count === 1 ? "Медиафайл успешно добавлен в проект" : "Медиафайлы успешно добавлены в проект"
+          const title = count === 1 ? "Файл импортирован" : `Файлов импортировано: ${count}`
+          const message = count === 1 ? "Медиафайл успешно добавлен в проект" : "Медиафайлы успешно добавлены в проект"
 
-        systemOrchestrator.showNotification({
-          type: "success",
-          notification_type: "success",
-          title,
-          message,
-          duration: 3000,
+          systemOrchestrator.showNotification({
+            type: "success",
+            notification_type: "success",
+            title,
+            message,
+            duration: 3000,
+          })
+
+          logger.info("[Media Management] Import success notification shown", { count })
         })
-
-        logger.info("[Media Management] Import success notification shown", { count })
-      }).catch((error) => {
-        logger.error("[Media Management] Failed to show import notification", { error: String(error) })
-      })
+        .catch((error) => {
+          logger.error("[Media Management] Failed to show import notification", { error: String(error) })
+        })
     } catch (error) {
       logger.error("[Media Management] Failed to import notification module", { error: String(error) })
     }

@@ -125,8 +125,9 @@ export interface PrerenderRequest {
   projectSchema: ProjectSchema
   startTime: number
   endTime: number
-  applyEffects: boolean
-  quality?: number
+  outputPath: string // Путь к выходному файлу (требуется Rust командой)
+  applyEffects?: boolean // Опционально - применять ли эффекты
+  quality?: number // Опционально - качество рендера
 }
 
 /**
@@ -144,13 +145,17 @@ export interface PrerenderResult {
  */
 export async function prerenderSegment(request: PrerenderRequest): Promise<PrerenderResult> {
   try {
-    const result = await prerenderSegmentTauri({
-      project_schema: request.projectSchema,
-      start_time: request.startTime,
-      end_time: request.endTime,
-      apply_effects: request.applyEffects,
-      quality: request.quality,
+    logger.info("VIDEO-COMPILER-SERVICE prerenderSegment called", {
+      hasProjectSchema: !!request?.projectSchema,
+      hasOutputPath: !!request?.outputPath,
+      startTime: request?.startTime,
+      endTime: request?.endTime,
+      requestKeys: Object.keys(request || {}),
+      requestType: typeof request,
     })
+
+    // Передаем объект request напрямую - он уже в правильном camelCase формате
+    const result = await prerenderSegmentTauri(request)
 
     return result
   } catch (error) {

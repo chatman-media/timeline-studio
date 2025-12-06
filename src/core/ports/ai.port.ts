@@ -164,15 +164,57 @@ export interface AudioCorrelationResult {
 // ============================================================================
 
 export interface AIDirectorConfig {
-  performance_mode: "fast" | "balanced" | "quality"
+  // Performance
+  performance_mode: "Fast" | "Balanced" | "Quality" | "Custom" // PascalCase для совместимости с Rust enum
+
+  // Core analysis toggles
   enable_audio_analysis: boolean
   enable_scene_detection: boolean
   enable_video_analysis: boolean
+  enable_vision_analysis: boolean
+
+  // Detection features
+  enable_face_detection: boolean
+  enable_face_analysis: boolean
   enable_object_detection: boolean
-  enable_face_recognition: boolean
-  enable_transcription: boolean
-  timeout_seconds: number
-  max_memory_mb: number
+  enable_object_analysis: boolean
+  enable_emotion_analysis: boolean
+
+  // Advanced analysis
+  enable_moment_detection: boolean
+  enable_content_classification: boolean
+  enable_composition_analysis: boolean
+  enable_mood_analysis: boolean
+  enable_quality_analysis: boolean
+
+  // Processing limits
+  max_processing_time: number | null // Option<u32> в Rust
+  quality_threshold: number
+  max_key_moments: number | null // Option<u32> в Rust
+  enable_caching: boolean
+
+  // Recommendations
+  generate_editing_recommendations: boolean
+  enable_mcp_agents: boolean
+
+  // AI Provider integration
+  ai_provider: "Ollama" | "OpenAI" | "Anthropic" | null // Option<AIProvider>
+  ai_model: string | null // Option<String>
+  ai_api_key: string | null // Option<String>
+  enable_ai_enhanced_analysis: boolean
+  enable_ai_descriptions: boolean
+  enable_ai_mood_analysis: boolean
+
+  // Vision Language Model
+  enable_vision_language_model: boolean
+  vlm_model: string | null // Option<String>
+  vlm_num_frames: number
+  vlm_temperature: number
+  vlm_max_tokens: number
+
+  // Parallel processing (Phase 3)
+  enable_parallel_processing: boolean
+  max_parallel_files: number | null // Option<u32>
 }
 
 export interface ComprehensiveAnalysisResult {

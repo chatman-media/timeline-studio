@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { type MediaFile, MediaType } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/domains/media-management"
 import { useVideoElement } from "../use-video-element"
 
 describe("useVideoElement - Core Functionality", () => {

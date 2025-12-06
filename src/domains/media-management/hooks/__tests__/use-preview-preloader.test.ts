@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { usePreviewPreloader } from "@/features/media/hooks/use-preview-preloader"
+import { usePreviewPreloader } from "@/domains/media-management/hooks/use-preview-preloader"
 
 // Mock useMediaPreview hook
 const mockGetPreviewData = vi.fn()

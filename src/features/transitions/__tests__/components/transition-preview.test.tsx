@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { type MediaFile, MediaType } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/domains/media-management"
 
 import { TransitionPreview } from "../../components/transition-preview"
 import type { Transition } from "../../types/transitions"

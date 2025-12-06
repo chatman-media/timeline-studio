@@ -13,6 +13,7 @@ import { appDirectoriesService } from "@/domains/project-management/services/app
 import { useModals } from "@/domains/system-integration"
 import { useLanguage } from "@/features/language"
 import { type LanguageCode, SUPPORTED_LANGUAGES } from "@/i18n/constants"
+import { replaceHomeWithTilde } from "@/lib/path-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { useUserSettings } from "../../hooks/use-user-settings"
 
@@ -59,8 +60,9 @@ export function GeneralSettingsTab() {
     const loadDefaultPaths = async () => {
       try {
         const directories = await appDirectoriesService.getAppDirectories()
-        setDefaultScreenshotsPath(directories.snapshot_dir)
-        setDefaultPlayerScreenshotsPath(directories.media_dir)
+        // Заменяем домашнюю директорию на тильду для отображения
+        setDefaultScreenshotsPath(replaceHomeWithTilde(directories.snapshot_dir))
+        setDefaultPlayerScreenshotsPath(replaceHomeWithTilde(directories.media_dir))
       } catch (error) {
         void logger.warn("Could not load default paths from AppDirectories:", { error })
       }

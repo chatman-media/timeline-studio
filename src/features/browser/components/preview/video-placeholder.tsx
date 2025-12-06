@@ -1,8 +1,9 @@
 import { memo, useCallback, useState } from "react"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import { usePlayer } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
+import { cn } from "@/lib/utils"
 import { VideoElement } from "./video-element"
 import { VideoOverlays } from "./video-overlays"
 
@@ -160,14 +161,17 @@ export const VideoPlaceholder = memo(
 
     return (
       <div
-        className="relative shrink-0"
+        className={cn("relative shrink-0", isAdded && "pointer-events-none")}
         style={{
           height: `${size}px`,
           width: `${size * (16 / 9)}px`,
         }}
       >
         <div
-          className="group relative h-full w-full cursor-pointer"
+          className={cn(
+            "group relative h-full w-full cursor-pointer",
+            isAdded && "opacity-50 grayscale cursor-not-allowed",
+          )}
           style={{ backgroundColor: "#1a1a1a" }}
           onClick={handleClick}
           onMouseMove={handleMouseMove}

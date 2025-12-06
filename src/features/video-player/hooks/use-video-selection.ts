@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { usePlayer } from "@/domains/video-editing/providers"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { logInfo } from "@/lib/tauri-logger"
 
 // Моковые импорты для браузера и таймлайна - нужно заменить на реальные

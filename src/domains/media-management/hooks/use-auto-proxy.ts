@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getProxyGenerator } from "@/domains/media-management/services/proxy-generator"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "../types"
 import { needsProxyGeneration } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 

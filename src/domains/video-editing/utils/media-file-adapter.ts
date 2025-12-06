@@ -4,7 +4,7 @@
  * Адаптер для конвертации между старым MediaFile (features) и новым (domains)
  */
 
-import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media"
+import type { MediaFile as FeatureMediaFile } from "@/domains/media-management"
 import { type MediaFile as DomainMediaFile, MediaType } from "../types/media"
 
 /**

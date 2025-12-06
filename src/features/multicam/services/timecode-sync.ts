@@ -3,7 +3,7 @@
  * Извлекает и сравнивает таймкоды из метаданных видеофайлов
  */
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 import { createLogger } from "@/lib/tauri-logger"

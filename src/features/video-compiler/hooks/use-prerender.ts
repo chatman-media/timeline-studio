@@ -68,11 +68,16 @@ export function usePrerender() {
           quality: quality || 75,
         })
 
+        // Генерируем уникальный путь для выходного файла пререндера
+        const timestamp = Date.now()
+        const outputPath = `/tmp/prerender_${timestamp}_${startTime}_${endTime}.mp4`
+
         // Запускаем пререндер
         const result = await prerenderSegment({
           projectSchema,
           startTime,
           endTime,
+          outputPath,
           applyEffects,
           quality,
         })

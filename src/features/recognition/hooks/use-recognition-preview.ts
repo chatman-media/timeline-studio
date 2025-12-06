@@ -5,8 +5,8 @@ import {
   getPreviewDataWithRecognition,
   processVideoRecognition as processVideoRecognitionCommand,
 } from "@/domains/ai-services/tauri/recognition-commands"
-import { useMediaPreview } from "@/features/media/hooks/use-media-preview"
-import type { RecognitionResults } from "@/features/media/types/preview"
+import { useMediaPreview } from "@/domains/media-management"
+import type { RecognitionResults } from "@/domains/media-management"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { YoloDetection, YoloVideoData } from "../types/yolo"

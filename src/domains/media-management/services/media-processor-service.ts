@@ -7,7 +7,7 @@
  */
 
 import { getMedia } from "@/core/container"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "../types/media"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaProcessorService")

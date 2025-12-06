@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { PlayerProvider, usePlayer } from "../player-provider"
 
 // Mock dependencies

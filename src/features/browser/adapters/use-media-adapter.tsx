@@ -10,7 +10,7 @@ import { MediaPreview } from "@/features/browser/components/preview/media-previe
 import { parseFileSize } from "@/features/browser/utils"
 import { useDraggable } from "@/features/drag-drop"
 import { getFileType } from "@/features/media"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import i18n from "@/i18n"
 import { formatDurationSeconds, parseDurationString } from "@/lib/duration-formatter"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"

@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { AudioPreview } from "./audio-preview"

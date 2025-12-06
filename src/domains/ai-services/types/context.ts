@@ -7,12 +7,14 @@
 
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { ResourceType } from "@/features/resources/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { TimelineProject } from "@/features/timeline/types"
 import type { Transition } from "@/features/transitions/types/transitions"
+import type { AIToolResult } from "@/domains/ai-tools/base"
+import type { EnhancementType } from "@/domains/shared/types/ai-tools/platform-adaptation"
 
 // ============================================================================
 // CORE AI CONTEXT TYPES
@@ -196,17 +198,6 @@ export interface UserPreferencesContext {
 // ============================================================================
 
 /**
- * Базовый интерфейс для результата выполнения AI инструмента
- */
-export interface AIToolResult {
-  success: boolean
-  message: string
-  data?: any
-  errors?: string[]
-  warnings?: string[]
-}
-
-/**
  * Критерии для анализа медиафайлов
  */
 export interface MediaAnalysisCriteria {
@@ -265,19 +256,6 @@ export interface ClipPlacementStrategy {
     paddingBetweenClips?: number
   }
 }
-
-/**
- * Типы автоматических улучшений
- */
-export type EnhancementType =
-  | "transitions"
-  | "color-correction"
-  | "audio-balance"
-  | "stabilization"
-  | "noise-reduction"
-  | "auto-cut"
-  | "scene-detection"
-  | "music-sync"
 
 /**
  * Настройки для применения улучшений

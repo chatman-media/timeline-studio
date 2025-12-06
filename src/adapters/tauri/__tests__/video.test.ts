@@ -261,13 +261,23 @@ describe("TauriVideoService", () => {
     })
 
     it("prerenders segment", async () => {
-      const request = { segmentId: "seg-1", startTime: 0, endTime: 10 } as any
+      const request = {
+        projectSchema: { id: "test-project" },
+        startTime: 0,
+        endTime: 10,
+        outputPath: "/tmp/prerender_seg-1.mp4",
+      } as any
       const result = { success: true, path: "/prerender/seg-1.mp4" } as any
       mockInvoke.mockResolvedValueOnce(result)
 
       const prerenderResult = await service.prerenderSegment(request)
 
-      expect(mockInvoke).toHaveBeenCalledWith("prerender_segment", { request })
+      expect(mockInvoke).toHaveBeenCalledWith("prerender_segment", {
+        projectSchema: request.projectSchema,
+        startTime: 0,
+        endTime: 10,
+        outputPath: "/tmp/prerender_seg-1.mp4",
+      })
       expect(prerenderResult).toEqual(result)
     })
 

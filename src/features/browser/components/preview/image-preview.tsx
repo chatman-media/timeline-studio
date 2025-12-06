@@ -1,7 +1,7 @@
 import { Image } from "lucide-react"
 import { memo, useCallback, useEffect, useState } from "react"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
 import { createImageUrl } from "@/lib/media-url-utils"

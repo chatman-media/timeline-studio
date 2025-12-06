@@ -137,10 +137,10 @@ export function timelineToProjectSchema(timeline: TimelineProject): ProjectSchem
     version: "1.0.0",
     metadata: {
       name: timeline.name || "Untitled Project",
-      description: timeline.description,
+      description: timeline.description || undefined,
       created_at: timeline.createdAt ? timeline.createdAt.toISOString() : now,
       modified_at: now,
-      author: undefined,
+      author: null,
     },
     timeline: {
       duration: calculateProjectDuration(timeline),

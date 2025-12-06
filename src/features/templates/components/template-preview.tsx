@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import { type MediaFile, MediaType } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/domains/media-management"
 import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/preview-sizes"
 import { useResources } from "@/features/resources"
 import type { TemplateResource, TimelineResource } from "@/features/resources/types"

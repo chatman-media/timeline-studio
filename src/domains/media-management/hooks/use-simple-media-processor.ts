@@ -2,8 +2,8 @@ import { useCallback, useMemo, useState } from "react"
 
 import { container } from "@/core"
 import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
-import type { MediaFile } from "@/features/media/types/media"
-import { MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "../types"
+import { MediaType } from "../types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("SimpleMediaProcessor")

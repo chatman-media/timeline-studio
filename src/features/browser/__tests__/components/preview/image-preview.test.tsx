@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { MediaType } from "@/features/media/types/media"
+import { MediaType } from "@/domains/media-management"
 import { ImagePreview } from "../../../components/preview/image-preview"
 
 // PlayerProvider is already mocked globally in setup.ts

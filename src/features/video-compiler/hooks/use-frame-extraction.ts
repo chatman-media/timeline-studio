@@ -10,7 +10,7 @@ import {
   type TimelineFrame,
 } from "@/domains/video-editing/services/compiler"
 import { Subtitle } from "@/domains/video-editing/types"
-import { useFramePreview } from "@/features/media/hooks/use-frame-preview"
+import { useFramePreview } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseFrameExtraction")

@@ -4,12 +4,11 @@ import { useTranslation } from "react-i18next"
 
 import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import { MediaType } from "@/features/media/types/media"
+import { MediaType } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import type { FilterResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
-import { convertVideoSrc } from "@/lib/tauri-utils"
 
 import { AddMediaButton } from "../../browser/components/layout/add-media-button"
 import { FavoriteButton } from "../../browser/components/layout/favorite-button"
@@ -228,7 +227,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
         {/* Видео для демонстрации фильтра */}
         <video
           ref={videoRef}
-          src={convertVideoSrc(window.location.hostname === "localhost" ? "/t1.mp4" : "./t1.mp4")} // Тестовое видео для демонстрации фильтра
+          src="/t1.mp4" // Статичный файл из public/, не нужен convertVideoSrc
           className="absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-xs object-cover"
           muted
           playsInline
@@ -283,7 +282,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
         >
           {filter && (
             <AddMediaButton
-              resource={{ id: filter.id, type: "filter", name: filter.name } as FilterResource}
+              resource={{ id: filter.id, type: "filter", name: filter.name, filter: filter } as FilterResource}
               size={size}
               type="filter"
             />

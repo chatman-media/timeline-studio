@@ -4,8 +4,8 @@
 
 import { describe, expect, it } from "vitest"
 
-import type { MediaFile } from "../../types/media"
-import type { SavedMediaFile, SavedMusicFile } from "../../types/saved-media"
+import type { MediaFile } from "@/domains/media-management"
+import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 import {
   addItemToPool,
   convertMediaFileToPoolItem,

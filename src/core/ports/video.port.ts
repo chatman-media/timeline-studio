@@ -101,7 +101,9 @@ export interface PrerenderRequest {
   projectSchema: unknown
   startTime: number
   endTime: number
-  quality?: number
+  outputPath: string // Путь к выходному файлу (требуется Rust командой)
+  applyEffects?: boolean // Опционально - применять ли эффекты
+  quality?: number // Опционально - качество рендера
 }
 
 export interface PrerenderResult {

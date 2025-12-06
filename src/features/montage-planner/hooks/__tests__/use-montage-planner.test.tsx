@@ -5,8 +5,8 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
-import { MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 import { ExportFormat, MONTAGE_STYLES } from "../../types"
 import { useMontagePlanner } from "../use-montage-planner"
 

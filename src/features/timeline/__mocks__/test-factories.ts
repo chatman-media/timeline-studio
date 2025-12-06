@@ -10,7 +10,7 @@ import type {
   TimelineSettings,
   Track,
 } from "@/domains/video-editing/types"
-import type { MediaFile, MediaType } from "@/features/media/types/media"
+import type { MediaFile, MediaType } from "@/domains/media-management"
 
 /**
  * Создает mock-объект трека со всеми обязательными полями

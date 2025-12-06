@@ -4,6 +4,74 @@
  * Центральное место для всех типов Media Management домена
  */
 
+// ==============================================================================
+// CORE MEDIA TYPES
+// ==============================================================================
+
+// Media file types and structures
+export type {
+  FileGroup,
+  MediaFile,
+  VideoSegment,
+} from "./media"
+export { MediaType } from "./media"
+
+// MediaInfo is an alias for MediaFile (for backward compatibility)
+export type MediaInfo = MediaFile
+
+// Saved media (для проектов)
+export type {
+  FileStatus,
+  MusicMetadata,
+  SavedFileMetadata,
+  SavedMediaFile,
+  SavedMusicFile,
+} from "./saved-media"
+
+// Media pools
+export type {
+  MediaBin,
+  MediaImportResult,
+  MediaItemStatus,
+  MediaItemType,
+  MediaPool,
+  MediaPoolItem,
+  MediaPoolOperations,
+  ProxySettings,
+  SmartCollection,
+} from "./media-pool"
+
+// FFprobe data structures
+export type {
+  FfprobeData,
+  FfprobeFormat,
+  FfprobeStream,
+} from "./ffprobe"
+
+// Time ranges
+export type {
+  TimeRange,
+} from "./time-range"
+
+// Preview and thumbnail data
+export type {
+  BasicVideoMetadata,
+  BoundingBox,
+  DetectedFace,
+  DetectedObject,
+  DetectedScene,
+  MediaPreviewData,
+  RecognitionFrame,
+  RecognitionResults,
+  ThumbnailData,
+  TimelineFrame,
+  TimelinePreview,
+} from "./preview"
+
+// ==============================================================================
+// METADATA TYPES
+// ==============================================================================
+
 // Import base types from media-api
 import type {
   AudioMetadata,
@@ -24,19 +92,9 @@ export type MediaMetadata = BaseMediaMetadata & {
   title?: string
 }
 
-// Define MediaType and MediaInfo locally
-export type MediaType = "Video" | "Audio" | "Image" | "Unknown"
-
-export interface MediaInfo {
-  id?: string
-  path: string
-  name: string
-  type: MediaType
-  metadata?: MediaMetadata
-  size?: number
-  duration?: number
-  thumbnailPath?: string
-}
+// ==============================================================================
+// SERVICE INTERFACES
+// ==============================================================================
 
 // Media file operations
 export interface MediaFileOperation {
@@ -140,3 +198,18 @@ export interface MediaManagementService {
   getMediaInfo(path: string): Promise<any>
   extractMetadata(path: string): Promise<MediaMetadata>
 }
+
+// ==============================================================================
+// PEAKS.JS WAVEFORM TYPES
+// ==============================================================================
+
+export type {
+  AudiowaveformData,
+  PeaksInstance,
+  PeaksOptions,
+  PeaksPoint,
+  PeaksSegment,
+  UsePeaksResult,
+  WaveformDataOptions,
+  WaveformDataResult,
+} from "./peaks-waveform"

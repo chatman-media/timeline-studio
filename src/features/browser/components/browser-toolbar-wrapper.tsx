@@ -30,6 +30,8 @@ interface BrowserToolbarWrapperProps {
   onImportMusicFile?: () => void
   onImportMusicFolder?: () => void
   isImportingMusic?: boolean
+  // Дополнительные кнопки
+  extraButtons?: React.ReactNode
 }
 
 /**
@@ -61,6 +63,8 @@ export const BrowserToolbarWrapper = memo(
     onImportMusicFile,
     onImportMusicFolder,
     isImportingMusic,
+    // Дополнительные кнопки
+    extraButtons,
   }: BrowserToolbarWrapperProps) => {
     // Получаем конфигурацию тулбара для текущей вкладки
     const toolbarConfig = getToolbarConfigForContent(
@@ -127,6 +131,8 @@ export const BrowserToolbarWrapper = memo(
         onZoomOut={onZoomOut}
         canZoomIn={canZoomIn}
         canZoomOut={canZoomOut}
+        // Дополнительные кнопки
+        extraButtons={extraButtons}
       />
     )
   },

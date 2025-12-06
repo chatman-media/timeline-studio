@@ -6,14 +6,14 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MediaType } from "@/domains/video-editing/types/media"
-import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
+import type { SavedMediaFile, SavedMusicFile } from "../../types/saved-media"
 import {
   convertFromSavedMediaFile,
   fileExists,
   generateAlternativePaths,
   getExtensionsForFile,
   validateFileIntegrity,
-} from "@/features/media/utils/saved-media-utils"
+} from "../../utils/saved-media-utils"
 import {
   generateRestorationReport,
   handleMissingFiles,
@@ -23,7 +23,7 @@ import {
 } from "../media-restoration-service"
 
 // Mock dependencies
-vi.mock("@/features/media/utils/saved-media-utils", () => ({
+vi.mock("../../utils/saved-media-utils", () => ({
   fileExists: vi.fn(),
   validateFileIntegrity: vi.fn(),
   generateAlternativePaths: vi.fn(),

@@ -4,7 +4,7 @@
 
 import { useCallback } from "react"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"

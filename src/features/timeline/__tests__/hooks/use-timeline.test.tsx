@@ -356,7 +356,7 @@ vi.mock("@xstate/react", () => ({
 // Импортируем моки из мокированного модуля
 // Используем vi.mocked чтобы получить доступ к мокам
 import * as backendSyncModule from "@/adapters/tauri"
-import type { MediaFile, MediaType } from "@/features/media/types/media"
+import type { MediaFile, MediaType } from "@/domains/media-management"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTimeline } from "../../hooks/use-timeline"
 

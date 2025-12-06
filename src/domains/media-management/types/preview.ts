@@ -62,6 +62,19 @@ export interface TimelineFrame {
   is_keyframe: boolean
 }
 
+export interface BasicVideoMetadata {
+  duration?: number
+  width?: number
+  height?: number
+  aspect_ratio?: string
+  fps?: number
+  video_codec?: string
+  audio_codec?: string
+  bitrate?: number
+  has_video: boolean
+  has_audio: boolean
+}
+
 export interface MediaPreviewData {
   file_id: string
   file_path: string
@@ -71,4 +84,5 @@ export interface MediaPreviewData {
   recognition_frames: RecognitionFrame[]
   recognition_results?: RecognitionResults
   last_updated: string
+  basic_metadata?: BasicVideoMetadata
 }

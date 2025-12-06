@@ -73,11 +73,17 @@ export {
 // ХУКИ
 // ============================================================================
 
+export type { PreviewGenerationState } from "./hooks/use-effect-preview-generator"
+export { useEffectPreviewGenerator } from "./hooks/use-effect-preview-generator"
 export { useUnifiedEffects } from "./hooks/use-unified-effects"
 export type { UseUserPresetsOptions, UseUserPresetsReturn } from "./hooks/use-user-presets"
 export { useUserPresets } from "./hooks/use-user-presets"
-export { useEffectPreviewGenerator } from "./hooks/use-effect-preview-generator"
-export type { PreviewGenerationState } from "./hooks/use-effect-preview-generator"
+
+// ============================================================================
+// КОМПОНЕНТЫ
+// ============================================================================
+
+export { EffectPreviewGenerator } from "./components/effect-preview-generator"
 
 // ============================================================================
 // БИБЛИОТЕКИ ЭФФЕКТОВ
@@ -117,13 +123,13 @@ export {
 // УТИЛИТЫ
 // ============================================================================
 
+export type { EffectPreviewConfig } from "./utils/generate-effect-previews"
 // Генерация превью
 export {
   generateAllEffectPreviews,
   generateEffectPreview,
   updateEffectsWithPreviews,
 } from "./utils/generate-effect-previews"
-export type { EffectPreviewConfig } from "./utils/generate-effect-previews"
 
 /**
  * Создает новый менеджер эффектов с предустановленными эффектами

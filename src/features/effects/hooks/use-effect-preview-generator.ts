@@ -6,7 +6,7 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNotifications } from "@/domains/system-integration"
 import type { BaseEffect } from "../types"
-import { generateAllEffectPreviews, type EffectPreviewConfig } from "../utils/generate-effect-previews"
+import { type EffectPreviewConfig, generateAllEffectPreviews } from "../utils/generate-effect-previews"
 
 export interface PreviewGenerationState {
   isGenerating: boolean
@@ -49,23 +49,16 @@ export function useEffectPreviewGenerator() {
         failed: 0,
       })
 
-      showInfo(
-        t("effects.preview.generating"),
-        t("effects.preview.generatingMessage", { count: effects.length }),
-      )
+      showInfo(t("effects.preview.generating"), t("effects.preview.generatingMessage", { count: effects.length }))
 
       try {
-        const results = await generateAllEffectPreviews(
-          effects,
-          fullConfig,
-          (current, total, effectId) => {
-            setState((prev) => ({
-              ...prev,
-              progress: (current / total) * 100,
-              currentEffectId: effectId,
-            }))
-          },
-        )
+        const results = await generateAllEffectPreviews(effects, fullConfig, (current, total, effectId) => {
+          setState((prev) => ({
+            ...prev,
+            progress: (current / total) * 100,
+            currentEffectId: effectId,
+          }))
+        })
 
         const completed = results.size
         const failed = effects.length - completed
@@ -84,10 +77,7 @@ export function useEffectPreviewGenerator() {
             t("effects.preview.completedMessage", { completed, failed }),
           )
         } else {
-          showSuccess(
-            t("effects.preview.completed"),
-            t("effects.preview.allCompletedMessage", { count: completed }),
-          )
+          showSuccess(t("effects.preview.completed"), t("effects.preview.allCompletedMessage", { count: completed }))
         }
 
         return results

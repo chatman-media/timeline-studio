@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { CacheStatistics } from "@/domains/media-management/services/indexeddb-cache-service"
-import { useCacheStatistics } from "@/features/media/hooks/use-cache-statistics"
+import { useCacheStatistics } from "@/domains/media-management/hooks/use-cache-statistics"
 
 // Мокаем indexedDBCacheService
 vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({

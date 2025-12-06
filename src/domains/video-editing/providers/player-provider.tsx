@@ -9,7 +9,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { isServiceEnabled } from "@/config/service-config"
 import { container } from "@/core/container"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { useUserSettings } from "@/features/user-settings"
 import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-time-sync"
 import { type CommandPriority, CommandQueue } from "@/features/video-player/services/command-queue"

@@ -88,7 +88,7 @@ export const mockSystemStatus: SystemStatus = {
 }
 
 export const mockAIDirectorConfig: AIDirectorConfig = {
-  performance_mode: "balanced",
+  performance_mode: "Balanced", // PascalCase
   enable_audio_analysis: true,
   enable_scene_detection: true,
   enable_video_analysis: true,

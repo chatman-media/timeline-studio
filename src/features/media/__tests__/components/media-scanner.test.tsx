@@ -28,7 +28,7 @@ vi.mock("@/domains/media-management/services/media-processor-service", () => ({
 }))
 
 // Мокаем useMediaProcessor
-vi.mock("../../hooks/use-media-processor", () => ({
+vi.mock("@/domains/media-management/hooks/use-media-processor", () => ({
   useMediaProcessor: vi.fn(),
 }))
 
@@ -43,7 +43,7 @@ describe("MediaScanner", () => {
 
   it("should render media scanner interface", async () => {
     // Мокаем useMediaProcessor для этого теста
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
     vi.mocked(useMediaProcessor).mockReturnValue({
       scanFolder: vi.fn().mockResolvedValue([]),
       scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
@@ -67,7 +67,7 @@ describe("MediaScanner", () => {
 
   it("should disable scan button when no folder selected", async () => {
     // Мокаем useMediaProcessor для этого теста
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
     vi.mocked(useMediaProcessor).mockReturnValue({
       scanFolder: vi.fn().mockResolvedValue([]),
       scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
@@ -87,7 +87,7 @@ describe("MediaScanner", () => {
   })
 
   it("should handle folder selection", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -126,7 +126,7 @@ describe("MediaScanner", () => {
   })
 
   it("should handle folder selection cancellation", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     mockShowOpenDialog.mockResolvedValue(null) // Пользователь отменил выбор
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -176,7 +176,7 @@ describe("MediaScanner", () => {
       },
     ]
 
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
@@ -219,7 +219,7 @@ describe("MediaScanner", () => {
   })
 
   it("should show processing state", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     // Мокаем состояние обработки
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -247,7 +247,7 @@ describe("MediaScanner", () => {
   })
 
   it("should display processing errors", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
     const mockErrors = new Map([
       ["file1", "Failed to read metadata"],
       ["file2", "Thumbnail generation failed"],
@@ -306,7 +306,7 @@ describe("MediaScanner", () => {
       },
     ]
 
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
@@ -346,7 +346,7 @@ describe("MediaScanner", () => {
   })
 
   it("should clear errors when selecting new folder", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     const mockErrors = new Map([["file1", "Some error"]])
     const mockClearErrors = vi.fn()
@@ -376,7 +376,7 @@ describe("MediaScanner", () => {
   })
 
   it("should handle scan errors gracefully", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
@@ -415,7 +415,7 @@ describe("MediaScanner", () => {
   })
 
   it("should not scan without selected folder", async () => {
-    const { useMediaProcessor } = await import("../../hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
     const mockScanFolderWithThumbnails = vi.fn()
 
     vi.mocked(useMediaProcessor).mockReturnValue({

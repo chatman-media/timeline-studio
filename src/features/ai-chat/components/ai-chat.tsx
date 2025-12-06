@@ -11,7 +11,7 @@ import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/ch
 import { useModals } from "@/domains/system-integration"
 import { useTimeline } from "@/domains/video-editing/hooks"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
-import { useMediaImport } from "@/features/media/hooks/use-media-import"
+import { useMediaImport } from "@/domains/media-management"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -116,10 +116,24 @@ export function AiChat() {
         // Получаем список поддерживаемых провайдеров
         const providers = await backendAI.getSupportedProviders()
 
+        // Проверяем что providers это массив
+        if (!Array.isArray(providers)) {
+          logger.warn("getSupportedProviders returned non-array value:", { providers })
+          setAvailableModels([])
+          return
+        }
+
         // Создаём список моделей на основе провайдеров
         const agents: Agent[] = []
         for (const provider of providers) {
           const models = await backendAI.getProviderModels(provider)
+
+          // Проверяем что models это массив
+          if (!Array.isArray(models)) {
+            logger.warn(`getProviderModels returned non-array for ${provider}:`, { models })
+            continue
+          }
+
           for (const model of models) {
             agents.push({
               id: model,

@@ -5,9 +5,9 @@
  * с применённым эффектом для каждого эффекта в библиотеке
  */
 
-import type { BaseEffect } from "../types"
 import { prerenderSegment } from "@/domains/video-editing/services/compiler"
 import { createLogger } from "@/lib/tauri-logger"
+import type { BaseEffect } from "../types"
 
 const logger = createLogger("EffectPreviewGenerator")
 
@@ -25,10 +25,7 @@ export interface EffectPreviewConfig {
 /**
  * Генерирует превью видео для одного эффекта
  */
-export async function generateEffectPreview(
-  effect: BaseEffect,
-  config: EffectPreviewConfig,
-): Promise<string | null> {
+export async function generateEffectPreview(effect: BaseEffect, config: EffectPreviewConfig): Promise<string | null> {
   try {
     void logger.info("Generating preview for effect", { effectId: effect.id })
 
@@ -65,13 +62,14 @@ export async function generateEffectPreview(
                   id: `${effect.id}-preview`,
                   effectId: effect.id,
                   enabled: true,
-                  customParams: effect.parameters?.reduce(
-                    (acc, param) => {
-                      acc[param.id] = param.defaultValue
-                      return acc
-                    },
-                    {} as Record<string, any>,
-                  ) || {},
+                  customParams:
+                    effect.parameters?.reduce(
+                      (acc, param) => {
+                        acc[param.id] = param.defaultValue
+                        return acc
+                      },
+                      {} as Record<string, any>,
+                    ) || {},
                   startTime: 0,
                   endTime: config.duration,
                   order: 0,
@@ -107,6 +105,7 @@ export async function generateEffectPreview(
       projectSchema: projectSchema as any,
       startTime: 0,
       endTime: config.duration,
+      outputPath, // Передаем путь к выходному файлу
       applyEffects: true,
       quality: config.quality,
     })
@@ -161,10 +160,7 @@ export async function generateAllEffectPreviews(
 /**
  * Обновляет эффекты с путями к превью
  */
-export function updateEffectsWithPreviews(
-  effects: BaseEffect[],
-  previewPaths: Map<string, string>,
-): BaseEffect[] {
+export function updateEffectsWithPreviews(effects: BaseEffect[], previewPaths: Map<string, string>): BaseEffect[] {
   return effects.map((effect) => {
     const previewPath = previewPaths.get(effect.id)
     if (previewPath) {

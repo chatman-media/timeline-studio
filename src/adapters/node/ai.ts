@@ -737,7 +737,7 @@ export class NodeAIService implements IAIService {
   }
 
   async aiDirectorAnalyzeQuick(videoPath: string): Promise<ComprehensiveAnalysisResult> {
-    return this.aiDirectorAnalyzeComprehensive(videoPath, { performance_mode: "fast" } as AIDirectorConfig)
+    return this.aiDirectorAnalyzeComprehensive(videoPath, { performance_mode: "Fast" } as AIDirectorConfig) // PascalCase
   }
 
   async aiDirectorAnalyzeBatch(filePaths: string[], config?: AIDirectorConfig): Promise<ComprehensiveAnalysisResult[]> {
@@ -777,8 +777,11 @@ export class NodeAIService implements IAIService {
   }
 
   async aiDirectorGetDefaultConfig(mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> {
+    // Конвертируем lowercase параметр в PascalCase для Rust enum
+    const performanceMode =
+      mode === "custom" ? "Balanced" : mode === "fast" ? "Fast" : mode === "quality" ? "Quality" : "Balanced"
     return {
-      performance_mode: mode === "custom" ? "balanced" : mode,
+      performance_mode: performanceMode,
       enable_audio_analysis: true,
       enable_scene_detection: mode !== "fast",
       enable_video_analysis: true,

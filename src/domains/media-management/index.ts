@@ -8,12 +8,25 @@
 // Import directly from "./components/audio-waveform" with "use client" directive
 // export { AudioWaveform, AudioWaveformCompact } from "./components/audio-waveform"
 
+// Utilities
+export * from "./utils"
+
 // Hooks
 export {
+  // Core domain hooks
   useFileOperations,
   useMediaImport,
   useMediaManagement,
   useMediaMetadata,
+  // Media processing and preview hooks
+  useAutoProxy,
+  useCacheStatistics,
+  useFramePreview,
+  useMediaPreview,
+  useMediaProcessor,
+  useMediaRestoration,
+  usePreviewPreloader,
+  useSimpleMediaProcessor,
 } from "./hooks"
 
 // Peaks.js Waveform - requires browser environment, import directly when needed
@@ -105,10 +118,17 @@ export type {
   BrowserVideoMetadata,
   FileOperationsContext,
   FileOperationsEvent,
+  // Core media types
+  FileGroup,
+  FfprobeChapter,
+  FfprobeData,
+  FfprobeFormat,
+  FfprobeStream,
   ImageMetadata,
   // Metadata service
   MediaAnalysisResult,
   // File operations
+  MediaFile,
   MediaFileOperation,
   MediaImportContext,
   MediaImportEvent,
@@ -118,10 +138,24 @@ export type {
   // Service interfaces
   MediaManagementService,
   MediaMetadata,
-  MediaType,
+  MediaPool,
+  MediaPoolFilter,
+  MediaPoolItem,
+  MediaPoolSort,
+  MediaPoolView,
+  MediaPreviewData,
+  PreviewGenerationOptions,
   QualityMetrics,
+  SavedMediaFile,
+  SavedMediaMetadata,
+  SavedMusicFile,
   SceneDetectionResult,
+  ThumbnailData,
+  TimelineFrame,
+  TimeRange,
+  VideoSegment,
 } from "./types"
+export { MediaType } from "./types"
 export type {
   AudiowaveformData,
   PeaksInstance,

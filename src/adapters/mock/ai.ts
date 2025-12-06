@@ -534,9 +534,9 @@ export class MockAIService implements IAIService {
     }
   }
 
-  async aiDirectorGetDefaultConfig(_mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> {
+  async aiDirectorGetDefaultConfig(_mode: "Fast" | "Balanced" | "Quality" | "custom"): Promise<AIDirectorConfig> {
     return {
-      performance_mode: "balanced",
+      performance_mode: "Balanced",
       enable_audio_analysis: true,
       enable_scene_detection: true,
       enable_video_analysis: true,
@@ -570,7 +570,7 @@ export class MockAIService implements IAIService {
       enable_ffmpeg_analysis?: boolean
       enable_montage_analysis?: boolean
       enable_transcription?: boolean
-      performance_mode?: "fast" | "balanced" | "quality"
+      performance_mode?: "Fast" | "Balanced" | "Quality"
     },
   ): Promise<unknown> {
     return {}
@@ -582,7 +582,7 @@ export class MockAIService implements IAIService {
 
   async unifiedAudioAnalyzeBatch(
     filePaths: string[],
-    _config?: { performance_mode?: "fast" | "balanced" | "quality" },
+    _config?: { performance_mode?: "Fast" | "Balanced" | "Quality" },
   ): Promise<unknown[]> {
     return filePaths.map(() => ({}))
   }

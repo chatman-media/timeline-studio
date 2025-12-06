@@ -3,7 +3,7 @@
  * Анализирует аудиодорожки для автоматического выравнивания клипов
  */
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 import { createLogger } from "@/lib/tauri-logger"

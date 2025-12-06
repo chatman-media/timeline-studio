@@ -27,7 +27,7 @@ import {
   SubtitleFontWeight,
   TextAlign,
 } from "@/domains/video-editing/types"
-import { MediaType } from "@/features/media/types/media"
+import { MediaType } from "@/domains/media-management"
 
 import type { TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
 import { timelineToProjectSchema } from "../../utils/timeline-to-project"

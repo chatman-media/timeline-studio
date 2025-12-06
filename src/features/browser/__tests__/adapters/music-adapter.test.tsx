@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
-import { MediaType } from "@/features/media/types/media"
+import { MediaType } from "@/domains/media-management"
 
 // Mock модулей
 vi.mock("@/domains/project-management/hooks", () => ({

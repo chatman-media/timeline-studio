@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { MediaType } from "@/features/media/types/media"
+import { MediaType } from "@/domains/media-management"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 import { mediaItemsToMediaFiles, mediaItemToMediaFile } from "../media-mapper"
 

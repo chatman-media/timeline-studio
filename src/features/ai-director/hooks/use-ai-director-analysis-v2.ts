@@ -10,7 +10,7 @@
  * for platform-independent event handling.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { container } from "@/core"
 import type { UnlistenFn } from "@/core/ports"
 import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@/domains/ai-director"
@@ -44,32 +44,75 @@ export interface UseAIDirectorAnalysisV2Return {
 }
 
 /**
- * Маппинг фронтенд анализаторов на флаги конфигурации бэкенда
+ * Безопасное вычисление процента (0-100) из дробного значения (0-1)
+ * Защищает от NaN и некорректных значений
  */
-function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): Partial<AIDirectorConfig> {
+function safePercentage(value: unknown): number {
+  const num = typeof value === "number" ? value : Number.parseFloat(String(value))
+  if (isNaN(num) || !isFinite(num)) return 0
+  return Math.max(0, Math.min(100, Math.round(num * 100)))
+}
+
+/**
+ * Маппинг фронтенд анализаторов на флаги конфигурации бэкенда
+ *
+ * ВАЖНО: Возвращает ПОЛНЫЙ AIDirectorConfig со ВСЕМИ обязательными полями,
+ * так как Rust struct требует все поля при десериализации.
+ * Используем null вместо undefined для Option<T> полей (Rust convention).
+ */
+function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): AIDirectorConfig {
   return {
+    // Performance
+    performance_mode: "Balanced", // PascalCase для Rust enum
+
+    // Core analysis toggles
+    enable_audio_analysis: analyzers.has("audio_quality") || analyzers.has("speech_recognition"),
     enable_scene_detection: analyzers.has("scene_detection"),
-    enable_object_detection: analyzers.has("object_detection"),
+    enable_video_analysis: true, // Всегда включено для видео анализа
+    enable_vision_analysis: true, // Базовый vision анализ (всегда включен)
+
+    // Detection features
     enable_face_detection: analyzers.has("face_detection"),
     enable_face_analysis: analyzers.has("face_detection"), // Включаем вместе с detection
-    enable_motion_analysis: analyzers.has("motion_analysis"),
-    enable_composition_analysis: analyzers.has("composition_analysis"),
+    enable_object_detection: analyzers.has("object_detection"),
+    enable_object_analysis: analyzers.has("object_detection"), // Анализ детектированных объектов
+    enable_emotion_analysis: analyzers.has("mood_analysis"), // Emotion analysis через mood
 
-    enable_audio_analysis: analyzers.has("audio_quality"),
-    // speech_recognition требует enable_audio_analysis + transcription
-    // Пока мапим на audio_analysis, позже можно расширить
+    // Advanced analysis
     enable_moment_detection: analyzers.has("moment_detection"),
     enable_content_classification: analyzers.has("content_classification"),
+    enable_composition_analysis: analyzers.has("composition_analysis"),
     enable_mood_analysis: analyzers.has("mood_analysis"),
     enable_quality_analysis: analyzers.has("quality_assessment"),
 
-    // VLM анализ
-    enable_vision_language_model: analyzers.has("vlm_analysis"),
+    // Processing limits
+    max_processing_time: 300, // 5 минут (не null, а конкретное значение)
+    quality_threshold: 50.0,
+    max_key_moments: 50, // Не null, а конкретное значение
+    enable_caching: true,
 
-    // Базовые настройки
-    performance_mode: "balanced",
-    generate_editing_recommendations: false,
+    // Recommendations
+    generate_editing_recommendations: false, // Отключено по умолчанию для скорости
     enable_mcp_agents: false,
+
+    // AI Provider integration (все отключено по умолчанию)
+    ai_provider: null, // Option<AIProvider> = None -> null в JSON
+    ai_model: null, // Option<String> = None -> null в JSON
+    ai_api_key: null, // Option<String> = None -> null в JSON
+    enable_ai_enhanced_analysis: false,
+    enable_ai_descriptions: false,
+    enable_ai_mood_analysis: false,
+
+    // Vision Language Model
+    enable_vision_language_model: analyzers.has("vlm_analysis"),
+    vlm_model: analyzers.has("vlm_analysis") ? "moondream2" : null, // Ollama model или null
+    vlm_num_frames: 5, // Количество фреймов для анализа
+    vlm_temperature: 0.7,
+    vlm_max_tokens: 1024,
+
+    // Parallel processing (Phase 3)
+    enable_parallel_processing: true, // Включено по умолчанию для скорости
+    max_parallel_files: null, // Option<u32> = None -> null (Auto: min(CPU cores, 4))
   }
 }
 
@@ -143,7 +186,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
   const [errors, setErrors] = useState<AnalysisError[]>([])
 
   // Map для отслеживания какой файл сейчас анализируется
-  const [currentFileIndex, setCurrentFileIndex] = useState(0)
+  const currentFileIndexRef = useRef(0)
 
   // Получаем event service из container
   const eventService = useMemo(() => {
@@ -203,7 +246,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
             if (file) {
               const fileIndex = updatedFiles.indexOf(file)
-              const progressPercentage = Math.round((payload.progress as number) * 100)
+              const progressPercentage = safePercentage(payload.progress)
 
               updatedFiles[fileIndex] = {
                 ...file,
@@ -264,17 +307,35 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis progress", payload)
 
+          const progressPercentage = safePercentage(payload.progress)
+
           setBatchProgress((prev) => {
             if (!prev) return prev
 
             return {
               ...prev,
               completedFiles: payload.completed_files,
-              progress: Math.round((payload.progress as number) * 100),
+              progress: progressPercentage,
               currentFilePath: payload.current_file_path,
               estimatedTimeRemaining: payload.estimated_time_remaining,
             }
           })
+
+          // Обновляем прогресс текущего файла (если указан)
+          if (payload.current_file_path) {
+            setFilesProgress((prev) => {
+              return prev.map((file) => {
+                if (file.filePath === payload.current_file_path) {
+                  return {
+                    ...file,
+                    status: "analyzing" as const,
+                    progress: progressPercentage,
+                  }
+                }
+                return file
+              })
+            })
+          }
         })
         if (isMounted) unlistenFunctions.push(unlistenBatchProgress)
 
@@ -283,6 +344,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
           const payload = event.payload as any
           logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis completed", payload)
 
+          // Обновляем batch progress
           setBatchProgress((prev) => {
             if (!prev) return prev
 
@@ -296,6 +358,23 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
               errors: payload.errors,
               endTime: new Date().toISOString(),
             }
+          })
+
+          // Обновляем все файлы до 100% если анализ успешен
+          setFilesProgress((prev) => {
+            return prev.map((file) => ({
+              ...file,
+              status: "completed" as const,
+              progress: 100,
+              endTime: new Date().toISOString(),
+              // Обновляем все анализаторы до completed
+              analyzers: file.analyzers.map((analyzer) => ({
+                ...analyzer,
+                status: "completed" as const,
+                progress: 100,
+                endTime: new Date().toISOString(),
+              })),
+            }))
           })
 
           setIsAnalyzing(false)
@@ -339,7 +418,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
             if (file) {
               const fileIndex = updatedFiles.indexOf(file)
               const analyzerType = payload.analyzer_type as string
-              const progressPercentage = Math.round((payload.progress as number) * 100)
+              const progressPercentage = safePercentage(payload.progress)
 
               updatedFiles[fileIndex] = updateAnalyzerProgress(file, analyzerType as AnalyzerType, {
                 progress: progressPercentage,
@@ -388,16 +467,16 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
             if (prev.length === 0) return prev
 
             const updatedFiles = [...prev]
-            const currentFile = updatedFiles[currentFileIndex]
+            const currentFile = updatedFiles[currentFileIndexRef.current]
 
             if (!currentFile) return prev
 
             // Simulate analyzer progress based on stage
-            const progressPercentage = Math.round(progress.progress * 100)
+            const progressPercentage = safePercentage(progress.progress)
             const updatedFile = simulateAnalyzerProgress(currentFile, progress.stage, progressPercentage)
 
             // Update file status and progress
-            updatedFiles[currentFileIndex] = {
+            updatedFiles[currentFileIndexRef.current] = {
               ...updatedFile,
               status: "analyzing",
               progress: progressPercentage,
@@ -414,7 +493,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
           setFilesProgress((prev) => {
             const updated = [...prev]
-            const currentFile = updated[currentFileIndex]
+            const currentFile = updated[currentFileIndexRef.current]
 
             if (currentFile) {
               // Mark all running analyzers as completed
@@ -430,7 +509,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
                 return analyzer
               })
 
-              updated[currentFileIndex] = {
+              updated[currentFileIndexRef.current] = {
                 ...currentFile,
                 status: "completed",
                 progress: 100,
@@ -453,10 +532,10 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
           setFilesProgress((prev) => {
             const updated = [...prev]
-            const currentFile = updated[currentFileIndex]
+            const currentFile = updated[currentFileIndexRef.current]
 
             if (currentFile) {
-              updated[currentFileIndex] = {
+              updated[currentFileIndexRef.current] = {
                 ...currentFile,
                 status: "error",
                 error: error.error,
@@ -485,7 +564,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
         }
       })
     }
-  }, [eventService, currentFileIndex])
+  }, [eventService])
 
   // Start batch analysis
   const startBatchAnalysis = useCallback(async (filePaths: string[], analyzers: Set<AnalyzerType>) => {
@@ -498,7 +577,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
       // Reset state
       setIsAnalyzing(true)
       setErrors([])
-      setCurrentFileIndex(0)
+      currentFileIndexRef.current = 0
 
       // Create initial file progress
       const initialFiles = filePaths.map((filePath, index) => {
@@ -625,7 +704,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
     setBatchProgress(null)
     setErrors([])
     setIsAnalyzing(false)
-    setCurrentFileIndex(0)
+    currentFileIndexRef.current = 0
   }, [])
 
   // Computed: overall progress across all files

@@ -24,6 +24,43 @@ pub struct MediaPreviewData {
 
   /// Время последнего обновления
   pub last_updated: chrono::DateTime<chrono::Utc>,
+
+  /// Базовые метаданные видео (для корректного отображения превью)
+  pub basic_metadata: Option<BasicVideoMetadata>,
+}
+
+/// Базовые метаданные видео для отображения превью
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BasicVideoMetadata {
+  /// Длительность (секунды)
+  pub duration: Option<f64>,
+
+  /// Ширина видео
+  pub width: Option<u32>,
+
+  /// Высота видео
+  pub height: Option<u32>,
+
+  /// Соотношение сторон (например "16:9")
+  pub aspect_ratio: Option<String>,
+
+  /// FPS
+  pub fps: Option<f64>,
+
+  /// Видео кодек
+  pub video_codec: Option<String>,
+
+  /// Аудио кодек
+  pub audio_codec: Option<String>,
+
+  /// Битрейт
+  pub bitrate: Option<u32>,
+
+  /// Есть ли видео поток
+  pub has_video: bool,
+
+  /// Есть ли аудио поток
+  pub has_audio: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -145,7 +182,15 @@ impl MediaPreviewData {
       recognition_frames: Vec::new(),
       recognition_results: None,
       last_updated: chrono::Utc::now(),
+      basic_metadata: None,
     }
+  }
+
+  /// Установить базовые метаданные
+  #[allow(dead_code)]
+  pub fn set_basic_metadata(&mut self, metadata: BasicVideoMetadata) {
+    self.basic_metadata = Some(metadata);
+    self.last_updated = chrono::Utc::now();
   }
 
   /// Добавить превью для браузера

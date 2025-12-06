@@ -1,9 +1,10 @@
-import { memo, useCallback, useEffect } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 
 import { useBrowserState } from "@/domains/browser"
 import { useMediaManagement } from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
-import { useMediaImport } from "@/features/media/hooks/use-media-import"
+import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-tools"
+import { useMediaImport } from "@/domains/media-management"
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
@@ -27,6 +28,9 @@ TabContentContainer.displayName = "TabContentContainer"
  * Поддерживает все типы контента через единую архитектуру
  */
 export const BrowserContent = memo(() => {
+  // Developer Tools модалка
+  const [showDeveloperTools, setShowDeveloperTools] = useState(false)
+
   // Получаем состояние браузера
   const {
     activeTab,
@@ -59,11 +63,11 @@ export const BrowserContent = memo(() => {
   } = currentTabSettings
 
   // Импорт медиа
-  const {
-    importFile: importMediaFile,
-    importFolder: importMediaFolder,
-    isImporting: isImportingMedia,
-  } = useMediaImport()
+  const { selectMediaFiles, isImporting: isImportingMedia } = useMediaImport()
+
+  // Wrapper функции для импорта медиа
+  const importMediaFile = useCallback(() => selectMediaFiles(), [selectMediaFiles])
+  const importMediaFolder = useCallback(() => selectMediaFiles(), [selectMediaFiles])
 
   // Импорт музыки
   const {
@@ -136,6 +140,10 @@ export const BrowserContent = memo(() => {
     setPreviewSize(previewSizeIndex - 1)
   }, [previewSizeIndex, setPreviewSize])
 
+  // Дополнительные кнопки для вкладки Effects
+  const extraButtons =
+    activeTab === "effects" ? <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} /> : undefined
+
   return (
     <>
       {/* Индикатор загрузки ресурсов */}
@@ -160,18 +168,23 @@ export const BrowserContent = memo(() => {
         onToggleFavorites={handleToggleFavorites}
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
-        // Импорт медиа
-        onImportMediaFile={activeTab === "media" ? importMediaFile : undefined}
-        onImportMediaFolder={activeTab === "media" ? importMediaFolder : undefined}
-        isImportingMedia={activeTab === "media" ? isImportingMedia : false}
-        // Импорт музыки
-        onImportMusicFile={activeTab === "music" ? importMusicFile : undefined}
-        onImportMusicFolder={activeTab === "music" ? importMusicFolder : undefined}
-        isImportingMusic={activeTab === "music" ? isImportingMusic : false}
+        // Импорт медиа (всегда доступен)
+        onImportMediaFile={importMediaFile}
+        onImportMediaFolder={importMediaFolder}
+        isImportingMedia={isImportingMedia}
+        // Импорт музыки (всегда доступен)
+        onImportMusicFile={importMusicFile}
+        onImportMusicFolder={importMusicFolder}
+        isImportingMusic={isImportingMusic}
+        // Дополнительные кнопки для конкретных вкладок
+        extraButtons={extraButtons}
       />
 
       {/* Контент только для активной вкладки */}
       <TabContentContainer activeTab={activeTab} />
+
+      {/* Developer Tools модалка */}
+      <DeveloperToolsModal open={showDeveloperTools} onOpenChange={setShowDeveloperTools} />
     </>
   )
 })

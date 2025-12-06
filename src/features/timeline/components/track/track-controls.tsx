@@ -2,7 +2,7 @@ import { Eye, EyeOff, Lock, LockOpen, Volume2, VolumeX } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Slider } from "@/components/ui/slider"
-import type { MediaTrack } from "@/features/media/types"
+import type { MediaTrack } from "@/domains/media-management"
 
 interface TrackControlsProps {
   track: MediaTrack

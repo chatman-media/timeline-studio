@@ -145,8 +145,18 @@ export class TauriVideoService implements IVideoService {
   }
 
   async prerenderSegment(request: PrerenderRequest): Promise<PrerenderResult> {
-    logger.debugSync("Prerendering segment")
-    return invoke("prerender_segment", { request })
+    logger.debugSync("Prerendering segment", {
+      startTime: request.startTime,
+      endTime: request.endTime,
+      outputPath: request.outputPath,
+    })
+    // Tauri автоматически конвертирует camelCase в snake_case
+    return invoke("prerender_segment", {
+      projectSchema: request.projectSchema,
+      startTime: request.startTime,
+      endTime: request.endTime,
+      outputPath: request.outputPath,
+    })
   }
 
   async getPrerenderCacheInfo(): Promise<PrerenderCacheInfo> {

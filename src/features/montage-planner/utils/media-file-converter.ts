@@ -5,7 +5,7 @@
  */
 
 import type { MediaFile as DomainMediaFile } from "@/domains/ai-services/types/interfaces"
-import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media"
+import type { MediaFile as FeatureMediaFile } from "@/domains/media-management"
 
 /**
  * Конвертирует MediaFile из features в формат для AI Services

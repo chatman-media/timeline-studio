@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { getFrameTime } from "@/features/media/utils/video"
 import { useMulticam } from "@/features/multicam"
 import { createLogger } from "@/lib/tauri-logger"

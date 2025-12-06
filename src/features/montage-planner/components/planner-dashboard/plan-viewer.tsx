@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useMediaFiles } from "@/domains/project-management/hooks"
 import type { MediaFile } from "@/domains/video-editing/types/media"
-import { MediaType } from "@/features/media/types/media"
+import { MediaType } from "@/domains/media-management"
 import { formatTime } from "@/lib/date"
 
 import { usePlanGenerator } from "../../hooks/use-plan-generator"

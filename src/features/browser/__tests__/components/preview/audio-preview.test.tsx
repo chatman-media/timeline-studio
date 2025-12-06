@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest"
 import "@/test/mocks/libraries/lucide-react"
 
 import { MediaType } from "@/domains/video-editing/types/media"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 
 import { AudioPreview } from "../../../components/preview/audio-preview"
 

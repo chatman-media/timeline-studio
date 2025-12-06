@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 
 import { createLogger } from "@/lib/tauri-logger"
 

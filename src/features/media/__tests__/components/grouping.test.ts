@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/features/media/types/media"
-import { MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 import * as i18nConstants from "@/i18n/constants"
 
 import { getGroupedFiles, getTopDateWithRemainingFiles, groupFilesByDate } from "../../utils"

@@ -7,7 +7,7 @@
 
 import { useSelector } from "@xstate/react"
 import { createContext, type ReactNode, useCallback, useContext, useMemo } from "react"
-import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"
+import { DEFAULT_PREVIEW_SIZE_INDEX, PREVIEW_SIZES } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@/types/generated/tauri-bindings"
 import { getBrowserOrchestrator } from "../services/browser-orchestrator"

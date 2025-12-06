@@ -1,11 +1,12 @@
 import { memo, useCallback, useRef, useState } from "react"
-import type { FfprobeStream } from "@/features/media/types/ffprobe"
-import type { MediaFile } from "@/features/media/types/media"
+import type { FfprobeStream } from "@/domains/media-management"
+import type { MediaFile } from "@/domains/media-management"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
 import { useResources } from "@/features/resources"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
+import { cn } from "@/lib/utils"
 import { VideoElement } from "./video-element"
 import { VideoOverlays } from "./video-overlays"
 
@@ -243,7 +244,7 @@ export const VideoStream = memo(
     return (
       <div
         key={key}
-        className="relative shrink-0"
+        className={cn("relative shrink-0", isAdded && "pointer-events-none")}
         style={{
           height: `${size}px`,
           width:
@@ -257,7 +258,10 @@ export const VideoStream = memo(
         }}
       >
         <div
-          className="group relative h-full w-full overflow-hidden"
+          className={cn(
+            "group relative h-full w-full overflow-hidden",
+            isAdded && "opacity-50 grayscale cursor-not-allowed",
+          )}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}

@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import type { FfprobeData } from "@/features/media/types/ffprobe"
-import type { MediaFile } from "@/features/media/types/media"
+import type { FfprobeData } from "@/domains/media-management"
+import type { MediaFile } from "@/domains/media-management"
 import { createLogger } from "./tauri-logger"
 
 const logger = createLogger("Utils")

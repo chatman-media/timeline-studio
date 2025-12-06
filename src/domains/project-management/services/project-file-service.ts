@@ -1,5 +1,5 @@
 import { container } from "@/core"
-import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
+import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 import type { ProjectFile } from "@/features/project-settings/types/project"
 
 import { createLogger } from "@/lib/tauri-logger"

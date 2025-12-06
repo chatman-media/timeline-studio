@@ -10,8 +10,8 @@ import { container } from "@/core/container"
 import { useApp } from "@/domains/project-management/providers"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { FfprobeData } from "@/features/media/types/ffprobe"
-import { MediaType as LocalMediaType, type MediaFile } from "@/features/media/types/media"
+import type { FfprobeData, MediaFile } from "@/domains/media-management"
+import { MediaType as LocalMediaType } from "@/domains/media-management"
 // Backend event handlers removed - simplified architecture
 import {
   type EffectResource,

@@ -1,6 +1,6 @@
 import { Film } from "lucide-react"
 import { memo } from "react"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/features/resources/types"
 import { formatDuration } from "@/lib/date"
 import { cn, formatResolution } from "@/lib/utils"

@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
+import { replaceHomeWithTilde } from "@/lib/path-utils"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("NoFiles")
@@ -141,7 +142,8 @@ export function NoFiles({ type, onImport, className }: NoFilesProps) {
         }
 
         const folder = folderMap[type]
-        setFolders(folder ? [folder] : [])
+        // Заменяем домашнюю директорию на тильду для отображения
+        setFolders(folder ? [replaceHomeWithTilde(folder)] : [])
       } catch (error) {
         logger.warn("Could not load app directories:", { error })
         // В случае ошибки показываем пустой массив (не показываем папки вообще)

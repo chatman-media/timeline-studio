@@ -6,7 +6,7 @@
  */
 
 import { getMedia } from "@/core/container"
-import type { MediaPreviewData, ThumbnailData, TimelineFrame } from "@/features/media/types/preview"
+import type { MediaPreviewData, ThumbnailData, TimelineFrame } from "../types/preview"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaPreviewService")

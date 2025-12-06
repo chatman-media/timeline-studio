@@ -6,7 +6,8 @@ import { AddMediaButton } from "@/features/browser/components/layout/add-media-b
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import type { BaseEffect, VideoEffect } from "@/features/effects/types"
-import { MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import type { EffectResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
@@ -159,7 +160,7 @@ export function EffectPreview({
    * Определяем использует ли эффект WebGL
    */
   const useWebGL = useMemo(() => {
-    const hasWebGL = !!(processedEffect?.processors?.webgl?.fragmentShader)
+    const hasWebGL = !!processedEffect?.processors?.webgl?.fragmentShader
     if (processedEffect) {
       void logger.info("Effect rendering mode", {
         effectId: processedEffect.id,
@@ -249,12 +250,7 @@ export function EffectPreview({
       Object.assign(effectParams, customParams)
 
       try {
-        await getEffectsPreviewService().applyEffect(
-          videoElement,
-          processedEffect.id,
-          effectParams,
-          canvas,
-        )
+        await getEffectsPreviewService().applyEffect(videoElement, processedEffect.id, effectParams, canvas)
       } catch (error) {
         void logger.error("WebGL effect rendering failed", { error })
       }
@@ -312,12 +308,7 @@ export function EffectPreview({
       if (videoElement.paused || videoElement.ended) return
 
       try {
-        await getEffectsPreviewService().applyEffect(
-          videoElement,
-          processedEffect.id,
-          effectParams,
-          canvas,
-        )
+        await getEffectsPreviewService().applyEffect(videoElement, processedEffect.id, effectParams, canvas)
       } catch (error) {
         void logger.error("WebGL continuous rendering failed", { error })
       }
@@ -416,9 +407,7 @@ export function EffectPreview({
                 : "Effect"}
             </div>
             {!currentVideo && size > 100 && (
-              <div className="text-gray-600 text-[10px] text-center">
-                Откройте видео для превью
-              </div>
+              <div className="text-gray-600 text-[10px] text-center">Откройте видео для превью</div>
             )}
           </div>
         )}

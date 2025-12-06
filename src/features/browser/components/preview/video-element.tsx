@@ -1,5 +1,5 @@
 import { type MutableRefObject, memo } from "react"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -67,7 +67,7 @@ export const VideoElement = memo(
         tabIndex={0}
         playsInline
         muted
-        className={cn("h-full w-full object-cover focus:outline-none", isAdded ? "opacity-50" : "opacity-100")}
+        className="h-full w-full object-cover focus:outline-none"
         style={{
           transition: "opacity 0.2s ease-in-out",
           backgroundColor: "black",

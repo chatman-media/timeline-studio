@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { useModals, useNotifications } from "@/domains/system-integration"
-import { useMediaImport } from "@/features/media/hooks/use-media-import"
+import { useMediaImport } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,

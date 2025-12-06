@@ -3,8 +3,8 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
-import { MediaType } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 import type { Fragment } from "../../types"
 import { MomentCategory } from "../../types"
 import { convertFragmentForAIServices, convertToAIServicesMediaFile } from "../media-file-converter"

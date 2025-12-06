@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { useFileSelection } from "@/features/media/hooks"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { cn } from "@/lib/utils"
 
 interface FileSelectionCheckboxProps {

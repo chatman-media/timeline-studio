@@ -3,6 +3,8 @@
  * Типы для AI Director системы анализа
  */
 
+import type { AIDirectorConfig } from "@/core/ports/ai.port"
+
 import type {
   AnalysisCompleted,
   AnalysisError,
@@ -17,52 +19,11 @@ import type {
 // Configuration Types
 // ============================================================================
 
-export type PerformanceMode = "fast" | "balanced" | "quality"
+// AIDirectorConfig is imported from core/ports/ai.port
+export type { AIDirectorConfig }
 
-export interface AIDirectorConfig {
-  /** Режим производительности */
-  performance_mode: PerformanceMode
-  /** Включить аудио анализ */
-  enable_audio_analysis: boolean
-  /** Включить детекцию сцен */
-  enable_scene_detection: boolean
-  /** Включить анализ видео */
-  enable_video_analysis: boolean
-  /** Включить детекцию объектов */
-  enable_object_detection: boolean
-  /** Включить распознавание лиц */
-  enable_face_recognition: boolean
-  /** Включить транскрипцию */
-  enable_transcription: boolean
-  /** Таймаут анализа (секунды) */
-  timeout_seconds?: number
-  /** Максимальное использование памяти (MB) */
-  max_memory_mb?: number
-
-  // Extended configuration (used by v2 batch analysis)
-  /** Включить детекцию лиц */
-  enable_face_detection?: boolean
-  /** Включить анализ лиц */
-  enable_face_analysis?: boolean
-  /** Включить анализ движения */
-  enable_motion_analysis?: boolean
-  /** Включить анализ композиции */
-  enable_composition_analysis?: boolean
-  /** Включить детекцию ключевых моментов */
-  enable_moment_detection?: boolean
-  /** Включить классификацию контента */
-  enable_content_classification?: boolean
-  /** Включить анализ настроения */
-  enable_mood_analysis?: boolean
-  /** Включить анализ качества */
-  enable_quality_analysis?: boolean
-  /** Включить VLM анализ */
-  enable_vision_language_model?: boolean
-  /** Генерировать рекомендации по редактированию */
-  generate_editing_recommendations?: boolean
-  /** Включить MCP агенты */
-  enable_mcp_agents?: boolean
-}
+// PerformanceMode is extracted from AIDirectorConfig
+export type PerformanceMode = AIDirectorConfig["performance_mode"]
 
 // ============================================================================
 // Analysis Result Types

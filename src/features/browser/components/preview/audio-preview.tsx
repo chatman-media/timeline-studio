@@ -2,7 +2,7 @@ import { Music } from "lucide-react"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { LiveAudioVisualizer } from "react-audio-visualize"
 
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
 import { createAudioUrl } from "@/lib/media-url-utils"

@@ -85,15 +85,8 @@ export class AIDirectorService {
       maxParallel: maxParallel ?? 4,
     })
     return aiDirectorAnalyzeBatchParallel(filePaths, {
-      performance_mode: config?.performance_mode ?? "balanced",
-      enable_audio_analysis: config?.enable_audio_analysis ?? true,
-      enable_scene_detection: config?.enable_scene_detection ?? true,
-      enable_video_analysis: config?.enable_video_analysis ?? true,
-      enable_object_detection: config?.enable_object_detection ?? true,
-      enable_face_recognition: config?.enable_face_recognition ?? true,
-      enable_transcription: config?.enable_transcription ?? false,
-      timeout_seconds: config?.timeout_seconds ?? 300,
-      max_memory_mb: config?.max_memory_mb ?? 4096,
+      ...config,
+      performance_mode: config?.performance_mode ?? "Balanced",
       enable_parallel_processing: true,
       max_parallel_files: maxParallel ?? 4,
     })
@@ -109,7 +102,7 @@ export class AIDirectorService {
   /**
    * Получить конфигурацию по умолчанию
    */
-  async getDefaultConfig(mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> {
+  async getDefaultConfig(mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig> {
     return aiDirectorGetDefaultConfig(mode)
   }
 
@@ -138,14 +131,14 @@ export class AIDirectorService {
       enableFFmpeg?: boolean
       enableMontage?: boolean
       enableTranscription?: boolean
-      performanceMode?: "fast" | "balanced" | "quality"
+      performanceMode?: "Fast" | "Balanced" | "Quality"
     },
   ): Promise<any> {
     const unifiedConfig: UnifiedAudioConfig = {
       enable_ffmpeg_analysis: config?.enableFFmpeg ?? true,
       enable_montage_analysis: config?.enableMontage ?? true,
       enable_transcription: config?.enableTranscription ?? false,
-      performance_mode: config?.performanceMode ?? "balanced",
+      performance_mode: config?.performanceMode ?? "Balanced",
     }
     return unifiedAudioAnalyzeComprehensive(videoPath, unifiedConfig)
   }
@@ -162,7 +155,7 @@ export class AIDirectorService {
    */
   async analyzeAudioBatch(
     filePaths: string[],
-    config?: { performanceMode?: "fast" | "balanced" | "quality" },
+    config?: { performanceMode?: "Fast" | "Balanced" | "Quality" },
   ): Promise<any[]> {
     return unifiedAudioAnalyzeBatch(filePaths, config ? { performance_mode: config.performanceMode } : undefined)
   }
@@ -215,7 +208,7 @@ export class AIDirectorService {
    */
   async getConfiguration(): Promise<AIDirectorConfig> {
     // Используем getDefaultConfig как временное решение
-    return this.getDefaultConfig("balanced")
+    return this.getDefaultConfig("Balanced")
   }
 
   /**

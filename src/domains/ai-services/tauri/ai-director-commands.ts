@@ -6,23 +6,9 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import { createLogger } from "@/lib/tauri-logger"
+import type { AIDirectorConfig } from "@/core/ports/ai.port"
 
 const logger = createLogger("AiDirectorCommands")
-
-/**
- * AI Director Types
- */
-export interface AIDirectorConfig {
-  performance_mode: "fast" | "balanced" | "quality"
-  enable_audio_analysis: boolean
-  enable_scene_detection: boolean
-  enable_video_analysis: boolean
-  enable_object_detection: boolean
-  enable_face_recognition: boolean
-  enable_transcription: boolean
-  timeout_seconds: number
-  max_memory_mb: number
-}
 
 export interface ComprehensiveAnalysisResult {
   analysis_id: string
@@ -187,7 +173,7 @@ export interface UnifiedAudioConfig {
   enable_ffmpeg_analysis?: boolean
   enable_montage_analysis?: boolean
   enable_transcription?: boolean
-  performance_mode?: "fast" | "balanced" | "quality"
+  performance_mode?: "Fast" | "Balanced" | "Quality"
 }
 
 export async function unifiedAudioAnalyzeComprehensive(videoPath: string, config?: UnifiedAudioConfig): Promise<any> {

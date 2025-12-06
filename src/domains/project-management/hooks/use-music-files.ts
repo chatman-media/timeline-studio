@@ -1,4 +1,4 @@
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 
 import { useApp } from "../providers/app-provider"

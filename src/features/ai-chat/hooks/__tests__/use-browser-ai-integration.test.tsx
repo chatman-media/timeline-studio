@@ -4,7 +4,7 @@
 
 import { renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { useBrowserAIIntegration } from "../use-browser-ai-integration"
 
 // Mock browser state

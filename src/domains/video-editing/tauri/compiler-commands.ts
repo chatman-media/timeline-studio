@@ -119,8 +119,31 @@ export async function cancelRender(jobId: string): Promise<boolean> {
 }
 
 export async function prerenderSegment(request: any): Promise<any> {
-  logger.debugSync("Prerendering segment")
-  return invoke("prerender_segment", { request })
+  logger.debugSync("Prerendering segment - REQUEST RECEIVED", {
+    hasProjectSchema: !!request.projectSchema,
+    startTime: request.startTime,
+    endTime: request.endTime,
+    outputPath: request.outputPath,
+    requestKeys: Object.keys(request || {}),
+  })
+
+  // Проверка обязательных полей
+  if (!request.projectSchema) {
+    logger.error("prerenderSegment: projectSchema is missing!", { request })
+    throw new Error("prerenderSegment requires projectSchema parameter")
+  }
+  if (!request.outputPath) {
+    logger.error("prerenderSegment: outputPath is missing!", { request })
+    throw new Error("prerenderSegment requires outputPath parameter")
+  }
+
+  // Tauri автоматически конвертирует camelCase в snake_case
+  return invoke("prerender_segment", {
+    projectSchema: request.projectSchema,
+    startTime: request.startTime,
+    endTime: request.endTime,
+    outputPath: request.outputPath,
+  })
 }
 
 export async function getPrerenderCacheInfo(): Promise<any> {

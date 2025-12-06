@@ -198,6 +198,20 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
               return null
             case "get_prerender_cache_info":
               return { file_count: 0, total_size: 0, cache_path: "/tmp/cache", files: [] }
+            case "prerender_segment":
+              // Mock prerender segment response
+              return {
+                filePath: "/tmp/prerender/mock_segment.mp4",
+                duration: args?.end_time - args?.start_time || 10,
+                fileSize: 1024 * 1024, // 1MB
+                renderTimeMs: 100,
+              }
+            case "generate_preview":
+              // Mock preview generation
+              return Array.from({ length: 100 }, (_, i) => (i * 255) / 100) // Mock image data
+            case "compile_video":
+              // Mock video compilation
+              return "mock-job-id-" + Date.now()
             case "plugin:event|listen": {
               // Generate event ID and register listener
               const eventId = Math.random().toString(36).slice(2, 11)
@@ -436,6 +450,23 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
             case "delete_api_key":
               // Возвращаем успешный результат
               return { success: true }
+            case "ai_get_supported_providers":
+              // Возвращаем список AI провайдеров (пустой в browser режиме)
+              return { status: "ok", data: [], error: null }
+            case "ai_get_provider_models":
+              // Возвращаем пустой список моделей (в browser режиме без backend)
+              return { status: "ok", data: [], error: null }
+            case "ai_send_secure_request":
+              // Mock AI request response
+              return {
+                status: "ok",
+                data: {
+                  provider: args?.provider || "mock",
+                  content: "Mock AI response from browser mode",
+                  toolCalls: null,
+                },
+                error: null,
+              }
             default:
               logger.warn(`[TauriMock] Unhandled command: ${cmd}`, args)
               // Return sensible defaults for unknown commands instead of throwing

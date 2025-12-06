@@ -5,8 +5,8 @@ import {
   restoreFile,
   restoreProjectMedia,
 } from "@/domains/media-management"
-import type { MediaFile } from "@/features/media/types/media"
-import type { SavedMediaFile, SavedMusicFile } from "@/features/media/types/saved-media"
+import type { MediaFile } from "@/domains/media-management"
+import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 
 // Мокаем модули Tauri
 vi.mock("@tauri-apps/api/path", () => ({

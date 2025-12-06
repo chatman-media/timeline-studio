@@ -201,19 +201,19 @@ impl UnifiedFFmpegAudioAnalyzer {
   async fn analyze_frequency_unified(file_path: &Path) -> Result<UnifiedFrequencyAnalysis> {
     info!("Analyzing frequency spectrum with unified types");
 
-    // Use showfreqs filter to analyze frequency spectrum
-    let _output = FFmpegCommand::ffmpeg()
-      .args(vec![
-        "-i",
-        &file_path.to_string_lossy(),
-        "-af",
-        "showfreqs=mode=line:fscale=log",
-        "-f",
-        "null",
-        "-",
-      ])
-      .execute()
-      .await?;
+    // DISABLED:     // Use showfreqs filter to analyze frequency spectrum
+    // DISABLED:     let _output = FFmpegCommand::ffmpeg()
+    // DISABLED:       .args(vec![
+    // DISABLED:         "-i",
+    // DISABLED:         &file_path.to_string_lossy(),
+    // DISABLED:         "-af",
+    // DISABLED:         "showfreqs=mode=line:fscale=log",
+    // DISABLED:         "-f",
+    // DISABLED:         "null",
+    // DISABLED:         "-",
+    // DISABLED:       ])
+    // DISABLED:       .execute()
+    // DISABLED:       .await?;
 
     // For now, provide reasonable defaults (can be enhanced with actual FFT analysis)
     let bass_energy = 0.3; // 20Hz - 250Hz
@@ -248,19 +248,19 @@ impl UnifiedFFmpegAudioAnalyzer {
   async fn analyze_dynamics_unified(file_path: &Path) -> Result<UnifiedDynamicsAnalysis> {
     info!("Analyzing audio dynamics with unified types");
 
-    // Use dynaudnorm filter to analyze dynamics
-    let _output = FFmpegCommand::ffmpeg()
-      .args(vec![
-        "-i",
-        &file_path.to_string_lossy(),
-        "-af",
-        "dynaudnorm=p=0.95:m=10:s=12",
-        "-f",
-        "null",
-        "-",
-      ])
-      .execute()
-      .await?;
+    // DISABLED:     // Use dynaudnorm filter to analyze dynamics
+    // DISABLED:     let _output = FFmpegCommand::ffmpeg()
+    // DISABLED:       .args(vec![
+    // DISABLED:         "-i",
+    // DISABLED:         &file_path.to_string_lossy(),
+    // DISABLED:         "-af",
+    // DISABLED:         "dynaudnorm=p=0.95:m=10:s=12",
+    // DISABLED:         "-f",
+    // DISABLED:         "null",
+    // DISABLED:         "-",
+    // DISABLED:       ])
+    // DISABLED:       .execute()
+    // DISABLED:       .await?;
 
     // Provide reasonable dynamics metrics (can be enhanced with actual analysis)
     Ok(UnifiedDynamicsAnalysis {

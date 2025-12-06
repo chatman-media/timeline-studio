@@ -6,7 +6,7 @@
  */
 
 import { getPlatform as getPlatformService } from "@/core/container"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { createLogger } from "./tauri-logger"
 import { isTauriEnvironment } from "./tauri-utils"
 

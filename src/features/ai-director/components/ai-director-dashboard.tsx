@@ -2,20 +2,24 @@
 
 /**
  * AI Director v3 Dashboard
- * Главный компонент для AI Director с minimalist design
+ * Главный компонент для AI Director с minimalist design и табовым интерфейсом
  */
 
+import { useCallback, useMemo, useState } from "react"
 import { Settings, Zap } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
-import { useCallback, useMemo, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useBrowserState } from "@/domains/browser"
 import { useMediaManagement } from "@/domains/media-management"
 import { useModals, useNotifications } from "@/domains/system-integration"
+import { AiChat } from "@/features/ai-chat"
 import { createLogger } from "@/lib/tauri-logger"
+
 import { useAIDirectorAnalysisV2 } from "../hooks/use-ai-director-analysis-v2"
 import type { AnalysisSettings as AnalysisSettingsType } from "./analysis-settings"
 import { AnalysisSettings } from "./analysis-settings"
@@ -32,6 +36,7 @@ export interface AIDirectorV3DashboardProps {
 
 export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
   // State
+  const [activeTab, setActiveTab] = useState<string>("analysis")
   const [analysisSettings, setAnalysisSettings] = useState<AnalysisSettingsType>({
     mode: "balanced",
     analyzers: ["scene_detection", "audio_quality"],
@@ -145,14 +150,24 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
 
   // UI State
   const hasFiles = filesProgress.length > 0
-  const showEmptyState = !hasFiles
+  const hasCompletedAnalysis = filesProgress.some((f) => f.status === "completed" || f.status === "error")
+  const showEmptyState = !hasFiles && !isAnalyzing
+
+  // Auto-switch to Results tab when analysis starts
+  const handleStartAnalysisAndSwitchTab = useCallback(
+    async (fileIds: Set<string>) => {
+      await handleStartAnalysisFromEmptyState(fileIds)
+      setActiveTab("results")
+    },
+    [handleStartAnalysisFromEmptyState],
+  )
 
   return (
     <TooltipProvider>
-      <div className="flex h-full w-full flex-col p-6 space-y-6">
+      <div className="flex h-full w-full flex-col p-6">
         {/* Header */}
         <motion.div
-          className="flex items-center justify-between"
+          className="flex items-center justify-between mb-4"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -193,19 +208,25 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
           </Popover>
         </motion.div>
 
-        {/* Empty State */}
-        <AnimatePresence mode="wait">
-          {showEmptyState && (
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="analysis">Analysis</TabsTrigger>
+            <TabsTrigger value="results">Results</TabsTrigger>
+            <TabsTrigger value="chat">Chat</TabsTrigger>
+          </TabsList>
+
+          {/* Analysis Tab - File Selection Only */}
+          <TabsContent value="analysis" className="flex-1 flex flex-col min-h-0 mt-0">
             <motion.div
-              key="empty-state"
+              className="flex-1 flex items-center justify-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
             >
               <EmptyState
                 onSelectFiles={handleOpenMediaPool}
-                onStartAnalysis={handleStartAnalysisFromEmptyState}
+                onStartAnalysis={handleStartAnalysisAndSwitchTab}
                 mediaPool={mediaPool}
                 selectedFileIds={selectedFileIds}
                 onSelectionChange={handleSelectionChange}
@@ -213,83 +234,111 @@ export function AIDirectorV3Dashboard(_props: AIDirectorV3DashboardProps) {
                 isAnalyzing={isAnalyzing}
               />
             </motion.div>
-          )}
-        </AnimatePresence>
+          </TabsContent>
 
-        {/* Analysis Progress */}
-        {hasFiles && (
-          <motion.div
-            className="flex flex-col gap-6 flex-1 min-h-0"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            {/* Files Section Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                📁 Selected Files ({filesProgress.length})
-              </h2>
-              {!isAnalyzing && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="outline" onClick={handleReset}>
-                      New Analysis
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Clear current results and start over</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
-            </div>
-
-            {/* Files List */}
-            <ScrollArea className="flex-1">
-              <div className="space-y-3 pr-4">
-                <AnimatePresence mode="popLayout">
-                  {fileCardsData.map((file, index) => (
-                    <motion.div
-                      key={file.filePath}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                      layout
-                    >
-                      <FileAnalysisCard file={file} />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+          {/* Results Tab - Analysis Progress & Results */}
+          <TabsContent value="results" className="flex-1 flex flex-col min-h-0 mt-0">
+            {!hasFiles ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center space-y-4">
+                  <h2 className="text-2xl font-semibold">No Analysis Yet</h2>
+                  <p className="text-muted-foreground">Go to Analysis tab to select files and start analysis</p>
+                </div>
               </div>
-            </ScrollArea>
+            ) : (
+              <motion.div
+                className="flex flex-col gap-6 flex-1 min-h-0"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                {/* Files Section Header */}
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1">
+                    <h2 className="text-xl font-semibold flex items-center gap-2">
+                      📁 {hasCompletedAnalysis && !isAnalyzing ? "Analysis Results" : "Analyzing Files"} (
+                      {filesProgress.length})
+                    </h2>
+                    {hasCompletedAnalysis && !isAnalyzing && (
+                      <p className="text-sm text-muted-foreground">
+                        ✅ Completed: {fileStatistics.completed} • ❌ Errors: {fileStatistics.error}
+                      </p>
+                    )}
+                  </div>
+                  {!isAnalyzing && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            handleReset()
+                            setActiveTab("analysis")
+                          }}
+                        >
+                          New Analysis
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Clear current results and start over</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
 
-            {/* Overall Progress */}
-            {batchProgress && (
-              <OverallProgressCard
-                progressData={{
-                  progress: batchProgress.progress || 0,
-                  completedFiles: batchProgress.completedFiles || 0,
-                  totalFiles: batchProgress.totalFiles || 0,
-                  estimatedTimeRemaining: batchProgress.estimatedTimeRemaining,
-                  status: isAnalyzing ? "analyzing" : "completed",
-                }}
-                fileStatistics={fileStatistics}
-                onCancel={isAnalyzing ? handleCancel : undefined}
-              />
+                {/* Files List */}
+                <ScrollArea className="flex-1">
+                  <div className="space-y-3 pr-4">
+                    <AnimatePresence mode="popLayout">
+                      {fileCardsData.map((file, index) => (
+                        <motion.div
+                          key={file.filePath}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ duration: 0.3, delay: index * 0.05 }}
+                          layout
+                        >
+                          <FileAnalysisCard file={file} />
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </ScrollArea>
+
+                {/* Overall Progress */}
+                {batchProgress && (
+                  <OverallProgressCard
+                    progressData={{
+                      progress: batchProgress.progress || 0,
+                      completedFiles: batchProgress.completedFiles || 0,
+                      totalFiles: batchProgress.totalFiles || 0,
+                      estimatedTimeRemaining: batchProgress.estimatedTimeRemaining,
+                      status: isAnalyzing ? "analyzing" : "completed",
+                    }}
+                    fileStatistics={fileStatistics}
+                    onCancel={isAnalyzing ? handleCancel : undefined}
+                  />
+                )}
+
+                {/* Active Analyzers Info */}
+                <motion.div
+                  className="text-sm text-muted-foreground text-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  ⚡ Mode: {analysisSettings.mode} • {analysisSettings.analyzers.length} analyzer
+                  {analysisSettings.analyzers.length !== 1 ? "s" : ""} active
+                </motion.div>
+              </motion.div>
             )}
+          </TabsContent>
 
-            {/* Active Analyzers Info */}
-            <motion.div
-              className="text-sm text-muted-foreground text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              ⚡ Mode: {analysisSettings.mode} • {analysisSettings.analyzers.length} analyzer
-              {analysisSettings.analyzers.length !== 1 ? "s" : ""} active
-            </motion.div>
-          </motion.div>
-        )}
+          {/* Chat Tab */}
+          <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 mt-0">
+            <AiChat />
+          </TabsContent>
+        </Tabs>
       </div>
     </TooltipProvider>
   )

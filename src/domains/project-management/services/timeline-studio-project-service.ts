@@ -5,7 +5,7 @@
 import { nanoid } from "nanoid"
 
 import { container, type IPlatformService } from "@/core"
-import { createEmptyMediaPool } from "@/features/media/utils/media-pool-utils"
+import { createEmptyMediaPool } from "@/domains/media-management"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/features/project-settings/types/project"
 import type {
   ProjectMetadata,

@@ -3,7 +3,7 @@
  * Вдохновлено лучшими практиками DaVinci Resolve, Adobe Premiere Pro и Final Cut Pro
  */
 
-import type { MediaPool, MediaPoolItem } from "@/features/media/types/media-pool"
+import type { MediaPool, MediaPoolItem } from "@/domains/media-management"
 import type { Sequence } from "@/features/timeline/types/sequence"
 
 import type { ProjectSettings } from "./project"

@@ -22,7 +22,7 @@ import type {
   ThumbnailOptions,
   WaveformOptions,
 } from "@/core/ports"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TauriMediaService")

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaType } from "@/features/media/types/media"
+import type { MediaType } from "@/domains/media-management"
 
 import { RollEditHandle } from "../../../components/edit-tools/roll-edit-handle"
 import { TrackRollHandles } from "../../../components/track/track-roll-handles"

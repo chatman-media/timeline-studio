@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-use super::preview_data::{MediaPreviewData, RecognitionFrame, ThumbnailData, TimelinePreview};
+use super::preview_data::{BasicVideoMetadata, MediaPreviewData, RecognitionFrame, ThumbnailData, TimelinePreview};
 use super::thumbnail::{generate_thumbnail, generate_thumbnail_fast};
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::frame_extraction::{ExtractionPurpose, FrameExtractionManager};
@@ -208,8 +208,19 @@ impl PreviewDataManager {
       let mut data = self.data.write().await;
       let preview_data = data
         .entry(file_id.clone())
-        .or_insert_with(|| MediaPreviewData::new(file_id, file_path));
+        .or_insert_with(|| MediaPreviewData::new(file_id.clone(), file_path.clone()));
       preview_data.set_browser_thumbnail(thumbnail.clone());
+
+      // Извлекаем метаданные если их еще нет
+      if preview_data.basic_metadata.is_none() {
+        drop(data); // Освобождаем write lock перед async вызовом
+        if let Some(metadata) = self.extract_basic_metadata(&file_path).await {
+          let mut data = self.data.write().await;
+          if let Some(preview_data) = data.get_mut(&file_id) {
+            preview_data.set_basic_metadata(metadata);
+          }
+        }
+      }
 
       return Ok(thumbnail);
     }
@@ -253,12 +264,20 @@ impl PreviewDataManager {
       height,
     };
 
+    // Извлекаем метаданные видео
+    let metadata = self.extract_basic_metadata(&file_path).await;
+
     // Обновляем данные
     let mut data = self.data.write().await;
     let preview_data = data
       .entry(file_id.clone())
       .or_insert_with(|| MediaPreviewData::new(file_id, file_path));
     preview_data.set_browser_thumbnail(thumbnail.clone());
+
+    // Сохраняем метаданные если успешно извлечены
+    if let Some(metadata) = metadata {
+      preview_data.set_basic_metadata(metadata);
+    }
 
     Ok(thumbnail)
   }
@@ -518,6 +537,121 @@ impl PreviewDataManager {
     // Простая эвристика: считаем keyframe'ом кадры через каждые 2 секунды
     // В реальной реализации можно анализировать метаданные FFmpeg
     timestamp % 2.0 < 0.1 || timestamp < 0.1
+  }
+
+  /// Извлечь базовые метаданные видео через ffprobe
+  async fn extract_basic_metadata(&self, file_path: &Path) -> Option<BasicVideoMetadata> {
+    use serde_json::Value;
+    use tokio::process::Command;
+
+    // Вызываем ffprobe для получения метаданных
+    let output = match Command::new("ffprobe")
+      .args([
+        "-v",
+        "quiet",
+        "-print_format",
+        "json",
+        "-show_format",
+        "-show_streams",
+        file_path.to_str()?,
+      ])
+      .output()
+      .await
+    {
+      Ok(output) if output.status.success() => output,
+      _ => return None,
+    };
+
+    // Парсим JSON
+    let json_str = String::from_utf8_lossy(&output.stdout);
+    let probe_data: Value = serde_json::from_str(&json_str).ok()?;
+
+    // Извлекаем метаданные формата
+    let format = probe_data.get("format")?;
+    let duration = format
+      .get("duration")
+      .and_then(|v| v.as_str())
+      .and_then(|s| s.parse::<f64>().ok());
+
+    let bitrate = format
+      .get("bit_rate")
+      .and_then(|v| v.as_str())
+      .and_then(|s| s.parse::<u32>().ok());
+
+    // Извлекаем метаданные потоков
+    let streams = probe_data.get("streams")?.as_array()?;
+
+    let video_stream = streams.iter().find(|s| {
+      s.get("codec_type")
+        .and_then(|v| v.as_str())
+        .map_or(false, |t| t == "video")
+    });
+
+    let audio_stream = streams.iter().find(|s| {
+      s.get("codec_type")
+        .and_then(|v| v.as_str())
+        .map_or(false, |t| t == "audio")
+    });
+
+    let has_video = video_stream.is_some();
+    let has_audio = audio_stream.is_some();
+
+    // Извлекаем параметры видео
+    let (width, height, fps, video_codec, aspect_ratio) = if let Some(stream) = video_stream {
+      let width = stream.get("width").and_then(|v| v.as_u64()).map(|v| v as u32);
+      let height = stream.get("height").and_then(|v| v.as_u64()).map(|v| v as u32);
+
+      let fps = stream
+        .get("r_frame_rate")
+        .and_then(|v| v.as_str())
+        .and_then(|r| {
+          let parts: Vec<&str> = r.split('/').collect();
+          if parts.len() == 2 {
+            let num = parts[0].parse::<f64>().ok()?;
+            let den = parts[1].parse::<f64>().ok()?;
+            if den > 0.0 {
+              Some(num / den)
+            } else {
+              None
+            }
+          } else {
+            None
+          }
+        });
+
+      let video_codec = stream
+        .get("codec_name")
+        .and_then(|v| v.as_str())
+        .map(|s| s.to_string());
+
+      let aspect_ratio = stream
+        .get("display_aspect_ratio")
+        .and_then(|v| v.as_str())
+        .map(|s| s.to_string());
+
+      (width, height, fps, video_codec, aspect_ratio)
+    } else {
+      (None, None, None, None, None)
+    };
+
+    // Извлекаем аудио кодек
+    let audio_codec = audio_stream
+      .and_then(|s| s.get("codec_name"))
+      .and_then(|v| v.as_str())
+      .map(|s| s.to_string());
+
+    Some(BasicVideoMetadata {
+      duration,
+      width,
+      height,
+      aspect_ratio,
+      fps,
+      video_codec,
+      audio_codec,
+      bitrate,
+      has_video,
+      has_audio,
+    })
   }
 }
 

@@ -147,24 +147,33 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
 
     // Подписываемся на события прогресса
     const unsubscribe = analysisTaskBridge.subscribeToProgress((updatedTask) => {
+      void logger.debug("Получено обновление прогресса задачи", {
+        taskId: updatedTask.id,
+        status: updatedTask.status,
+        progress: updatedTask.progress.percentage,
+      })
+
       setTasks((prevTasks) => {
         const index = prevTasks.findIndex((t) => t.id === updatedTask.id)
         if (index !== -1) {
           // Обновляем существующую задачу
           const newTasks = [...prevTasks]
           newTasks[index] = updatedTask
+          void logger.debug("Задача обновлена в списке", { taskId: updatedTask.id, index })
           return newTasks
         }
         // Добавляем новую задачу
+        void logger.debug("Новая задача добавлена в список", { taskId: updatedTask.id })
         return [...prevTasks, updatedTask]
       })
     })
 
-    // Обновляем список каждые 30 секунд для синхронизации
-    // (события прогресса уже обновляют список в реальном времени)
+    // Обновляем список каждые 5 секунд для синхронизации
+    // (события прогресса уже обновляют список в реальном времени, но для надежности делаем polling)
     const interval = setInterval(() => {
+      void logger.debug("Polling обновление списка задач")
       void refreshTasks()
-    }, 30000)
+    }, 5000) // Уменьшено с 30s до 5s для более быстрой реакции
 
     return () => {
       void logger.info("Размонтирование useAnalysisTasks хука")

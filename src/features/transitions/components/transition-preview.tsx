@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { ApplyButton } from "@/features/browser"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
-import { type MediaFile, MediaType } from "@/features/media/types/media"
+import { type MediaFile, MediaType } from "@/domains/media-management"
 import type { TransitionResource } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
@@ -46,6 +46,8 @@ export function TransitionPreview({
 
   const [isHovering, setIsHovering] = useState(false) // Состояние наведения мыши
   const [isError, setIsError] = useState(false) // Состояние ошибки загрузки видео
+  const [isVisible, setIsVisible] = useState(false) // Видим ли элемент на экране
+  const containerRef = useRef<HTMLDivElement>(null) // Ссылка на контейнер для Intersection Observer
 
   // Ссылки на элементы видео и таймеры
   const sourceVideoRef = useRef<HTMLVideoElement>(null) // Ссылка на исходное видео
@@ -411,6 +413,31 @@ export function TransitionPreview({
   }, [isHovering, transitionType, isError]) // Убираем resetVideos из зависимостей
 
   /**
+   * Intersection Observer для ленивой загрузки видео
+   */
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+        })
+      },
+      {
+        rootMargin: "100px", // Начинаем загрузку за 100px до появления в viewport
+        threshold: 0.1,
+      },
+    )
+
+    observer.observe(containerRef.current)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  /**
    * Эффект для инициализации видео и обработки ошибок
    */
   useEffect(() => {
@@ -418,6 +445,9 @@ export function TransitionPreview({
       logger.warn("Video elements not found", { transitionType })
       return
     }
+
+    // Загружаем видео только когда элемент становится видимым
+    if (!isVisible) return
 
     const sourceVideoElement = sourceVideoRef.current
     const targetVideoElement = targetVideoRef.current
@@ -477,7 +507,7 @@ export function TransitionPreview({
       if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current)
       if (loopTimeoutRef.current) clearTimeout(loopTimeoutRef.current)
     }
-  }, []) // Убираем resetVideos из зависимостей
+  }, [isVisible]) // Перезапускаем когда элемент становится видимым
 
   /**
    * Эффект для управления переходами при наведении
@@ -506,7 +536,10 @@ export function TransitionPreview({
 
   return (
     <div
-      ref={setNodeRef}
+      ref={(node) => {
+        setNodeRef(node)
+        containerRef.current = node
+      }}
       className="flex flex-col items-center"
       style={{
         transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
@@ -569,24 +602,24 @@ export function TransitionPreview({
               {/* Исходное видео (видимое в начале) */}
               <video
                 ref={sourceVideoRef}
-                src={sourceVideo.path} // Для статических файлов из public/ не используем convertVideoSrc
+                src={isVisible ? sourceVideo.path : undefined} // Загружаем только когда видимо
                 className="h-full w-full origin-center object-cover transition-all duration-1000"
                 muted
                 loop
                 playsInline
-                preload="auto"
+                preload={isVisible ? "metadata" : "none"}
                 onError={() => setIsError(true)}
                 data-testid="source-video"
               />
               {/* Целевое видео (появляется при переходе) */}
               <video
                 ref={targetVideoRef}
-                src={targetVideo.path} // Для статических файлов из public/ не используем convertVideoSrc
+                src={isVisible ? targetVideo.path : undefined} // Загружаем только когда видимо
                 className="absolute inset-0 h-full w-full origin-center object-cover opacity-0 transition-all duration-1000"
                 muted
                 loop
                 playsInline
-                preload="auto"
+                preload={isVisible ? "metadata" : "none"}
                 onError={() => setIsError(true)}
                 data-testid="target-video"
               />

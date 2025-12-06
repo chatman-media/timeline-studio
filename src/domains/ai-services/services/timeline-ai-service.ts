@@ -26,16 +26,16 @@ import { executePlayerTool, playerTools } from "@/domains/ai-tools/tools/core/pl
 import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/core/resources"
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
-import {
+import type {
   AIBrowserContext,
   AIPlayerContext,
   AIResourcesContext,
   AITimelineContext,
-  AIToolResult,
   ContentStoryAnalysis,
   TimelineStudioContext,
-} from "@/features/ai-chat/types/ai-context"
-import type { MediaFile } from "@/features/media/types/media"
+} from "../types/context"
+import type { AIToolResult } from "@/domains/ai-tools/base"
+import type { MediaFile } from "@/domains/media-management"
 import { ResourcesContextType } from "@/features/resources"
 import { TimelineProject } from "@/features/timeline"
 // Импорты из новой структуры tools

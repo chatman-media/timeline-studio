@@ -167,10 +167,23 @@ class BrowserResourcesProviderImpl implements EffectsProviderAPI {
       allResources.push(...(sourceResources as T[]))
     }
 
-    // Сохраняем результат в кэш
-    this.resourcesCache.set(cacheKey, { resources: allResources, timestamp: now })
+    // Дедупликация ресурсов по id (если один и тот же ресурс загружен из разных источников)
+    const uniqueResources = Array.from(new Map(allResources.map((resource) => [resource.id, resource])).values())
 
-    return allResources
+    // Логируем дедупликацию только если были дубликаты
+    if (!cached && allResources.length !== uniqueResources.length) {
+      logger.debugSync("Deduplicated resources", {
+        type,
+        before: allResources.length,
+        after: uniqueResources.length,
+        removed: allResources.length - uniqueResources.length,
+      })
+    }
+
+    // Сохраняем результат в кэш
+    this.resourcesCache.set(cacheKey, { resources: uniqueResources, timestamp: now })
+
+    return uniqueResources
   }
 
   getResourceById(type: ResourceType, id: string): Resource | null {

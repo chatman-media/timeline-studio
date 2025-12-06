@@ -11,6 +11,24 @@ export * from "./ai-config"
 export type { AIIntelligenceContext, AIIntelligenceEvent, AIServicesDomainConfig } from "./ai-intelligence"
 // Export ContentType specifically from local content-analysis module
 export type { ContentClassification, ContentType } from "./content-analysis"
+// Context types for Timeline Studio AI integration
+export type {
+  AIBrowserContext,
+  AICommand,
+  AICommandResult,
+  AICommandType,
+  AIPlayerContext,
+  AIResourcesContext,
+  AITimelineContext,
+  ClipPlacementStrategy,
+  ContentStoryAnalysis,
+  EnhancementSettings,
+  MediaAnalysisCriteria,
+  ProjectCreationSettings,
+  ResourceAdditionCriteria,
+  TimelineStudioContext,
+  UserPreferencesContext,
+} from "./context"
 // Other core types
 // Other core types already exported above via specific imports
 // Export MediaFile from interfaces as the canonical one

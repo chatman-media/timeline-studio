@@ -1,4 +1,4 @@
-import type { TimeRange } from "@/features/media/types/time-range"
+import type { TimeRange } from "@/domains/media-management"
 
 import type { MediaFile, MediaTrack } from "./media"
 

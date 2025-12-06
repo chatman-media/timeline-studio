@@ -91,6 +91,7 @@ describe("usePrerender", () => {
         }),
         startTime: 0,
         endTime: 10,
+        outputPath: expect.stringMatching(/\/tmp\/prerender_\d+_0_10\.mp4/),
         applyEffects: true,
         quality: 75,
       })
@@ -115,6 +116,7 @@ describe("usePrerender", () => {
         }),
         startTime: 0,
         endTime: 10,
+        outputPath: expect.stringMatching(/\/tmp\/prerender_\d+_0_10\.mp4/),
         applyEffects: true,
         quality: 50,
       })
@@ -131,6 +133,7 @@ describe("usePrerender", () => {
         projectSchema: expect.any(Object),
         startTime: 0,
         endTime: 10,
+        outputPath: expect.stringMatching(/\/tmp\/prerender_\d+_0_10\.mp4/),
         applyEffects: false,
         quality: 75,
       })

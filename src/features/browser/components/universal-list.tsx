@@ -142,7 +142,7 @@ export function UniversalList<T extends ListItem>({
 
     return (
       <div className="flex h-full flex-col">
-        <NoFiles type={mediaType} />
+        <NoFiles type={mediaType} onImport={adapter.importHandlers?.importFile} />
       </div>
     )
   }

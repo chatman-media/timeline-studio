@@ -284,6 +284,7 @@ describe("videoCompilerService", () => {
         projectSchema: mockProject,
         startTime: 0,
         endTime: 10,
+        outputPath: "/tmp/prerender/segment_001.mp4",
         applyEffects: true,
         quality: 90,
       })
@@ -295,13 +296,10 @@ describe("videoCompilerService", () => {
         renderTimeMs: 2500,
       })
       expect(mockInvoke).toHaveBeenCalledWith("prerender_segment", {
-        request: {
-          project_schema: mockProject,
-          start_time: 0,
-          end_time: 10,
-          apply_effects: true,
-          quality: 90,
-        },
+        projectSchema: mockProject,
+        startTime: 0,
+        endTime: 10,
+        outputPath: "/tmp/prerender/segment_001.mp4",
       })
     })
   })

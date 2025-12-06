@@ -3,7 +3,7 @@ import type { BrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/t
 import { setBrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/utils/helpers"
 import { useBrowserState } from "@/domains/browser"
 import { useApp } from "@/domains/project-management/providers"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { logInfo } from "@/lib/tauri-logger"
 
 /**

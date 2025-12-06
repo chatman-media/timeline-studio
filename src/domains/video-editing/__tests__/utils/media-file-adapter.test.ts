@@ -5,8 +5,8 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { MediaFile as FeatureMediaFile } from "@/features/media/types/media"
-import { MediaType as FeatureMediaType } from "@/features/media/types/media"
+import type { MediaFile as FeatureMediaFile } from "@/domains/media-management"
+import { MediaType as FeatureMediaType } from "@/domains/media-management"
 import { MediaCodec, MediaType } from "../../types/media"
 import { domainToFeatureMediaFile, featureToDomainMediaFile } from "../../utils/media-file-adapter"
 

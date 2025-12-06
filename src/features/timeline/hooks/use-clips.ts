@@ -8,7 +8,7 @@ import type {
   TimelineClip as DomainTimelineClip,
   Timeline,
 } from "@/domains/video-editing/types"
-import type { MediaFile } from "@/features/media/types/media"
+import type { MediaFile } from "@/domains/media-management"
 import { useTimeline } from "../hooks/use-timeline"
 import type { TimelineClip, TrackType } from "../types"
 
