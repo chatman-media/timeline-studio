@@ -1,3 +1,11 @@
+## [3.38.2](https://github.com/chatman-media/timeline-studio/compare/v3.38.1...v3.38.2) (2025-12-06)
+
+
+### Bug Fixes
+
+* **media:** реализовать автоматическую генерацию превью при импорте ([b56d527](https://github.com/chatman-media/timeline-studio/commit/b56d527a0864d6296ef7e6b22df7a610ce5c00f4))
+* **tests:** update tests after media and timeline changes ([2d167ef](https://github.com/chatman-media/timeline-studio/commit/2d167ef77c1d493b8861c58e50f1326e875c035c))
+
 ## [3.38.1](https://github.com/chatman-media/timeline-studio/compare/v3.38.0...v3.38.1) (2025-12-06)
 
 
