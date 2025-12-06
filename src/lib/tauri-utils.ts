@@ -1,10 +1,11 @@
 /**
  * Утилиты для работы с Tauri
+ * ✅ ОБНОВЛЕНО: Использует IPlatformService через container (FEOD архитектура)
  */
 
-import { convertFileSrc } from "@tauri-apps/api/core"
 import { exists } from "@tauri-apps/plugin-fs"
 
+import { getPlatform as getPlatformService } from "@/core/container"
 import { createLogger } from "./tauri-logger"
 
 const logger = createLogger("TauriUtils")
@@ -38,30 +39,17 @@ export function convertToAssetUrl(filePath: string): string {
     // Если декодирование не удалось, используем исходный путь
   }
 
-  // В Tauri v2 используем convertFileSrc
+  // Используем Platform адаптер для конверсии
   try {
-    const assetUrl = convertFileSrc(cleanPath)
+    const platform = getPlatformService()
+    const assetUrl = platform.convertFileSrc(cleanPath)
     logger.debugSync("convertFileSrc result", { assetUrl })
     return assetUrl
   } catch (error) {
     logger.errorSync("Error with convertFileSrc", { error })
+    // Fallback - возвращаем путь как есть
+    return cleanPath
   }
-
-  // Fallback - создаем asset URL вручную для Tauri 2.0
-  // Кодируем только специальные символы, но не весь путь
-  const escapedPath = cleanPath
-    .split("/")
-    .map((segment) => {
-      // Кодируем каждый сегмент пути отдельно
-      return encodeURIComponent(segment).replace(/'/g, "%27") // Дополнительно экранируем апостроф
-    })
-    .join("/")
-
-  // В Tauri 2.0 формат: asset://localhost/путь
-  const assetUrl = `asset://localhost/${escapedPath}`
-  logger.debugSync("Fallback asset URL", { assetUrl })
-
-  return assetUrl
 }
 
 /**
@@ -107,42 +95,23 @@ export function convertVideoSrc(filePath: string): string {
     isTauri: isTauriEnvironment(),
   })
 
-  // В Tauri v2 используем convertFileSrc, но если она не работает, используем альтернативный подход
+  // Используем Platform адаптер для конверсии
   try {
-    // Пробуем использовать встроенную функцию
-    const assetUrl = convertFileSrc(cleanPath)
+    const platform = getPlatformService()
+    const assetUrl = platform.convertFileSrc(cleanPath)
     logger.debugSync("convertFileSrc result", { assetUrl })
 
-    // Если URL начинается с asset://, возвращаем как есть
-    if (assetUrl && assetUrl.startsWith("asset://")) {
-      return assetUrl
-    }
-
-    // Если получили http://asset.localhost, тоже возвращаем
-    if (assetUrl && assetUrl.startsWith("http://asset.localhost")) {
+    // Если URL начинается с asset://, http://asset.localhost или file://, возвращаем как есть
+    if (assetUrl && (assetUrl.startsWith("asset://") || assetUrl.startsWith("http://asset.localhost") || assetUrl.startsWith("file://"))) {
       return assetUrl
     }
 
     return assetUrl
   } catch (error) {
     logger.errorSync("Error with convertFileSrc", { error })
+    // Fallback - возвращаем путь как есть
+    return cleanPath
   }
-
-  // Fallback - создаем asset URL вручную для Tauri 2.0
-  // Кодируем только специальные символы, но не весь путь
-  const escapedPath = cleanPath
-    .split("/")
-    .map((segment) => {
-      // Кодируем каждый сегмент пути отдельно
-      return encodeURIComponent(segment).replace(/'/g, "%27") // Дополнительно экранируем апостроф
-    })
-    .join("/")
-
-  // В Tauri 2.0 формат: asset://localhost/путь
-  const assetUrl = `asset://localhost/${escapedPath}`
-  logger.debugSync("Fallback asset URL", { assetUrl })
-
-  return assetUrl
 }
 
 /**

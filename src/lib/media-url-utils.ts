@@ -1,10 +1,11 @@
 /**
  * Утилиты для создания media URL
  *
- * Унифицированная система генерации URL для медиафайлов в Tauri
+ * Унифицированная система генерации URL для медиафайлов
+ * ✅ ОБНОВЛЕНО: Использует IPlatformService через container (FEOD архитектура)
  */
 
-import { convertFileSrc } from "@tauri-apps/api/core"
+import { getPlatform as getPlatformService } from "@/core/container"
 import type { MediaFile } from "@/features/media/types/media"
 import { createLogger } from "./tauri-logger"
 import { isTauriEnvironment } from "./tauri-utils"
@@ -155,13 +156,14 @@ export function createMediaUrl(filePath: string, options: MediaUrlOptions): stri
     isTauri: true,
   })
 
-  // Используем convertFileSrc для создания asset URL
+  // Используем Platform адаптер для конверсии пути в URL
   try {
-    const assetUrl = convertFileSrc(cleanPath)
+    const platform = getPlatformService()
+    const assetUrl = platform.convertFileSrc(cleanPath)
     logger.debugSync("convertFileSrc success", { assetUrl, type })
 
     // Проверяем, что получили валидный URL
-    if (assetUrl && (assetUrl.startsWith("asset://") || assetUrl.startsWith("http://asset.localhost"))) {
+    if (assetUrl && (assetUrl.startsWith("asset://") || assetUrl.startsWith("http://asset.localhost") || assetUrl.startsWith("file://"))) {
       return assetUrl
     }
 
@@ -178,16 +180,9 @@ export function createMediaUrl(filePath: string, options: MediaUrlOptions): stri
     })
   }
 
-  // Fallback - создаем asset URL вручную для Tauri 2.0
-  const escapedPath = cleanPath
-    .split("/")
-    .map((segment) => encodeURIComponent(segment).replace(/'/g, "%27"))
-    .join("/")
-
-  const manualAssetUrl = `asset://localhost/${escapedPath}`
-  logger.debugSync("Using manual asset URL", { manualAssetUrl, originalPath: filePath })
-
-  return manualAssetUrl
+  // Fallback - возвращаем путь как есть
+  logger.warnSync("Using fallback - returning original path", { filePath })
+  return cleanPath
 }
 
 /**
