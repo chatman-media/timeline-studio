@@ -15,7 +15,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor } from "xstate"
 import { timelineExtendedMachine } from "../../machines/timeline-extended-machine"
-import type { MediaFile, Timeline, TimelineClip, Track } from "../../types"
+import type { MediaFile, Timeline, TimelineClip } from "../../types"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({

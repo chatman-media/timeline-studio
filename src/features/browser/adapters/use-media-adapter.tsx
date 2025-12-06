@@ -85,8 +85,18 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
     if (mediaItems.length > 0) {
       console.log("[MediaAdapter] Media pool files:", {
         count: mediaItems.length,
-        files: mediaItems.map(([id, m]) => ({ id, path: m.path })),
+        files: mediaItems.map(([id, m]) => ({ id, name: m.name, path: m.path })),
       })
+
+      // Проверка на дубли
+      const nameCount = new Map<string, number>()
+      mediaItems.forEach(([_, m]) => {
+        nameCount.set(m.name, (nameCount.get(m.name) || 0) + 1)
+      })
+      const duplicates = Array.from(nameCount.entries()).filter(([_, count]) => count > 1)
+      if (duplicates.length > 0) {
+        console.error("[MediaAdapter] ДУБЛИ ОБНАРУЖЕНЫ:", duplicates)
+      }
     }
 
     // Преобразуем MediaInfo в MediaFile

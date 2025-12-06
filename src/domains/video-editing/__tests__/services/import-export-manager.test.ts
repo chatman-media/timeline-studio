@@ -6,7 +6,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { ImportExportManager } from "../../services/import-export/import-export-manager"
-import type { Exporter, Importer, ImportOptions, ImportResult } from "../../services/import-export/types"
+import type { Exporter, Importer, ImportOptions } from "../../services/import-export/types"
 
 // Mock Tauri file system
 vi.mock("@tauri-apps/plugin-fs", () => ({

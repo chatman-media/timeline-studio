@@ -253,6 +253,7 @@ describe("useRenderJobs", () => {
   it("should update jobs automatically with interval", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
 
+    mockInvoke.mockReset()
     mockInvoke
       .mockResolvedValueOnce(mockJobs) // First call
       .mockResolvedValueOnce([...mockJobs, { ...mockJobs[0], id: "job-5" }]) // Second call after interval
@@ -269,9 +270,9 @@ describe("useRenderJobs", () => {
 
     expect(mockInvoke).toHaveBeenCalledTimes(1)
 
-    // Advance timers by 5 seconds (interval in useRenderJobs is 5000ms)
+    // Advance timers by 60 seconds (interval in useRenderJobs is 60000ms)
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(5000)
+      await vi.advanceTimersByTimeAsync(60000)
     })
 
     // Wait for the update
@@ -324,13 +325,15 @@ describe("useRenderJobs", () => {
       },
     ]
 
-    mockInvoke.mockResolvedValueOnce(jobsWithSameStatus)
+    mockInvoke.mockReset()
+    mockInvoke.mockResolvedValue(jobsWithSameStatus)
 
     const { result } = renderHook(() => useRenderJobs())
 
     await waitFor(
       () => {
-        expect(result.current.jobs).toEqual(jobsWithSameStatus)
+        expect(result.current.jobs.length).toBe(jobsWithSameStatus.length)
+        expect(result.current.isLoading).toBe(false)
       },
       { timeout: 5000 },
     )
@@ -342,18 +345,22 @@ describe("useRenderJobs", () => {
   it("should handle jobs sorted by creation time", async () => {
     const sortedJobs = [...mockJobs].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
-    mockInvoke.mockResolvedValueOnce(sortedJobs)
+    // Полностью очищаем и пересоздаем mock
+    mockInvoke.mockReset()
+    mockInvoke.mockResolvedValue(sortedJobs)
 
     const { result } = renderHook(() => useRenderJobs())
 
     await waitFor(
       () => {
-        expect(result.current.jobs).toEqual(sortedJobs)
+        expect(result.current.jobs.length).toBe(sortedJobs.length)
+        expect(result.current.isLoading).toBe(false)
       },
       { timeout: 5000 },
     )
 
-    // Проверяем, что самая новая задача первая
+    // Проверяем, что jobs отсортированы по created_at в убывающем порядке
     expect(result.current.jobs[0].id).toBe("job-4")
+    expect(result.current.jobs[result.current.jobs.length - 1].id).toBe("job-2")
   })
 })

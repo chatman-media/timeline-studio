@@ -298,9 +298,9 @@ describe("RenderJobsDropdown", () => {
 
     const initialCallCount = vi.mocked(invoke).mock.calls.length
 
-    // Fast-forward 5 seconds (interval in useRenderJobs is 5000ms)
+    // Fast-forward 60 seconds (interval in useRenderJobs is 60000ms)
     act(() => {
-      vi.advanceTimersByTime(5000)
+      vi.advanceTimersByTime(60000)
     })
 
     // Give React time to process the timer

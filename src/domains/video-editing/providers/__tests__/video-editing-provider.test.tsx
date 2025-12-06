@@ -7,7 +7,7 @@
 import { renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { VideoEditingProvider, useVideoEditingContext } from "../video-editing-provider"
+import { useVideoEditingContext, VideoEditingProvider } from "../video-editing-provider"
 
 // Mock orchestrator
 const mockOrchestrator = {
@@ -54,9 +54,7 @@ describe("VideoEditingProvider", () => {
     vi.clearAllMocks()
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <VideoEditingProvider>{children}</VideoEditingProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <VideoEditingProvider>{children}</VideoEditingProvider>
 
   describe("Provider Initialization", () => {
     it("should render without errors", () => {

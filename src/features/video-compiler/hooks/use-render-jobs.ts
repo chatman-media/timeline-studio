@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { container } from "@/core/container"
 import { videoCompilerRenderService } from "@/domains/video-editing/services/video-compiler-render-service"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
@@ -102,43 +101,47 @@ export function useRenderJobs(): UseRenderJobsReturn {
     void logger.info("Инициализация useRenderJobs хука")
     void refreshJobs()
 
-    const backend = container.getBackend()
     const unsubscribers: Array<() => void> = []
 
-    // Подписка на события рендеринга
+    // Подписка на события рендеринга через Tauri event system
     const setupEventListeners = async () => {
       try {
-        // RenderStarted - новая задача началась
-        const unsubRenderStarted = await backend.onEvent("RenderStarted", async (event) => {
-          void logger.info("Получено событие RenderStarted", event)
-          await refreshJobs()
-        })
-        unsubscribers.push(unsubRenderStarted)
+        // Проверяем доступность Tauri API
+        if (typeof window === "undefined" || !(window as any).__TAURI__) {
+          void logger.warn("Tauri API недоступен, используется только polling")
+          return
+        }
 
-        // RenderProgress - обновление прогресса
-        const unsubRenderProgress = await backend.onEvent("RenderProgress", async (event) => {
-          void logger.debug("Получено событие RenderProgress", event)
-          await refreshJobs()
-        })
-        unsubscribers.push(unsubRenderProgress)
+        const tauri = (window as any).__TAURI__
 
-        // RenderCompleted - задача завершена
-        const unsubRenderCompleted = await backend.onEvent("RenderCompleted", async (event) => {
-          void logger.info("Получено событие RenderCompleted", event)
-          await refreshJobs()
-        })
-        unsubscribers.push(unsubRenderCompleted)
+        // Подписываемся на все события приложения и фильтруем события рендеринга
+        const unsubAppEvents = await tauri.event.listen("app:event", (event: any) => {
+          const eventType = event.payload?.type
 
-        // RenderFailed - задача провалилась
-        const unsubRenderFailed = await backend.onEvent("RenderFailed", async (event) => {
-          void logger.info("Получено событие RenderFailed", event)
-          await refreshJobs()
+          switch (eventType) {
+            case "RenderStarted":
+              void logger.info("Получено событие RenderStarted", event.payload)
+              void refreshJobs()
+              break
+            case "RenderProgress":
+              void logger.debug("Получено событие RenderProgress", event.payload)
+              void refreshJobs()
+              break
+            case "RenderCompleted":
+              void logger.info("Получено событие RenderCompleted", event.payload)
+              void refreshJobs()
+              break
+            case "RenderFailed":
+              void logger.info("Получено событие RenderFailed", event.payload)
+              void refreshJobs()
+              break
+          }
         })
-        unsubscribers.push(unsubRenderFailed)
+        unsubscribers.push(unsubAppEvents)
 
-        void logger.info("Подписки на события рендеринга установлены")
+        void logger.info("Подписка на события рендеринга установлена")
       } catch (err) {
-        void logger.error("Ошибка установки подписок на события", { error: err })
+        void logger.error("Ошибка установки подписки на события", { error: err })
       }
     }
 
