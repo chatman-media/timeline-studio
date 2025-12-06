@@ -271,7 +271,7 @@ describe("Project Management Providers", () => {
 
       expect(() => {
         renderHook(() => useAppState())
-      }).toThrow("useAppState must be used within ProjectManagementProvider")
+      }).toThrow("useAppState must be used within AppStateProvider")
 
       console.error = originalError
     })

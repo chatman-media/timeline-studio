@@ -127,26 +127,25 @@ export function NoFiles({ type, onImport, className }: NoFilesProps) {
     const loadFolders = async () => {
       try {
         const directories = await appDirectoriesService.getAppDirectories()
-        const mediaSubdirs = appDirectoriesService.getMediaSubdirectory
 
         // Маппинг типов медиа на поддиректории
         const folderMap: Record<MediaType, string> = {
           media: directories.media_dir,
-          music: mediaSubdirs("music"),
-          effects: mediaSubdirs("effects"),
-          filters: mediaSubdirs("filters"),
-          transitions: mediaSubdirs("transitions"),
+          music: appDirectoriesService.getMediaSubdirectory("music"),
+          effects: appDirectoriesService.getMediaSubdirectory("effects"),
+          filters: appDirectoriesService.getMediaSubdirectory("filters"),
+          transitions: appDirectoriesService.getMediaSubdirectory("transitions"),
           templates: directories.media_dir, // Шаблоны в корне Media
-          "style-templates": mediaSubdirs("style_templates"),
-          subtitles: mediaSubdirs("subtitles"),
+          "style-templates": appDirectoriesService.getMediaSubdirectory("style_templates"),
+          subtitles: appDirectoriesService.getMediaSubdirectory("subtitles"),
         }
 
         const folder = folderMap[type]
         setFolders(folder ? [folder] : [])
       } catch (error) {
-        logger.warn("Could not load app directories, using fallback paths:", { error })
-        // В случае ошибки (например, в тестовом окружении) показываем заглушку
-        setFolders(["Loading..."])
+        logger.warn("Could not load app directories:", { error })
+        // В случае ошибки показываем пустой массив (не показываем папки вообще)
+        setFolders([])
       } finally {
         setIsLoadingFolders(false)
       }
