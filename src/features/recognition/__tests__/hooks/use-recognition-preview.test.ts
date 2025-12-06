@@ -11,11 +11,15 @@ vi.mock("@tauri-apps/api/core", () => ({
 
 // Mock useMediaPreview
 const mockGetPreviewData = vi.fn()
-vi.mock("@/features/media/hooks/use-media-preview", () => ({
-  useMediaPreview: () => ({
-    getPreviewData: mockGetPreviewData,
-  }),
-}))
+vi.mock("@/domains/media-management", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/media-management")>()
+  return {
+    ...actual,
+    useMediaPreview: () => ({
+      getPreviewData: mockGetPreviewData,
+    }),
+  }
+})
 
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({

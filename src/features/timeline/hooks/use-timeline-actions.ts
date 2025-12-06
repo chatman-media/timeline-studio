@@ -4,7 +4,7 @@
 
 import { useCallback } from "react"
 
-import type { MediaFile } from "@/domains/media-management"
+import { MediaType, type MediaFile } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
@@ -30,15 +30,21 @@ export interface UseTimelineActionsReturn {
  */
 function getTrackTypeForMediaFile(file: MediaFile): TrackType {
   // Проверяем по типу файла
-  if (file.type === "still_image") {
+  if (file.type === MediaType.StillImage || file.type === MediaType.ImageSequence) {
     return "image"
   }
 
-  if (file.type === "video") {
+  if (file.type === MediaType.Video || file.type === MediaType.VideoWithAudio) {
     return "video"
   }
 
-  if (file.type === "audio") {
+  if (
+    file.type === MediaType.Audio ||
+    file.type === MediaType.Music ||
+    file.type === MediaType.Voiceover ||
+    file.type === MediaType.SFX ||
+    file.type === MediaType.Ambient
+  ) {
     return "audio"
   }
 
@@ -165,7 +171,9 @@ export function useTimelineActions(): UseTimelineActionsReturn {
 
       // Если трек уже существует, добавляем клип сразу
       const startTime = customStartTime !== undefined ? customStartTime : calculateClipStartTime(targetTrackId)
-      const duration = file.duration || (file.type === "still_image" ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
+      const duration =
+        file.duration ||
+        (file.type === MediaType.StillImage || file.type === MediaType.ImageSequence ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
 
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
       await addMedia(file)

@@ -6,7 +6,7 @@ import { usePreviewPreloader } from "@/domains/media-management/hooks/use-previe
 // Mock useMediaPreview hook
 const mockGetPreviewData = vi.fn()
 
-vi.mock("@/features/media/hooks/use-media-preview", () => ({
+vi.mock("../use-media-preview", () => ({
   useMediaPreview: () => ({
     getPreviewData: mockGetPreviewData,
     generateThumbnail: vi.fn(),
