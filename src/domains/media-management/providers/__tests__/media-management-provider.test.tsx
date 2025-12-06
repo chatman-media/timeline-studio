@@ -83,6 +83,7 @@ const mockOrchestrator = {
   selectMediaDirectory: mockSelectMediaDirectory,
   getMediaInfo: mockGetMediaInfo,
   extractMetadata: mockExtractMetadata,
+  refreshMediaPool: vi.fn().mockResolvedValue(undefined),
 }
 
 vi.mock("@tauri-apps/api/core", () => ({
