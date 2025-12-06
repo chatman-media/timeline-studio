@@ -125,6 +125,12 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     this.mediaImportActor.subscribe((state) => {
       if (state.matches("completed")) {
         logger.info("[Media Management] Media import completed")
+
+        // Показываем нотификацию об успешном импорте
+        const importedCount = state.context.importedFiles?.length ?? 0
+        if (importedCount > 0) {
+          this.showImportSuccessNotification(importedCount)
+        }
       } else if (state.matches("failed")) {
         logger.error("[Media Management] Media import failed", {
           errors: state.context.errors,
@@ -750,6 +756,35 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
     for (const mediaId of mediaIds) {
       await this.removeMedia(mediaId)
+    }
+  }
+
+  /**
+   * Показать нотификацию об успешном импорте
+   */
+  private showImportSuccessNotification(count: number) {
+    try {
+      // Используем динамический импорт чтобы избежать циклических зависимостей
+      import("@/domains/system-integration").then(({ getSystemIntegrationOrchestrator }) => {
+        const systemOrchestrator = getSystemIntegrationOrchestrator()
+
+        const title = count === 1 ? "Файл импортирован" : `Файлов импортировано: ${count}`
+        const message = count === 1 ? "Медиафайл успешно добавлен в проект" : "Медиафайлы успешно добавлены в проект"
+
+        systemOrchestrator.showNotification({
+          type: "success",
+          notification_type: "success",
+          title,
+          message,
+          duration: 3000,
+        })
+
+        logger.info("[Media Management] Import success notification shown", { count })
+      }).catch((error) => {
+        logger.error("[Media Management] Failed to show import notification", { error: String(error) })
+      })
+    } catch (error) {
+      logger.error("[Media Management] Failed to import notification module", { error: String(error) })
     }
   }
 

@@ -142,6 +142,8 @@
     "montagePlanner": "Планировщик монтажа",
     "aiDirector": "AI Директор",
     "export": "Экспорт",
+    "projectCreated": "Проект создан",
+    "projectCreatedMessage": "Новый проект успешно создан",
     "unknownError": "Неизвестная ошибка",
     "unknown": "Неизвестно",
     "gigabytes": "{{value}} ГБ",

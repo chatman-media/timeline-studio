@@ -141,6 +141,8 @@
     "userSettings": "User Settings",
     "montagePlanner": "Montage Planner",
     "export": "Export",
+    "projectCreated": "Project Created",
+    "projectCreatedMessage": "New project created successfully",
     "toggleBrowser": "Toggle browser (Cmd+B)",
     "unknownError": "Unknown error",
     "unknown": "Unknown",

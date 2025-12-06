@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useCurrentProject } from "@/domains/project-management/hooks"
-import { useModals } from "@/domains/system-integration"
+import { useModals, useNotifications } from "@/domains/system-integration"
 import { RenderQueueDropdown } from "@/features/export"
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
@@ -39,6 +39,7 @@ export const TOP_BAR_BUTTON_CLASS = "hover:bg-[#D1D1D1] dark:hover:bg-[#464747] 
 const TopBarComponent = function TopBar() {
   const { t } = useTranslation()
   const { openModal } = useModals()
+  const { showSuccess } = useNotifications()
   const { isBrowserVisible, toggleBrowserVisibility } = useUserSettings()
   const { isTimelineVisible, toggleTimelineVisibility } = useUserSettings()
   const { isOptionsVisible, toggleOptionsVisibility } = useUserSettings()
@@ -137,13 +138,16 @@ const TopBarComponent = function TopBar() {
       })
 
       logger.info("New project created successfully")
+
+      // Показываем нотификацию об успешном создании
+      showSuccess(t("topBar.projectCreated"), t("topBar.projectCreatedMessage"))
     } catch (error) {
       logger.error("Error creating new project", {
         error,
         context: "handleCreateNewProject",
       })
     }
-  }, [createTimelineProject])
+  }, [createTimelineProject, showSuccess, t])
 
   // Мемоизируем заголовки для кнопок
   const buttonTitles = useMemo(
