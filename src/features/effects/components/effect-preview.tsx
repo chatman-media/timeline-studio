@@ -142,12 +142,15 @@ export function EffectPreview({
   // Получаем текущее видео для использования в превью
   const currentVideo = getCurrentVideo()
 
-  // Ленивая загрузка видео при наведении
+  // Загрузка видео сразу (не ждем наведения)
   useEffect(() => {
-    if (isHovering && !videoSrc) {
-      setVideoSrc(getPreviewPath(effect, currentVideo))
+    if (!videoSrc) {
+      const path = getPreviewPath(effect, currentVideo)
+      if (path) {
+        setVideoSrc(path)
+      }
     }
-  }, [isHovering, effect, videoSrc, currentVideo])
+  }, [effect, videoSrc, currentVideo])
 
   /**
    * Эффект для управления воспроизведением видео и применением эффектов
@@ -158,83 +161,54 @@ export function EffectPreview({
     if (!videoSrc || !videoRef.current) return
     const videoElement = videoRef.current
 
-    /**
-     * Применяет эффект к видео и запускает его воспроизведение
-     * Устанавливает таймер для повторного воспроизведения
-     */
-    const applyEffect = () => {
-      videoElement.currentTime = 0 // Сбрасываем время видео на начало
-      videoElement.style.filter = "" // Сбрасываем предыдущие фильтры
-      videoElement.style.boxShadow = "" // Сбрасываем дополнительные эффекты
-      videoElement.playbackRate = 1 // Сбрасываем скорость воспроизведения
-
-      // Применяем CSS-фильтр на основе параметров эффекта
-      // Собираем параметры для CSS фильтра
-      const effectParams: Record<string, any> = {}
-      if (processedEffect?.parameters) {
-        processedEffect.parameters.forEach((param) => {
-          effectParams[param.id] = param.currentValue ?? param.defaultValue
-        })
-      }
-
-      // Добавляем пользовательские параметры
-      Object.assign(effectParams, customParams)
-
-      const cssFilter = generateCSSFilterForEffect(processedEffect || effect, effectParams)
-      if (cssFilter) {
-        videoElement.style.filter = cssFilter
-      }
-
-      // Специальные эффекты, требующие дополнительных CSS-стилей
-      if (
-        processedEffect?.id === "vignette" ||
-        (processedEffect?.category === "lighting" && processedEffect?.id.includes("vignette"))
-      ) {
-        // Создаем эффект виньетки через box-shadow
-        const intensity = customParams?.intensity ?? effectParams?.intensity ?? 0.3
-        const radius = customParams?.radius ?? effectParams?.radius ?? 0.8
-        const shadowSize = Math.round(Math.min(width, height) * (1 - radius) * 0.5)
-        const shadowBlur = Math.round(shadowSize * intensity * 2)
-        videoElement.style.boxShadow = `inset 0 0 ${shadowBlur}px ${shadowSize}px rgba(0,0,0,${intensity})`
-      } else {
-        videoElement.style.boxShadow = ""
-      }
-
-      // Устанавливаем скорость воспроизведения
-      const playbackRate = getPlaybackRate(processedEffect)
-      videoElement.playbackRate = playbackRate
-
-      // Запускаем воспроизведение видео
-      videoElement.play().catch((err: unknown) => {
-        void logger.info("Autoplay prevented", { error: err })
+    // Применяем CSS-фильтр на основе параметров эффекта
+    const effectParams: Record<string, any> = {}
+    if (processedEffect?.parameters) {
+      processedEffect.parameters.forEach((param) => {
+        effectParams[param.id] = param.currentValue ?? param.defaultValue
       })
-
-      // Устанавливаем таймер для повторного воспроизведения через 2 секунды
-      timeoutRef.current = setTimeout(() => {
-        if (isHovering) {
-          applyEffect()
-        }
-      }, 2000)
     }
 
-    // Если курсор наведен на превью - применяем эффект и запускаем видео
-    if (isHovering) {
-      applyEffect()
+    // Добавляем пользовательские параметры
+    Object.assign(effectParams, customParams)
+
+    const cssFilter = generateCSSFilterForEffect(processedEffect || effect, effectParams)
+    if (cssFilter) {
+      videoElement.style.filter = cssFilter
+    }
+
+    // Специальные эффекты, требующие дополнительных CSS-стилей
+    if (
+      processedEffect?.id === "vignette" ||
+      (processedEffect?.category === "lighting" && processedEffect?.id.includes("vignette"))
+    ) {
+      // Создаем эффект виньетки через box-shadow
+      const intensity = customParams?.intensity ?? effectParams?.intensity ?? 0.3
+      const radius = customParams?.radius ?? effectParams?.radius ?? 0.8
+      const shadowSize = Math.round(Math.min(width, height) * (1 - radius) * 0.5)
+      const shadowBlur = Math.round(shadowSize * intensity * 2)
+      videoElement.style.boxShadow = `inset 0 0 ${shadowBlur}px ${shadowSize}px rgba(0,0,0,${intensity})`
     } else {
-      // Если курсор не наведен - останавливаем видео и сбрасываем эффекты
+      videoElement.style.boxShadow = ""
+    }
+
+    // Устанавливаем скорость воспроизведения
+    const playbackRate = getPlaybackRate(processedEffect)
+    videoElement.playbackRate = playbackRate
+
+    // Запускаем воспроизведение в цикле
+    videoElement.loop = true
+    videoElement.play().catch((err: unknown) => {
+      void logger.info("Autoplay prevented", { error: err })
+    })
+
+    // Cleanup при размонтировании
+    return () => {
       videoElement.pause()
-      videoElement.currentTime = 0
       videoElement.style.filter = ""
       videoElement.style.boxShadow = ""
-      videoElement.playbackRate = 1
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
-
-    // Очищаем таймер при размонтировании компонента
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    }
-  }, [isHovering, processedEffect, width, height, customParams, videoSrc])
+  }, [processedEffect, width, height, customParams, videoSrc, effect])
 
   return (
     <div className="flex flex-col items-center">
