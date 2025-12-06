@@ -10,52 +10,55 @@ Timeline Studio использует доменно-ориентированну
 
 ```
 src/domains/
-├── ai-services/          # AI сервисы и анализ
-├── ai-tools/             # AI инструменты
+├── ai-director/          # AI Director - комплексный анализ видео
+├── ai-services/          # AI сервисы и анализ медиа
+├── ai-tools/             # AI инструменты для автоматизации
 ├── browser/              # Файловый браузер и навигация
 ├── media-management/     # Управление медиафайлами
 ├── project-management/   # Управление проектами и настройками
 ├── shared/               # Общие компоненты и утилиты
+├── subtitles/            # Работа с субтитрами
 ├── system-integration/   # Системная интеграция и UI
 └── video-editing/        # Редактирование видео
 ```
 
 ## Архитектурная эволюция
 
-### Orchestrator Pattern (2025)
-Timeline Studio завершил миграцию на паттерн Orchestrator для всех доменов. Этот паттерн обеспечивает:
-- **Единую точку входа** для каждого домена через singleton orchestrator
-- **Централизованное управление** уведомлениями, логированием и обработкой ошибок
-- **Интеграцию с backend** через BackendSync для синхронизации с Tauri
-- **Упрощенные React providers** без дублирования бизнес-логики
-- **Согласованный API** между всеми доменами
+### Orchestrator Pattern + DI Container (2025)
 
-**Статистика миграции:**
-- ✅ 6236+ строк доменных сервисов
-- ✅ 33 файла мигрированы с прямого `toast` на `useNotifications`
-- ✅ 5 основных orchestrator'ов внедрены
-- ✅ Все домены следуют единому паттерну
+Timeline Studio использует паттерн Orchestrator в сочетании с Dependency Injection контейнером:
+
+- **DI Container** (`@/core/container`) - централизованное управление сервисами
+- **Adapters** (`@/adapters/tauri`) - реализации сервисов для Tauri платформы
+- **BackendSync** (`@/adapters/tauri/backend-sync`) - синхронизация с Tauri backend
+- **Orchestrators** - координация бизнес-логики в каждом домене
 
 ## Описание доменов
 
+### 🎬 AI Director
+Комплексный анализ видео с использованием AI. Координация анализа сцен, аудио, качества.
+
+**Ключевые компоненты:**
+- Анализ видео контента
+- Детекция сцен и объектов
+- Оценка качества
+
 ### 🧠 AI Services
-Специализированные AI сервисы для анализа медиа контента. Включает анализ видео/аудио, распознавание объектов, классификацию контента.
+Централизованные AI сервисы для анализа и обработки медиа контента.
 
-**Архитектура:** UnifiedOrchestrator (образцовая реализация, рейтинг 9/10)
-- `UnifiedOrchestrator` - Координация всех AI сервисов
-- `AIDirectorService` - Комплексный анализ медиа
-- `AnalysisStorageService` - Хранение результатов анализа
-- `AIIntelligenceMachine` - XState машина для управления состоянием
+**Архитектура:**
+- `UnifiedOrchestrator` - координация всех AI сервисов
+- `AIDirectorService` - комплексный анализ медиа
+- `AnalysisStorageService` - хранение результатов анализа
+- `ChatProvider`, `MCPProvider` - провайдеры для AI чата
 
-**Singleton доступ:**
+**Использование:**
 ```typescript
-import { getUnifiedOrchestrator } from '@/domains/ai-services'
-const orchestrator = getUnifiedOrchestrator()
-await orchestrator.analyzeMedia(mediaFile)
+import { UnifiedOrchestrator, ChatProvider } from '@/domains/ai-services'
 ```
 
 ### 🛠️ AI Tools
-Набор AI инструментов для автоматизации монтажа, субтитров и анализа контента.
+Набор AI инструментов для автоматизации монтажа и анализа.
 
 **Ключевые инструменты:**
 - Montage Planning (автоматическая нарезка)
@@ -64,209 +67,198 @@ await orchestrator.analyzeMedia(mediaFile)
 - MCP Integration (Model Context Protocol)
 
 ### 📁 Browser
-Управление файловой системой и медиа браузером. Поддержка вкладок, фильтрации, поиска и предпросмотра файлов.
+Управление файловой системой и медиа браузером.
 
-**Функциональность:**
-- Навигация по директориям
-- Множественный выбор файлов
-- Фильтрация и сортировка
-- Интеграция с drag & drop
+**Архитектура:**
+- `BrowserProvider` - провайдер с BackendSync интеграцией
+- `browserMachine` - XState машина состояний
+- Event-driven архитектура через backend events
+
+**Использование:**
+```typescript
+import { BrowserProvider, useBrowser } from '@/domains/browser'
+```
 
 ### 📦 Media Management
-Импорт, организация и управление медиафайлами. Работа с метаданными, прокси файлами и структурой проекта.
+Импорт, организация и управление медиафайлами.
 
-**Архитектура:** MediaManagementOrchestrator (613 строк)
-- `MediaManagementOrchestrator` - Координация импорта и операций с медиа
-- `MediaFileOperations` - Операции с файлами (копирование, перемещение)
-- `MediaMetadataService` - Извлечение и управление метаданными
-- `MediaImportService` - Импорт из различных источников
+**Архитектура:**
+- `MediaManagementOrchestrator` - координация импорта и операций
+- `MediaManagementProvider` - React провайдер
+- Сервисы: CameraImport, ProxyGenerator, SmartOrganization, WaveformGenerator
 
-**Singleton доступ:**
+**Использование:**
 ```typescript
-import { getMediaManagementOrchestrator } from '@/domains/media-management'
-const orchestrator = getMediaManagementOrchestrator()
-await orchestrator.importMedia(files)
+import {
+  getMediaManagementOrchestrator,
+  useMediaManagement
+} from '@/domains/media-management'
 ```
 
 ### 📋 Project Management
-Управление проектами, пользовательскими настройками и конфигурацией приложения.
+Управление проектами, пользовательскими настройками и конфигурацией.
 
-**Архитектура:** ProjectManagementOrchestrator с упрощенным provider
-- `ProjectManagementOrchestrator` - Управление проектами и настройками
-- `UserSettingsMachine` - XState машина для пользовательских настроек
-- `AutosaveService` - Автоматическое сохранение проектов
-- `UpdateManagement` - Управление обновлениями приложения
+**Архитектура:**
+- `ProjectManagementOrchestrator` - управление проектами
+- `ApiKeysService` - безопасное хранение API ключей
+- `BatchCommandsService` - пакетные команды к backend
+- XState машины: `appMachine`, `userSettingsMachine`
 
-**Singleton доступ:**
+**Использование:**
 ```typescript
-import { getProjectManagementOrchestrator } from '@/domains/project-management'
-const orchestrator = getProjectManagementOrchestrator()
-await orchestrator.saveProject(projectData)
+import {
+  getProjectManagementOrchestrator,
+  useProjectManagement,
+  useUserSettings
+} from '@/domains/project-management'
 ```
 
 ### 🔗 Shared
-Общие компоненты, типы и утилиты, используемые всеми доменами.
+Общие компоненты, типы и утилиты для всех доменов.
 
 **Включает:**
 - Domain Event Bus для межкомпонентной коммуникации
 - Общие типы и интерфейсы
-- Утилиты для работы с файлами, временем, ID
-- Контракты между доменами
+- Утилиты
+
+**Использование:**
+```typescript
+import { useDomainEvents } from '@/domains/shared'
+```
+
+### 📝 Subtitles
+Работа с субтитрами: импорт, экспорт, редактирование.
+
+**Возможности:**
+- Поддержка форматов SRT, VTT, ASS
+- AI-генерация субтитров
+- Синхронизация с видео
 
 ### 🖥️ System Integration
 Интеграция с операционной системой, управление UI элементами.
 
-**Архитектура:** SystemIntegrationOrchestrator с BackendSync
-- `SystemIntegrationOrchestrator` - Координация системных операций
-- `BackendSync` - Двусторонняя синхронизация с Tauri backend
-- `NotificationService` - Централизованное управление уведомлениями
-- `ModalService` - Управление модальными окнами
-- `ShortcutService` - Горячие клавиши
+**Архитектура:**
+- `SystemIntegrationOrchestrator` - координация системных операций
+- `useModals` - управление модальными окнами
+- `useNotifications` - централизованные уведомления
+- `useFeatures` - feature flags
+- `useUpdates` - управление обновлениями
 
-**Singleton доступ:**
+**Использование:**
 ```typescript
-import { getSystemIntegrationOrchestrator } from '@/domains/system-integration'
-const orchestrator = getSystemIntegrationOrchestrator()
-orchestrator.showNotification({ title: 'Success', message: 'Done!' })
+import {
+  useNotifications,
+  useModals,
+  getSystemIntegrationOrchestrator
+} from '@/domains/system-integration'
 ```
 
 ### 🎬 Video Editing
 Основная функциональность редактирования видео.
 
-**Архитектура:** Доменные сервисы для операций с видео
-- Video Compiler сервисы для компиляции и экспорта
-- Timeline операции через domain services
-- Интеграция с FFmpeg через Tauri backend
-- Эффекты и переходы через CSS-based processing
+**Архитектура:**
+- `VideoEditingOrchestrator` - координация редактирования
+- `TimelineProvider` и специализированные провайдеры
+- `playerMachine`, `timelineMachine` - XState машины
+- Сервисы: Compiler, Effects, Import/Export, UndoRedo
 
-**Возможности:**
-- Timeline с треками и клипами
-- Эффекты и переходы
-- Импорт/экспорт (AAF, FCPXML, EDL)
-- Воспроизведение и навигация
+**Использование:**
+```typescript
+import {
+  getVideoEditingOrchestrator,
+  TimelineProvider,
+  useTimelineClips
+} from '@/domains/video-editing'
+```
+
+## Интеграция с Backend
+
+### BackendSync
+
+BackendSync обеспечивает двустороннюю синхронизацию с Tauri backend. **Важно:** теперь находится в `@/adapters/tauri`:
+
+```typescript
+import { getBackendSync } from '@/adapters/tauri'
+
+// В хуке или сервисе
+const backendSync = getBackendSync()
+
+// Подписка на изменения состояния
+backendSync.onStateChange('player', (state) => {
+  console.log('Player state:', state)
+})
+
+// Подписка на события
+backendSync.onEvent('MediaImported', (event) => {
+  console.log('Media imported:', event)
+})
+
+// Выполнение команды
+await backendSync.executeCommand({
+  type: 'Play',
+  params: {}
+})
+```
+
+### DI Container
+
+Сервисы регистрируются в контейнере при инициализации:
+
+```typescript
+import { container } from '@/core/container'
+import { initTauriApp } from '@/adapters/tauri'
+
+// Инициализация приложения
+await initTauriApp()
+
+// Получение сервисов
+const backend = container.getBackend()
+const media = container.getMedia()
+```
 
 ## Принципы организации
 
 ### 1. Изоляция доменов
-Каждый домен максимально независим и содержит всю необходимую логику для своей предметной области.
+Каждый домен максимально независим и содержит всю необходимую логику.
 
 ### 2. Четкие границы
-Взаимодействие между доменами происходит через:
-- Публичные интерфейсы (контракты)
+Взаимодействие между доменами через:
+- Публичные интерфейсы (index.ts)
 - Domain Event Bus
 - DI Container
 
 ### 3. Единообразная структура
-Каждый домен следует стандартной структуре:
 ```
 domain-name/
 ├── hooks/       # React хуки
 ├── machines/    # XState машины состояний
 ├── providers/   # React провайдеры
-├── services/    # Бизнес-логика
+├── services/    # Бизнес-логика и оркестраторы
+├── tauri/       # Tauri команды
 ├── types/       # TypeScript типы
 ├── utils/       # Утилиты
 └── index.ts     # Публичный API
 ```
 
-### 4. Тестируемость
-Каждый домен содержит тесты в `__tests__` директориях, организованные по типу компонентов.
-
-## Взаимодействие между доменами
-
-### Event-Driven Communication
-```typescript
-// Video Editing публикует событие
-domainEventBus.emit('clip:added', { clipId, trackId })
-
-// AI Services реагирует на событие
-domainEventBus.on('clip:added', async (event) => {
-  await analyzeClip(event.payload.clipId)
-})
-```
-
-### Service Contracts
-```typescript
-// Shared домен определяет контракт
-interface IMediaAnalysisContract {
-  analyzeFile(path: string): Promise<AnalysisResult>
-}
-
-// AI Services реализует контракт
-class MediaAnalysisService implements IMediaAnalysisContract {
-  async analyzeFile(path: string) { /* ... */ }
-}
-```
-
-### Dependency Injection
-```typescript
-// Регистрация сервиса
-container.registerSingleton('MediaAnalysis', MediaAnalysisService)
-
-// Использование в другом домене
-const analyzer = await container.resolve('MediaAnalysis')
-```
-
-## Миграция на доменную архитектуру
-
-При переносе кода из старой структуры (`src/features`, `src/shared`):
-
-1. Определите целевой домен по бизнес-логике
-2. Создайте необходимую структуру папок
-3. Перенесите код с сохранением функциональности
-4. Обновите импорты
-5. Создайте re-export для обратной совместимости
-6. Добавьте тесты
-
 ## Best Practices
 
-### Общие принципы доменов
-
-1. **Минимизируйте зависимости** между доменами
-2. **Используйте события** для слабой связанности
-3. **Определяйте контракты** для критичных интерфейсов
-4. **Документируйте** публичные API каждого домена
-5. **Тестируйте** изолированно каждый домен
-6. **Версионируйте** критичные изменения
-
-### Orchestrator Pattern Best Practices
-
-#### 1. Singleton Pattern
-Всегда используйте singleton getter для доступа к orchestrator:
+### Использование хуков вместо прямого доступа к оркестраторам
 
 ```typescript
-// ✅ Правильно
-import { getMediaManagementOrchestrator } from '@/domains/media-management'
-
-function MyComponent() {
-  const orchestrator = getMediaManagementOrchestrator()
-  // использование orchestrator
-}
-
-// ❌ Неправильно - не создавайте новые экземпляры
-const orchestrator = new MediaManagementOrchestrator()
-```
-
-#### 2. Использование через Provider
-Предпочитайте использование orchestrator через React context:
-
-```typescript
-// ✅ Правильно - используйте hook
+// ✅ Правильно - используйте хуки в компонентах
 import { useMediaManagement } from '@/domains/media-management'
 
 function MyComponent() {
-  const { importMedia, getMediaMetadata } = useMediaManagement()
+  const { importMedia } = useMediaManagement()
   await importMedia(files)
 }
 
 // ⚠️ Допустимо - прямой доступ в non-React коде
 import { getMediaManagementOrchestrator } from '@/domains/media-management'
 const orchestrator = getMediaManagementOrchestrator()
-await orchestrator.importMedia(files)
 ```
 
-#### 3. Обработка уведомлений
-Используйте `useNotifications` hook для отображения уведомлений:
+### Централизованные уведомления
 
 ```typescript
 // ✅ Правильно
@@ -277,9 +269,9 @@ function MyComponent() {
 
   try {
     await someOperation()
-    showSuccess({ title: 'Success', message: 'Operation completed' })
+    showSuccess({ title: 'Успех', message: 'Операция завершена' })
   } catch (error) {
-    showError({ title: 'Error', message: error.message })
+    showError({ title: 'Ошибка', message: error.message })
   }
 }
 
@@ -288,231 +280,44 @@ import { toast } from 'sonner'
 toast.success('Success')
 ```
 
-#### 4. BackendSync Integration
-Для операций с Tauri backend используйте BackendSync:
+### BackendSync в сервисах
 
 ```typescript
-// В orchestrator
-import { getBackendSync } from '@/domains/system-integration'
+import { getBackendSync } from '@/adapters/tauri'
 
-class MyOrchestrator {
+class MyService {
   private backendSync = getBackendSync()
 
-  async someOperation() {
-    // BackendSync автоматически обрабатывает ошибки и показывает уведомления
-    const result = await this.backendSync.invoke('my_command', { params })
-    return result
+  async performOperation(params: Params) {
+    return await this.backendSync.executeCommand({
+      type: 'MyCommand',
+      params
+    })
   }
 }
 ```
 
-#### 5. Структура Orchestrator
-Следуйте стандартной структуре для новых orchestrator'ов:
+## Тестирование
 
-```typescript
-import { getBackendSync } from '@/domains/system-integration'
-import type { Logger } from '@/shared/utils/logger'
-
-export class MyDomainOrchestrator {
-  private static instance: MyDomainOrchestrator | null = null
-  private backendSync = getBackendSync()
-  private logger: Logger
-
-  private constructor() {
-    this.logger = {
-      info: (msg: string) => console.log(`[MyDomain] ${msg}`),
-      error: (msg: string) => console.error(`[MyDomain] ${msg}`),
-      warn: (msg: string) => console.warn(`[MyDomain] ${msg}`),
-    }
-  }
-
-  static getInstance(): MyDomainOrchestrator {
-    if (!this.instance) {
-      this.instance = new MyDomainOrchestrator()
-    }
-    return this.instance
-  }
-
-  // Публичные методы домена
-  async myOperation(params: MyParams): Promise<MyResult> {
-    this.logger.info('Starting operation')
-
-    try {
-      const result = await this.backendSync.invoke('my_command', params)
-      this.logger.info('Operation completed')
-      return result
-    } catch (error) {
-      this.logger.error(`Operation failed: ${error}`)
-      throw error
-    }
-  }
-}
-
-// Singleton getter
-export const getMyDomainOrchestrator = () =>
-  MyDomainOrchestrator.getInstance()
-```
-
-#### 6. Provider Pattern
-Создавайте упрощенные providers без дублирования логики:
-
-```typescript
-import { createContext, useContext } from 'react'
-import { getMyDomainOrchestrator } from './orchestrator'
-
-const MyDomainContext = createContext<ReturnType<typeof getMyDomainOrchestrator> | null>(null)
-
-export function MyDomainProvider({ children }: { children: React.ReactNode }) {
-  const orchestrator = getMyDomainOrchestrator()
-
-  return (
-    <MyDomainContext.Provider value={orchestrator}>
-      {children}
-    </MyDomainContext.Provider>
-  )
-}
-
-export function useMyDomain() {
-  const context = useContext(MyDomainContext)
-  if (!context) {
-    throw new Error('useMyDomain must be used within MyDomainProvider')
-  }
-  return context
-}
-```
-
-#### 7. Тестирование Orchestrator
 Используйте моки для изоляции тестов:
 
 ```typescript
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { MyDomainOrchestrator } from '../orchestrator'
 
-vi.mock('@/domains/system-integration', () => ({
+vi.mock('@/adapters/tauri', () => ({
   getBackendSync: vi.fn(() => ({
-    invoke: vi.fn(),
+    executeCommand: vi.fn(),
+    onStateChange: vi.fn(() => () => {}),
+    onEvent: vi.fn(() => () => {}),
   })),
 }))
 
-describe('MyDomainOrchestrator', () => {
-  let orchestrator: MyDomainOrchestrator
-
-  beforeEach(() => {
-    orchestrator = MyDomainOrchestrator.getInstance()
-  })
-
+describe('MyService', () => {
   it('should perform operation', async () => {
-    const result = await orchestrator.myOperation(params)
-    expect(result).toBeDefined()
+    // test implementation
   })
 })
 ```
-
-## Миграция на Orchestrator Pattern - Завершена ✅
-
-### Обзор миграции
-
-В 2025 году Timeline Studio завершил полную миграцию на паттерн Orchestrator для всех основных доменов. Эта архитектурная эволюция обеспечивает:
-
-- **Единообразие:** Все домены следуют одному паттерну
-- **Надежность:** Централизованная обработка ошибок и логирование
-- **Тестируемость:** Упрощенное мокирование и изоляция тестов
-- **Расширяемость:** Простое добавление новых функций
-- **Производительность:** Singleton pattern предотвращает дублирование экземпляров
-
-### Статистика миграции
-
-**Созданные Orchestrator'ы:**
-1. **SystemIntegrationOrchestrator** - Системная интеграция и уведомления
-2. **MediaManagementOrchestrator** (613 строк) - Управление медиафайлами
-3. **ProjectManagementOrchestrator** - Управление проектами и настройками
-4. **UnifiedOrchestrator** (AI Services) - Координация AI сервисов (рейтинг 9/10)
-5. **Video Editing Domain Services** - Операции с видео и компиляция
-
-**Рефакторинг уведомлений:**
-- 33 файла мигрированы с прямого использования `toast` на `useNotifications`
-- Все уведомления теперь централизованы через SystemIntegrationOrchestrator
-- Единообразная обработка ошибок и успешных операций
-
-**Объем кода:**
-- 6236+ строк доменных сервисов
-- Полная интеграция с BackendSync для Tauri
-- Упрощенные React providers без дублирования логики
-
-### BackendSync - Ключевой компонент
-
-BackendSync обеспечивает двустороннюю синхронизацию между React frontend и Tauri backend:
-
-```typescript
-import { getBackendSync } from '@/domains/system-integration'
-
-// В orchestrator
-class MyOrchestrator {
-  private backendSync = getBackendSync()
-
-  async performOperation(params: Params) {
-    // Автоматическая обработка ошибок и уведомлений
-    return await this.backendSync.invoke('tauri_command', params)
-  }
-}
-```
-
-**Возможности BackendSync:**
-- Автоматическая обработка ошибок Tauri
-- Централизованное логирование
-- Интеграция с системой уведомлений
-- Типобезопасные вызовы команд
-- Graceful error handling
-
-### Преимущества новой архитектуры
-
-**До миграции:**
-```typescript
-// Дублирование логики в provider и сервисе
-// Прямые вызовы toast из компонентов
-// Разрозненная обработка ошибок
-import { toast } from 'sonner'
-import { invoke } from '@tauri-apps/api/core'
-
-try {
-  const result = await invoke('command')
-  toast.success('Success')
-} catch (error) {
-  toast.error(error.message)
-}
-```
-
-**После миграции:**
-```typescript
-// Централизованная логика в orchestrator
-// Единообразные уведомления
-// Автоматическая обработка ошибок
-import { useMediaManagement } from '@/domains/media-management'
-
-const { importMedia } = useMediaManagement()
-// Автоматические уведомления и обработка ошибок
-await importMedia(files)
-```
-
-### Следующие шаги
-
-Хотя основная миграция завершена, продолжается работа над:
-
-1. **Оптимизация производительности** orchestrator'ов
-2. **Расширение тестового покрытия** для всех orchestrator'ов
-3. **Документация** лучших практик и паттернов
-4. **Миграция legacy компонентов** на использование orchestrator'ов
-5. **Создание инструментов** для автоматической генерации orchestrator'ов
-
-## Дальнейшее развитие
-
-Планируемые домены:
-- `collaboration/` - Совместная работа
-- `cloud-sync/` - Облачная синхронизация
-- `plugins/` - Система плагинов
-- `automation/` - Автоматизация процессов
-
-Все новые домены будут следовать паттерну Orchestrator с первого дня.
 
 ## Лицензия
 

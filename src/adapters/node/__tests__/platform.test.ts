@@ -243,10 +243,34 @@ describe("NodePlatformService", () => {
   // ============================================================================
 
   describe("File Path Utilities", () => {
-    it("converts file src", () => {
+    it("converts local file path to file:// URL", () => {
       const result = service.convertFileSrc("/path/to/file.txt")
 
-      expect(result).toBe("/path/to/file.txt")
+      expect(result).toBe("file:///path/to/file.txt")
+    })
+
+    it("returns http URLs unchanged", () => {
+      const result = service.convertFileSrc("http://example.com/video.mp4")
+
+      expect(result).toBe("http://example.com/video.mp4")
+    })
+
+    it("returns https URLs unchanged", () => {
+      const result = service.convertFileSrc("https://example.com/video.mp4")
+
+      expect(result).toBe("https://example.com/video.mp4")
+    })
+
+    it("returns blob URLs unchanged", () => {
+      const result = service.convertFileSrc("blob:http://localhost/uuid")
+
+      expect(result).toBe("blob:http://localhost/uuid")
+    })
+
+    it("returns file:// URLs unchanged", () => {
+      const result = service.convertFileSrc("file:///path/to/file.mp4")
+
+      expect(result).toBe("file:///path/to/file.mp4")
     })
 
     it("gets basename", async () => {

@@ -209,10 +209,21 @@ export class NodePlatformService implements IPlatformService {
   // ============================================================================
 
   convertFileSrc(path: string): string {
-    // В Node.js просто возвращаем путь как есть
-    // Если нужен file:// URL:
-    // return `file://${path}`
-    return path
+    // В Node.js/browser окружении для медиа элементов (<img>, <video>, <audio>)
+    // нужен file:// протокол для локальных файлов
+
+    // Если путь уже является URL, возвращаем как есть
+    if (
+      path.startsWith("http://") ||
+      path.startsWith("https://") ||
+      path.startsWith("file://") ||
+      path.startsWith("blob:")
+    ) {
+      return path
+    }
+
+    // Для локальных путей добавляем file:// протокол
+    return `file://${path}`
   }
 
   async basename(path: string): Promise<string> {

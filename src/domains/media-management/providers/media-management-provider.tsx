@@ -249,7 +249,16 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       removeMedia,
       removeMultipleMedia,
     }),
-    [mediaManagementService, mediaPool, formattedFileOperationsState, formattedMediaImportState, isLoading, error, removeMedia, removeMultipleMedia],
+    [
+      mediaManagementService,
+      mediaPool,
+      formattedFileOperationsState,
+      formattedMediaImportState,
+      isLoading,
+      error,
+      removeMedia,
+      removeMultipleMedia,
+    ],
   )
 
   return <MediaManagementContext.Provider value={value}>{children}</MediaManagementContext.Provider>

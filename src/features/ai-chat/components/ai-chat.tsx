@@ -24,7 +24,6 @@ import { allAITools } from "@/domains/ai-tools"
 
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
-// История чата управляется через backend в ChatProvider (useChat hook)
 import { compressContext, isContextOverLimit } from "../utils/context-manager"
 import { convertToolsToUnifiedFormat, executeToolByName } from "../utils/convert-tools"
 import { createTimelineContextPrompt } from "../utils/timeline-context"

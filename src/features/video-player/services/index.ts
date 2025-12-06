@@ -1,5 +1,10 @@
 // Export from player-machine with renamed type to avoid conflict
 
+export type {
+  PlayerContext as PlayerMachineContextType,
+  PlayerEvent,
+} from "@/domains/video-editing/machines/player-machine"
+export { playerMachine } from "@/domains/video-editing/machines/player-machine"
 export type { PlayerContextType } from "@/domains/video-editing/providers"
 // Export from player-provider
 export {
@@ -18,11 +23,6 @@ export type { HDRMetadata, VideoCodecInfo } from "./hdr-support"
 export { getHDRSupportService } from "./hdr-support"
 export type { PerformanceMetrics, SyncRecord } from "./performance-monitor"
 export { globalPerformanceMonitor, PerformanceMonitor } from "./performance-monitor"
-export type {
-  PlayerContextType as PlayerMachineContextType,
-  PlayerEvent,
-} from "./player-machine"
-export { playerMachine } from "./player-machine"
 export type { EasingFunction, TransitionParams, TransitionShader } from "./transitions-preview"
 export { getTransitionsPreviewService } from "./transitions-preview"
 export type { VideoFrame } from "./webgl-video-renderer"

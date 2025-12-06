@@ -3,12 +3,7 @@ import type React from "react"
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { useFavorites } from "@/core/hooks"
 import { useMediaManagement } from "@/domains/media-management"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"

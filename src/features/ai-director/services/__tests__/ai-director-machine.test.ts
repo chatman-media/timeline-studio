@@ -4,6 +4,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
+import { aiDirectorMachine } from "@/domains/ai-director"
 import {
   AIDirectorConfig,
   AnalysisError,
@@ -13,7 +14,6 @@ import {
   HealthCheckResult,
   SystemCapabilities,
 } from "../../types/ai-director"
-import { aiDirectorMachine } from "../ai-director-machine"
 
 // Mock Tauri invoke - use factory function to avoid hoisting issues
 vi.mock("@tauri-apps/api/core", () => ({
