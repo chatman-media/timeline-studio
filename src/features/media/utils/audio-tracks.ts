@@ -1,9 +1,8 @@
 import { nanoid } from "nanoid"
-
+import type { MediaFile } from "@/domains/media-management"
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"
-import type { MediaFile } from "@/domains/media-management"
 import type { Sector } from "../types/types"
 import { doTimeRangesOverlap } from "./media-utils"
 import { updateSectorTimeRange } from "./tracks-utils"

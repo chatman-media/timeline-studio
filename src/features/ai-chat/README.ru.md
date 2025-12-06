@@ -130,7 +130,7 @@ if (isContextTooLarge(context)) {
   - `@/domains/ai-tools` - 48+ специализированных инструментов по доменам
   - `@/domains/ai-services` - Основные AI провайдеры и оркестрация
   - `@/shared/services/ai` - Общие AI утилиты и DI контейнер
-- **Используется в**: `@/features/media-studio`, `@/features/ai-director`, `@/features/analysis-dashboard`
+- **Используется в**: `@/features/media-studio`, `@/features/ai-director`
 
 ## Тестирование
 

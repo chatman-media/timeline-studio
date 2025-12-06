@@ -1,8 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
-import { MediaType } from "@/domains/video-editing/types/media"
 import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/video-editing/types/media"
 import { useResources } from "@/features/resources"
 
 import { AddMediaButton } from "../../../components/layout/add-media-button"

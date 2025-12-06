@@ -3,12 +3,12 @@
  */
 
 import { useMemo } from "react"
+import type { MediaFile } from "@/domains/media-management"
 import type {
   MediaFile as DomainMediaFile,
   TimelineClip as DomainTimelineClip,
   Timeline,
 } from "@/domains/video-editing/types"
-import type { MediaFile } from "@/domains/media-management"
 import { useTimeline } from "../hooks/use-timeline"
 import type { TimelineClip, TrackType } from "../types"
 

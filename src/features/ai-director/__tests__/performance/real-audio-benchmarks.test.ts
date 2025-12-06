@@ -273,17 +273,17 @@ describe("Real Audio Analysis Performance Tests", () => {
         {
           name: "Short Audio (30s)",
           audioPath: "/test/audio-30s.mp4",
-          config: { performance_mode: "balanced" },
+          config: { performance_mode: "Balanced" },
         },
         {
           name: "Medium Audio (2min)",
           audioPath: "/test/audio-2min.mp4",
-          config: { performance_mode: "balanced" },
+          config: { performance_mode: "Balanced" },
         },
         {
           name: "Long Audio (5min)",
           audioPath: "/test/audio-5min.mp4",
-          config: { performance_mode: "balanced" },
+          config: { performance_mode: "Balanced" },
         },
       ]
 
@@ -447,7 +447,7 @@ describe("Real Audio Analysis Performance Tests", () => {
           mockInvoke("unified_audio_analyze_comprehensive", {
             videoPath: "/test/audio-10min.mp4",
             config: {
-              performance_mode: "balanced",
+              performance_mode: "Balanced",
               enable_all_analysis: true,
             },
           }),
@@ -478,7 +478,7 @@ describe("Real Audio Analysis Performance Tests", () => {
           return benchmarker.runBenchmark(`Concurrent Operation ${index + 1}`, "unified", () =>
             mockInvoke("unified_audio_analyze_comprehensive", {
               videoPath: `/test/concurrent-audio-${index + 1}.mp4`,
-              config: { performance_mode: "fast" },
+              config: { performance_mode: "Fast" },
             }),
           )
         })

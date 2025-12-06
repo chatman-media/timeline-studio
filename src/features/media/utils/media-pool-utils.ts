@@ -3,10 +3,16 @@
  */
 
 import { nanoid } from "nanoid"
-
-import type { MediaFile } from "@/domains/media-management"
-import type { MediaBin, MediaItemStatus, MediaItemType, MediaPool, MediaPoolItem } from "@/domains/media-management"
-import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
+import type {
+  MediaBin,
+  MediaFile,
+  MediaItemStatus,
+  MediaItemType,
+  MediaPool,
+  MediaPoolItem,
+  SavedMediaFile,
+  SavedMusicFile,
+} from "@/domains/media-management"
 
 /**
  * Конвертация MediaFile в MediaPoolItem

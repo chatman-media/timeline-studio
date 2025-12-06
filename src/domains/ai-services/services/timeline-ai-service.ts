@@ -12,6 +12,7 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineAiService")
 
+import type { AIToolResult } from "@/domains/ai-tools/base"
 import { multimodalTools as multimodalAnalysisTools } from "@/domains/ai-tools/tools/analysis/multimodal"
 import { personIdentificationTools } from "@/domains/ai-tools/tools/analysis/person-identification"
 import { videoAnalysisTools } from "@/domains/ai-tools/tools/analysis/video-analysis"
@@ -26,6 +27,9 @@ import { executePlayerTool, playerTools } from "@/domains/ai-tools/tools/core/pl
 import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/core/resources"
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
+import type { MediaFile } from "@/domains/media-management"
+import { ResourcesContextType } from "@/features/resources"
+import { TimelineProject } from "@/features/timeline"
 import type {
   AIBrowserContext,
   AIPlayerContext,
@@ -34,10 +38,6 @@ import type {
   ContentStoryAnalysis,
   TimelineStudioContext,
 } from "../types/context"
-import type { AIToolResult } from "@/domains/ai-tools/base"
-import type { MediaFile } from "@/domains/media-management"
-import { ResourcesContextType } from "@/features/resources"
-import { TimelineProject } from "@/features/timeline"
 // Импорты из новой структуры tools
 /**
  * Результат выполнения AI команды Timeline
@@ -410,8 +410,9 @@ export class TimelineAIService {
       success: true,
       message: response.content,
       data: {},
-      // executionTime: 0,
-      // toolName: "",
+      executionTime: 0,
+      toolName: "claude_response",
+      executionId: crypto.randomUUID(),
     }
 
     // Если Claude использовал инструмент
@@ -719,6 +720,9 @@ export class TimelineAIService {
         success: true,
         message: `Инструмент ${name} выполнен успешно`,
         data: result,
+        executionTime: 0,
+        toolName: name,
+        executionId: crypto.randomUUID(),
       }
     } catch (error) {
       logger.error(`Error executing tool ${name}`, { error })
@@ -726,6 +730,9 @@ export class TimelineAIService {
         success: false,
         message: `Ошибка выполнения инструмента ${name}: ${String(error)}`,
         data: { toolName: name, input, error: String(error) },
+        executionTime: 0,
+        toolName: name,
+        executionId: crypto.randomUUID(),
       }
     }
   }

@@ -1,6 +1,6 @@
 import { container, type IStorageService } from "@/core"
-import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 import type { MediaFile } from "@/domains/media-management"
+import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
 
 import { createLogger } from "@/lib/tauri-logger"
 

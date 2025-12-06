@@ -6,9 +6,8 @@ import {
   restoreProjectMedia as restoreProjectMediaService,
 } from "@/domains/media-management/services/media-restoration-service"
 import { useModals } from "@/domains/system-integration"
-import type { MediaFile, SavedMediaFile, SavedMusicFile } from "../types"
-
 import { createLogger } from "@/lib/tauri-logger"
+import type { MediaFile, SavedMediaFile, SavedMusicFile } from "../types"
 
 const logger = createLogger({ module: "UseMediaRestoration" })
 

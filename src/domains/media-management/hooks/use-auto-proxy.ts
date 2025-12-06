@@ -7,9 +7,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getProxyGenerator } from "@/domains/media-management/services/proxy-generator"
-import type { MediaFile } from "../types"
 import { needsProxyGeneration } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
+import type { MediaFile } from "../types"
 
 const logger = createLogger("AutoProxy")
 
@@ -22,7 +22,12 @@ const proxyCache = new Map<string, string>()
 const generatingFiles = new Map<string, Promise<string | null>>()
 
 // Очередь ожидающих генерацию файлов
-const generationQueue: Array<{ file: MediaFile; resolve: (path: string | null) => void }> = []
+const generationQueue: Array<{
+  file: MediaFile
+  resolve: (path: string | null) => void
+  onProxyReady?: (fileId: string, proxyPath: string) => void
+  onError?: (fileId: string, error: string) => void
+}> = []
 
 // Максимальное количество одновременных генераций
 const MAX_CONCURRENT_GENERATIONS = 2
@@ -44,7 +49,7 @@ async function processQueue() {
   const item = generationQueue.shift()
   if (!item) return
 
-  const { file, resolve } = item
+  const { file, resolve, onProxyReady, onError } = item
   const filePath = file.path
 
   logger.infoSync(
@@ -81,6 +86,11 @@ async function processQueue() {
       queueRemaining: generationQueue.length,
     })
 
+    // Вызываем callback если предоставлен
+    if (onProxyReady) {
+      onProxyReady(file.id, proxyPath)
+    }
+
     resolve(proxyPath)
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
@@ -90,6 +100,11 @@ async function processQueue() {
       fileName: file.name,
       error: errorMessage,
     })
+
+    // Вызываем error callback если предоставлен
+    if (onError) {
+      onError(file.id, errorMessage)
+    }
 
     resolve(null)
   } finally {
@@ -172,8 +187,13 @@ export function useAutoProxy(options: UseAutoProxyOptions = {}): AutoProxyResult
       // 🔧 QUEUE: Добавляем файл в очередь генерации
       // Создаём Promise, который будет resolved когда генерация завершится
       const generationPromise = new Promise<string | null>((resolve) => {
-        // Добавляем в очередь
-        generationQueue.push({ file, resolve })
+        // Добавляем в очередь с callbacks из refs
+        generationQueue.push({
+          file,
+          resolve,
+          onProxyReady: onProxyReadyRef.current,
+          onError: onErrorRef.current,
+        })
 
         logger.infoSync(`[AutoProxy Queue] Added to queue (queue size: ${generationQueue.length})`, {
           filePath,

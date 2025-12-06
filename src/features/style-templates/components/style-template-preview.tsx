@@ -1,11 +1,10 @@
 import { Play } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
+import { MediaType } from "@/domains/media-management"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
-import { MediaType } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import type { StyleTemplateResource } from "@/features/resources/types"
 import type { StyleTemplate } from "../types"

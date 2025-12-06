@@ -3,9 +3,9 @@ import { type JSX, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { MediaFile } from "@/domains/media-management"
 import { TAB_BUTTON_STYLES } from "@/features/browser"
 import { ColorSettings } from "@/features/color-grading"
-import type { MediaFile } from "@/domains/media-management"
 import { cn } from "@/lib/utils"
 
 import { AudioSettings } from "./audio-settings"

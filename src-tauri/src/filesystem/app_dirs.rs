@@ -121,9 +121,12 @@ impl AppDirectories {
 
   /// Создать структуру из базовой директории
   fn from_base_dir(base_dir: &Path) -> Self {
+    // Создаём директорию Resources для всех медиа-ресурсов
+    let resources_dir = base_dir.join("Resources");
+
     Self {
       base_dir: base_dir.to_path_buf(),
-      media_dir: base_dir.join("Media"),
+      media_dir: resources_dir.join("Media"), // Медиа теперь внутри Resources
       projects_dir: base_dir.join("Projects"),
       snapshot_dir: base_dir.join("Snapshot"),
       cinematic_dir: base_dir.join("Cinematic"),

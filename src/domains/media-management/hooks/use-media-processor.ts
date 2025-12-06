@@ -3,8 +3,8 @@ import { container } from "@/core"
 import type { UnlistenFn } from "@/core/ports"
 import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import { cacheMediaMetadata, getCachedMetadata } from "@/domains/video-editing/services/compiler"
-import type { MediaFile } from "../types"
 import { createLogger } from "@/lib/tauri-logger"
+import type { MediaFile } from "../types"
 
 const logger = createLogger("MediaProcessor")
 

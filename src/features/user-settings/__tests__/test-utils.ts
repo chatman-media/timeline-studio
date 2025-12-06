@@ -33,8 +33,8 @@ export function createMockApiKeys(overrides?: any) {
 export function createMockUserSettings(overrides?: Partial<UserSettingsContextValue>): UserSettingsContextValue {
   return {
     // Базовые настройки
-    screenshotsPath: "public/screenshots",
-    playerScreenshotsPath: "public/media",
+    screenshotsPath: "", // Пути теперь загружаются из AppDirectories
+    playerScreenshotsPath: "", // Пути теперь загружаются из AppDirectories
     openAiApiKey: "",
     claudeApiKey: "",
     isBrowserVisible: true,

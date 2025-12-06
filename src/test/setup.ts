@@ -369,12 +369,13 @@ vi.mock("@/domains/project-management", () => ({
 vi.mock("@/domains/project-management/services/app-directories-service", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/domains/project-management/services/app-directories-service")>()
   const mockBaseDir = "/Users/test/Movies/Timeline Studio"
+  const mockResourcesDir = `${mockBaseDir}/Resources`
   return {
     ...actual,
     appDirectoriesService: {
       getAppDirectories: vi.fn().mockResolvedValue({
         base_dir: mockBaseDir,
-        media_dir: `${mockBaseDir}/Media`,
+        media_dir: `${mockResourcesDir}/Media`, // Media теперь внутри Resources
         projects_dir: `${mockBaseDir}/Projects`,
         snapshot_dir: `${mockBaseDir}/Snapshot`,
         cinematic_dir: `${mockBaseDir}/Cinematic`,
@@ -400,7 +401,7 @@ vi.mock("@/domains/project-management/services/app-directories-service", async (
           subtitles: "Subtitles",
           filters: "Filters",
         }
-        return `${mockBaseDir}/Media/${subdirs[type] || type}`
+        return `${mockResourcesDir}/Media/${subdirs[type] || type}`
       }),
     },
   }

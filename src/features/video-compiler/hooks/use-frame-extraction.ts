@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
+import { useFramePreview } from "@/domains/media-management"
 import { useNotifications } from "@/domains/system-integration"
 import {
   type ExtractionPurpose,
@@ -10,7 +11,6 @@ import {
   type TimelineFrame,
 } from "@/domains/video-editing/services/compiler"
 import { Subtitle } from "@/domains/video-editing/types"
-import { useFramePreview } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseFrameExtraction")

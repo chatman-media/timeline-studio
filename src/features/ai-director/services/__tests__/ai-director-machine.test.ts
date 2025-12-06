@@ -30,10 +30,10 @@ describe("AI Director XState Machine", () => {
   })
 
   const mockConfig: AIDirectorConfig = {
-    performance_mode: "balanced",
+    performance_mode: "Balanced",
     enable_audio_analysis: true,
     enable_video_analysis: true,
-    enable_face_recognition: true,
+    enable_face_detection: true,
     enable_object_detection: true,
     enable_scene_detection: true,
     enable_transcription: true,

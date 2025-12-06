@@ -1,9 +1,9 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import type { MediaPreviewData, ThumbnailData } from "@/domains/media-management"
+import { useMediaPreview } from "@/domains/media-management/hooks/use-media-preview"
 import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
 import { mediaPreviewService } from "@/domains/media-management/services/media-preview-service"
-import { useMediaPreview } from "@/domains/media-management/hooks/use-media-preview"
-import type { MediaPreviewData, ThumbnailData } from "@/domains/media-management"
 
 // Mock mediaPreviewService
 vi.mock("@/domains/media-management/services/media-preview-service", () => ({

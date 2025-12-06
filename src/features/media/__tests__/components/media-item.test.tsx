@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { useFavorites } from "@/domains/project-management/hooks"
 import { MediaType } from "@/domains/media-management"
+import { useFavorites } from "@/domains/project-management/hooks"
 import { fireEvent, renderWithProviders, screen } from "@/test/test-utils"
 
 import { MediaItem } from "../../components/media-item"

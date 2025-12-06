@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
 import type { Sector } from "../../types/types"
 import { processAudioFiles } from "../audio-tracks"
 import { doTimeRangesOverlap } from "../media-utils"

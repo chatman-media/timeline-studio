@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-
+import { MediaType } from "@/domains/media-management"
 import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import { MediaType } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import type { FilterResource, TimelineResource } from "@/features/resources/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"

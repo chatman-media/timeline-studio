@@ -1,11 +1,10 @@
 import { useDraggable } from "@dnd-kit/core"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-
+import { type MediaFile, MediaType } from "@/domains/media-management"
 import { ApplyButton } from "@/features/browser"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
-import { type MediaFile, MediaType } from "@/domains/media-management"
 import type { TransitionResource } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"

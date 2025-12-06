@@ -1,10 +1,10 @@
 import { memo, useCallback, useRef, useState } from "react"
-import type { FfprobeStream } from "@/domains/media-management"
-import type { MediaFile } from "@/domains/media-management"
+import type { FfprobeStream, MediaFile } from "@/domains/media-management"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
 import { useResources } from "@/features/resources"
 import type { TimelineResource } from "@/features/resources/types"
 import { usePlayer } from "@/features/video-player"
+import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { VideoElement } from "./video-element"
@@ -277,7 +277,7 @@ export const VideoStream = memo(
                 backgroundImage: previewData
                   ? `url(data:image/jpeg;base64,${previewData})`
                   : file.thumbnailPath
-                    ? `url(${file.thumbnailPath})`
+                    ? `url(${createThumbnailUrl(file.thumbnailPath)})`
                     : undefined,
                 zIndex: 0,
               }}
@@ -302,19 +302,24 @@ export const VideoStream = memo(
             streamKey={key}
           />
 
-          {/* Показываем имя файла и статус загрузки - ВСЕГДА показываем имя */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center pointer-events-none">
-            <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
-              {file.name}
+          {/* Показываем overlay с именем файла только когда идёт загрузка */}
+          {(isGeneratingProxy || !previewData || !file.thumbnailPath || !isLoaded) && (
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center pointer-events-none"
+              style={{ zIndex: 2 }}
+            >
+              <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
+                {file.name}
+              </div>
+              {isGeneratingProxy ? (
+                <div className="mt-2 text-xs text-blue-400/90 animate-pulse">Генерируется прокси...</div>
+              ) : !previewData && !file.thumbnailPath ? (
+                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка метаданных...</div>
+              ) : !isLoaded ? (
+                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка видео...</div>
+              ) : null}
             </div>
-            {isGeneratingProxy ? (
-              <div className="mt-2 text-xs text-blue-400/90 animate-pulse">Генерируется прокси...</div>
-            ) : !previewData && !file.thumbnailPath ? (
-              <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка метаданных...</div>
-            ) : !isLoaded ? (
-              <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка видео...</div>
-            ) : null}
-          </div>
+          )}
 
           <VideoOverlays
             file={file}

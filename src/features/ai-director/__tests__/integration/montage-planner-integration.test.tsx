@@ -177,7 +177,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
         config: {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
-          performance_mode: "balanced",
+          performance_mode: "Balanced",
         },
       })) as typeof mockUnifiedAudioAnalysis
 

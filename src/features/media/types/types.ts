@@ -1,6 +1,4 @@
-import type { TimeRange } from "@/domains/media-management"
-
-import type { MediaFile, MediaTrack } from "@/domains/media-management"
+import type { MediaFile, MediaTrack, TimeRange } from "@/domains/media-management"
 
 /**
  * Интерфейс для видеопотока

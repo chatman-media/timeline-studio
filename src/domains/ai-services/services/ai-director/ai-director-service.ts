@@ -5,8 +5,8 @@
  * @module ai-services/services/ai-director
  */
 
-import { createLogger } from "@/lib/tauri-logger"
 import type { AIDirectorConfig } from "@/core/ports/ai.port"
+import { createLogger } from "@/lib/tauri-logger"
 import {
   type AIDirectorHealthCheckResult,
   type AIDirectorVideoAnalysisOptions,
@@ -103,7 +103,9 @@ export class AIDirectorService {
    * Получить конфигурацию по умолчанию
    */
   async getDefaultConfig(mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig> {
-    return aiDirectorGetDefaultConfig(mode)
+    // Convert PascalCase to lowercase for Tauri
+    const rustMode = mode.toLowerCase() as "fast" | "balanced" | "quality" | "custom"
+    return aiDirectorGetDefaultConfig(rustMode)
   }
 
   /**

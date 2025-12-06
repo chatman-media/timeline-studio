@@ -18,12 +18,12 @@ import {
 } from "../machines/backend-event-handlers"
 import { fileOperationsMachine } from "../machines/file-operations-machine"
 import { mediaImportMachine } from "../machines/media-import-machine"
-import type {
-  MediaFileOperation,
-  MediaImportOptions,
-  MediaInfo,
-  MediaManagementService,
-  MediaMetadata,
+import {
+  type MediaFileOperation,
+  type MediaImportOptions,
+  type MediaInfo,
+  type MediaManagementService,
+  type MediaMetadata,
   MediaType,
 } from "../types"
 import { type CameraDevice, type CameraImportOptions, type CameraImportResult, getCameraImport } from "./camera-import"
@@ -347,11 +347,11 @@ export class MediaManagementOrchestrator implements MediaManagementService {
     const audioExts = ["mp3", "wav", "ogg", "flac", "aac", "m4a", "wma"]
     const imageExts = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "tiff"]
 
-    if (videoExts.includes(ext)) return "Video"
-    if (audioExts.includes(ext)) return "Audio"
-    if (imageExts.includes(ext)) return "Image"
+    if (videoExts.includes(ext)) return MediaType.Video
+    if (audioExts.includes(ext)) return MediaType.Audio
+    if (imageExts.includes(ext)) return MediaType.StillImage
 
-    return "Unknown"
+    return MediaType.Unknown
   }
 
   /**

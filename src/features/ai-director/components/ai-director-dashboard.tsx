@@ -5,9 +5,9 @@
  * Главный компонент для AI Director с minimalist design и табовым интерфейсом
  */
 
-import { useCallback, useMemo, useState } from "react"
 import { Settings, Zap } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
+import { useCallback, useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"

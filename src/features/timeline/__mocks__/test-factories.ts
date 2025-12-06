@@ -2,6 +2,7 @@
  * Фабрики для создания тестовых данных
  */
 
+import type { MediaFile, MediaType } from "@/domains/media-management"
 import type {
   Section,
   Timeline,
@@ -10,7 +11,6 @@ import type {
   TimelineSettings,
   Track,
 } from "@/domains/video-editing/types"
-import type { MediaFile, MediaType } from "@/domains/media-management"
 
 /**
  * Создает mock-объект трека со всеми обязательными полями

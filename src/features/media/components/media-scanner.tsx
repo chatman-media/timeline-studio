@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { container } from "@/core"
 import type { MediaFile } from "@/domains/media-management"
-import { createLogger } from "@/lib/tauri-logger"
 import { useMediaProcessor } from "@/domains/media-management/hooks/use-media-processor"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaScanner")
 

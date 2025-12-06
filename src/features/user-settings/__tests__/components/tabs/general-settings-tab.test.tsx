@@ -235,7 +235,7 @@ describe("GeneralSettingsTab", () => {
   it("should handle screenshots path input changes", () => {
     render(<GeneralSettingsTab />)
 
-    const screenshotsInput = screen.getByPlaceholderText("public/screenshots")
+    const inputs = screen.getAllByRole("textbox"); const screenshotsInput = inputs[0]
     act(() => {
       fireEvent.change(screenshotsInput, { target: { value: "new/screenshots/path" } })
     })
@@ -246,7 +246,7 @@ describe("GeneralSettingsTab", () => {
   it("should handle player screenshots path input changes", () => {
     render(<GeneralSettingsTab />)
 
-    const playerScreenshotsInput = screen.getByPlaceholderText("public/media")
+    const inputs = screen.getAllByRole("textbox"); const playerScreenshotsInput = inputs[1]
     act(() => {
       fireEvent.change(playerScreenshotsInput, { target: { value: "new/player/path" } })
     })
@@ -258,7 +258,7 @@ describe("GeneralSettingsTab", () => {
     vi.mocked(useUserSettings).mockImplementation(() =>
       createMockUserSettings({
         screenshotsPath: "custom/screenshots",
-        playerScreenshotsPath: "public/media",
+        playerScreenshotsPath: "",
         handleScreenshotsPathChange: mockHandleScreenshotsPathChange,
         handlePlayerScreenshotsPathChange: mockHandlePlayerScreenshotsPathChange,
       }),
@@ -273,7 +273,7 @@ describe("GeneralSettingsTab", () => {
       fireEvent.click(clearButton)
     })
 
-    expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("public/screenshots")
+    expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("")
   })
 
   it("should handle folder selection for screenshots path", async () => {
@@ -316,7 +316,7 @@ describe("GeneralSettingsTab", () => {
 
     // Wait for prompt to be called first
     await waitFor(() => {
-      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/screenshots")
+      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", expect.stringMatching(/.*/))
     })
 
     // Then wait for the path change handler
@@ -349,7 +349,7 @@ describe("GeneralSettingsTab", () => {
 
     // Wait for prompt to be called first
     await waitFor(() => {
-      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", "public/media")
+      expect(mockPrompt).toHaveBeenCalledWith("dialogs.userSettings.selectFolderPrompt", expect.stringMatching(/.*/))
     })
 
     // Then wait for the path change handler

@@ -295,7 +295,7 @@ describe("Audio Analysis Performance Benchmarks", () => {
             enable_ffmpeg_analysis: true,
             enable_montage_analysis: true,
             enable_transcription: false,
-            performance_mode: "balanced",
+            performance_mode: "Balanced",
           },
         }),
       )
@@ -342,7 +342,7 @@ describe("Audio Analysis Performance Benchmarks", () => {
         const unifiedResult = await runBenchmark(`${testFile.complexity} File Analysis`, "unified", () =>
           mockInvoke("unified_audio_analyze_comprehensive", {
             videoPath: testFile.path,
-            config: { performance_mode: "balanced" },
+            config: { performance_mode: "Balanced" },
           }),
         )
 
@@ -379,7 +379,7 @@ describe("Audio Analysis Performance Benchmarks", () => {
         mockInvoke("unified_audio_analyze_comprehensive", {
           videoPath: testFile.path,
           config: {
-            performance_mode: "quality",
+            performance_mode: "Quality",
             enable_all_analysis: true,
           },
         }),
@@ -423,7 +423,7 @@ describe("Audio Analysis Performance Benchmarks", () => {
       const unifiedThroughput = await runBenchmark("Throughput Test", "unified", () =>
         mockInvoke("unified_audio_analyze_comprehensive", {
           videoPath: "/test/medium-audio.mp4",
-          config: { performance_mode: "fast" },
+          config: { performance_mode: "Fast" },
         }),
       )
       throughputResults.push({ system: "Unified", throughput: unifiedThroughput.throughput })
@@ -454,9 +454,9 @@ describe("Audio Analysis Performance Benchmarks", () => {
 
       // Run a complete test suite
       const testCases = [
-        { name: "Basic Analysis", config: { performance_mode: "fast" } },
-        { name: "Balanced Analysis", config: { performance_mode: "balanced" } },
-        { name: "Quality Analysis", config: { performance_mode: "quality" } },
+        { name: "Basic Analysis", config: { performance_mode: "Fast" } },
+        { name: "Balanced Analysis", config: { performance_mode: "Balanced" } },
+        { name: "Quality Analysis", config: { performance_mode: "Quality" } },
       ]
 
       const summaryResults: Array<{

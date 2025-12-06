@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { MediaInfo, MediaType } from "@/domains/media-management/types"
+import { type MediaInfo, MediaType } from "@/domains/media-management/types"
 
 export interface MediaPoolListProps {
   /** Файлы из медиапула */
@@ -30,11 +30,18 @@ export interface MediaPoolListProps {
 
 const getMediaIcon = (type: MediaType) => {
   switch (type) {
-    case "Video":
+    case MediaType.Video:
+    case MediaType.VideoWithAudio:
       return <FileVideo className="h-4 w-4 text-blue-500" />
-    case "Audio":
+    case MediaType.Audio:
+    case MediaType.Music:
+    case MediaType.Voiceover:
+    case MediaType.SFX:
+    case MediaType.Ambient:
       return <FileAudio className="h-4 w-4 text-green-500" />
-    case "Image":
+    case MediaType.StillImage:
+    case MediaType.ImageSequence:
+    case MediaType.Graphics:
       return <FileImage className="h-4 w-4 text-purple-500" />
     default:
       return <File className="h-4 w-4 text-muted-foreground" />
@@ -42,14 +49,21 @@ const getMediaIcon = (type: MediaType) => {
 }
 
 const getMediaTypeBadge = (type: MediaType) => {
-  const variants: Record<MediaType, "default" | "secondary" | "outline" | "destructive"> = {
-    Video: "default",
-    Audio: "secondary",
-    Image: "outline",
-    Unknown: "outline",
+  const variants: Partial<Record<MediaType, "default" | "secondary" | "outline" | "destructive">> = {
+    [MediaType.Video]: "default",
+    [MediaType.VideoWithAudio]: "default",
+    [MediaType.Audio]: "secondary",
+    [MediaType.Music]: "secondary",
+    [MediaType.Voiceover]: "secondary",
+    [MediaType.SFX]: "secondary",
+    [MediaType.Ambient]: "secondary",
+    [MediaType.StillImage]: "outline",
+    [MediaType.ImageSequence]: "outline",
+    [MediaType.Graphics]: "outline",
+    [MediaType.Unknown]: "outline",
   }
   return (
-    <Badge variant={variants[type]} className="text-xs">
+    <Badge variant={variants[type] ?? "outline"} className="text-xs">
       {type}
     </Badge>
   )

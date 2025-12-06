@@ -3,10 +3,9 @@
  */
 
 import { useCallback, useState } from "react"
-
-import { getMediaMetadataService } from "@/domains/media-management/services/media-metadata-service"
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/media-management"
+import { getMediaMetadataService } from "@/domains/media-management/services/media-metadata-service"
 import { createLogger } from "@/lib/tauri-logger"
 import type { Fragment, MontagePlan } from "../types"
 import { convertToAIServicesMediaFile } from "../utils/media-file-converter"

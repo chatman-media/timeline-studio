@@ -1,6 +1,6 @@
 import { dirname } from "@tauri-apps/api/path"
 import { open } from "@tauri-apps/plugin-dialog"
-
+import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile, SavedMediaFile, SavedMusicFile } from "../types"
 import {
   convertFromSavedMediaFile,
@@ -9,7 +9,6 @@ import {
   getExtensionsForFile,
   validateFileIntegrity,
 } from "../utils/saved-media-utils"
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaRestoration")
 

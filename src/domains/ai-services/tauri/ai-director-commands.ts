@@ -178,13 +178,15 @@ export interface UnifiedAudioConfig {
 
 export async function unifiedAudioAnalyzeComprehensive(videoPath: string, config?: UnifiedAudioConfig): Promise<any> {
   logger.info("Running unified audio comprehensive analysis", { videoPath })
+  // Convert PascalCase to lowercase for Rust
+  const performanceMode = config?.performance_mode?.toLowerCase() as "fast" | "balanced" | "quality" | undefined
   return invoke("unified_audio_analyze_comprehensive", {
     videoPath,
     config: {
       enable_ffmpeg_analysis: config?.enable_ffmpeg_analysis ?? true,
       enable_montage_analysis: config?.enable_montage_analysis ?? true,
       enable_transcription: config?.enable_transcription ?? false,
-      performance_mode: config?.performance_mode ?? "balanced",
+      performance_mode: performanceMode ?? "balanced",
     },
   })
 }
@@ -196,13 +198,15 @@ export async function unifiedAudioAnalyzeQuick(videoPath: string): Promise<any> 
 
 export async function unifiedAudioAnalyzeBatch(
   filePaths: string[],
-  config?: { performance_mode?: "fast" | "balanced" | "quality" },
+  config?: { performance_mode?: "Fast" | "Balanced" | "Quality" },
 ): Promise<any[]> {
   logger.info("Running unified audio batch analysis", { fileCount: filePaths.length })
+  // Convert PascalCase to lowercase for Rust
+  const performanceMode = config?.performance_mode?.toLowerCase() as "fast" | "balanced" | "quality" | undefined
   return invoke("unified_audio_analyze_batch", {
     filePaths,
     config: {
-      performance_mode: config?.performance_mode ?? "fast",
+      performance_mode: performanceMode ?? "fast",
     },
   })
 }

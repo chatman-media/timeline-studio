@@ -1,9 +1,9 @@
 import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
+import type { MediaFile } from "@/domains/media-management"
 import { useTransitionsAdapter as useUnifiedTransitionsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
-import type { MediaFile } from "@/domains/media-management"
 import { TransitionPreview } from "@/features/transitions/components/transition-preview"
 import type { Transition } from "@/features/transitions/types/transitions"
 

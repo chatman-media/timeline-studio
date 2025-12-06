@@ -4,8 +4,6 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { TimelineStudioProjectService } from "@/domains/project-management/services/timeline-studio-project-service"
 import type { MediaPoolItem } from "@/domains/media-management"
 import {
   addItemToPool,
@@ -14,6 +12,7 @@ import {
   searchMediaPool,
   updateItemUsage,
 } from "@/domains/media-management"
+import { TimelineStudioProjectService } from "@/domains/project-management/services/timeline-studio-project-service"
 import type { Sequence } from "@/features/timeline/types/sequence"
 import type { TimelineClip } from "@/features/timeline/types/timeline"
 

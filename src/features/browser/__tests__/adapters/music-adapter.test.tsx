@@ -2,9 +2,8 @@ import "@testing-library/jest-dom/vitest"
 
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
 import { MediaType } from "@/domains/media-management"
+import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
 
 // Mock модулей
 vi.mock("@/domains/project-management/hooks", () => ({

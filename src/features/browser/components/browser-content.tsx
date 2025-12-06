@@ -1,12 +1,6 @@
+import { Trash2 } from "lucide-react"
 import { memo, useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { useBrowserState } from "@/domains/browser"
-import { useMediaManagement } from "@/domains/media-management"
-import { useMusicImport } from "@/features/browser/hooks/use-music-import"
-import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-tools"
-import { useMediaImport } from "@/domains/media-management"
-import { Trash2 } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +13,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { useBrowserState } from "@/domains/browser"
+import { useMediaImport, useMediaManagement } from "@/domains/media-management"
+import { useMusicImport } from "@/features/browser/hooks/use-music-import"
+import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-tools"
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
@@ -181,7 +179,8 @@ export const BrowserContent = memo(() => {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("browser.clearAllConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("browser.clearAllConfirm.description")} ({mediaPool.size} {t("common.files", { count: mediaPool.size })})
+              {t("browser.clearAllConfirm.description")} ({mediaPool.size}{" "}
+              {t("common.files", { count: mediaPool.size })})
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

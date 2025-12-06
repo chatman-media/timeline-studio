@@ -854,7 +854,7 @@ export class NodeAIService implements IAIService {
       enable_ffmpeg_analysis?: boolean
       enable_montage_analysis?: boolean
       enable_transcription?: boolean
-      performance_mode?: "fast" | "balanced" | "quality"
+      performance_mode?: "Fast" | "Balanced" | "Quality"
     },
   ): Promise<unknown> {
     return this.aiDirectorAnalyzeComprehensive(videoPath)
@@ -866,7 +866,7 @@ export class NodeAIService implements IAIService {
 
   async unifiedAudioAnalyzeBatch(
     filePaths: string[],
-    _config?: { performance_mode?: "fast" | "balanced" | "quality" },
+    _config?: { performance_mode?: "Fast" | "Balanced" | "Quality" },
   ): Promise<unknown[]> {
     return this.aiDirectorAnalyzeBatch(filePaths)
   }

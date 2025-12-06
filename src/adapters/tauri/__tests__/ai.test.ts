@@ -202,7 +202,7 @@ describe("TauriAIService", () => {
 
     it("gets default config for mode", async () => {
       mockInvoke.mockResolvedValueOnce({})
-      await aiService.aiDirectorGetDefaultConfig("fast")
+      await aiService.aiDirectorGetDefaultConfig("Fast")
       expect(mockInvoke).toHaveBeenCalledWith("ai_director_get_default_config", { mode: "fast" })
     })
 
@@ -229,7 +229,7 @@ describe("TauriAIService", () => {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           enable_transcription: false,
-          performance_mode: "balanced",
+          performance_mode: "Balanced",
         },
       })
     })

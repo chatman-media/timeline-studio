@@ -5,9 +5,9 @@ import { useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import type { SavedMediaFile } from "@/domains/media-management"
 import { promptUserToFindFile } from "@/domains/media-management/services/media-restoration-service"
 import { useModals } from "@/domains/system-integration"
-import type { SavedMediaFile } from "@/domains/media-management"
 
 import { createLogger } from "@/lib/tauri-logger"
 

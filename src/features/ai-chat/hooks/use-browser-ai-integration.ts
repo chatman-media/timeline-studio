@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 import type { BrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/types"
 import { setBrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/utils/helpers"
 import { useBrowserState } from "@/domains/browser"
-import { useApp } from "@/domains/project-management/providers"
 import type { MediaFile } from "@/domains/media-management"
+import { useApp } from "@/domains/project-management/providers"
 import { logInfo } from "@/lib/tauri-logger"
 
 /**

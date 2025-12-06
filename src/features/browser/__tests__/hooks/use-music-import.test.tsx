@@ -1,8 +1,8 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import * as mediaDomainModule from "@/domains/media-management"
-import { useMusicImport } from "@/features/browser/hooks/use-music-import"
 import { MediaType } from "@/domains/media-management"
+import { useMusicImport } from "@/features/browser/hooks/use-music-import"
 
 // Mock модулей
 vi.mock("@tauri-apps/api/core", () => ({

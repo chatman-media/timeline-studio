@@ -1,7 +1,7 @@
 import { useDraggable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
-import { useAutoProxy, useMediaPreview } from "@/domains/media-management"
 import type { MediaFile } from "@/domains/media-management"
+import { useAutoProxy, useMediaPreview } from "@/domains/media-management"
 import type { TimelineResource } from "@/features/resources/types"
 import { getTrackTypeForMediaFile } from "@/features/timeline"
 import type { DragData } from "@/features/timeline/types/drag-drop"
@@ -74,11 +74,17 @@ export const VideoPreview = memo(
     // Загружаем preview data при монтировании
     useEffect(() => {
       void getPreviewData(file.id).then((data) => {
+        console.log(`[VideoPreview] Preview data received for ${file.name}:`, {
+          hasData: !!data,
+          hasThumbnail: !!data?.browser_thumbnail,
+          hasBase64: !!data?.browser_thumbnail?.base64_data,
+          base64Length: data?.browser_thumbnail?.base64_data?.length || 0,
+        })
         if (data?.browser_thumbnail?.base64_data) {
           setPreviewData(data.browser_thumbnail.base64_data)
         }
       })
-    }, [file.id, getPreviewData])
+    }, [file.id, getPreviewData, file.name])
 
     // Обработчик применения видео - отправляем в главный плеер через backend
     const handleApplyVideo = useCallback(
@@ -231,7 +237,7 @@ export const VideoPreview = memo(
       streamsCount: videoData.videoStreams.length,
       hasProbeData: !!file.probeData,
       probeStreams: file.probeData?.streams?.length ?? 0,
-      videoStreams: videoData.videoStreams.map(s => ({ codec: s.codec_name, index: s.index })),
+      videoStreams: videoData.videoStreams.map((s) => ({ codec: s.codec_name, index: s.index })),
     })
 
     return (

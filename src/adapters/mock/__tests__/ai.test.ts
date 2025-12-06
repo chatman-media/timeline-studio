@@ -459,12 +459,12 @@ describe("MockAIService", () => {
     })
 
     it("gets default config", async () => {
-      const result = await service.aiDirectorGetDefaultConfig("balanced")
+      const result = await service.aiDirectorGetDefaultConfig("Balanced")
       expect(result).toHaveProperty("performance_mode")
     })
 
     it("validates config", async () => {
-      const config = { performance_mode: "balanced" } as any
+      const config = { performance_mode: "Balanced" } as any
       const result = await service.aiDirectorValidateConfig(config)
       expect(result).toHaveProperty("valid")
     })

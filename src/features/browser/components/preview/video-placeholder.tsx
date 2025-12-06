@@ -2,6 +2,7 @@ import { memo, useCallback, useState } from "react"
 import type { MediaFile } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import { usePlayer } from "@/features/video-player"
+import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { VideoElement } from "./video-element"
@@ -177,6 +178,21 @@ export const VideoPlaceholder = memo(
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
         >
+          {/* Preview background - показывается сразу */}
+          {(previewData || file.thumbnailPath) && (
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: previewData
+                  ? `url(data:image/jpeg;base64,${previewData})`
+                  : file.thumbnailPath
+                    ? `url(${createThumbnailUrl(file.thumbnailPath)})`
+                    : undefined,
+                zIndex: 0,
+              }}
+            />
+          )}
+
           <VideoElement
             file={file}
             videoUrl={videoUrl}
@@ -191,7 +207,10 @@ export const VideoPlaceholder = memo(
 
           {/* Показываем имя файла и статус загрузки - всегда когда не полностью загружено */}
           {(!isLoaded || !previewData || file.isLoadingMetadata) && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center">
+            <div
+              className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center"
+              style={{ zIndex: 2 }}
+            >
               <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
                 {file.name}
               </div>

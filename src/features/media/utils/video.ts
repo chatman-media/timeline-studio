@@ -1,6 +1,4 @@
-import type { FfprobeStream } from "@/domains/media-management"
-import type { MediaFile } from "@/domains/media-management"
-import type { TimeRange } from "@/domains/media-management"
+import type { FfprobeStream, MediaFile, TimeRange } from "@/domains/media-management"
 
 import { createLogger } from "@/lib/tauri-logger"
 

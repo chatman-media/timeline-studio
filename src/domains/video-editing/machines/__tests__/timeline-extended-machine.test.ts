@@ -14,6 +14,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor } from "xstate"
+import { MediaType } from "@/domains/media-management"
 import { timelineExtendedMachine } from "../../machines/timeline-extended-machine"
 import type { MediaFile, Timeline, TimelineClip } from "../../types"
 
@@ -344,7 +345,7 @@ describe("TimelineExtendedMachine", () => {
       id: "media-1",
       name: "video.mp4",
       path: "/test/video.mp4",
-      type: "video",
+      type: MediaType.Video,
       duration: 60,
       size: 1024 * 1024,
     }
@@ -698,7 +699,7 @@ describe("TimelineExtendedMachine", () => {
         id: "media-1",
         name: "video.mp4",
         path: "/test/video.mp4",
-        type: "video",
+        type: MediaType.Video,
         duration: 60,
         size: 1024 * 1024,
       }

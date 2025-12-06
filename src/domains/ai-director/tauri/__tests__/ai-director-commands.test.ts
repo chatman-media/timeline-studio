@@ -242,7 +242,7 @@ describe("AI Director Tauri Commands", () => {
   describe("aiDirectorGetDefaultConfig", () => {
     it("should get default config for fast mode", async () => {
       const mockConfig: AIDirectorConfig = {
-        performance_mode: "fast",
+        performance_mode: "Fast",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: false,
@@ -256,12 +256,12 @@ describe("AI Director Tauri Commands", () => {
       const result = await aiDirectorGetDefaultConfig("fast")
 
       expect(mockInvoke).toHaveBeenCalledWith("ai_director_get_default_config", { mode: "fast" })
-      expect(result.performance_mode).toBe("fast")
+      expect(result.performance_mode).toBe("Fast")
     })
 
     it("should get default config for balanced mode", async () => {
       const mockConfig: AIDirectorConfig = {
-        performance_mode: "balanced",
+        performance_mode: "Balanced",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
@@ -274,12 +274,12 @@ describe("AI Director Tauri Commands", () => {
 
       const result = await aiDirectorGetDefaultConfig("balanced")
 
-      expect(result.performance_mode).toBe("balanced")
+      expect(result.performance_mode).toBe("Balanced")
     })
 
     it("should get default config for quality mode", async () => {
       const mockConfig: AIDirectorConfig = {
-        performance_mode: "quality",
+        performance_mode: "Quality",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
@@ -292,7 +292,7 @@ describe("AI Director Tauri Commands", () => {
 
       const result = await aiDirectorGetDefaultConfig("quality")
 
-      expect(result.performance_mode).toBe("quality")
+      expect(result.performance_mode).toBe("Quality")
     })
   })
 

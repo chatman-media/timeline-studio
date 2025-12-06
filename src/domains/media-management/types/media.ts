@@ -2,12 +2,13 @@ import type { FfprobeData, FfprobeStream } from "./ffprobe"
 import type { TimeRange } from "./time-range"
 
 // Import MediaType from domains for compatibility
+// IMPORTANT: Backend expects "Video", "Audio", "Image" (capitalized)
 export enum MediaType {
-  Video = "video",
+  Video = "Video",
   VideoWithAudio = "video_with_audio",
-  StillImage = "still_image",
+  StillImage = "Image",
   ImageSequence = "image_sequence",
-  Audio = "audio",
+  Audio = "Audio",
   Music = "music",
   Voiceover = "voiceover",
   SFX = "sfx",

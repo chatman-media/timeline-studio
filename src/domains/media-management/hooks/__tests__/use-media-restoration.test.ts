@@ -1,9 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 import { useMediaRestoration } from "@/domains/media-management/hooks/use-media-restoration"
-import type { MediaFile } from "@/domains/media-management"
-import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 
 // Мокаем MediaRestorationService
 vi.mock("@/domains/media-management/services/media-restoration-service", () => ({

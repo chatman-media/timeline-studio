@@ -3,9 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-
-import type { MediaFile } from "@/domains/media-management"
-import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
+import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 import {
   addItemToPool,
   convertMediaFileToPoolItem,

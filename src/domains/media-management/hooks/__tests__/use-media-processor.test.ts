@@ -1,9 +1,8 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
-import { type DiscoveredFile, useMediaProcessor } from "@/domains/media-management/hooks/use-media-processor"
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/media-management"
+import { type DiscoveredFile, useMediaProcessor } from "@/domains/media-management/hooks/use-media-processor"
 
 // Create mock event service
 const mockUnlisten = vi.fn()

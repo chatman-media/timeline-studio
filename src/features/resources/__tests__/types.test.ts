@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { MediaFile } from "@/domains/media-management"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { MediaFile } from "@/domains/media-management"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"

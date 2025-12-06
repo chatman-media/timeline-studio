@@ -10,13 +10,12 @@ export type {
   // Core media types
   AudioMetadata,
   BrowserVideoMetadata,
-  FileGroup,
-  FileOperationsContext,
-  FileOperationsEvent,
-  FfprobeChapter,
   FfprobeData,
   FfprobeFormat,
   FfprobeStream,
+  FileGroup,
+  FileOperationsContext,
+  FileOperationsEvent,
   ImageMetadata,
   MediaAnalysisResult,
   MediaFile,
@@ -28,15 +27,11 @@ export type {
   MediaMetadata,
   MediaMetadataService,
   MediaPool,
-  MediaPoolFilter,
   MediaPoolItem,
-  MediaPoolSort,
-  MediaPoolView,
   MediaPreviewData,
-  PreviewGenerationOptions,
+  MediaTrack,
   QualityMetrics,
   SavedMediaFile,
-  SavedMediaMetadata,
   SavedMusicFile,
   SceneDetectionResult,
   ThumbnailData,
@@ -48,4 +43,4 @@ export type {
 export { MediaType } from "@/domains/media-management"
 
 // Local UI-specific types (not moved to domain)
-export type { MediaTrack, Sector, Track } from "./types"
+export type { Sector, Track } from "./types"
