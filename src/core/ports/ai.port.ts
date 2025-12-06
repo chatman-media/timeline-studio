@@ -546,7 +546,7 @@ export interface IAIService {
 
   // === AI Director - Configuration ===
   aiDirectorGetCapabilities(): Promise<SystemCapabilities>
-  aiDirectorGetDefaultConfig(mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig>
+  aiDirectorGetDefaultConfig(mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig>
   aiDirectorValidateConfig(config: AIDirectorConfig): Promise<ConfigValidationResult>
   aiDirectorHealthCheck(): Promise<AIDirectorHealthCheckResult>
 
@@ -557,13 +557,13 @@ export interface IAIService {
       enable_ffmpeg_analysis?: boolean
       enable_montage_analysis?: boolean
       enable_transcription?: boolean
-      performance_mode?: "fast" | "balanced" | "quality"
+      performance_mode?: "Fast" | "Balanced" | "Quality"
     },
   ): Promise<unknown>
   unifiedAudioAnalyzeQuick(videoPath: string): Promise<unknown>
   unifiedAudioAnalyzeBatch(
     filePaths: string[],
-    config?: { performance_mode?: "fast" | "balanced" | "quality" },
+    config?: { performance_mode?: "Fast" | "Balanced" | "Quality" },
   ): Promise<unknown[]>
   unifiedAudioGetCapabilities(): Promise<{
     ffmpegAvailable: boolean

@@ -6,8 +6,8 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
+import type { AIDirectorConfig } from "@/core/ports/ai.port"
 import {
-  type AIDirectorConfig,
   type AIDirectorHealthCheckResult,
   type AIDirectorVideoAnalysisOptions,
   aiDirectorAnalyzeBatch,
