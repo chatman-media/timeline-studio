@@ -95,7 +95,7 @@ function ExportButton() {
 ```
 
 ## Интеграция
-- **Зависит от**: @/features/app-state, @/features/timeline, FFmpeg
+- **Зависит от**: @/domains/project-management, @/features/timeline, FFmpeg
 - **Используется в**: @/features/media-studio, @/features/preview
 
 ## Тестирование

@@ -1,5 +1,5 @@
 import { Database, Folder, Save, X } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { container } from "@/core"
+import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
 import { useModals } from "@/domains/system-integration"
 import { useLanguage } from "@/features/language"
 import { type LanguageCode, SUPPORTED_LANGUAGES } from "@/i18n/constants"
@@ -41,12 +42,31 @@ export function GeneralSettingsTab() {
   // Локальное состояние для выбранного языка
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(currentLanguage)
 
+  // Локальное состояние для placeholders путей
+  const [defaultScreenshotsPath, setDefaultScreenshotsPath] = useState("")
+  const [defaultPlayerScreenshotsPath, setDefaultPlayerScreenshotsPath] = useState("")
+
   const platform = useMemo(() => {
     try {
       return container.hasPlatform() ? container.getPlatform() : null
     } catch {
       return null
     }
+  }, [])
+
+  // Загружаем пути из AppDirectories при монтировании
+  useEffect(() => {
+    const loadDefaultPaths = async () => {
+      try {
+        const directories = await appDirectoriesService.getAppDirectories()
+        setDefaultScreenshotsPath(directories.snapshot_dir)
+        setDefaultPlayerScreenshotsPath(directories.media_dir)
+      } catch (error) {
+        void logger.warn("Could not load default paths from AppDirectories:", { error })
+      }
+    }
+
+    void loadDefaultPaths()
   }, [])
 
   /**
@@ -88,13 +108,13 @@ export function GeneralSettingsTab() {
             <Input
               value={screenshotsPath}
               onChange={(e) => handleScreenshotsPathChange(e.target.value)}
-              placeholder="public/screenshots"
+              placeholder={defaultScreenshotsPath || "Loading..."}
               className="h-9 pr-8 font-mono text-sm"
             />
-            {screenshotsPath && screenshotsPath !== "public/screenshots" && (
+            {screenshotsPath && screenshotsPath !== defaultScreenshotsPath && (
               <button
                 type="button"
-                onClick={() => handleScreenshotsPathChange("public/screenshots")}
+                onClick={() => handleScreenshotsPathChange(defaultScreenshotsPath)}
                 className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 title={t("dialogs.userSettings.clearPath")}
               >
@@ -110,7 +130,10 @@ export function GeneralSettingsTab() {
             onClick={() => {
               void (async () => {
                 if (!platform) {
-                  const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/screenshots")
+                  const promptResult = window.prompt(
+                    t("dialogs.userSettings.selectFolderPrompt"),
+                    defaultScreenshotsPath || "Loading...",
+                  )
                   if (promptResult) {
                     handleScreenshotsPathChange(promptResult.trim())
                   }
@@ -130,7 +153,10 @@ export function GeneralSettingsTab() {
                   }
                 } catch (error) {
                   void logger.error("Ошибка при выборе директории:", { error: String(error) })
-                  const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/screenshots")
+                  const promptResult = window.prompt(
+                    t("dialogs.userSettings.selectFolderPrompt"),
+                    defaultScreenshotsPath || "Loading...",
+                  )
                   if (promptResult) {
                     handleScreenshotsPathChange(promptResult.trim())
                   }
@@ -153,13 +179,13 @@ export function GeneralSettingsTab() {
             <Input
               value={playerScreenshotsPath}
               onChange={(e) => handlePlayerScreenshotsPathChange(e.target.value)}
-              placeholder="public/media"
+              placeholder={defaultPlayerScreenshotsPath || "Loading..."}
               className="h-9 pr-8 font-mono text-sm"
             />
-            {playerScreenshotsPath && playerScreenshotsPath !== "public/media" && (
+            {playerScreenshotsPath && playerScreenshotsPath !== defaultPlayerScreenshotsPath && (
               <button
                 type="button"
-                onClick={() => handlePlayerScreenshotsPathChange("public/media")}
+                onClick={() => handlePlayerScreenshotsPathChange(defaultPlayerScreenshotsPath)}
                 className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 title={t("dialogs.userSettings.clearPath")}
               >
@@ -175,7 +201,10 @@ export function GeneralSettingsTab() {
             onClick={() => {
               void (async () => {
                 if (!platform) {
-                  const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/media")
+                  const promptResult = window.prompt(
+                    t("dialogs.userSettings.selectFolderPrompt"),
+                    defaultPlayerScreenshotsPath || "Loading...",
+                  )
                   if (promptResult) {
                     handlePlayerScreenshotsPathChange(promptResult.trim())
                   }
@@ -197,7 +226,10 @@ export function GeneralSettingsTab() {
                   }
                 } catch (error) {
                   void logger.error("Ошибка при выборе директории:", { error: String(error) })
-                  const promptResult = window.prompt(t("dialogs.userSettings.selectFolderPrompt"), "public/media")
+                  const promptResult = window.prompt(
+                    t("dialogs.userSettings.selectFolderPrompt"),
+                    defaultPlayerScreenshotsPath || "Loading...",
+                  )
                   if (promptResult) {
                     handlePlayerScreenshotsPathChange(promptResult.trim())
                   }

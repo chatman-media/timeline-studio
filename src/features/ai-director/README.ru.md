@@ -106,7 +106,7 @@ const health = await service.healthCheck()
 
 ## Интеграция
 
-- **Зависит от**: `@/domains/ai-services`, `@/domains/media-management`, `@/features/app-state`, `@/features/timeline`
+- **Зависит от**: `@/domains/ai-services`, `@/domains/media-management`, `@/domains/project-management`, `@/features/timeline`
 - **Используется в**: `@/features/analysis-dashboard`, `@/features/ai-chat`
 
 ## Тестирование

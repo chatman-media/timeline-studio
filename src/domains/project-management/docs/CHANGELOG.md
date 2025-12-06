@@ -104,7 +104,7 @@ const projectState = useSelector(appActor, (state) => state.context.projectState
 #### 4. React Providers
 - ProjectProvider - состояние проекта
 - UserSettingsProvider - настройки пользователя
-- AppStateProvider - состояние приложения
+- ProjectManagementProvider - состояние приложения
 
 ## Использование
 
@@ -127,7 +127,7 @@ function MyComponent() {
 
 ### Providers
 - `ProjectManagementProvider` - главный провайдер
-- `AppStateProvider` - состояние приложения
+- `ProjectManagementProvider` - состояние приложения
 - `UserSettingsProvider` - настройки пользователя
 - `ProjectProvider` - состояние проекта
 

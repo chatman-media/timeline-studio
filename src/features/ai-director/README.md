@@ -106,7 +106,7 @@ const health = await service.healthCheck()
 
 ## Integration
 
-- **Depends on**: `@/domains/ai-services`, `@/domains/media-management`, `@/features/app-state`, `@/features/timeline`
+- **Depends on**: `@/domains/ai-services`, `@/domains/media-management`, `@/domains/project-management`, `@/features/timeline`
 - **Used by**: `@/features/analysis-dashboard`, `@/features/ai-chat`
 
 ## Testing

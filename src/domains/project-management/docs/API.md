@@ -111,9 +111,9 @@ function App() {
 // Упрощенная версия без дублирования состояния
 <ProjectProvider>          {/* Читает из appActor */}
   <UserSettingsProvider>   {/* Читает из userSettingsActor */}
-    <AppStateProvider>     {/* Читает из appActor */}
+    <ProjectManagementProvider>     {/* Читает из appActor */}
       {children}
-    </AppStateProvider>
+    </ProjectManagementProvider>
   </UserSettingsProvider>
 </ProjectProvider>
 ```
@@ -122,7 +122,7 @@ function App() {
 
 Для более гранулярного контроля:
 
-- `AppStateProvider` - состояние приложения (использует `appActor` из оркестратора)
+- `ProjectManagementProvider` - состояние приложения (использует `appActor` из оркестратора)
 - `UserSettingsProvider` - настройки пользователя (использует `userSettingsActor` из оркестратора)
 - `ProjectProvider` - состояние проекта (использует `appActor` из оркестратора)
 

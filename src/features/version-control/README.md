@@ -72,7 +72,7 @@ function ProjectHeader() {
 ```
 
 ## Integration
-- **Depends on**: @/features/app-state (backend sync), Unified command system
+- **Depends on**: @/domains/project-management (backend sync), Unified command system
 - **Used by**: User Settings modal → Version Control tab
 
 ## Testing

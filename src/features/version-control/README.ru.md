@@ -72,7 +72,7 @@ function ProjectHeader() {
 ```
 
 ## Интеграция
-- **Зависит от**: @/features/app-state (backend sync), Унифицированная система команд
+- **Зависит от**: @/domains/project-management (backend sync), Унифицированная система команд
 - **Используется в**: Модальное окно User Settings → вкладка Version Control
 
 ## Тестирование

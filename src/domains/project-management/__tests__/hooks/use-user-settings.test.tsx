@@ -10,7 +10,7 @@ import { useUserSettings } from "../../hooks/use-user-settings"
 import { resetProjectManagementOrchestrator } from "../../services/project-management-orchestrator"
 
 // Mock BackendSync
-vi.mock("@/features/app-state/services/backend-sync", () => ({
+vi.mock("@/domains/project-management/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     connected: true,
     connect: vi.fn().mockResolvedValue(undefined),

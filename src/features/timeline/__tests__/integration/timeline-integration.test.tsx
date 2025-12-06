@@ -31,7 +31,7 @@ const mockConnect = vi.fn()
 const mockDisconnect = vi.fn()
 const mockGetProjectState = vi.fn()
 
-vi.mock("@/features/app-state/services/backend-sync", () => {
+vi.mock("@/domains/project-management/services/backend-sync", () => {
   const mockExecuteCommand = vi.fn().mockResolvedValue({ success: true, data: null, error: null })
   const mockOnStateChange = vi.fn().mockReturnValue(() => {})
   const mockOnEvent = vi.fn().mockReturnValue(() => {})

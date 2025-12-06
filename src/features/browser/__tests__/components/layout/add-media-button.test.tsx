@@ -9,7 +9,7 @@ import { AddMediaButton } from "../../../components/layout/add-media-button"
 
 // Мокаем BackendSync
 const mockExecuteCommand = vi.fn()
-vi.mock("@/features/app-state/services/backend-sync", () => ({
+vi.mock("@/domains/project-management/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     executeCommand: mockExecuteCommand,
   })),

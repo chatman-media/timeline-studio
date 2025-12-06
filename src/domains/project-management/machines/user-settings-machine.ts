@@ -127,8 +127,8 @@ const initialContext: UserSettingsContextType = {
   previewSizes: DEFAULT_CONTENT_SIZES,
   activeTab: DEFAULT_TAB, // Активный таб по умолчанию
   layoutMode: DEFAULT_LAYOUT, // Макет по умолчанию
-  screenshotsPath: "public/screenshots", // Путь для скриншотов по умолчанию
-  playerScreenshotsPath: "public/media", // Путь для скриншотов плеера по умолчанию
+  screenshotsPath: "", // Путь для скриншотов (будет установлен из AppDirectories при инициализации)
+  playerScreenshotsPath: "", // Путь для скриншотов плеера (будет установлен из AppDirectories при инициализации)
   playerVolume: 100, // Громкость плеера по умолчанию (100%)
 
   // AI сервисы - пустые по умолчанию

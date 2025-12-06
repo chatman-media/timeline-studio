@@ -111,7 +111,7 @@ let projects_dir = AppDirectoriesService::get_projects_directory().await?;
 import { createLogger } from '@/lib/tauri-logger'
 const logger = createLogger('ApplicationDirectories')
 
-import { appDirectoriesService } from '@/features/app-state/services';
+import { appDirectoriesService } from '@/domains/project-management/services';
 
 // Получить все директории
 const directories = await appDirectoriesService.getAppDirectories();

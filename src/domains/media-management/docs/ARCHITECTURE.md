@@ -537,7 +537,7 @@ media-management
     ├── @/domains/project-management
     │   └── AppCommands for media operations
     │
-    ├── @/features/app-state/services/backend-sync
+    ├── @/domains/project-management/services/backend-sync
     │   └── BackendSync for event subscription
     │
     ├── @/types/generated/state-types-extensions

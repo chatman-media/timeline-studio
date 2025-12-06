@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { VideoEditingOrchestrator } from "../../services/video-editing-orchestrator"
 
 // Mock dependencies
-vi.mock("@/features/app-state/services/backend-sync", () => ({
+vi.mock("@/domains/project-management/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onStateChange: vi.fn((_callback) => {
       // Return unsubscribe function

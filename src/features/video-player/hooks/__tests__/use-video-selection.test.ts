@@ -10,7 +10,7 @@ const mockPlayerState = {
   videoSource: "browser" as "browser" | "timeline",
 }
 
-vi.mock("@/features/app-state/services/backend-sync", () => ({
+vi.mock("@/domains/project-management/services/backend-sync", () => ({
   getBackendSync: () => ({
     onStateChange: vi.fn(() => () => {}),
     sendCommand: vi.fn(),

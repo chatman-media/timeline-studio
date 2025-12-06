@@ -58,7 +58,7 @@ vi.mock("../../providers/browser-resources-provider", () => ({
 }))
 
 // Мокаем BackendSync для BrowserProvider
-vi.mock("@/features/app-state/services/backend-sync", () => {
+vi.mock("@/domains/project-management/services/backend-sync", () => {
   let mockBrowserState = {
     active_tab: "media" as const,
     tab_settings: {

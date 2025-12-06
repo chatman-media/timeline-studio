@@ -1,4 +1,4 @@
-import { act } from "@testing-library/react"
+import { act, waitFor } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 import { renderWithBase, screen } from "@/test/test-utils"
@@ -6,36 +6,69 @@ import { renderWithBase, screen } from "@/test/test-utils"
 import { NoFiles } from "../../components/no-files"
 
 describe("NoFiles", () => {
-  it("должен рендериться для типа media", () => {
+  it("должен рендериться для типа media", async () => {
     renderWithBase(<NoFiles type="media" />)
 
     expect(screen.getByText("Медиафайлы не найдены")).toBeInTheDocument()
     expect(screen.getByText("Добавьте видео, аудио или фото файлы для работы с проектом")).toBeInTheDocument()
-    expect(screen.getByText("/public/media/")).toBeInTheDocument()
+
+    // Ожидаем загрузку путей из AppDirectories
+    await waitFor(
+      () => {
+        // Проверяем что путь загрузился (он будет из моков - /mock/media)
+        const pathElement = screen.queryByText(/\/mock\/media/)
+        expect(pathElement).toBeInTheDocument()
+      },
+      { timeout: 2000 },
+    )
   })
 
-  it("должен рендериться для типа music", () => {
+  it("должен рендериться для типа music", async () => {
     renderWithBase(<NoFiles type="music" />)
 
     expect(screen.getByText("Музыкальные файлы не найдены")).toBeInTheDocument()
     expect(screen.getByText("Добавьте музыку и звуковые эффекты для озвучивания проекта")).toBeInTheDocument()
-    expect(screen.getByText("/public/music/")).toBeInTheDocument()
+
+    // Ожидаем загрузку путей
+    await waitFor(
+      () => {
+        const pathElement = screen.queryByText(/Music/)
+        expect(pathElement).toBeInTheDocument()
+      },
+      { timeout: 2000 },
+    )
   })
 
-  it("должен рендериться для типа effects", () => {
+  it("должен рендериться для типа effects", async () => {
     renderWithBase(<NoFiles type="effects" />)
 
     expect(screen.getByText("Эффекты не найдены")).toBeInTheDocument()
     expect(screen.getByText("Добавьте видеоэффекты для улучшения ваших клипов")).toBeInTheDocument()
-    expect(screen.getByText("/public/effects/")).toBeInTheDocument()
+
+    // Ожидаем загрузку путей
+    await waitFor(
+      () => {
+        const pathElement = screen.queryByText(/Effects/)
+        expect(pathElement).toBeInTheDocument()
+      },
+      { timeout: 2000 },
+    )
   })
 
-  it("должен рендериться для типа filters", () => {
+  it("должен рендериться для типа filters", async () => {
     renderWithBase(<NoFiles type="filters" />)
 
     expect(screen.getByText("Фильтры не найдены")).toBeInTheDocument()
     expect(screen.getByText("Добавьте цветовые фильтры и коррекцию для видео")).toBeInTheDocument()
-    expect(screen.getByText("/public/filters/")).toBeInTheDocument()
+
+    // Ожидаем загрузку путей
+    await waitFor(
+      () => {
+        const pathElement = screen.queryByText(/Filters/)
+        expect(pathElement).toBeInTheDocument()
+      },
+      { timeout: 2000 },
+    )
   })
 
   it("должен показывать кнопку импорта когда передан onImport", () => {

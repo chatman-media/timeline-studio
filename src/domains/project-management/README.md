@@ -36,7 +36,7 @@ function MyComponent() {
 | Provider | Purpose |
 |----------|---------|
 | `ProjectManagementProvider` | Главный провайдер (использует оркестратор как single source of truth) |
-| `AppStateProvider` | Состояние приложения (читает из оркестратора) |
+| `ProjectManagementProvider` | Состояние приложения (читает из оркестратора) |
 | `UserSettingsProvider` | Настройки пользователя (читает из оркестратора) |
 | `ProjectProvider` | Состояние проекта (читает из оркестратора) |
 
@@ -67,7 +67,7 @@ function MyComponent() {
 ## Dependencies
 
 **Internal:**
-- `@/features/app-state/services/store-service` - Tauri Store
+- `@/domains/project-management/services/store-service` - Tauri Store
 - `@/types/generated/tauri-bindings` - Generated types
 
 **External:**

@@ -3,7 +3,7 @@ import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Мокаем backend-sync ДО импорта компонентов
-vi.mock("@/features/app-state/services/backend-sync", () => ({
+vi.mock("@/domains/project-management/services/backend-sync", () => ({
   getBackendSync: () => ({
     onStateChange: vi.fn(() => () => {}),
     onEvent: vi.fn(() => () => {}),

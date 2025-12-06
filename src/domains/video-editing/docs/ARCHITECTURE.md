@@ -547,7 +547,7 @@ video-editing
     ├── @/domains/project-management
     │   └── project settings
     │
-    ├── @/features/app-state
+    ├── @/domains/project-management
     │   └── BackendSync service
     │
     └── @/types/generated/state-types

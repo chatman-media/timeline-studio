@@ -91,7 +91,7 @@ function MediaBrowser() {
 ## Dependencies
 
 **Internal:**
-- `@/features/app-state/services/backend-sync` - BackendSync
+- `@/domains/project-management/services/backend-sync` - BackendSync
 - `@/types/generated/tauri-bindings` - Tauri types/commands
 
 **External:**

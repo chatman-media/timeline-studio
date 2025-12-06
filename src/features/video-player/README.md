@@ -94,7 +94,7 @@ function PlayerComponent() {
 ```
 
 ## Integration
-- **Depends on**: @/features/project-settings, @/features/app-state, @/lib/tauri-utils
+- **Depends on**: @/features/project-settings, @/domains/project-management, @/lib/tauri-utils
 - **Used by**: @/features/media-studio, @/features/timeline, @/features/browser, @/features/effects
 
 ## Testing

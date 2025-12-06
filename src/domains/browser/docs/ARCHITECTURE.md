@@ -234,7 +234,7 @@ Initial state received
 ```
 browser
     │
-    ├── @/features/app-state/services/backend-sync
+    ├── @/domains/project-management/services/backend-sync
     │   └── BackendSync для коммуникации с backend
     │
     ├── @/features/media/utils/preview-sizes

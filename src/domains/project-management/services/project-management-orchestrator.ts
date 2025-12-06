@@ -497,16 +497,56 @@ export class ProjectManagementOrchestrator {
       // Загружаем настройки
       const savedSettings = await storeService.getUserSettings()
 
+      // Получаем пути из AppDirectories для инициализации
+      let defaultPaths: { screenshotsPath?: string; playerScreenshotsPath?: string } = {}
+
+      try {
+        // Проверяем, доступен ли Tauri API
+        if (isServiceEnabled("platform")) {
+          const { appDirectoriesService } = await import("./app-directories-service")
+          const directories = await appDirectoriesService.getAppDirectories()
+
+          // Используем пути из пользовательской директории
+          defaultPaths = {
+            screenshotsPath: directories.snapshot_dir,
+            playerScreenshotsPath: directories.media_dir,
+          }
+
+          logger.info("[Project Management Orchestrator] Initialized paths from AppDirectories:", {
+            data: defaultPaths,
+          })
+        }
+      } catch (error) {
+        // В случае ошибки (например, в тестовом окружении) используем пустые строки
+        logger.warn("[Project Management Orchestrator] Could not load AppDirectories, paths will be empty:", {
+          error,
+        })
+      }
+
       if (savedSettings) {
         logger.info("[Project Management Orchestrator] Loaded user settings from store")
 
         // Обновляем актора с загруженными настройками
+        // Если пути не были сохранены ранее, используем значения из AppDirectories
         this.userSettingsActor.send({
           type: "UPDATE_ALL",
-          settings: savedSettings,
+          settings: {
+            ...savedSettings,
+            // Используем сохраненные пути, если они есть, иначе пути из AppDirectories
+            screenshotsPath: savedSettings.screenshotsPath || defaultPaths.screenshotsPath || "",
+            playerScreenshotsPath: savedSettings.playerScreenshotsPath || defaultPaths.playerScreenshotsPath || "",
+          },
         })
       } else {
-        logger.info("[Project Management Orchestrator] No saved settings found, using defaults")
+        logger.info("[Project Management Orchestrator] No saved settings found, initializing with AppDirectories paths")
+
+        // Если нет сохраненных настроек, инициализируем пути из AppDirectories
+        if (defaultPaths.screenshotsPath || defaultPaths.playerScreenshotsPath) {
+          this.userSettingsActor.send({
+            type: "UPDATE_ALL",
+            settings: defaultPaths,
+          })
+        }
       }
     } catch (error) {
       logger.error("[Project Management Orchestrator] Failed to load user settings:", { error })

@@ -25,7 +25,7 @@ vi.mock("@/lib/tauri-logger", () => ({
     errorSync: vi.fn(),
   })),
 }))
-vi.mock("@/features/app-state/services/backend-sync", () => ({
+vi.mock("@/domains/project-management/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     onEvent: vi.fn(() => () => {}),
     onStateChange: vi.fn(() => () => {}),

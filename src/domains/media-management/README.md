@@ -165,7 +165,7 @@ function DirectOrchestratorUsage() {
 
 **Internal:**
 - `@/domains/project-management` - AppCommands
-- `@/features/app-state/services/backend-sync` - BackendSync
+- `@/domains/project-management/services/backend-sync` - BackendSync
 - `@/lib/tauri-logger` - Logging
 
 **External:**

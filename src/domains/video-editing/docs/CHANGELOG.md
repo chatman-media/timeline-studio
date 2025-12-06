@@ -277,7 +277,7 @@
 ### Internal
 - `@/domains/shared` - Events, types, utilities
 - `@/domains/project-management` - Project settings
-- `@/features/app-state` - BackendSync service
+- `@/domains/project-management` - BackendSync service
 - `@/types/generated/state-types` - Backend command types
 
 ### External

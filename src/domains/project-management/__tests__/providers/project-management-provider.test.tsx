@@ -9,7 +9,7 @@ import { type ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { ProjectSettings } from "@/types/generated/tauri-bindings"
 import {
-  AppStateProvider,
+  ProjectManagementProvider,
   ProjectManagementProvider,
   ProjectProvider,
   UserSettingsProvider,
@@ -245,10 +245,10 @@ describe("Project Management Providers", () => {
     })
   })
 
-  describe("AppStateProvider", () => {
+  describe("ProjectManagementProvider", () => {
     it("should provide app state context", () => {
       const { result } = renderHook(() => useAppState(), {
-        wrapper: AppStateProvider,
+        wrapper: ProjectManagementProvider,
       })
 
       expect(result.current.isConnected).toBeDefined()
@@ -259,7 +259,7 @@ describe("Project Management Providers", () => {
 
     it("should provide retry connection function", () => {
       const { result } = renderHook(() => useAppState(), {
-        wrapper: AppStateProvider,
+        wrapper: ProjectManagementProvider,
       })
 
       expect(typeof result.current.retryConnection).toBe("function")
@@ -271,14 +271,14 @@ describe("Project Management Providers", () => {
 
       expect(() => {
         renderHook(() => useAppState())
-      }).toThrow("useAppState must be used within AppStateProvider")
+      }).toThrow("useAppState must be used within ProjectManagementProvider")
 
       console.error = originalError
     })
 
     it("should track backend status", () => {
       const { result } = renderHook(() => useAppState(), {
-        wrapper: AppStateProvider,
+        wrapper: ProjectManagementProvider,
       })
 
       expect(result.current.backendStatus.connected).toBe(true)
@@ -288,7 +288,7 @@ describe("Project Management Providers", () => {
 
     it("should handle retry connection", async () => {
       const { result } = renderHook(() => useAppState(), {
-        wrapper: AppStateProvider,
+        wrapper: ProjectManagementProvider,
       })
 
       result.current.retryConnection()

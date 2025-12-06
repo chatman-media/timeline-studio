@@ -7,10 +7,15 @@
 
 import { FileText, Filter, FolderOpen, Music, Palette, Sparkles, Upload, Video } from "lucide-react"
 import type React from "react"
+import { useEffect, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("NoFiles")
 
 export type MediaType =
   | "media"
@@ -38,12 +43,12 @@ interface MediaTypeConfig {
   folderText: string
 }
 
-const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
+// Базовая конфигурация без путей (пути будут загружены динамически)
+const BASE_MEDIA_CONFIGS: Record<MediaType, Omit<MediaTypeConfig, "folders">> = {
   media: {
     title: "Медиафайлы не найдены",
     description: "Добавьте видео, аудио или фото файлы для работы с проектом",
     icon: Video,
-    folders: ["/public/media/"],
     formats: [
       "Видео: MP4, MOV, AVI, MKV, WEBM, INSV (360°)",
       "Аудио: MP3, WAV, AAC, ALAC, OGG, FLAC",
@@ -56,7 +61,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Музыкальные файлы не найдены",
     description: "Добавьте музыку и звуковые эффекты для озвучивания проекта",
     icon: Music,
-    folders: ["/public/music/"],
     formats: ["MP3, WAV, AAC, ALAC, OGG, FLAC"],
     importText: "Импортировать музыку",
     folderText: "Или поместите музыку в папку",
@@ -65,7 +69,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Эффекты не найдены",
     description: "Добавьте видеоэффекты для улучшения ваших клипов",
     icon: Sparkles,
-    folders: ["/public/effects/"],
     formats: ["JSON файлы с описанием эффектов"],
     importText: "Импортировать эффекты",
     folderText: "Или поместите эффекты в папку",
@@ -74,7 +77,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Фильтры не найдены",
     description: "Добавьте цветовые фильтры и коррекцию для видео",
     icon: Filter,
-    folders: ["/public/filters/"],
     formats: ["JSON файлы с настройками фильтров"],
     importText: "Импортировать фильтры",
     folderText: "Или поместите фильтры в папку",
@@ -83,7 +85,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Переходы не найдены",
     description: "Добавьте переходы между клипами для плавного монтажа",
     icon: Palette,
-    folders: ["/public/transitions/"],
     formats: ["JSON файлы с анимациями переходов"],
     importText: "Импортировать переходы",
     folderText: "Или поместите переходы в папку",
@@ -92,7 +93,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Шаблоны не найдены",
     description: "Добавьте готовые шаблоны для быстрого создания проектов",
     icon: FileText,
-    folders: ["/public/templates/"],
     formats: ["JSON файлы с настройками шаблонов"],
     importText: "Импортировать шаблоны",
     folderText: "Или поместите шаблоны в папку",
@@ -101,7 +101,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Стилестические шаблоны не найдены",
     description: "Добавьте стилизованные шаблоны с готовым дизайном",
     icon: Palette,
-    folders: ["/public/style-templates/"],
     formats: ["JSON файлы со стилями и настройками"],
     importText: "Импортировать стилестические шаблоны",
     folderText: "Или поместите шаблоны в папку",
@@ -110,7 +109,6 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
     title: "Субтитры не найдены",
     description: "Добавьте файлы субтитров или создайте новые",
     icon: FileText,
-    folders: ["/public/subtitles/"],
     formats: ["SRT, VTT, ASS, SSA файлы субтитров"],
     importText: "Импортировать субтитры",
     folderText: "Или поместите субтитры в папку",
@@ -118,8 +116,44 @@ const MEDIA_CONFIGS: Record<MediaType, MediaTypeConfig> = {
 }
 
 export function NoFiles({ type, onImport, className }: NoFilesProps) {
-  const config = MEDIA_CONFIGS[type]
-  const IconComponent = config.icon
+  const [folders, setFolders] = useState<string[]>([])
+  const [isLoadingFolders, setIsLoadingFolders] = useState(true)
+
+  const baseConfig = BASE_MEDIA_CONFIGS[type]
+  const IconComponent = baseConfig.icon
+
+  // Загружаем пути из AppDirectories при монтировании
+  useEffect(() => {
+    const loadFolders = async () => {
+      try {
+        const directories = await appDirectoriesService.getAppDirectories()
+        const mediaSubdirs = appDirectoriesService.getMediaSubdirectory
+
+        // Маппинг типов медиа на поддиректории
+        const folderMap: Record<MediaType, string> = {
+          media: directories.media_dir,
+          music: mediaSubdirs("music"),
+          effects: mediaSubdirs("effects"),
+          filters: mediaSubdirs("filters"),
+          transitions: mediaSubdirs("transitions"),
+          templates: directories.media_dir, // Шаблоны в корне Media
+          "style-templates": mediaSubdirs("style_templates"),
+          subtitles: mediaSubdirs("subtitles"),
+        }
+
+        const folder = folderMap[type]
+        setFolders(folder ? [folder] : [])
+      } catch (error) {
+        logger.warn("Could not load app directories, using fallback paths:", { error })
+        // В случае ошибки (например, в тестовом окружении) показываем заглушку
+        setFolders(["Loading..."])
+      } finally {
+        setIsLoadingFolders(false)
+      }
+    }
+
+    void loadFolders()
+  }, [type])
 
   return (
     <div className={`flex h-full items-center justify-center p-8 ${className || ""}`} data-testid="no-files">
@@ -135,37 +169,39 @@ export function NoFiles({ type, onImport, className }: NoFilesProps) {
 
             {/* Заголовок и описание */}
             <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">{config.title}</h3>
-              <p className="text-sm text-muted-foreground">{config.description}</p>
+              <h3 className="font-semibold text-foreground">{baseConfig.title}</h3>
+              <p className="text-sm text-muted-foreground">{baseConfig.description}</p>
             </div>
 
             {/* Кнопка импорта */}
             {onImport && (
               <Button onClick={onImport} className="w-full">
                 <Upload className="h-4 w-4 mr-2" />
-                {config.importText}
+                {baseConfig.importText}
               </Button>
             )}
 
             {/* Инструкции по папкам */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <span>{config.folderText}</span>
-              </div>
-
-              {config.folders.map((folder, index) => (
-                <div key={index} className="flex items-center justify-center gap-2">
-                  <FolderOpen className="h-4 w-4 text-muted-foreground" />
-                  <code className="text-xs bg-muted px-2 py-1 rounded font-mono">{folder}</code>
+            {!isLoadingFolders && folders.length > 0 && (
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <span>{baseConfig.folderText}</span>
                 </div>
-              ))}
-            </div>
+
+                {folders.map((folder, index) => (
+                  <div key={index} className="flex items-center justify-center gap-2">
+                    <FolderOpen className="h-4 w-4 text-muted-foreground" />
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono">{folder}</code>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Поддерживаемые форматы */}
             <div className="space-y-2 pt-2">
               <p className="text-xs text-muted-foreground">Поддерживаемые форматы:</p>
               <div className="flex flex-wrap gap-1 justify-center">
-                {config.formats.map((format, index) => (
+                {baseConfig.formats.map((format, index) => (
                   <Badge key={index} variant="outline" className="text-xs">
                     {format}
                   </Badge>

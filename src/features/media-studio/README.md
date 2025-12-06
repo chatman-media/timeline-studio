@@ -149,7 +149,7 @@ bun test src/features/media-studio/__tests__/services/providers.test.tsx
 
 The `Providers` component combines all necessary context providers:
 - `TauriMockProvider` - Tauri API mocking for tests
-- `AppStateProvider` - Global application state
+- `ProjectManagementProvider` - Global application state
 - `UserSettingsProvider` - User preferences
 - `ModalProvider` - Modal dialog management
 - `TimelineProvider` - Timeline state

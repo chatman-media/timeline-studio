@@ -44,7 +44,7 @@ async function addClipNew(file) {
 ### 1. Отправка команды (Frontend)
 
 ```typescript
-import { getBackendSync } from "@/features/app-state/services/backend-sync"
+import { getBackendSync } from "@/domains/project-management/services/backend-sync"
 
 const backendSync = getBackendSync()
 

@@ -348,10 +348,10 @@ interface ProjectManagementProviderProps {
  */
 export function ProjectManagementProvider({ children }: ProjectManagementProviderProps) {
   return (
-    <ProjectProvider>
-      <UserSettingsProvider>
-        <AppStateProvider>{children}</AppStateProvider>
-      </UserSettingsProvider>
-    </ProjectProvider>
+    <AppStateProvider>
+      <ProjectProvider>
+        <UserSettingsProvider>{children}</UserSettingsProvider>
+      </ProjectProvider>
+    </AppStateProvider>
   )
 }

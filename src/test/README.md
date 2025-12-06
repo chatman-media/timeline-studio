@@ -31,7 +31,7 @@ src/test/
 **Автоматически мокируемые модули:**
 - `@/features/user-settings/providers/user-settings-provider`
 - `@/features/modals/providers/modal-provider`
-- `@/features/app-state/app-state-provider`
+- `@/domains/project-management/project-management-provider`
 
 ### `test-utils.tsx` - Утилиты рендеринга
 Кастомные функции рендеринга с предустановленными провайдерами:
@@ -44,7 +44,7 @@ const { getByText } = render(<MyComponent />);
 ```
 
 **Включенные провайдеры:**
-- `AppStateProvider` - глобальное состояние приложения
+- `ProjectManagementProvider` - глобальное состояние приложения
 - `ThemeProvider` - управление темами
 - `I18nextProvider` - интернационализация
 - `ModalProvider` - система модальных окон

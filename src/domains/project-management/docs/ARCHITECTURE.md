@@ -326,7 +326,7 @@ const isLoading = useSelector(appActor, (state) => state.matches({ connected: "e
 ```
 project-management
     │
-    ├── @/features/app-state/services/store-service
+    ├── @/domains/project-management/services/store-service
     │   └── Tauri Store для персистентности настроек
     │
     ├── @/types/generated/tauri-bindings
