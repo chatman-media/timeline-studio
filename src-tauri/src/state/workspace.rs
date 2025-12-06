@@ -144,7 +144,6 @@ pub async fn load_workspace_state() -> Result<WorkspaceState, String> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use tempfile::TempDir;
 
   #[test]
   fn test_default_workspace_state() {
