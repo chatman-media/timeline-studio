@@ -3,7 +3,7 @@ import { nanoid } from "nanoid"
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { createLogger } from "@/lib/tauri-logger"
-import type { MediaFile } from "../types/media"
+import type { MediaFile } from "@/domains/media-management"
 import type { Sector } from "../types/types"
 import { doTimeRangesOverlap } from "./media-utils"
 

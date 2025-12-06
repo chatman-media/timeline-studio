@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import type { MediaFile } from "../../types/media"
-import { MediaType } from "../../types/media"
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 import type { Sector } from "../../types/types"
 import { updateSectorTimeRange } from "../tracks-utils"
 

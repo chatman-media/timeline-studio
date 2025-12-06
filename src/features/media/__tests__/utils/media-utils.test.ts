@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { MediaFile } from "../../types/media"
+import type { MediaFile } from "@/domains/media-management"
 import {
   doTimeRangesOverlap,
   getFileType,

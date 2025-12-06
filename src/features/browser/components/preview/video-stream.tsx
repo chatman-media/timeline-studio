@@ -269,6 +269,21 @@ export const VideoStream = memo(
           onClick={handleClick}
           style={{ backgroundColor: "#1a1a1a" }}
         >
+          {/* Preview background - показывается сразу */}
+          {(previewData || file.thumbnailPath) && (
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: previewData
+                  ? `url(data:image/jpeg;base64,${previewData})`
+                  : file.thumbnailPath
+                    ? `url(${file.thumbnailPath})`
+                    : undefined,
+                zIndex: 0,
+              }}
+            />
+          )}
+
           <VideoElement
             file={file}
             videoUrl={videoUrl}
