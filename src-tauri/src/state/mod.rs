@@ -54,7 +54,49 @@ impl StateManager {
 
     // Load or create initial project state
     let project_state = match persistence.load_latest().await {
-      Ok(state) => Arc::new(RwLock::new(state)),
+      Ok(mut state) => {
+        // 🔧 FIX: Apply deduplication to loaded checkpoint to remove legacy duplicates
+        if let Some(ref mut project) = state.project {
+          let original_count = project.media_pool.items.len();
+
+          if original_count > 0 {
+            use std::collections::{HashMap, HashSet};
+
+            // Track unique paths
+            let mut seen_paths = HashSet::new();
+            let mut deduplicated_items = HashMap::new();
+
+            for (media_id, media_item) in &project.media_pool.items {
+              let path_key = media_item.path.clone();
+
+              if !seen_paths.contains(&path_key) {
+                seen_paths.insert(path_key.clone());
+                deduplicated_items.insert(media_id.clone(), media_item.clone());
+              } else {
+                log::warn!("Removing duplicate media entry from checkpoint: {} ({})", media_item.name, path_key);
+              }
+            }
+
+            let deduplicated_count = deduplicated_items.len();
+
+            if original_count > deduplicated_count {
+              log::warn!(
+                "Applied deduplication to loaded checkpoint: {} → {} items ({} duplicates removed)",
+                original_count,
+                deduplicated_count,
+                original_count - deduplicated_count
+              );
+
+              project.media_pool.items = deduplicated_items;
+
+              // Mark as dirty to trigger autosave with clean data
+              state.version_info.has_uncommitted_changes = true;
+            }
+          }
+        }
+
+        Arc::new(RwLock::new(state))
+      }
       Err(_) => {
         // Create a default project state with a temporary project
         let mut state = ProjectState::default();

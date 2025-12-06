@@ -57,6 +57,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
   private mediaImportActor: ActorRefFrom<typeof mediaImportMachine>
   private backend: IBackendService | null = null
   private backendUnsubscribe: (() => void) | null = null
+  private lastLoadedStateVersion: number = -1
 
   // Сервисы
   private metadataService = getMediaMetadataService()
@@ -212,14 +213,42 @@ export class MediaManagementOrchestrator implements MediaManagementService {
    * Загрузка начального состояния из backend
    */
   private loadInitialState(state: any) {
-    logger.info("[Media Management] Loading initial state from backend")
+    // Проверяем версию state чтобы избежать повторной загрузки
+    const stateVersion = state?.version ?? 0
+    if (stateVersion > 0 && stateVersion === this.lastLoadedStateVersion) {
+      logger.debug("[Media Management] Skipping loadInitialState - same version", { version: stateVersion })
+      return
+    }
+
+    logger.info("[Media Management] Loading initial state from backend", { version: stateVersion })
+    this.lastLoadedStateVersion = stateVersion
 
     const initialMediaPool = new Map<string, MediaInfo>()
 
     // Загружаем из project.media_pool (unified storage - all media here)
     if (state.project?.media_pool?.items) {
       const mediaPoolItems = state.project.media_pool.items
+      const itemCount = Object.keys(mediaPoolItems).length
+      console.warn("[MediaOrchestrator] loadInitialState: backend has", itemCount, "media items")
+
+      // Дедупликация по path - берём только первое вхождение каждого path
+      const pathToId = new Map<string, string>()
+
       Object.entries(mediaPoolItems).forEach(([mediaId, mediaItem]: [string, any]) => {
+        const existingId = pathToId.get(mediaItem.path)
+
+        if (existingId) {
+          console.warn("[MediaOrchestrator] ДУБЛЬ обнаружен:", {
+            name: mediaItem.name,
+            path: mediaItem.path,
+            existingId,
+            duplicateId: mediaId,
+          })
+          // Пропускаем дубль
+          return
+        }
+
+        pathToId.set(mediaItem.path, mediaId)
         initialMediaPool.set(mediaId, {
           id: mediaId,
           path: mediaItem.path,
@@ -235,6 +264,23 @@ export class MediaManagementOrchestrator implements MediaManagementService {
             : undefined,
         })
       })
+
+      if (itemCount > initialMediaPool.size) {
+        const duplicateCount = itemCount - initialMediaPool.size
+
+        // Используем warn для небольшого количества дублей (≤ 5), error для массовых дублей
+        if (duplicateCount <= 5) {
+          console.warn("[MediaOrchestrator] Найдено и удалено дублей:", duplicateCount, {
+            backend: itemCount,
+            afterDedup: initialMediaPool.size,
+          })
+        } else {
+          console.error("[MediaOrchestrator] ВНИМАНИЕ: Обнаружено много дублей:", duplicateCount, {
+            backend: itemCount,
+            afterDedup: initialMediaPool.size,
+          })
+        }
+      }
     }
 
     // NOTE: imported_media removed (2025-11) - all media now in media_pool
