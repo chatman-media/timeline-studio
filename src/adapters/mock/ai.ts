@@ -534,17 +534,42 @@ export class MockAIService implements IAIService {
     }
   }
 
-  async aiDirectorGetDefaultConfig(_mode: "Fast" | "Balanced" | "Quality" | "custom"): Promise<AIDirectorConfig> {
+  async aiDirectorGetDefaultConfig(_mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig> {
     return {
       performance_mode: "Balanced",
       enable_audio_analysis: true,
       enable_scene_detection: true,
       enable_video_analysis: true,
+      enable_vision_analysis: true,
+      enable_face_detection: false,
+      enable_face_analysis: false,
       enable_object_detection: false,
-      enable_face_recognition: false,
-      enable_transcription: false,
-      timeout_seconds: 300,
-      max_memory_mb: 4096,
+      enable_object_analysis: false,
+      enable_emotion_analysis: false,
+      enable_moment_detection: true,
+      enable_content_classification: true,
+      enable_composition_analysis: false,
+      enable_mood_analysis: false,
+      enable_quality_analysis: true,
+      max_processing_time: null,
+      quality_threshold: 50,
+      max_key_moments: null,
+      enable_caching: true,
+      generate_editing_recommendations: false,
+      enable_mcp_agents: false,
+      ai_provider: null,
+      ai_model: null,
+      ai_api_key: null,
+      enable_ai_enhanced_analysis: false,
+      enable_ai_descriptions: false,
+      enable_ai_mood_analysis: false,
+      enable_vision_language_model: false,
+      vlm_model: null,
+      vlm_num_frames: 5,
+      vlm_temperature: 0.7,
+      vlm_max_tokens: 500,
+      enable_parallel_processing: false,
+      max_parallel_files: null,
     }
   }
 

@@ -776,20 +776,45 @@ export class NodeAIService implements IAIService {
     }
   }
 
-  async aiDirectorGetDefaultConfig(mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> {
-    // Конвертируем lowercase параметр в PascalCase для Rust enum
-    const performanceMode =
-      mode === "custom" ? "Balanced" : mode === "fast" ? "Fast" : mode === "quality" ? "Quality" : "Balanced"
+  async aiDirectorGetDefaultConfig(mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig> {
+    const isQuality = mode === "Quality"
+    const isFast = mode === "Fast"
+
     return {
-      performance_mode: performanceMode,
+      performance_mode: mode,
       enable_audio_analysis: true,
-      enable_scene_detection: mode !== "fast",
+      enable_scene_detection: !isFast,
       enable_video_analysis: true,
-      enable_object_detection: mode === "quality",
-      enable_face_recognition: mode === "quality",
-      enable_transcription: mode !== "fast",
-      timeout_seconds: mode === "fast" ? 30 : mode === "balanced" ? 60 : 120,
-      max_memory_mb: 1024,
+      enable_vision_analysis: true,
+      enable_face_detection: isQuality,
+      enable_face_analysis: isQuality,
+      enable_object_detection: isQuality,
+      enable_object_analysis: isQuality,
+      enable_emotion_analysis: isQuality,
+      enable_moment_detection: true,
+      enable_content_classification: !isFast,
+      enable_composition_analysis: isQuality,
+      enable_mood_analysis: isQuality,
+      enable_quality_analysis: true,
+      max_processing_time: isFast ? 30 : isQuality ? 120 : null,
+      quality_threshold: isFast ? 30 : isQuality ? 70 : 50,
+      max_key_moments: isQuality ? 100 : null,
+      enable_caching: true,
+      generate_editing_recommendations: !isFast,
+      enable_mcp_agents: false,
+      ai_provider: null,
+      ai_model: null,
+      ai_api_key: null,
+      enable_ai_enhanced_analysis: false,
+      enable_ai_descriptions: false,
+      enable_ai_mood_analysis: false,
+      enable_vision_language_model: false,
+      vlm_model: null,
+      vlm_num_frames: 5,
+      vlm_temperature: 0.7,
+      vlm_max_tokens: 500,
+      enable_parallel_processing: !isFast,
+      max_parallel_files: null,
     }
   }
 
@@ -797,11 +822,11 @@ export class NodeAIService implements IAIService {
     const errors: string[] = []
     const warnings: string[] = []
 
-    if (config.timeout_seconds < 10) {
-      errors.push("Timeout too short")
+    if (config.max_processing_time !== null && config.max_processing_time < 10) {
+      errors.push("Processing time too short")
     }
-    if (config.max_memory_mb < 256) {
-      warnings.push("Low memory limit may cause issues")
+    if (config.quality_threshold < 0 || config.quality_threshold > 100) {
+      errors.push("Quality threshold must be between 0 and 100")
     }
 
     return { valid: errors.length === 0, errors, warnings }
