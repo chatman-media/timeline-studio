@@ -163,7 +163,12 @@ export function createMediaUrl(filePath: string, options: MediaUrlOptions): stri
     logger.debugSync("convertFileSrc success", { assetUrl, type })
 
     // Проверяем, что получили валидный URL
-    if (assetUrl && (assetUrl.startsWith("asset://") || assetUrl.startsWith("http://asset.localhost") || assetUrl.startsWith("file://"))) {
+    if (
+      assetUrl &&
+      (assetUrl.startsWith("asset://") ||
+        assetUrl.startsWith("http://asset.localhost") ||
+        assetUrl.startsWith("file://"))
+    ) {
       return assetUrl
     }
 

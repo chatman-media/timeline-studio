@@ -102,7 +102,12 @@ export function convertVideoSrc(filePath: string): string {
     logger.debugSync("convertFileSrc result", { assetUrl })
 
     // Если URL начинается с asset://, http://asset.localhost или file://, возвращаем как есть
-    if (assetUrl && (assetUrl.startsWith("asset://") || assetUrl.startsWith("http://asset.localhost") || assetUrl.startsWith("file://"))) {
+    if (
+      assetUrl &&
+      (assetUrl.startsWith("asset://") ||
+        assetUrl.startsWith("http://asset.localhost") ||
+        assetUrl.startsWith("file://"))
+    ) {
       return assetUrl
     }
 
