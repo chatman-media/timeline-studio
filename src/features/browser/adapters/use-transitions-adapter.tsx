@@ -6,7 +6,6 @@ import { useDraggable } from "@/features/drag-drop"
 import type { MediaFile } from "@/features/media/types/media"
 import { TransitionPreview } from "@/features/transitions/components/transition-preview"
 import type { Transition } from "@/features/transitions/types/transitions"
-import { convertVideoSrc } from "@/lib/tauri-utils"
 
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 
@@ -38,13 +37,13 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
   )
 
   // Демонстрационные видео для превью переходов
-  // В development режиме используем прямые пути, в production - через public
+  // Статические файлы из public/, не используем convertVideoSrc
   const demoVideos = {
     source: {
-      path: window.location.hostname === "localhost" ? "/t1.mp4" : "./t1.mp4",
+      path: "/t1.mp4", // Статичный файл из public/, не нужен convertVideoSrc
     } as MediaFile,
     target: {
-      path: window.location.hostname === "localhost" ? "/t2.mp4" : "./t2.mp4",
+      path: "/t2.mp4", // Статичный файл из public/, не нужен convertVideoSrc
     } as MediaFile,
   }
 
@@ -63,7 +62,7 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
         {/* Transition preview thumbnail */}
         <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden relative">
           <video
-            src={convertVideoSrc(window.location.hostname === "localhost" ? "/t1.mp4" : "./t1.mp4")}
+            src="/t1.mp4" // Статичный файл из public/, не нужен convertVideoSrc
             className="w-full h-full object-cover"
             muted
             playsInline

@@ -9,7 +9,6 @@ import { type MediaFile, MediaType } from "@/features/media/types/media"
 import type { TransitionResource } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
-import { convertVideoSrc } from "@/lib/tauri-utils"
 
 import { useTransitions } from "../hooks/use-transitions"
 
@@ -570,7 +569,7 @@ export function TransitionPreview({
               {/* Исходное видео (видимое в начале) */}
               <video
                 ref={sourceVideoRef}
-                src={convertVideoSrc(sourceVideo.path)}
+                src={sourceVideo.path} // Для статических файлов из public/ не используем convertVideoSrc
                 className="h-full w-full origin-center object-cover transition-all duration-1000"
                 muted
                 loop
@@ -582,7 +581,7 @@ export function TransitionPreview({
               {/* Целевое видео (появляется при переходе) */}
               <video
                 ref={targetVideoRef}
-                src={convertVideoSrc(targetVideo.path)}
+                src={targetVideo.path} // Для статических файлов из public/ не используем convertVideoSrc
                 className="absolute inset-0 h-full w-full origin-center object-cover opacity-0 transition-all duration-1000"
                 muted
                 loop
