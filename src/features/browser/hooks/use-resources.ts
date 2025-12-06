@@ -6,7 +6,7 @@ import type { VideoFilter } from "@/features/filters/types/filters"
 import type { ResourceType } from "@/features/resources/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
-import { useEffectsProvider } from "../providers/browser-resources-provider"
+import { useBrowserResourcesProvider } from "../providers/browser-resources-provider"
 import type {
   LoadingState,
   Resource,
@@ -21,7 +21,7 @@ const logger = createLogger("UseResources")
  * Хук для получения всех эффектов
  */
 export function useEffects(source?: ResourceSource) {
-  const { api, isInitialized } = useEffectsProvider()
+  const { api, isInitialized } = useBrowserResourcesProvider()
   const [effects, setEffects] = useState<VideoEffect[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -57,7 +57,7 @@ export function useEffects(source?: ResourceSource) {
  * Хук для получения всех фильтров
  */
 export function useFilters(source?: ResourceSource) {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [filters, setFilters] = useState<VideoFilter[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -86,7 +86,7 @@ export function useFilters(source?: ResourceSource) {
  * Хук для получения всех переходов
  */
 export function useTransitions(source?: ResourceSource) {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [transitions, setTransitions] = useState<Transition[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -115,7 +115,7 @@ export function useTransitions(source?: ResourceSource) {
  * Хук для получения ресурсов по типу
  */
 export function useResources(type: ResourceType, source?: ResourceSource) {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -144,7 +144,7 @@ export function useResources(type: ResourceType, source?: ResourceSource) {
  * Хук для получения ресурса по ID
  */
 export function useResourceById(type: ResourceType, id: string) {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [resource, setResource] = useState<Resource | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -173,7 +173,7 @@ export function useResourceById(type: ResourceType, id: string) {
  * Хук для поиска ресурсов
  */
 export function useResourcesSearch(type: ResourceType, options: SearchOptions) {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [results, setResults] = useState<Resource[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -243,7 +243,7 @@ export function useResourcesByComplexity(type: ResourceType, complexity: string)
  * Хук для получения состояния загрузки
  */
 export function useLoadingState() {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [loadingState, setLoadingState] = useState<LoadingState>(api.getLoadingState())
 
   useEffect(() => {
@@ -258,7 +258,7 @@ export function useLoadingState() {
  * Хук для получения статистики ресурсов
  */
 export function useResourcesStats() {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const [stats, setStats] = useState<ResourceStats>(api.getStats())
 
   useEffect(() => {
@@ -283,7 +283,7 @@ export function useResourcesStats() {
  * Хук для управления источниками данных
  */
 export function useResourceSources() {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
   const loadingState = useLoadingState()
 
   const loadSource = useCallback(
@@ -335,7 +335,7 @@ export function useResourceSources() {
  * Хук для управления кэшем
  */
 export function useResourcesCache() {
-  const { api } = useEffectsProvider()
+  const { api } = useBrowserResourcesProvider()
 
   const clearCache = useCallback(
     (type?: ResourceType) => {

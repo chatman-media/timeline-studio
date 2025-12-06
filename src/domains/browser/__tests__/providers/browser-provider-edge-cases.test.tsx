@@ -21,8 +21,7 @@ const createWrapper = () => {
   return Wrapper
 }
 
-// TODO: Обновить тесты для работы с backend events вместо синхронного состояния
-describe.skip("BrowserProvider - Edge Cases", () => {
+describe("BrowserProvider - Edge Cases", () => {
   beforeEach(() => {
     clearStateChangeHandlers()
     vi.clearAllMocks()

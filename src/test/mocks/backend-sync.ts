@@ -171,6 +171,13 @@ function handleBrowserCommand(command: ProjectCommand) {
           ...mockBrowserState,
           active_tab: command.params.tab,
         }
+        // Emit BrowserEvent for tab switch
+        triggerBrowserEvent({
+          event_type: "TabSwitched",
+          data: {
+            tab: command.params.tab,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -188,6 +195,14 @@ function handleBrowserCommand(command: ProjectCommand) {
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "SearchQueryChanged",
+          data: {
+            tab,
+            query: command.params.query,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -196,16 +211,25 @@ function handleBrowserCommand(command: ProjectCommand) {
       const favTab = command.params?.tab || activeTab
       const currentSettings = mockBrowserState.tab_settings[favTab]
       if (currentSettings) {
+        const newShowFavorites = !currentSettings.show_favorites_only
         mockBrowserState = {
           ...mockBrowserState,
           tab_settings: {
             ...mockBrowserState.tab_settings,
             [favTab]: {
               ...currentSettings,
-              show_favorites_only: !currentSettings.show_favorites_only,
+              show_favorites_only: newShowFavorites,
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "FavoritesToggled",
+          data: {
+            tab: favTab,
+            show_favorites: newShowFavorites,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -224,6 +248,15 @@ function handleBrowserCommand(command: ProjectCommand) {
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "SortChanged",
+          data: {
+            tab,
+            sort_by: command.params.sort_by,
+            sort_order: command.params.sort_order,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -241,6 +274,14 @@ function handleBrowserCommand(command: ProjectCommand) {
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "GroupByChanged",
+          data: {
+            tab,
+            group_by: command.params.group_by,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -258,6 +299,14 @@ function handleBrowserCommand(command: ProjectCommand) {
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "FilterChanged",
+          data: {
+            tab,
+            filter_type: command.params.filter_type,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -275,6 +324,14 @@ function handleBrowserCommand(command: ProjectCommand) {
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "ViewModeChanged",
+          data: {
+            tab,
+            view_mode: command.params.view_mode,
+          },
+        } as any)
         triggerStateChange()
       }
       break
@@ -292,28 +349,44 @@ function handleBrowserCommand(command: ProjectCommand) {
             },
           },
         }
+        // Emit BrowserEvent
+        triggerBrowserEvent({
+          event_type: "PreviewSizeChanged",
+          data: {
+            tab,
+            size_index: command.params.size_index,
+          },
+        } as any)
         triggerStateChange()
       }
       break
 
     case "BrowserResetTabSettings":
       if (command.params?.tab) {
+        const defaultSettings = {
+          search_query: "",
+          show_favorites_only: false,
+          sort_by: "name",
+          sort_order: "asc",
+          group_by: "none",
+          filter_type: "all",
+          view_mode: "thumbnails",
+          preview_size_index: 2,
+        }
         mockBrowserState = {
           ...mockBrowserState,
           tab_settings: {
             ...mockBrowserState.tab_settings,
-            [command.params.tab]: {
-              search_query: "",
-              show_favorites_only: false,
-              sort_by: "name",
-              sort_order: "asc",
-              group_by: "none",
-              filter_type: "all",
-              view_mode: "thumbnails",
-              preview_size_index: 2,
-            },
+            [command.params.tab]: defaultSettings,
           },
         }
+        // Emit BrowserEvent for tab settings reset
+        triggerBrowserEvent({
+          event_type: "TabSettingsReset",
+          data: {
+            tab: command.params.tab,
+          },
+        } as any)
         triggerStateChange()
       }
       break

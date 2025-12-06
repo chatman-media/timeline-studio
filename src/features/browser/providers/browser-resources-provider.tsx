@@ -1006,6 +1006,10 @@ export function EffectsProvider({ children, config = {}, onError }: EffectsProvi
         "StyleTemplateRemoved",
         "SubtitleAdded",
         "SubtitleRemoved",
+        // Media events (unified architecture 2025-11)
+        "MediaAdded",
+        "MediaRemoved",
+        // Legacy ImportedMedia events (backward compatibility)
         "ImportedMediaAdded",
         "ImportedMediaRemoved",
         "ImportedMediaUpdated",

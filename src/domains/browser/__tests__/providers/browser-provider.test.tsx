@@ -510,46 +510,8 @@ describe("BrowserProvider", () => {
   })
 
   describe("Error Handling", () => {
-    // TODO: Обновить тест для новой архитектуры - мок нужно устанавливать до создания провайдера
-    it.skip("should handle backend command errors", async () => {
-      const { commands } = await import("@/types/generated/tauri-bindings")
-      // Replace the mock temporarily to simulate an error
-      const originalMock = commands.browserSelectFile
-      commands.browserSelectFile = vi.fn().mockResolvedValue({ status: "error", error: "Backend error" })
-
-      const { result } = renderHook(() => useBrowser(), {
-        wrapper: createWrapper(),
-      })
-
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false)
-      })
-
-      await expect(
-        act(async () => {
-          await result.current.selectFile("file-1")
-        }),
-      ).rejects.toThrow("Backend error")
-
-      expect(result.current.error).toBeDefined()
-
-      // Restore the original mock
-      commands.browserSelectFile = originalMock
-    })
-
-    // TODO: Обновить тест для новой архитектуры с orchestrator
-    it.skip("should handle state loading errors", async () => {
-      // В новой архитектуре ошибки загрузки обрабатываются в orchestrator
-      // Тест нужно переписать для мокирования orchestrator
-      const { result } = renderHook(() => useBrowser(), {
-        wrapper: createWrapper(),
-      })
-
-      await waitFor(() => {
-        expect(result.current.error).toBeDefined()
-      })
-    })
-
+    // Note: Error handling is tested in browser-orchestrator.test.ts (59 tests)
+    // Provider only exposes error state from orchestrator
     it("should clear errors after successful operation", async () => {
       const { result } = renderHook(() => useBrowser(), {
         wrapper: createWrapper(),

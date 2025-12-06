@@ -27,12 +27,13 @@ export {
   useTemplatesAdapter,
   useTransitionsAdapter,
 } from "./hooks/use-resources"
-
 // Провайдеры
 /**
  * BrowserResourcesProvider - управляет библиотекой ДОСТУПНЫХ ресурсов для Browser
- * @deprecated Имя EffectsProvider устарело, используйте BrowserResourcesProvider
  */
+// Deprecated exports (for backward compatibility only)
+/** @deprecated Use BrowserResourcesProvider instead */
+/** @deprecated Use useBrowserResourcesProvider instead */
 export {
   BrowserResourcesProvider,
   EffectsProvider,

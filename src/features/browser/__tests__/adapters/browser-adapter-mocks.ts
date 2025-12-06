@@ -101,7 +101,7 @@ vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
 }))
 
 // Мокаем PlayerProvider
-vi.mock("@/features/video-player/services/player-provider", () => ({
+vi.mock("@/domains/video-editing/providers/player-provider", () => ({
   PlayerProvider: ({ children }: any) => children,
 }))
 
@@ -110,60 +110,62 @@ vi.mock("@/domains/ai-services/providers/chat-provider", () => ({
   ChatProvider: ({ children }: any) => children,
 }))
 
-// Мокаем EffectsProvider
-vi.mock("@/features/browser/providers/effects-provider", () => ({
+// Мокаем BrowserResourcesProvider (EffectsProvider устарел)
+const mockBrowserResourcesProvider = vi.fn(() => ({
+  api: {
+    getEffects: vi.fn(() => []),
+    getFilters: vi.fn(() => []),
+    getTransitions: vi.fn(() => []),
+    getResources: vi.fn(() => []),
+    getResourceById: vi.fn(() => null),
+    searchResources: vi.fn(() => []),
+    getResourcesByCategory: vi.fn(() => []),
+    getResourcesByTags: vi.fn(() => []),
+    getResourcesByComplexity: vi.fn(() => []),
+    loadSource: vi.fn(() => Promise.resolve({ success: true, data: [], source: "built-in", timestamp: Date.now() })),
+    isSourceLoaded: vi.fn(() => true),
+    refreshSource: vi.fn(() => Promise.resolve({ success: true, data: [], source: "built-in", timestamp: Date.now() })),
+    preloadCategory: vi.fn(() =>
+      Promise.resolve({ success: true, data: [], source: "built-in", timestamp: Date.now() }),
+    ),
+    getSourceConfig: vi.fn(() => null),
+    updateSourceConfig: vi.fn(),
+    getLoadingState: vi.fn(() => ({
+      isLoading: false,
+      loadedSources: new Set(["built-in"]),
+      loadingQueue: [],
+      error: null,
+      progress: 100,
+    })),
+    getStats: vi.fn(() => ({
+      total: 0,
+      byType: {},
+      bySource: {},
+      cacheSize: 0,
+      memoryUsage: 0,
+    })),
+    getCacheSize: vi.fn(() => 0),
+    clearCache: vi.fn(),
+    clearSourceCache: vi.fn(),
+    invalidateCache: vi.fn(),
+    onLoadingStateChange: vi.fn(() => () => {}),
+    onResourcesUpdate: vi.fn(() => () => {}),
+    onError: vi.fn(() => () => {}),
+  },
+  config: {
+    initialSources: ["built-in"],
+    backgroundLoadDelay: 1000,
+    enableCaching: true,
+    maxCacheSize: 100,
+  },
+  isInitialized: true,
+}))
+
+vi.mock("@/features/browser/providers/browser-resources-provider", () => ({
+  BrowserResourcesProvider: ({ children }: any) => children,
   EffectsProvider: ({ children }: any) => children,
-  useEffectsProvider: vi.fn(() => ({
-    api: {
-      getEffects: vi.fn(() => []),
-      getFilters: vi.fn(() => []),
-      getTransitions: vi.fn(() => []),
-      getResources: vi.fn(() => []),
-      getResourceById: vi.fn(() => null),
-      searchResources: vi.fn(() => []),
-      getResourcesByCategory: vi.fn(() => []),
-      getResourcesByTags: vi.fn(() => []),
-      getResourcesByComplexity: vi.fn(() => []),
-      loadSource: vi.fn(() => Promise.resolve({ success: true, data: [], source: "built-in", timestamp: Date.now() })),
-      isSourceLoaded: vi.fn(() => true),
-      refreshSource: vi.fn(() =>
-        Promise.resolve({ success: true, data: [], source: "built-in", timestamp: Date.now() }),
-      ),
-      preloadCategory: vi.fn(() =>
-        Promise.resolve({ success: true, data: [], source: "built-in", timestamp: Date.now() }),
-      ),
-      getSourceConfig: vi.fn(() => null),
-      updateSourceConfig: vi.fn(),
-      getLoadingState: vi.fn(() => ({
-        isLoading: false,
-        loadedSources: new Set(["built-in"]),
-        loadingQueue: [],
-        error: null,
-        progress: 100,
-      })),
-      getStats: vi.fn(() => ({
-        total: 0,
-        byType: {},
-        bySource: {},
-        cacheSize: 0,
-        memoryUsage: 0,
-      })),
-      getCacheSize: vi.fn(() => 0),
-      clearCache: vi.fn(),
-      clearSourceCache: vi.fn(),
-      invalidateCache: vi.fn(),
-      onLoadingStateChange: vi.fn(() => () => {}),
-      onResourcesUpdate: vi.fn(() => () => {}),
-      onError: vi.fn(() => () => {}),
-    },
-    config: {
-      initialSources: ["built-in"],
-      backgroundLoadDelay: 1000,
-      enableCaching: true,
-      maxCacheSize: 100,
-    },
-    isInitialized: true,
-  })),
+  useBrowserResourcesProvider: mockBrowserResourcesProvider,
+  useEffectsProvider: mockBrowserResourcesProvider,
 }))
 
 // Мокаем i18n
