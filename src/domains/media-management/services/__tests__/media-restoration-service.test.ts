@@ -5,7 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType } from "@/domains/video-editing/types/media"
+import { MediaType } from "@/domains/media-management"
 import type { SavedMediaFile, SavedMusicFile } from "../../types/saved-media"
 import {
   convertFromSavedMediaFile,

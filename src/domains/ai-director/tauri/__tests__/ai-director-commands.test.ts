@@ -63,7 +63,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
-        enable_face_recognition: true,
+        enable_face_detection: true,
         enable_transcription: false,
       }
 
@@ -152,7 +152,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: false,
         enable_video_analysis: true,
         enable_object_detection: false,
-        enable_face_recognition: false,
+        enable_face_detection: false,
         enable_transcription: false,
       }
 
@@ -247,7 +247,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: true,
         enable_video_analysis: false,
         enable_object_detection: false,
-        enable_face_recognition: false,
+        enable_face_detection: false,
         enable_transcription: false,
       }
 
@@ -266,7 +266,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
-        enable_face_recognition: false,
+        enable_face_detection: false,
         enable_transcription: false,
       }
 
@@ -284,7 +284,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
-        enable_face_recognition: true,
+        enable_face_detection: true,
         enable_transcription: true,
       }
 
@@ -304,7 +304,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
-        enable_face_recognition: true,
+        enable_face_detection: true,
         enable_transcription: false,
       }
 
@@ -332,7 +332,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
-        enable_face_recognition: true,
+        enable_face_detection: true,
         enable_transcription: true,
         max_parallel_files: 100, // Very low
       }
@@ -359,7 +359,7 @@ describe("AI Director Tauri Commands", () => {
         enable_scene_detection: false,
         enable_video_analysis: false,
         enable_object_detection: false,
-        enable_face_recognition: false,
+        enable_face_detection: false,
         enable_transcription: false,
       }
 
