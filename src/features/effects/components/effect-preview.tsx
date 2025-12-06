@@ -153,8 +153,8 @@ export function EffectPreview({
   }, [effect, videoSrc, currentVideo])
 
   /**
-   * Эффект для управления воспроизведением видео и применением эффектов
-   * Запускает видео при наведении и применяет соответствующий эффект
+   * Применение CSS-эффекта к видео
+   * Эффект применяется всегда, независимо от hover
    */
   useEffect(() => {
     if (!effect) return
@@ -196,11 +196,8 @@ export function EffectPreview({
     const playbackRate = getPlaybackRate(processedEffect)
     videoElement.playbackRate = playbackRate
 
-    // Запускаем воспроизведение в цикле
+    // Включаем зацикливание
     videoElement.loop = true
-    videoElement.play().catch((err: unknown) => {
-      void logger.info("Autoplay prevented", { error: err })
-    })
 
     // Cleanup при размонтировании
     return () => {
@@ -209,6 +206,26 @@ export function EffectPreview({
       videoElement.style.boxShadow = ""
     }
   }, [processedEffect, width, height, customParams, videoSrc, effect])
+
+  /**
+   * Управление воспроизведением при наведении
+   * При hover - проигрывается, без hover - первый кадр
+   */
+  useEffect(() => {
+    if (!videoRef.current || !videoSrc) return
+    const videoElement = videoRef.current
+
+    if (isHovering) {
+      // При наведении - проигрываем
+      videoElement.play().catch((err: unknown) => {
+        void logger.info("Autoplay prevented", { error: err })
+      })
+    } else {
+      // Без наведения - останавливаем и возвращаем на первый кадр
+      videoElement.pause()
+      videoElement.currentTime = 0
+    }
+  }, [isHovering, videoSrc])
 
   return (
     <div className="flex flex-col items-center">
