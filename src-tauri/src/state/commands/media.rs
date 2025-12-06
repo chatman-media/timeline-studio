@@ -232,4 +232,51 @@ impl MediaCommands {
 
     CommandResult::success(None)
   }
+
+  /// Remove duplicate media items from media_pool (keep only first occurrence by path)
+  pub async fn deduplicate_media_pool(&self) -> CommandResult {
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    let mut path_to_id: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+    let mut duplicates_to_remove: Vec<String> = Vec::new();
+
+    // Find duplicates by path
+    for (id, item) in &project.media_pool.items {
+      if let Some(existing_id) = path_to_id.get(&item.path) {
+        log::warn!(
+          "Found duplicate media: path={}, keeping id={}, removing id={}",
+          item.path,
+          existing_id,
+          id
+        );
+        duplicates_to_remove.push(id.clone());
+      } else {
+        path_to_id.insert(item.path.clone(), id.clone());
+      }
+    }
+
+    // Remove duplicates
+    let duplicate_count = duplicates_to_remove.len();
+    for id in duplicates_to_remove {
+      project.media_pool.items.remove(&id);
+    }
+
+    if duplicate_count > 0 {
+      state.mark_dirty();
+      log::info!(
+        "Removed {} duplicate media items from media_pool",
+        duplicate_count
+      );
+    }
+
+    CommandResult::success(serde_json::json!({
+      "removed_count": duplicate_count,
+      "remaining_count": project.media_pool.items.len()
+    }))
+  }
 }
