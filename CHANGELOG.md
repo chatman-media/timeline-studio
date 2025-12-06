@@ -1,3 +1,12 @@
+## [3.38.1](https://github.com/chatman-media/timeline-studio/compare/v3.38.0...v3.38.1) (2025-12-06)
+
+
+### Bug Fixes
+
+* **auto-proxy:** добавить вызов callbacks onProxyReady и onError ([a6e9fed](https://github.com/chatman-media/timeline-studio/commit/a6e9feda6cc9560704fee947efa0d61f65047dc2))
+* **tests:** update AI Director tests after PascalCase mode changes ([da0600b](https://github.com/chatman-media/timeline-studio/commit/da0600bffdfc2419cbc28a9cb19c05214c20a0ee))
+* **tests:** update tests after AI Director and media restoration changes ([53cb660](https://github.com/chatman-media/timeline-studio/commit/53cb66093c370bd1cbc0062e45157009ec83641f))
+
 # [3.38.0](https://github.com/chatman-media/timeline-studio/compare/v3.37.0...v3.38.0) (2025-12-06)
 
 
