@@ -18,12 +18,18 @@ import { EffectIndicators } from "./effect-indicators"
 const logger = createLogger("EffectPreview")
 
 // Получаем путь к превью видео для конкретного эффекта
-const getPreviewPath = (effect: BaseEffect) => {
-  // Используем превью из эффекта или дефолтное
+const getPreviewPath = (effect: BaseEffect, currentVideo: MediaFile | null) => {
+  // Используем превью из эффекта если есть
   if (effect.preview) {
     return effect.preview
   }
-  // Fallback на старую систему
+
+  // Используем текущее видео из плеера если есть
+  if (currentVideo?.path) {
+    return currentVideo.path
+  }
+
+  // Fallback на старую систему (может не существовать)
   const preview = getEffectPreview(effect.id)
   return preview.videoPath
 }
@@ -133,12 +139,15 @@ export function EffectPreview({
     [processedEffect, applyEffect, i18n.language],
   )
 
+  // Получаем текущее видео для использования в превью
+  const currentVideo = getCurrentVideo()
+
   // Ленивая загрузка видео при наведении
   useEffect(() => {
     if (isHovering && !videoSrc) {
-      setVideoSrc(getPreviewPath(effect))
+      setVideoSrc(getPreviewPath(effect, currentVideo))
     }
-  }, [isHovering, effect, videoSrc])
+  }, [isHovering, effect, videoSrc, currentVideo])
 
   /**
    * Эффект для управления воспроизведением видео и применением эффектов
@@ -258,19 +267,24 @@ export function EffectPreview({
         {/* Плейсхолдер пока видео не загружено */}
         {!videoSrc && (
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xs bg-gray-800 flex items-center justify-center"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xs bg-gray-800 flex flex-col gap-2 items-center justify-center p-2"
             style={{
               width: `${width}px`,
               height: `${height}px`,
             }}
           >
-            <div className="text-gray-500 text-xs">
+            <div className="text-gray-400 text-xs text-center">
               {processedEffect
                 ? typeof processedEffect.name === "object"
                   ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
                   : processedEffect.name || processedEffect.id
                 : "Effect"}
             </div>
+            {!currentVideo && size > 100 && (
+              <div className="text-gray-600 text-[10px] text-center">
+                Откройте видео для превью
+              </div>
+            )}
           </div>
         )}
 
