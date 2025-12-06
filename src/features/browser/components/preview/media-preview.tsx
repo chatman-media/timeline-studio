@@ -50,7 +50,7 @@ export function MediaPreview({
     return (
       <div
         className={cn(
-          "flex items-center justify-center bg-gray-100 dark:bg-gray-800",
+          "relative flex items-center justify-center bg-gradient-to-br from-gray-900 to-black",
           ignoreRatio ? "w-full h-full" : "aspect-video",
         )}
         style={{
@@ -58,10 +58,13 @@ export function MediaPreview({
           height: ignoreRatio ? "100%" : `${size}px`,
         }}
       >
-        <div className="flex flex-col items-center justify-center gap-2">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            {showFileName ? file.name : "Загрузка метаданных..."}
+        <div className="flex flex-col items-center justify-center gap-3 px-4 text-center">
+          <Loader2 className="h-10 w-10 animate-spin text-blue-400" />
+          <div className="flex flex-col gap-1">
+            <div className="truncate text-sm font-medium text-white/90" style={{ maxWidth: "200px" }}>
+              {file.name}
+            </div>
+            <div className="text-xs text-white/60 animate-pulse">Загрузка метаданных...</div>
           </div>
         </div>
       </div>

@@ -221,15 +221,32 @@ export const VideoPreview = memo(
         }
       : undefined
 
+    // Показываем плейсхолдер если метаданные ещё загружаются или потоки не найдены
+    const showPlaceholder = file.isLoadingMetadata || videoData.videoStreams.length === 0
+
+    // Логируем для отладки - используем console.log чтобы точно увидеть
+    console.log(`[VideoPreview] Rendering ${file.name}`, {
+      showPlaceholder,
+      isLoadingMetadata: file.isLoadingMetadata,
+      streamsCount: videoData.videoStreams.length,
+      hasProbeData: !!file.probeData,
+      probeStreams: file.probeData?.streams?.length ?? 0,
+      videoStreams: videoData.videoStreams.map(s => ({ codec: s.codec_name, index: s.index })),
+    })
+
     return (
       <div
         ref={setNodeRef}
-        className={cn("flex h-full w-full items-center justify-center", isDragging && "cursor-grabbing")}
-        style={style}
+        className={cn("flex h-full w-full items-center justify-center relative", isDragging && "cursor-grabbing")}
+        style={{
+          ...style,
+          minHeight: `${size}px`,
+          minWidth: `${size * (16 / 9)}px`,
+        }}
         {...(listeners && typeof listeners === "object" ? listeners : {})}
         {...(attributes && typeof attributes === "object" ? attributes : {})}
       >
-        {videoData.videoStreams.length === 0 ? (
+        {showPlaceholder ? (
           <VideoPlaceholder
             file={file}
             size={size}
@@ -238,6 +255,21 @@ export const VideoPreview = memo(
             hoverTime={hoverTime}
             onHoverTimeChange={setHoverTime}
           />
+        ) : videoData.videoStreams.length === 0 ? (
+          // Fallback если нет потоков но не показываем placeholder
+          <div
+            className="flex items-center justify-center bg-red-900/20 border-2 border-red-500"
+            style={{
+              width: `${size * (16 / 9)}px`,
+              height: `${size}px`,
+            }}
+          >
+            <div className="text-xs text-red-400 text-center px-2">
+              No video streams found
+              <br />
+              {file.name}
+            </div>
+          </div>
         ) : (
           videoData.videoStreams.map((stream, index) => (
             <VideoStream
@@ -254,6 +286,7 @@ export const VideoPreview = memo(
               onHoverTimeChange={setHoverTime}
               onApply={handleApplyVideo}
               isLastStream={index === videoData.videoStreams.length - 1}
+              isGeneratingProxy={isGenerating(file.path)}
             />
           ))
         )}

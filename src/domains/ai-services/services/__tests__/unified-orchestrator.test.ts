@@ -314,7 +314,7 @@ describe("UnifiedOrchestrator", () => {
         enable_audio_analysis: true,
         enable_scene_detection: false,
         enable_video_analysis: true,
-        timeout_seconds: 30,
+        max_processing_time: 30,
       }
 
       await orchestrator.analyzeComprehensive("/test/video.mp4", {

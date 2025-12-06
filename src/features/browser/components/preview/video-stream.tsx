@@ -25,6 +25,7 @@ interface VideoStreamProps {
   onHoverTimeChange: (time: number | null) => void
   onApply?: (resource: TimelineResource, type: string) => Promise<void>
   isLastStream: boolean
+  isGeneratingProxy?: boolean
 }
 
 /**
@@ -44,6 +45,7 @@ export const VideoStream = memo(
     onHoverTimeChange,
     onApply,
     isLastStream,
+    isGeneratingProxy = false,
   }: VideoStreamProps) => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
@@ -284,6 +286,20 @@ export const VideoStream = memo(
             streamIndex={stream.index}
             streamKey={key}
           />
+
+          {/* Показываем имя файла и статус загрузки - ВСЕГДА показываем имя */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center pointer-events-none">
+            <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
+              {file.name}
+            </div>
+            {isGeneratingProxy ? (
+              <div className="mt-2 text-xs text-blue-400/90 animate-pulse">Генерируется прокси...</div>
+            ) : !previewData && !file.thumbnailPath ? (
+              <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка метаданных...</div>
+            ) : !isLoaded ? (
+              <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка видео...</div>
+            ) : null}
+          </div>
 
           <VideoOverlays
             file={file}

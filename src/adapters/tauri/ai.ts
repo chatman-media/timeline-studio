@@ -556,9 +556,11 @@ export class TauriAIService implements IAIService {
     return invoke("ai_director_get_capabilities")
   }
 
-  async aiDirectorGetDefaultConfig(mode: "fast" | "balanced" | "quality" | "custom"): Promise<AIDirectorConfig> {
+  async aiDirectorGetDefaultConfig(mode: "Fast" | "Balanced" | "Quality" | "Custom"): Promise<AIDirectorConfig> {
     logger.debugSync("Getting default config", { mode })
-    return invoke("ai_director_get_default_config", { mode })
+    // Конвертируем в lowercase для Rust команды (если нужно)
+    const rustMode = mode.toLowerCase() as "fast" | "balanced" | "quality" | "custom"
+    return invoke("ai_director_get_default_config", { mode: rustMode })
   }
 
   async aiDirectorValidateConfig(config: AIDirectorConfig): Promise<ConfigValidationResult> {
@@ -581,7 +583,7 @@ export class TauriAIService implements IAIService {
       enable_ffmpeg_analysis?: boolean
       enable_montage_analysis?: boolean
       enable_transcription?: boolean
-      performance_mode?: "fast" | "balanced" | "quality"
+      performance_mode?: "Fast" | "Balanced" | "Quality"
     },
   ): Promise<unknown> {
     logger.infoSync("Running unified audio comprehensive analysis", { videoPath })
@@ -591,7 +593,7 @@ export class TauriAIService implements IAIService {
         enable_ffmpeg_analysis: config?.enable_ffmpeg_analysis ?? true,
         enable_montage_analysis: config?.enable_montage_analysis ?? true,
         enable_transcription: config?.enable_transcription ?? false,
-        performance_mode: config?.performance_mode ?? "balanced",
+        performance_mode: config?.performance_mode ?? "Balanced",
       },
     })
   }
@@ -603,12 +605,12 @@ export class TauriAIService implements IAIService {
 
   async unifiedAudioAnalyzeBatch(
     filePaths: string[],
-    config?: { performance_mode?: "fast" | "balanced" | "quality" },
+    config?: { performance_mode?: "Fast" | "Balanced" | "Quality" },
   ): Promise<unknown[]> {
     logger.infoSync("Running unified audio batch analysis", { fileCount: filePaths.length })
     return invoke("unified_audio_analyze_batch", {
       filePaths,
-      config: { performance_mode: config?.performance_mode ?? "fast" },
+      config: { performance_mode: config?.performance_mode ?? "Fast" },
     })
   }
 

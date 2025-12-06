@@ -189,17 +189,19 @@ export const VideoPlaceholder = memo(
             onKeyDown={handleKeyDown}
           />
 
-          {/* Показываем имя файла если видео ещё не загружено и нет превью */}
-          {!isLoaded && !previewData && !file.thumbnailPath && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-b from-black/40 to-black/60 text-center">
-              <div className="truncate px-2 text-xs text-white/80" style={{ maxWidth: "90%" }}>
+          {/* Показываем имя файла и статус загрузки - всегда когда не полностью загружено */}
+          {(!isLoaded || !previewData || file.isLoadingMetadata) && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center">
+              <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
                 {file.name}
               </div>
               {hasError ? (
-                <div className="mt-1 text-[10px] text-yellow-400/80">Ожидаем превью...</div>
-              ) : (
-                <div className="mt-1 text-[10px] text-white/50">Загрузка...</div>
-              )}
+                <div className="mt-2 text-xs text-yellow-400/90">Ожидаем превью...</div>
+              ) : file.isLoadingMetadata || (!previewData && !file.thumbnailPath) ? (
+                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка метаданных...</div>
+              ) : !isLoaded ? (
+                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка видео...</div>
+              ) : null}
             </div>
           )}
 

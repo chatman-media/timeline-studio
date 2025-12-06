@@ -12,6 +12,7 @@
 export type {
   FileGroup,
   MediaFile,
+  MediaTrack,
   VideoSegment,
 } from "./media"
 export { MediaType } from "./media"

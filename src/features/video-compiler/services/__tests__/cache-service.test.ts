@@ -181,7 +181,7 @@ describe("Cache Service", () => {
   describe("configureCacheSettings", () => {
     it("should configure cache with all settings", async () => {
       const settings = {
-        max_memory_mb: 1024,
+        max_parallel_files: 1024,
         max_entries: 10000,
         auto_cleanup: true,
       }
@@ -195,7 +195,7 @@ describe("Cache Service", () => {
 
     it("should configure cache with partial settings", async () => {
       const settings = {
-        max_memory_mb: 512,
+        max_parallel_files: 512,
       }
 
       mockCompilerCommands.configureCache.mockResolvedValue(undefined)
@@ -219,7 +219,7 @@ describe("Cache Service", () => {
 
     it("should handle configuration errors", async () => {
       const settings = {
-        max_memory_mb: 2048,
+        max_parallel_files: 2048,
         max_entries: 50000,
         auto_cleanup: true,
       }
@@ -232,7 +232,7 @@ describe("Cache Service", () => {
 
     it("should handle invalid memory settings", async () => {
       const settings = {
-        max_memory_mb: -100, // Invalid negative value
+        max_parallel_files: -100, // Invalid negative value
       }
 
       const error = new Error("Memory size must be positive")
@@ -411,7 +411,7 @@ describe("Cache Service", () => {
 
       // Configure cache
       mockCompilerCommands.configureCache.mockResolvedValueOnce(undefined)
-      await configureCacheSettings({ max_memory_mb: 1024, auto_cleanup: true })
+      await configureCacheSettings({ max_parallel_files: 1024, auto_cleanup: true })
 
       // Clear preview cache
       mockCompilerCommands.clearPreviewCache.mockResolvedValueOnce(undefined)

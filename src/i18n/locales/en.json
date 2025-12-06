@@ -1247,6 +1247,13 @@
     },
     "hide": "Hide browser",
     "show": "Show browser",
+    "clearAll": "Clear all",
+    "clearAllConfirm": {
+      "title": "Clear all media files?",
+      "description": "This action will remove all files from the media browser. Files on disk will remain unchanged.",
+      "cancel": "Cancel",
+      "confirm": "Clear all"
+    },
     "common": {
       "unknown": "Unknown"
     },

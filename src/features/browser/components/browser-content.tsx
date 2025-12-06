@@ -1,10 +1,24 @@
 import { memo, useCallback, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { useBrowserState } from "@/domains/browser"
 import { useMediaManagement } from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
 import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-tools"
 import { useMediaImport } from "@/domains/media-management"
+import { Trash2 } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
@@ -28,6 +42,8 @@ TabContentContainer.displayName = "TabContentContainer"
  * Поддерживает все типы контента через единую архитектуру
  */
 export const BrowserContent = memo(() => {
+  const { t } = useTranslation()
+
   // Developer Tools модалка
   const [showDeveloperTools, setShowDeveloperTools] = useState(false)
 
@@ -75,6 +91,15 @@ export const BrowserContent = memo(() => {
     importDirectory: importMusicFolder,
     isImporting: isImportingMusic,
   } = useMusicImport()
+
+  // Обработчик очистки всех медиафайлов
+  const handleClearAllMedia = useCallback(async () => {
+    if (mediaPool.size === 0) return
+
+    const allMediaIds = Array.from(mediaPool.keys())
+    await removeMultipleMedia(allMediaIds)
+    await deselectAllFiles()
+  }, [mediaPool, removeMultipleMedia, deselectAllFiles])
 
   // Keyboard shortcuts для Browser
   useEffect(() => {
@@ -140,9 +165,32 @@ export const BrowserContent = memo(() => {
     setPreviewSize(previewSizeIndex - 1)
   }, [previewSizeIndex, setPreviewSize])
 
-  // Дополнительные кнопки для вкладки Effects
+  // Дополнительные кнопки для разных вкладок
   const extraButtons =
-    activeTab === "effects" ? <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} /> : undefined
+    activeTab === "effects" ? (
+      <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} />
+    ) : activeTab === "media" && mediaPool.size > 0 ? (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-8 gap-2">
+            <Trash2 className="h-4 w-4" />
+            {t("browser.clearAll")}
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("browser.clearAllConfirm.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("browser.clearAllConfirm.description")} ({mediaPool.size} {t("common.files", { count: mediaPool.size })})
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("browser.clearAllConfirm.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearAllMedia}>{t("browser.clearAllConfirm.confirm")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    ) : undefined
 
   return (
     <>

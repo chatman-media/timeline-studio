@@ -334,7 +334,7 @@ describe("AI Director Tauri Commands", () => {
         enable_object_detection: true,
         enable_face_recognition: true,
         enable_transcription: true,
-        max_memory_mb: 100, // Very low
+        max_parallel_files: 100, // Very low
       }
 
       const mockValidation: ConfigValidationResult = {

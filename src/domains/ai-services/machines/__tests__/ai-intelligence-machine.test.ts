@@ -110,7 +110,7 @@ describe("AI Intelligence Machine", () => {
       const config: Partial<AIDirectorConfig> = {
         enable_audio_analysis: true,
         enable_scene_detection: true,
-        timeout_seconds: 120,
+        max_processing_time: 120,
       }
 
       actor.send({
