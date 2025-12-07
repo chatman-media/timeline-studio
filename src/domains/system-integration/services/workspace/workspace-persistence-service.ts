@@ -4,7 +4,7 @@
  * Handles saving and loading workspace state from localStorage and Tauri backend
  */
 
-import type { LayoutPreset, Widget } from "@/features/workspace/types/widget"
+import type { LayoutPreset, Widget } from "@/domains/system-integration/types/workspace"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   loadWorkspaceState as loadWorkspaceStateTauri,

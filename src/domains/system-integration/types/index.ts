@@ -151,3 +151,14 @@ export interface SystemIntegrationService {
   toggleFeature(feature: string, enabled: boolean): void
   isFeatureEnabled(feature: string): boolean
 }
+
+// Workspace widget types (canonical source)
+export type {
+  LayoutPreset,
+  Widget,
+  WidgetBounds,
+  WidgetDragData,
+  WidgetResizeData,
+  WidgetType,
+  WorkspaceLayout,
+} from "./workspace"
