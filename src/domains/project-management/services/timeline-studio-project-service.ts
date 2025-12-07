@@ -12,7 +12,7 @@ import type {
   ProjectMetadata,
   ProjectOperations,
   TimelineStudioProject,
-} from "@/features/project-settings/types/timeline-studio-project"
+} from "../types/timeline-studio-project"
 
 import { createLogger } from "@/lib/tauri-logger"
 

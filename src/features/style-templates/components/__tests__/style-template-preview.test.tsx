@@ -18,13 +18,16 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
   }),
 }))
 
-vi.mock("@/domains/video-editing/providers", () => ({
-  useResources: () => ({
-    addStyleTemplate: mockAddStyleTemplate,
-    isStyleTemplateAdded: mockIsStyleTemplateAdded,
-  }),
-  ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
+vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+  return {
+    ...actual,
+    useResources: () => ({
+      addStyleTemplate: mockAddStyleTemplate,
+      isStyleTemplateAdded: mockIsStyleTemplateAdded,
+    }),
+  }
+})
 
 vi.mock("@/features/browser/components/layout/apply-button", () => ({
   ApplyButton: vi.fn(({ resource, size, type }) => (

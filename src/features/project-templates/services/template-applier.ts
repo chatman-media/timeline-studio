@@ -4,7 +4,7 @@
  */
 
 import type { FrameRate, Resolution } from "@/domains/shared/types/project"
-import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
+import type { TimelineStudioProject } from "@/domains/project-management/types"
 import type { Sequence, SequenceSettings } from "@/features/timeline/types/sequence"
 import type { TimelineTrack } from "@/features/timeline/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"

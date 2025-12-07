@@ -3,7 +3,7 @@
  * Выполнение сценариев монтажа пошагово
  */
 
-import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
+import type { TimelineStudioProject } from "@/domains/project-management/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Scenario, ScenarioResult, ScenarioStep } from "../types/scenario"

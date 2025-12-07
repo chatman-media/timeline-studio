@@ -22,15 +22,18 @@ vi.mock("@/features/browser/components/layout/favorite-button", () => ({
   FavoriteButton: () => <button>Избранное</button>,
 }))
 
-vi.mock("@/domains/video-editing/providers", () => ({
-  useResources: () => ({
-    addSubtitle: vi.fn(),
-    isSubtitleAdded: vi.fn(() => false),
-    removeResource: vi.fn(),
-    subtitleResources: [],
-  }),
-  ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
+vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+  return {
+    ...actual,
+    useResources: () => ({
+      addSubtitle: vi.fn(),
+      isSubtitleAdded: vi.fn(() => false),
+      removeResource: vi.fn(),
+      subtitleResources: [],
+    }),
+  }
+})
 
 const mockSubtitle: SubtitleStyleTemplate = {
   id: "basic-white",

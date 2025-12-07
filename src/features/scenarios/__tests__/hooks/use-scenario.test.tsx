@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
+import type { TimelineStudioProject } from "@/domains/project-management/types"
 
 import { useScenario } from "../../hooks/use-scenario"
 import { scenarioExecutor } from "../../services/scenario-executor"

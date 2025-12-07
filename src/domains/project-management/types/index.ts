@@ -13,6 +13,19 @@ export type {
   ProjectState,
 } from "@/types/generated/tauri-bindings"
 
+// Re-export Timeline Studio Project types (canonical source)
+export type {
+  CollaborationSettings,
+  ExportPreset,
+  ProjectBackup,
+  ProjectCache,
+  ProjectEvents,
+  ProjectMetadata,
+  ProjectOperations,
+  ProjectState as TimelineStudioProjectState,
+  TimelineStudioProject,
+} from "./timeline-studio-project"
+
 // Re-export app machine types
 export type {
   AppMachineContext,

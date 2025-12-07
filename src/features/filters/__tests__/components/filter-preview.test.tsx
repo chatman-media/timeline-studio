@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { FilterCategory, VideoFilter } from "@/features/filters/types/filters"
+import { useResources } from "@/domains/video-editing/providers"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { renderWithBase } from "@/test/test-utils"
 

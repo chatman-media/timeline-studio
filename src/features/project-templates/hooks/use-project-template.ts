@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useMemo, useState } from "react"
-import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
+import type { TimelineStudioProject } from "@/domains/project-management/types"
 import type { Sequence } from "@/features/timeline/types/sequence"
 import { createLogger } from "@/lib/tauri-logger"
 

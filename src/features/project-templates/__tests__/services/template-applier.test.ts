@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
+import type { TimelineStudioProject } from "@/domains/project-management/types"
 
 import type { ApplyTemplateOptions } from "../../services/template-applier"
 import { TemplateApplier } from "../../services/template-applier"
