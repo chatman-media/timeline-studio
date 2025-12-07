@@ -55,6 +55,8 @@ export function getPlayerState(): PlayerState | null {
     currentTime: playerContext.currentTime || 0,
     duration: playerContext.duration || 0,
     volume: playerContext.volume || 1,
+    isLoading: playerContext.isLoading || false,
+    isReady: playerContext.isReady || false,
     playbackSpeed: playerContext.playbackSpeed || 1,
     loop: playerContext.loop || false,
     muted: playerContext.muted || false,
