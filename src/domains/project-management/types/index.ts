@@ -12,7 +12,17 @@ export type {
   ProjectSettings,
   ProjectState,
 } from "@/types/generated/tauri-bindings"
-
+// Re-export app machine types
+export type {
+  AppMachineContext,
+  AppMachineEvent,
+} from "../machines/app-machine"
+// Re-export user settings types
+export type {
+  LayoutMode,
+  UserSettingsContextType,
+  UserSettingsEvent,
+} from "../machines/user-settings-machine"
 // Re-export Timeline Studio Project types (canonical source)
 export type {
   CollaborationSettings,
@@ -25,19 +35,6 @@ export type {
   ProjectState as TimelineStudioProjectState,
   TimelineStudioProject,
 } from "./timeline-studio-project"
-
-// Re-export app machine types
-export type {
-  AppMachineContext,
-  AppMachineEvent,
-} from "../machines/app-machine"
-
-// Re-export user settings types
-export type {
-  LayoutMode,
-  UserSettingsContextType,
-  UserSettingsEvent,
-} from "../machines/user-settings-machine"
 
 // Project management orchestrator context
 export interface ProjectManagementContext {

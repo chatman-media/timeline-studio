@@ -8,13 +8,8 @@ import { container, type IPlatformService } from "@/core"
 import { createEmptyMediaPool } from "@/domains/media-management"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/domains/shared/types/project"
 import type { Sequence } from "@/domains/video-editing/types"
-import type {
-  ProjectMetadata,
-  ProjectOperations,
-  TimelineStudioProject,
-} from "../types/timeline-studio-project"
-
 import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectMetadata, ProjectOperations, TimelineStudioProject } from "../types/timeline-studio-project"
 
 const logger = createLogger("TimelineStudioProjectService")
 

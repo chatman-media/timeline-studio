@@ -110,28 +110,24 @@ vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
 }))
 
 // Мок для useMediaManagement - синхронный мок с константами
-vi.mock("@/domains/media-management", () => ({
-  useMediaManagement: () => ({
-    mediaPool: new Map(),
-    isLoading: false,
-    error: null,
-    removeMedia: vi.fn(),
-    removeMultipleMedia: vi.fn().mockResolvedValue(undefined),
-  }),
-  // Preview size constants needed by browser provider
-  DEFAULT_PREVIEW_SIZE_INDEX: 3,
-  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
-  DEFAULT_CONTENT_SIZES: {
-    MEDIA: 250,
-    TEMPLATES: 250,
-    STYLE_TEMPLATES: 250,
-    EFFECTS: 250,
-    FILTERS: 250,
-    TRANSITIONS: 250,
-    SUBTITLES: 250,
-    MUSIC: 250,
-  },
-}))
+vi.mock("@/domains/media-management", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/media-management")>()
+  return {
+    ...actual,
+    useMediaManagement: () => ({
+      mediaPool: new Map(),
+      isLoading: false,
+      error: null,
+      removeMedia: vi.fn(),
+      removeMultipleMedia: vi.fn().mockResolvedValue(undefined),
+    }),
+    useMediaImport: () => ({
+      importFiles: vi.fn(),
+      isImporting: false,
+      importProgress: 0,
+    }),
+  }
+})
 
 // Создаем мок для BrowserToolbarWrapper
 vi.mock("../../components/browser-toolbar-wrapper", () => ({

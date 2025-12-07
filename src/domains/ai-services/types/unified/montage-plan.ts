@@ -23,14 +23,14 @@ import type { Transition } from "@/features/transitions/types/transitions"
  * Объединяет простой union type и сложный object style
  */
 export type UnifiedMontageStyle =
-  | "dynamic"      // Быстрый, энергичный
-  | "calm"         // Спокойный, медленный
-  | "balanced"     // Сбалансированный
-  | "cinematic"    // Кинематографический
-  | "vlog"         // Vlog стиль
-  | "highlights"   // Подборка лучших моментов
-  | "tutorial"     // Обучающий
-  | "energetic"    // Энергичный (из montage-planner)
+  | "dynamic" // Быстрый, энергичный
+  | "calm" // Спокойный, медленный
+  | "balanced" // Сбалансированный
+  | "cinematic" // Кинематографический
+  | "vlog" // Vlog стиль
+  | "highlights" // Подборка лучших моментов
+  | "tutorial" // Обучающий
+  | "energetic" // Энергичный (из montage-planner)
 
 /**
  * Unified Montage Style Parameters
@@ -60,11 +60,11 @@ export interface UnifiedMontageStyleParams {
  * Transition Types
  */
 export type TransitionType =
-  | "cut"              // Прямая склейка
-  | "cross_dissolve"   // Затухание/появление
-  | "fade_to_black"    // Затухание в черный
-  | "wipe"             // Вытеснение
-  | "slide"            // Слайд
+  | "cut" // Прямая склейка
+  | "cross_dissolve" // Затухание/появление
+  | "fade_to_black" // Затухание в черный
+  | "wipe" // Вытеснение
+  | "slide" // Слайд
 
 /**
  * Unified Transition
@@ -98,17 +98,17 @@ export interface MomentScore {
   timestamp: number
   duration: number
   scores: {
-    visual: number       // 0-100, визуальная привлекательность
-    technical: number    // 0-100, техническое качество
-    emotional: number    // 0-100, эмоциональное воздействие
-    narrative: number    // 0-100, нарративная ценность
-    action: number       // 0-100, уровень действия
-    composition: number  // 0-100, композиция кадра
+    visual: number // 0-100, визуальная привлекательность
+    technical: number // 0-100, техническое качество
+    emotional: number // 0-100, эмоциональное воздействие
+    narrative: number // 0-100, нарративная ценность
+    action: number // 0-100, уровень действия
+    composition: number // 0-100, композиция кадра
   }
-  totalScore: number    // 0-100, взвешенное среднее
+  totalScore: number // 0-100, взвешенное среднее
   category: MomentCategory
-  weight?: number       // 0-1, вес важности для оптимизации
-  rank?: number         // 1-n, ранг среди всех моментов
+  weight?: number // 0-1, вес важности для оптимизации
+  rank?: number // 1-n, ранг среди всех моментов
 }
 
 /**
@@ -130,20 +130,20 @@ export enum MomentCategory {
  * (из domains/ai-services)
  */
 export interface FragmentAnalysis {
-  quality: number           // 0-1
-  motion: number            // 0-1
+  quality: number // 0-1
+  motion: number // 0-1
   faceCount: number
   objectsOfInterest: string[]
-  audioQuality: number      // 0-1
-  musicBeats?: number[]     // timestamps of detected beats
+  audioQuality: number // 0-1
+  musicBeats?: number[] // timestamps of detected beats
   sentiment?: "positive" | "negative" | "neutral"
   duration: number
-  brightnessVariation: number  // 0-1
-  colorfulness: number         // 0-1
-  sharpness: number            // 0-1
-  contrast: number             // 0-1
-  visualComplexity: number     // 0-1
-  audioLoudness: number        // dB
+  brightnessVariation: number // 0-1
+  colorfulness: number // 0-1
+  sharpness: number // 0-1
+  contrast: number // 0-1
+  visualComplexity: number // 0-1
+  audioLoudness: number // dB
   speechPresence: boolean
 }
 
@@ -155,17 +155,17 @@ export interface UnifiedFragment {
   id: string
   videoId: string
   sourceFile?: MediaFile
-  filePath?: string         // для совместимости с MontageClip
+  filePath?: string // для совместимости с MontageClip
 
   // Временные характеристики
-  startTime: number         // секунды
-  endTime: number           // секунды
-  duration: number          // секунды
+  startTime: number // секунды
+  endTime: number // секунды
+  duration: number // секунды
 
   // Визуальные данные
   screenshotPath?: string
-  objects: string[]         // обнаруженные объекты (YOLO)
-  people: Person[]          // идентифицированные люди
+  objects: string[] // обнаруженные объекты (YOLO)
+  people: Person[] // идентифицированные люди
 
   // Эффекты и переходы
   transitionId?: string
@@ -174,14 +174,14 @@ export interface UnifiedFragment {
   effect?: VideoEffect
 
   // Оценка и анализ (поддержка обоих форматов)
-  score?: MomentScore       // детальная оценка (montage-planner)
+  score?: MomentScore // детальная оценка (montage-planner)
   analysis?: FragmentAnalysis // простая оценка (ai-services)
-  qualityScore?: number     // 0-1 (ai-director)
+  qualityScore?: number // 0-1 (ai-director)
 
   // Дополнительная информация
   tags: string[]
   description?: string
-  reason?: string           // причина выбора (ai-director)
+  reason?: string // причина выбора (ai-director)
   metadata?: {
     hasAudio?: boolean
     hasFaces?: boolean
@@ -198,12 +198,7 @@ export interface UnifiedFragment {
 /**
  * Sequence Type
  */
-export type SequenceType =
-  | "intro"
-  | "main"
-  | "outro"
-  | "transition"
-  | "highlight"
+export type SequenceType = "intro" | "main" | "outro" | "transition" | "highlight"
 
 /**
  * Sequence - группа связанных фрагментов
@@ -213,13 +208,13 @@ export interface Sequence {
   type: SequenceType
   fragments: UnifiedFragment[]
   duration: number
-  startTime: number       // время начала в итоговом монтаже
-  endTime: number         // время окончания
+  startTime: number // время начала в итоговом монтаже
+  endTime: number // время окончания
   description?: string
   metadata?: {
     theme?: string
     mood?: string
-    energy?: number       // 0-1
+    energy?: number // 0-1
   }
 }
 
@@ -232,12 +227,12 @@ export interface Sequence {
  */
 export interface MontageMusicSettings {
   style?: string
-  volume?: number         // 0-1
-  startTime?: number      // секунды
-  fadeIn?: number         // секунды
-  fadeOut?: number        // секунды
-  filePath?: string       // путь к музыкальному файлу
-  syncToBeats?: boolean   // синхронизация с битами
+  volume?: number // 0-1
+  startTime?: number // секунды
+  fadeIn?: number // секунды
+  fadeOut?: number // секунды
+  filePath?: string // путь к музыкальному файлу
+  syncToBeats?: boolean // синхронизация с битами
 }
 
 /**
@@ -245,8 +240,8 @@ export interface MontageMusicSettings {
  */
 export interface MontageTextSettings {
   content: string
-  startTime: number       // секунды в итоговом монтаже
-  duration: number        // секунды
+  startTime: number // секунды в итоговом монтаже
+  duration: number // секунды
   style?: "title" | "subtitle" | "caption" | "credit"
   position?: "top" | "center" | "bottom"
   fontSize?: number
@@ -263,11 +258,11 @@ export interface MontageTextSettings {
  */
 export interface PlanMetadata {
   // Статистика анализа
-  analysisDuration?: number      // секунды
-  generationDuration?: number    // секунды
+  analysisDuration?: number // секунды
+  generationDuration?: number // секунды
 
   // Качество и оценка
-  averageQuality: number         // 0-1
+  averageQuality: number // 0-1
   totalFragments?: number
 
   // Файлы
@@ -290,8 +285,8 @@ export interface PlanMetadata {
 export interface UnifiedMontagePlan {
   // Основная информация
   id: string
-  name: string                    // используем name вместо title
-  title?: string                  // для обратной совместимости
+  name: string // используем name вместо title
+  title?: string // для обратной совместимости
   description?: string
 
   // Стиль монтажа
@@ -299,14 +294,14 @@ export interface UnifiedMontagePlan {
   styleParams?: UnifiedMontageStyleParams // расширенные параметры
 
   // Контент монтажа
-  sequences?: Sequence[]          // современный формат (montage-planner)
-  clips?: UnifiedFragment[]       // legacy формат (ai-director)
-  fragments?: UnifiedFragment[]   // альтернативное название (ai-services)
+  sequences?: Sequence[] // современный формат (montage-planner)
+  clips?: UnifiedFragment[] // legacy формат (ai-director)
+  fragments?: UnifiedFragment[] // альтернативное название (ai-services)
 
   // Длительность
-  targetDuration?: number         // желаемая длительность (секунды)
-  totalDuration: number           // фактическая длительность (секунды)
-  actualDuration?: number         // alias для totalDuration
+  targetDuration?: number // желаемая длительность (секунды)
+  totalDuration: number // фактическая длительность (секунды)
+  actualDuration?: number // alias для totalDuration
 
   // Переходы
   transitions: UnifiedTransition[]
@@ -315,16 +310,16 @@ export interface UnifiedMontagePlan {
   music?: MontageMusicSettings
   musicSettings?: MontageMusicSettings // alias
   texts?: MontageTextSettings[]
-  textSettings?: MontageTextSettings   // alias (single text)
+  textSettings?: MontageTextSettings // alias (single text)
 
   // Оценка качества
-  qualityScore?: number           // общая оценка 0-1
-  engagementScore?: number        // оценка вовлеченности 0-1
-  coherenceScore?: number         // оценка связности 0-1
+  qualityScore?: number // общая оценка 0-1
+  engagementScore?: number // оценка вовлеченности 0-1
+  coherenceScore?: number // оценка связности 0-1
 
   // Метаданные
   metadata: PlanMetadata
-  instructions?: string           // инструкции для применения
+  instructions?: string // инструкции для применения
 
   // Временные метки
   createdAt: Date
@@ -359,12 +354,12 @@ export interface PlanStatistics {
   transitionCount: number
   averageQuality: number
   qualityDistribution: {
-    low: number    // 0-0.3
+    low: number // 0-0.3
     medium: number // 0.3-0.7
-    high: number   // 0.7-1.0
+    high: number // 0.7-1.0
   }
   motionIntensity: number // средняя интенсивность движения
-  faceTime: number        // общее время с лицами
+  faceTime: number // общее время с лицами
   objectDiversity: number // количество уникальных объектов
   audioQuality: number
 }

@@ -62,10 +62,10 @@ vi.mock("@/core", () => ({
 const mockAddFilter = vi.fn()
 
 // Мокаем useResources для возврата mockAddFilter
-vi.mock("@/features/resources", async () => {
-  const React = await import("react")
+vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
   return {
-    ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+    ...actual,
     useResources: () => ({
       addFilter: mockAddFilter,
       effects: [],

@@ -11,23 +11,29 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MontagePlannerMachine")
 
-// Import types from domain
+// Import types from domain - OLD montage-planner types (legacy)
 import type {
   AnalysisOptions,
   AnalysisProgress,
   AudioAnalysis,
-  Fragment,
-  MediaFile,
-  MomentScore,
-  MontagePlan,
   PlanGenerationOptions,
-  PlanStatistics,
-  PlanValidation,
   VideoAnalysis,
 } from "../types/montage-planner"
 
 // Import enum as value (not type)
 import { AnalysisPhase } from "../types/montage-planner"
+
+// Import UNIFIED types (NEW - Phase 2)
+import type {
+  UnifiedFragment as Fragment,
+  UnifiedMontagePlan as MontagePlan,
+  MomentScore,
+  PlanStatistics,
+  PlanValidation,
+} from "../types/unified"
+
+// Import MediaFile from media-management (canonical source)
+import type { MediaFile } from "@/domains/media-management/types"
 
 // Machine context
 export interface MontagePlannerContext {

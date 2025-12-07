@@ -4,18 +4,15 @@
  * Обеспечивают обратную совместимость между старыми и новыми типами
  */
 
+import type { Fragment as DomainFragment, MontagePlan as DomainPlan } from "@/domains/ai-services/types/montage-planner"
 import type { MontagePlan as LegacyAIDirectorPlan } from "@/features/ai-director/types/montage-plan"
-import type {
-  Fragment as DomainFragment,
-  MontagePlan as DomainPlan,
-} from "@/domains/ai-services/types/montage-planner"
 import type { Fragment as FeatureFragment } from "@/features/montage-planner/types"
 import type {
+  FragmentAnalysis,
+  MomentScore,
   UnifiedFragment,
   UnifiedMontagePlan,
   UnifiedMontageStyle,
-  MomentScore,
-  FragmentAnalysis,
 } from "./montage-plan"
 
 // ============================================================================
@@ -25,9 +22,7 @@ import type {
 /**
  * Конвертирует legacy MontageClip в UnifiedFragment
  */
-export function convertLegacyClipToFragment(
-  clip: LegacyAIDirectorPlan["clips"][number],
-): UnifiedFragment {
+export function convertLegacyClipToFragment(clip: LegacyAIDirectorPlan["clips"][number]): UnifiedFragment {
   return {
     id: `${clip.fileId}-${clip.startTime}`,
     videoId: clip.fileId,
@@ -137,9 +132,7 @@ export function convertUnifiedToDomainFragment(fragment: UnifiedFragment): Domai
 /**
  * Конвертирует legacy AI Director plan в Unified plan
  */
-export function convertLegacyAIDirectorPlanToUnified(
-  plan: LegacyAIDirectorPlan,
-): UnifiedMontagePlan {
+export function convertLegacyAIDirectorPlanToUnified(plan: LegacyAIDirectorPlan): UnifiedMontagePlan {
   return {
     id: plan.id,
     name: plan.name,
@@ -201,9 +194,7 @@ export function convertDomainPlanToUnified(plan: DomainPlan): UnifiedMontagePlan
 /**
  * Конвертирует Unified plan обратно в legacy AI Director plan
  */
-export function convertUnifiedToLegacyAIDirectorPlan(
-  plan: UnifiedMontagePlan,
-): LegacyAIDirectorPlan {
+export function convertUnifiedToLegacyAIDirectorPlan(plan: UnifiedMontagePlan): LegacyAIDirectorPlan {
   // Получаем clips из sequences или напрямую из clips
   const clips = plan.sequences
     ? plan.sequences.flatMap((seq) =>

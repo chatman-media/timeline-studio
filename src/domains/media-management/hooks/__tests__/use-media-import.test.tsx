@@ -2,11 +2,9 @@ import { renderHook } from "@testing-library/react"
 import type React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { selectMediaDirectory, selectMediaFile } from "@/domains/media-management"
 import { TimelineProviders } from "@/test/test-utils"
 
 import { useMediaImport } from "../../hooks/use-media-import"
-import { useMediaManagement } from "../../hooks/use-media-management"
 
 // Мокаем AppProvider для избежания проблем с XState
 vi.mock("@/domains/project-management/providers/app-provider", () => ({

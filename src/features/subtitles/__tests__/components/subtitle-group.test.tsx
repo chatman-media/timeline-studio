@@ -5,17 +5,20 @@ import { fireEvent, renderWithMedia as render, screen } from "@/test/test-utils"
 import { SubtitleGroup } from "../../components/subtitle-group"
 
 // Мокаем useResources
-vi.mock("@/features/resources", () => ({
-  useResources: () => ({
-    addSubtitle: vi.fn(),
-    isSubtitleAdded: vi.fn(() => false),
-    removeResource: vi.fn(),
-    subtitleResources: [],
-    addResource: vi.fn(),
-    isAdded: vi.fn(() => false),
-  }),
-  ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
+vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+  return {
+    ...actual,
+    useResources: () => ({
+      addSubtitle: vi.fn(),
+      isSubtitleAdded: vi.fn(() => false),
+      removeResource: vi.fn(),
+      subtitleResources: [],
+      addResource: vi.fn(),
+      isAdded: vi.fn(() => false),
+    }),
+  }
+})
 
 // Мокаем AddMediaButton
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({

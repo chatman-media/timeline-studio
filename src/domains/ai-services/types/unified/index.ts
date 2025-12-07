@@ -4,53 +4,49 @@
  * Единый источник истины для всех типов монтажного планнера
  */
 
+// Converters
+export {
+  convertAnalysisToSimpleScore,
+  convertDomainFragmentToUnified,
+  convertDomainPlanToUnified,
+  convertFeatureFragmentToUnified,
+  // Plan converters
+  convertLegacyAIDirectorPlanToUnified,
+  // Fragment converters
+  convertLegacyClipToFragment,
+  // Analysis converters
+  convertMomentScoreToAnalysis,
+  // Auto converter
+  convertToUnified,
+  convertUnifiedToDomainFragment,
+  convertUnifiedToDomainPlan,
+  convertUnifiedToLegacyAIDirectorPlan,
+  isDomainPlan,
+  // Type guards
+  isLegacyPlan,
+  isUnifiedPlan,
+} from "./converters"
 // Core types
+// Supporting types
 export type {
-  UnifiedMontagePlan,
+  FragmentAnalysis,
+  MomentCategory,
+  MomentScore,
+  MontageCreationState,
+  MontageCreationStatus,
+  MontageMusicSettings,
+  MontageRequest,
+  MontageTextSettings,
+  Person,
+  PlanMetadata,
+  PlanStatistics,
+  PlanValidation,
+  Sequence,
+  SequenceType,
+  TransitionType,
   UnifiedFragment,
+  UnifiedMontagePlan,
   UnifiedMontageStyle,
   UnifiedMontageStyleParams,
   UnifiedTransition,
 } from "./montage-plan"
-
-// Supporting types
-export type {
-  Person,
-  MomentScore,
-  MomentCategory,
-  FragmentAnalysis,
-  Sequence,
-  SequenceType,
-  MontageMusicSettings,
-  MontageTextSettings,
-  PlanMetadata,
-  PlanValidation,
-  PlanStatistics,
-  MontageRequest,
-  MontageCreationStatus,
-  MontageCreationState,
-  TransitionType,
-} from "./montage-plan"
-
-// Converters
-export {
-  // Fragment converters
-  convertLegacyClipToFragment,
-  convertDomainFragmentToUnified,
-  convertFeatureFragmentToUnified,
-  convertUnifiedToDomainFragment,
-  // Plan converters
-  convertLegacyAIDirectorPlanToUnified,
-  convertDomainPlanToUnified,
-  convertUnifiedToLegacyAIDirectorPlan,
-  convertUnifiedToDomainPlan,
-  // Analysis converters
-  convertMomentScoreToAnalysis,
-  convertAnalysisToSimpleScore,
-  // Type guards
-  isLegacyPlan,
-  isDomainPlan,
-  isUnifiedPlan,
-  // Auto converter
-  convertToUnified,
-} from "./converters"

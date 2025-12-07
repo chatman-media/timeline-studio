@@ -38,29 +38,33 @@ vi.mock("@/core", () => ({
 }))
 
 // Мокаем tauri-logger для возврата мокированного logger
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => ({
-    error: mockLoggerError,
-    errorSync: vi.fn(),
-    info: mockLoggerInfo,
-    infoSync: vi.fn(),
-    warn: vi.fn(),
-    warnSync: vi.fn(),
-    debug: vi.fn(),
-    debugSync: vi.fn(),
-    trace: vi.fn(),
-    traceSync: vi.fn(),
-  })),
-}))
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/tauri-logger")>()
+  return {
+    ...actual,
+    createLogger: vi.fn(() => ({
+      error: mockLoggerError,
+      errorSync: vi.fn(),
+      info: mockLoggerInfo,
+      infoSync: vi.fn(),
+      warn: vi.fn(),
+      warnSync: vi.fn(),
+      debug: vi.fn(),
+      debugSync: vi.fn(),
+      trace: vi.fn(),
+      traceSync: vi.fn(),
+    })),
+  }
+})
 
 // Создаем мок функции для addStyleTemplate
 const mockAddStyleTemplate = vi.fn()
 
 // Мокаем useResources для возврата mockAddStyleTemplate
-vi.mock("@/features/resources", async () => {
-  const React = await import("react")
+vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
   return {
-    ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+    ...actual,
     useResources: () => ({
       addStyleTemplate: mockAddStyleTemplate,
       effects: [],
