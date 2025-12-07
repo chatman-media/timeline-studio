@@ -117,6 +117,7 @@ impl MediaCommands {
       in_timeline: false,
       bin: None,
       added_at,
+      proxy_path: None, // Proxy will be generated and updated later
     };
 
     // Add directly to media pool (persisted with project)
@@ -144,6 +145,7 @@ impl MediaCommands {
             },
             duration,
             codec,
+            proxy_path: None, // Will be set when proxy is generated
           },
         },
         "command_handler".to_string(),

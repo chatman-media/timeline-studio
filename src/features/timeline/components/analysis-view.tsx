@@ -1,5 +1,8 @@
 "use client"
 
+import { ChevronDown, ChevronUp } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 
 import { useTimelineAnalysis } from "../hooks/use-timeline-analysis"
@@ -22,10 +25,37 @@ export function AnalysisView() {
     analyzingFiles,
   } = useTimelineAnalysis()
 
+  const [showSettings, setShowSettings] = useState(false)
+
   return (
     <div className="flex h-full w-full flex-col">
-      {/* Панель настроек анализа */}
-      <AnalysisSettingsPanel />
+      {/* Кнопка для показа настроек */}
+      <div className="border-b px-4 py-2 flex items-center justify-between bg-muted/30">
+        <div className="text-sm font-medium text-muted-foreground">
+          {showSettings ? "Настройка нового анализа" : "Результаты анализов"}
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowSettings(!showSettings)}
+          className="gap-2"
+        >
+          {showSettings ? (
+            <>
+              <ChevronUp className="h-4 w-4" />
+              Скрыть настройки
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4" />
+              Настроить новый анализ
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Панель настроек анализа (сворачиваемая) */}
+      {showSettings && <AnalysisSettingsPanel />}
 
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         {/* Левая панель - список анализов */}
@@ -33,10 +63,14 @@ export function AnalysisView() {
           <div className="flex h-full flex-col border-r bg-background">
             {/* Header с статистикой */}
             <div className="border-b p-4">
-              <h2 className="text-lg font-semibold">Анализы</h2>
-              {totalFiles > 0 && (
+              <h2 className="text-lg font-semibold">История анализов</h2>
+              {totalFiles > 0 ? (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Всего: {totalFiles} • Завершено: {completedFiles} • В процессе: {analyzingFiles}
+                  Всего файлов: {totalFiles} • Завершено: {completedFiles} • В процессе: {analyzingFiles}
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Нет запущенных анализов
                 </p>
               )}
             </div>

@@ -281,6 +281,9 @@ pub struct MediaItem {
   /// Timestamp when media was added to pool (Unix timestamp in milliseconds)
   #[serde(default)]
   pub added_at: f64,
+  /// Path to generated proxy file (for H.265 videos that need H.264 proxy)
+  #[serde(default, skip_serializing_if = "Option::is_none")]
+  pub proxy_path: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]

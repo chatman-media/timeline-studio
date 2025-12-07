@@ -71,8 +71,11 @@ export function AnalysisList({ files, selectedFileId, onSelectFile }: AnalysisLi
       <div className="flex h-full items-center justify-center p-8 text-center">
         <div className="space-y-2">
           <FileVideo className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
-          <p className="text-sm text-muted-foreground">Нет анализов для отображения</p>
-          <p className="text-xs text-muted-foreground">Запустите анализ файлов через AI Director</p>
+          <p className="text-sm font-medium">Нет запущенных анализов</p>
+          <p className="text-xs text-muted-foreground">
+            Нажмите "Настроить новый анализ" вверху,<br />
+            чтобы выбрать файлы и запустить анализ
+          </p>
         </div>
       </div>
     )

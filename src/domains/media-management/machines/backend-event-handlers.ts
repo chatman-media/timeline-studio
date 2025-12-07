@@ -108,6 +108,7 @@ function handleMediaAdded(
       duration?: number
       codec?: string
       thumbnail?: string
+      proxy_path?: string
     }
   }
 
@@ -116,6 +117,7 @@ function handleMediaAdded(
     path: media.path,
     type: media.media_type,
     codec: media.codec,
+    proxyPath: media.proxy_path,
   })
 
   // Создаем новую копию media pool
@@ -134,6 +136,17 @@ function handleMediaAdded(
       type: media.media_type as TauriMediaType,
       ...(media.codec ? { codec: media.codec } : {}),
     },
+    // 🆕 Добавляем proxy если он был сгенерирован ранее
+    ...(media.proxy_path
+      ? {
+          proxy: {
+            path: media.proxy_path,
+            width: 1280,
+            height: 720,
+            bitrate: 3000000,
+          },
+        }
+      : {}),
   }
 
   // Добавляем в pool
@@ -303,12 +316,16 @@ function handleImportedMediaUpdated(
   // Type guard
   if (event.type !== "ImportedMediaUpdated") return {}
 
-  const { media_id, codec } = event.payload as { media_id: string; codec?: string }
+  const { media_id, codec, proxy_path } = event.payload as {
+    media_id: string
+    codec?: string
+    proxy_path?: string
+  }
 
-  logger.info("Imported media updated in pool:", { mediaId: media_id, codec })
+  logger.info("Imported media updated in pool:", { mediaId: media_id, codec, proxyPath: proxy_path })
 
-  // Если codec не передан, нет смысла обновлять
-  if (!codec) {
+  // Если нет обновлений, выходим
+  if (!codec && !proxy_path) {
     return {}
   }
 
@@ -323,19 +340,30 @@ function handleImportedMediaUpdated(
     return {}
   }
 
-  // Обновляем media info с codec для H.265 детекции
+  // Обновляем media info с codec и proxy_path
   const updatedMedia: MediaInfo = {
     ...existingMedia,
-    metadata: {
-      type: existingMedia.type as TauriMediaType,
-      codec: codec,
-    },
+    ...(codec && {
+      metadata: {
+        type: existingMedia.type as TauriMediaType,
+        codec: codec,
+      },
+    }),
+    // 🆕 Добавляем proxy если он сгенерирован
+    ...(proxy_path && {
+      proxy: {
+        path: proxy_path,
+        width: 1280,
+        height: 720,
+        bitrate: 3000000,
+      },
+    }),
   }
 
   // Обновляем в pool
   updatedMediaPool.set(media_id, updatedMedia)
 
-  logger.info("Media updated with codec:", { mediaId: media_id, codec })
+  logger.info("Media updated:", { mediaId: media_id, codec, proxyPath: proxy_path })
 
   return {
     mediaPool: updatedMediaPool,

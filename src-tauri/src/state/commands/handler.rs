@@ -1744,6 +1744,7 @@ impl CommandHandler {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs() as f64)
         .unwrap_or(0.0),
+      proxy_path: None, // Will be set when proxy is generated
     };
 
     // Add to media pool
@@ -1771,6 +1772,7 @@ impl CommandHandler {
             },
             duration: None,
             codec: None, // Codec will be set via MediaUpdated event after metadata extraction
+            proxy_path: None, // Will be set when proxy is generated
           },
         },
         "command_handler".to_string(),
@@ -4884,6 +4886,7 @@ impl CommandHandler {
           .duration_since(std::time::UNIX_EPOCH)
           .map(|d| d.as_secs() as f64)
           .unwrap_or(0.0),
+        proxy_path: None, // Will be set when proxy is generated
       };
 
       // Add to project if open

@@ -97,7 +97,7 @@ export function AnalysisSettingsPanel() {
             <TabsTrigger value="files">
               Файлы ({selectedFiles.length}/{analyzableFiles.length})
             </TabsTrigger>
-            <TabsTrigger value="analyzers">Анализаторы ({selectedAnalyzers.length})</TabsTrigger>
+            <TabsTrigger value="analyzers">Анализаторы ({selectedAnalyzers.size})</TabsTrigger>
             <TabsTrigger value="presets">Пресеты</TabsTrigger>
           </TabsList>
 

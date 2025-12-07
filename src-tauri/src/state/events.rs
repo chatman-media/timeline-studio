@@ -100,6 +100,8 @@ pub enum ProjectEvent {
     media_id: String,
     /// Video codec (e.g., "hevc", "h264") for H.265 detection - sent after metadata extraction
     codec: Option<String>,
+    /// Proxy path if generated
+    proxy_path: Option<String>,
   },
   ImportedMediaCleared,
 
@@ -480,6 +482,9 @@ pub struct MediaData {
   pub duration: Option<f64>,
   /// Video codec (e.g., "hevc", "h264") for H.265 detection
   pub codec: Option<String>,
+  /// Path to generated proxy file (persisted in checkpoint)
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub proxy_path: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]

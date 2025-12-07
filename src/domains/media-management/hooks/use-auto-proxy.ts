@@ -6,6 +6,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { getBackend } from "@/core"
 import { getProxyGenerator } from "@/domains/media-management/services/proxy-generator"
 import { needsProxyGeneration } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
@@ -85,6 +86,26 @@ async function processQueue() {
       generationTime: result.generationTime,
       queueRemaining: generationQueue.length,
     })
+
+    // 🆕 Save proxy_path to backend MediaItem so it persists in checkpoint
+    try {
+      const backend = getBackend()
+      await backend.executeCommand({
+        type: "UpdateImportedMedia",
+        media_id: file.id,
+        updates: { proxy_path: proxyPath },
+      })
+      logger.infoSync("✅ Proxy path saved to backend state", {
+        fileId: file.id,
+        proxyPath,
+      })
+    } catch (backendError) {
+      logger.errorSync("Failed to save proxy path to backend", {
+        fileId: file.id,
+        error: backendError,
+      })
+      // Continue anyway - local cache still works
+    }
 
     // Вызываем callback если предоставлен
     if (onProxyReady) {

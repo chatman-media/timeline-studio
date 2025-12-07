@@ -48,6 +48,12 @@ impl ImportedMediaCommands {
       media_item.thumbnail = Some(thumbnail.to_string());
     }
 
+    // 🆕 Update proxy_path if provided (from proxy generation)
+    if let Some(proxy_path) = updates.get("proxy_path").and_then(|v| v.as_str()) {
+      media_item.proxy_path = Some(proxy_path.to_string());
+      log::info!("Updated proxy_path for media {}: {}", media_id, proxy_path);
+    }
+
     if let Some(metadata) = updates.get("metadata") {
       if let Some(format) = metadata.get("format").and_then(|v| v.as_str()) {
         media_item.metadata.format = format.to_string();
@@ -83,8 +89,9 @@ impl ImportedMediaCommands {
       }
     }
 
-    // Get codec after extraction to include in event (before mark_dirty)
+    // Get codec and proxy_path after extraction to include in event (before mark_dirty)
     let codec = media_item.metadata.codec.clone();
+    let proxy_path = media_item.proxy_path.clone();
 
     // Mark project as dirty since we modified media_pool
     state.mark_dirty();
@@ -114,6 +121,7 @@ impl ImportedMediaCommands {
         ProjectEvent::ImportedMediaUpdated {
           media_id: media_id.clone(),
           codec,
+          proxy_path,
         },
         "command_handler".to_string(),
         version,
