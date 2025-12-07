@@ -1,4 +1,5 @@
 export * from "./clip-transform"
 export * from "./command-queue"
 export * from "./project-transform"
+export * from "./timeline-factories"
 export * from "./type-validation"
