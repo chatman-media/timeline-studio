@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from "react"
-import { globalPerformanceMonitor, type PerformanceMetrics, type SyncRecord } from "../services/performance-monitor"
+import { globalPerformanceMonitor, type PerformanceMetrics, type SyncRecord } from "@/domains/video-editing/services/performance-monitor"
 
 export interface UsePerformanceMonitorOptions {
   /** Включить автоматическое обновление метрик */

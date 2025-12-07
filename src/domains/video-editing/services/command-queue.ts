@@ -3,7 +3,7 @@
  * Canonical source in domains/video-editing/services
  */
 
-import { globalPerformanceMonitor } from "@/features/video-player/services/performance-monitor"
+import { globalPerformanceMonitor } from "./performance-monitor"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("video-player:command-queue")
