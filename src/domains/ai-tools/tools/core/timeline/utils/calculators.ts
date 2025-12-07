@@ -2,7 +2,7 @@
  * Функции вычислений для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineProject, TimelineSection } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection } from "@/domains/video-editing/types"
 
 export function calculateSectionsCoverage(sections: TimelineSection[]): number {
   // Расчет покрытия секций (процент времени timeline покрытого секциями)

@@ -2,7 +2,7 @@
  * AI инструмент для анализа нарратива и истории в Timeline с использованием BaseAITool
  */
 
-import type { TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineProject } from "@/domains/video-editing/types"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,

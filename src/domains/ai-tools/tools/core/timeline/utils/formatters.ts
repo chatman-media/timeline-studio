@@ -2,7 +2,7 @@
  * Форматирование данных для Timeline
  */
 
-import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { TimelineClip } from "@/domains/video-editing/types"
 
 export function formatTimecode(seconds: number, fps: number): string {
   const hours = Math.floor(seconds / 3600)

@@ -2,7 +2,7 @@
  * AI инструмент для создания нового проекта Timeline с использованием BaseAITool
  */
 
-import type { TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineProject } from "@/domains/video-editing/types"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -221,7 +221,6 @@ export class ProjectCreationTool extends BaseAITool {
         const project: TimelineProject = {
           id: projectId,
           name: projectSettings.name,
-          description: projectSettings.description,
           duration: projectSettings.duration,
           fps: projectSettings.fps,
           sampleRate: projectSettings.sampleRate,

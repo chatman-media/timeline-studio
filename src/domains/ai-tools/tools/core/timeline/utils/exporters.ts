@@ -2,7 +2,7 @@
  * Функции экспорта для Timeline AI инструментов
  */
 
-import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineProject } from "@/domains/video-editing/types"
 
 import { escapeCsv, escapeXml, formatTimecode } from "./formatters"
 

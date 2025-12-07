@@ -19,6 +19,8 @@ export * from "./filters"
 // Core types - экспорт из специализированных файлов
 export * from "./media"
 export * from "./player"
+// Aliases for backward compatibility with features layer
+export type { Section as TimelineSection, Timeline as TimelineProject, Track as TimelineTrack } from "./timeline"
 export * from "./timeline"
 export * from "./transitions"
 // Unified effects system (canonical source)

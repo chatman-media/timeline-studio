@@ -2,7 +2,7 @@
  * AI инструмент для создания и применения умных шаблонов Timeline с использованием BaseAITool
  */
 
-import type { TimelineProject, TimelineSection, TimelineTrack, TrackType } from "@/features/timeline/types/timeline"
+import type { TimelineProject, TimelineSection, TimelineTrack, TrackType } from "@/domains/video-editing/types"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,

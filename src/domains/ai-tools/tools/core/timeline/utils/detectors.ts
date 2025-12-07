@@ -2,8 +2,8 @@
  * Функции детектирования для Timeline AI инструментов
  */
 
+import type { TimelineClip } from "@/domains/video-editing/types"
 import { MediaFileUtils } from "@/domains/video-editing/types/media"
-import type { TimelineClip } from "@/features/timeline/types/timeline"
 
 export function determineContentType(clip: TimelineClip): string {
   // Определение типа контента на основе метаданных

@@ -237,19 +237,19 @@ export class KeyframeAnimationService {
       case "opacity":
         return clip.opacity ?? 1
       case "position.x":
-        return clip.position.x ?? 0
+        return clip.position?.x ?? 0
       case "position.y":
-        return clip.position.y ?? 0
+        return clip.position?.y ?? 0
       case "position.width":
-        return clip.position.width ?? 1
+        return clip.position?.width ?? 1
       case "position.height":
-        return clip.position.height ?? 1
+        return clip.position?.height ?? 1
       case "position.rotation":
-        return clip.position.rotation ?? 0
+        return clip.position?.rotation ?? 0
       case "position.scaleX":
-        return clip.position.scaleX ?? 1
+        return clip.position?.scaleX ?? 1
       case "position.scaleY":
-        return clip.position.scaleY ?? 1
+        return clip.position?.scaleY ?? 1
       case "volume":
         return clip.volume ?? 1
       case "speed":

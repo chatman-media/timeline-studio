@@ -159,7 +159,7 @@ export class EDLExporter implements Exporter {
     }
 
     // Добавляем информацию о скорости
-    if (clip.playbackRate !== 1.0) {
+    if (clip.playbackRate && clip.playbackRate !== 1.0) {
       comment += `SPEED: ${(clip.playbackRate * 100).toFixed(0)}%\n`
     }
 

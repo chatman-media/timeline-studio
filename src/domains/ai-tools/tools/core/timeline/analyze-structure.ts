@@ -2,7 +2,7 @@
  * AI инструмент для анализа структуры Timeline с использованием BaseAITool
  */
 
-import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "@/domains/video-editing/types"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,

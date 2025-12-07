@@ -4,6 +4,8 @@
  * Сервис для применения монтажных планов к Timeline
  */
 
+import type { Section, TimelineClip, TimelineProject, Track, TrackType } from "@/domains/video-editing/types"
+import { createTimelineClip, createTimelineSection, createTimelineTrack } from "@/features/timeline/types/factories"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedTransition } from "../../../../domains/video-editing/types/effects"
 import type { MediaFile } from "../../../../domains/video-editing/types/media"
@@ -11,16 +13,6 @@ import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
 import type { AppliedEffect } from "../../../../domains/video-editing/types/unified-effects"
 import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
 import { EmotionalTone } from "../../../../features/montage-planner/types/index"
-import {
-  createTimelineClip,
-  createTimelineSection,
-  createTimelineTrack,
-  type Section,
-  type TimelineClip,
-  type TimelineProject,
-  type Track,
-  type TrackType,
-} from "../../../../features/timeline/types"
 
 const logger = createLogger("TimelineIntegrationService")
 

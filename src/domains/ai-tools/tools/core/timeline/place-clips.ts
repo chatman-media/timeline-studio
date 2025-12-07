@@ -2,7 +2,7 @@
  * AI инструмент для размещения клипов на Timeline с использованием BaseAITool
  */
 
-import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { TimelineClip } from "@/domains/video-editing/types"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -171,19 +171,32 @@ export class ClipPlacementTool extends BaseAITool {
               mediaId: clipConfig.resourceId,
               startTime: clipConfig.startTime || currentTime,
               duration: clipConfig.duration,
+              sourceIn: clipConfig.trimStart || 0,
+              sourceOut: (clipConfig.trimStart || 0) + clipConfig.duration,
               mediaStartTime: clipConfig.trimStart || 0,
               mediaEndTime: (clipConfig.trimStart || 0) + clipConfig.duration,
               volume: 1,
               speed: 1,
+              playbackRate: 1,
               offset: 0,
               isReversed: false,
               opacity: 1,
+              position: {
+                x: 0,
+                y: 0,
+                width: 1920,
+                height: 1080,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+              },
               effects: [],
               filters: [],
               transitions: [],
               mediaFile: undefined,
               isSelected: false,
               isLocked: false,
+              isMuted: false,
               createdAt: new Date(),
               updatedAt: new Date(),
             }

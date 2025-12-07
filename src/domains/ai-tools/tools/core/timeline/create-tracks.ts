@@ -2,7 +2,7 @@
  * AI инструмент для создания структуры треков на Timeline с использованием BaseAITool
  */
 
-import type { TimelineTrack, TrackType } from "@/features/timeline/types/timeline"
+import type { TimelineTrack, TrackType } from "@/domains/video-editing/types"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -156,6 +156,10 @@ export class TrackCreationTool extends BaseAITool {
           type: trackConfig.type as TrackType,
           order: index,
           clips: [],
+          muted: trackConfig.isMuted ?? false,
+          solo: false,
+          locked: trackConfig.isLocked ?? false,
+          expanded: true,
           isLocked: trackConfig.isLocked ?? false,
           isMuted: trackConfig.isMuted ?? false,
           isHidden: trackConfig.isHidden ?? false,

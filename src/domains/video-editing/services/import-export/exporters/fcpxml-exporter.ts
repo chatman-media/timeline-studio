@@ -222,7 +222,7 @@ export class FCPXMLExporter implements Exporter {
     }
 
     // Скорость
-    if (clip.playbackRate !== 1.0) {
+    if (clip.playbackRate && clip.playbackRate !== 1.0) {
       lines.push(`${indentStr}<timeMap>`)
       lines.push(`${indentStr}  <timept time="0s" value="0s" interp="smooth2"/>`)
       const endTime = this.secondsToFCPXMLDuration(clip.duration)

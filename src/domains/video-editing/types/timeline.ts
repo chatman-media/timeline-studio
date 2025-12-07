@@ -17,6 +17,7 @@ export interface VideoFadeKeyframe {
 export interface Timeline {
   id: string
   name: string
+  description?: string
   duration: number
   fps: number
   sampleRate: number
@@ -97,10 +98,11 @@ export interface Track {
   // Transitions on track
   transitions: string[]
 
-  // State flags
-  muted: boolean
-  solo: boolean
-  locked: boolean
+  // State flags (dual naming for backward compatibility)
+  muted?: boolean
+  solo?: boolean
+  locked?: boolean
+  expanded?: boolean
   isLocked: boolean
   isMuted: boolean
   isHidden: boolean
@@ -108,7 +110,6 @@ export interface Track {
 
   // Visual
   height: number
-  expanded: boolean
   color?: string
 
   // Audio
@@ -141,8 +142,8 @@ export interface TimelineClip {
   trackId: string
   startTime: number
   duration: number
-  sourceIn: number
-  sourceOut: number
+  sourceIn?: number
+  sourceOut?: number
 
   // Media timing
   mediaStartTime: number
@@ -151,7 +152,7 @@ export interface TimelineClip {
   mediaDuration?: number
 
   // Playback
-  playbackRate: number
+  playbackRate?: number
   speed: number
   isReversed: boolean
   maintainPitch?: boolean
@@ -159,14 +160,14 @@ export interface TimelineClip {
   // State
   isSelected: boolean
   isLocked: boolean
-  isMuted: boolean
+  isMuted?: boolean
 
   // Audio
   volume: number
 
   // Visual
   opacity: number
-  position: {
+  position?: {
     x: number
     y: number
     width: number
