@@ -10,7 +10,7 @@
  */
 
 import type { MediaFile } from "@/domains/video-editing/types"
-import type { VideoEffect } from "../../effects/types"
+import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import type { VideoFilter } from "../../filters/types/filters"
 import type { StyleTemplate } from "../../style-templates/types/style-template"
 import type { SubtitleClip } from "../../subtitles/types"
@@ -18,6 +18,9 @@ import type { MediaTemplate } from "../../templates/lib/template-config"
 import type { Transition } from "../../transitions/types/transitions"
 import type { SpeedRampingConfig } from "./speed-ramping"
 import type { TimelineTransition } from "./timeline-transition"
+
+// Реэкспортируем AppliedEffect из unified-effects для обратной совместимости
+export type { AppliedEffect }
 
 // ============================================================================
 // CORE TIMELINE TYPES
@@ -27,8 +30,8 @@ import type { TimelineTransition } from "./timeline-transition"
  * Централизованное хранилище ресурсов проекта
  */
 export interface ProjectResources {
-  // Визуальные эффекты
-  effects: VideoEffect[]
+  // Визуальные эффекты (используем unified BaseEffect)
+  effects: BaseEffect[]
 
   // Фильтры цветокоррекции
   filters: VideoFilter[]
@@ -310,25 +313,8 @@ export interface TimelineProjectSettings {
 // APPLIED RESOURCES TYPES
 // ============================================================================
 
-/**
- * Применение эффекта с кастомными параметрами
- */
-export interface AppliedEffect {
-  id: string
-  effectId: string // Ссылка на эффект в resources.effects
-
-  // Временные параметры (для анимированных эффектов)
-  startTime?: number // Относительно клипа/трека
-  duration?: number
-
-  // Кастомные параметры для этого применения
-  // Переопределяют дефолтные параметры эффекта
-  customParams?: Record<string, any>
-
-  // Состояние
-  enabled: boolean
-  order: number // Порядок применения в цепочке
-}
+// AppliedEffect теперь импортируется из unified-effects.ts
+// export interface AppliedEffect - УДАЛЕНО, используется из unified-effects.ts
 
 /**
  * Применение фильтра с кастомными параметрами

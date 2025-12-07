@@ -27,6 +27,7 @@ export interface ImportOptions {
   defaultTrackType?: "video" | "audio"
   preserveMediaPaths?: boolean
   autoFixMissingMedia?: boolean
+  preserveTimecode?: boolean // Сохранять timecode из импортируемого проекта
 }
 
 // Результат импорта
@@ -159,7 +160,7 @@ export interface FCPXMLTransition {
 // Интерфейсы для импортеров/экспортеров
 export interface Importer {
   import(content: string, options: ImportOptions): Promise<ImportResult>
-  validateContent(content: string): boolean
+  validateContent?(content: string): boolean // Optional for backwards compatibility
 }
 
 export interface Exporter {

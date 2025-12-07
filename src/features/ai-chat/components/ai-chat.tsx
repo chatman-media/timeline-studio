@@ -78,7 +78,7 @@ export function AiChat() {
   } = useChat()
   const { getApiKeyInfo } = useApiKeys()
   const { openModal } = useModals()
-  const { importFile } = useMediaImport()
+  const { selectMediaFiles, importFiles } = useMediaImport()
 
   // Получаем контекст Timeline (если доступен)
   const timelineContext = useTimeline()
@@ -773,9 +773,10 @@ export function AiChat() {
                       variant="outline"
                       className="h-7 text-xs"
                       onClick={async () => {
-                        const result = await importFile()
-                        if (result.success) {
-                          logger.info(`Импортировано ${result.files.length} файлов`)
+                        const selectedFiles = await selectMediaFiles()
+                        if (selectedFiles) {
+                          const importedFiles = await importFiles(selectedFiles, {})
+                          logger.info(`Импортировано ${importedFiles.length} файлов`)
                         }
                       }}
                     >

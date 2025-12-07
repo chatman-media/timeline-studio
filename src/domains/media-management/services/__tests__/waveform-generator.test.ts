@@ -8,6 +8,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaInfo } from "../../types"
 import { WaveformGeneratorService } from "../waveform-generator"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 // Mock media service
 const mockMediaService = {
   getMetadata: vi.fn(),
@@ -60,7 +63,7 @@ describe("WaveformGeneratorService", () => {
       const mediaInfo: MediaInfo = {
         path: "/test/audio.mp3",
         name: "audio.mp3",
-        type: "Audio",
+        type: "Audio" as TauriMediaType,
         duration: 120,
       }
 

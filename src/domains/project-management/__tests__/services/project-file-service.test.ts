@@ -6,7 +6,7 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
-import type { ProjectFile } from "@/features/project-settings/types/project"
+import type { ProjectFile } from "@/domains/shared/types/project"
 import {
   createNewProject,
   getProjectStats,

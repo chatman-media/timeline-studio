@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { COMMON_FRAMERATES, COMMON_RESOLUTIONS } from "@/features/project-settings/types/project"
+import { COMMON_FRAMERATES, COMMON_RESOLUTIONS } from "@/domains/shared/types/project"
 
 import { useCameraPermissions, useDeviceCapabilities } from "../../hooks/camera-capture-hooks"
 

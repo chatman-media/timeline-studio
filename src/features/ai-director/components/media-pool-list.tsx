@@ -155,7 +155,7 @@ export function MediaPoolList({ mediaPool, selectedIds, onSelectionChange, disab
                     />
 
                     {/* Media icon */}
-                    {getMediaIcon(mediaInfo.type)}
+                    {getMediaIcon(mediaInfo.type as MediaType)}
 
                     {/* File info */}
                     <div className="flex-1 min-w-0">
@@ -163,7 +163,7 @@ export function MediaPoolList({ mediaPool, selectedIds, onSelectionChange, disab
                         {mediaInfo.name}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        {getMediaTypeBadge(mediaInfo.type)}
+                        {getMediaTypeBadge(mediaInfo.type as MediaType)}
                         {mediaInfo.duration && (
                           <span className="text-xs text-muted-foreground">{formatDuration(mediaInfo.duration)}</span>
                         )}

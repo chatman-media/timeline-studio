@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { logError, logInfo } from "@/lib/tauri-logger"
-import { COMMON_FRAMERATES, COMMON_RESOLUTIONS, type ResolutionOption } from "../../project-settings/types/project"
+import { COMMON_FRAMERATES, COMMON_RESOLUTIONS, type ResolutionOption } from "@/domains/shared/types/project"
 
 interface UseCameraPermissionsResult {
   permissionStatus: "pending" | "granted" | "denied" | "error"

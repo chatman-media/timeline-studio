@@ -4,9 +4,9 @@
 
 import { useCallback } from "react"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
-import type { VideoEffect } from "@/features/effects/types"
-import type { VideoFilter } from "@/features/filters/types/filters"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { VideoEffect } from "@/domains/video-editing/types"
+import type { VideoFilter } from "@/domains/video-editing/types"
+import type { Transition } from "@/domains/video-editing/types"
 import type { TimelineClip } from "../types"
 import { useTimeline } from "./use-timeline"
 

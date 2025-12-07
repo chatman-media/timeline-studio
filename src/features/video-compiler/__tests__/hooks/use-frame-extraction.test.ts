@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
-import { Subtitle, SubtitleAlignX, SubtitleAlignY, SubtitleFontWeight } from "@/domains/video-editing"
+import type { Subtitle } from "@/domains/video-editing"
+import { SubtitleAlignX, SubtitleAlignY, SubtitleFontWeight } from "@/domains/video-editing"
 import * as frameExtractionServiceModule from "@/domains/video-editing/services/compiler"
 import { useFrameExtraction } from "../../hooks/use-frame-extraction"
 
@@ -14,34 +15,35 @@ afterAll(() => {
   console.error = originalConsoleError
 })
 
-// Мокаем useMediaPreview и useFramePreview
-vi.mock("@/features/media/hooks/use-media-preview", () => ({
-  useMediaPreview: () => ({
-    getPreviewData: vi.fn().mockResolvedValue(null),
-    generateThumbnail: vi.fn().mockResolvedValue("base64-thumbnail"),
-    clearPreviewData: vi.fn().mockResolvedValue(true),
-    getFilesWithPreviews: vi.fn().mockResolvedValue([]),
-    savePreviewData: vi.fn().mockResolvedValue(true),
-    loadPreviewData: vi.fn().mockResolvedValue(true),
-    isGenerating: false,
-    error: null,
-  }),
-}))
-
 // Create mock functions outside to maintain references
 const mockExtractTimelineFrames = vi.fn()
 const mockExtractRecognitionFrames = vi.fn()
 const mockGetFrameAtTimestamp = vi.fn()
 
-vi.mock("@/features/media/hooks/use-frame-preview", () => ({
-  useFramePreview: () => ({
-    extractTimelineFrames: (...args: any[]) => mockExtractTimelineFrames(...args),
-    extractRecognitionFrames: (...args: any[]) => mockExtractRecognitionFrames(...args),
-    getFrameAtTimestamp: (...args: any[]) => mockGetFrameAtTimestamp(...args),
-    isExtracting: false,
-    error: null,
-  }),
-}))
+// Мокаем useMediaPreview и useFramePreview
+vi.mock("@/domains/media-management", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/media-management")>()
+  return {
+    ...actual,
+    useMediaPreview: () => ({
+      getPreviewData: vi.fn().mockResolvedValue(null),
+      generateThumbnail: vi.fn().mockResolvedValue("base64-thumbnail"),
+      clearPreviewData: vi.fn().mockResolvedValue(true),
+      getFilesWithPreviews: vi.fn().mockResolvedValue([]),
+      savePreviewData: vi.fn().mockResolvedValue(true),
+      loadPreviewData: vi.fn().mockResolvedValue(true),
+      isGenerating: false,
+      error: null,
+    }),
+    useFramePreview: () => ({
+      extractTimelineFrames: (...args: any[]) => mockExtractTimelineFrames(...args),
+      extractRecognitionFrames: (...args: any[]) => mockExtractRecognitionFrames(...args),
+      getFrameAtTimestamp: (...args: any[]) => mockGetFrameAtTimestamp(...args),
+      isExtracting: false,
+      error: null,
+    }),
+  }
+})
 
 // Мокаем сервис извлечения кадров
 vi.mock("@/domains/video-editing/services/compiler", () => {

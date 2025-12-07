@@ -33,9 +33,19 @@ describe("TemplateApplier", () => {
         modified: new Date(),
       },
       settings: {
-        resolution: { width: 1920, height: 1080 },
-        frameRate: 30,
-        aspectRatio: "16:9",
+        resolution: "1920x1080",
+        frameRate: "30",
+        aspectRatio: {
+          label: "16:9",
+          textLabel: "Широкоэкранный",
+          description: "YouTube",
+          value: {
+            width: 1920,
+            height: 1080,
+            name: "16:9",
+          },
+        },
+        colorSpace: "sdr",
         audio: {
           sampleRate: 48000,
           bitDepth: 16,
@@ -57,11 +67,19 @@ describe("TemplateApplier", () => {
       aspectRatio: "16:9",
       estimatedDuration: 600,
       settings: {
-        resolution: { width: 1920, height: 1080 },
-        frameRate: 30,
-        aspectRatio: "16:9",
-        audioSampleRate: 48000,
-        audioChannels: 2,
+        resolution: "1920x1080",
+        frameRate: "30",
+        aspectRatio: {
+          label: "16:9",
+          textLabel: "Широкоэкранный",
+          description: "YouTube",
+          value: {
+            width: 1920,
+            height: 1080,
+            name: "16:9",
+          },
+        },
+        colorSpace: "sdr",
       },
       structure: {
         sections: [

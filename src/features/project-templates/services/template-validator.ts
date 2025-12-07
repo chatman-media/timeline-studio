@@ -316,44 +316,37 @@ export class TemplateValidator {
         severity: "error",
       })
     } else {
-      if (template.settings.resolution.width <= 0 || template.settings.resolution.height <= 0) {
+      // Проверка формата разрешения (должно быть "WIDTHxHEIGHT")
+      const resolutionRegex = /^\d+x\d+$/
+      if (!resolutionRegex.test(template.settings.resolution)) {
         errors.push({
           field: "settings.resolution",
-          message: "Resolution width and height must be greater than 0",
+          message: "Resolution must be in format WIDTHxHEIGHT (e.g. 1920x1080)",
           severity: "error",
         })
-      }
+      } else {
+        // Предупреждения о нестандартных разрешениях
+        const commonResolutions = ["1920x1080", "1080x1920", "1280x720", "3840x2160", "1080x1080"]
 
-      // Предупреждения о нестандартных разрешениях
-      const commonResolutions = [
-        { width: 1920, height: 1080 },
-        { width: 1080, height: 1920 },
-        { width: 1280, height: 720 },
-        { width: 3840, height: 2160 },
-      ]
-
-      const isCommon = commonResolutions.some(
-        (r) => r.width === template.settings.resolution.width && r.height === template.settings.resolution.height,
-      )
-
-      if (!isCommon) {
-        warnings.push({
-          field: "settings.resolution",
-          message: `Unusual resolution: ${template.settings.resolution.width}x${template.settings.resolution.height}`,
-          severity: "warning",
-        })
+        if (!commonResolutions.includes(template.settings.resolution)) {
+          warnings.push({
+            field: "settings.resolution",
+            message: `Unusual resolution: ${template.settings.resolution}`,
+            severity: "warning",
+          })
+        }
       }
     }
 
     // Частота кадров
-    if (!template.settings.frameRate || template.settings.frameRate <= 0) {
+    if (!template.settings.frameRate) {
       errors.push({
         field: "settings.frameRate",
-        message: "Frame rate must be greater than 0",
+        message: "Frame rate is required",
         severity: "error",
       })
     } else {
-      const commonFrameRates = [23.976, 24, 25, 29.97, 30, 50, 59.94, 60]
+      const commonFrameRates = ["23.97", "24", "25", "29.97", "30", "50", "59.94", "60"]
       if (!commonFrameRates.includes(template.settings.frameRate)) {
         warnings.push({
           field: "settings.frameRate",
@@ -363,16 +356,22 @@ export class TemplateValidator {
       }
     }
 
-    // Sample rate
-    if (template.settings.audioSampleRate) {
-      const commonSampleRates = [44100, 48000, 96000]
-      if (!commonSampleRates.includes(template.settings.audioSampleRate)) {
-        warnings.push({
-          field: "settings.audioSampleRate",
-          message: `Unusual audio sample rate: ${template.settings.audioSampleRate} Hz`,
-          severity: "warning",
-        })
-      }
+    // Aspect Ratio
+    if (!template.settings.aspectRatio) {
+      errors.push({
+        field: "settings.aspectRatio",
+        message: "Aspect ratio is required",
+        severity: "error",
+      })
+    }
+
+    // Color Space
+    if (!template.settings.colorSpace) {
+      errors.push({
+        field: "settings.colorSpace",
+        message: "Color space is required",
+        severity: "error",
+      })
     }
   }
 

@@ -3,8 +3,8 @@
  * Применение шаблона проекта к Timeline Studio Project
  */
 
-import type { FrameRate } from "@/features/project-settings/types/project"
-import { ASPECT_RATIOS } from "@/features/project-settings/types/project"
+import type { FrameRate, Resolution } from "@/domains/shared/types/project"
+import { ASPECT_RATIOS, RESOLUTIONS_16_9, RESOLUTIONS_9_16, RESOLUTIONS_1_1, RESOLUTIONS_4_3, RESOLUTIONS_4_5, RESOLUTIONS_21_9 } from "@/domains/shared/types/project"
 import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
 import type { Sequence, SequenceSettings } from "@/features/timeline/types/sequence"
 import type { TimelineTrack } from "@/features/timeline/types/timeline"
@@ -13,6 +13,21 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectTemplate, Section } from "../types/project-template"
 
 const logger = createLogger("TemplateApplier")
+
+/**
+ * Helper функция для конвертации разрешения из строки в объект { width, height }
+ */
+function parseResolution(resolution: Resolution): { width: number; height: number } {
+  const [width, height] = resolution.split("x").map(Number)
+  return { width, height }
+}
+
+/**
+ * Helper функция для конвертации frameRate из FrameRate string в number
+ */
+function frameRateToNumber(frameRate: FrameRate): number {
+  return Number.parseFloat(frameRate)
+}
 
 export interface ApplyTemplateOptions {
   /** Создать новую секвенцию или заменить активную */
@@ -91,16 +106,16 @@ export class TemplateApplier {
    */
   private createSequenceSettings(template: ProjectTemplate): SequenceSettings {
     return {
-      resolution: template.settings.resolution,
-      frameRate: template.settings.frameRate,
-      aspectRatio: template.settings.aspectRatio,
+      resolution: parseResolution(template.settings.resolution),
+      frameRate: frameRateToNumber(template.settings.frameRate),
+      aspectRatio: template.settings.aspectRatio?.label || "16:9",
       duration: template.estimatedDuration,
       audio: {
-        sampleRate: template.settings.audioSampleRate || 48000,
+        sampleRate: 48000,
         bitDepth: 24,
-        channels: template.settings.audioChannels || 2,
+        channels: 2,
       },
-      colorSpace: "rec709",
+      colorSpace: template.settings.colorSpace || "rec709",
     }
   }
 
@@ -248,31 +263,24 @@ export class TemplateApplier {
    * Применяет настройки проекта
    */
   private applyProjectSettings(project: TimelineStudioProject, template: ProjectTemplate): void {
-    // Конвертируем resolution из { width, height } в строку "widthxheight"
+    // Применяем resolution если не установлено
     if (!project.settings.resolution && template.settings.resolution) {
-      const { width, height } = template.settings.resolution
-      project.settings.resolution = `${width}x${height}`
+      project.settings.resolution = template.settings.resolution
     }
 
-    // Конвертируем frameRate из number в FrameRate string
+    // Применяем frameRate если не установлено
     if (!project.settings.frameRate && template.settings.frameRate) {
-      project.settings.frameRate = String(template.settings.frameRate) as FrameRate
+      project.settings.frameRate = template.settings.frameRate
     }
 
-    // Конвертируем aspectRatio из string в AspectRatio object
+    // Применяем aspectRatio если не установлено
     if (!project.settings.aspectRatio && template.settings.aspectRatio) {
-      const aspectRatioObj = ASPECT_RATIOS.find((ar) => ar.label === template.settings.aspectRatio)
-      if (aspectRatioObj) {
-        project.settings.aspectRatio = aspectRatioObj
-      }
+      project.settings.aspectRatio = template.settings.aspectRatio
     }
 
-    // Обновляем аудио настройки
-    if (template.settings.audioSampleRate) {
-      project.settings.audio.sampleRate = template.settings.audioSampleRate
-    }
-    if (template.settings.audioChannels) {
-      project.settings.audio.channels = template.settings.audioChannels
+    // Применяем colorSpace если не установлено
+    if (!project.settings.colorSpace && template.settings.colorSpace) {
+      project.settings.colorSpace = template.settings.colorSpace
     }
 
     logger.info("Project settings applied", {

@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { LiveAudioVisualizer } from "react-audio-visualize"
 
 import type { MediaFile } from "@/domains/media-management"
-import type { TimelineResource } from "@/features/resources/types"
+import type { TimelineResource } from "@/domains/shared/types/resources"
 import { usePlayer } from "@/features/video-player"
 import { createAudioUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"

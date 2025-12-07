@@ -83,8 +83,8 @@ export class FCPXMLExporter implements Exporter {
       if (!mediaFile) continue
 
       const assetId = `r${index + 2}` // r1 занят форматом
-      const hasVideo = MediaFileUtils.hasVideo(mediaFile) ? "1" : "0"
-      const hasAudio = MediaFileUtils.hasAudio(mediaFile) ? "1" : "0"
+      const hasVideo = MediaFileUtils.isVideo(mediaFile.type) ? "1" : "0"
+      const hasAudio = MediaFileUtils.isAudio(mediaFile.type) ? "1" : "0"
 
       const duration = this.secondsToFCPXMLDuration(mediaFile.duration || 0)
 

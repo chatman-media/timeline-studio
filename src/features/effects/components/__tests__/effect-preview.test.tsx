@@ -108,8 +108,8 @@ describe("EffectPreview", () => {
     it("должен отображать превью эффекта", () => {
       render(<EffectPreview {...mockProps} />)
 
-      // Проверяем, что компонент отрендерился
-      expect(screen.getAllByText("Тестовый эффект")).toHaveLength(2) // placeholder и название
+      // Проверяем, что компонент отрендерился (только название, placeholder не показывается когда есть videoSrc)
+      expect(screen.getByText("Тестовый эффект")).toBeInTheDocument()
     })
 
     it("должен отображать название на правильном языке", () => {
@@ -120,12 +120,12 @@ describe("EffectPreview", () => {
       expect(title).toHaveTextContent("Тестовый эффект")
     })
 
-    it("должен показывать placeholder пока видео не загрузилось", () => {
+    it("должен показывать название эффекта", () => {
       render(<EffectPreview {...mockProps} />)
 
-      // Проверяем, что placeholder отображается
-      const placeholder = document.querySelector(".text-gray-500.text-xs")
-      expect(placeholder).toHaveTextContent("Тестовый эффект")
+      // Проверяем, что название отображается (placeholder показывается только без videoSrc)
+      const title = document.querySelector(".mt-1.text-xs.text-center")
+      expect(title).toHaveTextContent("Тестовый эффект")
     })
 
     it("должен отображать индикатор сложности", () => {
@@ -164,7 +164,7 @@ describe("EffectPreview", () => {
       render(<EffectPreview {...mockProps} customParams={customParams} />)
 
       // Компонент должен отрендериться с кастомными параметрами
-      expect(screen.getAllByText("Тестовый эффект")).toHaveLength(2)
+      expect(screen.getByText("Тестовый эффект")).toBeInTheDocument()
     })
 
     it("должен использовать кастомные размеры", () => {
@@ -195,7 +195,7 @@ describe("EffectPreview", () => {
 
       render(<EffectPreview {...mockProps} effect={minimalEffect} />)
 
-      expect(screen.getAllByText("Минимальный")).toHaveLength(2) // placeholder и название
+      expect(screen.getByText("Минимальный")).toBeInTheDocument()
     })
   })
 })

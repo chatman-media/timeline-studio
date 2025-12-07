@@ -87,12 +87,12 @@ impl MediaCommands {
         existing.id
       );
       // Return success with existing media ID instead of creating duplicate
-      return CommandResult::success(serde_json::json!({
+      return CommandResult::success(Some(serde_json::json!({
         "id": existing.id,
         "path": existing.path,
         "name": existing.name,
         "already_exists": true
-      }));
+      })));
     }
 
     // Create media item with full metadata
@@ -266,6 +266,12 @@ impl MediaCommands {
       project.media_pool.items.remove(&id);
     }
 
+    // Get remaining count before releasing project borrow
+    let remaining_count = project.media_pool.items.len();
+
+    // Release the project reference before calling mark_dirty
+    let _ = project;
+
     if duplicate_count > 0 {
       state.mark_dirty();
       log::info!(
@@ -274,9 +280,9 @@ impl MediaCommands {
       );
     }
 
-    CommandResult::success(serde_json::json!({
+    CommandResult::success(Some(serde_json::json!({
       "removed_count": duplicate_count,
-      "remaining_count": project.media_pool.items.len()
-    }))
+      "remaining_count": remaining_count
+    })))
   }
 }

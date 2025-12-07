@@ -11,7 +11,7 @@ import { type MediaFile as DomainMediaFile, MediaType } from "../types/media"
  * Конвертирует старый MediaFile в новый формат
  */
 export function featureToDomainMediaFile(file: FeatureMediaFile): DomainMediaFile {
-  // Определяем тип медиа на основе boolean флагов
+  // Определяем тип медиа на основе boolean флагов и probeData
   let type = MediaType.Unknown
 
   if (file.isVideo) {
@@ -22,6 +22,9 @@ export function featureToDomainMediaFile(file: FeatureMediaFile): DomainMediaFil
     type = MediaType.Audio
   } else if (file.isImage) {
     type = MediaType.StillImage
+  } else if (file.type) {
+    // Если type уже установлен и не покрыт boolean флагами - используем его
+    type = file.type
   }
 
   return {
@@ -54,12 +57,8 @@ export function featureToDomainMediaFile(file: FeatureMediaFile): DomainMediaFil
           width: file.proxy.width,
           height: file.proxy.height,
           bitrate: file.proxy.bitrate,
-          codec: MediaCodec.Unknown,
         }
       : undefined,
-
-    // Thumbnail
-    thumbnailPath: file.thumbnailPath,
 
     // Technical metadata
     probeData: file.probeData,
@@ -110,9 +109,6 @@ export function domainToFeatureMediaFile(file: DomainMediaFile): FeatureMediaFil
         }
       : undefined,
 
-    // Thumbnail
-    thumbnailPath: file.thumbnailPath,
-
     // Technical metadata
     probeData: file.probeData,
   }
@@ -129,5 +125,3 @@ function parseFps(fpsString: string): number {
   return Number(fpsString)
 }
 
-// Импортируем MediaCodec для proxy
-import { MediaCodec } from "../types/media"

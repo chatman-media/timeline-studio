@@ -18,11 +18,19 @@ describe("TemplateValidator", () => {
       aspectRatio: "16:9",
       estimatedDuration: 600,
       settings: {
-        resolution: { width: 1920, height: 1080 },
-        frameRate: 30,
-        aspectRatio: "16:9",
-        audioSampleRate: 48000,
-        audioChannels: 2,
+        resolution: "1920x1080",
+        frameRate: "30",
+        aspectRatio: {
+          label: "16:9",
+          textLabel: "Широкоэкнранный",
+          description: "YouTube",
+          value: {
+            width: 1920,
+            height: 1080,
+            name: "16:9",
+          },
+        },
+        colorSpace: "sdr",
       },
       structure: {
         sections: [
@@ -412,12 +420,12 @@ describe("TemplateValidator", () => {
       expect(result.errors.some((e) => e.field === "settings.resolution")).toBe(true)
     })
 
-    it("should require positive resolution dimensions", () => {
+    it("should require valid resolution format", () => {
       const template = {
         ...validTemplate,
         settings: {
           ...validTemplate.settings,
-          resolution: { width: 0, height: 0 },
+          resolution: "invalid",
         },
       }
       const result = validator.validate(template)
@@ -431,7 +439,7 @@ describe("TemplateValidator", () => {
         ...validTemplate,
         settings: {
           ...validTemplate.settings,
-          resolution: { width: 800, height: 600 },
+          resolution: "800x600",
         },
       }
       const result = validator.validate(template)
@@ -440,10 +448,10 @@ describe("TemplateValidator", () => {
       expect(result.warnings.some((w) => w.message.includes("Unusual resolution"))).toBe(true)
     })
 
-    it("should require positive frame rate", () => {
+    it("should require frame rate", () => {
       const template = {
         ...validTemplate,
-        settings: { ...validTemplate.settings, frameRate: 0 },
+        settings: { ...validTemplate.settings, frameRate: undefined as any },
       }
       const result = validator.validate(template)
 
@@ -454,21 +462,33 @@ describe("TemplateValidator", () => {
     it("should warn about unusual frame rate", () => {
       const template = {
         ...validTemplate,
-        settings: { ...validTemplate.settings, frameRate: 15 },
-      }
+        settings: { ...validTemplate.settings, frameRate: "24" },
+      } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
       expect(result.warnings.some((w) => w.field === "settings.frameRate")).toBe(true)
     })
 
-    it("should warn about unusual audio sample rate", () => {
+    it("should require aspect ratio object", () => {
       const template = {
         ...validTemplate,
-        settings: { ...validTemplate.settings, audioSampleRate: 22050 },
+        settings: { ...validTemplate.settings, aspectRatio: undefined as any },
       }
       const result = validator.validate(template)
 
-      expect(result.warnings.some((w) => w.field === "settings.audioSampleRate")).toBe(true)
+      expect(result.valid).toBe(false)
+      expect(result.errors.some((e) => e.field === "settings.aspectRatio")).toBe(true)
+    })
+
+    it("should require color space", () => {
+      const template = {
+        ...validTemplate,
+        settings: { ...validTemplate.settings, colorSpace: undefined as any },
+      }
+      const result = validator.validate(template)
+
+      expect(result.valid).toBe(false)
+      expect(result.errors.some((e) => e.field === "settings.colorSpace")).toBe(true)
     })
   })
 

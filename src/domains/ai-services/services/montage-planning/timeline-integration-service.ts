@@ -10,8 +10,6 @@ import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
 import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
 import { EmotionalTone } from "../../../../features/montage-planner/types/index"
 import {
-  type AppliedEffect,
-  type AppliedTransition,
   createTimelineClip,
   createTimelineSection,
   createTimelineTrack,
@@ -21,6 +19,8 @@ import {
   type Track,
   type TrackType,
 } from "../../../../features/timeline/types"
+import type { AppliedEffect } from "../../../../domains/video-editing/types/unified-effects"
+import type { AppliedTransition } from "../../../../domains/video-editing/types/effects"
 
 const logger = createLogger("TimelineIntegrationService")
 
@@ -110,12 +110,12 @@ export function applyPlanToTimeline(
   // Группируем клипы по трекам
   const videoClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return MediaFileUtils.isVideo(clip.fragment.sourceFile) || MediaFileUtils.isImage(clip.fragment.sourceFile)
+    return MediaFileUtils.isVideo(clip.fragment.sourceFile.type) || MediaFileUtils.isImage(clip.fragment.sourceFile.type)
   })
 
   const audioClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return MediaFileUtils.isAudio(clip.fragment.sourceFile)
+    return MediaFileUtils.isAudio(clip.fragment.sourceFile.type)
   })
 
   // Добавляем видео клипы
@@ -187,13 +187,22 @@ function createTimelineClips(
 
         // Стабилизация
         if (adjustments.stabilization) {
-          // Добавляем эффект стабилизации
+          // Добавляем эффект стабилизации (используем тип из effects.ts для timeline)
           const stabilizationEffect: AppliedEffect = {
             id: `effect_stabilization_${timelineClip.id}`,
             effectId: "stabilization",
             enabled: true,
             order: (timelineClip.effects || []).length,
-            customParams: {},
+            startTime: montageClip.fragment.startTime,
+            duration: montageClip.fragment.duration,
+            parameters: {},
+            keyframes: {},
+            masks: [],
+            blendMode: "normal",
+            opacity: 1,
+            effectVersion: "1.0.0",
+            createdAt: new Date(),
+            modifiedAt: new Date(),
           }
           timelineClip.effects = [...(timelineClip.effects || []), stabilizationEffect]
         }
@@ -229,7 +238,6 @@ function applyTransitionsToClips(clips: TimelineClip[], transitions: TransitionP
         type: "out",
         duration: transition.duration,
         isEnabled: true,
-        customParams: {},
       }
       fromClip.transitions = [...(fromClip.transitions || []), appliedTransition]
 

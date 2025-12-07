@@ -5,7 +5,7 @@ import { type MediaFile, MediaType } from "@/domains/media-management"
 import { ApplyButton } from "@/features/browser"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
-import type { TransitionResource } from "@/features/resources/types"
+import type { TransitionResource } from "@/domains/shared/types/resources"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 

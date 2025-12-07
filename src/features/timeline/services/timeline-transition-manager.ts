@@ -3,7 +3,7 @@
  * Управление переходами на треках таймлайна
  */
 
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 import type { TimelineProject, TimelineTrack } from "../types/timeline"
 import type { TimelineTransition } from "../types/timeline-transition"
 import {

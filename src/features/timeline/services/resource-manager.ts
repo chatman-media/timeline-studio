@@ -6,11 +6,11 @@
  */
 
 import type { MediaFile } from "@/domains/media-management"
-import type { VideoEffect } from "@/features/effects/types"
-import type { VideoFilter } from "@/features/filters/types/filters"
+import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { VideoFilter } from "@/domains/video-editing/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 
 import type {
   AppliedEffect,
@@ -44,7 +44,7 @@ function createEmptyResources(): ProjectResources {
 /**
  * Добавляет эффект в ресурсы проекта если его там еще нет
  */
-export function addEffectToResources(project: TimelineProject, effect: VideoEffect): TimelineProject {
+export function addEffectToResources(project: TimelineProject, effect: BaseEffect): TimelineProject {
   if (!project.resources) {
     project.resources = createEmptyResources()
   }
@@ -194,19 +194,27 @@ export function addMusicToResources(project: TimelineProject, musicFile: MusicFi
  */
 export function createAppliedEffect(
   project: TimelineProject,
-  effect: VideoEffect,
+  effect: BaseEffect,
   customParams?: Record<string, any>,
 ): { project: TimelineProject; appliedEffect: AppliedEffect } {
   // Добавляем эффект в ресурсы
   project = addEffectToResources(project, effect)
 
-  // Создаем применение
+  // Создаем применение согласно unified-effects.ts
   const appliedEffect: AppliedEffect = {
     id: `applied-${effect.id}-${Date.now()}`,
     effectId: effect.id,
-    customParams,
+    startTime: 0,
+    parameters: customParams || {},
     enabled: true,
     order: 0,
+    keyframes: {},
+    masks: [],
+    blendMode: "normal" as const,
+    opacity: 1,
+    effectVersion: effect.version || "1.0",
+    createdAt: new Date(),
+    modifiedAt: new Date(),
   }
 
   return { project, appliedEffect }

@@ -5,11 +5,11 @@
 // Временные заглушки для отсутствующих типов
 
 // Import actual types
-import type { VideoFilter } from "@/features/filters/types/filters"
+import type { VideoFilter } from "@/domains/video-editing/types"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import { SubtitleClip } from "@/features/subtitles"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
   AlignX,
@@ -290,7 +290,7 @@ function convertAppliedEffects(
   appliedEffectsMap.forEach(({ applied, baseEffect }) => {
     // Мерджим базовые параметры с кастомными
     const baseParams = baseEffect ? convertEffectParameters(baseEffect) : {}
-    const customParams = applied.customParams || {}
+    const customParams = applied.parameters || {}
     const mergedParams = { ...baseParams, ...customParams }
 
     // Генерируем FFmpeg команду с мерджеными параметрами

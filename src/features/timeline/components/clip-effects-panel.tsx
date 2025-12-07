@@ -23,11 +23,11 @@ import { Switch } from "@/components/ui/switch"
 import { EffectManagerPanel } from "@/features/effects/components/effect-manager-panel"
 import { EffectParameterControls } from "@/features/effects/components/effect-parameter-controls"
 import { useEffects } from "@/features/effects/hooks/use-effects"
-import type { BaseEffect } from "@/features/effects/types"
+import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
 import { useTimelineEffects } from "../hooks/use-timeline-effects"
-import type { AppliedEffect, TimelineClip } from "../types"
+import type { TimelineClip } from "../types"
 
 const logger = createLogger("ClipEffectsPanel")
 
@@ -78,9 +78,17 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
       const appliedEffect: AppliedEffect = {
         id: `applied_${effect.id}_${Date.now()}`,
         effectId: effect.id,
-        customParams: customParams || {},
+        startTime: 0,
+        parameters: customParams || {},
         enabled: true,
         order: clip.effects.length,
+        keyframes: {},
+        masks: [],
+        blendMode: "normal" as const,
+        opacity: 1,
+        effectVersion: effect.version || "1.0",
+        createdAt: new Date(),
+        modifiedAt: new Date(),
       }
 
       send({
@@ -136,7 +144,7 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
         type: "UPDATE_CLIP_EFFECT",
         clipId: clip.id,
         effectId: appliedEffectId,
-        updates: { customParams: params },
+        updates: { parameters: params, modifiedAt: new Date() },
       })
     },
     [clip, send],

@@ -165,7 +165,7 @@ function mapMediaTypeToString(mediaType: any): string {
  * Преобразует backend треки в frontend формат
  */
 function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
-  return backendTracks.map((track, index) => ({
+  return backendTracks.map((track, index): Track => ({
     id: track.id,
     name: track.name,
     type: mapTrackType(track.track_type),
@@ -214,6 +214,16 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
         effectId,
         enabled: true,
         order: index,
+        startTime: clip.timeline_in,
+        duration: clip.timeline_out - clip.timeline_in,
+        parameters: {},
+        keyframes: {},
+        masks: [],
+        blendMode: "normal" as const,
+        opacity: 1,
+        effectVersion: "1.0.0",
+        createdAt: new Date(),
+        modifiedAt: new Date(),
       })),
       filters: [],
       transitions: (clip.transitions || []).map((t: any) => ({
@@ -229,10 +239,10 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
       updatedAt: new Date(),
     })),
 
-    // Transitions on track
+    // Переходы на треке (между клипами и на границах)
     transitions: [],
 
-    // State flags (both old and new naming)
+    // Настройки трека
     muted: false,
     solo: false,
     locked: track.locked,
@@ -241,16 +251,16 @@ function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
     isHidden: false,
     isSolo: false,
 
-    // Visual
-    height: track.height,
+    // Визуальные настройки
+    height: track.height || 100,
     expanded: true,
     color: getTrackColor(track.track_type),
 
-    // Audio
-    volume: track.volume,
-    pan: track.pan,
+    // Аудио настройки
+    volume: track.volume || 1,
+    pan: track.pan || 0,
 
-    // Track resources
+    // Ресурсы трека (применяются ко всем клипам)
     trackEffects: [],
     trackFilters: [],
   }))

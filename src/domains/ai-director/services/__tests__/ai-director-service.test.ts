@@ -74,15 +74,14 @@ describe("AI Director Service", () => {
     last_check: new Date().toISOString(),
   }
 
-  const mockConfig: AIDirectorConfig = {
+  const mockConfig = {
     performance_mode: "Balanced",
     enable_audio_analysis: true,
     enable_scene_detection: true,
     enable_video_analysis: true,
     enable_object_detection: true,
     enable_face_detection: false,
-    enable_transcription: false,
-  }
+  } as AIDirectorConfig
 
   const mockAnalysisResult: ComprehensiveAnalysisResult = {
     analysis_id: "test-123",
@@ -258,7 +257,7 @@ describe("AI Director Service", () => {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           enable_transcription: false,
-          performance_mode: "Balanced",
+          performance_mode: "balanced",
         })
         expect(result).toEqual(audioResult)
       })
@@ -272,7 +271,7 @@ describe("AI Director Service", () => {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           enable_transcription: false,
-          performance_mode: "Balanced",
+          performance_mode: "balanced",
         })
       })
     })
@@ -299,7 +298,7 @@ describe("AI Director Service", () => {
         })
 
         expect(mockTauriCommands.unifiedAudioAnalyzeBatch).toHaveBeenCalledWith(["/video1.mp4", "/video2.mp4"], {
-          performance_mode: "Fast",
+          performance_mode: "fast",
         })
         expect(result).toEqual(audioResults)
       })

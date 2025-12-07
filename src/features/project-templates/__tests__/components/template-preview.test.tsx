@@ -13,11 +13,19 @@ describe("TemplatePreview", () => {
     aspectRatio: "16:9",
     estimatedDuration: 600, // 10 minutes
     settings: {
-      resolution: { width: 1920, height: 1080 },
-      frameRate: 30,
-      aspectRatio: "16:9",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1920x1080",
+      frameRate: "30",
+      aspectRatio: {
+        label: "16:9",
+        textLabel: "Широкоэкнранный",
+        description: "YouTube",
+        value: {
+          width: 1920,
+          height: 1080,
+          name: "16:9",
+        },
+      },
+      colorSpace: "sdr",
     },
     structure: {
       sections: [
@@ -116,29 +124,14 @@ describe("TemplatePreview", () => {
       expect(screen.getByText("Настройки проекта")).toBeInTheDocument()
       expect(screen.getByText("1920x1080")).toBeInTheDocument()
       expect(screen.getByText("30")).toBeInTheDocument()
-      expect(screen.getByText("16:9")).toBeInTheDocument()
-      expect(screen.getByText(/48000 Hz, 2 ch/)).toBeInTheDocument()
+      expect(screen.getAllByText("16:9").length).toBeGreaterThan(0) // aspectRatio label
+      expect(screen.getByText("sdr")).toBeInTheDocument() // colorSpace
     })
 
     it("should hide settings when showDetails is false", () => {
       render(<TemplatePreview template={mockTemplate} showDetails={false} />)
 
       expect(screen.queryByText("Настройки проекта")).not.toBeInTheDocument()
-    })
-
-    it("should use default audio values if not specified", () => {
-      const template = {
-        ...mockTemplate,
-        settings: {
-          ...mockTemplate.settings,
-          audioSampleRate: undefined,
-          audioChannels: undefined,
-        },
-      }
-
-      render(<TemplatePreview template={template} showDetails={true} />)
-
-      expect(screen.getByText(/48000 Hz, 2 ch/)).toBeInTheDocument()
     })
   })
 

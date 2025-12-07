@@ -603,7 +603,10 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
       // Convert analyzers to config
       const config = mapAnalyzersToConfig(analyzers)
-      logger.infoSync("[useAIDirectorAnalysisV2] Config", config)
+      logger.infoSync("[useAIDirectorAnalysisV2] Config", {
+        performance_mode: config.performance_mode,
+        enabledAnalyzers: Array.from(analyzers),
+      })
 
       // Call backend command (v2 with events) - using domain function
       // NOTE: Бэкенд анализирует файлы последовательно и отправляет real-time события

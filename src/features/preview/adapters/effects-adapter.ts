@@ -84,10 +84,16 @@ function extractParametersFromBaseEffect(
   if (appliedEffect) {
     if ("customParams" in appliedEffect && appliedEffect.customParams) {
       Object.assign(params, appliedEffect.customParams)
-    } else if ("parameters" in appliedEffect) {
-      appliedEffect.parameters.forEach((param: any) => {
-        params[param.parameterId] = param.value
-      })
+    } else if ("parameters" in appliedEffect && appliedEffect.parameters) {
+      // parameters может быть объектом (ключ-значение) или массивом
+      if (Array.isArray(appliedEffect.parameters)) {
+        appliedEffect.parameters.forEach((param: any) => {
+          params[param.parameterId] = param.value
+        })
+      } else {
+        // Если это объект (Record<string, any>)
+        Object.assign(params, appliedEffect.parameters)
+      }
     }
   }
 

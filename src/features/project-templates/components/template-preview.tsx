@@ -92,7 +92,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, show
                   <div>
                     <div className="text-muted-foreground">Разрешение</div>
                     <div className="font-medium">
-                      {template.settings.resolution.width}x{template.settings.resolution.height}
+                      {template.settings.resolution}
                     </div>
                   </div>
                   <div>
@@ -101,13 +101,11 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template, show
                   </div>
                   <div>
                     <div className="text-muted-foreground">Соотношение сторон</div>
-                    <div className="font-medium">{template.settings.aspectRatio}</div>
+                    <div className="font-medium">{template.settings.aspectRatio.label}</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Аудио</div>
-                    <div className="font-medium">
-                      {template.settings.audioSampleRate || 48000} Hz, {template.settings.audioChannels || 2} ch
-                    </div>
+                    <div className="text-muted-foreground">Цветовое пространство</div>
+                    <div className="font-medium">{template.settings.colorSpace}</div>
                   </div>
                 </div>
               </CardContent>

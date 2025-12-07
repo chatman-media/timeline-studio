@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { ResolutionOption } from "@/features/project-settings/types/project"
+import type { ResolutionOption } from "@/domains/shared/types/project"
 
 import { CameraSettings } from "../../components/camera-settings"
 

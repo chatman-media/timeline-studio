@@ -10,7 +10,7 @@ import type { MediaFile as FeatureMediaFile } from "@/domains/media-management"
 /**
  * Конвертирует MediaFile из features в формат для AI Services
  */
-export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMediaFile {
+export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMediaFile & { format?: string } {
   // Определяем тип на основе boolean флагов
   let type: "video" | "audio" | "image" = "video"
 
@@ -25,9 +25,9 @@ export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMedi
   return {
     id: file.id,
     path: file.path,
-    filename: file.name, // DomainMediaFile uses 'filename' instead of 'name'
+    name: file.name,
     size: file.size || 0,
-    type,
+    type: file.type,
     duration: file.duration,
     format: file.probeData?.format?.format_name,
   }

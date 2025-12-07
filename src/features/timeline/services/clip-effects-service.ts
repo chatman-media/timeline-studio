@@ -3,10 +3,10 @@
  * Сервис для применения эффектов к клипам Timeline
  */
 
-import type { BaseEffect } from "@/features/effects/types"
+import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
-import type { AppliedEffect, TimelineClip, TimelineProject, TimelineTrack } from "../types"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "../types"
 import { createAppliedEffect } from "./resource-manager"
 
 const logger = createLogger("ClipEffectsService")
@@ -25,7 +25,7 @@ export interface RemoveEffectOptions {
 
 export interface UpdateEffectOptions {
   appliedEffectId: string
-  customParams?: Record<string, any>
+  parameters?: Record<string, any>
   enabled?: boolean
   order?: number
 }
@@ -143,9 +143,10 @@ export function updateEffectOnClip(
 
     return {
       ...e,
-      customParams: options.customParams !== undefined ? options.customParams : e.customParams,
+      parameters: options.parameters !== undefined ? options.parameters : e.parameters,
       enabled: options.enabled !== undefined ? options.enabled : e.enabled,
       order: options.order !== undefined ? options.order : e.order,
+      modifiedAt: new Date(),
     }
   })
 

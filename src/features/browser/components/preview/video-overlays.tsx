@@ -1,7 +1,7 @@
 import { Film } from "lucide-react"
 import { memo } from "react"
 import type { MediaFile } from "@/domains/media-management"
-import type { TimelineResource } from "@/features/resources/types"
+import type { TimelineResource } from "@/domains/shared/types/resources"
 import { formatDuration } from "@/lib/date"
 import { cn, formatResolution } from "@/lib/utils"
 import { ApplyButton } from "../layout"

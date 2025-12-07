@@ -3,7 +3,8 @@
  * Provides batch operations for multiple clips in timeline
  */
 
-import type { AppliedEffect, TimelineClip, TimelineTrack } from "../types"
+import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
+import type { TimelineClip, TimelineTrack } from "../types"
 import { type VideoFadeOptions, VideoFadeService } from "./video-fade-service"
 
 export interface BatchOperationResult {

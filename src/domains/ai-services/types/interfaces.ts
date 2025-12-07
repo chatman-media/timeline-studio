@@ -3,16 +3,11 @@
  * Позволяют избежать прямых зависимостей от конкретных реализаций
  */
 
-// Базовые типы медиа анализа
-export interface MediaFile {
-  id: string
-  path: string
-  filename: string
-  size: number
-  type: "video" | "audio" | "image"
-  duration?: number
-  format?: string
-}
+// Реэкспорт MediaFile из canonical source
+export type { MediaFile } from "@/domains/media-management/types"
+
+// Import for local usage
+import type { MediaFile } from "@/domains/media-management/types"
 
 export interface VideoMetadata {
   format: string

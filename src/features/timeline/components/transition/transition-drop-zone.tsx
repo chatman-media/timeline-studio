@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"

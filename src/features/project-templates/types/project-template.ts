@@ -2,6 +2,8 @@
  * Типы для шаблонов проектов
  */
 
+import type { ProjectSettings } from "@/domains/shared/types/project"
+
 /**
  * Базовый интерфейс шаблона проекта
  */
@@ -102,20 +104,6 @@ export interface ProjectPlaceholders {
     auto?: boolean
     interval?: number // интервал между главами в секундах
   }
-}
-
-/**
- * Настройки проекта
- */
-export interface ProjectSettings {
-  resolution: {
-    width: number
-    height: number
-  }
-  frameRate: number
-  aspectRatio: string
-  audioSampleRate?: number
-  audioChannels?: number
 }
 
 /**

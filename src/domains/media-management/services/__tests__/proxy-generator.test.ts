@@ -9,6 +9,9 @@ import type { MediaInfo } from "../../types"
 import type { ProxyGenerationResult } from "../proxy-generator"
 import { ProxyGeneratorService } from "../proxy-generator"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 // Mock container
 const mockMediaService = {
   generateProxy: vi.fn(),
@@ -34,7 +37,7 @@ describe("ProxyGeneratorService", () => {
   const mockMediaInfo: MediaInfo = {
     path: "/test/video.mp4",
     name: "video.mp4",
-    type: "Video",
+    type: "Video" as TauriMediaType,
   }
 
   beforeEach(() => {
@@ -253,8 +256,8 @@ describe("ProxyGeneratorService", () => {
   describe("batchGenerate", () => {
     it("should generate proxies for multiple files", async () => {
       const files = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as const },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as const },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
 
       const mockResult: ProxyGenerationResult = {
@@ -274,7 +277,7 @@ describe("ProxyGeneratorService", () => {
     })
 
     it("should call file progress callback", async () => {
-      const files = [{ path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as const }]
+      const files = [{ path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType }]
 
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
@@ -294,7 +297,7 @@ describe("ProxyGeneratorService", () => {
     })
 
     it("should call file complete callback", async () => {
-      const files = [{ path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as const }]
+      const files = [{ path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType }]
 
       const mockResult: ProxyGenerationResult = {
         proxyPath: "/tmp/proxy.mp4",
@@ -321,7 +324,7 @@ describe("ProxyGeneratorService", () => {
     })
 
     it("should call file error callback on failure", async () => {
-      const files = [{ path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as const }]
+      const files = [{ path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType }]
 
       mockMediaService.generateProxy.mockRejectedValue(new Error("FFmpeg error"))
 
@@ -334,8 +337,8 @@ describe("ProxyGeneratorService", () => {
 
     it("should continue batch on individual file errors", async () => {
       const files = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as const },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as const },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
 
       const mockResult: ProxyGenerationResult = {

@@ -56,15 +56,14 @@ describe("AI Director Machine", () => {
     last_check: new Date().toISOString(),
   }
 
-  const mockConfig: AIDirectorConfig = {
+  const mockConfig = {
     performance_mode: "Balanced",
     enable_audio_analysis: true,
     enable_scene_detection: true,
     enable_video_analysis: true,
     enable_object_detection: true,
     enable_face_detection: false,
-    enable_transcription: false,
-  }
+  } as AIDirectorConfig
 
   const mockAnalysisResult: ComprehensiveAnalysisResult = {
     analysis_id: "test-123",

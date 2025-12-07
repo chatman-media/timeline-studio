@@ -147,7 +147,7 @@ export class AAFExporter implements Exporter {
     lines.push(`${indentStr}<SourceClip>`)
     lines.push(`${indentStr}  <Name>${this.escapeXml(clip.name)}</Name>`)
     lines.push(
-      `${indentStr}  <DataDefinition>${clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile) ? "Picture" : "Sound"}</DataDefinition>`,
+      `${indentStr}  <DataDefinition>${clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile.type) ? "Picture" : "Sound"}</DataDefinition>`,
     )
     lines.push(`${indentStr}  <Length>${Math.round(clip.duration * this.frameRate)}</Length>`)
     lines.push(`${indentStr}  <SourceID>${sourceID}</SourceID>`)

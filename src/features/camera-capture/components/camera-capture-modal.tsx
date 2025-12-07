@@ -82,7 +82,6 @@ export function CameraCaptureModal() {
     stopScreenCapture,
   } = useScreenCapture()
 
-  const { importFile } = useMediaImport()
   const [isSaving, setIsSaving] = useState(false)
 
   // Обработка записанного видео

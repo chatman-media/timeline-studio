@@ -2,8 +2,13 @@
  * Platform-related types for AI Services
  */
 
+import type { AspectRatio as SharedAspectRatio } from "@/domains/shared/types/ai-tools/platform-adaptation"
+
 // Platform identifier type
 export type PlatformId = "youtube" | "instagram" | "tiktok" | "facebook" | "twitter" | "linkedin" | "vimeo" | "twitch"
+
+// Re-export AspectRatio from shared types
+export type AspectRatio = SharedAspectRatio
 
 // Platform configuration
 export interface Platform {
@@ -29,12 +34,6 @@ export interface VideoFormat {
   fps: number
   bitrate: number
   codec: string
-}
-
-export interface AspectRatio {
-  ratio: string
-  width: number
-  height: number
 }
 
 // Adapted content for specific platform

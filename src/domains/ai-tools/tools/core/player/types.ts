@@ -2,6 +2,8 @@
  * Типы для Player AI инструментов
  */
 
+import type { PlayerState as BasePlayerState } from "@/domains/video-editing/types/player"
+
 /**
  * Интерфейс для текущего медиа в плеере
  */
@@ -35,13 +37,10 @@ export interface CurrentMedia {
 }
 
 /**
- * Состояние плеера
+ * Состояние плеера для AI инструментов
+ * Расширяет базовое состояние плеера дополнительными полями
  */
-export interface PlayerState {
-  isPlaying: boolean
-  currentTime: number
-  duration: number
-  volume: number
+export interface PlayerState extends BasePlayerState {
   playbackSpeed: number
   loop: boolean
   muted: boolean

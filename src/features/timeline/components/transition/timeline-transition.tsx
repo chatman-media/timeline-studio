@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useRef } from "react"
 
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 import { cn } from "@/lib/utils"
 
 import { TransitionHandles } from "./transition-handles"

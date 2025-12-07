@@ -84,12 +84,63 @@ export class AIDirectorService {
       fileCount: filePaths.length,
       maxParallel: maxParallel ?? 4,
     })
-    return aiDirectorAnalyzeBatchParallel(filePaths, {
-      ...config,
+
+    // Создаем полный конфиг с дефолтными значениями
+    const fullConfig: AIDirectorConfig & { enable_parallel_processing?: boolean; max_parallel_files?: number } = {
+      // Performance
       performance_mode: config?.performance_mode ?? "Balanced",
+
+      // Core analysis toggles
+      enable_audio_analysis: config?.enable_audio_analysis ?? true,
+      enable_scene_detection: config?.enable_scene_detection ?? true,
+      enable_video_analysis: config?.enable_video_analysis ?? true,
+      enable_vision_analysis: config?.enable_vision_analysis ?? true,
+
+      // Detection features
+      enable_face_detection: config?.enable_face_detection ?? false,
+      enable_face_analysis: config?.enable_face_analysis ?? false,
+      enable_object_detection: config?.enable_object_detection ?? false,
+      enable_object_analysis: config?.enable_object_analysis ?? false,
+      enable_emotion_analysis: config?.enable_emotion_analysis ?? false,
+
+      // Advanced analysis
+      enable_moment_detection: config?.enable_moment_detection ?? false,
+      enable_content_classification: config?.enable_content_classification ?? false,
+      enable_composition_analysis: config?.enable_composition_analysis ?? false,
+      enable_mood_analysis: config?.enable_mood_analysis ?? false,
+      enable_quality_analysis: config?.enable_quality_analysis ?? false,
+
+      // Processing limits
+      max_processing_time: config?.max_processing_time ?? 300,
+      quality_threshold: config?.quality_threshold ?? 50.0,
+      max_key_moments: config?.max_key_moments ?? 50,
+      enable_caching: config?.enable_caching ?? true,
+
+      // Recommendations
+      generate_editing_recommendations: config?.generate_editing_recommendations ?? false,
+      enable_mcp_agents: config?.enable_mcp_agents ?? false,
+
+      // AI Provider integration
+      ai_provider: config?.ai_provider ?? null,
+      ai_model: config?.ai_model ?? null,
+      ai_api_key: config?.ai_api_key ?? null,
+      enable_ai_enhanced_analysis: config?.enable_ai_enhanced_analysis ?? false,
+      enable_ai_descriptions: config?.enable_ai_descriptions ?? false,
+      enable_ai_mood_analysis: config?.enable_ai_mood_analysis ?? false,
+
+      // Vision Language Model
+      enable_vision_language_model: config?.enable_vision_language_model ?? false,
+      vlm_model: config?.vlm_model ?? null,
+      vlm_num_frames: config?.vlm_num_frames ?? 5,
+      vlm_temperature: config?.vlm_temperature ?? 0.7,
+      vlm_max_tokens: config?.vlm_max_tokens ?? 1024,
+
+      // Parallel processing
       enable_parallel_processing: true,
       max_parallel_files: maxParallel ?? 4,
-    })
+    }
+
+    return aiDirectorAnalyzeBatchParallel(filePaths, fullConfig)
   }
 
   /**

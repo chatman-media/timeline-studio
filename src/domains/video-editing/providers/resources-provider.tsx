@@ -23,7 +23,7 @@ import {
   type TemplateResource,
   type TimelineResource,
   type TransitionResource,
-} from "@/features/resources/types"
+} from "@/domains/shared/types/resources"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
@@ -31,10 +31,14 @@ import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+// We use a type alias to distinguish from our canonical MediaType enum
+type TauriMediaType = MediaType
+
 /**
  * Convert local MediaType enum to Rust MediaType
  */
-function convertToRustMediaType(localType: LocalMediaType | undefined): MediaType {
+function convertToRustMediaType(localType: LocalMediaType | undefined): TauriMediaType {
   if (!localType) return "Video"
 
   switch (localType) {
@@ -322,7 +326,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           type: "AddMedia",
           params: {
             path: file.path,
-            media_type: "Audio" as MediaType, // Rust expects "Audio" (PascalCase)
+            media_type: "Audio" as TauriMediaType, // Rust expects "Audio" (PascalCase)
           },
         })
         logInfo("ResourcesProvider: Music added successfully", { path: file.path })

@@ -122,6 +122,11 @@ export function getClosestPreviewSize(targetSize: number): PreviewSize {
 }
 
 /**
+ * Size with width and height
+ */
+export type ContentSize = { width: number; height: number }
+
+/**
  * Вычислить размеры с учетом соотношения сторон
  * Для шаблонов минимум 150px по длинному краю
  */
@@ -129,7 +134,7 @@ export function calculateDimensionsWithAspectRatio(
   baseSize: number,
   aspectRatio: { width: number; height: number },
   isTemplate = false,
-): { width: number; height: number } {
+): ContentSize {
   const ratio = aspectRatio.width / aspectRatio.height
 
   let width: number

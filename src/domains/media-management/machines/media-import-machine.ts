@@ -26,6 +26,7 @@ const initialContext: MediaImportContext = {
   currentOperation: null,
   totalProgress: 0,
   errors: [],
+  importedFiles: [],
 }
 
 // Actors for import tasks

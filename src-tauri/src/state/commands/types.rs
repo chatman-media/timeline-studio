@@ -84,6 +84,7 @@ pub enum ProjectCommand {
     media_id: String,
     updates: MediaUpdates,
   },
+  DeduplicateMediaPool,
 
   // Imported media commands (temporary storage before adding to media_pool)
   AddImportedMedia {

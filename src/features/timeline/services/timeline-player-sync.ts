@@ -131,7 +131,7 @@ export class TimelinePlayerSync {
       // Применяем эффекты через backend
       if (clip.effects) {
         for (const effect of clip.effects) {
-          await this.playerContext.playerApplyEffect(effect.effectId, effect.customParams || {})
+          await this.playerContext.playerApplyEffect(effect.effectId, effect.parameters || {})
         }
       }
 

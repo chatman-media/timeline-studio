@@ -8,7 +8,7 @@
 import React, { createContext, useCallback, useEffect, useState } from "react"
 
 import { container } from "@/core/container"
-import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/features/project-settings/types/project"
+import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/domains/shared/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "./project-settings-backend-handlers"

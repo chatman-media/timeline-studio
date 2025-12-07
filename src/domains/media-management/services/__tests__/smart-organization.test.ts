@@ -8,6 +8,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaInfo } from "../../types"
 import { SmartOrganizationService } from "../smart-organization"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 // Mock platform service
 const mockGetFileStats = vi.fn()
 const mockPlatformService = {
@@ -49,9 +52,9 @@ describe("SmartOrganizationService", () => {
   describe("organizeByDate", () => {
     it("should organize files by creation date", async () => {
       const files: MediaInfo[] = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
-        { path: "/test/video3.mp4", name: "video3.mp4", type: "Video" },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video3.mp4", name: "video3.mp4", type: "Video" as TauriMediaType },
       ]
 
       // Mock file stats with different dates
@@ -69,7 +72,7 @@ describe("SmartOrganizationService", () => {
     })
 
     it("should format dates according to format option", async () => {
-      const files: MediaInfo[] = [{ path: "/test/video.mp4", name: "video.mp4", type: "Video" }]
+      const files: MediaInfo[] = [{ path: "/test/video.mp4", name: "video.mp4", type: "Video" as TauriMediaType }]
 
       mockGetFileStats.mockResolvedValue({
         lastModified: new Date("2024-01-15").getTime(),
@@ -82,8 +85,8 @@ describe("SmartOrganizationService", () => {
 
     it("should handle files with missing dates", async () => {
       const files: MediaInfo[] = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
 
       mockGetFileStats
@@ -98,8 +101,8 @@ describe("SmartOrganizationService", () => {
 
     it("should sort groups by date", async () => {
       const files: MediaInfo[] = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
 
       mockGetFileStats
@@ -116,9 +119,9 @@ describe("SmartOrganizationService", () => {
   describe("organizeByEvents", () => {
     it("should group files by timestamp gaps", async () => {
       const files: MediaInfo[] = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
-        { path: "/test/video3.mp4", name: "video3.mp4", type: "Video" },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video3.mp4", name: "video3.mp4", type: "Video" as TauriMediaType },
       ]
 
       // Files 1 and 2 are close together, file 3 is 2 hours later
@@ -145,8 +148,8 @@ describe("SmartOrganizationService", () => {
 
     it("should respect minFilesPerEvent option", async () => {
       const files: MediaInfo[] = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
 
       const baseTime = new Date("2024-01-15T10:00:00").getTime()
@@ -174,19 +177,19 @@ describe("SmartOrganizationService", () => {
   describe("organizeByCameraType", () => {
     it("should group files by camera manufacturer", async () => {
       const files: MediaInfo[] = [
-        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
+        { path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
 
       mockExtractMetadata
         .mockResolvedValueOnce({
-          type: "Video",
+          type: "Video" as TauriMediaType,
           codec: "Canon H.264",
           artist: "Canon",
           album: "EOS R5",
         })
         .mockResolvedValueOnce({
-          type: "Video",
+          type: "Video" as TauriMediaType,
           codec: "Sony AVC",
           artist: "Sony",
           album: "A7S III",
@@ -202,11 +205,11 @@ describe("SmartOrganizationService", () => {
     })
 
     it("should handle files without camera metadata", async () => {
-      const files: MediaInfo[] = [{ path: "/test/video.mp4", name: "video.mp4", type: "Video" }]
+      const files: MediaInfo[] = [{ path: "/test/video.mp4", name: "video.mp4", type: "Video" as TauriMediaType }]
 
       // Return metadata without any camera info (no artist, album, or recognizable codec)
       mockExtractMetadata.mockResolvedValue({
-        type: "Video",
+        type: "Video" as TauriMediaType,
         codec: "H.264", // Generic codec without manufacturer info
       })
 

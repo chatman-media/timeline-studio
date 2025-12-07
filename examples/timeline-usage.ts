@@ -158,6 +158,15 @@ function applyEffectsToClips(project: TimelineProject): void {
     effectId: "brightness-effect",
     enabled: true,
     order: 0,
+    startTime: 0,
+    parameters: {},
+    keyframes: {},
+    masks: [],
+    blendMode: "normal",
+    opacity: 1,
+    effectVersion: "1.0.0",
+    createdAt: new Date(),
+    modifiedAt: new Date(),
   });
 
   // Добавляем фильтр

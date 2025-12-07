@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectSettings } from "@/features/project-settings/types/project"
+import type { ProjectSettings } from "@/domains/shared/types/project"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "../project-settings-backend-handlers"
 

@@ -276,7 +276,7 @@ export class MediaManagementOrchestrator implements MediaManagementService {
 
         // Используем warn для небольшого количества дублей (≤ 5), error для массовых дублей
         if (duplicateCount <= 5) {
-          console.warn("[MediaOrchestrator] Найдено и удалено дублей:", duplicateCount, {
+          console.warn("[MediaOrchestrator] Найдено и удалено дублей на фронтенде:", duplicateCount, {
             backend: itemCount,
             afterDedup: initialMediaPool.size,
           })
@@ -284,6 +284,12 @@ export class MediaManagementOrchestrator implements MediaManagementService {
           console.error("[MediaOrchestrator] ВНИМАНИЕ: Обнаружено много дублей:", duplicateCount, {
             backend: itemCount,
             afterDedup: initialMediaPool.size,
+          })
+
+          // Автоматически запускаем очистку дублей в backend
+          console.info("[MediaOrchestrator] Запускаем автоматическую очистку дублей в backend...")
+          this.deduplicateMediaPoolAsync().catch((err) => {
+            console.error("[MediaOrchestrator] Ошибка при очистке дублей:", err)
           })
         }
       }
@@ -430,6 +436,39 @@ export class MediaManagementOrchestrator implements MediaManagementService {
       })
       this.error = errorMessage
       this.isLoading = false
+      throw error
+    }
+  }
+
+  /**
+   * Очистка дублей в медиа-пуле
+   */
+  private async deduplicateMediaPoolAsync(): Promise<void> {
+    const backend = this.ensureBackend()
+
+    if (!backend) {
+      logger.error("[Media Management] Backend not available for deduplication")
+      return
+    }
+
+    try {
+      logger.info("[Media Management] Executing DeduplicateMediaPool command")
+      const result = await backend.executeCommand({
+        type: "DeduplicateMediaPool",
+      } as any)
+
+      if (result?.data) {
+        const { removed_count, remaining_count } = result.data as { removed_count: number; remaining_count: number }
+        logger.info("[Media Management] Deduplication completed", {
+          removed: removed_count,
+          remaining: remaining_count,
+        })
+
+        // Обновляем состояние фронтенда после очистки
+        await this.refreshMediaPool()
+      }
+    } catch (error) {
+      logger.error("[Media Management] Deduplication failed", { error })
       throw error
     }
   }

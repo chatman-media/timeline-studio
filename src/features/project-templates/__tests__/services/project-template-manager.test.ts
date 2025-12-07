@@ -52,7 +52,7 @@ describe("ProjectTemplateManager", () => {
 
       expect(Array.isArray(filtered)).toBe(true)
       filtered.forEach((template) => {
-        expect(template.settings.aspectRatio).toBe(aspectRatio)
+        expect(template.settings.aspectRatio.label).toBe(aspectRatio)
       })
     })
   })

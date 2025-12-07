@@ -13,11 +13,15 @@ describe("TemplateCustomizer", () => {
     aspectRatio: "16:9",
     estimatedDuration: 600,
     settings: {
-      resolution: { width: 1920, height: 1080 },
-      frameRate: 30,
-      aspectRatio: "16:9",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1920x1080",
+      frameRate: "30",
+      aspectRatio: {
+        label: "16:9",
+        textLabel: "Широкоэкнранный",
+        description: "YouTube",
+        value: { width: 1920, height: 1080, name: "16:9" },
+      },
+      colorSpace: "sdr",
     },
     structure: {
       sections: [

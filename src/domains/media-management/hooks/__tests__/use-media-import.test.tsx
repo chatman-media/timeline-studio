@@ -6,6 +6,7 @@ import { selectMediaDirectory, selectMediaFile } from "@/domains/media-managemen
 import { TimelineProviders } from "@/test/test-utils"
 
 import { useMediaImport } from "../../hooks/use-media-import"
+import { useMediaManagement } from "../../hooks/use-media-management"
 
 // Мокаем AppProvider для избежания проблем с XState
 vi.mock("@/domains/project-management/providers/app-provider", () => ({
@@ -134,9 +135,9 @@ describe("useMediaImport", () => {
     })
 
     expect(result.current.isImporting).toBe(false)
-    expect(result.current.progress).toBe(0)
-    expect(typeof result.current.importFile).toBe("function")
-    expect(typeof result.current.importFolder).toBe("function")
+    expect(result.current.status).toBe("idle")
+    expect(typeof result.current.selectMediaFiles).toBe("function")
+    expect(typeof result.current.importFiles).toBe("function")
   })
 
   it("should import multiple files", async () => {
@@ -148,15 +149,20 @@ describe("useMediaImport", () => {
       wrapper: TimelineProviders,
     })
 
-    const importResult = await result.current.importFile()
+    // Новый API: сначала выбираем файлы, потом импортируем
+    const selectedFiles = await result.current.selectMediaFiles()
+    expect(selectedFiles).toEqual(mockFiles)
 
-    // Проверяем результат
-    expect(importResult).toBeDefined()
-    expect(importResult.success).toBe(true)
-    expect(importResult.files).toHaveLength(2)
+    // importFiles требует 2 аргумента: (files, options) и возвращает массив
+    const importedFiles = await result.current.importFiles(mockFiles, {})
+
+    // Проверяем результат - это массив файлов
+    expect(importedFiles).toBeDefined()
+    expect(Array.isArray(importedFiles)).toBe(true)
+    expect(importedFiles).toHaveLength(2)
 
     // Проверяем первый файл - после обработки с метаданными
-    expect(importResult.files[0]).toMatchObject({
+    expect(importedFiles[0]).toMatchObject({
       path: mockFiles[0],
       name: "file1.mp4",
       isVideo: true,
@@ -166,7 +172,7 @@ describe("useMediaImport", () => {
     })
 
     // Проверяем второй файл
-    expect(importResult.files[1]).toMatchObject({
+    expect(importedFiles[1]).toMatchObject({
       path: mockFiles[1],
       name: "file2.mp3",
       isVideo: false,
@@ -184,16 +190,15 @@ describe("useMediaImport", () => {
 
     mockSelectMediaDirectory.mockResolvedValue(mockDirectory)
 
-    const { result } = renderHook(() => useMediaImport(), {
+    const { result } = renderHook(() => useMediaManagement(), {
       wrapper: TimelineProviders,
     })
 
-    const importResult = await result.current.importFolder()
+    // Новый API: selectMediaDirectory автоматически сканирует и импортирует файлы, возвращает путь
+    const selectedDirectory = await result.current.selectMediaDirectory()
 
-    // Проверяем результат
-    expect(importResult).toBeDefined()
-    expect(importResult.success).toBe(true)
-    expect(importResult.message).toContain("Сканирование папки начато")
+    // Проверяем результат - это строка с путём к директории
+    expect(selectedDirectory).toBe(mockDirectory)
   })
 
   it("should handle file selection cancellation", async () => {
@@ -203,27 +208,26 @@ describe("useMediaImport", () => {
       wrapper: TimelineProviders,
     })
 
-    const importResult = await result.current.importFile()
+    const selectedFiles = await result.current.selectMediaFiles()
 
-    expect(importResult.success).toBe(false)
-    expect(importResult.message).toContain("Файлы не выбраны")
+    expect(selectedFiles).toBeNull()
     expect(mockAddMedia).not.toHaveBeenCalled()
   })
 
   it("should handle folder selection cancellation", async () => {
     mockSelectMediaDirectory.mockResolvedValue(null)
 
-    const { result } = renderHook(() => useMediaImport(), {
+    const { result } = renderHook(() => useMediaManagement(), {
       wrapper: TimelineProviders,
     })
 
-    const importResult = await result.current.importFolder()
+    const selectedDirectory = await result.current.selectMediaDirectory()
 
-    expect(importResult.success).toBe(false)
-    expect(importResult.message).toContain("Директория не выбрана")
+    // Новый API: возвращает null при отмене
+    expect(selectedDirectory).toBeNull()
   })
 
-  it("should update progress during import", async () => {
+  it("should update status during import", async () => {
     const mockFiles = Array.from({ length: 10 }, (_, i) => `/path/to/file${i}.mp4`)
 
     // Создаем мок с задержкой для selectMediaFile
@@ -239,10 +243,10 @@ describe("useMediaImport", () => {
 
     // Проверяем начальное состояние
     expect(result.current.isImporting).toBe(false)
-    expect(result.current.progress).toBe(0)
+    expect(result.current.status).toBe("idle")
 
-    // Запускаем импорт
-    const importPromise = result.current.importFile()
+    // Запускаем импорт с пустым объектом опций
+    const importPromise = result.current.importFiles(mockFiles, {})
 
     // Ждем, пока состояние isImporting станет true
     await waitFor(() => {
@@ -250,13 +254,13 @@ describe("useMediaImport", () => {
     })
 
     // Ждем завершения импорта
-    const importResult = await importPromise
+    const importedFiles = await importPromise
 
     // Проверяем, что импорт завершен
     await waitFor(() => {
       expect(result.current.isImporting).toBe(false)
     })
-    expect(result.current.progress).toBe(0)
-    expect(importResult.files).toHaveLength(10)
+    expect(result.current.status).toBe("completed")
+    expect(importedFiles).toHaveLength(10)
   })
 })

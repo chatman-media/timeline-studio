@@ -194,7 +194,6 @@ describe("MediaFileAdapter", () => {
       expect(domainFile.proxy?.width).toBe(1280)
       expect(domainFile.proxy?.height).toBe(720)
       expect(domainFile.proxy?.bitrate).toBe(5000000)
-      expect(domainFile.proxy?.codec).toBe(MediaCodec.Unknown)
     })
 
     it("should handle timeline integration fields", () => {

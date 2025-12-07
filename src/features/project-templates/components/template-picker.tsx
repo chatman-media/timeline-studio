@@ -289,7 +289,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template, selected, onClick
           <div className="flex justify-between">
             <span className="text-muted-foreground">Разрешение:</span>
             <span className="font-medium">
-              {template.settings.resolution.width}x{template.settings.resolution.height}
+              {template.settings.resolution}
             </span>
           </div>
         </div>
@@ -333,7 +333,7 @@ const TemplateListItem: React.FC<TemplateListItemProps> = ({ template, selected,
             </div>
             <div>
               <div className="font-medium">
-                {template.settings.resolution.width}x{template.settings.resolution.height}
+                {template.settings.resolution}
               </div>
               <div>Разрешение</div>
             </div>

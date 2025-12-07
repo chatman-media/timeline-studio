@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import type { MediaFile } from "@/domains/video-editing/types/media"
-import type { VideoEffect } from "@/features/effects/types"
-import type { VideoFilter } from "@/features/filters/types/filters"
+import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { VideoFilter } from "@/domains/video-editing/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/template-config"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 
 import {
   addEffectToResources,
@@ -64,7 +64,7 @@ describe("resource-manager", () => {
   })
 
   describe("addEffectToResources", () => {
-    const mockEffect: VideoEffect = {
+    const mockEffect: BaseEffect = {
       id: "effect-1",
       name: {
         en: "Test Effect",
@@ -346,7 +346,7 @@ describe("resource-manager", () => {
   })
 
   describe("createAppliedEffect", () => {
-    const mockEffect: VideoEffect = {
+    const mockEffect: BaseEffect = {
       id: "effect-1",
       name: {
         en: "Test Effect",
@@ -376,10 +376,12 @@ describe("resource-manager", () => {
       expect(project.resources?.effects[0]).toBe(mockEffect)
 
       expect(appliedEffect.effectId).toBe(mockEffect.id)
-      expect(appliedEffect.customParams).toEqual(customParams)
+      expect(appliedEffect.parameters).toEqual(customParams)
       expect(appliedEffect.enabled).toBe(true)
       expect(appliedEffect.order).toBe(0)
       expect(appliedEffect.id).toMatch(/^applied-effect-1-\d+$/)
+      expect(appliedEffect.keyframes).toEqual({})
+      expect(appliedEffect.masks).toEqual([])
     })
   })
 
@@ -504,7 +506,7 @@ describe("resource-manager", () => {
 
   describe("cleanupUnusedResources", () => {
     it("should remove unused resources from project", () => {
-      const usedEffect: VideoEffect = {
+      const usedEffect: BaseEffect = {
         id: "used-effect",
         name: {
           en: "Used Effect",
@@ -526,7 +528,7 @@ describe("resource-manager", () => {
         processors: {},
       }
 
-      const unusedEffect: VideoEffect = {
+      const unusedEffect: BaseEffect = {
         id: "unused-effect",
         name: {
           en: "Unused Effect",
@@ -634,6 +636,15 @@ describe("resource-manager", () => {
                       effectId: "used-effect",
                       enabled: true,
                       order: 0,
+                      startTime: 0,
+                      parameters: {},
+                      keyframes: {},
+                      masks: [],
+                      blendMode: "normal",
+                      opacity: 100,
+                      effectVersion: "1.0.0",
+                      createdAt: new Date(),
+                      modifiedAt: new Date(),
                     },
                   ],
                 },

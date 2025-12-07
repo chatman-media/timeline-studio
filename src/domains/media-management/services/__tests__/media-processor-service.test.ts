@@ -7,6 +7,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MediaProcessorService } from "../media-processor-service"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 // Mock media service
 const mockMediaService = {
   scanFolder: vi.fn(),
@@ -45,8 +48,8 @@ describe("MediaProcessorService", () => {
   describe("scanFolder", () => {
     it("should scan folder and return media files", async () => {
       const mockFiles = [
-        { id: "file-1", path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { id: "file-2", path: "/test/video2.mp4", name: "video2.mp4", type: "Video" },
+        { id: "file-1", path: "/test/video1.mp4", name: "video1.mp4", type: "Video" as TauriMediaType },
+        { id: "file-2", path: "/test/video2.mp4", name: "video2.mp4", type: "Video" as TauriMediaType },
       ]
       mockMediaService.scanFolder.mockResolvedValue(mockFiles)
 

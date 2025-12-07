@@ -15,8 +15,8 @@ describe("NoFiles", () => {
     // Ожидаем загрузку путей из AppDirectories
     await waitFor(
       () => {
-        // Проверяем что путь загрузился (он будет из моков - /mock/media)
-        const pathElement = screen.queryByText(/\/mock\/media/)
+        // Проверяем что путь загрузился (он будет содержать /Resources/Media)
+        const pathElement = screen.queryByText(/Resources\/Media/)
         expect(pathElement).toBeInTheDocument()
       },
       { timeout: 2000 },

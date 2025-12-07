@@ -249,7 +249,7 @@ describe("timelineToProjectSchema", () => {
       mediaEndTime: 15,
       speed: 2.0,
       volume: 0.8,
-      effects: [{ id: "effect-1", effectId: "effect-1", enabled: true, order: 0 }],
+      effects: [{ id: "effect-1", effectId: "effect-1", enabled: true, order: 0, startTime: 0, parameters: {}, keyframes: {}, masks: [], blendMode: "normal", opacity: 100, effectVersion: "1.0.0", createdAt: new Date(), modifiedAt: new Date() }],
       filters: [{ id: "filter-1", filterId: "filter-1", isEnabled: true, order: 0 }],
       templateId: "template-1",
       templateCell: 2,

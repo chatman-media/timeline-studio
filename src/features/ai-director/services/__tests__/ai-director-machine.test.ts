@@ -30,13 +30,57 @@ describe("AI Director XState Machine", () => {
   })
 
   const mockConfig: AIDirectorConfig = {
+    // Performance
     performance_mode: "Balanced",
+
+    // Core analysis toggles
     enable_audio_analysis: true,
-    enable_video_analysis: true,
-    enable_face_detection: true,
-    enable_object_detection: true,
     enable_scene_detection: true,
-    enable_transcription: true,
+    enable_video_analysis: true,
+    enable_vision_analysis: true,
+
+    // Detection features
+    enable_face_detection: true,
+    enable_face_analysis: true,
+    enable_object_detection: true,
+    enable_object_analysis: true,
+    enable_emotion_analysis: true,
+
+    // Advanced analysis
+    enable_moment_detection: false,
+    enable_content_classification: false,
+    enable_composition_analysis: false,
+    enable_mood_analysis: false,
+    enable_quality_analysis: false,
+
+    // Processing limits
+    max_processing_time: 300,
+    quality_threshold: 50.0,
+    max_key_moments: 50,
+    enable_caching: true,
+
+    // Recommendations
+    generate_editing_recommendations: false,
+    enable_mcp_agents: false,
+
+    // AI Provider integration
+    ai_provider: null,
+    ai_model: null,
+    ai_api_key: null,
+    enable_ai_enhanced_analysis: false,
+    enable_ai_descriptions: true,
+    enable_ai_mood_analysis: false,
+
+    // Vision Language Model
+    enable_vision_language_model: false,
+    vlm_model: null,
+    vlm_num_frames: 5,
+    vlm_temperature: 0.7,
+    vlm_max_tokens: 1024,
+
+    // Parallel processing
+    enable_parallel_processing: false,
+    max_parallel_files: null,
   }
 
   const mockCapabilities: SystemCapabilities = {

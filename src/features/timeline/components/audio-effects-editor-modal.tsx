@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useModals } from "@/domains/system-integration"
 
-import type { AppliedEffect } from "../types"
+import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 
 // Тип для активного аудио эффекта
 interface ActiveAudioEffect {
@@ -122,9 +122,17 @@ export function AudioEffectsEditorModal() {
     const effects: AppliedEffect[] = Object.values(activeEffects).map((effect, index) => ({
       id: `applied-audio-effect-${Date.now()}-${index}`,
       effectId: effect.id,
+      startTime: 0,
       enabled: true,
       order: index,
-      customParams: effect.params,
+      parameters: effect.params,
+      keyframes: {},
+      masks: [],
+      blendMode: "normal" as const,
+      opacity: 1,
+      effectVersion: "1.0",
+      createdAt: new Date(),
+      modifiedAt: new Date(),
     }))
 
     if (onApplyEffects) {

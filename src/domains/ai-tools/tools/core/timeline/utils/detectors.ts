@@ -9,16 +9,16 @@ export function determineContentType(clip: TimelineClip): string {
   // Определение типа контента на основе метаданных
 
   // Приоритет: анализ реальных метаданных файла
-  if (clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile)) {
+  if (clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile.type)) {
     return "Video"
   }
 
-  if (clip.mediaFile && MediaFileUtils.isAudio(clip.mediaFile)) {
+  if (clip.mediaFile && MediaFileUtils.isAudio(clip.mediaFile.type)) {
     return "Audio"
   }
 
   // Анализ типа медиафайла
-  if (clip.mediaFile && MediaFileUtils.isImage(clip.mediaFile)) {
+  if (clip.mediaFile && MediaFileUtils.isImage(clip.mediaFile.type)) {
     return "Image"
   }
 

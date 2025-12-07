@@ -9,4 +9,30 @@ export { importExportManager } from "./import-export-manager"
 export { AAFImporter } from "./importers/aaf-importer"
 export { EDLImporter } from "./importers/edl-importer"
 export { FCPXMLImporter } from "./importers/fcpxml-importer"
-export * from "./types"
+
+// Export types explicitly to avoid conflicts
+export type {
+  EDLEvent,
+  ExportFormat,
+  ExportOptions,
+  Exporter,
+  FCPXMLAdjustment,
+  FCPXMLClipRef,
+  FCPXMLEffect,
+  FCPXMLEvent,
+  FCPXMLFormat,
+  FCPXMLProjectRef,
+  FCPXMLResource,
+  FCPXMLSequenceRef,
+  FCPXMLTransition,
+  ImportError,
+  ImportFormat,
+  ImportOptions,
+  Importer,
+  ImportResult,
+  ImportWarning,
+  MediaReference,
+  Timecode,
+} from "./types"
+
+export { formatTimecode, parseTimecode, secondsToTimecode, timecodeToSeconds } from "./types"

@@ -151,7 +151,7 @@ export const TemplateCustomizer: React.FC<TemplateCustomizerProps> = ({
                     <div>
                       <div className="text-muted-foreground">Разрешение</div>
                       <div className="font-medium">
-                        {template.settings.resolution.width}x{template.settings.resolution.height}
+                        {template.settings.resolution}
                       </div>
                     </div>
                     <div>
@@ -160,11 +160,11 @@ export const TemplateCustomizer: React.FC<TemplateCustomizerProps> = ({
                     </div>
                     <div>
                       <div className="text-muted-foreground">Соотношение</div>
-                      <div className="font-medium">{template.settings.aspectRatio}</div>
+                      <div className="font-medium">{template.settings.aspectRatio.label}</div>
                     </div>
                     <div>
-                      <div className="text-muted-foreground">Аудио</div>
-                      <div className="font-medium">{template.settings.audioSampleRate || 48000} Hz</div>
+                      <div className="text-muted-foreground">Цветовое пространство</div>
+                      <div className="font-medium">{template.settings.colorSpace}</div>
                     </div>
                   </div>
                 </div>

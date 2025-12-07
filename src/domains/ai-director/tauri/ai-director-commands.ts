@@ -26,7 +26,7 @@ const logger = createLogger("AiDirectorCommands")
  */
 export async function aiDirectorAnalyzeComprehensive(
   videoPath: string,
-  config?: AIDirectorConfig,
+  config?: Partial<AIDirectorConfig>,
 ): Promise<ComprehensiveAnalysisResult> {
   logger.info("Running comprehensive analysis", { videoPath })
   return invoke("ai_director_v2_analyze_comprehensive", {
@@ -50,7 +50,7 @@ export async function aiDirectorAnalyzeQuick(videoPath: string): Promise<Compreh
  */
 export async function aiDirectorAnalyzeBatch(
   filePaths: string[],
-  config?: AIDirectorConfig,
+  config?: Partial<AIDirectorConfig>,
 ): Promise<ComprehensiveAnalysisResult[]> {
   logger.info("Running batch analysis", { fileCount: filePaths.length })
   return invoke("ai_director_v2_analyze_batch", {
@@ -84,7 +84,7 @@ export async function aiDirectorGetDefaultConfig(
 /**
  * Validate AI Director configuration
  */
-export async function aiDirectorValidateConfig(config: AIDirectorConfig): Promise<ConfigValidationResult> {
+export async function aiDirectorValidateConfig(config: Partial<AIDirectorConfig>): Promise<ConfigValidationResult> {
   logger.debug("Validating AI Director config")
   return invoke("ai_director_validate_config", { config })
 }

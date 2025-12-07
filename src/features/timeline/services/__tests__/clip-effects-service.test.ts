@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { BaseEffect } from "@/features/effects/types"
+import type { BaseEffect } from "@/domains/video-editing/types"
 import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types"
 import {
   applyEffectToClip,
@@ -158,7 +158,7 @@ describe("ClipEffectsService", () => {
       const clip = updatedProject.sections[0].tracks[0].clips[0]
       expect(clip.effects).toHaveLength(1)
       expect(clip.effects[0].effectId).toBe(mockEffect.id)
-      expect(clip.effects[0].customParams).toEqual({ intensity: 1.5 })
+      expect(clip.effects[0].parameters).toEqual({ intensity: 1.5 })
     })
 
     it("should add effect to resources", () => {
@@ -223,11 +223,11 @@ describe("ClipEffectsService", () => {
       // Обновляем параметры
       const updatedProject = updateEffectOnClip(project, "clip-1", {
         appliedEffectId,
-        customParams: { intensity: 2.0 },
+        parameters: { intensity: 2.0 },
       })
 
       const clip = updatedProject.sections[0].tracks[0].clips[0]
-      expect(clip.effects[0].customParams).toEqual({ intensity: 2.0 })
+      expect(clip.effects[0].parameters).toEqual({ intensity: 2.0 })
     })
 
     it("should toggle effect enabled state", () => {
@@ -326,7 +326,7 @@ describe("ClipEffectsService", () => {
 
       expect(targetClip?.effects).toHaveLength(1)
       expect(targetClip?.effects[0].effectId).toBe(mockEffect.id)
-      expect(targetClip?.effects[0].customParams).toEqual({ intensity: 1.5 })
+      expect(targetClip?.effects[0].parameters).toEqual({ intensity: 1.5 })
 
       // ID должен быть новым
       const sourceEffectId = updatedProject.sections[0].tracks[0].clips[0].effects[0].id

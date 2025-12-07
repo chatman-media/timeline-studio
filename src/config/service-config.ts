@@ -20,6 +20,8 @@ export const SERVICE_CONFIG = {
     // Video and Timeline Services
     VIDEO_PLAYER: true,
     TIMELINE_PLAYER: true,
+    // Platform services
+    platform: true,
   },
 } as const
 

@@ -4,7 +4,8 @@
  * Типы для Timeline - основные структуры временной шкалы редактирования видео
  */
 
-import type { AppliedEffect, AppliedFilter, AppliedTransition, EffectType, FilterType, TransitionType } from "./effects"
+import type { AppliedEffect } from "./unified-effects"
+import type { AppliedFilter, AppliedTransition, EffectType, FilterType, TransitionType } from "./effects"
 import type { MediaFile } from "./media"
 
 export interface VideoFadeKeyframe {
@@ -295,5 +296,8 @@ export interface MusicType {
   file: MediaFile
 }
 
-// Re-export types from effects for compatibility
-export type { EffectParameter, EffectType, FilterType, TransitionType } from "./effects"
+// Re-export types from unified-effects for compatibility
+export type { EffectParameter } from "./unified-effects"
+
+// Note: EffectType, FilterType, TransitionType are deprecated
+// Use BaseEffect from unified-effects instead

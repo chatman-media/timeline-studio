@@ -84,11 +84,19 @@ export const socialTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1080, height: 1920 },
-      frameRate: 30,
-      aspectRatio: "9:16",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1080x1920",
+      frameRate: "30",
+      aspectRatio: {
+        label: "9:16",
+        textLabel: "Портрет",
+        description: "TikTok, YouTube Shorts",
+        value: {
+          width: 1080,
+          height: 1920,
+          name: "9:16",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 
@@ -158,11 +166,19 @@ export const socialTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1080, height: 1920 },
-      frameRate: 30,
-      aspectRatio: "9:16",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1080x1920",
+      frameRate: "30",
+      aspectRatio: {
+        label: "9:16",
+        textLabel: "Портрет",
+        description: "TikTok, YouTube Shorts",
+        value: {
+          width: 1080,
+          height: 1920,
+          name: "9:16",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 
@@ -246,11 +262,19 @@ export const socialTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1080, height: 1920 },
-      frameRate: 30,
-      aspectRatio: "9:16",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1080x1920",
+      frameRate: "30",
+      aspectRatio: {
+        label: "9:16",
+        textLabel: "Портрет",
+        description: "TikTok, YouTube Shorts",
+        value: {
+          width: 1080,
+          height: 1920,
+          name: "9:16",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 
@@ -340,11 +364,19 @@ export const socialTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1080, height: 1080 },
-      frameRate: 30,
-      aspectRatio: "1:1",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1080x1080",
+      frameRate: "30",
+      aspectRatio: {
+        label: "1:1",
+        textLabel: "Социальные сети",
+        description: "Instagram, Social media posts",
+        value: {
+          width: 1080,
+          height: 1080,
+          name: "1:1",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 ]

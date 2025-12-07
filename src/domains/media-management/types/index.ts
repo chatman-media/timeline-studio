@@ -18,7 +18,29 @@ export type {
 export { MediaType } from "./media"
 
 // MediaInfo is an alias for MediaFile (for backward compatibility)
-export type MediaInfo = MediaFile
+// BUT with simplified type field to match Tauri backend: "Video" | "Audio" | "Image"
+import type { MediaFile } from "./media"
+
+/**
+ * MediaInfo type for backend communication
+ * Uses simplified MediaType from Tauri: "Video" | "Audio" | "Image"
+ */
+export type MediaInfo = Omit<MediaFile, "type" | "id"> & {
+  id?: string // Optional for test mocks
+  type: string // Simplified: "Video" | "Audio" | "Image" from Tauri
+  metadata?: {
+    type: string // "Video" | "Audio" | "Image"
+    codec?: string
+    width?: number
+    height?: number
+    fps?: number
+    duration?: number
+    bitrate?: number
+    channels?: number
+    sample_rate?: number
+  }
+  thumbnailPath?: string
+}
 
 // FFprobe data structures
 export type {
@@ -119,6 +141,7 @@ export interface MediaImportContext {
   currentOperation: string | null
   totalProgress: number
   errors: string[]
+  importedFiles: string[] // Paths of successfully imported files
 }
 
 // Media import events

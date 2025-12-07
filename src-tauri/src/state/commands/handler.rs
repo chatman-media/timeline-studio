@@ -6,6 +6,7 @@ use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdat
 use chrono;
 use std::collections::HashMap;
 use std::sync::Arc;
+use tauri::Manager;
 use tokio::sync::RwLock;
 use uuid;
 
@@ -195,6 +196,9 @@ impl CommandHandler {
       ProjectCommand::RemoveMedia { media_id } => self.media_commands.remove_media(media_id).await,
       ProjectCommand::UpdateMedia { media_id, updates } => {
         self.media_commands.update_media(media_id, updates).await
+      }
+      ProjectCommand::DeduplicateMediaPool => {
+        self.media_commands.deduplicate_media_pool().await
       }
 
       // Legacy imported media commands - now redirect to MediaCommands
@@ -4907,7 +4911,7 @@ impl CommandHandler {
 
           tokio::spawn(async move {
             // Получаем PreviewDataManager из state
-            if let Ok(preview_state) = app_handle.try_state::<crate::media::commands::PreviewManagerState>() {
+            if let Some(preview_state) = app_handle.try_state::<crate::media::commands::PreviewManagerState>() {
               match preview_state.manager.generate_browser_thumbnail(
                 media_id_clone.clone(),
                 std::path::PathBuf::from(&path_clone),

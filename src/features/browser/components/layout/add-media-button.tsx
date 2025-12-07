@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { container } from "@/core/container"
 import { useResources } from "@/features/resources"
-import type { ResourceType, TimelineResource } from "@/features/resources/types"
+import type { ResourceType, TimelineResource } from "@/domains/shared/types/resources"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 

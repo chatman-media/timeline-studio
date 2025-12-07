@@ -53,11 +53,24 @@ vi.mock("@/lib/tauri-logger", () => ({
 describe("UserEffectsService", () => {
   const mockEffect: BaseEffect = {
     id: "effect-1",
-    name: "Test Effect",
-    type: "transform",
-    description: "Test effect description",
-    category: "basic",
-    parameters: {},
+    name: {
+      en: "Test Effect",
+      ru: "Тестовый эффект",
+    },
+    description: {
+      en: "Test effect description",
+      ru: "Описание тестового эффекта",
+    },
+    category: "transform",
+    scope: ["clip"],
+    processingType: "realtime",
+    version: "1.0.0",
+    tags: ["test"],
+    complexity: "low",
+    gpuAccelerated: false,
+    parameters: [],
+    presets: [],
+    processors: {},
   }
 
   beforeEach(() => {

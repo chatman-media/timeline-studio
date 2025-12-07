@@ -5,7 +5,8 @@
 import { act, renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile, MediaType } from "@/domains/media-management"
+import type { MediaFile } from "@/domains/media-management"
+import { MediaType } from "@/domains/media-management"
 
 import { useClips } from "../../hooks/use-clips"
 import { useTimeline } from "../../hooks/use-timeline"
@@ -81,7 +82,7 @@ const mockImageFile: MediaFile = {
   id: "test-image-1",
   name: "test-image.jpg",
   path: "/test/image.jpg",
-  type: "still_image" as MediaType,
+  type: MediaType.StillImage,
   size: 256000,
   duration: undefined,
   createdAt: new Date(),

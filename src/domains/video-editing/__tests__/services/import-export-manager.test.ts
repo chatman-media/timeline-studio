@@ -151,6 +151,8 @@ describe("ImportExportManager", () => {
     it("should register custom exporter", () => {
       const mockExporter: Exporter = {
         export: vi.fn().mockResolvedValue("exported content"),
+        getFileExtension: vi.fn().mockReturnValue(".edl"),
+        getMimeType: vi.fn().mockReturnValue("text/plain"),
       }
 
       manager.registerExporter("edl", mockExporter)

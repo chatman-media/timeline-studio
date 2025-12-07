@@ -267,25 +267,33 @@ describe("templates library", () => {
   })
 
   describe("template settings validation", () => {
-    it("should have resolution settings", () => {
+    it("should have resolution settings as string", () => {
       allProjectTemplates.forEach((template) => {
         expect(template.settings.resolution).toBeDefined()
-        expect(template.settings.resolution.width).toBeGreaterThan(0)
-        expect(template.settings.resolution.height).toBeGreaterThan(0)
+        expect(typeof template.settings.resolution).toBe("string")
+        expect(template.settings.resolution).toMatch(/^\d+x\d+$/)
       })
     })
 
-    it("should have frame rate settings", () => {
+    it("should have frame rate settings as string", () => {
       allProjectTemplates.forEach((template) => {
         expect(template.settings.frameRate).toBeDefined()
-        expect(template.settings.frameRate).toBeGreaterThan(0)
+        expect(typeof template.settings.frameRate).toBe("string")
       })
     })
 
-    it("should have aspect ratio settings", () => {
+    it("should have aspect ratio settings as object", () => {
       allProjectTemplates.forEach((template) => {
         expect(template.settings.aspectRatio).toBeDefined()
-        expect(template.settings.aspectRatio).toBe(template.aspectRatio)
+        expect(typeof template.settings.aspectRatio).toBe("object")
+        expect(template.settings.aspectRatio.label).toBeDefined()
+        expect(template.settings.aspectRatio.value).toBeDefined()
+      })
+    })
+
+    it("should have valid aspect ratio label matching template aspect ratio", () => {
+      allProjectTemplates.forEach((template) => {
+        expect(template.settings.aspectRatio.label).toBe(template.aspectRatio)
       })
     })
 
@@ -293,7 +301,7 @@ describe("templates library", () => {
       const verticalTemplates = allProjectTemplates.filter((t) => t.aspectRatio === "9:16")
 
       verticalTemplates.forEach((template) => {
-        expect(template.settings.resolution.width).toBeLessThan(template.settings.resolution.height)
+        expect(template.settings.aspectRatio.value.width).toBeLessThan(template.settings.aspectRatio.value.height)
       })
     })
 
@@ -301,7 +309,14 @@ describe("templates library", () => {
       const horizontalTemplates = allProjectTemplates.filter((t) => t.aspectRatio === "16:9")
 
       horizontalTemplates.forEach((template) => {
-        expect(template.settings.resolution.width).toBeGreaterThan(template.settings.resolution.height)
+        expect(template.settings.aspectRatio.value.width).toBeGreaterThan(template.settings.aspectRatio.value.height)
+      })
+    })
+
+    it("should have color space settings", () => {
+      allProjectTemplates.forEach((template) => {
+        expect(template.settings.colorSpace).toBeDefined()
+        expect(typeof template.settings.colorSpace).toBe("string")
       })
     })
   })

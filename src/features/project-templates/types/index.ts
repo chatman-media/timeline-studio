@@ -1,6 +1,5 @@
 export type {
   ProjectPlaceholders,
-  ProjectSettings,
   ProjectStructure,
   ProjectTemplate,
   ProjectTemplateFilter,
@@ -9,3 +8,4 @@ export type {
   Section,
   TrackConfig,
 } from "./project-template"
+export type { ProjectSettings } from "@/domains/shared/types/project"

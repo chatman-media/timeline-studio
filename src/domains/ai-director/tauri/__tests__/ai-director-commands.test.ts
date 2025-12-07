@@ -57,14 +57,14 @@ describe("AI Director Tauri Commands", () => {
   describe("aiDirectorAnalyzeComprehensive", () => {
     it("should invoke Tauri command with video path and config", async () => {
       const videoPath = "/path/to/video.mp4"
-      const config: AIDirectorConfig = {
+      const config: Partial<AIDirectorConfig> = {
         performance_mode: "Balanced",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
         enable_face_detection: true,
-        enable_transcription: false,
+        enable_ai_descriptions: false,
       }
 
       const mockResult: ComprehensiveAnalysisResult = {
@@ -146,14 +146,14 @@ describe("AI Director Tauri Commands", () => {
   describe("aiDirectorAnalyzeBatch", () => {
     it("should invoke batch analysis with multiple files", async () => {
       const filePaths = ["/video1.mp4", "/video2.mp4", "/video3.mp4"]
-      const config: AIDirectorConfig = {
+      const config: Partial<AIDirectorConfig> = {
         performance_mode: "Fast",
         enable_audio_analysis: true,
         enable_scene_detection: false,
         enable_video_analysis: true,
         enable_object_detection: false,
         enable_face_detection: false,
-        enable_transcription: false,
+        enable_ai_descriptions: false,
       }
 
       const mockResults: ComprehensiveAnalysisResult[] = [
@@ -241,14 +241,14 @@ describe("AI Director Tauri Commands", () => {
 
   describe("aiDirectorGetDefaultConfig", () => {
     it("should get default config for fast mode", async () => {
-      const mockConfig: AIDirectorConfig = {
+      const mockConfig: Partial<AIDirectorConfig> = {
         performance_mode: "Fast",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: false,
         enable_object_detection: false,
         enable_face_detection: false,
-        enable_transcription: false,
+        enable_ai_descriptions: false,
       }
 
       mockInvoke.mockResolvedValueOnce(mockConfig)
@@ -260,14 +260,14 @@ describe("AI Director Tauri Commands", () => {
     })
 
     it("should get default config for balanced mode", async () => {
-      const mockConfig: AIDirectorConfig = {
+      const mockConfig: Partial<AIDirectorConfig> = {
         performance_mode: "Balanced",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
         enable_face_detection: false,
-        enable_transcription: false,
+        enable_ai_descriptions: false,
       }
 
       mockInvoke.mockResolvedValueOnce(mockConfig)
@@ -278,14 +278,14 @@ describe("AI Director Tauri Commands", () => {
     })
 
     it("should get default config for quality mode", async () => {
-      const mockConfig: AIDirectorConfig = {
+      const mockConfig: Partial<AIDirectorConfig> = {
         performance_mode: "Quality",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
         enable_face_detection: true,
-        enable_transcription: true,
+        enable_ai_descriptions: true,
       }
 
       mockInvoke.mockResolvedValueOnce(mockConfig)
@@ -298,14 +298,14 @@ describe("AI Director Tauri Commands", () => {
 
   describe("aiDirectorValidateConfig", () => {
     it("should validate valid config", async () => {
-      const config: AIDirectorConfig = {
+      const config: Partial<AIDirectorConfig> = {
         performance_mode: "Balanced",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
         enable_face_detection: true,
-        enable_transcription: false,
+        enable_ai_descriptions: false,
       }
 
       const mockValidation: ConfigValidationResult = {
@@ -326,14 +326,14 @@ describe("AI Director Tauri Commands", () => {
     })
 
     it("should return warnings for potentially problematic config", async () => {
-      const config: AIDirectorConfig = {
+      const config: Partial<AIDirectorConfig> = {
         performance_mode: "Quality",
         enable_audio_analysis: true,
         enable_scene_detection: true,
         enable_video_analysis: true,
         enable_object_detection: true,
         enable_face_detection: true,
-        enable_transcription: true,
+        enable_ai_descriptions: true,
         max_parallel_files: 100, // Very low
       }
 
@@ -353,14 +353,14 @@ describe("AI Director Tauri Commands", () => {
     })
 
     it("should return errors for invalid config", async () => {
-      const config: AIDirectorConfig = {
+      const config: Partial<AIDirectorConfig> = {
         performance_mode: "Balanced",
         enable_audio_analysis: false,
         enable_scene_detection: false,
         enable_video_analysis: false,
         enable_object_detection: false,
         enable_face_detection: false,
-        enable_transcription: false,
+        enable_ai_descriptions: false,
       }
 
       const mockValidation: ConfigValidationResult = {
@@ -445,7 +445,7 @@ describe("AI Director Tauri Commands", () => {
           enable_ffmpeg_analysis: true,
           enable_montage_analysis: true,
           enable_transcription: false,
-          performance_mode: "Balanced" as const,
+          performance_mode: "balanced" as const,
         }
 
         mockInvoke.mockResolvedValueOnce({ audio_data: "test" })
@@ -471,7 +471,7 @@ describe("AI Director Tauri Commands", () => {
             enable_ffmpeg_analysis: true,
             enable_montage_analysis: true,
             enable_transcription: false,
-            performance_mode: "Balanced",
+            performance_mode: "balanced",
           },
         })
       })
@@ -492,7 +492,7 @@ describe("AI Director Tauri Commands", () => {
     describe("unifiedAudioAnalyzeBatch", () => {
       it("should invoke batch audio analysis", async () => {
         const filePaths = ["/video1.mp4", "/video2.mp4"]
-        const config = { performance_mode: "Fast" as const }
+        const config = { performance_mode: "fast" as const }
 
         mockInvoke.mockResolvedValueOnce([{ audio_data: "1" }, { audio_data: "2" }])
 
@@ -500,7 +500,7 @@ describe("AI Director Tauri Commands", () => {
 
         expect(mockInvoke).toHaveBeenCalledWith("unified_audio_analyze_batch", {
           filePaths,
-          config: { performance_mode: "Fast" },
+          config: { performance_mode: "fast" },
         })
       })
 
@@ -513,7 +513,7 @@ describe("AI Director Tauri Commands", () => {
 
         expect(mockInvoke).toHaveBeenCalledWith("unified_audio_analyze_batch", {
           filePaths,
-          config: { performance_mode: "Fast" },
+          config: { performance_mode: "fast" },
         })
       })
     })

@@ -6,8 +6,12 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
-import type { MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
+import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { MediaInfo } from "../types"
+
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+// We map it to our canonical MediaType enum
+type TauriMediaType = "Video" | "Audio" | "Image"
 
 const logger = createLogger("MediaBackendEventHandlers")
 
@@ -122,12 +126,12 @@ function handleMediaAdded(
     id: media.id,
     path: media.path,
     name: media.name,
-    type: media.media_type as MediaType,
+    type: media.media_type as TauriMediaType,
     duration: media.duration ?? undefined,
     thumbnailPath: media.thumbnail ?? undefined,
     // Добавляем metadata с типом, codec опционально для H.265 детекции
     metadata: {
-      type: media.media_type as "Video" | "Audio" | "Image",
+      type: media.media_type as TauriMediaType,
       ...(media.codec ? { codec: media.codec } : {}),
     },
   }
@@ -244,11 +248,11 @@ function handleImportedMediaAdded(
     id: media.id,
     path: media.path,
     name: media.name,
-    type: media.media_type as MediaType,
+    type: media.media_type as TauriMediaType,
     duration: media.duration ?? undefined,
     // Добавляем metadata с типом, codec опционально для H.265 детекции
     metadata: {
-      type: media.media_type as "Video" | "Audio" | "Image",
+      type: media.media_type as TauriMediaType,
       ...(media.codec ? { codec: media.codec } : {}),
     },
   }
@@ -323,7 +327,7 @@ function handleImportedMediaUpdated(
   const updatedMedia: MediaInfo = {
     ...existingMedia,
     metadata: {
-      type: existingMedia.type as "Video" | "Audio" | "Image",
+      type: existingMedia.type as TauriMediaType,
       codec: codec,
     },
   }

@@ -11,6 +11,9 @@ import { mockAudioMetadata, mockImageMetadata, mockSceneDetectionResults, mockVi
 import type { MediaMetadata } from "../../types"
 import { getMediaMetadataService } from "../media-metadata-service"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 // Mock media service
 const mockMediaService = {
   extractMediaMetadata: vi.fn(),
@@ -191,7 +194,7 @@ describe("MediaMetadataService", () => {
   describe("quality score calculation", () => {
     it("should calculate high quality score for 4K video", async () => {
       const highQualityMetadata: MediaMetadata = {
-        type: "Video",
+        type: "Video" as TauriMediaType,
         width: 3840,
         height: 2160,
         fps: 60,
@@ -212,7 +215,7 @@ describe("MediaMetadataService", () => {
 
     it("should calculate lower quality score for SD video", async () => {
       const lowQualityMetadata: MediaMetadata = {
-        type: "Video",
+        type: "Video" as TauriMediaType,
         width: 640,
         height: 480,
         fps: 24,

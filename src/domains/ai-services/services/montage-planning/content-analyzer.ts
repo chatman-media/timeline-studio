@@ -95,7 +95,7 @@ export class ContentAnalyzer {
     file: MediaFile,
     options: AnalysisOptions["audioAnalysis"],
   ): Promise<AudioAnalysis> {
-    const hasAudio = MediaFileUtils.hasAudio(file)
+    const hasAudio = MediaFileUtils.isAudio(file.type)
 
     if (!hasAudio) {
       return this.getEmptyAudioAnalysis()

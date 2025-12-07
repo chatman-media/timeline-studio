@@ -3,6 +3,7 @@
  */
 
 import type { AdaptedContent, Platform } from "@/domains/shared/types/ai-tools/platform-adaptation"
+import type { MediaFile as SharedMediaFile } from "@/domains/shared/types/media/media-file"
 import type { PlatformId } from "../../types/platform"
 import type { GeneratedScript } from "../../types/script"
 import type { UnifiedContentAnalysis } from "../../types/unified-analysis"
@@ -272,12 +273,12 @@ export interface SourceContent {
   metadata?: ContentMetadata
 }
 
-export interface MediaFile {
-  id: string
-  path: string
-  type: "video" | "audio" | "image"
-  duration?: number
-  metadata?: Record<string, any>
+/**
+ * MediaFile for multi-platform processing
+ * Extends shared MediaFile with multi-platform specific properties
+ */
+export interface MediaFile extends Pick<SharedMediaFile, "id" | "path" | "type" | "duration" | "metadata"> {
+  // Multi-platform specific fields can be added here if needed
 }
 
 export interface ContentMetadata {

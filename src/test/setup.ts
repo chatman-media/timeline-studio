@@ -433,6 +433,23 @@ vi.mock("@/domains/ai-services/services/engines/scene-analysis/scene-analysis-en
   },
 }))
 
+// Mock MediaManagementOrchestrator to prevent top-level initialization in tests
+vi.mock("@/domains/media-management/services/media-management-orchestrator", () => ({
+  MediaManagementOrchestrator: class MockMediaManagementOrchestrator {
+    processMedia = vi.fn().mockResolvedValue(undefined)
+    generatePreview = vi.fn().mockResolvedValue(undefined)
+    extractMetadata = vi.fn().mockResolvedValue({})
+    clearCache = vi.fn().mockResolvedValue(undefined)
+  },
+  getMediaManagementOrchestrator: vi.fn(() => ({
+    processMedia: vi.fn().mockResolvedValue(undefined),
+    generatePreview: vi.fn().mockResolvedValue(undefined),
+    extractMetadata: vi.fn().mockResolvedValue({}),
+    clearCache: vi.fn().mockResolvedValue(undefined),
+  })),
+  resetMediaManagementOrchestrator: vi.fn(),
+}))
+
 // Only absolutely essential global setup
 beforeAll(() => {
   // Mock console methods in tests to reduce noise

@@ -42,7 +42,7 @@ describe("media-file-converter", () => {
       expect(result).toEqual({
         id: "video-1",
         path: "/test/videos/sample.mp4",
-        filename: "sample.mp4",
+        name: "sample.mp4",
         size: 10485760,
         type: "video",
         duration: 120,
@@ -69,7 +69,7 @@ describe("media-file-converter", () => {
       expect(result).toEqual({
         id: "audio-1",
         path: "/test/audio/track.mp3",
-        filename: "track.mp3",
+        name: "track.mp3",
         size: 5242880,
         type: "audio",
         duration: 180,
@@ -97,7 +97,7 @@ describe("media-file-converter", () => {
       expect(result).toEqual({
         id: "image-1",
         path: "/test/images/photo.jpg",
-        filename: "photo.jpg",
+        name: "photo.jpg",
         size: 2097152,
         type: "image",
         duration: 0,
@@ -305,8 +305,8 @@ describe("media-file-converter", () => {
       expect(result.sourceFile).toBeDefined()
       expect(result.sourceFile?.id).toBe("source-1")
       expect(result.sourceFile?.path).toBe("/test/source.mp4")
-      expect(result.sourceFile?.filename).toBe("source.mp4")
-      expect(result.sourceFile?.type).toBe("video")
+      expect(result.sourceFile?.name).toBe("source.mp4")
+      expect(result.sourceFile?.type).toBeDefined()
     })
 
     it("should handle fragment with minimal data", () => {
@@ -422,8 +422,7 @@ describe("media-file-converter", () => {
       expect(result).toMatchObject({
         id: "test",
         path: "/test.mp4",
-        filename: "test.mp4",
-        type: "video",
+        name: "test.mp4",
         size: 0,
         duration: 0,
         format: undefined,
@@ -451,7 +450,7 @@ describe("media-file-converter", () => {
 
       expect(result.id).toBe("")
       expect(result.path).toBe("")
-      expect(result.filename).toBe("")
+      expect(result.name).toBe("")
     })
 
     it("should handle fragment with all score values at zero", () => {

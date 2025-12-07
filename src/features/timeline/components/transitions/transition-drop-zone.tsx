@@ -4,7 +4,7 @@
 
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import type { DragDropManager, DraggableItem, DropTarget } from "@/features/drag-drop/services/drag-drop-manager"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useTimelineEffects } from "../../hooks/use-timeline-effects"

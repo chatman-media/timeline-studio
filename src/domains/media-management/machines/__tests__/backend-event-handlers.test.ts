@@ -8,6 +8,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import { handleMediaBackendEvent, type MediaManagementContext } from "../backend-event-handlers"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
     trace: vi.fn(),
@@ -37,7 +40,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -61,7 +64,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -138,7 +141,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -159,7 +162,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "old_name.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -233,7 +236,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -254,7 +257,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -279,7 +282,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
 
       const event: ProjectEvent = {
@@ -359,7 +362,7 @@ describe("handleMediaBackendEvent", () => {
         id: "media-1",
         path: "/test/video.mp4",
         name: "video.mp4",
-        type: "Video",
+        type: "Video" as TauriMediaType,
       })
       const originalMap = context.mediaPool
 

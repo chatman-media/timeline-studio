@@ -1,13 +1,6 @@
 /**
  * Media Types for AI Services
+ * Re-exports from canonical source
  */
 
-export interface MediaFile {
-  path: string
-  name: string
-  filename: string
-  type: "video" | "audio" | "image"
-  duration: number
-  size?: number
-  metadata?: Record<string, any>
-}
+export type { MediaFile } from "@/domains/shared/types/media/media-file"

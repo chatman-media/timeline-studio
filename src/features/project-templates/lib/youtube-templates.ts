@@ -122,11 +122,19 @@ export const youtubeTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1920, height: 1080 },
-      frameRate: 30,
-      aspectRatio: "16:9",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1920x1080",
+      frameRate: "30",
+      aspectRatio: {
+        label: "16:9",
+        textLabel: "Широкоэкнранный",
+        description: "YouTube",
+        value: {
+          width: 1920,
+          height: 1080,
+          name: "16:9",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 
@@ -213,11 +221,19 @@ export const youtubeTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1080, height: 1920 },
-      frameRate: 30,
-      aspectRatio: "9:16",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1080x1920",
+      frameRate: "30",
+      aspectRatio: {
+        label: "9:16",
+        textLabel: "Портрет",
+        description: "TikTok, YouTube Shorts",
+        value: {
+          width: 1080,
+          height: 1920,
+          name: "9:16",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 
@@ -354,11 +370,19 @@ export const youtubeTemplates: ProjectTemplate[] = [
     },
 
     settings: {
-      resolution: { width: 1920, height: 1080 },
-      frameRate: 30,
-      aspectRatio: "16:9",
-      audioSampleRate: 48000,
-      audioChannels: 2,
+      resolution: "1920x1080",
+      frameRate: "30",
+      aspectRatio: {
+        label: "16:9",
+        textLabel: "Широкоэкнранный",
+        description: "YouTube",
+        value: {
+          width: 1920,
+          height: 1080,
+          name: "16:9",
+        },
+      },
+      colorSpace: "sdr",
     },
   },
 ]

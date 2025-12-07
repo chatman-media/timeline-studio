@@ -4,34 +4,12 @@
  */
 
 import { WebGL2UnifiedRenderer } from "@/features/effects/services/webgl2-unified-renderer"
-import type { BaseEffect, AppliedEffect as EffectsAppliedEffect } from "@/features/effects/types"
+import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
-import type { AppliedEffect as TimelineAppliedEffect, TimelineClip } from "../types"
+import type { TimelineClip } from "../types"
 import { EffectsCache } from "./effects-cache"
 
 const logger = createLogger("EffectsPlayerIntegration")
-
-/**
- * Конвертировать Timeline AppliedEffect в Effects AppliedEffect
- */
-function convertToEffectsAppliedEffect(timelineEffect: TimelineAppliedEffect): EffectsAppliedEffect {
-  return {
-    id: timelineEffect.id,
-    effectId: timelineEffect.effectId,
-    startTime: timelineEffect.startTime || 0,
-    duration: timelineEffect.duration,
-    parameters: timelineEffect.customParams || {},
-    enabled: timelineEffect.enabled,
-    order: timelineEffect.order,
-    keyframes: {},
-    masks: [],
-    blendMode: "normal",
-    opacity: 1.0,
-    effectVersion: "1.0",
-    createdAt: new Date(),
-    modifiedAt: new Date(),
-  }
-}
 
 export interface EffectsPlayerConfig {
   targetCanvas?: HTMLCanvasElement
@@ -152,11 +130,8 @@ export class EffectsPlayerIntegration {
     }
 
     try {
-      // Конвертируем timeline эффекты в effects эффекты
-      const convertedEffects = activeEffects.map(convertToEffectsAppliedEffect)
-
-      // Рендерим эффекты через WebGL
-      const result = await this.renderer.renderEffectStack(convertedEffects, this.baseEffects, {
+      // Рендерим эффекты через WebGL (теперь типы совместимы)
+      const result = await this.renderer.renderEffectStack(activeEffects, this.baseEffects, {
         source: videoElement,
         target: this.targetCanvas,
         width: videoElement.videoWidth,
@@ -260,10 +235,7 @@ export class EffectsPlayerIntegration {
         videoElement.onseeked = () => resolve(undefined)
       })
 
-      // Конвертируем timeline эффекты в effects эффекты
-      const convertedEffects = activeEffects.map(convertToEffectsAppliedEffect)
-
-      const result = await this.renderer.renderEffectStack(convertedEffects, this.baseEffects, {
+      const result = await this.renderer.renderEffectStack(activeEffects, this.baseEffects, {
         source: videoElement,
         target: tempCanvas,
         width: videoElement.videoWidth,
@@ -340,7 +312,7 @@ export class EffectsPlayerIntegration {
         })
       }
 
-      const appliedEffect: EffectsAppliedEffect = {
+      const appliedEffect: AppliedEffect = {
         id: `preview_${effect.id}`,
         effectId: effect.id,
         enabled: true,
@@ -407,7 +379,7 @@ export class EffectsPlayerIntegration {
 
       const params = {
         ...defaultParams,
-        ...appliedEffect.customParams,
+        ...appliedEffect.parameters,
       }
 
       // Проверяем наличие filter функции

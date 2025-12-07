@@ -4,7 +4,7 @@
  */
 
 import { useCallback } from "react"
-import type { BaseEffect } from "@/features/effects/types"
+import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   applyEffectToBatch,
@@ -16,7 +16,7 @@ import {
   toggleEffectOnClip,
   updateEffectOnClip,
 } from "../services/clip-effects-service"
-import type { AppliedEffect, TimelineProject } from "../types"
+import type { TimelineProject } from "../types"
 
 const logger = createLogger("useClipEffects")
 
@@ -39,7 +39,7 @@ export interface UseClipEffectsReturn {
     clipId: string,
     appliedEffectId: string,
     updates: {
-      customParams?: Record<string, any>
+      parameters?: Record<string, any>
       enabled?: boolean
       order?: number
     },
@@ -151,7 +151,7 @@ export function useClipEffects({ project, onProjectUpdate }: UseClipEffectsOptio
       clipId: string,
       appliedEffectId: string,
       updates: {
-        customParams?: Record<string, any>
+        parameters?: Record<string, any>
         enabled?: boolean
         order?: number
       },

@@ -6,8 +6,11 @@
 
 import type { MediaAnalysisResult, MediaInfo, MediaMetadata, QualityMetrics, SceneDetectionResult } from "../types"
 
+// Tauri MediaType is simplified: "Video" | "Audio" | "Image"
+type TauriMediaType = "Video" | "Audio" | "Image"
+
 export const mockVideoMetadata: MediaMetadata = {
-  type: "Video",
+  type: "Video" as TauriMediaType,
   width: 1920,
   height: 1080,
   fps: 30,
@@ -17,7 +20,7 @@ export const mockVideoMetadata: MediaMetadata = {
 }
 
 export const mockAudioMetadata: MediaMetadata = {
-  type: "Audio",
+  type: "Audio" as TauriMediaType,
   duration: 180.0,
   codec: "mp3",
   channels: 2,
@@ -26,7 +29,7 @@ export const mockAudioMetadata: MediaMetadata = {
 }
 
 export const mockImageMetadata: MediaMetadata = {
-  type: "Image",
+  type: "Image" as TauriMediaType,
   width: 3840,
   height: 2160,
 }
@@ -75,8 +78,16 @@ export const mockMediaInfo: MediaInfo = {
   id: "test-media-uuid-001",
   path: "/test/video.mp4",
   name: "video.mp4",
-  type: "Video",
-  metadata: mockVideoMetadata,
+  type: "Video" as TauriMediaType,
+  metadata: {
+    type: "Video",
+    codec: "h264",
+    width: 1920,
+    height: 1080,
+    fps: 30,
+    duration: 120.5,
+    bitrate: 5_000_000,
+  },
   size: 102_400_000,
   duration: 120.5,
   thumbnailPath: "/tmp/thumbnail.jpg",
@@ -87,7 +98,7 @@ export const createMockMediaInfo = (overrides?: Partial<MediaInfo>): MediaInfo =
   ...overrides,
 })
 
-export const createMockMetadata = (type: "Video" | "Audio" | "Image"): MediaMetadata => {
+export const createMockMetadata = (type: TauriMediaType): MediaMetadata => {
   switch (type) {
     case "Video":
       return { ...mockVideoMetadata }

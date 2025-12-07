@@ -2,7 +2,7 @@
  * Transition Manager - управление переходами между клипами
  */
 
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
 import type { AppliedTransition, TimelineClip, TimelineProject, TimelineTrack } from "../types"

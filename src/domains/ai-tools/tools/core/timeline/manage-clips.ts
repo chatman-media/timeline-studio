@@ -411,9 +411,9 @@ export class ClipManagementTool extends BaseAITool {
    * Определяет тип клипа
    */
   private getClipType(clip: TimelineClip): string {
-    if (clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile)) return "video"
-    if (clip.mediaFile && MediaFileUtils.isAudio(clip.mediaFile)) return "audio"
-    if (clip.mediaFile && MediaFileUtils.isImage(clip.mediaFile)) return "image"
+    if (clip.mediaFile && MediaFileUtils.isVideo(clip.mediaFile.type)) return "video"
+    if (clip.mediaFile && MediaFileUtils.isAudio(clip.mediaFile.type)) return "audio"
+    if (clip.mediaFile && MediaFileUtils.isImage(clip.mediaFile.type)) return "image"
     return "unknown"
   }
 
