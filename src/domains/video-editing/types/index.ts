@@ -97,10 +97,12 @@ export * from "./transitions"
 
 // Re-export subtitle types without aliases for direct imports
 export type {
+  Clip,
   Subtitle,
   SubtitleAnimation,
   SubtitlePosition,
   SubtitleStyle,
+  StyleTemplate,
 } from "./video-compiler"
 
 // Re-export other types needed by consumers
