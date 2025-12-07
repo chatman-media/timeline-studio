@@ -1,5 +1,4 @@
 import {
-  Brain,
   FilePlus,
   FolderOpen,
   LayoutTemplate,
@@ -162,7 +161,6 @@ const TopBarComponent = function TopBar() {
       save: currentProject?.metadata?.is_dirty ? t("topBar.saveChanges") : t("topBar.allChangesSaved"),
       publish: t("topBar.publish"),
       editingTasks: t("topBar.editingTasks"),
-      aiDirector: t("topBar.aiDirector"),
       export: t("topBar.export"),
     }),
     [t, isBrowserVisible, isTimelineVisible, currentProject?.metadata?.is_dirty],
@@ -331,17 +329,6 @@ const TopBarComponent = function TopBar() {
           <AnalysisTasksDropdown />
           <RenderQueueDropdown />
           <RenderJobsDropdown />
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className={TOP_BAR_BUTTON_CLASS}
-            title={buttonTitles.aiDirector}
-            onClick={() => handleOpenModal("ai-director")}
-            data-testid="ai-director-button"
-          >
-            <Brain className="h-5 w-5" />
-          </Button>
 
           <Button
             variant="outline"

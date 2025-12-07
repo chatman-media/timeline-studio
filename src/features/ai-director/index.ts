@@ -37,23 +37,7 @@ export {
   useAIDirectorEvents,
 } from "@/domains/ai-director"
 
-// Components
-export * from "./components/ai-director-chat"
-export * from "./components/ai-director-dashboard"
-export * from "./components/ai-director-modal"
-export * from "./components/analysis-settings"
-export * from "./components/analyzer-checkbox-group"
-export * from "./components/analyzer-preset-selector"
-export * from "./components/analyzer-progress-item"
-export * from "./components/empty-state"
-export * from "./components/file-analysis-card"
-export * from "./components/file-analysis-progress"
-export * from "./components/media-pool-list"
-export * from "./components/media-pool-selector"
-export * from "./components/montage-plan-editor"
-export * from "./components/montage-plan-preview"
-export * from "./components/montage-template-selector"
-export * from "./components/overall-progress-card"
+// Components (UI components removed - now using Timeline Analysis tab)
 
 // Hooks (feature-specific hooks, not domain hooks)
 export * from "./hooks"

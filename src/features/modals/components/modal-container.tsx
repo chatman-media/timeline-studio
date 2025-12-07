@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { type ModalType, useModals } from "@/domains/system-integration"
-import { AIDirectorModal } from "@/features/ai-director"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"
 import { EffectDetailModal } from "@/features/effects/components/effect-detail-modal"
@@ -69,8 +68,6 @@ export function ModalContainer() {
         return <EffectDetailModal />
       case "color-grading":
         return <ColorGradingSavePresetModal />
-      case "ai-director":
-        return <AIDirectorModal />
       default:
         return null
     }
@@ -116,8 +113,6 @@ export function ModalContainer() {
         return "max-w-4xl max-h-[90vh] overflow-y-auto"
       case "color-grading":
         return "h-[max(400px,min(50vh,500px))] w-[max(500px,min(60vw,600px))]"
-      case "ai-director":
-        return "h-[max(800px,min(90vh,1000px))] w-[max(1200px,min(95vw,1400px))]"
       default:
         return "h-[max(600px,min(50vh,800px))]"
     }
@@ -168,8 +163,6 @@ export function ModalContainer() {
         return t("modals.effectDetail.title", "Детали эффекта")
       case "color-grading":
         return t("modals.colorGrading.title", "Сохранить пресет цветокоррекции")
-      case "ai-director":
-        return t("modals.aiDirector.title", "AI Директор анализа")
       case "none":
         return ""
       default:

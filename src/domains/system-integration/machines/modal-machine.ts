@@ -36,7 +36,6 @@ export type ModalType =
   | "midi-configuration"
   | "effect-detail"
   | "color-grading"
-  | "ai-director"
   | "none"
 
 /**

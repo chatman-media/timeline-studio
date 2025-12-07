@@ -8,10 +8,7 @@
  * - Real-time обновления через Tauri events
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { container } from "@/core"
-import type { UnlistenFn } from "@/core/ports"
-import { createLogger } from "@/lib/tauri-logger"
+import { useCallback, useMemo, useState } from "react"
 
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type {
@@ -20,8 +17,6 @@ import type {
   FileAnalysisProgress,
   FileAnalysisStatus,
 } from "@/features/ai-director/types/analysis-progress"
-
-const logger = createLogger("useTimelineAnalysis")
 
 export interface AnalysisFilters {
   status: FileAnalysisStatus | "all"
@@ -66,36 +61,7 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null)
   const [filters, setFiltersState] = useState<AnalysisFilters>(DEFAULT_FILTERS)
 
-  // Subscribe to Tauri events for real-time updates
-  useEffect(() => {
-    const eventBus = container.getEventBus()
-    const unlisteners: UnlistenFn[] = []
-
-    // File progress events
-    const unlistenFileStarted = eventBus.on("ai-director:file-started", (event) => {
-      logger.info("File analysis started:", event.payload)
-    })
-
-    const unlistenFileCompleted = eventBus.on("ai-director:file-completed", (event) => {
-      logger.info("File analysis completed:", event.payload)
-    })
-
-    const unlistenFileError = eventBus.on("ai-director:file-error", (event) => {
-      logger.error("File analysis error:", event.payload)
-    })
-
-    unlisteners.push(unlistenFileStarted, unlistenFileCompleted, unlistenFileError)
-
-    return () => {
-      unlisteners.forEach((unlisten) => {
-        if (typeof unlisten === "function") {
-          unlisten()
-        } else if (unlisten && typeof unlisten.then === "function") {
-          unlisten.then((fn) => fn())
-        }
-      })
-    }
-  }, [])
+  // Real-time updates are handled by useAIDirectorAnalysisV2
 
   // Выбранный файл
   const selectedFile = useMemo(() => {

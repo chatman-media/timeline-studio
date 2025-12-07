@@ -6,6 +6,7 @@ import { useTimelineAnalysis } from "../hooks/use-timeline-analysis"
 import { AnalysisDetail } from "./analysis/analysis-detail"
 import { AnalysisFilters } from "./analysis/analysis-filters"
 import { AnalysisList } from "./analysis/analysis-list"
+import { AnalysisSettingsPanel } from "./analysis/analysis-settings-panel"
 
 export function AnalysisView() {
   const {
@@ -23,7 +24,10 @@ export function AnalysisView() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <ResizablePanelGroup direction="horizontal" className="h-full">
+      {/* Панель настроек анализа */}
+      <AnalysisSettingsPanel />
+
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
         {/* Левая панель - список анализов */}
         <ResizablePanel defaultSize={40} minSize={25} maxSize={60}>
           <div className="flex h-full flex-col border-r bg-background">
