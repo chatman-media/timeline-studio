@@ -64,3 +64,6 @@ export * from "./processing"
 export * from "./script"
 export * from "./transcription"
 export * from "./unified-analysis"
+
+// Unified Montage Planner Types (NEW - Phase 1)
+export * from "./unified"
