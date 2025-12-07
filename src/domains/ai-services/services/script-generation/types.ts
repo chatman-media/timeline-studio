@@ -3,7 +3,7 @@
  */
 
 import type { SceneAnalysis } from "@/domains/shared/types/ai-tools/content-analysis"
-import type { Person } from "@/features/montage-planner/types"
+import type { Person } from "@/domains/ai-services/types"
 
 // Базовые типы для генерации сценариев
 export interface ScriptGenerationConfig {

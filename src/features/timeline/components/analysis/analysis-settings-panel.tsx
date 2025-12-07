@@ -63,9 +63,8 @@ export function AnalysisSettingsPanel() {
   const handleStartAnalysis = useCallback(async () => {
     if (selectedFiles.length === 0 || selectedAnalyzers.length === 0) return
 
-    await startBatchAnalysis(selectedFiles, {
-      analyzers: selectedAnalyzers,
-    })
+    // startBatchAnalysis ожидает Set<AnalyzerType>
+    await startBatchAnalysis(selectedFiles, new Set(selectedAnalyzers))
   }, [selectedFiles, selectedAnalyzers, startBatchAnalysis])
 
   const canStartAnalysis = selectedFiles.length > 0 && selectedAnalyzers.length > 0 && !isAnalyzing

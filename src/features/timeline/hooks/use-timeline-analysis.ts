@@ -8,8 +8,9 @@
  * - Real-time обновления через Tauri events
  */
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
+import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type {
   AnalyzerType,
@@ -17,6 +18,9 @@ import type {
   FileAnalysisProgress,
   FileAnalysisStatus,
 } from "@/features/ai-director/types/analysis-progress"
+import { createLogger } from "@/lib/tauri-logger"
+
+const logger = createLogger("UseTimelineAnalysis")
 
 export interface AnalysisFilters {
   status: FileAnalysisStatus | "all"
@@ -60,18 +64,92 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
   // Local state
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null)
   const [filters, setFiltersState] = useState<AnalysisFilters>(DEFAULT_FILTERS)
+  const [savedAnalyses, setSavedAnalyses] = useState<FileAnalysisProgress[]>([])
+
+  // Загрузка сохраненных анализов при монтировании
+  useEffect(() => {
+    const loadSavedAnalyses = async () => {
+      try {
+        logger.info("Загрузка сохраненных анализов из storage")
+
+        const analyzedVideos = await analysisStorageService.getAnalyzedVideos()
+        logger.info(`Найдено сохраненных анализов: ${analyzedVideos.length}`)
+
+        const analyses: FileAnalysisProgress[] = []
+
+        for (const videoPath of analyzedVideos) {
+          // Загружаем comprehensive analysis для каждого видео
+          const result = await analysisStorageService.loadComprehensiveAnalysis(videoPath)
+
+          if (result.success && result.data) {
+            const fileName = videoPath.split('/').pop() || videoPath.split('\\').pop() || videoPath
+
+            // Создаем FileAnalysisProgress из сохраненного анализа
+            const fileProgress: FileAnalysisProgress = {
+              id: result.data.analysis_id,
+              fileId: result.data.analysis_id,
+              fileName,
+              filePath: videoPath,
+              status: "completed" as FileAnalysisStatus,
+              progress: 100,
+              analyzers: [],
+              stats: {
+                totalAnalyzers: 0,
+                completedAnalyzers: 0,
+                failedAnalyzers: 0,
+              },
+              startTime: result.data.started_at,
+              endTime: result.data.completed_at,
+              duration: result.data.duration,
+            }
+
+            analyses.push(fileProgress)
+          }
+        }
+
+        setSavedAnalyses(analyses)
+        logger.info(`Загружено сохраненных анализов: ${analyses.length}`)
+      } catch (error) {
+        logger.error("Ошибка загрузки сохраненных анализов", { error })
+      }
+    }
+
+    void loadSavedAnalyses()
+  }, [])
+
+  // Объединяем текущие и сохраненные анализы
+  const allFilesProgress = useMemo(() => {
+    // Создаем Map для дедупликации по fileId/id
+    const filesMap = new Map<string, FileAnalysisProgress>()
+
+    // Сначала добавляем текущие анализы (они имеют приоритет)
+    for (const file of filesProgress) {
+      const key = file.fileId || file.id
+      filesMap.set(key, file)
+    }
+
+    // Затем добавляем сохраненные (только если их еще нет)
+    for (const file of savedAnalyses) {
+      const key = file.fileId || file.id
+      if (!filesMap.has(key)) {
+        filesMap.set(key, file)
+      }
+    }
+
+    return Array.from(filesMap.values())
+  }, [filesProgress, savedAnalyses])
 
   // Real-time updates are handled by useAIDirectorAnalysisV2
 
   // Выбранный файл
   const selectedFile = useMemo(() => {
     if (!selectedFileId) return null
-    return filesProgress.find((f) => f.fileId === selectedFileId || f.id === selectedFileId) || null
-  }, [selectedFileId, filesProgress])
+    return allFilesProgress.find((f) => f.fileId === selectedFileId || f.id === selectedFileId) || null
+  }, [selectedFileId, allFilesProgress])
 
   // Фильтрация файлов
   const filteredFiles = useMemo(() => {
-    let filtered = [...filesProgress]
+    let filtered = [...allFilesProgress]
 
     // Фильтр по статусу
     if (filters.status !== "all") {
@@ -84,13 +162,13 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
     }
 
     return filtered
-  }, [filesProgress, filters])
+  }, [allFilesProgress, filters])
 
   // Computed statistics
-  const totalFiles = filesProgress.length
-  const completedFiles = filesProgress.filter((f) => f.status === "completed").length
-  const analyzingFiles = filesProgress.filter((f) => f.status === "analyzing").length
-  const failedFiles = filesProgress.filter((f) => f.status === "error").length
+  const totalFiles = allFilesProgress.length
+  const completedFiles = allFilesProgress.filter((f) => f.status === "completed").length
+  const analyzingFiles = allFilesProgress.filter((f) => f.status === "analyzing").length
+  const failedFiles = allFilesProgress.filter((f) => f.status === "error").length
 
   // Actions
   const setFilters = useCallback((newFilters: Partial<AnalysisFilters>) => {
@@ -103,7 +181,7 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
 
   return {
     // State
-    filesProgress,
+    filesProgress: allFilesProgress,
     filteredFiles,
     selectedFileId,
     selectedFile,
