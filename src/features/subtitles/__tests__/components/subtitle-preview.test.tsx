@@ -22,7 +22,7 @@ vi.mock("@/features/browser/components/layout/favorite-button", () => ({
   FavoriteButton: () => <button>Избранное</button>,
 }))
 
-vi.mock("@/features/resources", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   useResources: () => ({
     addSubtitle: vi.fn(),
     isSubtitleAdded: vi.fn(() => false),

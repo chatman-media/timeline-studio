@@ -28,7 +28,7 @@ vi.mock("@/features/browser/components/layout/favorite-button", () => ({
   FavoriteButton: (props: any) => <button data-testid="favorite-button" {...props} />,
 }))
 
-vi.mock("@/features/resources", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   useResources: () => ({
     isEffectAdded: vi.fn(() => false),
   }),

@@ -4,7 +4,7 @@
  */
 
 import type { MediaPool, MediaPoolItem } from "@/domains/media-management"
-import type { Sequence } from "@/features/timeline/types/sequence"
+import type { Sequence } from "@/domains/video-editing/types"
 
 import type { ProjectSettings } from "./project"
 

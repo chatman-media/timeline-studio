@@ -18,7 +18,7 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
   }),
 }))
 
-vi.mock("@/features/resources", () => ({
+vi.mock("@/domains/video-editing/providers", () => ({
   useResources: () => ({
     addStyleTemplate: mockAddStyleTemplate,
     isStyleTemplateAdded: mockIsStyleTemplateAdded,

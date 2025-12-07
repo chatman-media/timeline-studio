@@ -32,31 +32,19 @@ vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
   })),
 }))
 
-vi.mock("@/domains/media-management", () => ({
-  getMediaMetadata: vi.fn(),
-  selectAudioFile: vi.fn(),
-  selectMediaDirectory: vi.fn(),
-  getMediaFiles: vi.fn(),
-  MediaType: {
-    Video: "Video",
-    Audio: "Audio",
-    Image: "Image",
-    Music: "Music",
-    StillImage: "Image",
-  },
-}))
+vi.mock("@/domains/media-management", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/media-management")>()
+  return {
+    ...actual,
+    getMediaMetadata: vi.fn(),
+    selectAudioFile: vi.fn(),
+    selectMediaDirectory: vi.fn(),
+    getMediaFiles: vi.fn(),
+  }
+})
 
 vi.mock("@/features/media", () => ({
   convertToSavedMusicFile: vi.fn((file) => Promise.resolve(file)),
-}))
-
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => ({
-    info: vi.fn(),
-    error: vi.fn(),
-    warn: vi.fn(),
-    debug: vi.fn(),
-  })),
 }))
 
 describe("useMusicImport", () => {

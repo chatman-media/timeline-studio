@@ -19,6 +19,8 @@ export * from "./filters"
 // Core types - экспорт из специализированных файлов
 export * from "./media"
 export * from "./player"
+// Sequence types (canonical source for Sequence, SequenceSettings, etc.)
+export * from "./sequence"
 // Template types (canonical source for StyleTemplate, MediaTemplate, SubtitleStyleTemplate)
 export * from "./templates"
 // Aliases for backward compatibility with features layer

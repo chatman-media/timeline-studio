@@ -7,12 +7,12 @@ import { nanoid } from "nanoid"
 import { container, type IPlatformService } from "@/core"
 import { createEmptyMediaPool } from "@/domains/media-management"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/domains/shared/types/project"
+import type { Sequence } from "@/domains/video-editing/types"
 import type {
   ProjectMetadata,
   ProjectOperations,
   TimelineStudioProject,
 } from "@/features/project-settings/types/timeline-studio-project"
-import type { Sequence } from "@/features/timeline/types/sequence"
 
 import { createLogger } from "@/lib/tauri-logger"
 
