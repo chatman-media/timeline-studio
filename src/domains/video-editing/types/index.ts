@@ -8,49 +8,26 @@ export * from "./context"
 // Note: effects.ts is deprecated, use unified-effects.ts instead
 // But we still need to export VideoEffect and AppliedFilter for backward compatibility
 export type {
-  VideoEffect,
   AppliedFilter,
   AppliedTransition,
   FilterType,
   TransitionDirection,
   TransitionEasing,
+  VideoEffect,
 } from "./effects"
-
+export * from "./filters"
 // Core types - экспорт из специализированных файлов
 export * from "./media"
 export * from "./player"
 export * from "./timeline"
-
-// Video compiler types (moved from src/shared/types)
-// Export all from video-compiler EXCEPT conflicting Transition types
-export {
-  AlignX,
-  AlignY,
-  AnimationDirection,
-  AnimationEasing,
-  AnimationType,
-  AspectRatio,
-  CompilerFilterType,
-  CompilerTemplateType,
-  FitMode,
-  FontWeight,
-  ObjectFit,
-  StyleElementType,
-  StyleTemplateCategory,
-  StyleTemplateStyle,
-  SubtitleAlignX,
-  SubtitleAlignY,
-  SubtitleAnimationType,
-  SubtitleDirection,
-  SubtitleEasing,
-  SubtitleFontWeight,
-  TextAlign,
-  toRustEnumCase,
-} from "./video-compiler"
-
+export * from "./transitions"
+// Unified effects system (canonical source)
+export * from "./unified-effects"
+// Re-export subtitle types without aliases for direct imports
 export type {
   CacheStats,
   Clip as BackendClip,
+  Clip,
   CompilerEffectParameter,
   CompilerFilter,
   CompilerSettings,
@@ -70,14 +47,21 @@ export type {
   PreviewSettings,
   ProjectMetadata,
   ProjectSchema,
+  RenderJob,
+  RenderProgress,
   Size2D,
   StyleElementProperties,
   StyleTemplate as BackendStyleTemplate,
+  StyleTemplate,
   StyleTemplateElement,
   Subtitle as BackendSubtitle,
+  Subtitle,
   SubtitleAnimation as BackendSubtitleAnimation,
+  SubtitleAnimation,
   SubtitlePosition as BackendSubtitlePosition,
+  SubtitlePosition,
   SubtitleStyle as BackendSubtitleStyle,
+  SubtitleStyle,
   SystemInfo,
   Transition as CompilerTransition,
   TransitionCategory,
@@ -85,30 +69,33 @@ export type {
   TransitionDuration,
   TransitionTag,
 } from "./video-compiler"
-
+// Video compiler types (moved from src/shared/types)
+// Export all from video-compiler EXCEPT conflicting Transition types
 // Re-export enums and types from video-compiler
-export { GpuEncoder, OutputFormat, RenderStatus } from "./video-compiler"
-export type { RenderJob, RenderProgress } from "./video-compiler"
-
-// Unified effects system (canonical source)
-export * from "./unified-effects"
-export * from "./filters"
-export * from "./transitions"
-
-// Re-export subtitle types without aliases for direct imports
-export type {
-  Clip,
-  Subtitle,
-  SubtitleAnimation,
-  SubtitlePosition,
-  SubtitleStyle,
-  StyleTemplate,
+export {
+  AlignX,
+  AlignY,
+  AnimationDirection,
+  AnimationEasing,
+  AnimationType,
+  AspectRatio,
+  CompilerFilterType,
+  CompilerTemplateType,
+  FitMode,
+  FontWeight,
+  GpuEncoder,
+  ObjectFit,
+  OutputFormat,
+  RenderStatus,
+  StyleElementType,
+  StyleTemplateCategory,
+  StyleTemplateStyle,
+  SubtitleAlignX,
+  SubtitleAlignY,
+  SubtitleAnimationType,
+  SubtitleDirection,
+  SubtitleEasing,
+  SubtitleFontWeight,
+  TextAlign,
+  toRustEnumCase,
 } from "./video-compiler"
-
-// Re-export other types needed by consumers
-export type {
-  AppliedTransition,
-  FilterType,
-  TransitionDirection,
-  TransitionEasing,
-} from "./effects"

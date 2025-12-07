@@ -3,8 +3,8 @@
  * Интеграция WebGL эффектов с video player для real-time preview
  */
 
+import type { AppliedEffect, BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import { WebGL2UnifiedRenderer } from "@/features/effects/services/webgl2-unified-renderer"
-import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip } from "../types"
 import { EffectsCache } from "./effects-cache"

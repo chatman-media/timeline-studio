@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { useMediaImport } from "@/domains/media-management"
 import { useModals, useNotifications } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import {

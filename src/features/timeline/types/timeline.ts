@@ -10,7 +10,7 @@
  */
 
 import type { MediaFile } from "@/domains/video-editing/types"
-import type { BaseEffect, AppliedEffect } from "@/domains/video-editing/types/unified-effects"
+import type { AppliedEffect, BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import type { VideoFilter } from "../../filters/types/filters"
 import type { StyleTemplate } from "../../style-templates/types/style-template"
 import type { SubtitleClip } from "../../subtitles/types"

@@ -211,7 +211,7 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
               return Array.from({ length: 100 }, (_, i) => (i * 255) / 100) // Mock image data
             case "compile_video":
               // Mock video compilation
-              return "mock-job-id-" + Date.now()
+              return `mock-job-id-${Date.now()}`
             case "plugin:event|listen": {
               // Generate event ID and register listener
               const eventId = Math.random().toString(36).slice(2, 11)

@@ -4,10 +4,16 @@
  * Профессиональные типы медиафайлов по аналогии с DaVinci Resolve
  */
 
+export type { MediaFile } from "@/domains/shared/types/media/media-file"
+export {
+  isAudioFile,
+  isImageFile,
+  isVideoFile,
+  MediaCodec,
+  MediaColorSpace,
+} from "@/domains/shared/types/media/media-file"
 // Re-export from canonical source in shared
 export { MediaType } from "@/domains/shared/types/media/types"
-export { MediaCodec, MediaColorSpace, isVideoFile, isAudioFile, isImageFile } from "@/domains/shared/types/media/media-file"
-export type { MediaFile } from "@/domains/shared/types/media/media-file"
 
 // Video editing specific utilities
 

@@ -5,8 +5,10 @@
  */
 
 import { createLogger } from "@/lib/tauri-logger"
+import type { AppliedTransition } from "../../../../domains/video-editing/types/effects"
 import type { MediaFile } from "../../../../domains/video-editing/types/media"
 import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
+import type { AppliedEffect } from "../../../../domains/video-editing/types/unified-effects"
 import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
 import { EmotionalTone } from "../../../../features/montage-planner/types/index"
 import {
@@ -19,8 +21,6 @@ import {
   type Track,
   type TrackType,
 } from "../../../../features/timeline/types"
-import type { AppliedEffect } from "../../../../domains/video-editing/types/unified-effects"
-import type { AppliedTransition } from "../../../../domains/video-editing/types/effects"
 
 const logger = createLogger("TimelineIntegrationService")
 
@@ -110,7 +110,9 @@ export function applyPlanToTimeline(
   // Группируем клипы по трекам
   const videoClips = allClips.filter((clip) => {
     if (!clip.fragment?.sourceFile) return false
-    return MediaFileUtils.isVideo(clip.fragment.sourceFile.type) || MediaFileUtils.isImage(clip.fragment.sourceFile.type)
+    return (
+      MediaFileUtils.isVideo(clip.fragment.sourceFile.type) || MediaFileUtils.isImage(clip.fragment.sourceFile.type)
+    )
   })
 
   const audioClips = allClips.filter((clip) => {

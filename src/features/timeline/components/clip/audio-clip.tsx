@@ -7,13 +7,13 @@ import React from "react"
 
 import { Button } from "@/components/ui/button"
 import { useModals } from "@/domains/system-integration"
+import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"
 import { useClips } from "../../hooks"
 import { timelinePlayerSync } from "../../services/timeline-player-sync"
 import type { TimelineClip, TimelineTrack } from "../../types"
-import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import Waveform from "../track/waveform"
 
 const logger = createLogger("AudioClip")

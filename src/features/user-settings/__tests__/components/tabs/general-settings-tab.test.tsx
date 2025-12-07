@@ -235,7 +235,8 @@ describe("GeneralSettingsTab", () => {
   it("should handle screenshots path input changes", () => {
     render(<GeneralSettingsTab />)
 
-    const inputs = screen.getAllByRole("textbox"); const screenshotsInput = inputs[0]
+    const inputs = screen.getAllByRole("textbox")
+    const screenshotsInput = inputs[0]
     act(() => {
       fireEvent.change(screenshotsInput, { target: { value: "new/screenshots/path" } })
     })
@@ -246,7 +247,8 @@ describe("GeneralSettingsTab", () => {
   it("should handle player screenshots path input changes", () => {
     render(<GeneralSettingsTab />)
 
-    const inputs = screen.getAllByRole("textbox"); const playerScreenshotsInput = inputs[1]
+    const inputs = screen.getAllByRole("textbox")
+    const playerScreenshotsInput = inputs[1]
     act(() => {
       fireEvent.change(playerScreenshotsInput, { target: { value: "new/player/path" } })
     })

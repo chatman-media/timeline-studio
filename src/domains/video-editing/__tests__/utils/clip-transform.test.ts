@@ -262,7 +262,23 @@ describe("Clip Transform Utilities", () => {
         scaleX: 1.5,
         scaleY: 2.0,
       },
-      effects: [{ id: "effect-1", effectId: "blur", enabled: true, order: 0, startTime: 0, parameters: {}, keyframes: {}, masks: [], blendMode: "normal", opacity: 1, effectVersion: "1.0.0", createdAt: new Date(), modifiedAt: new Date() }], // Should be preserved
+      effects: [
+        {
+          id: "effect-1",
+          effectId: "blur",
+          enabled: true,
+          order: 0,
+          startTime: 0,
+          parameters: {},
+          keyframes: {},
+          masks: [],
+          blendMode: "normal",
+          opacity: 1,
+          effectVersion: "1.0.0",
+          createdAt: new Date(),
+          modifiedAt: new Date(),
+        },
+      ], // Should be preserved
       filters: [],
       transitions: [],
       createdAt: new Date("2024-01-01"),

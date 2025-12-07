@@ -10,9 +10,7 @@ import { memo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { BaseEffect } from "@/domains/video-editing/types"
-import type { VideoFilter } from "@/domains/video-editing/types"
-import type { Transition } from "@/domains/video-editing/types"
+import type { BaseEffect, Transition, VideoFilter } from "@/domains/video-editing/types"
 import { cn } from "@/lib/utils"
 
 // Временные моковые данные - потом заменить на реальные из контекста

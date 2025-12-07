@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react"
-
+import type { Transition } from "@/domains/video-editing/types"
 import { useAdvancedTransitions } from "@/features/transitions/hooks/use-advanced-transitions"
 import { useTransitions } from "@/features/transitions/hooks/use-transitions"
-import type { Transition } from "@/domains/video-editing/types"
 
 import {
   addKeyframeToTimelineTransition,

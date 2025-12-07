@@ -5,8 +5,8 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { createLogger } from "@/lib/tauri-logger"
 import type { AIDirectorConfig } from "@/core/ports/ai.port"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AiDirectorCommands")
 

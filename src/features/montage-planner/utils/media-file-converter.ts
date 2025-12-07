@@ -27,7 +27,7 @@ export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMedi
     path: file.path,
     name: file.name,
     size: file.size || 0,
-    type: file.type,
+    type: type as any, // DomainMediaFile uses different MediaType definition
     duration: file.duration,
     format: file.probeData?.format?.format_name,
   }

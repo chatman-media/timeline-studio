@@ -4,7 +4,9 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-use super::preview_data::{BasicVideoMetadata, MediaPreviewData, RecognitionFrame, ThumbnailData, TimelinePreview};
+use super::preview_data::{
+  BasicVideoMetadata, MediaPreviewData, RecognitionFrame, ThumbnailData, TimelinePreview,
+};
 use super::thumbnail::{generate_thumbnail, generate_thumbnail_fast};
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::frame_extraction::{ExtractionPurpose, FrameExtractionManager};
@@ -598,8 +600,14 @@ impl PreviewDataManager {
 
     // Извлекаем параметры видео
     let (width, height, fps, video_codec, aspect_ratio) = if let Some(stream) = video_stream {
-      let width = stream.get("width").and_then(|v| v.as_u64()).map(|v| v as u32);
-      let height = stream.get("height").and_then(|v| v.as_u64()).map(|v| v as u32);
+      let width = stream
+        .get("width")
+        .and_then(|v| v.as_u64())
+        .map(|v| v as u32);
+      let height = stream
+        .get("height")
+        .and_then(|v| v.as_u64())
+        .map(|v| v as u32);
 
       let fps = stream
         .get("r_frame_rate")

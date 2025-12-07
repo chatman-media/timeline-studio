@@ -149,7 +149,8 @@ describe("UserSettingsModal", () => {
     render(<UserSettingsModal />)
 
     // Находим инпут пути скриншотов
-    const inputs = screen.getAllByRole("textbox"); const screenshotsPathInput = inputs[0]
+    const inputs = screen.getAllByRole("textbox")
+    const screenshotsPathInput = inputs[0]
 
     // Вводим новый путь
     act(() => {
@@ -255,7 +256,8 @@ describe("UserSettingsModal", () => {
     render(<UserSettingsModal />)
 
     // Проверяем, что начальное значение пути скриншотов установлено правильно
-    const inputs = screen.getAllByRole("textbox"); const screenshotsPathInput = inputs[0]
+    const inputs = screen.getAllByRole("textbox")
+    const screenshotsPathInput = inputs[0]
     expect(screenshotsPathInput).toHaveValue("")
 
     // Изменяем путь скриншотов в контексте
@@ -271,7 +273,8 @@ describe("UserSettingsModal", () => {
     render(<UserSettingsModal />)
 
     // Проверяем, что значение пути скриншотов обновилось
-    const updatedInputs = screen.getAllByRole("textbox"); const updatedScreenshotsPathInput = updatedInputs[0]
+    const updatedInputs = screen.getAllByRole("textbox")
+    const updatedScreenshotsPathInput = updatedInputs[0]
     expect(updatedScreenshotsPathInput).toHaveValue("new/path")
   })
 
@@ -323,7 +326,8 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что путь скриншотов был обновлен
-    const inputs = screen.getAllByRole("textbox"); const screenshotsPathInput = inputs[0]
+    const inputs = screen.getAllByRole("textbox")
+    const screenshotsPathInput = inputs[0]
     expect(screenshotsPathInput).toHaveValue("selected/directory/path")
   })
 
@@ -375,7 +379,8 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что путь скриншотов плеера был обновлен
-    const inputs = screen.getAllByRole("textbox"); const playerScreenshotsPathInput = inputs[1]
+    const inputs = screen.getAllByRole("textbox")
+    const playerScreenshotsPathInput = inputs[1]
     expect(playerScreenshotsPathInput).toHaveValue("selected/directory/path")
   })
 
@@ -413,7 +418,8 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что путь скриншотов не изменился
-    const inputs = screen.getAllByRole("textbox"); const screenshotsPathInput = inputs[0]
+    const inputs = screen.getAllByRole("textbox")
+    const screenshotsPathInput = inputs[0]
     expect(screenshotsPathInput).toHaveValue("")
   })
 
@@ -457,7 +463,8 @@ describe("UserSettingsModal", () => {
     render(<UserSettingsModal />)
 
     // Находим инпут пути скриншотов плеера
-    const inputs = screen.getAllByRole("textbox"); const playerScreenshotsPathInput = inputs[1]
+    const inputs = screen.getAllByRole("textbox")
+    const playerScreenshotsPathInput = inputs[1]
 
     // Вводим новый путь
     act(() => {

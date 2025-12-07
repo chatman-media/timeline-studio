@@ -229,7 +229,7 @@ export async function adaptContentForPlatforms(
   logger.info("Adapting content for platforms", { platforms, duration: analysis.technicalSpecs.duration })
 
   // Placeholder implementation - would call actual platform adaptation
-  return platforms.map((platform) => ({
+  const adaptedContent: AdaptedContent[] = platforms.map((platform) => ({
     platformId: platform,
     title: "Platform-Optimized Content",
     description: `Content optimized for ${platform}`,
@@ -249,6 +249,7 @@ export async function adaptContentForPlatforms(
         ratio: "16:9",
         width: 16,
         height: 9,
+        preferred: true,
       },
     },
     optimizations: {
@@ -262,6 +263,8 @@ export async function adaptContentForPlatforms(
       tags: [platform],
     },
   }))
+
+  return adaptedContent
 }
 
 /**

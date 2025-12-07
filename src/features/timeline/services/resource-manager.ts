@@ -6,11 +6,10 @@
  */
 
 import type { MediaFile } from "@/domains/media-management"
+import type { Transition, VideoFilter } from "@/domains/video-editing/types"
 import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
-import type { VideoFilter } from "@/domains/video-editing/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { Transition } from "@/domains/video-editing/types"
 
 import type {
   AppliedEffect,

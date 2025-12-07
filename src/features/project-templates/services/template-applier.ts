@@ -4,7 +4,6 @@
  */
 
 import type { FrameRate, Resolution } from "@/domains/shared/types/project"
-import { ASPECT_RATIOS, RESOLUTIONS_16_9, RESOLUTIONS_9_16, RESOLUTIONS_1_1, RESOLUTIONS_4_3, RESOLUTIONS_4_5, RESOLUTIONS_21_9 } from "@/domains/shared/types/project"
 import type { TimelineStudioProject } from "@/features/project-settings/types/timeline-studio-project"
 import type { Sequence, SequenceSettings } from "@/features/timeline/types/sequence"
 import type { TimelineTrack } from "@/features/timeline/types/timeline"
@@ -115,7 +114,7 @@ export class TemplateApplier {
         bitDepth: 24,
         channels: 2,
       },
-      colorSpace: template.settings.colorSpace || "rec709",
+      colorSpace: "rec709" as "rec709" | "rec2020" | "srgb" | "p3",
     }
   }
 

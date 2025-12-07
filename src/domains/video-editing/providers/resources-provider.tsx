@@ -10,8 +10,6 @@ import { container } from "@/core/container"
 import type { FfprobeData, MediaFile } from "@/domains/media-management"
 import { MediaType as LocalMediaType } from "@/domains/media-management"
 import { useApp } from "@/domains/project-management/providers"
-import type { VideoEffect } from "@/features/effects/types"
-import type { VideoFilter } from "@/features/filters/types/filters"
 // Backend event handlers removed - simplified architecture
 import {
   type EffectResource,
@@ -24,6 +22,8 @@ import {
   type TimelineResource,
   type TransitionResource,
 } from "@/domains/shared/types/resources"
+import type { VideoEffect } from "@/features/effects/types"
+import type { VideoFilter } from "@/features/filters/types/filters"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"

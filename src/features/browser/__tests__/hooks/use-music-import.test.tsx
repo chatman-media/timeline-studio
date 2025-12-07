@@ -32,6 +32,19 @@ vi.mock("@/domains/media-management", () => ({
   selectAudioFile: vi.fn(),
   selectMediaDirectory: vi.fn(),
   getMediaFiles: vi.fn(),
+  // Preview size constants needed by browser provider
+  DEFAULT_PREVIEW_SIZE_INDEX: 3,
+  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
+  DEFAULT_CONTENT_SIZES: {
+    MEDIA: 250,
+    TEMPLATES: 250,
+    STYLE_TEMPLATES: 250,
+    EFFECTS: 250,
+    FILTERS: 250,
+    TRANSITIONS: 250,
+    SUBTITLES: 250,
+    MUSIC: 250,
+  },
 }))
 
 vi.mock("@/features/media", () => ({

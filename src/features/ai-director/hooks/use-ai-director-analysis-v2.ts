@@ -49,7 +49,7 @@ export interface UseAIDirectorAnalysisV2Return {
  */
 function safePercentage(value: unknown): number {
   const num = typeof value === "number" ? value : Number.parseFloat(String(value))
-  if (isNaN(num) || !isFinite(num)) return 0
+  if (Number.isNaN(num) || !Number.isFinite(num)) return 0
   return Math.max(0, Math.min(100, Math.round(num * 100)))
 }
 

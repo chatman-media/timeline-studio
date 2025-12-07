@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
+import type { FilterResource, TimelineResource } from "@/domains/shared/types/resources"
 import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import { useResources } from "@/features/resources"
-import type { FilterResource, TimelineResource } from "@/domains/shared/types/resources"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
 

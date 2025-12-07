@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest"
+import type { Transition, VideoFilter } from "@/domains/video-editing/types"
 import type { MediaFile } from "@/domains/video-editing/types/media"
 import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
-import type { VideoFilter } from "@/domains/video-editing/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/template-config"
-import type { Transition } from "@/domains/video-editing/types"
 
 import {
   addEffectToResources,

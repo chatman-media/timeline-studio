@@ -165,105 +165,107 @@ function mapMediaTypeToString(mediaType: any): string {
  * Преобразует backend треки в frontend формат
  */
 function transformBackendTracks(backendTracks: BackendTrack[]): Track[] {
-  return backendTracks.map((track, index): Track => ({
-    id: track.id,
-    name: track.name,
-    type: mapTrackType(track.track_type),
-    order: index,
-    clips: track.clips.map((clip) => ({
-      id: clip.id,
-      name: clip.name,
-      mediaId: clip.media_id,
-      trackId: track.id,
-      startTime: clip.timeline_in,
-      duration: clip.timeline_out - clip.timeline_in,
-      sourceIn: clip.source_in,
-      sourceOut: clip.source_out,
-
-      // Media timing (required fields)
-      mediaStartTime: clip.source_in,
-      mediaEndTime: clip.source_out,
-      offset: 0,
-
-      // Playback
-      playbackRate: clip.playback_rate,
-      speed: clip.playback_rate,
-      isReversed: false,
-
-      // State
-      isSelected: false,
-      isLocked: false,
-      isMuted: !clip.enabled,
-
-      // Audio/Visual
-      volume: track.volume,
-      opacity: 1,
-      position: {
-        x: 0.5,
-        y: 0.5,
-        width: 1,
-        height: 1,
-        rotation: 0,
-        scaleX: 1,
-        scaleY: 1,
-      },
-
-      // Resources
-      effects: (clip.effects || []).map((effectId: string, index: number) => ({
-        id: effectId,
-        effectId,
-        enabled: true,
-        order: index,
+  return backendTracks.map(
+    (track, index): Track => ({
+      id: track.id,
+      name: track.name,
+      type: mapTrackType(track.track_type),
+      order: index,
+      clips: track.clips.map((clip) => ({
+        id: clip.id,
+        name: clip.name,
+        mediaId: clip.media_id,
+        trackId: track.id,
         startTime: clip.timeline_in,
         duration: clip.timeline_out - clip.timeline_in,
-        parameters: {},
-        keyframes: {},
-        masks: [],
-        blendMode: "normal" as const,
+        sourceIn: clip.source_in,
+        sourceOut: clip.source_out,
+
+        // Media timing (required fields)
+        mediaStartTime: clip.source_in,
+        mediaEndTime: clip.source_out,
+        offset: 0,
+
+        // Playback
+        playbackRate: clip.playback_rate,
+        speed: clip.playback_rate,
+        isReversed: false,
+
+        // State
+        isSelected: false,
+        isLocked: false,
+        isMuted: !clip.enabled,
+
+        // Audio/Visual
+        volume: track.volume,
         opacity: 1,
-        effectVersion: "1.0.0",
+        position: {
+          x: 0.5,
+          y: 0.5,
+          width: 1,
+          height: 1,
+          rotation: 0,
+          scaleX: 1,
+          scaleY: 1,
+        },
+
+        // Resources
+        effects: (clip.effects || []).map((effectId: string, index: number) => ({
+          id: effectId,
+          effectId,
+          enabled: true,
+          order: index,
+          startTime: clip.timeline_in,
+          duration: clip.timeline_out - clip.timeline_in,
+          parameters: {},
+          keyframes: {},
+          masks: [],
+          blendMode: "normal" as const,
+          opacity: 1,
+          effectVersion: "1.0.0",
+          createdAt: new Date(),
+          modifiedAt: new Date(),
+        })),
+        filters: [],
+        transitions: (clip.transitions || []).map((t: any) => ({
+          id: t.id,
+          transitionId: t.transition_type,
+          type: "cross" as const,
+          duration: t.duration,
+          isEnabled: true,
+        })),
+
+        // Metadata
         createdAt: new Date(),
-        modifiedAt: new Date(),
-      })),
-      filters: [],
-      transitions: (clip.transitions || []).map((t: any) => ({
-        id: t.id,
-        transitionId: t.transition_type,
-        type: "cross" as const,
-        duration: t.duration,
-        isEnabled: true,
+        updatedAt: new Date(),
       })),
 
-      // Metadata
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })),
+      // Переходы на треке (между клипами и на границах)
+      transitions: [],
 
-    // Переходы на треке (между клипами и на границах)
-    transitions: [],
+      // Настройки трека
+      muted: false,
+      solo: false,
+      locked: track.locked,
+      isLocked: track.locked,
+      isMuted: false,
+      isHidden: false,
+      isSolo: false,
 
-    // Настройки трека
-    muted: false,
-    solo: false,
-    locked: track.locked,
-    isLocked: track.locked,
-    isMuted: false,
-    isHidden: false,
-    isSolo: false,
+      // Визуальные настройки
+      height: track.height || 100,
+      expanded: true,
+      color: getTrackColor(track.track_type),
 
-    // Визуальные настройки
-    height: track.height || 100,
-    expanded: true,
-    color: getTrackColor(track.track_type),
+      // Аудио настройки
+      volume: track.volume || 1,
+      pan: track.pan || 0,
 
-    // Аудио настройки
-    volume: track.volume || 1,
-    pan: track.pan || 0,
-
-    // Ресурсы трека (применяются ко всем клипам)
-    trackEffects: [],
-    trackFilters: [],
-  }))
+      // Ресурсы трека (применяются ко всем клипам)
+      trackEffects: [],
+      trackFilters: [],
+    }),
+  )
 }
 
 /**

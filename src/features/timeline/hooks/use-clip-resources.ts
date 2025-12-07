@@ -3,10 +3,12 @@
  */
 
 import { useCallback } from "react"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
-import type { VideoEffect } from "@/domains/video-editing/types"
-import type { VideoFilter } from "@/domains/video-editing/types"
-import type { Transition } from "@/domains/video-editing/types"
+import type {
+  TimelineClip as DomainTimelineClip,
+  Transition,
+  VideoEffect,
+  VideoFilter,
+} from "@/domains/video-editing/types"
 import type { TimelineClip } from "../types"
 import { useTimeline } from "./use-timeline"
 

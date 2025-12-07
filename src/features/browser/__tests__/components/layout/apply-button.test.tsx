@@ -1,8 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-
-import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import type { ResourceType, TimelineResource } from "@/domains/shared/types/resources"
+import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 
 // Mock the logger with a spy - use vi.hoisted to ensure these are created before the mock
 const { mockInfo, mockWarn, mockError, mockDebug, mockTrace } = vi.hoisted(() => ({

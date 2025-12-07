@@ -7,11 +7,11 @@
 
 import type { MediaFile } from "@/domains/media-management"
 import type { VideoEffect } from "@/features/effects/types"
+import type { VideoFilter } from "@/features/filters/types/filters"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type { Transition } from "@/features/transitions/types/transitions"
-import type { VideoFilter } from "@/features/filters/types/filters"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("Resources:Types")

@@ -242,7 +242,8 @@ impl MediaCommands {
       None => return CommandResult::error("No project open".to_string()),
     };
 
-    let mut path_to_id: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+    let mut path_to_id: std::collections::HashMap<String, String> =
+      std::collections::HashMap::new();
     let mut duplicates_to_remove: Vec<String> = Vec::new();
 
     // Find duplicates by path

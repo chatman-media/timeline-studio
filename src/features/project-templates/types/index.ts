@@ -1,3 +1,4 @@
+export type { ProjectSettings } from "@/domains/shared/types/project"
 export type {
   ProjectPlaceholders,
   ProjectStructure,
@@ -8,4 +9,3 @@ export type {
   Section,
   TrackConfig,
 } from "./project-template"
-export type { ProjectSettings } from "@/domains/shared/types/project"

@@ -1,6 +1,6 @@
 /**
  * Media Types - Shared across all domains
- * 
+ *
  * Canonical source for MediaType enum
  */
 

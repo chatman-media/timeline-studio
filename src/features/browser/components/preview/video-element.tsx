@@ -2,7 +2,6 @@ import { type MutableRefObject, memo } from "react"
 import type { MediaFile } from "@/domains/media-management"
 import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
-import { cn } from "@/lib/utils"
 
 const logger = createLogger("VideoElement")
 
@@ -32,7 +31,7 @@ export const VideoElement = memo(
     file,
     videoUrl,
     previewData,
-    isAdded,
+    // isAdded,
     videoRef,
     onLoadedData,
     onLoadedMetadata,

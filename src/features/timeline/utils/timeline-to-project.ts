@@ -5,11 +5,10 @@
 // Временные заглушки для отсутствующих типов
 
 // Import actual types
-import type { VideoFilter } from "@/domains/video-editing/types"
+import type { Transition, VideoFilter } from "@/domains/video-editing/types"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import { SubtitleClip } from "@/features/subtitles"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { Transition } from "@/domains/video-editing/types"
 import type { TrackType } from "@/types/generated/tauri-bindings"
 import {
   AlignX,
@@ -140,7 +139,7 @@ export function timelineToProjectSchema(timeline: TimelineProject): ProjectSchem
       description: timeline.description || undefined,
       created_at: timeline.createdAt ? timeline.createdAt.toISOString() : now,
       modified_at: now,
-      author: null,
+      author: undefined,
     },
     timeline: {
       duration: calculateProjectDuration(timeline),

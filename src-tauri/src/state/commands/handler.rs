@@ -197,9 +197,7 @@ impl CommandHandler {
       ProjectCommand::UpdateMedia { media_id, updates } => {
         self.media_commands.update_media(media_id, updates).await
       }
-      ProjectCommand::DeduplicateMediaPool => {
-        self.media_commands.deduplicate_media_pool().await
-      }
+      ProjectCommand::DeduplicateMediaPool => self.media_commands.deduplicate_media_pool().await,
 
       // Legacy imported media commands - now redirect to MediaCommands
       // All media now goes directly to media_pool (unified architecture)
@@ -4911,14 +4909,20 @@ impl CommandHandler {
 
           tokio::spawn(async move {
             // Получаем PreviewDataManager из state
-            if let Some(preview_state) = app_handle.try_state::<crate::media::commands::PreviewManagerState>() {
-              match preview_state.manager.generate_browser_thumbnail(
-                media_id_clone.clone(),
-                std::path::PathBuf::from(&path_clone),
-                200, // width
-                112, // height (16:9)
-                0.0, // timestamp - первый кадр
-              ).await {
+            if let Some(preview_state) =
+              app_handle.try_state::<crate::media::commands::PreviewManagerState>()
+            {
+              match preview_state
+                .manager
+                .generate_browser_thumbnail(
+                  media_id_clone.clone(),
+                  std::path::PathBuf::from(&path_clone),
+                  200, // width
+                  112, // height (16:9)
+                  0.0, // timestamp - первый кадр
+                )
+                .await
+              {
                 Ok(_) => {
                   log::info!("✅ Thumbnail generated successfully for: {}", path_clone);
                 }

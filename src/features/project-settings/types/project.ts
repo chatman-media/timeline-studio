@@ -19,14 +19,14 @@ export {
   COMMON_RESOLUTIONS,
   DEFAULT_PROJECT_SETTINGS,
   FRAME_RATES,
-  RESOLUTIONS_16_9,
+  getDefaultResolutionForAspectRatio,
+  getResolutionsForAspectRatio,
   RESOLUTIONS_1_1,
-  RESOLUTIONS_21_9,
   RESOLUTIONS_4_3,
   RESOLUTIONS_4_5,
   RESOLUTIONS_9_16,
-  getDefaultResolutionForAspectRatio,
-  getResolutionsForAspectRatio,
+  RESOLUTIONS_16_9,
+  RESOLUTIONS_21_9,
 } from "@/domains/shared/types/project"
 
 // Import directly to avoid circular dependency

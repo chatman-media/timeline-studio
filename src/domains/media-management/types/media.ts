@@ -1,10 +1,15 @@
-import type { FfprobeData, FfprobeStream } from "./ffprobe"
 import type { TimeRange } from "./time-range"
 
+export type { MediaFile } from "@/domains/shared/types/media/media-file"
+export {
+  isAudioFile,
+  isImageFile,
+  isVideoFile,
+  MediaCodec,
+  MediaColorSpace,
+} from "@/domains/shared/types/media/media-file"
 // Re-export from canonical source in shared
 export { MediaType } from "@/domains/shared/types/media/types"
-export { MediaCodec, MediaColorSpace, isVideoFile, isAudioFile, isImageFile } from "@/domains/shared/types/media/media-file"
-export type { MediaFile } from "@/domains/shared/types/media/media-file"
 
 // Domain-specific types and utilities
 

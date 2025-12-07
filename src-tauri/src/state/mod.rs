@@ -73,7 +73,11 @@ impl StateManager {
                 seen_paths.insert(path_key.clone());
                 deduplicated_items.insert(media_id.clone(), media_item.clone());
               } else {
-                log::warn!("Removing duplicate media entry from checkpoint: {} ({})", media_item.name, path_key);
+                log::warn!(
+                  "Removing duplicate media entry from checkpoint: {} ({})",
+                  media_item.name,
+                  path_key
+                );
               }
             }
 

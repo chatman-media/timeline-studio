@@ -3,9 +3,7 @@
  * Основная единица редактирования в проекте
  */
 
-import type { VideoEffect } from "@/domains/video-editing/types"
-import type { VideoFilter } from "@/domains/video-editing/types"
-import type { Transition } from "@/domains/video-editing/types"
+import type { Transition, VideoEffect, VideoFilter } from "@/domains/video-editing/types"
 
 import type { TimelineClip, TimelineTrack } from "./timeline"
 

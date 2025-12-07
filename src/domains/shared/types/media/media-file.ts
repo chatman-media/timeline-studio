@@ -1,6 +1,6 @@
 /**
  * Media File - Canonical source
- * 
+ *
  * Unified MediaFile interface combining features from both domains
  */
 
@@ -117,7 +117,7 @@ export interface MediaFile {
     bitrate: number
     streamKey: string
   }>
-  
+
   // Low-res preview (from media-management)
   lrv?: {
     path: string
@@ -126,7 +126,7 @@ export interface MediaFile {
     duration: number
     probeData?: FfprobeData
   }
-  
+
   // Insta360 specific
   insv?: {
     path: string
@@ -149,28 +149,26 @@ export interface MediaFile {
  * Utility to check if MediaFile is video
  */
 export function isVideoFile(file: MediaFile): boolean {
-  return file.isVideo === true || 
-         file.type === MediaType.Video ||
-         file.type === MediaType.VideoWithAudio
+  return file.isVideo === true || file.type === MediaType.Video || file.type === MediaType.VideoWithAudio
 }
 
 /**
  * Utility to check if MediaFile is audio
  */
 export function isAudioFile(file: MediaFile): boolean {
-  return file.isAudio === true ||
-         file.type === MediaType.Audio ||
-         file.type === MediaType.Music ||
-         file.type === MediaType.Voiceover ||
-         file.type === MediaType.SFX ||
-         file.type === MediaType.Ambient
+  return (
+    file.isAudio === true ||
+    file.type === MediaType.Audio ||
+    file.type === MediaType.Music ||
+    file.type === MediaType.Voiceover ||
+    file.type === MediaType.SFX ||
+    file.type === MediaType.Ambient
+  )
 }
 
 /**
  * Utility to check if MediaFile is image
  */
 export function isImageFile(file: MediaFile): boolean {
-  return file.isImage === true ||
-         file.type === MediaType.StillImage ||
-         file.type === MediaType.ImageSequence
+  return file.isImage === true || file.type === MediaType.StillImage || file.type === MediaType.ImageSequence
 }

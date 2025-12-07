@@ -13,9 +13,9 @@ export { FCPXMLImporter } from "./importers/fcpxml-importer"
 // Export types explicitly to avoid conflicts
 export type {
   EDLEvent,
+  Exporter,
   ExportFormat,
   ExportOptions,
-  Exporter,
   FCPXMLAdjustment,
   FCPXMLClipRef,
   FCPXMLEffect,
@@ -26,9 +26,9 @@ export type {
   FCPXMLSequenceRef,
   FCPXMLTransition,
   ImportError,
+  Importer,
   ImportFormat,
   ImportOptions,
-  Importer,
   ImportResult,
   ImportWarning,
   MediaReference,

@@ -4,7 +4,7 @@
 
 import { useCallback } from "react"
 
-import { MediaType, type MediaFile } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@/domains/media-management"
 import { useResources } from "@/features/resources"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../hooks/use-timeline"
@@ -172,8 +172,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
       // Если трек уже существует, добавляем клип сразу
       const startTime = customStartTime !== undefined ? customStartTime : calculateClipStartTime(targetTrackId)
       const duration =
-        file.duration ||
-        (file.type === MediaType.StillImage || file.type === MediaType.ImageSequence ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
+        file.duration || (file.type === MediaType.StillImage || file.type === MediaType.ImageSequence ? 5 : 10) // 5 секунд для изображений, 10 для видео/аудио без duration
 
       // Автоматически добавляем медиа на панель ресурсов (для работы с ИИ)
       await addMedia(file)

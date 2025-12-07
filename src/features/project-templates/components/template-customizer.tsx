@@ -150,9 +150,7 @@ export const TemplateCustomizer: React.FC<TemplateCustomizerProps> = ({
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <div className="text-muted-foreground">Разрешение</div>
-                      <div className="font-medium">
-                        {template.settings.resolution}
-                      </div>
+                      <div className="font-medium">{template.settings.resolution}</div>
                     </div>
                     <div>
                       <div className="text-muted-foreground">FPS</div>

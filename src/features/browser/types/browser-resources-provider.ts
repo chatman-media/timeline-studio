@@ -1,6 +1,6 @@
+import type { ResourceType } from "@/domains/shared/types/resources"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { ResourceType } from "@/domains/shared/types/resources"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 

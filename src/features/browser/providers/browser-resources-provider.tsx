@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { container } from "@/core/container"
+import type { ResourceType } from "@/domains/shared/types/resources"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { ResourceType } from "@/domains/shared/types/resources"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 

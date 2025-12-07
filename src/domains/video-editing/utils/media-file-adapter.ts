@@ -124,4 +124,3 @@ function parseFps(fpsString: string): number {
   }
   return Number(fpsString)
 }
-

@@ -1,9 +1,8 @@
 import type React from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
-
+import type { ResourceType } from "@/domains/shared/types/resources"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { ResourceType } from "@/domains/shared/types/resources"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 import { useBrowserResourcesProvider } from "../providers/browser-resources-provider"
