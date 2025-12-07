@@ -66,17 +66,12 @@ export const VideoElement = memo(
         tabIndex={0}
         playsInline
         muted
-        className="h-full w-full object-cover focus:outline-none"
+        className="absolute inset-0 h-full w-full object-cover focus:outline-none"
         style={{
           transition: "opacity 0.2s ease-in-out",
           backgroundColor: "black",
           zIndex: 1,
           objectFit: "cover",
-          visibility: "visible",
-          display: "block",
-          width: "100%",
-          height: "100%",
-          position: "relative",
         }}
         onLoadedData={onLoadedData}
         onLoadedMetadata={onLoadedMetadata}

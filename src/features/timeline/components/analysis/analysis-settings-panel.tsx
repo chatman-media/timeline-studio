@@ -24,7 +24,7 @@ export function AnalysisSettingsPanel() {
   const { startBatchAnalysis, isAnalyzing } = useAIDirectorAnalysisV2()
 
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
-  const [selectedAnalyzers, setSelectedAnalyzers] = useState<AnalyzerType[]>([])
+  const [selectedAnalyzers, setSelectedAnalyzers] = useState<Set<AnalyzerType>>(new Set())
   const [activePreset, setActivePreset] = useState<string | null>(null)
 
   // Фильтруем только видео и аудио файлы
@@ -43,12 +43,20 @@ export function AnalysisSettingsPanel() {
   }, [])
 
   const handleAnalyzerToggle = useCallback((analyzer: AnalyzerType) => {
-    setSelectedAnalyzers((prev) => (prev.includes(analyzer) ? prev.filter((a) => a !== analyzer) : [...prev, analyzer]))
+    setSelectedAnalyzers((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(analyzer)) {
+        newSet.delete(analyzer)
+      } else {
+        newSet.add(analyzer)
+      }
+      return newSet
+    })
     setActivePreset(null) // Сброс пресета при ручном изменении
   }, [])
 
   const handlePresetSelect = useCallback((preset: AnalyzerPreset) => {
-    setSelectedAnalyzers(preset.analyzers)
+    setSelectedAnalyzers(new Set(preset.analyzers))
     setActivePreset(preset.id)
   }, [])
 
@@ -61,13 +69,13 @@ export function AnalysisSettingsPanel() {
   }, [])
 
   const handleStartAnalysis = useCallback(async () => {
-    if (selectedFiles.length === 0 || selectedAnalyzers.length === 0) return
+    if (selectedFiles.length === 0 || selectedAnalyzers.size === 0) return
 
     // startBatchAnalysis ожидает Set<AnalyzerType>
-    await startBatchAnalysis(selectedFiles, new Set(selectedAnalyzers))
+    await startBatchAnalysis(selectedFiles, selectedAnalyzers)
   }, [selectedFiles, selectedAnalyzers, startBatchAnalysis])
 
-  const canStartAnalysis = selectedFiles.length > 0 && selectedAnalyzers.length > 0 && !isAnalyzing
+  const canStartAnalysis = selectedFiles.length > 0 && selectedAnalyzers.size > 0 && !isAnalyzing
 
   return (
     <Card className="border-b rounded-none">
@@ -148,7 +156,7 @@ export function AnalysisSettingsPanel() {
                         <div key={analyzer} className="flex items-start space-x-2">
                           <Checkbox
                             id={`analyzer-${analyzer}`}
-                            checked={selectedAnalyzers.includes(analyzer)}
+                            checked={selectedAnalyzers.has(analyzer)}
                             onCheckedChange={() => handleAnalyzerToggle(analyzer)}
                           />
                           <div className="flex-1">
@@ -184,7 +192,7 @@ export function AnalysisSettingsPanel() {
                     <CardDescription className="text-xs">{preset.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="p-3 pt-0">
-                    <p className="text-xs text-muted-foreground">{preset.analyzers.length} анализаторов</p>
+                    <p className="text-xs text-muted-foreground">{preset.analyzers.size} анализаторов</p>
                   </CardContent>
                 </Card>
               ))}

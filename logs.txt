@@ -1,0 +1,892 @@
+[Warning] 1070 console messages are not shown.
+[Debug] [ColorGrading:BackendEventHandlers] Unhandled backend event type: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "MediaRemoved"
+}
+[Info] [MediaManagementOrchestrator] [Media Management] Media removed successfully { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "mediaId": "efe5c1b5-9f39-4c25-9d02-304f68186a27"
+}
+[Info] [BrowserOrchestrator] [BrowserOrchestrator] Deselecting all files { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tab": "media"
+}
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.title" – "Developer Tools" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.description" – "Advanced tools for developers and content creators" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.tabs.effectPreviews" – "Effect Previews" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AudioPreview] Размонтирование AudioPreview { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "01 REC-2025-09-22.wav"
+}
+[Debug] [AudioPreview] Очистка AudioContext и MediaRecorder { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "01 REC-2025-09-22.wav"
+}
+[Debug] [AudioPreview] MediaRecorder остановлен { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "01 REC-2025-09-22.wav"
+}
+[Debug] [AudioPreview] Audio source disconnected { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "01 REC-2025-09-22.wav"
+}
+[Debug] [AudioPreview] AudioContext closed { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "01 REC-2025-09-22.wav"
+}
+[Debug] [ImagePreview] Размонтирование ImagePreview { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "DSC09863.JPG"
+}
+[Debug] [ImagePreview] Размонтирование ImagePreview { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "DSC09869.JPG"
+}
+[Debug] [ImagePreview] Размонтирование ImagePreview { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "DSC09870.JPG"
+}
+[Debug] [ImagePreview] Размонтирование ImagePreview { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "DSC09871.JPG"
+}
+[Debug] [ImagePreview] Размонтирование ImagePreview { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileName": "DSC09882.JPG"
+}
+[Debug] [ProjectCommands] Getting app directories (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [BackendSync] 🟢 RECEIVED event from Tauri: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser"
+}
+[Info] [BackendSync] BackendSync: Received event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "envelope": {
+    "metadata": {
+      "id": "095bc47f-d2f8-40a0-8bbc-039eaf845880",
+      "timestamp": "2025-12-07T08:40:42.160904Z",
+      "source": "command_handler",
+      "version": 2049
+    },
+    "event": {
+      "type": "Browser",
+      "payload": {
+        "event_type": "AllFilesDeselected",
+        "data": {
+          "tab": "media"
+        }
+      }
+    }
+  }
+}
+[Log] 🟢 [MediaManagementOrchestrator] EVENT RECEIVED: – "Browser" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaManagementOrchestrator] [Media Management Orchestrator] Received backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser"
+}
+[Log] 🔵 [handleMediaBackendEvent] CALLED – "Browser" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaBackendEventHandlers] Handling media backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "event": "Browser"
+}
+[Debug] [MediaBackendEventHandlers] Unhandled media event type: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "Browser"
+}
+[Info] [BrowserOrchestrator] [BrowserOrchestrator] Received backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "AllFilesDeselected"
+}
+[Debug] [BrowserMachine] [BrowserMachine] Processing backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "AllFilesDeselected"
+}
+[Warning] 🔄 BrowserEvents/sec: – "FavoritesToggled: 16, SortChanged: 16, GroupByChanged: 16, FilterChanged: 16, ViewModeChanged: 16, PreviewSizeChanged: 16…" (node_modules_next_dist_7a8122d0._.js, line 2288)
+"FavoritesToggled: 16, SortChanged: 16, GroupByChanged: 16, FilterChanged: 16, ViewModeChanged: 16, PreviewSizeChanged: 16, SearchQueryChanged: 15, AllFilesSelected: 16, AllFilesDeselected: 1"
+[Debug] [BrowserEventHandlers] All files deselected: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tab": "media"
+}
+[Debug] [BrowserMachine] [BrowserMachine] Context updates: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "updatedKeys": [
+    "selectedFiles"
+  ]
+}
+[Info] [SystemIntegrationOrchestrator] [System Integration Orchestrator] Received backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser"
+}
+[Debug] [BrowserResourcesProvider] Backend event received { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser"
+}
+[Info] [TimelineProviders] [TimelineProjectProvider] Received backend event, forwarding to machine { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser"
+}
+[Info] [ProjectSettingsProvider] [ProjectSettingsProvider] Received backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser",
+  "event": "{\"type\":\"Browser\",\"payload\":{\"event_type\":\"AllFilesDeselected\",\"data\":{\"tab\":\"media\"}}}"
+}
+[Info] [ProjectSettingsEventHandlers] [handleProjectSettingsEvent] Called with event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser",
+  "hasPayload": true,
+  "payload": "{\"event_type\":\"AllFilesDeselected\",\"data\":{\"tab\":\"media\"}}"
+}
+[Info] [ProjectSettingsEventHandlers] [handleProjectSettingsEvent] Event type is not ProjectSettingsUpdated, ignoring (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [ColorGradingProvider] Received backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "Browser"
+}
+[Info] [ColorGrading:BackendEventHandlers] Handling backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "Browser"
+}
+[Debug] [ColorGrading:BackendEventHandlers] Unhandled backend event type: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "Browser"
+}
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.title" – "Developer Tools" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.description" – "Advanced tools for developers and content creators" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.tabs.effectPreviews" – "Effect Previews" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [BrowserMachine] [BrowserMachine] Processing backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "AllFilesDeselected"
+}
+[Debug] [BrowserEventHandlers] All files deselected: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tab": "media"
+}
+[Debug] [BrowserMachine] [BrowserMachine] Context updates: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "updatedKeys": [
+    "selectedFiles"
+  ]
+}
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.title" – "Developer Tools" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.description" – "Advanced tools for developers and content creators" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.tabs.effectPreviews" – "Effect Previews" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Log] [Fast Refresh] rebuilding (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [useAIDirectorAnalysisV2] [useAIDirectorAnalysisV2] Инициализация хука для пакетного AI Director анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] [Fast Refresh] done in 217ms (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Info] [UseRenderJobs] Запрос списка активных задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [VideoCompilerRenderService] Getting active render jobs (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [CompilerCommands] Getting active render jobs (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [VideoCompilerRenderService] Active render jobs retrieved successfully { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "jobsCount": 0
+}
+[Info] [UseRenderJobs] Список активных задач получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "jobsCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+> Selected Element
+< <div class="flex h-full items-center justify-center p-8 " data-testid="no-files">…</div>
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Info] [UseRenderJobs] Запрос списка активных задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [VideoCompilerRenderService] Getting active render jobs (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [CompilerCommands] Getting active render jobs (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [VideoCompilerRenderService] Active render jobs retrieved successfully { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "jobsCount": 0
+}
+[Info] [UseRenderJobs] Список активных задач получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "jobsCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Info] [MediaManagementProvider] [MediaManagementProvider] Importing files via orchestrator { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filesCount": 1
+}
+[Info] [MediaManagementOrchestrator] [Media Management Orchestrator] Importing files { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filesCount": 1
+}
+[Info] [MediaImportMachine] [Media Import] Added 1 files { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "totalFiles": 1
+}
+[Info] [MediaImportMachine] [Media Import] Created operations { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "operationsCount": 1
+}
+[Info] [MediaImportMachine] [Media Import] Importing files { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filesCount": 1
+}
+[Info] [TauriMediaService] Importing media files { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 1
+}
+[Info] [MediaManagementOrchestrator] [Media Management] Sending AddMedia command { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "mediaType": "Video"
+}
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.title" – "Developer Tools" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.description" – "Advanced tools for developers and content creators" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.tabs.effectPreviews" – "Effect Previews" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [BackendSync] 🟢 RECEIVED event from Tauri: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Info] [BackendSync] BackendSync: Received event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "envelope": {
+    "metadata": {
+      "id": "6588a69a-2782-47d8-a0b4-8fc47c4100ac",
+      "timestamp": "2025-12-07T08:41:59.694169Z",
+      "source": "command_handler",
+      "version": 2050
+    },
+    "event": {
+      "type": "MediaAdded",
+      "payload": {
+        "media": {
+          "id": "6484bad5-0261-4743-8450-c6e6a0709712",
+          "path": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+          "name": "IMG_5051.MOV",
+          "media_type": "Video",
+          "duration": 8.3917,
+          "codec": "hevc"
+        }
+      }
+    }
+  }
+}
+[Log] 🟢 [MediaManagementOrchestrator] EVENT RECEIVED: – "MediaAdded" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaManagementOrchestrator] [Media Management Orchestrator] Received backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Log] 🔵 [handleMediaBackendEvent] CALLED – "MediaAdded" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaBackendEventHandlers] Handling media backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "event": "MediaAdded"
+}
+[Info] [MediaBackendEventHandlers] Media added to pool: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "mediaId": "6484bad5-0261-4743-8450-c6e6a0709712",
+  "path": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "type": "Video",
+  "codec": "hevc"
+}
+[Info] [MediaManagementOrchestrator] [Media Management] Media pool updated via event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded",
+  "poolSize": 1
+}
+[Info] [SystemIntegrationOrchestrator] [System Integration Orchestrator] Received backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Debug] [BrowserResourcesProvider] Backend event received { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Debug] [BrowserResourcesProvider] Browser resource event detected, applying update { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Debug] [BrowserResources:BackendEventHandlers] Handling backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Info] [BrowserResources:BackendEventHandlers] Adding media to browser library { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "mediaId": "6484bad5-0261-4743-8450-c6e6a0709712",
+  "name": "IMG_5051.MOV"
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "effect",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "effect:built-in",
+  "count": 39
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "effect:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "effect:imported",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "effect:remote",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "filter",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "filter:built-in",
+  "count": 15
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "filter:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "filter:imported",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "filter:remote",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "transition",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "transition:built-in",
+  "count": 30
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "transition:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "transition:imported",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "transition:remote",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "template",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "template:built-in",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "template:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "template:imported",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "template:remote",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "styleTemplate",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "styleTemplate:built-in",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "styleTemplate:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "styleTemplate:imported",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "styleTemplate:remote",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "subtitle",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "subtitle:built-in",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "subtitle:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "subtitle:imported",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "subtitle:remote",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Looking for resources in loaded sources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "media",
+  "loadedSources": [
+    "built-in",
+    "local",
+    "imported",
+    "remote"
+  ],
+  "availableKeys": [
+    "effect:built-in",
+    "filter:built-in",
+    "transition:built-in",
+    "media:imported"
+  ]
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "media:built-in",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "media:local",
+  "count": 0
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "media:imported",
+  "count": 1
+}
+[Debug] [BrowserResourcesProvider] Checking source resources { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourceKey": "media:remote",
+  "count": 0
+}
+[Info] [TimelineProviders] [TimelineProjectProvider] Received backend event, forwarding to machine { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Info] [App] ResourcesProvider: Backend event detected, applying incremental update { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Info] [App] ResourcesProvider: Event detected, will use backend state on next render (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [ProjectSettingsProvider] [ProjectSettingsProvider] Received backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded",
+  "event": "{\"type\":\"MediaAdded\",\"payload\":{\"media\":{\"id\":\"6484bad5-0261-4743-8450-c6e6a0709712\",\"path\":\"/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV\",\"name\":\"IMG_5051.MOV\",\"media_type\":\"Video\",\"duration\":8.3917,\"codec\":\"hevc\"}}}"
+}
+[Info] [ProjectSettingsEventHandlers] [handleProjectSettingsEvent] Called with event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded",
+  "hasPayload": true,
+  "payload": "{\"media\":{\"id\":\"6484bad5-0261-4743-8450-c6e6a0709712\",\"path\":\"/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV\",\"name\":\"IMG_5051.MOV\",\"media_type\":\"Video\",\"duration\":8.3917,\"codec\":\"hevc\"}}"
+}
+[Info] [ProjectSettingsEventHandlers] [handleProjectSettingsEvent] Event type is not ProjectSettingsUpdated, ignoring (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [ColorGradingProvider] Received backend event { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "MediaAdded"
+}
+[Info] [ColorGrading:BackendEventHandlers] Handling backend event: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "eventType": "MediaAdded"
+}
+[Debug] [ColorGrading:BackendEventHandlers] Unhandled backend event type: { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "type": "MediaAdded"
+}
+[Info] [MediaManagementOrchestrator] [Media Management] AddMedia result { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "result": {
+    "success": true,
+    "error": null,
+    "data": {
+      "media_id": "6484bad5-0261-4743-8450-c6e6a0709712"
+    }
+  }
+}
+[Info] [MediaManagementProvider] [MediaManagementProvider] 🔧 Refreshing mediaPool from backend after import... (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaManagementOrchestrator] [Media Management] 🔧 FORCE REFRESH: Fetching current state from backend... (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaManagementOrchestrator] [Media Management] Loading initial state from backend { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "version": 2050
+}
+[Warning] [MediaOrchestrator] loadInitialState: backend has – 1 – "media items" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaManagementOrchestrator] [Media Management] Initial media pool loaded { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 1
+}
+[Info] [MediaManagementOrchestrator] [Media Management] 🔧 FORCE REFRESH: Media pool updated { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "poolSize": 1
+}
+[Info] [MediaManagementProvider] [MediaManagementProvider] 🔧 FORCE SYNC mediaPool after import { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "poolSize": 1,
+  "poolKeys": [
+    "6484bad5-0261-4743-8450-c6e6a0709712"
+  ]
+}
+[Log] i18next::translator: missingKey – "en" – "translation" – "common.files" – "common.files" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] [MediaAdapter] Media pool files: – {count: 1, files: [{id: "6484bad5-0261-4743-8450-c6e6a0709712", name: "IMG_5051.MOV", path: "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV"}]} (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaPreview] [MediaPreview] File IMG_5051.MOV: isLoadingMetadata=false, hasProbeData=true (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] [VideoPreview] Rendering IMG_5051.MOV – {showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, hasProbeData: true, probeStreams: 1, …}Object
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.title" – "Developer Tools" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.description" – "Advanced tools for developers and content creators" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.tabs.effectPreviews" – "Effect Previews" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [VideoPreview] [VideoPreview] File loaded: IMG_5051.MOV { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "videoCodec": "hevc",
+  "streamCodec": "hevc",
+  "hasProxy": false,
+  "isVideo": true
+}
+[Info] [VideoPreview] [VideoPreview] Starting proxy generation for H.265 video: IMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [AutoProxy] [AutoProxy Queue] Added to queue (queue size: 1) { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "fileName": "IMG_5051.MOV",
+  "activeGenerations": 0,
+  "maxConcurrent": 2
+}
+[Info] [AutoProxy] [AutoProxy Queue] Starting generation from queue (0/2) { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "fileName": "IMG_5051.MOV",
+  "queueSize": 0
+}
+[Info] [ProxyGenerator] Starting proxy generation { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourcePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "options": {
+    "resolution": "720p",
+    "quality": "medium",
+    "codec": "h264",
+    "preserveAudio": true
+  }
+}
+[Info] [TauriMediaService] Generating proxy { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourcePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "options": {
+    "width": 1280,
+    "height": 720,
+    "codec": "h264",
+    "bitrate": "3M",
+    "preserveAudio": true
+  }
+}
+[Debug] [VideoPreview] [VideoPreview] Proxy needed for H.265 video: IMG_5051.MOV { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "codec": "hevc",
+  "isGenerating": true
+}
+[Debug] [VideoPreview] [VideoPreview] Attempting to load video from path: /Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] [VideoPreview] Rendering IMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+Object
+
+hasProbeData: true
+
+isLoadingMetadata: false
+
+probeStreams: 1
+
+showPlaceholder: false
+
+streamsCount: 1
+
+videoStreams: [{codec: "hevc", index: 0}] (1)
+
+Object Prototype
+[Debug] [TauriUtils] File exists check { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "fileExists": true
+}
+[Debug] [VideoPreview] [VideoPreview] File access check result: true (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [TauriUtils] Tauri detected { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "hasTauri": false,
+  "hasTauriInternals": true
+}
+[Debug] [MediaUrlUtils] Creating media URL { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "original": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "cleaned": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "type": "video",
+  "isTauri": true
+}
+[Debug] [MediaUrlUtils] convertFileSrc success { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "assetUrl": "asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV",
+  "type": "video"
+}
+[Debug] [VideoPreview] [VideoPreview] Created video URL { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "original": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "videoUrl": "asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV",
+  "isAsset": true
+}
+[Debug] [VideoPreview] [VideoPreview] Video URL generated: asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] [VideoPreview] Rendering IMG_5051.MOV – {showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, hasProbeData: true, probeStreams: 1, …}Object
+[Debug] [MediaPreviewService] Getting preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriMediaService] Getting media preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [MediaPreviewService] Getting preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriMediaService] Getting media preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriMediaService] Media preview data retrieved { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Log] [VideoPreview] Preview data received for IMG_5051.MOV: – {hasData: false, hasThumbnail: false, hasBase64: false, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{hasData: false, hasThumbnail: false, hasBase64: false, base64Length: 0}Object
+[Debug] [MediaPreviewService] Getting preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriMediaService] Getting media preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriMediaService] Media preview data retrieved { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Log] [VideoPreview] Preview data received for IMG_5051.MOV: – {hasData: false, hasThumbnail: false, hasBase64: false, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{hasData: false, hasThumbnail: false, hasBase64: false, base64Length: 0}Object
+[Debug] [TauriMediaService] Media preview data retrieved { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Log] [VideoPreview] Preview data received for IMG_5051.MOV: – {hasData: false, hasThumbnail: false, hasBase64: false, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{hasData: false, hasThumbnail: false, hasBase64: false, base64Length: 0}Object
+[Info] [TauriMediaService] Media files imported { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "imported": 0,
+  "failed": 0
+}
+[Info] [MediaImportMachine] [Media Import] Import completed successfully (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaManagementOrchestrator] [Media Management] Media import completed (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "common.files" – "common.files" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [MediaPreview] [MediaPreview] File IMG_5051.MOV: isLoadingMetadata=false, hasProbeData=true (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.title" – "Developer Tools" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.description" – "Advanced tools for developers and content creators" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] i18next::translator: missingKey – "en" – "translation" – "developerTools.tabs.effectPreviews" – "Effect Previews" (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [VideoStream] Time update for stream { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "streamIndex": 0,
+  "currentTime": "0.00"
+}
+[Debug] [VideoStream] Video loaded for stream { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "streamIndex": 0
+}
+[Debug] [VideoStream] [VideoStream] Video dimensions: 3840x2160 (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [VideoStream] [VideoStream] Video src: asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Info] [TauriMediaService] Proxy generated {} (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [ProxyGenerator] Proxy generation completed { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "sourcePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "generationTime": 11063
+}
+[Info] [AutoProxy] ✅ Proxy generation completed { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712",
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "fileName": "IMG_5051.MOV",
+  "generationTime": 11063,
+  "queueRemaining": 0
+}
+[Info] [VideoPreview] [VideoPreview] Proxy ready for IMG_5051.MOV {} (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Log] [VideoPreview] Rendering IMG_5051.MOV – {showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, hasProbeData: true, probeStreams: 1, …}Object
+[Debug] [VideoPreview] [VideoPreview] Proxy needed for H.265 video: IMG_5051.MOV { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "codec": "hevc",
+  "isGenerating": false
+}
+[Debug] [VideoPreview] [VideoPreview] Attempting to load video from path: /Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [MediaPreviewService] Getting preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriMediaService] Getting media preview data { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Debug] [TauriUtils] File exists check { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "filePath": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "fileExists": true
+}
+[Debug] [VideoPreview] [VideoPreview] File access check result: true (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [TauriUtils] Tauri detected { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "hasTauri": false,
+  "hasTauriInternals": true
+}
+[Debug] [MediaUrlUtils] Creating media URL { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "original": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "cleaned": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "type": "video",
+  "isTauri": true
+}
+[Debug] [MediaUrlUtils] convertFileSrc success { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "assetUrl": "asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV",
+  "type": "video"
+}
+[Debug] [VideoPreview] [VideoPreview] Created video URL { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "original": "/Users/aleksandrkireev/Apps/timeline-studio/videos/IMG_5051.MOV",
+  "videoUrl": "asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV",
+  "isAsset": true
+}
+[Debug] [VideoPreview] [VideoPreview] Video URL generated: asset://localhost/%2FUsers%2Faleksandrkireev%2FApps%2Ftimeline-studio%2Fvideos%2FIMG_5051.MOV (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [TauriMediaService] Media preview data retrieved { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "fileId": "6484bad5-0261-4743-8450-c6e6a0709712"
+}
+[Log] [VideoPreview] Preview data received for IMG_5051.MOV: – {hasData: false, hasThumbnail: false, hasBase64: false, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{hasData: false, hasThumbnail: false, hasBase64: false, base64Length: 0}Object
+[Log] [VideoPreview] Rendering IMG_5051.MOV – {showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, …} (node_modules_next_dist_7a8122d0._.js, line 2288)
+{showPlaceholder: false, isLoadingMetadata: false, streamsCount: 1, hasProbeData: true, probeStreams: 1, …}Object
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}
+[Debug] [UseAnalysisTasks] Polling обновление списка задач (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Info] [UseAnalysisTasks] Запрос списка задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Получение активных задач анализа (node_modules_next_dist_7a8122d0._.js, line 2288)
+[Debug] [AnalysisTaskBridge] Активные задачи получены { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "count": 0
+}
+[Info] [UseAnalysisTasks] Список задач анализа получен успешно { (node_modules_next_dist_7a8122d0._.js, line 2288)
+  "tasksCount": 0
+}

@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
+import { useMediaFiles } from "@/domains/project-management/hooks"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type {
   AnalyzerType,
@@ -60,6 +61,7 @@ const DEFAULT_FILTERS: AnalysisFilters = {
  */
 export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
   const { filesProgress, batchProgress, isAnalyzing, overallProgress } = useAIDirectorAnalysisV2()
+  const { mediaFiles } = useMediaFiles()
 
   // Local state
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null)
@@ -117,27 +119,56 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
     void loadSavedAnalyses()
   }, [])
 
-  // Объединяем текущие и сохраненные анализы
+  // Объединяем текущие анализы, сохраненные анализы и медиа-файлы из проекта
   const allFilesProgress = useMemo(() => {
-    // Создаем Map для дедупликации по fileId/id
+    // Создаем Map для дедупликации по пути к файлу
     const filesMap = new Map<string, FileAnalysisProgress>()
 
-    // Сначала добавляем текущие анализы (они имеют приоритет)
+    // 1. Добавляем текущие анализы (они имеют наивысший приоритет)
     for (const file of filesProgress) {
-      const key = file.fileId || file.id
-      filesMap.set(key, file)
+      filesMap.set(file.filePath, file)
     }
 
-    // Затем добавляем сохраненные (только если их еще нет)
+    // 2. Добавляем сохраненные анализы (если их еще нет)
     for (const file of savedAnalyses) {
-      const key = file.fileId || file.id
-      if (!filesMap.has(key)) {
-        filesMap.set(key, file)
+      if (!filesMap.has(file.filePath)) {
+        filesMap.set(file.filePath, file)
       }
     }
 
+    // 3. Добавляем медиа-файлы из проекта (видео, аудио, изображения - если нет анализа)
+    for (const mediaItem of mediaFiles) {
+      // Включаем видео, аудио и изображения
+      if (!["Video", "Audio", "Image"].includes(mediaItem.media_type)) continue
+
+      const filePath = mediaItem.path
+
+      // Если для этого файла уже есть анализ - пропускаем
+      if (filesMap.has(filePath)) continue
+
+      // Создаем FileAnalysisProgress для не проанализированного файла
+      const fileName = filePath.split('/').pop() || filePath.split('\\').pop() || filePath
+
+      const fileProgress: FileAnalysisProgress = {
+        id: mediaItem.id,
+        fileId: mediaItem.id,
+        fileName,
+        filePath,
+        status: "pending" as FileAnalysisStatus,
+        progress: 0,
+        analyzers: [],
+        stats: {
+          totalAnalyzers: 0,
+          completedAnalyzers: 0,
+          failedAnalyzers: 0,
+        },
+      }
+
+      filesMap.set(filePath, fileProgress)
+    }
+
     return Array.from(filesMap.values())
-  }, [filesProgress, savedAnalyses])
+  }, [filesProgress, savedAnalyses, mediaFiles])
 
   // Real-time updates are handled by useAIDirectorAnalysisV2
 

@@ -6,6 +6,7 @@
 
 import { type ActorRefFrom, createActor } from "xstate"
 import { isServiceEnabled } from "@/config/service-config"
+import { getBackend } from "@/core"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"
@@ -424,10 +425,25 @@ export class ProjectManagementOrchestrator {
   }
 
   /**
-   * Получение состояния проекта
+   * Получение состояния проекта из actor snapshot
    */
   getProjectState(): ProjectState | null {
     return this.appActor.getSnapshot().context.projectState
+  }
+
+  /**
+   * Загрузка состояния проекта напрямую из backend
+   * Используется при инициализации для bypass race conditions
+   */
+  async loadProjectStateFromBackend(): Promise<ProjectState | null> {
+    try {
+      const backend = getBackend()
+      const state = await backend.getProjectState()
+      return state
+    } catch (error) {
+      logger.error("[ProjectManagementOrchestrator] Failed to load project state from backend", { error })
+      return null
+    }
   }
 
   /**

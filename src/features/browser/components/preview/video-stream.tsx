@@ -302,8 +302,8 @@ export const VideoStream = memo(
             streamKey={key}
           />
 
-          {/* Показываем overlay с именем файла только когда идёт загрузка */}
-          {(isGeneratingProxy || !previewData || !file.thumbnailPath || !isLoaded) && (
+          {/* Показываем overlay с именем файла только когда идёт загрузка или генерация прокси */}
+          {(isGeneratingProxy || !isLoaded) && (
             <div
               className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center pointer-events-none"
               style={{ zIndex: 2 }}
