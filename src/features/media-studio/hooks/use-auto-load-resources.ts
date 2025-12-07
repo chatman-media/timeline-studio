@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
-import { useResources } from "@/features/resources"
+import { useResources } from "@/domains/video-editing/providers"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   validateEffect,

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
 import type { SubtitleResource } from "@/domains/shared/types/resources"
 import { ApplyButton } from "@/features/browser"
-import { useResources } from "@/features/resources"
+import { useResources } from "@/domains/video-editing/providers"
 
 import { AddMediaButton } from "../../browser/components/layout/add-media-button"
 import { FavoriteButton } from "../../browser/components/layout/favorite-button"

@@ -5,7 +5,7 @@ import { MediaType } from "@/domains/media-management"
 import type { FilterResource, TimelineResource } from "@/domains/shared/types/resources"
 import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import { useResources } from "@/features/resources"
+import { useResources } from "@/domains/video-editing/providers"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
 

@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { useUserSettings } from "@/domains/project-management/hooks"
-import { ResourcesPanel } from "@/features/resources"
+import { ResourcesPanel } from "@/features/resources/components/resources-panel"
 import { cn } from "@/lib/utils"
 
 import { AudioMixerView } from "./audio-mixer-view"

@@ -3,8 +3,7 @@
  */
 
 import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
-import type { RenderProgress } from "@/features/video-compiler/types/render"
-import { RenderStatus } from "@/features/video-compiler/types/render"
+import { RenderStatus, type RenderProgress } from "@/domains/video-editing/types/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   cancelRender as cancelRenderTauri,

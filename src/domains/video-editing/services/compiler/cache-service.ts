@@ -2,7 +2,7 @@
  * Сервис для работы с кэшем компилятора
  */
 
-import type { VideoCompilerCacheStats } from "@/features/video-compiler/types/cache"
+import type { VideoCompilerCacheStats } from "@/domains/video-editing/types/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   clearAllCache as clearAllCacheTauri,

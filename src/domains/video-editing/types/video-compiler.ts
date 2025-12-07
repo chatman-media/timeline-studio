@@ -1,24 +1,131 @@
 /**
  * TypeScript типы для интеграции с Video Compiler (Rust backend)
- * Перенесено из src/shared/types/video-compiler.ts
+ * Canonical source for all video-compiler types
  */
 
-import type { BaseEffect } from "@/features/effects/types/unified-effects"
-import {
-  OutputFormat,
-  type VideoRenderJob as RenderJob,
-  type RenderProgress,
-} from "@/features/video-compiler/types/render"
+import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
 
-// Импортируем новые типы эффектов
+// ============================================================================
+// RENDER TYPES (from features/video-compiler/types/render.ts)
+// ============================================================================
 
-// Реэкспорт для обратной совместимости
-export {
-  OutputFormat,
-  type RenderProgress,
-  RenderStatus,
-  type VideoRenderJob as RenderJob,
-} from "@/features/video-compiler/types/render"
+export interface VideoRenderJob {
+  id: string
+  project_name: string
+  output_path: string
+  status: RenderStatus
+  created_at: string
+  progress: RenderProgress
+  error_message?: string
+}
+
+// Alias for backward compatibility
+export type RenderJob = VideoRenderJob
+
+export interface RenderProgress {
+  job_id: string
+  stage: string
+  percentage: number
+  current_frame: number
+  total_frames: number
+  elapsed_time: number
+  estimated_remaining?: number
+  status: RenderStatus
+  message?: string
+  // Backward compatibility alias
+  progress?: number
+}
+
+export enum RenderStatus {
+  Pending = "Pending",
+  Processing = "Processing",
+  Completed = "Completed",
+  Failed = "Failed",
+  Cancelled = "Cancelled",
+}
+
+export interface RenderSettings {
+  format: OutputFormat
+  quality: number
+  video_bitrate: number
+  audio_bitrate: number
+  hardware_acceleration: boolean
+  ffmpeg_args: string[]
+}
+
+export enum OutputFormat {
+  Mp4 = "Mp4",
+  Avi = "Avi",
+  Mov = "Mov",
+  Mkv = "Mkv",
+  WebM = "WebM",
+  Gif = "Gif",
+}
+
+export interface RenderStatistics {
+  total_jobs: number
+  completed_jobs: number
+  failed_jobs: number
+  average_render_time: number
+  total_render_time: number
+}
+
+// ============================================================================
+// CACHE TYPES (from features/video-compiler/types/cache.ts)
+// ============================================================================
+
+export interface VideoCompilerCacheStats {
+  total_entries: number
+  preview_hits: number
+  preview_misses: number
+  metadata_hits: number
+  metadata_misses: number
+  cache_hits: number
+  cache_misses: number
+  memory_usage: CacheMemoryUsage
+  cache_size_mb: number
+  total_size_mb: number
+  preview_cache: {
+    entries: number
+    size_mb: number
+  }
+  cache_efficiency: number
+}
+
+export interface CacheMemoryUsage {
+  preview_bytes: number
+  metadata_bytes: number
+  render_bytes: number
+  total_bytes: number
+  totalSize: number
+  fileCount: number
+  oldestEntry: string
+  newestEntry: string
+}
+
+export interface PreviewCacheEntry {
+  file_path: string
+  timestamp: number
+  quality: number
+  image_data: Uint8Array
+  created_at: string
+  last_accessed: string
+  access_count: number
+}
+
+export interface MetadataCacheEntry {
+  file_path: string
+  metadata: any
+  created_at: string
+  last_accessed: string
+}
+
+export interface CacheSettings {
+  max_memory_mb: number
+  max_entries: number
+  auto_cleanup: boolean
+  cleanup_threshold_percent: number
+}
 
 // ============ Основные типы проекта ============
 

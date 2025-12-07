@@ -3,7 +3,7 @@
  */
 
 import type { MediaMetadata } from "@/domains/shared/types/media"
-import type { CacheMemoryUsage } from "@/features/video-compiler/types/cache"
+import type { CacheMemoryUsage } from "@/domains/video-editing/types/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   cacheMediaMetadata as cacheMediaMetadataTauri,
