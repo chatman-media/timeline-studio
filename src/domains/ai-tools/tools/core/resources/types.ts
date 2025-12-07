@@ -4,8 +4,8 @@
 
 import type { MediaFile } from "@/domains/media-management"
 import type { ResourcesContextType } from "@/domains/video-editing/providers"
-import type { VideoEffect } from "@/features/effects/types"
-import type { VideoFilter } from "@/features/filters/types/filters"
+import type { VideoFilter } from "@/domains/video-editing/types/filters"
+import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
 
 /**
  * Результат выполнения инструмента для ресурсов

@@ -9,7 +9,7 @@
 import { type ReactNode, useEffect, useState } from "react"
 
 import { type MCPConfig, mcpCheckApi, mcpInitialize } from "@/domains/ai-services/tauri/chat-commands"
-import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
+import { useApiKeys } from "@/domains/project-management/hooks"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "MCPProvider" })

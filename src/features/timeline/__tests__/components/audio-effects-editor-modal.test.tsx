@@ -436,13 +436,13 @@ describe("AudioEffectsEditorModal", () => {
           effectId: "fade-in",
           enabled: true,
           order: 0,
-          customParams: { duration: 1.0 },
+          parameters: { duration: 1.0 },
         }),
         expect.objectContaining({
           effectId: "equalizer",
           enabled: true,
           order: 1,
-          customParams: { gain_low: 0, gain_mid: 0, gain_high: 0 },
+          parameters: { gain_low: 0, gain_mid: 0, gain_high: 0 },
         }),
       ])
 
@@ -466,7 +466,7 @@ describe("AudioEffectsEditorModal", () => {
       expect(mockOnApplyEffects).toHaveBeenCalledWith([
         expect.objectContaining({
           effectId: "fade-in",
-          customParams: { duration: 2.5 },
+          parameters: { duration: 2.5 },
         }),
       ])
     })
@@ -639,7 +639,7 @@ describe("AudioEffectsEditorModal", () => {
       expect(mockOnApplyEffects).toHaveBeenCalledWith([
         expect.objectContaining({
           effectId: "fade-in",
-          customParams: { duration: 3 },
+          parameters: { duration: 3 },
         }),
         expect.objectContaining({
           effectId: "compressor",
@@ -739,15 +739,15 @@ describe("AudioEffectsEditorModal", () => {
       expect(mockOnApplyEffects).toHaveBeenCalledWith([
         expect.objectContaining({
           effectId: "fade-in",
-          customParams: { duration: 2.5 },
+          parameters: { duration: 2.5 },
         }),
         expect.objectContaining({
           effectId: "equalizer",
-          customParams: { gain_low: -5, gain_mid: 3, gain_high: 7 },
+          parameters: { gain_low: -5, gain_mid: 3, gain_high: 7 },
         }),
         expect.objectContaining({
           effectId: "compressor",
-          customParams: expect.objectContaining({
+          parameters: expect.objectContaining({
             threshold: -25,
             ratio: 6,
             attack: 5, // Default values preserved
@@ -756,7 +756,7 @@ describe("AudioEffectsEditorModal", () => {
         }),
         expect.objectContaining({
           effectId: "reverb",
-          customParams: expect.objectContaining({
+          parameters: expect.objectContaining({
             room_size: 0.7,
             wet: 0.4,
             damping: 0.5, // Default value preserved

@@ -22,12 +22,12 @@ import {
   type TimelineResource,
   type TransitionResource,
 } from "@/domains/shared/types/resources"
-import type { VideoEffect } from "@/features/effects/types"
-import type { VideoFilter } from "@/features/filters/types/filters"
+import type { VideoFilter } from "@/domains/video-editing/types/filters"
+import type { Transition } from "@/domains/video-editing/types/transitions"
+import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
 import type { StyleTemplate } from "@/features/style-templates/types"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
