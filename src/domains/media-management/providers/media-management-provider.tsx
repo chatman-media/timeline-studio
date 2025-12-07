@@ -73,6 +73,31 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     }
   }, [orchestrator])
 
+  // 🔧 FIX: Загрузка начального состояния при монтировании
+  // ПРОБЛЕМА: orchestrator создается ДО инициализации backend,
+  // поэтому подписка на события не срабатывает при старте.
+  // РЕШЕНИЕ: Активно загружаем mediaPool после монтирования провайдера
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        logger.infoSync("[MediaManagementProvider] 🔧 Loading initial media pool from backend...")
+        await orchestrator.refreshMediaPool()
+        const newMediaPool = orchestrator.getMediaPool()
+        logger.infoSync("[MediaManagementProvider] ✅ Initial media pool loaded", {
+          poolSize: newMediaPool.size,
+          hasFiles: newMediaPool.size > 0,
+        })
+        setMediaPool(new Map(newMediaPool)) // Force re-render
+        setIsLoading(orchestrator.isMediaLoading())
+        setError(orchestrator.getError())
+      } catch (error) {
+        logger.errorSync("[MediaManagementProvider] ❌ Failed to load initial media pool", { error })
+      }
+    }
+
+    loadInitialData()
+  }, [orchestrator])
+
   // Периодическая синхронизация состояния с orchestrator
   // (для mediaPool, isLoading, error которые не имеют подписок)
   // ОПТИМИЗИРОВАНО: используем refs для сравнения и обновляем только при изменениях
