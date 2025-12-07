@@ -11,10 +11,9 @@ import type { EnhancementType } from "@/domains/shared/types/ai-tools/platform-a
 import type { ResourceType } from "@/domains/shared/types/resources"
 import type { TimelineProject } from "@/domains/video-editing/types"
 import type { VideoFilter } from "@/domains/video-editing/types/filters"
+import type { MediaTemplate, StyleTemplate } from "@/domains/video-editing/types/templates"
 import type { Transition } from "@/domains/video-editing/types/transitions"
 import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
-import type { StyleTemplate } from "@/features/style-templates/types/style-template"
-import type { MediaTemplate } from "@/features/templates/lib/templates"
 
 // ============================================================================
 // CORE AI CONTEXT TYPES
