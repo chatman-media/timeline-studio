@@ -446,3 +446,84 @@ docs/
 - Types: kebab-case (e.g., `timeline.ts`)
 - Test files: Located in `__tests__/` with `.test.ts` or `.test.tsx` suffix
 - Mock files: Located in `__mocks__/` with same name as mocked module
+
+### Организация типов
+
+Timeline Studio использует строгую иерархию типов согласно FEOD и DDD принципам:
+
+```
+src/domains/shared/types/    # Общие типы (используются всеми доменами)
+  ├── primitives.ts           # ID, Timestamp, FilePath, Duration
+  ├── common.ts               # Size, Position, TimeRange, Rectangle
+  ├── result.ts               # Result<T>, Option<T>
+  ├── project/                # ProjectSettings, AspectRatio, Resolution
+  ├── media/                  # MediaType, ResolutionOption, FrameRate
+  └── resources/              # Resource, TimelineResource
+
+src/domains/*/types/          # Бизнес-логика доменов
+  ├── media-management/       # MediaFile, ImportOptions (CANONICAL)
+  ├── video-editing/          # TimelineClip, Track, Section
+  └── ai-services/            # AIAnalysis, ContentAnalysis
+
+src/features/*/types/         # UI-специфичные типы
+  ├── timeline/types/         # Реэкспорт из domains + UI props
+  └── effects/types/          # VideoEffect (TODO: migrate to domain)
+
+src/core/ports/               # Интерфейсы для Dependency Injection
+  ├── media.port.ts           # IMediaService
+  └── ai.port.ts              # IAIService
+```
+
+#### Правила импорта типов
+
+**✅ Правильно:**
+```typescript
+// Features импортируют из domains/shared
+import type { ProjectSettings } from '@/domains/shared/types/project'
+import type { Resource } from '@/domains/shared/types/resources'
+
+// Features импортируют из domains
+import type { MediaFile } from '@/domains/media-management/types'
+
+// Domains импортируют из shared
+import type { Size, Position } from '@/domains/shared/types/common'
+```
+
+**❌ Неправильно:**
+```typescript
+// Кросс-фича импорты ЗАПРЕЩЕНЫ
+import type { SomeType } from '@/features/other-feature/types'
+
+// Features НЕ должны импортировать сервисы domains
+import { SomeService } from '@/domains/some-domain/services'
+```
+
+#### Где разместить новый тип?
+
+1. **Используется в 3+ доменах/features?** → `src/domains/shared/types/`
+2. **Интерфейс для внешнего сервиса (DI)?** → `src/core/ports/`
+3. **Бизнес-логика домена?** → `src/domains/*/types/`
+4. **UI props или локальное состояние?** → `src/features/*/types/`
+
+#### Примеры
+
+**Тип для нового медиа формата:**
+```typescript
+// ✅ Правильно: src/domains/shared/types/media/formats.ts
+export type VideoCodec = 'h264' | 'h265' | 'vp9' | 'av1'
+```
+
+**Props для UI компонента:**
+```typescript
+// ✅ Правильно: src/features/timeline/types/components.ts
+export interface TimelineClipProps {
+  clip: TimelineClip  // импорт из domain
+  isSelected: boolean
+  onSelect: (id: string) => void
+}
+```
+
+**Canonical источники (не дублировать):**
+- `MediaFile` → `@/domains/media-management/types` (CANONICAL)
+- `ProjectSettings` → `@/domains/shared/types/project` (CANONICAL)
+- `Resource` → `@/domains/shared/types/resources` (CANONICAL)
