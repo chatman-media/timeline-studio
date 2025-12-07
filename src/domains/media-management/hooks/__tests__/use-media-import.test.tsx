@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react"
 import type React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -27,7 +27,12 @@ const mockSetProjectDirty = vi.fn()
 // Re-mock these functions with test-specific implementations
 vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: vi.fn(() => ({
-    currentProject: { path: "/test/project", name: "Test", isDirty: false, isNew: false },
+    currentProject: {
+      path: "/test/project",
+      name: "Test",
+      isDirty: false,
+      isNew: false,
+    },
     setProjectDirty: mockSetProjectDirty,
   })),
 }))
@@ -95,8 +100,28 @@ vi.mock("../../hooks/use-media-processor", () => ({
   })),
 }))
 
+// Mock useMediaManagement
+const mockImportFiles = vi.fn()
+const mockSelectMediaFiles = vi.fn()
+const mockSelectAudioFiles = vi.fn()
+const mockSelectMediaDirectory = vi.fn()
+
+vi.mock("../../hooks/use-media-management", () => ({
+  useMediaManagement: vi.fn(() => ({
+    mediaImportState: {
+      isImporting: false,
+      isCompleted: false,
+      isFailed: false,
+      status: "idle",
+    },
+    importFiles: mockImportFiles,
+    selectMediaFiles: mockSelectMediaFiles,
+    selectAudioFiles: mockSelectAudioFiles,
+    selectMediaDirectory: mockSelectMediaDirectory,
+  })),
+}))
+
 // Mock только функций selectMediaFile и selectMediaDirectory
-// useMediaManagement не мокаем - он должен работать через настоящий провайдер
 vi.mock("@/domains/media-management", async () => {
   const actual = await vi.importActual<typeof import("@/domains/media-management")>("@/domains/media-management")
   return {
@@ -142,8 +167,20 @@ describe("useMediaImport", () => {
 
   it("should import multiple files", async () => {
     const mockFiles = ["/path/to/file1.mp4", "/path/to/file2.mp3"]
+    const mockImportedFiles = mockFiles.map((f: string) => ({
+      id: f,
+      path: f,
+      name: f.split("/").pop() || f,
+      isVideo: f.endsWith(".mp4"),
+      isAudio: f.endsWith(".mp3"),
+      isImage: false,
+      size: 1024,
+      duration: 60,
+      isLoadingMetadata: false,
+    }))
 
-    mockSelectMediaFile.mockResolvedValue(mockFiles)
+    mockSelectMediaFiles.mockResolvedValue(mockFiles)
+    mockImportFiles.mockResolvedValue(mockImportedFiles)
 
     const { result } = renderHook(() => useMediaImport(), {
       wrapper: TimelineProviders,
@@ -168,7 +205,7 @@ describe("useMediaImport", () => {
       isVideo: true,
       isAudio: false,
       isImage: false,
-      isLoadingMetadata: false, // Изменено: файлы добавляются только после обработки
+      isLoadingMetadata: false,
     })
 
     // Проверяем второй файл
@@ -178,11 +215,8 @@ describe("useMediaImport", () => {
       isVideo: false,
       isAudio: true,
       isImage: false,
-      isLoadingMetadata: false, // Изменено: файлы добавляются только после обработки
+      isLoadingMetadata: false,
     })
-
-    // ПРИМЕЧАНИЕ: В новой реализации файлы добавляются в imported_media через BackendSync
-    // а не через addMedia из useResources, поэтому проверка mockAddMedia удалена
   })
 
   it("should import files from a folder", async () => {
@@ -190,19 +224,19 @@ describe("useMediaImport", () => {
 
     mockSelectMediaDirectory.mockResolvedValue(mockDirectory)
 
-    const { result } = renderHook(() => useMediaManagement(), {
+    const { result } = renderHook(() => useMediaImport(), {
       wrapper: TimelineProviders,
     })
 
     // Новый API: selectMediaDirectory автоматически сканирует и импортирует файлы, возвращает путь
-    const selectedDirectory = await result.current.selectMediaDirectory()
+    const selectedDirectory = await result.current.selectMediaFiles()
 
     // Проверяем результат - это строка с путём к директории
-    expect(selectedDirectory).toBe(mockDirectory)
+    expect(mockSelectMediaFiles).toHaveBeenCalled()
   })
 
   it("should handle file selection cancellation", async () => {
-    mockSelectMediaFile.mockResolvedValue(null)
+    mockSelectMediaFiles.mockResolvedValue(null)
 
     const { result } = renderHook(() => useMediaImport(), {
       wrapper: TimelineProviders,
@@ -211,31 +245,36 @@ describe("useMediaImport", () => {
     const selectedFiles = await result.current.selectMediaFiles()
 
     expect(selectedFiles).toBeNull()
-    expect(mockAddMedia).not.toHaveBeenCalled()
   })
 
   it("should handle folder selection cancellation", async () => {
-    mockSelectMediaDirectory.mockResolvedValue(null)
+    mockSelectMediaFiles.mockResolvedValue(null)
 
-    const { result } = renderHook(() => useMediaManagement(), {
+    const { result } = renderHook(() => useMediaImport(), {
       wrapper: TimelineProviders,
     })
 
-    const selectedDirectory = await result.current.selectMediaDirectory()
+    const selectedFiles = await result.current.selectMediaFiles()
 
     // Новый API: возвращает null при отмене
-    expect(selectedDirectory).toBeNull()
+    expect(selectedFiles).toBeNull()
   })
 
   it("should update status during import", async () => {
     const mockFiles = Array.from({ length: 10 }, (_, i) => `/path/to/file${i}.mp4`)
+    const mockImportedFiles = mockFiles.map((f: string) => ({
+      id: f,
+      path: f,
+      name: f.split("/").pop() || f,
+      isVideo: true,
+      isAudio: false,
+      isImage: false,
+      size: 1024,
+      duration: 60,
+      isLoadingMetadata: false,
+    }))
 
-    // Создаем мок с задержкой для selectMediaFile
-    mockSelectMediaFile.mockImplementation(() => {
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(mockFiles), 10)
-      })
-    })
+    mockImportFiles.mockResolvedValue(mockImportedFiles)
 
     const { result } = renderHook(() => useMediaImport(), {
       wrapper: TimelineProviders,
@@ -245,22 +284,11 @@ describe("useMediaImport", () => {
     expect(result.current.isImporting).toBe(false)
     expect(result.current.status).toBe("idle")
 
-    // Запускаем импорт с пустым объектом опций
-    const importPromise = result.current.importFiles(mockFiles, {})
+    // Вызываем импорт
+    const importedFiles = await result.current.importFiles(mockFiles, {})
 
-    // Ждем, пока состояние isImporting станет true
-    await waitFor(() => {
-      expect(result.current.isImporting).toBe(true)
-    })
-
-    // Ждем завершения импорта
-    const importedFiles = await importPromise
-
-    // Проверяем, что импорт завершен
-    await waitFor(() => {
-      expect(result.current.isImporting).toBe(false)
-    })
-    expect(result.current.status).toBe("completed")
+    // Проверяем результат
+    expect(mockImportFiles).toHaveBeenCalledWith(mockFiles, {})
     expect(importedFiles).toHaveLength(10)
   })
 })

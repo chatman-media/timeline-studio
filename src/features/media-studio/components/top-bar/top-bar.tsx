@@ -312,13 +312,11 @@ const TopBarComponent = function TopBar() {
                 onChange={handleNameChange}
                 onKeyDown={handleKeyDown}
                 onBlur={() => setIsEditing(false)}
-                className="w-full h-5 bg-transparent pl-[1px] text-xs focus:outline-none"
+                className="w-full h-5 bg-transparent pl-px text-xs focus:outline-none"
                 autoFocus
               />
             ) : (
-              <span className="block truncate pl-[1px] hover:border hover:border-teal hover:pl-[0px]">
-                {projectName}
-              </span>
+              <span className="block truncate pl-px hover:border hover:border-teal hover:pl-0">{projectName}</span>
             )}
           </div>
         </div>

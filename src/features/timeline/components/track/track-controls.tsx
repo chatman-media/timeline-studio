@@ -101,7 +101,7 @@ export function TrackControls({
               max={100}
               step={1}
               onValueChange={handleVolumeChange}
-              className="w-full [&_[data-orientation=horizontal]]:h-0.5"
+              className="w-full **:data-[orientation=horizontal]:h-0.5"
             />
             <span className="w-[30px] text-right text-xs text-gray-300">{isMuted ? 0 : volume}</span>
           </div>

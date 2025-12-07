@@ -100,7 +100,7 @@ export const MediaItem = memo<MediaItemProps>(
           style={gridStyles}
           data-testid="media-item"
         >
-          <div className="group relative w-full flex-1 flex-grow flex-row">
+          <div className="group relative w-full flex-1 grow flex-row">
             <MediaPreview
               file={file}
               size={previewSize}
@@ -125,7 +125,7 @@ export const MediaItem = memo<MediaItemProps>(
           )}
           data-testid="media-item"
         >
-          <div className="group relative w-full flex-1 flex-grow flex-row">
+          <div className="group relative w-full flex-1 grow flex-row">
             <MediaPreview
               file={file}
               size={previewSize}

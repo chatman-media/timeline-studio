@@ -23,11 +23,9 @@ import {
   type TransitionResource,
 } from "@/domains/shared/types/resources"
 import type { VideoFilter } from "@/domains/video-editing/types/filters"
+import type { MediaTemplate, StyleTemplate, SubtitleStyleTemplate } from "@/domains/video-editing/types/templates"
 import type { Transition } from "@/domains/video-editing/types/transitions"
 import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
-import type { StyleTemplate } from "@/features/style-templates/types"
-import type { SubtitleStyleTemplate } from "@/features/subtitles/types"
-import type { MediaTemplate } from "@/features/templates/lib/templates"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 
