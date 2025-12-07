@@ -9,14 +9,24 @@ import { createActor } from "xstate"
 import { userSettingsMachine } from "../machines/user-settings-machine"
 
 // Mock logger
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => ({
-    info: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-    warn: vi.fn(),
-  })),
-}))
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/tauri-logger")>()
+  return {
+    ...actual,
+    createLogger: vi.fn(() => ({
+      info: vi.fn(),
+      infoSync: vi.fn(),
+      error: vi.fn(),
+      errorSync: vi.fn(),
+      debug: vi.fn(),
+      debugSync: vi.fn(),
+      warn: vi.fn(),
+      warnSync: vi.fn(),
+      trace: vi.fn(),
+      traceSync: vi.fn(),
+    })),
+  }
+})
 
 describe("User Settings Machine", () => {
   let actor: ReturnType<typeof createActor<typeof userSettingsMachine>>

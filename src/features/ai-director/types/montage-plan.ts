@@ -15,9 +15,7 @@ export type {
   MontageTextSettings,
 } from "@/domains/ai-services/types/unified"
 
-// Legacy clip type - map to UnifiedFragment
-import type { UnifiedFragment } from "@/domains/ai-services/types/unified"
-
+// Legacy clip type - kept for backward compatibility
 export interface MontageClip {
   fileId: string
   filePath: string
@@ -32,6 +30,45 @@ export interface MontageClip {
     hasObjects?: boolean
     mood?: string
     sceneType?: string
+  }
+}
+
+// Helper functions to convert between legacy and unified types
+import type { UnifiedFragment } from "@/domains/ai-services/types/unified"
+
+/**
+ * Converts UnifiedFragment to legacy MontageClip
+ */
+export function fragmentToClip(fragment: UnifiedFragment): MontageClip {
+  return {
+    fileId: fragment.videoId,
+    filePath: fragment.filePath || "",
+    startTime: fragment.startTime,
+    endTime: fragment.endTime,
+    duration: fragment.duration,
+    reason: fragment.reason || fragment.description || "",
+    qualityScore: fragment.qualityScore || fragment.analysis?.quality,
+    metadata: fragment.metadata,
+  }
+}
+
+/**
+ * Converts legacy MontageClip to UnifiedFragment
+ */
+export function clipToFragment(clip: MontageClip): UnifiedFragment {
+  return {
+    id: `${clip.fileId}-${clip.startTime}`,
+    videoId: clip.fileId,
+    filePath: clip.filePath,
+    startTime: clip.startTime,
+    endTime: clip.endTime,
+    duration: clip.duration,
+    objects: [],
+    people: [],
+    tags: [],
+    reason: clip.reason,
+    qualityScore: clip.qualityScore,
+    metadata: clip.metadata,
   }
 }
 

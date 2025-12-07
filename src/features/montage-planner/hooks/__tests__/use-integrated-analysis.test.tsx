@@ -114,14 +114,24 @@ vi.mock("../use-plan-generator", () => ({
   usePlanGenerator: vi.fn(),
 }))
 
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: () => ({
-    info: vi.fn(),
-    debug: vi.fn(),
-    error: vi.fn(),
-    warn: vi.fn(),
-  }),
-}))
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/tauri-logger")>()
+  return {
+    ...actual,
+    createLogger: () => ({
+      info: vi.fn(),
+      infoSync: vi.fn(),
+      debug: vi.fn(),
+      debugSync: vi.fn(),
+      error: vi.fn(),
+      errorSync: vi.fn(),
+      warn: vi.fn(),
+      warnSync: vi.fn(),
+      trace: vi.fn(),
+      traceSync: vi.fn(),
+    }),
+  }
+})
 
 describe("useIntegratedAnalysis", () => {
   beforeEach(() => {
