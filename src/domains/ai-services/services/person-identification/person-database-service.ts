@@ -15,7 +15,7 @@ import type {
   PersonSearchResult,
   PersonStats,
   PersonThumbnail,
-} from "../types/person-identification"
+} from "@/domains/ai-services/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("PersonDatabaseService")

@@ -4,7 +4,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor } from "xstate"
-import type { UpdateCheckResult } from "../types/updates"
+import type { UpdateCheckResult } from "@/domains/system-integration/types"
 import { createUpdateMachine } from "../../machines/update-machine"
 import type { UpdateService } from "../../services/updates/update-service"
 

@@ -66,3 +66,5 @@ export * from "./transcription"
 // Unified Montage Planner Types (NEW - Phase 1)
 export * from "./unified"
 export * from "./unified-analysis"
+// Person Identification types (canonical source)
+export * from "./person-identification"

@@ -4,7 +4,7 @@
  */
 
 import * as PersonIdCmds from "@/domains/ai-services/tauri/person-identification-commands"
-import type { DetectedFace, PersonAppearance } from "../types/person-identification"
+import type { DetectedFace, PersonAppearance } from "@/domains/ai-services/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AdvancedTrackingService")
