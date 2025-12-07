@@ -95,29 +95,16 @@ vi.mock("../../hooks/use-media-processor", () => ({
   })),
 }))
 
-vi.mock("@/domains/media-management", () => ({
-  selectMediaFile: vi.fn(),
-  selectMediaDirectory: vi.fn(),
-  MediaManagementProvider: ({ children }: { children: React.ReactNode }) => children,
-  useMediaManagement: () => ({
-    mediaFiles: [],
-    addMedia: vi.fn(),
-    removeMedia: vi.fn(),
-  }),
-  // Preview size constants needed by browser provider
-  DEFAULT_PREVIEW_SIZE_INDEX: 3,
-  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
-  DEFAULT_CONTENT_SIZES: {
-    MEDIA: 250,
-    TEMPLATES: 250,
-    STYLE_TEMPLATES: 250,
-    EFFECTS: 250,
-    FILTERS: 250,
-    TRANSITIONS: 250,
-    SUBTITLES: 250,
-    MUSIC: 250,
-  },
-}))
+// Mock только функций selectMediaFile и selectMediaDirectory
+// useMediaManagement не мокаем - он должен работать через настоящий провайдер
+vi.mock("@/domains/media-management", async () => {
+  const actual = await vi.importActual<typeof import("@/domains/media-management")>("@/domains/media-management")
+  return {
+    ...actual,
+    selectMediaFile: vi.fn(),
+    selectMediaDirectory: vi.fn(),
+  }
+})
 
 // Мокаем модули
 vi.mock("@tauri-apps/api/core", () => ({

@@ -583,17 +583,13 @@ impl PreviewDataManager {
     // Извлекаем метаданные потоков
     let streams = probe_data.get("streams")?.as_array()?;
 
-    let video_stream = streams.iter().find(|s| {
-      s.get("codec_type")
-        .and_then(|v| v.as_str())
-        .map_or(false, |t| t == "video")
-    });
+    let video_stream = streams
+      .iter()
+      .find(|s| s.get("codec_type").and_then(|v| v.as_str()) == Some("video"));
 
-    let audio_stream = streams.iter().find(|s| {
-      s.get("codec_type")
-        .and_then(|v| v.as_str())
-        .map_or(false, |t| t == "audio")
-    });
+    let audio_stream = streams
+      .iter()
+      .find(|s| s.get("codec_type").and_then(|v| v.as_str()) == Some("audio"));
 
     let has_video = video_stream.is_some();
     let has_audio = audio_stream.is_some();

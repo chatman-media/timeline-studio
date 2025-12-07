@@ -27,25 +27,16 @@ vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
   })),
 }))
 
-vi.mock("@/domains/media-management", () => ({
-  getMediaMetadata: vi.fn(),
-  selectAudioFile: vi.fn(),
-  selectMediaDirectory: vi.fn(),
-  getMediaFiles: vi.fn(),
-  // Preview size constants needed by browser provider
-  DEFAULT_PREVIEW_SIZE_INDEX: 3,
-  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
-  DEFAULT_CONTENT_SIZES: {
-    MEDIA: 250,
-    TEMPLATES: 250,
-    STYLE_TEMPLATES: 250,
-    EFFECTS: 250,
-    FILTERS: 250,
-    TRANSITIONS: 250,
-    SUBTITLES: 250,
-    MUSIC: 250,
-  },
-}))
+vi.mock("@/domains/media-management", async () => {
+  const actual = await vi.importActual<typeof import("@/domains/media-management")>("@/domains/media-management")
+  return {
+    ...actual,
+    getMediaMetadata: vi.fn(),
+    selectAudioFile: vi.fn(),
+    selectMediaDirectory: vi.fn(),
+    getMediaFiles: vi.fn(),
+  }
+})
 
 vi.mock("@/features/media", () => ({
   convertToSavedMusicFile: vi.fn((file) => Promise.resolve(file)),

@@ -198,7 +198,7 @@ impl UnifiedFFmpegAudioAnalyzer {
   }
 
   /// Unified frequency analysis
-  async fn analyze_frequency_unified(file_path: &Path) -> Result<UnifiedFrequencyAnalysis> {
+  async fn analyze_frequency_unified(_file_path: &Path) -> Result<UnifiedFrequencyAnalysis> {
     info!("Analyzing frequency spectrum with unified types");
 
     // DISABLED:     // Use showfreqs filter to analyze frequency spectrum
@@ -245,7 +245,7 @@ impl UnifiedFFmpegAudioAnalyzer {
   }
 
   /// Unified dynamics analysis
-  async fn analyze_dynamics_unified(file_path: &Path) -> Result<UnifiedDynamicsAnalysis> {
+  async fn analyze_dynamics_unified(_file_path: &Path) -> Result<UnifiedDynamicsAnalysis> {
     info!("Analyzing audio dynamics with unified types");
 
     // DISABLED:     // Use dynaudnorm filter to analyze dynamics

@@ -301,11 +301,11 @@ export interface VideoAdaptation {
   frameRate: number
   codec: string
   bitrate: number
-  filters?: VideoFilter[]
+  filters?: PlatformVideoFilter[]
   crops?: CropArea[]
 }
 
-export interface VideoFilter {
+export interface PlatformVideoFilter {
   type: FilterType
   intensity: number
   timing?: PlatformTiming

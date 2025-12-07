@@ -8,22 +8,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AIDirectorV3Dashboard } from "../ai-director-dashboard"
 
 // Mock dependencies
-vi.mock("@/domains/media-management", () => ({
-  useMediaManagement: vi.fn(),
-  // Preview size constants needed by browser provider
-  DEFAULT_PREVIEW_SIZE_INDEX: 3,
-  PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
-  DEFAULT_CONTENT_SIZES: {
-    MEDIA: 250,
-    TEMPLATES: 250,
-    STYLE_TEMPLATES: 250,
-    EFFECTS: 250,
-    FILTERS: 250,
-    TRANSITIONS: 250,
-    SUBTITLES: 250,
-    MUSIC: 250,
-  },
-}))
+vi.mock("@/domains/media-management", async () => {
+  const actual = await vi.importActual<typeof import("@/domains/media-management")>("@/domains/media-management")
+  return {
+    ...actual,
+    useMediaManagement: vi.fn(),
+  }
+})
 
 vi.mock("../../hooks/use-ai-director-analysis-v2", () => ({
   useAIDirectorAnalysisV2: vi.fn(),
