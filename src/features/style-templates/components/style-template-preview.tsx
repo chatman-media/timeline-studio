@@ -3,10 +3,10 @@ import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
 import type { StyleTemplateResource } from "@/domains/shared/types/resources"
+import { useResources } from "@/domains/video-editing/providers"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
-import { useResources } from "@/domains/video-editing/providers"
 import type { StyleTemplate } from "../types"
 
 interface StyleTemplatePreviewProps {

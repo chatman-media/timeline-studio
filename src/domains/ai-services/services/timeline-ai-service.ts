@@ -28,8 +28,8 @@ import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/cor
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
 import type { MediaFile } from "@/domains/media-management"
-import type { Timeline as TimelineProject } from "@/domains/video-editing/types"
 import type { ResourcesContextType } from "@/domains/video-editing/providers"
+import type { Timeline as TimelineProject } from "@/domains/video-editing/types"
 import type {
   AIBrowserContext,
   AIPlayerContext,

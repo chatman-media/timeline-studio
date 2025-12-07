@@ -11,4 +11,4 @@ export type {
   RenderStatistics,
   VideoRenderJob,
 } from "@/domains/video-editing/types/video-compiler"
-export { RenderStatus, OutputFormat } from "@/domains/video-editing/types/video-compiler"
+export { OutputFormat, RenderStatus } from "@/domains/video-editing/types/video-compiler"

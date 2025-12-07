@@ -2,8 +2,7 @@
  * Сервис для работы с Video Compiler (Rust backend)
  */
 
-import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
-import { RenderStatus, type RenderProgress } from "@/domains/video-editing/types/video-compiler"
+import { ProjectSchema, type RenderProgress, RenderStatus } from "@/domains/video-editing/types/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   cancelRender as cancelRenderTauri,
