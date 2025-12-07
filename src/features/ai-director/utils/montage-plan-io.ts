@@ -114,9 +114,10 @@ export async function importMontagePlan(): Promise<MontagePlan | null> {
       throw new Error(`Invalid montage plan: ${validation.errors.join(", ")}`)
     }
 
+    const clips = plan.clips || plan.fragments || []
     logger.infoSync("[MontagePlanIO] Plan imported successfully", {
       planId: plan.id,
-      clipsCount: plan.clips.length,
+      clipsCount: clips.length,
     })
 
     return plan
@@ -232,15 +233,16 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
   }
 
   try {
+    const clips = plan.clips || plan.fragments || []
     const avgClipDuration =
-      plan.clips.length > 0 ? plan.clips.reduce((sum, c) => sum + c.duration, 0) / plan.clips.length : 5
+      clips.length > 0 ? clips.reduce((sum, c) => sum + c.duration, 0) / clips.length : 5
 
     // Создаем шаблон из плана
     const template: MontageTemplate = {
       id: `template-${Date.now()}`,
       name: plan.name,
       description: plan.description || `Template based on ${plan.name}`,
-      style: plan.style,
+      style: plan.style as "dynamic" | "cinematic" | "vlog" | "tutorial",
       icon: options?.icon || "📋",
       category: options?.category || "custom",
       tags: options?.tags || ["custom"],
@@ -248,16 +250,16 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
       createdAt: new Date(),
 
       parameters: {
-        targetDuration: plan.targetDuration,
+        targetDuration: plan.targetDuration || plan.totalDuration || 0,
         clipDuration: {
           min: Math.max(1, avgClipDuration * 0.5),
           max: avgClipDuration * 2,
           preferred: avgClipDuration,
         },
         clipCount: {
-          min: Math.max(1, plan.clips.length - 2),
-          max: plan.clips.length + 5,
-          preferred: plan.clips.length,
+          min: Math.max(1, clips.length - 2),
+          max: clips.length + 5,
+          preferred: clips.length,
         },
       },
 
@@ -283,7 +285,7 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
           enabled: plan.transitions.length > 1,
           types: plan.transitions.map((t) => t.type),
         },
-        frequency: plan.clips.length > 1 ? plan.transitions.length / (plan.clips.length - 1) : 0,
+        frequency: clips.length > 1 ? plan.transitions.length / (clips.length - 1) : 0,
       },
 
       musicSettings: plan.music

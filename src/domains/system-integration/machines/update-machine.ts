@@ -7,9 +7,9 @@
  */
 
 import { type Actor, assign, fromPromise, setup } from "xstate"
-import type { UpdateCheckResult, UpdateMachineContext, UpdateMachineEvent } from "../types/updates"
 import type { UpdateService } from "../services/updates/update-service"
 import { updateService as defaultUpdateService } from "../services/updates/update-service"
+import type { UpdateCheckResult, UpdateMachineContext, UpdateMachineEvent } from "../types/updates"
 
 /**
  * Интерфейс для инъекции зависимостей

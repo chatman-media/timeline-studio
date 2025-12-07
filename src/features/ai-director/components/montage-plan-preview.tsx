@@ -91,10 +91,14 @@ export function MontagePlanPreview({ plan, onApply, onEdit, onCancel, className 
     return styles[style] || { label: style, icon: "🎞️", color: "text-gray-500" }
   }
 
+  // Helper to get clips array (handles undefined)
+  const getClips = (p: MontagePlan) => p.clips || p.fragments || []
+
   // Используем отредактированный план для отображения
   const displayPlan = editedPlan
   const styleInfo = getStyleInfo(displayPlan.style)
-  const totalDuration = displayPlan.actualDuration || displayPlan.targetDuration
+  const clips = getClips(displayPlan)
+  const totalDuration = displayPlan.actualDuration || displayPlan.targetDuration || 0
 
   return (
     <Card className={cn("flex flex-col", className)}>
@@ -113,7 +117,7 @@ export function MontagePlanPreview({ plan, onApply, onEdit, onCancel, className 
               </span>
               <span className="flex items-center gap-1">
                 <Film className="h-4 w-4" />
-                {displayPlan.clips.length} клипов
+                {clips.length} клипов
               </span>
               <span className={cn("flex items-center gap-1 font-medium", styleInfo.color)}>
                 <span>{styleInfo.icon}</span>
@@ -134,10 +138,10 @@ export function MontagePlanPreview({ plan, onApply, onEdit, onCancel, className 
 
         {/* Список клипов */}
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold">Клипы ({displayPlan.clips.length})</h3>
+          <h3 className="text-sm font-semibold">Клипы ({clips.length})</h3>
           <ScrollArea className="h-[300px]">
             <div className="space-y-2 pr-4">
-              {displayPlan.clips.map((clip, index) => (
+              {clips.map((clip, index) => (
                 <ClipCard
                   key={index}
                   clip={clip}
@@ -241,12 +245,13 @@ export function MontagePlanPreview({ plan, onApply, onEdit, onCancel, className 
  * TimelinePreview - Визуальная мини-временная шкала
  */
 function TimelinePreview({ plan, onClipClick }: { plan: MontagePlan; onClipClick?: (index: number) => void }) {
-  const totalDuration = plan.actualDuration || plan.targetDuration
+  const totalDuration = plan.actualDuration || plan.targetDuration || plan.totalDuration || 1
+  const clips = plan.clips || plan.fragments || []
 
   return (
     <div className="relative w-full h-24 rounded-lg border bg-muted/30 p-4 overflow-x-auto">
       <div className="relative h-full flex items-center gap-1">
-        {plan.clips.map((clip, index) => {
+        {clips.map((clip, index) => {
           const widthPercent = (clip.duration / totalDuration) * 100
           const transition = plan.transitions.find((t) => t.afterClipIndex === index)
 

@@ -871,7 +871,8 @@
   "timeline": {
     "workspace": {
       "timeline": "Таймлайн",
-      "audioMixer": "Аудио микшер"
+      "audioMixer": "Аудио микшер",
+      "analysis": "Анализ"
     },
     "audioMixer": {
       "title": "Аудио микшер",

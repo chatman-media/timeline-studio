@@ -20,21 +20,30 @@ describe("useMontageApplicator", () => {
     name: "Test Plan",
     style: "dynamic",
     targetDuration: 8,
+    totalDuration: 8,
     clips: [
       {
-        fileId: "file-1",
+        id: "file-1-0",
+        videoId: "file-1",
         filePath: "/path/to/video1.mp4",
         startTime: 0,
         endTime: 5,
         duration: 5,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "Test clip 1",
       },
       {
-        fileId: "file-2",
+        id: "file-2-5",
+        videoId: "file-2",
         filePath: "/path/to/video2.mp4",
         startTime: 5,
         endTime: 8,
         duration: 3,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "Test clip 2",
       },
     ],
@@ -61,7 +70,12 @@ describe("useMontageApplicator", () => {
         position: "center",
       },
     ],
+    metadata: {
+      averageQuality: 0.8,
+    },
     createdAt: new Date(),
+    updatedAt: new Date(),
+    version: 1,
   }
 
   beforeEach(() => {
@@ -165,14 +179,17 @@ describe("useMontageApplicator", () => {
     it("should handle application errors", async () => {
       const { result } = renderHook(() => useMontageApplicator())
 
+      const firstClip = mockPlan.clips?.[0] || mockPlan.fragments?.[0]
       const invalidPlan = {
         ...mockPlan,
-        clips: [
-          {
-            ...mockPlan.clips[0],
-            duration: -5, // Invalid duration
-          },
-        ],
+        clips: firstClip
+          ? [
+              {
+                ...firstClip,
+                duration: -5, // Invalid duration
+              },
+            ]
+          : [],
       }
 
       await act(async () => {

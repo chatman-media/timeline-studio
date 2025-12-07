@@ -22,7 +22,7 @@ import type {
 /**
  * Конвертирует legacy MontageClip в UnifiedFragment
  */
-export function convertLegacyClipToFragment(clip: LegacyAIDirectorPlan["clips"][number]): UnifiedFragment {
+export function convertLegacyClipToFragment(clip: NonNullable<LegacyAIDirectorPlan["clips"]>[number]): UnifiedFragment {
   return {
     id: `${clip.fileId}-${clip.startTime}`,
     videoId: clip.fileId,
@@ -133,15 +133,16 @@ export function convertUnifiedToDomainFragment(fragment: UnifiedFragment): Domai
  * Конвертирует legacy AI Director plan в Unified plan
  */
 export function convertLegacyAIDirectorPlanToUnified(plan: LegacyAIDirectorPlan): UnifiedMontagePlan {
+  const clips = plan.clips || plan.fragments || []
   return {
     id: plan.id,
     name: plan.name,
     title: plan.name,
     description: plan.description,
     style: plan.style as UnifiedMontageStyle,
-    clips: plan.clips.map(convertLegacyClipToFragment),
-    totalDuration: plan.actualDuration || plan.targetDuration,
-    targetDuration: plan.targetDuration,
+    clips: clips.map(convertLegacyClipToFragment),
+    totalDuration: plan.actualDuration || plan.targetDuration || plan.totalDuration || 0,
+    targetDuration: plan.targetDuration || plan.totalDuration || 0,
     actualDuration: plan.actualDuration,
     transitions: plan.transitions.map((t) => ({
       type: t.type,
@@ -244,6 +245,7 @@ export function convertUnifiedToLegacyAIDirectorPlan(plan: UnifiedMontagePlan): 
       sourceFilesCount: plan.metadata.sourceFilesCount ?? 0,
       usedFilesCount: plan.metadata.usedFilesCount ?? 0,
       usagePercentage: plan.metadata.usagePercentage,
+      averageQuality: plan.metadata.averageQuality ?? 0.8,
     },
     totalDuration: plan.totalDuration,
   }

@@ -14,20 +14,29 @@ const { mockLoggerError, mockLogInfo, mockLogError } = vi.hoisted(() => ({
 }))
 
 // Мокаем tauri-logger
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: vi.fn(() => ({
-    info: vi.fn(),
-    debug: vi.fn(),
-    error: mockLoggerError,
-    warn: vi.fn(),
-    trace: vi.fn(),
-  })),
-  logInfo: mockLogInfo,
-  logError: mockLogError,
-  logDebug: vi.fn(),
-  logWarn: vi.fn(),
-  logTrace: vi.fn(),
-}))
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/tauri-logger")>()
+  return {
+    ...actual,
+    createLogger: vi.fn(() => ({
+      info: vi.fn(),
+      infoSync: vi.fn(),
+      debug: vi.fn(),
+      debugSync: vi.fn(),
+      error: mockLoggerError,
+      errorSync: vi.fn(),
+      warn: vi.fn(),
+      warnSync: vi.fn(),
+      trace: vi.fn(),
+      traceSync: vi.fn(),
+    })),
+    logInfo: mockLogInfo,
+    logError: mockLogError,
+    logDebug: vi.fn(),
+    logWarn: vi.fn(),
+    logTrace: vi.fn(),
+  }
+})
 
 // Вспомогательная функция для рендеринга с провайдерами
 const renderWithProviders = (ui: React.ReactElement) => {

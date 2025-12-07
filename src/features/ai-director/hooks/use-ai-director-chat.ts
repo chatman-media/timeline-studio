@@ -124,9 +124,10 @@ export function useAIDirectorChat(
           montagePlan = parseResult.success ? parseResult.plan || null : null
 
           if (montagePlan) {
+            const clips = montagePlan.clips || montagePlan.fragments || []
             logger.infoSync("[useAIDirectorChat] Montage plan detected and parsed", {
               planId: montagePlan.id,
-              clipsCount: montagePlan.clips.length,
+              clipsCount: clips.length,
             })
 
             setLastMontagePlan(montagePlan)

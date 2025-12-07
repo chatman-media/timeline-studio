@@ -178,18 +178,26 @@ This plan uses a cinematic style.`
       name: "Valid Plan",
       style: "dynamic",
       targetDuration: 5,
+      totalDuration: 5,
       clips: [
         {
-          fileId: "file-1",
+          id: "file-1-0",
+          videoId: "file-1",
           filePath: "video.mp4",
           startTime: 0,
           endTime: 5,
           duration: 5,
+          objects: [],
+          people: [],
+          tags: [],
           reason: "Test clip",
         },
       ],
       transitions: [],
+      metadata: { averageQuality: 0.8 },
       createdAt: new Date(),
+      updatedAt: new Date(),
+      version: 1,
     }
 
     it("should validate correct plan", () => {
@@ -216,11 +224,15 @@ This plan uses a cinematic style.`
         ...validPlan,
         clips: [
           {
-            fileId: "file-1",
+            id: "file-1-0",
+            videoId: "file-1",
             filePath: "video.mp4",
             startTime: 0,
             endTime: -5,
             duration: -5, // Invalid negative duration
+            objects: [],
+            people: [],
+            tags: [],
             reason: "Test",
           },
         ],
@@ -309,8 +321,8 @@ This plan uses a cinematic style.`
       const planWithOverlaps: MontagePlan = {
         ...validPlan,
         clips: [
-          { fileId: "f1", filePath: "v1.mp4", startTime: 0, endTime: 10, duration: 10, reason: "Test" },
-          { fileId: "f2", filePath: "v2.mp4", startTime: 5, endTime: 15, duration: 10, reason: "Test" }, // Overlaps
+          { id: "f1-0", videoId: "f1", filePath: "v1.mp4", startTime: 0, endTime: 10, duration: 10, objects: [], people: [], tags: [], reason: "Test" },
+          { id: "f2-5", videoId: "f2", filePath: "v2.mp4", startTime: 5, endTime: 15, duration: 10, objects: [], people: [], tags: [], reason: "Test" }, // Overlaps
         ],
       }
 
@@ -323,7 +335,7 @@ This plan uses a cinematic style.`
     it("should validate source file paths", () => {
       const planWithEmptyPath: MontagePlan = {
         ...validPlan,
-        clips: [{ fileId: "f1", filePath: "", startTime: 0, endTime: 5, duration: 5, reason: "Test" }],
+        clips: [{ id: "f1-0", videoId: "f1", filePath: "", startTime: 0, endTime: 5, duration: 5, objects: [], people: [], tags: [], reason: "Test" }],
       }
 
       const result = validateMontagePlan(planWithEmptyPath)

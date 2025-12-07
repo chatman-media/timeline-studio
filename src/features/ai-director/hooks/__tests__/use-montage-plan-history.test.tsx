@@ -24,18 +24,28 @@ describe("useMontagePlanHistory", () => {
     style: "dynamic",
     targetDuration: 120,
     actualDuration: 115,
+    totalDuration: 115,
     clips: [
       {
-        fileId: "file-1",
+        id: "file-1-10",
+        videoId: "file-1",
         filePath: "/path/to/video.mp4",
         startTime: 10,
         endTime: 20,
         duration: 10,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "High quality",
       },
     ],
     transitions: [],
+    metadata: {
+      averageQuality: 0.8,
+    },
     createdAt: new Date(),
+    updatedAt: new Date(),
+    version: 1,
   }
 
   beforeEach(() => {

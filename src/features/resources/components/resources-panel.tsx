@@ -61,7 +61,7 @@ export function ResourcesPanel() {
   return (
     <div className="flex h-full flex-col bg-background">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-3 py-2">
+      <div className="flex h-11 items-center justify-between border-b border-border px-3">
         <h2 className="text-sm font-medium text-foreground">
           {t("timeline.resources.title", "Ресурсы")}
           {totalCount > 0 && <span className="ml-2 text-xs text-muted-foreground">({totalCount})</span>}

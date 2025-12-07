@@ -2,7 +2,6 @@ import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/video-editing/types/media"
-import { useResources } from "@/features/resources"
 
 import { AddMediaButton } from "../../../components/layout/add-media-button"
 
@@ -14,41 +13,48 @@ vi.mock("@/domains/project-management/services/backend-sync", () => ({
   })),
 }))
 
-vi.mock("@/features/resources", () => ({
-  useResources: vi.fn().mockReturnValue({
-    addResource: vi.fn(),
-    removeResource: vi.fn(),
-    isAdded: vi.fn(),
-    addMedia: vi.fn(),
-    addMusic: vi.fn(),
-    addSubtitle: vi.fn(),
-    addEffect: vi.fn(),
-    addFilter: vi.fn(),
-    addTransition: vi.fn(),
-    addTemplate: vi.fn(),
-    removeMedia: vi.fn(),
-    removeMusic: vi.fn(),
-    removeSubtitle: vi.fn(),
-    removeEffect: vi.fn(),
-    removeFilter: vi.fn(),
-    removeTransition: vi.fn(),
-    removeTemplate: vi.fn(),
-    clear: vi.fn(),
-    getResource: vi.fn(),
-    getResources: vi.fn(),
-    subscribe: vi.fn(),
-    unsubscribe: vi.fn(),
-    replaceAll: vi.fn(),
-    resourceIds: [],
-    mediaResources: [],
-    musicResources: [],
-    subtitleResources: [],
-    effectResources: [],
-    filterResources: [],
-    transitionResources: [],
-    templateResources: [],
-  }),
-}))
+// Создаем общий объект моков, который будет переиспользоваться
+const mockUseResourcesReturn = {
+  addResource: vi.fn(),
+  removeResource: vi.fn(),
+  isAdded: vi.fn().mockReturnValue(false),
+  addMedia: vi.fn(),
+  addMusic: vi.fn(),
+  addSubtitle: vi.fn(),
+  addEffect: vi.fn(),
+  addFilter: vi.fn(),
+  addTransition: vi.fn(),
+  addTemplate: vi.fn(),
+  removeMedia: vi.fn(),
+  removeMusic: vi.fn(),
+  removeSubtitle: vi.fn(),
+  removeEffect: vi.fn(),
+  removeFilter: vi.fn(),
+  removeTransition: vi.fn(),
+  removeTemplate: vi.fn(),
+  clear: vi.fn(),
+  getResource: vi.fn(),
+  getResources: vi.fn(),
+  subscribe: vi.fn(),
+  unsubscribe: vi.fn(),
+  replaceAll: vi.fn(),
+  resourceIds: [],
+  mediaResources: [],
+  musicResources: [],
+  subtitleResources: [],
+  effectResources: [],
+  filterResources: [],
+  transitionResources: [],
+  templateResources: [],
+}
+
+vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+  return {
+    ...actual,
+    useResources: vi.fn(() => mockUseResourcesReturn),
+  }
+})
 
 // Мокаем react-i18next
 vi.mock("react-i18next", () => ({
@@ -139,10 +145,10 @@ describe("AddMediaButton", () => {
   })
 
   it("should render check icon when isAdded is true", () => {
-    // Рендерим компонент
-    const mockUseResources = useResources as any
-    mockUseResources().isAdded.mockReturnValue(true)
+    // Настраиваем мок для возврата true
+    mockUseResourcesReturn.isAdded.mockReturnValue(true)
 
+    // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
 
     // Проверяем, что отображается иконка Check
@@ -157,9 +163,8 @@ describe("AddMediaButton", () => {
   })
 
   it("should call addMedia when clicked while hovering and not added", () => {
-    const mockUseResources = useResources as any
-    const { isAdded, addMedia } = mockUseResources()
-    isAdded.mockReturnValue(false)
+    // Настраиваем мок для возврата false
+    mockUseResourcesReturn.isAdded.mockReturnValue(false)
 
     // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
@@ -176,13 +181,13 @@ describe("AddMediaButton", () => {
     })
 
     // Проверяем, что addMedia был вызван с файлом
-    expect(addMedia).toHaveBeenCalledTimes(1)
-    expect(addMedia).toHaveBeenCalledWith(testResource.file)
+    expect(mockUseResourcesReturn.addMedia).toHaveBeenCalledTimes(1)
+    expect(mockUseResourcesReturn.addMedia).toHaveBeenCalledWith(testResource.file)
   })
 
   it("should show remove icon on hover when isAdded is true and not recently added", () => {
-    const mockUseResources = useResources as any
-    mockUseResources().isAdded.mockReturnValue(true)
+    // Настраиваем мок для возврата true
+    mockUseResourcesReturn.isAdded.mockReturnValue(true)
 
     // Рендерим компонент
     render(<AddMediaButton resource={testResource} type="media" size={150} />)
@@ -211,9 +216,8 @@ describe("AddMediaButton", () => {
   })
 
   it("should call removeResource when clicked on remove icon", async () => {
-    const mockUseResources = useResources as any
-    const { isAdded, removeResource } = mockUseResources()
-    isAdded.mockReturnValue(true)
+    // Настраиваем мок для возврата true
+    mockUseResourcesReturn.isAdded.mockReturnValue(true)
 
     // Рендерим компонент
     const { rerender } = render(<AddMediaButton resource={testResource} type="media" size={150} />)
@@ -243,7 +247,7 @@ describe("AddMediaButton", () => {
     })
 
     // Проверяем, что removeResource был вызван с правильными аргументами
-    expect(removeResource).toHaveBeenCalledTimes(1)
-    expect(removeResource).toHaveBeenCalledWith(testResource.id, "media")
+    expect(mockUseResourcesReturn.removeResource).toHaveBeenCalledTimes(1)
+    expect(mockUseResourcesReturn.removeResource).toHaveBeenCalledWith(testResource.id, "media")
   })
 })

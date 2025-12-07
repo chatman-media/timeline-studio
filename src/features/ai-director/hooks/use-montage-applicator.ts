@@ -52,6 +52,9 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
   const [history, setHistory] = useState<MontagePlan[]>([])
   const [currentIndex, setCurrentIndex] = useState(-1)
 
+  // Helper to get clips array (handles undefined)
+  const getClips = (p: MontagePlan) => p.clips || p.fragments || []
+
   // Применить план к timeline
   const applyToTimeline = useCallback(
     async (plan: MontagePlan) => {
@@ -71,9 +74,10 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
         setProgress(10)
         callbacks?.onProgress?.({ percent: 10, step: "Adding clips" })
 
-        for (let i = 0; i < plan.clips.length; i++) {
+        const clips = getClips(plan)
+        for (let i = 0; i < clips.length; i++) {
           await new Promise((resolve) => setTimeout(resolve, 10)) // Симуляция
-          const clipProgress = 10 + Math.floor((i / plan.clips.length) * 30)
+          const clipProgress = 10 + Math.floor((i / clips.length) * 30)
           setProgress(clipProgress)
         }
 
@@ -127,11 +131,12 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
 
   // Генерация preview
   const generatePreview = useCallback(async (plan: MontagePlan) => {
+    const clips = getClips(plan)
     const preview: PreviewData = {
-      clips: plan.clips,
+      clips,
       transitions: plan.transitions,
-      timelineRepresentation: `Timeline with ${plan.clips.length} clips`,
-      totalDuration: plan.actualDuration || plan.targetDuration,
+      timelineRepresentation: `Timeline with ${clips.length} clips`,
+      totalDuration: plan.actualDuration || plan.targetDuration || plan.totalDuration || 0,
     }
 
     setPreview(preview)
@@ -152,16 +157,27 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
   // Проверка существования файлов
   const validateFiles = useCallback(async (plan: MontagePlan) => {
     const missingFiles: string[] = []
+    const clips = getClips(plan)
 
-    for (const clip of plan.clips) {
+    for (const clip of clips) {
       try {
         // Проверяем существование файла через domain service
-        const exists = await fileSystemService.fileExists(clip.filePath)
+        const sourceFile = clip.sourceFile
+        const sourceFilePath = typeof sourceFile === 'string' ? sourceFile : sourceFile?.path
+        const filePath = clip.filePath || sourceFilePath || ""
+        if (!filePath) continue
+
+        const exists = await fileSystemService.fileExists(filePath)
         if (!exists) {
-          missingFiles.push(clip.filePath)
+          missingFiles.push(filePath)
         }
       } catch {
-        missingFiles.push(clip.filePath)
+        const sourceFile = clip.sourceFile
+        const sourceFilePath = typeof sourceFile === 'string' ? sourceFile : sourceFile?.path
+        const filePath = clip.filePath || sourceFilePath || ""
+        if (filePath) {
+          missingFiles.push(filePath)
+        }
       }
     }
 

@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import type { UnifiedFragment } from "@/domains/ai-services/types/unified"
 import { cn } from "@/lib/utils"
-
-import type { MontageClip, MontagePlan, TransitionType } from "../types/montage-plan"
+import type { MontagePlan, TransitionType } from "../types/montage-plan"
 
 interface MontagePlanEditorProps {
   plan: MontagePlan
@@ -29,118 +29,146 @@ export function MontagePlanEditor({ plan, onSave, onCancel, className }: Montage
   const [editedPlan, setEditedPlan] = useState<MontagePlan>(plan)
   const [hasChanges, setHasChanges] = useState(false)
 
+  // Helper to get clips array (handles undefined)
+  const getClips = useCallback((p: MontagePlan) => p.clips || p.fragments || [], [])
+
   // Переместить клип вверх
-  const moveClipUp = useCallback((index: number) => {
-    if (index === 0) return
+  const moveClipUp = useCallback(
+    (index: number) => {
+      if (index === 0) return
 
-    setEditedPlan((prev) => {
-      const newClips = [...prev.clips]
-      ;[newClips[index - 1], newClips[index]] = [newClips[index], newClips[index - 1]]
+      setEditedPlan((prev) => {
+        const prevClips = getClips(prev)
+        const newClips = [...prevClips]
+        ;[newClips[index - 1], newClips[index]] = [newClips[index], newClips[index - 1]]
 
-      return {
-        ...prev,
-        clips: newClips,
-      }
-    })
-    setHasChanges(true)
-  }, [])
-
-  // Переместить клип вниз
-  const moveClipDown = useCallback((index: number) => {
-    setEditedPlan((prev) => {
-      if (index === prev.clips.length - 1) return prev
-
-      const newClips = [...prev.clips]
-      ;[newClips[index], newClips[index + 1]] = [newClips[index + 1], newClips[index]]
-
-      return {
-        ...prev,
-        clips: newClips,
-      }
-    })
-    setHasChanges(true)
-  }, [])
-
-  // Удалить клип
-  const removeClip = useCallback((index: number) => {
-    setEditedPlan((prev) => ({
-      ...prev,
-      clips: prev.clips.filter((_, i) => i !== index),
-      transitions: prev.transitions.filter((t) => t.afterClipIndex !== index),
-    }))
-    setHasChanges(true)
-  }, [])
-
-  // Изменить длительность клипа
-  const updateClipDuration = useCallback((index: number, newDuration: number) => {
-    setEditedPlan((prev) => {
-      const newClips = [...prev.clips]
-      const clip = newClips[index]
-
-      // Пересчитываем endTime на основе новой длительности
-      newClips[index] = {
-        ...clip,
-        duration: newDuration,
-        endTime: clip.startTime + newDuration,
-      }
-
-      return {
-        ...prev,
-        clips: newClips,
-      }
-    })
-    setHasChanges(true)
-  }, [])
-
-  // Изменить переход после клипа
-  const updateTransition = useCallback((clipIndex: number, transitionType: TransitionType) => {
-    setEditedPlan((prev) => {
-      const existingTransition = prev.transitions.find((t) => t.afterClipIndex === clipIndex)
-
-      if (existingTransition) {
-        // Обновляем существующий переход
         return {
           ...prev,
-          transitions: prev.transitions.map((t) =>
-            t.afterClipIndex === clipIndex
-              ? {
-                  ...t,
-                  type: transitionType,
-                }
-              : t,
-          ),
+          clips: newClips,
         }
-      }
+      })
+      setHasChanges(true)
+    },
+    [getClips],
+  )
 
-      // Добавляем новый переход
-      return {
-        ...prev,
-        transitions: [
-          ...prev.transitions,
-          {
-            type: transitionType,
-            duration: 0.5,
-            afterClipIndex: clipIndex,
-          },
-        ],
-      }
-    })
-    setHasChanges(true)
-  }, [])
+  // Переместить клип вниз
+  const moveClipDown = useCallback(
+    (index: number) => {
+      setEditedPlan((prev) => {
+        const prevClips = getClips(prev)
+        if (index === prevClips.length - 1) return prev
+
+        const newClips = [...prevClips]
+        ;[newClips[index], newClips[index + 1]] = [newClips[index + 1], newClips[index]]
+
+        return {
+          ...prev,
+          clips: newClips,
+        }
+      })
+      setHasChanges(true)
+    },
+    [getClips],
+  )
+
+  // Удалить клип
+  const removeClip = useCallback(
+    (index: number) => {
+      setEditedPlan((prev) => {
+        const prevClips = getClips(prev)
+        return {
+          ...prev,
+          clips: prevClips.filter((_, i) => i !== index),
+          transitions: prev.transitions.filter((t) => t.afterClipIndex !== index),
+        }
+      })
+      setHasChanges(true)
+    },
+    [getClips],
+  )
+
+  // Изменить длительность клипа
+  const updateClipDuration = useCallback(
+    (index: number, newDuration: number) => {
+      setEditedPlan((prev) => {
+        const prevClips = getClips(prev)
+        const newClips = [...prevClips]
+        const clip = newClips[index]
+
+        // Пересчитываем endTime на основе новой длительности
+        newClips[index] = {
+          ...clip,
+          duration: newDuration,
+          endTime: clip.startTime + newDuration,
+        }
+
+        return {
+          ...prev,
+          clips: newClips,
+        }
+      })
+      setHasChanges(true)
+    },
+    [getClips],
+  )
+
+  // Изменить переход после клипа
+  const updateTransition = useCallback(
+    (clipIndex: number, transitionType: TransitionType) => {
+      setEditedPlan((prev) => {
+        const existingTransition = prev.transitions.find((t) => t.afterClipIndex === clipIndex)
+
+        if (existingTransition) {
+          // Обновляем существующий переход
+          return {
+            ...prev,
+            transitions: prev.transitions.map((t) =>
+              t.afterClipIndex === clipIndex
+                ? {
+                    ...t,
+                    type: transitionType,
+                  }
+                : t,
+            ),
+          }
+        }
+
+        // Добавляем новый переход
+        return {
+          ...prev,
+          transitions: [
+            ...prev.transitions,
+            {
+              type: transitionType,
+              duration: 0.5,
+              afterClipIndex: clipIndex,
+            },
+          ],
+        }
+      })
+      setHasChanges(true)
+    },
+    [getClips],
+  )
 
   // Удалить переход
-  const removeTransition = useCallback((clipIndex: number) => {
-    setEditedPlan((prev) => ({
-      ...prev,
-      transitions: prev.transitions.filter((t) => t.afterClipIndex !== clipIndex),
-    }))
-    setHasChanges(true)
-  }, [])
+  const removeTransition = useCallback(
+    (clipIndex: number) => {
+      setEditedPlan((prev) => ({
+        ...prev,
+        transitions: prev.transitions.filter((t) => t.afterClipIndex !== clipIndex),
+      }))
+      setHasChanges(true)
+    },
+    [getClips],
+  )
 
   // Сохранить изменения
   const handleSave = useCallback(() => {
     // Пересчитываем actualDuration
-    const totalDuration = editedPlan.clips.reduce((sum, clip) => sum + clip.duration, 0)
+    const clips = getClips(editedPlan)
+    const totalDuration = clips.reduce((sum, clip) => sum + clip.duration, 0)
 
     const updatedPlan: MontagePlan = {
       ...editedPlan,
@@ -151,7 +179,7 @@ export function MontagePlanEditor({ plan, onSave, onCancel, className }: Montage
     if (onSave) {
       onSave(updatedPlan)
     }
-  }, [editedPlan, onSave])
+  }, [editedPlan, onSave, getClips])
 
   // Форматирование времени
   const formatTime = (seconds: number): string => {
@@ -160,7 +188,8 @@ export function MontagePlanEditor({ plan, onSave, onCancel, className }: Montage
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const totalDuration = editedPlan.clips.reduce((sum, clip) => sum + clip.duration, 0)
+  const clips = getClips(editedPlan)
+  const totalDuration = clips.reduce((sum, clip) => sum + clip.duration, 0)
 
   return (
     <Card className={cn("flex flex-col", className)}>
@@ -177,7 +206,7 @@ export function MontagePlanEditor({ plan, onSave, onCancel, className }: Montage
       <CardContent className="flex-1 space-y-6">
         {/* Общая информация */}
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span>Клипов: {editedPlan.clips.length}</span>
+          <span>Клипов: {clips.length}</span>
           <span>Длительность: {formatTime(totalDuration)}</span>
           <span>Переходов: {editedPlan.transitions.length}</span>
         </div>
@@ -185,12 +214,12 @@ export function MontagePlanEditor({ plan, onSave, onCancel, className }: Montage
         {/* Список клипов для редактирования */}
         <ScrollArea className="h-[400px]">
           <div className="space-y-3 pr-4">
-            {editedPlan.clips.map((clip, index) => (
+            {clips.map((clip, index) => (
               <ClipEditorCard
-                key={`${clip.fileId}-${index}`}
+                key={`${clip.videoId}-${index}`}
                 clip={clip}
                 index={index}
-                totalClips={editedPlan.clips.length}
+                totalClips={clips.length}
                 transition={editedPlan.transitions.find((t) => t.afterClipIndex === index)}
                 onMoveUp={() => moveClipUp(index)}
                 onMoveDown={() => moveClipDown(index)}
@@ -224,7 +253,7 @@ export function MontagePlanEditor({ plan, onSave, onCancel, className }: Montage
  * ClipEditorCard - Карточка клипа для редактирования
  */
 interface ClipEditorCardProps {
-  clip: MontageClip
+  clip: UnifiedFragment
   index: number
   totalClips: number
   transition?: { type: TransitionType; duration: number }
@@ -275,8 +304,8 @@ function ClipEditorCard({
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-sm truncate">{clip.filePath.split("/").pop()}</p>
-          <p className="text-xs text-muted-foreground mt-1">{clip.reason}</p>
+          <p className="font-medium text-sm truncate">{clip.filePath?.split("/").pop() || clip.videoId}</p>
+          <p className="text-xs text-muted-foreground mt-1">{clip.reason || clip.description || ""}</p>
         </div>
         <div className="flex gap-1">
           <Button

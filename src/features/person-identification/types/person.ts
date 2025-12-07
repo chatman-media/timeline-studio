@@ -26,6 +26,6 @@ export type {
   PersonStats,
   PersonThumbnail,
   Point2D,
-  TimeRange,
   Timecode,
+  TimeRange,
 } from "@/domains/ai-services/types/person-identification"

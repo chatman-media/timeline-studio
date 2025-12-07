@@ -8,11 +8,18 @@
 
 // Re-export unified types as legacy types
 export type {
-  UnifiedMontageStyle as MontageStyle,
-  UnifiedMontagePlan as MontagePlan,
-  TransitionType,
   MontageMusicSettings,
   MontageTextSettings,
+  TransitionType,
+  UnifiedMontagePlan as MontagePlan,
+  UnifiedMontageStyle as MontageStyle,
+} from "@/domains/ai-services/types/unified"
+
+// Import types for local use
+import type {
+  UnifiedMontagePlan as MontagePlan,
+  UnifiedMontageStyle as MontageStyle,
+  TransitionType,
 } from "@/domains/ai-services/types/unified"
 
 // Legacy clip type - kept for backward compatibility

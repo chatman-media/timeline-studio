@@ -64,21 +64,30 @@ describe("montage-plan-io", () => {
     name: "Test Montage Plan",
     style: "dynamic",
     targetDuration: 8,
+    totalDuration: 8,
     clips: [
       {
-        fileId: "file-1",
+        id: "file-1-10",
+        videoId: "file-1",
         filePath: "/path/to/video1.mp4",
         startTime: 10,
         endTime: 15,
         duration: 5,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "Test clip 1",
       },
       {
-        fileId: "file-2",
+        id: "file-2-0",
+        videoId: "file-2",
         filePath: "/path/to/video2.mp4",
         startTime: 0,
         endTime: 3,
         duration: 3,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "Test clip 2",
       },
     ],
@@ -96,7 +105,12 @@ describe("montage-plan-io", () => {
       fadeIn: 2,
       fadeOut: 2,
     },
+    metadata: {
+      averageQuality: 0.8,
+    },
     createdAt: new Date("2024-01-01T12:00:00Z"),
+    updatedAt: new Date("2024-01-01T12:00:00Z"),
+    version: 1,
   }
 
   beforeEach(() => {
@@ -288,7 +302,8 @@ describe("montage-plan-io", () => {
       const parsed = JSON.parse(writtenData)
 
       expect(parsed.parameters.targetDuration).toBe(mockPlan.targetDuration)
-      expect(parsed.parameters.clipCount.preferred).toBe(mockPlan.clips.length)
+      const clips = mockPlan.clips || mockPlan.fragments || []
+      expect(parsed.parameters.clipCount.preferred).toBe(clips.length)
     })
 
     it("should preserve music settings as template", async () => {

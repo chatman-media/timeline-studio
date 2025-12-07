@@ -17,22 +17,31 @@ describe("MontagePlanEditor", () => {
     style: "dynamic",
     targetDuration: 120,
     actualDuration: 115,
+    totalDuration: 115,
     clips: [
       {
-        fileId: "file-1",
+        id: "file-1-10",
+        videoId: "file-1",
         filePath: "/path/to/video1.mp4",
         startTime: 10,
         endTime: 20,
         duration: 10,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "High quality scene",
         qualityScore: 0.9,
       },
       {
-        fileId: "file-2",
+        id: "file-2-30",
+        videoId: "file-2",
         filePath: "/path/to/video2.mp4",
         startTime: 30,
         endTime: 45,
         duration: 15,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "Good composition",
         qualityScore: 0.85,
       },
@@ -44,7 +53,12 @@ describe("MontagePlanEditor", () => {
         afterClipIndex: 0,
       },
     ],
+    metadata: {
+      averageQuality: 0.875,
+    },
     createdAt: new Date(),
+    updatedAt: new Date(),
+    version: 1,
   }
 
   describe("Rendering", () => {
@@ -262,7 +276,7 @@ describe("MontagePlanEditor", () => {
     it("should not show transition selector for last clip", () => {
       const singleClipPlan: MontagePlan = {
         ...mockPlan,
-        clips: [mockPlan.clips[0]],
+        clips: mockPlan.clips ? [mockPlan.clips[0]] : [],
         transitions: [],
       }
 

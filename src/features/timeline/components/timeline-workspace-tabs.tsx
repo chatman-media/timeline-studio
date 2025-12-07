@@ -1,10 +1,10 @@
-import { Layers, Sliders } from "lucide-react"
+import { BarChart3, Layers, Sliders } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export type WorkspaceView = "timeline" | "audio-mixer"
+export type WorkspaceView = "timeline" | "audio-mixer" | "analysis"
 
 interface TimelineWorkspaceTabsProps {
   activeView: WorkspaceView
@@ -15,7 +15,7 @@ export function TimelineWorkspaceTabs({ activeView, onViewChange }: TimelineWork
   const { t } = useTranslation()
 
   return (
-    <div className="flex h-10 items-center border-b bg-background px-2">
+    <div className="flex h-11 items-center border-b bg-background px-2">
       <div className="flex gap-1">
         <Button
           variant={activeView === "timeline" ? "secondary" : "ghost"}
@@ -35,6 +35,16 @@ export function TimelineWorkspaceTabs({ activeView, onViewChange }: TimelineWork
         >
           <Sliders className="h-4 w-4" />
           <span>{t("timeline.workspace.audioMixer")}</span>
+        </Button>
+
+        <Button
+          variant={activeView === "analysis" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => onViewChange("analysis")}
+          className={cn("h-8 gap-2", activeView === "analysis" && "bg-secondary")}
+        >
+          <BarChart3 className="h-4 w-4" />
+          <span>{t("timeline.workspace.analysis")}</span>
         </Button>
       </div>
     </div>

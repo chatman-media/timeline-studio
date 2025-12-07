@@ -104,19 +104,27 @@ export function parseMontagePlanFromAI(aiResponse: string): ParseResult {
       style: validateMontageStyle(planData.style),
       targetDuration: planData.target_duration || planData.targetDuration || planData.totalDuration || 60,
       actualDuration: planData.actual_duration || planData.actualDuration,
-      totalDuration: planData.totalDuration,
-      clips: planData.clips.map((clip: any, index: number) => ({
-        fileId: clip.file_id || clip.fileId || `file-${index}`,
-        filePath: clip.file || clip.file_path || clip.filePath || clip.sourceFile || "",
-        startTime: Number.parseFloat(clip.start || clip.start_time || clip.startTime || clip.inPoint || 0),
-        endTime: Number.parseFloat(clip.end || clip.end_time || clip.endTime || 0),
-        duration:
-          Number.parseFloat(clip.duration || 0) ||
-          Number.parseFloat(clip.end || clip.endTime || 0) - Number.parseFloat(clip.start || clip.startTime || 0),
-        reason: clip.reason || "Selected by AI",
-        qualityScore: clip.quality_score || clip.qualityScore,
-        metadata: clip.metadata,
-      })),
+      totalDuration: planData.totalDuration || planData.target_duration || planData.targetDuration || 60,
+      clips: planData.clips.map((clip: any, index: number) => {
+        const videoId = clip.file_id || clip.fileId || clip.videoId || `file-${index}`
+        const startTime = Number.parseFloat(clip.start || clip.start_time || clip.startTime || clip.inPoint || 0)
+        return {
+          id: `${videoId}-${startTime}`,
+          videoId,
+          filePath: clip.file || clip.file_path || clip.filePath || clip.sourceFile || "",
+          startTime,
+          endTime: Number.parseFloat(clip.end || clip.end_time || clip.endTime || 0),
+          duration:
+            Number.parseFloat(clip.duration || 0) ||
+            Number.parseFloat(clip.end || clip.endTime || 0) - startTime,
+          objects: clip.objects || [],
+          people: clip.people || [],
+          tags: clip.tags || [],
+          reason: clip.reason || "Selected by AI",
+          qualityScore: clip.quality_score || clip.qualityScore,
+          metadata: clip.metadata,
+        }
+      }),
       transitions: parseTransitions(planData.transitions),
       music: musicSettings,
       musicSettings: musicSettings,
@@ -124,16 +132,20 @@ export function parseMontagePlanFromAI(aiResponse: string): ParseResult {
       textSettings: textSettings,
       description: planData.description,
       createdAt: planData.createdAt ? new Date(planData.createdAt) : new Date(),
+      updatedAt: planData.updatedAt ? new Date(planData.updatedAt) : new Date(),
+      version: planData.version || 1,
       metadata: {
         sourceFilesCount: planData.metadata?.source_files_count || planData.metadata?.sourceFilesCount || 0,
         usedFilesCount: planData.metadata?.used_files_count || planData.metadata?.usedFilesCount || 0,
         usagePercentage: planData.metadata?.usage_percentage || planData.metadata?.usagePercentage,
+        averageQuality: planData.metadata?.average_quality || planData.metadata?.averageQuality || 0.8,
       },
     }
 
+    const clips = plan.clips || plan.fragments || []
     logger.infoSync("[MontagePlanParser] Plan parsed successfully", {
       planId: plan.id,
-      clipsCount: plan.clips.length,
+      clipsCount: clips.length,
       transitionsCount: plan.transitions.length,
       style: plan.style,
     })
@@ -226,8 +238,8 @@ export function validateMontagePlan(plan: MontagePlan): ValidationResult {
   if (!plan.style) {
     errors.push("Plan must have style")
   } else {
-    const validStyles: MontageStyle[] = ["dynamic", "calm", "balanced", "cinematic", "vlog", "highlights", "tutorial"]
-    if (!validStyles.includes(plan.style)) {
+    const validStyles = ["dynamic", "calm", "balanced", "cinematic", "vlog", "highlights", "tutorial", "energetic"] as const
+    if (!validStyles.includes(plan.style as any)) {
       errors.push(`Invalid style: ${plan.style}`)
     }
   }
@@ -269,9 +281,9 @@ export function validateMontagePlan(plan: MontagePlan): ValidationResult {
   // Проверка переходов
   if (plan.transitions && plan.transitions.length > 0) {
     for (const [index, transition] of plan.transitions.entries()) {
-      const totalDuration = plan.actualDuration || plan.totalDuration || plan.targetDuration
+      const totalDuration = plan.actualDuration || plan.totalDuration || plan.targetDuration || 0
 
-      if (transition.atTime !== undefined && transition.atTime > totalDuration) {
+      if (transition.atTime !== undefined && totalDuration && transition.atTime > totalDuration) {
         errors.push(`Transition ${index} at ${transition.atTime}s is beyond total duration ${totalDuration}s`)
       }
 
@@ -282,13 +294,14 @@ export function validateMontagePlan(plan: MontagePlan): ValidationResult {
   }
 
   // Проверка общей длительности
-  if (plan.targetDuration <= 0) {
+  if ((plan.targetDuration || 0) <= 0) {
     errors.push("Target duration must be > 0")
   }
 
+  const clips = plan.clips || plan.fragments || []
   const effectiveDuration = plan.actualDuration || plan.totalDuration
-  if (effectiveDuration && plan.clips.length > 0) {
-    const calculatedDuration = plan.clips.reduce((sum, clip) => sum + clip.duration, 0)
+  if (effectiveDuration && clips.length > 0) {
+    const calculatedDuration = clips.reduce((sum, clip) => sum + clip.duration, 0)
     const diff = Math.abs(calculatedDuration - effectiveDuration)
 
     if (diff > 1) {
@@ -332,22 +345,31 @@ export function createSampleMontagePlan(): MontagePlan {
     style: "dynamic",
     targetDuration: 120,
     actualDuration: 118,
+    totalDuration: 118,
     clips: [
       {
-        fileId: "file-1",
+        id: "file-1-10.5",
+        videoId: "file-1",
         filePath: "/path/to/video1.mp4",
         startTime: 10.5,
         endTime: 25.3,
         duration: 14.8,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "High action scene with good composition",
         qualityScore: 0.92,
       },
       {
-        fileId: "file-2",
+        id: "file-2-5",
+        videoId: "file-2",
         filePath: "/path/to/video2.mp4",
         startTime: 5.0,
         endTime: 18.5,
         duration: 13.5,
+        objects: [],
+        people: [],
+        tags: [],
         reason: "Key moment with speech detected",
         qualityScore: 0.87,
       },
@@ -368,10 +390,13 @@ export function createSampleMontagePlan(): MontagePlan {
     },
     description: "Dynamic 2-minute montage with action scenes",
     createdAt: new Date(),
+    updatedAt: new Date(),
+    version: 1,
     metadata: {
       sourceFilesCount: 5,
       usedFilesCount: 2,
       usagePercentage: 40,
+      averageQuality: 0.895,
     },
   }
 }

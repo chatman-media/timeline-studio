@@ -5,7 +5,11 @@
  */
 
 import type { Section, TimelineClip, TimelineProject, Track, TrackType } from "@/domains/video-editing/types"
-import { createTimelineClip, createTimelineSection, createTimelineTrack } from "@/domains/video-editing/utils/timeline-factories"
+import {
+  createTimelineClip,
+  createTimelineSection,
+  createTimelineTrack,
+} from "@/domains/video-editing/utils/timeline-factories"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AppliedTransition } from "../../../../domains/video-editing/types/effects"
 import type { MediaFile } from "../../../../domains/video-editing/types/media"

@@ -19,14 +19,24 @@ import {
 } from "../timecode-sync"
 
 // Мокаем логгер
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: () => ({
-    info: vi.fn(),
-    error: vi.fn(),
-    warn: vi.fn(),
-    debug: vi.fn(),
-  }),
-}))
+vi.mock("@/lib/tauri-logger", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/tauri-logger")>()
+  return {
+    ...actual,
+    createLogger: () => ({
+      info: vi.fn(),
+      infoSync: vi.fn(),
+      error: vi.fn(),
+      errorSync: vi.fn(),
+      warn: vi.fn(),
+      warnSync: vi.fn(),
+      debug: vi.fn(),
+      debugSync: vi.fn(),
+      trace: vi.fn(),
+      traceSync: vi.fn(),
+    }),
+  }
+})
 
 describe("timecode-sync", () => {
   const createMockMediaFile = (overrides?: Partial<MediaFile>): MediaFile => ({

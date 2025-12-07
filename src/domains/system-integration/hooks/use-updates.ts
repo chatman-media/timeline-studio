@@ -3,8 +3,8 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { UpdateStatus } from "../types/updates"
 import { getSystemIntegrationOrchestrator } from "../services/system-integration-orchestrator"
+import type { UpdateStatus } from "../types/updates"
 
 export function useUpdates() {
   const [orchestrator] = useState(() => getSystemIntegrationOrchestrator())

@@ -1,12 +1,12 @@
 import { vi } from "vitest"
 import type { Section, Timeline } from "@/domains/video-editing/types"
-import type { TimelineClip, TimelineTrack, TrackType } from "../types"
 import {
   createTimelineClip,
   createTimelineProject,
   createTimelineSection,
   createTimelineTrack,
 } from "@/domains/video-editing/utils/timeline-factories"
+import type { TimelineClip, TimelineTrack, TrackType } from "../types"
 
 type EventListener = (...args: any[]) => void
 

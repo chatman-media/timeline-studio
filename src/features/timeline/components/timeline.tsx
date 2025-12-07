@@ -6,6 +6,7 @@ import { useUserSettings } from "@/domains/project-management/hooks"
 import { ResourcesPanel } from "@/features/resources/components/resources-panel"
 import { cn } from "@/lib/utils"
 
+import { AnalysisView } from "./analysis-view"
 import { AudioMixerView } from "./audio-mixer-view"
 import { TimelineContent } from "./timeline-content"
 import { TimelineWorkspaceTabs, type WorkspaceView } from "./timeline-workspace-tabs"
@@ -29,6 +30,20 @@ export function Timeline({ className, style }: TimelineProps = {}) {
   // Выбираем компонент Timeline в зависимости от настроек виртуализации
   const TimelineComponent = settings?.timelineVirtualizationEnabled ? VirtualizedTimelineContent : TimelineContent
 
+  // Функция для рендеринга активного вида
+  const renderView = () => {
+    switch (activeView) {
+      case "timeline":
+        return <TimelineComponent />
+      case "audio-mixer":
+        return <AudioMixerView />
+      case "analysis":
+        return <AnalysisView />
+      default:
+        return <TimelineComponent />
+    }
+  }
+
   return (
     <ResizablePanelGroup
       direction="horizontal"
@@ -49,10 +64,8 @@ export function Timeline({ className, style }: TimelineProps = {}) {
             <TimelineWorkspaceTabs activeView={activeView} onViewChange={setActiveView} />
           </div>
 
-          {/* Основная часть - Timeline контент или Audio Mixer */}
-          <div className="w-full grow overflow-hidden">
-            {activeView === "timeline" ? <TimelineComponent /> : <AudioMixerView />}
-          </div>
+          {/* Основная часть - Timeline контент, Audio Mixer или Analysis */}
+          <div className="w-full grow overflow-hidden">{renderView()}</div>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

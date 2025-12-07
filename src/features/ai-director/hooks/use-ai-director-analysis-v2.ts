@@ -63,7 +63,7 @@ function safePercentage(value: unknown): number {
 function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): AIDirectorConfig {
   return {
     // Performance
-    performance_mode: "balanced", // PascalCase для Rust enum
+    performance_mode: "Balanced",
 
     // Core analysis toggles
     enable_audio_analysis: analyzers.has("audio_quality") || analyzers.has("speech_recognition"),
