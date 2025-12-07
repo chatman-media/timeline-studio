@@ -4,7 +4,7 @@
  * Сохранение и загрузка пользовательских настроек
  */
 
-import type { EffectPreset } from "@/features/effects/types/unified-effects"
+import type { EffectPreset } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import { loadFile, saveFile } from "../../tauri/compiler-commands"
 

@@ -146,9 +146,6 @@ vi.mock("../../utils/saved-media-utils", () => ({
   convertToSavedMediaFile: vi.fn().mockResolvedValue({}),
 }))
 
-const mockSelectMediaFile = vi.mocked(selectMediaFile)
-const mockSelectMediaDirectory = vi.mocked(selectMediaDirectory)
-
 describe("useMediaImport", () => {
   beforeEach(() => {
     vi.clearAllMocks()

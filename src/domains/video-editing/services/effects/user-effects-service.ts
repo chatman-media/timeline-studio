@@ -4,8 +4,8 @@
  * Операции с файловой системой и backend командами
  */
 
+import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
-import type { BaseEffect } from "@/features/effects/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   addEffectToClip as addEffectToClipTauri,

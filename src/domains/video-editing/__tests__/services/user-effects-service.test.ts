@@ -5,7 +5,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { BaseEffect } from "@/features/effects/types/unified-effects"
+import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import * as userEffectsService from "../../services/effects/user-effects-service"
 
 // Mock Tauri commands
