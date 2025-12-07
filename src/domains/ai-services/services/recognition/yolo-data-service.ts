@@ -1,5 +1,5 @@
 import * as PersonIdCmds from "@/domains/ai-services/tauri/person-identification-commands"
-import type { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@/features/recognition/types/yolo"
+import type { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@/domains/ai-services/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("YoloDataService")

@@ -58,6 +58,10 @@ export type {
   VideoAnalysisResult,
   VideoMetadata,
 } from "./interfaces"
+// Person Identification types (canonical source)
+export * from "./person-identification"
+// YOLO Recognition types (canonical source)
+export * from "./yolo"
 // Core AI types - export first to avoid circular dependencies
 export * from "./platform"
 export * from "./processing"
@@ -66,5 +70,3 @@ export * from "./transcription"
 // Unified Montage Planner Types (NEW - Phase 1)
 export * from "./unified"
 export * from "./unified-analysis"
-// Person Identification types (canonical source)
-export * from "./person-identification"

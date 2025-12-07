@@ -5,7 +5,7 @@
 
 import { env, type InferenceSession, Tensor } from "onnxruntime-web"
 
-import type { YoloDetection } from "@/features/recognition/types/yolo"
+import type { YoloDetection } from "@/domains/ai-services/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 
