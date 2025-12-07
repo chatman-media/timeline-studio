@@ -16,7 +16,7 @@ import type {
   UpdateProgress,
   UpdateProgressWithPercentage,
   UpdateStatus,
-} from "@/features/updates/types"
+} from "../types/updates"
 
 export type {
   AutoCheckSettings,

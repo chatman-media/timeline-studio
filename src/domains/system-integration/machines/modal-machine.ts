@@ -7,8 +7,8 @@
  */
 
 import { assign, setup } from "xstate"
-import type { ModalBackendEvent } from "@/features/modals/machines/backend-event-handlers"
-import { handleModalBackendEvent } from "@/features/modals/machines/backend-event-handlers"
+import type { ModalBackendEvent } from "../utils/modal-backend-handlers"
+import { handleModalBackendEvent } from "../utils/modal-backend-handlers"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("ModalMachine")

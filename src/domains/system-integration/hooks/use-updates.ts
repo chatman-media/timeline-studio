@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { UpdateStatus } from "@/features/updates/types"
+import type { UpdateStatus } from "../types/updates"
 import { getSystemIntegrationOrchestrator } from "../services/system-integration-orchestrator"
 
 export function useUpdates() {
