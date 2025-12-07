@@ -4,6 +4,6 @@
  * Типы для настроек проекта, разрешений и параметров
  */
 
-// Re-export ProjectFile from features/project-settings for backward compatibility
-export type { ProjectFile } from "@/features/project-settings/types/project"
+// Project file types (canonical source)
+export type { ProjectFile } from "./project-file"
 export * from "./settings"
