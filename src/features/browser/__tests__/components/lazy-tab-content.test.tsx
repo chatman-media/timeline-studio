@@ -151,8 +151,8 @@ describe("LazyTabContent", () => {
       expect(screen.getByText("Templates Content")).toBeInTheDocument()
     })
 
-    it("should lazy load style-templates adapter content", async () => {
-      render(<LazyTabContent tabValue="style-templates" activeTab="style-templates" />)
+    it("should lazy load style_templates adapter content", async () => {
+      render(<LazyTabContent tabValue="style_templates" activeTab="style_templates" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("style-templates-content")).toBeInTheDocument()

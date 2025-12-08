@@ -218,8 +218,8 @@ describe("TabContent", () => {
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "template")
     })
 
-    it("should render style-templates tab content when active", () => {
-      render(<TabContent tabValue="style-templates" activeTab="style-templates" className="test-class" />)
+    it("should render style_templates tab content when active", () => {
+      render(<TabContent tabValue="style_templates" activeTab="style_templates" className="test-class" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "styleTemplate")

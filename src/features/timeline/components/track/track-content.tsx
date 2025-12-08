@@ -4,13 +4,13 @@
 
 import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useMemo } from "react"
+import { getDragDropManager } from "@/features/drag-drop"
 import { createLogger } from "@/lib/tauri-logger"
-// Удалена зависимость от @/features/drag-drop для устранения конфликта архитектур
-// Оставляем только @dnd-kit/core систему
 import { cn } from "@/lib/utils"
 import { useClipGroups } from "../../hooks/use-clip-groups"
 import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
 import { useTimeline } from "../../hooks/use-timeline"
+import { useTimelineActions } from "../../hooks/use-timeline-actions"
 import { useTimelineSelection } from "../../hooks/use-timeline-selection"
 import { useTrackTransitionCollisions } from "../../hooks/use-transition-collisions"
 import { addTransitionBetweenClips, getTrackTransitions } from "../../services/timeline-transition-manager"
@@ -35,6 +35,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
   const { dragState, isValidDropTarget } = useDragDropTimeline()
   const { selectMultiple } = useTimelineSelection()
   const { project, saveProject } = useTimeline()
+  const { addSingleMediaToTimeline } = useTimelineActions()
   const { groups, toggleCollapse } = useClipGroups()
 
   // Обнаружение коллизий переходов на треке
@@ -49,8 +50,35 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
     },
   })
 
-  // Удалён дублирующий useDropZone для устранения конфликта архитектур
-  // Теперь используем только @dnd-kit систему через handleDragEnd в useDragDropTimeline
+  // Нативные drag-and-drop обработчики для совместимости с DragDropManager (браузер)
+  const handleNativeDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+  }, [])
+
+  const handleNativeDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      const manager = getDragDropManager()
+      const currentDrag = manager.getCurrentDrag()
+
+      if (currentDrag && currentDrag.type === "media" && currentDrag.data) {
+        // Вычисляем время на основе позиции курсора
+        const rect = e.currentTarget.getBoundingClientRect()
+        const relativeX = e.clientX - rect.left
+        const startTime = Math.max(0, relativeX / timeScale)
+
+        logger.info("[TrackContent] Native drop:", {
+          mediaName: currentDrag.data.name,
+          trackId: track.id,
+          startTime,
+        })
+
+        void addSingleMediaToTimeline(currentDrag.data, track.id, startTime)
+      }
+    },
+    [track.id, timeScale, addSingleMediaToTimeline],
+  )
 
   // Check if this track is a valid drop target
   const isValidTarget = isValidDropTarget(track.id, track.type)
@@ -152,6 +180,8 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
       ref={setNodeRef}
       data-track-id={track.id}
       data-testid={`track-container-${track.id}`}
+      onDragOver={handleNativeDragOver}
+      onDrop={handleNativeDrop}
       className={cn(
         "relative h-full w-full",
         "bg-background border-l border-border",

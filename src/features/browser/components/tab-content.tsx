@@ -117,7 +117,7 @@ export const TabContent = memo(({ tabValue, activeTab, className }: TabContentPr
         return <SubtitlesTabContent />
       case "templates":
         return <TemplatesTabContent />
-      case "style-templates":
+      case "style_templates":
         return <StyleTemplatesTabContent />
       case "projects":
         return <ProjectsTabContent />

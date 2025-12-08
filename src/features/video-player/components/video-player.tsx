@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { MediaType } from "@/domains/media-management"
@@ -23,17 +23,7 @@ export function VideoPlayer() {
   const {
     settings: { aspectRatio },
   } = useProjectSettings()
-  const {
-    currentVideo: video,
-    setDuration,
-    pause,
-    isPlaying,
-    currentTime,
-    duration,
-    volume,
-    isSeeking,
-    setRealPlayingState,
-  } = usePlayer()
+  const { currentVideo: video, setDuration, pause, isPlaying, currentTime, duration, volume, isSeeking } = usePlayer()
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const { project } = useTimeline()
@@ -44,47 +34,31 @@ export function VideoPlayer() {
   // Подключаем AI интеграцию
   const { isReady: aiReady } = usePlayerAIIntegration()
 
+  // Мемоизируем handlers чтобы избежать бесконечного цикла в useVideoEvents
+  const videoEventHandlers = useMemo(
+    () => ({
+      onEnded: () => {
+        logger.debug("Video ended")
+        pause().catch((error) => logger.error("Failed to pause on video end", { error }))
+      },
+      onError: (error: Error) => {
+        logger.error("Video playback error", { error })
+        pause().catch((err) => logger.error("Failed to pause on error", { err }))
+      },
+      onDurationChange: (duration: number) => {
+        logger.debug("Video duration changed", { duration })
+        setDuration(duration)
+      },
+      onLoadedMetadata: (metadata: { duration: number; videoWidth: number; videoHeight: number }) => {
+        logger.debug("Video metadata loaded", metadata)
+        setDuration(metadata.duration)
+      },
+    }),
+    [pause, setDuration],
+  )
+
   // Подписываемся на события video элемента
-  useVideoEvents(videoRef, {
-    onEnded: () => {
-      logger.debug("Video ended")
-      setRealPlayingState(false)
-      pause().catch((error) => logger.error("Failed to pause on video end", { error }))
-    },
-    onError: (error) => {
-      logger.error("Video playback error", { error })
-      setRealPlayingState(false)
-    },
-    onDurationChange: (duration) => {
-      logger.debug("Video duration changed", { duration })
-      setDuration(duration)
-    },
-    onLoadedMetadata: (metadata) => {
-      logger.debug("Video metadata loaded", metadata)
-      setDuration(metadata.duration)
-    },
-    onPause: () => {
-      logger.debug("Video paused (native event)")
-      setRealPlayingState(false)
-    },
-  })
-
-  // Слушаем событие "playing" - оно срабатывает когда видео РЕАЛЬНО начинает воспроизведение
-  // (в отличие от "play" которое срабатывает при запросе на воспроизведение)
-  useEffect(() => {
-    const videoElement = videoRef.current
-    if (!videoElement) return
-
-    const handlePlaying = () => {
-      logger.debug("Video playing (real playback started)")
-      setRealPlayingState(true)
-    }
-
-    videoElement.addEventListener("playing", handlePlaying)
-    return () => {
-      videoElement.removeEventListener("playing", handlePlaying)
-    }
-  }, [setRealPlayingState, video?.id])
+  useVideoEvents(videoRef, videoEventHandlers)
 
   // Синхронизация состояния isPlaying с video элементом
   useEffect(() => {

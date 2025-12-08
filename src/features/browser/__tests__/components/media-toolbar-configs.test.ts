@@ -256,8 +256,8 @@ describe("media-toolbar-configs", () => {
       expect(config.showGroupBy).toBe(true)
     })
 
-    it("should return correct config for style-templates", () => {
-      const config = getToolbarConfigForContent("style-templates")
+    it("should return correct config for style_templates", () => {
+      const config = getToolbarConfigForContent("style_templates")
 
       expect(config.viewModes).toBe(effectsViewModes)
       expect(config.sortOptions).toHaveLength(4)

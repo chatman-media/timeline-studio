@@ -42,16 +42,18 @@ vi.mock("@/core/container", () => ({
 // Mock user settings
 const mockUserSettings = {
   playerVolume: 50,
-  handlePlayerVolumeChange: vi.fn(),
+  playerVideoSource: "browser" as const,
+  updatePlayerVolume: vi.fn(),
+  updatePlayerVideoSource: vi.fn(),
 }
 
-vi.mock("@/features/user-settings", () => ({
+vi.mock("@/domains/project-management", () => ({
   useUserSettings: () => mockUserSettings,
 }))
 
 // Mock playback time sync hook
 const mockUsePlaybackTimeSync = vi.fn()
-vi.mock("@/features/video-player/hooks/use-playback-time-sync", () => ({
+vi.mock("@/domains/video-editing/hooks", () => ({
   usePlaybackTimeSync: (config: any) => {
     mockUsePlaybackTimeSync(config)
     return config.initialTime
@@ -429,13 +431,14 @@ describe("PlayerProvider", () => {
 
       const { result } = renderHook(() => usePlayer(), { wrapper })
 
-      expect(result.current.videoSource).toBe("timeline")
+      // Default is "browser" from userSettings
+      expect(result.current.videoSource).toBe("browser")
 
       act(() => {
-        result.current.setVideoSource("browser")
+        result.current.setVideoSource("timeline")
       })
 
-      expect(result.current.videoSource).toBe("browser")
+      expect(result.current.videoSource).toBe("timeline")
       expect(mockExecuteCommand).not.toHaveBeenCalled()
     })
 
@@ -472,7 +475,7 @@ describe("PlayerProvider", () => {
       })
 
       expect(result.current.volume).toBe(0.8)
-      expect(mockUserSettings.handlePlayerVolumeChange).toHaveBeenCalledWith(80)
+      expect(mockUserSettings.updatePlayerVolume).toHaveBeenCalledWith(80)
     })
 
     it("setDuration updates duration locally", () => {

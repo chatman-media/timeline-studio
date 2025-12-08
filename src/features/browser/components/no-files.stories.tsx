@@ -30,7 +30,7 @@ const meta = {
         "filters",
         "transitions",
         "templates",
-        "style-templates",
+        "style_templates",
         "subtitles",
       ] as MediaType[],
       description: "Тип медиа контента",
@@ -117,7 +117,7 @@ export const Templates: Story = {
  */
 export const StyleTemplates: Story = {
   args: {
-    type: "style-templates",
+    type: "style_templates",
   },
 }
 

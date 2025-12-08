@@ -42,6 +42,7 @@ export interface UseTimelineAnalysisReturn {
   setSelectedFileId: (fileId: string | null) => void
   setFilters: (filters: Partial<AnalysisFilters>) => void
   clearFilters: () => void
+  clearHistory: () => Promise<void>
 
   // Computed
   totalFiles: number
@@ -211,6 +212,18 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
     setFiltersState(DEFAULT_FILTERS)
   }, [])
 
+  const clearHistory = useCallback(async () => {
+    try {
+      logger.info("Очистка истории анализов")
+      await analysisStorageService.clearAll()
+      setSavedAnalyses([])
+      setSelectedFileId(null)
+      logger.info("История анализов очищена")
+    } catch (error) {
+      logger.error("Ошибка очистки истории", { error })
+    }
+  }, [])
+
   return {
     // State
     filesProgress: allFilesProgress,
@@ -225,6 +238,7 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
     setSelectedFileId,
     setFilters,
     clearFilters,
+    clearHistory,
 
     // Computed
     totalFiles,

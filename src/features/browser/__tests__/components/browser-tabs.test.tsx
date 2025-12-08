@@ -73,7 +73,7 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("filters-tab")).toBeInTheDocument()
     expect(screen.getByTestId("transitions-tab")).toBeInTheDocument()
     expect(screen.getByTestId("templates-tab")).toBeInTheDocument()
-    expect(screen.getByTestId("style-templates-tab")).toBeInTheDocument()
+    expect(screen.getByTestId("style_templates-tab")).toBeInTheDocument()
     // projects and scenarios tabs are temporarily disabled
     expect(screen.queryByTestId("projects-tab")).not.toBeInTheDocument()
     expect(screen.queryByTestId("scenarios-tab")).not.toBeInTheDocument()
@@ -89,7 +89,7 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("filters-tab")).toContainElement(screen.getByTestId("icon-blend"))
     expect(screen.getByTestId("transitions-tab")).toContainElement(screen.getByTestId("icon-flip"))
     expect(screen.getByTestId("templates-tab")).toContainElement(screen.getByTestId("icon-video"))
-    expect(screen.getByTestId("style-templates-tab")).toContainElement(screen.getByTestId("icon-sticker"))
+    expect(screen.getByTestId("style_templates-tab")).toContainElement(screen.getByTestId("icon-sticker"))
   })
 
   it("должен отображать правильные метки для каждой активной вкладки", () => {
@@ -102,7 +102,7 @@ describe("BrowserTabs", () => {
     expect(screen.getByTestId("filters-tab")).toHaveTextContent("browser.tabs.filters")
     expect(screen.getByTestId("transitions-tab")).toHaveTextContent("browser.tabs.transitions")
     expect(screen.getByTestId("templates-tab")).toHaveTextContent("browser.tabs.templates")
-    expect(screen.getByTestId("style-templates-tab")).toHaveTextContent("browser.tabs.styleTemplates")
+    expect(screen.getByTestId("style_templates-tab")).toHaveTextContent("browser.tabs.styleTemplates")
   })
 
   it("должен устанавливать правильные классы для активной вкладки", () => {
@@ -179,7 +179,7 @@ describe("BrowserTabs", () => {
   })
 
   it("должен обрабатывать все активные вкладки", () => {
-    const tabs = ["media", "music", "subtitles", "effects", "filters", "transitions", "templates", "style-templates"]
+    const tabs = ["media", "music", "subtitles", "effects", "filters", "transitions", "templates", "style_templates"]
 
     tabs.forEach((tab) => {
       // Очищаем DOM перед каждым рендером

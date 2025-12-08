@@ -25,7 +25,7 @@ export type MediaType =
   | "filters"
   | "transitions"
   | "templates"
-  | "style-templates"
+  | "style_templates"
   | "subtitles"
 
 interface NoFilesProps {
@@ -98,7 +98,7 @@ const BASE_MEDIA_CONFIGS: Record<MediaType, Omit<MediaTypeConfig, "folders">> = 
     importText: "Импортировать шаблоны",
     folderText: "Или поместите шаблоны в папку",
   },
-  "style-templates": {
+  style_templates: {
     title: "Стилестические шаблоны не найдены",
     description: "Добавьте стилизованные шаблоны с готовым дизайном",
     icon: Palette,
@@ -137,7 +137,7 @@ export function NoFiles({ type, onImport, className }: NoFilesProps) {
           filters: appDirectoriesService.getMediaSubdirectory("filters"),
           transitions: appDirectoriesService.getMediaSubdirectory("transitions"),
           templates: directories.media_dir, // Шаблоны в корне Media
-          "style-templates": appDirectoriesService.getMediaSubdirectory("style_templates"),
+          style_templates: appDirectoriesService.getMediaSubdirectory("style_templates"),
           subtitles: appDirectoriesService.getMediaSubdirectory("subtitles"),
         }
 

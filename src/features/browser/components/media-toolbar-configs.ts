@@ -213,7 +213,7 @@ export function getToolbarConfigForContent(
     | "transitions"
     | "subtitles"
     | "templates"
-    | "style-templates",
+    | "style_templates",
 ) {
   switch (contentType) {
     case "media":
@@ -328,7 +328,7 @@ export function getToolbarConfigForContent(
         showZoom: true, // Размеры превью нужны
         showGroupBy: true, // Группировка по экранам
       }
-    case "style-templates":
+    case "style_templates":
       return {
         viewModes: effectsViewModes, // Стилистические шаблоны используют только превью
         sortOptions: [

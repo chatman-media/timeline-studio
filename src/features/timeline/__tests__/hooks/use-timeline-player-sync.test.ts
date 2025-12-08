@@ -255,7 +255,6 @@ const mockPlayerContext = {
   setIsResizableMode: vi.fn(),
   setPreviewMedia: vi.fn(),
   setVideoSource: vi.fn(),
-  setRealPlayingState: vi.fn(),
   applyEffect: vi.fn(),
   applyFilter: vi.fn(),
   applyTemplate: vi.fn(),

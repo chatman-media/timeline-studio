@@ -30,6 +30,103 @@ export type AnalyzerType =
   | "person_recognition" // Person recognition in v3 UI
   | "vlm_analysis"
 
+// ============================================================================
+// VLM Model Types
+// ============================================================================
+
+/** Поддерживаемые Vision Language Models для анализа */
+export type VlmModelType =
+  | "moondream2" // Быстрая, легкая модель (по умолчанию)
+  | "llava" // LLaVA - Large Language and Vision Assistant
+  | "llava:13b" // LLaVA 13B - более мощная версия
+  | "llava:34b" // LLaVA 34B - самая мощная версия
+  | "llama3.2-vision" // Llama 3.2 Vision - новая модель от Meta
+  | "llama3.2-vision:11b" // Llama 3.2 Vision 11B
+  | "llama3.2-vision:90b" // Llama 3.2 Vision 90B
+
+export interface VlmModelInfo {
+  id: VlmModelType
+  displayName: string
+  description: string
+  size: "small" | "medium" | "large" | "xlarge"
+  /** Рекомендуемое количество фреймов */
+  recommendedFrames: number
+  /** Приблизительная скорость (фреймов/сек) */
+  estimatedSpeed: number
+}
+
+/** Информация о доступных VLM моделях */
+export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
+  moondream2: {
+    id: "moondream2",
+    displayName: "Moondream 2",
+    description: "Быстрая и легкая модель для базового анализа изображений",
+    size: "small",
+    recommendedFrames: 5,
+    estimatedSpeed: 2.0,
+  },
+  llava: {
+    id: "llava",
+    displayName: "LLaVA 7B",
+    description: "Универсальная модель для анализа видео и изображений",
+    size: "medium",
+    recommendedFrames: 4,
+    estimatedSpeed: 1.0,
+  },
+  "llava:13b": {
+    id: "llava:13b",
+    displayName: "LLaVA 13B",
+    description: "Улучшенная точность для детального анализа",
+    size: "large",
+    recommendedFrames: 3,
+    estimatedSpeed: 0.5,
+  },
+  "llava:34b": {
+    id: "llava:34b",
+    displayName: "LLaVA 34B",
+    description: "Максимальная точность, требует мощный GPU",
+    size: "xlarge",
+    recommendedFrames: 2,
+    estimatedSpeed: 0.2,
+  },
+  "llama3.2-vision": {
+    id: "llama3.2-vision",
+    displayName: "Llama 3.2 Vision",
+    description: "Новейшая модель от Meta для vision-задач",
+    size: "medium",
+    recommendedFrames: 4,
+    estimatedSpeed: 1.2,
+  },
+  "llama3.2-vision:11b": {
+    id: "llama3.2-vision:11b",
+    displayName: "Llama 3.2 Vision 11B",
+    description: "Баланс скорости и качества",
+    size: "large",
+    recommendedFrames: 3,
+    estimatedSpeed: 0.6,
+  },
+  "llama3.2-vision:90b": {
+    id: "llama3.2-vision:90b",
+    displayName: "Llama 3.2 Vision 90B",
+    description: "Максимальное качество, требует много VRAM",
+    size: "xlarge",
+    recommendedFrames: 2,
+    estimatedSpeed: 0.1,
+  },
+}
+
+/** Опции конфигурации VLM анализа */
+export interface VlmAnalysisOptions {
+  /** Модель для использования */
+  model: VlmModelType
+  /** Количество фреймов для анализа (переопределяет рекомендованное) */
+  numFrames?: number
+  /** Temperature для генерации (0.0-1.0) */
+  temperature?: number
+  /** Максимальное количество токенов */
+  maxTokens?: number
+}
+
 export interface AnalyzerMetadata {
   type: AnalyzerType
   displayName: string

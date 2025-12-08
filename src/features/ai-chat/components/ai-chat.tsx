@@ -1,5 +1,5 @@
 import { Bot, ChevronDown, History, Plus, Send, Settings, StopCircle, User } from "lucide-react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
@@ -102,6 +102,14 @@ export function AiChat() {
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
 
+  // В режиме agent показываем только модели с поддержкой инструментов (Claude, OpenAI)
+  const displayedModels = useMemo(() => {
+    if (chatMode === "agent") {
+      return availableModels.filter((model) => model.useTools)
+    }
+    return availableModels
+  }, [availableModels, chatMode])
+
   // Load chat history on mount
   useEffect(() => {
     void updateSessions()
@@ -137,10 +145,16 @@ export function AiChat() {
           }
 
           for (const model of models) {
+            // Vision-модели (llava, moondream, llama-vision) также поддерживают работу с контентом
+            const isVisionModel =
+              model.toLowerCase().includes("llava") ||
+              model.toLowerCase().includes("moondream") ||
+              model.toLowerCase().includes("vision")
+
             agents.push({
               id: model,
               name: model,
-              useTools: provider === "claude" || provider === "openai",
+              useTools: provider === "claude" || provider === "openai" || isVisionModel,
               provider: provider as string,
             })
           }
@@ -846,9 +860,9 @@ export function AiChat() {
                         {isLoadingModels
                           ? t("timeline.chat.loading_models", "Загрузка моделей...")
                           : selectedAgentId
-                            ? availableModels.find((a) => a.id === selectedAgentId)?.name || selectedAgentId
-                            : availableModels.length > 0
-                              ? availableModels[0].name
+                            ? displayedModels.find((a) => a.id === selectedAgentId)?.name || selectedAgentId
+                            : displayedModels.length > 0
+                              ? displayedModels[0].name
                               : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
@@ -863,12 +877,14 @@ export function AiChat() {
                       <DropdownMenuItem disabled className="text-muted-foreground">
                         {t("timeline.chat.loading_models", "Загрузка моделей...")}
                       </DropdownMenuItem>
-                    ) : availableModels.length === 0 ? (
+                    ) : displayedModels.length === 0 ? (
                       <DropdownMenuItem disabled className="text-muted-foreground">
-                        {t("timeline.chat.no_models", "Нет доступных моделей")}
+                        {chatMode === "agent"
+                          ? t("timeline.chat.no_tool_models", "Нет моделей с поддержкой инструментов")
+                          : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </DropdownMenuItem>
                     ) : (
-                      availableModels.map((agent) => (
+                      displayedModels.map((agent) => (
                         <DropdownMenuItem
                           key={agent.id}
                           onClick={() => selectAgent(agent.id)}
@@ -1029,9 +1045,9 @@ export function AiChat() {
                         {isLoadingModels
                           ? t("timeline.chat.loading_models", "Загрузка моделей...")
                           : selectedAgentId
-                            ? availableModels.find((a) => a.id === selectedAgentId)?.name || selectedAgentId
-                            : availableModels.length > 0
-                              ? availableModels[0].name
+                            ? displayedModels.find((a) => a.id === selectedAgentId)?.name || selectedAgentId
+                            : displayedModels.length > 0
+                              ? displayedModels[0].name
                               : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
@@ -1046,12 +1062,14 @@ export function AiChat() {
                       <DropdownMenuItem disabled className="text-muted-foreground">
                         {t("timeline.chat.loading_models", "Загрузка моделей...")}
                       </DropdownMenuItem>
-                    ) : availableModels.length === 0 ? (
+                    ) : displayedModels.length === 0 ? (
                       <DropdownMenuItem disabled className="text-muted-foreground">
-                        {t("timeline.chat.no_models", "Нет доступных моделей")}
+                        {chatMode === "agent"
+                          ? t("timeline.chat.no_tool_models", "Нет моделей с поддержкой инструментов")
+                          : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </DropdownMenuItem>
                     ) : (
-                      availableModels.map((agent) => (
+                      displayedModels.map((agent) => (
                         <DropdownMenuItem
                           key={agent.id}
                           onClick={() => selectAgent(agent.id)}

@@ -1,5 +1,6 @@
-import { AlertCircle, Brain, CheckCircle2, Clock, Loader2, StopCircle, XCircle } from "lucide-react"
+import { AlertCircle, Brain, CheckCircle2, Clock, Loader2, StopCircle, Trash2, XCircle } from "lucide-react"
 import type React from "react"
+import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Badge } from "@/components/ui/badge"
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import { cn } from "@/lib/utils"
 
 import {
@@ -21,11 +23,64 @@ import {
   getAnalysisTaskStatusLabel,
   useAnalysisTasks,
 } from "../hooks"
-import type { AnalysisTaskStatus } from "../types/analysis-task"
+import { AnalysisPhase } from "../types"
+import type { AnalysisTask, AnalysisTaskStatus } from "../types/analysis-task"
+
+/**
+ * Маппинг статуса FileAnalysisProgress на AnalysisTaskStatus
+ */
+function mapFileStatusToTaskStatus(status: string): AnalysisTaskStatus {
+  switch (status) {
+    case "pending":
+      return "pending"
+    case "analyzing":
+      return "analyzing_video"
+    case "completed":
+      return "completed"
+    case "error":
+      return "failed"
+    case "cancelled":
+      return "cancelled"
+    default:
+      return "pending"
+  }
+}
 
 export function AnalysisTasksDropdown() {
   const { t } = useTranslation()
-  const { tasks, isLoading, error, cancelTask } = useAnalysisTasks()
+  const { tasks: storedTasks, isLoading, error, cancelTask, clearHistory } = useAnalysisTasks()
+
+  // Получаем текущие активные анализы из useAIDirectorAnalysisV2
+  const { filesProgress, isAnalyzing, cancelAnalysis } = useAIDirectorAnalysisV2()
+
+  // Конвертируем filesProgress в формат AnalysisTask и объединяем с сохранёнными задачами
+  const tasks = useMemo(() => {
+    // Преобразуем текущие активные анализы
+    const activeTasks: AnalysisTask[] = filesProgress.map((file) => ({
+      id: file.id,
+      video_path: file.filePath,
+      video_name: file.fileName,
+      status: mapFileStatusToTaskStatus(file.status),
+      created_at: file.startTime || new Date().toISOString(),
+      started_at: file.startTime,
+      completed_at: file.endTime,
+      progress: {
+        percentage: file.progress,
+        phase: (file.status === "analyzing" ? AnalysisPhase.AnalyzingVideo : AnalysisPhase.Initializing) as any,
+        current_file: file.filePath,
+        message: file.analyzers.find((a) => a.status === "analyzing")?.type,
+      },
+    }))
+
+    // Получаем пути активных задач для фильтрации дубликатов
+    const activeFilePaths = new Set(activeTasks.map((t) => t.video_path))
+
+    // Фильтруем сохранённые задачи, чтобы не дублировать активные
+    const filteredStoredTasks = storedTasks.filter((t) => !activeFilePaths.has(t.video_path))
+
+    // Активные задачи в начале списка
+    return [...activeTasks, ...filteredStoredTasks]
+  }, [filesProgress, storedTasks])
 
   // Количество активных задач
   const activeTasksCount = tasks.filter(
@@ -65,9 +120,28 @@ export function AnalysisTasksDropdown() {
     e.stopPropagation()
     const confirmed = window.confirm(t("montagePlanner.cancelTask"))
     if (confirmed) {
-      await cancelTask(taskId)
+      // Проверяем, является ли это активной задачей из useAIDirectorAnalysisV2
+      const isActiveTask = filesProgress.some((f) => f.id === taskId)
+      if (isActiveTask) {
+        cancelAnalysis()
+      } else {
+        await cancelTask(taskId)
+      }
     }
   }
+
+  // Обработчик очистки истории
+  const handleClearHistory = async () => {
+    const confirmed = window.confirm("Очистить всю историю анализов?")
+    if (confirmed) {
+      await clearHistory()
+    }
+  }
+
+  // Количество завершённых задач (включая failed и cancelled)
+  const finishedTasksCount = tasks.filter(
+    (task) => task.status === "completed" || task.status === "failed" || task.status === "cancelled",
+  ).length
 
   return (
     <DropdownMenu>
@@ -98,7 +172,20 @@ export function AnalysisTasksDropdown() {
       <DropdownMenuContent align="end" className="w-96">
         <DropdownMenuLabel className="flex items-center justify-between">
           <span>{t("montagePlanner.analysisTasks")}</span>
-          {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+          <div className="flex items-center gap-1">
+            {(isLoading || isAnalyzing) && <Loader2 className="h-4 w-4 animate-spin" />}
+            {finishedTasksCount > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClearHistory}
+                className="h-6 w-6 text-destructive hover:text-destructive"
+                title="Очистить историю"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 

@@ -4,6 +4,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -20,6 +21,7 @@ interface UseAnalysisTasksReturn {
   getTask: (taskId: string) => Promise<AnalysisTask | null>
   cancelTask: (taskId: string) => Promise<boolean>
   createTask: (videoPath: string, videoName: string) => Promise<AnalysisTask>
+  clearHistory: () => Promise<void>
 }
 
 /**
@@ -140,6 +142,19 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
     [refreshTasks],
   )
 
+  // Очистка истории анализов
+  const clearHistory = useCallback(async () => {
+    void logger.info("Очистка истории анализов")
+    try {
+      await analysisStorageService.clearAll()
+      analysisTaskBridge.clearCache()
+      setTasks([])
+      void logger.info("История анализов очищена")
+    } catch (err) {
+      void logger.error("Ошибка очистки истории", { error: err })
+    }
+  }, [])
+
   // Автоматическое обновление списка задач и подписка на прогресс
   useEffect(() => {
     void logger.info("Инициализация useAnalysisTasks хука")
@@ -191,6 +206,7 @@ export function useAnalysisTasks(): UseAnalysisTasksReturn {
     getTask,
     cancelTask,
     createTask,
+    clearHistory,
   }
 }
 

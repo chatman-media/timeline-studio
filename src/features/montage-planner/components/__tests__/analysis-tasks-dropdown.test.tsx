@@ -19,6 +19,22 @@ vi.mock("../../hooks", () => ({
   formatAnalysisTaskDuration: vi.fn(() => "5 min"),
 }))
 
+// Mock useAIDirectorAnalysisV2
+vi.mock("@/features/ai-director/hooks/use-ai-director-analysis-v2", () => ({
+  useAIDirectorAnalysisV2: vi.fn(() => ({
+    filesProgress: [],
+    isAnalyzing: false,
+    cancelAnalysis: vi.fn(),
+    errors: [],
+    overallProgress: 0,
+    availableVlmModels: {},
+    startBatchAnalysis: vi.fn(),
+    clearErrors: vi.fn(),
+    reset: vi.fn(),
+    batchProgress: null,
+  })),
+}))
+
 // Mock i18next
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -92,6 +108,7 @@ describe("AnalysisTasksDropdown", () => {
     getTask: vi.fn(),
     cancelTask: vi.fn(),
     createTask: vi.fn(),
+    clearHistory: vi.fn(),
   }
 
   beforeEach(() => {

@@ -76,7 +76,7 @@ export const BrowserToolbarWrapper = memo(
         | "transitions"
         | "subtitles"
         | "templates"
-        | "style-templates",
+        | "style_templates",
     )
 
     const handleChangeOrder = () => {

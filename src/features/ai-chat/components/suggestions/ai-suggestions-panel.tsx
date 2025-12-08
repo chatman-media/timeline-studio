@@ -10,7 +10,6 @@ import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
@@ -70,9 +69,9 @@ export function AISuggestionsPanel({
     })
   }, [analysisResult, mediaFilesCount])
 
-  // Получаем подходящие промты
+  // Получаем подходящие промты (ограничиваем до 2)
   const prompts: SuggestedPrompt[] = useMemo(() => {
-    const result = analyzeContextForPrompts(context)
+    const result = analyzeContextForPrompts(context).slice(0, 2)
     logger.info("Generated prompts for display", {
       count: result.length,
       hasAnalysis: context.hasAnalysisResults,
@@ -134,37 +133,35 @@ export function AISuggestionsPanel({
       </div>
 
       {/* Промты */}
-      <ScrollArea className="max-h-32">
-        <div className="flex flex-wrap gap-2">
-          {prompts.map((prompt) => (
-            <Button
-              key={prompt.id}
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                logger.info("Prompt clicked", {
-                  promptId: prompt.id,
-                  text: prompt.text,
-                  autoSend: !!onAutoSend,
-                })
+      <div className="flex flex-wrap gap-2">
+        {prompts.map((prompt) => (
+          <Button
+            key={prompt.id}
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              logger.info("Prompt clicked", {
+                promptId: prompt.id,
+                text: prompt.text,
+                autoSend: !!onAutoSend,
+              })
 
-                // Если есть onAutoSend - сразу отправляем промт
-                if (onAutoSend) {
-                  onAutoSend(prompt.text)
-                } else {
-                  // Иначе просто вставляем текст в поле
-                  onPromptClick(prompt.text)
-                }
-              }}
-              className="h-auto whitespace-normal py-1.5 text-left text-xs hover:bg-accent hover:text-accent-foreground"
-              title={prompt.text}
-            >
-              <span className="mr-1">{prompt.emoji}</span>
-              <span className="line-clamp-2">{prompt.text}</span>
-            </Button>
-          ))}
-        </div>
-      </ScrollArea>
+              // Если есть onAutoSend - сразу отправляем промт
+              if (onAutoSend) {
+                onAutoSend(prompt.text)
+              } else {
+                // Иначе просто вставляем текст в поле
+                onPromptClick(prompt.text)
+              }
+            }}
+            className="h-auto whitespace-normal py-1.5 text-left text-xs hover:bg-accent hover:text-accent-foreground"
+            title={prompt.text}
+          >
+            <span className="mr-1">{prompt.emoji}</span>
+            <span className="line-clamp-2">{prompt.text}</span>
+          </Button>
+        ))}
+      </div>
 
       {/* Подсказка */}
       {mediaFilesCount === 0 && (

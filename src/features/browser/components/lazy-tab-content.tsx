@@ -45,7 +45,7 @@ const getAdapterComponent = (tabValue: string) => {
           default: module.TemplatesAdapterContent,
         })),
       )
-    case "style-templates":
+    case "style_templates":
       return React.lazy(() =>
         import("./tab-adapters/style-templates-adapter-content").then((module) => ({
           default: module.StyleTemplatesAdapterContent,

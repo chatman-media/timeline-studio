@@ -126,8 +126,16 @@ export function usePlaybackTimeSync({
       }
 
       const element = videoElementRef.current
-      if (!element || element.paused || element.ended) {
+      if (!element) {
         rafIdRef.current = requestAnimationFrame(updatePlaybackTime)
+        return
+      }
+
+      // Если видео закончилось - останавливаем цикл
+      // Примечание: НЕ проверяем element.paused здесь, т.к. видео может быть
+      // на паузе пока загружается, но isPlaying уже true. Цикл остановится
+      // через cleanup useEffect когда isPlaying станет false.
+      if (element.ended) {
         return
       }
 

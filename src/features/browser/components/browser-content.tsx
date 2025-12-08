@@ -25,7 +25,7 @@ import { LazyTabContent } from "./lazy-tab-content"
 
 // Контейнер для контента вкладки
 const TabContentContainer = memo(({ activeTab }: { activeTab: string }) => {
-  const contentClassName = "bg-background m-0 flex-1 overflow-auto"
+  const contentClassName = "bg-background m-0 px-0.5 flex-1 overflow-auto"
 
   return (
     <div className={contentClassName}>
@@ -91,14 +91,14 @@ export const BrowserContent = memo(() => {
     isImporting: isImportingMusic,
   } = useMusicImport()
 
-  // Обработчик очистки всех медиафайлов
-  const handleClearAllMedia = useCallback(async () => {
-    if (mediaPool.size === 0) return
+  // Обработчик очистки выбранных медиафайлов
+  const handleClearSelectedMedia = useCallback(async () => {
+    if (selectedFiles.size === 0) return
 
-    const allMediaIds = Array.from(mediaPool.keys())
-    await removeMultipleMedia(allMediaIds)
+    const selectedIds = Array.from(selectedFiles)
+    await removeMultipleMedia(selectedIds)
     await deselectAllFiles()
-  }, [mediaPool, removeMultipleMedia, deselectAllFiles])
+  }, [selectedFiles, removeMultipleMedia, deselectAllFiles])
 
   // Keyboard shortcuts для Browser
   useEffect(() => {
@@ -168,7 +168,7 @@ export const BrowserContent = memo(() => {
   const extraButtons =
     activeTab === "effects" ? (
       <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} />
-    ) : activeTab === "media" && mediaPool.size > 0 ? (
+    ) : activeTab === "media" && selectedFiles.size > 0 ? (
       <AlertDialog>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -178,19 +178,21 @@ export const BrowserContent = memo(() => {
               </Button>
             </AlertDialogTrigger>
           </TooltipTrigger>
-          <TooltipContent>{t("browser.clearAll")}</TooltipContent>
+          <TooltipContent>{t("browser.clearSelected")}</TooltipContent>
         </Tooltip>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("browser.clearAllConfirm.title")}</AlertDialogTitle>
+            <AlertDialogTitle>{t("browser.clearSelectedConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("browser.clearAllConfirm.description")} ({mediaPool.size}{" "}
-              {t("common.files", { count: mediaPool.size })})
+              {t("browser.clearSelectedConfirm.description")} ({selectedFiles.size}{" "}
+              {t("common.files", { count: selectedFiles.size })})
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("browser.clearAllConfirm.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleClearAllMedia}>{t("browser.clearAllConfirm.confirm")}</AlertDialogAction>
+            <AlertDialogCancel>{t("browser.clearSelectedConfirm.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearSelectedMedia}>
+              {t("browser.clearSelectedConfirm.confirm")}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

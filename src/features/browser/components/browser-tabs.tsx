@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 export const TAB_BUTTON_STYLES =
   "h-[50px] text-xs text-gray-600 dark:bg-[#2D2D2D] border-none " +
   "hover:text-gray-900 dark:text-gray-400 dark:hover:bg-background dark:hover:text-gray-100 " +
-  "flex flex-col items-center justify-center gap-1 py-2 px-4 " +
+  "flex flex-col items-center justify-center gap-1 py-2 px-2 " +
   "cursor-pointer rounded-none transition-colors"
 
 export const TAB_ACTIVE_STYLES =
@@ -82,7 +82,7 @@ export const BrowserTabs = memo(({ activeTab, onTabChange }: BrowserTabsProps) =
         <Video className="h-4 w-4" />
         <span>{t("browser.tabs.templates")}</span>
       </TabButton>
-      <TabButton value="style-templates" activeTab={activeTab} onClick={onTabChange} testId="style-templates-tab">
+      <TabButton value="style_templates" activeTab={activeTab} onClick={onTabChange} testId="style_templates-tab">
         <Sticker className="h-4 w-4" />
         <span>{t("browser.tabs.styleTemplates")}</span>
       </TabButton>

@@ -56,11 +56,14 @@ export function useAnalyzerPresets() {
       const newPreset: AnalyzerPreset = {
         id: `custom-${Date.now()}`,
         name: options.name,
+        nameRu: options.name,
         description: options.description,
+        descriptionRu: options.description,
         analyzers: options.analyzers,
         isDefault: false,
         category: "custom",
         estimatedTime: calculateEstimatedTime(options.analyzers),
+        mediaTypes: ["video"],
       }
 
       setCustomPresets((prev) => [...prev, newPreset])
@@ -190,11 +193,14 @@ export function useAnalyzerPresets() {
       const imported: AnalyzerPreset = {
         id: data.id || `imported-${Date.now()}`,
         name: data.name,
+        nameRu: data.nameRu || data.name,
         description: data.description,
-        analyzers: Array.isArray(data.analyzers) ? data.analyzers : [],
+        descriptionRu: data.descriptionRu || data.description,
+        analyzers: Array.isArray(data.analyzers) ? new Set(data.analyzers) : new Set(),
         isDefault: data.isDefault || false,
         category: data.category || "custom",
-        estimatedTime: data.estimatedTime || 0,
+        estimatedTime: data.estimatedTime || "< 1 min",
+        mediaTypes: data.mediaTypes || ["video"],
       }
 
       // Добавляем в кастомные presets

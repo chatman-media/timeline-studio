@@ -11,6 +11,7 @@
  * - Отмена задач анализа
  */
 
+import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import type { AnalysisWorkflow } from "@/domains/ai-services/services/unified-orchestrator"
 import { unifiedOrchestrator } from "@/domains/ai-services/services/unified-orchestrator"
 import type {
@@ -291,14 +292,15 @@ export class AnalysisTaskBridge {
   // ============================================================================
 
   /**
-   * Получить список активных задач анализа
+   * Получить список активных задач анализа + историю из storage
    */
   async getActiveTasks(): Promise<AnalysisTask[]> {
     try {
       logger.debug("Получение активных задач анализа")
 
+      // 1. Получаем активные workflows из orchestrator
       const workflows = unifiedOrchestrator.getActiveWorkflows()
-      const tasks = workflows.map((workflow) => {
+      const activeTasks = workflows.map((workflow) => {
         // Проверяем кэш для актуального прогресса
         const cachedTask = this.tasksCache.get(workflow.workflowId)
         if (cachedTask) {
@@ -311,8 +313,48 @@ export class AnalysisTaskBridge {
         return task
       })
 
-      logger.debug("Активные задачи получены", { count: tasks.length })
-      return tasks
+      // 2. Получаем завершённые анализы из storage (история)
+      const completedTasks: AnalysisTask[] = []
+      try {
+        const storedAnalyses = await analysisStorageService.loadComprehensiveAnalyses()
+        const activeVideoPaths = new Set(activeTasks.map((t) => t.video_path))
+
+        for (const [videoPath, analysis] of Object.entries(storedAnalyses)) {
+          // Пропускаем если уже есть в активных
+          if (activeVideoPaths.has(videoPath)) continue
+
+          const videoName = videoPath.split(/[/\\]/).pop() || videoPath
+          const task: AnalysisTask = {
+            id: analysis.analysis_id,
+            video_path: videoPath,
+            video_name: videoName,
+            status: analysis.status === "completed" ? AnalysisTaskStatus.Completed : AnalysisTaskStatus.Failed,
+            created_at: new Date().toISOString(), // Storage doesn't track creation time
+            started_at: new Date().toISOString(),
+            completed_at: new Date().toISOString(),
+            progress: {
+              percentage: 100,
+              phase: "complete" as any,
+              current_file: videoPath,
+            },
+            error_message: analysis.errors?.length > 0 ? analysis.errors[0] : undefined,
+            results: undefined, // Don't include full results in list
+          }
+          completedTasks.push(task)
+        }
+      } catch (storageError) {
+        logger.debug("Не удалось загрузить историю анализов из storage", { error: storageError })
+      }
+
+      // 3. Объединяем: активные + завершённые из storage
+      const allTasks = [...activeTasks, ...completedTasks]
+
+      logger.debug("Активные задачи получены", {
+        activeCount: activeTasks.length,
+        completedCount: completedTasks.length,
+        totalCount: allTasks.length,
+      })
+      return allTasks
     } catch (error) {
       logger.error("Ошибка получения активных задач", { error })
       throw error

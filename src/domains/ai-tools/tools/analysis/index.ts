@@ -3,6 +3,8 @@
  * Инструменты анализа и обработки контента
  */
 
+// Analysis Results Tools
+export * from "./analysis-results"
 // Audio Analysis Tools
 export * from "./audio-analysis"
 // Multimodal & Person ID Tools
@@ -13,6 +15,7 @@ export * from "./video-analysis"
 // Whisper Tools
 export * from "./whisper"
 
+import { analysisResultsTools } from "./analysis-results"
 import { audioAnalysisTools } from "./audio-analysis"
 import { multimodalTools } from "./multimodal"
 import { personIdentificationTools } from "./person-identification"
@@ -22,6 +25,7 @@ import { whisperTools } from "./whisper"
 
 // Все Analysis инструменты
 export const analysisTools = [
+  ...analysisResultsTools,
   ...videoAnalysisTools,
   ...audioAnalysisTools,
   ...whisperTools,

@@ -1,23 +1,34 @@
 /**
  * Player AI Analysis Hook
- * Интеграция AI анализа с video player для real-time обработки
+ * Интеграция AI Director анализа с video player
+ *
+ * Архитектура:
+ * - При старте анализа запускается AI Director для полного анализа файла
+ * - Результаты кешируются и отображаются в overlay в соответствии с текущим временем
+ * - Поддерживает сцены, объекты и ключевые моменты из AI Director
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import {
+  aiDirectorAnalyzeQuick,
+  type ComprehensiveAnalysisResult,
+} from "@/domains/ai-services/tauri/ai-director-commands"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
 import { usePlayer } from "@/domains/video-editing/providers"
 import { createLogger } from "@/lib/tauri-logger"
-import { FrameCaptureService } from "../services/frame-capture-service"
 
 const logger = createLogger("video-player:use-player-ai-analysis")
 
 interface PlayerAIAnalysisState {
   isAnalyzing: boolean
+  analysisProgress: number // 0-100
   currentScene: SceneInfo | null
   detectedObjects: ObjectDetection[]
   upcomingMoments: KeyMoment[]
-  frameAnalysisRate: number // Frames per second to analyze
+  frameAnalysisRate: number // Используется для частоты обновления UI
+  analysisResult: ComprehensiveAnalysisResult | null
+  error: string | null
 }
 
 export interface PlayerAIAnalysisHook {
@@ -37,86 +48,189 @@ export interface PlayerAIAnalysisHook {
   updateUpcomingMoments?: (moments: KeyMoment[]) => void
 }
 
-export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
-  logger.debug("hook initialized")
+/**
+ * Преобразует результат AI Director в формат SceneInfo для overlay
+ */
+function convertToSceneInfo(analysisResult: ComprehensiveAnalysisResult | null, currentTime: number): SceneInfo | null {
+  if (!analysisResult?.scene_analysis?.scenes) return null
 
-  const { currentTime, isPlaying, duration } = usePlayer()
+  const scenes = analysisResult.scene_analysis.scenes
+  const currentScene = scenes.find((scene) => currentTime >= scene.start_time && currentTime < scene.end_time)
+
+  if (!currentScene) return null
+
+  return {
+    id: `scene-${currentScene.start_time}`,
+    type: currentScene.description?.toLowerCase().includes("dialogue")
+      ? "dialogue"
+      : currentScene.description?.toLowerCase().includes("action")
+        ? "action"
+        : "other",
+    startTime: currentScene.start_time,
+    endTime: currentScene.end_time,
+    duration: currentScene.end_time - currentScene.start_time,
+    confidence: currentScene.confidence,
+  }
+}
+
+/**
+ * Преобразует результат AI Director в формат ObjectDetection для overlay
+ */
+function convertToObjectDetections(analysisResult: ComprehensiveAnalysisResult | null): ObjectDetection[] {
+  if (!analysisResult?.object_detection?.objects) return []
+
+  return analysisResult.object_detection.objects.map((obj: any, index: number) => ({
+    id: `obj-${index}`,
+    label: obj.label || obj.class || "object",
+    confidence: obj.confidence || 0.8,
+    boundingBox: obj.boundingBox ||
+      obj.bounding_box || {
+        x: 10 + ((index * 15) % 60),
+        y: 10 + ((index * 10) % 40),
+        width: 20,
+        height: 30,
+      },
+    frameNumber: obj.frame_number || 0,
+    timestamp: obj.timestamp || 0,
+  }))
+}
+
+/**
+ * Преобразует результат AI Director в формат KeyMoment
+ */
+function convertToKeyMoments(analysisResult: ComprehensiveAnalysisResult | null): KeyMoment[] {
+  if (!analysisResult?.scene_analysis?.scenes) return []
+
+  // Используем сцены с высокой уверенностью как ключевые моменты
+  return analysisResult.scene_analysis.scenes
+    .filter((scene) => scene.confidence > 0.7)
+    .map((scene, index) => ({
+      id: `moment-${index}`,
+      timestamp: scene.start_time,
+      duration: scene.end_time - scene.start_time,
+      type: "visual_highlight" as KeyMoment["type"], // KeyMomentType enum value
+      score: scene.confidence,
+      description: scene.description || `Сцена ${index + 1}`,
+      sceneId: `scene-${scene.start_time}`,
+    }))
+}
+
+export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
+  const { currentVideo, currentTime, isPlaying } = usePlayer()
 
   const [state, setState] = useState<PlayerAIAnalysisState>({
     isAnalyzing: false,
+    analysisProgress: 0,
     currentScene: null,
     detectedObjects: [],
     upcomingMoments: [],
-    frameAnalysisRate: 2, // Анализировать 2 кадра в секунду по умолчанию
+    frameAnalysisRate: 2,
+    analysisResult: null,
+    error: null,
   })
 
-  const [frameCaptureService] = useState(() => new FrameCaptureService())
-  const analysisIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const lastAnalyzedTimeRef = useRef<number>(0)
+  const updateIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const lastAnalyzedPathRef = useRef<string | null>(null)
+  const isAnalyzingRef = useRef(false)
 
-  // Запуск real-time анализа
-  const startRealtimeAnalysis = useCallback(() => {
-    if (state.isAnalyzing) return
+  // Обновление текущей сцены на основе currentTime
+  // Оптимизация: используем useRef для предотвращения лишних обновлений состояния
+  const lastSceneIdRef = useRef<string | null>(null)
 
-    setState((prev) => ({ ...prev, isAnalyzing: true }))
+  useEffect(() => {
+    if (!state.analysisResult || !state.isAnalyzing) return
 
-    // Анализ с заданной частотой
-    const intervalMs = 1000 / state.frameAnalysisRate
+    const currentScene = convertToSceneInfo(state.analysisResult, currentTime)
 
-    analysisIntervalRef.current = setInterval(async () => {
-      // Анализируем только если воспроизведение идет
-      if (!isPlaying) return
+    // Избегаем обновления если сцена не изменилась
+    if (currentScene?.id === lastSceneIdRef.current) return
+    lastSceneIdRef.current = currentScene?.id ?? null
 
-      // Избегаем повторного анализа того же времени
-      if (Math.abs(currentTime - lastAnalyzedTimeRef.current) < 0.1) return
+    const detectedObjects = convertToObjectDetections(state.analysisResult)
 
-      lastAnalyzedTimeRef.current = currentTime
+    setState((prev) => ({
+      ...prev,
+      currentScene,
+      detectedObjects,
+    }))
+  }, [currentTime, state.analysisResult, state.isAnalyzing])
 
-      try {
-        // TODO: В новой архитектуре с backend синхронизацией нужно реализовать
-        // захват кадров через backend API вместо прямого доступа к video элементу
+  // Запуск анализа через AI Director
+  const startRealtimeAnalysis = useCallback(async () => {
+    if (isAnalyzingRef.current) return
 
-        // Временно отключаем анализ кадров
-        logger.debug("frame analysis disabled - needs backend implementation", { currentTime })
+    const videoPath = currentVideo?.path
+    if (!videoPath) {
+      logger.warn("No video path available for analysis")
+      setState((prev) => ({ ...prev, error: "Видео не загружено" }))
+      return
+    }
 
-        // Временная симуляция анализа
-        setState((prev) => ({
-          ...prev,
-          currentScene: {
-            id: `scene-${Math.floor(currentTime / 10)}`,
-            type: "dialogue",
-            startTime: Math.floor(currentTime / 10) * 10,
-            endTime: Math.floor(currentTime / 10) * 10 + 10,
-            duration: 10,
-            confidence: 0.85,
-          },
-          detectedObjects: [
-            {
-              id: `obj-${Date.now()}-1`,
-              label: "person",
-              confidence: 0.92,
-              boundingBox: {
-                x: 20,
-                y: 15,
-                width: 30,
-                height: 60,
-              },
-              frameNumber: Math.floor(currentTime * 30), // Assuming 30fps
-              timestamp: currentTime,
-            },
-          ],
-        }))
-      } catch (error) {
-        logger.error("frame analysis error", { error })
-      }
-    }, intervalMs)
-  }, [state.isAnalyzing, state.frameAnalysisRate, isPlaying, currentTime, frameCaptureService])
+    // Если уже анализировали этот файл - используем кеш
+    if (lastAnalyzedPathRef.current === videoPath && state.analysisResult) {
+      logger.debug("Using cached analysis result")
+      setState((prev) => ({ ...prev, isAnalyzing: true }))
+      return
+    }
+
+    isAnalyzingRef.current = true
+    setState((prev) => ({
+      ...prev,
+      isAnalyzing: true,
+      analysisProgress: 10,
+      error: null,
+    }))
+
+    try {
+      logger.info("Starting AI Director analysis", { videoPath })
+
+      // Показываем прогресс во время анализа
+      setState((prev) => ({ ...prev, analysisProgress: 30 }))
+
+      // Запускаем быстрый анализ через AI Director
+      const result = await aiDirectorAnalyzeQuick(videoPath)
+
+      logger.info("AI Director analysis completed", {
+        analysisId: result.analysis_id,
+        sceneCount: result.scene_analysis?.scene_count,
+        objectCount: result.object_detection?.total_objects,
+      })
+
+      lastAnalyzedPathRef.current = videoPath
+
+      // Преобразуем результаты
+      const keyMoments = convertToKeyMoments(result)
+      const currentScene = convertToSceneInfo(result, currentTime)
+      const detectedObjects = convertToObjectDetections(result)
+
+      setState((prev) => ({
+        ...prev,
+        analysisProgress: 100,
+        analysisResult: result,
+        upcomingMoments: keyMoments,
+        currentScene,
+        detectedObjects,
+        error: null,
+      }))
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      logger.error("AI Director analysis failed", { error: errorMessage })
+      setState((prev) => ({
+        ...prev,
+        isAnalyzing: false,
+        analysisProgress: 0,
+        error: errorMessage,
+      }))
+    } finally {
+      isAnalyzingRef.current = false
+    }
+  }, [currentVideo?.path, state.analysisResult, currentTime])
 
   // Остановка анализа
   const stopRealtimeAnalysis = useCallback(() => {
-    if (analysisIntervalRef.current) {
-      clearInterval(analysisIntervalRef.current)
-      analysisIntervalRef.current = null
+    if (updateIntervalRef.current) {
+      clearInterval(updateIntervalRef.current)
+      updateIntervalRef.current = null
     }
 
     setState((prev) => ({
@@ -127,22 +241,12 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
     }))
   }, [])
 
-  // Установка частоты анализа
-  const setFrameAnalysisRate = useCallback(
-    (fps: number) => {
-      // Ограничиваем от 0.5 до 10 fps для производительности
-      const clampedFps = Math.max(0.5, Math.min(10, fps))
-
-      setState((prev) => ({ ...prev, frameAnalysisRate: clampedFps }))
-
-      // Перезапускаем анализ с новой частотой
-      if (state.isAnalyzing) {
-        stopRealtimeAnalysis()
-        startRealtimeAnalysis()
-      }
-    },
-    [state.isAnalyzing, stopRealtimeAnalysis, startRealtimeAnalysis],
-  )
+  // Установка частоты обновления UI
+  const setFrameAnalysisRate = useCallback((fps: number) => {
+    // Ограничиваем от 0.5 до 10 fps для производительности
+    const clampedFps = Math.max(0.5, Math.min(10, fps))
+    setState((prev) => ({ ...prev, frameAnalysisRate: clampedFps }))
+  }, [])
 
   // Получение информации о текущей сцене
   const getCurrentSceneInfo = useCallback(() => {
@@ -171,22 +275,29 @@ export function usePlayerAIAnalysis(): PlayerAIAnalysisHook {
     setState((prev) => ({ ...prev, upcomingMoments: moments }))
   }, [])
 
-  // Автоматическая остановка при остановке воспроизведения
+  // Сброс кеша при смене видео
   useEffect(() => {
-    if (!isPlaying && state.isAnalyzing) {
-      stopRealtimeAnalysis()
+    if (currentVideo?.path !== lastAnalyzedPathRef.current) {
+      setState((prev) => ({
+        ...prev,
+        analysisResult: null,
+        currentScene: null,
+        detectedObjects: [],
+        upcomingMoments: [],
+        analysisProgress: 0,
+        error: null,
+      }))
     }
-  }, [isPlaying, state.isAnalyzing, stopRealtimeAnalysis])
+  }, [currentVideo?.path])
 
   // Очистка при размонтировании
   useEffect(() => {
     return () => {
-      if (analysisIntervalRef.current) {
-        clearInterval(analysisIntervalRef.current)
+      if (updateIntervalRef.current) {
+        clearInterval(updateIntervalRef.current)
       }
-      frameCaptureService.dispose()
     }
-  }, [frameCaptureService])
+  }, [])
 
   return {
     state,

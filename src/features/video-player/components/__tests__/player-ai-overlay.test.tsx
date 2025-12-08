@@ -13,10 +13,13 @@ describe("PlayerAIOverlay", () => {
   const mockAIAnalysis: PlayerAIAnalysisHook = {
     state: {
       isAnalyzing: false,
+      analysisProgress: 0,
       currentScene: null,
       detectedObjects: [],
       upcomingMoments: [],
       frameAnalysisRate: 2,
+      analysisResult: null,
+      error: null,
     },
     startRealtimeAnalysis: vi.fn(),
     stopRealtimeAnalysis: vi.fn(),

@@ -217,7 +217,7 @@ vi.mock("../../components/lazy-tab-content", () => ({
       "transitions",
       "subtitles",
       "templates",
-      "style-templates",
+      "style_templates",
     ]
 
     // Если вкладка неизвестная, возвращаем null
@@ -245,13 +245,13 @@ vi.mock("../../components/lazy-tab-content", () => ({
                   transitions: "Переход выбран:",
                   subtitles: "Стиль субтитров выбран:",
                   templates: "Шаблон выбран:",
-                  "style-templates": "Стилистический шаблон выбран:",
+                  style_templates: "Стилистический шаблон выбран:",
                 }
                 const message = typeMessages[activeTab]
                 if (message) {
                   if (activeTab === "templates") {
                     console.log(message, item.id)
-                  } else if (activeTab === "style-templates") {
+                  } else if (activeTab === "style_templates") {
                     console.log(message, undefined)
                   } else {
                     console.log(message, item.name)
@@ -276,7 +276,7 @@ const mockFiltersAdapter = { type: "filters" }
 const mockTransitionsAdapter = { type: "transitions" }
 const mockSubtitlesAdapter = { type: "subtitles" }
 const mockTemplatesAdapter = { type: "templates" }
-const mockStyleTemplatesAdapter = { type: "style-templates" }
+const mockStyleTemplatesAdapter = { type: "style_templates" }
 
 // Переменная для управления тем, какой адаптер возвращается
 const currentAdapters = {
@@ -581,12 +581,12 @@ describe("BrowserContent", () => {
       expect(adapterType.textContent).toBe("templates")
     })
 
-    it("должен использовать style-templates адаптер для style-templates вкладки", () => {
-      mockBrowserState.activeTab = "style-templates"
+    it("должен использовать style_templates адаптер для style_templates вкладки", () => {
+      mockBrowserState.activeTab = "style_templates"
       render(<BrowserContent />)
 
       const adapterType = screen.getByTestId("adapter-type")
-      expect(adapterType.textContent).toBe("style-templates")
+      expect(adapterType.textContent).toBe("style_templates")
     })
   })
 
@@ -674,7 +674,7 @@ describe("BrowserContent", () => {
 
     it("должен логировать выбор стилистического шаблона", () => {
       const consoleSpy = vi.spyOn(console, "log")
-      mockBrowserState.activeTab = "style-templates"
+      mockBrowserState.activeTab = "style_templates"
       render(<BrowserContent />)
 
       const selectBtn = screen.getByTestId("item-select-btn")

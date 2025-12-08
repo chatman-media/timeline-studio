@@ -198,7 +198,7 @@ export interface AIDirectorConfig {
   enable_mcp_agents: boolean
 
   // AI Provider integration
-  ai_provider: "Ollama" | "OpenAI" | "Anthropic" | null // Option<AIProvider>
+  ai_provider: "ollama" | "openai" | "anthropic" | null // Option<AIProvider> - lowercase to match Rust serde
   ai_model: string | null // Option<String>
   ai_api_key: string | null // Option<String>
   enable_ai_enhanced_analysis: boolean

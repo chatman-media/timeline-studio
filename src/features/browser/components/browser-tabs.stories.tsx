@@ -31,7 +31,7 @@ const meta = {
         "filters",
         "transitions",
         "templates",
-        "style-templates",
+        "style_templates",
         "scenarios",
       ],
       description: "Активная вкладка",
@@ -116,7 +116,7 @@ export const TemplatesTab: Story = {
  */
 export const StyleTemplatesTab: Story = {
   args: {
-    activeTab: "style-templates",
+    activeTab: "style_templates",
   },
 }
 

@@ -15,16 +15,26 @@ import { container } from "@/core"
 import type { UnlistenFn } from "@/core/ports"
 import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@/domains/ai-director"
 import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
+import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type {
   AnalyzerType,
   BatchAnalysisProgress,
   FileAnalysisProgress as FileProgress,
+  VlmAnalysisOptions,
 } from "../types/analysis-progress"
-import { createInitialFileProgress, updateAnalyzerProgress } from "../types/analysis-progress"
+import { createInitialFileProgress, updateAnalyzerProgress, VLM_MODELS } from "../types/analysis-progress"
 
 const logger = createLogger("useAIDirectorAnalysisV2")
+
+/** Опции для запуска анализа */
+export interface BatchAnalysisOptions {
+  /** Включенные анализаторы */
+  analyzers: Set<AnalyzerType>
+  /** Опции VLM анализа (если vlm_analysis включен) */
+  vlmOptions?: VlmAnalysisOptions
+}
 
 export interface UseAIDirectorAnalysisV2Return {
   // State
@@ -34,13 +44,20 @@ export interface UseAIDirectorAnalysisV2Return {
   errors: AnalysisError[]
 
   // Actions
-  startBatchAnalysis: (filePaths: string[], analyzers: Set<AnalyzerType>) => Promise<void>
+  startBatchAnalysis: (
+    filePaths: string[],
+    analyzers: Set<AnalyzerType>,
+    vlmOptions?: VlmAnalysisOptions,
+  ) => Promise<void>
   cancelAnalysis: () => void
   clearErrors: () => void
   reset: () => void
 
   // Computed
   overallProgress: number
+
+  // VLM helpers
+  availableVlmModels: typeof VLM_MODELS
 }
 
 /**
@@ -59,21 +76,39 @@ function safePercentage(value: unknown): number {
  * ВАЖНО: Возвращает ПОЛНЫЙ AIDirectorConfig со ВСЕМИ обязательными полями,
  * так как Rust struct требует все поля при десериализации.
  * Используем null вместо undefined для Option<T> полей (Rust convention).
+ *
+ * @param analyzers - Set включенных анализаторов
+ * @param vlmOptions - Опции VLM анализа (модель, количество фреймов и т.д.)
  */
-function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): AIDirectorConfig {
+function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>, vlmOptions?: VlmAnalysisOptions): AIDirectorConfig {
+  const hasVlmAnalysis = analyzers.has("vlm_analysis")
+
+  // Получаем информацию о выбранной VLM модели для оптимальных настроек
+  const vlmModel = vlmOptions?.model ?? "moondream2"
+  const vlmModelInfo = VLM_MODELS[vlmModel]
+  const vlmNumFrames = vlmOptions?.numFrames ?? vlmModelInfo?.recommendedFrames ?? 5
+  const vlmTemperature = vlmOptions?.temperature ?? 0.7
+  const vlmMaxTokens = vlmOptions?.maxTokens ?? 1024
+
   return {
     // Performance
-    performance_mode: "Balanced",
+    performance_mode: "balanced",
 
     // Core analysis toggles
-    enable_audio_analysis: analyzers.has("audio_quality") || analyzers.has("speech_recognition"),
+    enable_audio_analysis:
+      analyzers.has("audio_quality") ||
+      analyzers.has("speech_recognition") ||
+      analyzers.has("speech_detection") ||
+      analyzers.has("music_detection") ||
+      analyzers.has("sound_events") ||
+      analyzers.has("silence_detection"),
     enable_scene_detection: analyzers.has("scene_detection"),
     enable_video_analysis: true, // Всегда включено для видео анализа
     enable_vision_analysis: true, // Базовый vision анализ (всегда включен)
 
     // Detection features
-    enable_face_detection: analyzers.has("face_detection"),
-    enable_face_analysis: analyzers.has("face_detection"), // Включаем вместе с detection
+    enable_face_detection: analyzers.has("face_detection") || analyzers.has("person_recognition"),
+    enable_face_analysis: analyzers.has("face_detection") || analyzers.has("person_recognition"),
     enable_object_detection: analyzers.has("object_detection"),
     enable_object_analysis: analyzers.has("object_detection"), // Анализ детектированных объектов
     enable_emotion_analysis: analyzers.has("mood_analysis"), // Emotion analysis через mood
@@ -83,7 +118,7 @@ function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): AIDirectorConfig {
     enable_content_classification: analyzers.has("content_classification"),
     enable_composition_analysis: analyzers.has("composition_analysis"),
     enable_mood_analysis: analyzers.has("mood_analysis"),
-    enable_quality_analysis: analyzers.has("quality_assessment"),
+    enable_quality_analysis: analyzers.has("quality_assessment") || analyzers.has("visual_quality"),
 
     // Processing limits
     max_processing_time: 300, // 5 минут (не null, а конкретное значение)
@@ -95,20 +130,20 @@ function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>): AIDirectorConfig {
     generate_editing_recommendations: false, // Отключено по умолчанию для скорости
     enable_mcp_agents: false,
 
-    // AI Provider integration (все отключено по умолчанию)
-    ai_provider: null, // Option<AIProvider> = None -> null в JSON
-    ai_model: null, // Option<String> = None -> null в JSON
-    ai_api_key: null, // Option<String> = None -> null в JSON
-    enable_ai_enhanced_analysis: false,
-    enable_ai_descriptions: false,
-    enable_ai_mood_analysis: false,
+    // AI Provider integration - включаем Ollama если используется VLM
+    ai_provider: hasVlmAnalysis ? "ollama" : null, // ollama для локальных VLM моделей
+    ai_model: hasVlmAnalysis ? vlmModel : null, // Используем выбранную VLM модель
+    ai_api_key: null, // Не требуется для Ollama
+    enable_ai_enhanced_analysis: hasVlmAnalysis,
+    enable_ai_descriptions: hasVlmAnalysis,
+    enable_ai_mood_analysis: analyzers.has("mood_analysis"),
 
     // Vision Language Model
-    enable_vision_language_model: analyzers.has("vlm_analysis"),
-    vlm_model: analyzers.has("vlm_analysis") ? "moondream2" : null, // Ollama model или null
-    vlm_num_frames: 5, // Количество фреймов для анализа
-    vlm_temperature: 0.7,
-    vlm_max_tokens: 1024,
+    enable_vision_language_model: hasVlmAnalysis,
+    vlm_model: hasVlmAnalysis ? vlmModel : null,
+    vlm_num_frames: vlmNumFrames,
+    vlm_temperature: vlmTemperature,
+    vlm_max_tokens: vlmMaxTokens,
 
     // Parallel processing (Phase 3)
     enable_parallel_processing: true, // Включено по умолчанию для скорости
@@ -225,6 +260,9 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
             if (fileIndex < updatedFiles.length) {
               updatedFiles[fileIndex] = {
                 ...updatedFiles[fileIndex],
+                // Обновляем id на тот, который пришёл от бэкенда для дальнейшего отслеживания
+                id: payload.file_id || updatedFiles[fileIndex].id,
+                fileId: payload.file_id || updatedFiles[fileIndex].fileId,
                 status: "analyzing",
                 startTime: new Date().toISOString(),
               }
@@ -567,99 +605,123 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
   }, [eventService])
 
   // Start batch analysis
-  const startBatchAnalysis = useCallback(async (filePaths: string[], analyzers: Set<AnalyzerType>) => {
-    try {
-      logger.infoSync("[useAIDirectorAnalysisV2] Запуск пакетного анализа", {
-        filesCount: filePaths.length,
-        analyzers: Array.from(analyzers),
-      })
+  const startBatchAnalysis = useCallback(
+    async (filePaths: string[], analyzers: Set<AnalyzerType>, vlmOptions?: VlmAnalysisOptions) => {
+      try {
+        logger.infoSync("[useAIDirectorAnalysisV2] Запуск пакетного анализа", {
+          filesCount: filePaths.length,
+          analyzers: Array.from(analyzers),
+          vlmModel: vlmOptions?.model ?? "moondream2",
+        })
 
-      // Reset state
-      setIsAnalyzing(true)
-      setErrors([])
-      currentFileIndexRef.current = 0
+        // Reset state
+        setIsAnalyzing(true)
+        setErrors([])
+        currentFileIndexRef.current = 0
 
-      // Create initial file progress
-      const initialFiles = filePaths.map((filePath, index) => {
-        const fileName = filePath.split("/").pop() || filePath
-        return createInitialFileProgress(`file-${index}`, filePath, fileName, Array.from(analyzers))
-      })
-      setFilesProgress(initialFiles)
+        // Create initial file progress
+        const initialFiles = filePaths.map((filePath, index) => {
+          const fileName = filePath.split("/").pop() || filePath
+          return createInitialFileProgress(`file-${index}`, filePath, fileName, Array.from(analyzers))
+        })
+        setFilesProgress(initialFiles)
 
-      // Create batch progress
-      const batchId = `batch-${Date.now()}`
-      setBatchProgress({
-        id: batchId,
-        status: "running",
-        files: initialFiles,
-        startTime: new Date().toISOString(),
-        stats: {
-          totalFiles: filePaths.length,
-          completedFiles: 0,
-          failedFiles: 0,
-          totalProgress: 0,
-        },
-      })
+        // Create batch progress
+        const batchId = `batch-${Date.now()}`
+        setBatchProgress({
+          id: batchId,
+          status: "running",
+          files: initialFiles,
+          startTime: new Date().toISOString(),
+          stats: {
+            totalFiles: filePaths.length,
+            completedFiles: 0,
+            failedFiles: 0,
+            totalProgress: 0,
+          },
+        })
 
-      // Convert analyzers to config
-      const config = mapAnalyzersToConfig(analyzers)
-      logger.infoSync("[useAIDirectorAnalysisV2] Config", {
-        performance_mode: config.performance_mode,
-        enabledAnalyzers: Array.from(analyzers),
-      })
+        // Convert analyzers to config with VLM options
+        const config = mapAnalyzersToConfig(analyzers, vlmOptions)
+        logger.infoSync("[useAIDirectorAnalysisV2] Config", {
+          performance_mode: config.performance_mode,
+          enabledAnalyzers: Array.from(analyzers),
+          vlm_model: config.vlm_model,
+          vlm_num_frames: config.vlm_num_frames,
+        })
 
-      // Call backend command (v2 with events) - using domain function
-      // NOTE: Бэкенд анализирует файлы последовательно и отправляет real-time события
-      const results = await aiDirectorAnalyzeBatch(filePaths, config as AIDirectorConfig)
+        // Call backend command (v2 with events) - using domain function
+        // NOTE: Бэкенд анализирует файлы последовательно и отправляет real-time события
+        const results = await aiDirectorAnalyzeBatch(filePaths, config as AIDirectorConfig)
 
-      logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis completed", {
-        resultsCount: results.length,
-      })
+        logger.infoSync("[useAIDirectorAnalysisV2] Batch analysis completed", {
+          resultsCount: results.length,
+        })
 
-      // Update final state
-      setIsAnalyzing(false)
-      setBatchProgress((prev) =>
-        prev
-          ? {
-              ...prev,
-              status: "completed" as const,
-              endTime: new Date().toISOString(),
-              stats: prev.stats
-                ? {
-                    ...prev.stats,
-                    completedFiles: results.length,
-                  }
-                : {
-                    totalFiles: prev.totalFiles || 0,
-                    completedFiles: results.length,
-                    failedFiles: 0,
-                    totalProgress: 100,
-                  },
+        // 💾 Save results to analysis storage for history
+        for (let i = 0; i < results.length; i++) {
+          const result = results[i]
+          const videoPath = filePaths[i]
+          if (result && videoPath) {
+            try {
+              // Cast to storage type - types are compatible at runtime
+              await analysisStorageService.saveComprehensiveAnalysis(videoPath, result as any, { overwrite: true })
+              logger.infoSync("[useAIDirectorAnalysisV2] Saved analysis to storage", { videoPath })
+            } catch (saveError) {
+              logger.errorSync("[useAIDirectorAnalysisV2] Failed to save analysis", {
+                videoPath,
+                error: saveError,
+              })
             }
-          : null,
-      )
-    } catch (error) {
-      logger.errorSync("[useAIDirectorAnalysisV2] Ошибка пакетного анализа", error as Record<string, unknown>)
-      setIsAnalyzing(false)
-      setErrors((prev) => [
-        ...prev,
-        {
-          analysisId: "batch",
-          stage: "batch",
-          error: String(error),
-        },
-      ])
-      setBatchProgress((prev) =>
-        prev
-          ? {
-              ...prev,
-              status: "error",
-              endTime: new Date().toISOString(),
-            }
-          : null,
-      )
-    }
-  }, [])
+          }
+        }
+
+        // Update final state
+        setIsAnalyzing(false)
+        setBatchProgress((prev) =>
+          prev
+            ? {
+                ...prev,
+                status: "completed" as const,
+                endTime: new Date().toISOString(),
+                stats: prev.stats
+                  ? {
+                      ...prev.stats,
+                      completedFiles: results.length,
+                    }
+                  : {
+                      totalFiles: prev.totalFiles || 0,
+                      completedFiles: results.length,
+                      failedFiles: 0,
+                      totalProgress: 100,
+                    },
+              }
+            : null,
+        )
+      } catch (error) {
+        logger.errorSync("[useAIDirectorAnalysisV2] Ошибка пакетного анализа", error as Record<string, unknown>)
+        setIsAnalyzing(false)
+        setErrors((prev) => [
+          ...prev,
+          {
+            analysisId: "batch",
+            stage: "batch",
+            error: String(error),
+          },
+        ])
+        setBatchProgress((prev) =>
+          prev
+            ? {
+                ...prev,
+                status: "error",
+                endTime: new Date().toISOString(),
+              }
+            : null,
+        )
+      }
+    },
+    [],
+  )
 
   // Cancel analysis
   const cancelAnalysis = useCallback(() => {
@@ -731,5 +793,8 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
 
     // Computed
     overallProgress,
+
+    // VLM helpers
+    availableVlmModels: VLM_MODELS,
   }
 }
