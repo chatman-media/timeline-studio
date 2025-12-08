@@ -23,7 +23,17 @@ export function VideoPlayer() {
   const {
     settings: { aspectRatio },
   } = useProjectSettings()
-  const { currentVideo: video, setDuration, pause, isPlaying, currentTime } = usePlayer()
+  const {
+    currentVideo: video,
+    setDuration,
+    pause,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    isSeeking,
+    setRealPlayingState,
+  } = usePlayer()
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const { project } = useTimeline()
@@ -38,10 +48,12 @@ export function VideoPlayer() {
   useVideoEvents(videoRef, {
     onEnded: () => {
       logger.debug("Video ended")
+      setRealPlayingState(false)
       pause().catch((error) => logger.error("Failed to pause on video end", { error }))
     },
     onError: (error) => {
       logger.error("Video playback error", { error })
+      setRealPlayingState(false)
     },
     onDurationChange: (duration) => {
       logger.debug("Video duration changed", { duration })
@@ -51,23 +63,83 @@ export function VideoPlayer() {
       logger.debug("Video metadata loaded", metadata)
       setDuration(metadata.duration)
     },
+    onPause: () => {
+      logger.debug("Video paused (native event)")
+      setRealPlayingState(false)
+    },
   })
 
-  // Синхронизация состояния isPlaying с video элементом
+  // Слушаем событие "playing" - оно срабатывает когда видео РЕАЛЬНО начинает воспроизведение
+  // (в отличие от "play" которое срабатывает при запросе на воспроизведение)
   useEffect(() => {
     const videoElement = videoRef.current
     if (!videoElement) return
 
+    const handlePlaying = () => {
+      logger.debug("Video playing (real playback started)")
+      setRealPlayingState(true)
+    }
+
+    videoElement.addEventListener("playing", handlePlaying)
+    return () => {
+      videoElement.removeEventListener("playing", handlePlaying)
+    }
+  }, [setRealPlayingState, video?.id])
+
+  // Синхронизация состояния isPlaying с video элементом
+  useEffect(() => {
+    const videoElement = videoRef.current
+    logger.debug("isPlaying sync effect", {
+      isPlaying,
+      hasVideoElement: !!videoElement,
+      videoId: video?.id,
+      readyState: videoElement?.readyState,
+      paused: videoElement?.paused,
+    })
+
+    if (!videoElement) return
+
     if (isPlaying) {
-      videoElement.play().catch((error) => {
-        logger.error("Failed to play video", { error })
-      })
+      // Уже играет - не вызываем play() повторно (защита от двойного аудио)
+      if (!videoElement.paused) {
+        logger.debug("Video already playing, skipping play()")
+        return
+      }
+
+      // Проверяем, что видео достаточно загружено для воспроизведения
+      // readyState >= 2 означает HAVE_CURRENT_DATA (есть данные для текущего кадра)
+      if (videoElement.readyState >= 2) {
+        logger.debug("Calling videoElement.play() - readyState OK")
+        videoElement.play().catch((error) => {
+          logger.error("Failed to play video", { error })
+        })
+      } else {
+        logger.debug("Waiting for canplay event", { readyState: videoElement.readyState })
+        // Если видео не готово, ждём события canplay
+        const handleCanPlay = () => {
+          // Повторная проверка - может видео уже играет из-за другого события
+          if (!videoElement.paused) {
+            logger.debug("canplay: Video already playing, skipping")
+            videoElement.removeEventListener("canplay", handleCanPlay)
+            return
+          }
+          logger.debug("canplay event fired, calling play()")
+          videoElement.play().catch((error) => {
+            logger.error("Failed to play video after canplay", { error })
+          })
+          videoElement.removeEventListener("canplay", handleCanPlay)
+        }
+        videoElement.addEventListener("canplay", handleCanPlay)
+        return () => {
+          videoElement.removeEventListener("canplay", handleCanPlay)
+        }
+      }
     } else {
       videoElement.pause()
     }
-  }, [isPlaying])
+  }, [isPlaying, video?.id])
 
-  // Синхронизация currentTime с video элементом (для seek)
+  // Синхронизация currentTime с video элементом (только при seek, не во время воспроизведения)
   useEffect(() => {
     const videoElement = videoRef.current
     if (!videoElement) return
@@ -75,13 +147,26 @@ export function VideoPlayer() {
     // Валидация времени: если значение слишком большое, это Unix timestamp - игнорируем
     if (currentTime > 100000) return
 
-    // Синхронизируем только если разница больше 0.5 секунды
-    // чтобы избежать постоянных обновлений при воспроизведении
-    if (Math.abs(videoElement.currentTime - currentTime) > 0.5) {
+    // НЕ синхронизируем во время воспроизведения - это вызывает audio glitches
+    // Синхронизируем только когда видео на паузе или при явном seek
+    if (isPlaying && !isSeeking) return
+
+    // Синхронизируем только если разница больше 0.1 секунды
+    if (Math.abs(videoElement.currentTime - currentTime) > 0.1) {
       videoElement.currentTime = currentTime
-      logger.debug("Synced video currentTime", { currentTime })
+      logger.debug("Synced video currentTime", { currentTime, isSeeking })
     }
-  }, [currentTime])
+  }, [currentTime, isPlaying, isSeeking])
+
+  // Синхронизация громкости с video элементом
+  useEffect(() => {
+    const videoElement = videoRef.current
+    if (!videoElement) return
+
+    // volume в контексте уже в диапазоне 0-1
+    videoElement.volume = Math.max(0, Math.min(1, volume))
+    logger.debug("Synced video volume", { volume })
+  }, [volume])
 
   // Вычисляем соотношение сторон для AspectRatio
   const aspectRatioValue = aspectRatio.value.width / aspectRatio.value.height
@@ -201,8 +286,6 @@ export function VideoPlayer() {
                 <PlayerAIOverlay className="z-10" />
                 {/* WebGL Effects Preview */}
                 {hasEffects() && showEffectsPreview && <TimelinePreview className="absolute inset-0 z-2" />}
-                {/* AI Analysis Overlay */}
-                <PlayerAIOverlay className="z-10" />
               </div>
             </AspectRatio>
           </div>
@@ -224,7 +307,7 @@ export function VideoPlayer() {
           </div>
         )}
       </div>
-      <PlayerControls currentTime={currentTime} file={video} />
+      <PlayerControls currentTime={currentTime} file={video} duration={duration} />
     </div>
   )
 }

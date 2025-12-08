@@ -89,6 +89,13 @@ export function useUserSettings() {
     [orchestrator],
   )
 
+  const updatePlayerVideoSource = useCallback(
+    (playerVideoSource: "browser" | "timeline") => {
+      orchestrator.updateUserSettings({ playerVideoSource })
+    },
+    [orchestrator],
+  )
+
   const updateScreenshotsPath = useCallback(
     (screenshotsPath: string) => {
       orchestrator.updateUserSettings({ screenshotsPath })
@@ -141,6 +148,7 @@ export function useUserSettings() {
     updateAutoSave,
     updateAutoSaveInterval,
     updatePlayerVolume,
+    updatePlayerVideoSource,
     updateScreenshotsPath,
     updatePlayerScreenshotsPath,
     updateSettings,

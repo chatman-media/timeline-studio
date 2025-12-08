@@ -72,9 +72,14 @@ interface PlayerControlsProps {
    * Медиафайл для воспроизведения (опционально)
    */
   file: MediaFile
+
+  /**
+   * Длительность видео в секундах (из провайдера)
+   */
+  duration?: number
 }
 
-export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
+export function PlayerControls({ currentTime, file, duration: providerDuration }: PlayerControlsProps) {
   const { t } = useTranslation()
   const {
     isPlaying,
@@ -148,6 +153,17 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
     return currentTime
   }, [currentTime, localDisplayTime])
 
+  // Эффективная длительность: приоритет providerDuration (из video элемента), затем file.duration
+  const effectiveDuration = useMemo(() => {
+    if (typeof providerDuration === "number" && Number.isFinite(providerDuration) && providerDuration > 0) {
+      return providerDuration
+    }
+    if (typeof file.duration === "number" && Number.isFinite(file.duration) && file.duration > 0) {
+      return file.duration
+    }
+    return 0
+  }, [providerDuration, file.duration])
+
   // Получаем frameTime с помощью функции getFrameTime
   const frameTime = getFrameTime(file)
 
@@ -182,10 +198,10 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
   }, [isPlaying, play, pause])
 
   const handleSkipForward = useCallback(() => {
-    const newTime = Math.min(currentTime + frameTime, file.endTime ?? file.duration ?? 0)
+    const newTime = Math.min(currentTime + frameTime, file.endTime ?? effectiveDuration)
     // Используем immediate seek для мгновенной навигации
     immediateSeek(newTime).catch((error) => logger.error("Operation failed", { error }))
-  }, [currentTime, frameTime, file.endTime, file.duration, immediateSeek])
+  }, [currentTime, frameTime, file.endTime, effectiveDuration, immediateSeek])
 
   const handleSkipBackward = useCallback(() => {
     const newTime = Math.max(currentTime - frameTime, file.startTime ?? 0)
@@ -269,19 +285,19 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
               <div
                 className="absolute top-0 left-0 h-full rounded-full bg-teal dark:bg-white transition-all duration-200 ease-out"
                 style={{
-                  width: `${typeof calculatedDisplayTime === "number" && !Number.isNaN(calculatedDisplayTime) && typeof file.duration === "number" && !Number.isNaN(file.duration) && file.duration > 0 ? (Math.max(0, calculatedDisplayTime) / file.duration) * 100 : 0}%`,
+                  width: `${typeof calculatedDisplayTime === "number" && !Number.isNaN(calculatedDisplayTime) && typeof effectiveDuration === "number" && !Number.isNaN(effectiveDuration) && effectiveDuration > 0 ? (Math.max(0, calculatedDisplayTime) / effectiveDuration) * 100 : 0}%`,
                 }}
               />
               <div
                 className="absolute top-1/2 h-[14px] w-[14px] -translate-y-1/2 rounded-full border border-teal dark:border-teal bg-teal transition-all duration-200 ease-out"
                 style={{
-                  left: `calc(${typeof calculatedDisplayTime === "number" && !Number.isNaN(calculatedDisplayTime) && typeof file.duration === "number" && !Number.isNaN(file.duration) && file.duration > 0 ? (Math.max(0, calculatedDisplayTime) / file.duration) * 100 : 0}% - 7px)`,
+                  left: `calc(${typeof calculatedDisplayTime === "number" && !Number.isNaN(calculatedDisplayTime) && typeof effectiveDuration === "number" && !Number.isNaN(effectiveDuration) && effectiveDuration > 0 ? (Math.max(0, calculatedDisplayTime) / effectiveDuration) * 100 : 0}% - 7px)`,
                 }}
               />
               <Slider
                 value={[Math.max(0, calculatedDisplayTime)]}
                 min={0}
-                max={file.duration ?? 100}
+                max={effectiveDuration ?? 100}
                 step={0.001}
                 onValueChange={handleTimeChange}
                 className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
@@ -290,12 +306,12 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
               />
             </div>
           </div>
-          <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-black dark:text-white ml-1">
+          <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-black dark:text-white ml-1 font-mono min-w-[85px] text-center inline-block">
             {formatTimeToTimecode(calculatedDisplayTime)}
           </span>
           <span className="mb-[3px]">/</span>
-          <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-background dark:text-white">
-            {formatTimeToTimecode(file.duration)}
+          <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-background dark:text-white font-mono min-w-[85px] text-center inline-block">
+            {formatTimeToTimecode(effectiveDuration)}
           </span>
 
           {/* Скрытый элемент для обновления компонента при воспроизведении */}
@@ -313,7 +329,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
           <div className="flex items-center gap-2">
             {/* Индикатор источника видео - всегда отображается и работает как переключатель */}
             <Button
-              className={`h-8 w-8 cursor-pointer ${videoSource === "browser" ? "bg-[#45444b] hover:bg-[#45444b]/80" : "hover:bg-[#45444b]/80"}`}
+              className="h-8 w-8 cursor-pointer"
               variant="ghost"
               size="icon"
               title={
@@ -323,7 +339,6 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
               }
               onClick={handleToggleSource}
             >
-              {/* Используем isHydrated для условного рендеринга иконки */}
               {videoSource === "timeline" ? <TvMinimalPlay className="h-8 w-8" /> : <ImagePlay className="h-8 w-8" />}
             </Button>
 
@@ -340,7 +355,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
             >
               {<UnfoldHorizontal className="h-8 w-8" />}
             </Button>
-            <PrerenderControls currentTime={currentTime} duration={file.duration ?? 0} />
+            <PrerenderControls currentTime={currentTime} duration={effectiveDuration ?? 0} />
 
             {/* Управление скоростью воспроизведения */}
             {file.probeData && <PlaybackSpeedControl />}
@@ -390,7 +405,7 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
               size="icon"
               title={isPlaying ? t("timeline.controls.pause") : t("timeline.controls.play")}
               onClick={handlePlayPause}
-              disabled={isChangingCamera || !file.probeData}
+              disabled={isChangingCamera}
             >
               {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
             </Button>

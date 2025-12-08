@@ -38,6 +38,7 @@ export interface UserSettingsContextType {
   screenshotsPath: string // Путь для сохранения скриншотов
   playerScreenshotsPath: string // Путь для сохранения скриншотов из плеера
   playerVolume: number // Громкость плеера (0-100)
+  playerVideoSource: "browser" | "timeline" // Источник видео в плеере
 
   // AI сервисы
   openAiApiKey: string // API ключ для OpenAI
@@ -130,6 +131,7 @@ const initialContext: UserSettingsContextType = {
   screenshotsPath: "", // Путь для скриншотов (будет установлен из AppDirectories при инициализации)
   playerScreenshotsPath: "", // Путь для скриншотов плеера (будет установлен из AppDirectories при инициализации)
   playerVolume: 100, // Громкость плеера по умолчанию (100%)
+  playerVideoSource: "browser" as const, // Источник видео по умолчанию - браузер
 
   // AI сервисы - пустые по умолчанию
   openAiApiKey: "", // Пустой API ключ OpenAI

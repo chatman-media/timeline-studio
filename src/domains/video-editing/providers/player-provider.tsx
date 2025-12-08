@@ -72,6 +72,8 @@ interface PlayerContextType {
   setIsResizableMode: (isResizableMode: boolean) => void
   setPreviewMedia: (media: MediaFile | null) => void
   setVideoSource: (source: "browser" | "timeline") => void
+  // Устанавливает реальное состояние воспроизведения (вызывается из video-player при событии playing/pause)
+  setRealPlayingState: (isPlaying: boolean) => void
 
   // Действия для эффектов/фильтров (локальные preview)
   applyEffect: (effect: { id: string; name: string; params: any }) => void
@@ -144,6 +146,8 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     isChangingCamera: false,
     isRecording: false,
     isResizableMode: false,
+    isPlayRequested: false, // Запрос на воспроизведение (пользователь нажал play)
+    realIsPlaying: false, // Реальное состояние воспроизведения (видео действительно играет)
 
     // Speed ramping
     speedRampingEnabled: false,
@@ -151,7 +155,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     basePlaybackRate: 1.0,
     currentVideo: null as MediaFile | null,
     previewMedia: null as MediaFile | null,
-    videoSource: "timeline" as "browser" | "timeline",
+    videoSource: (userSettings.playerVideoSource || "browser") as "browser" | "timeline",
     appliedEffects: [] as Array<{ id: string; name: string; params: any }>,
     appliedFilters: [] as Array<{ id: string; name: string; params: any }>,
     appliedTemplate: null as { id: string; name: string } | null,
@@ -201,8 +205,16 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
   // это скорее всего Unix timestamp или мусор - сбрасываем на 0
   const validatedInitialTime =
     playbackState?.current_time && playbackState.current_time < 100000 ? playbackState.current_time : 0
+
+  // Определяем isPlaying для времени: используем realIsPlaying (реальное состояние video элемента)
+  // Это гарантирует что время начнёт обновляться только когда видео действительно играет
+  const effectiveIsPlaying = isVideoPlayerServiceEnabled
+    ? (playbackState?.is_playing ?? false)
+    : localState.realIsPlaying
+
   const currentDisplayTime = usePlaybackTimeSync({
-    isPlaying: playbackState?.is_playing ?? false,
+    isPlaying: effectiveIsPlaying,
+    videoId: localState.currentVideo?.id, // Сбрасываем время при смене видео
     syncInterval: 1000, // Синхронизация с backend раз в секунду
     onBackendSync: handleBackendTimeSync,
     initialTime: validatedInitialTime,
@@ -273,21 +285,44 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
   )
 
   const play = async () => {
+    // Fallback: используем локальное состояние когда backend отключен
     if (!isVideoPlayerServiceEnabled) {
+      // Устанавливаем только запрос на воспроизведение
+      // realIsPlaying будет установлен через setRealPlayingState когда видео реально начнёт играть
+      setLocalState((prev) => ({ ...prev, isPlayRequested: true }))
+      logger.debug("play (local fallback) - request sent")
       return
     }
     await executeCommand({ type: "Play", params: {} })
   }
 
   const pause = async () => {
+    // Fallback: используем локальное состояние когда backend отключен
     if (!isVideoPlayerServiceEnabled) {
+      setLocalState((prev) => ({ ...prev, isPlayRequested: false, realIsPlaying: false }))
+      logger.debug("pause (local fallback)")
       return
     }
     await executeCommand({ type: "Pause", params: {} })
   }
 
   const seek = async (time: number) => {
+    // Fallback: обновляем локальное время когда backend отключен
     if (!isVideoPlayerServiceEnabled) {
+      // Находим video элемент и устанавливаем время напрямую
+      const videoElement = document.querySelector("video[data-player-video]") as HTMLVideoElement
+      if (videoElement) {
+        const wasPlaying = localState.realIsPlaying || localState.isPlayRequested
+        videoElement.currentTime = time
+        logger.debug("seek (local fallback)", { time, wasPlaying })
+
+        // Если видео было в режиме воспроизведения, продолжаем играть после seek
+        if (wasPlaying && videoElement.paused) {
+          videoElement.play().catch((error) => {
+            logger.error("Failed to resume playback after seek", { error })
+          })
+        }
+      }
       return
     }
     await executeCommand({ type: "Seek", params: { time } })
@@ -302,13 +337,22 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   // Player-specific backend команды
   const playerSetMedia = async (mediaId: string, startTime?: number) => {
-    if (!isVideoPlayerServiceEnabled) {
-      return
-    }
-
     // Проверяем, что mediaId не пустой
     if (!mediaId) {
       logger.error("playerSetMedia called with empty mediaId")
+      return
+    }
+
+    // Fallback: когда backend отключен, просто логируем
+    if (!isVideoPlayerServiceEnabled) {
+      logger.debug("playerSetMedia (local fallback)", { mediaId, startTime })
+      // Устанавливаем начальное время на video элементе
+      if (startTime !== undefined && startTime > 0) {
+        const videoElement = document.querySelector("video[data-player-video]") as HTMLVideoElement
+        if (videoElement) {
+          videoElement.currentTime = startTime
+        }
+      }
       return
     }
 
@@ -316,18 +360,36 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
   }
 
   const playerSetVolumeBackend = async (volume: number) => {
+    if (!isVideoPlayerServiceEnabled) {
+      setLocalState((prev) => ({ ...prev, volume }))
+      return
+    }
     await executeCommand(AppCommands.playerSetVolume(volume))
   }
 
   const playerSelectClip = async (clipId: string) => {
+    if (!isVideoPlayerServiceEnabled) {
+      logger.debug("playerSelectClip (local fallback)", { clipId })
+      return
+    }
     await executeCommand(AppCommands.playerSelectClip(clipId))
   }
 
   const playerClearSelection = async () => {
+    if (!isVideoPlayerServiceEnabled) {
+      logger.debug("playerClearSelection (local fallback)")
+      return
+    }
     await executeCommand(AppCommands.playerClearSelection())
   }
 
   const playerSetSourceBackend = async (source: "browser" | "timeline") => {
+    // Fallback: обновляем локальное состояние
+    if (!isVideoPlayerServiceEnabled) {
+      setLocalState((prev) => ({ ...prev, videoSource: source }))
+      logger.debug("playerSetSource (local fallback)", { source })
+      return
+    }
     await executeCommand(AppCommands.playerSetSource(source))
   }
 
@@ -357,7 +419,19 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   // Локальные действия
   const setCurrentVideo = (video: MediaFile | null) => {
-    setLocalState((prev) => ({ ...prev, currentVideo: video }))
+    setLocalState((prev) => ({
+      ...prev,
+      currentVideo: video,
+      duration: 0, // Сбрасываем duration при смене видео
+      isPlayRequested: false, // Сбрасываем запрос на воспроизведение
+      realIsPlaying: false, // Сбрасываем реальное состояние воспроизведения
+    }))
+  }
+
+  // Устанавливает реальное состояние воспроизведения (вызывается из video-player)
+  const setRealPlayingState = (isPlaying: boolean) => {
+    setLocalState((prev) => ({ ...prev, realIsPlaying: isPlaying }))
+    logger.debug("setRealPlayingState", { isPlaying })
   }
 
   const setVolume = (volume: number) => {
@@ -399,6 +473,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   const setVideoSource = (source: "browser" | "timeline") => {
     setLocalState((prev) => ({ ...prev, videoSource: source }))
+    userSettings.updatePlayerVideoSource(source) // Сохраняем в user settings
   }
 
   // Эффекты и фильтры (локальные для preview)
@@ -474,21 +549,30 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   // Контекстное значение
   const contextValue: PlayerContextType = {
-    // Backend состояние с локальным временем для плавного обновления
-    currentTime: currentDisplayTime, // L1: Локальное время, обновляемое 60fps
-    isPlaying: playbackState ? playbackState.is_playing : defaultPlaybackState.isPlaying,
-    playbackRate: playbackState ? playbackState.playback_rate : defaultPlaybackState.playbackRate,
-
-    // Локальное состояние с override для backend значений
+    // Сначала spread локального состояния
     ...localState,
 
-    // Override некоторых значений из backend (только если backend состояние существует)
-    volume: playbackState ? playbackState.volume || localState.volume : localState.volume,
-    videoSource: playbackState ? playbackState.video_source || localState.videoSource : localState.videoSource,
-    duration: playbackState ? playbackState.duration : localState.duration,
-    isSeeking: playbackState ? playbackState.is_seeking : localState.isSeeking,
-    isVideoLoading: playbackState ? playbackState.is_loading : localState.isVideoLoading,
-    selectedClipId: playbackState ? playbackState.selected_clip_id || null : null,
+    // Backend состояние с локальным временем для плавного обновления
+    currentTime: currentDisplayTime, // L1: Локальное время, обновляемое 60fps
+    // Используем isPlayRequested для UI (кнопка play/pause), но время обновляется по realIsPlaying
+    isPlaying: isVideoPlayerServiceEnabled
+      ? playbackState
+        ? playbackState.is_playing
+        : defaultPlaybackState.isPlaying
+      : localState.isPlayRequested,
+    playbackRate: playbackState ? playbackState.playback_rate : defaultPlaybackState.playbackRate,
+
+    // Override некоторых значений из backend (только если backend состояние существует и сервис включен)
+    volume:
+      isVideoPlayerServiceEnabled && playbackState ? playbackState.volume || localState.volume : localState.volume,
+    videoSource:
+      isVideoPlayerServiceEnabled && playbackState
+        ? playbackState.video_source || localState.videoSource
+        : localState.videoSource,
+    duration: isVideoPlayerServiceEnabled && playbackState ? playbackState.duration : localState.duration,
+    isSeeking: isVideoPlayerServiceEnabled && playbackState ? playbackState.is_seeking : localState.isSeeking,
+    isVideoLoading: isVideoPlayerServiceEnabled && playbackState ? playbackState.is_loading : localState.isVideoLoading,
+    selectedClipId: isVideoPlayerServiceEnabled && playbackState ? playbackState.selected_clip_id || null : null,
 
     // Локальные действия
     setCurrentVideo,
@@ -502,6 +586,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     setIsResizableMode,
     setPreviewMedia,
     setVideoSource,
+    setRealPlayingState,
     applyEffect,
     applyFilter,
     applyTemplate,

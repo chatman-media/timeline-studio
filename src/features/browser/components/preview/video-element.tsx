@@ -69,7 +69,6 @@ export const VideoElement = memo(
         className="absolute inset-0 h-full w-full object-cover focus:outline-none"
         style={{
           transition: "opacity 0.2s ease-in-out",
-          backgroundColor: "black",
           zIndex: 1,
           objectFit: "cover",
         }}

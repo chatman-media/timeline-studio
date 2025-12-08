@@ -252,6 +252,7 @@ const createMockPlayerContext = (overrides = {}) => ({
   setIsResizableMode: vi.fn(),
   setPreviewMedia: vi.fn(),
   setVideoSource: vi.fn(),
+  setRealPlayingState: vi.fn(),
   applyEffect: vi.fn(),
   applyFilter: vi.fn(),
   applyTemplate: vi.fn(),
@@ -578,13 +579,15 @@ describe("PlayerControls", () => {
     it("должен правильно отображать время файла", () => {
       const fileWithTime = {
         ...mockFile,
-        startTime: "00:01:05:15" as any, // Передаем строку в нужном формате (временный обход типов)
-        duration: "00:02:00:00" as any, // Передаем строку в нужном формате (временный обход типов)
+        startTime: 65.5, // В секундах
+        duration: 120, // 2 минуты в секундах
       }
-      renderWithProviders(<PlayerControls currentTime={65.5} file={fileWithTime} />)
+      // currentTime=65.5 секунд: 1 минута 5 секунд 12 кадров (при 25fps)
+      // duration=120 секунд через prop: 2 минуты
+      renderWithProviders(<PlayerControls currentTime={65.5} file={fileWithTime} duration={120} />)
 
-      // Компонент отображает startTime и duration из файла
-      expect(screen.getByText("00:01:05:15")).toBeInTheDocument()
+      // Компонент отображает currentTime и duration в timecode формате
+      expect(screen.getByText("00:01:05:12")).toBeInTheDocument()
       expect(screen.getByText("00:02:00:00")).toBeInTheDocument()
     })
 

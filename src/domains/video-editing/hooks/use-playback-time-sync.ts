@@ -7,6 +7,11 @@ export interface PlaybackTimeSyncOptions {
   isPlaying: boolean
 
   /**
+   * ID текущего видео - при изменении сбрасывается время
+   */
+  videoId?: string | null
+
+  /**
    * CSS селектор для поиска video элемента
    * @default 'video[data-player-video]'
    */
@@ -54,6 +59,7 @@ export interface PlaybackTimeSyncOptions {
  */
 export function usePlaybackTimeSync({
   isPlaying,
+  videoId,
   videoSelector = "video[data-player-video]",
   syncInterval = 1000,
   onBackendSync,
@@ -63,6 +69,13 @@ export function usePlaybackTimeSync({
   const rafIdRef = useRef<number | undefined>(undefined)
   const lastBackendSyncRef = useRef(0)
   const videoElementRef = useRef<HTMLVideoElement | null>(null)
+
+  // Сбрасываем время и кеш при смене видео
+  useEffect(() => {
+    setCurrentDisplayTime(0)
+    videoElementRef.current = null
+    lastBackendSyncRef.current = 0
+  }, [videoId])
 
   // Обновляем время при изменении initialTime (важно для тестов и синхронизации с backend)
   useEffect(() => {

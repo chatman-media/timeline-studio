@@ -42,6 +42,7 @@ describe("StoreService", () => {
       screenshotsPath: "",
       playerScreenshotsPath: "",
       playerVolume: 80,
+      playerVideoSource: "browser" as const,
       openAiApiKey: "test-key",
       claudeApiKey: "",
       youtubeClientId: "",

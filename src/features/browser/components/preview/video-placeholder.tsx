@@ -28,7 +28,7 @@ export const VideoPlaceholder = memo(
     const [isPlaying, setIsPlaying] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasError, setHasError] = useState(false)
-    const { playerSetSource, playerSetMedia } = usePlayer()
+    const { playerSetSource, playerSetMedia, setCurrentVideo } = usePlayer()
     const { isAdded: isResourceAdded } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
 
@@ -43,6 +43,8 @@ export const VideoPlaceholder = memo(
         }
 
         try {
+          // Устанавливаем видео в плеер (важно для локального fallback режима)
+          setCurrentVideo(file)
           await playerSetSource("browser")
           await playerSetMedia(file.id, hoverTime || 0)
           logger.debugSync(`[VideoPlaceholder] Video sent to main player: ${file.name} at time ${hoverTime || 0}`)
@@ -71,7 +73,7 @@ export const VideoPlaceholder = memo(
           })
         }
       },
-      [hoverTime, file, playerSetSource, playerSetMedia, isPlaying, isAdded],
+      [hoverTime, file, playerSetSource, playerSetMedia, setCurrentVideo, isPlaying, isAdded],
     )
 
     const handleMouseMove = useCallback(
@@ -170,10 +172,9 @@ export const VideoPlaceholder = memo(
       >
         <div
           className={cn(
-            "group relative h-full w-full cursor-pointer",
+            "group relative h-full w-full cursor-pointer bg-muted",
             isAdded && "opacity-50 grayscale cursor-not-allowed",
           )}
-          style={{ backgroundColor: "#1a1a1a" }}
           onClick={handleClick}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -208,18 +209,18 @@ export const VideoPlaceholder = memo(
           {/* Показываем имя файла и статус загрузки - всегда когда не полностью загружено */}
           {(!isLoaded || !previewData || file.isLoadingMetadata) && (
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center"
+              className="absolute inset-0 flex flex-col items-center justify-center bg-muted/80 text-center"
               style={{ zIndex: 2 }}
             >
-              <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
+              <div className="truncate px-2 text-sm text-foreground/90 font-medium" style={{ maxWidth: "90%" }}>
                 {file.name}
               </div>
               {hasError ? (
-                <div className="mt-2 text-xs text-yellow-400/90">Ожидаем превью...</div>
+                <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400">Ожидаем превью...</div>
               ) : file.isLoadingMetadata || (!previewData && !file.thumbnailPath) ? (
-                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка метаданных...</div>
+                <div className="mt-2 text-xs text-muted-foreground animate-pulse">Загрузка метаданных...</div>
               ) : !isLoaded ? (
-                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка видео...</div>
+                <div className="mt-2 text-xs text-muted-foreground animate-pulse">Загрузка видео...</div>
               ) : null}
             </div>
           )}

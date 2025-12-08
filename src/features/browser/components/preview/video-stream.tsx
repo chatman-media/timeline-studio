@@ -259,11 +259,10 @@ export const VideoStream = memo(
         }}
       >
         <div
-          className={cn("group relative h-full w-full", isAdded && "opacity-50 grayscale cursor-not-allowed")}
+          className={cn("group relative h-full w-full bg-muted", isAdded && "opacity-50 grayscale cursor-not-allowed")}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}
-          style={{ backgroundColor: "#1a1a1a" }}
         >
           {/* Preview background - показывается сразу */}
           {(previewData || file.thumbnailPath) && (
@@ -301,13 +300,13 @@ export const VideoStream = memo(
           {/* Показываем overlay только если нет превью и видео не загружено */}
           {!isLoaded && !previewData && !file.thumbnailPath && (
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center pointer-events-none"
+              className="absolute inset-0 flex flex-col items-center justify-center bg-muted/80 text-center pointer-events-none"
               style={{ zIndex: 2 }}
             >
-              <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
+              <div className="truncate px-2 text-sm text-foreground/90 font-medium" style={{ maxWidth: "90%" }}>
                 {file.name}
               </div>
-              <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка...</div>
+              <div className="mt-2 text-xs text-muted-foreground animate-pulse">Загрузка...</div>
             </div>
           )}
 
