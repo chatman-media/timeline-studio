@@ -24,7 +24,7 @@ interface TimelineProps {
  * @param style Optional inline styles for the root element.
  */
 export function Timeline({ className, style }: TimelineProps = {}) {
-  const [activeView, setActiveView] = useState<WorkspaceView>("timeline")
+  const [activeView, setActiveView] = useState<WorkspaceView>("analysis") // Анализ по умолчанию
   const settings = useUserSettings()
 
   // Выбираем компонент Timeline в зависимости от настроек виртуализации

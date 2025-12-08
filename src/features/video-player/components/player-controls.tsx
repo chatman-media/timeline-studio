@@ -29,6 +29,32 @@ import { cn } from "@/lib/utils"
 const logger = createLogger("video-player:player-controls")
 
 import { usePlayer } from "@/domains/video-editing/providers"
+
+/**
+ * Форматирует время в секундах в timecode формат (HH:MM:SS:FF)
+ * Валидирует значение и возвращает "00:00:00:00" для некорректных значений
+ */
+function formatTimeToTimecode(timeInSeconds: number | undefined | null, fps = 25): string {
+  // Валидация: проверяем на undefined/null, не-число, NaN, и Unix timestamp
+  if (
+    timeInSeconds === undefined ||
+    timeInSeconds === null ||
+    typeof timeInSeconds !== "number" ||
+    !Number.isFinite(timeInSeconds) ||
+    timeInSeconds < 0 ||
+    timeInSeconds > 100000 // Больше ~27 часов - вероятно Unix timestamp
+  ) {
+    return "00:00:00:00"
+  }
+
+  const hours = Math.floor(timeInSeconds / 3600)
+  const minutes = Math.floor((timeInSeconds % 3600) / 60)
+  const seconds = Math.floor(timeInSeconds % 60)
+  const frames = Math.floor((timeInSeconds % 1) * fps)
+
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${frames.toString().padStart(2, "0")}`
+}
+
 import { useDebouncedSeek } from "../hooks/use-debounced-seek"
 import { useFullscreen } from "../hooks/use-fullscreen"
 import { PlaybackSpeedControl } from "./playback-speed-control"
@@ -265,11 +291,11 @@ export function PlayerControls({ currentTime, file }: PlayerControlsProps) {
             </div>
           </div>
           <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-black dark:text-white ml-1">
-            {file.startTime ?? "00:00:00:00"}
+            {formatTimeToTimecode(calculatedDisplayTime)}
           </span>
           <span className="mb-[3px]">/</span>
           <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-background dark:text-white">
-            {file.duration ?? "00:00:00:00"}
+            {formatTimeToTimecode(file.duration)}
           </span>
 
           {/* Скрытый элемент для обновления компонента при воспроизведении */}

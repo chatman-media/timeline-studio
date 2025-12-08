@@ -264,13 +264,31 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           isImage: file.isImage,
           isAudio: file.isAudio,
         })
-        await executeCommand({
+        const result = await executeCommand({
           type: "AddMedia",
           params: {
             path: file.path,
             media_type: mediaType,
           },
         })
+
+        // Получаем media_id из результата и помечаем как ресурс
+        const resultObj = result as { media_id?: string; id?: string } | null
+        const mediaId = resultObj?.media_id || resultObj?.id
+        if (mediaId) {
+          await executeCommand({
+            type: "SetMediaAsResource",
+            params: {
+              media_id: mediaId,
+              is_resource: true,
+            },
+          })
+          logInfo("ResourcesProvider: Media marked as resource", {
+            path: file.path,
+            mediaId,
+          })
+        }
+
         logInfo("ResourcesProvider: Media added successfully", {
           path: file.path,
           localType: file.type,
@@ -320,13 +338,31 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
 
       // Добавляем музыку через backend команду (используем Rust MediaType "Audio")
       try {
-        await executeCommand({
+        const result = await executeCommand({
           type: "AddMedia",
           params: {
             path: file.path,
             media_type: "Audio" as TauriMediaType, // Rust expects "Audio" (PascalCase)
           },
         })
+
+        // Получаем media_id из результата и помечаем как ресурс
+        const resultObj = result as { media_id?: string; id?: string } | null
+        const mediaId = resultObj?.media_id || resultObj?.id
+        if (mediaId) {
+          await executeCommand({
+            type: "SetMediaAsResource",
+            params: {
+              media_id: mediaId,
+              is_resource: true,
+            },
+          })
+          logInfo("ResourcesProvider: Music marked as resource", {
+            path: file.path,
+            mediaId,
+          })
+        }
+
         logInfo("ResourcesProvider: Music added successfully", { path: file.path })
       } catch (error) {
         logError("ResourcesProvider: Failed to add music", {
@@ -609,21 +645,34 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     })
 
     const mediaPool = backendState.project.media_pool ?? null
+
     if (!mediaPool) {
       logInfo("ResourcesProvider: MediaPool from backend is empty, using empty defaults")
     } else {
       const itemCount = Object.values(mediaPool.items || {}).length
-      logInfo("ResourcesProvider: MediaPool loaded from backend", { itemCount })
+      const resourceCount = Object.values(mediaPool.items || {}).filter(
+        (item) => item && typeof item === "object" && (item as MediaItem).is_resource === true,
+      ).length
+      logInfo("ResourcesProvider: MediaPool loaded from backend", {
+        itemCount,
+        resourceCount,
+      })
     }
 
-    // Конвертируем медиа из backend в MediaResource формат
+    // Конвертируем ТОЛЬКО медиа с is_resource=true в MediaResource формат
+    // is_resource устанавливается когда пользователь явно добавляет файл через "+"
     const mediaResources: MediaResource[] = mediaPool?.items
       ? Object.values(mediaPool.items)
           .filter((item): item is MediaItem => {
             if (!item || typeof item !== "object") return false
             const mediaItem = item as MediaItem
             const mediaType = String(mediaItem.media_type)
-            return "media_type" in mediaItem && (mediaType === "Video" || mediaType === "Image")
+            // Проверяем что это видео/изображение И is_resource = true
+            return (
+              "media_type" in mediaItem &&
+              (mediaType === "Video" || mediaType === "Image") &&
+              mediaItem.is_resource === true
+            )
           })
           .map((item) => {
             // Проверяем кэш метаданных для этого файла
@@ -674,13 +723,15 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           })
       : []
 
+    // Конвертируем ТОЛЬКО музыку с is_resource=true в MusicResource формат
     const musicResources: MusicResource[] = mediaPool?.items
       ? Object.values(mediaPool.items)
           .filter((item): item is MediaItem => {
             if (!item || typeof item !== "object") return false
             const mediaItem = item as MediaItem
             const mediaType = String(mediaItem.media_type)
-            return "media_type" in mediaItem && mediaType === "Audio"
+            // Проверяем что это аудио И is_resource = true
+            return "media_type" in mediaItem && mediaType === "Audio" && mediaItem.is_resource === true
           })
           .map((item) => {
             // Проверяем кэш метаданных для этого файла
@@ -928,18 +979,24 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
       return resourcesState.styleTemplateResources.some((resource) => resource.template.id === template.id)
     },
     isAdded: (resourceId: string, type: string) => {
-      const resources = getResourcesByType(type)
-      // Для медиа и музыки проверяем также по path
+      // Для медиа и музыки проверяем флаг is_resource в backend state
+      // is_resource = true означает что файл явно добавлен в ресурсы пользователем (через "+")
       if (type === "media" || type === "music") {
-        const mediaRes = resources as (MediaResource | MusicResource)[]
-        return mediaRes.some(
-          (resource) =>
-            resource.id === resourceId ||
-            resource.resourceId === resourceId ||
-            resource.file.path === resourceId || // Проверка по path
-            resource.file.id === resourceId, // Проверка по ID файла
-        )
+        const mediaPool = backendState?.project?.media_pool
+        if (!mediaPool?.items) return false
+
+        // Ищем медиа по resourceId и проверяем флаг is_resource
+        const mediaItem = Object.values(mediaPool.items).find((item) => {
+          if (!item || typeof item !== "object") return false
+          const media = item as MediaItem
+          return media.id === resourceId
+        }) as MediaItem | undefined
+
+        return mediaItem?.is_resource === true
       }
+
+      // Для других типов ресурсов (эффекты, фильтры и т.д.) проверяем по старой логике
+      const resources = getResourcesByType(type)
       return resources.some((resource) => resource.id === resourceId || resource.resourceId === resourceId)
     },
   }

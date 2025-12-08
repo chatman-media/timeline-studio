@@ -33,14 +33,14 @@ export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMedi
   }
 }
 
-import type { Fragment as DomainFragment } from "@/domains/ai-services/types/montage-planner"
+import type { UnifiedFragment } from "@/domains/ai-services/types/unified"
 // Типы для Fragment
 import type { Fragment as FeatureFragment } from "../types"
 
 /**
  * Конвертирует Fragment для использования в AI Services domain
  */
-export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>): Partial<DomainFragment> {
+export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>): Partial<UnifiedFragment> {
   // Конвертируем score в analysis если есть
   const analysis = fragment.score
     ? {
@@ -74,7 +74,7 @@ export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>)
         speechPresence: false,
       }
 
-  const converted: Partial<DomainFragment> = {
+  const converted: Partial<UnifiedFragment> = {
     id: fragment.id,
     videoId: fragment.videoId,
     startTime: fragment.startTime,
@@ -82,12 +82,14 @@ export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>)
     duration: fragment.duration,
     objects: fragment.objects || [],
     people: fragment.people || [],
+    tags: fragment.tags || [],
+    description: fragment.description,
     analysis,
   }
 
   // Конвертируем sourceFile если есть
   if (fragment.sourceFile) {
-    converted.sourceFile = convertToAIServicesMediaFile(fragment.sourceFile as FeatureMediaFile)
+    converted.sourceFile = convertToAIServicesMediaFile(fragment.sourceFile as FeatureMediaFile) as any
   }
 
   return converted

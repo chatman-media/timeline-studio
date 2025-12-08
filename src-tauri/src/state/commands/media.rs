@@ -115,6 +115,7 @@ impl MediaCommands {
       thumbnail: None,
       usage_count: 0,
       in_timeline: false,
+      is_resource: false, // Not added to resources panel yet (only imported)
       bin: None,
       added_at,
       proxy_path: None, // Proxy will be generated and updated later
@@ -233,6 +234,54 @@ impl MediaCommands {
       .ok();
 
     CommandResult::success(None)
+  }
+
+  /// Set media item as resource (added to resources panel by user)
+  pub async fn set_media_as_resource(&self, media_id: String, is_resource: bool) -> CommandResult {
+    let mut state = self.state.write().await;
+
+    let project = match state.project.as_mut() {
+      Some(p) => p,
+      None => return CommandResult::error("No project open".to_string()),
+    };
+
+    // Get media item and update is_resource flag
+    if let Some(media_item) = project.media_pool.items.get_mut(&media_id) {
+      media_item.is_resource = is_resource;
+      log::info!(
+        "Set media {} is_resource={} (name: {})",
+        media_id,
+        is_resource,
+        media_item.name
+      );
+    } else {
+      return CommandResult::error(format!("Media item not found: {}", media_id));
+    }
+
+    state.mark_dirty();
+    let version = state.version;
+
+    // Publish event
+    self
+      .event_bus
+      .publish(
+        ProjectEvent::MediaUpdated {
+          media_id: media_id.clone(),
+          changes: crate::state::events::MediaChanges {
+            name: None,
+            thumbnail: None,
+          },
+        },
+        "command_handler".to_string(),
+        version,
+      )
+      .await
+      .ok();
+
+    CommandResult::success(Some(serde_json::json!({
+      "media_id": media_id,
+      "is_resource": is_resource
+    })))
   }
 
   /// Remove duplicate media items from media_pool (keep only first occurrence by path)

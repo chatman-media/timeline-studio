@@ -275,6 +275,9 @@ pub struct MediaItem {
   /// Is this media used on the timeline
   #[serde(default)]
   pub in_timeline: bool,
+  /// Is this media added to resources panel (explicitly by user via "+" button)
+  #[serde(default)]
+  pub is_resource: bool,
   /// Bin/folder for organization (None = root)
   #[serde(default)]
   pub bin: Option<String>,

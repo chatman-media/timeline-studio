@@ -9,9 +9,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { isServiceEnabled } from "@/config/service-config"
 import { container } from "@/core/container"
 import type { MediaFile } from "@/domains/media-management"
+import { useUserSettings } from "@/domains/project-management"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { usePlaybackTimeSync } from "@/domains/video-editing/hooks"
-import { useUserSettings } from "@/domains/project-management"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { type CommandPriority, CommandQueue } from "../services/command-queue"
@@ -197,11 +197,15 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   // Используем хук для плавного обновления времени (L1: 60fps)
   const playbackState = backendState?.playback_state
+  // Валидация времени: если значение слишком большое (>100000 секунд ≈ 27 часов),
+  // это скорее всего Unix timestamp или мусор - сбрасываем на 0
+  const validatedInitialTime =
+    playbackState?.current_time && playbackState.current_time < 100000 ? playbackState.current_time : 0
   const currentDisplayTime = usePlaybackTimeSync({
     isPlaying: playbackState?.is_playing ?? false,
     syncInterval: 1000, // Синхронизация с backend раз в секунду
     onBackendSync: handleBackendTimeSync,
-    initialTime: playbackState?.current_time ?? 0,
+    initialTime: validatedInitialTime,
   })
 
   /**
@@ -358,7 +362,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
 
   const setVolume = (volume: number) => {
     setLocalState((prev) => ({ ...prev, volume }))
-    userSettings.handlePlayerVolumeChange(volume * 100) // Конвертируем обратно в проценты для user settings
+    userSettings.updatePlayerVolume(volume * 100) // Конвертируем обратно в проценты для user settings
   }
 
   const setDuration = (duration: number) => {

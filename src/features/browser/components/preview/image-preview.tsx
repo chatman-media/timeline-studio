@@ -43,7 +43,7 @@ export const ImagePreview = memo(function ImagePreview({
   showFileName = false,
   dimensions = [16, 9],
 }: ImagePreviewProps) {
-  const { playerSetSource, playerSetMedia } = usePlayer()
+  const { playerSetSource, playerSetMedia, setCurrentVideo } = usePlayer()
 
   const calculateWidth = (): number => {
     const [width, height] = dimensions
@@ -125,6 +125,9 @@ export const ImagePreview = memo(function ImagePreview({
         return
       }
 
+      // Устанавливаем изображение в локальное состояние плеера
+      setCurrentVideo(file)
+
       logger.debugSync("Отправляем изображение в главный плеер", {
         fileId: file.id,
         fileName: file.name,
@@ -143,7 +146,7 @@ export const ImagePreview = memo(function ImagePreview({
         fileId: file.id,
       })
     }
-  }, [file, playerSetSource, playerSetMedia])
+  }, [file, playerSetSource, playerSetMedia, setCurrentVideo])
 
   return (
     <div
@@ -233,7 +236,7 @@ export const ImagePreview = memo(function ImagePreview({
         <Image size={size > 100 ? 16 : 12} />
       </div>
       <FavoriteButton file={file} size={size} type="media" />
-      <AddMediaButton resource={{ id: file.id, type: "media" } as TimelineResource} size={size} type="media" />
+      <AddMediaButton resource={{ id: file.id, type: "media", file } as TimelineResource} size={size} type="media" />
     </div>
   )
 })

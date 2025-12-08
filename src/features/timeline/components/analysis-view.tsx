@@ -34,12 +34,7 @@ export function AnalysisView() {
         <div className="text-sm font-medium text-muted-foreground">
           {showSettings ? "Настройка нового анализа" : "Результаты анализов"}
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowSettings(!showSettings)}
-          className="gap-2"
-        >
+        <Button variant="ghost" size="sm" onClick={() => setShowSettings(!showSettings)} className="gap-2">
           {showSettings ? (
             <>
               <ChevronUp className="h-4 w-4" />
@@ -69,9 +64,7 @@ export function AnalysisView() {
                   Всего файлов: {totalFiles} • Завершено: {completedFiles} • В процессе: {analyzingFiles}
                 </p>
               ) : (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Нет запущенных анализов
-                </p>
+                <p className="text-xs text-muted-foreground mt-1">Нет запущенных анализов</p>
               )}
             </div>
 
@@ -80,11 +73,7 @@ export function AnalysisView() {
 
             {/* Список анализов */}
             <div className="flex-1 overflow-hidden">
-              <AnalysisList
-                files={filteredFiles}
-                selectedFileId={selectedFileId}
-                onSelectFile={setSelectedFileId}
-              />
+              <AnalysisList files={filteredFiles} selectedFileId={selectedFileId} onSelectFile={setSelectedFileId} />
             </div>
           </div>
         </ResizablePanel>

@@ -57,7 +57,7 @@ export const AudioPreview = memo(function AudioPreview({
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
-  const { playerSetSource, playerSetMedia } = usePlayer()
+  const { playerSetSource, playerSetMedia, setCurrentVideo, play } = usePlayer()
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -112,6 +112,9 @@ export const AudioPreview = memo(function AudioPreview({
           return
         }
 
+        // Устанавливаем аудио в локальное состояние плеера
+        setCurrentVideo(file)
+
         logger.debugSync("Отправляем аудио в главный плеер", {
           fileId: file.id,
           fileName: file.name,
@@ -121,6 +124,7 @@ export const AudioPreview = memo(function AudioPreview({
         // Отправляем аудио в главный плеер через backend
         await playerSetSource("browser")
         await playerSetMedia(file.id, hoverTime || 0)
+        await play()
 
         logger.infoSync("Аудио успешно отправлено в плеер", {
           fileName: file.name,
@@ -153,7 +157,7 @@ export const AudioPreview = memo(function AudioPreview({
         setIsPlaying(!isPlaying)
       }
     },
-    [hoverTime, file, playerSetSource, playerSetMedia, isPlaying],
+    [hoverTime, file, playerSetSource, playerSetMedia, play, isPlaying, setCurrentVideo],
   )
 
   const handleMouseLeave = useCallback(() => {
@@ -353,6 +357,7 @@ export const AudioPreview = memo(function AudioPreview({
             {
               id: file.id,
               type: "media",
+              file,
             } as TimelineResource
           }
           size={size}

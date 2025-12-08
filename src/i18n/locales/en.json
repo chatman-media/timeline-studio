@@ -1455,7 +1455,8 @@
     "show": "Show timeline",
     "workspace": {
       "timeline": "Timeline",
-      "audioMixer": "Audio Mixer"
+      "audioMixer": "Audio Mixer",
+      "analysis": "Analysis"
     },
     "audioMixer": {
       "title": "Audio Mixer",
@@ -1562,7 +1563,12 @@
       "muteAudio": "Mute audio",
       "unmuteAudio": "Unmute audio",
       "fullscreen": "Fullscreen mode",
-      "exitFullscreen": "Exit fullscreen mode"
+      "exitFullscreen": "Exit fullscreen mode",
+      "playbackSpeed": "Playback speed"
+    },
+    "speed": {
+      "normal": "Normal",
+      "advancedOptions": "For advanced options use Options panel"
     },
     "track": {
       "hideTrack": "Hide track",

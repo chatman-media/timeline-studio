@@ -268,6 +268,15 @@ export class MediaManagementOrchestrator implements MediaManagementService {
                 codec: mediaItem.metadata.codec,
               }
             : undefined,
+          // 🆕 FIX: Загружаем proxy_path из backend для сохранения сгенерированного прокси
+          proxy: mediaItem.proxy_path
+            ? {
+                path: mediaItem.proxy_path,
+                width: 960, // 540p resolution
+                height: 540,
+                bitrate: 2000000,
+              }
+            : undefined,
         })
       })
 

@@ -7,8 +7,8 @@
  * Canonical source for project file types
  */
 
-import type { ProjectSettings } from "./settings"
 import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
+import type { ProjectSettings } from "./settings"
 
 /**
  * DEPRECATED: Старая структура файла проекта (.tls)

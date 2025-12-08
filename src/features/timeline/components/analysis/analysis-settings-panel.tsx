@@ -1,17 +1,17 @@
 "use client"
 
 import { Play } from "lucide-react"
-import { useState, useCallback, useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useMediaFiles } from "@/domains/project-management/hooks/use-media-files"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import { ANALYZER_METADATA, type AnalyzerType } from "@/features/ai-director/types/analysis-progress"
-import { DEFAULT_PRESETS, type AnalyzerPreset } from "@/features/ai-director/types/analyzer-presets"
+import { type AnalyzerPreset, DEFAULT_PRESETS } from "@/features/ai-director/types/analyzer-presets"
 
 const ANALYZER_CATEGORIES = {
   video: ["scene_detection", "object_detection", "face_detection"] as AnalyzerType[],
@@ -37,9 +37,7 @@ export function AnalysisSettingsPanel() {
   }, [mediaFiles])
 
   const handleFileToggle = useCallback((filePath: string) => {
-    setSelectedFiles((prev) =>
-      prev.includes(filePath) ? prev.filter((p) => p !== filePath) : [...prev, filePath],
-    )
+    setSelectedFiles((prev) => (prev.includes(filePath) ? prev.filter((p) => p !== filePath) : [...prev, filePath]))
   }, [])
 
   const handleAnalyzerToggle = useCallback((analyzer: AnalyzerType) => {
@@ -148,7 +146,9 @@ export function AnalysisSettingsPanel() {
             <div className="space-y-4">
               {Object.entries(ANALYZER_CATEGORIES).map(([category, analyzers]) => (
                 <div key={category} className="space-y-2">
-                  <h4 className="text-sm font-medium capitalize">{category === "video" ? "Видео" : category === "audio" ? "Аудио" : "Контент"}</h4>
+                  <h4 className="text-sm font-medium capitalize">
+                    {category === "video" ? "Видео" : category === "audio" ? "Аудио" : "Контент"}
+                  </h4>
                   <div className="space-y-2 pl-2">
                     {analyzers.map((analyzer) => {
                       const metadata = ANALYZER_METADATA[analyzer]

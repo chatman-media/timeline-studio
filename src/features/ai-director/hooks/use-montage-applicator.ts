@@ -163,7 +163,7 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
       try {
         // Проверяем существование файла через domain service
         const sourceFile = clip.sourceFile
-        const sourceFilePath = typeof sourceFile === 'string' ? sourceFile : sourceFile?.path
+        const sourceFilePath = typeof sourceFile === "string" ? sourceFile : sourceFile?.path
         const filePath = clip.filePath || sourceFilePath || ""
         if (!filePath) continue
 
@@ -173,7 +173,7 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
         }
       } catch {
         const sourceFile = clip.sourceFile
-        const sourceFilePath = typeof sourceFile === 'string' ? sourceFile : sourceFile?.path
+        const sourceFilePath = typeof sourceFile === "string" ? sourceFile : sourceFile?.path
         const filePath = clip.filePath || sourceFilePath || ""
         if (filePath) {
           missingFiles.push(filePath)

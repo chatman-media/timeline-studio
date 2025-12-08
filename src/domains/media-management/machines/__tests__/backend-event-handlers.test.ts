@@ -265,6 +265,7 @@ describe("handleMediaBackendEvent", () => {
         payload: {
           media_id: "media-1",
           codec: "hevc",
+          proxy_path: null,
         },
       }
 
@@ -290,6 +291,7 @@ describe("handleMediaBackendEvent", () => {
         payload: {
           media_id: "media-1",
           codec: null,
+          proxy_path: null,
         },
       }
 

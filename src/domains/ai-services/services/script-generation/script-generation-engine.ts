@@ -3,8 +3,8 @@
  * Движок для генерации сценариев на основе анализа контента
  */
 
-import { type UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import type { Person } from "@/domains/ai-services/types"
+import { type UnifiedContentAnalysis } from "@/domains/ai-services/types/unified-analysis"
 import { createLogger } from "@/lib/tauri-logger"
 import { BaseAIEngine, type EngineCapabilities } from "./base-engine"
 import { DialogueGenerator } from "./dialogue-generator"

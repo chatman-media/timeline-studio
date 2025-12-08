@@ -115,8 +115,7 @@ export function parseMontagePlanFromAI(aiResponse: string): ParseResult {
           startTime,
           endTime: Number.parseFloat(clip.end || clip.end_time || clip.endTime || 0),
           duration:
-            Number.parseFloat(clip.duration || 0) ||
-            Number.parseFloat(clip.end || clip.endTime || 0) - startTime,
+            Number.parseFloat(clip.duration || 0) || Number.parseFloat(clip.end || clip.endTime || 0) - startTime,
           objects: clip.objects || [],
           people: clip.people || [],
           tags: clip.tags || [],
@@ -238,7 +237,16 @@ export function validateMontagePlan(plan: MontagePlan): ValidationResult {
   if (!plan.style) {
     errors.push("Plan must have style")
   } else {
-    const validStyles = ["dynamic", "calm", "balanced", "cinematic", "vlog", "highlights", "tutorial", "energetic"] as const
+    const validStyles = [
+      "dynamic",
+      "calm",
+      "balanced",
+      "cinematic",
+      "vlog",
+      "highlights",
+      "tutorial",
+      "energetic",
+    ] as const
     if (!validStyles.includes(plan.style as any)) {
       errors.push(`Invalid style: ${plan.style}`)
     }

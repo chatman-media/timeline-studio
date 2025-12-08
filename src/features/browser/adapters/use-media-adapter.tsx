@@ -133,6 +133,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         isAudio: mediaInfo.type === "Audio",
         isImage: mediaInfo.type === "Image",
         isLoadingMetadata: false,
+        // 🆕 FIX: Передаём proxy из MediaInfo для сохранения сгенерированного прокси
+        proxy: mediaInfo.proxy,
         // Добавляем probeData для совместимости с тестами
         probeData: mediaInfo.metadata
           ? {

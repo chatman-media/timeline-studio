@@ -321,8 +321,30 @@ This plan uses a cinematic style.`
       const planWithOverlaps: MontagePlan = {
         ...validPlan,
         clips: [
-          { id: "f1-0", videoId: "f1", filePath: "v1.mp4", startTime: 0, endTime: 10, duration: 10, objects: [], people: [], tags: [], reason: "Test" },
-          { id: "f2-5", videoId: "f2", filePath: "v2.mp4", startTime: 5, endTime: 15, duration: 10, objects: [], people: [], tags: [], reason: "Test" }, // Overlaps
+          {
+            id: "f1-0",
+            videoId: "f1",
+            filePath: "v1.mp4",
+            startTime: 0,
+            endTime: 10,
+            duration: 10,
+            objects: [],
+            people: [],
+            tags: [],
+            reason: "Test",
+          },
+          {
+            id: "f2-5",
+            videoId: "f2",
+            filePath: "v2.mp4",
+            startTime: 5,
+            endTime: 15,
+            duration: 10,
+            objects: [],
+            people: [],
+            tags: [],
+            reason: "Test",
+          }, // Overlaps
         ],
       }
 
@@ -335,7 +357,20 @@ This plan uses a cinematic style.`
     it("should validate source file paths", () => {
       const planWithEmptyPath: MontagePlan = {
         ...validPlan,
-        clips: [{ id: "f1-0", videoId: "f1", filePath: "", startTime: 0, endTime: 5, duration: 5, objects: [], people: [], tags: [], reason: "Test" }],
+        clips: [
+          {
+            id: "f1-0",
+            videoId: "f1",
+            filePath: "",
+            startTime: 0,
+            endTime: 5,
+            duration: 5,
+            objects: [],
+            people: [],
+            tags: [],
+            reason: "Test",
+          },
+        ],
       }
 
       const result = validateMontagePlan(planWithEmptyPath)

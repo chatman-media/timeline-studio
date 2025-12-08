@@ -22,12 +22,20 @@ const proxyCache = new Map<string, string>()
 // 🔧 FIX: Храним промис, чтобы несколько вызовов ждали один и тот же результат
 const generatingFiles = new Map<string, Promise<string | null>>()
 
+// 🆕 Глобальные слушатели для обновления всех экземпляров хука
+const stateListeners = new Set<() => void>()
+
+function notifyStateChange() {
+  stateListeners.forEach((listener) => listener())
+}
+
 // Очередь ожидающих генерацию файлов
 const generationQueue: Array<{
   file: MediaFile
   resolve: (path: string | null) => void
   onProxyReady?: (fileId: string, proxyPath: string) => void
   onError?: (fileId: string, error: string) => void
+  onComplete?: () => void // 🆕 Callback для обновления React состояния
 }> = []
 
 // Максимальное количество одновременных генераций
@@ -50,7 +58,7 @@ async function processQueue() {
   const item = generationQueue.shift()
   if (!item) return
 
-  const { file, resolve, onProxyReady, onError } = item
+  const { file, resolve, onProxyReady, onError, onComplete } = item
   const filePath = file.path
 
   logger.infoSync(
@@ -69,7 +77,7 @@ async function processQueue() {
   try {
     const proxyGenerator = getProxyGenerator()
     const result = await proxyGenerator.generateProxy(file.path, {
-      resolution: "720p",
+      resolution: "540p", // 🔧 Используем 540p вместо 720p для ускорения генерации
       quality: "medium",
       codec: "h264",
       preserveAudio: true,
@@ -92,9 +100,8 @@ async function processQueue() {
       const backend = getBackend()
       await backend.executeCommand({
         type: "UpdateImportedMedia",
-        media_id: file.id,
-        updates: { proxy_path: proxyPath },
-      })
+        params: { media_id: file.id, updates: { proxy_path: proxyPath } },
+      } as any)
       logger.infoSync("✅ Proxy path saved to backend state", {
         fileId: file.id,
         proxyPath,
@@ -132,6 +139,9 @@ async function processQueue() {
     // Убираем из генерируемых и уменьшаем счётчик
     generatingFiles.delete(filePath)
     activeGenerations--
+
+    // 🆕 Уведомляем ВСЕ экземпляры хука об изменении состояния
+    notifyStateChange()
 
     // Обрабатываем следующий файл из очереди
     processQueue()
@@ -174,6 +184,22 @@ export function useAutoProxy(options: UseAutoProxyOptions = {}): AutoProxyResult
     onErrorRef.current = onError
   }, [onProxyReady, onError])
 
+  // 🆕 Подписываемся на глобальные изменения состояния генерации
+  useEffect(() => {
+    const handleStateChange = () => {
+      setGeneratingFileIds(Array.from(generatingFiles.keys()))
+    }
+
+    stateListeners.add(handleStateChange)
+
+    // Синхронизируем состояние при монтировании
+    handleStateChange()
+
+    return () => {
+      stateListeners.delete(handleStateChange)
+    }
+  }, [])
+
   const generateProxy = useCallback(
     async (file: MediaFile): Promise<string | null> => {
       // Проверяем, нужна ли генерация
@@ -184,6 +210,13 @@ export function useAutoProxy(options: UseAutoProxyOptions = {}): AutoProxyResult
 
       // 🔧 FIX: Используем путь к файлу для кэширования
       const filePath = file.path
+
+      // 🆕 Проверяем, есть ли уже прокси у файла (из backend)
+      if (file.proxy?.path) {
+        logger.debugSync("Proxy already exists in file", { filePath, proxyPath: file.proxy.path })
+        proxyCache.set(filePath, file.proxy.path) // Добавляем в кэш
+        return file.proxy.path
+      }
 
       // Проверяем, уже есть ли прокси в кэше
       const cachedProxy = proxyCache.get(filePath)
@@ -214,6 +247,10 @@ export function useAutoProxy(options: UseAutoProxyOptions = {}): AutoProxyResult
           resolve,
           onProxyReady: onProxyReadyRef.current,
           onError: onErrorRef.current,
+          // 🆕 Callback для обновления React состояния после завершения
+          onComplete: () => {
+            setGeneratingFileIds(Array.from(generatingFiles.keys()))
+          },
         })
 
         logger.infoSync(`[AutoProxy Queue] Added to queue (queue size: ${generationQueue.length})`, {
@@ -303,9 +340,9 @@ export function useAutoProxyOnImport(
         ...file,
         proxy: {
           path: cachedProxyPath,
-          width: 1280,
-          height: 720,
-          bitrate: 3000000,
+          width: 960, // 540p resolution
+          height: 540,
+          bitrate: 2000000, // Снижен битрейт для 540p
         },
       }
     }

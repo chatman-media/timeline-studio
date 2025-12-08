@@ -5,7 +5,7 @@
  */
 
 import type { Fragment as DomainFragment, MontagePlan as DomainPlan } from "@/domains/ai-services/types/montage-planner"
-import type { MontagePlan as LegacyAIDirectorPlan } from "@/features/ai-director/types/montage-plan"
+import type { MontagePlan as LegacyAIDirectorPlan, MontageClip } from "@/features/ai-director/types/montage-plan"
 import type { Fragment as FeatureFragment } from "@/features/montage-planner/types"
 import type {
   FragmentAnalysis,
@@ -22,7 +22,7 @@ import type {
 /**
  * Конвертирует legacy MontageClip в UnifiedFragment
  */
-export function convertLegacyClipToFragment(clip: NonNullable<LegacyAIDirectorPlan["clips"]>[number]): UnifiedFragment {
+export function convertLegacyClipToFragment(clip: MontageClip): UnifiedFragment {
   return {
     id: `${clip.fileId}-${clip.startTime}`,
     videoId: clip.fileId,
@@ -133,6 +133,7 @@ export function convertUnifiedToDomainFragment(fragment: UnifiedFragment): Domai
  * Конвертирует legacy AI Director plan в Unified plan
  */
 export function convertLegacyAIDirectorPlanToUnified(plan: LegacyAIDirectorPlan): UnifiedMontagePlan {
+  // Since LegacyAIDirectorPlan is now UnifiedMontagePlan, clips are already UnifiedFragment[]
   const clips = plan.clips || plan.fragments || []
   return {
     id: plan.id,
@@ -140,7 +141,7 @@ export function convertLegacyAIDirectorPlanToUnified(plan: LegacyAIDirectorPlan)
     title: plan.name,
     description: plan.description,
     style: plan.style as UnifiedMontageStyle,
-    clips: clips.map(convertLegacyClipToFragment),
+    clips: clips,
     totalDuration: plan.actualDuration || plan.targetDuration || plan.totalDuration || 0,
     targetDuration: plan.targetDuration || plan.totalDuration || 0,
     actualDuration: plan.actualDuration,
@@ -197,25 +198,33 @@ export function convertDomainPlanToUnified(plan: DomainPlan): UnifiedMontagePlan
  */
 export function convertUnifiedToLegacyAIDirectorPlan(plan: UnifiedMontagePlan): LegacyAIDirectorPlan {
   // Получаем clips из sequences или напрямую из clips
-  const clips = plan.sequences
+  const clips: UnifiedFragment[] = plan.sequences
     ? plan.sequences.flatMap((seq) =>
         seq.fragments.map((f) => ({
-          fileId: f.videoId,
+          id: f.id,
+          videoId: f.videoId,
           filePath: f.filePath || "",
           startTime: f.startTime,
           endTime: f.endTime,
           duration: f.duration,
+          objects: f.objects || [],
+          people: f.people || [],
+          tags: f.tags || [],
           reason: f.reason || f.description || "",
           qualityScore: f.qualityScore || f.analysis?.quality,
           metadata: f.metadata,
         })),
       )
     : (plan.clips || plan.fragments || []).map((f) => ({
-        fileId: f.videoId,
+        id: f.id,
+        videoId: f.videoId,
         filePath: f.filePath || "",
         startTime: f.startTime,
         endTime: f.endTime,
         duration: f.duration,
+        objects: f.objects || [],
+        people: f.people || [],
+        tags: f.tags || [],
         reason: f.reason || f.description || "",
         qualityScore: f.qualityScore || f.analysis?.quality,
         metadata: f.metadata,
@@ -224,6 +233,7 @@ export function convertUnifiedToLegacyAIDirectorPlan(plan: UnifiedMontagePlan): 
   return {
     id: plan.id,
     name: plan.name,
+    title: plan.title || plan.name,
     style: plan.style as LegacyAIDirectorPlan["style"],
     targetDuration: plan.targetDuration || plan.totalDuration,
     actualDuration: plan.actualDuration || plan.totalDuration,
@@ -241,11 +251,12 @@ export function convertUnifiedToLegacyAIDirectorPlan(plan: UnifiedMontagePlan): 
     description: plan.description,
     createdAt: plan.createdAt,
     updatedAt: plan.updatedAt,
+    version: plan.version || 1,
     metadata: {
-      sourceFilesCount: plan.metadata.sourceFilesCount ?? 0,
-      usedFilesCount: plan.metadata.usedFilesCount ?? 0,
-      usagePercentage: plan.metadata.usagePercentage,
-      averageQuality: plan.metadata.averageQuality ?? 0.8,
+      sourceFilesCount: plan.metadata?.sourceFilesCount ?? 0,
+      usedFilesCount: plan.metadata?.usedFilesCount ?? 0,
+      usagePercentage: plan.metadata?.usagePercentage,
+      averageQuality: plan.metadata?.averageQuality ?? 0.8,
     },
     totalDuration: plan.totalDuration,
   }

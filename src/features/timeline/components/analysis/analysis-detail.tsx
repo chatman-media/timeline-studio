@@ -5,13 +5,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { cn } from "@/lib/utils"
-
-import type {
-  AnalyzerProgress,
-  FileAnalysisProgress,
-} from "@/features/ai-director/types/analysis-progress"
+import type { AnalyzerProgress, FileAnalysisProgress } from "@/features/ai-director/types/analysis-progress"
 import { ANALYZER_METADATA } from "@/features/ai-director/types/analysis-progress"
+import { cn } from "@/lib/utils"
 
 interface AnalysisDetailProps {
   file: FileAnalysisProgress
@@ -183,9 +179,7 @@ export function AnalysisDetail({ file }: AnalysisDetailProps) {
                       )}
 
                       {/* Error */}
-                      {analyzer.error && (
-                        <p className="text-xs text-red-500">{analyzer.error}</p>
-                      )}
+                      {analyzer.error && <p className="text-xs text-red-500">{analyzer.error}</p>}
 
                       {/* Result metadata */}
                       {analyzer.result?.metadata && (

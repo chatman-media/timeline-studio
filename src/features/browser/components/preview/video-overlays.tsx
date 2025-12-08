@@ -4,7 +4,6 @@ import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
 import { formatDuration } from "@/lib/date"
 import { cn, formatResolution } from "@/lib/utils"
-import { ApplyButton } from "../layout"
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
 
@@ -17,7 +16,6 @@ interface VideoOverlaysProps {
   streamWidth?: number
   streamHeight?: number
   showFileName?: boolean
-  onApply?: (resource: TimelineResource, type: string) => Promise<void>
   isLastStream?: boolean
 }
 
@@ -35,7 +33,6 @@ export const VideoOverlays = memo(
     streamWidth,
     streamHeight,
     showFileName,
-    onApply,
     isLastStream,
   }: VideoOverlaysProps) => {
     const isNotFirstStream = isMultipleStreams && typeof streamIndex !== "undefined" && streamIndex !== 0
@@ -104,16 +101,6 @@ export const VideoOverlays = memo(
           >
             {file.name}
           </div>
-        )}
-
-        {/* Кнопка Apply */}
-        {onApply && (
-          <ApplyButton
-            resource={{ id: file.id, type: "media" } as TimelineResource}
-            size={size}
-            type="media"
-            onApply={onApply}
-          />
         )}
 
         {/* Кнопка добавления */}

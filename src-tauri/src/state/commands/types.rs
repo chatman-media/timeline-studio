@@ -85,6 +85,11 @@ pub enum ProjectCommand {
     updates: MediaUpdates,
   },
   DeduplicateMediaPool,
+  /// Set media as resource (added to resources panel by user via "+" button)
+  SetMediaAsResource {
+    media_id: String,
+    is_resource: bool,
+  },
 
   // Imported media commands (temporary storage before adding to media_pool)
   AddImportedMedia {

@@ -198,6 +198,15 @@ impl CommandHandler {
         self.media_commands.update_media(media_id, updates).await
       }
       ProjectCommand::DeduplicateMediaPool => self.media_commands.deduplicate_media_pool().await,
+      ProjectCommand::SetMediaAsResource {
+        media_id,
+        is_resource,
+      } => {
+        self
+          .media_commands
+          .set_media_as_resource(media_id, is_resource)
+          .await
+      }
 
       // Legacy imported media commands - now redirect to MediaCommands
       // All media now goes directly to media_pool (unified architecture)
@@ -1739,6 +1748,7 @@ impl CommandHandler {
       thumbnail: None,
       usage_count: 0,
       in_timeline: false,
+      is_resource: false, // Not added to resources panel yet (only imported)
       bin: None,
       added_at: std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -4881,6 +4891,7 @@ impl CommandHandler {
         thumbnail: None,
         usage_count: 0,
         in_timeline: false,
+        is_resource: false, // Not added to resources panel yet (only imported)
         bin: None,
         added_at: std::time::SystemTime::now()
           .duration_since(std::time::UNIX_EPOCH)

@@ -84,7 +84,7 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
           const result = await analysisStorageService.loadComprehensiveAnalysis(videoPath)
 
           if (result.success && result.data) {
-            const fileName = videoPath.split('/').pop() || videoPath.split('\\').pop() || videoPath
+            const fileName = videoPath.split("/").pop() || videoPath.split("\\").pop() || videoPath
 
             // Создаем FileAnalysisProgress из сохраненного анализа
             const fileProgress: FileAnalysisProgress = {
@@ -99,10 +99,10 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
                 totalAnalyzers: 0,
                 completedAnalyzers: 0,
                 failedAnalyzers: 0,
+                skippedAnalyzers: 0,
               },
               startTime: result.data.started_at,
               endTime: result.data.completed_at,
-              duration: result.data.duration,
             }
 
             analyses.push(fileProgress)
@@ -147,7 +147,7 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
       if (filesMap.has(filePath)) continue
 
       // Создаем FileAnalysisProgress для не проанализированного файла
-      const fileName = filePath.split('/').pop() || filePath.split('\\').pop() || filePath
+      const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || filePath
 
       const fileProgress: FileAnalysisProgress = {
         id: mediaItem.id,
@@ -161,6 +161,7 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
           totalAnalyzers: 0,
           completedAnalyzers: 0,
           failedAnalyzers: 0,
+          skippedAnalyzers: 0,
         },
       }
 

@@ -6,4 +6,4 @@
  */
 
 export type { PerformanceMetrics, SyncRecord } from "@/domains/video-editing/services/performance-monitor"
-export { PerformanceMonitor, globalPerformanceMonitor } from "@/domains/video-editing/services/performance-monitor"
+export { globalPerformanceMonitor, PerformanceMonitor } from "@/domains/video-editing/services/performance-monitor"

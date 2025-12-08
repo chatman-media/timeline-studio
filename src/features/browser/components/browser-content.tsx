@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useBrowserState } from "@/domains/browser"
 import { useMediaImport, useMediaManagement } from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
@@ -169,12 +170,16 @@ export const BrowserContent = memo(() => {
       <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} />
     ) : activeTab === "media" && mediaPool.size > 0 ? (
       <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 gap-2">
-            <Trash2 className="h-4 w-4" />
-            {t("browser.clearAll")}
-          </Button>
-        </AlertDialogTrigger>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="ml-2 h-6 w-6 cursor-pointer">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>{t("browser.clearAll")}</TooltipContent>
+        </Tooltip>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("browser.clearAllConfirm.title")}</AlertDialogTitle>

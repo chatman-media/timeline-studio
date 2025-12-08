@@ -234,8 +234,7 @@ export async function exportPlanAsTemplate(plan: MontagePlan, options?: ExportTe
 
   try {
     const clips = plan.clips || plan.fragments || []
-    const avgClipDuration =
-      clips.length > 0 ? clips.reduce((sum, c) => sum + c.duration, 0) / clips.length : 5
+    const avgClipDuration = clips.length > 0 ? clips.reduce((sum, c) => sum + c.duration, 0) / clips.length : 5
 
     // Создаем шаблон из плана
     const template: MontageTemplate = {

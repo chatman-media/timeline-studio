@@ -1,6 +1,5 @@
 import { memo, useCallback, useRef, useState } from "react"
 import type { FfprobeStream, MediaFile } from "@/domains/media-management"
-import type { TimelineResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing/providers"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
 import { usePlayer } from "@/features/video-player"
@@ -23,9 +22,7 @@ interface VideoStreamProps {
   showFileName?: boolean
   hoverTime: number | null
   onHoverTimeChange: (time: number | null) => void
-  onApply?: (resource: TimelineResource, type: string) => Promise<void>
   isLastStream: boolean
-  isGeneratingProxy?: boolean
 }
 
 /**
@@ -43,15 +40,13 @@ export const VideoStream = memo(
     showFileName,
     hoverTime,
     onHoverTimeChange,
-    onApply,
     isLastStream,
-    isGeneratingProxy = false,
   }: VideoStreamProps) => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
     const videoRef = useRef<HTMLVideoElement | null>(null)
     const lastUpdateTimeRef = useRef(0)
-    const { playerSetSource, playerSetMedia } = usePlayer()
+    const { playerSetSource, playerSetMedia, setCurrentVideo, play } = usePlayer()
     const { isAdded: isResourceAdded, removeResource } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
 
@@ -106,8 +101,12 @@ export const VideoStream = memo(
         }
 
         try {
+          // Устанавливаем видео в локальное состояние плеера
+          setCurrentVideo(file)
+
           await playerSetSource("browser")
           await playerSetMedia(file.id, hoverTime || 0)
+          await play()
           logger.debugSync(`[VideoStream] Video sent to main player: ${file.name} at time ${hoverTime || 0}`)
         } catch (error) {
           logger.errorSync("[VideoStream] Failed to send video to main player:", { error })
@@ -136,7 +135,7 @@ export const VideoStream = memo(
           })
         }
       },
-      [hoverTime, file, playerSetSource, playerSetMedia, isPlaying, isAdded],
+      [hoverTime, file, playerSetSource, playerSetMedia, play, isPlaying, isAdded, setCurrentVideo],
     )
 
     const handleLoadedData = useCallback(
@@ -260,10 +259,7 @@ export const VideoStream = memo(
         }}
       >
         <div
-          className={cn(
-            "group relative h-full w-full overflow-hidden",
-            isAdded && "opacity-50 grayscale cursor-not-allowed",
-          )}
+          className={cn("group relative h-full w-full", isAdded && "opacity-50 grayscale cursor-not-allowed")}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}
@@ -302,8 +298,8 @@ export const VideoStream = memo(
             streamKey={key}
           />
 
-          {/* Показываем overlay с именем файла только когда идёт загрузка или генерация прокси */}
-          {(isGeneratingProxy || !isLoaded) && (
+          {/* Показываем overlay только если нет превью и видео не загружено */}
+          {!isLoaded && !previewData && !file.thumbnailPath && (
             <div
               className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-black/50 to-black/70 text-center pointer-events-none"
               style={{ zIndex: 2 }}
@@ -311,13 +307,7 @@ export const VideoStream = memo(
               <div className="truncate px-2 text-sm text-white/90 font-medium" style={{ maxWidth: "90%" }}>
                 {file.name}
               </div>
-              {isGeneratingProxy ? (
-                <div className="mt-2 text-xs text-blue-400/90 animate-pulse">Генерируется прокси...</div>
-              ) : !previewData && !file.thumbnailPath ? (
-                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка метаданных...</div>
-              ) : !isLoaded ? (
-                <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка видео...</div>
-              ) : null}
+              <div className="mt-2 text-xs text-white/70 animate-pulse">Загрузка...</div>
             </div>
           )}
 
@@ -330,7 +320,6 @@ export const VideoStream = memo(
             streamWidth={stream.width}
             streamHeight={stream.height}
             showFileName={showFileName}
-            onApply={onApply}
             isLastStream={isLastStream}
           />
         </div>

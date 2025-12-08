@@ -248,9 +248,6 @@ export function MediaToolbar({
       </div>
 
       <div className="flex items-end gap-2">
-        {/* Дополнительные кнопки для конкретных вкладок */}
-        {extraButtons}
-
         {/* Кнопка избранного */}
         <TooltipProvider>
           <Tooltip>
@@ -473,6 +470,9 @@ export function MediaToolbar({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
+
+        {/* Дополнительные кнопки для конкретных вкладок (в конце тулбара) */}
+        {extraButtons}
       </div>
     </div>
   )

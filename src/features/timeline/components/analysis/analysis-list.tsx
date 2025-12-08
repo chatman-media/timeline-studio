@@ -4,9 +4,8 @@ import { CheckCircle2, Circle, FileVideo, Loader2, XCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { cn } from "@/lib/utils"
-
 import type { FileAnalysisProgress } from "@/features/ai-director/types/analysis-progress"
+import { cn } from "@/lib/utils"
 
 interface AnalysisListProps {
   files: FileAnalysisProgress[]
@@ -73,7 +72,8 @@ export function AnalysisList({ files, selectedFileId, onSelectFile }: AnalysisLi
           <FileVideo className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
           <p className="text-sm font-medium">Нет запущенных анализов</p>
           <p className="text-xs text-muted-foreground">
-            Нажмите "Настроить новый анализ" вверху,<br />
+            Нажмите "Настроить новый анализ" вверху,
+            <br />
             чтобы выбрать файлы и запустить анализ
           </p>
         </div>
@@ -125,9 +125,7 @@ export function AnalysisList({ files, selectedFileId, onSelectFile }: AnalysisLi
                       <span className="font-medium">{file.progress}%</span>
                     </div>
                     <Progress value={file.progress} className="h-1.5" />
-                    {file.currentStage && (
-                      <p className="text-xs text-muted-foreground">{file.currentStage}</p>
-                    )}
+                    {file.currentStage && <p className="text-xs text-muted-foreground">{file.currentStage}</p>}
                   </div>
                 ) : file.status === "completed" ? (
                   <div className="text-xs text-muted-foreground">

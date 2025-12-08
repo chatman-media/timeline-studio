@@ -36,11 +36,25 @@ vi.mock("@/core/container", () => ({
 }))
 
 // Mock useApp hook
-const mockProjectState = {
+const mockProjectState: {
+  project: {
+    id: string
+    name: string
+    media_pool: { items: Record<string, any> }
+    timeline?: any
+    effects_pool: Record<string, any>
+    filters_pool: Record<string, any>
+    transitions_pool: Record<string, any>
+    templates_pool: Record<string, any>
+    style_templates_pool: Record<string, any>
+    subtitles_pool: Record<string, any>
+  }
+} = {
   project: {
     id: "test-project",
     name: "Test Project",
     media_pool: { items: {} },
+    timeline: { duration: 0, fps: 30, sample_rate: 48000, tracks: [], markers: [] },
     effects_pool: {},
     filters_pool: {},
     transitions_pool: {},
@@ -56,6 +70,43 @@ vi.mock("@/domains/project-management/providers", () => ({
   }),
 }))
 
+// Хелпер для создания timeline с клипами
+function createTimelineWithClips(mediaIds: string[]) {
+  return {
+    duration: 10,
+    fps: 30,
+    sample_rate: 48000,
+    tracks: [
+      {
+        id: "track-1",
+        name: "Video Track",
+        track_type: "Video",
+        enabled: true,
+        locked: false,
+        height: 100,
+        clips: mediaIds.map((mediaId, index) => ({
+          id: `clip-${index}`,
+          media_id: mediaId,
+          name: `Clip ${index}`,
+          timeline_in: index * 5,
+          timeline_out: (index + 1) * 5,
+          source_in: 0,
+          source_out: 5,
+          playback_rate: 1,
+          enabled: true,
+          effects: [],
+          transitions: [],
+          keyframes: [],
+        })),
+        effects: [],
+        volume: 1,
+        pan: 0,
+      },
+    ],
+    markers: [],
+  }
+}
+
 describe("ResourcesProvider", () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -67,6 +118,7 @@ describe("ResourcesProvider", () => {
       id: "test-project",
       name: "Test Project",
       media_pool: { items: {} },
+      timeline: { duration: 0, fps: 30, sample_rate: 48000, tracks: [], markers: [] },
       effects_pool: {},
       filters_pool: {},
       transitions_pool: {},
@@ -97,7 +149,7 @@ describe("ResourcesProvider", () => {
       expect(result.current.error).toBeNull()
     })
 
-    it("initializes with resources from backend state", () => {
+    it("initializes with resources from backend state when media has is_resource=true", () => {
       mockProjectState.project.media_pool = {
         items: {
           "media-1": {
@@ -106,6 +158,7 @@ describe("ResourcesProvider", () => {
             path: "/path/to/video.mp4",
             media_type: "Video",
             duration: 120,
+            is_resource: true, // Явно добавлено в ресурсы
           },
         },
       }
@@ -119,6 +172,26 @@ describe("ResourcesProvider", () => {
         name: "video.mp4",
         resourceId: "media-1",
       })
+    })
+
+    it("does not include media in resources if is_resource=false", () => {
+      mockProjectState.project.media_pool = {
+        items: {
+          "media-1": {
+            id: "media-1",
+            name: "video.mp4",
+            path: "/path/to/video.mp4",
+            media_type: "Video",
+            duration: 120,
+            is_resource: false, // Только импортирован, не добавлен в ресурсы
+          },
+        },
+      }
+
+      const { result } = renderHook(() => useResources(), { wrapper })
+
+      // mediaResources должен быть пустым - файл импортирован но не добавлен в ресурсы
+      expect(result.current.mediaResources).toHaveLength(0)
     })
 
     it("subscribes to backend events on mount", () => {
@@ -139,7 +212,11 @@ describe("ResourcesProvider", () => {
   })
 
   describe("addMedia", () => {
-    it("adds media file to backend and caches metadata", async () => {
+    it("adds media file to backend and marks as resource", async () => {
+      const mediaId = "test-media-id"
+      mockExecuteCommand.mockResolvedValueOnce({ success: true, data: { media_id: mediaId } })
+      mockExecuteCommand.mockResolvedValueOnce({ success: true, data: null })
+
       const file: MediaFile = {
         id: "video-1",
         name: "test.mp4",
@@ -161,11 +238,21 @@ describe("ResourcesProvider", () => {
 
       await result.current.addMedia(file)
 
+      // First call - AddMedia
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "AddMedia",
         params: {
           path: "/path/to/test.mp4",
           media_type: "Video",
+        },
+      })
+
+      // Second call - SetMediaAsResource
+      expect(mockExecuteCommand).toHaveBeenCalledWith({
+        type: "SetMediaAsResource",
+        params: {
+          media_id: mediaId,
+          is_resource: true,
         },
       })
     })
@@ -619,9 +706,12 @@ describe("ResourcesProvider", () => {
             path: "/path/to/video.mp4",
             media_type: "Video",
             duration: 120,
+            is_resource: true,
           },
         },
       }
+      // Timeline не влияет на ресурсы - используется is_resource флаг
+      mockProjectState.project.timeline = createTimelineWithClips(["media-1"]) as any
       mockProjectState.project.effects_pool = {
         "effect-1": {
           id: "effect-res-1",
@@ -681,7 +771,7 @@ describe("ResourcesProvider", () => {
     })
 
     describe("isMusicAdded", () => {
-      it("returns true if music with same path exists", () => {
+      it("returns true if music has is_resource=true", () => {
         mockProjectState.project.media_pool = {
           items: {
             "audio-1": {
@@ -690,6 +780,7 @@ describe("ResourcesProvider", () => {
               path: "/path/to/song.mp3",
               media_type: "Audio",
               duration: 180,
+              is_resource: true,
             },
           },
         }
@@ -706,7 +797,7 @@ describe("ResourcesProvider", () => {
         expect(result.current.isMusicAdded(file)).toBe(true)
       })
 
-      it("returns false if music not added", () => {
+      it("returns false if music not added to resources", () => {
         const { result } = renderHook(() => useResources(), { wrapper })
 
         const file: MediaFile = {
@@ -745,17 +836,44 @@ describe("ResourcesProvider", () => {
     })
 
     describe("isAdded", () => {
-      it("checks media by path", () => {
+      it("checks media by is_resource flag in media_pool", () => {
+        // Setup: добавляем media_pool с флагами is_resource
+        mockProjectState.project.media_pool = {
+          items: {
+            "media-1": {
+              id: "media-1",
+              name: "video-1.mp4",
+              path: "/path/to/video-1.mp4",
+              media_type: "Video",
+              duration: 120,
+              is_resource: true, // Добавлено в ресурсы
+            },
+            "media-2": {
+              id: "media-2",
+              name: "video-2.mp4",
+              path: "/path/to/video-2.mp4",
+              media_type: "Video",
+              duration: 60,
+              is_resource: false, // Только импортировано
+            },
+          },
+        }
+
         const { result } = renderHook(() => useResources(), { wrapper })
 
-        expect(result.current.isAdded("/path/to/video.mp4", "media")).toBe(true)
-        expect(result.current.isAdded("/path/to/other.mp4", "media")).toBe(false)
+        // media-1 имеет is_resource=true - должен быть "added"
+        expect(result.current.isAdded("media-1", "media")).toBe(true)
+        // media-2 имеет is_resource=false - не должен быть "added"
+        expect(result.current.isAdded("media-2", "media")).toBe(false)
       })
 
-      it("checks media by file id", () => {
+      it("returns false when no media_pool exists", () => {
+        // Убираем media_pool из проекта
+        delete (mockProjectState.project as any).media_pool
+
         const { result } = renderHook(() => useResources(), { wrapper })
 
-        expect(result.current.isAdded("media-1", "media")).toBe(true)
+        expect(result.current.isAdded("media-1", "media")).toBe(false)
       })
 
       it("checks effect by resourceId", () => {

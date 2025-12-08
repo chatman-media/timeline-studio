@@ -67,7 +67,7 @@ export function AppProvider({ children }: AppProviderProps) {
         if (state) {
           logger.infoSync("[AppProvider] ✅ Initial project state loaded", {
             hasMediaPool: !!state.project?.media_pool,
-            mediaItemsCount: state.project?.media_pool?.items ? Object.keys(state.project.media_pool.items).length : 0
+            mediaItemsCount: state.project?.media_pool?.items ? Object.keys(state.project.media_pool.items).length : 0,
           })
           // Отправляем в machine для обновления React state
           appActor.send({ type: "STATE_UPDATED", state })

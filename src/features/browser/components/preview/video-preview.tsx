@@ -2,11 +2,9 @@ import { useDraggable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import type { MediaFile } from "@/domains/media-management"
 import { useAutoProxy, useMediaPreview } from "@/domains/media-management"
-import type { TimelineResource } from "@/domains/shared/types/resources"
 import { getTrackTypeForMediaFile } from "@/features/timeline"
 import type { DragData } from "@/features/timeline/types/drag-drop"
-import { usePlayer } from "@/features/video-player"
-import { createVideoUrl, getPlaybackPath, needsProxyGeneration } from "@/lib/media-url-utils"
+import { createVideoUrl, getPlaybackPath } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { checkFileAccess } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"
@@ -46,20 +44,11 @@ export const VideoPreview = memo(
     const [previewData, setPreviewData] = useState<string | null>(null)
     const [videoUrl, setVideoUrl] = useState<string>("")
     const [proxyPath, setProxyPath] = useState<string | null>(null)
-    const { setPreviewMedia, playerSetSource, playerSetMedia } = usePlayer()
-
     // Используем Preview Manager для получения данных превью
     const { getPreviewData } = useMediaPreview()
 
-    // Auto proxy для H.265 видео
-    const { generateProxy, getProxyPath, isGenerating } = useAutoProxy({
-      onProxyReady: (fileId, path) => {
-        if (fileId === file.id) {
-          logger.infoSync(`[VideoPreview] Proxy ready for ${file.name}`, { proxyPath: path })
-          setProxyPath(path)
-        }
-      },
-    })
+    // Auto proxy для H.265 видео (генерация временно отключена)
+    const { getProxyPath } = useAutoProxy()
 
     // Логируем codec информацию для отладки H.265 детекции
     useEffect(() => {
@@ -86,28 +75,6 @@ export const VideoPreview = memo(
       })
     }, [file.id, getPreviewData, file.name])
 
-    // Обработчик применения видео - отправляем в главный плеер через backend
-    const handleApplyVideo = useCallback(
-      async (_resource: TimelineResource, _type: string) => {
-        try {
-          if (!file.id) {
-            logger.errorSync("[VideoPreview] File has no id:", { file })
-            setPreviewMedia(file)
-            return
-          }
-
-          await playerSetSource("browser")
-          await playerSetMedia(file.id, 0)
-
-          logger.debugSync(`[VideoPreview] Media sent to main player: ${file.name}`)
-        } catch (error) {
-          logger.errorSync("[VideoPreview] Failed to send media to player:", { error })
-          setPreviewMedia(file)
-        }
-      },
-      [file, playerSetSource, playerSetMedia, setPreviewMedia],
-    )
-
     // Функция для получения URL видео
     const loadVideoFile = useCallback(async (path: string) => {
       const videoUrl = createVideoUrl(path)
@@ -119,12 +86,6 @@ export const VideoPreview = memo(
       return videoUrl
     }, [])
 
-    // Проверяем нужна ли генерация прокси
-    const proxyNeeded = useMemo(
-      () => needsProxyGeneration(file) && !proxyPath,
-      [file.videoCodec, file.probeData?.streams, file.proxy?.path, proxyPath],
-    )
-
     // Мемоизируем путь к файлу для предотвращения лишних перезагрузок
     // Используем прокси путь если файл H.265/HEVC и прокси доступен (из file.proxy или локального состояния)
     const filePath = useMemo(() => {
@@ -133,33 +94,22 @@ export const VideoPreview = memo(
       return getPlaybackPath(file)
     }, [file.path, file.proxy?.path, file.videoCodec, file.probeData?.streams, proxyPath])
 
-    // Эффект для запуска генерации прокси если нужно
+    // Эффект для загрузки прокси из кэша (генерация временно отключена)
     useEffect(() => {
       // Проверяем, есть ли уже прокси в кэше (используем file.path вместо file.id)
       const cachedProxy = getProxyPath(file.path)
       if (cachedProxy) {
         setProxyPath(cachedProxy)
-        return
       }
-
-      // Запускаем генерацию если нужен прокси и не генерируется (используем file.path)
-      if (proxyNeeded && !isGenerating(file.path)) {
-        logger.infoSync(`[VideoPreview] Starting proxy generation for H.265 video: ${file.name}`)
-        void generateProxy(file)
-      }
-    }, [file, proxyNeeded, generateProxy, getProxyPath, isGenerating])
+      // TODO: Генерация прокси временно отключена
+      // if (proxyNeeded && !isGeneratingProxy) {
+      //   void generateProxy(file)
+      // }
+    }, [file.path, getProxyPath])
 
     // Эффект для загрузки видео при монтировании компонента
     useEffect(() => {
       let isMounted = true
-
-      // Логируем если требуется прокси но он не готов
-      if (proxyNeeded && !proxyPath) {
-        logger.debugSync(`[VideoPreview] Proxy needed for H.265 video: ${file.name}`, {
-          codec: file.videoCodec || file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
-          isGenerating: isGenerating(file.path),
-        })
-      }
 
       logger.debugSync(`[VideoPreview] Attempting to load video from path: ${filePath}`)
 
@@ -180,17 +130,7 @@ export const VideoPreview = memo(
       return () => {
         isMounted = false
       }
-    }, [
-      filePath,
-      loadVideoFile,
-      proxyNeeded,
-      proxyPath,
-      file.id,
-      file.name,
-      file.videoCodec,
-      file.probeData?.streams,
-      isGenerating,
-    ])
+    }, [filePath, loadVideoFile, file.id, file.name])
 
     // Оптимизируем вычисления с помощью useMemo
     const videoData = useMemo(() => {
@@ -290,9 +230,7 @@ export const VideoPreview = memo(
               showFileName={showFileName}
               hoverTime={hoverTime}
               onHoverTimeChange={setHoverTime}
-              onApply={handleApplyVideo}
               isLastStream={index === videoData.videoStreams.length - 1}
-              isGeneratingProxy={isGenerating(file.path)}
             />
           ))
         )}

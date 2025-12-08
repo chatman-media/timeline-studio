@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { MediaType } from "@/domains/media-management"
@@ -23,7 +23,7 @@ export function VideoPlayer() {
   const {
     settings: { aspectRatio },
   } = useProjectSettings()
-  const { currentVideo: video, setDuration, pause } = usePlayer()
+  const { currentVideo: video, setDuration, pause, isPlaying, currentTime } = usePlayer()
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const { project } = useTimeline()
@@ -52,6 +52,36 @@ export function VideoPlayer() {
       setDuration(metadata.duration)
     },
   })
+
+  // Синхронизация состояния isPlaying с video элементом
+  useEffect(() => {
+    const videoElement = videoRef.current
+    if (!videoElement) return
+
+    if (isPlaying) {
+      videoElement.play().catch((error) => {
+        logger.error("Failed to play video", { error })
+      })
+    } else {
+      videoElement.pause()
+    }
+  }, [isPlaying])
+
+  // Синхронизация currentTime с video элементом (для seek)
+  useEffect(() => {
+    const videoElement = videoRef.current
+    if (!videoElement) return
+
+    // Валидация времени: если значение слишком большое, это Unix timestamp - игнорируем
+    if (currentTime > 100000) return
+
+    // Синхронизируем только если разница больше 0.5 секунды
+    // чтобы избежать постоянных обновлений при воспроизведении
+    if (Math.abs(videoElement.currentTime - currentTime) > 0.5) {
+      videoElement.currentTime = currentTime
+      logger.debug("Synced video currentTime", { currentTime })
+    }
+  }, [currentTime])
 
   // Вычисляем соотношение сторон для AspectRatio
   const aspectRatioValue = aspectRatio.value.width / aspectRatio.value.height
@@ -194,7 +224,7 @@ export function VideoPlayer() {
           </div>
         )}
       </div>
-      <PlayerControls currentTime={0} file={video} />
+      <PlayerControls currentTime={currentTime} file={video} />
     </div>
   )
 }
