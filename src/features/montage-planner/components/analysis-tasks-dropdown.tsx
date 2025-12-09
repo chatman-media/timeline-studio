@@ -24,7 +24,7 @@ import {
   useAnalysisTasks,
 } from "../hooks"
 import { AnalysisPhase } from "../types"
-import { AnalysisTaskStatus, type AnalysisTask } from "../types/analysis-task"
+import { type AnalysisTask, AnalysisTaskStatus } from "../types/analysis-task"
 
 /**
  * Маппинг статуса FileAnalysisProgress на AnalysisTaskStatus

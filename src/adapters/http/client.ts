@@ -54,11 +54,7 @@ export class HttpClient {
     return this.request<T>("DELETE", path)
   }
 
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: unknown,
-  ): Promise<ApiResponse<T>> {
+  private async request<T>(method: string, path: string, body?: unknown): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${path}`
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), this.timeout)

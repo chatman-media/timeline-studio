@@ -29,6 +29,13 @@
  * ```
  */
 
+// HTTP adapters (for web version / remote control via src-node)
+export {
+  createHttpServices,
+  HttpBackendService,
+  HttpClient,
+  initHttpApp,
+} from "./http"
 // Mock adapters
 export {
   createMockServices,
@@ -38,13 +45,10 @@ export {
   MockPlatformService,
   MockStorageService,
 } from "./mock"
-
 // Node.js adapters
 export { initNodeApp, NodeMediaService } from "./node"
-
 // React provider (main entry point for apps)
 export { AppInitProvider, useAppInit, useAppReady } from "./react"
-
 // Tauri adapters
 export {
   initTauriApp,
@@ -53,11 +57,3 @@ export {
   TauriPlatformService,
   TauriStorageService,
 } from "./tauri"
-
-// HTTP adapters (for web version / remote control via src-node)
-export {
-  createHttpServices,
-  HttpBackendService,
-  HttpClient,
-  initHttpApp,
-} from "./http"

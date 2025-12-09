@@ -20,11 +20,11 @@
 import { container } from "@/core/container"
 
 import { type HttpBackendOptions, HttpBackendService } from "./backend"
-import { type HttpClientOptions, HttpClient } from "./client"
+import { HttpClient } from "./client"
 
 // Re-exports
 export { type HttpBackendOptions, HttpBackendService } from "./backend"
-export { type HttpClientOptions, HttpClient } from "./client"
+export { HttpClient, type HttpClientOptions } from "./client"
 
 export interface HttpAppOptions {
   /** URL сервера */
@@ -48,10 +48,7 @@ export interface HttpAppServices {
  * @returns Объект со всеми сервисами
  */
 export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpAppServices> {
-  const {
-    serverUrl = "http://localhost:3001",
-    autoConnect = true,
-  } = options
+  const { serverUrl = "http://localhost:3001", autoConnect = true } = options
 
   // Create HTTP client
   const client = new HttpClient({
