@@ -21,7 +21,9 @@ interface MCPProviderProps {
 /**
  * MCP Provider
  *
- * Автоматически инициализирует MCP сервер при наличии API ключа Claude в настройках
+ * Автоматически инициализирует MCP сервер для локальных операций (анализ видео, timeline команды).
+ * MCP Server нужен независимо от наличия API ключа - он используется для выполнения
+ * локальных MCP инструментов через AI Chat.
  */
 export function MCPProvider({ children }: MCPProviderProps) {
   const { getApiKeyInfo } = useApiKeys()
@@ -30,17 +32,10 @@ export function MCPProvider({ children }: MCPProviderProps) {
   useEffect(() => {
     const initializeMCP = async () => {
       try {
-        // Проверяем наличие API ключа для MCP
-        const mcpClaudeInfo = getApiKeyInfo("mcp_claude")
-
-        if (!mcpClaudeInfo?.has_value) {
-          logger.info("MCP Claude API key not configured, skipping initialization")
-          return
-        }
-
-        logger.info("Initializing MCP server...")
+        logger.info("Initializing MCP server for local operations...")
 
         // Инициализируем MCP с конфигурацией по умолчанию
+        // MCP Server нужен для локальных операций независимо от API ключа
         const config: MCPConfig = {
           enabled: true,
           claude_api_key: null, // Ключ уже в SecureStorage, не передаем его напрямую
@@ -55,16 +50,23 @@ export function MCPProvider({ children }: MCPProviderProps) {
           logger.info("MCP server initialized successfully")
           setInitialized(true)
 
-          // Проверяем подключение к Claude API
-          try {
-            const apiStatus = await mcpCheckApi()
-            if (apiStatus) {
-              logger.info("MCP Claude API connectivity verified")
-            } else {
-              logger.warn("MCP Claude API connectivity check failed")
+          // Проверяем подключение к Claude API только если есть ключ
+          const mcpClaudeInfo = getApiKeyInfo("mcp_claude")
+          const claudeInfo = getApiKeyInfo("claude")
+
+          if (mcpClaudeInfo?.has_value || claudeInfo?.has_value) {
+            try {
+              const apiStatus = await mcpCheckApi()
+              if (apiStatus) {
+                logger.info("MCP Claude API connectivity verified")
+              } else {
+                logger.warn("MCP Claude API connectivity check failed (API key may be invalid)")
+              }
+            } catch (error) {
+              logger.warn("MCP API check skipped - no valid API key configured", { error })
             }
-          } catch (error) {
-            logger.error("Failed to check MCP API connectivity", { error })
+          } else {
+            logger.info("MCP initialized without API key - local tools available, Claude API disabled")
           }
         } else {
           logger.warn("MCP initialization returned false")

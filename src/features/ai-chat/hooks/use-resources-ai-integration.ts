@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
+import { MediaType } from "@/domains/shared/types/media/types"
 import { useResources } from "@/domains/video-editing/providers"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 
@@ -8,6 +9,15 @@ const setResourcesStateAccess = (access: any) => {
   resourcesStateAccess = access
 }
 
+export interface AIMediaFile {
+  id: string
+  name: string
+  path: string
+  type: "video" | "audio" | "image"
+  duration?: number
+  size?: number
+}
+
 export interface AIResourceStats {
   totalMedia: number
   totalEffects: number
@@ -15,6 +25,7 @@ export interface AIResourceStats {
   totalSize: number
   totalDuration: number
   totalMusic: number
+  mediaFiles: AIMediaFile[]
 }
 
 /**
@@ -237,6 +248,46 @@ export function useResourcesAIIntegration() {
       0,
     )
 
+    // Собираем информацию о медиафайлах с путями для AI
+    // Функция для определения типа файла
+    const getFileType = (fileType: MediaType | undefined): "video" | "audio" | "image" => {
+      if (!fileType) return "video"
+      switch (fileType) {
+        case MediaType.Audio:
+        case MediaType.Music:
+        case MediaType.Voiceover:
+        case MediaType.SFX:
+        case MediaType.Ambient:
+          return "audio"
+        case MediaType.StillImage:
+        case MediaType.ImageSequence:
+          return "image"
+        default:
+          return "video"
+      }
+    }
+
+    const mediaFiles: AIMediaFile[] = resources.mediaResources.map((r) => ({
+      id: r.id,
+      name: r.file.name || "unknown",
+      path: r.file.path || "",
+      type: getFileType(r.file.type),
+      duration: r.file.duration,
+      size: r.file.size,
+    }))
+
+    // Добавляем музыкальные файлы
+    resources.musicResources.forEach((r) => {
+      mediaFiles.push({
+        id: r.id,
+        name: r.file.name || "unknown",
+        path: r.file.path || "",
+        type: "audio",
+        duration: r.file.duration,
+        size: r.file.size,
+      })
+    })
+
     return {
       totalMedia,
       totalEffects,
@@ -244,6 +295,7 @@ export function useResourcesAIIntegration() {
       totalSize,
       totalDuration,
       totalMusic,
+      mediaFiles,
     }
   }, [resources.mediaResources, resources.musicResources, resources.effectResources, resources.filterResources])
 

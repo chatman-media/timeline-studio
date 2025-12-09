@@ -92,7 +92,7 @@ function mapAnalyzersToConfig(analyzers: Set<AnalyzerType>, vlmOptions?: VlmAnal
 
   return {
     // Performance
-    performance_mode: "balanced",
+    performance_mode: "Balanced",
 
     // Core analysis toggles
     enable_audio_analysis:

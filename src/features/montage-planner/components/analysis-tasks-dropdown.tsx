@@ -24,7 +24,7 @@ import {
   useAnalysisTasks,
 } from "../hooks"
 import { AnalysisPhase } from "../types"
-import type { AnalysisTask, AnalysisTaskStatus } from "../types/analysis-task"
+import { AnalysisTaskStatus, type AnalysisTask } from "../types/analysis-task"
 
 /**
  * Маппинг статуса FileAnalysisProgress на AnalysisTaskStatus
@@ -32,17 +32,17 @@ import type { AnalysisTask, AnalysisTaskStatus } from "../types/analysis-task"
 function mapFileStatusToTaskStatus(status: string): AnalysisTaskStatus {
   switch (status) {
     case "pending":
-      return "pending"
+      return AnalysisTaskStatus.Pending
     case "analyzing":
-      return "analyzing_video"
+      return AnalysisTaskStatus.AnalyzingVideo
     case "completed":
-      return "completed"
+      return AnalysisTaskStatus.Completed
     case "error":
-      return "failed"
+      return AnalysisTaskStatus.Failed
     case "cancelled":
-      return "cancelled"
+      return AnalysisTaskStatus.Cancelled
     default:
-      return "pending"
+      return AnalysisTaskStatus.Pending
   }
 }
 
@@ -57,7 +57,7 @@ export function AnalysisTasksDropdown() {
   const tasks = useMemo(() => {
     // Преобразуем текущие активные анализы
     const activeTasks: AnalysisTask[] = filesProgress.map((file) => ({
-      id: file.id,
+      id: file.id || `temp-${file.filePath}`, // Fallback ID для файлов без id
       video_path: file.filePath,
       video_name: file.fileName,
       status: mapFileStatusToTaskStatus(file.status),
@@ -68,7 +68,7 @@ export function AnalysisTasksDropdown() {
         percentage: file.progress,
         phase: (file.status === "analyzing" ? AnalysisPhase.AnalyzingVideo : AnalysisPhase.Initializing) as any,
         current_file: file.filePath,
-        message: file.analyzers.find((a) => a.status === "analyzing")?.type,
+        message: file.analyzers.find((a) => a.status === "running")?.type,
       },
     }))
 
@@ -85,30 +85,30 @@ export function AnalysisTasksDropdown() {
   // Количество активных задач
   const activeTasksCount = tasks.filter(
     (task) =>
-      task.status === "pending" ||
-      task.status === "initializing" ||
-      task.status === "analyzing_video" ||
-      task.status === "analyzing_audio" ||
-      task.status === "detecting_moments" ||
-      task.status === "generating_plan",
+      task.status === AnalysisTaskStatus.Pending ||
+      task.status === AnalysisTaskStatus.Initializing ||
+      task.status === AnalysisTaskStatus.AnalyzingVideo ||
+      task.status === AnalysisTaskStatus.AnalyzingAudio ||
+      task.status === AnalysisTaskStatus.DetectingMoments ||
+      task.status === AnalysisTaskStatus.GeneratingPlan,
   ).length
 
   // Иконка для статуса задачи
   const getStatusIcon = (status: AnalysisTaskStatus) => {
     switch (status) {
-      case "pending":
-      case "initializing":
+      case AnalysisTaskStatus.Pending:
+      case AnalysisTaskStatus.Initializing:
         return <Clock className="h-4 w-4" />
-      case "analyzing_video":
-      case "analyzing_audio":
-      case "detecting_moments":
-      case "generating_plan":
+      case AnalysisTaskStatus.AnalyzingVideo:
+      case AnalysisTaskStatus.AnalyzingAudio:
+      case AnalysisTaskStatus.DetectingMoments:
+      case AnalysisTaskStatus.GeneratingPlan:
         return <Loader2 className="h-4 w-4 animate-spin" />
-      case "completed":
+      case AnalysisTaskStatus.Completed:
         return <CheckCircle2 className="h-4 w-4" />
-      case "failed":
+      case AnalysisTaskStatus.Failed:
         return <XCircle className="h-4 w-4" />
-      case "cancelled":
+      case AnalysisTaskStatus.Cancelled:
         return <StopCircle className="h-4 w-4" />
       default:
         return <AlertCircle className="h-4 w-4" />
@@ -140,7 +140,10 @@ export function AnalysisTasksDropdown() {
 
   // Количество завершённых задач (включая failed и cancelled)
   const finishedTasksCount = tasks.filter(
-    (task) => task.status === "completed" || task.status === "failed" || task.status === "cancelled",
+    (task) =>
+      task.status === AnalysisTaskStatus.Completed ||
+      task.status === AnalysisTaskStatus.Failed ||
+      task.status === AnalysisTaskStatus.Cancelled,
   ).length
 
   return (
@@ -162,10 +165,10 @@ export function AnalysisTasksDropdown() {
           )}
           {tasks.some(
             (task) =>
-              task.status === "analyzing_video" ||
-              task.status === "analyzing_audio" ||
-              task.status === "detecting_moments" ||
-              task.status === "generating_plan",
+              task.status === AnalysisTaskStatus.AnalyzingVideo ||
+              task.status === AnalysisTaskStatus.AnalyzingAudio ||
+              task.status === AnalysisTaskStatus.DetectingMoments ||
+              task.status === AnalysisTaskStatus.GeneratingPlan,
           ) && <div className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-teal animate-pulse" />}
         </Button>
       </DropdownMenuTrigger>
@@ -219,12 +222,12 @@ export function AnalysisTasksDropdown() {
                       <p className="text-sm font-medium line-clamp-1">{task.video_name}</p>
                       <p className="text-xs text-muted-foreground line-clamp-1">{task.video_path}</p>
                     </div>
-                    {(task.status === "pending" ||
-                      task.status === "initializing" ||
-                      task.status === "analyzing_video" ||
-                      task.status === "analyzing_audio" ||
-                      task.status === "detecting_moments" ||
-                      task.status === "generating_plan") && (
+                    {(task.status === AnalysisTaskStatus.Pending ||
+                      task.status === AnalysisTaskStatus.Initializing ||
+                      task.status === AnalysisTaskStatus.AnalyzingVideo ||
+                      task.status === AnalysisTaskStatus.AnalyzingAudio ||
+                      task.status === AnalysisTaskStatus.DetectingMoments ||
+                      task.status === AnalysisTaskStatus.GeneratingPlan) && (
                       <Button
                         size="sm"
                         variant="ghost"
@@ -236,10 +239,10 @@ export function AnalysisTasksDropdown() {
                     )}
                   </div>
 
-                  {(task.status === "analyzing_video" ||
-                    task.status === "analyzing_audio" ||
-                    task.status === "detecting_moments" ||
-                    task.status === "generating_plan") &&
+                  {(task.status === AnalysisTaskStatus.AnalyzingVideo ||
+                    task.status === AnalysisTaskStatus.AnalyzingAudio ||
+                    task.status === AnalysisTaskStatus.DetectingMoments ||
+                    task.status === AnalysisTaskStatus.GeneratingPlan) &&
                     task.progress && (
                       <div className="space-y-1">
                         <Progress value={task.progress.percentage} className="h-2" />
@@ -258,11 +261,11 @@ export function AnalysisTasksDropdown() {
                       </div>
                     )}
 
-                  {task.status === "failed" && task.error_message && (
+                  {task.status === AnalysisTaskStatus.Failed && task.error_message && (
                     <p className="text-xs text-red-500 line-clamp-2">{task.error_message}</p>
                   )}
 
-                  {task.status === "completed" && task.results && (
+                  {task.status === AnalysisTaskStatus.Completed && task.results && (
                     <div className="text-xs text-muted-foreground space-y-1">
                       {task.results.momentScores && (
                         <p>
@@ -297,7 +300,7 @@ export function AnalysisTasksDropdown() {
               </div>
               <div className="flex justify-between">
                 <span>{t("montagePlanner.completedTasks")}:</span>
-                <span>{tasks.filter((t) => t.status === "completed").length}</span>
+                <span>{tasks.filter((t) => t.status === AnalysisTaskStatus.Completed).length}</span>
               </div>
             </div>
           </>

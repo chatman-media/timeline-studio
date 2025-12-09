@@ -326,7 +326,7 @@ export function AiChat() {
 
         // Добавляем информацию о доступных ресурсах
         if (resourceStats && isIntegrated) {
-          systemPrompt += "\n\nДоступные ресурсы в проекте:"
+          systemPrompt += "\n\n## Доступные ресурсы в проекте"
           if (resourceStats.totalMedia > 0) {
             systemPrompt += `\n- Медиафайлы: ${resourceStats.totalMedia} шт.`
           }
@@ -345,6 +345,27 @@ export function AiChat() {
           if (resourceStats.totalSize > 0) {
             const sizeInMB = Math.round(resourceStats.totalSize / 1024 / 1024)
             systemPrompt += `\n- Общий размер: ${sizeInMB} МБ`
+          }
+
+          // Добавляем список медиафайлов с путями для AI
+          if (resourceStats.mediaFiles && resourceStats.mediaFiles.length > 0) {
+            systemPrompt += "\n\n### Медиафайлы с путями (для анализа):"
+            // Ограничиваем до 10 файлов чтобы не раздувать промпт
+            const filesToShow = resourceStats.mediaFiles.slice(0, 10)
+            filesToShow.forEach((file, index) => {
+              systemPrompt += `\n${index + 1}. "${file.name}" (${file.type})`
+              systemPrompt += `\n   path: ${file.path}`
+              if (file.duration) {
+                const mins = Math.floor(file.duration / 60)
+                const secs = Math.floor(file.duration % 60)
+                systemPrompt += `\n   duration: ${mins}:${secs.toString().padStart(2, "0")}`
+              }
+            })
+            if (resourceStats.mediaFiles.length > 10) {
+              systemPrompt += `\n... и ещё ${resourceStats.mediaFiles.length - 10} файлов`
+            }
+            systemPrompt +=
+              "\n\nИспользуй эти пути (video_path) для вызова инструментов анализа mcp-analyze-video, mcp-detect-scenes и т.д."
           }
         }
 

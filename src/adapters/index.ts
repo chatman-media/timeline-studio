@@ -53,3 +53,11 @@ export {
   TauriPlatformService,
   TauriStorageService,
 } from "./tauri"
+
+// HTTP adapters (for web version / remote control via src-node)
+export {
+  createHttpServices,
+  HttpBackendService,
+  HttpClient,
+  initHttpApp,
+} from "./http"

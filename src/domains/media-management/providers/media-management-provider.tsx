@@ -14,6 +14,43 @@ import type { MediaImportOptions, MediaInfo, MediaManagementService } from "../t
 
 const logger = createLogger("MediaManagementProvider")
 
+// Поддерживаемые расширения медиа файлов для drag-drop импорта
+const SUPPORTED_MEDIA_EXTENSIONS = new Set([
+  // Video
+  ".mp4",
+  ".mov",
+  ".avi",
+  ".mkv",
+  ".webm",
+  ".m4v",
+  ".wmv",
+  ".flv",
+  ".3gp",
+  ".mxf",
+  ".ts",
+  ".mts",
+  // Image
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".webp",
+  ".bmp",
+  ".tiff",
+  ".tif",
+  ".heic",
+  ".heif",
+  // Audio
+  ".mp3",
+  ".wav",
+  ".aac",
+  ".ogg",
+  ".flac",
+  ".m4a",
+  ".wma",
+  ".aiff",
+])
+
 interface MediaManagementContextValue extends MediaManagementService {
   mediaPool: Map<string, MediaInfo>
   fileOperationsState: any
@@ -96,6 +133,85 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     }
 
     loadInitialData()
+  }, [orchestrator])
+
+  // 🖱️ Drag-Drop: Обработка перетаскивания файлов из файлового менеджера
+  // Использует Tauri v2 webview.onDragDropEvent для импорта медиа файлов
+  useEffect(() => {
+    let unlisten: (() => void) | undefined
+
+    const setupDragDropListener = async () => {
+      try {
+        // Динамический импорт для избежания ошибок на платформах без Tauri
+        const { getCurrentWebview } = await import("@tauri-apps/api/webview")
+        const webview = getCurrentWebview()
+
+        unlisten = await webview.onDragDropEvent(async (event) => {
+          // Обрабатываем только событие drop (когда файлы отпущены)
+          if (event.payload.type !== "drop") return
+
+          const droppedPaths = event.payload.paths
+          logger.infoSync("[MediaManagementProvider] 🖱️ Files dropped via drag-drop", {
+            count: droppedPaths.length,
+            paths: droppedPaths.slice(0, 3), // Логируем только первые 3 для краткости
+          })
+
+          // Фильтруем только поддерживаемые медиа файлы
+          const mediaFiles = droppedPaths.filter((filePath) => {
+            const ext = filePath.toLowerCase().slice(filePath.lastIndexOf("."))
+            return SUPPORTED_MEDIA_EXTENSIONS.has(ext)
+          })
+
+          if (mediaFiles.length === 0) {
+            logger.warnSync("[MediaManagementProvider] ⚠️ No supported media files in dropped files", {
+              droppedCount: droppedPaths.length,
+              supportedExtensions: Array.from(SUPPORTED_MEDIA_EXTENSIONS).slice(0, 10),
+            })
+            return
+          }
+
+          logger.infoSync("[MediaManagementProvider] 📥 Importing dropped media files", {
+            count: mediaFiles.length,
+          })
+
+          // Импортируем файлы
+          try {
+            await orchestrator.importFiles(mediaFiles, {})
+            // Синхронизируем состояние
+            await orchestrator.refreshMediaPool()
+            const newMediaPool = orchestrator.getMediaPool()
+            setMediaPool(new Map(newMediaPool))
+            setIsLoading(orchestrator.isMediaLoading())
+            setError(orchestrator.getError())
+
+            logger.infoSync("[MediaManagementProvider] ✅ Drag-drop import completed", {
+              importedCount: mediaFiles.length,
+              newPoolSize: newMediaPool.size,
+            })
+          } catch (importError) {
+            logger.errorSync("[MediaManagementProvider] ❌ Drag-drop import failed", {
+              error: String(importError),
+            })
+          }
+        })
+
+        logger.infoSync("[MediaManagementProvider] 🖱️ Drag-drop listener initialized")
+      } catch (error) {
+        // Ожидаемо в браузере или при ошибке инициализации Tauri
+        logger.debugSync("[MediaManagementProvider] Drag-drop listener not available (expected in browser)", {
+          error: String(error),
+        })
+      }
+    }
+
+    setupDragDropListener()
+
+    return () => {
+      if (unlisten) {
+        unlisten()
+        logger.debugSync("[MediaManagementProvider] 🖱️ Drag-drop listener cleaned up")
+      }
+    }
   }, [orchestrator])
 
   // Периодическая синхронизация состояния с orchestrator
