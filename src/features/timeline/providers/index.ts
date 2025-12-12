@@ -1,6 +1,6 @@
 /**
- * Video Editing Domain - Providers
- * Все провайдеры для video editing домена
+ * Timeline Feature - Providers
+ * React providers для video editing функциональности
  */
 
 export * from "./player-provider"

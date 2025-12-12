@@ -19,7 +19,7 @@ import { createLogger } from "@/lib/tauri-logger"
 const logger = createLogger("TimelineProviders")
 
 // Используем типы из доменов
-import type { MediaFile, Section, Timeline, TimelineClip, Track } from "../types"
+import type { MediaFile, Section, Timeline, TimelineClip, Track } from "@/domains/video-editing/types"
 
 // Временный alias для совместимости
 type TimelineProject = Timeline
@@ -28,8 +28,8 @@ type TimelineSection = Section
 
 import { container } from "@/core/container"
 import type { ProjectState as BackendProjectState } from "@/types/generated/tauri-bindings"
-import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
-import { transformProjectStateToTimeline } from "../utils/project-transform"
+import { getVideoEditingOrchestrator } from "@/domains/video-editing/services/video-editing-orchestrator"
+import { transformProjectStateToTimeline } from "@/domains/video-editing/utils/project-transform"
 
 // ===========================
 // Project Provider

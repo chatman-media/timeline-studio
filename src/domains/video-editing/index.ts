@@ -13,7 +13,7 @@ export type { PlayerContext, PlayerEvent, PlayerMachine } from "./machines/playe
 export { playerMachine } from "./machines/player-machine"
 export type { TimelineContext, TimelineEvent, TimelineMachine } from "./machines/timeline-machine"
 export { timelineMachine } from "./machines/timeline-machine"
-// Экспорт провайдеров
+// Экспорт провайдеров (реэкспорт из features для обратной совместимости)
 export {
   TimelineClipsProvider,
   TimelineEffectsProvider,
@@ -32,14 +32,17 @@ export {
   useTimelineProject,
   useTimelineSelection,
   useTimelineTracks,
-} from "./providers/timeline-providers"
+} from "@/features/timeline/providers/timeline-providers"
 export {
   UndoRedoProvider,
   useClipUndoRedo,
   useKeyframeUndoRedo,
   useTrackUndoRedo,
   useUndoRedoContext,
-} from "./providers/undo-redo-provider"
+} from "@/features/timeline/providers/undo-redo-provider"
+export { PlayerProvider, usePlayer } from "@/features/timeline/providers/player-provider"
+export { ResourcesProvider, useResources } from "@/features/timeline/providers/resources-provider"
+export { VideoEditingProvider, useVideoEditingContext } from "@/features/timeline/providers/video-editing-provider"
 // Экспорт compiler services
 export * from "./services/compiler"
 // Экспорт effects services
