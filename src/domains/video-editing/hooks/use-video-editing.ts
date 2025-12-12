@@ -4,13 +4,13 @@
 
 import { useCallback, useEffect, useState } from "react"
 import type { PlayerContext } from "../machines/player-machine"
-import type { TimelineExtendedContext } from "../machines/timeline-extended-machine"
+import type { TimelineContext } from "../machines/timeline-machine"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 import type { MediaFile } from "../types"
 
 export function useVideoEditing() {
   const [orchestrator] = useState(() => getVideoEditingOrchestrator())
-  const [timelineState, setTimelineState] = useState<TimelineExtendedContext>(
+  const [timelineState, setTimelineState] = useState<TimelineContext>(
     () => orchestrator.getTimelineState().context,
   )
   const [playerState, setPlayerState] = useState<PlayerContext>(() => orchestrator.getPlayerState().context)

@@ -14,7 +14,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import { handleBackendEvent } from "../backend-event-handlers"
-import type { TimelineExtendedContext } from "../timeline-extended-machine"
+import type { TimelineContext } from "../timeline-machine"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({
@@ -51,7 +51,7 @@ vi.mock("../../utils/clip-transform", () => ({
 import { validateProjectEvent } from "../../utils/type-validation"
 
 describe("BackendEventHandlers", () => {
-  let mockContext: TimelineExtendedContext
+  let mockContext: TimelineContext
 
   beforeEach(() => {
     vi.clearAllMocks()

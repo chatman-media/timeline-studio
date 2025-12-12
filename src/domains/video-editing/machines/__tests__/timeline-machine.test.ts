@@ -1,7 +1,7 @@
 /**
- * Timeline Extended Machine Tests
+ * Timeline Machine Tests
  *
- * Comprehensive tests for the extended timeline state machine with:
+ * Comprehensive tests for the unified timeline state machine with:
  * - Project management
  * - Playback control
  * - Track operations
@@ -15,7 +15,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor } from "xstate"
 import { MediaType } from "@/domains/media-management"
-import { timelineExtendedMachine } from "../../machines/timeline-extended-machine"
+import { timelineMachine } from "../../machines/timeline-machine"
 import type { MediaFile, Timeline, TimelineClip } from "../../types"
 
 // Mock logger
@@ -32,8 +32,8 @@ vi.mock("@/lib/tauri-logger", () => ({
   }),
 }))
 
-describe("TimelineExtendedMachine", () => {
-  let actor: ReturnType<typeof createActor<typeof timelineExtendedMachine>>
+describe("TimelineMachine", () => {
+  let actor: ReturnType<typeof createActor<typeof timelineMachine>>
 
   // Helper to transition from idle to active state
   const activateActor = async () => {
@@ -43,7 +43,7 @@ describe("TimelineExtendedMachine", () => {
   }
 
   beforeEach(() => {
-    actor = createActor(timelineExtendedMachine)
+    actor = createActor(timelineMachine)
     actor.start()
   })
 

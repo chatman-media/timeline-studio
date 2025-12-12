@@ -10,7 +10,7 @@ import type { ProjectEvent } from "@/types/generated/tauri-bindings"
 import type { TimelineClip, Track } from "../types"
 import { convertClipDataToTimelineClip } from "../utils/clip-transform"
 import { validateClip, validateProjectEvent } from "../utils/type-validation"
-import type { TimelineExtendedContext } from "./timeline-extended-machine"
+import type { TimelineContext } from "./timeline-machine"
 
 const logger = createLogger("BackendEventHandlers")
 
@@ -18,9 +18,9 @@ const logger = createLogger("BackendEventHandlers")
  * Главный обработчик backend событий
  */
 export function handleBackendEvent(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: ProjectEvent,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   // Валидация события перед обработкой
   if (!validateProjectEvent(event)) {
     logger.error("Invalid backend event, skipping", { event })
@@ -93,9 +93,9 @@ export function handleBackendEvent(
 // ============================================================================
 
 function handleProjectCreated(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ProjectCreated" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Project created:", { projectId: event.payload.project_id })
 
   // Проект создан на backend, ждем полной синхронизации через PROJECT_UPDATED
@@ -106,9 +106,9 @@ function handleProjectCreated(
 }
 
 function handleProjectOpened(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ProjectOpened" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Project opened:", { path: event.payload.path })
 
   return {
@@ -118,9 +118,9 @@ function handleProjectOpened(
 }
 
 function handleProjectSaved(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ProjectSaved" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Project saved:", { path: event.payload.path })
 
   return {
@@ -129,9 +129,9 @@ function handleProjectSaved(
 }
 
 function handleProjectClosed(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ProjectClosed" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Project closed:", { projectId: event.payload.project_id })
 
   return {
@@ -148,9 +148,9 @@ function handleProjectClosed(
 // ============================================================================
 
 function handleClipAdded(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ClipAdded" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { track_id, clip } = event.payload
 
   if (!context.project) {
@@ -219,9 +219,9 @@ function handleClipAdded(
 }
 
 function handleClipMoved(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ClipMoved" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { clip_id, new_track_id, new_time } = event.payload
 
   if (!context.project) {
@@ -293,9 +293,9 @@ function handleClipMoved(
 }
 
 function handleClipTrimmed(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ClipTrimmed" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { clip_id, new_in, new_out } = event.payload
 
   if (!context.project) {
@@ -342,9 +342,9 @@ function handleClipTrimmed(
 }
 
 function handleClipDeleted(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ClipDeleted" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { clip_id } = event.payload
 
   if (!context.project) {
@@ -379,9 +379,9 @@ function handleClipDeleted(
 }
 
 function handleClipUpdated(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ClipUpdated" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { clip_id, changes } = event.payload
 
   if (!context.project) {
@@ -428,9 +428,9 @@ function handleClipUpdated(
 }
 
 function handleClipSplit(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "ClipSplit" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { original_clip_id, left_clip, right_clip, track_id } = event.payload
 
   if (!context.project) {
@@ -482,9 +482,9 @@ function handleClipSplit(
 // ============================================================================
 
 function handleTrackAdded(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "TrackAdded" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { track } = event.payload
 
   if (!context.project) {
@@ -501,9 +501,9 @@ function handleTrackAdded(
 }
 
 function handleTrackDeleted(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "TrackDeleted" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { track_id } = event.payload
 
   if (!context.project) {
@@ -537,9 +537,9 @@ function handleTrackDeleted(
 }
 
 function handleTrackUpdated(
-  context: TimelineExtendedContext,
+  context: TimelineContext,
   event: Extract<ProjectEvent, { type: "TrackUpdated" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   const { track_id, changes } = event.payload
 
   if (!context.project) {
@@ -585,25 +585,25 @@ function handleTrackUpdated(
 // ============================================================================
 
 function handleMediaAdded(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "MediaAdded" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Media added to pool:", { mediaId: event.payload.media.id })
   return {} // Media pool обрабатывается отдельно
 }
 
 function handleMediaRemoved(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "MediaRemoved" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Media removed from pool:", { mediaId: event.payload.media_id })
   return {} // Media pool обрабатывается отдельно
 }
 
 function handleMediaUpdated(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "MediaUpdated" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Media updated in pool:", { mediaId: event.payload.media_id })
   return {} // Media pool обрабатывается отдельно
 }
@@ -613,9 +613,9 @@ function handleMediaUpdated(
 // ============================================================================
 
 function handlePlaybackStarted(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "PlaybackStarted" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Playback started:", { time: event.payload.time })
 
   return {
@@ -625,9 +625,9 @@ function handlePlaybackStarted(
 }
 
 function handlePlaybackStopped(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "PlaybackStopped" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Playback stopped:", { time: event.payload.time })
 
   return {
@@ -637,9 +637,9 @@ function handlePlaybackStopped(
 }
 
 function handlePlaybackSeeked(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "PlaybackSeeked" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Playback seeked:", { time: event.payload.time })
 
   return {
@@ -648,9 +648,9 @@ function handlePlaybackSeeked(
 }
 
 function handlePlaybackRateChanged(
-  _context: TimelineExtendedContext,
+  _context: TimelineContext,
   event: Extract<ProjectEvent, { type: "PlaybackRateChanged" }>,
-): Partial<TimelineExtendedContext> {
+): Partial<TimelineContext> {
   logger.info("Playback rate changed:", { rate: event.payload.rate })
 
   return {

@@ -11,12 +11,6 @@ export { UndoRedoHelpers, useUndoRedo } from "./hooks/use-undo-redo"
 export type { PlayerContext, PlayerEvent, PlayerMachine } from "./machines/player-machine"
 // Экспорт машин
 export { playerMachine } from "./machines/player-machine"
-export type {
-  TimelineExtendedContext,
-  TimelineExtendedEvent,
-  TimelineExtendedMachine,
-} from "./machines/timeline-extended-machine"
-export { timelineExtendedMachine } from "./machines/timeline-extended-machine"
 export type { TimelineContext, TimelineEvent, TimelineMachine } from "./machines/timeline-machine"
 export { timelineMachine } from "./machines/timeline-machine"
 // Экспорт провайдеров
@@ -59,7 +53,6 @@ export { UndoRedoService } from "./services/undo-redo-service"
 export {
   getPlayerActor,
   getTimelineActor,
-  getTimelineUIActor,
   getVideoEditingOrchestrator,
   VideoEditingOrchestrator,
 } from "./services/video-editing-orchestrator"

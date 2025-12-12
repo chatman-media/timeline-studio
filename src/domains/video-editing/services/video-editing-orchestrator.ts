@@ -83,18 +83,16 @@ import { container } from "@/core"
 import type { IBackendService } from "@/core/ports"
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
-import { playerMachine } from "../machines/player-machine"
 // Import machines
-import { timelineExtendedMachine } from "../machines/timeline-extended-machine"
+import { playerMachine } from "../machines/player-machine"
 import { timelineMachine } from "../machines/timeline-machine"
 
 export class VideoEditingOrchestrator {
   private static instance: VideoEditingOrchestrator | null = null
 
   // Actors
-  private timelineExtendedActor: ActorRefFrom<typeof timelineExtendedMachine>
+  private timelineActor: ActorRefFrom<typeof timelineMachine>
   private playerActor: ActorRefFrom<typeof playerMachine>
-  private timelineUIActor: ActorRefFrom<typeof timelineMachine> // Для UI состояния
 
   // Backend sync
   private backend: IBackendService | null = null
@@ -104,14 +102,12 @@ export class VideoEditingOrchestrator {
     logger.info("[Video Editing Orchestrator] Initializing...")
 
     // Создаем акторы
-    this.timelineExtendedActor = createActor(timelineExtendedMachine)
+    this.timelineActor = createActor(timelineMachine)
     this.playerActor = createActor(playerMachine)
-    this.timelineUIActor = createActor(timelineMachine)
 
     // Запускаем акторы
-    this.timelineExtendedActor.start()
+    this.timelineActor.start()
     this.playerActor.start()
-    this.timelineUIActor.start()
 
     // Получаем backend из контейнера (может быть null если контейнер не инициализирован)
     try {
@@ -151,7 +147,7 @@ export class VideoEditingOrchestrator {
 
       // Обновляем timeline машину
       if (state.project) {
-        this.timelineExtendedActor.send({
+        this.timelineActor.send({
           type: "PROJECT_UPDATED",
           project: state.project as any,
         })
@@ -165,7 +161,7 @@ export class VideoEditingOrchestrator {
         })
 
         // Синхронизируем с timeline
-        this.timelineExtendedActor.send({
+        this.timelineActor.send({
           type: "SYNC_PLAYBACK_STATE",
           isPlaying: state.playback_state.is_playing,
           currentTime: state.playback_state.current_time,
@@ -207,38 +203,8 @@ export class VideoEditingOrchestrator {
    * Настройка синхронизации между акторами
    */
   private setupActorSync() {
-    // Синхронизация player -> timeline
-    this.playerActor.subscribe((snapshot) => {
-      const { currentTime, isPlaying } = snapshot.context
-
-      // Обновляем timeline UI
-      this.timelineUIActor.send({
-        type: "SYNC_CURRENT_TIME",
-        currentTime,
-      })
-
-      this.timelineUIActor.send({
-        type: "SYNC_PLAYBACK_STATE",
-        isPlaying,
-        currentTime,
-      })
-    })
-
-    // Синхронизация timeline UI -> extended timeline
-    this.timelineUIActor.subscribe((snapshot) => {
-      const { selectedClipIds, selectedTrackIds } = snapshot.context
-
-      // Синхронизируем выделение
-      this.timelineExtendedActor.send({
-        type: "SELECT_CLIPS",
-        clipIds: selectedClipIds,
-      })
-
-      this.timelineExtendedActor.send({
-        type: "SELECT_TRACKS",
-        trackIds: selectedTrackIds,
-      })
-    })
+    // Player и timeline синхронизируются автоматически через backend events
+    // Дополнительная синхронизация не требуется
   }
 
   /**
@@ -246,7 +212,7 @@ export class VideoEditingOrchestrator {
    */
   private setupEventPublishing() {
     // Публикуем события из timeline
-    this.timelineExtendedActor.subscribe((snapshot) => {
+    this.timelineActor.subscribe((snapshot) => {
       const { project, hasUnsavedChanges } = snapshot.context
 
       // Публикуем обновление timeline
@@ -290,7 +256,7 @@ export class VideoEditingOrchestrator {
    * API для управления проектом
    */
   async createProject(name: string, settings?: any) {
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "CREATE_PROJECT",
       name,
       settings,
@@ -298,14 +264,14 @@ export class VideoEditingOrchestrator {
   }
 
   async loadProject(path: string) {
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "LOAD_PROJECT",
       path,
     })
   }
 
   async saveProject() {
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "SAVE_PROJECT",
     })
   }
@@ -315,22 +281,22 @@ export class VideoEditingOrchestrator {
    */
   play() {
     this.playerActor.send({ type: "PLAY" })
-    this.timelineExtendedActor.send({ type: "PLAY" })
+    this.timelineActor.send({ type: "PLAY" })
   }
 
   pause() {
     this.playerActor.send({ type: "PAUSE" })
-    this.timelineExtendedActor.send({ type: "PAUSE" })
+    this.timelineActor.send({ type: "PAUSE" })
   }
 
   stopPlayback() {
     this.playerActor.send({ type: "STOP" })
-    this.timelineExtendedActor.send({ type: "STOP" })
+    this.timelineActor.send({ type: "STOP" })
   }
 
   seek(time: number) {
     this.playerActor.send({ type: "SEEK", time })
-    this.timelineExtendedActor.send({ type: "SEEK", time })
+    this.timelineActor.send({ type: "SEEK", time })
   }
 
   /**
@@ -348,7 +314,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "ADD_TRACK",
       trackType: type,
       name,
@@ -371,7 +337,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "ADD_CLIP",
       trackId,
       mediaFile,
@@ -409,7 +375,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "MOVE_CLIP",
       clipId,
       trackId: newTrackId,
@@ -429,7 +395,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "REMOVE_CLIP",
       clipId,
     })
@@ -451,7 +417,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "TRIM_CLIP",
       clipId,
       startTime: start,
@@ -474,7 +440,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "SPLIT_CLIP",
       clipId,
       time,
@@ -496,7 +462,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "UPDATE_CLIP",
       clipId,
       updates,
@@ -518,7 +484,7 @@ export class VideoEditingOrchestrator {
     await this.executeCommand(command)
 
     // Machine не принимает параметры для COPY_CLIPS, она копирует выбранные клипы
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "COPY_CLIPS",
     })
   }
@@ -538,7 +504,7 @@ export class VideoEditingOrchestrator {
     await this.executeCommand(command)
 
     // Machine не принимает параметры для CUT_CLIPS, она вырезает выбранные клипы
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "CUT_CLIPS",
     })
   }
@@ -558,7 +524,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "PASTE_CLIPS",
       trackId,
       time,
@@ -581,7 +547,7 @@ export class VideoEditingOrchestrator {
 
     // Отправляем индивидуальные обновления в machine для синхронизации
     for (const update of updates) {
-      this.timelineExtendedActor.send({
+      this.timelineActor.send({
         type: "UPDATE_CLIP",
         clipId: update.clip_id,
         updates: update.updates,
@@ -604,7 +570,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "SELECT_CLIPS",
       clipIds,
       addToSelection,
@@ -619,7 +585,7 @@ export class VideoEditingOrchestrator {
     }
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "CLEAR_SELECTION",
     })
   }
@@ -639,7 +605,7 @@ export class VideoEditingOrchestrator {
 
     await this.executeCommand(command)
 
-    this.timelineExtendedActor.send({
+    this.timelineActor.send({
       type: "SELECT_SECTIONS",
       sectionIds,
       addToSelection,
@@ -650,15 +616,11 @@ export class VideoEditingOrchestrator {
    * Получить состояния машин
    */
   getTimelineState() {
-    return this.timelineExtendedActor.getSnapshot()
+    return this.timelineActor.getSnapshot()
   }
 
   getPlayerState() {
     return this.playerActor.getSnapshot()
-  }
-
-  getTimelineUIState() {
-    return this.timelineUIActor.getSnapshot()
   }
 
   /**
@@ -666,9 +628,8 @@ export class VideoEditingOrchestrator {
    */
   getActors() {
     return {
-      timeline: this.timelineExtendedActor,
+      timeline: this.timelineActor,
       player: this.playerActor,
-      timelineUI: this.timelineUIActor,
     }
   }
 
@@ -676,15 +637,11 @@ export class VideoEditingOrchestrator {
    * Подписка на изменения
    */
   subscribeToTimeline(callback: (state: any) => void) {
-    return this.timelineExtendedActor.subscribe(callback)
+    return this.timelineActor.subscribe(callback)
   }
 
   subscribeToPlayer(callback: (state: any) => void) {
     return this.playerActor.subscribe(callback)
-  }
-
-  subscribeToTimelineUI(callback: (state: any) => void) {
-    return this.timelineUIActor.subscribe(callback)
   }
 
   /**
@@ -699,9 +656,8 @@ export class VideoEditingOrchestrator {
     }
 
     // Останавливаем акторы
-    this.timelineExtendedActor.stop()
+    this.timelineActor.stop()
     this.playerActor.stop()
-    this.timelineUIActor.stop()
 
     VideoEditingOrchestrator.instance = null
   }
@@ -718,8 +674,4 @@ export function getTimelineActor() {
 
 export function getPlayerActor() {
   return VideoEditingOrchestrator.getInstance().getActors().player
-}
-
-export function getTimelineUIActor() {
-  return VideoEditingOrchestrator.getInstance().getActors().timelineUI
 }

@@ -3,12 +3,12 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { TimelineExtendedContext } from "../machines/timeline-extended-machine"
+import type { TimelineContext } from "../machines/timeline-machine"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 
 export function useTimeline() {
   const [orchestrator] = useState(() => getVideoEditingOrchestrator())
-  const [state, setState] = useState<TimelineExtendedContext>(() => orchestrator.getTimelineState().context)
+  const [state, setState] = useState<TimelineContext>(() => orchestrator.getTimelineState().context)
 
   // Подписка на изменения состояния
   useEffect(() => {
