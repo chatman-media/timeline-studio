@@ -6,9 +6,9 @@ import { beforeEach, describe, expect, it } from "vitest"
 
 import type { ContentInsights, KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
+import type { TimelineMarker } from "@/features/timeline/types"
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 import { AIMarkerService } from "../../services/ai-marker-service"
-import type { TimelineMarker } from "@/features/timeline/types"
 
 describe("AIMarkerService", () => {
   let service: AIMarkerService

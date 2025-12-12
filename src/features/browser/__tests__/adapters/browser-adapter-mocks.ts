@@ -91,17 +91,17 @@ vi.mock("@/features/resources", () => ({
 }))
 
 // Мокаем ResourcesProvider альтернативный путь
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   ResourcesProvider: ({ children }: any) => children,
 }))
 
 // Мокаем TimelineProvider
-vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+vi.mock("@/domains/video-editing/timeline-providers", () => ({
   TimelineProvider: ({ children }: any) => children,
 }))
 
 // Мокаем PlayerProvider
-vi.mock("@/domains/video-editing/providers/player-provider", () => ({
+vi.mock("@/domains/video-editing/player-provider", () => ({
   PlayerProvider: ({ children }: any) => children,
 }))
 

@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { MediaType } from "@/domains/media-management"
-import { usePlayer } from "@/domains/video-editing/providers"
+import { usePlayer } from "@/domains/video-editing"
 import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"

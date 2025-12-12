@@ -59,7 +59,7 @@ vi.mock("@/features/project-settings/hooks", () => ({
   }),
 }))
 
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="player-provider">{children}</div>,
   usePlayer: () => ({
     video: null,
@@ -133,7 +133,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
-vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+vi.mock("@/domains/video-editing/timeline-providers", () => ({
   Timeline: () => <div data-testid="timeline">Timeline</div>,
 }))
 

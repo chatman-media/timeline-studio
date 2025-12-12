@@ -101,7 +101,7 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
   PrerenderControls: () => null,
 }))
 
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="player-provider">{children}</div>,
   usePlayer: () => ({
     video: null,
@@ -138,7 +138,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
-vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+vi.mock("@/domains/video-editing/timeline-providers", () => ({
   useTimeline: () => ({
     currentTime: 0,
     duration: 0,

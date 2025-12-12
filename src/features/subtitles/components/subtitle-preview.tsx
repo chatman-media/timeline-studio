@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
 import type { SubtitleResource } from "@/domains/shared/types/resources"
-import { useResources } from "@/domains/video-editing/providers"
+import { useResources } from "@/domains/video-editing"
 import { ApplyButton } from "@/features/browser"
 
 import { AddMediaButton } from "../../browser/components/layout/add-media-button"

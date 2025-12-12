@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { useResources } from "@/domains/video-editing/providers"
+import { useResources } from "@/domains/video-editing"
 import type { FilterCategory, VideoFilter } from "@/features/filters/types/filters"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { renderWithBase } from "@/test/test-utils"
@@ -8,8 +8,8 @@ import { renderWithBase } from "@/test/test-utils"
 import { FilterPreview } from "../../components/filter-preview"
 
 // Mock external dependencies
-vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+vi.mock("@/domains/video-editing", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
   return {
     ...actual,
     useResources: vi.fn(),

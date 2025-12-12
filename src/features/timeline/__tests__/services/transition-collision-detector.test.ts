@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import {
   autoFixCollisions,
   detectAllCollisions,
@@ -6,7 +7,6 @@ import {
   suggestCollisionFixes,
   type TransitionCollision,
 } from "../../services/transition-collision-detector"
-import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import type { TimelineTransition } from "../../types/timeline-transition"
 
 // Тестовые данные

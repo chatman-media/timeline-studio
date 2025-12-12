@@ -4,11 +4,11 @@ import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
+import type { TimelineTrack, TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useTimeline } from "../hooks/use-timeline"
 import { useTracks } from "../hooks/use-tracks"
-import type { TimelineTrack, TrackType } from "@/features/timeline/types"
 
 const logger = createLogger("AudioMixer")
 

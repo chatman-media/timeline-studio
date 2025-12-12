@@ -2,6 +2,7 @@
  * Сервис для управления Split Edit операциями
  */
 
+import type { TimelineClip } from "@/features/timeline/types"
 import type {
   SplitEdit,
   SplitEditConfig,
@@ -19,7 +20,6 @@ import {
   getSplitEditsForClip,
   removeSplitEdit,
 } from "../types/split-edit"
-import type { TimelineClip } from "@/features/timeline/types"
 
 export interface SplitEditService {
   /** Получить текущую конфигурацию */

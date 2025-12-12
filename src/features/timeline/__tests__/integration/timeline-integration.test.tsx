@@ -144,7 +144,7 @@ vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
 }))
 
 // Timeline Providers mock
-vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+vi.mock("@/domains/video-editing/timeline-providers", () => ({
   TimelineProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TimelineProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TimelinePlaybackProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 
 import { container } from "@/core"
-import { useResources } from "@/domains/video-editing/providers"
+import { useResources } from "@/domains/video-editing"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { VideoFilter } from "../types/filters"

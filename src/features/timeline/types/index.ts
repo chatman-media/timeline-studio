@@ -11,54 +11,46 @@
 // DOMAIN TYPES - Реэкспорт из domain layer (CANONICAL SOURCE)
 // ============================================================================
 
+// Aliases for backward compatibility (deprecated - use domain names directly)
 export type {
-  // Core timeline types
-  Timeline,
-  Section,
-  Track,
-  TimelineClip,
-  TimelineKeyframe,
-  TimelineMarker,
-  TimelineSettings,
-  TimelineResources,
-  TrackType,
-
   // Applied resources
   AppliedEffect,
   AppliedFilter,
   AppliedTransition,
-
-  // Supporting types
-  VideoFadeKeyframe,
-
   // Media types
   MediaFile,
-} from "@/domains/video-editing/types"
-
-// Aliases for backward compatibility (deprecated - use domain names directly)
-export type {
-  Timeline as TimelineProject,
+  Section,
   Section as TimelineSection,
+  // Core timeline types
+  Timeline,
+  Timeline as TimelineProject,
+  TimelineClip,
+  TimelineKeyframe,
+  TimelineMarker,
+  TimelineResources,
+  TimelineSettings,
+  Track,
   Track as TimelineTrack,
+  TrackType,
+  // Supporting types
+  VideoFadeKeyframe,
 } from "@/domains/video-editing/types"
 
 // ============================================================================
 // UI-ONLY TYPES - Локальные типы для UI слоя
 // ============================================================================
 
-// UI State
-export * from "./ui"
-
-// Edit modes and operations
-export * from "./edit-modes"
-
-// Drag & Drop
-export * from "./drag-drop"
-
 // Specialized features (TODO: migrate to domain)
 export * from "./clip-groups"
 export * from "./color-grading"
+
+// Drag & Drop
+export * from "./drag-drop"
+// Edit modes and operations
+export * from "./edit-modes"
 export * from "./edit-schema"
+// Factories
+export * from "./factories"
 export * from "./jl-cuts"
 export * from "./markers"
 export * from "./music"
@@ -67,6 +59,5 @@ export * from "./speed-ramping"
 export * from "./split-edit"
 export * from "./subtitle-styles"
 export * from "./timeline-transition"
-
-// Factories
-export * from "./factories"
+// UI State
+export * from "./ui"

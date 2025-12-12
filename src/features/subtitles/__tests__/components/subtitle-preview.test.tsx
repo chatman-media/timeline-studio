@@ -22,8 +22,8 @@ vi.mock("@/features/browser/components/layout/favorite-button", () => ({
   FavoriteButton: () => <button>Избранное</button>,
 }))
 
-vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+vi.mock("@/domains/video-editing", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
   return {
     ...actual,
     useResources: () => ({

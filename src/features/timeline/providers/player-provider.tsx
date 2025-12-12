@@ -12,10 +12,10 @@ import type { MediaFile } from "@/domains/media-management"
 import { useUserSettings } from "@/domains/project-management"
 import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { usePlaybackTimeSync } from "@/domains/video-editing/hooks"
-import { createLogger } from "@/lib/tauri-logger"
-import type { ProjectState } from "@/types/generated/tauri-bindings"
 import { type CommandPriority, CommandQueue } from "@/domains/video-editing/services/command-queue"
 import { defaultShouldRetry, retryWithBackoff } from "@/domains/video-editing/utils/retry-helper"
+import { createLogger } from "@/lib/tauri-logger"
+import type { ProjectState } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("video-player:player-provider")
 

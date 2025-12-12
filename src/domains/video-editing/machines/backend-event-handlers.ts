@@ -17,10 +17,7 @@ const logger = createLogger("BackendEventHandlers")
 /**
  * Главный обработчик backend событий
  */
-export function handleBackendEvent(
-  context: TimelineContext,
-  event: ProjectEvent,
-): Partial<TimelineContext> {
+export function handleBackendEvent(context: TimelineContext, event: ProjectEvent): Partial<TimelineContext> {
   // Валидация события перед обработкой
   if (!validateProjectEvent(event)) {
     logger.error("Invalid backend event, skipping", { event })

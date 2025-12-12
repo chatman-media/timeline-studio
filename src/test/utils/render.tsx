@@ -59,7 +59,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { TimelineProvider } = await import("@/domains/video-editing/providers/timeline-providers")
+    const { TimelineProvider } = await import("@/domains/video-editing/timeline-providers")
     providers.TimelineProvider = TimelineProvider
   } catch (_e) {
     // Provider not available
@@ -73,7 +73,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { PlayerProvider } = await import("@/domains/video-editing/providers")
+    const { PlayerProvider } = await import("@/domains/video-editing")
     providers.PlayerProvider = PlayerProvider
   } catch (_e) {
     // Provider not available
@@ -102,7 +102,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { ResourcesProvider } = await import("@/domains/video-editing/providers")
+    const { ResourcesProvider } = await import("@/domains/video-editing")
     providers.ResourcesProvider = ResourcesProvider
   } catch (_e) {
     // Provider not available

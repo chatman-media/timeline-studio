@@ -4,12 +4,9 @@
 
 import { AnimatePresence, motion } from "motion/react"
 import { useMemo } from "react"
-
-import { cn } from "@/lib/utils"
-
-import { useTimeline } from "../hooks/use-timeline"
-
 import type { TimelineClip } from "@/features/timeline/types"
+import { cn } from "@/lib/utils"
+import { useTimeline } from "../hooks/use-timeline"
 
 interface LinkedClipsConnectorProps {
   className?: string

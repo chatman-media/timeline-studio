@@ -1,16 +1,16 @@
 // Export from player-machine with renamed type to avoid conflict
 
+export type { PlayerContextType } from "@/domains/video-editing"
+// Export from player-provider
+export {
+  PlayerProvider,
+  usePlayer,
+} from "@/domains/video-editing"
 export type {
   PlayerContext as PlayerMachineContextType,
   PlayerEvent,
 } from "@/domains/video-editing/machines/player-machine"
 export { playerMachine } from "@/domains/video-editing/machines/player-machine"
-export type { PlayerContextType } from "@/domains/video-editing/providers"
-// Export from player-provider
-export {
-  PlayerProvider,
-  usePlayer,
-} from "@/domains/video-editing/providers"
 export type { CodecProfile, FormatDetectionResult, OptimizationSettings } from "./codec-support"
 // Export new services
 // Lazy initialization functions for SSR compatibility

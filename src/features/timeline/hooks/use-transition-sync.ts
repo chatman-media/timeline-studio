@@ -3,14 +3,13 @@
  */
 
 import { useCallback } from "react"
-
+import type { TimelineClip, TimelineProject } from "@/features/timeline/types"
 import {
   syncTransitionsOnClipDelete,
   syncTransitionsOnClipMove,
   syncTransitionsOnClipSplit,
   syncTransitionsOnClipTrim,
 } from "../services/clip-transition-sync"
-import type { TimelineClip, TimelineProject } from "@/features/timeline/types"
 
 interface UseTransitionSyncProps {
   project: TimelineProject | null

@@ -25,7 +25,7 @@ vi.mock("@/features/timeline/hooks/use-timeline-selection", () => ({
   }),
 }))
 
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   usePlayer: () => ({
     currentTime: 5.0,
     isPlaying: false,
@@ -166,7 +166,7 @@ describe("useTimelineIntegration", () => {
     })
 
     it("should return 0 when no media file", () => {
-      vi.mock("@/domains/video-editing/providers", () => ({
+      vi.mock("@/domains/video-editing", () => ({
         usePlayer: () => ({
           currentTime: 5.0,
           isPlaying: false,
@@ -315,7 +315,7 @@ describe("useTimelineIntegration", () => {
 
   describe("edge cases", () => {
     it("should handle renderer without currentVideo", () => {
-      vi.mock("@/domains/video-editing/providers", () => ({
+      vi.mock("@/domains/video-editing", () => ({
         usePlayer: () => ({
           currentTime: 0,
           isPlaying: false,

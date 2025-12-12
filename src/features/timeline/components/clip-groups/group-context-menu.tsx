@@ -11,11 +11,10 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-
+import type { TimelineClip } from "@/features/timeline/types"
 import { useClipGroups } from "../../hooks/use-clip-groups"
 import { useTimeline } from "../../hooks/use-timeline"
 import { type GroupColorKey, GroupColors } from "../../types/clip-groups"
-import type { TimelineClip } from "@/features/timeline/types"
 
 interface GroupContextMenuProps {
   children: React.ReactNode

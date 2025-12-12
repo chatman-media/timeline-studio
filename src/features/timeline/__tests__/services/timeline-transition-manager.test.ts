@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { Transition } from "@/domains/video-editing/types"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import {
   addTransitionBetweenClips,
   addTransitionIn,
@@ -12,7 +13,6 @@ import {
   getTrackTransitions,
   removeTransition,
 } from "../../services/timeline-transition-manager"
-import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import type { TimelineTransition } from "../../types/timeline-transition"
 
 // Mock модуля resource-manager

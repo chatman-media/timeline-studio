@@ -4,15 +4,8 @@
  * Домен для управления редактированием видео
  */
 
-export type { UseUndoRedoReturn } from "./hooks/use-undo-redo"
-export { UndoRedoHelpers, useUndoRedo } from "./hooks/use-undo-redo"
-// Экспорт типов машин
-// Экспорт типов контекста и событий
-export type { PlayerContext, PlayerEvent, PlayerMachine } from "./machines/player-machine"
-// Экспорт машин
-export { playerMachine } from "./machines/player-machine"
-export type { TimelineContext, TimelineEvent, TimelineMachine } from "./machines/timeline-machine"
-export { timelineMachine } from "./machines/timeline-machine"
+export { PlayerProvider, usePlayer } from "@/features/timeline/providers/player-provider"
+export { ResourcesProvider, useResources } from "@/features/timeline/providers/resources-provider"
 // Экспорт провайдеров (реэкспорт из features для обратной совместимости)
 export {
   TimelineClipsProvider,
@@ -40,9 +33,16 @@ export {
   useTrackUndoRedo,
   useUndoRedoContext,
 } from "@/features/timeline/providers/undo-redo-provider"
-export { PlayerProvider, usePlayer } from "@/features/timeline/providers/player-provider"
-export { ResourcesProvider, useResources } from "@/features/timeline/providers/resources-provider"
-export { VideoEditingProvider, useVideoEditingContext } from "@/features/timeline/providers/video-editing-provider"
+export { useVideoEditingContext, VideoEditingProvider } from "@/features/timeline/providers/video-editing-provider"
+export type { UseUndoRedoReturn } from "./hooks/use-undo-redo"
+export { UndoRedoHelpers, useUndoRedo } from "./hooks/use-undo-redo"
+// Экспорт типов машин
+// Экспорт типов контекста и событий
+export type { PlayerContext, PlayerEvent, PlayerMachine } from "./machines/player-machine"
+// Экспорт машин
+export { playerMachine } from "./machines/player-machine"
+export type { TimelineContext, TimelineEvent, TimelineMachine } from "./machines/timeline-machine"
+export { timelineMachine } from "./machines/timeline-machine"
 // Экспорт compiler services
 export * from "./services/compiler"
 // Экспорт effects services

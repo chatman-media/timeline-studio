@@ -9,8 +9,8 @@ import { ResizableTemplate } from "../../components/resizable-template"
 
 // Мокаем usePlayer хук
 const mockUsePlayer = vi.fn()
-vi.mock("@/domains/video-editing/providers", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing/providers")>()
+vi.mock("@/domains/video-editing", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
   return {
     ...actual,
     usePlayer: () => mockUsePlayer(),

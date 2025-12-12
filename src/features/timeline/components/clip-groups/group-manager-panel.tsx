@@ -4,13 +4,12 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import type { TimelineClip } from "@/features/timeline/types"
 import { cn } from "@/lib/utils"
-
 import { useClipGroups } from "../../hooks/use-clip-groups"
 import { useTimeline } from "../../hooks/use-timeline"
 import type { ClipGroup, GroupColorKey } from "../../types/clip-groups"
 import { GroupColors } from "../../types/clip-groups"
-import type { TimelineClip } from "@/features/timeline/types"
 
 export function GroupManagerPanel() {
   const { project, selectedClipIds } = useTimeline()

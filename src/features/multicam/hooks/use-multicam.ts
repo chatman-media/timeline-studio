@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { usePlayer } from "@/domains/video-editing/providers"
+import { usePlayer } from "@/domains/video-editing"
 import { useLinkedClips } from "@/features/timeline/hooks"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { createLogger } from "@/lib/tauri-logger"

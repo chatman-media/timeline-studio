@@ -3,7 +3,7 @@
  */
 
 import type { MediaFile } from "@/domains/media-management"
-import type { ResourcesContextType } from "@/domains/video-editing/providers"
+import type { ResourcesContextType } from "@/domains/video-editing"
 import type { VideoFilter } from "@/domains/video-editing/types/filters"
 import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
 

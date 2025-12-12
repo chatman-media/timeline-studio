@@ -13,8 +13,8 @@ import {
   updateItemUsage,
 } from "@/domains/media-management"
 import { TimelineStudioProjectService } from "@/domains/project-management/services/timeline-studio-project-service"
-import type { Sequence } from "@/features/timeline/types/sequence"
 import type { TimelineClip } from "@/features/timeline/types"
+import type { Sequence } from "@/features/timeline/types/sequence"
 
 // Mock platform service
 const mockReadTextFile = vi.fn()

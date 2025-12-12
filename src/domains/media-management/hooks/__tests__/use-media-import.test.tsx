@@ -41,7 +41,7 @@ vi.mock("../../hooks/use-media-preview", () => ({
   })),
 }))
 
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
   PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
   TimelineProvider: ({ children }: { children: React.ReactNode }) => children,

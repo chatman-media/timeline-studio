@@ -137,7 +137,7 @@ vi.mock("@/features/user-settings", async (importOriginal) => {
 })
 
 // Mock PlayerProvider, ResourcesProvider, and usePlayer
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
   ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
   TimelineProvider: ({ children }: { children: React.ReactNode }) => children,

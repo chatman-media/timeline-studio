@@ -1,10 +1,8 @@
 import { FolderClosed, Lock } from "lucide-react"
 import React from "react"
-
-import { cn } from "@/lib/utils"
-
-import type { ClipGroup } from "../../types/clip-groups"
 import type { TimelineClip } from "@/features/timeline/types"
+import { cn } from "@/lib/utils"
+import type { ClipGroup } from "../../types/clip-groups"
 
 interface CollapsedGroupProps {
   group: ClipGroup

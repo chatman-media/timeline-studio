@@ -5,7 +5,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
+import { TimelineProvider } from "@/domains/video-editing/timeline-providers"
 
 import { useCameraSync } from "../use-camera-sync"
 

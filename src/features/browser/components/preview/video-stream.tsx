@@ -1,6 +1,6 @@
 import { memo, useCallback, useRef, useState } from "react"
 import type { FfprobeStream, MediaFile } from "@/domains/media-management"
-import { useResources } from "@/domains/video-editing/providers"
+import { useResources } from "@/domains/video-editing"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
 import { usePlayer } from "@/features/video-player"
 import { createThumbnailUrl } from "@/lib/media-url-utils"

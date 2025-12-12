@@ -4,7 +4,7 @@ import type { MediaFile } from "@/domains/video-editing/types/media"
 import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/template-config"
-
+import type { TimelineProject } from "@/features/timeline/types"
 import {
   addEffectToResources,
   addFilterToResources,
@@ -18,7 +18,6 @@ import {
   createAppliedStyleTemplate,
   createAppliedTransition,
 } from "../../services/resource-manager"
-import type { TimelineProject } from "@/features/timeline/types"
 
 describe("resource-manager", () => {
   let mockProject: TimelineProject

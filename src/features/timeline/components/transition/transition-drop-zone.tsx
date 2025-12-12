@@ -2,12 +2,12 @@ import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 
 import type { Transition } from "@/domains/video-editing/types"
+import type { TimelineClip } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
 import { useTimeline } from "../../hooks/use-timeline"
 import { useTimelineEffects } from "../../hooks/use-timeline-effects"
-import type { TimelineClip } from "@/features/timeline/types"
 
 const logger = createLogger("TransitionDropZone")
 

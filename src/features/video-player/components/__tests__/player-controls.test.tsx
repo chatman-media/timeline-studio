@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { type MediaFile, MediaType } from "@/domains/media-management"
-import { usePlayer } from "@/domains/video-editing/providers"
-import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/providers/timeline-providers"
+import { usePlayer } from "@/domains/video-editing"
+import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/timeline-providers"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
 import { PlayerControls } from "../player-controls"
 
@@ -174,7 +174,7 @@ vi.mock("../volume-slider", () => ({
   ),
 }))
 
-vi.mock("@/domains/video-editing/providers/timeline-providers", () => ({
+vi.mock("@/domains/video-editing/timeline-providers", () => ({
   TimelineProjectProvider: ({ children }: any) => children,
   TimelineProvider: ({ children }: any) => children,
   useTimeline: () => ({
@@ -281,7 +281,7 @@ const createMockPlayerContext = (overrides = {}) => ({
 })
 
 // Мокаем хуки
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   usePlayer: vi.fn(() => createMockPlayerContext()),
 }))
 

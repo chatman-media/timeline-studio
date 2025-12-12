@@ -10,9 +10,7 @@ import type { MediaFile } from "../types"
 
 export function useVideoEditing() {
   const [orchestrator] = useState(() => getVideoEditingOrchestrator())
-  const [timelineState, setTimelineState] = useState<TimelineContext>(
-    () => orchestrator.getTimelineState().context,
-  )
+  const [timelineState, setTimelineState] = useState<TimelineContext>(() => orchestrator.getTimelineState().context)
   const [playerState, setPlayerState] = useState<PlayerContext>(() => orchestrator.getPlayerState().context)
 
   // Подписка на изменения состояния

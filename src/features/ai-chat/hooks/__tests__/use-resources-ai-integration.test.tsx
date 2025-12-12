@@ -28,7 +28,7 @@ const mockResources = {
   updateResource: vi.fn(),
 }
 
-vi.mock("@/domains/video-editing/providers", () => ({
+vi.mock("@/domains/video-editing", () => ({
   useResources: () => mockResources,
 }))
 

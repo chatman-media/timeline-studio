@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
-import { useResources } from "@/domains/video-editing/providers"
+import { useResources } from "@/domains/video-editing"
 import type { ResourceType, TimelineResource } from "@/features/resources/types"
 import { ResourceThumbnail } from "./resource-thumbnail"
 

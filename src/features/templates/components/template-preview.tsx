@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { type MediaFile, MediaType } from "@/domains/media-management"
 import type { TemplateResource, TimelineResource } from "@/domains/shared/types/resources"
-import { useResources } from "@/domains/video-editing/providers"
+import { useResources } from "@/domains/video-editing"
 import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/preview-sizes"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"

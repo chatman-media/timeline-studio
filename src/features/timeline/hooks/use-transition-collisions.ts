@@ -3,6 +3,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   autoFixCollisions,
@@ -11,8 +12,7 @@ import {
   suggestCollisionFixes,
   type TransitionCollision,
 } from "../services/transition-collision-detector"
-import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
-import { useTimeline } from "./use-timeline"
+import { useTimeline } from "../state/use-timeline"
 
 const logger = createLogger("UseTransitionCollisions")
 
