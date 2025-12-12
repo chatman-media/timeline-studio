@@ -15,8 +15,8 @@ import type React from "react"
 import { useEffect } from "react"
 
 import type { MediaFile } from "@/domains/media-management"
+import { useDragDropTimeline } from "@/features/timeline/hooks/drag-drop/use-drag-drop-timeline"
 import { createLogger } from "@/lib/tauri-logger"
-import { useDragDropTimeline } from "../hooks/use-drag-drop-timeline"
 import { initializeDragDropBridge } from "../services/drag-drop-bridge"
 
 const logger = createLogger("DragDropProvider")

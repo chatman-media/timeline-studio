@@ -4,7 +4,7 @@ import { useUnifiedEffects } from "../../hooks/use-unified-effects"
 import type { BaseEffect } from "../../types/unified-effects"
 
 // Mock dependencies
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     currentTime: 0,
   }),

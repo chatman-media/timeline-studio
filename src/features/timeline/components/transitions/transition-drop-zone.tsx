@@ -7,7 +7,7 @@ import type { Transition } from "@/domains/video-editing/types"
 import type { DragDropManager, DraggableItem, DropTarget } from "@/features/drag-drop/services/drag-drop-manager"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { useTimelineEffects } from "../../hooks/use-timeline-effects"
+import { useTimelineEffects } from "../../hooks/effects/use-timeline-effects"
 import type { TimelineClip } from "../../types"
 
 const logger = createLogger("TransitionDropZone")

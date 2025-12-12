@@ -4,10 +4,10 @@
 
 import { useMemo } from "react"
 import { createLogger } from "@/lib/tauri-logger"
+import type { TimelineClip, TimelineSection, TimelineTrack } from "../../types"
 import { useClips } from "../clips/use-clips"
 import { useTimeline } from "../state/use-timeline"
-import type { TimelineClip, TimelineSection, TimelineTrack } from "../types"
-import { useTracks } from "./use-tracks"
+import { useTracks } from '../state/use-tracks'
 
 const logger = createLogger("UseTimelineSelection")
 

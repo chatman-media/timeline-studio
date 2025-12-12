@@ -9,9 +9,8 @@ import {
   type TimelineIntegrationOptions,
 } from "@/domains/ai-services/services/montage-planning/timeline-integration-service"
 import type { MediaFile } from "@/domains/video-editing/types/media"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import { useTimelineActions } from "@/features/timeline/hooks/use-timeline-actions"
-import { useTimelineMarkers } from "@/features/timeline/hooks/use-timeline-markers"
+import { useTimelineActions, useTimelineMarkers } from "@/features/timeline/hooks/markers/use-timeline-markers"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MontagePlan, PlannedClip, Sequence } from "../types"
 

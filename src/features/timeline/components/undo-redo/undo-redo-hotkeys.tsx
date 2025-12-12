@@ -3,7 +3,7 @@
  */
 
 import { useEffect } from "react"
-import { useUndoRedo } from "../../hooks/use-undo-redo"
+import { useUndoRedo } from "../../hooks/state/use-undo-redo"
 
 export function UndoRedoHotkeys() {
   const { undo, redo, canUndo, canRedo } = useUndoRedo()

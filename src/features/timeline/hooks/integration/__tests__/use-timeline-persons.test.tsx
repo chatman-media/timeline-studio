@@ -4,9 +4,9 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { MockTimelineProvider } from "@/features/timeline/__mocks__/hooks"
 import type { TimelineClip } from "@/features/timeline/types"
-import { MockTimelineProvider } from "../test-providers"
-import { useTimelinePersons } from "../use-timeline-persons"
+import { useTimelinePersons } from "../../state/use-timeline-persons"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => {
@@ -409,7 +409,9 @@ describe("useTimelinePersons", () => {
       result.current.showPersonDetail("person-1")
     })
 
-    expect(mockLogger.info).toHaveBeenCalledWith("Show person detail:", { personId: "person-1" })
+    expect(mockLogger.info).toHaveBeenCalledWith("Show person detail:", {
+      personId: "person-1",
+    })
   })
 
   it("должен обрабатывать ошибки при анализе", async () => {

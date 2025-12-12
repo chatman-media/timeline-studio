@@ -40,7 +40,7 @@ vi.mock("@/domains/system-integration", () => ({
   })),
 }))
 
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: vi.fn(() => ({
     project: null,
     send: vi.fn(),
@@ -79,7 +79,7 @@ vi.mock("sonner", () => ({
 import { WhisperService } from "@/domains/ai-services/services/whisper-service"
 import { useMediaFiles } from "@/domains/project-management/hooks"
 import { useModals } from "@/domains/system-integration"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 import { SubtitleAIToolsModal } from "../subtitle-ai-tools-modal"
 

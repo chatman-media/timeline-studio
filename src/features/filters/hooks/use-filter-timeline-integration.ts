@@ -6,8 +6,8 @@
 
 import { useCallback, useRef } from "react"
 
-import { useClips } from "@/features/timeline/hooks/use-clips"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useClips } from "@/features/timeline/hooks/clips/use-clips"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import type { AppliedFilter } from "@/features/timeline/types"
 import type { VideoFilter } from "../types/filters"
 

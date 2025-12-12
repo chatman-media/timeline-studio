@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
+import { useTimeline } from "../hooks/state/use-timeline"
 import {
   autoFixCollisions,
   detectAllCollisions,
@@ -12,7 +13,6 @@ import {
   suggestCollisionFixes,
   type TransitionCollision,
 } from "../services/transition-collision-detector"
-import { useTimeline } from "../state/use-timeline"
 
 const logger = createLogger("UseTransitionCollisions")
 
@@ -115,7 +115,10 @@ export function useTransitionCollisions(): UseTransitionCollisionsReturn {
           const updates = fix.action()
 
           // TODO: Интегрировать с системой обновления проекта
-          logger.info("Apply fix:", { transitionId: collision.transition1.id, updates })
+          logger.info("Apply fix:", {
+            transitionId: collision.transition1.id,
+            updates,
+          })
         },
       }))
     },

@@ -15,14 +15,11 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { useCurrentProject } from "@/domains/project-management/hooks"
 import { useTimelineAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
+import { EditModeProvider } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { createLogger } from "@/lib/tauri-logger"
 import { TimelineUIProvider, useTimelineUI } from "../context/timeline-ui-context"
-import { useClips } from "../hooks/use-clips"
-import { useDragDropTimeline } from "../hooks/use-drag-drop-timeline"
-import { EditModeProvider } from "../hooks/use-edit-mode"
-import { useTimeline } from "../hooks/use-timeline"
-import { useTimelinePlayerSync } from "../hooks/use-timeline-player-sync"
-import { useTracks } from "../hooks/use-tracks"
+import { useClips, useTimeline, useTimelinePlayerSync, useTracks } from "../hooks"
+import { useDragDropTimeline } from "../hooks/drag-drop/use-drag-drop-timeline"
 import { TimelineAIOverlay } from "./ai-analysis/timeline-ai-overlay"
 import { AIMarkerControls } from "./ai-markers/ai-marker-controls"
 import { DragDropProvider } from "./drag-drop-provider"
@@ -96,7 +93,9 @@ function TimelineContentInner() {
     if (!project && currentProject && projectSettings) {
       // Создаем проект синхронно
       createProject(currentProject.metadata.name).then(() => {
-        logger.info("[TimelineContent] Timeline project created", { projectName: currentProject.metadata.name })
+        logger.info("[TimelineContent] Timeline project created", {
+          projectName: currentProject.metadata.name,
+        })
       })
     }
   }, [project, currentProject, projectSettings, createProject])
@@ -281,9 +280,15 @@ function TimelineContentInner() {
                           // Find clip at this position
                           const track = tracks.find((t) => t.id === trackId)
                           if (track) {
-                            const clip = track.clips.find((c) => time > c.startTime && time < c.startTime + c.duration)
+                            const clip = track.clips.find(
+                              (c: any) => time > c.startTime && time < c.startTime + c.duration,
+                            )
                             if (clip) {
-                              send({ type: "SPLIT_CLIP", clipId: clip.id, splitTime: time })
+                              send({
+                                type: "SPLIT_CLIP",
+                                clipId: clip.id,
+                                splitTime: time,
+                              })
                             }
                           }
                         }}

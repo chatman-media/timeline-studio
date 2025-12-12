@@ -9,9 +9,9 @@ import {
   type AnimationResult,
   type InterpolationType,
   KeyframeAnimationService,
-} from "../services/keyframe-animation-service"
+} from "../../services/keyframe-animation-service"
 import { useTimeline } from "../state/use-timeline"
-import type { TimelineClip, TimelineKeyframe } from "../types"
+import type { TimelineClip, TimelineKeyframe } from "../../types"
 
 export interface UseKeyframeAnimationReturn {
   // Основные операции с keyframes

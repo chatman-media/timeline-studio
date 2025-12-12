@@ -12,9 +12,8 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"
-
-import { useEditModeContext } from "../hooks/use-edit-mode"
 import { EDIT_MODE_CONFIGS } from "../types/edit-modes"
 
 // Map icon names to Lucide components

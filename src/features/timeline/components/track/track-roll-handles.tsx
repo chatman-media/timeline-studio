@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 
-import { useEditModeContext } from "../../hooks/use-edit-mode"
+import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import type { TimelineClip, TimelineTrack } from "../../types"
 import { EDIT_MODES } from "../../types/edit-modes"
 import { RollEditHandle } from "../edit-tools/roll-edit-handle"

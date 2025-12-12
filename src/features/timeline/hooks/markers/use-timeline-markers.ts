@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useTimelineMarkers as useDomainTimelineMarkers } from "@/domains/video-editing"
-import { createMarker, type ExtendedTimelineMarker, type MarkerType } from "../types/markers"
+import { createMarker, type ExtendedTimelineMarker, type MarkerType } from "../../types/markers"
 
 export interface AddMarkerData {
   time: number

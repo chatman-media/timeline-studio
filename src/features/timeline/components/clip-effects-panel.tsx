@@ -25,8 +25,8 @@ import { EffectManagerPanel } from "@/features/effects/components/effect-manager
 import { EffectParameterControls } from "@/features/effects/components/effect-parameter-controls"
 import { useEffects } from "@/features/effects/hooks/use-effects"
 import { createLogger } from "@/lib/tauri-logger"
-import { useTimeline } from "../hooks/use-timeline"
-import { useTimelineEffects } from "../hooks/use-timeline-effects"
+import { useTimeline } from "../hooks/state/use-timeline"
+import { useTimelineEffects } from "../hooks/effects/use-timeline-effects"
 import type { TimelineClip } from "../types"
 
 const logger = createLogger("ClipEffectsPanel")

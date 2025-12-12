@@ -12,8 +12,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import type { TimelineClip } from "@/features/timeline/types"
-import { useClipGroups } from "../../hooks/use-clip-groups"
-import { useTimeline } from "../../hooks/use-timeline"
+import { useClipGroups } from "../../hooks/clips/use-clip-groups"
+import { useTimeline } from "../../hooks/state/use-timeline"
 import { type GroupColorKey, GroupColors } from "../../types/clip-groups"
 
 interface GroupContextMenuProps {

@@ -1,9 +1,8 @@
 import { GripVertical } from "lucide-react"
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"
-
-import { useEditModeContext } from "../../hooks/use-edit-mode"
 import type { TimelineClip } from "../../types"
 import { EDIT_MODES } from "../../types/edit-modes"
 

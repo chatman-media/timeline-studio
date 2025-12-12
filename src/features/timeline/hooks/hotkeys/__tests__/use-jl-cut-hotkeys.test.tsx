@@ -19,8 +19,8 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
-import { MockTimelineProvider } from "../test-providers"
-import { useJLCutHotkeys } from "../use-jl-cut-hotkeys"
+import { MockTimelineProvider } from "../../../__tests__/test-providers"
+import { useJLCutHotkeys } from '../use-jl-cut-hotkeys'
 
 // Mock keyboard event
 const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })

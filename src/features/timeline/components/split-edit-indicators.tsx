@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
-import { useSplitEdit } from "../hooks/use-split-edit"
+import { useSplitEdit } from "../hooks/editing/use-split-edit"
 
 interface SplitEditIndicatorsProps {
   className?: string

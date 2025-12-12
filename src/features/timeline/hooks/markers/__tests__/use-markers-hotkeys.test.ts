@@ -9,8 +9,7 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 }))
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
-
-import { useMarkerHotkeys } from "../use-marker-hotkeys"
+import { useMarkerHotkeys } from "../../hotkeys/use-marker-hotkeys"
 
 // Mock keyboard event
 const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })

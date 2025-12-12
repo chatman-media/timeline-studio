@@ -260,7 +260,7 @@ async function applyPlanToTimeline(plan: MontagePlan): Promise<{
     logger.debug("Clearing current selection")
 
     // Получаем список существующих треков
-    const timelineProviders = await import("@/domains/video-editing/timeline-providers")
+    const timelineProviders = await import("@/features/timeline/providers/timeline-providers")
 
     // Создаём треки для каждого sequence (если нужно)
     const sequenceTracks = new Map<string, string>() // sequenceId -> trackId

@@ -37,7 +37,7 @@ vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
 }))
 
 // Мокаем useTimeline
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: vi.fn(() => ({
     clips: [],
     tracks: [],

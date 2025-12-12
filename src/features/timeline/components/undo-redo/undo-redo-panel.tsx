@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useUndoRedo } from "../../hooks/use-undo-redo"
+import { useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
 import type { ActionType } from "../../services/undo-redo-service"
 
 const ACTION_ICONS: Record<ActionType, any> = {

@@ -10,7 +10,7 @@ import { SubtitleToolbar } from "../../components/subtitle-toolbar"
 import { SubtitleTools } from "../../components/subtitle-tools"
 
 // Mock timeline hook
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     project: { id: "test-project" },
     tracks: [],

@@ -3,33 +3,21 @@
  * Продвинутая система переходов как отдельных объектов на таймлайне
  */
 
+import type { TimelineTransitionBase } from "@/domains/video-editing/types"
 import type { EasingFunction } from "../../video-player/services/transitions-preview"
 
 /**
  * Переход как отдельный объект на таймлайне
+ * Использует базовый domain тип с более строгими параметрами TransitionParameters
  */
-export interface TimelineTransition {
-  id: string
-  transitionId: string // Ссылка на ресурс перехода
-  type: "between" | "in" | "out" | "adjustment"
-
-  // Позиционирование
-  position: number // Позиция на таймлайне в секундах
-  duration: number // Длительность
-
-  // Связи с клипами
-  startClipId?: string // ID начального клипа
-  endClipId?: string // ID конечного клипа
-  trackId: string // ID трека
-
-  // Параметры
-  parameters: TransitionParameters
+export interface TimelineTransition extends Omit<TimelineTransitionBase<TransitionParameters>, "keyframes" | "curve"> {
+  // Keyframes с расширенным типом
   keyframes: TransitionKeyframe[]
-  curve: TransitionCurve // Кривая перехода
 
-  // Состояние
-  isEnabled: boolean
-  isLocked: boolean
+  // Кривая перехода (обязательная в feature типе)
+  curve: TransitionCurve
+
+  // Дополнительные поля feature типа
   renderCache?: RenderCacheInfo
 }
 
@@ -101,13 +89,15 @@ export interface TransitionParameters {
 
 /**
  * Keyframe для анимации параметров
+ * Расширяет базовый TimelineKeyframe с дополнительными полями
  */
 export interface TransitionKeyframe {
   id: string
   time: number // 0-1 нормализованное время относительно длительности перехода
-  parameter: string // Путь к параметру (e.g., "blur.amount", "color.brightness")
+  property: string // Совместимо с TimelineKeyframe.property
+  parameter?: string // Дополнительное поле: путь к параметру (e.g., "blur.amount", "color.brightness")
   value: any // Значение параметра
-  interpolation: "linear" | "bezier" | "hold" | "step"
+  interpolation: "linear" | "bezier" | "hold" | "step" | "ease" | "ease-in" | "ease-out" | "ease-in-out" // Расширенный набор
   controlPoints?: [number, number, number, number] // Для bezier интерполяции
 }
 

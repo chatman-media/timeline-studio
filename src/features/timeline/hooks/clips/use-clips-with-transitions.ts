@@ -8,7 +8,7 @@ import type { TimelineProject } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { useClips } from "../clips/use-clips"
 import { useTimeline } from "../state/use-timeline"
-import { useTransitionSync } from "./use-transition-sync"
+import { useTransitionSync } from "../use-transition-sync"
 
 const logger = createLogger("UseClipsWithTransitions")
 

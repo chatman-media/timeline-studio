@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useWebGL2Preview } from "../../hooks/use-webgl2-preview"
 
 // Mock dependencies
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     segments: [],
     selectedClipIds: [],

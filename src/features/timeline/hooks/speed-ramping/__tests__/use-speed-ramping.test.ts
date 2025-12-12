@@ -1,8 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { useSpeedRamping } from "../use-speed-ramping"
 import { SPEED_RAMPING_PRESETS } from "../../../types/speed-ramping"
+import { useSpeedRamping } from "../use-speed-ramping"
 
 // Mock useTimeline хук
 const mockSend = vi.fn()

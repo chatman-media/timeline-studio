@@ -12,7 +12,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-import { useSpeedRamping } from "../../hooks/use-speed-ramping"
+import { useSpeedRamping } from "../../hooks/speed-ramping/use-speed-ramping"
 import type { SpeedInterpolationType } from "../../types/speed-ramping"
 import { SPEED_RAMPING_PRESETS } from "../../types/speed-ramping"
 

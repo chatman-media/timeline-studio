@@ -11,11 +11,11 @@ import {
   BatchOperationsService,
   type BatchSpeedOptions,
   type BatchTrimOptions,
-} from "../services/batch-operations-service"
+} from "../../services/batch-operations-service"
 import { useTimeline } from "../state/use-timeline"
-import type { AppliedEffect, TimelineClip } from "../types"
-import { useTimelineSelection } from "./use-timeline-selection"
-import { useTracks } from "./use-tracks"
+import type { AppliedEffect, TimelineClip } from "../../types"
+import { useTimelineSelection } from '../state/use-timeline-selection'
+import { useTracks } from '../state/use-tracks'
 
 export interface UseBatchOperationsReturn {
   // Базовые операции

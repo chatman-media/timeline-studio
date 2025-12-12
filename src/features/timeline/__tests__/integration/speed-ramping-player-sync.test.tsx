@@ -2,15 +2,14 @@ import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { usePlayer } from "@/domains/video-editing"
-
-import { useTimeline } from "../../hooks/use-timeline"
-import { useTimelinePlayerSync } from "../../hooks/use-timeline-player-sync"
-import { useTimelineSelection } from "../../hooks/use-timeline-selection"
+import { useTimelinePlayerSync } from "@/features/timeline/hooks/integration/use-timeline-player-sync"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
+import { useTimelineSelection } from "@/features/timeline/hooks/state/use-timeline-selection"
 import { timelinePlayerSync } from "../../services/timeline-player-sync"
 import { createMockClip } from "../test-utils"
 
-vi.mock("../../hooks/use-timeline")
-vi.mock("../../hooks/use-timeline-selection")
+vi.mock("@/features/timeline/hooks/state/use-timeline")
+vi.mock("@/features/timeline/hooks/state/use-timeline-selection")
 vi.mock("@/domains/video-editing")
 vi.mock("../../services/timeline-player-sync", () => ({
   timelinePlayerSync: {

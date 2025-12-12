@@ -8,13 +8,13 @@ import { SubtitleSyncTools } from "../../components/subtitle-sync-tools"
 const mockUpdateClip = vi.fn()
 const mockToast = vi.fn()
 
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     updateClip: mockUpdateClip,
   }),
 }))
 
-vi.mock("@/features/timeline/hooks/use-tracks", () => ({
+vi.mock("@/features/timeline/hooks/state/use-tracks", () => ({
   useTracks: () => ({
     tracks: [
       {

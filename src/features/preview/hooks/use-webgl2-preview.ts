@@ -4,9 +4,8 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
-import { useTimelineEffects } from "@/features/timeline/hooks/use-timeline-effects"
+import { useTimelineEffects } from "@/features/timeline/hooks/effects/use-timeline-effects"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { usePlayer } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
 import { PreviewCache } from "../services/preview-cache"

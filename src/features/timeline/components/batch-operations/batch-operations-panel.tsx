@@ -24,9 +24,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useBatchOperations } from "../../hooks/use-batch-operations"
-import { useTimeline } from "../../hooks/use-timeline"
-import { useTimelineSelection } from "../../hooks/use-timeline-selection"
+import { useBatchOperations } from "../../hooks/batch/use-batch-operations"
+import { useTimeline } from "../../hooks/state/use-timeline"
+import { useTimelineSelection } from "../../hooks/state/use-timeline-selection"
 import type { VideoFadeOptions } from "../../services/video-fade-service"
 
 export function BatchOperationsPanel() {

@@ -47,12 +47,12 @@ vi.mock("../../services/resource-manager", () => ({
     if (!updatedProject.resources.timelineTransitions) {
       updatedProject.resources.timelineTransitions = []
     }
-    updatedProject.resources.timelineTransitions.push(transition)
+    updatedProject.resources.timelineTransitions.push(transition as any)
     return updatedProject
   }),
   updateTimelineTransitionParameters: vi.fn((project: TimelineProject, transitionId: string, updates: any) => {
     const updatedProject = { ...project }
-    const transition = updatedProject.resources.timelineTransitions.find((t) => t.id === transitionId)
+    const transition = updatedProject.resources.timelineTransitions?.find((t) => t.id === transitionId)
     if (transition) {
       Object.assign(transition.parameters, updates)
     }
@@ -60,7 +60,7 @@ vi.mock("../../services/resource-manager", () => ({
   }),
   updateTimelineTransitionProperties: vi.fn((project: TimelineProject, transitionId: string, updates: any) => {
     const updatedProject = { ...project }
-    const transition = updatedProject.resources.timelineTransitions.find((t) => t.id === transitionId)
+    const transition = updatedProject.resources.timelineTransitions?.find((t) => t.id === transitionId)
     if (transition) {
       Object.assign(transition, updates)
     }
@@ -328,11 +328,12 @@ describe("timeline-transition-manager", () => {
       }
 
       // Добавляем переход в проект
-      mockProject.resources.timelineTransitions = [transition]
+      mockProject.resources.timelineTransitions = [transition as any]
       mockProject.globalTracks[0].transitions = ["test-transition"]
 
       const transitions = getTrackTransitions(mockProject, "track-1")
 
+      expect(transitions).toBeDefined()
       expect(transitions).toHaveLength(1)
       expect(transitions[0]).toEqual(transition)
     })
@@ -385,7 +386,7 @@ describe("timeline-transition-manager", () => {
         isLocked: false,
       }
 
-      mockProject.resources.timelineTransitions = [transition1, transition2]
+      mockProject.resources.timelineTransitions = [transition1 as any, transition2 as any]
       mockProject.globalTracks[0].transitions = ["transition-1", "transition-2"]
     })
 
@@ -474,7 +475,7 @@ describe("timeline-transition-manager", () => {
         },
       ]
 
-      mockProject.resources.timelineTransitions = testTransitions
+      mockProject.resources.timelineTransitions = testTransitions as any
       mockProject.globalTracks[0].transitions = ["between-transition", "in-transition", "out-transition"]
     })
 
@@ -482,10 +483,12 @@ describe("timeline-transition-manager", () => {
       // Перемещаем clip-1 с позиции 0 на позицию 5 (длительность остается 10)
       const result = adjustTransitionsForClipChange(mockProject, "track-1", "clip-1", 0, 5, 10, 10)
 
-      const betweenTransition = result.resources.timelineTransitions.find((t) => t.id === "between-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const betweenTransition = result.resources.timelineTransitions?.find((t) => t.id === "between-transition")
       expect(betweenTransition?.position).toBe(14) // 9 + (15 - 10) = 14
 
-      const outTransition = result.resources.timelineTransitions.find((t) => t.id === "out-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const outTransition = result.resources.timelineTransitions?.find((t) => t.id === "out-transition")
       expect(outTransition?.position).toBe(14) // 5 + 10 - 1 = 14
     })
 
@@ -493,10 +496,12 @@ describe("timeline-transition-manager", () => {
       // Изменяем длительность clip-1 с 10 на 15 (позиция остается 0)
       const result = adjustTransitionsForClipChange(mockProject, "track-1", "clip-1", 0, 0, 10, 15)
 
-      const betweenTransition = result.resources.timelineTransitions.find((t) => t.id === "between-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const betweenTransition = result.resources.timelineTransitions?.find((t) => t.id === "between-transition")
       expect(betweenTransition?.position).toBe(14) // 9 + (15 - 10) = 14
 
-      const outTransition = result.resources.timelineTransitions.find((t) => t.id === "out-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const outTransition = result.resources.timelineTransitions?.find((t) => t.id === "out-transition")
       expect(outTransition?.position).toBe(14) // 0 + 15 - 1 = 14
     })
 
@@ -504,10 +509,12 @@ describe("timeline-transition-manager", () => {
       // Перемещаем clip-2 с позиции 10 на 12 и меняем длительность с 10 на 8
       const result = adjustTransitionsForClipChange(mockProject, "track-1", "clip-2", 10, 12, 10, 8)
 
-      const betweenTransition = result.resources.timelineTransitions.find((t) => t.id === "between-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const betweenTransition = result.resources.timelineTransitions?.find((t) => t.id === "between-transition")
       expect(betweenTransition?.position).toBe(11) // 9 + (12 - 10) = 11
 
-      const inTransition = result.resources.timelineTransitions.find((t) => t.id === "in-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const inTransition = result.resources.timelineTransitions?.find((t) => t.id === "in-transition")
       expect(inTransition?.position).toBe(12) // новая позиция клипа
     })
 
@@ -516,13 +523,16 @@ describe("timeline-transition-manager", () => {
       const result = adjustTransitionsForClipChange(mockProject, "track-1", "clip-3", 25, 30, 10, 12)
 
       // Все переходы должны остаться без изменений
-      const betweenTransition = result.resources.timelineTransitions.find((t) => t.id === "between-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const betweenTransition = result.resources.timelineTransitions?.find((t) => t.id === "between-transition")
       expect(betweenTransition?.position).toBe(9)
 
-      const inTransition = result.resources.timelineTransitions.find((t) => t.id === "in-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const inTransition = result.resources.timelineTransitions?.find((t) => t.id === "in-transition")
       expect(inTransition?.position).toBe(10)
 
-      const outTransition = result.resources.timelineTransitions.find((t) => t.id === "out-transition")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const outTransition = result.resources.timelineTransitions?.find((t) => t.id === "out-transition")
       expect(outTransition?.position).toBe(9)
     })
   })
@@ -543,7 +553,7 @@ describe("timeline-transition-manager", () => {
         isLocked: false,
       }
 
-      mockProject.resources.timelineTransitions = [transition]
+      mockProject.resources.timelineTransitions = [transition as any]
       mockProject.globalTracks[0].transitions = ["test-transition"]
 
       const result = removeTransition(mockProject, "test-transition")
@@ -570,7 +580,7 @@ describe("timeline-transition-manager", () => {
       const sectionTrack = createMockTrack("section-track", [])
       sectionTrack.transitions = ["test-transition"]
 
-      mockProject.resources.timelineTransitions = [transition]
+      mockProject.resources.timelineTransitions = [transition as any]
       mockProject.globalTracks[0].transitions = ["test-transition"]
       mockProject.sections = [
         {
@@ -593,18 +603,21 @@ describe("timeline-transition-manager", () => {
     })
 
     it("должен не изменять проект если переход не найден", () => {
-      const originalTransitionsLength = mockProject.resources.timelineTransitions.length
+      expect(mockProject.resources.timelineTransitions).toBeDefined()
+      const originalTransitionsLength = mockProject.resources.timelineTransitions?.length ?? 0
       const originalTrackTransitionsLength = mockProject.globalTracks[0].transitions.length
 
       const result = removeTransition(mockProject, "nonexistent")
 
-      expect(result.resources.timelineTransitions).toHaveLength(originalTransitionsLength)
+      expect(result.resources.timelineTransitions).toBeDefined()
+      expect(result.resources.timelineTransitions?.length).toBe(originalTransitionsLength)
       expect(result.globalTracks[0].transitions).toHaveLength(originalTrackTransitionsLength)
     })
   })
 
   describe("getClipTransitions", () => {
     beforeEach(() => {
+      expect(mockProject.resources.timelineTransitions).toBeDefined()
       const transitions: TimelineTransition[] = [
         {
           id: "in-transition",
@@ -666,7 +679,7 @@ describe("timeline-transition-manager", () => {
         },
       ]
 
-      mockProject.resources.timelineTransitions = transitions
+      mockProject.resources.timelineTransitions = transitions as any
     })
 
     it("должен возвращать все типы переходов для клипа", () => {
@@ -715,12 +728,16 @@ describe("timeline-transition-manager", () => {
       const result = applyTransitionPresetToTrack(project, "track-1", mockTransitionResource, 1)
 
       // Должно быть 2 перехода (между clip-1 и clip-2, между clip-2 и clip-3)
-      expect(result.resources.timelineTransitions).toHaveLength(2)
+      expect(result.resources.timelineTransitions).toBeDefined()
+      expect(result.resources.timelineTransitions?.length).toBe(2)
 
       // Проверяем что переходы созданы правильно
+      expect(result.resources.timelineTransitions).toBeDefined()
       const transitions = result.resources.timelineTransitions
-      expect(transitions.every((t) => t.type === "between")).toBe(true)
-      expect(transitions.every((t) => t.duration === 1)).toBe(true)
+      if (transitions) {
+        expect(transitions.every((t) => t.type === "between")).toBe(true)
+        expect(transitions.every((t) => t.duration === 1)).toBe(true)
+      }
     })
 
     it("должен пропускать несоседние клипы", () => {
@@ -728,11 +745,15 @@ describe("timeline-transition-manager", () => {
       const result = applyTransitionPresetToTrack(mockProject, "track-1", mockTransitionResource, 1)
 
       // Должен быть только 1 переход (между clip-1 и clip-2)
-      expect(result.resources.timelineTransitions).toHaveLength(1)
+      expect(result.resources.timelineTransitions).toBeDefined()
+      expect(result.resources.timelineTransitions?.length).toBe(1)
 
-      const transition = result.resources.timelineTransitions[0]
-      expect(transition.startClipId).toBe("clip-1")
-      expect(transition.endClipId).toBe("clip-2")
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const transition = result.resources.timelineTransitions?.[0]
+      if (transition) {
+        expect(transition.startClipId).toBe("clip-1")
+        expect(transition.endClipId).toBe("clip-2")
+      }
     })
 
     it("должен возвращать проект без изменений если трек не найден", () => {
@@ -755,8 +776,11 @@ describe("timeline-transition-manager", () => {
 
       const result = applyTransitionPresetToTrack(project, "track-1", mockTransitionResource)
 
-      const transition = result.resources.timelineTransitions[0]
-      expect(transition.duration).toBe(mockTransitionResource.duration.default)
+      expect(result.resources.timelineTransitions).toBeDefined()
+      const transition = result.resources.timelineTransitions?.[0]
+      if (transition) {
+        expect(transition.duration).toBe(mockTransitionResource.duration.default)
+      }
     })
 
     it("должен сортировать клипы по времени перед применением", () => {
@@ -767,16 +791,20 @@ describe("timeline-transition-manager", () => {
 
       const result = applyTransitionPresetToTrack(project, "track-1", mockTransitionResource, 1)
 
-      expect(result.resources.timelineTransitions).toHaveLength(2)
+      expect(result.resources.timelineTransitions).toBeDefined()
+      expect(result.resources.timelineTransitions?.length).toBe(2)
 
+      expect(result.resources.timelineTransitions).toBeDefined()
       const transitions = result.resources.timelineTransitions
-      // Первый переход между clip-1 и clip-2
-      const firstTransition = transitions.find((t) => t.startClipId === "clip-1")
-      expect(firstTransition?.endClipId).toBe("clip-2")
+      if (transitions) {
+        // Первый переход между clip-1 и clip-2
+        const firstTransition = transitions.find((t) => t.startClipId === "clip-1")
+        expect(firstTransition?.endClipId).toBe("clip-2")
 
-      // Второй переход между clip-2 и clip-3
-      const secondTransition = transitions.find((t) => t.startClipId === "clip-2")
-      expect(secondTransition?.endClipId).toBe("clip-3")
+        // Второй переход между clip-2 и clip-3
+        const secondTransition = transitions.find((t) => t.startClipId === "clip-2")
+        expect(secondTransition?.endClipId).toBe("clip-3")
+      }
     })
   })
 })

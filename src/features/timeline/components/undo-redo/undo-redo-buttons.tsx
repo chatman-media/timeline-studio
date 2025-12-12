@@ -6,7 +6,7 @@ import { Redo, Undo } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useUndoRedo } from "../../hooks/use-undo-redo"
+import { useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
 
 interface UndoRedoButtonsProps {
   variant?: "default" | "outline" | "ghost" | "secondary"

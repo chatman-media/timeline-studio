@@ -133,7 +133,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
-vi.mock("@/domains/video-editing/timeline-providers", () => ({
+vi.mock("@/features/timeline/providers/timeline-providers", () => ({
   Timeline: () => <div data-testid="timeline">Timeline</div>,
 }))
 

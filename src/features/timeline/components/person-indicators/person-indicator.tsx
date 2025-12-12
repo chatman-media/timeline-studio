@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 import type { PersonProfile } from "../../../person-identification/types/person"
-import type { TimelinePersonAppearance } from "../../hooks/use-timeline-persons"
+import type { TimelinePersonAppearance } from "../../hooks/state/use-timeline-persons"
 
 interface PersonIndicatorProps {
   persons: PersonProfile[]

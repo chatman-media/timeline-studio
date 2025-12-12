@@ -3,8 +3,9 @@
  * Конвертирует Timeline переходы в FFmpeg команды
  */
 
+import type { TimelineTransition } from "@/domains/video-editing/types"
 import type { TimelineProject } from "@/features/timeline/types"
-import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
+import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ExportSettings } from "../types/export-types"
 import {
@@ -15,6 +16,7 @@ import {
   type TransitionExportInfo,
   type TransitionExportResult,
   type TransitionExportStatus,
+  type TransitionFFmpegParameters,
   type TransitionOptimizationSettings,
   type TransitionType,
 } from "../types/transition-export-types"
@@ -53,8 +55,13 @@ export class TransitionExportService {
 
   /**
    * Получить все переходы из проекта для экспорта
+   * @param project - Проект таймлайна
+   * @param availableTransitions - Мапа доступных переходов (ID -> Transition object)
    */
-  extractTransitionsFromProject(project: TimelineProject): TransitionExportInfo[] {
+  extractTransitionsFromProject(
+    project: TimelineProject,
+    availableTransitions: Map<string, Transition>,
+  ): TransitionExportInfo[] {
     const transitions: TransitionExportInfo[] = []
 
     // Собираем все треки
@@ -64,19 +71,23 @@ export class TransitionExportService {
       if (!track.transitions || track.transitions.length === 0) continue
 
       // Получаем переходы трека
-      const trackTransitions = track.transitions
-        .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
-        .filter((t): t is TimelineTransition => t !== undefined)
+      for (const transitionId of track.transitions) {
+        const transition = project.resources.timelineTransitions?.find((t) => t.id === transitionId)
 
-      for (const transition of trackTransitions) {
-        // Находим ресурс перехода
-        const resource = project.resources.transitions.find((r) => r.id === transition.transitionId)
+        if (!transition) {
+          logger.warn(`Timeline transition not found: ${transitionId}`)
+          continue
+        }
+
+        // Находим ресурс перехода в переданной мапе
+        const resource = availableTransitions.get(transition.transitionId)
 
         if (!resource) {
           logger.warn(`Transition resource not found: ${transition.transitionId}`)
           continue
         }
 
+        // После проверок transition и resource гарантированно не undefined
         const exportInfo: TransitionExportInfo = {
           transition,
           resource,
@@ -87,9 +98,9 @@ export class TransitionExportService {
           sourceClipId: transition.startClipId,
           targetClipId: transition.endClipId,
           renderQuality: this.calculateTransitionQuality(transition, resource),
-          gpuAccelerated: resource.gpuAccelerated || false,
-          shaderType: (resource as any).shaderType || "basic",
-          customParameters: transition.parameters || {},
+          gpuAccelerated: resource.gpuAccelerated ?? false,
+          shaderType: resource.webglShader ?? "basic",
+          customParameters: transition.parameters,
         }
 
         transitions.push(exportInfo)
@@ -156,7 +167,7 @@ export class TransitionExportService {
       type: ffmpegType,
       startTime: transition.position,
       duration: transition.duration,
-      parameters: this.convertParameters(transition.parameters || {}),
+      parameters: this.convertParameters(transition.parameters),
       inputA,
       inputB,
       output: this.generateOutputPath(transition.id, exportSettings),
@@ -239,17 +250,23 @@ export class TransitionExportService {
 
   /**
    * Выполнить экспорт переходов
+   * @param project - Проект таймлайна
+   * @param exportSettings - Настройки экспорта
+   * @param clipPaths - Мапа путей к клипам
+   * @param availableTransitions - Мапа доступных переходов
+   * @param onProgress - Коллбек прогресса
    */
   async exportTransitions(
     project: TimelineProject,
     exportSettings: ExportSettings,
     clipPaths: Map<string, string>,
+    availableTransitions: Map<string, Transition>,
     onProgress?: (status: TransitionExportStatus) => void,
   ): Promise<TransitionExportResult> {
     const startTime = Date.now()
 
     // Извлекаем переходы
-    const transitions = this.extractTransitionsFromProject(project)
+    const transitions = this.extractTransitionsFromProject(project, availableTransitions)
 
     if (transitions.length === 0) {
       return {
@@ -423,13 +440,26 @@ export class TransitionExportService {
     return TRANSITION_FFMPEG_MAPPING[transitionId] || TRANSITION_FFMPEG_MAPPING["*"]
   }
 
-  private convertParameters(params: Record<string, any>) {
+  private convertParameters(params: Record<string, any>): TransitionFFmpegParameters {
     // Конвертируем параметры Timeline в FFmpeg формат
     return {
-      intensity: params.intensity || 1.0,
-      direction: params.direction || "center",
-      blur: params.blur || { enabled: false, amount: 0, type: "gaussian" },
-      color: params.color || { enabled: false, tint: "#FFFFFF", saturation: 0, brightness: 0 },
+      intensity: params.intensity ?? 1.0,
+      direction: params.direction ?? "center",
+      blur: params.blur
+        ? {
+            enabled: params.blur.enabled ?? false,
+            amount: params.blur.amount,
+            type: params.blur.type,
+          }
+        : { enabled: false, amount: 0, type: "gaussian" },
+      color: params.color
+        ? {
+            enabled: params.color.enabled ?? false,
+            tint: params.color.tint,
+            saturation: params.color.saturation,
+            brightness: params.color.brightness,
+          }
+        : { enabled: false, tint: "#FFFFFF", saturation: 0, brightness: 0 },
     }
   }
 
@@ -458,13 +488,17 @@ export class TransitionExportService {
     return Math.round(51 - (quality / 100) * 51)
   }
 
-  private calculateTransitionQuality(transition: TimelineTransition, resource: any): number {
+  private calculateTransitionQuality(transition: TimelineTransition, resource: Transition): number {
     // Базовое качество
     let quality = 85
 
     // Учитываем сложность перехода
     if (resource.gpuAccelerated) quality += 5
-    if (transition.parameters?.blur) quality -= 5
+    // Проверяем blur в параметрах (они имеют тип Record<string, any>)
+    if (transition.parameters?.blur && typeof transition.parameters.blur === "object") {
+      const blur = transition.parameters.blur as { enabled?: boolean }
+      if (blur.enabled) quality -= 5
+    }
     if (transition.duration < 0.5) quality -= 10
 
     return Math.max(50, Math.min(100, quality))

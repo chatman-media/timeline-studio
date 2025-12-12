@@ -10,9 +10,9 @@ import {
   getTimelineTransitionById,
   removeKeyframeFromTimelineTransition,
   updateTimelineTransitionParameters,
-} from "../services/resource-manager"
-import { getTrackTransitions as getTrackTransitionsService } from "../services/timeline-transition-manager"
-import type { TimelineTransition } from "../types/timeline-transition"
+} from "../../services/resource-manager"
+import { getTrackTransitions as getTrackTransitionsService } from "../../services/timeline-transition-manager"
+import type { TimelineTransition } from "../../types/timeline-transition"
 
 /**
  * Hook для работы с переходами на таймлайне

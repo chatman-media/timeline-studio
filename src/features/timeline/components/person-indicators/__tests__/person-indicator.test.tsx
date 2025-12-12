@@ -6,7 +6,7 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 
 import type { PersonProfile } from "@/features/person-identification/types/person"
-import type { TimelinePersonAppearance } from "@/features/timeline/hooks/use-timeline-persons"
+import type { TimelinePersonAppearance } from "@/features/timeline/hooks/state/use-timeline-persons"
 
 import { PersonIndicator } from "../person-indicator"
 

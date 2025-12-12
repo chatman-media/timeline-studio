@@ -102,7 +102,7 @@ it("should not throw errors with invalid parameters", () => {
 Timeline hooks are mocked globally in `src/test/setup.ts`:
 
 ```typescript
-vi.mock("@/features/timeline/hooks/use-clips", () => ({
+vi.mock("@/features/timeline/hooks/clips/use-clips", () => ({
   useClips: () => ({
     clips: [],
     selectedClips: [],

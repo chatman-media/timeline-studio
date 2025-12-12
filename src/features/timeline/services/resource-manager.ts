@@ -7,10 +7,10 @@
 
 import type { MediaFile } from "@/domains/media-management"
 import type { Transition, VideoFilter } from "@/domains/video-editing/types"
+import type { TimelineTransition } from "@/domains/video-editing/types/timeline"
 import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
-
 import type {
   AppliedEffect,
   AppliedFilter,
@@ -21,7 +21,6 @@ import type {
   SubtitleStyle,
   TimelineProject,
 } from "@/features/timeline/types"
-import type { TimelineTransition } from "../types/timeline-transition"
 
 /**
  * Создает пустой объект ресурсов
@@ -100,9 +99,13 @@ export function addTimelineTransitionToResources(
     project.resources = createEmptyResources()
   }
 
+  if (!project.resources.timelineTransitions) {
+    project.resources.timelineTransitions = []
+  }
+
   const exists = project.resources.timelineTransitions.some((t) => t.id === timelineTransition.id)
   if (!exists) {
-    project.resources.timelineTransitions.push(timelineTransition)
+    project.resources.timelineTransitions.push(timelineTransition as any)
   }
 
   return project
@@ -116,9 +119,13 @@ export function addTemplateToResources(project: TimelineProject, template: Media
     project.resources = createEmptyResources()
   }
 
+  if (!project.resources.templates) {
+    project.resources.templates = []
+  }
+
   const exists = project.resources.templates.some((t) => t.id === template.id)
   if (!exists) {
-    project.resources.templates.push(template)
+    project.resources.templates.push(template as any)
   }
 
   return project
@@ -132,9 +139,13 @@ export function addStyleTemplateToResources(project: TimelineProject, styleTempl
     project.resources = createEmptyResources()
   }
 
+  if (!project.resources.styleTemplates) {
+    project.resources.styleTemplates = []
+  }
+
   const exists = project.resources.styleTemplates.some((st) => st.id === styleTemplate.id)
   if (!exists) {
-    project.resources.styleTemplates.push(styleTemplate)
+    project.resources.styleTemplates.push(styleTemplate as any)
   }
 
   return project
@@ -164,9 +175,13 @@ export function addSubtitleStyleToResources(project: TimelineProject, subtitleSt
     project.resources = createEmptyResources()
   }
 
+  if (!project.resources.subtitleStyles) {
+    project.resources.subtitleStyles = []
+  }
+
   const exists = project.resources.subtitleStyles.some((s) => s.id === subtitleStyle.id)
   if (!exists) {
-    project.resources.subtitleStyles.push(subtitleStyle)
+    project.resources.subtitleStyles.push(subtitleStyle as any)
   }
 
   return project
@@ -414,9 +429,9 @@ export function cleanupUnusedResources(project: TimelineProject): TimelineProjec
       transitions: project.resources.transitions.filter((t) => usedTransitionIds.has(t.id)),
       timelineTransitions:
         project.resources.timelineTransitions?.filter((t) => usedTimelineTransitionIds.has(t.id)) || [],
-      templates: project.resources.templates.filter((t) => usedTemplateIds.has(t.id)),
-      styleTemplates: project.resources.styleTemplates.filter((st) => usedStyleTemplateIds.has(st.id)),
-      subtitleStyles: project.resources.subtitleStyles.filter((s) => usedSubtitleStyleIds.has(s.id)),
+      templates: project.resources.templates?.filter((t) => usedTemplateIds.has(t.id)) || [],
+      styleTemplates: project.resources.styleTemplates?.filter((st) => usedStyleTemplateIds.has(st.id)) || [],
+      subtitleStyles: project.resources.subtitleStyles?.filter((s) => usedSubtitleStyleIds.has(s.id)) || [],
       music: project.resources.music.filter((m) => usedMusicIds.has(m.id)),
       media: project.resources.media.filter((m) => usedMediaIds.has(m.id)),
     },
@@ -501,7 +516,7 @@ export function addKeyframeToTimelineTransition(
   const transitionIndex = project.resources.timelineTransitions.findIndex((t) => t.id === transitionId)
   if (transitionIndex === -1) return project
 
-  const updatedTransition = {
+  const updatedTransition: TimelineTransition = {
     ...project.resources.timelineTransitions[transitionIndex],
     keyframes: [...project.resources.timelineTransitions[transitionIndex].keyframes, keyframe].sort(
       (a, b) => a.time - b.time,

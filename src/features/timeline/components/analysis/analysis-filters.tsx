@@ -4,7 +4,7 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { AnalyzerType, FileAnalysisStatus } from "@/features/ai-director/types/analysis-progress"
-import type { AnalysisFilters as Filters } from "../../hooks/use-timeline-analysis"
+import type { AnalysisFilters as Filters } from "../../hooks/state/use-timeline-analysis"
 
 interface AnalysisFiltersProps {
   filters: Filters

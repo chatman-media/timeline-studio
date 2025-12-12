@@ -16,7 +16,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 
-import { useTimeline } from "../hooks/use-timeline"
+import { useTimeline } from "../hooks/state/use-timeline"
 import type { TimelineClip } from "../types"
 
 interface ClipContextMenuProps {

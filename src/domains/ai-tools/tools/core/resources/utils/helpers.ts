@@ -2,6 +2,14 @@
  * Вспомогательные функции для работы с ресурсами
  */
 
+import type {
+  EffectResource,
+  FilterResource,
+  MediaResource,
+  MusicResource,
+  Resource,
+  TransitionResource,
+} from "@/domains/shared/types/resources"
 import type { ResourcesStateAccess } from "../types"
 
 // Глобальная переменная для доступа к состоянию resources
@@ -54,7 +62,7 @@ export function getResourcesStats() {
 export function resourceExists(resourceId: string): boolean {
   try {
     const provider = getResourcesProvider()
-    return provider.resources.some((r) => r.resourceId === resourceId)
+    return provider.resources.some((r: Resource) => r.resourceId === resourceId)
   } catch {
     return false
   }
@@ -66,7 +74,7 @@ export function resourceExists(resourceId: string): boolean {
 export function findResource(resourceId: string) {
   try {
     const provider = getResourcesProvider()
-    return provider.resources.find((r) => r.resourceId === resourceId)
+    return provider.resources.find((r: Resource) => r.resourceId === resourceId)
   } catch {
     return null
   }
@@ -78,7 +86,7 @@ export function findResource(resourceId: string) {
 export function getResourceDetails(resourceId: string) {
   try {
     const provider = getResourcesProvider()
-    const resource = provider.resources.find((r) => r.resourceId === resourceId)
+    const resource = provider.resources.find((r: Resource) => r.resourceId === resourceId)
     if (!resource) return null
 
     // Получаем детальную информацию в зависимости от типа
@@ -86,8 +94,8 @@ export function getResourceDetails(resourceId: string) {
       case "media":
       case "music": {
         const mediaResource =
-          provider.mediaResources.find((m) => m.resourceId === resourceId) ||
-          provider.musicResources.find((m) => m.resourceId === resourceId)
+          provider.mediaResources.find((m: MediaResource) => m.resourceId === resourceId) ||
+          provider.musicResources.find((m: MusicResource) => m.resourceId === resourceId)
         return mediaResource
           ? {
               ...resource,
@@ -99,7 +107,7 @@ export function getResourceDetails(resourceId: string) {
           : null
       }
       case "effect": {
-        const effectResource = provider.effectResources.find((e) => e.resourceId === resourceId)
+        const effectResource = provider.effectResources.find((e: EffectResource) => e.resourceId === resourceId)
         return effectResource
           ? {
               ...resource,
@@ -110,7 +118,7 @@ export function getResourceDetails(resourceId: string) {
           : null
       }
       case "filter": {
-        const filterResource = provider.filterResources.find((f) => f.resourceId === resourceId)
+        const filterResource = provider.filterResources.find((f: FilterResource) => f.resourceId === resourceId)
         return filterResource
           ? {
               ...resource,
@@ -121,7 +129,9 @@ export function getResourceDetails(resourceId: string) {
           : null
       }
       case "transition": {
-        const transitionResource = provider.transitionResources.find((t) => t.resourceId === resourceId)
+        const transitionResource = provider.transitionResources.find(
+          (t: TransitionResource) => t.resourceId === resourceId,
+        )
         return transitionResource
           ? {
               ...resource,

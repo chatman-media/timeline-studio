@@ -10,7 +10,7 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 
-import { useSpeedRampingHotkeys } from "../use-speed-ramping-hotkeys"
+import { useSpeedRampingHotkeys } from '../use-speed-ramping-hotkeys'
 
 // Mock keyboard event
 const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })

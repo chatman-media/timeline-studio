@@ -76,7 +76,7 @@ export function TransitionPlayerOverlay({
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
                 <div className="text-muted-foreground">Позиция</div>
-                <div>{transition.startTime.toFixed(2)}s</div>
+                <div>{transition.startTime?.toFixed(2)}s</div>
               </div>
               <div>
                 <div className="text-muted-foreground">Длительность</div>

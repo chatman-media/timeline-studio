@@ -96,7 +96,7 @@ const createMockProject = (
     subtitleStyles: [],
     music: [],
     media: [],
-    timelineTransitions,
+    timelineTransitions: timelineTransitions as any,
   },
   settings: {
     resolution: { width: 1920, height: 1080 },
@@ -132,7 +132,7 @@ describe("transition-collision-detector", () => {
       const transition1 = createMockTransition("t1", "in", 5, 3, undefined, "clip-1", "track-1") // 5-8
       const transition2 = createMockTransition("t2", "out", 7, 3, "clip-1", undefined, "track-1") // 7-10
 
-      mockProject.resources.timelineTransitions = [transition1, transition2]
+      mockProject.resources.timelineTransitions = [transition1 as any, transition2 as any]
       mockTrack.transitions = ["t1", "t2"]
 
       const collisions = detectTrackCollisions(mockProject, mockTrack)
@@ -148,7 +148,7 @@ describe("transition-collision-detector", () => {
       const transition1 = createMockTransition("t1", "in", 5, 2, undefined, "clip-1", "track-1") // 5-7
       const transition2 = createMockTransition("t2", "out", 7.05, 2, "clip-1", undefined, "track-1") // 7.05-9.05
 
-      mockProject.resources.timelineTransitions = [transition1, transition2]
+      mockProject.resources.timelineTransitions = [transition1 as any, transition2 as any]
       mockTrack.transitions = ["t1", "t2"]
 
       const collisions = detectTrackCollisions(mockProject, mockTrack)
@@ -161,7 +161,7 @@ describe("transition-collision-detector", () => {
     it("должен обнаруживать выход перехода 'in' за границы клипа", () => {
       const transition = createMockTransition("t1", "in", -1, 3, undefined, "clip-1", "track-1") // -1 до 2
 
-      mockProject.resources.timelineTransitions = [transition]
+      mockProject.resources.timelineTransitions = [transition as any]
       mockTrack.transitions = ["t1"]
 
       const collisions = detectTrackCollisions(mockProject, mockTrack)
@@ -175,7 +175,7 @@ describe("transition-collision-detector", () => {
     it("должен обнаруживать выход перехода 'out' за границы клипа", () => {
       const transition = createMockTransition("t1", "out", 8, 5, "clip-1", undefined, "track-1") // 8-13, но clip-1 заканчивается в 10
 
-      mockProject.resources.timelineTransitions = [transition]
+      mockProject.resources.timelineTransitions = [transition as any]
       mockTrack.transitions = ["t1"]
 
       const collisions = detectTrackCollisions(mockProject, mockTrack)
@@ -232,7 +232,7 @@ describe("transition-collision-detector", () => {
       const transition1 = createMockTransition("t1", "in", 2, 2, undefined, "clip-1", "track-1") // 2-4, в пределах clip-1 (0-10)
       const transition2 = createMockTransition("t2", "out", 15, 1, "clip-2", undefined, "track-1") // 15-16, в пределах clip-2 (10-20)
 
-      mockProject.resources.timelineTransitions = [transition1, transition2]
+      mockProject.resources.timelineTransitions = [transition1 as any, transition2 as any]
       mockTrack.transitions = ["t1", "t2"]
 
       const collisions = detectTrackCollisions(mockProject, mockTrack)

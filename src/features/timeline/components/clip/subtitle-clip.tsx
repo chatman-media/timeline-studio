@@ -3,8 +3,8 @@ import { useCallback, useRef, useState } from "react"
 import { useSubtitleStyles } from "@/features/subtitles"
 import type { SubtitleClip as SubtitleClipType } from "@/features/subtitles/types"
 import { cn } from "@/lib/utils"
-import { useTimeline } from "../../hooks/use-timeline"
-import { useTimelineSelection } from "../../hooks/use-timeline-selection"
+import { useTimeline } from "../../hooks/state/use-timeline"
+import { useTimelineSelection } from "../../hooks/state/use-timeline-selection"
 
 interface SubtitleClipProps {
   clip: SubtitleClipType

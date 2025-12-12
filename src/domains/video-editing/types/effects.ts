@@ -44,6 +44,17 @@ export interface AppliedTransition {
   isEnabled: boolean
 }
 
+export interface AppliedStyleTemplate {
+  id: string
+  styleTemplateId: string
+  customizations?: {
+    text?: Record<string, any>
+    colors?: Record<string, any>
+    [key: string]: any
+  }
+  isEnabled: boolean
+}
+
 // TimelineKeyframe moved to timeline.ts to avoid duplicate exports
 
 // Effect Types

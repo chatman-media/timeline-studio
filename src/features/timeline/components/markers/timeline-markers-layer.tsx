@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react"
 
 import { cn } from "@/lib/utils"
-import { useTimelineMarkers } from "../../hooks/use-timeline-markers"
+import { useTimelineMarkers } from "../../hooks/markers/use-timeline-markers"
 import { TimelineMarker } from "./timeline-marker"
 
 interface TimelineMarkersLayerProps {

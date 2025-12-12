@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
+import type { MediaFile } from "@/domains/media-management"
 import type { Transition, VideoFilter } from "@/domains/video-editing/types"
-import type { MediaFile } from "@/domains/video-editing/types/media"
 import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/template-config"
@@ -238,8 +238,9 @@ describe("resource-manager", () => {
     it("should add template to resources", () => {
       const result = addTemplateToResources(mockProject, mockTemplate)
 
+      expect(result.resources?.templates).toBeDefined()
       expect(result.resources?.templates).toHaveLength(1)
-      expect(result.resources?.templates[0]).toBe(mockTemplate)
+      expect(result.resources?.templates?.[0]).toBe(mockTemplate)
     })
 
     it("should not add duplicate templates", () => {
@@ -257,6 +258,7 @@ describe("resource-manager", () => {
 
       const result = addTemplateToResources(mockProject, mockTemplate)
 
+      expect(result.resources?.templates).toBeDefined()
       expect(result.resources?.templates).toHaveLength(1)
     })
   })
@@ -284,8 +286,9 @@ describe("resource-manager", () => {
     it("should add style template to resources", () => {
       const result = addStyleTemplateToResources(mockProject, mockStyleTemplate)
 
+      expect(result.resources?.styleTemplates).toBeDefined()
       expect(result.resources?.styleTemplates).toHaveLength(1)
-      expect(result.resources?.styleTemplates[0]).toBe(mockStyleTemplate)
+      expect(result.resources?.styleTemplates?.[0]).toBe(mockStyleTemplate)
     })
 
     it("should not add duplicate style templates", () => {
@@ -303,6 +306,7 @@ describe("resource-manager", () => {
 
       const result = addStyleTemplateToResources(mockProject, mockStyleTemplate)
 
+      expect(result.resources?.styleTemplates).toBeDefined()
       expect(result.resources?.styleTemplates).toHaveLength(1)
     })
   })
@@ -492,8 +496,9 @@ describe("resource-manager", () => {
         customizations,
       )
 
+      expect(project.resources?.styleTemplates).toBeDefined()
       expect(project.resources?.styleTemplates).toHaveLength(1)
-      expect(project.resources?.styleTemplates[0]).toBe(mockStyleTemplate)
+      expect(project.resources?.styleTemplates?.[0]).toBe(mockStyleTemplate)
 
       expect(appliedStyleTemplate.styleTemplateId).toBe(mockStyleTemplate.id)
       expect(appliedStyleTemplate.customizations).toEqual(customizations)

@@ -7,8 +7,8 @@ import { useVersionControl } from "@/features/version-control/hooks"
 import {
   type VersionControlIntegrationConfig,
   versionControlIntegration,
-} from "../services/version-control-integration"
-import { useUndoRedo } from "./use-undo-redo"
+} from "../../services/version-control-integration"
+import { useUndoRedo } from '../state/use-undo-redo'
 
 export interface UseIntegratedVersionControlReturn {
   // Undo/Redo операции (краткосрочные)

@@ -16,6 +16,7 @@ export type {
   // Applied resources
   AppliedEffect,
   AppliedFilter,
+  AppliedStyleTemplate,
   AppliedTransition,
   // Media types
   MediaFile,
@@ -28,6 +29,7 @@ export type {
   TimelineKeyframe,
   TimelineMarker,
   TimelineResources,
+  TimelineResources as ProjectResources, // Legacy alias
   TimelineSettings,
   Track,
   Track as TimelineTrack,

@@ -6,7 +6,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react"
 import type { DragDropManager, DraggableItem, DropTarget } from "@/features/drag-drop/services/drag-drop-manager"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { useClipResources } from "../../hooks/use-clip-resources"
+import { useClipResources } from "../../hooks/effects/use-clip-resources"
 import type { TimelineClip } from "../../types"
 
 const logger = createLogger("ClipDropZone")

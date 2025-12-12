@@ -2,6 +2,7 @@
  * AI инструмент для анализа доступных ресурсов с использованием BaseAITool
  */
 
+import type { EffectResource, FilterResource, MediaResource, MusicResource } from "@/domains/shared/types/resources"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -9,7 +10,6 @@ import {
   type AIToolResult,
   BaseAITool,
 } from "../../../base"
-
 import type { AnalyzeResourcesParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, getResourcesStats, hasResourcesAccess } from "./utils/helpers"
 
@@ -173,7 +173,7 @@ export class AnalyzeResourcesTool extends BaseAITool {
     switch (resourceType) {
       case "media":
         analysis.totalCount = resourcesProvider.mediaResources.length
-        analysis.items = resourcesProvider.mediaResources.map((r) => ({
+        analysis.items = resourcesProvider.mediaResources.map((r: MediaResource) => ({
           id: r.id,
           name: r.file.name,
           duration: r.file.duration,
@@ -183,7 +183,7 @@ export class AnalyzeResourcesTool extends BaseAITool {
         break
       case "effect":
         analysis.totalCount = resourcesProvider.effectResources.length
-        analysis.items = resourcesProvider.effectResources.map((r) => ({
+        analysis.items = resourcesProvider.effectResources.map((r: EffectResource) => ({
           id: r.id,
           name: r.effect.name,
           category: r.effect.category,
@@ -191,7 +191,7 @@ export class AnalyzeResourcesTool extends BaseAITool {
         break
       case "filter":
         analysis.totalCount = resourcesProvider.filterResources.length
-        analysis.items = resourcesProvider.filterResources.map((r) => ({
+        analysis.items = resourcesProvider.filterResources.map((r: FilterResource) => ({
           id: r.id,
           name: r.filter.name,
           category: r.filter.category,
@@ -199,7 +199,7 @@ export class AnalyzeResourcesTool extends BaseAITool {
         break
       case "music":
         analysis.totalCount = resourcesProvider.musicResources.length
-        analysis.items = resourcesProvider.musicResources.map((r) => ({
+        analysis.items = resourcesProvider.musicResources.map((r: MusicResource) => ({
           id: r.id,
           name: r.file.name,
           duration: r.file.duration,

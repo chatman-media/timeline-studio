@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { type MediaFile, MediaType } from "@/domains/media-management"
 import { usePlayer } from "@/domains/video-editing"
-import { TimelineProjectProvider, TimelineProvider } from "@/domains/video-editing/timeline-providers"
+import { TimelineProjectProvider, TimelineProvider } from "@/features/timeline/providers/timeline-providers"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
 import { PlayerControls } from "../player-controls"
 
@@ -174,7 +174,7 @@ vi.mock("../volume-slider", () => ({
   ),
 }))
 
-vi.mock("@/domains/video-editing/timeline-providers", () => ({
+vi.mock("@/features/timeline/providers/timeline-providers", () => ({
   TimelineProjectProvider: ({ children }: any) => children,
   TimelineProvider: ({ children }: any) => children,
   useTimeline: () => ({
@@ -190,7 +190,7 @@ vi.mock("@/domains/video-editing/timeline-providers", () => ({
 }))
 
 // Мокаем useLinkedClips
-vi.mock("@/features/timeline/hooks/use-linked-clips", () => ({
+vi.mock("@/features/timeline/hooks/clips/use-linked-clips", () => ({
   useLinkedClips: () => ({
     linkedClips: [],
     isLinked: () => false,

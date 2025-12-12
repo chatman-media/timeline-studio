@@ -5,12 +5,12 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { TimelineProvider } from "@/domains/video-editing/timeline-providers"
+import { TimelineProvider } from "@/features/timeline/providers/timeline-providers"
 
 import { useCameraSync } from "../use-camera-sync"
 
 // Мокаем зависимости
-vi.mock("@/features/timeline/hooks/use-linked-clips", () => ({
+vi.mock("@/features/timeline/hooks/clips/use-linked-clips", () => ({
   useLinkedClips: () => ({
     getMulticamGroup: vi.fn(() => [
       {
@@ -111,7 +111,7 @@ vi.mock("../../utils/media-mapper", () => ({
   mediaItemsToMediaFiles: vi.fn((items) => items),
 }))
 
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     clips: [
       {

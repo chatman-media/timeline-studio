@@ -1,8 +1,8 @@
 import { useEffect } from "react"
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
+import { useJLCuts } from "../editing/use-jl-cuts"
 import { useTimeline } from "../state/use-timeline"
-import { useJLCuts } from "./use-jl-cuts"
 
 export function useJLCutHotkeys() {
   const { project, selectedClipIds = [] } = useTimeline()

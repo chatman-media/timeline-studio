@@ -2,6 +2,7 @@
  * AI инструмент для экспорта списка ресурсов с использованием BaseAITool
  */
 
+import type { Resource } from "@/domains/shared/types/resources"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -9,7 +10,6 @@ import {
   type AIToolResult,
   BaseAITool,
 } from "../../../base"
-
 import type { ExportListParams, ResourceToolResult } from "./types"
 import { getResourcesProvider, groupResourcesByType, hasResourcesAccess } from "./utils/helpers"
 
@@ -177,17 +177,19 @@ export class ExportResourcesTool extends BaseAITool {
 
       // Применяем фильтры
       if (filterCriteria.resourceTypes && filterCriteria.resourceTypes.length > 0) {
-        resourcesToExport = resourcesToExport.filter((r) => filterCriteria.resourceTypes!.includes((r as any).type))
+        resourcesToExport = resourcesToExport.filter((r: Resource) =>
+          filterCriteria.resourceTypes!.includes((r as any).type),
+        )
       }
 
       if (filterCriteria.usedOnly) {
         // В реальной реализации фильтр по использованию в Timeline
-        // resourcesToExport = resourcesToExport.filter(r => timelineStateAccess?.isResourceUsed(r.resourceId))
+        // resourcesToExport = resourcesToExport.filter((r: Resource) => timelineStateAccess?.isResourceUsed(r.resourceId))
       }
 
       if (filterCriteria.addedAfter) {
         const afterDate = new Date(filterCriteria.addedAfter)
-        resourcesToExport = resourcesToExport.filter((r) => new Date(r.addedAt || 0) >= afterDate)
+        resourcesToExport = resourcesToExport.filter((r: Resource) => new Date(r.addedAt || 0) >= afterDate)
       }
 
       // Собираем данные для экспорта

@@ -27,8 +27,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { useTimeline } from "../../hooks/use-timeline"
-import { useTimelineMarkers } from "../../hooks/use-timeline-markers"
+import { useTimeline } from "../../hooks/state/use-timeline"
+import { useTimelineMarkers } from "../../hooks/markers/use-timeline-markers"
 import type { MarkerFilter, MarkerType } from "../../types/markers"
 import { MarkerColors } from "../../types/markers"
 

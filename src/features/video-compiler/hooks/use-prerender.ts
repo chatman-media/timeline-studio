@@ -14,7 +14,7 @@ import {
   prerenderSegment,
 } from "@/domains/video-editing/services/compiler"
 import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 export interface PrerenderState {
   isRendering: boolean

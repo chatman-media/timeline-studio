@@ -2,17 +2,16 @@ import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { MediaType } from "@/domains/media-management"
-
+import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { RollEditHandle } from "../../../components/edit-tools/roll-edit-handle"
 import { TrackRollHandles } from "../../../components/track/track-roll-handles"
-import { useEditModeContext } from "../../../hooks/use-edit-mode"
 import type { TimelineClip, TimelineTrack, TrackType } from "../../../types"
 import { EDIT_MODES } from "../../../types/edit-modes"
 
 const mockRollEditHandle = vi.mocked(RollEditHandle)
 
 // Mock dependencies
-vi.mock("../../../hooks/use-edit-mode", () => ({
+vi.mock("@/features/timeline/hooks/editing/use-edit-mode", () => ({
   useEditModeContext: vi.fn(),
 }))
 

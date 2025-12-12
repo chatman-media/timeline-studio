@@ -2,6 +2,14 @@
  * AI инструменты для статистики и управления использованием ресурсов с BaseAITool
  */
 
+import type {
+  EffectResource,
+  FilterResource,
+  MediaResource,
+  MusicResource,
+  Resource,
+  TransitionResource,
+} from "@/domains/shared/types/resources"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -9,7 +17,6 @@ import {
   type AIToolResult,
   BaseAITool,
 } from "../../../base"
-
 import type { CleanupParams, ResourceToolResult, UsageStatsParams } from "./types"
 import {
   formatFileSize,
@@ -220,19 +227,25 @@ export class UsageStatsTool extends BaseAITool {
         media: {
           total: resourcesProvider.mediaResources.length,
           used: 0, // В реальной реализации будет подсчет из Timeline
-          size: resourcesProvider.mediaResources.reduce((sum, r) => sum + (r.file.size || 0), 0),
-          duration: resourcesProvider.mediaResources.reduce((sum, r) => sum + (r.file.duration || 0), 0),
+          size: resourcesProvider.mediaResources.reduce((sum: number, r: MediaResource) => sum + (r.file.size || 0), 0),
+          duration: resourcesProvider.mediaResources.reduce(
+            (sum: number, r: MediaResource) => sum + (r.file.duration || 0),
+            0,
+          ),
         },
         music: {
           total: resourcesProvider.musicResources.length,
           used: 0,
-          size: resourcesProvider.musicResources.reduce((sum, r) => sum + (r.file.size || 0), 0),
-          duration: resourcesProvider.musicResources.reduce((sum, r) => sum + (r.file.duration || 0), 0),
+          size: resourcesProvider.musicResources.reduce((sum: number, r: MusicResource) => sum + (r.file.size || 0), 0),
+          duration: resourcesProvider.musicResources.reduce(
+            (sum: number, r: MusicResource) => sum + (r.file.duration || 0),
+            0,
+          ),
         },
         effects: {
           total: resourcesProvider.effectResources.length,
           used: 0,
-          categories: resourcesProvider.effectResources.reduce<Record<string, number>>((acc, r) => {
+          categories: resourcesProvider.effectResources.reduce<Record<string, number>>((acc, r: EffectResource) => {
             const category = r.effect.category || "other"
             acc[category] = (acc[category] || 0) + 1
             return acc
@@ -241,7 +254,7 @@ export class UsageStatsTool extends BaseAITool {
         filters: {
           total: resourcesProvider.filterResources.length,
           used: 0,
-          categories: resourcesProvider.filterResources.reduce<Record<string, number>>((acc, r) => {
+          categories: resourcesProvider.filterResources.reduce<Record<string, number>>((acc, r: FilterResource) => {
             const category = r.filter.category || "other"
             acc[category] = (acc[category] || 0) + 1
             return acc
@@ -250,7 +263,7 @@ export class UsageStatsTool extends BaseAITool {
         transitions: {
           total: resourcesProvider.transitionResources.length,
           used: 0,
-          types: resourcesProvider.transitionResources.reduce<Record<string, number>>((acc, r) => {
+          types: resourcesProvider.transitionResources.reduce<Record<string, number>>((acc, r: TransitionResource) => {
             const type = r.transition.type
             acc[type] = (acc[type] || 0) + 1
             return acc
@@ -289,7 +302,7 @@ export class UsageStatsTool extends BaseAITool {
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
         const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
 
-        resourcesProvider.resources.forEach((resource) => {
+        resourcesProvider.resources.forEach((resource: Resource) => {
           const addedDate = new Date(resource.addedAt || now)
           if (addedDate >= today) {
             groupedStats.today++
@@ -409,7 +422,7 @@ export class UsageStatsTool extends BaseAITool {
       const cutoffDate = new Date(now.getTime() - unusedForDays * 24 * 60 * 60 * 1000)
 
       // Проходим по всем ресурсам и находим неиспользуемые
-      for (const resource of resourcesProvider.resources) {
+      for (const resource of resourcesProvider.resources as Resource[]) {
         // Фильтр по типу ресурса
         if (resourceTypes.length > 0 && !resourceTypes.includes(resource.type)) {
           continue
@@ -456,7 +469,9 @@ export class UsageStatsTool extends BaseAITool {
             break
           }
           case "effect": {
-            const effectResource = resourcesProvider.effectResources.find((e) => e.resourceId === resource.resourceId)
+            const effectResource = resourcesProvider.effectResources.find(
+              (e: EffectResource) => e.resourceId === resource.resourceId,
+            )
             if (effectResource) {
               resourceName = (effectResource as any).effect.name
               const isUsedInTimeline = false
@@ -467,7 +482,9 @@ export class UsageStatsTool extends BaseAITool {
             break
           }
           case "filter": {
-            const filterResource = resourcesProvider.filterResources.find((f) => f.resourceId === resource.resourceId)
+            const filterResource = resourcesProvider.filterResources.find(
+              (f: FilterResource) => f.resourceId === resource.resourceId,
+            )
             if (filterResource) {
               resourceName = filterResource.filter.name
               const isUsedInTimeline = false
@@ -479,7 +496,7 @@ export class UsageStatsTool extends BaseAITool {
           }
           case "transition": {
             const transitionResource = resourcesProvider.transitionResources.find(
-              (t) => t.resourceId === resource.resourceId,
+              (t: TransitionResource) => t.resourceId === resource.resourceId,
             )
             if (transitionResource) {
               resourceName = transitionResource.transition.name || transitionResource.transition.type
@@ -505,8 +522,8 @@ export class UsageStatsTool extends BaseAITool {
       }
 
       // Подсчитываем статистику
-      const totalSizeToRemove = toRemove.reduce((sum, r) => sum + (r.size || 0), 0)
-      const byType = toRemove.reduce<Record<string, number>>((acc, r) => {
+      const totalSizeToRemove = toRemove.reduce((sum: number, r: { size?: number }) => sum + (r.size || 0), 0)
+      const byType = toRemove.reduce<Record<string, number>>((acc, r: { type: string }) => {
         acc[r.type] = (acc[r.type] || 0) + 1
         return acc
       }, {})
@@ -518,7 +535,7 @@ export class UsageStatsTool extends BaseAITool {
           data: {
             analysis: {
               dryRun: true,
-              toRemove: toRemove.map((r) => ({
+              toRemove: toRemove.map((r: { resourceId: string; type: string; name: string }) => ({
                 id: r.resourceId,
                 type: r.type,
                 name: r.name,

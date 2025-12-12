@@ -6,7 +6,7 @@ import { renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { TimelineProviders } from "@/test/test-utils"
-import { useTracks } from "../use-tracks"
+import { useTracks } from '../use-tracks'
 
 // Мокаем треки (используем domain свойства)
 const mockTracks: TimelineTrack[] = [

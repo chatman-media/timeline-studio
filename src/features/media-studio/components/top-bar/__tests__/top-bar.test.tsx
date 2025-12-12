@@ -102,7 +102,7 @@ vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
   }
 })
 
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     createProject: mockCreateTimelineProject,
   }),

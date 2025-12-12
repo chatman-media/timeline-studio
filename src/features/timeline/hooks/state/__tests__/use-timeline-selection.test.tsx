@@ -7,7 +7,7 @@ import { describe, expect, it } from "vitest"
 
 import { TimelineProviders } from "@/test/test-utils"
 
-import { useTimelineSelection } from "../use-timeline-selection"
+import { useTimelineSelection } from '../use-timeline-selection'
 
 describe("useTimelineSelection", () => {
   describe("Hook Initialization", () => {

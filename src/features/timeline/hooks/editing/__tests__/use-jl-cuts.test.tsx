@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineProject } from "@/features/timeline/types"
-import { useJLCuts } from "../use-jl-cuts"
 import { useTimeline } from "../../state/use-timeline"
+import { useJLCuts } from '../use-jl-cuts'
 
 // Mock useTimeline hook
 vi.mock("../../hooks/use-timeline", () => ({

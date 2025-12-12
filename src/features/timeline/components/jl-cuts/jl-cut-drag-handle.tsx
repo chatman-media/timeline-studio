@@ -2,7 +2,7 @@ import type React from "react"
 import { useCallback, useState } from "react"
 import type { TimelineClip } from "@/features/timeline/types"
 import { cn } from "@/lib/utils"
-import { useJLCuts } from "../../hooks/use-jl-cuts"
+import { useJLCuts } from "../../hooks/editing/use-jl-cuts"
 import type { CutType } from "../../types/jl-cuts"
 
 interface JLCutDragHandleProps {

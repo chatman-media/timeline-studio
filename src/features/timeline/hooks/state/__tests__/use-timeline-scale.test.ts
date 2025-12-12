@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import { useTimelineScale } from "../use-timeline-scale"
+import { useTimelineScale } from '../use-timeline-scale'
 
 describe("useTimelineScale", () => {
   describe("Time Scale Calculations", () => {

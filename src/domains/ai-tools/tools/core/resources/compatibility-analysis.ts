@@ -2,6 +2,7 @@
  * AI инструмент для анализа совместимости ресурсов с использованием BaseAITool
  */
 
+import type { Resource } from "@/domains/shared/types/resources"
 import {
   type AIToolExecutionOptions,
   type AIToolLogger,
@@ -9,7 +10,6 @@ import {
   type AIToolResult,
   BaseAITool,
 } from "../../../base"
-
 import type { CompatibilityParams, ResourceToolResult } from "./types"
 import {
   checkResourceCompatibility,
@@ -210,7 +210,7 @@ export class CompatibilityAnalysisTool extends BaseAITool {
       if (checkAgainst === "other-resources" || checkAgainst === "all") {
         // Проверяем совместимость с другими ресурсами того же типа
         const sameTypeResources = resourcesProvider.resources.filter(
-          (r) => r.type === resourceDetails.type && r.resourceId !== resourceId,
+          (r: Resource) => r.type === resourceDetails.type && r.resourceId !== resourceId,
         )
 
         if (sameTypeResources.length > 0) {
@@ -235,11 +235,15 @@ export class CompatibilityAnalysisTool extends BaseAITool {
 
     // Генерируем рекомендации
     if (includeRecommendations) {
-      const hasResolutionIssues = compatibilityResults.some((r) =>
+      const hasResolutionIssues = compatibilityResults.some((r: { issues: string[] }) =>
         r.issues.some((i: string) => i.includes("разрешения")),
       )
-      const hasFpsIssues = compatibilityResults.some((r) => r.issues.some((i: string) => i.includes("частота кадров")))
-      const hasAudioIssues = compatibilityResults.some((r) => r.issues.some((i: string) => i.includes("дискретизации")))
+      const hasFpsIssues = compatibilityResults.some((r: { issues: string[] }) =>
+        r.issues.some((i: string) => i.includes("частота кадров")),
+      )
+      const hasAudioIssues = compatibilityResults.some((r: { issues: string[] }) =>
+        r.issues.some((i: string) => i.includes("дискретизации")),
+      )
 
       if (hasResolutionIssues) {
         recommendations.push("Конвертировать все видео в единое разрешение проекта")
@@ -257,16 +261,17 @@ export class CompatibilityAnalysisTool extends BaseAITool {
       }
 
       // Общие рекомендации
-      const incompatibleCount = compatibilityResults.filter((r) => !r.compatible).length
+      const incompatibleCount = compatibilityResults.filter((r: { compatible: boolean }) => !r.compatible).length
       if (incompatibleCount > 0) {
         recommendations.push("Создать прокси-файлы для несовместимых ресурсов")
         recommendations.push("Использовать предварительный рендеринг для проблемных участков")
       }
     }
 
-    const overallCompatibility = compatibilityResults.every((r) => r.compatible)
+    const overallCompatibility = compatibilityResults.every((r: { compatible: boolean }) => r.compatible)
       ? "excellent"
-      : compatibilityResults.filter((r) => r.compatible).length > compatibilityResults.length / 2
+      : compatibilityResults.filter((r: { compatible: boolean }) => r.compatible).length >
+          compatibilityResults.length / 2
         ? "good"
         : "needs-attention"
 
@@ -280,8 +285,8 @@ export class CompatibilityAnalysisTool extends BaseAITool {
         projectSettings,
         summary: {
           total: compatibilityResults.length,
-          compatible: compatibilityResults.filter((r) => r.compatible).length,
-          incompatible: compatibilityResults.filter((r) => !r.compatible).length,
+          compatible: compatibilityResults.filter((r: { compatible: boolean }) => r.compatible).length,
+          incompatible: compatibilityResults.filter((r: { compatible: boolean }) => !r.compatible).length,
         },
       },
       suggestions: recommendations,

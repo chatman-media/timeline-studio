@@ -10,8 +10,8 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 }))
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
-import { EDIT_MODE_CONFIGS, EDIT_MODES } from "../../types/edit-modes"
-import { EditModeProvider, useEditMode, useEditModeContext } from "../use-edit-mode"
+import { EDIT_MODE_CONFIGS, EDIT_MODES } from "../../../types/edit-modes"
+import { EditModeProvider, useEditMode, useEditModeContext } from '../use-edit-mode'
 
 const mockShortcutsRegistry = vi.mocked(shortcutsRegistry)
 

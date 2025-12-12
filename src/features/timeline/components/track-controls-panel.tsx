@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { cn } from "@/lib/utils"
-import { useTracks } from "../hooks/use-tracks"
+import { useTracks } from "../hooks/state/use-tracks"
 import { PersonsPanel } from "./persons-panel"
 
 // Типы треков с иконками и цветами

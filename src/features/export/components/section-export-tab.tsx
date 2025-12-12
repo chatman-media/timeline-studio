@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 import type { ExportSettings } from "../types/export-types"
 

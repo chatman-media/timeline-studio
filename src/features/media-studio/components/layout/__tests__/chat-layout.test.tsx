@@ -134,7 +134,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ),
 }))
 
-vi.mock("@/domains/video-editing/timeline-providers", () => ({
+vi.mock("@/features/timeline/providers/timeline-providers", () => ({
   useTimeline: () => ({
     currentTime: 0,
     duration: 0,

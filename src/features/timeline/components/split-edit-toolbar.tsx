@@ -23,7 +23,7 @@ import { Toggle } from "@/components/ui/toggle"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-import { useSplitEdit } from "../hooks/use-split-edit"
+import { useSplitEdit } from "../hooks/editing/use-split-edit"
 
 interface SplitEditToolbarProps {
   className?: string

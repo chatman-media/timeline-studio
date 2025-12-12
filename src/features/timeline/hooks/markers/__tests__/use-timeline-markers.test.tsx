@@ -1,8 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { useTimelineMarkers } from "../use-timeline-markers"
 import type { MarkerType } from "../../../types/markers"
+import { useTimelineMarkers } from '../use-timeline-markers'
 
 // Mock данные маркеров
 const mockMarkers = [

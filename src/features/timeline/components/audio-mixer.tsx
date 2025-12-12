@@ -7,8 +7,8 @@ import { Slider } from "@/components/ui/slider"
 import type { TimelineTrack, TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { useTimeline } from "../hooks/use-timeline"
-import { useTracks } from "../hooks/use-tracks"
+import { useTimeline } from "../hooks/state/use-timeline"
+import { useTracks } from "../hooks/state/use-tracks"
 
 const logger = createLogger("AudioMixer")
 

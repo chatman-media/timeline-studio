@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { TimelineTransition } from "@/domains/video-editing/types/timeline"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { getTransitionsPreviewService, type TransitionParams } from "../services/transitions-preview"

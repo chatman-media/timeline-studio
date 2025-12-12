@@ -13,8 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useKeyframeAnimation } from "../../hooks/use-keyframe-animation"
-import { useTimeline } from "../../hooks/use-timeline"
+import { useKeyframeAnimation } from "../../hooks/animation/use-keyframe-animation"
+import { useTimeline } from "../../hooks/state/use-timeline"
 import type { AnimatableProperty, InterpolationType } from "../../services/keyframe-animation-service"
 
 interface KeyframeEditorProps {

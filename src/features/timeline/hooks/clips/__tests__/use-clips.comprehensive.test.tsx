@@ -7,9 +7,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/domains/video-editing/types/media"
 import { MediaType } from "@/domains/video-editing/types/media"
 import { TimelineProviders } from "@/test/test-utils"
-import type { TimelineClip, TimelineProject, TrackType } from "../../types"
-import { useClips } from "../use-clips"
 import { useTimeline } from "../../state/use-timeline"
+import type { TimelineClip, TimelineProject, TrackType } from "../../../types"
+import { useClips } from "../use-clips"
 
 // Mock useTimeline hook
 vi.mock("../../hooks/use-timeline")

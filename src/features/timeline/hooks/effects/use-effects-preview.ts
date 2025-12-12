@@ -5,8 +5,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useEffects } from "@/features/effects/hooks/use-effects"
 import { createLogger } from "@/lib/tauri-logger"
-import { type EffectsPlayerConfig, getEffectsPlayerIntegration } from "../services/effects-player-integration"
-import type { TimelineClip } from "../types"
+import { type EffectsPlayerConfig, getEffectsPlayerIntegration } from "../../services/effects-player-integration"
+import type { TimelineClip } from "../../types"
 
 const logger = createLogger("UseEffectsPreview")
 
@@ -51,7 +51,11 @@ export function useEffectsPreview(options: UseEffectsPreviewOptions = {}): UseEf
   const [isInitialized, setIsInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [processedCanvas, setProcessedCanvas] = useState<HTMLCanvasElement | null>(null)
-  const [cacheStats, setCacheStats] = useState({ entries: 0, sizeMB: 0, hitRate: 0 })
+  const [cacheStats, setCacheStats] = useState({
+    entries: 0,
+    sizeMB: 0,
+    hitRate: 0,
+  })
 
   const integrationRef = useRef(getEffectsPlayerIntegration(config))
   const currentClipRef = useRef<TimelineClip | null>(null)

@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { useLinkedClips } from "../hooks/use-linked-clips"
+import { useLinkedClips } from "../hooks/clips/use-linked-clips"
 
 const logger = createLogger("LinkedClipsPanel")
 

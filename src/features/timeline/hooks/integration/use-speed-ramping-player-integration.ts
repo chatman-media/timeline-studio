@@ -6,9 +6,9 @@ import { useCallback, useEffect, useRef } from "react"
 
 // import { usePlayer } from "@/features/video-player/hooks/use-player"
 
+import type { TimelineClip, TimelineProject } from "../../types"
+import { getSpeedAtTime } from "../../types/speed-ramping"
 import { useTimeline } from "../state/use-timeline"
-import type { TimelineClip, TimelineProject } from "../types"
-import { getSpeedAtTime } from "../types/speed-ramping"
 
 export interface SpeedRampingPlayerIntegration {
   /**

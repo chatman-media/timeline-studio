@@ -6,8 +6,8 @@ import { useMemo } from "react"
 
 import type { Track as DomainTrack, Timeline } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
+import type { TimelineTrack, TrackType } from "../../types"
 import { useTimeline } from "../state/use-timeline"
-import type { TimelineTrack, TrackType } from "../types"
 
 const logger = createLogger("UseTracks")
 

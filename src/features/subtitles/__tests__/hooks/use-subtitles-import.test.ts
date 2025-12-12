@@ -21,7 +21,7 @@ vi.mock("@/core", () => ({
   },
 }))
 
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     project: { sections: [{ tracks: [] }] },
     send: vi.fn(),

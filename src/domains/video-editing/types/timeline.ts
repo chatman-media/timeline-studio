@@ -216,20 +216,61 @@ export interface TimelineClip {
   updatedAt: Date
 }
 
-export interface TimelineTransition {
+/**
+ * Базовый тип для переходов на таймлайне
+ * Использует generic для parameters для совместимости с feature типами
+ */
+export interface TimelineTransitionBase<TParams = Record<string, any>> {
   id: string
   transitionId: string
-  name: string
-  position: "in" | "out" | "cross"
-  trackId: string
-  startTime: number
-  duration: number
-  parameters: Record<string, any>
+  type: "between" | "in" | "out" | "adjustment"
+
+  // Позиционирование
+  position: number // Позиция на таймлайне в секундах
+  duration: number // Длительность
+
+  // Связи с клипами
+  startClipId?: string // ID начального клипа
+  endClipId?: string // ID конечного клипа
+  trackId: string // ID трека
+
+  // Параметры - generic для совместимости с feature типами
+  parameters: TParams
   keyframes: TimelineKeyframe[]
+
+  // Кривая перехода - опциональна для обратной совместимости
+  curve?: {
+    type: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "custom" | "bounce"
+    points: Array<{
+      id: string
+      x: number
+      y: number
+      handleIn?: { x: number; y: number }
+      handleOut?: { x: number; y: number }
+    }>
+    presets?: {
+      name: string
+      description?: string
+    }
+  }
+
+  // Состояние
   isEnabled: boolean
-  createdAt: Date
-  updatedAt: Date
+  isLocked: boolean
+  renderCache?: any
+
+  // Legacy поля для обратной совместимости с feature типом
+  name?: string
+  createdAt?: Date
+  updatedAt?: Date
+  startTime?: number
 }
+
+/**
+ * Default TimelineTransition с Record<string, any> параметрами
+ * Для обратной совместимости
+ */
+export type TimelineTransition = TimelineTransitionBase<Record<string, any>>
 
 export interface TimelineKeyframe {
   id: string
@@ -251,14 +292,14 @@ export interface TimelineMarker {
 }
 
 export interface TimelineResources {
-  effects: EffectType[]
-  filters: FilterType[]
-  transitions: TransitionType[]
+  effects: any[] // BaseEffect[] - full effect objects (any to avoid circular dependencies)
+  filters: any[] // VideoFilter[] - full filter objects
+  transitions: any[] // Transition[] - full transition objects
   timelineTransitions?: TimelineTransition[]
-  templates?: TemplateType[]
-  styleTemplates?: StyleTemplateType[]
+  templates?: any[] // MediaTemplate[] - full template objects
+  styleTemplates?: any[] // StyleTemplate[] - full style template objects
   subtitleStyles?: SubtitleStyleType[]
-  music: MusicType[]
+  music: any[] // MusicFile[] - full music file objects
   media: MediaFile[]
 }
 

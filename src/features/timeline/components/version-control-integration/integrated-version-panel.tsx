@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { type IntegrationRecommendation, useIntegratedVersionControl } from "../../hooks/use-integrated-version-control"
+import { type IntegrationRecommendation, useIntegratedVersionControl } from "../../hooks/integration/use-integrated-version-control"
 
 const RECOMMENDATION_ICONS = {
   snapshot: GitCommit,

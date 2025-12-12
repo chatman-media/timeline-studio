@@ -15,7 +15,7 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
-import { useTimelinePersons } from "../../hooks/use-timeline-persons"
+import { useTimelinePersons } from "../../hooks/state/use-timeline-persons"
 
 interface PersonsPanelProps {
   className?: string

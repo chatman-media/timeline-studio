@@ -11,7 +11,7 @@ import type { WebGL2PreviewRenderer } from "../../services/webgl2-preview-render
 import type { PreviewQuality } from "../../types"
 
 // Mock dependencies
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     currentTime: 5.0,
     segments: [],
@@ -19,7 +19,7 @@ vi.mock("@/features/timeline/hooks/use-timeline", () => ({
   }),
 }))
 
-vi.mock("@/features/timeline/hooks/use-timeline-selection", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline-selection", () => ({
   useTimelineSelection: () => ({
     selectedClips: [{ id: "clip_1" }],
   }),

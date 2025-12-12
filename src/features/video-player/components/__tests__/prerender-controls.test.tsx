@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { usePlayer } from "@/domains/video-editing"
 // Import mocked modules
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
 
 import { PrerenderControls } from "../prerender-controls"
@@ -27,7 +27,7 @@ vi.mock("@/domains/system-integration", () => ({
   }),
 }))
 
-vi.mock("@/features/timeline/hooks/use-timeline")
+vi.mock("@/features/timeline/hooks/state/use-timeline")
 vi.mock("@/features/video-compiler/hooks/use-prerender")
 vi.mock("@/domains/video-editing")
 

@@ -7,7 +7,7 @@ import { useEffect } from "react"
 import { usePlayer } from "@/domains/video-editing"
 import { timelinePlayerSync } from "../../services/timeline-player-sync"
 import { useTimeline } from "../state/use-timeline"
-import { useTimelineSelection } from "./use-timeline-selection"
+import { useTimelineSelection } from "../state/use-timeline-selection"
 
 export function useTimelinePlayerSync() {
   const player = usePlayer()

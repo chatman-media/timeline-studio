@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
-import { useClips } from "../../hooks/use-clips"
+import { useClips } from "../../hooks/clips/use-clips"
 import { VideoFadeService } from "../../services/video-fade-service"
 import type { TimelineClip } from "../../types"
 

@@ -70,7 +70,6 @@ describe("VideoEditingOrchestrator", () => {
 
       expect(actors.timeline).toBeDefined()
       expect(actors.player).toBeDefined()
-      expect(actors.timelineUI).toBeDefined()
     })
   })
 
@@ -290,20 +289,11 @@ describe("VideoEditingOrchestrator", () => {
       expect(state.context.isPlaying).toBe(false)
     })
 
-    it("should get timeline UI state", () => {
-      const state = orchestrator.getTimelineUIState()
-
-      expect(state).toBeDefined()
-      expect(state.context).toBeDefined()
-      expect(state.context.editMode).toBe("select")
-    })
-
     it("should get all actors", () => {
       const actors = orchestrator.getActors()
 
       expect(actors.timeline).toBeDefined()
       expect(actors.player).toBeDefined()
-      expect(actors.timelineUI).toBeDefined()
     })
   })
 
@@ -322,14 +312,6 @@ describe("VideoEditingOrchestrator", () => {
     it("should subscribe to player changes", () => {
       const callback = vi.fn()
       const unsubscribe = orchestrator.subscribeToPlayer(callback)
-
-      expect(unsubscribe).toBeDefined()
-      unsubscribe.unsubscribe()
-    })
-
-    it("should subscribe to timeline UI changes", () => {
-      const callback = vi.fn()
-      const unsubscribe = orchestrator.subscribeToTimelineUI(callback)
 
       expect(unsubscribe).toBeDefined()
       unsubscribe.unsubscribe()
@@ -355,19 +337,20 @@ describe("VideoEditingOrchestrator", () => {
   describe("Actor Synchronization", () => {
     it("should have synchronized actors", () => {
       const playerState = orchestrator.getPlayerState()
-      const timelineUIState = orchestrator.getTimelineUIState()
+      const timelineState = orchestrator.getTimelineState()
 
       // Actors should be initialized and accessible
       expect(playerState.context).toBeDefined()
-      expect(timelineUIState.context).toBeDefined()
+      expect(timelineState.context).toBeDefined()
     })
 
-    it("should sync timeline UI selection to extended timeline", async () => {
-      const timelineUIActor = orchestrator.getActors().timelineUI
+    it("should sync timeline selection with player", async () => {
+      const timelineActor = orchestrator.getActors().timeline
 
-      timelineUIActor.send({
-        type: "SELECT_CLIP",
-        clipId: "clip-1",
+      timelineActor.send({
+        type: "SELECT_CLIPS",
+        clipIds: ["clip-1"],
+        addToSelection: false,
       })
 
       // Дожидаемся следующего тика для синхронизации

@@ -111,9 +111,9 @@ vi.mock("../../hooks/use-timeline", () => ({
 }))
 
 import type { TimelineClip, TimelineProject } from "@/features/timeline/types"
-import type { ClipGroup } from "../../types/clip-groups"
-import { MockTimelineProvider } from "../test-providers"
-import { useGroupHotkeys } from "../use-group-hotkeys"
+import type { ClipGroup } from "../../../types/clip-groups"
+import { MockTimelineProvider } from "../../../__tests__/test-providers"
+import { useGroupHotkeys } from '../use-group-hotkeys'
 
 describe("useGroupHotkeys", () => {
   beforeEach(() => {

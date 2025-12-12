@@ -4,7 +4,7 @@
 
 import { useCallback, useMemo } from "react"
 import { useTimeline } from "../state/use-timeline"
-import type { TimelineClip, TimelineSection, TimelineTrack } from "../types"
+import type { TimelineClip, TimelineSection, TimelineTrack } from "../../types"
 
 export interface LinkedClipsPair {
   id: string

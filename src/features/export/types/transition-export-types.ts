@@ -2,7 +2,7 @@
  * Типы для экспорта переходов через FFmpeg
  */
 
-import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
+import type { TimelineTransition } from "@/domains/video-editing/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 
 import type { ExportSettings } from "./export-types"
@@ -54,7 +54,7 @@ export interface TransitionExportInfo {
 
   // Метаданные
   shaderType: string
-  customParameters: Record<string, any>
+  customParameters: Record<string, any> // Параметры из domain типа (гибкие)
 }
 
 /**

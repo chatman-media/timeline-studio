@@ -6,8 +6,8 @@
 import { useCallback, useRef, useState } from "react"
 
 import { useMediaFiles } from "@/domains/project-management/hooks"
-import { useLinkedClips } from "@/features/timeline/hooks/use-linked-clips"
-import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+import { useLinkedClips } from "@/features/timeline/hooks/clips/use-linked-clips"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import { syncByAudio as syncByAudioService } from "../services/audio-sync-adapter"
 import { syncByTimecode as syncByTimecodeService } from "../services/timecode-sync"

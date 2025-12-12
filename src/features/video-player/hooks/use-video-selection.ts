@@ -5,7 +5,7 @@ import { logInfo } from "@/lib/tauri-logger"
 
 // Моковые импорты для браузера и таймлайна - нужно заменить на реальные
 // import { useMedia } from "@/features/browser/hooks/use-media"
-// import { useTimeline } from "@/features/timeline/hooks/use-timeline"
+// import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 interface VideoSelectionHook {
   getVideosForPreview: (count?: number) => MediaFile[]

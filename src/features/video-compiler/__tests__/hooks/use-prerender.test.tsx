@@ -22,7 +22,7 @@ const mockProject = {
   duration: 60,
 }
 
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     project: mockProject,
   }),

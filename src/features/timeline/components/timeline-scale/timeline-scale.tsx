@@ -1,4 +1,4 @@
-import { useTimelineScale } from "../../hooks/use-timeline-scale"
+import { useTimelineScale } from "../../hooks/state/use-timeline-scale"
 import { TimelineMarks } from "./timeline-marks"
 
 interface TimeRange {

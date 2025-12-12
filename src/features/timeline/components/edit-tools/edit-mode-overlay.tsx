@@ -1,6 +1,5 @@
+import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"
-
-import { useEditModeContext } from "../../hooks/use-edit-mode"
 import { EDIT_MODE_CONFIGS, EDIT_MODES } from "../../types/edit-modes"
 
 interface EditModeOverlayProps {

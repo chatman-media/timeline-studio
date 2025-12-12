@@ -4,8 +4,8 @@
 
 import { useEffect } from "react"
 
-import { useSpeedRampingPlayerIntegration } from "../hooks/use-speed-ramping-player-integration"
-import { useTimeline } from "../hooks/use-timeline"
+import { useSpeedRampingPlayerIntegration } from "../hooks/integration/use-speed-ramping-player-integration"
+import { useTimeline } from "../hooks/state/use-timeline"
 
 export function TimelineSpeedRampingIntegration() {
   const { isPlaying, currentTime } = useTimeline()

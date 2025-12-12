@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-import { useTimelineAIAnalysis } from "../../hooks/use-timeline-ai-analysis"
+import { useTimelineAIAnalysis } from "../../hooks/integration/use-timeline-ai-analysis"
 
 interface TimelineAIOverlayProps {
   timelineWidth: number

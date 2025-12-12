@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-
-import { useTimelineAnalysis } from "../hooks/use-timeline-analysis"
+import { useTimelineAnalysis } from "../hooks/state/use-timeline-analysis"
 import { AnalysisDetail } from "./analysis/analysis-detail"
 import { AnalysisFilters } from "./analysis/analysis-filters"
 import { AnalysisList } from "./analysis/analysis-list"

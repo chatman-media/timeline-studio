@@ -15,8 +15,8 @@ import {
   reorderEffectsOnClip,
   toggleEffectOnClip,
   updateEffectOnClip,
-} from "../services/clip-effects-service"
-import type { TimelineProject } from "../types"
+} from "../../services/clip-effects-service"
+import type { TimelineProject } from "../../types"
 
 const logger = createLogger("useClipEffects")
 

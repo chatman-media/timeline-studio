@@ -93,14 +93,20 @@ describe("TransitionExportService", () => {
         startClipId: "clip-1",
         endClipId: "clip-2",
         trackId: "track-1",
-        parameters: {},
+        parameters: {
+          intensity: 1.0,
+          direction: "center",
+        },
         keyframes: [],
         curve: { type: "linear", points: [] },
         isEnabled: true,
         isLocked: false,
       }
 
-      mockProject.resources.timelineTransitions.push(invalidTransition)
+      if (!mockProject.resources.timelineTransitions) {
+        mockProject.resources.timelineTransitions = []
+      }
+      mockProject.resources.timelineTransitions.push(invalidTransition as any)
       track.transitions?.push("invalid-transition")
 
       const transitions = service.extractTransitionsFromProject(mockProject)
@@ -471,7 +477,9 @@ describe("TransitionExportService", () => {
   describe("Edge Cases", () => {
     it("should handle transitions with zero duration", () => {
       const mockProject = createMockProject()
-      mockProject.resources.timelineTransitions[0].duration = 0
+      if (mockProject.resources.timelineTransitions && mockProject.resources.timelineTransitions[0]) {
+        mockProject.resources.timelineTransitions[0].duration = 0
+      }
 
       const transitions = service.extractTransitionsFromProject(mockProject)
 
@@ -480,7 +488,9 @@ describe("TransitionExportService", () => {
 
     it("should handle very long transitions", () => {
       const mockProject = createMockProject()
-      mockProject.resources.timelineTransitions[0].duration = 10000
+      if (mockProject.resources.timelineTransitions && mockProject.resources.timelineTransitions[0]) {
+        mockProject.resources.timelineTransitions[0].duration = 10000
+      }
 
       const transitions = service.extractTransitionsFromProject(mockProject)
 
@@ -540,7 +550,10 @@ function createMockProject(): TimelineProject {
     startClipId: "clip-1",
     endClipId: "clip-2",
     trackId: "track-1",
-    parameters: {},
+    parameters: {
+      intensity: 1.0,
+      direction: "center",
+    },
     keyframes: [],
     curve: { type: "linear", points: [] },
     isEnabled: true,
@@ -556,7 +569,10 @@ function createMockProject(): TimelineProject {
     startClipId: "clip-1",
     endClipId: "clip-2",
     trackId: "track-1",
-    parameters: {},
+    parameters: {
+      intensity: 0.8,
+      direction: "center",
+    },
     keyframes: [],
     curve: { type: "linear", points: [] },
     isEnabled: true,

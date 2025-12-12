@@ -6,15 +6,14 @@
 
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "vitest"
-
+import { useDragDropTimeline } from "@/features/timeline/hooks/drag-drop/use-drag-drop-timeline"
 import { DragDropProvider } from "../../components/drag-drop-provider"
-import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
 
 // Import backend-sync mock
 import "@/test/mocks/backend-sync"
 
 // Мокаем хук useDragDropTimeline
-vi.mock("../../hooks/use-drag-drop-timeline", () => ({
+vi.mock("@/features/timeline/hooks/drag-drop/use-drag-drop-timeline", () => ({
   useDragDropTimeline: vi.fn(),
 }))
 

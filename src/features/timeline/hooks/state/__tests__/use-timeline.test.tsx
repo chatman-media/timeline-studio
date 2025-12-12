@@ -95,7 +95,7 @@ vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
 }))
 
 // Мокаем старый TimelineProvider для совместимости с test-utils (только providers, не hooks)
-vi.mock("@/domains/video-editing/timeline-providers", () => ({
+vi.mock("@/features/timeline/providers/timeline-providers", () => ({
   TimelineProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TimelineProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TimelinePlaybackProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,

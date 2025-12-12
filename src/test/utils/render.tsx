@@ -59,7 +59,7 @@ const getProviders = async () => {
   }
 
   try {
-    const { TimelineProvider } = await import("@/domains/video-editing/timeline-providers")
+    const { TimelineProvider } = await import("@/features/timeline/providers/timeline-providers")
     providers.TimelineProvider = TimelineProvider
   } catch (_e) {
     // Provider not available

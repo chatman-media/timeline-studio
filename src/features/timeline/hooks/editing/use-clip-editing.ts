@@ -1,11 +1,11 @@
 import { useCallback, useRef, useState } from "react"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
-import { useTimelineUI } from "../context/timeline-ui-context"
+import { useTimelineUI } from "../../context/timeline-ui-context"
+import { EDIT_MODES } from "../../types/edit-modes"
+import { getClipTrimBounds, getSlideBounds, getSlipBounds } from "../../utils/edit-operations"
+import { DEFAULT_SNAP_CONFIG, findSnapPoints, snapTime } from "../../utils/snap-engine"
 import { useTimeline } from "../state/use-timeline"
-import { EDIT_MODES } from "../types/edit-modes"
-import { getClipTrimBounds, getSlideBounds, getSlipBounds } from "../utils/edit-operations"
-import { DEFAULT_SNAP_CONFIG, findSnapPoints, snapTime } from "../utils/snap-engine"
-import { useEditModeContext } from "./use-edit-mode"
+import { useEditModeContext } from '../editing/use-edit-mode'
 
 interface UseClipEditingOptions {
   snapConfig?: typeof DEFAULT_SNAP_CONFIG

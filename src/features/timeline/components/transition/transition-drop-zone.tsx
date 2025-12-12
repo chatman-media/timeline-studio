@@ -5,9 +5,9 @@ import type { Transition } from "@/domains/video-editing/types"
 import type { TimelineClip } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
-import { useDragDropTimeline } from "../../hooks/use-drag-drop-timeline"
-import { useTimeline } from "../../hooks/use-timeline"
-import { useTimelineEffects } from "../../hooks/use-timeline-effects"
+import { useDragDropTimeline } from "../../hooks/drag-drop/use-drag-drop-timeline"
+import { useTimeline } from "../../hooks/state/use-timeline"
+import { useTimelineEffects } from "../../hooks/effects/use-timeline-effects"
 
 const logger = createLogger("TransitionDropZone")
 

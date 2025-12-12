@@ -1,8 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
+import { EditModeProvider } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { ClipTrimHandles, RippleHandles, RollHandles } from "../../../components/clip/clip-trim-handles"
-import { EditModeProvider } from "../../../hooks/use-edit-mode"
 import { EDIT_MODES } from "../../../types/edit-modes"
 
 // Mock useEditModeContext возвращаемого контекста
@@ -16,7 +15,7 @@ const mockEditModeContext = {
 }
 
 // Мокаем хук editMode
-vi.mock("../../../hooks/use-edit-mode", async (importOriginal) => {
+vi.mock("@/features/timeline/hooks/editing/use-edit-mode", async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...(actual as any),

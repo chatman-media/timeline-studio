@@ -7,10 +7,10 @@ import { useCallback } from "react"
 import { type MediaFile, MediaType } from "@/domains/media-management"
 import { useResources } from "@/domains/video-editing"
 import { createLogger } from "@/lib/tauri-logger"
+import type { TrackType } from "../../types"
 import { useClips } from "../clips/use-clips"
 import { useTimeline } from "../state/use-timeline"
-import type { TrackType } from "../types"
-import { useTracks } from "./use-tracks"
+import { useTracks } from '../state/use-tracks'
 
 const logger = createLogger("UseTimelineActions")
 

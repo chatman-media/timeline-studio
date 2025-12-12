@@ -8,14 +8,14 @@ import { useFilterTimelineIntegration } from "../../hooks/use-filter-timeline-in
 import type { VideoFilter } from "../../types/filters"
 
 // Mock hooks
-vi.mock("@/features/timeline/hooks/use-timeline", () => ({
+vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     updateClip: vi.fn().mockResolvedValue(undefined),
     project: null,
   }),
 }))
 
-vi.mock("@/features/timeline/hooks/use-clips", () => ({
+vi.mock("@/features/timeline/hooks/clips/use-clips", () => ({
   useClips: () => ({
     findClip: vi.fn().mockReturnValue(null),
   }),

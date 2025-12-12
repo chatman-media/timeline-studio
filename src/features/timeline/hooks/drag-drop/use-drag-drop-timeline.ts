@@ -11,18 +11,18 @@ import type { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core"
 import { useCallback, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { handleInterModuleDrag, isInterModuleDrag } from "../../services/drag-drop-bridge"
-import { useTimeline } from "../state/use-timeline"
-import type { TrackType } from "../types"
-import type { DragData, DragState } from "../types/drag-drop"
-import type { SnapPoint } from "../types/edit-modes"
+import type { TrackType } from "../../types"
+import type { DragData, DragState } from "../../types/drag-drop"
+import type { SnapPoint } from "../../types/edit-modes"
 import {
   calculateTimelinePosition,
   canDropOnTrack,
   findInsertionPoint,
   getTrackTypeForMediaFile,
   snapToGrid,
-} from "../utils/drag-calculations"
-import { useTimelineActions } from "./use-timeline-actions"
+} from "../../utils/drag-calculations"
+import { useTimeline } from "../state/use-timeline"
+import { useTimelineActions } from "../state/use-timeline-actions"
 
 const logger = createLogger("UseDragDropTimeline")
 

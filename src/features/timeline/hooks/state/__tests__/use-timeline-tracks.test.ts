@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import { useTimelineTracks } from "../use-timeline-tracks"
+import { useTimelineTracks } from '../use-timeline-tracks'
 
 describe("useTimelineTracks", () => {
   describe("Базовая функциональность", () => {

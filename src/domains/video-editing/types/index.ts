@@ -9,6 +9,7 @@ export * from "./context"
 // But we still need to export VideoEffect and AppliedFilter for backward compatibility
 export type {
   AppliedFilter,
+  AppliedStyleTemplate,
   AppliedTransition,
   FilterType,
   TransitionDirection,
@@ -24,7 +25,13 @@ export * from "./sequence"
 // Template types (canonical source for StyleTemplate, MediaTemplate, SubtitleStyleTemplate)
 export * from "./templates"
 // Aliases for backward compatibility with features layer
-export type { Section as TimelineSection, Timeline as TimelineProject, Track as TimelineTrack } from "./timeline"
+// Export TimelineTransitionBase explicitly for feature layer
+export type {
+  Section as TimelineSection,
+  Timeline as TimelineProject,
+  TimelineTransitionBase,
+  Track as TimelineTrack,
+} from "./timeline"
 export * from "./timeline"
 export * from "./transitions"
 // Unified effects system (canonical source)

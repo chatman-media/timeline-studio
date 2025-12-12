@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-import { useSpeedRamping } from "../../hooks/use-speed-ramping"
+import { useSpeedRamping } from "../../hooks/speed-ramping/use-speed-ramping"
 
 interface SpeedRampingToggleProps {
   clipId: string

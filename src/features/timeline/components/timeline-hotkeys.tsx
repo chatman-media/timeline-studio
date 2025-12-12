@@ -1,7 +1,7 @@
-import { useGroupHotkeys } from "../hooks/use-group-hotkeys"
-import { useJLCutHotkeys } from "../hooks/use-jl-cut-hotkeys"
-import { useMarkerHotkeys } from "../hooks/use-marker-hotkeys"
-import { useSpeedRampingHotkeys } from "../hooks/use-speed-ramping-hotkeys"
+import { useGroupHotkeys } from "../hooks/hotkeys/use-group-hotkeys"
+import { useJLCutHotkeys } from "../hooks/hotkeys/use-jl-cut-hotkeys"
+import { useMarkerHotkeys } from "../hooks/hotkeys/use-marker-hotkeys"
+import { useSpeedRampingHotkeys } from "../hooks/speed-ramping/use-speed-ramping-hotkeys"
 
 /**
  * Компонент для инициализации всех горячих клавиш timeline

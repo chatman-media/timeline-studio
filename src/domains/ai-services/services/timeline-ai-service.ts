@@ -28,8 +28,8 @@ import { executeResourceTool, resourceTools } from "@/domains/ai-tools/tools/cor
 import { executeTimelineTool, timelineTools } from "@/domains/ai-tools/tools/core/timeline"
 import { exportTools as exportManagementTools } from "@/domains/ai-tools/tools/integration/export"
 import type { MediaFile } from "@/domains/media-management"
-import type { ResourcesContextType } from "@/domains/video-editing"
 import type { Timeline as TimelineProject } from "@/domains/video-editing/types"
+import type { ResourcesContextType } from "@/features/timeline/providers/resources-provider"
 import type {
   AIBrowserContext,
   AIPlayerContext,
@@ -740,14 +740,14 @@ export class TimelineAIService {
   // Вспомогательные методы для сбора контекста
 
   private calculateTotalDuration(): number {
-    return this.resourcesProvider.mediaResources.reduce((total: number, resource) => {
+    return this.resourcesProvider.mediaResources.reduce((total: number, resource: { file: { duration?: number } }) => {
       const duration: number = typeof resource.file.duration === "number" ? resource.file.duration : 0
       return total + duration
     }, 0)
   }
 
   private calculateTotalSize(): number {
-    return this.resourcesProvider.mediaResources.reduce((total: number, resource) => {
+    return this.resourcesProvider.mediaResources.reduce((total: number, resource: { file: { size?: number } }) => {
       const size: number = typeof resource.file.size === "number" ? resource.file.size : 0
       return total + size
     }, 0)
@@ -774,10 +774,10 @@ export class TimelineAIService {
     // Получаем файлы в зависимости от активной вкладки
     const activeTab = this.browserState?.activeTab
     if (activeTab === "media") {
-      return this.resourcesProvider.mediaResources.map((r) => r.file)
+      return this.resourcesProvider.mediaResources.map((r: { file: MediaFile }) => r.file)
     }
     if (activeTab === "music") {
-      return this.resourcesProvider.musicResources.map((r) => r.file)
+      return this.resourcesProvider.musicResources.map((r: { file: MediaFile }) => r.file)
     }
     return []
   }

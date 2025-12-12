@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { useTracks } from "@/features/timeline/hooks/use-tracks"
+import { useTracks } from "@/features/timeline/hooks/state/use-tracks"
 
 import { useSubtitlesExport } from "../../hooks/use-subtitles-export"
 
@@ -24,7 +24,7 @@ vi.mock("@/core", () => ({
   },
 }))
 
-vi.mock("@/features/timeline/hooks/use-tracks", () => ({
+vi.mock("@/features/timeline/hooks/state/use-tracks", () => ({
   useTracks: vi.fn(() => ({
     tracks: [
       {

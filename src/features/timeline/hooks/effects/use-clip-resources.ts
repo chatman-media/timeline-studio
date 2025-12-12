@@ -9,8 +9,8 @@ import type {
   VideoEffect,
   VideoFilter,
 } from "@/domains/video-editing/types"
+import type { TimelineClip } from "../../types"
 import { useTimeline } from "../state/use-timeline"
-import type { TimelineClip } from "../types"
 
 export interface UseClipResourcesReturn {
   // Применение ресурсов к клипу

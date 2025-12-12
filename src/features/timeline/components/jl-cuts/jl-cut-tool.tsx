@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-import { useJLCuts } from "../../hooks/use-jl-cuts"
+import { useJLCuts } from "../../hooks/editing/use-jl-cuts"
 
 import type { TimelineClip } from "../../types"
 
