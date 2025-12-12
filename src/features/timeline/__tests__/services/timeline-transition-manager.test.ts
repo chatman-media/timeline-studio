@@ -12,7 +12,7 @@ import {
   getTrackTransitions,
   removeTransition,
 } from "../../services/timeline-transition-manager"
-import type { TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import type { TimelineTransition } from "../../types/timeline-transition"
 
 // Mock модуля resource-manager

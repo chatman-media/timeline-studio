@@ -8,7 +8,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useTimeline } from "../hooks/use-timeline"
 import { useTracks } from "../hooks/use-tracks"
-import type { TimelineTrack, TrackType } from "../types/timeline"
+import type { TimelineTrack, TrackType } from "@/features/timeline/types"
 
 const logger = createLogger("AudioMixer")
 

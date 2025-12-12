@@ -68,7 +68,7 @@ import {
   type TimelineClip,
   type TimelineProject,
   type TimelineTrack,
-} from "../types/timeline"
+} from "@/features/timeline/types"
 
 /**
  * Преобразует проект Timeline в схему для Video Compiler

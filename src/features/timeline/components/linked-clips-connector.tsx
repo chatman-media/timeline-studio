@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 
 import { useTimeline } from "../hooks/use-timeline"
 
-import type { TimelineClip } from "../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 
 interface LinkedClipsConnectorProps {
   className?: string

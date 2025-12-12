@@ -2,7 +2,7 @@
  * Типы для мультикамерной системы
  */
 
-import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 
 /**
  * Метод синхронизации камер

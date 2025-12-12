@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { createKeyframe } from "../../services/keyframe-manager"
 import {
   addMotionGraphicsToClip,

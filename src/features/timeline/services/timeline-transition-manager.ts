@@ -4,7 +4,7 @@
  */
 
 import type { Transition } from "@/domains/video-editing/types"
-import type { TimelineProject, TimelineTrack } from "../types/timeline"
+import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import type { TimelineTransition } from "../types/timeline-transition"
 import {
   addTimelineTransitionToResources,

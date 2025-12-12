@@ -10,7 +10,7 @@ import {
   type SpeedRampingConfig,
   type SpeedRampingPreset,
 } from "../types/speed-ramping"
-import type { TimelineClip } from "../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { useTimeline } from "./use-timeline"
 
 export interface UseSpeedRampingReturn {

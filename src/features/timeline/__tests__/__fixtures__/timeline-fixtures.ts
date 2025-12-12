@@ -1,4 +1,4 @@
-import type { TimelineProject, TimelineSection, TimelineTrack, TrackType } from "../../types/timeline"
+import type { TimelineProject, TimelineSection, TimelineTrack, TrackType } from "@/features/timeline/types"
 
 export const createMockTimelineProject = (): TimelineProject => ({
   id: "project-1",

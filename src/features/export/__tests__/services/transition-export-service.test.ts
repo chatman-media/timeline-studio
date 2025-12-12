@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineProject } from "@/features/timeline/types"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { OutputFormat } from "@/features/video-compiler/types/render"

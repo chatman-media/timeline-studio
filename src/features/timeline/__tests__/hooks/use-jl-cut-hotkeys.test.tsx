@@ -20,7 +20,7 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 
 import { useJLCutHotkeys } from "../../hooks/use-jl-cut-hotkeys"
-import type { TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { MockTimelineProvider } from "../test-providers"
 
 // Mock keyboard event

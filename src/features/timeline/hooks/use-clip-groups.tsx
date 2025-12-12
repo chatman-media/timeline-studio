@@ -8,7 +8,7 @@ import type {
   GroupOptions,
   NestedSequence,
 } from "../types/clip-groups"
-import type { TimelineClip, TimelineSection, TimelineTrack } from "../types/timeline"
+import type { TimelineClip, TimelineSection, TimelineTrack } from "@/features/timeline/types"
 import { useTimeline } from "./use-timeline"
 
 export interface UseClipGroupsReturn {

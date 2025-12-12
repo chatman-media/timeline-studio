@@ -13,7 +13,7 @@ import { useMediaFiles } from "@/domains/project-management/hooks"
 import { analyzeAudioPeaks } from "@/domains/subtitles"
 import { useTimeline } from "@/features/timeline/hooks/use-timeline"
 import { useTracks } from "@/features/timeline/hooks/use-tracks"
-import type { TrackType } from "@/features/timeline/types/timeline"
+import type { TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SubtitleClip } from "../types/subtitles"
 

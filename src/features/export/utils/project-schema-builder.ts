@@ -1,6 +1,6 @@
 import type { ProjectSchema } from "@/core/types"
 import { OutputFormat } from "@/core/types"
-import type { TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineProject } from "@/features/timeline/types"
 import { timelineToProjectSchema } from "@/features/timeline/utils/timeline-to-project"
 import { AUDIO_BITRATE } from "../constants/export-constants"
 import type { ExportSettings } from "../types/export-types"

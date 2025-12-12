@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { TimelineClip, TimelineProject, TimelineSection } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineProject, TimelineSection } from "@/features/timeline/types"
 import { createDetailedTimelineContext, createTimelineContextPrompt } from "../timeline-context"
 
 // Helper для создания mock проекта

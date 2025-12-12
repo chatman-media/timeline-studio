@@ -11,7 +11,7 @@ import {
   suggestCollisionFixes,
   type TransitionCollision,
 } from "../services/transition-collision-detector"
-import type { TimelineProject, TimelineTrack } from "../types/timeline"
+import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTransitionCollisions")

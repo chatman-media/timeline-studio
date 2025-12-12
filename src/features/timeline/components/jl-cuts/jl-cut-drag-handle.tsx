@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { useJLCuts } from "../../hooks/use-jl-cuts"
 
 import type { CutType } from "../../types/jl-cuts"
-import type { TimelineClip } from "../../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 
 interface JLCutDragHandleProps {
   clip: TimelineClip

@@ -3,7 +3,7 @@
  * Синхронизация переходов при операциях с клипами
  */
 
-import type { TimelineProject } from "../types/timeline"
+import type { TimelineProject } from "@/features/timeline/types"
 import type { TimelineTransition } from "../types/timeline-transition"
 import { updateTimelineTransitionProperties } from "./resource-manager"
 import {

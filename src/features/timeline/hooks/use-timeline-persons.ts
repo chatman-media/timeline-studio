@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react"
 import { usePersonIdentification } from "@/features/person-identification/hooks/use-person-identification"
 import type { BoundingBox, PersonProfile } from "@/features/person-identification/types/person"
 import { createLogger } from "@/lib/tauri-logger"
-import type { TimelineClip } from "../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTimelinePersons")

@@ -1,4 +1,4 @@
-import type { TimelineClip, TimelineTrack } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineTrack } from "@/features/timeline/types"
 
 // Test data constants and utilities
 export const TEST_MEDIA_FILES = {

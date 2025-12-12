@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 
 import { getCutType } from "../../types/jl-cuts"
 
-import type { TimelineClip } from "../../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 
 interface JLCutIndicatorProps {
   videoClip?: TimelineClip

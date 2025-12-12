@@ -3,7 +3,7 @@
  * Integrates Motion Graphics with Timeline functionality
  */
 
-import type { TimelineClip, TimelineProject } from "@/features/timeline/types/timeline"
+import type { TimelineClip, TimelineProject } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnimatedProperty, AnimationTrack, MotionPreset } from "../types/keyframe"
 import { createAnimationTrack, evaluateTrackAtTime } from "./animation-layers"

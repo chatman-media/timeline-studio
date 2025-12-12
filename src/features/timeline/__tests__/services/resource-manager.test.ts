@@ -18,7 +18,7 @@ import {
   createAppliedStyleTemplate,
   createAppliedTransition,
 } from "../../services/resource-manager"
-import type { TimelineProject } from "../../types/timeline"
+import type { TimelineProject } from "@/features/timeline/types"
 
 describe("resource-manager", () => {
   let mockProject: TimelineProject

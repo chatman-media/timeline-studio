@@ -29,7 +29,7 @@ import {
   TextAlign,
 } from "@/domains/video-editing/types"
 
-import type { TimelineClip, TimelineProject, TimelineTrack } from "../../types/timeline"
+import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { timelineToProjectSchema } from "../../utils/timeline-to-project"
 
 describe("timelineToProjectSchema", () => {

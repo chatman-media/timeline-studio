@@ -8,7 +8,7 @@
  * - Оптимизация производительности
  */
 
-import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 

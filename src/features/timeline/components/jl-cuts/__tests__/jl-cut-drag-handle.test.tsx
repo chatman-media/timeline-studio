@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { TimelineClip } from "../../../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { JLCutDragHandle } from "../jl-cut-drag-handle"
 
 // Mock useJLCuts hook

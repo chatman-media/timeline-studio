@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useJLCuts } from "../../hooks/use-jl-cuts"
 import { useTimeline } from "../../hooks/use-timeline"
 
-import type { TimelineProject } from "../../types/timeline"
+import type { TimelineProject } from "@/features/timeline/types"
 
 // Mock useTimeline hook
 vi.mock("../../hooks/use-timeline", () => ({

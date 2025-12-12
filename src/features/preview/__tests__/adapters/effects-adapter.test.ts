@@ -6,7 +6,7 @@
 import { describe, expect, it } from "vitest"
 import type { BaseEffect } from "@/features/effects/types/unified-effects"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { AppliedColorGrading, AppliedEffect, AppliedFilter } from "@/features/timeline/types/timeline"
+import type { AppliedColorGrading, AppliedEffect, AppliedFilter } from "@/features/timeline/types"
 import {
   convertBaseEffect,
   convertColorGrading,

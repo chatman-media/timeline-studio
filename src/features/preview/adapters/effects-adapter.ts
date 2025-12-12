@@ -5,7 +5,7 @@
 
 import type { AppliedEffect as BaseAppliedEffect, BaseEffect } from "@/features/effects/types/unified-effects"
 import type { VideoFilter } from "@/features/filters/types/filters"
-import type { AppliedColorGrading, AppliedEffect, AppliedFilter } from "@/features/timeline/types/timeline"
+import type { AppliedColorGrading, AppliedEffect, AppliedFilter } from "@/features/timeline/types"
 
 import type { EffectType, Effect as PreviewEffect } from "../types"
 

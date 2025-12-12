@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { AppliedColorGrading } from "@/features/timeline/types/timeline"
+import type { AppliedColorGrading } from "@/features/timeline/types"
 
 describe("Color Grading Timeline Integration", () => {
   let eventListener: EventListener | null = null

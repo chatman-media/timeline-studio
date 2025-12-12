@@ -8,7 +8,7 @@ import { describe, expect, it, vi } from "vitest"
 import { TimelineProviders } from "@/test/test-utils"
 
 import { useTracks } from "../../hooks/use-tracks"
-import type { TimelineProject, TimelineTrack } from "../../types/timeline"
+import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 
 // Мокаем треки (используем domain свойства)
 const mockTracks: TimelineTrack[] = [

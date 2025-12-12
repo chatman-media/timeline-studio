@@ -13,7 +13,7 @@ import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domai
 import { KeyMomentType } from "@/domains/ai-services/types"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
-import type { TimelineClip } from "../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { useTimeline } from "./use-timeline"
 
 const logger = createLogger("UseTimelineAiAnalysis")

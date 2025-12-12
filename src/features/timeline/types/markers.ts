@@ -2,10 +2,10 @@
  * Расширенные типы для системы маркеров Timeline
  */
 
-import type { TimelineMarker } from "./timeline"
+import type { TimelineMarker } from "@/features/timeline/types"
 
 // Реэкспорт базового типа
-export type { TimelineMarker } from "./timeline"
+export type { TimelineMarker } from "@/features/timeline/types"
 
 // Типы маркеров
 export type MarkerType = "chapter" | "section" | "note" | "export" | "todo" | "sync" | "cue" | "important" | "warning"

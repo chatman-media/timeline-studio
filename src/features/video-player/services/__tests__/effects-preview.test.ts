@@ -19,7 +19,7 @@ vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => mockLogger),
 }))
 
-import type { TimelineClip } from "@/features/timeline/types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { type EffectChain, type EffectPreviewOptions, EffectsPreviewService } from "../effects-preview"
 
 // Получаем мок logger

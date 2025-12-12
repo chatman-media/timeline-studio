@@ -2,7 +2,7 @@
  * AI-специфичные типы для Timeline AI инструментов
  *
  * Основные типы Timeline (TimelineProject, TimelineSection, TimelineTrack, TimelineClip)
- * импортируются из @/features/timeline/types/timeline
+ * импортируются из @/features/timeline/types
  */
 
 import type { TimelineClip, TimelineSection, TimelineTrack } from "@/domains/video-editing/types"

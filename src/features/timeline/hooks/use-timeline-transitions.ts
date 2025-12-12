@@ -12,7 +12,7 @@ import {
   updateTimelineTransitionParameters,
 } from "../services/resource-manager"
 import { getTrackTransitions as getTrackTransitionsService } from "../services/timeline-transition-manager"
-import type { TimelineProject } from "../types/timeline"
+import type { TimelineProject } from "@/features/timeline/types"
 import type { TimelineTransition } from "../types/timeline-transition"
 
 /**

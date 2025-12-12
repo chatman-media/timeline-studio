@@ -20,7 +20,7 @@ import type {
   ProjectResources,
   SubtitleStyle,
   TimelineProject,
-} from "../types/timeline"
+} from "@/features/timeline/types"
 import type { TimelineTransition } from "../types/timeline-transition"
 
 /**

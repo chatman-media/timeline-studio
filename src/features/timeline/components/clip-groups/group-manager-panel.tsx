@@ -10,7 +10,7 @@ import { useClipGroups } from "../../hooks/use-clip-groups"
 import { useTimeline } from "../../hooks/use-timeline"
 import type { ClipGroup, GroupColorKey } from "../../types/clip-groups"
 import { GroupColors } from "../../types/clip-groups"
-import type { TimelineClip } from "../../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 
 export function GroupManagerPanel() {
   const { project, selectedClipIds } = useTimeline()

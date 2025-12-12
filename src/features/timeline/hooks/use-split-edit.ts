@@ -12,7 +12,7 @@ import type {
   SplitEditToolSettings,
   SplitEditVisual,
 } from "../types/split-edit"
-import type { TimelineClip } from "../types/timeline"
+import type { TimelineClip } from "@/features/timeline/types"
 import { useTimeline } from "./use-timeline"
 
 export interface UseSplitEditReturn {
