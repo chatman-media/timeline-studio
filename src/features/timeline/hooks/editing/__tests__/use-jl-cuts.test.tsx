@@ -186,7 +186,7 @@ describe("useJLCuts", () => {
   })
 
   it("should get linked clip correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     const linkedClip = result.current.getLinkedClip("video-clip-1")
     expect(linkedClip).toBeDefined()
@@ -194,7 +194,7 @@ describe("useJLCuts", () => {
   })
 
   it("should get linked pair correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     const pair = result.current.getLinkedPair("video-clip-1")
     expect(pair).toBeDefined()
@@ -204,7 +204,7 @@ describe("useJLCuts", () => {
   })
 
   it("should create J-Cut correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     act(() => {
       result.current.createJCut("video-clip-1", 0.5)
@@ -216,7 +216,7 @@ describe("useJLCuts", () => {
   })
 
   it("should create L-Cut correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     act(() => {
       result.current.createLCut("video-clip-1", 0.5)
@@ -228,7 +228,7 @@ describe("useJLCuts", () => {
   })
 
   it("should reset cut correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     act(() => {
       result.current.resetCut("video-clip-1")
@@ -240,7 +240,7 @@ describe("useJLCuts", () => {
   })
 
   it("should link clips correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     act(() => {
       result.current.linkClips("video-clip-2", "audio-clip-2")
@@ -258,7 +258,7 @@ describe("useJLCuts", () => {
   })
 
   it("should unlink clips correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     act(() => {
       result.current.unlinkClips("video-clip-1")
@@ -278,7 +278,7 @@ describe("useJLCuts", () => {
   })
 
   it("should identify video clips correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     const videoClip = mockProject.sections[0].tracks[0].clips[0] as any
     const audioClip = mockProject.sections[0].tracks[1].clips[0] as any
@@ -288,7 +288,7 @@ describe("useJLCuts", () => {
   })
 
   it("should identify audio clips correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     const videoClip = mockProject.sections[0].tracks[0].clips[0] as any
     const audioClip = mockProject.sections[0].tracks[1].clips[0] as any
@@ -298,7 +298,7 @@ describe("useJLCuts", () => {
   })
 
   it("should get cut preview correctly", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useJLCuts(), {})
+    const { result } = renderHook(() => useJLCuts(), {})
 
     const preview = result.current.getCutPreview("video-clip-1", "j-cut", 0.5)
 

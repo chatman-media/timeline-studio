@@ -141,7 +141,7 @@ describe("useTimelineActions", () => {
     })
 
     it("должен возвращать объект с необходимыми методами", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       expect(result.current).toHaveProperty("addMediaToTimeline")
       expect(result.current).toHaveProperty("addSingleMediaToTimeline")
@@ -151,7 +151,7 @@ describe("useTimelineActions", () => {
     })
 
     it("должен вызывать зависимые хуки", () => {
-      renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       expect(useTimeline).toHaveBeenCalled()
       expect(useTracks).toHaveBeenCalled()
@@ -161,35 +161,35 @@ describe("useTimelineActions", () => {
 
   describe("getTrackTypeForMedia", () => {
     it("должен определить тип Video для видеофайла", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(mockVideoFile)
       expect(trackType).toBe("video")
     })
 
     it("должен определить тип Audio для аудиофайла", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(mockAudioFile)
       expect(trackType).toBe("audio")
     })
 
     it("должен определить тип Image для изображения", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(mockImageFile)
       expect(trackType).toBe("image")
     })
 
     it("должен определить тип Video по probeData", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(mockVideoFile)
       expect(trackType).toBe("video")
     })
 
     it("должен определить тип Audio по probeData если есть только аудио поток", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(mockAudioFile)
       expect(trackType).toBe("audio")
@@ -201,7 +201,7 @@ describe("useTimelineActions", () => {
         type: "video" as MediaType,
         probeData: undefined,
       }
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(unknownFile)
       expect(trackType).toBe("video")
@@ -211,7 +211,7 @@ describe("useTimelineActions", () => {
   describe("findBestTrackForMedia", () => {
     it("должен возвращать null если нет подходящих треков", () => {
       mockTracks.getTracksByType.mockReturnValue([])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const bestTrack = result.current.findBestTrackForMedia(mockVideoFile)
       expect(bestTrack).toBeNull()
@@ -223,14 +223,14 @@ describe("useTimelineActions", () => {
         { id: "video-track-2", type: "Video" },
       ]
       mockTracks.getTracksByType.mockReturnValue(videoTracks)
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const bestTrack = result.current.findBestTrackForMedia(mockVideoFile)
       expect(bestTrack).toBe("video-track-1")
     })
 
     it("должен вызвать getTracksByType с правильным типом", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       result.current.findBestTrackForMedia(mockVideoFile)
       expect(mockTracks.getTracksByType).toHaveBeenCalledWith("video")
@@ -240,7 +240,7 @@ describe("useTimelineActions", () => {
   describe("calculateClipStartTime", () => {
     it("должен возвращать 0 для пустого трека", () => {
       mockClips.getClipsByTrack.mockReturnValue([])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const startTime = result.current.calculateClipStartTime("test-track-id")
       expect(startTime).toBe(0)
@@ -253,7 +253,7 @@ describe("useTimelineActions", () => {
         { startTime: 5, duration: 8 },
       ]
       mockClips.getClipsByTrack.mockReturnValue(clips)
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const startTime = result.current.calculateClipStartTime("test-track-id")
       expect(startTime).toBe(20) // 15 + 5 = последний клип заканчивается в 20
@@ -266,7 +266,7 @@ describe("useTimelineActions", () => {
         { startTime: 20, duration: 3 }, // заканчивается в 23 - это последний
       ]
       mockClips.getClipsByTrack.mockReturnValue(clips)
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const startTime = result.current.calculateClipStartTime("test-track-id")
       expect(startTime).toBe(23)
@@ -276,7 +276,7 @@ describe("useTimelineActions", () => {
   describe("addSingleMediaToTimeline", () => {
     it("должен создать проект если его нет", () => {
       mockTimeline.project = null
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       act(() => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
@@ -289,7 +289,7 @@ describe("useTimelineActions", () => {
       mockTracks.getTracksByType.mockReturnValue([{ id: "video-track-1" }])
       mockClips.getClipsByTrack.mockReturnValue([])
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addSingleMediaToTimeline(mockVideoFile)
@@ -300,7 +300,7 @@ describe("useTimelineActions", () => {
 
     it("должен создать новый трек если подходящий не найден", () => {
       mockTracks.getTracksByType.mockReturnValue([])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       act(() => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
@@ -311,7 +311,7 @@ describe("useTimelineActions", () => {
 
     it("должен использовать customStartTime если указано", async () => {
       mockTracks.getTracksByType.mockReturnValue([{ id: "video-track-1" }])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addSingleMediaToTimeline(mockVideoFile, undefined, 15)
@@ -321,7 +321,7 @@ describe("useTimelineActions", () => {
     })
 
     it("должен использовать customTrackId если указан", async () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addSingleMediaToTimeline(mockVideoFile, "custom-track", 10)
@@ -332,7 +332,7 @@ describe("useTimelineActions", () => {
 
     it("должен использовать дефолтную длительность для изображений", async () => {
       mockTracks.getTracksByType.mockReturnValue([{ id: "image-track-1" }])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addSingleMediaToTimeline(mockImageFile)
@@ -344,7 +344,7 @@ describe("useTimelineActions", () => {
     it("должен использовать дефолтную длительность для файлов без duration", async () => {
       const fileWithoutDuration = { ...mockVideoFile, duration: undefined }
       mockTracks.getTracksByType.mockReturnValue([{ id: "video-track-1" }])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addSingleMediaToTimeline(fileWithoutDuration)
@@ -356,7 +356,7 @@ describe("useTimelineActions", () => {
 
   describe("addMediaToTimeline", () => {
     it("должен обработать пустой массив файлов", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       act(() => {
         result.current.addMediaToTimeline([])
@@ -367,7 +367,7 @@ describe("useTimelineActions", () => {
     })
 
     it("должен обработать null или undefined", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       act(() => {
         result.current.addMediaToTimeline(null as any)
@@ -386,7 +386,7 @@ describe("useTimelineActions", () => {
 
     it("должен добавить несколько файлов последовательно", async () => {
       mockTracks.getTracksByType.mockReturnValue([{ id: "track-1" }])
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addMediaToTimeline([mockVideoFile, mockAudioFile])
@@ -403,7 +403,7 @@ describe("useTimelineActions", () => {
       const localAddClipMock = vi.fn().mockResolvedValue(undefined)
       mockTimeline.addClip = localAddClipMock
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       // Запускаем асинхронное добавление
       await act(async () => {
@@ -418,7 +418,7 @@ describe("useTimelineActions", () => {
   describe("edge cases", () => {
     it("должен обработать файл без probeData", () => {
       const fileWithoutProbe = { ...mockVideoFile, probeData: undefined }
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(fileWithoutProbe)
       expect(trackType).toBe("video") // По типу type
@@ -430,7 +430,7 @@ describe("useTimelineActions", () => {
         type: "video" as MediaType,
         probeData: { ...mockVideoFile.probeData!, streams: [] },
       }
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const trackType = result.current.getTrackTypeForMedia(fileWithEmptyStreams)
       expect(trackType).toBe("video") // По умолчанию
@@ -442,7 +442,7 @@ describe("useTimelineActions", () => {
         { startTime: 0, duration: 3 }, // заканчивается в 3
       ]
       mockClips.getClipsByTrack.mockReturnValue(clips)
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       const startTime = result.current.calculateClipStartTime("test-track")
       expect(startTime).toBe(5)
@@ -457,7 +457,7 @@ describe("useTimelineActions", () => {
         .mockReturnValueOnce([{ id: "new-track" }]) // Второй вызов - трек появился
 
       vi.useFakeTimers()
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       act(() => {
         result.current.addSingleMediaToTimeline(mockVideoFile)
@@ -481,7 +481,7 @@ describe("useTimelineActions", () => {
         .mockReturnValueOnce([]) // Первый вызов - нет треков
         .mockReturnValueOnce([{ id: "new-track" }]) // Второй вызов после создания - трек появился
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       await act(async () => {
         await result.current.addSingleMediaToTimeline(mockVideoFile)
@@ -499,7 +499,7 @@ describe("useTimelineActions", () => {
       mockTracks.getTracksByType.mockReturnValue([{ id: "video-track-1" }])
       mockClips.getClipsByTrack.mockReturnValue([{ startTime: 0, duration: 10 }])
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineActions())
+      const { result } = renderHook(() => useTimelineActions(), { wrapper: TimelineProviders })
 
       // 1. Определяем тип медиа
       const trackType = result.current.getTrackTypeForMedia(mockVideoFile)

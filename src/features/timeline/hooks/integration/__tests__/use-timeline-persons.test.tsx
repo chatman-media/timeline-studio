@@ -206,7 +206,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     expect(result.current.state).toEqual({
       isAnalyzing: false,
@@ -224,7 +224,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     expect(result.current.persons).toHaveLength(2)
     expect(result.current.persons[0].name).toBe("John Doe")
@@ -236,7 +236,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -264,7 +264,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -290,7 +290,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     // Устанавливаем высокий порог уверенности
     act(() => {
@@ -318,7 +318,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -337,7 +337,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -356,7 +356,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     await act(async () => {
       await result.current.analyzeTimelineForPersons()
@@ -375,7 +375,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     // Сначала анализируем
     const testClip = getTestClip()
@@ -404,7 +404,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     act(() => {
       result.current.showPersonDetail("person-1")
@@ -422,7 +422,7 @@ describe("useTimelinePersons", () => {
 
     mockDetectFaces.mockRejectedValueOnce(new Error("Ошибка обнаружения лиц"))
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -439,7 +439,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     expect(result.current.enablePersonDetection).toBe(true)
 
@@ -455,7 +455,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     expect(result.current.confidenceThreshold).toBe(0.7)
 
@@ -471,7 +471,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const clipWithoutMedia = {
       id: "clip-no-media",
@@ -509,7 +509,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     act(() => {
       result.current.setEnablePersonDetection(false)
@@ -529,7 +529,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -573,7 +573,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     // Убеждаемся, что обнаружение персон включено
     expect(result.current.enablePersonDetection).toBe(true)
@@ -597,7 +597,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     const testClip = getTestClip()
 
@@ -665,7 +665,7 @@ describe("useTimelinePersons", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePersons(), { wrapper })
+    const { result } = renderHook(() => useTimelinePersons(), { wrapper })
 
     // Мок возвращает null для идентификации (неизвестное лицо)
     mockIdentifyPerson.mockResolvedValue(null)

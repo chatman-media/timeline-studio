@@ -293,13 +293,13 @@ describe("useTimelinePlayerSync", () => {
 
   describe("Initialization", () => {
     it("должен инициализировать player context при монтировании", () => {
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledWith(mockPlayerContext)
     })
 
     it("должен обновлять player context при его изменении", () => {
-      const { rerender } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       const newPlayerContext = { ...mockPlayerContext, volume: 0.5 }
       vi.mocked(usePlayer).mockReturnValue(newPlayerContext)
@@ -319,7 +319,7 @@ describe("useTimelinePlayerSync", () => {
         }),
       )
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { result } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
       expect(result.current.isSynced).toBe(true)
@@ -329,7 +329,7 @@ describe("useTimelinePlayerSync", () => {
     it("должен очищать синхронизацию когда нет выбранных клипов", () => {
       vi.mocked(useTimelineSelection).mockReturnValue(createSelectionMock())
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { result } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.clearSelection).toHaveBeenCalled()
       expect(result.current.isSynced).toBe(false)
@@ -343,7 +343,7 @@ describe("useTimelinePlayerSync", () => {
         }),
       )
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { result } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).not.toHaveBeenCalled()
       expect(timelinePlayerSync.timelinePlayerSync.clearSelection).not.toHaveBeenCalled()
@@ -352,7 +352,7 @@ describe("useTimelinePlayerSync", () => {
     })
 
     it("должен обновлять синхронизацию при изменении выбора", () => {
-      const { rerender } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       // Изначально нет выбранных клипов
       expect(timelinePlayerSync.timelinePlayerSync.clearSelection).toHaveBeenCalled()
@@ -383,13 +383,13 @@ describe("useTimelinePlayerSync", () => {
 
   describe("Синхронизация времени воспроизведения", () => {
     it("должен синхронизировать текущее время воспроизведения", () => {
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(15)
     })
 
     it("должен обновлять время при его изменении", () => {
-      const { rerender } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       // Изменяем текущее время
       vi.mocked(useTimeline).mockReturnValue(
@@ -411,7 +411,7 @@ describe("useTimelinePlayerSync", () => {
         }),
       )
 
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(0)
     })
@@ -423,7 +423,7 @@ describe("useTimelinePlayerSync", () => {
         }),
       )
 
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(15.567)
     })
@@ -431,7 +431,7 @@ describe("useTimelinePlayerSync", () => {
 
   describe("Комплексные сценарии", () => {
     it("должен корректно обрабатывать все изменения вместе", () => {
-      const { rerender } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       // Проверяем инициализацию
       expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledWith(mockPlayerContext)
@@ -462,7 +462,7 @@ describe("useTimelinePlayerSync", () => {
     })
 
     it("должен корректно очищать синхронизацию при размонтировании", () => {
-      const { unmount } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { unmount } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       // Устанавливаем синхронизацию с клипом
       vi.mocked(useTimelineSelection).mockReturnValue(
@@ -482,13 +482,13 @@ describe("useTimelinePlayerSync", () => {
     it("должен обрабатывать null player context", () => {
       vi.mocked(usePlayer).mockReturnValue(null as any)
 
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledWith(null)
     })
 
     it("должен обрабатывать пустой массив клипов после выбора", () => {
-      const { rerender } = renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       // Сначала выбираем клип
       vi.mocked(useTimelineSelection).mockReturnValue(
@@ -516,7 +516,7 @@ describe("useTimelinePlayerSync", () => {
         }),
       )
 
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(-5)
     })
@@ -528,7 +528,7 @@ describe("useTimelinePlayerSync", () => {
         }),
       )
 
-      renderHook((, { wrapper: TimelineProviders }) => useTimelinePlayerSync())
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(999999)
     })

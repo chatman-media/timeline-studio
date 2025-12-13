@@ -346,8 +346,16 @@ describe("AnalysisTasksDropdown", () => {
 
       await waitFor(() => {
         const buttons = screen.getAllByRole("button")
-        // Должна быть только trigger кнопка
-        expect(buttons).toHaveLength(1)
+        // Должна быть trigger кнопка и кнопка очистки истории (Trash2)
+        // Но НЕ должно быть кнопки отмены (StopCircle) для завершенной задачи
+        expect(buttons.length).toBeGreaterThanOrEqual(1)
+
+        // Проверим, что нет кнопки отмены с StopCircle иконкой
+        const cancelButtons = buttons.filter((btn) => {
+          const svg = btn.querySelector('[data-icon="StopCircle"]')
+          return svg !== null
+        })
+        expect(cancelButtons).toHaveLength(0)
       })
     })
 

@@ -1,6 +1,16 @@
 import { act, renderHook } from "@testing-library/react"
 import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+
+// Мокаем app-providers чтобы избежать проблем с импортами
+vi.mock("@/config/providers/app-providers", () => ({
+  AppProviders: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+
+vi.mock("@/config/providers", () => ({
+  AppProviders: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+
 import { useTimelineProject } from "@/domains/video-editing"
 
 // Мокаем backend-sync ДО импорта компонентов

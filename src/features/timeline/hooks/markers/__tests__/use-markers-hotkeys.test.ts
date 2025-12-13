@@ -67,7 +67,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("регистрирует горячие клавиши для маркеров", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Проверяем, что shortcuts были зарегистрированы
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledTimes(8)
@@ -81,7 +81,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("добавляет маркер при нажатии M", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для add-marker
     const addMarkerAction = vi
@@ -102,7 +102,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("добавляет маркер главы при нажатии Shift+M", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для add-chapter-marker
     const addChapterAction = vi
@@ -123,7 +123,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("удаляет выбранный маркер при нажатии Delete", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для delete-marker
     const deleteAction = vi
@@ -141,7 +141,7 @@ describe("useMarkersHotkeys", () => {
   it("не удаляет маркер если ничего не выбрано", () => {
     mockUseTimeline.currentTime = 5 // Время где нет маркера
 
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     const deleteAction = vi
       .mocked(shortcutsRegistry)
@@ -155,7 +155,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("переходит к предыдущему маркеру при нажатии ; (semicolon)", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для previous-marker
     const prevMarkerAction = vi
@@ -171,7 +171,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("переходит к следующему маркеру при нажатии ' (apostrophe)", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для next-marker
     const nextMarkerAction = vi
@@ -187,7 +187,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("генерирует правильные имена для новых маркеров", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     const addMarkerAction = vi
       .mocked(shortcutsRegistry)
@@ -206,7 +206,7 @@ describe("useMarkersHotkeys", () => {
   })
 
   it("настраивает правильные опции для горячих клавиш", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useMarkerHotkeys())
+    renderHook(() => useMarkerHotkeys(), { wrapper: TimelineProviders })
 
     // Проверяем количество зарегистрированных shortcuts
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledTimes(8)

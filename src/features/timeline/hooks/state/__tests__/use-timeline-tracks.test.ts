@@ -7,7 +7,7 @@ import { useTimelineTracks } from "../use-timeline-tracks"
 describe("useTimelineTracks", () => {
   describe("Базовая функциональность", () => {
     it("должен возвращать аудио треки", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       expect(result.current.audioTracks).toHaveLength(2)
       expect(result.current.audioTracks[0]).toEqual({
@@ -25,7 +25,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("должен возвращать видео треки", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       expect(result.current.videoTracks).toHaveLength(1)
       expect(result.current.videoTracks[0]).toEqual({
@@ -36,7 +36,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("должен возвращать все треки в правильном порядке", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       expect(result.current.allTracks).toHaveLength(3)
       // Видео треки идут первыми
@@ -49,7 +49,7 @@ describe("useTimelineTracks", () => {
 
   describe("Мемоизация", () => {
     it("должен возвращать одинаковые ссылки при повторных рендерах", () => {
-      const { result, rerender } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result, rerender } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       const audioTracks1 = result.current.audioTracks
       const videoTracks1 = result.current.videoTracks
@@ -74,7 +74,7 @@ describe("useTimelineTracks", () => {
 
   describe("Типы треков", () => {
     it("должен правильно типизировать аудио треки", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       const stereoTrack = result.current.audioTracks.find((t) => t.type === "stereo")
       const monoTrack = result.current.audioTracks.find((t) => t.type === "mono")
@@ -86,7 +86,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("видео треки не должны иметь поле type", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       const videoTrack = result.current.videoTracks[0]
       expect(videoTrack).not.toHaveProperty("type")
@@ -95,7 +95,7 @@ describe("useTimelineTracks", () => {
 
   describe("Консистентность данных", () => {
     it("должен иметь уникальные ID для всех треков", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       const allIds = result.current.allTracks.map((t) => t.id)
       const uniqueIds = new Set(allIds)
@@ -104,7 +104,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("должен иметь соответствие между id и trackId", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       result.current.allTracks.forEach((track) => {
         expect(track.id).toBe(track.trackId)
@@ -112,7 +112,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("должен иметь корректные имена треков", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       expect(result.current.audioTracks[0].name).toMatch(/Audio Track \d/)
       expect(result.current.audioTracks[1].name).toMatch(/Audio Track \d/)
@@ -122,7 +122,7 @@ describe("useTimelineTracks", () => {
 
   describe("Структура возвращаемых данных", () => {
     it("должен возвращать объект с тремя полями", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       expect(result.current).toHaveProperty("audioTracks")
       expect(result.current).toHaveProperty("videoTracks")
@@ -131,7 +131,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("должен возвращать массивы для всех полей", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       expect(Array.isArray(result.current.audioTracks)).toBe(true)
       expect(Array.isArray(result.current.videoTracks)).toBe(true)
@@ -141,8 +141,8 @@ describe("useTimelineTracks", () => {
 
   describe("Edge cases", () => {
     it("должен корректно работать при множественных вызовах", () => {
-      const { result: result1 } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
-      const { result: result2 } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result: result1 } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
+      const { result: result2 } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       // Разные экземпляры хука должны возвращать одинаковые данные
       expect(result1.current.audioTracks).toEqual(result2.current.audioTracks)
@@ -151,7 +151,7 @@ describe("useTimelineTracks", () => {
     })
 
     it("должен быть готов к миграции на реальную реализацию", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineTracks())
+      const { result } = renderHook(() => useTimelineTracks(), { wrapper: TimelineProviders })
 
       // Проверяем, что структура данных подходит для будущей интеграции
       result.current.audioTracks.forEach((track) => {

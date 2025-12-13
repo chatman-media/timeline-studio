@@ -67,6 +67,7 @@ import "@/test/mocks/browser"
 import "@/test/mocks/libraries"
 import "@/test/mocks/libraries/lucide-react"
 import "@/test/mocks/libraries/react-hotkeys-hook"
+import "@/test/mocks/system-integration"
 
 // Mock Tauri Logger
 vi.mock("@/lib/tauri-logger", () => ({

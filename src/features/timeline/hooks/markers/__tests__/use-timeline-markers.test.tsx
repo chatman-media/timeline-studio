@@ -46,7 +46,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("возвращает правильный интерфейс", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     expect(result.current).toHaveProperty("markers")
     expect(result.current).toHaveProperty("addMarker")
@@ -59,7 +59,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("возвращает маркеры с вычисленными свойствами", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     expect(result.current.markers).toHaveLength(2)
     expect(result.current.markers[0]).toMatchObject({
@@ -73,7 +73,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("добавляет новый маркер", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.addMarker({
@@ -95,7 +95,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("генерирует уникальный ID для нового маркера", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     const markerData = {
       time: 15,
@@ -120,7 +120,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("обновляет существующий маркер", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.updateMarker("marker-1", {
@@ -139,7 +139,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("удаляет маркер", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.removeMarker("marker-1")
@@ -156,14 +156,14 @@ describe("useTimelineMarkers", () => {
   })
 
   it("возвращает все типы маркеров", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     const types = result.current.getMarkerTypes()
     expect(types).toEqual(["chapter", "note"])
   })
 
   it("фильтрует маркеры по типу", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     const chapterMarkers = result.current.getMarkersByType("chapter")
     expect(chapterMarkers).toHaveLength(1)
@@ -175,7 +175,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("экспортирует маркеры в формате EDL", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     const edl = result.current.exportMarkers("edl")
 
@@ -185,7 +185,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("экспортирует маркеры в формате CSV", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     const csv = result.current.exportMarkers("csv")
 
@@ -195,7 +195,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("экспортирует маркеры в формате JSON", () => {
-    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
+    const { result } = renderHook(() => useTimelineMarkers(), { wrapper: TimelineProviders })
 
     const json = result.current.exportMarkers("json")
     const parsed = JSON.parse(json)

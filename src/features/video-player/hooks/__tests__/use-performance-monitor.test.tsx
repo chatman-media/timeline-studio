@@ -15,12 +15,12 @@ const mockReset = vi.fn()
 
 vi.mock("../../services/performance-monitor", () => ({
   globalPerformanceMonitor: {
-    getMetrics: () => mockGetMetrics(),
-    getSyncRecords: () => mockGetSyncRecords(),
-    getCommandTypeStats: () => mockGetCommandTypeStats(),
-    getHealthStatus: () => mockGetHealthStatus(),
-    getSummaryReport: () => mockGetSummaryReport(),
-    reset: () => mockReset(),
+    getMetrics: mockGetMetrics,
+    getSyncRecords: mockGetSyncRecords,
+    getCommandTypeStats: mockGetCommandTypeStats,
+    getHealthStatus: mockGetHealthStatus,
+    getSummaryReport: mockGetSummaryReport,
+    reset: mockReset,
   },
 }))
 
@@ -57,10 +57,18 @@ describe("usePerformanceMonitor", () => {
 
   const mockReport = "=== Video Player Performance Report ==="
 
+  // Устанавливаем моки сразу при загрузке модуля
+  mockGetMetrics.mockReturnValue(mockMetrics)
+  mockGetSyncRecords.mockReturnValue(mockSyncRecords)
+  mockGetCommandTypeStats.mockReturnValue(mockCommandStats)
+  mockGetHealthStatus.mockReturnValue(mockHealth)
+  mockGetSummaryReport.mockReturnValue(mockReport)
+
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
 
+    // Переустанавливаем моки после clearAllMocks
     mockGetMetrics.mockReturnValue(mockMetrics)
     mockGetSyncRecords.mockReturnValue(mockSyncRecords)
     mockGetCommandTypeStats.mockReturnValue(mockCommandStats)

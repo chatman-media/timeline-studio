@@ -43,7 +43,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("регистрирует горячие клавиши", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Проверяем, что shortcuts были зарегистрированы
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledWith("enable-speed-ramping", expect.any(Function))
@@ -60,7 +60,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("включает speed ramping при нажатии Cmd+Shift+R", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для enable-speed-ramping
     const enableAction = vi
@@ -84,7 +84,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("сбрасывает к нормальной скорости при нажатии Cmd+Alt+R", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для reset-speed
     const resetAction = vi
@@ -101,7 +101,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("устанавливает скорость 0.5x при нажатии клавиши 5", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для speed-half
     const slowAction = vi
@@ -118,7 +118,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("устанавливает скорость 2x при нажатии клавиши 2", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для speed-double
     const fastAction = vi
@@ -135,7 +135,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("устанавливает скорость 4x при нажатии клавиши 4", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для speed-quad
     const veryFastAction = vi
@@ -155,7 +155,7 @@ describe("useSpeedRampingHotkeys", () => {
     // Временно очищаем выбранные клипы
     mockUseTimeline.selectedClipIds = []
 
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Получаем action для enable-speed-ramping
     const enableAction = vi
@@ -175,7 +175,7 @@ describe("useSpeedRampingHotkeys", () => {
   })
 
   it("настраивает правильные опции для горячих клавиш", () => {
-    renderHook((, { wrapper: TimelineProviders }) => useSpeedRampingHotkeys())
+    renderHook(() => useSpeedRampingHotkeys(), { wrapper: TimelineProviders })
 
     // Проверяем что shortcuts были зарегистрированы
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledTimes(6)

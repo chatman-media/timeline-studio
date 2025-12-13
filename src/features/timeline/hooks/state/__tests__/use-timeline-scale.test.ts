@@ -7,91 +7,91 @@ import { useTimelineScale } from "../use-timeline-scale"
 describe("useTimelineScale", () => {
   describe("Time Scale Calculations", () => {
     it("should calculate correct time steps for very short duration (≤5s)", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(3, 0, 3, 1))
+      const { result } = renderHook(() => useTimelineScale(3, 0, 3, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(1)
       expect(result.current.subStep).toBe(0.2)
     })
 
     it("should calculate correct time steps for short duration (≤10s)", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(8, 0, 8, 1))
+      const { result } = renderHook(() => useTimelineScale(8, 0, 8, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(2)
       expect(result.current.subStep).toBe(0.5)
     })
 
     it("should calculate correct time steps for medium duration (≤30s)", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(25, 0, 25, 1))
+      const { result } = renderHook(() => useTimelineScale(25, 0, 25, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(5)
       expect(result.current.subStep).toBe(1)
     })
 
     it("should calculate correct time steps for 1 minute duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(60, 0, 60, 1))
+      const { result } = renderHook(() => useTimelineScale(60, 0, 60, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(10)
       expect(result.current.subStep).toBe(2)
     })
 
     it("should calculate correct time steps for 2 minute duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(120, 0, 120, 1))
+      const { result } = renderHook(() => useTimelineScale(120, 0, 120, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(20)
       expect(result.current.subStep).toBe(5)
     })
 
     it("should calculate correct time steps for 5 minute duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(300, 0, 300, 1))
+      const { result } = renderHook(() => useTimelineScale(300, 0, 300, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(60)
       expect(result.current.subStep).toBe(10)
     })
 
     it("should calculate correct time steps for 10 minute duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(600, 0, 600, 1))
+      const { result } = renderHook(() => useTimelineScale(600, 0, 600, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(120)
       expect(result.current.subStep).toBe(30)
     })
 
     it("should calculate correct time steps for 30 minute duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(1800, 0, 1800, 1))
+      const { result } = renderHook(() => useTimelineScale(1800, 0, 1800, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(300)
       expect(result.current.subStep).toBe(60)
     })
 
     it("should calculate correct time steps for 1 hour duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(3600, 0, 3600, 1))
+      const { result } = renderHook(() => useTimelineScale(3600, 0, 3600, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(600)
       expect(result.current.subStep).toBe(120)
     })
 
     it("should calculate correct time steps for 2 hour duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(7200, 0, 7200, 1))
+      const { result } = renderHook(() => useTimelineScale(7200, 0, 7200, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(1200)
       expect(result.current.subStep).toBe(300)
     })
 
     it("should calculate correct time steps for 4 hour duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(14400, 0, 14400, 1))
+      const { result } = renderHook(() => useTimelineScale(14400, 0, 14400, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(1800)
       expect(result.current.subStep).toBe(600)
     })
 
     it("should calculate correct time steps for 12 hour duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(43200, 0, 43200, 1))
+      const { result } = renderHook(() => useTimelineScale(43200, 0, 43200, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(3600)
       expect(result.current.subStep).toBe(900)
     })
 
     it("should calculate correct time steps for very long duration (>12h)", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(86400, 0, 86400, 1))
+      const { result } = renderHook(() => useTimelineScale(86400, 0, 86400, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(7200)
       expect(result.current.subStep).toBe(1800)
@@ -100,8 +100,8 @@ describe("useTimelineScale", () => {
 
   describe("Scale Factor Effects", () => {
     it("should adjust time steps when scale > 1 (zoom in)", () => {
-      const { result: normalResult } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(60, 0, 60, 1))
-      const { result: zoomedResult } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(60, 0, 60, 2))
+      const { result: normalResult } = renderHook(() => useTimelineScale(60, 0, 60, 1), { wrapper: TimelineProviders })
+      const { result: zoomedResult } = renderHook(() => useTimelineScale(60, 0, 60, 2), { wrapper: TimelineProviders })
 
       // With scale = 2, the effective duration is 30s, so we get different time steps
       expect(normalResult.current.timeStep).toBe(10) // 60s duration
@@ -109,8 +109,8 @@ describe("useTimelineScale", () => {
     })
 
     it("should adjust time steps when scale < 1 (zoom out)", () => {
-      const { result: normalResult } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(30, 0, 30, 1))
-      const { result: zoomedOutResult } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(30, 0, 30, 0.5))
+      const { result: normalResult } = renderHook(() => useTimelineScale(30, 0, 30, 1), { wrapper: TimelineProviders })
+      const { result: zoomedOutResult } = renderHook(() => useTimelineScale(30, 0, 30, 0.5), { wrapper: TimelineProviders })
 
       // With scale = 0.5, the effective duration is 60s, so we get different time steps
       expect(normalResult.current.timeStep).toBe(5) // 30s duration
@@ -118,8 +118,8 @@ describe("useTimelineScale", () => {
     })
 
     it("should handle edge case scale values", () => {
-      const { result: veryHighScale } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(60, 0, 60, 10))
-      const { result: veryLowScale } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(60, 0, 60, 0.1))
+      const { result: veryHighScale } = renderHook(() => useTimelineScale(60, 0, 60, 10), { wrapper: TimelineProviders })
+      const { result: veryLowScale } = renderHook(() => useTimelineScale(60, 0, 60, 0.1), { wrapper: TimelineProviders })
 
       // With scale 10, effective duration is 6s, should get 2s step
       expect(veryHighScale.current.timeStep).toBe(2)
@@ -130,7 +130,7 @@ describe("useTimelineScale", () => {
 
   describe("Adjusted Range Calculations", () => {
     it("should calculate adjusted range with padding for normal scale", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 10, 110, 1))
+      const { result } = renderHook(() => useTimelineScale(100, 10, 110, 1), { wrapper: TimelineProviders })
 
       const { adjustedRange } = result.current
       const timeRange = 110 - 10 // 100
@@ -142,7 +142,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should calculate adjusted range with scale > 1 (zoom in)", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 10, 110, 2))
+      const { result } = renderHook(() => useTimelineScale(100, 10, 110, 2), { wrapper: TimelineProviders })
 
       const { adjustedRange } = result.current
       const timeRange = 110 - 10 // 100
@@ -155,7 +155,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should calculate adjusted range with scale < 1 (zoom out)", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 10, 110, 0.5))
+      const { result } = renderHook(() => useTimelineScale(100, 10, 110, 0.5), { wrapper: TimelineProviders })
 
       const { adjustedRange } = result.current
       const timeRange = 110 - 10 // 100
@@ -168,7 +168,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should handle edge case with zero duration", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(0, 10, 10, 1))
+      const { result } = renderHook(() => useTimelineScale(0, 10, 10, 1), { wrapper: TimelineProviders })
 
       const { adjustedRange } = result.current
 
@@ -181,8 +181,8 @@ describe("useTimelineScale", () => {
       const startTime = 100
       const endTime = 200
 
-      const { result: normalScale } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, startTime, endTime, 1))
-      const { result: zoomedScale } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, startTime, endTime, 2))
+      const { result: normalScale } = renderHook(() => useTimelineScale(100, startTime, endTime, 1), { wrapper: TimelineProviders })
+      const { result: zoomedScale } = renderHook(() => useTimelineScale(100, startTime, endTime, 2), { wrapper: TimelineProviders })
 
       // Both should have similar start times (with padding adjustment)
       const normalPadding = (endTime - startTime) * 0.03
@@ -195,7 +195,7 @@ describe("useTimelineScale", () => {
 
   describe("Time to Position Conversion", () => {
     it("should convert time to position correctly", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 0, 100, 1))
+      const { result } = renderHook(() => useTimelineScale(100, 0, 100, 1), { wrapper: TimelineProviders })
 
       const { timeToPosition, adjustedRange } = result.current
 
@@ -211,7 +211,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should handle edge cases in time to position conversion", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 0, 100, 1))
+      const { result } = renderHook(() => useTimelineScale(100, 0, 100, 1), { wrapper: TimelineProviders })
 
       const { timeToPosition, adjustedRange } = result.current
 
@@ -223,7 +223,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should handle zero duration in time to position conversion", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(0, 10, 10, 1))
+      const { result } = renderHook(() => useTimelineScale(0, 10, 10, 1), { wrapper: TimelineProviders })
 
       const { timeToPosition } = result.current
 
@@ -236,7 +236,7 @@ describe("useTimelineScale", () => {
 
   describe("Position to Time Conversion", () => {
     it("should convert position to time correctly", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 0, 100, 1))
+      const { result } = renderHook(() => useTimelineScale(100, 0, 100, 1), { wrapper: TimelineProviders })
 
       const { positionToTime, adjustedRange } = result.current
 
@@ -252,7 +252,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should handle out-of-bounds positions", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 0, 100, 1))
+      const { result } = renderHook(() => useTimelineScale(100, 0, 100, 1), { wrapper: TimelineProviders })
 
       const { positionToTime, adjustedRange } = result.current
 
@@ -264,7 +264,7 @@ describe("useTimelineScale", () => {
     })
 
     it("should be inverse of timeToPosition", () => {
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(100, 0, 100, 1))
+      const { result } = renderHook(() => useTimelineScale(100, 0, 100, 1), { wrapper: TimelineProviders })
 
       const { timeToPosition, positionToTime, adjustedRange } = result.current
 
@@ -328,7 +328,7 @@ describe("useTimelineScale", () => {
   describe("Real-world Scenarios", () => {
     it("should handle typical video timeline (5 minutes)", () => {
       const duration = 300 // 5 minutes
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(duration, 0, duration, 1))
+      const { result } = renderHook(() => useTimelineScale(duration, 0, duration, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(60) // 1-minute steps
       expect(result.current.subStep).toBe(10) // 10-second substeps
@@ -342,7 +342,7 @@ describe("useTimelineScale", () => {
     it("should handle zoomed-in short clip (10 seconds, 4x zoom)", () => {
       const duration = 10
       const scale = 4
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(duration, 0, duration, scale))
+      const { result } = renderHook(() => useTimelineScale(duration, 0, duration, scale), { wrapper: TimelineProviders })
 
       // Effective duration is 2.5s, so should use fine-grained steps
       expect(result.current.timeStep).toBe(1) // 1-second steps
@@ -355,7 +355,7 @@ describe("useTimelineScale", () => {
     it("should handle long documentary timeline (2 hours, zoomed out)", () => {
       const duration = 7200 // 2 hours
       const scale = 0.1 // Zoomed way out
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(duration, 0, duration, scale))
+      const { result } = renderHook(() => useTimelineScale(duration, 0, duration, scale), { wrapper: TimelineProviders })
 
       // Effective duration is 20 hours, so should use very coarse steps
       expect(result.current.timeStep).toBe(7200) // 2-hour steps
@@ -367,7 +367,7 @@ describe("useTimelineScale", () => {
       const endTime = 1641081600 // Jan 2, 2022 00:00:00 UTC
       const duration = endTime - startTime // 24 hours
 
-      const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineScale(duration, startTime, endTime, 1))
+      const { result } = renderHook(() => useTimelineScale(duration, startTime, endTime, 1), { wrapper: TimelineProviders })
 
       expect(result.current.timeStep).toBe(7200) // 2-hour steps for 24h duration
       expect(result.current.adjustedRange.startTime).toBeLessThan(startTime)
