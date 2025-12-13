@@ -71,6 +71,7 @@ export function JLCutDragHandle({ clip, cutType, pixelsPerSecond, onOffsetChange
 
   return (
     <div
+      data-testid="jl-cut-handle"
       className={cn(
         "absolute top-0 h-full w-2 cursor-ew-resize",
         "hover:bg-primary/20 transition-colors",

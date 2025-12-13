@@ -8,7 +8,7 @@ import { JLCutDragHandle } from "../jl-cut-drag-handle"
 const mockCreateJCut = vi.fn()
 const mockCreateLCut = vi.fn()
 
-vi.mock("../../../hooks/use-jl-cuts", () => ({
+vi.mock("../../../hooks/editing/use-jl-cuts", () => ({
   useJLCuts: () => ({
     createJCut: mockCreateJCut,
     createLCut: mockCreateLCut,
@@ -63,24 +63,24 @@ describe("JLCutDragHandle", () => {
   })
 
   it("should render drag handle", () => {
-    const { container } = render(<JLCutDragHandle {...defaultProps} />)
+    const { getByTestId } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-    const handle = container.firstChild as HTMLElement
+    const handle = getByTestId("jl-cut-handle")
     expect(handle).toBeInTheDocument()
     expect(handle).toHaveClass("cursor-ew-resize")
   })
 
   describe("J-Cut positioning and styling", () => {
     it("should position handle for J-Cut", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
       expect(handle).toHaveClass("left-0 -translate-x-full")
       expect(handle).toHaveStyle({ marginLeft: "200px" }) // 2 * 100 pixels
     })
 
     it("should position visual indicator for J-Cut", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
       const visualHandle = container.querySelector("[class*='bg-primary/50']")
       expect(visualHandle).toBeInTheDocument()
@@ -95,15 +95,15 @@ describe("JLCutDragHandle", () => {
     }
 
     it("should position handle for L-Cut", () => {
-      const { container } = render(<JLCutDragHandle {...lCutProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...lCutProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
       expect(handle).toHaveClass("right-0 translate-x-full")
       expect(handle).toHaveStyle({ marginRight: "150px" }) // Math.abs(-1.5) * 100 pixels
     })
 
     it("should position visual indicator for L-Cut", () => {
-      const { container } = render(<JLCutDragHandle {...lCutProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...lCutProps} />)
 
       const visualHandle = container.querySelector("[class*='bg-primary/50']")
       expect(visualHandle).toBeInTheDocument()
@@ -113,9 +113,9 @@ describe("JLCutDragHandle", () => {
   describe("Mouse interaction", () => {
     it("should handle mousedown event", () => {
       const onOffsetChange = vi.fn()
-      const { container } = render(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -126,9 +126,9 @@ describe("JLCutDragHandle", () => {
     })
 
     it("should show tooltip during drag", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -141,9 +141,9 @@ describe("JLCutDragHandle", () => {
     })
 
     it("should position tooltip correctly for J-Cut", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -160,9 +160,9 @@ describe("JLCutDragHandle", () => {
         cutType: "l-cut" as const,
       }
 
-      const { container } = render(<JLCutDragHandle {...lCutProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...lCutProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -173,9 +173,9 @@ describe("JLCutDragHandle", () => {
     })
 
     it("should call createJCut for J-Cut during drag", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -200,9 +200,9 @@ describe("JLCutDragHandle", () => {
         cutType: "l-cut" as const,
       }
 
-      const { container } = render(<JLCutDragHandle {...lCutProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...lCutProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -222,9 +222,9 @@ describe("JLCutDragHandle", () => {
 
     it("should call onOffsetChange callback during drag", () => {
       const onOffsetChange = vi.fn()
-      const { container } = render(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -242,9 +242,9 @@ describe("JLCutDragHandle", () => {
 
     it("should constrain offset to minimum 0.1s", () => {
       const onOffsetChange = vi.fn()
-      const { container } = render(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -264,9 +264,9 @@ describe("JLCutDragHandle", () => {
 
     it("should constrain offset to maximum 5s", () => {
       const onOffsetChange = vi.fn()
-      const { container } = render(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -285,9 +285,9 @@ describe("JLCutDragHandle", () => {
     })
 
     it("should stop dragging on mouseup", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -302,9 +302,9 @@ describe("JLCutDragHandle", () => {
     })
 
     it("should prevent default and stop propagation on mousedown", () => {
-      const { container } = render(<JLCutDragHandle {...defaultProps} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       const mouseDownEvent = new MouseEvent("mousedown", {
         clientX: 100,
@@ -329,9 +329,9 @@ describe("JLCutDragHandle", () => {
         clip: createMockClip({ audioOffset: undefined }),
       }
 
-      const { container } = render(<JLCutDragHandle {...props} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...props} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
       expect(handle).toHaveStyle({ marginLeft: "0px" })
     })
 
@@ -341,9 +341,9 @@ describe("JLCutDragHandle", () => {
         clip: createMockClip({ audioOffset: 0 }),
       }
 
-      const { container } = render(<JLCutDragHandle {...props} />)
+      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...props} />)
 
-      const handle = container.firstChild as HTMLElement
+      const handle = getByTestId("jl-cut-handle")
 
       fireEvent.mouseDown(handle, {
         clientX: 100,
@@ -356,16 +356,16 @@ describe("JLCutDragHandle", () => {
 
   it("should apply custom className", () => {
     const customClass = "custom-drag-handle"
-    const { container } = render(<JLCutDragHandle {...defaultProps} className={customClass} />)
+    const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} className={customClass} />)
 
-    const handle = container.firstChild as HTMLElement
+    const handle = getByTestId("jl-cut-handle")
     expect(handle).toHaveClass(customClass)
   })
 
   it("should have proper hover styling", () => {
-    const { container } = render(<JLCutDragHandle {...defaultProps} />)
+    const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} />)
 
-    const handle = container.firstChild as HTMLElement
+    const handle = getByTestId("jl-cut-handle")
     expect(handle).toHaveClass("cursor-ew-resize")
 
     const visualHandle = container.querySelector("[class*='bg-primary/50']")
