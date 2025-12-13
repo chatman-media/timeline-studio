@@ -470,33 +470,35 @@ describe("throttleCommand", () => {
 })
 
 describe("Integration Tests", () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
   it("should work with debounceCommand and CommandQueue", async () => {
     const queue = new CommandQueue()
     const fn = vi.fn(async (value: string) => value)
     const debounced = debounceCommand(fn, 50)
 
-    // Enqueue all commands
-    const promise1 = queue.enqueue(() => debounced("call1"))
-    const promise2 = queue.enqueue(() => debounced("call2"))
-    const promise3 = queue.enqueue(() => debounced("call3"))
+    // Enqueue a command that calls debounced multiple times rapidly
+    // This simulates a real scenario where one queued operation
+    // makes multiple rapid calls to a debounced function
+    const promise = queue.enqueue(async () => {
+      // Call debounced multiple times in rapid succession
+      const p1 = debounced("call1")
+      const p2 = debounced("call2")
+      const p3 = debounced("call3")
 
-    // Run all timers to completion - this will execute all debounce timers
-    await vi.runAllTimersAsync()
+      // Wait for debounce to complete
+      await new Promise((resolve) => setTimeout(resolve, 60))
 
-    // Wait for all promises to resolve
-    await Promise.all([promise1, promise2, promise3])
+      // All promises should resolve to the last call's result
+      const results = await Promise.all([p1, p2, p3])
+      return results
+    })
+
+    const results = await promise
 
     // Only last call should execute due to debounce
     expect(fn).toHaveBeenCalledTimes(1)
     expect(fn).toHaveBeenCalledWith("call3")
+    // All promises get the same result
+    expect(results).toEqual(["call3", "call3", "call3"])
   })
 
   it("should work with throttleCommand and CommandQueue", async () => {
@@ -507,8 +509,8 @@ describe("Integration Tests", () => {
     await queue.enqueue(() => throttled(1))
     await queue.enqueue(() => throttled(2))
 
-    // Advance past throttle period
-    await vi.advanceTimersByTimeAsync(60)
+    // Wait for throttle period
+    await new Promise((resolve) => setTimeout(resolve, 60))
 
     await queue.enqueue(() => throttled(3))
 
