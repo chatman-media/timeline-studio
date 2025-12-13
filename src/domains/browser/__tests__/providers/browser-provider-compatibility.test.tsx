@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Browser Provider Backwards Compatibility Tests
  *
  * Tests for backwards compatibility features:

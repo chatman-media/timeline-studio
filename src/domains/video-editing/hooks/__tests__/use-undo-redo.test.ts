@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use Undo/Redo Hook Tests
  *
  * Comprehensive tests for the undo/redo system hook

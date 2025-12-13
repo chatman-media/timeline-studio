@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use Favorites Hook Tests
  *
  * Тесты для хука useFavorites

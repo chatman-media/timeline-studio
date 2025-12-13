@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Тесты для AppInitProvider
  *
  * Проверяет инициализацию адаптеров в зависимости от окружения (Desktop/Browser)

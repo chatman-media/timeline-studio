@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for useAnalysisStorage hook
  *
  * Тесты для хука работы с хранилищем AI анализов

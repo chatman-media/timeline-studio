@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * AudioWaveform Component Tests
  *
  * Тесты для компонента AudioWaveform и AudioWaveformCompact

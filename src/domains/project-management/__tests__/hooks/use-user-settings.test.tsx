@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use User Settings Hook Tests
  *
  * Тесты для хука useUserSettings из domains/project-management

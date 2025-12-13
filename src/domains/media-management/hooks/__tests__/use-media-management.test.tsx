@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * useMediaManagement Hook Tests
  *
  * Тесты для хука useMediaManagement

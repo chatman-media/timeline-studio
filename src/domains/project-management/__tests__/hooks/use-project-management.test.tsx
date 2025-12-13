@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use Project Management Hook Tests
  *
  * Тесты для хука useProjectManagement

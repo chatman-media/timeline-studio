@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * useMediaMetadata Hook Tests
  *
  * Тесты для хука useMediaMetadata

@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Тесты для ChatProvider
  * Проверяет асинхронные операции, race conditions, error handling
  */

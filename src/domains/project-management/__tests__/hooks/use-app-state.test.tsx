@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use App State Hook Tests
  *
  * Тесты для хука useAppState

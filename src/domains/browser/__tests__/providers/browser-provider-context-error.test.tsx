@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Browser Provider Context Error Tests
  *
  * Tests for error handling when hook is used outside provider

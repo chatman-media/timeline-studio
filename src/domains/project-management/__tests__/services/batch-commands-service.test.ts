@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for batch command utilities
  * Tests builder pattern, batch operations, and utility functions
  */

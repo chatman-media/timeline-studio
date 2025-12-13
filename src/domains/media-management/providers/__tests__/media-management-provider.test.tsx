@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * MediaManagementProvider Integration Tests
  *
  * Интеграционные тесты для MediaManagementProvider

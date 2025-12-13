@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"

@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Project Management Provider Tests
  *
  * Тесты для провайдеров проектного управления

@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Browser Provider Edge Cases Tests
  *
  * Tests for edge cases and boundary conditions:

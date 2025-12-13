@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Browser Domain Integration Tests
  *
  * End-to-end integration tests covering complete workflows:

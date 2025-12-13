@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Тесты для useAIDirectorEvents Hook
  */
 import { renderHook, waitFor } from "@testing-library/react"

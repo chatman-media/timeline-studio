@@ -1,4 +1,5 @@
 /**
+ * @vitest-environment jsdom
  * Tests for Home page component
  *
  * Note: Home page is a simple wrapper that renders MediaStudio.

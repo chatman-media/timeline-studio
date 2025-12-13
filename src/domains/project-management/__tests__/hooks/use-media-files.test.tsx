@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use Media Files Hook Tests
  *
  * Тесты для хука useMediaFiles

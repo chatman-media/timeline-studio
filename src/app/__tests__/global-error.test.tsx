@@ -1,4 +1,5 @@
 /**
+ * @vitest-environment jsdom
  * Tests for GlobalError component
  */
 

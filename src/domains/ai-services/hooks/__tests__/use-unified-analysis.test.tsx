@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * useUnifiedAnalysis Hook Tests
  *
  * Тесты для хука работы с Unified Orchestrator

@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Use Recent Projects Hook Tests
  *
  * Тесты для хука useRecentProjects

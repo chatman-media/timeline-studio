@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * useFileOperations Hook Tests
  *
  * Тесты для хука useFileOperations

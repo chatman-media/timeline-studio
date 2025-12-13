@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Browser Provider Tests
  *
  * Comprehensive tests for BrowserProvider including:

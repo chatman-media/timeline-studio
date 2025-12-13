@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for useAIDirectorEvents hooks
  *
  * Тесты для хуков подписки на события AI Director

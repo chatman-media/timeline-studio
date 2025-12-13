@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for useVideoEditing Hook
  *
  * Comprehensive tests for the combined video editing hook with

@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Edge Cases тесты для AppInitProvider
  *
  * Проверяет граничные случаи и нестандартные сценарии

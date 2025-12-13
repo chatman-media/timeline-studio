@@ -1,4 +1,5 @@
 /**
+ * @vitest-environment jsdom
  * Tests for RootLayout metadata
  *
  * Note: Full component testing is done in E2E tests due to PostCSS requirements.
