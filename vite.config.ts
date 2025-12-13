@@ -1,31 +1,31 @@
-import path from "node:path"
-// import { codecovVitePlugin } from "@codecov/vite-plugin"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import path from "node:path";
+import { codecovVitePlugin } from "@codecov/vite-plugin";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    // Codecov bundle analysis plugin - DISABLED
-    // codecovVitePlugin({
-    //   enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-    //   bundleName: "timeline-studio",
-    //   uploadToken: process.env.CODECOV_TOKEN,
-    //   gitService: "github",
-    //   ...(process.env.CI && {
-    //     uploadOverrides: {
-    //       // Override the commit SHA if needed
-    //       sha: process.env.GITHUB_SHA,
-    //       // Override the branch name if needed
-    //       branch: process.env.GITHUB_REF_NAME?.replace("refs/heads/", ""),
-    //       // Add PR number if available
-    //       pr: process.env.GITHUB_PR_NUMBER,
-    //       // Add build ID
-    //       build: process.env.GITHUB_RUN_ID,
-    //     },
-    //   }),
-    // }),
+    // Codecov bundle analysis plugin
+    codecovVitePlugin({
+      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+      bundleName: "timeline-studio",
+      uploadToken: process.env.CODECOV_TOKEN,
+      gitService: "github",
+      ...(process.env.CI && {
+        uploadOverrides: {
+          // Override the commit SHA if needed
+          sha: process.env.GITHUB_SHA,
+          // Override the branch name if needed
+          branch: process.env.GITHUB_REF_NAME?.replace("refs/heads/", ""),
+          // Add PR number if available
+          pr: process.env.GITHUB_PR_NUMBER,
+          // Add build ID
+          build: process.env.GITHUB_RUN_ID,
+        },
+      }),
+    }),
   ],
   resolve: {
     alias: {
@@ -48,7 +48,11 @@ export default defineConfig({
           // State management
           state: ["xstate", "@xstate/react"],
           // UI components
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
+          ui: [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-select",
+          ],
           // Tauri APIs
           tauri: [
             "@tauri-apps/api",
@@ -70,4 +74,4 @@ export default defineConfig({
       },
     },
   },
-})
+});
