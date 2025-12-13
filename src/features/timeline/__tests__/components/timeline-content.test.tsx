@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"

@@ -175,40 +175,40 @@ export const timelineHookMocks = {
   useClipEditing: mockUseClipEditing,
 }
 
-// Set up vi.mock calls
-vi.mock("../hooks/use-timeline", () => ({
+// Set up vi.mock calls - updated paths after hooks reorganization
+vi.mock("../hooks/state/use-timeline", () => ({
   useTimeline: mockUseTimeline,
 }))
 
-vi.mock("../hooks/use-timeline-selection", () => ({
+vi.mock("../hooks/state/use-timeline-selection", () => ({
   useTimelineSelection: mockUseTimelineSelection,
 }))
 
-vi.mock("../hooks/use-timeline-playback", () => ({
+vi.mock("../hooks/state/use-timeline-playback", () => ({
   useTimelinePlayback: mockUseTimelinePlayback,
 }))
 
-vi.mock("../hooks/use-timeline-zoom", () => ({
+vi.mock("../hooks/state/use-timeline-zoom", () => ({
   useTimelineZoom: mockUseTimelineZoom,
 }))
 
-vi.mock("../hooks/use-timeline-undo", () => ({
+vi.mock("../hooks/state/use-timeline-undo", () => ({
   useTimelineUndo: mockUseTimelineUndo,
 }))
 
-vi.mock("../hooks/use-clips", () => ({
+vi.mock("../hooks/clips/use-clips", () => ({
   useClips: mockUseClips,
 }))
 
-vi.mock("../hooks/use-tracks", () => ({
+vi.mock("../hooks/state/use-tracks", () => ({
   useTracks: mockUseTracks,
 }))
 
-vi.mock("../hooks/use-drag-drop-timeline", () => ({
+vi.mock("../hooks/drag-drop/use-drag-drop-timeline", () => ({
   useDragDropTimeline: mockUseDragDropTimeline,
 }))
 
-vi.mock("../hooks/use-edit-mode", () => ({
+vi.mock("../hooks/editing/use-edit-mode", () => ({
   useEditModeContext: mockUseEditModeContext,
   EditModeProvider: ({ children }: { children: React.ReactNode }) => children,
 }))

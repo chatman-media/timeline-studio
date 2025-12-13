@@ -2,13 +2,14 @@
  * Тесты для Track компонента
  */
 
-import { render, screen } from "@testing-library/react"
+import { screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
 // Import mocks before components
 import "@/test/mocks/dnd-kit"
 import "../../__mocks__/hooks"
 
+import { renderWithTimeline } from "@/test/test-utils"
 import { TrackComponent as Track } from "../../components/track/track"
 
 // Мокаем данные трека
@@ -43,12 +44,12 @@ describe("Track Component", () => {
 
     it("should render without errors", () => {
       expect(() => {
-        render(<Track track={mockTrack} />)
+        renderWithTimeline(<Track track={mockTrack} />)
       }).not.toThrow()
     })
 
     it("should render with track test id", () => {
-      render(<Track track={mockTrack} />)
+      renderWithTimeline(<Track track={mockTrack} />)
 
       const trackElement = screen.getByTestId("timeline-track")
       expect(trackElement).toBeInTheDocument()
@@ -57,7 +58,7 @@ describe("Track Component", () => {
 
   describe("Track Properties", () => {
     it("should display track name", () => {
-      render(<Track track={mockTrack} />)
+      renderWithTimeline(<Track track={mockTrack} />)
 
       expect(screen.getByText("Test Track")).toBeInTheDocument()
     })
@@ -66,10 +67,12 @@ describe("Track Component", () => {
       const videoTrack = { ...mockTrack, type: "video" as const }
       const audioTrack = { ...mockTrack, type: "audio" as const, name: "Audio Track" }
 
-      const { rerender } = render(<Track track={videoTrack} />)
+      const { rerender } = renderWithTimeline(<Track track={videoTrack} />)
       expect(screen.getByTestId("timeline-track")).toBeInTheDocument()
 
-      rerender(<Track track={audioTrack} />)
+      rerender(
+        <Track track={audioTrack} />
+      )
       expect(screen.getByText("Audio Track")).toBeInTheDocument()
     })
 
@@ -77,10 +80,12 @@ describe("Track Component", () => {
       const mutedTrack = { ...mockTrack, isMuted: true, name: "Muted Track" }
       const lockedTrack = { ...mockTrack, isLocked: true, name: "Locked Track" }
 
-      const { rerender } = render(<Track track={mutedTrack} />)
+      const { rerender } = renderWithTimeline(<Track track={mutedTrack} />)
       expect(screen.getByText("Muted Track")).toBeInTheDocument()
 
-      rerender(<Track track={lockedTrack} />)
+      rerender(
+        <Track track={lockedTrack} />
+      )
       expect(screen.getByText("Locked Track")).toBeInTheDocument()
     })
   })
@@ -88,7 +93,7 @@ describe("Track Component", () => {
   describe("Track Interactions", () => {
     it("should handle track selection", () => {
       const onSelect = vi.fn()
-      render(<Track track={mockTrack} onSelect={onSelect} />)
+      renderWithTimeline(<Track track={mockTrack} onSelect={onSelect} />)
 
       const trackElement = screen.getByTestId("timeline-track")
       expect(trackElement).toBeInTheDocument()
@@ -100,7 +105,7 @@ describe("Track Component", () => {
 
     it("should handle track lock toggle", () => {
       const onUpdate = vi.fn()
-      render(<Track track={mockTrack} onUpdate={onUpdate} />)
+      renderWithTimeline(<Track track={mockTrack} onUpdate={onUpdate} />)
 
       // Ищем кнопку lock
       const lockButton = screen.getByTestId("track-lock-button")
@@ -113,7 +118,7 @@ describe("Track Component", () => {
     it("should handle track mute toggle for audio tracks", () => {
       const audioTrack = { ...mockTrack, type: "audio" as const }
       const onUpdate = vi.fn()
-      render(<Track track={audioTrack} onUpdate={onUpdate} />)
+      renderWithTimeline(<Track track={audioTrack} onUpdate={onUpdate} />)
 
       // Ищем кнопку mute (только для аудио треков)
       const muteButton = screen.getByTestId("track-mute-button")
@@ -124,7 +129,7 @@ describe("Track Component", () => {
     })
 
     it("should not show mute button for video tracks", () => {
-      render(<Track track={mockTrack} />)
+      renderWithTimeline(<Track track={mockTrack} />)
 
       // Для видео треков кнопка mute не должна отображаться
       const muteButton = screen.queryByTestId("track-mute-button")
@@ -137,7 +142,7 @@ describe("Track Component", () => {
       const customStyle = { backgroundColor: "blue", height: "150px" }
 
       expect(() => {
-        render(<Track track={mockTrack} className="custom-track" style={customStyle} />)
+        renderWithTimeline(<Track track={mockTrack} className="custom-track" style={customStyle} />)
       }).not.toThrow()
 
       const trackElement = screen.getByTestId("timeline-track")
@@ -150,14 +155,14 @@ describe("Track Component", () => {
       const hiddenTrack = { ...mockTrack, isHidden: true, name: "Hidden Track" }
 
       expect(() => {
-        render(<Track track={hiddenTrack} />)
+        renderWithTimeline(<Track track={hiddenTrack} />)
       }).not.toThrow()
     })
 
     it("should render solo track", () => {
       const soloTrack = { ...mockTrack, isSolo: true, name: "Solo Track" }
 
-      render(<Track track={soloTrack} />)
+      renderWithTimeline(<Track track={soloTrack} />)
       expect(screen.getByText("Solo Track")).toBeInTheDocument()
     })
 
@@ -205,7 +210,7 @@ describe("Track Component", () => {
       }
 
       expect(() => {
-        render(<Track track={trackWithClips} />)
+        renderWithTimeline(<Track track={trackWithClips} />)
       }).not.toThrow()
     })
   })
@@ -213,7 +218,7 @@ describe("Track Component", () => {
   describe("Track Error Handling", () => {
     it("should handle missing track prop gracefully", () => {
       expect(() => {
-        render(<Track track={null} />)
+        renderWithTimeline(<Track track={null} />)
       }).not.toThrow()
 
       // Проверяем, что отображается fallback
@@ -221,7 +226,7 @@ describe("Track Component", () => {
     })
 
     it("should render track with null gracefully", () => {
-      render(<Track track={null} />)
+      renderWithTimeline(<Track track={null} />)
 
       const trackElement = screen.getByTestId("timeline-track")
       expect(trackElement).toBeInTheDocument()
@@ -231,7 +236,7 @@ describe("Track Component", () => {
 
   describe("Track Accessibility", () => {
     it("should have proper ARIA attributes", () => {
-      render(<Track track={mockTrack} />)
+      renderWithTimeline(<Track track={mockTrack} />)
 
       const trackElement = screen.getByTestId("timeline-track")
       expect(trackElement).toBeInTheDocument()
@@ -242,7 +247,7 @@ describe("Track Component", () => {
     })
 
     it("should be keyboard accessible", () => {
-      render(<Track track={mockTrack} />)
+      renderWithTimeline(<Track track={mockTrack} />)
 
       const trackElement = screen.getByTestId("timeline-track")
       // DIV с role="button" и tabIndex для клавиатурной доступности

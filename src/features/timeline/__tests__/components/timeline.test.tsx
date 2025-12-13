@@ -26,6 +26,11 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
   }),
 }))
 
+// Mock ResourcesPanel before any imports
+vi.mock("@/features/resources/components/resources-panel", () => ({
+  ResourcesPanel: () => <div data-testid="resources-panel">Resources</div>,
+}))
+
 // Import mocks before components
 import "../../__mocks__/hooks"
 import "@/test/mocks/libraries/lucide-react"
