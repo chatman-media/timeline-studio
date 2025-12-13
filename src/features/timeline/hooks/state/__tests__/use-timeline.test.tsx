@@ -9,6 +9,8 @@ vi.mock("@/config/providers/app-providers", () => ({
 
 vi.mock("@/config/providers", () => ({
   AppProviders: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  I18nProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
 import { useTimelineProject } from "@/domains/video-editing"
@@ -169,6 +171,11 @@ const mockBatchUpdateClips = vi.fn()
 
 // Мокаем timeline hooks для useTimeline
 vi.mock("@/domains/video-editing", () => ({
+  // Add providers to avoid test-utils import errors
+  PlayerProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  ResourcesProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  TimelineProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+
   useTimelineProject: vi.fn(() => ({
     project: null,
     isLoading: false,

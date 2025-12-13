@@ -470,20 +470,33 @@ describe("throttleCommand", () => {
 })
 
 describe("Integration Tests", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it("should work with debounceCommand and CommandQueue", async () => {
     const queue = new CommandQueue()
     const fn = vi.fn(async (value: string) => value)
     const debounced = debounceCommand(fn, 50)
 
-    queue.enqueue(() => debounced("call1"))
-    queue.enqueue(() => debounced("call2"))
-    queue.enqueue(() => debounced("call3"))
+    // Enqueue all commands
+    const promise1 = queue.enqueue(() => debounced("call1"))
+    const promise2 = queue.enqueue(() => debounced("call2"))
+    const promise3 = queue.enqueue(() => debounced("call3"))
 
-    // Ждём выполнения debounce delay
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // Run all timers to completion - this will execute all debounce timers
+    await vi.runAllTimersAsync()
+
+    // Wait for all promises to resolve
+    await Promise.all([promise1, promise2, promise3])
 
     // Only last call should execute due to debounce
     expect(fn).toHaveBeenCalledTimes(1)
+    expect(fn).toHaveBeenCalledWith("call3")
   })
 
   it("should work with throttleCommand and CommandQueue", async () => {
@@ -494,8 +507,8 @@ describe("Integration Tests", () => {
     await queue.enqueue(() => throttled(1))
     await queue.enqueue(() => throttled(2))
 
-    // Ждём throttle period
-    await new Promise((resolve) => setTimeout(resolve, 60))
+    // Advance past throttle period
+    await vi.advanceTimersByTimeAsync(60)
 
     await queue.enqueue(() => throttled(3))
 
