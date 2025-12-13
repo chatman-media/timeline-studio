@@ -1,7 +1,7 @@
 import { fireEvent, screen, within } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { render } from "@/test/test-utils"
+import { renderWithTimeline } from "@/test/test-utils"
 
 import { SlipSlideHandles } from "../../../components/edit-tools/slip-slide-handles"
 import type { TimelineClip } from "../../../types"
@@ -15,7 +15,7 @@ const mockEditModeContext = {
   cursor: "ew-resize",
 }
 
-vi.mock("../../../hooks/use-edit-mode", () => ({
+vi.mock("../../../hooks/editing/use-edit-mode", () => ({
   useEditModeContext: () => mockEditModeContext,
 }))
 
@@ -98,7 +98,7 @@ describe("SlipSlideHandles", () => {
 
   describe("Видимость компонента", () => {
     it("должен не отображаться когда isHovered = false", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} isHovered={false} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} isHovered={false} />)
 
       expect(container.querySelector(".cursor-ew-resize")).not.toBeInTheDocument()
     })
@@ -106,7 +106,7 @@ describe("SlipSlideHandles", () => {
     it("должен не отображаться когда editMode не SLIP или SLIDE", () => {
       mockEditModeContext.editMode = EDIT_MODES.SELECT
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       expect(container.querySelector(".cursor-ew-resize")).not.toBeInTheDocument()
     })
@@ -114,7 +114,7 @@ describe("SlipSlideHandles", () => {
     it("должен отображаться в SLIP режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIP
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).toBeInTheDocument()
@@ -123,7 +123,7 @@ describe("SlipSlideHandles", () => {
     it("должен отображаться в SLIDE режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIDE
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).toBeInTheDocument()
@@ -136,7 +136,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать handle в центре клипа", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -146,7 +146,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать media boundaries когда есть offset", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       // Проверяем контейнер медиа границ
       const mediaExtent = container.querySelector(".pointer-events-none")!
@@ -164,7 +164,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать правую границу медиа когда есть доступное медиа справа", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const mediaExtent = container.querySelector(".pointer-events-none")!
       const rightBoundary = mediaExtent.querySelector(".right-0.bg-blue-500\\/50")
@@ -176,7 +176,7 @@ describe("SlipSlideHandles", () => {
     it("не должен отображать левую границу когда offset = 0", () => {
       const clipNoOffset = { ...clip, offset: 0 }
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} clip={clipNoOffset} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} clip={clipNoOffset} />)
 
       const mediaExtent = container.querySelector(".pointer-events-none")!
       const leftBoundary = mediaExtent.querySelector(".left-0.bg-blue-500\\/50")
@@ -184,7 +184,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать индикатор доступного медиа", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const availableMediaIndicator = container.querySelector(".h-1.bg-blue-500\\/20.rounded-full")
       expect(availableMediaIndicator).toBeInTheDocument()
@@ -196,7 +196,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен использовать blue цвета для slip режима", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toHaveClass("bg-blue-500/20")
@@ -207,7 +207,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен применять активные стили когда isActive = true", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} isActive={true} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} isActive={true} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toHaveClass("bg-blue-500/40")
@@ -217,7 +217,7 @@ describe("SlipSlideHandles", () => {
     it("должен вызывать onSlipStart при mouseDown", () => {
       const onSlipStart = vi.fn()
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} onSlipStart={onSlipStart} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} onSlipStart={onSlipStart} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       fireEvent.mouseDown(handle, { clientX: 150 })
@@ -227,7 +227,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать tooltip с правильным содержимым для slip", () => {
-      render(<SlipSlideHandles {...defaultProps} />)
+      renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const tooltipContent = screen.getByTestId("tooltip-content")
       expect(tooltipContent).toBeInTheDocument()
@@ -242,7 +242,7 @@ describe("SlipSlideHandles", () => {
     it("должен правильно рассчитывать позиции для клипа без mediaDuration", () => {
       const clipNoMediaDuration = { ...clip, mediaDuration: undefined }
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} clip={clipNoMediaDuration} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} clip={clipNoMediaDuration} />)
 
       const mediaExtent = container.querySelector(".pointer-events-none")!
       expect(mediaExtent).toBeInTheDocument()
@@ -252,7 +252,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен работать с отрицательным timeScale", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} timeScale={-10} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} timeScale={-10} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -266,7 +266,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать handle в центре клипа", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -276,7 +276,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать направляющие стрелки", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       // Проверяем контейнер стрелок
       const arrowsContainer = container.querySelector(".absolute.top-0.bottom-0")!
@@ -302,7 +302,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен использовать green цвета для slide режима", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toHaveClass("bg-green-500/20")
@@ -314,7 +314,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен применять активные стили когда isActive = true", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} isActive={true} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} isActive={true} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toHaveClass("bg-green-500/40")
@@ -324,7 +324,7 @@ describe("SlipSlideHandles", () => {
     it("должен вызывать onSlideStart при mouseDown", () => {
       const onSlideStart = vi.fn()
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} onSlideStart={onSlideStart} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} onSlideStart={onSlideStart} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       fireEvent.mouseDown(handle, { clientX: 250 })
@@ -334,7 +334,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать tooltip с правильным содержимым для slide", () => {
-      render(<SlipSlideHandles {...defaultProps} />)
+      renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const tooltipContent = screen.getByTestId("tooltip-content")
       expect(tooltipContent).toBeInTheDocument()
@@ -347,7 +347,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен отображать стрелки с правильными стилями", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       // Проверяем стили стрелок
       const leftArrowHead = container.querySelector(".border-r-green-500\\/50")
@@ -373,7 +373,7 @@ describe("SlipSlideHandles", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIP
       const onSlipStart = vi.fn()
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} onSlipStart={onSlipStart} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} onSlipStart={onSlipStart} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       fireEvent.mouseDown(handle, { clientX: 100 })
@@ -385,7 +385,7 @@ describe("SlipSlideHandles", () => {
     it("не должен вызывать обработчики если они не переданы", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIP
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} onSlipStart={undefined} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} onSlipStart={undefined} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
 
@@ -396,7 +396,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен иметь правильные базовые стили для handle", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toHaveClass("absolute")
@@ -415,7 +415,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен корректно масштабироваться с разными timeScale", () => {
-      const { rerender, container } = render(<SlipSlideHandles {...defaultProps} timeScale={5} />)
+      const { rerender, container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} timeScale={5} />)
 
       let handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toHaveStyle({ left: "100px" }) // (10 + 10) * 5
@@ -431,7 +431,7 @@ describe("SlipSlideHandles", () => {
     it("должен работать с очень маленькими клипами", () => {
       const tinyClip = { ...clip, startTime: 0, duration: 0.01 }
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} clip={tinyClip} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} clip={tinyClip} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -441,7 +441,7 @@ describe("SlipSlideHandles", () => {
     it("должен работать с очень большими значениями", () => {
       const largeClip = { ...clip, startTime: 10000, duration: 5000 }
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} clip={largeClip} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} clip={largeClip} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -449,7 +449,7 @@ describe("SlipSlideHandles", () => {
     })
 
     it("должен работать с нулевым timeScale", () => {
-      const { container } = render(<SlipSlideHandles {...defaultProps} timeScale={0} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} timeScale={0} />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -460,7 +460,7 @@ describe("SlipSlideHandles", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIP
       const clipNoOffset = { ...clip, offset: 0 }
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} clip={clipNoOffset} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} clip={clipNoOffset} />)
 
       const mediaExtent = container.querySelector(".pointer-events-none")!
       expect(mediaExtent).toBeInTheDocument()
@@ -470,7 +470,7 @@ describe("SlipSlideHandles", () => {
     it("должен возвращать null для неподдерживаемых режимов", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<SlipSlideHandles {...defaultProps} />)
+      const { container } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       expect(container.querySelector(".cursor-ew-resize")).not.toBeInTheDocument()
     })
@@ -478,7 +478,7 @@ describe("SlipSlideHandles", () => {
 
   describe("Tooltip стили", () => {
     it("должен иметь правильные стили для tooltip", () => {
-      render(<SlipSlideHandles {...defaultProps} />)
+      renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       const tooltipContent = screen.getByTestId("tooltip-content")
       expect(tooltipContent).toHaveClass("bg-gray-900")
@@ -488,7 +488,7 @@ describe("SlipSlideHandles", () => {
     it("должен отображать правильный hotkey для каждого режима", () => {
       // Slip mode
       mockEditModeContext.editMode = EDIT_MODES.SLIP
-      const { rerender } = render(<SlipSlideHandles {...defaultProps} />)
+      const { rerender } = renderWithTimeline(<SlipSlideHandles {...defaultProps} />)
 
       let tooltipContent = screen.getByTestId("tooltip-content")
       expect(within(tooltipContent).getByText(/\(Y\)/)).toBeInTheDocument()

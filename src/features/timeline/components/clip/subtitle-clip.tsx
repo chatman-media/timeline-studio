@@ -132,6 +132,7 @@ export function SubtitleClip({
 
   return (
     <div
+      data-testid="subtitle-clip"
       className={cn(
         "absolute rounded-md overflow-hidden cursor-move transition-all",
         "border-2 hover:brightness-110",

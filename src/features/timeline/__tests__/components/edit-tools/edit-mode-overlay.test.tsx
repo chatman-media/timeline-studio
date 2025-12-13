@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { render, screen } from "@/test/test-utils"
+import { renderWithTimeline, screen } from "@/test/test-utils"
 
 import { EditCursorOverlay, EditModeOverlay } from "../../../components/edit-tools/edit-mode-overlay"
 import { EDIT_MODES } from "../../../types/edit-modes"
@@ -13,7 +13,7 @@ const mockEditModeContext = {
   cursor: "default",
 }
 
-vi.mock("../../../hooks/use-edit-mode", () => ({
+vi.mock("../../../hooks/editing/use-edit-mode", () => ({
   useEditModeContext: () => mockEditModeContext,
 }))
 
@@ -33,7 +33,7 @@ describe("EditModeOverlay", () => {
     it("должен не отображаться в SELECT режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SELECT
 
-      const { container } = render(<EditModeOverlay />)
+      const { container } = renderWithTimeline(<EditModeOverlay />)
 
       // В SELECT режиме компонент не должен рендерить никакой контент
       expect(container.querySelector('[class*="fixed"]')).not.toBeInTheDocument()
@@ -42,7 +42,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в TRIM режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Trim Mode")).toBeInTheDocument()
       expect(screen.getByText("Trim clip edges")).toBeInTheDocument()
@@ -53,7 +53,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в RIPPLE режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.RIPPLE
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Ripple Mode")).toBeInTheDocument()
       expect(screen.getByText("Ripple edit - trim and move subsequent clips")).toBeInTheDocument()
@@ -63,7 +63,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в ROLL режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.ROLL
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Roll Mode")).toBeInTheDocument()
       expect(screen.getByText("Roll edit - adjust edit point between clips")).toBeInTheDocument()
@@ -73,7 +73,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в SLIP режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIP
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Slip Mode")).toBeInTheDocument()
       expect(screen.getByText("Slip edit - change clip content without moving")).toBeInTheDocument()
@@ -83,7 +83,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в SLIDE режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIDE
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Slide Mode")).toBeInTheDocument()
       expect(screen.getByText("Slide edit - move clip and adjust neighbors")).toBeInTheDocument()
@@ -93,7 +93,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в SPLIT режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SPLIT
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Split Mode")).toBeInTheDocument()
       expect(screen.getByText("Split clips at cursor position")).toBeInTheDocument()
@@ -103,7 +103,7 @@ describe("EditModeOverlay", () => {
     it("должен отображаться в RATE режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.RATE
 
-      render(<EditModeOverlay />)
+      renderWithTimeline(<EditModeOverlay />)
 
       expect(screen.getByText("Rate Mode")).toBeInTheDocument()
       expect(screen.getByText("Change clip playback speed")).toBeInTheDocument()
@@ -115,7 +115,7 @@ describe("EditModeOverlay", () => {
     it("должен применять базовые стили", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditModeOverlay />)
+      const { container } = renderWithTimeline(<EditModeOverlay />)
 
       // Находим overlay по классам
       const overlay = container.querySelector('[class*="fixed"][class*="top-20"]')
@@ -133,7 +133,7 @@ describe("EditModeOverlay", () => {
     it("должен применять кастомный className", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditModeOverlay className="custom-class" />)
+      const { container } = renderWithTimeline(<EditModeOverlay className="custom-class" />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="top-20"]')
       expect(overlay).toBeInTheDocument()
@@ -143,7 +143,7 @@ describe("EditModeOverlay", () => {
     it("должен иметь pointer-events-none", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditModeOverlay />)
+      const { container } = renderWithTimeline(<EditModeOverlay />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="top-20"]')
       expect(overlay).toBeInTheDocument()
@@ -154,7 +154,7 @@ describe("EditModeOverlay", () => {
     it("должен содержать правильную структуру элементов", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditModeOverlay />)
+      const { container } = renderWithTimeline(<EditModeOverlay />)
 
       // Проверяем наличие всех основных элементов
       expect(container.querySelector(".flex.items-center.gap-3")).toBeInTheDocument()
@@ -178,7 +178,7 @@ describe("EditModeOverlay", () => {
 
       modes.forEach(({ mode, hotkey }) => {
         mockEditModeContext.editMode = mode
-        render(<EditModeOverlay />)
+        renderWithTimeline(<EditModeOverlay />)
         expect(screen.getByText(hotkey)).toBeInTheDocument()
         // Очищаем экран между итерациями
         screen.debug = vi.fn()
@@ -197,7 +197,7 @@ describe("EditCursorOverlay", () => {
     it("должен не отображаться когда isActive = false", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={false} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={false} />)
 
       expect(container.querySelector('[class*="fixed"][class*="pointer-events-none"]')).not.toBeInTheDocument()
     })
@@ -205,7 +205,7 @@ describe("EditCursorOverlay", () => {
     it("должен не отображаться когда mousePosition = null", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={null} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={null} isActive={true} />)
 
       expect(container.querySelector('[class*="fixed"][class*="pointer-events-none"]')).not.toBeInTheDocument()
     })
@@ -213,7 +213,7 @@ describe("EditCursorOverlay", () => {
     it("должен не отображаться в SELECT режиме", () => {
       mockEditModeContext.editMode = EDIT_MODES.SELECT
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       expect(container.querySelector('[class*="fixed"][class*="pointer-events-none"]')).not.toBeInTheDocument()
     })
@@ -221,7 +221,7 @@ describe("EditCursorOverlay", () => {
     it("должен отображаться когда isActive = true и есть mousePosition", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       expect(container.firstChild).toBeInTheDocument()
     })
@@ -231,7 +231,7 @@ describe("EditCursorOverlay", () => {
     it("должен позиционироваться в правильной позиции мыши", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 150, y: 200 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 150, y: 200 }} isActive={true} />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -245,7 +245,7 @@ describe("EditCursorOverlay", () => {
     it("должен иметь правильные классы позиционирования", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -259,7 +259,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать TrimCursor для TRIM режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       // Проверяем наличие SVG элемента
       const svg = container.querySelector("svg")
@@ -270,7 +270,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать RippleCursor для RIPPLE режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.RIPPLE
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -280,7 +280,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать RollCursor для ROLL режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.ROLL
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -290,7 +290,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать SlipCursor для SLIP режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIP
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -300,7 +300,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать SlideCursor для SLIDE режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.SLIDE
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -310,7 +310,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать SplitCursor для SPLIT режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.SPLIT
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -320,7 +320,7 @@ describe("EditCursorOverlay", () => {
     it("должен показывать RateCursor для RATE режима", () => {
       mockEditModeContext.editMode = EDIT_MODES.RATE
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -337,7 +337,7 @@ describe("EditCursorOverlay", () => {
     it("должен корректно обрабатывать нулевые координаты", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 0, y: 0 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 0, y: 0 }} isActive={true} />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -350,7 +350,7 @@ describe("EditCursorOverlay", () => {
     it("должен корректно обрабатывать большие координаты", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: 9999, y: 9999 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 9999, y: 9999 }} isActive={true} />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -363,7 +363,7 @@ describe("EditCursorOverlay", () => {
     it("должен корректно обрабатывать отрицательные координаты", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = render(<EditCursorOverlay mousePosition={{ x: -100, y: -50 }} isActive={true} />)
+      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: -100, y: -50 }} isActive={true} />)
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -388,7 +388,7 @@ describe("EditCursorOverlay", () => {
 
       modes.forEach((mode) => {
         mockEditModeContext.editMode = mode
-        const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+        const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
         const svg = container.querySelector("svg")
         expect(svg).toBeInTheDocument()
@@ -411,7 +411,7 @@ describe("EditCursorOverlay", () => {
 
       modes.forEach((mode) => {
         mockEditModeContext.editMode = mode
-        const { container } = render(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+        const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
 
         const svg = container.querySelector("svg")
         expect(svg).toBeInTheDocument()

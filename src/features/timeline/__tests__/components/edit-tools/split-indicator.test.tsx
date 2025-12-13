@@ -3,7 +3,7 @@ import type React from "react"
 import { createRef } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { render } from "@/test/test-utils"
+import { renderWithTimeline } from "@/test/test-utils"
 
 import { SplitIndicator, SplitPreview } from "../../../components/edit-tools/split-indicator"
 import { EDIT_MODES } from "../../../types/edit-modes"
@@ -16,7 +16,7 @@ const mockEditModeContext = {
   cursor: "crosshair",
 }
 
-vi.mock("../../../hooks/use-edit-mode", () => ({
+vi.mock("../../../hooks/editing/use-edit-mode", () => ({
   useEditModeContext: () => mockEditModeContext,
 }))
 
@@ -66,13 +66,13 @@ describe("SplitIndicator", () => {
       mockEditModeContext.editMode = EDIT_MODES.SELECT
       mockEditModeContext.isEditMode = vi.fn((mode: any) => mode === EDIT_MODES.SELECT)
 
-      render(<SplitIndicator {...defaultProps} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       expect(screen.queryByText(/\d{2}:\d{2}\.\d{2}/)).not.toBeInTheDocument()
     })
 
     it("не должен отображаться когда disabled = true", () => {
-      render(<SplitIndicator {...defaultProps} disabled={true} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} disabled={true} />)
 
       expect(screen.queryByText(/\d{2}:\d{2}\.\d{2}/)).not.toBeInTheDocument()
     })
@@ -80,13 +80,13 @@ describe("SplitIndicator", () => {
     it("не должен отображаться без containerRef", () => {
       const emptyRef = createRef<HTMLElement>()
 
-      render(<SplitIndicator {...defaultProps} containerRef={emptyRef as React.RefObject<HTMLElement>} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} containerRef={emptyRef as React.RefObject<HTMLElement>} />)
 
       expect(screen.queryByText(/\d{2}:\d{2}\.\d{2}/)).not.toBeInTheDocument()
     })
 
     it("должен отображаться при движении мыши в SPLIT режиме", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       // Симулируем движение мыши
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
@@ -101,7 +101,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен скрываться при выходе мыши из контейнера", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       // Симулируем движение и выход мыши
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
@@ -115,7 +115,7 @@ describe("SplitIndicator", () => {
 
   describe("Позиционирование", () => {
     it("должен следовать за курсором мыши", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       // Первая позиция
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
@@ -131,7 +131,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен правильно рассчитывать время с учетом scrollX", () => {
-      render(<SplitIndicator {...defaultProps} scrollX={100} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} scrollX={100} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -140,7 +140,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен правильно форматировать время", () => {
-      render(<SplitIndicator {...defaultProps} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       // Проверяем разные позиции
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 }) // 10 секунд
@@ -156,7 +156,7 @@ describe("SplitIndicator", () => {
 
   describe("Интерактивность", () => {
     it("должен вызывать onSplit при клике", () => {
-      render(<SplitIndicator {...defaultProps} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
       fireEvent.click(mockContainerRef.current!, { clientX: 200 })
@@ -171,7 +171,7 @@ describe("SplitIndicator", () => {
       trackElement.setAttribute("data-track-id", "track-1")
       mockContainerRef.current!.appendChild(trackElement)
 
-      render(<SplitIndicator {...defaultProps} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(trackElement, { clientX: 200 })
       fireEvent.click(trackElement, { clientX: 200 })
@@ -180,7 +180,7 @@ describe("SplitIndicator", () => {
     })
 
     it("не должен вызывать onSplit если индикатор не видим", () => {
-      render(<SplitIndicator {...defaultProps} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       // Клик без предварительного mouseMove
       fireEvent.click(mockContainerRef.current!, { clientX: 200 })
@@ -193,7 +193,7 @@ describe("SplitIndicator", () => {
       trackElement.setAttribute("data-track-id", "track-1")
       mockContainerRef.current!.appendChild(trackElement)
 
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(trackElement, { clientX: 200 })
 
@@ -208,7 +208,7 @@ describe("SplitIndicator", () => {
 
   describe("Визуальные элементы", () => {
     it("должен отображать иконку split", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -220,7 +220,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен отображать все элементы иконки", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -229,7 +229,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен применять правильные стили", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -241,7 +241,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен правильно позиционировать время", () => {
-      const { container } = render(<SplitIndicator {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -263,7 +263,7 @@ describe("SplitIndicator", () => {
     it("должен очищать event listeners при размонтировании", () => {
       const removeEventListenerSpy = vi.spyOn(mockContainerRef.current!, "removeEventListener")
 
-      const { unmount } = render(<SplitIndicator {...defaultProps} />)
+      const { unmount } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       unmount()
 
@@ -276,7 +276,7 @@ describe("SplitIndicator", () => {
       const addEventListenerSpy = vi.spyOn(mockContainerRef.current!, "addEventListener")
       const removeEventListenerSpy = vi.spyOn(mockContainerRef.current!, "removeEventListener")
 
-      const { rerender } = render(<SplitIndicator {...defaultProps} />)
+      const { rerender } = renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       const callCountBefore = addEventListenerSpy.mock.calls.length
 
@@ -291,7 +291,7 @@ describe("SplitIndicator", () => {
 
   describe("Граничные случаи", () => {
     it("должен работать с большими значениями scrollX", () => {
-      render(<SplitIndicator {...defaultProps} scrollX={10000} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} scrollX={10000} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -300,7 +300,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен работать с маленьким timeScale", () => {
-      render(<SplitIndicator {...defaultProps} timeScale={0.1} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} timeScale={0.1} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -309,7 +309,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен работать с отрицательным scrollX", () => {
-      render(<SplitIndicator {...defaultProps} scrollX={-50} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} scrollX={-50} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 200 })
 
@@ -318,7 +318,7 @@ describe("SplitIndicator", () => {
     })
 
     it("должен корректно обрабатывать клики на границе контейнера", () => {
-      render(<SplitIndicator {...defaultProps} />)
+      renderWithTimeline(<SplitIndicator {...defaultProps} />)
 
       fireEvent.mouseMove(mockContainerRef.current!, { clientX: 100 }) // На левой границе
       fireEvent.click(mockContainerRef.current!, { clientX: 100 })
@@ -358,7 +358,7 @@ describe("SplitPreview", () => {
 
   describe("Отображение preview", () => {
     it("должен отображать preview для клипов, через которые проходит split", () => {
-      const { container } = render(<SplitPreview {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} />)
 
       // Должен показать preview только для clip-1 (splitTime=20 попадает в диапазон 10-30)
       const clipPreviews = container.querySelectorAll(".absolute > .absolute")
@@ -366,7 +366,7 @@ describe("SplitPreview", () => {
     })
 
     it("не должен отображаться если split не попадает ни в один клип", () => {
-      const { container } = render(<SplitPreview {...defaultProps} splitTime={35} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} splitTime={35} />)
 
       // splitTime=35 попадает в промежуток между клипами
       expect(container.firstChild).toHaveTextContent("")
@@ -383,7 +383,7 @@ describe("SplitPreview", () => {
         },
       ]
 
-      const { container } = render(<SplitPreview clips={overlappingClips} splitTime={20} timeScale={10} />)
+      const { container } = renderWithTimeline(<SplitPreview clips={overlappingClips} splitTime={20} timeScale={10} />)
 
       // Должен показать preview для clip-1 и clip-4
       // Ищем контейнеры клипов по стилю
@@ -397,7 +397,7 @@ describe("SplitPreview", () => {
 
   describe("Позиционирование элементов", () => {
     it("должен правильно позиционировать split line внутри клипа", () => {
-      const { container } = render(<SplitPreview {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} />)
 
       // Для clip-1: splitPoint = 20 - 10 = 10, splitPosition = 10 * 10 = 100px
       const splitLine = container.querySelector(".w-0\\.5.bg-red-500")
@@ -406,7 +406,7 @@ describe("SplitPreview", () => {
     })
 
     it("должен правильно позиционировать клипы", () => {
-      const { container } = render(<SplitPreview {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} />)
 
       const clipContainer = container.querySelector('.absolute[style*="width"]')!
       expect(clipContainer).toHaveStyle({
@@ -416,7 +416,7 @@ describe("SplitPreview", () => {
     })
 
     it("должен правильно позиционировать индикатор точки split", () => {
-      const { container } = render(<SplitPreview {...defaultProps} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} />)
 
       const splitPoint = container.querySelector(".rounded-full")
       expect(splitPoint).toBeInTheDocument()
@@ -429,7 +429,7 @@ describe("SplitPreview", () => {
 
   describe("Кастомные классы", () => {
     it("должен применять кастомный className", () => {
-      const { container } = render(<SplitPreview {...defaultProps} className="custom-class" />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} className="custom-class" />)
 
       const wrapper = container.querySelector(".absolute.inset-0.pointer-events-none")!
       expect(wrapper).toBeInTheDocument()
@@ -439,7 +439,7 @@ describe("SplitPreview", () => {
 
   describe("Граничные случаи", () => {
     it("должен корректно обрабатывать split в самом начале клипа", () => {
-      const { container } = render(<SplitPreview {...defaultProps} splitTime={10.001} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} splitTime={10.001} />)
 
       const splitLine = container.querySelector(".w-0\\.5.bg-red-500")
       expect(splitLine).toBeInTheDocument()
@@ -450,7 +450,7 @@ describe("SplitPreview", () => {
     })
 
     it("должен корректно обрабатывать split в самом конце клипа", () => {
-      const { container } = render(<SplitPreview {...defaultProps} splitTime={29.999} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} splitTime={29.999} />)
 
       const splitLine = container.querySelector(".w-0\\.5.bg-red-500")
       expect(splitLine).toBeInTheDocument()
@@ -461,7 +461,7 @@ describe("SplitPreview", () => {
     })
 
     it("должен работать с нулевым timeScale", () => {
-      const { container } = render(<SplitPreview {...defaultProps} timeScale={0} />)
+      const { container } = renderWithTimeline(<SplitPreview {...defaultProps} timeScale={0} />)
 
       const splitLine = container.querySelector(".w-0\\.5.bg-red-500")
       if (splitLine) {
@@ -470,7 +470,7 @@ describe("SplitPreview", () => {
     })
 
     it("должен обрабатывать пустой массив клипов", () => {
-      const { container } = render(<SplitPreview clips={[]} splitTime={20} timeScale={10} />)
+      const { container } = renderWithTimeline(<SplitPreview clips={[]} splitTime={20} timeScale={10} />)
 
       const wrapper = container.querySelector(".absolute.inset-0.pointer-events-none")
       expect(wrapper).not.toBeInTheDocument()
