@@ -41,44 +41,21 @@ vi.mock("@/domains/system-integration/services/updates/update-service", () => ({
 
     cleanup = vi.fn()
   },
-}))
-
-// Mock update-machine with proper XState v5 structure
-vi.mock("@/domains/system-integration/machines/update-machine", () => ({
-  updateMachine: {
-    id: "update",
-    config: {
-      id: "update",
-      initial: "idle",
-      states: {
-        idle: {},
-        checking: {},
-        available: {},
-        downloading: {},
-        ready: {},
-        error: {},
-      },
-    },
-    // XState v5 требует эти методы
-    getInitialSnapshot: vi.fn(() => ({
-      value: "idle",
-      context: {},
-      matches: vi.fn(() => false),
-    })),
-    transition: vi.fn((state, event) => state),
-    resolveState: vi.fn((state) => state),
-    getPersistedSnapshot: vi.fn((snapshot) => snapshot),
-    restoreSnapshot: vi.fn((snapshot) => snapshot),
+  updateService: {
+    checkForUpdates: vi.fn().mockResolvedValue({
+      available: false,
+      current_version: "1.0.0",
+      update_info: undefined,
+    }),
+    downloadAndInstall: vi.fn().mockResolvedValue(undefined),
+    getCurrentVersion: vi.fn().mockResolvedValue("1.0.0"),
+    isUpdaterAvailable: vi.fn().mockResolvedValue(true),
+    enableAutoCheck: vi.fn(),
+    disableAutoCheck: vi.fn(),
+    getCurrentStatus: vi.fn().mockReturnValue("idle"),
+    subscribe: vi.fn().mockReturnValue(() => {}),
+    reset: vi.fn(),
+    getAutoCheckSettings: vi.fn().mockReturnValue({ enabled: false, intervalMinutes: 60 }),
+    dispose: vi.fn(),
   },
-  createUpdateActor: vi.fn(() => ({
-    start: vi.fn(),
-    stop: vi.fn(),
-    send: vi.fn(),
-    subscribe: vi.fn(() => vi.fn()),
-    getSnapshot: vi.fn(() => ({
-      value: "idle",
-      context: {},
-      matches: vi.fn(() => false),
-    })),
-  })),
 }))

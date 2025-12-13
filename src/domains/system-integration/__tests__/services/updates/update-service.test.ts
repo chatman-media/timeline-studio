@@ -6,6 +6,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { UpdateService } from "../../../services/updates/update-service"
 import type { UpdateCheckResult } from "../../../types"
 
+// Unmock UpdateService to test the real implementation
+vi.unmock("@/domains/system-integration/services/updates/update-service")
+
 // Mock Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
