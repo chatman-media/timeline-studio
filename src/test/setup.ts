@@ -137,40 +137,111 @@ vi.mock("@/features/user-settings", async (importOriginal) => {
 })
 
 // Mock PlayerProvider, ResourcesProvider, and usePlayer
-vi.mock("@/domains/video-editing", () => ({
-  PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
-  ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
-  TimelineProvider: ({ children }: { children: React.ReactNode }) => children,
-  usePlayer: () => ({
-    playerSetSource: vi.fn().mockResolvedValue(undefined),
-    playerSetMedia: vi.fn().mockResolvedValue(undefined),
-    currentTime: 0,
-    duration: 0,
-    isPlaying: false,
-    volume: 1,
-    playbackRate: 1,
-    play: vi.fn().mockResolvedValue(undefined),
-    pause: vi.fn(),
-    seek: vi.fn(),
-    setVolume: vi.fn(),
-    setPlaybackRate: vi.fn(),
-    setPreviewMedia: vi.fn(),
-  }),
-  useResources: () => ({
-    effects: [],
-    filters: [],
-    transitions: [],
-    templates: [],
-    addMedia: vi.fn(),
-    removeMedia: vi.fn(),
-    getEffectById: vi.fn(),
-    getFilterById: vi.fn(),
-    getTransitionById: vi.fn(),
-    getTemplateById: vi.fn(),
-    loadResources: vi.fn(),
-    isLoading: false,
-  }),
-}))
+// После миграции providers в features, этот мок обеспечивает обратную совместимость
+vi.mock("@/domains/video-editing", async () => {
+  // Импортируем actual domain exports
+  const actual = await vi.importActual("@/domains/video-editing")
+
+  return {
+    ...actual,
+    // Providers (теперь импортируются из features)
+    PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
+    ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
+    TimelineProvider: ({ children }: { children: React.ReactNode }) => children,
+
+    // Hooks из timeline providers
+    useTimelineProject: () => ({
+      project: null,
+      isLoading: false,
+      hasUnsavedChanges: false,
+      createProject: vi.fn(),
+      saveProject: vi.fn(),
+      loadProject: vi.fn(),
+      backend: null,
+    }),
+    useTimelinePlayback: () => ({
+      isPlaying: false,
+      currentTime: 0,
+      playbackRate: 1,
+      duration: 0,
+      play: vi.fn(),
+      pause: vi.fn(),
+      stop: vi.fn(),
+      seek: vi.fn(),
+      setPlaybackRate: vi.fn(),
+    }),
+    useTimelineTracks: () => ({
+      tracks: [],
+      activeTrackId: null,
+      addTrack: vi.fn(),
+      removeTrack: vi.fn(),
+      updateTrack: vi.fn(),
+      setActiveTrack: vi.fn(),
+    }),
+    useTimelineUI: () => ({
+      timeScale: 1,
+      scrollPosition: { x: 0, y: 0 },
+      setTimeScale: vi.fn(),
+      setScrollPosition: vi.fn(),
+    }),
+    useTimelineEvents: () => ({
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }),
+    useTimelineMarkers: () => ({
+      markers: [],
+      addMarker: vi.fn(),
+      removeMarker: vi.fn(),
+      updateMarker: vi.fn(),
+    }),
+
+    // Player hooks
+    usePlayer: () => ({
+      playerSetSource: vi.fn().mockResolvedValue(undefined),
+      playerSetMedia: vi.fn().mockResolvedValue(undefined),
+      currentTime: 0,
+      duration: 0,
+      isPlaying: false,
+      volume: 1,
+      playbackRate: 1,
+      play: vi.fn().mockResolvedValue(undefined),
+      pause: vi.fn(),
+      seek: vi.fn(),
+      setVolume: vi.fn(),
+      setPlaybackRate: vi.fn(),
+      setPreviewMedia: vi.fn(),
+    }),
+
+    // Resources hooks
+    useResources: () => ({
+      effects: [],
+      filters: [],
+      transitions: [],
+      templates: [],
+      addMedia: vi.fn(),
+      removeMedia: vi.fn(),
+      getEffectById: vi.fn(),
+      getFilterById: vi.fn(),
+      getTransitionById: vi.fn(),
+      getTemplateById: vi.fn(),
+      loadResources: vi.fn(),
+      isLoading: false,
+    }),
+
+    // Добавляем типы которые могут импортироваться
+    GpuEncoder: {
+      H264: "h264",
+      H265: "h265",
+      VP9: "vp9",
+    },
+    SubtitleAlignX: {
+      LEFT: "left",
+      CENTER: "center",
+      RIGHT: "right",
+    },
+  }
+})
 
 // Mock useApiKeys hook
 vi.mock("@/features/user-settings/hooks/use-api-keys")
@@ -533,3 +604,18 @@ declare module "vitest" {
     toHaveFocus(): T
   }
 }
+
+// Mock media-management domain
+vi.mock("@/domains/media-management", async () => {
+  const actual = await vi.importActual("@/domains/media-management")
+  return {
+    ...actual,
+    DEFAULT_PREVIEW_SIZE_INDEX: 3,
+    PREVIEW_SIZES: [
+      { size: 100, label: "Small" },
+      { size: 150, label: "Medium" },
+      { size: 200, label: "Large" },
+      { size: 250, label: "Extra Large" },
+    ],
+  }
+})

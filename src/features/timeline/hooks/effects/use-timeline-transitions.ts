@@ -12,7 +12,6 @@ import {
   updateTimelineTransitionParameters,
 } from "../../services/resource-manager"
 import { getTrackTransitions as getTrackTransitionsService } from "../../services/timeline-transition-manager"
-import type { TimelineTransition as FeatureTimelineTransition } from "../../types/timeline-transition"
 
 /**
  * Hook для работы с переходами на таймлайне

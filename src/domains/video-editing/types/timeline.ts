@@ -4,7 +4,7 @@
  * Типы для Timeline - основные структуры временной шкалы редактирования видео
  */
 
-import type { AppliedFilter, AppliedTransition, EffectType, FilterType, TransitionType } from "./effects"
+import type { AppliedFilter, AppliedTransition, EffectType, TransitionType } from "./effects"
 import type { MediaFile } from "./media"
 import type { AppliedEffect } from "./unified-effects"
 

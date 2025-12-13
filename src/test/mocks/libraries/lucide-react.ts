@@ -92,6 +92,7 @@ export const Heart = createMockIcon("Heart")
 export const HelpCircle = createMockIcon("HelpCircle")
 export const History = createMockIcon("History")
 export const Image = createMockIcon("Image")
+export const ImageIcon = createMockIcon("ImageIcon")
 export const ImagePlay = createMockIcon("ImagePlay")
 export const Info = createMockIcon("Info")
 export const Keyboard = createMockIcon("Keyboard")
@@ -271,6 +272,7 @@ vi.mock("lucide-react", () => ({
   HelpCircle,
   History,
   Image,
+  ImageIcon,
   ImagePlay,
   Info,
   Keyboard,
