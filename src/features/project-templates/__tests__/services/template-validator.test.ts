@@ -462,7 +462,7 @@ describe("TemplateValidator", () => {
     it("should warn about unusual frame rate", () => {
       const template = {
         ...validTemplate,
-        settings: { ...validTemplate.settings, frameRate: "24" },
+        settings: { ...validTemplate.settings, frameRate: "48" },
       } as unknown as ProjectTemplate
       const result = validator.validate(template)
 
