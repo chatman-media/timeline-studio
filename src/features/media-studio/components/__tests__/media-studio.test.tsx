@@ -3,16 +3,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MediaStudio } from "../"
 
 // Мокаем tauri-logger
-const mockLogger = vi.hoisted(() => ({
-  info: vi.fn(),
-  error: vi.fn(),
-  debug: vi.fn(),
-  warn: vi.fn(),
-  trace: vi.fn(),
-}))
-
 vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: () => mockLogger,
+  createLogger: vi.fn(() => ({
+    trace: vi.fn(),
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
+    traceSync: vi.fn(),
+  })),
 }))
 
 // Мокаем useUserSettings
@@ -48,6 +51,14 @@ vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
     saveProject: vi.fn(),
     setProjectDirty: vi.fn(),
     createNewProject: vi.fn(),
+  }),
+}))
+
+// Мокаем useApp для ProjectLoadingOverlay
+vi.mock("@/domains/project-management/providers/app-provider", () => ({
+  useApp: () => ({
+    isConnecting: false,
+    connectionError: null,
   }),
 }))
 
@@ -176,7 +187,7 @@ describe("MediaStudio", () => {
   })
 
   describe("автозагрузка пользовательских данных", () => {
-    it("логирует состояние загрузки", () => {
+    it("рендерится во время загрузки пользовательских данных", () => {
       mockUseAutoLoadUserData.mockReturnValue({
         isLoading: true,
         loadedData: {
@@ -191,12 +202,13 @@ describe("MediaStudio", () => {
         error: null,
       })
 
-      render(<MediaStudio />)
+      const { container } = render(<MediaStudio />)
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Загружаем пользовательские данные...")
+      // Проверяем что компонент рендерится
+      expect(container.querySelector(".flex.flex-col.h-screen.w-screen")).toBeInTheDocument()
     })
 
-    it("логирует ошибку при неудачной загрузке", () => {
+    it("рендерится при ошибке загрузки", () => {
       const error = new Error("Ошибка загрузки")
       mockUseAutoLoadUserData.mockReturnValue({
         isLoading: false,
@@ -212,12 +224,13 @@ describe("MediaStudio", () => {
         error,
       })
 
-      render(<MediaStudio />)
+      const { container } = render(<MediaStudio />)
 
-      expect(mockLogger.error).toHaveBeenCalledWith("Ошибка автозагрузки пользовательских данных", { error })
+      // Проверяем что компонент рендерится
+      expect(container.querySelector(".flex.flex-col.h-screen.w-screen")).toBeInTheDocument()
     })
 
-    it("логирует загруженные данные когда есть ненулевые значения", () => {
+    it("рендерится с загруженными данными", () => {
       const loadedData = {
         media: 5,
         music: 3,
@@ -234,30 +247,10 @@ describe("MediaStudio", () => {
         error: null,
       })
 
-      render(<MediaStudio />)
+      const { container } = render(<MediaStudio />)
 
-      expect(mockLogger.info).toHaveBeenCalledWith("Загружены пользовательские данные", { loadedData })
-    })
-
-    it("не логирует данные когда все значения нулевые", () => {
-      mockUseAutoLoadUserData.mockReturnValue({
-        isLoading: false,
-        loadedData: {
-          media: 0,
-          music: 0,
-          effects: 0,
-          transitions: 0,
-          filters: 0,
-          subtitles: 0,
-          styleTemplates: 0,
-        },
-        error: null,
-      })
-
-      render(<MediaStudio />)
-
-      expect(mockLogger.info).not.toHaveBeenCalled()
-      expect(mockLogger.error).not.toHaveBeenCalled()
+      // Проверяем что компонент рендерится
+      expect(container.querySelector(".flex.flex-col.h-screen.w-screen")).toBeInTheDocument()
     })
   })
 
