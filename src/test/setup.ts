@@ -612,11 +612,6 @@ vi.mock("@/domains/media-management", async () => {
   return {
     ...actual,
     DEFAULT_PREVIEW_SIZE_INDEX: 3,
-    PREVIEW_SIZES: [
-      { size: 100, label: "Small" },
-      { size: 150, label: "Medium" },
-      { size: 200, label: "Large" },
-      { size: 250, label: "Extra Large" },
-    ],
+    PREVIEW_SIZES: [125, 150, 200, 250, 300, 400, 500],
   }
 })
