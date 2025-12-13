@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { renderWithTimeline } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { SpeedCurveEditor } from "../../../components/speed-ramping/speed-curve-editor"

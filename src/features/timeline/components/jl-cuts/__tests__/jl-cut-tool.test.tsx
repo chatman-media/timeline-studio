@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+import { renderWithTimeline } from "@/test/test-utils"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@/domains/video-editing/types"
@@ -16,7 +17,7 @@ const mockHasJLCut = vi.fn()
 const mockIsVideoClip = vi.fn()
 const mockIsAudioClip = vi.fn()
 
-vi.mock("../../../hooks/use-jl-cuts", () => ({
+vi.mock("../../../hooks/editing/use-jl-cuts", () => ({
   useJLCuts: () => ({
     createJCut: mockCreateJCut,
     createLCut: mockCreateLCut,
@@ -31,7 +32,7 @@ vi.mock("../../../hooks/use-jl-cuts", () => ({
   }),
 }))
 
-vi.mock("../../../hooks/use-timeline", () => ({
+vi.mock("../../../hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     uiState: {},
   }),

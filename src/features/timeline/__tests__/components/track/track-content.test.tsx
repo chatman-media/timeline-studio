@@ -1,5 +1,6 @@
 import { useDroppable } from "@dnd-kit/core"
 import { screen } from "@testing-library/react"
+import { renderWithTimeline } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Import mocks before components

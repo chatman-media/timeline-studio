@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+import { renderWithTimeline } from "@/test/test-utils"
 import { describe, expect, it, vi } from "vitest"
 import { SplitEditToolbar } from "../split-edit-toolbar"
 

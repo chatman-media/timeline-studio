@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react"
+import { TimelineProviders } from "@/test/test-utils"
 import type { ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -33,21 +34,21 @@ describe("use-edit-mode", () => {
 
   describe("useEditMode", () => {
     it("инициализируется с режимом SELECT по умолчанию", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       expect(result.current.editMode).toBe(EDIT_MODES.SELECT)
       expect(result.current.cursor).toBe("default")
     })
 
     it("инициализируется с указанным режимом", () => {
-      const { result } = renderHook(() => useEditMode(EDIT_MODES.TRIM))
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode(EDIT_MODES.TRIM))
 
       expect(result.current.editMode).toBe(EDIT_MODES.TRIM)
       expect(result.current.cursor).toBe("col-resize")
     })
 
     it("изменяет режим редактирования", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       act(() => {
         result.current.setEditMode(EDIT_MODES.RIPPLE)
@@ -58,7 +59,7 @@ describe("use-edit-mode", () => {
     })
 
     it("проверяет текущий режим с помощью isEditMode", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       expect(result.current.isEditMode(EDIT_MODES.SELECT)).toBe(true)
       expect(result.current.isEditMode(EDIT_MODES.TRIM)).toBe(false)
@@ -72,7 +73,7 @@ describe("use-edit-mode", () => {
     })
 
     it("обновляет cursor документа при изменении режима", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       expect(document.body.style.cursor).toBe("default")
 
@@ -85,7 +86,7 @@ describe("use-edit-mode", () => {
 
     it("восстанавливает предыдущий cursor при unmount", () => {
       document.body.style.cursor = "pointer"
-      const { unmount } = renderHook(() => useEditMode())
+      const { unmount } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       expect(document.body.style.cursor).toBe("default")
 
@@ -95,7 +96,7 @@ describe("use-edit-mode", () => {
     })
 
     it("регистрирует горячие клавиши для всех режимов", () => {
-      renderHook(() => useEditMode())
+      renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       // Проверяем, что updateAction вызван для каждого режима
       const expectedShortcuts = [
@@ -119,7 +120,7 @@ describe("use-edit-mode", () => {
     })
 
     it("переключает режимы при вызове горячих клавиш", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       // Получаем callback для edit-mode-trim
       const trimCall = mockShortcutsRegistry.updateAction.mock.calls.find((call) => call[0] === "edit-mode-trim")
@@ -135,7 +136,7 @@ describe("use-edit-mode", () => {
     })
 
     it("возвращается в режим SELECT при нажатии Escape", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       // Устанавливаем другой режим
       act(() => {
@@ -160,7 +161,7 @@ describe("use-edit-mode", () => {
     const wrapper = ({ children }: { children: ReactNode }) => <EditModeProvider>{children}</EditModeProvider>
 
     it("предоставляет контекст режима редактирования", () => {
-      const { result } = renderHook(() => useEditModeContext(), { wrapper })
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditModeContext(), { wrapper })
 
       expect(result.current.editMode).toBe(EDIT_MODES.SELECT)
       expect(result.current.cursor).toBe("default")
@@ -172,7 +173,7 @@ describe("use-edit-mode", () => {
       const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
 
       expect(() => {
-        renderHook(() => useEditModeContext())
+        renderHook((, { wrapper: TimelineProviders }) => useEditModeContext())
       }).toThrow("useEditModeContext must be used within EditModeProvider")
 
       consoleError.mockRestore()
@@ -186,7 +187,7 @@ describe("use-edit-mode", () => {
         return { context1, context2 }
       }
 
-      const { result } = renderHook(() => TestComponent(), { wrapper })
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => TestComponent(), { wrapper })
 
       expect(result.current.context1.editMode).toBe(EDIT_MODES.SELECT)
       expect(result.current.context2.editMode).toBe(EDIT_MODES.SELECT)
@@ -202,7 +203,7 @@ describe("use-edit-mode", () => {
 
   describe("Интеграционные тесты", () => {
     it("полный цикл работы с режимами редактирования", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       // Начальное состояние
       expect(result.current.editMode).toBe(EDIT_MODES.SELECT)
@@ -245,7 +246,7 @@ describe("use-edit-mode", () => {
     })
 
     it("корректно обрабатывает быстрое переключение режимов", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       // Быстрое переключение между режимами
       act(() => {
@@ -259,7 +260,7 @@ describe("use-edit-mode", () => {
     })
 
     it("проверяет все режимы редактирования", () => {
-      const { result } = renderHook(() => useEditMode())
+      const { result } = renderHook((, { wrapper: TimelineProviders }) => useEditMode())
 
       Object.values(EDIT_MODES).forEach((mode) => {
         act(() => {

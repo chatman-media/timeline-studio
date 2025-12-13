@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { TimelineProviders } from "@/test/test-utils"
 import { SPEED_RAMPING_PRESETS } from "../../../types/speed-ramping"
 import { useSpeedRamping } from "../use-speed-ramping"
 
@@ -24,7 +25,7 @@ const mockProject = {
   ],
 }
 
-vi.mock("../../../hooks/use-timeline", () => ({
+vi.mock("../../state/use-timeline", () => ({
   useTimeline: () => ({
     project: mockProject,
     send: mockSend,
@@ -37,7 +38,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("возвращает правильный интерфейс", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     expect(result.current).toHaveProperty("getConfig")
     expect(result.current).toHaveProperty("setConfig")
@@ -58,14 +59,14 @@ describe("useSpeedRamping", () => {
   })
 
   it("возвращает null для несуществующей конфигурации", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     const config = result.current.getConfig("non-existent-clip")
     expect(config).toBeNull()
   })
 
   it("добавляет keyframe и создает конфигурацию если её нет", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.addKeyframe("clip-1", 5, 2.0, "ease")
@@ -83,7 +84,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("сортирует keyframes по времени при добавлении", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.addKeyframe("clip-1", 10, 1.5, "linear")
@@ -99,7 +100,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("обновляет keyframe и пересортировывает если время изменилось", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Добавляем keyframes
     act(() => {
@@ -123,7 +124,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("удаляет keyframe", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Добавляем keyframes
     act(() => {
@@ -145,7 +146,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("применяет пресет и адаптирует keyframes к длительности клипа", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.applyPreset("clip-1", "slow-motion")
@@ -161,7 +162,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("возвращает список пресетов", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     const presets = result.current.getPresets()
     expect(presets).toEqual(SPEED_RAMPING_PRESETS)
@@ -169,7 +170,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("создает пресет из конфигурации клипа", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Создаем конфигурацию
     act(() => {
@@ -190,7 +191,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("включает speed ramping", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.enableSpeedRamping("clip-1")
@@ -201,7 +202,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("выключает speed ramping и сбрасывает скорость клипа", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Сначала включаем и добавляем keyframe
     act(() => {
@@ -232,7 +233,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("переключает состояние speed ramping", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Включаем (сначала выключен)
     act(() => {
@@ -252,7 +253,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("сбрасывает к постоянной скорости", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     act(() => {
       result.current.resetToConstantSpeed("clip-1", 1.5)
@@ -266,7 +267,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("возвращает скорость в определенный момент времени", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Создаем кривую скорости
     act(() => {
@@ -284,7 +285,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("генерирует данные кривой скорости с заданным разрешением", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Создаем простую кривую
     act(() => {
@@ -301,7 +302,7 @@ describe("useSpeedRamping", () => {
   })
 
   it("ограничивает время keyframe в пределах клипа при moveKeyframe", () => {
-    const { result } = renderHook(() => useSpeedRamping())
+    const { result } = renderHook(() => useSpeedRamping(), { wrapper: TimelineProviders })
 
     // Добавляем keyframe
     act(() => {

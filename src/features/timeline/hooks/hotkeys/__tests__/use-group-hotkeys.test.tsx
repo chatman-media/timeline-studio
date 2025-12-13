@@ -3,6 +3,7 @@
  */
 
 import { renderHook } from "@testing-library/react"
+import { TimelineProviders } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock timeline-machine
@@ -142,7 +143,7 @@ describe("useGroupHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     // Проверяем что были зарегистрированы actions для shortcuts
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledWith("group-clips", expect.any(Function))
@@ -154,7 +155,7 @@ describe("useGroupHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     // Получаем функцию, переданную для group-clips
     const groupClipsAction = vi
@@ -179,7 +180,7 @@ describe("useGroupHotkeys", () => {
     // Изменяем выбранные клипы
     mockUiState.selectedClipIds = ["clip-1"]
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const groupClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -196,7 +197,7 @@ describe("useGroupHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     // Получаем функцию для ungroup-clips
     const ungroupClipsAction = vi
@@ -218,7 +219,7 @@ describe("useGroupHotkeys", () => {
     // Мокаем что клип не в группе
     mockGetGroupByClip.mockReturnValue(undefined)
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const ungroupClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -239,7 +240,7 @@ describe("useGroupHotkeys", () => {
     // Очищаем выбранные клипы
     mockUiState.selectedClipIds = []
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const ungroupClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -260,7 +261,7 @@ describe("useGroupHotkeys", () => {
     // Выбираем клипы включая глобальный трек
     mockUiState.selectedClipIds = ["clip-1", "clip-3"]
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const groupClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -282,7 +283,7 @@ describe("useGroupHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     // Проверяем что зарегистрированы shortcuts
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledWith("group-clips", expect.any(Function))
@@ -294,7 +295,7 @@ describe("useGroupHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     // В новой системе shortcuts это контролируется контекстом,
     // проверяем что shortcuts были зарегистрированы
@@ -313,7 +314,7 @@ describe("useGroupHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const groupClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -376,7 +377,7 @@ describe("useGroupHotkeys", () => {
       clips: [{ clipId: "clip-2", trackId: "track-1" }],
     } as ClipGroup)
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const ungroupClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -465,7 +466,7 @@ describe("useGroupHotkeys", () => {
     // Выбираем клипы из разных секций
     mockUiState.selectedClipIds = ["clip-1", "clip-4"]
 
-    renderHook(() => useGroupHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useGroupHotkeys(), { wrapper })
 
     const groupClipsAction = vi
       .mocked(shortcutsRegistry)

@@ -3,6 +3,7 @@
  */
 
 import { renderHook } from "@testing-library/react"
+import { TimelineProviders } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock timeline-machine
@@ -138,7 +139,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     // Проверяем регистрацию всех shortcuts
     expect(vi.mocked(shortcutsRegistry).updateAction).toHaveBeenCalledWith("j-cut", expect.any(Function))
@@ -155,7 +156,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "j-cut")?.[1]
     expect(jCutAction).toBeDefined()
@@ -170,7 +171,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const lCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "l-cut")?.[1]
     expect(lCutAction).toBeDefined()
@@ -185,7 +186,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutLargeAction = vi
       .mocked(shortcutsRegistry)
@@ -202,7 +203,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const lCutLargeAction = vi
       .mocked(shortcutsRegistry)
@@ -222,7 +223,7 @@ describe("useJLCutHotkeys", () => {
     // Клип без связанной пары
     mockGetLinkedPair.mockReturnValue(null)
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "j-cut")?.[1]
     expect(jCutAction).toBeDefined()
@@ -247,7 +248,7 @@ describe("useJLCutHotkeys", () => {
     // Нет выбранных клипов
     mockUiState.selectedClipIds = []
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "j-cut")?.[1]
     expect(jCutAction).toBeDefined()
@@ -266,7 +267,7 @@ describe("useJLCutHotkeys", () => {
     // Выбрано несколько клипов
     mockUiState.selectedClipIds = ["video-clip-1", "audio-clip-1"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "j-cut")?.[1]
     expect(jCutAction).toBeDefined()
@@ -282,7 +283,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const resetCutAction = vi
       .mocked(shortcutsRegistry)
@@ -300,7 +301,7 @@ describe("useJLCutHotkeys", () => {
 
     mockUiState.selectedClipIds = []
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const resetCutAction = vi
       .mocked(shortcutsRegistry)
@@ -319,7 +320,7 @@ describe("useJLCutHotkeys", () => {
     // Выбираем видео и аудио клипы
     mockUiState.selectedClipIds = ["video-clip-1", "audio-clip-1"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const linkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -338,7 +339,7 @@ describe("useJLCutHotkeys", () => {
     // Выбираем в обратном порядке - сначала аудио, потом видео
     mockUiState.selectedClipIds = ["audio-clip-1", "video-clip-1"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const linkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -359,7 +360,7 @@ describe("useJLCutHotkeys", () => {
     // Выбираем видео и музыкальный клип
     mockUiState.selectedClipIds = ["video-clip-1", "music-clip-1"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const linkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -379,7 +380,7 @@ describe("useJLCutHotkeys", () => {
     // Выбран только один клип
     mockUiState.selectedClipIds = ["video-clip-1"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const linkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -415,7 +416,7 @@ describe("useJLCutHotkeys", () => {
     // Выбираем два видео клипа
     mockUiState.selectedClipIds = ["video-clip-1", "video-clip-2"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const linkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -435,7 +436,7 @@ describe("useJLCutHotkeys", () => {
       <MockTimelineProvider>{children}</MockTimelineProvider>
     )
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const unlinkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -453,7 +454,7 @@ describe("useJLCutHotkeys", () => {
 
     mockUiState.selectedClipIds = ["video-clip-1", "audio-clip-1"]
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const unlinkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -472,7 +473,7 @@ describe("useJLCutHotkeys", () => {
 
     mockUiState.selectedClipIds = []
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const unlinkClipsAction = vi
       .mocked(shortcutsRegistry)
@@ -497,7 +498,7 @@ describe("useJLCutHotkeys", () => {
 
     // Тест проверяет логику хука, но хук все равно вызовет createJCut
     // если есть linked pair. Проверим что функция вызывается, но с правильными параметрами
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "j-cut")?.[1]
     expect(jCutAction).toBeDefined()
@@ -525,7 +526,7 @@ describe("useJLCutHotkeys", () => {
       audioClipId: "music-clip-1",
     })
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const jCutAction = vi.mocked(shortcutsRegistry).updateAction.mock.calls.find((call) => call[0] === "j-cut")?.[1]
     expect(jCutAction).toBeDefined()
@@ -572,7 +573,7 @@ describe("useJLCutHotkeys", () => {
       vi.mocked(shortcutsRegistry).updateAction.mockClear()
 
       // Рендерим хук для каждого теста отдельно
-      const { unmount } = renderHook(() => useJLCutHotkeys(), { wrapper })
+      const { unmount } = renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
       const linkClipsAction = vi
         .mocked(shortcutsRegistry)
@@ -634,7 +635,7 @@ describe("useJLCutHotkeys", () => {
     // Очищаем предыдущие вызовы
     vi.mocked(shortcutsRegistry).updateAction.mockClear()
 
-    renderHook(() => useJLCutHotkeys(), { wrapper })
+    renderHook((, { wrapper: TimelineProviders }) => useJLCutHotkeys(), { wrapper })
 
     const linkClipsAction = vi
       .mocked(shortcutsRegistry)

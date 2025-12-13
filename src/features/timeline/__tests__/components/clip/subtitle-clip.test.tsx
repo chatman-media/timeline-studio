@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react"
+import { renderWithTimeline } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { SubtitleClip as SubtitleClipType } from "@/features/subtitles/types"
 import { SubtitleClip } from "../../../components/clip/subtitle-clip"

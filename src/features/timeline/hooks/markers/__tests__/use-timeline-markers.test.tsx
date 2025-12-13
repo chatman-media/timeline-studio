@@ -1,4 +1,5 @@
 import { act, renderHook } from "@testing-library/react"
+import { TimelineProviders } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MarkerType } from "../../../types/markers"
 import { useTimelineMarkers } from "../use-timeline-markers"
@@ -45,7 +46,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("возвращает правильный интерфейс", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     expect(result.current).toHaveProperty("markers")
     expect(result.current).toHaveProperty("addMarker")
@@ -58,7 +59,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("возвращает маркеры с вычисленными свойствами", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     expect(result.current.markers).toHaveLength(2)
     expect(result.current.markers[0]).toMatchObject({
@@ -72,7 +73,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("добавляет новый маркер", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     act(() => {
       result.current.addMarker({
@@ -94,7 +95,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("генерирует уникальный ID для нового маркера", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     const markerData = {
       time: 15,
@@ -119,7 +120,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("обновляет существующий маркер", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     act(() => {
       result.current.updateMarker("marker-1", {
@@ -138,7 +139,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("удаляет маркер", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     act(() => {
       result.current.removeMarker("marker-1")
@@ -155,14 +156,14 @@ describe("useTimelineMarkers", () => {
   })
 
   it("возвращает все типы маркеров", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     const types = result.current.getMarkerTypes()
     expect(types).toEqual(["chapter", "note"])
   })
 
   it("фильтрует маркеры по типу", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     const chapterMarkers = result.current.getMarkersByType("chapter")
     expect(chapterMarkers).toHaveLength(1)
@@ -174,7 +175,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("экспортирует маркеры в формате EDL", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     const edl = result.current.exportMarkers("edl")
 
@@ -184,7 +185,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("экспортирует маркеры в формате CSV", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     const csv = result.current.exportMarkers("csv")
 
@@ -194,7 +195,7 @@ describe("useTimelineMarkers", () => {
   })
 
   it("экспортирует маркеры в формате JSON", () => {
-    const { result } = renderHook(() => useTimelineMarkers())
+    const { result } = renderHook((, { wrapper: TimelineProviders }) => useTimelineMarkers())
 
     const json = result.current.exportMarkers("json")
     const parsed = JSON.parse(json)
