@@ -9,7 +9,7 @@ import { EditModeButtonGroup, EditModeSelector } from "../edit-mode-selector"
 const mockSetEditMode = vi.fn()
 const mockEditMode: EditMode = "select"
 
-vi.mock("../../hooks/use-edit-mode", () => ({
+vi.mock("../../hooks/editing/use-edit-mode", () => ({
   useEditModeContext: () => ({
     editMode: mockEditMode,
     setEditMode: mockSetEditMode,

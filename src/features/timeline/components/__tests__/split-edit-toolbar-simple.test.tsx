@@ -1,10 +1,9 @@
 import { render, screen } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
 import { describe, expect, it, vi } from "vitest"
 import { SplitEditToolbar } from "../split-edit-toolbar"
 
 // Минимальный мок хука use-split-edit
-vi.mock("../../hooks/use-split-edit", () => ({
+vi.mock("../../hooks/editing/use-split-edit", () => ({
   useSplitEdit: () => ({
     config: {
       enabled: true,
