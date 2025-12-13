@@ -6,9 +6,8 @@
 import { useDroppable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect } from "react"
 import { cn } from "@/lib/utils"
-
-import { useClipResources } from "../../hooks/effects/use-clip-resources"
 import { useDragDropTimeline } from "../../hooks/drag-drop/use-drag-drop-timeline"
+import { useClipResources } from "../../hooks/effects/use-clip-resources"
 import type { TimelineClip } from "../../types"
 
 interface ClipDropZoneDndProps {

@@ -2,14 +2,8 @@
  * Преобразование Timeline в ProjectSchema для Video Compiler
  */
 
-// Временные заглушки для отсутствующих типов
-
 // Import actual types
-import type { Transition, VideoFilter } from "@/domains/video-editing/types"
-import type { StyleTemplate } from "@/features/style-templates/types"
-import { SubtitleClip } from "@/features/subtitles"
-import type { MediaTemplate } from "@/features/templates/lib/templates"
-import type { TrackType } from "@/types/generated/tauri-bindings"
+import type { MediaTemplate, StyleTemplate, Transition, VideoFilter } from "@/domains/video-editing/types"
 import {
   AlignX,
   AlignY,
@@ -17,17 +11,15 @@ import {
   AnimationEasing,
   AnimationType,
   AspectRatio,
-  type Clip as BackendClip,
-  type StyleTemplate as BackendStyleTemplate,
-  type Subtitle as BackendSubtitle,
-  type SubtitleAnimation as BackendSubtitleAnimation,
-  type SubtitlePosition as BackendSubtitlePosition,
-  type SubtitleStyle as BackendSubtitleStyle,
-  type Track as BackendTrack,
-  // Effect as BackendEffect, // Not exported from video-compiler
+  type BackendClip,
+  type BackendStyleTemplate,
+  type BackendSubtitle,
+  type BackendSubtitleAnimation,
+  type BackendSubtitlePosition,
+  type BackendSubtitleStyle,
+  CompilerFilterType,
   CompilerTemplateType,
   type ElementAnimation,
-  FilterType,
   FitMode,
   FontWeight,
   ObjectFit,
@@ -43,14 +35,26 @@ import {
   SubtitleDirection,
   SubtitleEasing,
   SubtitleFontWeight,
-  TemplateType,
   TextAlign,
   toRustEnumCase,
-} from "../../../domains/video-editing/types"
+} from "@/domains/video-editing/types"
+import { CompilerTrackType } from "@/domains/video-editing/types/video-compiler"
+import type { SubtitleClip } from "@/features/subtitles/types"
 
 // Aliases for compatibility
-type BackendFilter = FilterType
-type BackendTemplate = TemplateType
+type BackendFilter = CompilerFilterType
+type BackendTemplate = CompilerTemplateType
+type BackendTrack = {
+  id: string
+  track_type: CompilerTrackType
+  name: string
+  enabled: boolean
+  locked: boolean
+  volume: number
+  clips: BackendClip[]
+  effects: string[]
+  filters: string[]
+}
 type TemplateCell = {
   index: number
   x: number
@@ -63,12 +67,16 @@ type TemplateCell = {
 import {
   type AppliedEffect,
   type AppliedTransition,
-  isSubtitleClip,
   type ProjectResources,
   type TimelineClip,
   type TimelineProject,
   type TimelineTrack,
 } from "@/features/timeline/types"
+
+// Type guard для SubtitleClip
+function isSubtitleClip(clip: TimelineClip): clip is SubtitleClip {
+  return clip.type === "subtitle" && "text" in clip
+}
 
 /**
  * Преобразует проект Timeline в схему для Video Compiler
@@ -225,7 +233,7 @@ function convertClip(clip: TimelineClip): BackendClip {
     // transitions: convertClipTransitions(clip.transitions),
     template_id: clip.templateId,
     template_cell: clip.templateCell,
-    style_template_id: clip.styleTemplate?.styleTemplateId,
+    style_template_id: (clip as any).styleTemplate?.styleTemplateId,
   }
 }
 
@@ -829,7 +837,7 @@ function convertStyleTemplates(styleTemplates: StyleTemplate[]): BackendStyleTem
       }
 
       // Преобразуем анимации
-      const animations: ElementAnimation[] = (element.animations || []).map((anim) => {
+      const animations: ElementAnimation[] = ((element as any).animations || []).map((anim: any) => {
         const animationTypeMap: Record<string, AnimationType> = {
           fadeIn: AnimationType.FadeIn,
           fadeOut: AnimationType.FadeOut,
@@ -886,38 +894,41 @@ function convertStyleTemplates(styleTemplates: StyleTemplate[]): BackendStyleTem
         fill: ObjectFit.Fill,
       }
 
+      const el = element as any
+      const props = el.properties || {}
+
       return {
-        id: element.id,
-        element_type: elementTypeMap[element.type] || StyleElementType.Text,
-        name: element.name.en || element.name.ru,
+        id: el.id,
+        element_type: elementTypeMap[el.type] || StyleElementType.Text,
+        name: typeof el.name === "string" ? el.name : el.name?.en || el.name?.ru || "Element",
         position: {
-          x: element.position.x,
-          y: element.position.y,
+          x: el.position?.x ?? 0,
+          y: el.position?.y ?? 0,
         },
         size: {
-          width: element.size.width,
-          height: element.size.height,
+          width: el.size?.width ?? 100,
+          height: el.size?.height ?? 100,
         },
         timing: {
-          start: element.timing.start,
-          end: element.timing.end,
+          start: el.timing?.start ?? 0,
+          end: el.timing?.end ?? 1,
         },
         properties: {
-          opacity: element.properties.opacity,
-          rotation: element.properties.rotation,
-          scale: element.properties.scale,
-          text: element.properties.text,
-          font_size: element.properties.fontSize,
-          font_family: element.properties.fontFamily,
-          color: element.properties.color,
-          text_align: element.properties.textAlign ? textAlignMap[element.properties.textAlign] : undefined,
-          font_weight: element.properties.fontWeight ? fontWeightMap[element.properties.fontWeight] : undefined,
-          background_color: element.properties.backgroundColor,
-          border_color: element.properties.borderColor,
-          border_width: element.properties.borderWidth,
-          border_radius: element.properties.borderRadius,
-          src: element.properties.src,
-          object_fit: element.properties.objectFit ? objectFitMap[element.properties.objectFit] : undefined,
+          opacity: props.opacity,
+          rotation: props.rotation,
+          scale: props.scale,
+          text: props.text,
+          font_size: props.fontSize,
+          font_family: props.fontFamily,
+          color: props.color,
+          text_align: props.textAlign ? textAlignMap[props.textAlign] : undefined,
+          font_weight: props.fontWeight ? fontWeightMap[props.fontWeight] : undefined,
+          background_color: props.backgroundColor,
+          border_color: props.borderColor,
+          border_width: props.borderWidth,
+          border_radius: props.borderRadius,
+          src: props.src,
+          object_fit: props.objectFit ? objectFitMap[props.objectFit] : undefined,
         },
         animations,
       }
@@ -942,12 +953,13 @@ function convertStyleTemplates(styleTemplates: StyleTemplate[]): BackendStyleTem
       cinematic: StyleTemplateStyle.Cinematic,
     }
 
+    const st = styleTemplate as any
     return {
-      id: styleTemplate.id,
-      name: styleTemplate.name.en || styleTemplate.name.ru,
-      category: categoryMap[styleTemplate.category] || StyleTemplateCategory.Title,
-      style: styleMap[styleTemplate.style] || StyleTemplateStyle.Modern,
-      duration: styleTemplate.duration,
+      id: st.id,
+      name: typeof st.name === "string" ? st.name : st.name?.en || st.name?.ru || "Style Template",
+      category: categoryMap[st.category] || StyleTemplateCategory.Title,
+      style: styleMap[st.style] || StyleTemplateStyle.Modern,
+      duration: st.duration ?? 3,
       elements,
     }
   })
@@ -956,17 +968,23 @@ function convertStyleTemplates(styleTemplates: StyleTemplate[]): BackendStyleTem
 /**
  * Определяет тип трека
  */
-function getTrackType(type: string): TrackType {
+function getTrackType(type: string): CompilerTrackType {
   switch (type.toLowerCase()) {
     case "video":
-      return "Video"
+    case "image":
+      return CompilerTrackType.Video
     case "audio":
-      return "Audio"
+    case "music":
+    case "voiceover":
+    case "sfx":
+    case "ambient":
+      return CompilerTrackType.Audio
     case "subtitle":
     case "text":
-      return "Title" // Subtitle tracks map to Title in tauri-bindings
+    case "title":
+      return CompilerTrackType.Subtitle
     default:
-      return "Video"
+      return CompilerTrackType.Video
   }
 }
 

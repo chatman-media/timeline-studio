@@ -24,7 +24,7 @@ export type {
   TrackType,
 } from "./types"
 // Functions from types
-export { isSubtitleClip } from "./types"
+// isSubtitleClip moved to subtitles feature
 // Factories
 export * from "./types/factories"
 // Timeline transition types

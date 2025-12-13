@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest"
+import type { TimelineTransition } from "@/domains/video-editing/types"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import {
   autoFixCollisions,
@@ -7,7 +8,6 @@ import {
   suggestCollisionFixes,
   type TransitionCollision,
 } from "../../services/transition-collision-detector"
-import type { TimelineTransition } from "../../types/timeline-transition"
 
 // Тестовые данные
 const createMockClip = (id: string, startTime: number, duration: number): TimelineClip => ({
@@ -56,6 +56,7 @@ const createMockTransition = (
   trackId,
   isEnabled: true,
   isLocked: false,
+  renderCache: undefined,
 })
 
 const createMockTrack = (id: string, clips: TimelineClip[] = [], transitions: string[] = []): TimelineTrack => ({
@@ -415,7 +416,7 @@ describe("transition-collision-detector", () => {
       const fixedProject = autoFixCollisions(project, collisions)
 
       // Проверяем, что переходы были изменены
-      const updatedTransition1 = fixedProject.resources.timelineTransitions.find((t) => t.id === "t1")
+      const updatedTransition1 = fixedProject.resources.timelineTransitions?.find((t) => t.id === "t1")
       expect(updatedTransition1).toBeDefined()
       expect(updatedTransition1?.duration).not.toBe(3) // Должно быть изменено
     })
@@ -449,8 +450,8 @@ describe("transition-collision-detector", () => {
       const fixedProject = autoFixCollisions(project, collisions)
 
       // Проверяем, что оба перехода были изменены
-      const updatedTransition1 = fixedProject.resources.timelineTransitions.find((t) => t.id === "t1")
-      const updatedTransition2 = fixedProject.resources.timelineTransitions.find((t) => t.id === "t2")
+      const updatedTransition1 = fixedProject.resources.timelineTransitions?.find((t) => t.id === "t1")
+      const updatedTransition2 = fixedProject.resources.timelineTransitions?.find((t) => t.id === "t2")
 
       expect(updatedTransition1?.position).not.toBe(-1)
       expect(updatedTransition2?.position).not.toBe(-2)
@@ -509,7 +510,7 @@ describe("transition-collision-detector", () => {
       const fixedProject = autoFixCollisions(project, collisions)
 
       // Оригинальный переход не должен быть изменен
-      const unchangedTransition = fixedProject.resources.timelineTransitions.find((t) => t.id === "t1")
+      const unchangedTransition = fixedProject.resources.timelineTransitions?.find((t) => t.id === "t1")
       expect(unchangedTransition).toEqual(transition)
     })
   })

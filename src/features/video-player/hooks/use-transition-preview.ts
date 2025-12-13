@@ -62,7 +62,7 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
 
   // Получить все переходы в проекте
   const allTransitions = useMemo(() => {
-    if (!project) return []
+    if (!project || !project.resources.timelineTransitions) return []
 
     const transitions: Array<{
       transition: TimelineTransition
@@ -74,8 +74,8 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
     const allTracks = [...sectionTracks, ...project.globalTracks]
 
     for (const track of allTracks) {
-      // Skip tracks without clips that have transitions
-      if (!track.clips || !project.resources.timelineTransitions) continue
+      // Skip tracks without clips
+      if (!track.clips || track.clips.length === 0) continue
 
       // Collect transitions from all clips in this track
       const trackTransitionIds = track.clips.flatMap((clip) => clip.transitions.map((t) => t.id))
@@ -89,16 +89,22 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
       transitions.push(...trackTransitions)
     }
 
-    return transitions.sort((a, b) => a.transition.startTime - b.transition.startTime)
+    // Сортируем по position (или startTime для обратной совместимости)
+    return transitions.sort((a, b) => {
+      const timeA = a.transition.startTime ?? a.transition.position
+      const timeB = b.transition.startTime ?? b.transition.position
+      return timeA - timeB
+    })
   }, [project])
 
   // Найти переход на определённом времени
   const getTransitionAtTime = useCallback(
     (time: number) => {
       for (const { transition } of allTransitions) {
-        const transitionEnd = transition.startTime + transition.duration
-        if (time >= transition.startTime && time <= transitionEnd) {
-          const progress = (time - transition.startTime) / transition.duration
+        const transitionStart = transition.startTime ?? transition.position
+        const transitionEnd = transitionStart + transition.duration
+        if (time >= transitionStart && time <= transitionEnd) {
+          const progress = (time - transitionStart) / transition.duration
           return { transition, progress }
         }
       }
@@ -122,12 +128,13 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
 
     if (transitionData) {
       const { transition, progress } = transitionData
+      const transitionStart = transition.startTime ?? transition.position
       setState((prev) => ({
         ...prev,
         activeTransition: transition,
         progress,
-        startTime: transition.startTime,
-        endTime: transition.startTime + transition.duration,
+        startTime: transitionStart,
+        endTime: transitionStart + transition.duration,
       }))
     } else {
       setState((prev) => ({
@@ -221,12 +228,13 @@ export function useTransitionPreview(options: UseTransitionPreviewOptions = {}):
       const transitionData = getTransitionAtTime(time)
 
       if (transitionData) {
+        const transitionStart = transitionData.transition.startTime ?? transitionData.transition.position
         setState((prev) => ({
           ...prev,
           activeTransition: transitionData.transition,
           progress: transitionData.progress,
-          startTime: transitionData.transition.startTime,
-          endTime: transitionData.transition.startTime + transitionData.transition.duration,
+          startTime: transitionStart,
+          endTime: transitionStart + transitionData.transition.duration,
         }))
       }
     },
@@ -272,15 +280,15 @@ export function useActiveTransition() {
   const { project, currentTime } = useTimeline()
 
   return useMemo(() => {
-    if (!project || !currentTime) return null
+    if (!project || !project.resources.timelineTransitions) return null
 
     // Ищем активный переход
     const sectionTracks = project.sections.flatMap((s) => s.tracks)
     const allTracks = [...sectionTracks, ...project.globalTracks]
 
     for (const track of allTracks) {
-      // Skip tracks without clips that have transitions
-      if (!track.clips || !project.resources.timelineTransitions) continue
+      // Skip tracks without clips
+      if (!track.clips || track.clips.length === 0) continue
 
       // Collect transitions from all clips in this track
       const trackTransitionIds = track.clips.flatMap((clip) => clip.transitions.map((t) => t.id))
@@ -290,9 +298,10 @@ export function useActiveTransition() {
         .filter((t): t is TimelineTransition => t !== undefined && t !== null)
 
       for (const transition of validTransitions) {
-        const transitionEnd = transition.startTime + transition.duration
-        if (currentTime >= transition.startTime && currentTime <= transitionEnd) {
-          const progress = (currentTime - transition.startTime) / transition.duration
+        const transitionStart = transition.startTime ?? transition.position
+        const transitionEnd = transitionStart + transition.duration
+        if (currentTime >= transitionStart && currentTime <= transitionEnd) {
+          const progress = (currentTime - transitionStart) / transition.duration
           return { transition, progress, trackId: track.id }
         }
       }

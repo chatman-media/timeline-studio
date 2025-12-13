@@ -107,6 +107,7 @@ describe("useTransitionExport", () => {
   describe("getTransitionInfo", () => {
     it("should return transition information", () => {
       const project = createMockProject()
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
       const mockTransitions = [
         {
           transition: { id: "t1" },
@@ -127,7 +128,7 @@ describe("useTransitionExport", () => {
       mockService.extractTransitionsFromProject.mockReturnValue(mockTransitions)
 
       const { result } = renderHook(() => useTransitionExport())
-      const info = result.current.getTransitionInfo(project)
+      const info = result.current.getTransitionInfo(project, availableTransitions)
 
       expect(info.totalTransitions).toBe(2)
       expect(info.gpuAccelerated).toBe(1)
@@ -137,10 +138,11 @@ describe("useTransitionExport", () => {
 
     it("should handle project without transitions", () => {
       const project = createMockProject()
+      const availableTransitions = new Map()
       mockService.extractTransitionsFromProject.mockReturnValue([])
 
       const { result } = renderHook(() => useTransitionExport())
-      const info = result.current.getTransitionInfo(project)
+      const info = result.current.getTransitionInfo(project, availableTransitions)
 
       expect(info.totalTransitions).toBe(0)
       expect(info.gpuAccelerated).toBe(0)
@@ -153,6 +155,7 @@ describe("useTransitionExport", () => {
       const project = createMockProject()
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map([["clip-1", "/path/clip1.mp4"]])
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
 
       const mockResult = {
         success: true,
@@ -175,7 +178,12 @@ describe("useTransitionExport", () => {
       const onComplete = vi.fn()
       const { result } = renderHook(() => useTransitionExport({ onComplete }))
 
-      const exportResult = await result.current.exportTransitions(project, exportSettings, clipPaths)
+      const exportResult = await result.current.exportTransitions(
+        project,
+        exportSettings,
+        clipPaths,
+        availableTransitions,
+      )
 
       await waitFor(() => {
         expect(result.current.isExporting).toBe(false)
@@ -193,11 +201,17 @@ describe("useTransitionExport", () => {
 
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = new Map()
 
       const onError = vi.fn()
       const { result } = renderHook(() => useTransitionExport({ onError }))
 
-      const exportResult = await result.current.exportTransitions(project, exportSettings, clipPaths)
+      const exportResult = await result.current.exportTransitions(
+        project,
+        exportSettings,
+        clipPaths,
+        availableTransitions,
+      )
 
       expect(exportResult).toBeNull()
       expect(onError).toHaveBeenCalledWith("В проекте нет переходов для экспорта")
@@ -207,6 +221,7 @@ describe("useTransitionExport", () => {
       const project = createMockProject()
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
 
       mockService.extractTransitionsFromProject.mockReturnValue([{ transition: { id: "t1" } }])
       mockService.exportTransitions.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 1000)))
@@ -215,14 +230,14 @@ describe("useTransitionExport", () => {
       const { result } = renderHook(() => useTransitionExport({ onError }))
 
       // Начинаем первый экспорт
-      const promise1 = result.current.exportTransitions(project, exportSettings, clipPaths)
+      const promise1 = result.current.exportTransitions(project, exportSettings, clipPaths, availableTransitions)
 
       // Пытаемся начать второй экспорт пока первый выполняется
       await waitFor(() => {
         expect(result.current.isExporting).toBe(true)
       })
 
-      const promise2 = result.current.exportTransitions(project, exportSettings, clipPaths)
+      const promise2 = result.current.exportTransitions(project, exportSettings, clipPaths, availableTransitions)
 
       expect(await promise2).toBeNull()
       expect(onError).toHaveBeenCalledWith("Экспорт уже выполняется")
@@ -235,6 +250,7 @@ describe("useTransitionExport", () => {
       const project = createMockProject()
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
 
       mockService.extractTransitionsFromProject.mockReturnValue([{ transition: { id: "t1" } }])
       mockService.exportTransitions.mockRejectedValue(new Error("Export failed"))
@@ -242,7 +258,12 @@ describe("useTransitionExport", () => {
       const onError = vi.fn()
       const { result } = renderHook(() => useTransitionExport({ onError }))
 
-      const exportResult = await result.current.exportTransitions(project, exportSettings, clipPaths)
+      const exportResult = await result.current.exportTransitions(
+        project,
+        exportSettings,
+        clipPaths,
+        availableTransitions,
+      )
 
       await waitFor(() => {
         expect(result.current.isExporting).toBe(false)
@@ -257,6 +278,7 @@ describe("useTransitionExport", () => {
       const project = createMockProject()
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
 
       const mockResult = {
         success: true,
@@ -279,6 +301,7 @@ describe("useTransitionExport", () => {
           _project: TimelineProject,
           _settings: ExportSettings,
           _clips: Map<string, string>,
+          _availableTransitions: Map<string, any>,
           onProgress?: (status: TransitionExportStatus) => void,
         ) => {
           if (onProgress) {
@@ -292,7 +315,7 @@ describe("useTransitionExport", () => {
       const onProgress = vi.fn()
       const { result } = renderHook(() => useTransitionExport({ onProgress }))
 
-      await result.current.exportTransitions(project, exportSettings, clipPaths)
+      await result.current.exportTransitions(project, exportSettings, clipPaths, availableTransitions)
 
       expect(onProgress).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -311,11 +334,12 @@ describe("useTransitionExport", () => {
       const project = createMockProject()
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
 
       mockService.extractTransitionsFromProject.mockReturnValue([{ transition: { id: "t1" } }])
       mockService.exportTransitions.mockImplementation(() => new Promise(() => {})) // Never resolves
 
-      result.current.exportTransitions(project, exportSettings, clipPaths)
+      result.current.exportTransitions(project, exportSettings, clipPaths, availableTransitions)
 
       await waitFor(() => {
         expect(result.current.isExporting).toBe(true)
@@ -359,6 +383,7 @@ describe("useTransitionExport", () => {
       const project = createMockProject()
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = new Map([["fade", { id: "fade", type: "fade", name: "Fade" }]])
 
       const mockResult = {
         success: true,
@@ -385,6 +410,7 @@ describe("useTransitionExport", () => {
           _project: TimelineProject,
           _settings: ExportSettings,
           _clips: Map<string, string>,
+          _availableTransitions: Map<string, any>,
           onProgress?: (status: TransitionExportStatus) => void,
         ) => {
           if (onProgress) {
@@ -409,7 +435,7 @@ describe("useTransitionExport", () => {
 
       const { result } = renderHook(() => useTransitionExport())
 
-      await result.current.exportTransitions(project, exportSettings, clipPaths)
+      await result.current.exportTransitions(project, exportSettings, clipPaths, availableTransitions)
 
       await waitFor(() => {
         const stats = result.current.getExportStats()

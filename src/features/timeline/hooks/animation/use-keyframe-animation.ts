@@ -10,8 +10,8 @@ import {
   type InterpolationType,
   KeyframeAnimationService,
 } from "../../services/keyframe-animation-service"
-import { useTimeline } from "../state/use-timeline"
 import type { TimelineClip, TimelineKeyframe } from "../../types"
+import { useTimeline } from "../state/use-timeline"
 
 export interface UseKeyframeAnimationReturn {
   // Основные операции с keyframes

@@ -112,8 +112,8 @@ export function useTransitionExport(options: UseTransitionExportOptions = {}) {
 
   // Получение информации о переходах
   const getTransitionInfo = useCallback(
-    (project: TimelineProject) => {
-      const transitionInfos = service.extractTransitionsFromProject(project)
+    (project: TimelineProject, availableTransitions: Map<string, any>) => {
+      const transitionInfos = service.extractTransitionsFromProject(project, availableTransitions)
 
       return {
         totalTransitions: transitionInfos.length,
@@ -138,6 +138,7 @@ export function useTransitionExport(options: UseTransitionExportOptions = {}) {
       project: TimelineProject,
       exportSettings: ExportSettings | TransitionExportSettings,
       clipPaths: Map<string, string>,
+      availableTransitions: Map<string, any>,
     ): Promise<TransitionExportResult | null> => {
       // Проверяем наличие переходов
       if (!hasTransitions(project)) {
@@ -165,7 +166,13 @@ export function useTransitionExport(options: UseTransitionExportOptions = {}) {
         }))
 
         // Запускаем экспорт
-        const result = await service.exportTransitions(project, exportSettings, clipPaths, handleProgress)
+        const result = await service.exportTransitions(
+          project,
+          exportSettings,
+          clipPaths,
+          availableTransitions,
+          handleProgress,
+        )
 
         // Обновляем состояние с результатом
         setState((prev) => ({

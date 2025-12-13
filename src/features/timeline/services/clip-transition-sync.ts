@@ -3,8 +3,12 @@
  * Синхронизация переходов при операциях с клипами
  */
 
+import type { TimelineTransition as DomainTimelineTransition } from "@/domains/video-editing/types"
 import type { TimelineProject } from "@/features/timeline/types"
-import type { TimelineTransition } from "../types/timeline-transition"
+
+// Используем базовый domain тип для совместимости с resources
+type TimelineTransition = DomainTimelineTransition
+
 import { updateTimelineTransitionProperties } from "./resource-manager"
 import {
   adjustTransitionsForClipChange,
@@ -155,16 +159,17 @@ export function resolveTransitionCollisions(
 ): TimelineProject {
   let updatedProject = { ...project }
   const track = findTrack(project, trackId)
-  if (!track || !track.transitions) return updatedProject
+  if (!track || !track.transitions || !project.resources.timelineTransitions) return updatedProject
 
   const transitions = track.transitions
-    .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
-    .filter((t): t is TimelineTransition => t !== undefined)
-    .sort((a, b) => a.position - b.position)
+    .map((id) => project.resources.timelineTransitions?.find((t) => t.id === id))
+    .filter((t) => t !== undefined)
+    .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0)) as TimelineTransition[]
 
   // Проверяем каждый переход на коллизии
   for (let i = 0; i < transitions.length; i++) {
     const transition = transitions[i]
+    if (!transition) continue
 
     // Пропускаем изменённый переход
     if (transition.id === changedTransitionId) continue
@@ -172,6 +177,7 @@ export function resolveTransitionCollisions(
     // Проверяем коллизию с предыдущими переходами
     for (let j = 0; j < i; j++) {
       const prevTransition = transitions[j]
+      if (!prevTransition) continue
       const prevEnd = prevTransition.position + prevTransition.duration
 
       if (prevEnd > transition.position) {

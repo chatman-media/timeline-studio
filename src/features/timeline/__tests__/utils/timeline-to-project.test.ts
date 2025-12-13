@@ -269,7 +269,6 @@ describe("timelineToProjectSchema", () => {
       filters: [{ id: "filter-1", filterId: "filter-1", isEnabled: true, order: 0 }],
       templateId: "template-1",
       templateCell: 2,
-      styleTemplate: { id: "style-1", styleTemplateId: "style-1", isEnabled: true },
     })
 
     const track = createMockTrack({ clips: [clip] })
@@ -288,7 +287,6 @@ describe("timelineToProjectSchema", () => {
     expect(convertedClip.filters).toEqual(["filter-1"])
     expect(convertedClip.template_id).toBe("template-1")
     expect(convertedClip.template_cell).toBe(2)
-    expect(convertedClip.style_template_id).toBe("style-1")
   })
 
   it("использует значения по умолчанию для клипов", () => {

@@ -47,7 +47,8 @@ describe("TransitionExportService", () => {
   describe("extractTransitionsFromProject", () => {
     it("should extract transitions from project", () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       expect(transitions).toHaveLength(2)
       expect(transitions[0].transition.id).toBe("transition-1")
@@ -56,14 +57,16 @@ describe("TransitionExportService", () => {
 
     it("should sort transitions by start time", () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       expect(transitions[0].startTime).toBeLessThanOrEqual(transitions[1].startTime)
     })
 
     it("should calculate render quality for each transition", () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       transitions.forEach((t) => {
         expect(t.renderQuality).toBeGreaterThanOrEqual(50)
@@ -74,8 +77,9 @@ describe("TransitionExportService", () => {
     it("should handle project without transitions", () => {
       const emptyProject = createMockProject()
       emptyProject.sections[0].tracks[0].transitions = []
+      const availableTransitions = createAvailableTransitionsMap()
 
-      const transitions = service.extractTransitionsFromProject(emptyProject)
+      const transitions = service.extractTransitionsFromProject(emptyProject, availableTransitions)
 
       expect(transitions).toHaveLength(0)
     })
@@ -109,7 +113,8 @@ describe("TransitionExportService", () => {
       mockProject.resources.timelineTransitions.push(invalidTransition as any)
       track.transitions?.push("invalid-transition")
 
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       // Should only return valid transitions
       expect(transitions.every((t) => t.resource !== undefined)).toBe(true)
@@ -137,7 +142,8 @@ describe("TransitionExportService", () => {
 
       mockProject.globalTracks = [globalTrack]
 
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       expect(transitions.length).toBeGreaterThanOrEqual(1)
     })
@@ -146,7 +152,8 @@ describe("TransitionExportService", () => {
   describe("createFFmpegConfigs", () => {
     it("should create FFmpeg configs from transitions", async () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map([
         ["clip-1", "/path/to/clip1.mp4"],
@@ -166,7 +173,8 @@ describe("TransitionExportService", () => {
 
     it("should skip transitions with missing clip paths", async () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map([["clip-1", "/path/to/clip1.mp4"]])
       // clip-2 отсутствует
@@ -179,7 +187,8 @@ describe("TransitionExportService", () => {
 
     it("should apply GPU settings when enabled", async () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       const exportSettings = createMockExportSettings()
       exportSettings.enableGPU = true
 
@@ -199,7 +208,8 @@ describe("TransitionExportService", () => {
 
     it("should handle errors when skipFailedTransitions is enabled", async () => {
       const mockProject = createMockProject()
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
 
@@ -333,8 +343,9 @@ describe("TransitionExportService", () => {
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
       ])
+      const availableTransitions = createAvailableTransitionsMap()
 
-      const result = await service.exportTransitions(mockProject, exportSettings, clipPaths)
+      const result = await service.exportTransitions(mockProject, exportSettings, clipPaths, availableTransitions)
 
       expect(result.success).toBe(true)
       expect(result.totalTransitions).toBe(2)
@@ -347,8 +358,9 @@ describe("TransitionExportService", () => {
 
       const exportSettings = createMockExportSettings()
       const clipPaths = new Map()
+      const availableTransitions = createAvailableTransitionsMap()
 
-      const result = await service.exportTransitions(emptyProject, exportSettings, clipPaths)
+      const result = await service.exportTransitions(emptyProject, exportSettings, clipPaths, availableTransitions)
 
       expect(result.success).toBe(true)
       expect(result.totalTransitions).toBe(0)
@@ -362,10 +374,11 @@ describe("TransitionExportService", () => {
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
       ])
+      const availableTransitions = createAvailableTransitionsMap()
 
       const progressCallback = vi.fn()
 
-      await service.exportTransitions(mockProject, exportSettings, clipPaths, progressCallback)
+      await service.exportTransitions(mockProject, exportSettings, clipPaths, availableTransitions, progressCallback)
 
       expect(progressCallback).toHaveBeenCalled()
     })
@@ -377,8 +390,9 @@ describe("TransitionExportService", () => {
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
       ])
+      const availableTransitions = createAvailableTransitionsMap()
 
-      const result = await service.exportTransitions(mockProject, exportSettings, clipPaths)
+      const result = await service.exportTransitions(mockProject, exportSettings, clipPaths, availableTransitions)
 
       expect(result.totalRenderTime).toBeGreaterThan(0)
       expect(result.averageTransitionTime).toBeGreaterThan(0)
@@ -396,8 +410,9 @@ describe("TransitionExportService", () => {
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
       ])
+      const availableTransitions = createAvailableTransitionsMap()
 
-      const result = await service.exportTransitions(mockProject, exportSettings, clipPaths)
+      const result = await service.exportTransitions(mockProject, exportSettings, clipPaths, availableTransitions)
 
       expect(result.success).toBe(true)
     })
@@ -440,11 +455,12 @@ describe("TransitionExportService", () => {
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
       ])
+      const availableTransitions = createAvailableTransitionsMap()
 
-      await service.exportTransitions(mockProject, exportSettings, clipPaths)
+      await service.exportTransitions(mockProject, exportSettings, clipPaths, availableTransitions)
 
       // After export, statuses should be available
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       if (transitions.length > 0) {
         const status = service.getExportStatus(transitions[0].transition.id)
         // Status might be undefined or defined based on implementation
@@ -461,12 +477,13 @@ describe("TransitionExportService", () => {
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
       ])
+      const availableTransitions = createAvailableTransitionsMap()
 
-      await service.exportTransitions(mockProject, exportSettings, clipPaths)
+      await service.exportTransitions(mockProject, exportSettings, clipPaths, availableTransitions)
 
       service.clearStatuses()
 
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       if (transitions.length > 0) {
         const status = service.getExportStatus(transitions[0].transition.id)
         expect(status).toBeUndefined()
@@ -481,7 +498,8 @@ describe("TransitionExportService", () => {
         mockProject.resources.timelineTransitions[0].duration = 0
       }
 
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       expect(transitions[0].duration).toBe(0)
     })
@@ -492,7 +510,8 @@ describe("TransitionExportService", () => {
         mockProject.resources.timelineTransitions[0].duration = 10000
       }
 
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
 
       expect(transitions[0].duration).toBe(10000)
     })
@@ -502,7 +521,8 @@ describe("TransitionExportService", () => {
       const exportSettings = createMockExportSettings()
       exportSettings.quality = "best"
 
-      const transitions = service.extractTransitionsFromProject(mockProject)
+      const availableTransitions = createAvailableTransitionsMap()
+      const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
       const clipPaths = new Map([
         ["clip-1", "/path/to/clip1.mp4"],
         ["clip-2", "/path/to/clip2.mp4"],
@@ -521,7 +541,8 @@ describe("TransitionExportService", () => {
         const exportSettings = createMockExportSettings()
         exportSettings.resolution = resolution
 
-        const transitions = service.extractTransitionsFromProject(mockProject)
+        const availableTransitions = createAvailableTransitionsMap()
+        const transitions = service.extractTransitionsFromProject(mockProject, availableTransitions)
         const clipPaths = new Map([
           ["clip-1", "/path/to/clip1.mp4"],
           ["clip-2", "/path/to/clip2.mp4"],
@@ -540,45 +561,7 @@ describe("TransitionExportService", () => {
 // Helper Functions
 // ============================================================================
 
-function createMockProject(): TimelineProject {
-  const transition1: TimelineTransition = {
-    id: "transition-1",
-    transitionId: "fade",
-    type: "between",
-    position: 0,
-    duration: 1,
-    startClipId: "clip-1",
-    endClipId: "clip-2",
-    trackId: "track-1",
-    parameters: {
-      intensity: 1.0,
-      direction: "center",
-    },
-    keyframes: [],
-    curve: { type: "linear", points: [] },
-    isEnabled: true,
-    isLocked: false,
-  }
-
-  const transition2: TimelineTransition = {
-    id: "transition-2",
-    transitionId: "dissolve",
-    type: "between",
-    position: 5,
-    duration: 1.5,
-    startClipId: "clip-1",
-    endClipId: "clip-2",
-    trackId: "track-1",
-    parameters: {
-      intensity: 0.8,
-      direction: "center",
-    },
-    keyframes: [],
-    curve: { type: "linear", points: [] },
-    isEnabled: true,
-    isLocked: false,
-  }
-
+function createAvailableTransitionsMap(): Map<string, Transition> {
   const transitionResource1: Transition = {
     id: "fade",
     type: "fade",
@@ -625,6 +608,51 @@ function createMockProject(): TimelineProject {
     gpuAccelerated: true,
   }
 
+  return new Map([
+    ["fade", transitionResource1],
+    ["dissolve", transitionResource2],
+  ])
+}
+
+function createMockProject(): TimelineProject {
+  const transition1: TimelineTransition = {
+    id: "transition-1",
+    transitionId: "fade",
+    type: "between",
+    position: 0,
+    duration: 1,
+    startClipId: "clip-1",
+    endClipId: "clip-2",
+    trackId: "track-1",
+    parameters: {
+      intensity: 1.0,
+      direction: "center",
+    },
+    keyframes: [],
+    curve: { type: "linear", points: [] },
+    isEnabled: true,
+    isLocked: false,
+  }
+
+  const transition2: TimelineTransition = {
+    id: "transition-2",
+    transitionId: "dissolve",
+    type: "between",
+    position: 5,
+    duration: 1.5,
+    startClipId: "clip-1",
+    endClipId: "clip-2",
+    trackId: "track-1",
+    parameters: {
+      intensity: 0.8,
+      direction: "center",
+    },
+    keyframes: [],
+    curve: { type: "linear", points: [] },
+    isEnabled: true,
+    isLocked: false,
+  }
+
   return {
     id: "test-project",
     name: "Test Project",
@@ -647,7 +675,7 @@ function createMockProject(): TimelineProject {
     globalTracks: [],
     resources: {
       timelineTransitions: [transition1, transition2],
-      transitions: [transitionResource1, transitionResource2],
+      transitions: [], // Note: transitions are now passed via availableTransitions Map
       effects: [],
       filters: [],
       templates: [],

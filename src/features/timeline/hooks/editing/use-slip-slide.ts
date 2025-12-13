@@ -7,8 +7,8 @@ import { useCallback, useRef, useState } from "react"
 import { SlipSlideService } from "../../services/slip-slide-service"
 import type { TimelineClip, TimelineTrack } from "../../types"
 import { EDIT_MODES } from "../../types/edit-modes"
+import { useEditModeContext } from "../editing/use-edit-mode"
 import { useTimeline } from "../state/use-timeline"
-import { useEditModeContext } from '../editing/use-edit-mode'
 
 export interface SlipSlidePreview {
   mode: "slip" | "slide"

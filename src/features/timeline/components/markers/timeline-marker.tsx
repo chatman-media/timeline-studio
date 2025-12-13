@@ -38,6 +38,7 @@ const markerIcons: Record<MarkerType, React.ReactNode> = {
   cue: <PlayCircle className="w-3 h-3" />,
   important: <AlertCircle className="w-3 h-3" />,
   warning: <AlertTriangle className="w-3 h-3" />,
+  timeline: <Bookmark className="w-3 h-3" />,
 }
 
 export function TimelineMarker({ marker, timeScale, isSelected, onDrag, onClick, onDelete }: TimelineMarkerProps) {

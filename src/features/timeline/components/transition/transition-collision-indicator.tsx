@@ -8,16 +8,9 @@ import { AlertCircle, AlertTriangle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
+import type { TimelineTransition } from "@/domains/video-editing/types"
 import { cn } from "@/lib/utils"
-
-interface TransitionCollision {
-  transition1: TimelineTransition
-  transition2: TimelineTransition
-  type: "overlap" | "adjacent" | "clip-boundary"
-  severity: "warning" | "error"
-  message: string
-}
+import type { TransitionCollision } from "../../services/transition-collision-detector"
 
 interface TransitionCollisionIndicatorProps {
   collisions: TransitionCollision[]

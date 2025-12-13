@@ -9,7 +9,7 @@ import { describe, expect, it, vi } from "vitest"
 import "@/test/mocks/dnd-kit"
 import "../../__mocks__/hooks"
 
-import { Track } from "../../components/track/track"
+import { TrackComponent as Track } from "../../components/track/track"
 
 // Мокаем данные трека
 const mockTrack = {

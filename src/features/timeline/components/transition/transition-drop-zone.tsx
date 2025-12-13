@@ -6,8 +6,8 @@ import type { TimelineClip } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useDragDropTimeline } from "../../hooks/drag-drop/use-drag-drop-timeline"
-import { useTimeline } from "../../hooks/state/use-timeline"
 import { useTimelineEffects } from "../../hooks/effects/use-timeline-effects"
+import { useTimeline } from "../../hooks/state/use-timeline"
 
 const logger = createLogger("TransitionDropZone")
 

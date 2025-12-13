@@ -12,8 +12,8 @@ import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useModals } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
-import { useTimeline } from "../../hooks/state/use-timeline"
 import { useTimelineAIAnalysis } from "../../hooks/integration/use-timeline-ai-analysis"
+import { useTimeline } from "../../hooks/state/use-timeline"
 import { type AIMarkerConfig, AIMarkerService } from "../../services/ai-marker-service"
 
 const logger = createLogger("AiMarkerControls")

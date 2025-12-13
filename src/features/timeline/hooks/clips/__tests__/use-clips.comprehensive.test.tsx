@@ -7,8 +7,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@/domains/video-editing/types/media"
 import { MediaType } from "@/domains/video-editing/types/media"
 import { TimelineProviders } from "@/test/test-utils"
-import { useTimeline } from "../../state/use-timeline"
 import type { TimelineClip, TimelineProject, TrackType } from "../../../types"
+import { useTimeline } from "../../state/use-timeline"
 import { useClips } from "../use-clips"
 
 // Mock useTimeline hook

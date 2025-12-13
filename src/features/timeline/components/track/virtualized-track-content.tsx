@@ -17,8 +17,7 @@ import { addTransitionBetweenClips, getTrackTransitions } from "../../services/t
 import type { TimelineTrack } from "../../types"
 import { OptimizedClip } from "../clip/optimized-clip"
 import { CollapsedGroup } from "../clip-groups/collapsed-group"
-import { TransitionCollisionIndicator } from "../transition/transition-collision-indicator"
-import { TransitionDropZone } from "../transition/transition-drop-zone"
+import { TransitionCollisionIndicator, TransitionDropZone } from "../transition"
 import { TimelineTransitionComponent } from "../transitions/timeline-transition"
 import { TrackRollHandles } from "./track-roll-handles"
 

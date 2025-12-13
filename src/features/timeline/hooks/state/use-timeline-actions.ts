@@ -10,7 +10,7 @@ import { createLogger } from "@/lib/tauri-logger"
 import type { TrackType } from "../../types"
 import { useClips } from "../clips/use-clips"
 import { useTimeline } from "../state/use-timeline"
-import { useTracks } from '../state/use-tracks'
+import { useTracks } from "../state/use-tracks"
 
 const logger = createLogger("UseTimelineActions")
 

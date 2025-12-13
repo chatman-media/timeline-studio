@@ -9,8 +9,8 @@ import type {
   TimelineClip as DomainTimelineClip,
   Timeline,
 } from "@/domains/video-editing/types"
-import { useTimeline } from "../state/use-timeline"
 import type { TimelineClip, TrackType } from "../../types"
+import { useTimeline } from "../state/use-timeline"
 
 // Адаптер для преобразования domain MediaFile в feature MediaFile
 const adaptDomainMediaFileToFeatureMediaFile = (domainMediaFile: DomainMediaFile): MediaFile => {

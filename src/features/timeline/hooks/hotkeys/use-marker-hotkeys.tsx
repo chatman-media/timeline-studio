@@ -1,9 +1,8 @@
 import { useEffect } from "react"
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
-
+import { useTimelineMarkers } from "../markers/use-timeline-markers"
 import { useTimeline } from "../state/use-timeline"
-import { useTimelineMarkers } from '../markers/use-timeline-markers'
 
 export function useMarkerHotkeys() {
   const { currentTime, seek } = useTimeline()

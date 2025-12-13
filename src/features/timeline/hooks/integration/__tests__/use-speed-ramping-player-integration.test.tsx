@@ -6,7 +6,7 @@ import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProviders } from "@/test/test-utils"
 import { SpeedRampingServiceImpl } from "../../../services/speed-ramping-service"
-import { useSpeedRampingPlayerIntegration } from '../use-speed-ramping-player-integration'
+import { useSpeedRampingPlayerIntegration } from "../use-speed-ramping-player-integration"
 
 // Мокаем timeline
 const mockSpeedRampingService = new SpeedRampingServiceImpl()

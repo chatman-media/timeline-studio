@@ -8,6 +8,7 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
 import { container } from "@/core/container"
+import { UndoRedoHelpers, useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
 import {
   createInitialUndoState,
   handleHistoryLoaded,
@@ -16,7 +17,6 @@ import {
   type UndoRedoState,
 } from "@/domains/video-editing/machines/undo-backend-event-handlers"
 import { createLogger } from "@/lib/tauri-logger"
-import { UndoRedoHelpers, useUndoRedo } from '@/domains/video-editing/hooks/use-undo-redo'
 
 const logger = createLogger("UndoRedoProvider")
 

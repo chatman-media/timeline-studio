@@ -2,8 +2,8 @@ import { useEffect } from "react"
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import type { TimelineClip } from "@/features/timeline/types"
+import { useClipGroups } from "../clips/use-clip-groups"
 import { useTimeline } from "../state/use-timeline"
-import { useClipGroups } from '../clips/use-clip-groups'
 
 export function useGroupHotkeys() {
   const { createGroup, ungroupClips, getGroupByClip } = useClipGroups()

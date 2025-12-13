@@ -2,8 +2,11 @@
  * Сервис обнаружения коллизий переходов
  */
 
+import type { TimelineTransition as DomainTimelineTransition } from "@/domains/video-editing/types"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
-import type { TimelineTransition } from "../types/timeline-transition"
+
+// Используем базовый domain тип для совместимости с resources
+type TimelineTransition = DomainTimelineTransition
 
 export interface TransitionCollision {
   transition1: TimelineTransition
@@ -41,18 +44,24 @@ export function detectTrackCollisions(project: TimelineProject, track: TimelineT
   }
 
   // Получаем все переходы трека
+  if (!project.resources.timelineTransitions) {
+    return collisions
+  }
+
   const transitions = track.transitions
-    .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
-    .filter((t): t is TimelineTransition => t !== undefined)
-    .sort((a, b) => a.position - b.position)
+    .map((id) => project.resources.timelineTransitions?.find((t) => t.id === id))
+    .filter((t) => t !== undefined)
+    .sort((a, b) => (a?.position ?? 0) - (b?.position ?? 0)) as TimelineTransition[]
 
   // Проверяем пересечения между переходами
   for (let i = 0; i < transitions.length; i++) {
     const transition1 = transitions[i]
+    if (!transition1) continue
 
     // Проверяем с последующими переходами
     for (let j = i + 1; j < transitions.length; j++) {
       const transition2 = transitions[j]
+      if (!transition2) continue
       const collision = checkTransitionOverlap(transition1, transition2)
       if (collision) {
         collisions.push(collision)
@@ -288,6 +297,11 @@ export function suggestCollisionFixes(collision: TransitionCollision): Array<{
 export function autoFixCollisions(project: TimelineProject, collisions: TransitionCollision[]): TimelineProject {
   const updatedProject = { ...project }
 
+  // Проверяем наличие timelineTransitions
+  if (!updatedProject.resources.timelineTransitions) {
+    return updatedProject
+  }
+
   // Группируем коллизии по трекам для эффективной обработки
   const collisionsByTrack = new Map<string, TransitionCollision[]>()
 
@@ -313,11 +327,11 @@ export function autoFixCollisions(project: TimelineProject, collisions: Transiti
         const fix = fixes[0].action()
 
         // Обновляем переход в проекте
-        const transitionIndex = updatedProject.resources.timelineTransitions.findIndex(
+        const transitionIndex = updatedProject.resources.timelineTransitions?.findIndex(
           (t) => t.id === collision.transition1.id,
         )
 
-        if (transitionIndex !== -1) {
+        if (transitionIndex !== undefined && transitionIndex !== -1 && updatedProject.resources.timelineTransitions) {
           updatedProject.resources.timelineTransitions[transitionIndex] = {
             ...updatedProject.resources.timelineTransitions[transitionIndex],
             ...fix,

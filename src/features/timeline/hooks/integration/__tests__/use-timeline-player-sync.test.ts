@@ -6,8 +6,8 @@ import { createMockClip } from "../../../__mocks__/test-factories"
 import * as timelinePlayerSync from "../../../services/timeline-player-sync"
 // Import mocked functions
 import { useTimeline } from "../../state/use-timeline"
-import { useTimelinePlayerSync } from '../use-timeline-player-sync'
-import { useTimelineSelection } from '../../state/use-timeline-selection'
+import { useTimelineSelection } from "../../state/use-timeline-selection"
+import { useTimelinePlayerSync } from "../use-timeline-player-sync"
 
 // Mock dependencies
 vi.mock("@/domains/video-editing", () => ({

@@ -40,7 +40,9 @@ export function TransitionExportSettingsComponent({
   const id = useId()
 
   // Информация о переходах в проекте
-  const transitionInfo = project ? getTransitionInfo(project) : null
+  // TODO: availableTransitions должны быть переданы из родительского компонента
+  const availableTransitions = new Map()
+  const transitionInfo = project ? getTransitionInfo(project, availableTransitions) : null
   const hasProjectTransitions = project ? hasTransitions(project) : false
 
   // Обработчики изменений

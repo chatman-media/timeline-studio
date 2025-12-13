@@ -27,7 +27,7 @@ interface TrackProps {
   style?: React.CSSProperties
 }
 
-export function Track({
+export function TrackComponent({
   track,
   timeScale = 100,
   currentTime = 0,

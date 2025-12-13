@@ -10,8 +10,8 @@ import { MediaType } from "@/domains/media-management"
 
 import { useClips } from "../../clips/use-clips"
 import { useTimeline } from "../use-timeline"
-import { useTimelineActions } from '../use-timeline-actions'
-import { useTracks } from '../use-tracks'
+import { useTimelineActions } from "../use-timeline-actions"
+import { useTracks } from "../use-tracks"
 
 // Mock dependencies
 vi.mock("../../hooks/use-timeline")

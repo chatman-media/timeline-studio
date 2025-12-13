@@ -7,7 +7,6 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"
-import { isSubtitleClip } from "../.."
 import { useTimelinePersons } from "../../hooks"
 import { useClipGroups } from "../../hooks/clips/use-clip-groups"
 import { useDebouncedDrag } from "../../hooks/drag-drop/use-debounced-drag"
@@ -104,8 +103,9 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
 
       case "subtitle":
       case "title":
-        if (isSubtitleClip(clip)) {
-          return <SubtitleClip clip={clip} trackHeight={track.height} isSelected={clip.isSelected} />
+        // Type guard for subtitle clips
+        if ("text" in clip && typeof clip.text === "string") {
+          return <SubtitleClip clip={clip as any} trackHeight={track.height} isSelected={clip.isSelected} />
         }
         return (
           <div className="h-full w-full bg-muted border border-border rounded flex items-center justify-center">

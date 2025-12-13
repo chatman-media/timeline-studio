@@ -11,7 +11,7 @@ import "@/test/mocks/dnd-kit"
 
 import type { TrackType } from "../../../types"
 import type { DragType } from "../../../types/drag-drop"
-import { useDragDropTimeline } from '../use-drag-drop-timeline'
+import { useDragDropTimeline } from "../use-drag-drop-timeline"
 
 // Import the actual hook after mocks are set up
 

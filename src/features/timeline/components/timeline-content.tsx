@@ -34,7 +34,7 @@ import {
   TimelineSpeedRampingIntegration,
   TimelineSpeedRampingStatus,
 } from "./timeline-speed-ramping-integration"
-import { Track } from "./track/track"
+import { TrackComponent } from "./track/track"
 import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
@@ -338,14 +338,14 @@ function TracksWithTimeScale({
   return (
     <>
       {tracks.map((track) => (
-        <Track
+        <TrackComponent
           key={track.id}
           track={track}
           timeScale={uiState.timeScale}
           currentTime={currentTime}
           isSelected={selectedTrackIds?.includes(track.id) ?? false}
-          onSelect={(trackId) => selectTracks([trackId])}
-          onUpdate={(updates) => updateTrack(track.id, updates as Partial<typeof Track>)}
+          onSelect={(trackId: string) => selectTracks([trackId])}
+          onUpdate={(updates: any) => updateTrack(track.id, updates)}
         />
       ))}
     </>

@@ -3,9 +3,8 @@
  * Управление переходами на треках таймлайна
  */
 
-import type { Transition } from "@/domains/video-editing/types"
+import type { TimelineTransition, Transition } from "@/domains/video-editing/types"
 import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
-import type { TimelineTransition } from "../types/timeline-transition"
 import {
   addTimelineTransitionToResources,
   createTimelineTransition,
@@ -76,7 +75,7 @@ export function addTransitionBetweenClips(
   })
 
   // Обновляем связи с клипами
-  const transition = {
+  const transition: TimelineTransition = {
     ...timelineTransition,
     startClipId: leftClipId,
     endClipId: rightClipId,
@@ -130,7 +129,7 @@ export function addTransitionIn(
   })
 
   // Обновляем связи
-  const transition = {
+  const transition: TimelineTransition = {
     ...timelineTransition,
     endClipId: clipId,
     trackId,
@@ -183,7 +182,7 @@ export function addTransitionOut(
   })
 
   // Обновляем связи
-  const transition = {
+  const transition: TimelineTransition = {
     ...timelineTransition,
     startClipId: clipId,
     trackId,
@@ -208,9 +207,18 @@ export function getTrackTransitions(project: TimelineProject, trackId: string): 
     return []
   }
 
-  return track.transitions
-    .map((id) => project.resources.timelineTransitions.find((t) => t.id === id))
-    .filter((t): t is TimelineTransition => t !== undefined)
+  if (!project.resources.timelineTransitions) {
+    return []
+  }
+
+  const transitions: TimelineTransition[] = []
+  for (const id of track.transitions) {
+    const transition = project.resources.timelineTransitions.find((t) => t.id === id)
+    if (transition) {
+      transitions.push(transition)
+    }
+  }
+  return transitions
 }
 
 /**
@@ -254,7 +262,9 @@ export function adjustTransitionsForClipChange(
 
   transitions.forEach((transition) => {
     let needsUpdate = false
-    const updates: Partial<TimelineTransition> = {}
+    const updates: Partial<
+      Pick<TimelineTransition, "startClipId" | "endClipId" | "position" | "duration" | "trackId" | "type">
+    > = {}
 
     // Переход между клипами
     if (transition.type === "between") {
@@ -310,9 +320,11 @@ export function removeTransition(project: TimelineProject, transitionId: string)
   const updatedProject = { ...project }
 
   // Удаляем из ресурсов
-  updatedProject.resources.timelineTransitions = updatedProject.resources.timelineTransitions.filter(
-    (t) => t.id !== transitionId,
-  )
+  if (updatedProject.resources.timelineTransitions) {
+    updatedProject.resources.timelineTransitions = updatedProject.resources.timelineTransitions.filter(
+      (t) => t.id !== transitionId,
+    )
+  }
 
   // Удаляем из треков
   updatedProject.sections.forEach((section) => {
@@ -358,7 +370,7 @@ export function getClipTransitions(
   betweenBefore: TimelineTransition | null
   betweenAfter: TimelineTransition | null
 } {
-  const transitions = project.resources.timelineTransitions
+  const transitions = project.resources.timelineTransitions || []
 
   return {
     in: transitions.find((t) => t.type === "in" && t.endClipId === clipId) || null,

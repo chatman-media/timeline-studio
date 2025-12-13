@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react"
-import type { Transition } from "@/domains/video-editing/types"
+import type { TimelineTransition, Transition } from "@/domains/video-editing/types"
 import type { TimelineProject } from "@/features/timeline/types"
 import { useAdvancedTransitions } from "@/features/transitions/hooks/use-advanced-transitions"
 import { useTransitions } from "@/features/transitions/hooks/use-transitions"
@@ -12,7 +12,7 @@ import {
   updateTimelineTransitionParameters,
 } from "../../services/resource-manager"
 import { getTrackTransitions as getTrackTransitionsService } from "../../services/timeline-transition-manager"
-import type { TimelineTransition } from "../../types/timeline-transition"
+import type { TimelineTransition as FeatureTimelineTransition } from "../../types/timeline-transition"
 
 /**
  * Hook для работы с переходами на таймлайне
@@ -51,7 +51,7 @@ export function useTimelineTransitions(project: TimelineProject) {
         type: "between" | "in" | "out" | "adjustment"
         startClipId?: string
         endClipId?: string
-        parameters?: TimelineTransition["parameters"]
+        parameters?: Record<string, any>
         keyframes?: TimelineTransition["keyframes"]
       },
     ) => {
@@ -65,7 +65,7 @@ export function useTimelineTransitions(project: TimelineProject) {
    * Обновление параметров перехода
    */
   const updateTransitionParameters = useCallback(
-    (transitionId: string, newParameters: Partial<TimelineTransition["parameters"]>) => {
+    (transitionId: string, newParameters: Record<string, any>) => {
       return updateTimelineTransitionParameters(project, transitionId, newParameters)
     },
     [project],

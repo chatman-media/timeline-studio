@@ -1,8 +1,8 @@
 import { useCallback } from "react"
-import { useTimeline } from "../state/use-timeline"
 import type { TimelineClip } from "../../types"
 import type { CutType, JLCutPreview, LinkedClipPair } from "../../types/jl-cuts"
 import { getAudioOffsetForCut } from "../../types/jl-cuts"
+import { useTimeline } from "../state/use-timeline"
 
 export interface UseJLCutsReturn {
   // Создание J/L cuts

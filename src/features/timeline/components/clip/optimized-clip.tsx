@@ -5,15 +5,16 @@
 
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import type { SubtitleClip as SubtitleClipType } from "@/features/subtitles/types"
 import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"
-import { useClipEditing } from "../../hooks/editing/use-clip-editing"
 import { useClipGroups } from "../../hooks/clips/use-clip-groups"
+import { useClipEditing } from "../../hooks/editing/use-clip-editing"
 import { useJLCuts } from "../../hooks/editing/use-jl-cuts"
 import { useSlipSlide } from "../../hooks/editing/use-slip-slide"
 import { useSpeedRamping } from "../../hooks/speed-ramping/use-speed-ramping"
 import { useTimelinePersons } from "../../hooks/state/use-timeline-persons"
-import { isSubtitleClip, type TimelineClip, type TimelineTrack } from "../../types"
+import type { TimelineClip, TimelineTrack } from "../../types"
 import { EDIT_MODES } from "../../types/edit-modes"
 import { getCutType } from "../../types/jl-cuts"
 import { ClipAIIndicator } from "../ai-analysis/clip-ai-indicator"
@@ -93,6 +94,11 @@ export const OptimizedClip = memo(function OptimizedClip({
     [clip.startTime, clip.duration, timeScale, preview],
   )
 
+  // Type guard для SubtitleClip
+  const isSubtitleClip = useCallback((clip: TimelineClip): clip is SubtitleClipType => {
+    return clip.type === "subtitle" && "text" in clip
+  }, [])
+
   // Упрощенный рендеринг для маленьких клипов
   const renderSimplifiedContent = useCallback(() => {
     const bgColor =
@@ -158,6 +164,7 @@ export const OptimizedClip = memo(function OptimizedClip({
     onUpdate,
     onRemove,
     renderSimplifiedContent,
+    isSubtitleClip,
   ])
 
   // Handle slip/slide start

@@ -6,7 +6,6 @@ import { useCallback, useEffect, useState } from "react"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 import type { TimelineClip } from "@/features/timeline/types"
 import { SplitEditServiceImpl } from "../../services/split-edit-service"
-import { useTimeline } from "../state/use-timeline"
 import type {
   SplitEdit,
   SplitEditConfig,
@@ -14,6 +13,7 @@ import type {
   SplitEditToolSettings,
   SplitEditVisual,
 } from "../../types/split-edit"
+import { useTimeline } from "../state/use-timeline"
 
 export interface UseSplitEditReturn {
   /** Текущая конфигурация split edit */

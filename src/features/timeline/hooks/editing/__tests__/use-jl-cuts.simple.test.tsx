@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { useTimeline } from "../../state/use-timeline"
-import { useJLCuts } from '../use-jl-cuts'
+import { useJLCuts } from "../use-jl-cuts"
 
 // Mock useTimeline hook
 vi.mock("../../hooks/use-timeline", () => ({
