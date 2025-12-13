@@ -1,7 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
+import { fireEvent, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@/features/timeline/types"
+import { renderWithTimeline } from "@/test/test-utils"
 import { JLCutDragHandle } from "../jl-cut-drag-handle"
 
 // Mock useJLCuts hook
@@ -113,7 +113,9 @@ describe("JLCutDragHandle", () => {
   describe("Mouse interaction", () => {
     it("should handle mousedown event", () => {
       const onOffsetChange = vi.fn()
-      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(
+        <JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />,
+      )
 
       const handle = getByTestId("jl-cut-handle")
 
@@ -222,7 +224,9 @@ describe("JLCutDragHandle", () => {
 
     it("should call onOffsetChange callback during drag", () => {
       const onOffsetChange = vi.fn()
-      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(
+        <JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />,
+      )
 
       const handle = getByTestId("jl-cut-handle")
 
@@ -242,7 +246,9 @@ describe("JLCutDragHandle", () => {
 
     it("should constrain offset to minimum 0.1s", () => {
       const onOffsetChange = vi.fn()
-      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(
+        <JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />,
+      )
 
       const handle = getByTestId("jl-cut-handle")
 
@@ -264,7 +270,9 @@ describe("JLCutDragHandle", () => {
 
     it("should constrain offset to maximum 5s", () => {
       const onOffsetChange = vi.fn()
-      const { getByTestId, container } = renderWithTimeline(<JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />)
+      const { getByTestId, container } = renderWithTimeline(
+        <JLCutDragHandle {...defaultProps} onOffsetChange={onOffsetChange} />,
+      )
 
       const handle = getByTestId("jl-cut-handle")
 

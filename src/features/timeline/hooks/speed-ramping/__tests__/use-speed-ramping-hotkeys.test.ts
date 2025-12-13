@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { TimelineProviders } from "@/test/test-utils"
 
 // Mock shortcuts registry
 vi.mock("@/features/keyboard-shortcuts", () => ({

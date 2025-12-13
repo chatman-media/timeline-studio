@@ -1,9 +1,9 @@
 /**
  * Comprehensive tests for use-timeline-persons hook
+ * @vitest-environment jsdom
  */
 
 import { act, renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { MockTimelineProvider } from "@/features/timeline/__mocks__/hooks"
 import type { TimelineClip } from "@/features/timeline/types"
@@ -170,6 +170,7 @@ vi.mock("../../hooks/use-timeline", () => ({
 describe("useTimelinePersons", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
 
     // Настройка моков по умолчанию
     mockDetectFaces.mockResolvedValue([
@@ -199,6 +200,7 @@ describe("useTimelinePersons", () => {
 
   afterEach(() => {
     vi.clearAllTimers()
+    vi.useRealTimers()
   })
 
   it("должен инициализироваться с начальным состоянием", () => {

@@ -13,6 +13,7 @@ vi.mock("react-i18next", () => ({
   useTranslation: vi.fn(() => ({
     t: vi.fn((key: string) => {
       const translations: Record<string, string> = {
+        "timeline.workspace.analysis": "Analysis",
         "timeline.workspace.timeline": "Timeline",
         "timeline.workspace.audioMixer": "Audio Mixer",
       }
@@ -34,6 +35,7 @@ vi.mock("@/lib/utils", () => ({
 }))
 
 vi.mock("lucide-react", () => ({
+  BarChart3: vi.fn(() => <div data-testid="barchart3-icon" />),
   Layers: vi.fn(() => <div data-testid="layers-icon" />),
   Sliders: vi.fn(() => <div data-testid="sliders-icon" />),
 }))
@@ -63,9 +65,11 @@ describe("TimelineWorkspaceTabs", () => {
     it("должен рендерить обе кнопки табов", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
+      const analysisButton = screen.getByText("Analysis")
       const timelineButton = screen.getByText("Timeline")
       const audioMixerButton = screen.getByText("Audio Mixer")
 
+      expect(analysisButton).toBeInTheDocument()
       expect(timelineButton).toBeInTheDocument()
       expect(audioMixerButton).toBeInTheDocument()
     })
@@ -73,6 +77,7 @@ describe("TimelineWorkspaceTabs", () => {
     it("должен рендерить иконки для каждого таба", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
+      expect(screen.getByTestId("barchart3-icon")).toBeInTheDocument()
       expect(screen.getByTestId("layers-icon")).toBeInTheDocument()
       expect(screen.getByTestId("sliders-icon")).toBeInTheDocument()
     })
@@ -90,6 +95,7 @@ describe("TimelineWorkspaceTabs", () => {
 
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
+      expect(mockT).toHaveBeenCalledWith("timeline.workspace.analysis")
       expect(mockT).toHaveBeenCalledWith("timeline.workspace.timeline")
       expect(mockT).toHaveBeenCalledWith("timeline.workspace.audioMixer")
     })
@@ -230,7 +236,7 @@ describe("TimelineWorkspaceTabs", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
       const buttons = screen.getAllByRole("button")
-      expect(buttons).toHaveLength(2)
+      expect(buttons).toHaveLength(3)
 
       buttons.forEach((button) => {
         expect(button).toBeInTheDocument()
@@ -241,6 +247,7 @@ describe("TimelineWorkspaceTabs", () => {
     it("должен иметь читаемый текст для screen readers", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
+      expect(screen.getByText("Analysis")).toBeInTheDocument()
       expect(screen.getByText("Timeline")).toBeInTheDocument()
       expect(screen.getByText("Audio Mixer")).toBeInTheDocument()
     })
@@ -265,16 +272,18 @@ describe("TimelineWorkspaceTabs", () => {
 
       expect(wrapper).toBeInTheDocument()
       expect(innerContainer).toBeInTheDocument()
-      expect(buttons).toHaveLength(2)
+      expect(buttons).toHaveLength(3)
     })
 
     it("должен правильно организовать иконки и текст", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
+      const analysisButton = screen.getByText("Analysis").closest("button")
       const timelineButton = screen.getByText("Timeline").closest("button")
       const audioMixerButton = screen.getByText("Audio Mixer").closest("button")
 
       // Проверяем что иконки находятся внутри кнопок
+      expect(analysisButton?.querySelector('[data-testid="barchart3-icon"]')).toBeInTheDocument()
       expect(timelineButton?.querySelector('[data-testid="layers-icon"]')).toBeInTheDocument()
       expect(audioMixerButton?.querySelector('[data-testid="sliders-icon"]')).toBeInTheDocument()
     })

@@ -1,9 +1,9 @@
 /**
  * Comprehensive tests for use-jl-cut-hotkeys hook
+ * @vitest-environment jsdom
  */
 
 import { renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock timeline-machine
@@ -23,8 +23,8 @@ import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/ti
 import { MockTimelineProvider } from "../../../__tests__/test-providers"
 import { useJLCutHotkeys } from "../use-jl-cut-hotkeys"
 
-// Mock keyboard event
-const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
+// Mock keyboard event - will be initialized in beforeEach
+let mockKeyboardEvent: KeyboardEvent
 const mockHotkeyEvent = { keys: ["enter"], scope: "all", element: null }
 
 // Mock functions
@@ -119,6 +119,9 @@ vi.mock("../../hooks/use-timeline", () => ({
 describe("useJLCutHotkeys", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+
+    // Initialize KeyboardEvent
+    mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
 
     // Сбрасываем выбранные клипы
     mockUiState.selectedClipIds = ["video-clip-1"]

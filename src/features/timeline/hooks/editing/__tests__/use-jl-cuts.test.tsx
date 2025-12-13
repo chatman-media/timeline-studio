@@ -1,12 +1,15 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import { act, renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineProject } from "@/features/timeline/types"
 import { useTimeline } from "../../state/use-timeline"
 import { useJLCuts } from "../use-jl-cuts"
 
 // Mock useTimeline hook
-vi.mock("../../hooks/use-timeline", () => ({
+vi.mock("../../state/use-timeline", () => ({
   useTimeline: vi.fn(),
 }))
 
@@ -178,7 +181,7 @@ describe("useJLCuts", () => {
     audioClip.audioOffset = 0
 
     // Setup useTimeline mock
-    vi.mocked(useTimeline).mockReturnValue({
+    ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
       project: mockProject,
       send: mockSend,
       updateClip: mockUpdateClip,

@@ -1,5 +1,6 @@
 /**
  * Расширенные тесты для useDragDropTimeline hook
+ * @vitest-environment jsdom
  */
 
 import type { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core"
@@ -64,27 +65,28 @@ vi.mock("../../utils/drag-calculations", () => ({
   }),
 }))
 
-// Mock для DOM элементов
-Object.defineProperty(document, "querySelector", {
-  value: vi.fn(() => ({
-    getBoundingClientRect: () => ({
-      left: 100,
-      right: 500,
-      top: 50,
-      bottom: 150,
-      width: 400,
-      height: 100,
-    }),
-    scrollLeft: 0,
-  })),
-  writable: true,
-})
-
 describe("useDragDropTimeline", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockUiState.timeScale = 1
     mockUiState.snapMode = "none"
+
+    // Mock для DOM элементов
+    Object.defineProperty(document, "querySelector", {
+      value: vi.fn(() => ({
+        getBoundingClientRect: () => ({
+          left: 100,
+          right: 500,
+          top: 50,
+          bottom: 150,
+          width: 400,
+          height: 100,
+        }),
+        scrollLeft: 0,
+      })),
+      writable: true,
+      configurable: true,
+    })
   })
 
   describe("Hook Initialization", () => {

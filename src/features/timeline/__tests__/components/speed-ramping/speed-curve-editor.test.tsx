@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { renderWithTimeline } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -81,7 +81,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("рендерит компонент с базовыми элементами", () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     expect(screen.getByText("Speed Ramping")).toBeInTheDocument()
     expect(screen.getByText("Presets")).toBeInTheDocument()
@@ -89,7 +89,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("отображает canvas с правильными размерами", () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     const canvas = screen.getByTestId("speed-curve-canvas")
     expect(canvas).toHaveAttribute("width", "1000") // 10 сек * 100 пикс/сек
@@ -97,7 +97,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("добавляет keyframe при клике на canvas", async () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     const canvas = screen.getByTestId("speed-curve-canvas")
 
@@ -118,7 +118,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("применяет пресет при выборе из меню", async () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     // Находим кнопку пресетов и кликаем
     const presetsButton = screen.getByText("Presets")
@@ -134,7 +134,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("сбрасывает скорость к нормальной при клике на reset", async () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     // Ищем кнопку с иконкой RotateCcw
     const resetButton = screen.getByTestId("rotateccw-icon").closest("button")
@@ -148,7 +148,7 @@ describe("SpeedCurveEditor", () => {
 
   it("вызывает onClose при клике на кнопку закрытия", () => {
     const onClose = vi.fn()
-    render(<SpeedCurveEditor {...defaultProps} onClose={onClose} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} onClose={onClose} />)
 
     const closeButton = screen.getByText("✕")
     fireEvent.click(closeButton)
@@ -168,13 +168,13 @@ describe("SpeedCurveEditor", () => {
       graphOpacity: 0.8,
     })
 
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     expect(screen.getByText("Click to add speed keyframes")).toBeInTheDocument()
   })
 
   it("обрабатывает клики по canvas для взаимодействия с keyframes", async () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     // Симулируем клик по canvas
     const canvas = screen.getByTestId("speed-curve-canvas")
@@ -189,7 +189,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("показывает Y-axis labels с правильными значениями скорости", () => {
-    render(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
 
     expect(screen.getByText("4x")).toBeInTheDocument()
     expect(screen.getByText("3x")).toBeInTheDocument()

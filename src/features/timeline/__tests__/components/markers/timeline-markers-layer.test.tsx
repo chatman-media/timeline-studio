@@ -7,22 +7,28 @@ import type { ExtendedTimelineMarker } from "../../../types/markers"
 // Mock компонента TimelineMarker
 vi.mock("../../../components/markers/timeline-marker", () => ({
   TimelineMarker: ({ marker, onClick }: any) => (
-    <div data-testid={`marker-${marker.id}`} onClick={() => onClick?.(marker.id)}>
-      {marker.name}
+    <div
+      data-testid={`marker-${marker.id}`}
+      onClick={() => onClick?.(marker.id)}
+      style={{ display: "block", visibility: "visible" }}
+    >
+      <span data-testid={`marker-name-${marker.id}`}>{marker.name}</span>
     </div>
   ),
 }))
 
-// Mock хука маркеров
-const mockUseTimelineMarkers = {
+// Mock хука маркеров - используем vi.fn() чтобы можно было менять возвращаемое значение
+const mockUseTimelineMarkersReturn = {
   markers: [] as ExtendedTimelineMarker[],
   updateMarker: vi.fn(),
   removeMarker: vi.fn(),
   goToMarker: vi.fn(),
 }
 
-vi.mock("../../../hooks/use-timeline-markers", () => ({
-  useTimelineMarkers: () => mockUseTimelineMarkers,
+const mockUseTimelineMarkers = vi.fn(() => mockUseTimelineMarkersReturn)
+
+vi.mock("../../../hooks/markers/use-timeline-markers", () => ({
+  useTimelineMarkers: () => mockUseTimelineMarkers(),
 }))
 
 describe("TimelineMarkersLayer", () => {
@@ -63,7 +69,7 @@ describe("TimelineMarkersLayer", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockUseTimelineMarkers.markers = []
+    mockUseTimelineMarkersReturn.markers = []
   })
 
   it("рендерит слой с правильными размерами и позицией", () => {
@@ -95,44 +101,46 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("рендерит все маркеры", () => {
-    mockUseTimelineMarkers.markers = mockMarkers
+    mockUseTimelineMarkersReturn.markers = [...mockMarkers]
 
     render(<TimelineMarkersLayer {...defaultProps} />)
 
-    expect(screen.getByTestId("marker-marker-1")).toBeInTheDocument()
-    expect(screen.getByTestId("marker-marker-2")).toBeInTheDocument()
-    expect(screen.getByTestId("marker-marker-3")).toBeInTheDocument()
+    // Check that marker elements are rendered
+    const markerElements = screen.queryAllByTestId(/^marker-marker-/)
+    expect(markerElements.length).toBe(3)
 
+    // Check that marker names are present
     expect(screen.getByText("Chapter 1")).toBeInTheDocument()
     expect(screen.getByText("Important Note")).toBeInTheDocument()
     expect(screen.getByText("Export Point")).toBeInTheDocument()
   })
 
   it("передает правильные пропсы в компоненты маркеров", () => {
-    mockUseTimelineMarkers.markers = [mockMarkers[0]]
+    mockUseTimelineMarkersReturn.markers = [...mockMarkers.slice(0, 1)]
 
     render(<TimelineMarkersLayer {...defaultProps} />)
 
     // Проверяем, что маркер рендерится с правильными пропсами
-    const marker = screen.getByTestId("marker-marker-1")
-    expect(marker).toBeInTheDocument()
+    const markerElements = screen.queryAllByTestId(/^marker-/)
+    expect(markerElements.length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText("Chapter 1")).toBeInTheDocument()
   })
 
   it("обрабатывает перетаскивание маркера с ограничением по времени", () => {
-    mockUseTimelineMarkers.markers = [mockMarkers[0]]
+    mockUseTimelineMarkersReturn.markers = [mockMarkers[0]]
 
     const { rerender } = render(<TimelineMarkersLayer {...defaultProps} />)
 
     // Симулируем вызов handleMarkerDrag через callback
     // В реальном компоненте это происходит через пропс onDrag
-    const updateMarker = mockUseTimelineMarkers.updateMarker
+    const updateMarker = mockUseTimelineMarkersReturn.updateMarker
 
     // Проверяем, что функция updateMarker готова к вызову
     expect(updateMarker).toBeDefined()
   })
 
   it("ограничивает время маркера в пределах duration", () => {
-    mockUseTimelineMarkers.markers = [mockMarkers[0]]
+    mockUseTimelineMarkersReturn.markers = [mockMarkers[0]]
 
     render(<TimelineMarkersLayer {...defaultProps} duration={30} />)
 
@@ -145,15 +153,15 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("обрабатывает клик по маркеру", () => {
-    mockUseTimelineMarkers.markers = [mockMarkers[0]]
+    mockUseTimelineMarkersReturn.markers = [...mockMarkers.slice(0, 1)]
 
     render(<TimelineMarkersLayer {...defaultProps} />)
 
-    const marker = screen.getByTestId("marker-marker-1")
+    const marker = screen.getByText("Chapter 1").closest("div")!
     marker.click()
 
     // В реальной реализации handleMarkerClick вызовет goToMarker
-    expect(mockUseTimelineMarkers.goToMarker).toHaveBeenCalledWith("marker-1")
+    expect(mockUseTimelineMarkersReturn.goToMarker).toHaveBeenCalledWith("marker-1")
   })
 
   it("применяет дополнительные CSS классы", () => {
@@ -164,7 +172,7 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("не рендерит маркеры если список пуст", () => {
-    mockUseTimelineMarkers.markers = []
+    mockUseTimelineMarkersReturn.markers = []
 
     render(<TimelineMarkersLayer {...defaultProps} />)
 

@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import type { ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { TimelineProviders } from "@/test/test-utils"
 
 // Мок для shortcuts registry
 vi.mock("@/features/keyboard-shortcuts", () => ({

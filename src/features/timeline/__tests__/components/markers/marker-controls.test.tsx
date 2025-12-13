@@ -1,8 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
+import { fireEvent, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
+import { renderWithTimeline } from "@/test/test-utils"
 import { MarkerControls } from "../../../components/markers/marker-controls"
 import type { ExtendedTimelineMarker } from "../../../types/markers"
 import { MarkerColors } from "../../../types/markers"
@@ -178,7 +178,7 @@ describe("MarkerControls", () => {
   })
 
   it("рендерит основные элементы управления", () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     // Используем getAllByText и проверяем первый элемент (кнопка)
     const addMarkerButtons = screen.getAllByText("Add Marker")
@@ -192,7 +192,7 @@ describe("MarkerControls", () => {
   })
 
   it("открывает попап добавления маркера при клике", async () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     const addButton = screen.getAllByText("Add Marker")[0]
     fireEvent.click(addButton)
@@ -205,7 +205,7 @@ describe("MarkerControls", () => {
 
   it("добавляет новый маркер с корректными данными", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     // Открываем попап
     fireEvent.click(screen.getAllByText("Add Marker")[0])
@@ -228,7 +228,7 @@ describe("MarkerControls", () => {
 
   it("добавляет маркер при нажатии Enter", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getAllByText("Add Marker")[0])
 
@@ -245,7 +245,7 @@ describe("MarkerControls", () => {
   })
 
   it("не добавляет маркер с пустым именем", async () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getAllByText("Add Marker")[0])
 
@@ -255,7 +255,7 @@ describe("MarkerControls", () => {
 
   it("позволяет выбрать тип маркера", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getAllByText("Add Marker")[0])
 
@@ -281,7 +281,7 @@ describe("MarkerControls", () => {
   })
 
   it("навигация между маркерами работает корректно", () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     // Находим кнопки по их содержимому
     const buttons = screen.getAllByRole("button")
@@ -301,7 +301,7 @@ describe("MarkerControls", () => {
       addMarker: defaultMocks.addMarker,
     })
 
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     const buttons = screen.getAllByRole("button")
     const prevButton = buttons.find((btn) => btn.querySelector('[data-icon="ChevronLeft"]'))
@@ -312,7 +312,7 @@ describe("MarkerControls", () => {
   })
 
   it("открывает фильтр и показывает счетчик активных фильтров", async () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     const filterButton = screen.getByRole("button", { name: /Filter/i })
     fireEvent.click(filterButton)
@@ -325,7 +325,7 @@ describe("MarkerControls", () => {
 
   it("фильтрует маркеры по поиску", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -339,7 +339,7 @@ describe("MarkerControls", () => {
   })
 
   it("фильтрует маркеры по типу", async () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -355,7 +355,7 @@ describe("MarkerControls", () => {
 
   it("очищает поиск при клике на X", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -372,7 +372,7 @@ describe("MarkerControls", () => {
   })
 
   it("показывает количество активных фильтров", async () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -388,7 +388,7 @@ describe("MarkerControls", () => {
   })
 
   it("очищает все фильтры при клике на Clear all", async () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -408,7 +408,7 @@ describe("MarkerControls", () => {
 
   it("обновляет счетчик маркеров при фильтрации", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     // Фильтруем по поиску
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
@@ -423,7 +423,7 @@ describe("MarkerControls", () => {
 
   it("сохраняет состояние фильтров между открытиями попапа", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     // Открываем фильтр и вводим поиск
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
@@ -443,7 +443,7 @@ describe("MarkerControls", () => {
 
   it("комбинирует фильтры по типу и поиску", async () => {
     const user = userEvent.setup()
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -463,7 +463,7 @@ describe("MarkerControls", () => {
   })
 
   it("отображает правильный цвет для каждого типа маркера", () => {
-    render(<MarkerControls />)
+    renderWithTimeline(<MarkerControls />)
 
     fireEvent.click(screen.getAllByText("Add Marker")[0])
 

@@ -3,11 +3,10 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/media-management"
+import { TimelineProviders } from "@/test/test-utils"
 
 import { useClips } from "../../clips/use-clips"
 import { useTimeline } from "../use-timeline"

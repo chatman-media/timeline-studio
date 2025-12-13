@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { describe, expect, it } from "vitest"
+import { TimelineProviders } from "@/test/test-utils"
 
 import { useTimelineTracks } from "../use-timeline-tracks"
 

@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { TimelineProviders } from "@/test/test-utils"
 import type { MarkerType } from "../../../types/markers"
 import { useTimelineMarkers } from "../use-timeline-markers"
 

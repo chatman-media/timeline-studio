@@ -70,9 +70,7 @@ describe("Track Component", () => {
       const { rerender } = renderWithTimeline(<Track track={videoTrack} />)
       expect(screen.getByTestId("timeline-track")).toBeInTheDocument()
 
-      rerender(
-        <Track track={audioTrack} />
-      )
+      rerender(<Track track={audioTrack} />)
       expect(screen.getByText("Audio Track")).toBeInTheDocument()
     })
 
@@ -83,9 +81,7 @@ describe("Track Component", () => {
       const { rerender } = renderWithTimeline(<Track track={mutedTrack} />)
       expect(screen.getByText("Muted Track")).toBeInTheDocument()
 
-      rerender(
-        <Track track={lockedTrack} />
-      )
+      rerender(<Track track={lockedTrack} />)
       expect(screen.getByText("Locked Track")).toBeInTheDocument()
     })
   })

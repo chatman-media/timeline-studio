@@ -1,5 +1,6 @@
 /**
  * Comprehensive tests for useClips hook
+ * @vitest-environment jsdom
  */
 
 import { act, renderHook } from "@testing-library/react"
@@ -12,7 +13,9 @@ import { useTimeline } from "../../state/use-timeline"
 import { useClips } from "../use-clips"
 
 // Mock useTimeline hook
-vi.mock("../../hooks/use-timeline")
+vi.mock("../../state/use-timeline", () => ({
+  useTimeline: vi.fn(),
+}))
 
 // Mock data
 const mockMediaFile: MediaFile = {
@@ -219,7 +222,7 @@ const mockUseTimeline = {
 describe("useClips - Comprehensive Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(useTimeline).mockReturnValue(mockUseTimeline as any)
+    ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue(mockUseTimeline as any)
   })
 
   describe("Clip Operations", () => {
@@ -334,7 +337,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should add clip to selection", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         selectedClipIds: ["clip-2"],
       } as any)
@@ -351,7 +354,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should remove clip from selection when already selected", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         selectedClipIds: ["clip-1", "clip-2"],
       } as any)
@@ -568,7 +571,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should check if clip is selected", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         selectedClipIds: ["clip-1"],
       } as any)
@@ -621,7 +624,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should count selected clips in statistics", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         selectedClipIds: ["clip-1"],
       } as any)
@@ -647,7 +650,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should compute selected clips", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         selectedClipIds: ["clip-1"],
       } as any)
@@ -663,7 +666,7 @@ describe("useClips - Comprehensive Tests", () => {
 
   describe("Edge Cases", () => {
     it("should handle project without sections", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         project: {
           ...mockProject,
@@ -680,7 +683,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should handle null project", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         project: null,
       } as any)
@@ -697,7 +700,7 @@ describe("useClips - Comprehensive Tests", () => {
     })
 
     it("should handle clips without media files", () => {
-      vi.mocked(useTimeline).mockReturnValue({
+      ;(useTimeline as ReturnType<typeof vi.fn>).mockReturnValue({
         ...mockUseTimeline,
         project: {
           ...mockProject,

@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@/domains/video-editing/types"

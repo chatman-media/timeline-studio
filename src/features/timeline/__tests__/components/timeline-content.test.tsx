@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
+import { renderWithTimeline } from "@/test/test-utils"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 
 import { TimelineContent } from "../../components/timeline-content"
@@ -236,7 +237,7 @@ describe("TimelineContent", () => {
 
   describe("Loading and error states", () => {
     it("should render without loading state when project is not initialized", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       // Компонент больше не показывает loading state - Timeline рендерится сразу
       // Проект создается автоматически в useEffect
@@ -246,7 +247,7 @@ describe("TimelineContent", () => {
     it("should show error state when there is an error", () => {
       mockTimelineState.error = "Failed to load timeline"
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByText("Ошибка Timeline")).toBeInTheDocument()
       expect(screen.getByText("Failed to load timeline")).toBeInTheDocument()
@@ -256,7 +257,7 @@ describe("TimelineContent", () => {
     it("should clear error when clicking close button", () => {
       mockTimelineState.error = "Some error"
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       const closeButton = screen.getByText("Закрыть")
       fireEvent.click(closeButton)
@@ -267,7 +268,7 @@ describe("TimelineContent", () => {
 
   describe("Project initialization", () => {
     it("should create project on mount when no project exists", async () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       await waitFor(() => {
         expect(mockTimelineState.createProject).toHaveBeenCalledWith("Test Project")
@@ -283,7 +284,7 @@ describe("TimelineContent", () => {
         duration: 300,
       }
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       await waitFor(() => {
         expect(mockTimelineState.addSection).toHaveBeenCalledWith("Main Section", 0, 300)
@@ -299,7 +300,7 @@ describe("TimelineContent", () => {
         duration: 300,
       }
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(mockTimelineState.addSection).not.toHaveBeenCalled()
     })
@@ -317,7 +318,7 @@ describe("TimelineContent", () => {
     })
 
     it("should render all main components", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("timeline-hotkeys")).toBeInTheDocument()
       expect(screen.getByTestId("timeline-speed-ramping-integration")).toBeInTheDocument()
@@ -328,7 +329,7 @@ describe("TimelineContent", () => {
     })
 
     it("should display project information", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByText("Test Project")).toBeInTheDocument()
       expect(screen.getByText("1920x1080 @ 30fps")).toBeInTheDocument()
@@ -338,7 +339,7 @@ describe("TimelineContent", () => {
       mockTracks.tracks = [{ id: "t1" }, { id: "t2" }]
       mockClips.clips = [{ id: "c1" }, { id: "c2" }, { id: "c3" }]
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByText("1 секций")).toBeInTheDocument()
       expect(screen.getByText("2 треков")).toBeInTheDocument()
@@ -360,7 +361,7 @@ describe("TimelineContent", () => {
     it("should show empty state when no tracks", () => {
       mockTracks.tracks = []
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByText("Треки не найдены")).toBeInTheDocument()
       expect(screen.getByText("Добавить видео трек")).toBeInTheDocument()
@@ -369,7 +370,7 @@ describe("TimelineContent", () => {
     it("should add track when clicking add button", () => {
       mockTracks.tracks = []
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       const addButton = screen.getByText("Добавить видео трек")
       fireEvent.click(addButton)
@@ -383,7 +384,7 @@ describe("TimelineContent", () => {
         { id: "track-2", name: "Audio Track 1", type: "audio", clips: [] },
       ]
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("track-track-1")).toBeInTheDocument()
       expect(screen.getByTestId("track-track-2")).toBeInTheDocument()
@@ -405,25 +406,25 @@ describe("TimelineContent", () => {
     })
 
     it("should render timeline scale", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("timeline-scale")).toBeInTheDocument()
     })
 
     it("should render markers layer", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("timeline-markers-layer")).toBeInTheDocument()
     })
 
     it("should render AI overlay", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("timeline-ai-overlay")).toBeInTheDocument()
     })
 
     it("should render split indicator", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("split-indicator")).toBeInTheDocument()
     })
@@ -431,7 +432,7 @@ describe("TimelineContent", () => {
     it("should render track insertion zones when dragging", () => {
       mockDragState.dragState.isDragging = true
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("track-insertion-zones")).toBeInTheDocument()
     })
@@ -452,7 +453,7 @@ describe("TimelineContent", () => {
       mockTracks.tracks = [{ id: "track-1", name: "Audio Track", type: "audio", clips: [] }]
       mockClips.clips = []
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.queryByTestId("timeline-preview-strip")).not.toBeInTheDocument()
     })
@@ -470,7 +471,7 @@ describe("TimelineContent", () => {
         },
       ]
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("timeline-preview-strip")).toBeInTheDocument()
     })
@@ -489,7 +490,7 @@ describe("TimelineContent", () => {
     })
 
     it("should handle scroll events", () => {
-      const { container } = render(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent />)
 
       const scrollContainer = container.querySelector(".overflow-auto")
       expect(scrollContainer).toBeTruthy()
@@ -509,7 +510,7 @@ describe("TimelineContent", () => {
         unobserve = vi.fn()
       } as any
 
-      const { unmount } = render(<TimelineContent />)
+      const { unmount } = renderWithTimeline(<TimelineContent />)
 
       expect(mockObserve).toHaveBeenCalled()
 
@@ -542,14 +543,14 @@ describe("TimelineContent", () => {
       mockTimelineState.uiState.selectedTrackIds = ["track-1"]
       mockTimelineState.currentTime = 5
 
-      const { container } = render(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent />)
 
       const track = container.querySelector('[data-testid="track-track-1"]')
       expect(track).toBeTruthy()
     })
 
     it("should handle track selection", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       // Since Track is mocked, we can't test the actual selection,
       // but we can verify the component receives the correct props
@@ -570,13 +571,13 @@ describe("TimelineContent", () => {
     })
 
     it("should render timeline header with label", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByText("Временная шкала")).toBeInTheDocument()
     })
 
     it("should render resizable panels", () => {
-      const { container } = render(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent />)
 
       const panels = container.querySelectorAll("[data-default-size]")
       expect(panels).toHaveLength(2)
@@ -585,7 +586,7 @@ describe("TimelineContent", () => {
     })
 
     it("should render resizable handle", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("resizable-handle")).toBeInTheDocument()
     })
@@ -611,7 +612,7 @@ describe("TimelineContent", () => {
     })
 
     it("should setup split indicator with correct props", () => {
-      const { container } = render(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("split-indicator")).toBeInTheDocument()
 
@@ -636,7 +637,7 @@ describe("TimelineContent", () => {
     it("should setup window resize listener", () => {
       const addEventListenerSpy = vi.spyOn(window, "addEventListener")
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(addEventListenerSpy).toHaveBeenCalledWith("resize", expect.any(Function))
     })
@@ -644,7 +645,7 @@ describe("TimelineContent", () => {
     it("should cleanup listeners on unmount", () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener")
 
-      const { unmount } = render(<TimelineContent />)
+      const { unmount } = renderWithTimeline(<TimelineContent />)
 
       unmount()
 
@@ -672,7 +673,7 @@ describe("TimelineContent", () => {
     })
 
     it("should pass update handler to tracks", () => {
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       // Verify updateTrack function is available
       expect(mockTimelineState.updateTrack).toBeDefined()
@@ -692,7 +693,7 @@ describe("TimelineContent", () => {
       // Temporarily set projectSettings to null
       vi.mocked(useProjectSettings).mockReturnValueOnce({ settings: null } as any)
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByText("1280x720 @ 25fps")).toBeInTheDocument()
     })
@@ -713,7 +714,7 @@ describe("TimelineContent", () => {
     it("should not show track insertion zones when not dragging", () => {
       mockDragState.dragState.isDragging = false
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       // TrackInsertionZones should still be rendered but with isVisible=false
       expect(screen.getByTestId("track-insertion-zones")).toBeInTheDocument()
@@ -722,7 +723,7 @@ describe("TimelineContent", () => {
     it("should show track insertion zones when dragging", () => {
       mockDragState.dragState.isDragging = true
 
-      render(<TimelineContent />)
+      renderWithTimeline(<TimelineContent />)
 
       expect(screen.getByTestId("track-insertion-zones")).toBeInTheDocument()
     })

@@ -1,11 +1,15 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import { act, renderHook } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProviders } from "@/test/test-utils"
-import { describe, expect, it, vi } from "vitest"
 import { useTimeline } from "../../state/use-timeline"
 import { useJLCuts } from "../use-jl-cuts"
 
 // Mock useTimeline hook
-vi.mock("../../hooks/use-timeline", () => ({
+vi.mock("../../state/use-timeline", () => ({
   useTimeline: vi.fn(),
 }))
 

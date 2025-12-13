@@ -1,9 +1,9 @@
 /**
  * Comprehensive tests for use-group-hotkeys hook
+ * @vitest-environment jsdom
  */
 
 import { renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock timeline-machine
@@ -20,8 +20,8 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 
-// Mock keyboard event
-const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
+// Mock keyboard event - will be initialized in beforeEach
+let mockKeyboardEvent: KeyboardEvent
 const mockHotkeyEvent = { keys: ["enter"], scope: "all", element: null }
 
 // Создаем отдельный модуль для моков
@@ -119,6 +119,9 @@ import { useGroupHotkeys } from "../use-group-hotkeys"
 describe("useGroupHotkeys", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+
+    // Initialize KeyboardEvent
+    mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
 
     // Сбрасываем выбранные клипы
     mockUiState.selectedClipIds = ["clip-1", "clip-2"]

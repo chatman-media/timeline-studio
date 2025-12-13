@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, screen } from "@testing-library/react"
 import { renderWithTimeline } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -43,7 +43,7 @@ describe("SpeedRampingToggle", () => {
   it("показывает неактивное состояние когда speed ramping выключен", () => {
     mockUseSpeedRamping.getConfig.mockReturnValue(null)
 
-    render(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
 
     const button = screen.getByRole("button")
     expect(button).toBeInTheDocument()
@@ -65,7 +65,7 @@ describe("SpeedRampingToggle", () => {
       graphOpacity: 0.8,
     })
 
-    render(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
 
     expect(screen.getByText("Disable Speed Ramping")).toBeInTheDocument()
   })
@@ -73,7 +73,7 @@ describe("SpeedRampingToggle", () => {
   it("включает speed ramping при клике когда выключен", () => {
     mockUseSpeedRamping.getConfig.mockReturnValue(null)
 
-    render(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
@@ -93,7 +93,7 @@ describe("SpeedRampingToggle", () => {
       graphOpacity: 0.8,
     })
 
-    render(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
@@ -104,7 +104,7 @@ describe("SpeedRampingToggle", () => {
   it("применяет дополнительные CSS классы", () => {
     mockUseSpeedRamping.getConfig.mockReturnValue(null)
 
-    render(<SpeedRampingToggle {...defaultProps} className="custom-class" />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} className="custom-class" />)
 
     const button = screen.getByRole("button")
     expect(button).toHaveClass("custom-class")
