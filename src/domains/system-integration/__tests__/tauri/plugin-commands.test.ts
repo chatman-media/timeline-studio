@@ -18,7 +18,7 @@ describe("Plugin Tauri Commands", () => {
   describe("sendPluginCommand", () => {
     it("should invoke send_plugin_command with correct parameters", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         command_id: "cmd-123",
@@ -40,7 +40,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should send command without parameters", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         command_id: "cmd-124",
@@ -62,7 +62,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle successful command with data", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockData = {
         status: "active",
@@ -86,7 +86,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle failed command", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         command_id: "cmd-126",
@@ -104,7 +104,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle complex parameter objects", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const complexParams = {
         nested: {
@@ -134,7 +134,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle generic type parameter", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       interface CustomData {
         customField: string
@@ -160,7 +160,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should throw error on backend failure", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Plugin not found"))
 
@@ -169,7 +169,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle different plugin IDs", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const plugins = ["audio-plugin", "video-plugin", "effects-plugin", "export-plugin"]
 
@@ -192,7 +192,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle different command names", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const commands = ["init", "start", "stop", "reset", "getState", "updateConfig"]
 
@@ -216,7 +216,7 @@ describe("Plugin Tauri Commands", () => {
   describe("Error Handling", () => {
     it("should handle Tauri IPC errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("IPC communication error"))
 
@@ -225,7 +225,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle plugin not loaded errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Plugin not loaded"))
 
@@ -234,7 +234,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle invalid command errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Unknown command"))
 
@@ -243,7 +243,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle timeout errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Command timeout"))
 
@@ -252,7 +252,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle backend not available", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Backend not initialized"))
 
@@ -263,7 +263,7 @@ describe("Plugin Tauri Commands", () => {
   describe("Edge Cases", () => {
     it("should handle empty plugin ID", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Invalid plugin ID"))
 
@@ -272,7 +272,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle empty command name", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Invalid command name"))
 
@@ -281,7 +281,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle null parameters", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         command_id: "cmd-null",
@@ -299,7 +299,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle very large parameter objects", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const largeParams = {
         data: new Array(1000).fill(0).map((_, i) => ({ id: i, value: `item-${i}` })),
@@ -321,7 +321,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle concurrent commands to same plugin", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke
         .mockResolvedValueOnce({ command_id: "cmd-1", success: true })
@@ -341,7 +341,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle concurrent commands to different plugins", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke
         .mockResolvedValueOnce({ command_id: "cmd-plugin1", success: true })
@@ -363,7 +363,7 @@ describe("Plugin Tauri Commands", () => {
   describe("Response Structure", () => {
     it("should return response with command_id", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         command_id: "unique-id-123",
@@ -377,7 +377,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should return response with success flag", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         command_id: "cmd-1",
@@ -392,7 +392,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle response with optional data field", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         command_id: "cmd-1",
@@ -407,7 +407,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle response with optional error field", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         command_id: "cmd-1",
@@ -422,7 +422,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle response with both data and error fields", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         command_id: "cmd-1",
@@ -441,7 +441,7 @@ describe("Plugin Tauri Commands", () => {
   describe("Integration Scenarios", () => {
     it("should handle plugin initialization flow", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       // Check if plugin is loaded
       mockedInvoke.mockResolvedValueOnce({
@@ -467,7 +467,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle plugin state query", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockState = {
         status: "active",
@@ -488,7 +488,7 @@ describe("Plugin Tauri Commands", () => {
 
     it("should handle plugin configuration update", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const config = {
         bitrate: 5000000,

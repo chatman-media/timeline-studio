@@ -37,7 +37,7 @@ const mockRefreshOAuthToken = vi.fn()
 const mockGetOAuthUserInfo = vi.fn()
 const mockParseOAuthCallbackUrl = vi.fn()
 
-vi.mock("../../tauri/api-keys-commands", () => ({
+vi.mock("@/domains/project-management/tauri/api-keys-commands", () => ({
   listApiKeys: () => mockListApiKeys(),
   saveSimpleApiKey: (params: any) => mockSaveSimpleApiKey(params),
   validateApiKey: (service: string) => mockValidateApiKey(service),

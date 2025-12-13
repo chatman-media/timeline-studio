@@ -18,7 +18,7 @@ describe("Language Tauri Commands", () => {
   describe("getAppLanguage", () => {
     it("should invoke get_app_language_tauri command", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         language: "en",
@@ -35,7 +35,7 @@ describe("Language Tauri Commands", () => {
 
     it("should return Russian language settings", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         language: "ru",
@@ -52,7 +52,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle different system languages", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const testCases = [
         { language: "en", system_language: "en-GB" },
@@ -71,7 +71,7 @@ describe("Language Tauri Commands", () => {
 
     it("should throw error on backend failure", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Backend error"))
 
@@ -80,7 +80,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle network timeout", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Timeout"))
 
@@ -89,7 +89,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle malformed response", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const malformedResponse = {
         language: "en",
@@ -108,7 +108,7 @@ describe("Language Tauri Commands", () => {
   describe("setAppLanguage", () => {
     it("should invoke set_app_language_tauri command with language code", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         language: "ru",
@@ -125,7 +125,7 @@ describe("Language Tauri Commands", () => {
 
     it("should set all supported languages", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const languages = ["en", "ru", "es", "fr", "de", "pt", "zh", "ja", "ko", "tr", "it", "th", "hi", "ar", "fa"]
 
@@ -144,7 +144,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle setting English language", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         language: "en",
@@ -159,7 +159,7 @@ describe("Language Tauri Commands", () => {
 
     it("should throw error on invalid language code", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Invalid language code"))
 
@@ -168,7 +168,7 @@ describe("Language Tauri Commands", () => {
 
     it("should throw error on backend failure", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Failed to save language"))
 
@@ -177,7 +177,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle RTL languages", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       // Arabic
       mockedInvoke.mockResolvedValueOnce({
@@ -200,7 +200,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle empty string language code", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Language code cannot be empty"))
 
@@ -209,7 +209,7 @@ describe("Language Tauri Commands", () => {
 
     it("should preserve system language when changing app language", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const systemLang = "de-DE"
 
@@ -227,7 +227,7 @@ describe("Language Tauri Commands", () => {
   describe("Error Handling", () => {
     it("should handle Tauri IPC errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("IPC communication error"))
 
@@ -237,7 +237,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle backend not available", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Backend not initialized"))
 
@@ -246,7 +246,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle permission denied errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Permission denied"))
 
@@ -257,7 +257,7 @@ describe("Language Tauri Commands", () => {
   describe("Edge Cases", () => {
     it("should handle concurrent get requests", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         language: "en",
@@ -273,7 +273,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle concurrent set requests", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke
         .mockResolvedValueOnce({ language: "ru", system_language: "en-US" })
@@ -293,7 +293,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle language code with locale", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         language: "en",
@@ -307,7 +307,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle uppercase language codes", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         language: "EN",
@@ -321,7 +321,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle mixed case language codes", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         language: "En",
@@ -337,7 +337,7 @@ describe("Language Tauri Commands", () => {
   describe("Response Structure", () => {
     it("should return response with both language and system_language fields", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         language: "en",
@@ -354,7 +354,7 @@ describe("Language Tauri Commands", () => {
 
     it("should handle response with additional fields", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         language: "en",

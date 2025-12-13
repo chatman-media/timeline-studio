@@ -18,7 +18,7 @@ describe("Update Tauri Commands", () => {
   describe("checkForUpdate", () => {
     it("should invoke check_for_update command", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         available: false,
@@ -36,7 +36,7 @@ describe("Update Tauri Commands", () => {
 
     it("should return update not available", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         available: false,
@@ -55,7 +55,7 @@ describe("Update Tauri Commands", () => {
 
     it("should return update available with update info", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const updateInfo = {
         version: "2.0.0",
@@ -82,7 +82,7 @@ describe("Update Tauri Commands", () => {
 
     it("should include version number in update info", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const mockResponse = {
         available: true,
@@ -105,7 +105,7 @@ describe("Update Tauri Commands", () => {
 
     it("should include release notes", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const releaseNotes = "New features:\n- Feature 1\n- Feature 2\n\nBug fixes:\n- Fix 1\n- Fix 2"
 
@@ -130,7 +130,7 @@ describe("Update Tauri Commands", () => {
 
     it("should throw error on check failure", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Network error"))
 
@@ -139,7 +139,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle timeout errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Request timeout"))
 
@@ -148,7 +148,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle backend not available", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Backend not available"))
 
@@ -159,7 +159,7 @@ describe("Update Tauri Commands", () => {
   describe("downloadAndInstallUpdate", () => {
     it("should invoke download_and_install_update command", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue(undefined)
 
@@ -170,7 +170,7 @@ describe("Update Tauri Commands", () => {
 
     it("should resolve without return value", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue(undefined)
 
@@ -181,7 +181,7 @@ describe("Update Tauri Commands", () => {
 
     it("should throw error on download failure", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Download failed"))
 
@@ -190,7 +190,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle network errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Connection lost"))
 
@@ -199,7 +199,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle permission errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Permission denied"))
 
@@ -208,7 +208,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle disk space errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Insufficient disk space"))
 
@@ -217,7 +217,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle installation errors", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Installation failed"))
 
@@ -228,7 +228,7 @@ describe("Update Tauri Commands", () => {
   describe("Update Flow Integration", () => {
     it("should check and download update sequentially", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       // First check for updates
       const updateInfo = {
@@ -261,7 +261,7 @@ describe("Update Tauri Commands", () => {
 
     it("should not download if no update available", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValueOnce({
         available: false,
@@ -281,7 +281,7 @@ describe("Update Tauri Commands", () => {
   describe("Error Handling", () => {
     it("should handle Tauri IPC errors for check", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("IPC communication error"))
 
@@ -290,7 +290,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle Tauri IPC errors for download", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("IPC communication error"))
 
@@ -299,7 +299,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle updater not available", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockRejectedValue(new Error("Updater not available"))
 
@@ -310,7 +310,7 @@ describe("Update Tauri Commands", () => {
   describe("Edge Cases", () => {
     it("should handle concurrent check requests", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: false,
@@ -327,7 +327,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle update info with all fields populated", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       const completeUpdateInfo = {
         version: "3.0.0-beta.1",
@@ -350,7 +350,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle pre-release versions", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: true,
@@ -371,7 +371,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle patch versions", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: true,
@@ -392,7 +392,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle major version updates", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: true,
@@ -413,7 +413,7 @@ describe("Update Tauri Commands", () => {
 
     it("should handle malformed update info", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: true,
@@ -434,7 +434,7 @@ describe("Update Tauri Commands", () => {
   describe("Response Structure", () => {
     it("should return response with available flag", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: false,
@@ -450,7 +450,7 @@ describe("Update Tauri Commands", () => {
 
     it("should return response with current_version", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: false,
@@ -466,7 +466,7 @@ describe("Update Tauri Commands", () => {
 
     it("should return response with optional update_info", async () => {
       const { invoke } = await import("@tauri-apps/api/core")
-      const mockedInvoke = vi.mocked(invoke)
+      const mockedInvoke = invoke as ReturnType<typeof vi.fn>
 
       mockedInvoke.mockResolvedValue({
         available: true,

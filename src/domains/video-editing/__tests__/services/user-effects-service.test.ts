@@ -20,7 +20,7 @@ const mockRemoveEffectFromClipTauri = vi.fn()
 const mockCreateEffectTauri = vi.fn()
 const mockCreateFilterTauri = vi.fn()
 
-vi.mock("../../tauri/compiler-commands", () => ({
+vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
   saveUserEffect: (fileName: string, data: string) => mockSaveUserEffectTauri(fileName, data),
   loadUserEffect: (filePath: string) => mockLoadUserEffectTauri(filePath),
   getUserEffectsList: () => mockGetUserEffectsListTauri(),
