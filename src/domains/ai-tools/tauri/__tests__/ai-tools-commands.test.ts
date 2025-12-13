@@ -4,14 +4,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { detectKeyMoments, generateMontagePlan, mcpExecuteTool } from "../ai-tools-commands"
 
-// Hoist mock function declaration
-const { mockInvoke } = vi.hoisted(() => ({
-  mockInvoke: vi.fn(),
-}))
-
 // Mock Tauri API
+const mockInvoke = vi.fn()
 vi.mock("@tauri-apps/api/core", () => ({
-  invoke: mockInvoke,
+  invoke: (...args: any[]) => mockInvoke(...args),
 }))
 
 // Mock logger

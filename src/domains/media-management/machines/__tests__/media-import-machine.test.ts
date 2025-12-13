@@ -9,11 +9,11 @@ import { createActor, waitFor } from "xstate"
 import { mediaImportMachine } from "../media-import-machine"
 
 // Mock media service
-const mockMediaService = vi.hoisted(() => ({
+const mockMediaService = {
   importFiles: vi.fn(),
   getMetadata: vi.fn(),
   getMediaFiles: vi.fn(),
-}))
+}
 
 vi.mock("@/core/container", () => ({
   getMedia: vi.fn(() => mockMediaService),

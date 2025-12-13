@@ -5,22 +5,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { AudioAnalysisOptions, AudioPeaksResult, SubtitleExportOptions, SubtitleImportResult } from "../../types"
 import { SubtitleService } from "../subtitle-service"
 
-// Hoist mock functions
-const { mockReadSubtitleFile, mockAnalyzeAudioPeaks, mockSaveSubtitleFile, mockUpdateTimelineSubtitles } = vi.hoisted(
-  () => ({
-    mockReadSubtitleFile: vi.fn(),
-    mockAnalyzeAudioPeaks: vi.fn(),
-    mockSaveSubtitleFile: vi.fn(),
-    mockUpdateTimelineSubtitles: vi.fn(),
-  }),
-)
+// Mock functions
+const mockReadSubtitleFile = vi.fn()
+const mockAnalyzeAudioPeaks = vi.fn()
+const mockSaveSubtitleFile = vi.fn()
+const mockUpdateTimelineSubtitles = vi.fn()
 
 // Mock subtitle commands
 vi.mock("../../tauri", () => ({
-  readSubtitleFile: mockReadSubtitleFile,
-  analyzeAudioPeaks: mockAnalyzeAudioPeaks,
-  saveSubtitleFile: mockSaveSubtitleFile,
-  updateTimelineSubtitles: mockUpdateTimelineSubtitles,
+  readSubtitleFile: (...args: any[]) => mockReadSubtitleFile(...args),
+  analyzeAudioPeaks: (...args: any[]) => mockAnalyzeAudioPeaks(...args),
+  saveSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
+  updateTimelineSubtitles: (...args: any[]) => mockUpdateTimelineSubtitles(...args),
 }))
 
 // Mock logger

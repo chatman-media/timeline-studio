@@ -1,20 +1,10 @@
 /**
  * @vitest-environment jsdom
  */
-/**
- * MediaManagementProvider Integration Tests
- *
- * Интеграционные тесты для MediaManagementProvider
- * Теперь провайдер использует MediaManagementOrchestrator
- */
 
-import { act, renderHook } from "@testing-library/react"
-import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { useMediaManagement } from "../../hooks/use-media-management"
-import { MediaManagementProvider } from "../media-management-provider"
 
-// Mock orchestrator state
+// Mock orchestrator state - MUST BE BEFORE ANY IMPORTS
 const mockMediaPool = new Map<string, any>()
 const mockIsLoading = false
 const mockError: string | null = null
@@ -111,6 +101,19 @@ vi.mock("@/lib/tauri-logger", () => ({
 vi.mock("../../services/media-management-orchestrator", () => ({
   getMediaManagementOrchestrator: vi.fn(() => mockOrchestrator),
 }))
+
+// NOW import React components AFTER mocks are set up
+import { act, renderHook } from "@testing-library/react"
+import type { ReactNode } from "react"
+import { useMediaManagement } from "../../hooks/use-media-management"
+import { MediaManagementProvider } from "../media-management-provider"
+
+/**
+ * MediaManagementProvider Integration Tests
+ *
+ * Интеграционные тесты для MediaManagementProvider
+ * Теперь провайдер использует MediaManagementOrchestrator
+ */
 
 describe("MediaManagementProvider", () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
