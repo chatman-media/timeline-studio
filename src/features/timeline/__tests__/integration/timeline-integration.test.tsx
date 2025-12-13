@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Comprehensive Timeline Integration Tests
  *
  * Покрытие:

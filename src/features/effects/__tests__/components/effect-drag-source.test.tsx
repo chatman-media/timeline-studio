@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 // @ts-nocheck - TODO: Update to use new unified effects types
 import { DndContext } from "@dnd-kit/core"
 import { render, screen } from "@testing-library/react"

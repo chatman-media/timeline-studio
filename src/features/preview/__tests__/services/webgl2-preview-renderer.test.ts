@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for WebGL2PreviewRenderer
  */
 

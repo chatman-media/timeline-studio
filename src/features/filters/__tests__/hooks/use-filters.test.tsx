@@ -1,4 +1,5 @@
 /**
+ * @vitest-environment jsdom
  * Tests for use-filters hook
  *
  * Tests the main filters hook functionality including:

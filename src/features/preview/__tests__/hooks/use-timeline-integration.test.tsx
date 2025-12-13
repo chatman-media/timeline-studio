@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for useTimelineIntegration hook
  * Тесты для хука интеграции с таймлайном
  */

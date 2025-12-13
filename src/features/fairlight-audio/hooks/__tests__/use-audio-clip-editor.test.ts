@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { AudioClip, FadeOptions } from "../../services/audio-clip-editor"

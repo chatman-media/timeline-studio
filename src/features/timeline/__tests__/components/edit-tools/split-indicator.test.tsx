@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { fireEvent, screen } from "@testing-library/react"
 import type React from "react"
 import { createRef } from "react"

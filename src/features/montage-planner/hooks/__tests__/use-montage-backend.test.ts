@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for useMontageBackend hook - integration with Tauri backend commands
  */
 

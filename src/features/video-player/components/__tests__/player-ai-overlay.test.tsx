@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 // Мокаем хук до импорта компонента
 vi.mock("../../hooks/use-player-ai-analysis", () => ({
   usePlayerAIAnalysis: vi.fn(),

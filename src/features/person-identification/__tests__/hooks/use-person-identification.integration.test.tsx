@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Integration tests for usePersonIdentification hook
  */
 

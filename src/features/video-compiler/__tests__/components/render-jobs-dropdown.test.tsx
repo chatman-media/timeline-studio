@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { invoke } from "@tauri-apps/api/core"
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { vi } from "vitest"

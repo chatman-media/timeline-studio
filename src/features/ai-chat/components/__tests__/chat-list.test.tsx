@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { fireEvent } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import type { ChatListItem } from "@/domains/ai-services/types/chat"

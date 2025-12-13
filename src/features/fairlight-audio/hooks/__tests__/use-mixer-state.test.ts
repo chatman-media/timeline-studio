@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { AudioChannel } from "../../types"

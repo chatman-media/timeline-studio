@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for TrackHeightAdjuster component
  *
  * The closure bug has been fixed by using useRef to track dragging state.

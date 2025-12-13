@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Тесты для хука use-speed-ramping-player-integration
  */
 

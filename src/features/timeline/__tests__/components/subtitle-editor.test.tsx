@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Тесты для SubtitleEditor компонента
  */
 

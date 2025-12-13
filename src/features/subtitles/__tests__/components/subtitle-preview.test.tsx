@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { describe, expect, it, vi } from "vitest"
 
 import { fireEvent, renderWithMedia as render, screen } from "@/test/test-utils"

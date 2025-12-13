@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Undo/Redo Provider Tests
  *
  * Tests for the undo/redo context provider with backend synchronization

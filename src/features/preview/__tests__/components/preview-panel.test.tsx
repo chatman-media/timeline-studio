@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for PreviewPanel component
  * Тесты для компонента панели preview
  */

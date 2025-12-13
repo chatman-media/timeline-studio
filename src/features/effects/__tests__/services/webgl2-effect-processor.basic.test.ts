@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 // @ts-nocheck - TODO: Update to use new unified effects types
 /**
  * Basic tests for WebGL2EffectProcessor

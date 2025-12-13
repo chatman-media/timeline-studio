@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { Camera, Sparkles } from "lucide-react"
 import { useEffect, useRef, useState } from "react"

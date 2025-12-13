@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Tests for WidgetContainer dragging states
  *
  * Этот файл тестирует состояния dragging с динамическим моком useDraggable

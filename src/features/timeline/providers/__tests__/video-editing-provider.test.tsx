@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Video Editing Provider Tests
  *
  * Tests for the main video editing domain provider

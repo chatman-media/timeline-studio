@@ -1,4 +1,7 @@
 /**
+ * @vitest-environment jsdom
+ */
+/**
  * Расширенные тесты для video player
  *
  * Покрытие:

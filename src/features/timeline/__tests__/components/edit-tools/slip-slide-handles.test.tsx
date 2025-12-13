@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { fireEvent, screen, within } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
