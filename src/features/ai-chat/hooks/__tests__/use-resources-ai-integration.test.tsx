@@ -63,6 +63,7 @@ describe("useResourcesAIIntegration", () => {
       totalSize: 0,
       totalDuration: 0,
       totalMusic: 0,
+      mediaFiles: [],
     })
   })
 

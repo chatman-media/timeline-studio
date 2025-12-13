@@ -18,7 +18,7 @@ vi.mock("@/domains/ai-services/tauri/chat-commands", () => ({
 // Mock useApiKeys
 const mockGetApiKeyInfo = vi.fn()
 
-vi.mock("@/features/user-settings/hooks/use-api-keys", () => ({
+vi.mock("@/domains/project-management/hooks", () => ({
   useApiKeys: () => ({
     getApiKeyInfo: mockGetApiKeyInfo,
   }),
@@ -61,8 +61,9 @@ describe("MCPProvider", () => {
     expect(getByText("Test Content")).toBeInTheDocument()
   })
 
-  it("не должен инициализировать MCP если нет API ключа", async () => {
+  it("должен инициализировать MCP даже без API ключа (для локальных инструментов)", async () => {
     mockGetApiKeyInfo.mockReturnValue({ has_value: false })
+    mockMcpInitialize.mockResolvedValue(true)
 
     render(
       <MCPProvider>
@@ -70,9 +71,19 @@ describe("MCPProvider", () => {
       </MCPProvider>,
     )
 
+    // MCP инициализируется всегда для локальных инструментов
     await waitFor(() => {
-      expect(mockMcpInitialize).not.toHaveBeenCalled()
+      expect(mockMcpInitialize).toHaveBeenCalledWith({
+        enabled: true,
+        claude_api_key: null,
+        model: "claude-3-5-sonnet-20241022",
+        max_tokens: 4096,
+        temperature: 0.7,
+      })
     })
+
+    // Но проверка API не должна выполняться без ключа
+    expect(mockMcpCheckApi).not.toHaveBeenCalled()
   })
 
   it("должен инициализировать MCP если есть API ключ", async () => {
@@ -98,7 +109,13 @@ describe("MCPProvider", () => {
   })
 
   it("должен проверить подключение к API после инициализации", async () => {
-    mockGetApiKeyInfo.mockReturnValue({ has_value: true })
+    // Мокаем проверку для обоих ключей
+    mockGetApiKeyInfo.mockImplementation((keyName: string) => {
+      if (keyName === "mcp_claude" || keyName === "claude") {
+        return { has_value: true }
+      }
+      return { has_value: false }
+    })
     mockMcpInitialize.mockResolvedValue(true)
     mockMcpCheckApi.mockResolvedValue(true)
 
@@ -132,7 +149,13 @@ describe("MCPProvider", () => {
   })
 
   it("не должен падать если проверка API не удалась", async () => {
-    mockGetApiKeyInfo.mockReturnValue({ has_value: true })
+    // Мокаем проверку для обоих ключей
+    mockGetApiKeyInfo.mockImplementation((keyName: string) => {
+      if (keyName === "mcp_claude" || keyName === "claude") {
+        return { has_value: true }
+      }
+      return { has_value: false }
+    })
     mockMcpInitialize.mockResolvedValue(true)
     mockMcpCheckApi.mockResolvedValue(false)
 
@@ -167,7 +190,13 @@ describe("MCPProvider", () => {
   })
 
   it("не должен падать при ошибке проверки API", async () => {
-    mockGetApiKeyInfo.mockReturnValue({ has_value: true })
+    // Мокаем проверку для обоих ключей
+    mockGetApiKeyInfo.mockImplementation((keyName: string) => {
+      if (keyName === "mcp_claude" || keyName === "claude") {
+        return { has_value: true }
+      }
+      return { has_value: false }
+    })
     mockMcpInitialize.mockResolvedValue(true)
     mockMcpCheckApi.mockRejectedValue(new Error("API check failed"))
 
