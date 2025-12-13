@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProviders } from "@/test/test-utils"
@@ -13,8 +16,8 @@ import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 
 import { useSpeedRampingHotkeys } from "../use-speed-ramping-hotkeys"
 
-// Mock keyboard event
-const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
+// Mock keyboard event - will be initialized in beforeEach
+let mockKeyboardEvent: KeyboardEvent
 const mockHotkeyEvent = { keys: ["enter"], scope: "all", element: null }
 
 // Mock useSpeedRamping
@@ -22,7 +25,7 @@ const mockUseSpeedRamping = {
   resetToConstantSpeed: vi.fn(),
 }
 
-vi.mock("../../../hooks/use-speed-ramping", () => ({
+vi.mock("../use-speed-ramping", () => ({
   useSpeedRamping: () => mockUseSpeedRamping,
 }))
 
@@ -33,13 +36,15 @@ const mockUseTimeline = {
   selectedClipIds: ["test-clip-1", "test-clip-2"],
 }
 
-vi.mock("../../../hooks/use-timeline", () => ({
+vi.mock("../../state/use-timeline", () => ({
   useTimeline: () => mockUseTimeline,
 }))
 
 describe("useSpeedRampingHotkeys", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Initialize KeyboardEvent
+    mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
   })
 
   it("регистрирует горячие клавиши", () => {

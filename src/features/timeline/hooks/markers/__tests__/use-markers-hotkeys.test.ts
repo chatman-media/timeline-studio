@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProviders } from "@/test/test-utils"
@@ -12,8 +15,8 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { useMarkerHotkeys } from "../../hotkeys/use-marker-hotkeys"
 
-// Mock keyboard event
-const mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
+// Mock keyboard event - will be initialized in beforeEach
+let mockKeyboardEvent: KeyboardEvent
 const mockHotkeyEvent = { keys: ["enter"], scope: "all", element: null }
 
 // Mock timeline hook
@@ -22,7 +25,7 @@ const mockUseTimeline = {
   seek: vi.fn(),
 }
 
-vi.mock("../../../hooks/use-timeline", () => ({
+vi.mock("../../state/use-timeline", () => ({
   useTimeline: () => mockUseTimeline,
 }))
 
@@ -56,13 +59,15 @@ const mockUseTimelineMarkers = {
   ],
 }
 
-vi.mock("../../../hooks/use-timeline-markers", () => ({
+vi.mock("../use-timeline-markers", () => ({
   useTimelineMarkers: () => mockUseTimelineMarkers,
 }))
 
 describe("useMarkersHotkeys", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Initialize KeyboardEvent
+    mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
     mockUseTimeline.currentTime = 15.5
   })
 
