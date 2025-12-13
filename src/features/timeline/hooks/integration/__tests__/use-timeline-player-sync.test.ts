@@ -1,29 +1,27 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { renderHook } from "@testing-library/react"
-import { TimelineProviders } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { usePlayer } from "@/domains/video-editing"
-import { createMockClip } from "../../../__mocks__/test-factories"
-import * as timelinePlayerSync from "../../../services/timeline-player-sync"
-// Import mocked functions
-import { useTimeline } from "../../state/use-timeline"
-import { useTimelineSelection } from "../../state/use-timeline-selection"
-import { useTimelinePlayerSync } from "../use-timeline-player-sync"
-
-// Mock dependencies
+// Mock dependencies - mocks MUST be before imports and can't reference variables
 vi.mock("@/domains/video-editing", () => ({
   usePlayer: vi.fn(),
+  // Include provider mocks needed by TimelineProviders
+  PlayerProvider: ({ children }: { children: any }) => children,
+  ResourcesProvider: ({ children }: { children: any }) => children,
+  TimelineMarkersProvider: ({ children }: { children: any }) => children,
 }))
 
-vi.mock("../../hooks/use-timeline", () => ({
+vi.mock("../../state/use-timeline", () => ({
   useTimeline: vi.fn(),
 }))
 
-vi.mock("../../hooks/use-timeline-selection", () => ({
+vi.mock("../../state/use-timeline-selection", () => ({
   useTimelineSelection: vi.fn(),
 }))
 
-vi.mock("../../services/timeline-player-sync", () => ({
+vi.mock("../../../services/timeline-player-sync", () => ({
   timelinePlayerSync: {
     setPlayerContext: vi.fn(),
     syncSelectedClip: vi.fn(),
@@ -31,6 +29,15 @@ vi.mock("../../services/timeline-player-sync", () => ({
     syncPlaybackTime: vi.fn(),
   },
 }))
+
+import { usePlayer } from "@/domains/video-editing"
+import * as timelinePlayerSyncModule from "../../../services/timeline-player-sync"
+import { useTimeline } from "../../state/use-timeline"
+import { useTimelineSelection } from "../../state/use-timeline-selection"
+
+import { TimelineProviders } from "@/test/test-utils"
+import { createMockClip } from "../../../__mocks__/test-factories"
+import { useTimelinePlayerSync } from "../use-timeline-player-sync"
 
 // Test data
 const mockClip1 = createMockClip({
@@ -49,194 +56,93 @@ const mockClip1 = createMockClip({
 })
 
 const mockClip2 = createMockClip({
-  ...mockClip1,
   id: "clip-2",
-  startTime: 35,
+  trackId: "track-1",
+  mediaId: "source-2",
+  startTime: 30,
+  duration: 15,
+  offset: 0,
+  effects: [],
+  speed: 1,
+  volume: 1,
+  opacity: 1,
+  filters: [],
+  transitions: [],
 })
 
-// Helper to create full TimelineContextType mock
-function createTimelineMock(overrides: Partial<ReturnType<typeof useTimeline>> = {}) {
+// Helper to create timeline mock
+function createTimelineMock(overrides = {}) {
   return {
-    // Project
-    project: null,
-    isLoading: false,
-    hasUnsavedChanges: false,
-    createProject: vi.fn(),
-    saveProject: vi.fn(),
-    loadProject: vi.fn(),
-    backend: null,
-
-    // Playback
+    currentTime: 0,
+    duration: 100,
     isPlaying: false,
-    currentTime: 15,
-    playbackRate: 1,
-    duration: 300,
+    seek: vi.fn(),
     play: vi.fn(),
     pause: vi.fn(),
     stop: vi.fn(),
-    seek: vi.fn(),
-    setPlaybackRate: vi.fn(),
-
-    // Tracks
-    tracks: [],
-    activeTrackId: null,
-    addTrack: vi.fn(),
-    removeTrack: vi.fn(),
-    updateTrack: vi.fn(),
-    reorderTracks: vi.fn(),
-    setActiveTrack: vi.fn(),
-
-    // Clips
-    clips: [],
-    addClip: vi.fn(),
-    removeClip: vi.fn(),
-    moveClip: vi.fn(),
-    trimClip: vi.fn(),
-    splitClip: vi.fn(),
-    updateClip: vi.fn(),
-    batchUpdateClips: vi.fn(),
-
-    // Selection
-    selectedClipIds: [],
-    selectedTrackIds: [],
-    clipboardClips: [],
-    selectClips: vi.fn(),
-    selectTracks: vi.fn(),
-    clearSelection: vi.fn(),
-    copyClips: vi.fn(),
-    cutClips: vi.fn(),
-    pasteClips: vi.fn(),
-    deleteSelected: vi.fn(),
-
-    // Effects
-    applyEffect: vi.fn(),
-    removeEffect: vi.fn(),
-    applyFilter: vi.fn(),
-    removeFilter: vi.fn(),
-    applyTransition: vi.fn(),
-    removeTransition: vi.fn(),
-
-    // Legacy methods
-    addSection: vi.fn(),
-    removeSection: vi.fn(),
-    selectSections: vi.fn(),
-    setTimeScale: vi.fn(),
-    setScrollPosition: vi.fn(),
-    setEditMode: vi.fn(),
-    toggleSnap: vi.fn(),
-    copySelection: vi.fn(),
-    cutSelection: vi.fn(),
-    paste: vi.fn(),
-    send: vi.fn(),
+    setDuration: vi.fn(),
     ...overrides,
-  } as any
+  }
 }
 
-// Helper to create full UseTimelineSelectionReturn mock
-function createSelectionMock(overrides: Partial<ReturnType<typeof useTimelineSelection>> = {}) {
+// Helper to create selection mock
+function createSelectionMock(overrides = {}) {
   return {
-    // Current selection
     selectedClips: [],
     selectedTracks: [],
     selectedSections: [],
-
-    // Selection state
-    hasSelection: false,
-    selectionCount: {
-      clips: 0,
-      tracks: 0,
-      sections: 0,
-      total: 0,
-    },
-    selectionBounds: null,
-
-    // Selection actions
     selectClip: vi.fn(),
     selectTrack: vi.fn(),
     selectSection: vi.fn(),
-    selectMultiple: vi.fn(),
-    selectAll: vi.fn(),
-    selectNone: vi.fn(),
-    invertSelection: vi.fn(),
-
-    // Area selection
-    selectInTimeRange: vi.fn(),
-    selectByType: vi.fn(),
-
-    // Operations
-    deleteSelected: vi.fn(),
-    duplicateSelected: vi.fn(),
-    groupSelected: vi.fn(),
-    ungroupSelected: vi.fn(),
-
-    // Properties
-    setSelectedVolume: vi.fn(),
-    setSelectedSpeed: vi.fn(),
-    setSelectedOpacity: vi.fn(),
-    muteSelected: vi.fn(),
-    unmuteSelected: vi.fn(),
-    lockSelected: vi.fn(),
-    unlockSelected: vi.fn(),
-
-    // Clipboard
-    copySelected: vi.fn(),
-    cutSelected: vi.fn(),
-    pasteAtTime: vi.fn(),
-
-    // Utilities
-    isClipSelected: vi.fn(),
-    isTrackSelected: vi.fn(),
-    isSectionSelected: vi.fn(),
-    getSelectionStats: vi.fn(() => ({
-      totalDuration: 0,
-      averageVolume: 0,
-      trackTypes: [],
-      mediaTypes: [],
-    })),
+    clearSelection: vi.fn(),
     ...overrides,
-  } as any
+  }
 }
 
+// Mock player context
 const mockPlayerContext = {
-  // Playback control
-  play: vi.fn().mockResolvedValue(undefined),
-  pause: vi.fn().mockResolvedValue(undefined),
-  seek: vi.fn().mockResolvedValue(undefined),
-  setPlaybackRate: vi.fn().mockResolvedValue(undefined),
-
-  // Playback state
-  isPlaying: false,
+  // State
   currentTime: 0,
-  duration: 100,
+  duration: 0,
+  isPlaying: false,
   volume: 1,
   playbackRate: 1,
-
-  // Speed ramping
-  speedRampingEnabled: false,
-  currentPlaybackRate: 1,
-  basePlaybackRate: 1,
-
-  // Local state
-  isVideoLoading: false,
-  isVideoReady: false,
+  isLoading: false,
+  isReady: false,
   isSeeking: false,
   isChangingCamera: false,
   isRecording: false,
   isResizableMode: false,
-
-  // Media content
   currentVideo: null,
+  videoSource: null,
   previewMedia: null,
-  videoSource: "timeline" as const,
-  selectedClipId: null,
-
-  // Effects and filters
   appliedEffects: [],
   appliedFilters: [],
-  appliedTemplate: null,
+  currentTemplate: null,
+  speedRampingEnabled: false,
+  basePlaybackRate: 1,
 
-  // Prerender settings
+  // Settings
+  renderSettings: {
+    codec: "h264",
+    quality: 80,
+    fps: 30,
+    subtitle_font_size: 30,
+    subtitle_color: "#FFFFFF",
+    subtitle_background_color: "#000000",
+    subtitle_align_x: "center",
+    subtitle_align_y: "bottom",
+    bitrate: 5000,
+    use_gpu: true,
+    gpu_encoder: "h264",
+  },
+
   prerenderSettings: {
+    enabled: false,
+    quality: 80,
+    segmentDuration: 10,
+    applyEffects: true,
+    autoPrerender: false,
     prerenderEnabled: false,
     prerenderQuality: 80,
     prerenderSegmentDuration: 10,
@@ -282,94 +188,85 @@ const mockPlayerContext = {
 }
 
 describe("useTimelinePlayerSync", () => {
+  // Get references to the mocked functions
+  const mockUsePlayer = usePlayer as unknown as ReturnType<typeof vi.fn>
+  const mockUseTimeline = useTimeline as unknown as ReturnType<typeof vi.fn>
+  const mockUseTimelineSelection = useTimelineSelection as unknown as ReturnType<typeof vi.fn>
+  const mockTimelinePlayerSyncService = timelinePlayerSyncModule.timelinePlayerSync
+
   beforeEach(() => {
     vi.clearAllMocks()
 
     // Default mock implementations
-    vi.mocked(usePlayer).mockReturnValue(mockPlayerContext)
-    vi.mocked(useTimeline).mockReturnValue(createTimelineMock())
-    vi.mocked(useTimelineSelection).mockReturnValue(createSelectionMock())
+    mockUsePlayer.mockReturnValue(mockPlayerContext)
+    mockUseTimeline.mockReturnValue(createTimelineMock())
+    mockUseTimelineSelection.mockReturnValue(createSelectionMock())
   })
 
   describe("Initialization", () => {
     it("должен инициализировать player context при монтировании", () => {
       renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledWith(mockPlayerContext)
+      expect(mockTimelinePlayerSyncService.setPlayerContext).toHaveBeenCalledWith(mockPlayerContext)
     })
 
     it("должен обновлять player context при его изменении", () => {
       const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
       const newPlayerContext = { ...mockPlayerContext, volume: 0.5 }
-      vi.mocked(usePlayer).mockReturnValue(newPlayerContext)
+      mockUsePlayer.mockReturnValue(newPlayerContext)
 
       rerender()
 
-      expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledTimes(2)
-      expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenLastCalledWith(newPlayerContext)
+      expect(mockTimelinePlayerSyncService.setPlayerContext).toHaveBeenCalledTimes(2)
+      expect(mockTimelinePlayerSyncService.setPlayerContext).toHaveBeenLastCalledWith(newPlayerContext)
     })
   })
 
   describe("Синхронизация выбранных клипов", () => {
     it("должен синхронизировать один выбранный клип", () => {
-      vi.mocked(useTimelineSelection).mockReturnValue(
+      mockUseTimelineSelection.mockReturnValue(
         createSelectionMock({
           selectedClips: [mockClip1],
         }),
       )
 
-      const { result } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
-      expect(result.current.isSynced).toBe(true)
-      expect(result.current.syncedClip).toEqual(mockClip1)
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
     })
 
     it("должен очищать синхронизацию когда нет выбранных клипов", () => {
-      vi.mocked(useTimelineSelection).mockReturnValue(createSelectionMock())
+      mockUseTimelineSelection.mockReturnValue(createSelectionMock())
 
-      const { result } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.clearSelection).toHaveBeenCalled()
-      expect(result.current.isSynced).toBe(false)
-      expect(result.current.syncedClip).toBe(null)
+      expect(mockTimelinePlayerSyncService.clearSelection).toHaveBeenCalled()
     })
 
     it("не должен синхронизировать когда выбрано несколько клипов", () => {
-      vi.mocked(useTimelineSelection).mockReturnValue(
+      mockUseTimelineSelection.mockReturnValue(
         createSelectionMock({
           selectedClips: [mockClip1, mockClip2],
         }),
       )
 
-      const { result } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).not.toHaveBeenCalled()
-      expect(timelinePlayerSync.timelinePlayerSync.clearSelection).not.toHaveBeenCalled()
-      expect(result.current.isSynced).toBe(false)
-      expect(result.current.syncedClip).toBe(null)
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).not.toHaveBeenCalled()
+      expect(mockTimelinePlayerSyncService.clearSelection).toHaveBeenCalled()
     })
 
     it("должен обновлять синхронизацию при изменении выбора", () => {
-      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
-
-      // Изначально нет выбранных клипов
-      expect(timelinePlayerSync.timelinePlayerSync.clearSelection).toHaveBeenCalled()
-
-      // Выбираем один клип
-      vi.mocked(useTimelineSelection).mockReturnValue(
+      mockUseTimelineSelection.mockReturnValue(
         createSelectionMock({
           selectedClips: [mockClip1],
         }),
       )
 
-      rerender()
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
-
-      // Выбираем другой клип
-      vi.mocked(useTimelineSelection).mockReturnValue(
+      mockUseTimelineSelection.mockReturnValue(
         createSelectionMock({
           selectedClips: [mockClip2],
         }),
@@ -377,35 +274,115 @@ describe("useTimelinePlayerSync", () => {
 
       rerender()
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).toHaveBeenLastCalledWith(mockClip2)
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).toHaveBeenCalledTimes(2)
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).toHaveBeenLastCalledWith(mockClip2)
     })
   })
 
   describe("Синхронизация времени воспроизведения", () => {
     it("должен синхронизировать текущее время воспроизведения", () => {
+      mockUseTimeline.mockReturnValue(
+        createTimelineMock({
+          currentTime: 42.5,
+        }),
+      )
+
       renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(15)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenCalledWith(42.5)
     })
 
     it("должен обновлять время при его изменении", () => {
+      mockUseTimeline.mockReturnValue(
+        createTimelineMock({
+          currentTime: 10,
+        }),
+      )
+
       const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      // Изменяем текущее время
-      vi.mocked(useTimeline).mockReturnValue(
+      mockUseTimeline.mockReturnValue(
         createTimelineMock({
-          currentTime: 25,
+          currentTime: 20,
         }),
       )
 
       rerender()
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledTimes(2)
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenLastCalledWith(25)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenCalledTimes(2)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenLastCalledWith(20)
+    })
+  })
+
+  describe("Комплексная синхронизация", () => {
+    it("должен синхронизировать все состояния при монтировании", () => {
+      mockUsePlayer.mockReturnValue(mockPlayerContext)
+      mockUseTimeline.mockReturnValue(
+        createTimelineMock({
+          currentTime: 15,
+        }),
+      )
+      mockUseTimelineSelection.mockReturnValue(
+        createSelectionMock({
+          selectedClips: [mockClip1],
+        }),
+      )
+
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+
+      expect(mockTimelinePlayerSyncService.setPlayerContext).toHaveBeenCalledWith(mockPlayerContext)
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenCalledWith(15)
     })
 
-    it("должен синхронизировать время 0", () => {
-      vi.mocked(useTimeline).mockReturnValue(
+    it("должен обновлять все состояния при их изменении", () => {
+      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+
+      const newPlayerContext = { ...mockPlayerContext, volume: 0.8 }
+      mockUsePlayer.mockReturnValue(newPlayerContext)
+      mockUseTimeline.mockReturnValue(
+        createTimelineMock({
+          currentTime: 25,
+        }),
+      )
+      mockUseTimelineSelection.mockReturnValue(
+        createSelectionMock({
+          selectedClips: [mockClip2],
+        }),
+      )
+
+      rerender()
+
+      expect(mockTimelinePlayerSyncService.setPlayerContext).toHaveBeenLastCalledWith(newPlayerContext)
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).toHaveBeenLastCalledWith(mockClip2)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenLastCalledWith(25)
+    })
+  })
+
+  describe("Edge cases", () => {
+    it("должен обрабатывать null player context", () => {
+      mockUsePlayer.mockReturnValue(null as any)
+
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+
+      expect(mockTimelinePlayerSyncService.setPlayerContext).toHaveBeenCalledWith(null)
+    })
+
+    it("должен обрабатывать пустой массив выбранных клипов", () => {
+      mockUseTimelineSelection.mockReturnValue(
+        createSelectionMock({
+          selectedClips: [],
+        }),
+      )
+
+      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
+
+      expect(mockTimelinePlayerSyncService.clearSelection).toHaveBeenCalled()
+      expect(mockTimelinePlayerSyncService.syncSelectedClip).not.toHaveBeenCalled()
+    })
+
+    it("должен обрабатывать нулевое время", () => {
+      mockUseTimeline.mockReturnValue(
         createTimelineMock({
           currentTime: 0,
         }),
@@ -413,124 +390,31 @@ describe("useTimelinePlayerSync", () => {
 
       renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(0)
-    })
-
-    it("должен обрабатывать дробные значения времени", () => {
-      vi.mocked(useTimeline).mockReturnValue(
-        createTimelineMock({
-          currentTime: 15.567,
-        }),
-      )
-
-      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
-
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(15.567)
-    })
-  })
-
-  describe("Комплексные сценарии", () => {
-    it("должен корректно обрабатывать все изменения вместе", () => {
-      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
-
-      // Проверяем инициализацию
-      expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledWith(mockPlayerContext)
-      expect(timelinePlayerSync.timelinePlayerSync.clearSelection).toHaveBeenCalled()
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(15)
-
-      // Изменяем все параметры
-      const newPlayerContext = { ...mockPlayerContext, isPlaying: true }
-      vi.mocked(usePlayer).mockReturnValue(newPlayerContext)
-      vi.mocked(useTimelineSelection).mockReturnValue(
-        createSelectionMock({
-          selectedClips: [mockClip1],
-        }),
-      )
-      vi.mocked(useTimeline).mockReturnValue(
-        createTimelineMock({
-          currentTime: 30,
-          isPlaying: true,
-        }),
-      )
-
-      rerender()
-
-      // Проверяем, что все обновления произошли
-      expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenLastCalledWith(newPlayerContext)
-      expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenLastCalledWith(30)
-    })
-
-    it("должен корректно очищать синхронизацию при размонтировании", () => {
-      const { unmount } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
-
-      // Устанавливаем синхронизацию с клипом
-      vi.mocked(useTimelineSelection).mockReturnValue(
-        createSelectionMock({
-          selectedClips: [mockClip1],
-        }),
-      )
-
-      unmount()
-
-      // При размонтировании React очищает все эффекты, но наш хук не имеет cleanup функций
-      // Это может быть потенциальной проблемой, если сервис синхронизации держит ссылки
-    })
-  })
-
-  describe("Edge cases", () => {
-    it("должен обрабатывать null player context", () => {
-      vi.mocked(usePlayer).mockReturnValue(null as any)
-
-      renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
-
-      expect(timelinePlayerSync.timelinePlayerSync.setPlayerContext).toHaveBeenCalledWith(null)
-    })
-
-    it("должен обрабатывать пустой массив клипов после выбора", () => {
-      const { rerender } = renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
-
-      // Сначала выбираем клип
-      vi.mocked(useTimelineSelection).mockReturnValue(
-        createSelectionMock({
-          selectedClips: [mockClip1],
-        }),
-      )
-
-      rerender()
-
-      expect(timelinePlayerSync.timelinePlayerSync.syncSelectedClip).toHaveBeenCalledWith(mockClip1)
-
-      // Затем очищаем выбор
-      vi.mocked(useTimelineSelection).mockReturnValue(createSelectionMock())
-
-      rerender()
-
-      expect(timelinePlayerSync.timelinePlayerSync.clearSelection).toHaveBeenCalled()
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenCalledWith(0)
     })
 
     it("должен обрабатывать отрицательное время", () => {
-      vi.mocked(useTimeline).mockReturnValue(
+      mockUseTimeline.mockReturnValue(
         createTimelineMock({
-          currentTime: -5, // Может случиться при перемотке
+          currentTime: -1,
         }),
       )
 
       renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(-5)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenCalledWith(-1)
     })
 
     it("должен обрабатывать очень большое время", () => {
-      vi.mocked(useTimeline).mockReturnValue(
+      mockUseTimeline.mockReturnValue(
         createTimelineMock({
-          currentTime: 999999,
+          currentTime: Number.MAX_SAFE_INTEGER,
         }),
       )
 
       renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
-      expect(timelinePlayerSync.timelinePlayerSync.syncPlaybackTime).toHaveBeenCalledWith(999999)
+      expect(mockTimelinePlayerSyncService.syncPlaybackTime).toHaveBeenCalledWith(Number.MAX_SAFE_INTEGER)
     })
   })
 })

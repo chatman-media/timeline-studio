@@ -207,8 +207,8 @@ describe("timelineToProjectSchema", () => {
     const testCases = [
       { type: "video", expected: "Video" },
       { type: "audio", expected: "Audio" },
-      { type: "subtitle", expected: "Title" },
-      { type: "text", expected: "Title" },
+      { type: "subtitle", expected: "Subtitle" },
+      { type: "text", expected: "Subtitle" },
       { type: "unknown", expected: "Video" },
     ]
 

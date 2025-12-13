@@ -14,9 +14,15 @@ import { useTimelineActions } from "../use-timeline-actions"
 import { useTracks } from "../use-tracks"
 
 // Mock dependencies
-vi.mock("../../hooks/use-timeline")
-vi.mock("../../hooks/use-tracks")
-vi.mock("../../hooks/use-clips")
+vi.mock("../use-timeline", () => ({
+  useTimeline: vi.fn(),
+}))
+vi.mock("../use-tracks", () => ({
+  useTracks: vi.fn(),
+}))
+vi.mock("../../clips/use-clips", () => ({
+  useClips: vi.fn(),
+}))
 vi.mock("@/features/resources", () => ({
   useResources: vi.fn(() => ({
     addMedia: vi.fn(),
