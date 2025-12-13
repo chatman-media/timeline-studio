@@ -1,8 +1,12 @@
 import "@testing-library/jest-dom"
 
-import { cleanup } from "@testing-library/react"
+import { cleanup, render } from "@testing-library/react"
 import type React from "react"
 import { afterEach, beforeAll, vi } from "vitest"
+
+// Export render to make it available globally
+// This prevents RTL from calling beforeAll() inside tests
+export { render }
 
 // Mock requestAnimationFrame and cancelAnimationFrame at module level
 // This ensures they're available before any component code loads
