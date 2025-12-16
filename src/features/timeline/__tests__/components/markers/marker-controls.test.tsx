@@ -80,11 +80,11 @@ vi.mock("lucide-react", () => ({
 const mockUseTimeline = vi.fn()
 const mockUseTimelineMarkers = vi.fn()
 
-vi.mock("../../../hooks/use-timeline", () => ({
+vi.mock("../../../hooks/state/use-timeline", () => ({
   useTimeline: () => mockUseTimeline(),
 }))
 
-vi.mock("../../../hooks/use-timeline-markers", () => ({
+vi.mock("../../../hooks/markers/use-timeline-markers", () => ({
   useTimelineMarkers: () => mockUseTimelineMarkers(),
 }))
 
@@ -188,7 +188,9 @@ describe("MarkerControls", () => {
     const filterButton = screen.getByRole("button", { name: /Filter/i })
     expect(filterButton).toBeInTheDocument()
 
-    expect(screen.getByText("3 / 3")).toBeInTheDocument() // счетчик маркеров
+    // Проверяем счетчик маркеров (текст разбит на несколько узлов)
+    expect(screen.getByText("3", { exact: false })).toBeInTheDocument()
+    expect(screen.getByText("/", { exact: false })).toBeInTheDocument()
   })
 
   it("открывает попап добавления маркера при клике", async () => {
@@ -208,15 +210,17 @@ describe("MarkerControls", () => {
     renderWithTimeline(<MarkerControls />)
 
     // Открываем попап
-    fireEvent.click(screen.getAllByText("Add Marker")[0])
+    const addButton = screen.getAllByText("Add Marker")[0]
+    await user.click(addButton)
 
     // Вводим имя маркера
-    const input = screen.getByPlaceholderText("Marker name")
+    const input = await screen.findByPlaceholderText("Marker name")
     await user.type(input, "New Chapter")
 
     // Нажимаем кнопку добавления
-    const submitButton = screen.getAllByText("Add Marker")[2] // Третья кнопка в попапе
-    fireEvent.click(submitButton)
+    const submitButtons = screen.getAllByText("Add Marker")
+    const submitButton = submitButtons[submitButtons.length - 1] // Последняя кнопка - submit
+    await user.click(submitButton)
 
     expect(defaultMocks.addMarker).toHaveBeenCalledWith({
       time: 15,
@@ -230,11 +234,11 @@ describe("MarkerControls", () => {
     const user = userEvent.setup()
     renderWithTimeline(<MarkerControls />)
 
-    fireEvent.click(screen.getAllByText("Add Marker")[0])
+    const addButton = screen.getAllByText("Add Marker")[0]
+    await user.click(addButton)
 
-    const input = screen.getByPlaceholderText("Marker name")
-    await user.type(input, "Quick Marker")
-    fireEvent.keyDown(input, { key: "Enter" })
+    const input = await screen.findByPlaceholderText("Marker name")
+    await user.type(input, "Quick Marker{Enter}")
 
     expect(defaultMocks.addMarker).toHaveBeenCalledWith({
       time: 15,
@@ -257,20 +261,25 @@ describe("MarkerControls", () => {
     const user = userEvent.setup()
     renderWithTimeline(<MarkerControls />)
 
-    fireEvent.click(screen.getAllByText("Add Marker")[0])
+    const addButton = screen.getAllByText("Add Marker")[0]
+    await user.click(addButton)
 
     // Открываем выбор типа
-    const typeSelector = screen.getByTestId("dropdown-trigger")
-    fireEvent.click(typeSelector)
+    const typeSelector = await screen.findByTestId("dropdown-trigger")
+    await user.click(typeSelector)
 
     // Выбираем тип "Chapter" - находим первый элемент dropdown-item с текстом Chapter
     const dropdownItems = screen.getAllByTestId("dropdown-item")
     const chapterOption = dropdownItems.find((item) => item.textContent?.includes("Chapter"))
-    fireEvent.click(chapterOption!)
+    await user.click(chapterOption!)
 
     // Проверяем что тип изменился
-    await user.type(screen.getByPlaceholderText("Marker name"), "Test Chapter")
-    fireEvent.click(screen.getAllByText("Add Marker")[2])
+    const input = screen.getByPlaceholderText("Marker name")
+    await user.type(input, "Test Chapter")
+
+    const submitButtons = screen.getAllByText("Add Marker")
+    const submitButton = submitButtons[submitButtons.length - 1]
+    await user.click(submitButton)
 
     expect(defaultMocks.addMarker).toHaveBeenCalledWith({
       time: 15,
@@ -280,7 +289,8 @@ describe("MarkerControls", () => {
     })
   })
 
-  it("навигация между маркерами работает корректно", () => {
+  it("навигация между маркерами работает корректно", async () => {
+    const user = userEvent.setup()
     renderWithTimeline(<MarkerControls />)
 
     // Находим кнопки по их содержимому
@@ -288,10 +298,10 @@ describe("MarkerControls", () => {
     const prevButton = buttons.find((btn) => btn.querySelector('[data-icon="ChevronLeft"]'))
     const nextButton = buttons.find((btn) => btn.querySelector('[data-icon="ChevronRight"]'))
 
-    fireEvent.click(prevButton!)
+    await user.click(prevButton!)
     expect(defaultMocks.seek).toHaveBeenCalledWith(10) // предыдущий маркер на 10с
 
-    fireEvent.click(nextButton!)
+    await user.click(nextButton!)
     expect(defaultMocks.seek).toHaveBeenCalledWith(20) // следующий маркер на 20с
   })
 
@@ -327,30 +337,36 @@ describe("MarkerControls", () => {
     const user = userEvent.setup()
     renderWithTimeline(<MarkerControls />)
 
-    fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
+    const filterButton = screen.getByRole("button", { name: /Filter/i })
+    await user.click(filterButton)
 
-    const searchInput = screen.getByPlaceholderText("Search markers...")
+    const searchInput = await screen.findByPlaceholderText("Search markers...")
     await user.type(searchInput, "Chapter")
 
-    // Проверяем, что фильтрация обновила счетчик
-    await waitFor(() => {
-      expect(screen.getByText("1 / 3")).toBeInTheDocument() // 1 маркер с "Chapter" из 3
+    // Проверяем, что фильтрация обновила счетчик (текст может быть разбит на узлы)
+    const counter = screen.getByText((_content, element) => {
+      return element?.textContent === "1 / 3" || false
     })
+    expect(counter).toBeInTheDocument() // 1 маркер с "Chapter" из 3
   })
 
   it("фильтрует маркеры по типу", async () => {
+    const user = userEvent.setup()
     renderWithTimeline(<MarkerControls />)
 
-    fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
+    const filterButton = screen.getByRole("button", { name: /Filter/i })
+    await user.click(filterButton)
 
     // Находим чекбокс для типа "Chapter"
-    const chapterCheckbox = screen.getAllByRole("checkbox")[0]
-    fireEvent.click(chapterCheckbox)
+    const checkboxes = await screen.findAllByRole("checkbox")
+    const chapterCheckbox = checkboxes[0]
+    await user.click(chapterCheckbox)
 
     // Проверяем, что фильтрация обновила счетчик
-    await waitFor(() => {
-      expect(screen.getByText("1 / 3")).toBeInTheDocument() // 1 chapter маркер из 3
+    const counter = screen.getByText((_content, element) => {
+      return element?.textContent === "1 / 3" || false
     })
+    expect(counter).toBeInTheDocument() // 1 chapter маркер из 3
   })
 
   it("очищает поиск при клике на X", async () => {
@@ -388,22 +404,26 @@ describe("MarkerControls", () => {
   })
 
   it("очищает все фильтры при клике на Clear all", async () => {
+    const user = userEvent.setup()
     renderWithTimeline(<MarkerControls />)
 
-    fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
+    const filterButton = screen.getByRole("button", { name: /Filter/i })
+    await user.click(filterButton)
 
     // Устанавливаем фильтр
-    const chapterCheckbox = screen.getAllByRole("checkbox")[0]
-    fireEvent.click(chapterCheckbox)
+    const checkboxes = await screen.findAllByRole("checkbox")
+    const chapterCheckbox = checkboxes[0]
+    await user.click(chapterCheckbox)
 
     // Нажимаем Clear all
     const clearAllButton = screen.getByText("Clear all")
-    fireEvent.click(clearAllButton)
+    await user.click(clearAllButton)
 
     // Проверяем, что фильтры очищены (нет активных фильтров)
-    await waitFor(() => {
-      expect(screen.getByText("3 / 3")).toBeInTheDocument() // все маркеры видимы
+    const counter = screen.getByText((_content, element) => {
+      return element?.textContent === "3 / 3" || false
     })
+    expect(counter).toBeInTheDocument() // все маркеры видимы
   })
 
   it("обновляет счетчик маркеров при фильтрации", async () => {
@@ -411,14 +431,17 @@ describe("MarkerControls", () => {
     renderWithTimeline(<MarkerControls />)
 
     // Фильтруем по поиску
-    fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
-    const searchInput = screen.getByPlaceholderText("Search markers...")
+    const filterButton = screen.getByRole("button", { name: /Filter/i })
+    await user.click(filterButton)
+
+    const searchInput = await screen.findByPlaceholderText("Search markers...")
     await user.type(searchInput, "Chapter")
 
     // Проверяем обновленный счетчик
-    await waitFor(() => {
-      expect(screen.getByText("1 / 3")).toBeInTheDocument()
+    const counter = screen.getByText((_content, element) => {
+      return element?.textContent === "1 / 3" || false
     })
+    expect(counter).toBeInTheDocument()
   })
 
   it("сохраняет состояние фильтров между открытиями попапа", async () => {

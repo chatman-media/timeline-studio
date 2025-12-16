@@ -11,6 +11,7 @@ vi.mock("@/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: any }) => children,
   ResourcesProvider: ({ children }: { children: any }) => children,
   TimelineMarkersProvider: ({ children }: { children: any }) => children,
+  TimelineProvider: ({ children }: { children: any }) => children,
 }))
 
 vi.mock("../../state/use-timeline", () => ({
@@ -31,12 +32,11 @@ vi.mock("../../../services/timeline-player-sync", () => ({
 }))
 
 import { usePlayer } from "@/domains/video-editing"
+import { TimelineProviders } from "@/test/test-utils"
+import { createMockClip } from "../../../__mocks__/test-factories"
 import * as timelinePlayerSyncModule from "../../../services/timeline-player-sync"
 import { useTimeline } from "../../state/use-timeline"
 import { useTimelineSelection } from "../../state/use-timeline-selection"
-
-import { TimelineProviders } from "@/test/test-utils"
-import { createMockClip } from "../../../__mocks__/test-factories"
 import { useTimelinePlayerSync } from "../use-timeline-player-sync"
 
 // Test data
@@ -253,8 +253,9 @@ describe("useTimelinePlayerSync", () => {
 
       renderHook(() => useTimelinePlayerSync(), { wrapper: TimelineProviders })
 
+      // При выборе нескольких клипов хук не делает ничего - ни sync, ни clear
       expect(mockTimelinePlayerSyncService.syncSelectedClip).not.toHaveBeenCalled()
-      expect(mockTimelinePlayerSyncService.clearSelection).toHaveBeenCalled()
+      expect(mockTimelinePlayerSyncService.clearSelection).not.toHaveBeenCalled()
     })
 
     it("должен обновлять синхронизацию при изменении выбора", () => {

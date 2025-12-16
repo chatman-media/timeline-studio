@@ -31,60 +31,66 @@ vi.mock("@/domains/project-management/hooks", () => ({
 }))
 
 // Мокируем основной экспорт из index
-vi.mock("@/domains/media-management", async (importOriginal) => {
-  const actual = await importOriginal()
-  return {
-    ...actual,
-    DEFAULT_PREVIEW_SIZE_INDEX: 3,
-    useMediaManagement: vi.fn(() => ({
-      mediaPool: new Map([
-        [
-          "test-1",
-          {
-            path: "/test/video.mp4",
-            name: "test-video.mp4",
-            type: "Video",
-            duration: 120.5,
-            metadata: {
-              format: "",
-              codec: null,
-              resolution: null,
-              frame_rate: null,
-              bitrate: null,
-              audio_channels: null,
-              sample_rate: null,
-            },
-            thumbnailPath: null,
+vi.mock("@/domains/media-management", () => ({
+  DEFAULT_PREVIEW_SIZE_INDEX: 3,
+  DEFAULT_CONTENT_SIZES: {
+    MEDIA: 250,
+    TEMPLATES: 250,
+    STYLE_TEMPLATES: 250,
+    EFFECTS: 250,
+    FILTERS: 250,
+    TRANSITIONS: 250,
+    SUBTITLES: 250,
+    MUSIC: 250,
+  },
+  useMediaManagement: vi.fn(() => ({
+    mediaPool: new Map([
+      [
+        "test-1",
+        {
+          path: "/test/video.mp4",
+          name: "test-video.mp4",
+          type: "Video",
+          duration: 120.5,
+          metadata: {
+            format: "",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
           },
-        ],
-        [
-          "test-2",
-          {
-            path: "/test/image.jpg",
-            name: "test-image.jpg",
-            type: "Image",
-            duration: null,
-            metadata: {
-              format: "",
-              codec: null,
-              resolution: null,
-              frame_rate: null,
-              bitrate: null,
-              audio_channels: null,
-              sample_rate: null,
-            },
-            thumbnailPath: null,
+          thumbnailPath: null,
+        },
+      ],
+      [
+        "test-2",
+        {
+          path: "/test/image.jpg",
+          name: "test-image.jpg",
+          type: "Image",
+          duration: null,
+          metadata: {
+            format: "",
+            codec: null,
+            resolution: null,
+            frame_rate: null,
+            bitrate: null,
+            audio_channels: null,
+            sample_rate: null,
           },
-        ],
-      ]),
-      isLoading: false,
-      error: null,
-      importFiles: vi.fn(),
-      selectMediaFiles: vi.fn(() => Promise.resolve([])),
-      selectMediaDirectory: vi.fn(() => Promise.resolve([])),
-    })),
-  }
-})
+          thumbnailPath: null,
+        },
+      ],
+    ]),
+    isLoading: false,
+    error: null,
+    importFiles: vi.fn(),
+    selectMediaFiles: vi.fn(() => Promise.resolve([])),
+    selectMediaDirectory: vi.fn(() => Promise.resolve([])),
+  })),
+}))
 
 vi.mock("@/features/media", () => ({
   getFileType: vi.fn((file) => {

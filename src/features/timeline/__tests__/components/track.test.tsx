@@ -15,6 +15,24 @@ import "../../__mocks__/hooks"
 import { renderWithTimeline } from "@/test/test-utils"
 import { TrackComponent as Track } from "../../components/track/track"
 
+// Мокируем TimelineUIContext
+vi.mock("../../context/timeline-ui-context", () => ({
+  TimelineUIProvider: ({ children }: any) => children,
+  useTimelineUI: () => ({
+    uiState: {
+      timeScale: 60,
+      scrollPosition: { x: 0, y: 0 },
+      minTimeScale: 10,
+      maxTimeScale: 200,
+    },
+    setTimeScale: vi.fn(),
+    setScrollPosition: vi.fn(),
+    zoomIn: vi.fn(),
+    zoomOut: vi.fn(),
+    resetZoom: vi.fn(),
+  }),
+}))
+
 // Мокаем данные трека
 const mockTrack = {
   id: "track-1",

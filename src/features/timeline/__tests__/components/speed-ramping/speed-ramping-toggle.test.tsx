@@ -1,6 +1,6 @@
 import { fireEvent, screen } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { renderWithTimeline } from "@/test/test-utils"
 
 import { SpeedRampingToggle } from "../../../components/speed-ramping/speed-ramping-toggle"
 
@@ -27,7 +27,7 @@ const mockUseSpeedRamping = {
   disableSpeedRamping: vi.fn(),
 }
 
-vi.mock("../../../hooks/use-speed-ramping", () => ({
+vi.mock("../../../hooks/speed-ramping/use-speed-ramping", () => ({
   useSpeedRamping: () => mockUseSpeedRamping,
 }))
 

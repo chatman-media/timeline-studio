@@ -292,12 +292,10 @@ describe("useTimelineScale", () => {
 
   describe("Hook Memoization", () => {
     it("should recalculate when duration changes", () => {
-      const { result, rerender } = renderHook(
-        ({ duration }, { wrapper: TimelineProviders }) => useTimelineScale(duration, 0, duration, 1),
-        {
-          initialProps: { duration: 30 },
-        },
-      )
+      const { result, rerender } = renderHook(({ duration }) => useTimelineScale(duration, 0, duration, 1), {
+        wrapper: TimelineProviders,
+        initialProps: { duration: 30 },
+      })
 
       const initialTimeStep = result.current.timeStep
       expect(initialTimeStep).toBe(5) // 30s duration
@@ -310,12 +308,10 @@ describe("useTimelineScale", () => {
     })
 
     it("should recalculate when scale changes", () => {
-      const { result, rerender } = renderHook(
-        ({ scale }, { wrapper: TimelineProviders }) => useTimelineScale(60, 0, 60, scale),
-        {
-          initialProps: { scale: 1 },
-        },
-      )
+      const { result, rerender } = renderHook(({ scale }) => useTimelineScale(60, 0, 60, scale), {
+        wrapper: TimelineProviders,
+        initialProps: { scale: 1 },
+      })
 
       const initialTimeStep = result.current.timeStep
       expect(initialTimeStep).toBe(10) // 60s duration

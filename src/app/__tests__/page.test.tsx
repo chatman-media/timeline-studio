@@ -24,7 +24,7 @@ describe("Home Page", () => {
     expect(typeof Home).toBe("function")
 
     // Verify it can be called without throwing
-    expect(() => Home({})).not.toThrow()
+    expect(() => Home()).not.toThrow()
   })
 
   it("should have correct display name or type", async () => {

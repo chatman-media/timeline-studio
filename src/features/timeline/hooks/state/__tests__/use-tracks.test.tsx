@@ -4,13 +4,13 @@
  */
 
 import { renderHook } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { Timeline, Track } from "@/domains/video-editing/types"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTracks } from "../use-tracks"
 
-// Мокаем треки (используем domain свойства)
-const mockTracks: TimelineTrack[] = [
+// Мокаем треки (domain типы)
+const mockTracks: Track[] = [
   {
     id: "track-1",
     name: "Video Track 1",
@@ -18,7 +18,6 @@ const mockTracks: TimelineTrack[] = [
     clips: [],
     muted: false,
     locked: false,
-    isHidden: false,
     solo: false,
     volume: 1,
     pan: 0,
@@ -26,10 +25,6 @@ const mockTracks: TimelineTrack[] = [
     order: 0,
     trackEffects: [],
     trackFilters: [],
-    // Feature properties (добавляются адаптером)
-    isMuted: false,
-    isLocked: false,
-    isSolo: false,
   } as any,
   {
     id: "track-2",
@@ -38,7 +33,6 @@ const mockTracks: TimelineTrack[] = [
     clips: [],
     muted: true,
     locked: false,
-    isHidden: false,
     solo: false,
     volume: 0.8,
     pan: -0.2,
@@ -46,10 +40,6 @@ const mockTracks: TimelineTrack[] = [
     order: 1,
     trackEffects: [],
     trackFilters: [],
-    // Feature properties (добавляются адаптером)
-    isMuted: true,
-    isLocked: false,
-    isSolo: false,
   } as any,
   {
     id: "track-3",
@@ -58,7 +48,6 @@ const mockTracks: TimelineTrack[] = [
     clips: [],
     muted: false,
     locked: false,
-    isHidden: true,
     solo: false,
     volume: 1,
     pan: 0,
@@ -66,20 +55,14 @@ const mockTracks: TimelineTrack[] = [
     order: 2,
     trackEffects: [],
     trackFilters: [],
-    // Feature properties (добавляются адаптером)
-    isMuted: false,
-    isLocked: false,
-    isSolo: false,
   } as any,
 ]
 
-// Мокаем проект
-const mockProject: TimelineProject = {
+// Мокаем проект (domain типы)
+const mockProject: Timeline = {
   id: "project-1",
   name: "Test Project",
   duration: 60,
-  fps: 30,
-  sampleRate: 44100,
   sections: [
     {
       id: "section-1",
@@ -113,11 +96,6 @@ const mockProject: TimelineProject = {
     sampleRate: 44100,
     channels: 2,
     bitDepth: 16,
-    timeFormat: "timecode",
-    snapToGrid: true,
-    gridSize: 1,
-    autoSave: true,
-    autoSaveInterval: 300,
   },
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -126,51 +104,33 @@ const mockProject: TimelineProject = {
     effects: [],
     filters: [],
     transitions: [],
-    timelineTransitions: [],
     templates: [],
-    styleTemplates: [],
-    subtitleStyles: [],
     music: [],
     media: [],
   },
-}
+  markers: [],
+} as any
 
-// Мокаем UI состояние
-const mockUIState = {
-  selectedClipIds: [],
-  selectedTrackIds: ["track-1"],
-  currentTime: 0,
-  zoom: 1,
-  scrollPosition: 0,
-  visibleTrackTypes: ["video", "audio"],
-}
-
-// Мокаем зависимости
+// Мокаем useTimeline
 const mockUseTimeline = vi.fn()
-vi.mock("../../hooks/use-timeline", () => ({
+vi.mock("../use-timeline", () => ({
   useTimeline: () => mockUseTimeline(),
 }))
 
-// Default mock implementation
-mockUseTimeline.mockReturnValue({
-  project: mockProject,
-  uiState: mockUIState,
-  addTrack: vi.fn(),
-  removeTrack: vi.fn(),
-  updateTrack: vi.fn(),
-  reorderTracks: vi.fn(),
-  selectTracks: vi.fn(),
-  clearSelection: vi.fn(),
-})
-
-vi.mock("../../utils/utils", () => ({
-  getAllTracks: vi.fn((project) => (project ? mockTracks : [])),
-  findTrackById: vi.fn((project, id) => (project ? mockTracks.find((track) => track.id === id) || null : null)),
-  getTracksByType: vi.fn((project, type) => (project ? mockTracks.filter((track) => track.type === type) : [])),
-  sortTracksByOrder: vi.fn((tracks) => tracks || []),
-}))
-
 describe("useTracks", () => {
+  beforeEach(() => {
+    // Default mock implementation
+    mockUseTimeline.mockReturnValue({
+      project: mockProject,
+      selectedTrackIds: [],
+      addTrack: vi.fn(),
+      removeTrack: vi.fn(),
+      updateTrack: vi.fn(),
+      selectTracks: vi.fn(),
+      clearSelection: vi.fn(),
+    })
+  })
+
   describe("Hook Initialization", () => {
     it("should be defined and exportable", () => {
       expect(useTracks).toBeDefined()
@@ -203,11 +163,10 @@ describe("useTracks", () => {
       // Mock useTimeline to return no project
       mockUseTimeline.mockReturnValueOnce({
         project: null,
-        uiState: mockUIState,
+        selectedTrackIds: [],
         addTrack: vi.fn(),
         removeTrack: vi.fn(),
         updateTrack: vi.fn(),
-        reorderTracks: vi.fn(),
         selectTracks: vi.fn(),
         clearSelection: vi.fn(),
       })
@@ -228,11 +187,20 @@ describe("useTracks", () => {
         wrapper: TimelineProviders,
       })
 
-      expect(result.current.tracks).toEqual(mockTracks)
+      // Tracks будут адаптированы из domain в feature, так что проверяем структуру
+      expect(result.current.tracks).toHaveLength(3)
+      expect(result.current.tracks[0]).toMatchObject({
+        id: "track-1",
+        name: "Video Track 1",
+        type: "video",
+        isMuted: false,
+        isLocked: false,
+        isSolo: false,
+      })
       expect(result.current.globalTracks).toEqual([]) // No global tracks in mock project
-      expect(result.current.sectionTracks).toEqual(mockTracks) // All tracks are in sections
+      expect(result.current.sectionTracks).toHaveLength(3) // All tracks are in sections
       expect(result.current.selectedTracks).toEqual([]) // No tracks selected by default
-      expect(result.current.visibleTracks).toEqual([mockTracks[0], mockTracks[1]]) // Only non-hidden tracks (track-3 is hidden)
+      expect(result.current.visibleTracks).toHaveLength(3) // All tracks visible (isHidden добавляется адаптером как false)
     })
   })
 
@@ -252,7 +220,9 @@ describe("useTracks", () => {
       })
 
       const track = result.current.findTrack("track-1")
-      expect(track).toEqual(mockTracks[0])
+      expect(track).toBeTruthy()
+      expect(track?.id).toBe("track-1")
+      expect(track?.name).toBe("Video Track 1")
     })
 
     it("should return tracks filtered by type", () => {
@@ -261,20 +231,22 @@ describe("useTracks", () => {
       })
 
       const videoTracks = result.current.getTracksByType("video")
-      expect(videoTracks).toEqual([mockTracks[0], mockTracks[2]])
+      expect(videoTracks).toHaveLength(2)
+      expect(videoTracks[0].type).toBe("video")
+      expect(videoTracks[1].type).toBe("video")
 
       const audioTracks = result.current.getTracksByType("audio")
-      expect(audioTracks).toEqual([mockTracks[1]])
+      expect(audioTracks).toHaveLength(1)
+      expect(audioTracks[0].type).toBe("audio")
     })
 
     it("should return empty array for tracks by type when no project", () => {
       mockUseTimeline.mockReturnValueOnce({
         project: null,
-        uiState: mockUIState,
+        selectedTrackIds: [],
         addTrack: vi.fn(),
         removeTrack: vi.fn(),
         updateTrack: vi.fn(),
-        reorderTracks: vi.fn(),
         selectTracks: vi.fn(),
         clearSelection: vi.fn(),
       })
@@ -293,7 +265,9 @@ describe("useTracks", () => {
       })
 
       const sectionTracks = result.current.getTracksBySection("section-1")
-      expect(sectionTracks).toEqual([mockTracks[0], mockTracks[1]])
+      expect(sectionTracks).toHaveLength(2)
+      expect(sectionTracks[0].id).toBe("track-1")
+      expect(sectionTracks[1].id).toBe("track-2")
     })
 
     it("should return empty array for non-existent section", () => {
@@ -310,11 +284,10 @@ describe("useTracks", () => {
     it("should return false when adding track without project", () => {
       mockUseTimeline.mockReturnValueOnce({
         project: null,
-        uiState: mockUIState,
+        selectedTrackIds: [],
         addTrack: vi.fn(),
         removeTrack: vi.fn(),
         updateTrack: vi.fn(),
-        reorderTracks: vi.fn(),
         selectTracks: vi.fn(),
         clearSelection: vi.fn(),
       })

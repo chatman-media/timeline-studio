@@ -19,6 +19,7 @@ import { useDragDropTimeline } from "../use-drag-drop-timeline"
 // Моки для внешних зависимостей
 const mockAddSingleMediaToTimeline = vi.fn()
 const mockAddTrack = vi.fn()
+let mockProject: any
 const mockUiState: {
   timeScale: number
   snapMode: "none" | "grid" | "clips" | "markers"
@@ -29,14 +30,154 @@ const mockUiState: {
   selectedTrackIds: [],
 }
 
-vi.mock("../../hooks/use-timeline", () => ({
-  useTimeline: () => ({
-    uiState: mockUiState,
+function createMockProject() {
+  return {
+    id: "test-project",
+    sections: [],
+    globalTracks: [],
+  }
+}
+
+// Mock всех необходимых хуков из провайдеров
+vi.mock("@/domains/video-editing", () => ({
+  useTimelineProject: () => ({
+    project: mockProject,
+    isLoading: false,
+    hasUnsavedChanges: false,
+    createProject: vi.fn(),
+    saveProject: vi.fn(),
+    loadProject: vi.fn(),
+    backend: null,
+  }),
+  useTimelinePlayback: () => ({
+    isPlaying: false,
+    currentTime: 0,
+    playbackRate: 1,
+    duration: 100,
+    play: vi.fn(),
+    pause: vi.fn(),
+    stop: vi.fn(),
+    seek: vi.fn(),
+    setPlaybackRate: vi.fn(),
+  }),
+  useTimelineTracks: () => ({
+    tracks: mockProject?.globalTracks || [],
+    activeTrackId: null,
     addTrack: mockAddTrack,
+    removeTrack: vi.fn(),
+    updateTrack: vi.fn(),
+    reorderTracks: vi.fn(),
+    setActiveTrack: vi.fn(),
+  }),
+  useTimelineClips: () => ({
+    clips: mockProject?.globalTracks?.[0]?.clips || [],
+    addClip: vi.fn(),
+    removeClip: vi.fn(),
+    moveClip: vi.fn(),
+    trimClip: vi.fn(),
+    splitClip: vi.fn(),
+    updateClip: vi.fn(),
+    batchUpdateClips: vi.fn(),
+  }),
+  useTimelineSelection: () => ({
+    selectedClipIds: [],
+    selectedTrackIds: [],
+    selectClips: vi.fn(),
+    selectTracks: vi.fn(),
+    clearSelection: vi.fn(),
+    copyClips: vi.fn(),
+    cutClips: vi.fn(),
+    pasteClips: vi.fn(),
+    deleteSelected: vi.fn(),
+  }),
+  useTimelineEffects: () => ({
+    applyEffect: vi.fn(),
+    removeEffect: vi.fn(),
+    applyFilter: vi.fn(),
+    removeFilter: vi.fn(),
+    applyTransition: vi.fn(),
+    removeTransition: vi.fn(),
+  }),
+  useTimelineMarkers: () => ({
+    markers: [],
+    addMarker: vi.fn(),
+    updateMarker: vi.fn(),
+    removeMarker: vi.fn(),
+    goToMarker: vi.fn(),
   }),
 }))
 
-vi.mock("../../hooks/use-timeline-actions", () => ({
+vi.mock("../../state/use-timeline", () => ({
+  useTimeline: () => ({
+    project: mockProject,
+    uiState: mockUiState,
+    addTrack: mockAddTrack,
+    send: vi.fn(),
+    isLoading: false,
+    hasUnsavedChanges: false,
+    createProject: vi.fn(),
+    saveProject: vi.fn(),
+    loadProject: vi.fn(),
+    backend: null,
+    isPlaying: false,
+    currentTime: 0,
+    playbackRate: 1,
+    duration: 100,
+    play: vi.fn(),
+    pause: vi.fn(),
+    stop: vi.fn(),
+    seek: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    tracks: mockProject?.globalTracks || [],
+    activeTrackId: null,
+    removeTrack: vi.fn(),
+    updateTrack: vi.fn(),
+    reorderTracks: vi.fn(),
+    setActiveTrack: vi.fn(),
+    clips: mockProject?.globalTracks?.[0]?.clips || [],
+    addClip: vi.fn(),
+    removeClip: vi.fn(),
+    moveClip: vi.fn(),
+    trimClip: vi.fn(),
+    splitClip: vi.fn(),
+    updateClip: vi.fn(),
+    batchUpdateClips: vi.fn(),
+    selectedClipIds: [],
+    selectedTrackIds: [],
+    selectClips: vi.fn(),
+    selectTracks: vi.fn(),
+    clearSelection: vi.fn(),
+    copyClips: vi.fn(),
+    cutClips: vi.fn(),
+    pasteClips: vi.fn(),
+    deleteSelected: vi.fn(),
+    applyEffect: vi.fn(),
+    removeEffect: vi.fn(),
+    applyFilter: vi.fn(),
+    removeFilter: vi.fn(),
+    applyTransition: vi.fn(),
+    removeTransition: vi.fn(),
+    markers: [],
+    addMarker: vi.fn(),
+    updateMarker: vi.fn(),
+    removeMarker: vi.fn(),
+    goToMarker: vi.fn(),
+    addSection: vi.fn(),
+    removeSection: vi.fn(),
+    selectSections: vi.fn(),
+    setTimeScale: vi.fn(),
+    setScrollPosition: vi.fn(),
+    setEditMode: vi.fn(),
+    toggleSnap: vi.fn(),
+    copySelection: vi.fn(),
+    cutSelection: vi.fn(),
+    paste: vi.fn(),
+    error: null,
+    clearError: vi.fn(),
+  }),
+}))
+
+vi.mock("../../state/use-timeline-actions", () => ({
   useTimelineActions: () => ({
     addSingleMediaToTimeline: mockAddSingleMediaToTimeline,
   }),
@@ -52,7 +193,10 @@ vi.mock("../../utils/drag-calculations", () => ({
     if (mediaFile.isImage) return trackType === "video"
     return false
   }),
-  findInsertionPoint: vi.fn((timePosition, _trackId, _duration) => timePosition),
+  findInsertionPoint: vi.fn((timePosition, _trackId, _duration) => ({
+    insertionTime: timePosition,
+    hasOverlap: false,
+  })),
   getTrackTypeForMediaFile: vi.fn((mediaFile) => {
     if (mediaFile.isVideo) return "video"
     if (mediaFile.isAudio) return "audio"
@@ -68,6 +212,7 @@ vi.mock("../../utils/drag-calculations", () => ({
 describe("useDragDropTimeline", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockProject = createMockProject()
     mockUiState.timeScale = 1
     mockUiState.snapMode = "none"
 
@@ -535,7 +680,11 @@ describe("useDragDropTimeline", () => {
         result.current.handleDragEnd(event)
       })
 
-      expect(mockAddSingleMediaToTimeline).toHaveBeenCalledWith(mediaFile, "track-1", undefined)
+      // После handleDragOver startTime будет рассчитан на основе clientX: 200
+      // Хук использует hardcoded timeScale: 50 (строка 39 в use-drag-drop-timeline.ts)
+      // calculateTimelinePosition(200, {left: 100}, 0, 50) = (200 - 100) / 50 = 2
+      // findInsertionPoint(2, "track-1", 60) = { insertionTime: 2 }
+      expect(mockAddSingleMediaToTimeline).toHaveBeenCalledWith(mediaFile, "track-1", 2)
     })
   })
 

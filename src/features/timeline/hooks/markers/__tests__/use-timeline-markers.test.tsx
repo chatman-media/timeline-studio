@@ -41,6 +41,9 @@ vi.mock("@/domains/video-editing", () => ({
     goToMarker: mockGoToMarker,
   }),
   TimelineMarkersProvider: ({ children }: any) => children,
+  ResourcesProvider: ({ children }: any) => children,
+  PlayerProvider: ({ children }: any) => children,
+  TimelineProvider: ({ children }: any) => children,
 }))
 
 describe("useTimelineMarkers", () => {

@@ -139,30 +139,24 @@ describe("BrowserOrchestrator", () => {
 
   describe("Search Query", () => {
     it("should set search query", async () => {
-      
-
       await orchestrator.setSearchQuery("test query")
 
       expect(mockCommands.browserSetSearchQuery).toHaveBeenCalledWith("test query", null)
     })
 
     it("should set search query for specific tab", async () => {
-      
-
       await orchestrator.setSearchQuery("effects query", "effects")
 
       expect(mockCommands.browserSetSearchQuery).toHaveBeenCalledWith("effects query", "effects")
     })
 
     it("should handle search query error", async () => {
-      
       mockCommands.browserSetSearchQuery = vi.fn().mockResolvedValue({ status: "error", error: "Search failed" })
 
       await expect(orchestrator.setSearchQuery("test")).rejects.toThrow("Search failed")
     })
 
     it("should clear error after successful search", async () => {
-      
       // Reset mock to return success
       mockCommands.browserSetSearchQuery = vi.fn().mockResolvedValue({ status: "ok" })
 
@@ -174,23 +168,18 @@ describe("BrowserOrchestrator", () => {
 
   describe("Favorites Toggle", () => {
     it("should toggle favorites", async () => {
-      
-
       await orchestrator.toggleFavorites()
 
       expect(mockCommands.browserToggleFavorites).toHaveBeenCalledWith(null)
     })
 
     it("should toggle favorites for specific tab", async () => {
-      
-
       await orchestrator.toggleFavorites("filters")
 
       expect(mockCommands.browserToggleFavorites).toHaveBeenCalledWith("filters")
     })
 
     it("should handle toggle favorites error", async () => {
-      
       mockCommands.browserToggleFavorites = vi.fn().mockResolvedValue({ status: "error", error: "Toggle failed" })
 
       await expect(orchestrator.toggleFavorites()).rejects.toThrow("Toggle failed")
@@ -199,23 +188,18 @@ describe("BrowserOrchestrator", () => {
 
   describe("Sort Settings", () => {
     it("should set sort", async () => {
-      
-
       await orchestrator.setSort("date", "desc")
 
       expect(mockCommands.browserSetSort).toHaveBeenCalledWith("date", "desc", null)
     })
 
     it("should set sort for specific tab", async () => {
-      
-
       await orchestrator.setSort("name", "asc", "effects")
 
       expect(mockCommands.browserSetSort).toHaveBeenCalledWith("name", "asc", "effects")
     })
 
     it("should handle sort error", async () => {
-      
       mockCommands.browserSetSort = vi.fn().mockResolvedValue({ status: "error", error: "Sort failed" })
 
       await expect(orchestrator.setSort("date", "asc")).rejects.toThrow("Sort failed")
@@ -224,16 +208,12 @@ describe("BrowserOrchestrator", () => {
 
   describe("Group By Settings", () => {
     it("should set group by", async () => {
-      
-
       await orchestrator.setGroupBy("type")
 
       expect(mockCommands.browserSetGroupBy).toHaveBeenCalledWith("type", null)
     })
 
     it("should set group by for specific tab", async () => {
-      
-
       await orchestrator.setGroupBy("category", "templates")
 
       expect(mockCommands.browserSetGroupBy).toHaveBeenCalledWith("category", "templates")
@@ -242,16 +222,12 @@ describe("BrowserOrchestrator", () => {
 
   describe("Filter Settings", () => {
     it("should set filter", async () => {
-      
-
       await orchestrator.setFilter("video")
 
       expect(mockCommands.browserSetFilter).toHaveBeenCalledWith("video", null)
     })
 
     it("should set filter for specific tab", async () => {
-      
-
       await orchestrator.setFilter("image", "media")
 
       expect(mockCommands.browserSetFilter).toHaveBeenCalledWith("image", "media")
@@ -260,23 +236,18 @@ describe("BrowserOrchestrator", () => {
 
   describe("View Mode Settings", () => {
     it("should set view mode", async () => {
-      
-
       await orchestrator.setViewMode("grid")
 
       expect(mockCommands.browserSetViewMode).toHaveBeenCalledWith("grid", null)
     })
 
     it("should set view mode for specific tab", async () => {
-      
-
       await orchestrator.setViewMode("list", "effects")
 
       expect(mockCommands.browserSetViewMode).toHaveBeenCalledWith("list", "effects")
     })
 
     it("should handle all view modes", async () => {
-      
       const viewModes: Array<"thumbnails" | "list" | "grid"> = ["thumbnails", "list", "grid"]
 
       for (const viewMode of viewModes) {
@@ -288,23 +259,18 @@ describe("BrowserOrchestrator", () => {
 
   describe("Preview Size Settings", () => {
     it("should set preview size", async () => {
-      
-
       await orchestrator.setPreviewSize(3)
 
       expect(mockCommands.browserSetPreviewSize).toHaveBeenCalledWith(3, null)
     })
 
     it("should set preview size for specific tab", async () => {
-      
-
       await orchestrator.setPreviewSize(4, "filters")
 
       expect(mockCommands.browserSetPreviewSize).toHaveBeenCalledWith(4, "filters")
     })
 
     it("should handle all size indices", async () => {
-      
       const sizeIndices = [0, 1, 2, 3, 4]
 
       for (const sizeIndex of sizeIndices) {
@@ -316,15 +282,12 @@ describe("BrowserOrchestrator", () => {
 
   describe("Reset Tab Settings", () => {
     it("should reset tab settings", async () => {
-      
-
       await orchestrator.resetTabSettings("media")
 
       expect(mockCommands.browserResetTabSettings).toHaveBeenCalledWith("media")
     })
 
     it("should handle reset error", async () => {
-      
       mockCommands.browserResetTabSettings = vi.fn().mockResolvedValue({ status: "error", error: "Reset failed" })
 
       await expect(orchestrator.resetTabSettings("media")).rejects.toThrow("Reset failed")
@@ -333,39 +296,30 @@ describe("BrowserOrchestrator", () => {
 
   describe("File Selection", () => {
     it("should select file", async () => {
-      
-
       await orchestrator.selectFile("file-1")
 
       expect(mockCommands.browserSelectFile).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should select file for specific tab", async () => {
-      
-
       await orchestrator.selectFile("effect-1", "effects")
 
       expect(mockCommands.browserSelectFile).toHaveBeenCalledWith("effect-1", "effects")
     })
 
     it("should deselect file", async () => {
-      
-
       await orchestrator.deselectFile("file-1")
 
       expect(mockCommands.browserDeselectFile).toHaveBeenCalledWith("file-1", null)
     })
 
     it("should deselect file for specific tab", async () => {
-      
-
       await orchestrator.deselectFile("effect-1", "effects")
 
       expect(mockCommands.browserDeselectFile).toHaveBeenCalledWith("effect-1", "effects")
     })
 
     it("should handle file selection error", async () => {
-      
       mockCommands.browserSelectFile = vi.fn().mockResolvedValue({ status: "error", error: "Select failed" })
 
       await expect(orchestrator.selectFile("file-1")).rejects.toThrow("Select failed")
@@ -374,7 +328,6 @@ describe("BrowserOrchestrator", () => {
 
   describe("Toggle File Selection", () => {
     it("should toggle file selection - select when not selected", async () => {
-      
       // Reset mocks to return success
       mockCommands.browserSelectFile = vi.fn().mockResolvedValue({ status: "ok" })
 
@@ -385,7 +338,6 @@ describe("BrowserOrchestrator", () => {
     })
 
     it("should toggle file selection - deselect when selected", async () => {
-      
       // Reset mocks to return success
       mockCommands.browserSelectFile = vi.fn().mockResolvedValue({ status: "ok" })
       mockCommands.browserDeselectFile = vi.fn().mockResolvedValue({ status: "ok" })
@@ -412,7 +364,6 @@ describe("BrowserOrchestrator", () => {
 
   describe("Select All Files", () => {
     it("should select all files", async () => {
-      
       const fileIds = ["file-1", "file-2", "file-3"]
 
       await orchestrator.selectAllFiles(fileIds)
@@ -421,7 +372,6 @@ describe("BrowserOrchestrator", () => {
     })
 
     it("should select all files for specific tab", async () => {
-      
       const fileIds = ["effect-1", "effect-2"]
 
       await orchestrator.selectAllFiles(fileIds, "effects")
@@ -432,16 +382,12 @@ describe("BrowserOrchestrator", () => {
 
   describe("Deselect All Files", () => {
     it("should deselect all files", async () => {
-      
-
       await orchestrator.deselectAllFiles()
 
       expect(mockCommands.browserDeselectAllFiles).toHaveBeenCalledWith(null)
     })
 
     it("should deselect all files for specific tab", async () => {
-      
-
       await orchestrator.deselectAllFiles("effects")
 
       expect(mockCommands.browserDeselectAllFiles).toHaveBeenCalledWith("effects")
@@ -500,7 +446,6 @@ describe("BrowserOrchestrator", () => {
     })
 
     it("should notify subscribers on state change", async () => {
-      
       mockCommands.browserSwitchTab = vi.fn().mockResolvedValue({ status: "ok" })
 
       const callback = vi.fn()
@@ -554,15 +499,12 @@ describe("BrowserOrchestrator", () => {
 
   describe("Error Handling", () => {
     it("should set error state on command failure", async () => {
-      
       mockCommands.browserSwitchTab = vi.fn().mockResolvedValue({ status: "error", error: "Test error" })
 
       await expect(orchestrator.switchTab("effects")).rejects.toThrow("Test error")
     })
 
     it("should clear error after successful operation", async () => {
-      
-
       // Cause an error
       mockCommands.browserSetSearchQuery = vi.fn().mockResolvedValue({ status: "error", error: "Test error" })
       try {
@@ -581,8 +523,6 @@ describe("BrowserOrchestrator", () => {
 
   describe("Loading State", () => {
     it("should set loading state during operations", async () => {
-      
-
       // Mock slow command
       mockCommands.browserSetSearchQuery = vi
         .fn()
@@ -600,7 +540,6 @@ describe("BrowserOrchestrator", () => {
     })
 
     it("should clear loading state on error", async () => {
-      
       mockCommands.browserSetSearchQuery = vi.fn().mockResolvedValue({ status: "error", error: "Test error" })
 
       try {

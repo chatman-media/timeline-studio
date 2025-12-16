@@ -20,34 +20,45 @@ vi.mock("@/features/keyboard-shortcuts", () => ({
 
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 
-// Mock keyboard event - will be initialized in beforeEach
-let mockKeyboardEvent: KeyboardEvent
+// Mock keyboard event
+const mockKeyboardEvent = { key: "Enter", type: "keydown" } as KeyboardEvent
 const mockHotkeyEvent = { keys: ["enter"], scope: "all", element: null }
 
-// Создаем отдельный модуль для моков
-const mockCreateGroup = vi.fn()
-const mockUngroupClips = vi.fn()
-const mockGetGroupByClip = vi.fn()
+// Используем vi.hoisted для переменных, которые нужны в vi.mock
+const { mockCreateGroup, mockUngroupClips, mockGetGroupByClip, mockUseTimeline, mockClipGroupsReturn } = vi.hoisted(
+  () => {
+    const createGroup = vi.fn()
+    const ungroupClips = vi.fn()
+    const getGroupByClip = vi.fn()
+    return {
+      mockCreateGroup: createGroup,
+      mockUngroupClips: ungroupClips,
+      mockGetGroupByClip: getGroupByClip,
+      mockUseTimeline: vi.fn(),
+      mockClipGroupsReturn: {
+        createGroup,
+        ungroupClips,
+        getGroupByClip,
+        groups: [],
+        groupManager: {},
+        addToGroup: vi.fn(),
+        removeFromGroup: vi.fn(),
+        toggleCollapse: vi.fn(),
+        lockGroup: vi.fn(),
+        renameGroup: vi.fn(),
+        setGroupColor: vi.fn(),
+        createNestedSequence: vi.fn(),
+        updateNestedSequence: vi.fn(),
+        breakApartSequence: vi.fn(),
+        isClipInGroup: vi.fn(),
+        getClipsInGroup: vi.fn(),
+      },
+    }
+  },
+)
 
-vi.mock("../../hooks/use-clip-groups", () => ({
-  useClipGroups: () => ({
-    createGroup: mockCreateGroup,
-    ungroupClips: mockUngroupClips,
-    getGroupByClip: mockGetGroupByClip,
-    groups: [],
-    groupManager: {},
-    addToGroup: vi.fn(),
-    removeFromGroup: vi.fn(),
-    toggleCollapse: vi.fn(),
-    lockGroup: vi.fn(),
-    renameGroup: vi.fn(),
-    setGroupColor: vi.fn(),
-    createNestedSequence: vi.fn(),
-    updateNestedSequence: vi.fn(),
-    breakApartSequence: vi.fn(),
-    isClipInGroup: vi.fn(),
-    getClipsInGroup: vi.fn(),
-  }),
+vi.mock("../../clips/use-clip-groups", () => ({
+  useClipGroups: () => mockClipGroupsReturn,
 }))
 
 // Mock project data
@@ -103,12 +114,8 @@ const mockUiState = {
 
 const mockSend = vi.fn()
 
-vi.mock("../../hooks/use-timeline", () => ({
-  useTimeline: () => ({
-    project: mockProject,
-    selectedClipIds: mockUiState.selectedClipIds,
-    send: mockSend,
-  }),
+vi.mock("../../state/use-timeline", () => ({
+  useTimeline: () => mockUseTimeline(),
 }))
 
 import type { TimelineClip, TimelineProject } from "@/features/timeline/types"
@@ -120,11 +127,59 @@ describe("useGroupHotkeys", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    // Initialize KeyboardEvent
-    mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
-
     // Сбрасываем выбранные клипы
     mockUiState.selectedClipIds = ["clip-1", "clip-2"]
+
+    // Настраиваем мок useTimeline (используем mockImplementation для динамического чтения selectedClipIds)
+    mockUseTimeline.mockImplementation(() => ({
+      project: mockProject,
+      selectedClipIds: mockUiState.selectedClipIds,
+      send: mockSend,
+    }))
+
+    // Восстанавливаем mockProject к исходному состоянию
+    mockProject.sections = [
+      {
+        id: "section-1",
+        name: "Section 1",
+        tracks: [
+          {
+            id: "track-1",
+            clips: [
+              {
+                id: "clip-1",
+                name: "Clip 1",
+                trackId: "track-1",
+                startTime: 0,
+                duration: 5,
+              } as TimelineClip,
+              {
+                id: "clip-2",
+                name: "Clip 2",
+                trackId: "track-1",
+                startTime: 5,
+                duration: 5,
+              } as TimelineClip,
+            ],
+          },
+        ],
+      },
+    ] as any
+
+    mockProject.globalTracks = [
+      {
+        id: "global-track-1",
+        clips: [
+          {
+            id: "clip-3",
+            name: "Clip 3",
+            trackId: "global-track-1",
+            startTime: 0,
+            duration: 10,
+          } as TimelineClip,
+        ],
+      },
+    ] as any
 
     // Настройка мока getGroupByClip по умолчанию
     mockGetGroupByClip.mockReturnValue({
@@ -138,7 +193,7 @@ describe("useGroupHotkeys", () => {
   })
 
   afterEach(() => {
-    vi.clearAllTimers()
+    // No cleanup needed - we don't use fake timers
   })
 
   it("должен регистрировать горячие клавиши", () => {

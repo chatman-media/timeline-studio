@@ -197,7 +197,9 @@ describe("EditCursorOverlay", () => {
     it("должен не отображаться когда isActive = false", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={false} />)
+      const { container } = renderWithTimeline(
+        <EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={false} />,
+      )
 
       expect(container.querySelector('[class*="fixed"][class*="pointer-events-none"]')).not.toBeInTheDocument()
     })
@@ -350,7 +352,9 @@ describe("EditCursorOverlay", () => {
     it("должен корректно обрабатывать большие координаты", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 9999, y: 9999 }} isActive={true} />)
+      const { container } = renderWithTimeline(
+        <EditCursorOverlay mousePosition={{ x: 9999, y: 9999 }} isActive={true} />,
+      )
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -363,7 +367,9 @@ describe("EditCursorOverlay", () => {
     it("должен корректно обрабатывать отрицательные координаты", () => {
       mockEditModeContext.editMode = EDIT_MODES.TRIM
 
-      const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: -100, y: -50 }} isActive={true} />)
+      const { container } = renderWithTimeline(
+        <EditCursorOverlay mousePosition={{ x: -100, y: -50 }} isActive={true} />,
+      )
 
       const overlay = container.querySelector('[class*="fixed"][class*="pointer-events-none"]')!
       expect(overlay).toBeInTheDocument()
@@ -388,7 +394,9 @@ describe("EditCursorOverlay", () => {
 
       modes.forEach((mode) => {
         mockEditModeContext.editMode = mode
-        const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+        const { container } = renderWithTimeline(
+          <EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />,
+        )
 
         const svg = container.querySelector("svg")
         expect(svg).toBeInTheDocument()
@@ -411,7 +419,9 @@ describe("EditCursorOverlay", () => {
 
       modes.forEach((mode) => {
         mockEditModeContext.editMode = mode
-        const { container } = renderWithTimeline(<EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />)
+        const { container } = renderWithTimeline(
+          <EditCursorOverlay mousePosition={{ x: 100, y: 100 }} isActive={true} />,
+        )
 
         const svg = container.querySelector("svg")
         expect(svg).toBeInTheDocument()

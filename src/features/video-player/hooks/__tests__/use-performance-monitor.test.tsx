@@ -14,14 +14,14 @@ const mockGetHealthStatus = vi.fn()
 const mockGetSummaryReport = vi.fn()
 const mockReset = vi.fn()
 
-vi.mock("../../services/performance-monitor", () => ({
+vi.mock("@/domains/video-editing/services/performance-monitor", () => ({
   globalPerformanceMonitor: {
-    getMetrics: mockGetMetrics,
-    getSyncRecords: mockGetSyncRecords,
-    getCommandTypeStats: mockGetCommandTypeStats,
-    getHealthStatus: mockGetHealthStatus,
-    getSummaryReport: mockGetSummaryReport,
-    reset: mockReset,
+    getMetrics: (...args: any[]) => mockGetMetrics(...args),
+    getSyncRecords: (...args: any[]) => mockGetSyncRecords(...args),
+    getCommandTypeStats: (...args: any[]) => mockGetCommandTypeStats(...args),
+    getHealthStatus: (...args: any[]) => mockGetHealthStatus(...args),
+    getSummaryReport: (...args: any[]) => mockGetSummaryReport(...args),
+    reset: (...args: any[]) => mockReset(...args),
   },
 }))
 
@@ -66,15 +66,15 @@ describe("usePerformanceMonitor", () => {
   mockGetSummaryReport.mockReturnValue(mockReport)
 
   beforeEach(() => {
-    vi.clearAllMocks()
     vi.useFakeTimers()
 
-    // Переустанавливаем моки после clearAllMocks
-    mockGetMetrics.mockReturnValue(mockMetrics)
-    mockGetSyncRecords.mockReturnValue(mockSyncRecords)
-    mockGetCommandTypeStats.mockReturnValue(mockCommandStats)
-    mockGetHealthStatus.mockReturnValue(mockHealth)
-    mockGetSummaryReport.mockReturnValue(mockReport)
+    // Очищаем счетчики вызовов, но сохраняем implementation
+    mockGetMetrics.mockClear()
+    mockGetSyncRecords.mockClear()
+    mockGetCommandTypeStats.mockClear()
+    mockGetHealthStatus.mockClear()
+    mockGetSummaryReport.mockClear()
+    mockReset.mockClear()
   })
 
   afterEach(() => {

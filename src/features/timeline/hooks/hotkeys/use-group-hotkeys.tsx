@@ -9,37 +9,37 @@ export function useGroupHotkeys() {
   const { createGroup, ungroupClips, getGroupByClip } = useClipGroups()
   const { project, selectedClipIds } = useTimeline()
 
-  // Helper function to get selected clips
-  const getSelectedClips = (): TimelineClip[] => {
-    if (!project) return []
+  // Register keyboard shortcuts for grouping operations
+  useEffect(() => {
+    // Helper function to get selected clips
+    const getSelectedClips = (): TimelineClip[] => {
+      if (!project) return []
 
-    const selectedClips: TimelineClip[] = []
+      const selectedClips: TimelineClip[] = []
 
-    // Check global tracks
-    project.globalTracks.forEach((track) => {
-      track.clips.forEach((clip) => {
-        if (selectedClipIds.includes(clip.id)) {
-          selectedClips.push(clip)
-        }
-      })
-    })
-
-    // Check section tracks
-    project.sections.forEach((section) => {
-      section.tracks.forEach((track) => {
+      // Check global tracks
+      project.globalTracks.forEach((track) => {
         track.clips.forEach((clip) => {
           if (selectedClipIds.includes(clip.id)) {
             selectedClips.push(clip)
           }
         })
       })
-    })
 
-    return selectedClips
-  }
+      // Check section tracks
+      project.sections.forEach((section) => {
+        section.tracks.forEach((track) => {
+          track.clips.forEach((clip) => {
+            if (selectedClipIds.includes(clip.id)) {
+              selectedClips.push(clip)
+            }
+          })
+        })
+      })
 
-  // Register keyboard shortcuts for grouping operations
-  useEffect(() => {
+      return selectedClips
+    }
+
     const shortcuts = [
       {
         id: "group-clips",

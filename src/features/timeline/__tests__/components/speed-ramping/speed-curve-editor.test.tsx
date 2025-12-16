@@ -1,6 +1,6 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react"
-import { renderWithTimeline } from "@/test/test-utils"
+import { fireEvent, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { renderWithTimeline } from "@/test/test-utils"
 
 import { SpeedCurveEditor } from "../../../components/speed-ramping/speed-curve-editor"
 
@@ -14,11 +14,17 @@ vi.mock("@/components/ui/button", () => ({
 }))
 
 vi.mock("@/components/ui/dropdown-menu", () => ({
-  DropdownMenu: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, onClick }: any) => <div onClick={onClick}>{children}</div>,
+  DropdownMenu: ({ children }: any) => <div data-testid="dropdown-menu">{children}</div>,
+  DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
+  DropdownMenuItem: ({ children, onClick }: any) => (
+    <button onClick={onClick} data-testid="dropdown-item">
+      {children}
+    </button>
+  ),
   DropdownMenuSeparator: () => <hr />,
-  DropdownMenuTrigger: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuTrigger: ({ children, asChild }: any) => (
+    <div data-testid="dropdown-trigger">{asChild ? children : <div>{children}</div>}</div>
+  ),
 }))
 
 vi.mock("@/components/ui/tooltip", () => ({
@@ -39,7 +45,7 @@ const mockUseSpeedRamping = {
   getSpeedCurveData: vi.fn(),
 }
 
-vi.mock("../../../hooks/use-speed-ramping", () => ({
+vi.mock("../../../hooks/speed-ramping/use-speed-ramping", () => ({
   useSpeedRamping: () => mockUseSpeedRamping,
 }))
 
@@ -101,20 +107,33 @@ describe("SpeedCurveEditor", () => {
 
     const canvas = screen.getByTestId("speed-curve-canvas")
 
+    // Мокаем getBoundingClientRect для правильных координат
+    vi.spyOn(canvas, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      top: 0,
+      right: 1000,
+      bottom: 120,
+      width: 1000,
+      height: 120,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    })
+
     // Симулируем клик по canvas
     fireEvent.click(canvas, {
       clientX: 300, // 3 секунды при 100 пикс/сек
       clientY: 60, // Середина по высоте (speed = 2.0)
     })
 
-    await waitFor(() => {
-      expect(mockUseSpeedRamping.addKeyframe).toHaveBeenCalledWith(
-        "test-clip-1",
-        expect.any(Number), // время
-        expect.any(Number), // значение скорости
-        "ease",
-      )
-    })
+    // Проверяем что функция была вызвана
+    expect(mockUseSpeedRamping.addKeyframe).toHaveBeenCalled()
+    expect(mockUseSpeedRamping.addKeyframe).toHaveBeenCalledWith(
+      "test-clip-1",
+      expect.any(Number), // время
+      expect.any(Number), // значение скорости
+      "ease",
+    )
   })
 
   it("применяет пресет при выборе из меню", async () => {
@@ -128,9 +147,8 @@ describe("SpeedCurveEditor", () => {
     const slowMotionPreset = screen.getByText("Slow Motion")
     fireEvent.click(slowMotionPreset)
 
-    await waitFor(() => {
-      expect(mockUseSpeedRamping.applyPreset).toHaveBeenCalledWith("test-clip-1", "slow-motion")
-    })
+    // Проверяем что функция была вызвана
+    expect(mockUseSpeedRamping.applyPreset).toHaveBeenCalledWith("test-clip-1", "slow-motion")
   })
 
   it("сбрасывает скорость к нормальной при клике на reset", async () => {
@@ -141,9 +159,8 @@ describe("SpeedCurveEditor", () => {
     expect(resetButton).toBeInTheDocument()
     fireEvent.click(resetButton!)
 
-    await waitFor(() => {
-      expect(mockUseSpeedRamping.resetToConstantSpeed).toHaveBeenCalledWith("test-clip-1", 1.0)
-    })
+    // Проверяем что функция была вызвана
+    expect(mockUseSpeedRamping.resetToConstantSpeed).toHaveBeenCalledWith("test-clip-1", 1.0)
   })
 
   it("вызывает onClose при клике на кнопку закрытия", () => {

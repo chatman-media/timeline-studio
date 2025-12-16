@@ -23,20 +23,31 @@ import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/ti
 import { MockTimelineProvider } from "../../../__tests__/test-providers"
 import { useJLCutHotkeys } from "../use-jl-cut-hotkeys"
 
-// Mock keyboard event - will be initialized in beforeEach
-let mockKeyboardEvent: KeyboardEvent
+// Mock keyboard event
+const mockKeyboardEvent = { key: "Enter", type: "keydown" } as KeyboardEvent
 const mockHotkeyEvent = { keys: ["enter"], scope: "all", element: null }
 
-// Mock functions
-const mockCreateJCut = vi.fn()
-const mockCreateLCut = vi.fn()
-const mockResetCut = vi.fn()
-const mockLinkClips = vi.fn()
-const mockUnlinkClips = vi.fn()
-const mockGetLinkedPair = vi.fn()
+// Используем vi.hoisted для переменных, которые нужны в vi.mock
+const {
+  mockCreateJCut,
+  mockCreateLCut,
+  mockResetCut,
+  mockLinkClips,
+  mockUnlinkClips,
+  mockGetLinkedPair,
+  mockUseTimeline,
+} = vi.hoisted(() => ({
+  mockCreateJCut: vi.fn(),
+  mockCreateLCut: vi.fn(),
+  mockResetCut: vi.fn(),
+  mockLinkClips: vi.fn(),
+  mockUnlinkClips: vi.fn(),
+  mockGetLinkedPair: vi.fn(),
+  mockUseTimeline: vi.fn(),
+}))
 
 // Mock use-jl-cuts
-vi.mock("../../hooks/use-jl-cuts", () => ({
+vi.mock("../../editing/use-jl-cuts", () => ({
   useJLCuts: () => ({
     createJCut: mockCreateJCut,
     createLCut: mockCreateLCut,
@@ -108,23 +119,23 @@ const mockUiState = {
 
 const mockSend = vi.fn()
 
-vi.mock("../../hooks/use-timeline", () => ({
-  useTimeline: () => ({
-    project: mockProject,
-    selectedClipIds: mockUiState.selectedClipIds,
-    send: mockSend,
-  }),
+vi.mock("../../state/use-timeline", () => ({
+  useTimeline: () => mockUseTimeline(),
 }))
 
 describe("useJLCutHotkeys", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    // Initialize KeyboardEvent
-    mockKeyboardEvent = new KeyboardEvent("keydown", { key: "Enter" })
-
     // Сбрасываем выбранные клипы
     mockUiState.selectedClipIds = ["video-clip-1"]
+
+    // Настраиваем мок useTimeline (используем mockImplementation для динамического чтения selectedClipIds)
+    mockUseTimeline.mockImplementation(() => ({
+      project: mockProject,
+      selectedClipIds: mockUiState.selectedClipIds,
+      send: mockSend,
+    }))
 
     // Настройка мока getLinkedPair по умолчанию
     mockGetLinkedPair.mockReturnValue({
@@ -134,7 +145,7 @@ describe("useJLCutHotkeys", () => {
   })
 
   afterEach(() => {
-    vi.clearAllTimers()
+    // No cleanup needed - we don't use fake timers
   })
 
   it("должен регистрировать все горячие клавиши", () => {

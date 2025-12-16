@@ -118,8 +118,8 @@ describe("TimelineWorkspaceTabs", () => {
     it("должен применить правильные CSS классы для активного timeline", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} />)
 
-      expect(cn).toHaveBeenCalledWith("h-8 gap-2", "bg-secondary")
-      expect(cn).toHaveBeenCalledWith("h-8 gap-2", false)
+      expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", "bg-secondary")
+      expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", false)
     })
   })
 
@@ -137,8 +137,8 @@ describe("TimelineWorkspaceTabs", () => {
     it("должен применить правильные CSS классы для активного audio-mixer", () => {
       render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} />)
 
-      expect(cn).toHaveBeenCalledWith("h-8 gap-2", false)
-      expect(cn).toHaveBeenCalledWith("h-8 gap-2", "bg-secondary")
+      expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", false)
+      expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", "bg-secondary")
     })
   })
 
@@ -302,7 +302,7 @@ describe("TimelineWorkspaceTabs", () => {
 
       const afterRerenderCallCount = vi.mocked(Button).mock.calls.length
 
-      expect(afterRerenderCallCount).toBe(initialCallCount + 2) // 2 кнопки
+      expect(afterRerenderCallCount).toBe(initialCallCount + 3) // 3 кнопки
     })
 
     it("должен мемоизировать переводы", () => {
@@ -316,7 +316,7 @@ describe("TimelineWorkspaceTabs", () => {
 
       rerender(<TimelineWorkspaceTabs {...defaultProps} />)
 
-      expect(mockT.mock.calls.length).toBe(initialTCallCount + 2) // Переводы вызываются заново
+      expect(mockT.mock.calls.length).toBe(initialTCallCount + 3) // Переводы вызываются заново
     })
   })
 

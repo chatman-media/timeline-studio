@@ -1,8 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
-import { renderWithTimeline } from "@/test/test-utils"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
+import { renderWithTimeline } from "@/test/test-utils"
 
 import { TimelineContent } from "../../components/timeline-content"
 
@@ -24,31 +23,81 @@ const mockProjectSettings = vi.hoisted(() => ({
   frameRate: "30",
 }))
 
-const mockTimelineState = vi.hoisted(() => ({
-  project: null as any,
-  uiState: {
-    timeScale: 10,
+const mockTimelineState = vi.hoisted(() => {
+  // Create mock functions inside hoisted block
+  const mockCreateProject = vi.fn(() => Promise.resolve())
+  const mockAddSection = vi.fn(() => Promise.resolve())
+  const mockAddTrack = vi.fn(() => Promise.resolve())
+  const mockRemoveTrack = vi.fn(() => Promise.resolve())
+  const mockUpdateTrack = vi.fn(() => Promise.resolve())
+  const mockSelectTracks = vi.fn()
+  const mockSelectClips = vi.fn()
+  const mockClearSelection = vi.fn()
+  const mockSeek = vi.fn()
+  const mockPlay = vi.fn()
+  const mockPause = vi.fn()
+  const mockStop = vi.fn()
+  const mockClearError = vi.fn()
+  const mockSend = vi.fn()
+  const mockSetTimeScale = vi.fn()
+  const mockSetScrollPosition = vi.fn()
+  const mockToggleSnap = vi.fn()
+
+  return {
+    project: null as any,
     selectedTrackIds: [] as string[],
-  },
-  currentTime: 0,
-  createProject: vi.fn().mockResolvedValue(undefined),
-  addSection: vi.fn().mockResolvedValue(undefined),
-  addTrack: vi.fn(),
-  updateTrack: vi.fn(),
-  selectTracks: vi.fn(),
-  seek: vi.fn(),
-  error: null as string | null,
-  clearError: vi.fn(),
-  send: vi.fn(),
-}))
+    selectedClipIds: [] as string[],
+    currentTime: 0,
+    isPlaying: false,
+    duration: 300,
+    playbackRate: 1,
+    createProject: mockCreateProject,
+    addSection: mockAddSection,
+    addTrack: mockAddTrack,
+    removeTrack: mockRemoveTrack,
+    updateTrack: mockUpdateTrack,
+    selectTracks: mockSelectTracks,
+    selectClips: mockSelectClips,
+    clearSelection: mockClearSelection,
+    seek: mockSeek,
+    play: mockPlay,
+    pause: mockPause,
+    stop: mockStop,
+    error: null as string | null,
+    clearError: mockClearError,
+    send: mockSend,
+    setTimeScale: mockSetTimeScale,
+    setScrollPosition: mockSetScrollPosition,
+    toggleSnap: mockToggleSnap,
+  }
+})
 
 const mockTracks = vi.hoisted(() => ({
   tracks: [] as any[],
+  globalTracks: [] as any[],
+  sectionTracks: [] as any[],
+  selectedTracks: [] as any[],
+  visibleTracks: [] as any[],
+  findTrack: vi.fn(() => null),
+  getTracksByType: vi.fn(() => []),
+  getTracksBySection: vi.fn(() => []),
+  canAddTrackToSection: vi.fn(() => true),
+  getTrackStats: vi.fn(() => ({ clipCount: 0, totalDuration: 0, isEmpty: true })),
+  addTrack: vi.fn(),
+  removeTrack: vi.fn(),
+  updateTrack: vi.fn(),
   setTrackHeight: vi.fn(),
 }))
 
 const mockClips = vi.hoisted(() => ({
   clips: [] as any[],
+  addClip: vi.fn(),
+  removeClip: vi.fn(),
+  moveClip: vi.fn(),
+  trimClip: vi.fn(),
+  splitClip: vi.fn(),
+  updateClip: vi.fn(),
+  batchUpdateClips: vi.fn(),
 }))
 
 const mockDragState = vi.hoisted(() => ({
@@ -110,19 +159,19 @@ vi.mock("@/features/project-settings/hooks/use-project-settings", () => ({
   })),
 }))
 
-vi.mock("../../hooks/use-timeline", () => ({
+vi.mock("../../hooks/state/use-timeline", () => ({
   useTimeline: () => mockTimelineState,
 }))
 
-vi.mock("../../hooks/use-tracks", () => ({
+vi.mock("../../hooks/state/use-tracks", () => ({
   useTracks: () => mockTracks,
 }))
 
-vi.mock("../../hooks/use-clips", () => ({
+vi.mock("../../hooks/clips/use-clips", () => ({
   useClips: () => mockClips,
 }))
 
-vi.mock("../../hooks/use-drag-drop-timeline", () => ({
+vi.mock("../../hooks/drag-drop/use-drag-drop-timeline", () => ({
   useDragDropTimeline: () => mockDragState,
 }))
 
@@ -149,11 +198,11 @@ vi.mock("@/features/ai-chat/hooks/use-timeline-ai-integration", () => ({
   }),
 }))
 
-vi.mock("../../hooks/use-timeline-player-sync", () => ({
+vi.mock("../../hooks/integration/use-timeline-player-sync", () => ({
   useTimelinePlayerSync: vi.fn(),
 }))
 
-vi.mock("../../hooks/use-edit-mode", () => ({
+vi.mock("../../hooks/editing/use-edit-mode", () => ({
   EditModeProvider: ({ children }: any) => <div>{children}</div>,
 }))
 
@@ -213,7 +262,7 @@ vi.mock("../../components/timeline-scale", () => ({
 }))
 
 vi.mock("../../components/track/track", () => ({
-  Track: ({ track }: any) => <div data-testid={`track-${track.id}`}>{track.name}</div>,
+  TrackComponent: ({ track }: any) => <div data-testid={`track-${track.id}`}>{track.name}</div>,
 }))
 
 // TODO: Набор тестов пропущен (1/33 тестов проходит, 32 падают)
@@ -228,6 +277,10 @@ describe("TimelineContent", () => {
     mockTimelineState.error = null
     mockTracks.tracks = []
     mockClips.clips = []
+
+    // Reset mock implementations
+    mockTimelineState.createProject.mockImplementation(() => Promise.resolve())
+    mockTimelineState.addSection.mockImplementation(() => Promise.resolve())
     // ResizeObserver уже мокируется в setup.ts
   })
 
@@ -540,7 +593,7 @@ describe("TimelineContent", () => {
     })
 
     it("should pass correct props to Track component", () => {
-      mockTimelineState.uiState.selectedTrackIds = ["track-1"]
+      mockTimelineState.selectedTrackIds = ["track-1"]
       mockTimelineState.currentTime = 5
 
       const { container } = renderWithTimeline(<TimelineContent />)
