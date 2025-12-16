@@ -1,5 +1,7 @@
 "use client"
 
+import { useAIDirectorEvents } from "@/domains/ai-director/hooks/use-ai-director-events"
+import { AnalysisProgressIndicator } from "@/features/ai-director/components/analysis-progress-indicator"
 import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
 import { useUserSettings } from "@/features/user-settings"
@@ -15,6 +17,9 @@ export function MediaStudio() {
 
   // Автозагрузка пользовательских данных при старте приложения
   const { isLoading: isLoadingUserData, loadedData, error: userDataError } = useAutoLoadUserData()
+
+  // Подписка на события AI анализа для глобального индикатора
+  const { lastProgress } = useAIDirectorEvents()
 
   // Логирование для отладки
   if (userDataError) {
@@ -42,6 +47,14 @@ export function MediaStudio() {
 
       {/* Оверлей загрузки проекта */}
       <ProjectLoadingOverlay />
+
+      {/* Глобальный индикатор прогресса AI анализа */}
+      <AnalysisProgressIndicator
+        fileName={lastProgress?.fileName}
+        stage={lastProgress?.stage}
+        progress={lastProgress?.progress}
+        isVisible={!!lastProgress}
+      />
     </div>
   )
 }

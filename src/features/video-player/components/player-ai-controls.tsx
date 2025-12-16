@@ -3,7 +3,7 @@
  * Панель управления AI анализом в плеере
  */
 
-import { Eye, EyeOff, Gauge, Pause, Play, Settings, Sparkles } from "lucide-react"
+import { Eye, EyeOff, Gauge, Loader2, Play, Settings, Sparkles } from "lucide-react"
 import { useId, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useAIDirectorEvents } from "@/domains/ai-director/hooks/use-ai-director-events"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { usePlayerAIAnalysis } from "../hooks/use-player-ai-analysis"
@@ -32,6 +33,10 @@ interface PlayerAIControlsProps {
 export function PlayerAIControls({ className }: PlayerAIControlsProps) {
   const aiAnalysis = usePlayerAIAnalysis()
   const { isAnalyzing, frameAnalysisRate } = aiAnalysis.state
+
+  // Подписываемся на события прогресса анализа
+  const { lastProgress } = useAIDirectorEvents()
+  const analysisProgress = lastProgress?.progress ? Math.round(lastProgress.progress) : 0
 
   const [showOverlay, setShowOverlay] = useState(true)
   const [showObjects, setShowObjects] = useState(true)
@@ -67,8 +72,8 @@ export function PlayerAIControls({ className }: PlayerAIControlsProps) {
               <Sparkles className="h-4 w-4" />
               {isAnalyzing ? (
                 <>
-                  <Pause className="h-3 w-3" />
-                  AI Active
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  AI Active{analysisProgress > 0 && ` (${analysisProgress}%)`}
                 </>
               ) : (
                 <>

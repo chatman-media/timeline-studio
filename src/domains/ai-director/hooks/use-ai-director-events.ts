@@ -7,6 +7,7 @@
 
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { analysisNotificationService } from "@/features/ai-director/services/analysis-notification-service"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisCompleted, AnalysisError, AnalysisProgress, AnalysisStageCompleted } from "../types"
 
@@ -98,6 +99,14 @@ export function useAIDirectorEvents(callbacks?: AIDirectorEventCallbacks): UseAI
         // Analysis Started
         const unlistenStarted = await listen(AI_DIRECTOR_EVENTS.ANALYSIS_STARTED, (event) => {
           logger.info("Analysis started", event.payload as Record<string, unknown>)
+          const payload = event.payload as any
+
+          // Отправляем нотификацию
+          analysisNotificationService.notifyAnalysisStarted(
+            payload.media_path || payload.file_path || "Unknown file",
+            payload.analysis_type || "comprehensive",
+          )
+
           callbacks?.onAnalysisStarted?.(event.payload)
         })
         if (isMounted) unlistenFunctions.push(unlistenStarted)
@@ -116,6 +125,15 @@ export function useAIDirectorEvents(callbacks?: AIDirectorEventCallbacks): UseAI
           const result = event.payload as unknown as AnalysisCompleted
           logger.info("Analysis completed", event.payload as Record<string, unknown>)
           setLastProgress(null)
+
+          // Отправляем нотификацию
+          const payload = event.payload as any
+          analysisNotificationService.notifyAnalysisCompleted(
+            payload.file_name || payload.file_path || "Unknown file",
+            payload.total_duration_ms || 0,
+            payload.success !== false,
+          )
+
           callbacks?.onAnalysisCompleted?.(result)
         })
         if (isMounted) unlistenFunctions.push(unlistenCompleted)
@@ -126,6 +144,14 @@ export function useAIDirectorEvents(callbacks?: AIDirectorEventCallbacks): UseAI
           logger.error("Analysis error", error as unknown as Record<string, unknown>)
           setLastError(error)
           setErrors((prev) => [...prev, error])
+
+          // Отправляем нотификацию об ошибке
+          const payload = event.payload as any
+          analysisNotificationService.notifyAnalysisError(
+            payload.file_path || payload.media_path || "Unknown file",
+            payload.error || payload.message || "Unknown error",
+          )
+
           callbacks?.onAnalysisError?.(error)
         })
         if (isMounted) unlistenFunctions.push(unlistenError)

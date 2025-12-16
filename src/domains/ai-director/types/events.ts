@@ -14,6 +14,7 @@ export interface AnalysisProgress {
   progress: number // 0.0 - 1.0
   message?: string
   estimatedTimeRemaining?: number // seconds
+  fileName?: string // имя анализируемого файла
 }
 
 export interface AnalysisError {

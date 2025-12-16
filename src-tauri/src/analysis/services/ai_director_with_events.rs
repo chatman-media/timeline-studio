@@ -51,6 +51,12 @@ impl AIDirectorWithEvents {
     let analysis_id = Uuid::new_v4().to_string();
     let start_time = Instant::now();
 
+    // Извлекаем имя файла для progress events
+    let file_name = media_path
+      .file_name()
+      .and_then(|n| n.to_str())
+      .map(|s| s.to_string());
+
     info!(
       "AI Director starting analysis with events: {:?}",
       media_path
@@ -69,6 +75,7 @@ impl AIDirectorWithEvents {
         0.0,
         Some("Initializing analysis..."),
         None,
+        file_name.as_deref(),
       )
       .await;
 
@@ -84,6 +91,7 @@ impl AIDirectorWithEvents {
           0.1,
           Some("Starting audio analysis..."),
           Some(120),
+          file_name.as_deref(),
         )
         .await;
 
@@ -105,6 +113,7 @@ impl AIDirectorWithEvents {
               0.3,
               Some("Audio analysis completed"),
               Some(90),
+              file_name.as_deref(),
             )
             .await;
         }
@@ -137,6 +146,7 @@ impl AIDirectorWithEvents {
           0.4,
           Some("Starting video analysis..."),
           Some(60),
+          file_name.as_deref(),
         )
         .await;
 
@@ -158,6 +168,7 @@ impl AIDirectorWithEvents {
               0.7,
               Some("Video analysis completed"),
               Some(30),
+              file_name.as_deref(),
             )
             .await;
         }
@@ -189,6 +200,7 @@ impl AIDirectorWithEvents {
         0.8,
         Some("Integrating results..."),
         Some(15),
+        file_name.as_deref(),
       )
       .await;
 
@@ -253,6 +265,7 @@ impl AIDirectorWithEvents {
           1.0,
           Some("Analysis completed successfully!"),
           Some(0),
+          file_name.as_deref(),
         )
         .await;
     } else {
@@ -263,6 +276,7 @@ impl AIDirectorWithEvents {
           1.0,
           Some("Analysis completed with errors"),
           Some(0),
+          file_name.as_deref(),
         )
         .await;
     }
@@ -660,6 +674,12 @@ impl AIDirectorWithEvents {
     let file_path = media_path.to_string_lossy().to_string();
     let stage_start = Instant::now();
 
+    // Извлекаем имя файла для progress events
+    let file_name = media_path
+      .file_name()
+      .and_then(|n| n.to_str())
+      .map(|s| s.to_string());
+
     // 🆕 v2: Emit file analysis started
     self
       .emit_file_analysis_started(
@@ -688,6 +708,7 @@ impl AIDirectorWithEvents {
         0.1,
         Some("Starting unified audio analysis..."),
         None,
+        file_name.as_deref(),
       )
       .await;
 
@@ -768,6 +789,7 @@ impl AIDirectorWithEvents {
             0.28,
             Some("Audio analysis completed successfully"),
             Some(stage_start.elapsed().as_secs().saturating_sub(1).max(1)),
+            file_name.as_deref(),
           )
           .await;
 
@@ -809,6 +831,7 @@ impl AIDirectorWithEvents {
             0.28,
             Some(&format!("Audio analysis failed: {}", e)),
             None,
+            file_name.as_deref(),
           )
           .await;
       }
@@ -842,6 +865,12 @@ impl AIDirectorWithEvents {
     let mut all_scenes = Vec::new();
     let mut has_errors = false;
 
+    // Извлекаем имя файла для progress events
+    let file_name = media_path
+      .file_name()
+      .and_then(|n| n.to_str())
+      .map(|s| s.to_string());
+
     // 🆕 v2: Emit file analysis started
     self
       .emit_file_analysis_started(
@@ -866,6 +895,7 @@ impl AIDirectorWithEvents {
         0.35,
         Some("Running scene detection..."),
         None,
+        file_name.as_deref(),
       )
       .await;
 
@@ -937,6 +967,7 @@ impl AIDirectorWithEvents {
           0.5,
           Some("Running vision analysis..."),
           None,
+          file_name.as_deref(),
         )
         .await;
 
@@ -1018,6 +1049,7 @@ impl AIDirectorWithEvents {
           0.6,
           Some("Analyzing content..."),
           None,
+          file_name.as_deref(),
         )
         .await;
 
@@ -1092,6 +1124,7 @@ impl AIDirectorWithEvents {
           0.7,
           Some("Detecting key moments..."),
           None,
+          file_name.as_deref(),
         )
         .await;
 
@@ -1160,6 +1193,7 @@ impl AIDirectorWithEvents {
           completed_analyzers.len()
         )),
         None,
+        file_name.as_deref(),
       )
       .await;
 
@@ -1202,6 +1236,7 @@ impl AIDirectorWithEvents {
     progress: f32,
     message: Option<&str>,
     estimated_time_remaining: Option<u64>,
+    file_name: Option<&str>,
   ) {
     let event = AppEvent::AnalysisProgress {
       analysis_id: analysis_id.to_string(),
@@ -1209,6 +1244,7 @@ impl AIDirectorWithEvents {
       progress,
       message: message.map(|s| s.to_string()),
       estimated_time_remaining,
+      file_name: file_name.map(|s| s.to_string()),
     };
 
     if let Err(e) = self.app_handle.emit("analysis-progress", &event) {

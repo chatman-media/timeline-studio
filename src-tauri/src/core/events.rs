@@ -88,6 +88,7 @@ pub enum AppEvent {
     progress: f32, // 0.0 - 1.0
     message: Option<String>,
     estimated_time_remaining: Option<u64>, // seconds
+    file_name: Option<String>,             // имя анализируемого файла
   },
   AnalysisStageCompleted {
     analysis_id: String,

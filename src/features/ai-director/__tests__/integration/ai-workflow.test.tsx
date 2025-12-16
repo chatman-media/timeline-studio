@@ -650,8 +650,8 @@ describe("AI Director Workflow Integration Tests", () => {
     it("should detect audio quality issues", async () => {
       // Assertions: 8
       const mockResult = createMockAnalysisResult("audio-issues-1")
-      mockResult.audio_analysis!.ffmpeg_analysis!.volume_analysis.peak_volume.level = 0.3
-      mockResult.audio_analysis!.montage_analysis!.overall_quality_score = 0.45
+      mockResult.audio_analysis.ffmpeg_analysis!.volume_analysis.peak_volume.level = 0.3
+      mockResult.audio_analysis.montage_analysis!.overall_quality_score = 0.45
 
       mockCommands.aiDirectorAnalyzeComprehensive.mockResolvedValue({
         status: "ok",

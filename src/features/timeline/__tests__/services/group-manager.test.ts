@@ -515,12 +515,12 @@ describe("TimelineGroupManager", () => {
       // Создаем дочерние группы
       const clips2 = createClipRefs(2).map((c, i) => ({ ...c, clipId: `child1-${i}` }))
       const result2 = manager.createGroup(clips2, "Child Group 1")
-      const group2 = manager.getGroup(result2.groupId!)!
+      const group2 = manager.getGroup(result2.groupId)!
       group2.parent = result1.groupId
 
       const clips3 = createClipRefs(2).map((c, i) => ({ ...c, clipId: `child2-${i}` }))
       const result3 = manager.createGroup(clips3, "Child Group 2")
-      const group3 = manager.getGroup(result3.groupId!)!
+      const group3 = manager.getGroup(result3.groupId)!
       group3.parent = result1.groupId
 
       const childGroups = manager.getChildGroups(result1.groupId!)
@@ -542,7 +542,7 @@ describe("TimelineGroupManager", () => {
       )
 
       // Делаем result3 дочерней группой result1
-      const group3 = manager.getGroup(result3.groupId!)!
+      const group3 = manager.getGroup(result3.groupId)!
       group3.parent = result1.groupId
 
       const hierarchy = manager.getGroupHierarchy()
