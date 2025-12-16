@@ -553,3 +553,167 @@ export function updateAnalyzerProgress(
     stats,
   }
 }
+
+/**
+ * Извлечь список анализаторов из ComprehensiveAnalysisResult
+ * Определяет какие анализаторы были выполнены на основе заполненных полей
+ */
+export function extractAnalyzersFromResult(
+  result: any, // ComprehensiveAnalysisResult from Rust
+): AnalyzerProgress[] {
+  const analyzers: AnalyzerProgress[] = []
+
+  // Audio analyzers
+  if (result.audio_analysis) {
+    analyzers.push({
+      type: "audio_quality",
+      status: "completed",
+      progress: 100,
+    })
+
+    // Если есть транскрипция
+    if (result.audio_analysis.transcription) {
+      analyzers.push({
+        type: "speech_recognition",
+        status: "completed",
+        progress: 100,
+      })
+    }
+  }
+
+  // Scene detection
+  if (result.scene_analysis && result.scene_analysis.scenes && result.scene_analysis.scenes.length > 0) {
+    analyzers.push({
+      type: "scene_detection",
+      status: "completed",
+      progress: 100,
+      result: {
+        type: "scene_detection",
+        success: true,
+        metadata: {
+          itemsFound: result.scene_analysis.scenes.length,
+          processingTime: 0,
+        },
+      },
+    })
+  }
+
+  // Vision analysis (objects, faces)
+  if (result.vision_analysis) {
+    if (result.vision_analysis.objects_detected && result.vision_analysis.objects_detected.length > 0) {
+      analyzers.push({
+        type: "object_detection",
+        status: "completed",
+        progress: 100,
+        result: {
+          type: "object_detection",
+          success: true,
+          metadata: {
+            itemsFound: result.vision_analysis.objects_detected.length,
+            processingTime: 0,
+          },
+        },
+      })
+    }
+
+    if (result.vision_analysis.faces_count > 0) {
+      analyzers.push({
+        type: "face_detection",
+        status: "completed",
+        progress: 100,
+        result: {
+          type: "face_detection",
+          success: true,
+          metadata: {
+            itemsFound: result.vision_analysis.faces_count,
+            processingTime: 0,
+          },
+        },
+      })
+    }
+  }
+
+  // Vision Language Model analysis
+  if (result.vision_language_model_analysis) {
+    analyzers.push({
+      type: "vlm_analysis",
+      status: "completed",
+      progress: 100,
+    })
+  }
+
+  // Moment detection
+  if (result.moment_analysis && result.moment_analysis.key_moments && result.moment_analysis.key_moments.length > 0) {
+    analyzers.push({
+      type: "moment_detection",
+      status: "completed",
+      progress: 100,
+      result: {
+        type: "moment_detection",
+        success: true,
+        metadata: {
+          itemsFound: result.moment_analysis.key_moments.length,
+          processingTime: 0,
+        },
+      },
+    })
+  }
+
+  // Content analysis
+  if (result.content_analysis) {
+    analyzers.push({
+      type: "content_classification",
+      status: "completed",
+      progress: 100,
+    })
+
+    if (result.content_analysis.mood) {
+      analyzers.push({
+        type: "mood_analysis",
+        status: "completed",
+        progress: 100,
+      })
+    }
+
+    if (result.content_analysis.quality) {
+      analyzers.push({
+        type: "quality_assessment",
+        status: "completed",
+        progress: 100,
+      })
+    }
+  }
+
+  return analyzers
+}
+
+/**
+ * Создать FileAnalysisProgress из ComprehensiveAnalysisResult
+ * Используется при загрузке сохраненных анализов из storage
+ */
+export function createFileProgressFromResult(
+  result: any, // ComprehensiveAnalysisResult from Rust
+  filePath: string,
+): FileAnalysisProgress {
+  const fileName = filePath.split("/").pop() || filePath.split("\\").pop() || filePath
+  const analyzers = extractAnalyzersFromResult(result)
+
+  return {
+    id: result.analysis_id,
+    fileId: result.analysis_id,
+    fileName,
+    filePath,
+    status: result.status === "Completed" ? "completed" : "error",
+    progress: 100,
+    analyzers,
+    stats: {
+      totalAnalyzers: analyzers.length,
+      completedAnalyzers: analyzers.filter((a) => a.status === "completed").length,
+      failedAnalyzers: analyzers.filter((a) => a.status === "error").length,
+      skippedAnalyzers: analyzers.filter((a) => a.status === "skipped").length,
+    },
+    startTime: result.started_at,
+    endTime: result.completed_at,
+    duration: result.total_duration_ms,
+  }
+}

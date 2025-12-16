@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
 import { useMediaFiles } from "@/domains/project-management/hooks"
+import { createFileProgressFromResult } from "@/features/ai-director"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type {
   AnalyzerType,
@@ -85,27 +86,9 @@ export function useTimelineAnalysis(): UseTimelineAnalysisReturn {
           const result = await analysisStorageService.loadComprehensiveAnalysis(videoPath)
 
           if (result.success && result.data) {
-            const fileName = videoPath.split("/").pop() || videoPath.split("\\").pop() || videoPath
-
             // Создаем FileAnalysisProgress из сохраненного анализа
-            const fileProgress: FileAnalysisProgress = {
-              id: result.data.analysis_id,
-              fileId: result.data.analysis_id,
-              fileName,
-              filePath: videoPath,
-              status: "completed" as FileAnalysisStatus,
-              progress: 100,
-              analyzers: [],
-              stats: {
-                totalAnalyzers: 0,
-                completedAnalyzers: 0,
-                failedAnalyzers: 0,
-                skippedAnalyzers: 0,
-              },
-              startTime: result.data.started_at,
-              endTime: result.data.completed_at,
-            }
-
+            // Используем маппер для извлечения анализаторов из результата
+            const fileProgress = createFileProgressFromResult(result.data, videoPath)
             analyses.push(fileProgress)
           }
         }
