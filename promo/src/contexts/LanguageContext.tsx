@@ -130,7 +130,8 @@ const translations = {
     // Interface section
     "mainPage.interface.title": "The",
     "mainPage.interface.titleHighlight": "Interface",
-    "mainPage.interface.description": "Clean, intuitive, and powerful - everything where you need it",
+    "mainPage.interface.description":
+      "Clean, intuitive, and powerful - everything where you need it",
 
     // What You Can Do
     "mainPage.whatYouCanDo.title": "What You Can",
@@ -609,7 +610,8 @@ const translations = {
     // Interface section
     "mainPage.interface.title": " ",
     "mainPage.interface.titleHighlight": "Интерфейс",
-    "mainPage.interface.description": "Чистый, интуитивный и мощный — всё на своих местах",
+    "mainPage.interface.description":
+      "Чистый, интуитивный и мощный — всё на своих местах",
 
     // What You Can Do
     "mainPage.whatYouCanDo.title": "Что можно",
@@ -1453,7 +1455,10 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider
+      value={{ language, setLanguage, t }}
+      data-oid="obir48a"
+    >
       {children}
     </LanguageContext.Provider>
   );

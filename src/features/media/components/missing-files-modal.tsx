@@ -97,13 +97,13 @@ export function MissingFilesModal() {
   const getActionIcon = (action: FileResolution["action"]) => {
     switch (action) {
       case "found":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-green-500" data-oid="ve5.5iw" />
       case "remove":
-        return <Trash2 className="h-4 w-4 text-red-500" />
+        return <Trash2 className="h-4 w-4 text-red-500" data-oid="7ak4frm" />
       case "skip":
-        return <FileX className="h-4 w-4 text-gray-500" />
+        return <FileX className="h-4 w-4 text-gray-500" data-oid="qhb:xu9" />
       default:
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" data-oid=".0eg_w6" />
     }
   }
 
@@ -124,46 +124,48 @@ export function MissingFilesModal() {
   const canProceed = resolvedCount > 0
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 text-yellow-500">
-        <AlertTriangle className="h-5 w-5" />
-        <p className="text-sm text-muted-foreground">
+    <div className="space-y-4" data-oid="pywmewi">
+      <div className="flex items-center gap-2 text-yellow-500" data-oid="azgim_s">
+        <AlertTriangle className="h-5 w-5" data-oid="n3-ovod" />
+        <p className="text-sm text-muted-foreground" data-oid="j:53:qg">
           При открытии проекта обнаружены отсутствующие файлы. Выберите действие для каждого файла: найти новое
           расположение или удалить из проекта.
         </p>
       </div>
 
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <span>Файлов: {missingFiles.length}</span>
-        <span>
+      <div className="flex items-center justify-between text-sm text-muted-foreground" data-oid="2gmzf:9">
+        <span data-oid="fl13zcb">Файлов: {missingFiles.length}</span>
+        <span data-oid="uxko1bf">
           Обработано: {resolvedCount}/{missingFiles.length}
         </span>
       </div>
 
-      <div className="h-[300px] w-full border rounded-md p-4 overflow-y-auto">
-        <div className="space-y-3">
+      <div className="h-[300px] w-full border rounded-md p-4 overflow-y-auto" data-oid="mbm5s.c">
+        <div className="space-y-3" data-oid="4awsaq6">
           {resolutions.map((resolution, index) => (
-            <div key={resolution.file.id} className="space-y-2">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+            <div key={resolution.file.id} className="space-y-2" data-oid="-krii7g">
+              <div className="flex items-start justify-between gap-3" data-oid=":2thp4r">
+                <div className="flex-1 min-w-0" data-oid="mqbaqb4">
+                  <div className="flex items-center gap-2" data-oid="85to032">
                     {getActionIcon(resolution.action)}
-                    <span className="font-medium truncate">{resolution.file.name}</span>
-                    <span className="text-xs px-2 py-1 bg-gray-100 rounded border text-gray-700">
+                    <span className="font-medium truncate" data-oid="jlyis5p">
+                      {resolution.file.name}
+                    </span>
+                    <span className="text-xs px-2 py-1 bg-gray-100 rounded border text-gray-700" data-oid="-r2frmw">
                       {getActionText(resolution.action)}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground truncate mt-1">
+                  <p className="text-xs text-muted-foreground truncate mt-1" data-oid="s:e.ozg">
                     {resolution.newPath || resolution.file.originalPath}
                   </p>
                   {resolution.file.size && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground" data-oid="zco9tr3">
                       Размер: {(resolution.file.size / 1024 / 1024).toFixed(1)} МБ
                     </p>
                   )}
                 </div>
 
-                <div className="flex gap-1">
+                <div className="flex gap-1" data-oid="owndx7v">
                   {resolution.action === "pending" && (
                     <>
                       <Button
@@ -172,16 +174,18 @@ export function MissingFilesModal() {
                         onClick={() => handleFindFile(index)}
                         disabled={resolution.isProcessing}
                         className="h-8 px-2"
+                        data-oid="g1wgdvn"
                       >
-                        <Search className="h-3 w-3" />
+                        <Search className="h-3 w-3" data-oid="va-19mm" />
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleRemoveFile(index)}
                         className="h-8 px-2 text-red-600 hover:text-red-700"
+                        data-oid="r5ms4v:"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-3 w-3" data-oid="9wa_6sk" />
                       </Button>
                     </>
                   )}
@@ -192,6 +196,7 @@ export function MissingFilesModal() {
                       variant="ghost"
                       onClick={() => handleResetFile(index)}
                       className="h-8 px-2 text-xs"
+                      data-oid="nts2.fy"
                     >
                       Отменить
                     </Button>
@@ -199,20 +204,24 @@ export function MissingFilesModal() {
                 </div>
               </div>
 
-              {index < resolutions.length - 1 && <Separator />}
+              {index < resolutions.length - 1 && <Separator data-oid="t9593_m" />}
             </div>
           ))}
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
-        <Button variant="outline" onClick={handleSkipAll}>
+      <div className="flex justify-between items-center" data-oid="mydp0pj">
+        <Button variant="outline" onClick={handleSkipAll} data-oid="ljz_a_z">
           Пропустить все
         </Button>
 
-        <div className="flex items-center gap-4">
-          {canProceed && <p className="text-xs text-muted-foreground">Будет обработано {resolvedCount} файлов</p>}
-          <Button onClick={handleResolveAll} disabled={!canProceed}>
+        <div className="flex items-center gap-4" data-oid="-oq9b4y">
+          {canProceed && (
+            <p className="text-xs text-muted-foreground" data-oid="a6o2:th">
+              Будет обработано {resolvedCount} файлов
+            </p>
+          )}
+          <Button onClick={handleResolveAll} disabled={!canProceed} data-oid="8_jvp21">
             Применить изменения
           </Button>
         </div>

@@ -103,35 +103,38 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
   )
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" data-oid="n2:5wb9">
       {/* Контейнер превью стиля субтитров */}
       <div
         className="group relative cursor-pointer rounded-xs bg-gray-800 flex items-center justify-center"
         style={{ width: `${previewWidth}px`, height: `${previewHeight}px` }}
         onClick={onClick}
+        data-oid="rodv3ar"
       >
         {/* Текст для демонстрации стиля */}
         <div
           className="text-center px-2 py-1 max-w-full break-words"
           style={textStyle}
           data-testid="subtitle-preview-text"
+          data-oid=".4xt.8m"
         >
           Timeline Studio
         </div>
 
         {/* Индикатор сложности слева */}
         {/* <div className="absolute top-1 left-1">
-          <div
-            className={`h-2 w-2 rounded-full ${getComplexityColor(style.complexity || "basic")}`}
-            title={t(`subtitles.complexity.${style.complexity || "basic"}`)}
-          />
-        </div> */}
+             <div
+               className={`h-2 w-2 rounded-full ${getComplexityColor(style.complexity || "basic")}`}
+               title={t(`subtitles.complexity.${style.complexity || "basic"}`)}
+             />
+            </div> */}
 
         {/* Индикатор категории справа */}
-        <div className="absolute top-1 left-1">
+        <div className="absolute top-1 left-1" data-oid="90e3mmm">
           <div
             className="bg-black/80 bg-opacity-60 text-white font-medium text-[8px] px-1 py-0.5 rounded"
             title={t(`subtitles.categories.${style.category}`)}
+            data-oid="1cgvy8-"
           >
             {getCategoryAbbreviation(style.category)}
           </div>
@@ -139,31 +142,40 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
 
         {/* Кнопка добавления в избранное */}
         <FavoriteButton
-          file={{ id: style.id, path: "", name: style.name, type: MediaType.Subtitle }}
+          file={{
+            id: style.id,
+            path: "",
+            name: style.name,
+            type: MediaType.Subtitle,
+          }}
           size={size}
           type="subtitle"
+          data-oid="hcvv2dm"
         />
 
         {/* Кнопка удаления стиля из проекта */}
-        <ApplyButton resource={fileObject as SubtitleResource} size={size} type="subtitle" />
+        <ApplyButton resource={fileObject as SubtitleResource} size={size} type="subtitle" data-oid="abshvc8" />
 
         {/* Кнопка добавления стиля в проект */}
         <div
           className={`${isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-200`}
+          data-oid="tr:9qxk"
         >
-          <AddMediaButton resource={fileObject as SubtitleResource} size={size} type="subtitle" />
+          <AddMediaButton resource={fileObject as SubtitleResource} size={size} type="subtitle" data-oid="qg9heab" />
         </div>
 
         {/* Индикатор анимации (если есть) */}
         {style.style.animation && (
-          <div className="absolute bottom-1 left-1">
-            <div className="bg-black/80 bg-opacity-60 text-white rounded-xs px-1 py-0.5 text-[8px]">ANI</div>
+          <div className="absolute bottom-1 left-1" data-oid="v7bpiki">
+            <div className="bg-black/80 bg-opacity-60 text-white rounded-xs px-1 py-0.5 text-[8px]" data-oid="ug:e6oe">
+              ANI
+            </div>
           </div>
         )}
       </div>
 
       {/* Название стиля */}
-      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${previewWidth}px` }}>
+      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${previewWidth}px` }} data-oid="b::_9av">
         {style.labels?.ru || style.name}
       </div>
     </div>

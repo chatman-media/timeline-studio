@@ -12,7 +12,7 @@ const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
   if (shouldThrow) {
     throw new Error("Test error message")
   }
-  return <div>Normal content</div>
+  return <div data-oid="i.k13gs">Normal content</div>
 }
 
 describe("StyleTemplateErrorBoundary", () => {
@@ -27,8 +27,8 @@ describe("StyleTemplateErrorBoundary", () => {
 
   it("should render children when there is no error", () => {
     render(
-      <StyleTemplateErrorBoundary>
-        <div>Test content</div>
+      <StyleTemplateErrorBoundary data-oid="_zqnjd3">
+        <div data-oid="m.u5haw">Test content</div>
       </StyleTemplateErrorBoundary>,
     )
 
@@ -37,8 +37,8 @@ describe("StyleTemplateErrorBoundary", () => {
 
   it("should render default error UI when error occurs", () => {
     render(
-      <StyleTemplateErrorBoundary>
-        <ThrowError shouldThrow={true} />
+      <StyleTemplateErrorBoundary data-oid="jug3hb7">
+        <ThrowError shouldThrow={true} data-oid="boimq3j" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -48,11 +48,11 @@ describe("StyleTemplateErrorBoundary", () => {
   })
 
   it("should render custom fallback when provided", () => {
-    const customFallback = <div>Custom error fallback</div>
+    const customFallback = <div data-oid="m1adxv3">Custom error fallback</div>
 
     render(
-      <StyleTemplateErrorBoundary fallback={customFallback}>
-        <ThrowError shouldThrow={true} />
+      <StyleTemplateErrorBoundary fallback={customFallback} data-oid="0.1k48:">
+        <ThrowError shouldThrow={true} data-oid="_lgjogm" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -65,8 +65,8 @@ describe("StyleTemplateErrorBoundary", () => {
     const componentDidCatchSpy = vi.spyOn(StyleTemplateErrorBoundary.prototype, "componentDidCatch")
 
     render(
-      <StyleTemplateErrorBoundary>
-        <ThrowError shouldThrow={true} />
+      <StyleTemplateErrorBoundary data-oid="xfr9r2o">
+        <ThrowError shouldThrow={true} data-oid="rl7xgtf" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -87,12 +87,12 @@ describe("StyleTemplateErrorBoundary", () => {
       if (throwError) {
         throw new Error("Test error")
       }
-      return <div>Success after retry</div>
+      return <div data-oid=".b4wj3x">Success after retry</div>
     }
 
     const { rerender } = render(
-      <StyleTemplateErrorBoundary>
-        <TestComponent />
+      <StyleTemplateErrorBoundary data-oid="phpmxk1">
+        <TestComponent data-oid="9yl2y2g" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -108,8 +108,8 @@ describe("StyleTemplateErrorBoundary", () => {
 
     // Should reset error state and try to render children again
     rerender(
-      <StyleTemplateErrorBoundary>
-        <TestComponent />
+      <StyleTemplateErrorBoundary data-oid="o8zu3h3">
+        <TestComponent data-oid="h5t8hhs" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -123,8 +123,8 @@ describe("StyleTemplateErrorBoundary", () => {
     }
 
     render(
-      <StyleTemplateErrorBoundary>
-        <ErrorWithoutMessage />
+      <StyleTemplateErrorBoundary data-oid="pd1kkbn">
+        <ErrorWithoutMessage data-oid="ji3jit." />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -133,8 +133,8 @@ describe("StyleTemplateErrorBoundary", () => {
 
   it("should have proper styling for error UI", () => {
     render(
-      <StyleTemplateErrorBoundary>
-        <ThrowError shouldThrow={true} />
+      <StyleTemplateErrorBoundary data-oid=":zhvktn">
+        <ThrowError shouldThrow={true} data-oid="_5xpu08" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -150,8 +150,8 @@ describe("StyleTemplateErrorBoundary", () => {
 
   it("should have refresh icon in retry button", () => {
     render(
-      <StyleTemplateErrorBoundary>
-        <ThrowError shouldThrow={true} />
+      <StyleTemplateErrorBoundary data-oid="sis608c">
+        <ThrowError shouldThrow={true} data-oid="6x_dsb0" />
       </StyleTemplateErrorBoundary>,
     )
 
@@ -171,10 +171,10 @@ describe("withStyleTemplateErrorBoundary HOC", () => {
   })
 
   it("should wrap component with error boundary", () => {
-    const TestComponent = () => <div>Test component</div>
+    const TestComponent = () => <div data-oid="a445gsb">Test component</div>
     const WrappedComponent = withStyleTemplateErrorBoundary(TestComponent)
 
-    render(<WrappedComponent />)
+    render(<WrappedComponent data-oid="6b5x:4j" />)
 
     expect(screen.getByText("Test component")).toBeInTheDocument()
   })
@@ -185,7 +185,7 @@ describe("withStyleTemplateErrorBoundary HOC", () => {
     }
     const WrappedComponent = withStyleTemplateErrorBoundary(ErrorComponent)
 
-    render(<WrappedComponent />)
+    render(<WrappedComponent data-oid="3sxzwd1" />)
 
     expect(screen.getByText("Component error")).toBeInTheDocument()
     expect(screen.getByText("Ошибка загрузки шаблонов")).toBeInTheDocument()
@@ -195,10 +195,10 @@ describe("withStyleTemplateErrorBoundary HOC", () => {
     const ErrorComponent = () => {
       throw new Error("Component error")
     }
-    const customFallback = <div>Custom HOC fallback</div>
+    const customFallback = <div data-oid=":fpy92e">Custom HOC fallback</div>
     const WrappedComponent = withStyleTemplateErrorBoundary(ErrorComponent, customFallback)
 
-    render(<WrappedComponent />)
+    render(<WrappedComponent data-oid="z59ujz9" />)
 
     expect(screen.getByText("Custom HOC fallback")).toBeInTheDocument()
     expect(screen.queryByText("Ошибка загрузки шаблонов")).not.toBeInTheDocument()
@@ -211,14 +211,14 @@ describe("withStyleTemplateErrorBoundary HOC", () => {
     }
 
     const TestComponent = ({ message, count }: TestProps) => (
-      <div>
+      <div data-oid="dlw-82t">
         {message} - {count}
       </div>
     )
 
     const WrappedComponent = withStyleTemplateErrorBoundary(TestComponent)
 
-    render(<WrappedComponent message="Hello" count={42} />)
+    render(<WrappedComponent message="Hello" count={42} data-oid="v7.ac_5" />)
 
     expect(screen.getByText("Hello - 42")).toBeInTheDocument()
   })
@@ -228,15 +228,15 @@ describe("withStyleTemplateErrorBoundary HOC", () => {
       if (shouldError) {
         throw new Error("Conditional error")
       }
-      return <div>No error</div>
+      return <div data-oid="_.k95pb">No error</div>
     }
 
     const WrappedComponent = withStyleTemplateErrorBoundary(ConditionalErrorComponent)
 
-    const { rerender } = render(<WrappedComponent shouldError={false} />)
+    const { rerender } = render(<WrappedComponent shouldError={false} data-oid="il9r4ny" />)
     expect(screen.getByText("No error")).toBeInTheDocument()
 
-    rerender(<WrappedComponent shouldError={true} />)
+    rerender(<WrappedComponent shouldError={true} data-oid="f58s613" />)
     expect(screen.getByText("Conditional error")).toBeInTheDocument()
   })
 })

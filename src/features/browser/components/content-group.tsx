@@ -83,7 +83,7 @@ export function ContentGroup<T>({
   // Если группа не имеет заголовка, отображаем только элементы
   if (!title || title === "") {
     return (
-      <div key="ungrouped" className={getItemsContainerClasses()} style={itemsContainerStyle}>
+      <div key="ungrouped" className={getItemsContainerClasses()} style={itemsContainerStyle} data-oid="siqnaj2">
         {items.map((item, index) => (
           <React.Fragment key={getItemKey ? getItemKey(item, index) : index}>{renderItem(item, index)}</React.Fragment>
         ))}
@@ -93,9 +93,11 @@ export function ContentGroup<T>({
 
   // Если группа имеет заголовок, отображаем заголовок и элементы
   return (
-    <div key={title} className="mb-4">
-      <div className="mb-2 flex items-center justify-between pl-2">
-        <h3 className="text-sm font-medium">{title}</h3>
+    <div key={title} className="mb-4" data-oid="2whqot:">
+      <div className="mb-2 flex items-center justify-between pl-2" data-oid="uvh.qi2">
+        <h3 className="text-sm font-medium" data-oid="w65de77">
+          {title}
+        </h3>
         {onAddAll && (
           <Button
             variant="secondary"
@@ -106,15 +108,16 @@ export function ContentGroup<T>({
             )}
             onClick={() => onAddAll(items)}
             disabled={allItemsAdded}
+            data-oid=".ffg13c"
           >
-            <span className="px-1 text-xs">
+            <span className="px-1 text-xs" data-oid="u8ngq-z">
               {allItemsAdded ? addedButtonText || t("common.allFilesAdded") : addButtonText || t("common.add")}
             </span>
-            <CopyPlus className="mr-1 h-3 w-3" />
+            <CopyPlus className="mr-1 h-3 w-3" data-oid="d10s3g2" />
           </Button>
         )}
       </div>
-      <div className={getItemsContainerClasses()} style={itemsContainerStyle}>
+      <div className={getItemsContainerClasses()} style={itemsContainerStyle} data-oid="p0-pvvo">
         {items.map((item, index) => (
           <React.Fragment key={getItemKey ? getItemKey(item, index) : index}>{renderItem(item, index)}</React.Fragment>
         ))}

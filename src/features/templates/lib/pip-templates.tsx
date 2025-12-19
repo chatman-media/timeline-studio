@@ -51,6 +51,7 @@ function createBasicPip(
         },
       }),
     ],
+
     cellLayouts: [
       {
         position: "absolute",
@@ -67,6 +68,7 @@ function createBasicPip(
         zIndex: 10,
       },
     ],
+
     dividers: createDividerConfig("default"),
   }
 }
@@ -128,6 +130,7 @@ function createDualPip(
         },
       }),
     ],
+
     cellLayouts: [
       {
         position: "absolute",
@@ -150,6 +153,7 @@ function createDualPip(
         zIndex: 10,
       },
     ],
+
     dividers: createDividerConfig("default"),
   }
 }
@@ -344,6 +348,7 @@ function createTriplePip(
         },
       }),
     ],
+
     cellLayouts,
     dividers: createDividerConfig("default"),
   }

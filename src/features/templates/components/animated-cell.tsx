@@ -122,7 +122,7 @@ export function AnimatedCell({
   const animationStyles = getAnimationStyles()
 
   return (
-    <div className={cn("h-full w-full", className)} style={{ ...style, ...animationStyles }}>
+    <div className={cn("h-full w-full", className)} style={{ ...style, ...animationStyles }} data-oid="i:c2kzr">
       {children}
     </div>
   )

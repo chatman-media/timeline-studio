@@ -96,13 +96,13 @@ describe("RenderJobsDropdown", () => {
   })
 
   it("should render the dropdown button with correct text", () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid=".3a8nbk" />)
 
     expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
   })
 
   it("should show active jobs count badge", async () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="ib0xo55" />)
 
     await waitFor(
       () => {
@@ -113,7 +113,7 @@ describe("RenderJobsDropdown", () => {
   })
 
   it("should open dropdown when clicked", async () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="9fgb6kh" />)
 
     const button = screen.getByTestId("dropdown-menu-trigger")
 
@@ -138,7 +138,7 @@ describe("RenderJobsDropdown", () => {
   })
 
   it("should display all jobs in the dropdown", async () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="99ujpmh" />)
 
     await waitFor(() => {
       expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
@@ -162,7 +162,7 @@ describe("RenderJobsDropdown", () => {
   })
 
   it("should show progress for processing jobs", async () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="rxl86r:" />)
 
     await waitFor(() => {
       expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
@@ -185,7 +185,7 @@ describe("RenderJobsDropdown", () => {
   })
 
   it("should show error message for failed jobs", async () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="6rqcbit" />)
 
     await waitFor(() => {
       expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
@@ -213,7 +213,7 @@ describe("RenderJobsDropdown", () => {
       return Promise.resolve(mockJobs)
     })
 
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="5dmg909" />)
 
     await waitFor(() => {
       expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
@@ -245,7 +245,7 @@ describe("RenderJobsDropdown", () => {
   it("should show empty state when no jobs", async () => {
     vi.mocked(invoke).mockResolvedValue([])
 
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="fimec5." />)
 
     await waitFor(() => {
       expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
@@ -269,7 +269,7 @@ describe("RenderJobsDropdown", () => {
   it("should handle error state", async () => {
     vi.mocked(invoke).mockRejectedValue(new Error("Failed to fetch jobs"))
 
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="tinepy5" />)
 
     await waitFor(() => {
       expect(screen.getByTestId("dropdown-menu-trigger")).toBeInTheDocument()
@@ -293,7 +293,7 @@ describe("RenderJobsDropdown", () => {
   it("should refresh jobs periodically", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
 
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="_:vz7o." />)
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith("get_active_jobs")
@@ -317,7 +317,7 @@ describe("RenderJobsDropdown", () => {
   })
 
   it("should display job statistics", async () => {
-    render(<RenderJobsDropdown />)
+    render(<RenderJobsDropdown data-oid="0ixm_z_" />)
 
     await waitFor(() => {
       expect(invoke).toHaveBeenCalledWith("get_active_jobs")

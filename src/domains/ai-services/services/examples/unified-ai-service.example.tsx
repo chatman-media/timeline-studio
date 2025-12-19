@@ -42,8 +42,10 @@ export function SimpleAIChatExample() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Simple AI Chat</h2>
+    <div className="space-y-4" data-oid="rn9s9k9">
+      <h2 className="text-xl font-bold" data-oid="_blg_wh">
+        Simple AI Chat
+      </h2>
       <input
         type="text"
         value={message}
@@ -51,19 +53,24 @@ export function SimpleAIChatExample() {
         placeholder="Type your message..."
         className="w-full p-2 border rounded"
         disabled={loading}
+        data-oid="7wl_ox6"
       />
+
       <button
         type="button"
         onClick={handleSend}
         disabled={loading}
         className="px-4 py-2 bg-blue-500 text-white rounded"
+        data-oid="hkqjxaf"
       >
         {loading ? "Sending..." : "Send"}
       </button>
       {response && (
-        <div className="p-4 bg-gray-100 rounded">
-          <p className="font-semibold">Response:</p>
-          <p>{response}</p>
+        <div className="p-4 bg-gray-100 rounded" data-oid="3.n6496">
+          <p className="font-semibold" data-oid="uh3mevj">
+            Response:
+          </p>
+          <p data-oid="5qqjgt.">{response}</p>
         </div>
       )}
     </div>
@@ -119,8 +126,10 @@ export function StreamingAIChatExample() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Streaming AI Chat</h2>
+    <div className="space-y-4" data-oid="64svcuy">
+      <h2 className="text-xl font-bold" data-oid="h2ye5fz">
+        Streaming AI Chat
+      </h2>
       <input
         type="text"
         value={message}
@@ -128,19 +137,26 @@ export function StreamingAIChatExample() {
         placeholder="Type your message..."
         className="w-full p-2 border rounded"
         disabled={isStreaming}
+        data-oid="ek065su"
       />
+
       <button
         type="button"
         onClick={handleStream}
         disabled={isStreaming}
         className="px-4 py-2 bg-green-500 text-white rounded"
+        data-oid="zhni6w6"
       >
         {isStreaming ? "Streaming..." : "Stream"}
       </button>
       {streamingText && (
-        <div className="p-4 bg-gray-100 rounded">
-          <p className="font-semibold">Response:</p>
-          <p className="whitespace-pre-wrap">{streamingText}</p>
+        <div className="p-4 bg-gray-100 rounded" data-oid="ees3gur">
+          <p className="font-semibold" data-oid="58e61tk">
+            Response:
+          </p>
+          <p className="whitespace-pre-wrap" data-oid="wmyet4m">
+            {streamingText}
+          </p>
         </div>
       )}
     </div>
@@ -172,31 +188,42 @@ export function ProviderHealthCheckExample() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Provider Health Check</h2>
+    <div className="space-y-4" data-oid="4mnzs:s">
+      <h2 className="text-xl font-bold" data-oid="s7t::.n">
+        Provider Health Check
+      </h2>
       <button
         type="button"
         onClick={checkHealth}
         disabled={loading}
         className="px-4 py-2 bg-purple-500 text-white rounded"
+        data-oid="kbm_1fc"
       >
         {loading ? "Checking..." : "Check Health"}
       </button>
 
       {health.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2" data-oid="es3-_yd">
           {health.map((status) => (
-            <div key={status.provider} className="p-3 border rounded">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">{status.provider}</span>
-                <span className={status.available ? "text-green-600" : "text-red-600"}>
+            <div key={status.provider} className="p-3 border rounded" data-oid="c07fi1.">
+              <div className="flex items-center justify-between" data-oid="9h-j9b.">
+                <span className="font-semibold" data-oid="5ahpmgz">
+                  {status.provider}
+                </span>
+                <span className={status.available ? "text-green-600" : "text-red-600"} data-oid="_vwq67e">
                   {status.available ? "✓ Available" : "✗ Unavailable"}
                 </span>
               </div>
               {status.available && status.models && status.models.length > 0 && (
-                <p className="text-sm text-gray-600 mt-1">Models: {status.models.slice(0, 3).join(", ")}</p>
+                <p className="text-sm text-gray-600 mt-1" data-oid="bty1djq">
+                  Models: {status.models.slice(0, 3).join(", ")}
+                </p>
               )}
-              {status.error && <p className="text-sm text-red-600 mt-1">Error: {status.error}</p>}
+              {status.error && (
+                <p className="text-sm text-red-600 mt-1" data-oid="jq_33x6">
+                  Error: {status.error}
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -241,37 +268,69 @@ export function CacheStatsExample() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">Cache Statistics</h2>
+    <div className="space-y-4" data-oid="5uz03j3">
+      <h2 className="text-xl font-bold" data-oid="0y:u4kt">
+        Cache Statistics
+      </h2>
 
-      <div className="flex gap-2">
-        <button type="button" onClick={loadStats} className="px-4 py-2 bg-blue-500 text-white rounded">
+      <div className="flex gap-2" data-oid="pva_k5r">
+        <button
+          type="button"
+          onClick={loadStats}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+          data-oid="pueqy-u"
+        >
           Load Stats
         </button>
-        <button type="button" onClick={clearCache} className="px-4 py-2 bg-red-500 text-white rounded">
+        <button
+          type="button"
+          onClick={clearCache}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+          data-oid="im81qfb"
+        >
           Clear Cache
         </button>
-        <button type="button" onClick={cleanupExpired} className="px-4 py-2 bg-orange-500 text-white rounded">
+        <button
+          type="button"
+          onClick={cleanupExpired}
+          className="px-4 py-2 bg-orange-500 text-white rounded"
+          data-oid="i_ssc4s"
+        >
           Cleanup Expired
         </button>
       </div>
 
       {stats && (
-        <div className="p-4 bg-gray-100 rounded space-y-2">
-          <p>
-            <span className="font-semibold">Total Entries:</span> {stats.totalEntries}
+        <div className="p-4 bg-gray-100 rounded space-y-2" data-oid="m19qbqj">
+          <p data-oid="n.:j6mk">
+            <span className="font-semibold" data-oid="cpti.iu">
+              Total Entries:
+            </span>{" "}
+            {stats.totalEntries}
           </p>
-          <p>
-            <span className="font-semibold">Cache Hits:</span> {stats.totalHits}
+          <p data-oid="537hj10">
+            <span className="font-semibold" data-oid="8k4jked">
+              Cache Hits:
+            </span>{" "}
+            {stats.totalHits}
           </p>
-          <p>
-            <span className="font-semibold">Cache Misses:</span> {stats.totalMisses}
+          <p data-oid="gqmljod">
+            <span className="font-semibold" data-oid="k-b8sgt">
+              Cache Misses:
+            </span>{" "}
+            {stats.totalMisses}
           </p>
-          <p>
-            <span className="font-semibold">Expired:</span> {stats.expiredEntries}
+          <p data-oid="cmugh12">
+            <span className="font-semibold" data-oid="0mojets">
+              Expired:
+            </span>{" "}
+            {stats.expiredEntries}
           </p>
-          <p>
-            <span className="font-semibold">Cache Size:</span> {stats.cacheSize} bytes
+          <p data-oid=":-qjt9h">
+            <span className="font-semibold" data-oid="ithh8i:">
+              Cache Size:
+            </span>{" "}
+            {stats.cacheSize} bytes
           </p>
         </div>
       )}
@@ -292,7 +351,13 @@ export function AIWithToolsExample() {
       const response = await unifiedAIService.sendSecureRequestWithTools(
         "claude",
         "claude-sonnet-4",
-        [{ role: "user", content: "What's the weather like in San Francisco?" }],
+        [
+          {
+            role: "user",
+            content: "What's the weather like in San Francisco?",
+          },
+        ],
+
         [
           {
             name: "get_weather",
@@ -314,6 +379,7 @@ export function AIWithToolsExample() {
             },
           },
         ],
+
         {
           toolChoice: { type: "tool", name: "get_weather" },
           maxTokens: 1024,
@@ -335,22 +401,29 @@ export function AIWithToolsExample() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold">AI with Tools (Function Calling)</h2>
+    <div className="space-y-4" data-oid="ehrak9-">
+      <h2 className="text-xl font-bold" data-oid="kl:gipq">
+        AI with Tools (Function Calling)
+      </h2>
 
       <button
         type="button"
         onClick={callAIWithTools}
         disabled={loading}
         className="px-4 py-2 bg-indigo-500 text-white rounded"
+        data-oid="qkmoqof"
       >
         {loading ? "Calling..." : "Call AI with Tools"}
       </button>
 
       {result && (
-        <div className="p-4 bg-gray-100 rounded">
-          <p className="font-semibold">Result:</p>
-          <pre className="mt-2 text-sm whitespace-pre-wrap">{result}</pre>
+        <div className="p-4 bg-gray-100 rounded" data-oid="x7dtbjq">
+          <p className="font-semibold" data-oid="vx6x_j1">
+            Result:
+          </p>
+          <pre className="mt-2 text-sm whitespace-pre-wrap" data-oid="b:w_fru">
+            {result}
+          </pre>
         </div>
       )}
     </div>

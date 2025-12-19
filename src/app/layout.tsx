@@ -12,14 +12,10 @@ export const metadata: Metadata = {
   description: "Professional video editing application",
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
+    <html lang="en" suppressHydrationWarning data-oid="7pp_5zt">
+      <head data-oid="cq3_:_m">
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -83,11 +79,12 @@ export default function RootLayout({
 })();
             `,
           }}
+          data-oid="gta.kab"
         />
       </head>
-      <body className="antialiased">
-        <Providers>
-          <AppErrorBoundary>{children}</AppErrorBoundary>
+      <body className="antialiased" data-oid="ijuq8_j">
+        <Providers data-oid="s5iwkac">
+          <AppErrorBoundary data-oid="v-nz.gc">{children}</AppErrorBoundary>
         </Providers>
       </body>
     </html>

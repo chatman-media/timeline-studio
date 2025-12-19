@@ -86,7 +86,9 @@ export function ShaderPreview({
     gl.compileShader(vertShader)
 
     if (!gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)) {
-      void logger.error("Vertex shader error", { log: gl.getShaderInfoLog(vertShader) })
+      void logger.error("Vertex shader error", {
+        log: gl.getShaderInfoLog(vertShader),
+      })
       gl.deleteShader(vertShader)
       return
     }
@@ -96,7 +98,9 @@ export function ShaderPreview({
     gl.compileShader(fragShader)
 
     if (!gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)) {
-      void logger.error("Fragment shader error", { log: gl.getShaderInfoLog(fragShader) })
+      void logger.error("Fragment shader error", {
+        log: gl.getShaderInfoLog(fragShader),
+      })
       gl.deleteShader(fragShader)
       gl.deleteShader(vertShader)
       return
@@ -111,7 +115,9 @@ export function ShaderPreview({
     gl.linkProgram(program)
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      void logger.error("Program link error", { log: gl.getProgramInfoLog(program) })
+      void logger.error("Program link error", {
+        log: gl.getProgramInfoLog(program),
+      })
       gl.deleteProgram(program)
       gl.deleteShader(fragShader)
       gl.deleteShader(vertShader)
@@ -316,29 +322,41 @@ export function ShaderPreview({
   }, [])
 
   return (
-    <div className={cn("flex flex-col bg-gray-900", className)}>
+    <div className={cn("flex flex-col bg-gray-900", className)} data-oid="y1wmu8s">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
-        <h3 className="text-sm font-medium text-white">Preview</h3>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} className="h-8 w-8 p-0">
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+      <div className="flex items-center justify-between p-4 border-b border-gray-800" data-oid="c5x.ujo">
+        <h3 className="text-sm font-medium text-white" data-oid="znyg.z8">
+          Preview
+        </h3>
+        <div className="flex items-center gap-2" data-oid="x3e3mz3">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="h-8 w-8 p-0"
+            data-oid="9:1m24q"
+          >
+            {isPlaying ? (
+              <Pause className="h-4 w-4" data-oid="ovxg277" />
+            ) : (
+              <Play className="h-4 w-4" data-oid="iujzecf" />
+            )}
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleReset} className="h-8 w-8 p-0">
-            <RotateCcw className="h-4 w-4" />
+          <Button size="sm" variant="ghost" onClick={handleReset} className="h-8 w-8 p-0" data-oid="zc2o2pf">
+            <RotateCcw className="h-4 w-4" data-oid="kgrmqd3" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleFullscreen} className="h-8 w-8 p-0">
-            <Maximize2 className="h-4 w-4" />
+          <Button size="sm" variant="ghost" onClick={handleFullscreen} className="h-8 w-8 p-0" data-oid="u59c6:p">
+            <Maximize2 className="h-4 w-4" data-oid="ay8_b_p" />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleDownload} className="h-8 w-8 p-0">
-            <Download className="h-4 w-4" />
+          <Button size="sm" variant="ghost" onClick={handleDownload} className="h-8 w-8 p-0" data-oid="0:kw-m4">
+            <Download className="h-4 w-4" data-oid="u-c_7cd" />
           </Button>
         </div>
       </div>
 
       {/* Canvas */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="relative">
+      <div className="flex-1 flex items-center justify-center p-4" data-oid="-7mzc-7">
+        <div className="relative" data-oid="t.3m6__">
           <canvas
             ref={canvasRef}
             width={resolution.width}
@@ -349,14 +367,19 @@ export function ShaderPreview({
               maxWidth: "100%",
               maxHeight: "calc(100vh - 200px)",
             }}
+            data-oid="oterst3"
           />
 
           {/* Error overlay */}
           {compilationResult && !compilationResult.success && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-              <div className="text-center">
-                <p className="text-red-400 text-sm font-medium">Shader Compilation Error</p>
-                <p className="text-gray-400 text-xs mt-1">{compilationResult.errors[0]?.message || "Unknown error"}</p>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/80" data-oid="35dr5mb">
+              <div className="text-center" data-oid="rj23:de">
+                <p className="text-red-400 text-sm font-medium" data-oid="n3g1qer">
+                  Shader Compilation Error
+                </p>
+                <p className="text-gray-400 text-xs mt-1" data-oid="vyazif_">
+                  {compilationResult.errors[0]?.message || "Unknown error"}
+                </p>
               </div>
             </div>
           )}
@@ -364,21 +387,27 @@ export function ShaderPreview({
       </div>
 
       {/* Status bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-t border-gray-800 text-xs text-gray-500">
-        <div className="flex items-center gap-4">
-          <span>
+      <div
+        className="flex items-center justify-between px-4 py-2 border-t border-gray-800 text-xs text-gray-500"
+        data-oid="_yee-ke"
+      >
+        <div className="flex items-center gap-4" data-oid="7fiyr9t">
+          <span data-oid="8bw_hy3">
             {resolution.width}×{resolution.height}
           </span>
-          <span>Time: {time.toFixed(2)}s</span>
-          <span>
+          <span data-oid="i8icom7">Time: {time.toFixed(2)}s</span>
+          <span data-oid="f16p._k">
             Mouse: ({mousePosition.x.toFixed(2)}, {mousePosition.y.toFixed(2)})
           </span>
         </div>
-        <div className="flex items-center gap-4">
-          <span className={cn(fps > 50 ? "text-green-400" : fps > 30 ? "text-yellow-400" : "text-red-400")}>
+        <div className="flex items-center gap-4" data-oid="rjziz85">
+          <span
+            className={cn(fps > 50 ? "text-green-400" : fps > 30 ? "text-yellow-400" : "text-red-400")}
+            data-oid="wjtotyx"
+          >
             {fps} FPS
           </span>
-          <span>WebGL2</span>
+          <span data-oid="-wlv40i">WebGL2</span>
         </div>
       </div>
     </div>

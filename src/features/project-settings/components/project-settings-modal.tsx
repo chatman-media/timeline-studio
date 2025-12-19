@@ -148,18 +148,20 @@ export function ProjectSettingsModal() {
   }
 
   return (
-    <div className="flex h-full flex-col justify-between items-stretch py-1">
+    <div className="flex h-full flex-col justify-between items-stretch py-1" data-oid="7nz6h_d">
       {/* Выбор соотношения сторон */}
-      <div className="flex items-center justify-end">
-        <Label className="mr-2 text-xs">{t("dialogs.projectSettings.aspectRatio")}</Label>
-        <Select value={settings.aspectRatio.label} onValueChange={handleAspectRatioChange}>
-          <SelectTrigger className="w-[300px]">
-            <SelectValue />
+      <div className="flex items-center justify-end" data-oid="fqlp47b">
+        <Label className="mr-2 text-xs" data-oid="_.ed16-">
+          {t("dialogs.projectSettings.aspectRatio")}
+        </Label>
+        <Select value={settings.aspectRatio.label} onValueChange={handleAspectRatioChange} data-oid="1a:wor0">
+          <SelectTrigger className="w-[300px]" data-oid="6rq3x6m">
+            <SelectValue data-oid=".3st:uy" />
           </SelectTrigger>
-          <SelectContent className="">
+          <SelectContent className="" data-oid="o.u.itj">
             {/* Отображение списка доступных соотношений сторон */}
             {ASPECT_RATIOS.map((item) => (
-              <SelectItem key={item.label} value={item.label} className="">
+              <SelectItem key={item.label} value={item.label} className="" data-oid="8gem6_o">
                 {/* Для пользовательского соотношения показываем специальную метку */}
                 {item.label === "custom"
                   ? t("dialogs.projectSettings.aspectRatioLabels.custom")
@@ -171,8 +173,10 @@ export function ProjectSettingsModal() {
       </div>
 
       {/* Выбор разрешения */}
-      <div className="flex items-center justify-end">
-        <Label className="mr-2 text-xs">{t("dialogs.projectSettings.resolution")}</Label>
+      <div className="flex items-center justify-end" data-oid="aiqg0pe">
+        <Label className="mr-2 text-xs" data-oid="_99kw_w">
+          {t("dialogs.projectSettings.resolution")}
+        </Label>
         <Select
           value={
             // Для пользовательского соотношения сторон всегда показываем "custom"
@@ -217,20 +221,21 @@ export function ProjectSettingsModal() {
               })
             }
           }}
+          data-oid="rcnp_2l"
         >
-          <SelectTrigger className="w-[300px]">
-            <SelectValue />
+          <SelectTrigger className="w-[300px]" data-oid=":euq5zr">
+            <SelectValue data-oid="28u7v8e" />
           </SelectTrigger>
-          <SelectContent className="">
+          <SelectContent className="" data-oid="3z:0.5s">
             {/* Для пользовательского соотношения сторон показываем только "custom" */}
             {settings.aspectRatio.label === "custom" ? (
-              <SelectItem value="custom" className="">
+              <SelectItem value="custom" className="" data-oid="_e572fl">
                 {t("dialogs.projectSettings.aspectRatioLabels.custom")}
               </SelectItem>
             ) : (
               // Для стандартных соотношений показываем список доступных разрешений
               availableResolutions.map((option) => (
-                <SelectItem key={option.value} value={option.value} className="">
+                <SelectItem key={option.value} value={option.value} className="" data-oid="t_vwum7">
                   {option.label}
                 </SelectItem>
               ))
@@ -240,9 +245,11 @@ export function ProjectSettingsModal() {
       </div>
 
       {/* Поля для ввода пользовательских размеров (ширина и высота) */}
-      <div className="flex items-center justify-end">
-        <Label className="mr-2 text-xs">{t("dialogs.projectSettings.customSize")}</Label>
-        <div className="flex items-center">
+      <div className="flex items-center justify-end" data-oid="yokx4ut">
+        <Label className="mr-2 text-xs" data-oid="mwky8un">
+          {t("dialogs.projectSettings.customSize")}
+        </Label>
+        <div className="flex items-center" data-oid="twiqnhp">
           {/* Поле ввода ширины */}
           <Input
             type="number"
@@ -294,10 +301,13 @@ export function ProjectSettingsModal() {
             className="w-20 text-center"
             min={320} // Минимальная ширина
             max={7680} // Максимальная ширина (8K)
+            data-oid="6l-8uth"
           />
 
           {/* Разделитель между полями ширины и высоты */}
-          <span className="mx-2 text-sm">x</span>
+          <span className="mx-2 text-sm" data-oid="ecg56_n">
+            x
+          </span>
 
           {/* Поле ввода высоты */}
           <Input
@@ -350,6 +360,7 @@ export function ProjectSettingsModal() {
             className="w-20 text-center"
             min={240} // Минимальная высота
             max={4320} // Максимальная высота (4K)
+            data-oid="o3i5vw0"
           />
 
           {/* Кнопка блокировки/разблокировки соотношения сторон */}
@@ -368,21 +379,26 @@ export function ProjectSettingsModal() {
                 ? t("dialogs.projectSettings.unlockAspectRatio")
                 : t("dialogs.projectSettings.lockAspectRatio")
             }
+            data-oid="pb9v2b7"
           >
             {/* Иконка в зависимости от состояния блокировки */}
-            {aspectRatioLocked ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+            {aspectRatioLocked ? (
+              <Lock className="h-4 w-4" data-oid="64-vvz4" />
+            ) : (
+              <Unlock className="h-4 w-4" data-oid="169slxv" />
+            )}
           </Button>
         </div>
       </div>
 
       {/* Информация о текущем соотношении сторон */}
-      <div className="flex items-center justify-center">
-        <div className="flex items-center text-xs text-gray-400">
+      <div className="flex items-center justify-center" data-oid="8vcll1h">
+        <div className="flex items-center text-xs text-gray-400" data-oid="yhybo9_">
           {aspectRatioLocked ? (
             // Заблокированное соотношение сторон
             <>
-              <Lock className="mr-1 h-3 w-3 text-[#00CCC0]" />
-              <span className="text-[#00CCC0]">
+              <Lock className="mr-1 h-3 w-3 text-[#00CCC0]" data-oid="awcjux-" />
+              <span className="text-[#00CCC0]" data-oid="hhl6vn9">
                 {settings.aspectRatio.label !== "custom"
                   ? t("dialogs.projectSettings.aspectRatioLocked", {
                       ratio: settings.aspectRatio.label,
@@ -395,7 +411,7 @@ export function ProjectSettingsModal() {
           ) : (
             // Разблокированное соотношение сторон
             <>
-              <Unlock className="mr-1 h-3 w-3" />
+              <Unlock className="mr-1 h-3 w-3" data-oid="5es42g9" />
               {settings.aspectRatio.label !== "custom"
                 ? t("dialogs.projectSettings.aspectRatioUnlocked", {
                     ratio: settings.aspectRatio.label,
@@ -409,8 +425,10 @@ export function ProjectSettingsModal() {
       </div>
 
       {/* Выбор частоты кадров */}
-      <div className="flex items-center justify-end">
-        <Label className="mr-2 text-xs">{t("dialogs.projectSettings.frameRate")}</Label>
+      <div className="flex items-center justify-end" data-oid="_pw7ov:">
+        <Label className="mr-2 text-xs" data-oid="rdlhs-o">
+          {t("dialogs.projectSettings.frameRate")}
+        </Label>
         <Select
           value={settings.frameRate}
           onValueChange={(value: FrameRate) =>
@@ -420,14 +438,15 @@ export function ProjectSettingsModal() {
               frameRate: value,
             })
           }
+          data-oid="_upbjr0"
         >
-          <SelectTrigger className="w-[300px]">
-            <SelectValue />
+          <SelectTrigger className="w-[300px]" data-oid=":ngp739">
+            <SelectValue data-oid="7j:7ybz" />
           </SelectTrigger>
-          <SelectContent className="">
+          <SelectContent className="" data-oid="nplj5u8">
             {/* Отображение списка доступных частот кадров */}
             {FRAME_RATES.map((frameRate) => (
-              <SelectItem key={frameRate.value} value={frameRate.value} className="">
+              <SelectItem key={frameRate.value} value={frameRate.value} className="" data-oid="7n40um1">
                 {frameRate.label}
               </SelectItem>
             ))}
@@ -436,8 +455,10 @@ export function ProjectSettingsModal() {
       </div>
 
       {/* Выбор цветового пространства */}
-      <div className="flex items-center justify-end">
-        <Label className="mr-2 text-xs">{t("dialogs.projectSettings.colorSpace")}</Label>
+      <div className="flex items-center justify-end" data-oid="24zshfx">
+        <Label className="mr-2 text-xs" data-oid="7kps.ud">
+          {t("dialogs.projectSettings.colorSpace")}
+        </Label>
         <Select
           value={settings.colorSpace}
           onValueChange={(value: ColorSpace) =>
@@ -447,14 +468,15 @@ export function ProjectSettingsModal() {
               colorSpace: value,
             })
           }
+          data-oid="j3-okbw"
         >
-          <SelectTrigger className="w-[300px]">
-            <SelectValue />
+          <SelectTrigger className="w-[300px]" data-oid="xk.liak">
+            <SelectValue data-oid="-v5brg9" />
           </SelectTrigger>
-          <SelectContent className="">
+          <SelectContent className="" data-oid="wpu_47q">
             {/* Отображение списка доступных цветовых пространств */}
             {COLOR_SPACES.map((colorSpace) => (
-              <SelectItem key={colorSpace.value} value={colorSpace.value} className="">
+              <SelectItem key={colorSpace.value} value={colorSpace.value} className="" data-oid="ynz2l89">
                 {colorSpace.label}
               </SelectItem>
             ))}
@@ -463,12 +485,13 @@ export function ProjectSettingsModal() {
       </div>
 
       {/* Кнопки действий в нижней части модального окна */}
-      <DialogFooter className="flex justify-between space-x-4 h-[50px]">
+      <DialogFooter className="flex justify-between space-x-4 h-[50px]" data-oid="3-jlfcj">
         {/* Кнопка отмены */}
         <Button
           variant="default"
           className="flex-1 cursor-pointer"
           onClick={() => closeModal()} // Закрываем модальное окно без сохранения
+          data-oid="mgq2xh4"
         >
           {t("dialogs.projectSettings.cancel")}
         </Button>
@@ -537,6 +560,7 @@ export function ProjectSettingsModal() {
               }
             }, 100)
           }}
+          data-oid="7qp094q"
         >
           {t("dialogs.projectSettings.save")}
         </Button>

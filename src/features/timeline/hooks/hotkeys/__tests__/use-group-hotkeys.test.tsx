@@ -92,6 +92,7 @@ const mockProject: TimelineProject = {
       ],
     },
   ],
+
   globalTracks: [
     {
       id: "global-track-1",
@@ -195,10 +196,9 @@ describe("useGroupHotkeys", () => {
   afterEach(() => {
     // No cleanup needed - we don't use fake timers
   })
-
   it("должен регистрировать горячие клавиши", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="rpcslvy">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useGroupHotkeys(), { wrapper })
@@ -210,7 +210,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен создавать группу при нажатии Cmd+G с выбранными клипами", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="_.hl8g:">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useGroupHotkeys(), { wrapper })
@@ -232,7 +232,7 @@ describe("useGroupHotkeys", () => {
 
   it("не должен создавать группу если выбрано меньше 2 клипов", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="6f6d1yh">{children}</MockTimelineProvider>
     )
 
     // Изменяем выбранные клипы
@@ -252,7 +252,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен разгруппировывать клипы при нажатии Cmd+Shift+G", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="5tgin0b">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useGroupHotkeys(), { wrapper })
@@ -271,7 +271,7 @@ describe("useGroupHotkeys", () => {
 
   it("не должен разгруппировывать если клип не в группе", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="4mif150">{children}</MockTimelineProvider>
     )
 
     // Мокаем что клип не в группе
@@ -292,7 +292,7 @@ describe("useGroupHotkeys", () => {
 
   it("не должен разгруппировывать если нет выбранных клипов", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="6t_tb4i">{children}</MockTimelineProvider>
     )
 
     // Очищаем выбранные клипы
@@ -313,7 +313,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен работать с клипами из глобальных треков", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="r8759yi">{children}</MockTimelineProvider>
     )
 
     // Выбираем клипы включая глобальный трек
@@ -338,7 +338,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен работать с разными сочетаниями клавиш для разных ОС", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="0ii1nff">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useGroupHotkeys(), { wrapper })
@@ -350,7 +350,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен отключать хоткеи на элементах форм", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="t-pubme">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useGroupHotkeys(), { wrapper })
@@ -369,7 +369,7 @@ describe("useGroupHotkeys", () => {
     mockProject.globalTracks = []
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="9xub9v:">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useGroupHotkeys(), { wrapper })
@@ -391,7 +391,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен выбирать первый клип из выбранных для определения группы", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="9wfng3g">{children}</MockTimelineProvider>
     )
 
     // Убедимся что в проекте есть нужные клипы после предыдущего теста
@@ -451,7 +451,7 @@ describe("useGroupHotkeys", () => {
 
   it("должен собирать клипы из всех секций", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="ay2_zxv">{children}</MockTimelineProvider>
     )
 
     // Убедимся что проект восстановлен

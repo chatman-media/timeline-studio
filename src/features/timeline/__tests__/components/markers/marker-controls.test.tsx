@@ -10,67 +10,94 @@ import { MarkerColors } from "../../../types/markers"
 // Мок для иконок lucide-react
 vi.mock("lucide-react", () => ({
   Bookmark: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="Bookmark" data-testid={dataTestId || "bookmark-icon"}>
+    <svg className={className} data-icon="Bookmark" data-testid={dataTestId || "bookmark-icon"} data-oid="-t:zj9v">
       Bookmark
     </svg>
   ),
+
   CheckSquare: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="CheckSquare" data-testid={dataTestId || "checksquare-icon"}>
+    <svg
+      className={className}
+      data-icon="CheckSquare"
+      data-testid={dataTestId || "checksquare-icon"}
+      data-oid="0-04_u."
+    >
       CheckSquare
     </svg>
   ),
+
   ChevronLeft: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="ChevronLeft" data-testid={dataTestId || "chevronleft-icon"}>
+    <svg
+      className={className}
+      data-icon="ChevronLeft"
+      data-testid={dataTestId || "chevronleft-icon"}
+      data-oid="wy842yh"
+    >
       ChevronLeft
     </svg>
   ),
+
   ChevronRight: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="ChevronRight" data-testid={dataTestId || "chevronright-icon"}>
+    <svg
+      className={className}
+      data-icon="ChevronRight"
+      data-testid={dataTestId || "chevronright-icon"}
+      data-oid="5qe4waa"
+    >
       ChevronRight
     </svg>
   ),
+
   Download: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="Download" data-testid={dataTestId || "download-icon"}>
+    <svg className={className} data-icon="Download" data-testid={dataTestId || "download-icon"} data-oid="ekb778d">
       Download
     </svg>
   ),
+
   Filter: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="Filter" data-testid={dataTestId || "filter-icon"}>
+    <svg className={className} data-icon="Filter" data-testid={dataTestId || "filter-icon"} data-oid="3u.1_u3">
       Filter
     </svg>
   ),
+
   Folder: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="Folder" data-testid={dataTestId || "folder-icon"}>
+    <svg className={className} data-icon="Folder" data-testid={dataTestId || "folder-icon"} data-oid="362bsuk">
       Folder
     </svg>
   ),
+
   PlayCircle: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="PlayCircle" data-testid={dataTestId || "playcircle-icon"}>
+    <svg className={className} data-icon="PlayCircle" data-testid={dataTestId || "playcircle-icon"} data-oid="fu.fy50">
       PlayCircle
     </svg>
   ),
+
   Plus: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="Plus" data-testid={dataTestId || "plus-icon"}>
+    <svg className={className} data-icon="Plus" data-testid={dataTestId || "plus-icon"} data-oid="uew.-hw">
       Plus
     </svg>
   ),
+
   RefreshCw: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="RefreshCw" data-testid={dataTestId || "refreshcw-icon"}>
+    <svg className={className} data-icon="RefreshCw" data-testid={dataTestId || "refreshcw-icon"} data-oid="31u.bxx">
       RefreshCw
     </svg>
   ),
+
   Search: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="Search" data-testid={dataTestId || "search-icon"}>
+    <svg className={className} data-icon="Search" data-testid={dataTestId || "search-icon"} data-oid="g4fdy4i">
       Search
     </svg>
   ),
+
   StickyNote: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="StickyNote" data-testid={dataTestId || "stickynote-icon"}>
+    <svg className={className} data-icon="StickyNote" data-testid={dataTestId || "stickynote-icon"} data-oid="3cc6wyx">
       StickyNote
     </svg>
   ),
+
   X: ({ className, "data-testid": dataTestId }: any) => (
-    <svg className={className} data-icon="X" data-testid={dataTestId || "x-icon"}>
+    <svg className={className} data-icon="X" data-testid={dataTestId || "x-icon"} data-oid="746iv2i">
       X
     </svg>
   ),
@@ -91,44 +118,67 @@ vi.mock("../../../hooks/markers/use-timeline-markers", () => ({
 // Мок для UI компонентов
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled, ...props }: any) => (
-    <button onClick={onClick} disabled={disabled} {...props}>
+    <button onClick={onClick} disabled={disabled} {...props} data-oid="-2oo7si">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/badge", () => ({
-  Badge: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+  Badge: ({ children, ...props }: any) => (
+    <span {...props} data-oid="o5._822">
+      {children}
+    </span>
+  ),
 }))
 
 vi.mock("@/components/ui/input", () => ({
-  Input: ({ onChange, onKeyDown, ...props }: any) => <input onChange={onChange} onKeyDown={onKeyDown} {...props} />,
+  Input: ({ onChange, onKeyDown, ...props }: any) => (
+    <input onChange={onChange} onKeyDown={onKeyDown} {...props} data-oid="bxsp-rv" />
+  ),
 }))
 
 vi.mock("@/components/ui/popover", () => ({
   Popover: ({ children, open }: any) => (
-    <div data-open={open} data-testid="popover">
+    <div data-open={open} data-testid="popover" data-oid="ur06bkw">
       {children}
     </div>
   ),
+
   PopoverTrigger: ({ children, asChild }: any) => (
-    <div data-testid="popover-trigger">{asChild ? children : <div>{children}</div>}</div>
+    <div data-testid="popover-trigger" data-oid="6bs4470">
+      {asChild ? children : <div data-oid="6v6--fj">{children}</div>}
+    </div>
   ),
-  PopoverContent: ({ children }: any) => <div data-testid="popover-content">{children}</div>,
+
+  PopoverContent: ({ children }: any) => (
+    <div data-testid="popover-content" data-oid="noovguf">
+      {children}
+    </div>
+  ),
 }))
 
 vi.mock("@/components/ui/dropdown-menu", () => ({
-  DropdownMenu: ({ children }: any) => <div>{children}</div>,
+  DropdownMenu: ({ children }: any) => <div data-oid="8wvngw8">{children}</div>,
   DropdownMenuTrigger: ({ children, asChild }: any) => (
-    <div data-testid="dropdown-trigger">{asChild ? children : <div>{children}</div>}</div>
+    <div data-testid="dropdown-trigger" data-oid="-4g9lra">
+      {asChild ? children : <div data-oid="xba9w5m">{children}</div>}
+    </div>
   ),
-  DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
-  DropdownMenuItem: ({ children, onClick }: any) => (
-    <div onClick={onClick} data-testid="dropdown-item">
+
+  DropdownMenuContent: ({ children }: any) => (
+    <div data-testid="dropdown-content" data-oid="o3__qdf">
       {children}
     </div>
   ),
-  DropdownMenuSeparator: () => <hr />,
+
+  DropdownMenuItem: ({ children, onClick }: any) => (
+    <div onClick={onClick} data-testid="dropdown-item" data-oid="1z07v63">
+      {children}
+    </div>
+  ),
+
+  DropdownMenuSeparator: () => <hr data-oid="seqy4eq" />,
 }))
 
 describe("MarkerControls", () => {
@@ -178,7 +228,7 @@ describe("MarkerControls", () => {
   })
 
   it("рендерит основные элементы управления", () => {
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="wuj7i4x" />)
 
     // Используем getAllByText и проверяем первый элемент (кнопка)
     const addMarkerButtons = screen.getAllByText("Add Marker")
@@ -194,7 +244,7 @@ describe("MarkerControls", () => {
   })
 
   it("открывает попап добавления маркера при клике", async () => {
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid=":rvbw4s" />)
 
     const addButton = screen.getAllByText("Add Marker")[0]
     fireEvent.click(addButton)
@@ -207,7 +257,7 @@ describe("MarkerControls", () => {
 
   it("добавляет новый маркер с корректными данными", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="pmj:hgk" />)
 
     // Открываем попап
     const addButton = screen.getAllByText("Add Marker")[0]
@@ -232,7 +282,7 @@ describe("MarkerControls", () => {
 
   it("добавляет маркер при нажатии Enter", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="v5e73fg" />)
 
     const addButton = screen.getAllByText("Add Marker")[0]
     await user.click(addButton)
@@ -249,7 +299,7 @@ describe("MarkerControls", () => {
   })
 
   it("не добавляет маркер с пустым именем", async () => {
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="rzmby0-" />)
 
     fireEvent.click(screen.getAllByText("Add Marker")[0])
 
@@ -259,7 +309,7 @@ describe("MarkerControls", () => {
 
   it("позволяет выбрать тип маркера", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="t:0om67" />)
 
     const addButton = screen.getAllByText("Add Marker")[0]
     await user.click(addButton)
@@ -291,7 +341,7 @@ describe("MarkerControls", () => {
 
   it("навигация между маркерами работает корректно", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="-xf_jay" />)
 
     // Находим кнопки по их содержимому
     const buttons = screen.getAllByRole("button")
@@ -311,7 +361,7 @@ describe("MarkerControls", () => {
       addMarker: defaultMocks.addMarker,
     })
 
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="yu1tjxu" />)
 
     const buttons = screen.getAllByRole("button")
     const prevButton = buttons.find((btn) => btn.querySelector('[data-icon="ChevronLeft"]'))
@@ -322,7 +372,7 @@ describe("MarkerControls", () => {
   })
 
   it("открывает фильтр и показывает счетчик активных фильтров", async () => {
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid=".nzg7.i" />)
 
     const filterButton = screen.getByRole("button", { name: /Filter/i })
     fireEvent.click(filterButton)
@@ -335,7 +385,7 @@ describe("MarkerControls", () => {
 
   it("фильтрует маркеры по поиску", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="xo90t_3" />)
 
     const filterButton = screen.getByRole("button", { name: /Filter/i })
     await user.click(filterButton)
@@ -352,7 +402,7 @@ describe("MarkerControls", () => {
 
   it("фильтрует маркеры по типу", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="fv.d6i_" />)
 
     const filterButton = screen.getByRole("button", { name: /Filter/i })
     await user.click(filterButton)
@@ -371,7 +421,7 @@ describe("MarkerControls", () => {
 
   it("очищает поиск при клике на X", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="q2w_shp" />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -388,7 +438,7 @@ describe("MarkerControls", () => {
   })
 
   it("показывает количество активных фильтров", async () => {
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="g6rr1:j" />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -405,7 +455,7 @@ describe("MarkerControls", () => {
 
   it("очищает все фильтры при клике на Clear all", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="04x.rzo" />)
 
     const filterButton = screen.getByRole("button", { name: /Filter/i })
     await user.click(filterButton)
@@ -428,7 +478,7 @@ describe("MarkerControls", () => {
 
   it("обновляет счетчик маркеров при фильтрации", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="bqurird" />)
 
     // Фильтруем по поиску
     const filterButton = screen.getByRole("button", { name: /Filter/i })
@@ -446,7 +496,7 @@ describe("MarkerControls", () => {
 
   it("сохраняет состояние фильтров между открытиями попапа", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="0h3ul5c" />)
 
     // Открываем фильтр и вводим поиск
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
@@ -466,7 +516,7 @@ describe("MarkerControls", () => {
 
   it("комбинирует фильтры по типу и поиску", async () => {
     const user = userEvent.setup()
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="9t8ka1x" />)
 
     fireEvent.click(screen.getByRole("button", { name: /Filter/i }))
 
@@ -486,7 +536,7 @@ describe("MarkerControls", () => {
   })
 
   it("отображает правильный цвет для каждого типа маркера", () => {
-    renderWithTimeline(<MarkerControls />)
+    renderWithTimeline(<MarkerControls data-oid="igr:ptz" />)
 
     fireEvent.click(screen.getAllByText("Add Marker")[0])
 

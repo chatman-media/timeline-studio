@@ -11,7 +11,7 @@ export const MediaAdapterContent = memo(() => {
 
   const handleItemSelect = useMemo(() => (item: any) => addSingleMediaToTimeline(item), [addSingleMediaToTimeline])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="83k_v2_" />
 })
 
 MediaAdapterContent.displayName = "MediaAdapterContent"

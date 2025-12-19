@@ -68,11 +68,11 @@ export function GroupManagerPanel() {
   const colorOptions = Object.entries(GroupColors as Record<GroupColorKey, string>)
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4" data-oid="nb:z4w9">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium flex items-center gap-2">
-          <Users className="w-4 h-4" />
+      <div className="flex items-center justify-between" data-oid="871o8sa">
+        <h3 className="text-sm font-medium flex items-center gap-2" data-oid="t4sjrlg">
+          <Users className="w-4 h-4" data-oid="j1asnrl" />
           Clip Groups
         </h3>
         {selectedClipCount > 0 && (
@@ -82,17 +82,20 @@ export function GroupManagerPanel() {
             className="text-xs"
             disabled={selectedClipCount < 2}
             onClick={handleCreateGroup}
+            data-oid="nj8isbw"
           >
-            <Plus className="w-3 h-3 mr-1" />
+            <Plus className="w-3 h-3 mr-1" data-oid="qitcf2v" />
             Group Selected ({selectedClipCount})
           </Button>
         )}
       </div>
 
       {/* Groups list */}
-      <div className="space-y-2">
+      <div className="space-y-2" data-oid="la1kmh8">
         {groups.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-4">No groups created yet</p>
+          <p className="text-xs text-muted-foreground text-center py-4" data-oid="wmcrzye">
+            No groups created yet
+          </p>
         ) : (
           groups.map((group) => (
             <div
@@ -102,18 +105,23 @@ export function GroupManagerPanel() {
                 borderColor: `${group.color}40`,
                 backgroundColor: `${group.color}10`,
               }}
+              data-oid="m7ysdwv"
             >
               {/* Collapse toggle */}
-              <button onClick={() => toggleCollapse(group.id)} className="p-1 hover:bg-white/20 rounded">
+              <button
+                onClick={() => toggleCollapse(group.id)}
+                className="p-1 hover:bg-white/20 rounded"
+                data-oid="8fazw7-"
+              >
                 {group.collapsed ? (
-                  <FolderClosed className="w-4 h-4" style={{ color: group.color }} />
+                  <FolderClosed className="w-4 h-4" style={{ color: group.color }} data-oid="3pkiv-a" />
                 ) : (
-                  <FolderOpen className="w-4 h-4" style={{ color: group.color }} />
+                  <FolderOpen className="w-4 h-4" style={{ color: group.color }} data-oid="qw1sl0y" />
                 )}
               </button>
 
               {/* Group name */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0" data-oid="wksq.5v">
                 {editingGroupId === group.id ? (
                   <Input
                     value={editingName}
@@ -128,31 +136,42 @@ export function GroupManagerPanel() {
                     }}
                     className="h-6 text-xs"
                     autoFocus
+                    data-oid="agmrt_8"
                   />
                 ) : (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium truncate">{group.name}</span>
-                    <span className="text-xs text-muted-foreground">({group.clips.length} clips)</span>
+                  <div className="flex items-center gap-2" data-oid="201g1hq">
+                    <span className="text-xs font-medium truncate" data-oid="65swe3a">
+                      {group.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground" data-oid="8w2:2c6">
+                      ({group.clips.length} clips)
+                    </span>
                   </div>
                 )}
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1" data-oid="4emkbgp">
                 {/* Edit name */}
-                <Button size="sm" variant="ghost" className="h-6 w-6 p-0" onClick={() => handleStartRename(group)}>
-                  <Edit2 className="w-3 h-3" />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0"
+                  onClick={() => handleStartRename(group)}
+                  data-oid="m:92gpc"
+                >
+                  <Edit2 className="w-3 h-3" data-oid="loxax2w" />
                 </Button>
 
                 {/* Color picker */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
-                      <Palette className="w-3 h-3" />
+                <Popover data-oid="0.8:vem">
+                  <PopoverTrigger asChild data-oid="lv4ex:g">
+                    <Button size="sm" variant="ghost" className="h-6 w-6 p-0" data-oid="b9g_7_3">
+                      <Palette className="w-3 h-3" data-oid="j22_61n" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2">
-                    <div className="grid grid-cols-4 gap-2">
+                  <PopoverContent className="w-auto p-2" data-oid="kwqwbmw">
+                    <div className="grid grid-cols-4 gap-2" data-oid="gp1pgev">
                       {colorOptions.map(([key, color]) => (
                         <button
                           key={key}
@@ -162,6 +181,7 @@ export function GroupManagerPanel() {
                           )}
                           style={{ backgroundColor: color }}
                           onClick={() => handleColorChange(group.id, color)}
+                          data-oid="b8ls4aa"
                         />
                       ))}
                     </div>
@@ -174,8 +194,13 @@ export function GroupManagerPanel() {
                   variant="ghost"
                   className="h-6 w-6 p-0"
                   onClick={() => lockGroup(group.id, !group.locked)}
+                  data-oid="imzvmop"
                 >
-                  {group.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                  {group.locked ? (
+                    <Lock className="w-3 h-3" data-oid="ey3rzz5" />
+                  ) : (
+                    <Unlock className="w-3 h-3" data-oid=":sbnq8:" />
+                  )}
                 </Button>
 
                 {/* Ungroup */}
@@ -185,8 +210,9 @@ export function GroupManagerPanel() {
                   className="h-6 w-6 p-0 hover:text-destructive"
                   onClick={() => ungroupClips(group.id)}
                   disabled={group.locked}
+                  data-oid="hfg:hly"
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-3 h-3" data-oid="5k:-et4" />
                 </Button>
               </div>
             </div>

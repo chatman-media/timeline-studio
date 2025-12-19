@@ -8,7 +8,7 @@ export const SubtitlesAdapterContent = memo(() => {
   const adapter = useSubtitlesAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="mi3jvnx" />
 })
 
 SubtitlesAdapterContent.displayName = "SubtitlesAdapterContent"

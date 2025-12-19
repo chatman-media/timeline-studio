@@ -169,6 +169,7 @@ export const VideoPlaceholder = memo(
           height: `${size}px`,
           width: `${size * (16 / 9)}px`,
         }}
+        data-oid="dnud_le"
       >
         <div
           className={cn(
@@ -178,6 +179,7 @@ export const VideoPlaceholder = memo(
           onClick={handleClick}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
+          data-oid="rxce.9w"
         >
           {/* Preview background - показывается сразу */}
           {(previewData || file.thumbnailPath) && (
@@ -191,6 +193,7 @@ export const VideoPlaceholder = memo(
                     : undefined,
                 zIndex: 0,
               }}
+              data-oid="ik2bdzz"
             />
           )}
 
@@ -204,6 +207,7 @@ export const VideoPlaceholder = memo(
             onLoadedMetadata={handleLoadedMetadata}
             onError={handleError}
             onKeyDown={handleKeyDown}
+            data-oid="wacev_-"
           />
 
           {/* Показываем имя файла и статус загрузки - всегда когда не полностью загружено */}
@@ -211,21 +215,32 @@ export const VideoPlaceholder = memo(
             <div
               className="absolute inset-0 flex flex-col items-center justify-center bg-muted/80 text-center"
               style={{ zIndex: 2 }}
+              data-oid="5s1m.i2"
             >
-              <div className="truncate px-2 text-sm text-foreground/90 font-medium" style={{ maxWidth: "90%" }}>
+              <div
+                className="truncate px-2 text-sm text-foreground/90 font-medium"
+                style={{ maxWidth: "90%" }}
+                data-oid="x5nej6z"
+              >
                 {file.name}
               </div>
               {hasError ? (
-                <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400">Ожидаем превью...</div>
+                <div className="mt-2 text-xs text-yellow-600 dark:text-yellow-400" data-oid="ppwl-vx">
+                  Ожидаем превью...
+                </div>
               ) : file.isLoadingMetadata || (!previewData && !file.thumbnailPath) ? (
-                <div className="mt-2 text-xs text-muted-foreground animate-pulse">Загрузка метаданных...</div>
+                <div className="mt-2 text-xs text-muted-foreground animate-pulse" data-oid="hl6129r">
+                  Загрузка метаданных...
+                </div>
               ) : !isLoaded ? (
-                <div className="mt-2 text-xs text-muted-foreground animate-pulse">Загрузка видео...</div>
+                <div className="mt-2 text-xs text-muted-foreground animate-pulse" data-oid="abf2u6a">
+                  Загрузка видео...
+                </div>
               ) : null}
             </div>
           )}
 
-          <VideoOverlays file={file} size={size} isLoaded={isLoaded} isMultipleStreams={false} />
+          <VideoOverlays file={file} size={size} isLoaded={isLoaded} isMultipleStreams={false} data-oid="zc:oh8." />
         </div>
       </div>
     )

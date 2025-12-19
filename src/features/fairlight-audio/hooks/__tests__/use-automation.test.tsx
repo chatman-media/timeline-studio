@@ -94,7 +94,12 @@ describe("useAutomation", () => {
         ["channel2", {}],
       ]),
     )
-    mockGetState.mockReturnValue({ mode: "read", isRecording: false, currentTime: 0, lanes: new Map() })
+    mockGetState.mockReturnValue({
+      mode: "read",
+      isRecording: false,
+      currentTime: 0,
+      lanes: new Map(),
+    })
     mockCreateLane.mockImplementation((channelId: string, parameterId: string, initialValue = 0.5) => ({
       id: `${channelId}.${parameterId}`,
       parameterId,
@@ -306,7 +311,12 @@ describe("useAutomation", () => {
     it("should get automation state", () => {
       const { result } = renderHook(() => useAutomation())
 
-      const mockState = { mode: "read" as const, isRecording: false, currentTime: 0, lanes: new Map() }
+      const mockState = {
+        mode: "read" as const,
+        isRecording: false,
+        currentTime: 0,
+        lanes: new Map(),
+      }
       mockGetState.mockReturnValue(mockState)
 
       const state = result.current.getState()

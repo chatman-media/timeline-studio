@@ -22,14 +22,14 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 
 describe("AudioSettings", () => {
   it("should render audio settings component", () => {
-    renderWithProviders(<AudioSettings />)
+    renderWithProviders(<AudioSettings data-oid="sy7qarx" />)
 
     // Проверяем, что компонент рендерится
     expect(screen.getByTestId("audio-settings")).toBeInTheDocument()
   })
 
   it("should render all audio setting controls", () => {
-    renderWithProviders(<AudioSettings />)
+    renderWithProviders(<AudioSettings data-oid="410o0:0" />)
 
     // Проверяем новые элементы управления согласно обновленному дизайну (по ключам i18n)
     expect(screen.getByText("options.audio.deviceSettings")).toBeInTheDocument()

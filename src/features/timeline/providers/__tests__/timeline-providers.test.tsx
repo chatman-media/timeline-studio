@@ -177,7 +177,9 @@ describe("TimelineProvider", () => {
     })
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => <TimelineProvider>{children}</TimelineProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <TimelineProvider data-oid="ihuhatn">{children}</TimelineProvider>
+  )
 
   describe("Main TimelineProvider", () => {
     it("renders all child providers successfully", () => {
@@ -189,9 +191,15 @@ describe("TimelineProvider", () => {
     })
 
     it("provides access to all sub-providers", () => {
-      const { result: projectResult } = renderHook(() => useTimelineProject(), { wrapper })
-      const { result: clipsResult } = renderHook(() => useTimelineClips(), { wrapper })
-      const { result: tracksResult } = renderHook(() => useTimelineTracks(), { wrapper })
+      const { result: projectResult } = renderHook(() => useTimelineProject(), {
+        wrapper,
+      })
+      const { result: clipsResult } = renderHook(() => useTimelineClips(), {
+        wrapper,
+      })
+      const { result: tracksResult } = renderHook(() => useTimelineTracks(), {
+        wrapper,
+      })
       const { result: selectionResult } = renderHook(() => useTimelineSelection(), { wrapper })
 
       expect(projectResult.current).toBeDefined()
@@ -244,7 +252,10 @@ describe("TimelineProvider", () => {
 
       // Mock implementation returns undefined, so we just check it doesn't throw
       await act(async () => {
-        await result.current.createProject("Test Project", { width: 1920, height: 1080 })
+        await result.current.createProject("Test Project", {
+          width: 1920,
+          height: 1080,
+        })
       })
     })
 
@@ -543,9 +554,15 @@ describe("TimelineProvider", () => {
 
   describe("Integration", () => {
     it("all providers work together seamlessly", async () => {
-      const { result: projectResult } = renderHook(() => useTimelineProject(), { wrapper })
-      const { result: clipsResult } = renderHook(() => useTimelineClips(), { wrapper })
-      const { result: tracksResult } = renderHook(() => useTimelineTracks(), { wrapper })
+      const { result: projectResult } = renderHook(() => useTimelineProject(), {
+        wrapper,
+      })
+      const { result: clipsResult } = renderHook(() => useTimelineClips(), {
+        wrapper,
+      })
+      const { result: tracksResult } = renderHook(() => useTimelineTracks(), {
+        wrapper,
+      })
 
       // All provider interfaces should be available
       expect(typeof projectResult.current.createProject).toBe("function")

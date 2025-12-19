@@ -58,9 +58,10 @@ export const SnapFeedback = memo(function SnapFeedback({ snapPoint, isActive, cl
         className,
       )}
       style={{ left: `${left}px` }}
+      data-oid="l9hwdvq"
     >
       {/* Вертикальная линия */}
-      <div className="w-full h-full border-l-2 border-dashed opacity-80" />
+      <div className="w-full h-full border-l-2 border-dashed opacity-80" data-oid="w1kgm86" />
 
       {/* Метка типа snap'а */}
       <div
@@ -74,6 +75,7 @@ export const SnapFeedback = memo(function SnapFeedback({ snapPoint, isActive, cl
           getSnapStyle(snapPoint.type).includes("red") && "bg-red-500",
           getSnapStyle(snapPoint.type).includes("gray") && "bg-gray-500",
         )}
+        data-oid="n3sua6a"
       >
         {getSnapLabel(snapPoint.type)}
       </div>
@@ -86,6 +88,7 @@ export const SnapFeedback = memo(function SnapFeedback({ snapPoint, isActive, cl
           "border-2 border-white shadow-md",
           getSnapStyle(snapPoint.type).replace("/20", "/80"),
         )}
+        data-oid="f304e6z"
       />
     </div>
   )
@@ -111,7 +114,7 @@ export const SnapGuidelines = memo(function SnapGuidelines({
   if (!isVisible || snapPoints.length === 0) return null
 
   return (
-    <div className={cn("absolute inset-0 pointer-events-none z-40", className)}>
+    <div className={cn("absolute inset-0 pointer-events-none z-40", className)} data-oid="rd2-7v5">
       {snapPoints.map((snapPoint, index) => {
         const isActive = activeSnapPoint?.position === snapPoint.position
         const left = snapPoint.position
@@ -129,6 +132,7 @@ export const SnapGuidelines = memo(function SnapGuidelines({
               snapPoint.type === "playhead" && "bg-red-300",
             )}
             style={{ left: `${left}px` }}
+            data-oid="c:cq:td"
           />
         )
       })}

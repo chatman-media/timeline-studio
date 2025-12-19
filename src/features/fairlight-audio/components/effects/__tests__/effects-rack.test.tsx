@@ -15,41 +15,47 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("../compressor", () => ({
   Compressor: ({ onParameterChange, gainReduction }: any) => (
-    <div data-testid="compressor">
+    <div data-testid="compressor" data-oid="gnpknro">
       Compressor (gain: {gainReduction || 0})
-      <button onClick={() => onParameterChange?.("threshold", -20)}>Change Threshold</button>
+      <button onClick={() => onParameterChange?.("threshold", -20)} data-oid="sf40083">
+        Change Threshold
+      </button>
     </div>
   ),
 }))
 
 vi.mock("../equalizer", () => ({
   Equalizer: ({ onBandChange }: any) => (
-    <div data-testid="equalizer">
+    <div data-testid="equalizer" data-oid="ea8a500">
       Equalizer
-      <button onClick={() => onBandChange?.(0, { gain: 5 })}>Change Band</button>
+      <button onClick={() => onBandChange?.(0, { gain: 5 })} data-oid="bie4oua">
+        Change Band
+      </button>
     </div>
   ),
 }))
 
 vi.mock("../reverb", () => ({
   Reverb: ({ onParameterChange }: any) => (
-    <div data-testid="reverb">
+    <div data-testid="reverb" data-oid="-.7n5d9">
       Reverb
-      <button onClick={() => onParameterChange?.("roomSize", 80)}>Change Room Size</button>
+      <button onClick={() => onParameterChange?.("roomSize", 80)} data-oid="4w4y_xn">
+        Change Room Size
+      </button>
     </div>
   ),
 }))
 
 describe("EffectsRack", () => {
   it("renders with title and add button", () => {
-    render(<EffectsRack channelId="ch1" />)
+    render(<EffectsRack channelId="ch1" data-oid="z45uynf" />)
 
     expect(screen.getByText("fairlightAudio.effectsRack.title")).toBeInTheDocument()
     expect(screen.getByText("fairlightAudio.effectsRack.addEffect")).toBeInTheDocument()
   })
 
   it("shows effect menu when add button is clicked", () => {
-    render(<EffectsRack channelId="ch1" />)
+    render(<EffectsRack channelId="ch1" data-oid="o46:ogt" />)
 
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
     fireEvent.click(addButton)
@@ -60,7 +66,7 @@ describe("EffectsRack", () => {
   })
 
   it("hides menu when clicking outside", () => {
-    render(<EffectsRack channelId="ch1" />)
+    render(<EffectsRack channelId="ch1" data-oid="gnx.ki." />)
 
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
     fireEvent.click(addButton)
@@ -76,7 +82,7 @@ describe("EffectsRack", () => {
 
   it("adds equalizer effect", () => {
     const onEffectAdd = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectAdd={onEffectAdd} />)
+    render(<EffectsRack channelId="ch1" onEffectAdd={onEffectAdd} data-oid="xjuh3k:" />)
 
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
     fireEvent.click(addButton)
@@ -97,7 +103,7 @@ describe("EffectsRack", () => {
 
   it("adds compressor effect", () => {
     const onEffectAdd = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectAdd={onEffectAdd} />)
+    render(<EffectsRack channelId="ch1" onEffectAdd={onEffectAdd} data-oid="m6b.veh" />)
 
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
     fireEvent.click(addButton)
@@ -118,7 +124,7 @@ describe("EffectsRack", () => {
 
   it("adds reverb effect", () => {
     const onEffectAdd = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectAdd={onEffectAdd} />)
+    render(<EffectsRack channelId="ch1" onEffectAdd={onEffectAdd} data-oid="n0zvjp2" />)
 
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
     fireEvent.click(addButton)
@@ -139,7 +145,7 @@ describe("EffectsRack", () => {
 
   it("toggles effect enabled state", () => {
     const onEffectToggle = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectToggle={onEffectToggle} />)
+    render(<EffectsRack channelId="ch1" onEffectToggle={onEffectToggle} data-oid="w:okmiu" />)
 
     // Add an effect first
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -156,7 +162,7 @@ describe("EffectsRack", () => {
 
   it("removes effect", () => {
     const onEffectRemove = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectRemove={onEffectRemove} />)
+    render(<EffectsRack channelId="ch1" onEffectRemove={onEffectRemove} data-oid="33h3aqt" />)
 
     // Add an effect first
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -173,7 +179,7 @@ describe("EffectsRack", () => {
   })
 
   it("toggles effect expanded state", () => {
-    render(<EffectsRack channelId="ch1" />)
+    render(<EffectsRack channelId="ch1" data-oid="n3l60ah" />)
 
     // Add an effect
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -200,7 +206,7 @@ describe("EffectsRack", () => {
 
   it("calls onEffectParameterChange for equalizer", () => {
     const onEffectParameterChange = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectParameterChange={onEffectParameterChange} />)
+    render(<EffectsRack channelId="ch1" onEffectParameterChange={onEffectParameterChange} data-oid="ihfkg05" />)
 
     // Add equalizer
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -216,7 +222,7 @@ describe("EffectsRack", () => {
 
   it("calls onEffectParameterChange for compressor", () => {
     const onEffectParameterChange = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectParameterChange={onEffectParameterChange} />)
+    render(<EffectsRack channelId="ch1" onEffectParameterChange={onEffectParameterChange} data-oid="uqi53xu" />)
 
     // Add compressor
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -232,7 +238,7 @@ describe("EffectsRack", () => {
 
   it("calls onEffectParameterChange for reverb", () => {
     const onEffectParameterChange = vi.fn()
-    render(<EffectsRack channelId="ch1" onEffectParameterChange={onEffectParameterChange} />)
+    render(<EffectsRack channelId="ch1" onEffectParameterChange={onEffectParameterChange} data-oid="xa.7dnl" />)
 
     // Add reverb
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -248,7 +254,7 @@ describe("EffectsRack", () => {
 
   it("displays gain reduction for compressor", () => {
     const getCompressorGainReduction = vi.fn().mockReturnValue(-6)
-    render(<EffectsRack channelId="ch1" getCompressorGainReduction={getCompressorGainReduction} />)
+    render(<EffectsRack channelId="ch1" getCompressorGainReduction={getCompressorGainReduction} data-oid="he05okx" />)
 
     // Add compressor
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
@@ -260,14 +266,14 @@ describe("EffectsRack", () => {
   })
 
   it("applies custom className", () => {
-    const { container } = render(<EffectsRack channelId="ch1" className="custom-class" />)
+    const { container } = render(<EffectsRack channelId="ch1" className="custom-class" data-oid="0adeg:e" />)
 
     expect(container.firstChild).toHaveClass("custom-class")
     expect(container.firstChild).toHaveClass("space-y-2")
   })
 
   it("displays multiple effects", () => {
-    render(<EffectsRack channelId="ch1" />)
+    render(<EffectsRack channelId="ch1" data-oid="640_yhf" />)
 
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")
 
@@ -287,7 +293,7 @@ describe("EffectsRack", () => {
   })
 
   it("applies opacity when effect is disabled", () => {
-    render(<EffectsRack channelId="ch1" />)
+    render(<EffectsRack channelId="ch1" data-oid="2c5kd-y" />)
 
     // Add an effect
     const addButton = screen.getByText("fairlightAudio.effectsRack.addEffect")

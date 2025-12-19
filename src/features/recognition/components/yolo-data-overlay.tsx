@@ -59,18 +59,21 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
   }
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-10">
+    <div className="pointer-events-none absolute inset-0 z-10" data-oid="ho:69fd">
       {/* Отображаем рамки для каждого обнаруженного объекта */}
       {detections.map((detection, index) => (
-        <DetectionBox key={index} detection={detection} />
+        <DetectionBox key={index} detection={detection} data-oid=".j8ohws" />
       ))}
 
       {/* Информационная панель */}
-      <div className="pointer-events-auto absolute top-4 left-4 rounded bg-black bg-opacity-50 p-2 text-white">
-        <div className="text-sm">
+      <div
+        className="pointer-events-auto absolute top-4 left-4 rounded bg-black bg-opacity-50 p-2 text-white"
+        data-oid="epyi.rm"
+      >
+        <div className="text-sm" data-oid="5:.knvc">
           {t("Обнаружено объектов")}: {detections.length}
         </div>
-        <div className="text-xs">
+        <div className="text-xs" data-oid="70:y48h">
           {detections
             .map((d) => d.class)
             .filter((value, index, self) => self.indexOf(value) === index)
@@ -105,6 +108,7 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
 
           showInfo(t("Контекст сцены скопирован"), t("Данные о распознанных объектах скопированы в буфер обмена"))
         }}
+        data-oid="kveq9.l"
       >
         {t("Скопировать контекст сцены")}
       </button>
@@ -141,8 +145,13 @@ function DetectionBox({ detection }: { detection: YoloDetection }) {
         height: `${height * 100}%`,
         borderColor: color,
       }}
+      data-oid="ioavauu"
     >
-      <div className="max-w-full truncate px-1 text-xs text-white" style={{ backgroundColor: color }}>
+      <div
+        className="max-w-full truncate px-1 text-xs text-white"
+        style={{ backgroundColor: color }}
+        data-oid="8cn5ii1"
+      >
         {detection.class} ({Math.round(detection.confidence * 100)}%)
       </div>
     </div>

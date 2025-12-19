@@ -92,43 +92,46 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>Export Shader as Effect</DialogTitle>
-          <DialogDescription>Configure how to export your shader as a reusable effect</DialogDescription>
+    <Dialog open={open} onOpenChange={onOpenChange} data-oid="k8fkoh4">
+      <DialogContent className="max-w-2xl" data-oid="rcr4agy">
+        <DialogHeader data-oid=":zs0weg">
+          <DialogTitle data-oid="dt6j-0a">Export Shader as Effect</DialogTitle>
+          <DialogDescription data-oid="q3-e504">
+            Configure how to export your shader as a reusable effect
+          </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="metadata" className="mt-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="metadata">
-              <Package className="h-4 w-4 mr-2" />
+        <Tabs defaultValue="metadata" className="mt-4" data-oid="1y6136n">
+          <TabsList className="grid w-full grid-cols-3" data-oid="bqdig-9">
+            <TabsTrigger value="metadata" data-oid="t3id9z.">
+              <Package className="h-4 w-4 mr-2" data-oid="1cjlmsb" />
               Metadata
             </TabsTrigger>
-            <TabsTrigger value="format">
-              <Code className="h-4 w-4 mr-2" />
+            <TabsTrigger value="format" data-oid="b_e8:-m">
+              <Code className="h-4 w-4 mr-2" data-oid="i4tk20l" />
               Format
             </TabsTrigger>
-            <TabsTrigger value="performance">
-              <Cpu className="h-4 w-4 mr-2" />
+            <TabsTrigger value="performance" data-oid="4fd:q4e">
+              <Cpu className="h-4 w-4 mr-2" data-oid="rtx4r6:" />
               Performance
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="metadata" className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label>Effect Name</Label>
+          <TabsContent value="metadata" className="space-y-4 mt-4" data-oid="8v4kxyy">
+            <div className="space-y-2" data-oid="scscmyf">
+              <Label data-oid="rz_wh6e">Effect Name</Label>
               <Input
                 value={project.name}
                 onChange={(e) => {
                   project.name = e.target.value
                 }}
                 placeholder="My Custom Effect"
+                data-oid="6m2f_cs"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Description</Label>
+            <div className="space-y-2" data-oid="k1qg5nn">
+              <Label data-oid="dzd.iiv">Description</Label>
               <Textarea
                 value={project.description}
                 onChange={(e) => {
@@ -136,11 +139,12 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                 }}
                 placeholder="Describe what this effect does..."
                 rows={3}
+                data-oid="5umv_8f"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Category</Label>
+            <div className="space-y-2" data-oid="1mys02-">
+              <Label data-oid="vac8.sf">Category</Label>
               <Select
                 value={effectMetadata.category}
                 onValueChange={(value) =>
@@ -149,23 +153,36 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     category: value as "stylize",
                   })
                 }
+                data-oid="at:b:ma"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="3nch_vz">
+                  <SelectValue data-oid="g3j4wxb" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="custom">Custom</SelectItem>
-                  <SelectItem value="color">Color Correction</SelectItem>
-                  <SelectItem value="distortion">Distortion</SelectItem>
-                  <SelectItem value="stylize">Stylize</SelectItem>
-                  <SelectItem value="blur">Blur & Sharpen</SelectItem>
-                  <SelectItem value="generate">Generate</SelectItem>
+                <SelectContent data-oid=":q9wotf">
+                  <SelectItem value="custom" data-oid="-c7.mhz">
+                    Custom
+                  </SelectItem>
+                  <SelectItem value="color" data-oid="hd0qxkm">
+                    Color Correction
+                  </SelectItem>
+                  <SelectItem value="distortion" data-oid="5w6j8xa">
+                    Distortion
+                  </SelectItem>
+                  <SelectItem value="stylize" data-oid="bqf5uw0">
+                    Stylize
+                  </SelectItem>
+                  <SelectItem value="blur" data-oid="b2chcvz">
+                    Blur & Sharpen
+                  </SelectItem>
+                  <SelectItem value="generate" data-oid="_hw88wj">
+                    Generate
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label>Complexity</Label>
+            <div className="space-y-2" data-oid="2ufmy_y">
+              <Label data-oid="o8d_svw">Complexity</Label>
               <Select
                 value={effectMetadata.complexity}
                 onValueChange={(value: any) =>
@@ -174,21 +191,30 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     complexity: value,
                   })
                 }
+                data-oid="aj3ibwr"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="ndtsen0">
+                  <SelectValue data-oid="b41e1vx" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basic">Basic</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                  <SelectItem value="pro">Professional</SelectItem>
+                <SelectContent data-oid="rzuwzpi">
+                  <SelectItem value="basic" data-oid="-cnv9-3">
+                    Basic
+                  </SelectItem>
+                  <SelectItem value="intermediate" data-oid="jf65cw5">
+                    Intermediate
+                  </SelectItem>
+                  <SelectItem value="advanced" data-oid="6py6sqs">
+                    Advanced
+                  </SelectItem>
+                  <SelectItem value="pro" data-oid="seifs9m">
+                    Professional
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label>Tags</Label>
+            <div className="space-y-2" data-oid="1dvmjdv">
+              <Label data-oid="p:mal1x">Tags</Label>
               <Input
                 value={effectMetadata.tags.join(", ")}
                 onChange={(e) =>
@@ -201,13 +227,14 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                   })
                 }
                 placeholder="custom, shader, glsl"
+                data-oid=".ej4i_3"
               />
             </div>
           </TabsContent>
 
-          <TabsContent value="format" className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label>Export Format</Label>
+          <TabsContent value="format" className="space-y-4 mt-4" data-oid="1v40dwk">
+            <div className="space-y-2" data-oid="9cl06ba">
+              <Label data-oid="vfg8mvi">Export Format</Label>
               <Select
                 value={exportOptions.format}
                 onValueChange={(value: any) =>
@@ -216,20 +243,27 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     format: value,
                   })
                 }
+                data-oid="sf:zg10"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="-.1ac7.">
+                  <SelectValue data-oid="ade1_vd" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="effect">Timeline Studio Effect</SelectItem>
-                  <SelectItem value="standalone">Standalone Shader</SelectItem>
-                  <SelectItem value="node">Node Component</SelectItem>
+                <SelectContent data-oid="fx1g0qg">
+                  <SelectItem value="effect" data-oid=".rfg4kk">
+                    Timeline Studio Effect
+                  </SelectItem>
+                  <SelectItem value="standalone" data-oid="i42oop6">
+                    Standalone Shader
+                  </SelectItem>
+                  <SelectItem value="node" data-oid="-kqbzal">
+                    Node Component
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label>Include Presets</Label>
+            <div className="flex items-center justify-between" data-oid="2nk6fas">
+              <Label data-oid="w87yjq1">Include Presets</Label>
               <Switch
                 checked={exportOptions.includePresets}
                 onCheckedChange={(checked) =>
@@ -238,11 +272,12 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     includePresets: checked,
                   })
                 }
+                data-oid="ql6io38"
               />
             </div>
 
-            <div className="flex items-center justify-between">
-              <Label>Embed Textures</Label>
+            <div className="flex items-center justify-between" data-oid="73fbnrb">
+              <Label data-oid="_l265dr">Embed Textures</Label>
               <Switch
                 checked={exportOptions.embedTextures}
                 onCheckedChange={(checked) =>
@@ -251,11 +286,12 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     embedTextures: checked,
                   })
                 }
+                data-oid="fyg-vrf"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>Target Version</Label>
+            <div className="space-y-2" data-oid="mf_:48p">
+              <Label data-oid="q0e8:ra">Target Version</Label>
               <Select
                 value={exportOptions.targetVersion}
                 onValueChange={(value) =>
@@ -264,24 +300,33 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     targetVersion: value,
                   })
                 }
+                data-oid="n1a6i0i"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="yezcpb:">
+                  <SelectValue data-oid="he9ana_" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="webgl">WebGL 1.0</SelectItem>
-                  <SelectItem value="webgl2">WebGL 2.0</SelectItem>
-                  <SelectItem value="webgpu">WebGPU (Experimental)</SelectItem>
+                <SelectContent data-oid="crpinvj">
+                  <SelectItem value="webgl" data-oid="-7n45b9">
+                    WebGL 1.0
+                  </SelectItem>
+                  <SelectItem value="webgl2" data-oid="m6ja3:8">
+                    WebGL 2.0
+                  </SelectItem>
+                  <SelectItem value="webgpu" data-oid="x2h8n9p">
+                    WebGPU (Experimental)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </TabsContent>
 
-          <TabsContent value="performance" className="space-y-4 mt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label>Minify Shaders</Label>
-                <p className="text-xs text-gray-500 mt-1">Remove comments and whitespace to reduce size</p>
+          <TabsContent value="performance" className="space-y-4 mt-4" data-oid="o57epdp">
+            <div className="flex items-center justify-between" data-oid="ig1bcjy">
+              <div data-oid="j9iklnc">
+                <Label data-oid="d0n4wec">Minify Shaders</Label>
+                <p className="text-xs text-gray-500 mt-1" data-oid="y9o9x.3">
+                  Remove comments and whitespace to reduce size
+                </p>
               </div>
               <Switch
                 checked={exportOptions.minify}
@@ -291,35 +336,44 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
                     minify: checked,
                   })
                 }
+                data-oid="_gzskst"
               />
             </div>
 
-            <div className="rounded-lg bg-gray-900 p-4 space-y-2">
-              <h4 className="text-sm font-medium">Performance Analysis</h4>
-              <div className="text-xs space-y-1 text-gray-400">
-                <div className="flex justify-between">
-                  <span>Uniforms:</span>
-                  <span>{project.uniforms.length}</span>
+            <div className="rounded-lg bg-gray-900 p-4 space-y-2" data-oid="nvgspj-">
+              <h4 className="text-sm font-medium" data-oid="uzit6kt">
+                Performance Analysis
+              </h4>
+              <div className="text-xs space-y-1 text-gray-400" data-oid="l:g6xz:">
+                <div className="flex justify-between" data-oid="jnw5coq">
+                  <span data-oid="oxx3k2v">Uniforms:</span>
+                  <span data-oid="t7moni0">{project.uniforms.length}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Texture Samplers:</span>
-                  <span>{project.uniforms.filter((u) => u.type.includes("sampler")).length}</span>
+                <div className="flex justify-between" data-oid="hc8txcc">
+                  <span data-oid="wslv_uf">Texture Samplers:</span>
+                  <span data-oid="t_-sclb">{project.uniforms.filter((u) => u.type.includes("sampler")).length}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Estimated GPU Load:</span>
-                  <span className={cn(project.uniforms.length > 20 ? "text-yellow-400" : "text-green-400")}>
+                <div className="flex justify-between" data-oid="xc:gv8z">
+                  <span data-oid="s9umu_z">Estimated GPU Load:</span>
+                  <span
+                    className={cn(project.uniforms.length > 20 ? "text-yellow-400" : "text-green-400")}
+                    data-oid="v60by17"
+                  >
                     {project.uniforms.length > 20 ? "High" : "Normal"}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Shader Size:</span>
-                  <span>{Math.round((project.vertexShader.length + project.fragmentShader.length) / 1024)}KB</span>
+                <div className="flex justify-between" data-oid="jrw0gkv">
+                  <span data-oid=":4vrllc">Shader Size:</span>
+                  <span data-oid="qruseag">
+                    {Math.round((project.vertexShader.length + project.fragmentShader.length) / 1024)}
+                    KB
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-lg bg-yellow-900/20 border border-yellow-700 p-3">
-              <p className="text-xs text-yellow-400">
+            <div className="rounded-lg bg-yellow-900/20 border border-yellow-700 p-3" data-oid="7lvprfa">
+              <p className="text-xs text-yellow-400" data-oid="7zzjjgl">
                 ⚠️ Complex shaders may impact performance on lower-end devices. Consider providing quality presets for
                 different performance levels.
               </p>
@@ -327,11 +381,13 @@ export function ShaderExportDialog({ open, onOpenChange, project, onExport }: Sh
           </TabsContent>
         </Tabs>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter data-oid="acj_b8a">
+          <Button variant="outline" onClick={() => onOpenChange(false)} data-oid="gy68hna">
             Cancel
           </Button>
-          <Button onClick={handleExport}>Export Effect</Button>
+          <Button onClick={handleExport} data-oid="5j4113.">
+            Export Effect
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

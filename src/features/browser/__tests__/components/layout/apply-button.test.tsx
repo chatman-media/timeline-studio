@@ -43,7 +43,9 @@ describe("ApplyButton", () => {
   }
 
   it("should render apply button", () => {
-    render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />)
+    render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="19xg1xc" />,
+    )
 
     const button = screen.getByRole("button")
     expect(button).toBeInTheDocument()
@@ -53,7 +55,13 @@ describe("ApplyButton", () => {
     const onApply = vi.fn()
 
     render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />,
+      <ApplyButton
+        resource={mockResource as unknown as TimelineResource}
+        size={150}
+        type="media"
+        onApply={onApply}
+        data-oid="drmhv39"
+      />,
     )
 
     const button = screen.getByRole("button")
@@ -66,7 +74,9 @@ describe("ApplyButton", () => {
   it("should log to logger when onApply is not provided", () => {
     mockInfo.mockClear()
 
-    render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />)
+    render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="ru4-rar" />,
+    )
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
@@ -82,8 +92,14 @@ describe("ApplyButton", () => {
     const containerClick = vi.fn()
 
     render(
-      <div onClick={containerClick}>
-        <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />
+      <div onClick={containerClick} data-oid="isomvv6">
+        <ApplyButton
+          resource={mockResource as unknown as TimelineResource}
+          size={150}
+          type="media"
+          onApply={onApply}
+          data-oid="w4j7ujt"
+        />
       </div>,
     )
 
@@ -114,6 +130,7 @@ describe("ApplyButton", () => {
           size={150}
           type={type}
           onApply={onApply}
+          data-oid="e3c:bv."
         />,
       )
 
@@ -133,7 +150,12 @@ describe("ApplyButton", () => {
 
     sizes.forEach((size) => {
       const { container, unmount } = render(
-        <ApplyButton resource={mockResource as unknown as TimelineResource} size={size} type="media" />,
+        <ApplyButton
+          resource={mockResource as unknown as TimelineResource}
+          size={size}
+          type="media"
+          data-oid="58ldn--"
+        />,
       )
 
       const button = container.querySelector("button")
@@ -152,14 +174,18 @@ describe("ApplyButton", () => {
   })
 
   it("should have correct accessibility attributes", () => {
-    render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />)
+    render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="2gm:it5" />,
+    )
 
     const button = screen.getByRole("button")
     expect(button).toHaveAttribute("type", "button")
   })
 
   it("should have correct hover and focus classes", () => {
-    render(<ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />)
+    render(
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="xcb1kf1" />,
+    )
 
     const button = screen.getByRole("button")
     expect(button.className).toContain("group-hover:visible")
@@ -171,7 +197,13 @@ describe("ApplyButton", () => {
     const onApply = vi.fn()
 
     render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" onApply={onApply} />,
+      <ApplyButton
+        resource={mockResource as unknown as TimelineResource}
+        size={150}
+        type="media"
+        onApply={onApply}
+        data-oid="-fd7uqx"
+      />,
     )
 
     const button = screen.getByRole("button")
@@ -185,7 +217,7 @@ describe("ApplyButton", () => {
 
   it("should render ArrowRight icon", () => {
     const { container } = render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" />,
+      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="_3hae4g" />,
     )
 
     const icon = container.querySelector("svg")

@@ -25,21 +25,27 @@ export function SpeedRampingToggle({ clipId, className }: SpeedRampingToggleProp
   }
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
+    <TooltipProvider data-oid="81p88dw">
+      <Tooltip data-oid="rh:xh3c">
+        <TooltipTrigger asChild data-oid="z:3m3if">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleToggle}
             className={cn("h-6 w-6 p-0", isEnabled && "bg-purple-500/20 hover:bg-purple-500/30", className)}
+            data-oid="_ux44r0"
           >
-            <Gauge className={cn("h-4 w-4", isEnabled ? "text-purple-500" : "text-muted-foreground")} />
+            <Gauge
+              className={cn("h-4 w-4", isEnabled ? "text-purple-500" : "text-muted-foreground")}
+              data-oid="uhjt58j"
+            />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          <p>{isEnabled ? "Disable" : "Enable"} Speed Ramping</p>
-          <p className="text-xs text-muted-foreground">Cmd/Ctrl+Shift+R</p>
+        <TooltipContent data-oid="edcc9lq">
+          <p data-oid="r1s:9yo">{isEnabled ? "Disable" : "Enable"} Speed Ramping</p>
+          <p className="text-xs text-muted-foreground" data-oid="v4o0o32">
+            Cmd/Ctrl+Shift+R
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

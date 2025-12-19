@@ -47,6 +47,7 @@ describe("useMontageApplicator", () => {
         reason: "Test clip 2",
       },
     ],
+
     transitions: [
       {
         type: "cross_dissolve",
@@ -54,6 +55,7 @@ describe("useMontageApplicator", () => {
         atTime: 5,
       },
     ],
+
     music: {
       style: "upbeat",
       volume: 0.3,
@@ -70,6 +72,7 @@ describe("useMontageApplicator", () => {
         position: "center",
       },
     ],
+
     metadata: {
       averageQuality: 0.8,
     },

@@ -58,6 +58,7 @@ describe("FileMetadata", () => {
             bit_rate: "5000000",
           },
         ],
+
         format: {
           duration: 120,
           size: 10485760, // 10 MB
@@ -65,7 +66,7 @@ describe("FileMetadata", () => {
       },
     }
 
-    render(<FileMetadata file={videoFile} size={100} />)
+    render(<FileMetadata file={videoFile} size={100} data-oid="ccox0iz" />)
 
     // Проверяем, что имя файла отображается
     expect(screen.getByText("video-file.mp4")).toBeInTheDocument()
@@ -111,6 +112,7 @@ describe("FileMetadata", () => {
             bit_rate: "320000",
           },
         ],
+
         format: {
           duration: 180,
           size: 5242880, // 5 MB
@@ -118,7 +120,7 @@ describe("FileMetadata", () => {
       },
     }
 
-    render(<FileMetadata file={audioFile} size={100} />)
+    render(<FileMetadata file={audioFile} size={100} data-oid="a7lbest" />)
 
     // Проверяем, что имя файла отображается
     expect(screen.getByText("audio-file.mp3")).toBeInTheDocument()
@@ -148,13 +150,14 @@ describe("FileMetadata", () => {
             height: 2160,
           },
         ],
+
         format: {
           size: 2097152, // 2 MB
         },
       },
     }
 
-    render(<FileMetadata file={imageFile} size={100} />)
+    render(<FileMetadata file={imageFile} size={100} data-oid="1bhrmod" />)
 
     // Проверяем, что имя файла отображается
     expect(screen.getByText("image-file.jpg")).toBeInTheDocument()
@@ -182,6 +185,7 @@ describe("FileMetadata", () => {
             bit_rate: "5000000",
           },
         ],
+
         format: {
           duration: 120,
           size: 10485760,
@@ -190,7 +194,7 @@ describe("FileMetadata", () => {
     }
 
     // Рендерим с размером > 100
-    const { rerender } = render(<FileMetadata file={videoFile} size={120} />)
+    const { rerender } = render(<FileMetadata file={videoFile} size={120} data-oid="-zjb-tk" />)
 
     // Проверяем, что стиль font-size установлен на 13px
     const durationElement = screen.getByText("120 сек")
@@ -198,7 +202,7 @@ describe("FileMetadata", () => {
 
     // Перерендериваем с размером <= 100
     act(() => {
-      rerender(<FileMetadata file={videoFile} size={100} />)
+      rerender(<FileMetadata file={videoFile} size={100} data-oid="v_o0_da" />)
     })
 
     // Проверяем, что стиль font-size установлен на 12px
@@ -223,6 +227,7 @@ describe("FileMetadata", () => {
             bit_rate: "5000000",
           },
         ],
+
         format: {
           duration: 120,
           size: 10485760,
@@ -230,7 +235,7 @@ describe("FileMetadata", () => {
       },
     }
 
-    const renderResult = render(<FileMetadata file={videoFile} />)
+    const renderResult = render(<FileMetadata file={videoFile} data-oid="m4q97mq" />)
 
     // Проверяем, что контейнер имеет высоту 100px (значение по умолчанию)
     const mainContainer = renderResult.container.firstChild as HTMLElement

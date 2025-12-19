@@ -29,5 +29,5 @@ export function Providers({ children }: ProvidersProps) {
     "[DEPRECATED] Importing from @/features/media-studio/services/providers is deprecated. " +
       "Use @/config/providers/app-providers instead.",
   )
-  return <AppProviders>{children}</AppProviders>
+  return <AppProviders data-oid="iu66r2_">{children}</AppProviders>
 }

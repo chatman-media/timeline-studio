@@ -28,11 +28,35 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, any>
   return {
     ...actual,
-    Clock: () => <div data-testid="clock-icon">Clock</div>,
-    Flag: () => <div data-testid="flag-icon">Flag</div>,
-    Play: () => <div data-testid="play-icon">Play</div>,
-    Scissors: () => <div data-testid="scissors-icon">Scissors</div>,
-    Video: () => <div data-testid="video-icon">Video</div>,
+    Clock: () => (
+      <div data-testid="clock-icon" data-oid="_no-0ym">
+        Clock
+      </div>
+    ),
+
+    Flag: () => (
+      <div data-testid="flag-icon" data-oid="w28-c1j">
+        Flag
+      </div>
+    ),
+
+    Play: () => (
+      <div data-testid="play-icon" data-oid="bv3c6t3">
+        Play
+      </div>
+    ),
+
+    Scissors: () => (
+      <div data-testid="scissors-icon" data-oid="a6xkp2s">
+        Scissors
+      </div>
+    ),
+
+    Video: () => (
+      <div data-testid="video-icon" data-oid="c-6-d0k">
+        Video
+      </div>
+    ),
   }
 })
 
@@ -87,11 +111,13 @@ const mockProject = {
       ],
     },
   ],
+
   markers: [
     { id: "marker-1", name: "Marker 1", time: 15 },
     { id: "marker-2", name: "Marker 2", time: 45 },
     { id: "marker-3", name: "Marker 3", time: 90 },
   ],
+
   duration: 180,
 }
 
@@ -122,7 +148,7 @@ describe("SectionExportTab", () => {
 
   describe("Рендеринг", () => {
     it("должен рендерить основные элементы", () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="emo96k." />)
 
       expect(screen.getByText("export.sections.exportMode")).toBeInTheDocument()
       expect(screen.getByText("export.sections.qualityPreset")).toBeInTheDocument()
@@ -132,9 +158,11 @@ describe("SectionExportTab", () => {
     })
 
     it("должен показывать поля ввода времени в ручном режиме", () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="5ny.cco" />)
 
-      const manualRadio = screen.getByRole("radio", { name: /export.sections.manual/ })
+      const manualRadio = screen.getByRole("radio", {
+        name: /export.sections.manual/,
+      })
       fireEvent.click(manualRadio)
 
       expect(screen.getByText("export.sections.startTime")).toBeInTheDocument()
@@ -145,7 +173,7 @@ describe("SectionExportTab", () => {
 
   describe("Режим маркеров", () => {
     it("должен создавать секции из маркеров", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="jm.5lhy" />)
 
       // По умолчанию выбран режим маркеров
       await waitFor(() => {
@@ -163,7 +191,7 @@ describe("SectionExportTab", () => {
       const originalMarkers = mockProject.markers
       mockProject.markers = []
 
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="44ujb39" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -180,9 +208,11 @@ describe("SectionExportTab", () => {
 
   describe("Режим клипов", () => {
     it("должен создавать секции из клипов", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="z.82-jc" />)
 
-      const clipsRadio = screen.getByRole("radio", { name: /export.sections.byClips/ })
+      const clipsRadio = screen.getByRole("radio", {
+        name: /export.sections.byClips/,
+      })
       fireEvent.click(clipsRadio)
 
       await waitFor(() => {
@@ -198,9 +228,11 @@ describe("SectionExportTab", () => {
 
   describe("Ручной режим", () => {
     it("должен создавать секцию с указанным временем", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="8vzanr9" />)
 
-      const manualRadio = screen.getByRole("radio", { name: /export.sections.manual/ })
+      const manualRadio = screen.getByRole("radio", {
+        name: /export.sections.manual/,
+      })
       fireEvent.click(manualRadio)
 
       const startInput = screen.getByPlaceholderText("00:00:00")
@@ -218,9 +250,11 @@ describe("SectionExportTab", () => {
     })
 
     it("не должен создавать секцию если время начала больше времени конца", () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="mx0daas" />)
 
-      const manualRadio = screen.getByRole("radio", { name: /export.sections.manual/ })
+      const manualRadio = screen.getByRole("radio", {
+        name: /export.sections.manual/,
+      })
       fireEvent.click(manualRadio)
 
       const startInput = screen.getByPlaceholderText("00:00:00")
@@ -239,7 +273,7 @@ describe("SectionExportTab", () => {
 
   describe("Управление секциями", () => {
     it("должен переключать выбор секции", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="s4d0ddj" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -256,7 +290,7 @@ describe("SectionExportTab", () => {
     })
 
     it("должен выбирать/снимать выбор со всех секций", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="l_-k2ok" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -277,7 +311,7 @@ describe("SectionExportTab", () => {
     })
 
     it("должен обновлять имя файла секции", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="-5v4_r_" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -295,6 +329,7 @@ describe("SectionExportTab", () => {
           defaultSettings={defaultSettings}
           onExport={mockOnExport}
           onPreviewSection={mockOnPreviewSection}
+          data-oid="amvcqd_"
         />,
       )
 
@@ -309,7 +344,7 @@ describe("SectionExportTab", () => {
     })
 
     it("должен использовать seek если не передан onPreviewSection", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="o7kbnd_" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -324,7 +359,7 @@ describe("SectionExportTab", () => {
 
   describe("Настройки качества", () => {
     it("должен менять настройки качества", () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="demr:k4" />)
 
       const qualitySelect = screen.getByRole("combobox")
       fireEvent.click(qualitySelect)
@@ -339,7 +374,7 @@ describe("SectionExportTab", () => {
 
   describe("Экспорт", () => {
     it("должен вызывать onExport с выбранными секциями", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="i5f8-og" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -361,7 +396,7 @@ describe("SectionExportTab", () => {
     })
 
     it("должен отключать кнопку экспорта если не выбрано секций", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="ak1ln:." />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -376,7 +411,7 @@ describe("SectionExportTab", () => {
     })
 
     it("должен применять настройки качества preview", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="wvmn4c." />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -402,7 +437,7 @@ describe("SectionExportTab", () => {
     })
 
     it("должен применять настройки качества draft", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="76fj_.5" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()
@@ -430,7 +465,7 @@ describe("SectionExportTab", () => {
 
   describe("Форматирование времени", () => {
     it("должен правильно отображать время секций", async () => {
-      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} />)
+      render(<SectionExportTab defaultSettings={defaultSettings} onExport={mockOnExport} data-oid="2s-8ch0" />)
 
       await waitFor(() => {
         expect(screen.getByText("export.sections.sectionsTitle")).toBeInTheDocument()

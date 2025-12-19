@@ -25,12 +25,12 @@ vi.mock("@/domains/video-editing", async (importOriginal) => {
 
 // Мокаем AddMediaButton
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({
-  AddMediaButton: () => <button>Добавить</button>,
+  AddMediaButton: () => <button data-oid="stmc3xi">Добавить</button>,
 }))
 
 // Мокаем FavoriteButton
 vi.mock("@/features/browser/components/layout/favorite-button", () => ({
-  FavoriteButton: () => <button>Избранное</button>,
+  FavoriteButton: () => <button data-oid="cjl2x3a">Избранное</button>,
 }))
 
 const mockSubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = [
@@ -54,7 +54,10 @@ const mockSubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = [
     category: "basic" as const,
     complexity: "basic" as const,
     tags: ["simple", "colorful"],
-    description: { en: "Simple yellow subtitles", ru: "Простые желтые субтитры" },
+    description: {
+      en: "Simple yellow subtitles",
+      ru: "Простые желтые субтитры",
+    },
     labels: { en: "Basic Yellow", ru: "Базовый желтый" },
     style: {
       color: "#FFFF00",
@@ -75,13 +78,13 @@ describe("SubtitleGroup", () => {
   }
 
   it("должен рендериться без ошибок", () => {
-    render(<SubtitleGroup {...defaultProps} />)
+    render(<SubtitleGroup {...defaultProps} data-oid="67nq.gp" />)
 
     expect(screen.getByText("Basic Subtitles")).toBeInTheDocument()
   })
 
   it("должен отображать все субтитры", () => {
-    render(<SubtitleGroup {...defaultProps} />)
+    render(<SubtitleGroup {...defaultProps} data-oid="jgdnhf8" />)
 
     // Проверяем, что рендерятся все названия субтитров
     expect(screen.getByText("Базовый белый")).toBeInTheDocument()
@@ -90,7 +93,7 @@ describe("SubtitleGroup", () => {
 
   it("должен вызывать onSubtitleClick при клике на субтитр", () => {
     const onSubtitleClick = vi.fn()
-    render(<SubtitleGroup {...defaultProps} onSubtitleClick={onSubtitleClick} />)
+    render(<SubtitleGroup {...defaultProps} onSubtitleClick={onSubtitleClick} data-oid="zyfc12f" />)
 
     // Кликаем на первый превью по тексту Timeline Studio
     const firstPreview = screen.getAllByText("Timeline Studio")[0]
@@ -102,26 +105,28 @@ describe("SubtitleGroup", () => {
   })
 
   it("не должен отображаться если нет субтитров", () => {
-    render(<SubtitleGroup {...defaultProps} subtitles={[]} />)
+    render(<SubtitleGroup {...defaultProps} subtitles={[]} data-oid="zjrcyiw" />)
 
     expect(screen.queryByText("Basic Subtitles")).not.toBeInTheDocument()
   })
 
   it("не должен отображать заголовок если title пустой", () => {
-    render(<SubtitleGroup {...defaultProps} title="" />)
+    render(<SubtitleGroup {...defaultProps} title="" data-oid="1y5a3:_" />)
 
     expect(screen.queryByRole("heading")).not.toBeInTheDocument()
   })
 
   it("должен применять правильные CSS переменные для размеров", () => {
-    render(<SubtitleGroup {...defaultProps} />)
+    render(<SubtitleGroup {...defaultProps} data-oid="10lo7n-" />)
 
     const grid = screen.getByText("Basic Subtitles").nextElementSibling
     expect(grid).toHaveStyle({ "--preview-size": "150px" })
   })
 
   it("должен передавать правильные размеры в SubtitlePreview", () => {
-    render(<SubtitleGroup {...defaultProps} previewSize={120} previewWidth={180} previewHeight={100} />)
+    render(
+      <SubtitleGroup {...defaultProps} previewSize={120} previewWidth={180} previewHeight={100} data-oid="ewe.xr2" />,
+    )
 
     // Проверяем, что компоненты рендерятся
     expect(screen.getByText("Базовый белый")).toBeInTheDocument()
@@ -139,7 +144,7 @@ describe("SubtitleGroup", () => {
       }),
     )
 
-    render(<SubtitleGroup {...defaultProps} subtitles={manySubtitles} />)
+    render(<SubtitleGroup {...defaultProps} subtitles={manySubtitles} data-oid="v63z6j8" />)
 
     // Проверяем что рендерятся все 20 субтитров
     const previewElements = screen.getAllByText("Timeline Studio")
@@ -148,13 +153,32 @@ describe("SubtitleGroup", () => {
 
   it("должен сохранять порядок субтитров", () => {
     const orderedSubtitles: import("../../types/subtitles").SubtitleStyleTemplate[] = [
-      { ...mockSubtitles[0], id: "first", labels: { en: "First", ru: "Первый" } },
-      { ...mockSubtitles[1], id: "second", labels: { en: "Second", ru: "Второй" } },
-      { ...mockSubtitles[0], id: "third", labels: { en: "Third", ru: "Третий" } },
+      {
+        ...mockSubtitles[0],
+        id: "first",
+        labels: { en: "First", ru: "Первый" },
+      },
+      {
+        ...mockSubtitles[1],
+        id: "second",
+        labels: { en: "Second", ru: "Второй" },
+      },
+      {
+        ...mockSubtitles[0],
+        id: "third",
+        labels: { en: "Third", ru: "Третий" },
+      },
     ]
 
     const onSubtitleClick = vi.fn()
-    render(<SubtitleGroup {...defaultProps} subtitles={orderedSubtitles} onSubtitleClick={onSubtitleClick} />)
+    render(
+      <SubtitleGroup
+        {...defaultProps}
+        subtitles={orderedSubtitles}
+        onSubtitleClick={onSubtitleClick}
+        data-oid="q2qjy:k"
+      />,
+    )
 
     // Кликаем по каждому превью через Timeline Studio
     const previewElements = screen.getAllByText("Timeline Studio")

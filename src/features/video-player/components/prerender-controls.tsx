@@ -118,44 +118,57 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
   const id = useId()
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu data-oid="gy_7yhu">
+      <DropdownMenuTrigger asChild data-oid="hnft_x.">
         <Button
           variant="ghost"
           size="sm"
           className={`relative ${settings.enabled ? "text-primary" : ""}`}
           aria-label="Настройки пререндера"
+          data-oid="-nb_1h."
         >
-          <Sparkles className="h-4 w-4" />
+          <Sparkles className="h-4 w-4" data-oid="_6btbcr" />
           {isRendering && (
-            <span className="absolute -right-1 -top-1 h-2 w-2 animate-pulse rounded-full bg-orange-500" />
+            <span
+              className="absolute -right-1 -top-1 h-2 w-2 animate-pulse rounded-full bg-orange-500"
+              data-oid="t4mtqw-"
+            />
           )}
-          {settings.enabled && cacheSize > 0 && <span className="ml-1 text-xs">{cacheSize}</span>}
+          {settings.enabled && cacheSize > 0 && (
+            <span className="ml-1 text-xs" data-oid="7fmbwxm">
+              {cacheSize}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <DropdownMenuLabel>Настройки пререндера</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent align="end" className="w-80" data-oid="q9v-7up">
+        <DropdownMenuLabel data-oid="adaj-fi">Настройки пререндера</DropdownMenuLabel>
+        <DropdownMenuSeparator data-oid="yd::jbn" />
 
         {/* Включение/выключение */}
-        <div className="flex items-center justify-between px-2 py-3">
-          <Label htmlFor={`${id}-prerender-enabled`}>Включить пререндер</Label>
+        <div className="flex items-center justify-between px-2 py-3" data-oid=":cupm3g">
+          <Label htmlFor={`${id}-prerender-enabled`} data-oid="q6hwq6p">
+            Включить пререндер
+          </Label>
           <Switch
             id={`${id}-prerender-enabled`}
             checked={settings.enabled}
             onCheckedChange={(checked) => updateSetting("enabled", checked)}
+            data-oid=".zr8w24"
           />
         </div>
 
         {settings.enabled && (
           <>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator data-oid="fc1gb7v" />
 
             {/* Качество */}
-            <div className="px-2 py-3">
-              <div className="flex items-center justify-between mb-2">
-                <Label>Качество</Label>
-                <span className="text-sm text-muted-foreground">{settings.quality}%</span>
+            <div className="px-2 py-3" data-oid="n859e0a">
+              <div className="flex items-center justify-between mb-2" data-oid="j8c3ps5">
+                <Label data-oid="7lpu45:">Качество</Label>
+                <span className="text-sm text-muted-foreground" data-oid="ub9_i7i">
+                  {settings.quality}%
+                </span>
               </div>
               <Slider
                 value={[settings.quality]}
@@ -164,14 +177,17 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
                 max={100}
                 step={5}
                 className="w-full"
+                data-oid="bzs_hvh"
               />
             </div>
 
             {/* Длительность сегмента */}
-            <div className="px-2 py-3">
-              <div className="flex items-center justify-between mb-2">
-                <Label>Длительность сегмента</Label>
-                <span className="text-sm text-muted-foreground">{settings.segmentDuration}с</span>
+            <div className="px-2 py-3" data-oid="sx67n0x">
+              <div className="flex items-center justify-between mb-2" data-oid="f-v7xxx">
+                <Label data-oid="_s-yv9:">Длительность сегмента</Label>
+                <span className="text-sm text-muted-foreground" data-oid="ig8i0ge">
+                  {settings.segmentDuration}с
+                </span>
               </div>
               <Slider
                 value={[settings.segmentDuration]}
@@ -180,40 +196,51 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
                 max={30}
                 step={1}
                 className="w-full"
+                data-oid="su7wtp5"
               />
             </div>
 
             {/* Применять эффекты */}
-            <div className="flex items-center justify-between px-2 py-3">
-              <Label htmlFor={`${id}-apply-effects`}>Применять эффекты</Label>
+            <div className="flex items-center justify-between px-2 py-3" data-oid="er93x-r">
+              <Label htmlFor={`${id}-apply-effects`} data-oid="9s3k:hz">
+                Применять эффекты
+              </Label>
               <Switch
                 id={`${id}-apply-effects`}
                 checked={settings.applyEffects}
                 onCheckedChange={(checked) => updateSetting("applyEffects", checked)}
+                data-oid="k9d58om"
               />
             </div>
 
             {/* Автоматический пререндер */}
-            <div className="flex items-center justify-between px-2 py-3">
-              <Label htmlFor={`${id}-auto-prerender`}>Автоматический</Label>
+            <div className="flex items-center justify-between px-2 py-3" data-oid="2k_sfgv">
+              <Label htmlFor={`${id}-auto-prerender`} data-oid="x_1nsw2">
+                Автоматический
+              </Label>
               <Switch
                 id={`${id}-auto-prerender`}
                 checked={settings.autoPrerender}
                 onCheckedChange={(checked) => updateSetting("autoPrerender", checked)}
+                data-oid="it7fahy"
               />
             </div>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator data-oid="2m5oz.r" />
 
             {/* Действия */}
-            <DropdownMenuItem onClick={handlePrerenderCurrent} disabled={isRendering || !hasEffectsAtCurrentTime()}>
-              <Sparkles className="mr-2 h-4 w-4" />
+            <DropdownMenuItem
+              onClick={handlePrerenderCurrent}
+              disabled={isRendering || !hasEffectsAtCurrentTime()}
+              data-oid="7nh-4y9"
+            >
+              <Sparkles className="mr-2 h-4 w-4" data-oid="8n652c7" />
               {isRendering ? "Рендеринг..." : "Пререндер текущего сегмента"}
             </DropdownMenuItem>
 
             {cacheSize > 0 && (
-              <DropdownMenuItem onClick={clearCache} className="text-destructive">
-                <Settings2 className="mr-2 h-4 w-4" />
+              <DropdownMenuItem onClick={clearCache} className="text-destructive" data-oid="36:jo_1">
+                <Settings2 className="mr-2 h-4 w-4" data-oid="621-80b" />
                 Очистить кеш ({cacheSize} файлов, {(totalCacheSize / 1024 / 1024).toFixed(1)} МБ)
               </DropdownMenuItem>
             )}
@@ -221,11 +248,11 @@ export function PrerenderControls({ currentTime, duration, onSettingsChange }: P
             {/* Информация */}
             {currentResult && (
               <>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-2 text-xs text-muted-foreground">
-                  <div>Последний рендер: {currentResult.duration.toFixed(2)}с</div>
-                  <div>Время: {currentResult.renderTimeMs}мс</div>
-                  <div>Размер: {(currentResult.fileSize / 1024 / 1024).toFixed(2)} МБ</div>
+                <DropdownMenuSeparator data-oid="h1dv4p-" />
+                <div className="px-2 py-2 text-xs text-muted-foreground" data-oid="h.es57e">
+                  <div data-oid="eh8c6yz">Последний рендер: {currentResult.duration.toFixed(2)}с</div>
+                  <div data-oid="xd2_q5p">Время: {currentResult.renderTimeMs}мс</div>
+                  <div data-oid="9d_jo73">Размер: {(currentResult.fileSize / 1024 / 1024).toFixed(2)} МБ</div>
                 </div>
               </>
             )}

@@ -44,11 +44,19 @@ vi.mock("../../utils", () => ({
 }))
 
 vi.mock("../../components/content-group", () => ({
-  ContentGroup: () => <div data-testid="content-group">Content Group</div>,
+  ContentGroup: () => (
+    <div data-testid="content-group" data-oid=":8qynlv">
+      Content Group
+    </div>
+  ),
 }))
 
 vi.mock("../../components/no-files", () => ({
-  NoFiles: ({ contentType }: any) => <div data-testid="no-files">No files for {contentType}</div>,
+  NoFiles: ({ contentType }: any) => (
+    <div data-testid="no-files" data-oid=".r:d-lc">
+      No files for {contentType}
+    </div>
+  ),
 }))
 
 describe("UniversalList", () => {
@@ -75,7 +83,7 @@ describe("UniversalList", () => {
         useData: () => ({ items: [], loading: true, error: null }),
       }
 
-      render(<UniversalList adapter={loadingAdapter} />)
+      render(<UniversalList adapter={loadingAdapter} data-oid="y3-xipn" />)
 
       expect(screen.getByText("common.loading")).toBeInTheDocument()
     })
@@ -90,14 +98,14 @@ describe("UniversalList", () => {
         }),
       }
 
-      render(<UniversalList adapter={errorAdapter} />)
+      render(<UniversalList adapter={errorAdapter} data-oid="-q74jlt" />)
 
       expect(screen.getByText(/common.error/)).toBeInTheDocument()
       expect(screen.getByText(/Test error/)).toBeInTheDocument()
     })
 
     it("должен показывать NoFiles когда список пуст", () => {
-      render(<UniversalList adapter={mockAdapter} />)
+      render(<UniversalList adapter={mockAdapter} data-oid="qinpq-x" />)
 
       expect(screen.getByTestId("no-files")).toBeInTheDocument()
     })

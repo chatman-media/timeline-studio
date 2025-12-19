@@ -58,7 +58,6 @@ export const ClipDropZoneDnd = memo(function ClipDropZoneDnd({ clip, className, 
       // Здесь мы только обновляем визуальное состояние
     }
   }, [isOver, dragState.draggedResource, canAcceptDrop])
-
   const showDropFeedback = isOver && canAcceptDrop()
   const showRejectFeedback = isOver && !canAcceptDrop()
 
@@ -71,6 +70,7 @@ export const ClipDropZoneDnd = memo(function ClipDropZoneDnd({ clip, className, 
         showRejectFeedback && "ring-2 ring-destructive ring-opacity-50 opacity-50",
         className,
       )}
+      data-oid="jf.i.m:"
     >
       {children}
 
@@ -84,12 +84,14 @@ export const ClipDropZoneDnd = memo(function ClipDropZoneDnd({ clip, className, 
               ? "bg-primary/20 border-2 border-primary border-dashed"
               : "bg-destructive/20 border-2 border-destructive border-dashed",
           )}
+          data-oid="a7nc09k"
         >
           <div
             className={cn(
               "px-3 py-1 rounded-full text-sm font-medium",
               showDropFeedback ? "bg-primary text-primary-foreground" : "bg-destructive text-destructive-foreground",
             )}
+            data-oid="ri82tzr"
           >
             {showDropFeedback
               ? dragState.draggedResourceType === "effect"

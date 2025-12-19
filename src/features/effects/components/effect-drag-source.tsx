@@ -50,6 +50,7 @@ export function EffectDragSource({ effect, children, className, disabled = false
       )}
       {...listeners}
       {...attributes}
+      data-oid="hgw_zq7"
     >
       {children}
     </div>

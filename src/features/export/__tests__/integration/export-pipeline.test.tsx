@@ -124,6 +124,7 @@ describe("Export Pipeline Integration Tests", () => {
             filters: [],
           },
         ],
+
         effects: [],
         filters: [],
       },
@@ -148,10 +149,12 @@ describe("Export Pipeline Integration Tests", () => {
             filters: [],
           },
         ],
+
         effects: [],
         filters: [],
       },
     ],
+
     effects: [],
     transitions: [],
     filters: [],
@@ -178,6 +181,7 @@ describe("Export Pipeline Integration Tests", () => {
         enabled: true,
       },
     ],
+
     settings: {
       export: {
         format: OutputFormat.Mp4,
@@ -429,7 +433,10 @@ describe("Export Pipeline Integration Tests", () => {
   })
 
   describe("3. Quality Presets", () => {
-    const qualityTests: Array<{ quality: "normal" | "good" | "best"; bitrate: number }> = [
+    const qualityTests: Array<{
+      quality: "normal" | "good" | "best"
+      bitrate: number
+    }> = [
       { quality: "normal", bitrate: QUALITY_PRESETS.normal.videoBitrate },
       { quality: "good", bitrate: QUALITY_PRESETS.good.videoBitrate },
       { quality: "best", bitrate: QUALITY_PRESETS.best.videoBitrate },
@@ -620,6 +627,7 @@ describe("Export Pipeline Integration Tests", () => {
                 filters: [],
               },
             ],
+
             effects: [],
             filters: [],
           },
@@ -644,6 +652,7 @@ describe("Export Pipeline Integration Tests", () => {
                 filters: [],
               },
             ],
+
             effects: [],
             filters: [],
           },
@@ -694,7 +703,12 @@ describe("Export Pipeline Integration Tests", () => {
             text: "First subtitle",
             start_time: 0,
             end_time: 5,
-            position: { x: 50, y: 90, align_x: "Center" as any, align_y: "Bottom" as any },
+            position: {
+              x: 50,
+              y: 90,
+              align_x: "Center" as any,
+              align_y: "Bottom" as any,
+            },
             style: {
               font_family: "Arial",
               font_size: 24,
@@ -708,7 +722,12 @@ describe("Export Pipeline Integration Tests", () => {
             text: "Second subtitle",
             start_time: 5,
             end_time: 10,
-            position: { x: 50, y: 90, align_x: "Center" as any, align_y: "Bottom" as any },
+            position: {
+              x: 50,
+              y: 90,
+              align_x: "Center" as any,
+              align_y: "Bottom" as any,
+            },
             style: {
               font_family: "Arial",
               font_size: 24,
@@ -735,7 +754,12 @@ describe("Export Pipeline Integration Tests", () => {
             text: "Enabled subtitle",
             start_time: 0,
             end_time: 5,
-            position: { x: 50, y: 90, align_x: "Center" as any, align_y: "Bottom" as any },
+            position: {
+              x: 50,
+              y: 90,
+              align_x: "Center" as any,
+              align_y: "Bottom" as any,
+            },
             style: {
               font_family: "Arial",
               font_size: 24,
@@ -749,7 +773,12 @@ describe("Export Pipeline Integration Tests", () => {
             text: "Disabled subtitle",
             start_time: 5,
             end_time: 10,
-            position: { x: 50, y: 90, align_x: "Center" as any, align_y: "Bottom" as any },
+            position: {
+              x: 50,
+              y: 90,
+              align_x: "Center" as any,
+              align_y: "Bottom" as any,
+            },
             style: {
               font_family: "Arial",
               font_size: 24,
@@ -914,7 +943,9 @@ describe("Export Pipeline Integration Tests", () => {
       })
 
       // Verify job can be resumed
-      const resumedJobId = await mockInvoke("resume_render", { jobId: mockJobId })
+      const resumedJobId = await mockInvoke("resume_render", {
+        jobId: mockJobId,
+      })
       expect(resumedJobId).toBe(mockJobId)
     })
   })
@@ -923,13 +954,25 @@ describe("Export Pipeline Integration Tests", () => {
     it("should export multiple projects in batch", async () => {
       const projects = [
         createMockProject({
-          metadata: { name: "Project 1", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project 1",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
         createMockProject({
-          metadata: { name: "Project 2", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project 2",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
         createMockProject({
-          metadata: { name: "Project 3", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project 3",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
       ]
 
@@ -959,10 +1002,18 @@ describe("Export Pipeline Integration Tests", () => {
     it("should handle partial batch export failures", async () => {
       const projects = [
         createMockProject({
-          metadata: { name: "Project 1", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project 1",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
         createMockProject({
-          metadata: { name: "Project 2", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project 2",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
       ]
 
@@ -1028,7 +1079,9 @@ describe("Export Pipeline Integration Tests", () => {
         expect(isLoggedIn).toBe(true)
 
         // Simulate file creation
-        const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
+        const videoFile = new Blob([new Uint8Array(1024)], {
+          type: "video/mp4",
+        })
         const uploadResult = await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings)
 
         expect(uploadResult.success).toBe(true)
@@ -1061,7 +1114,9 @@ describe("Export Pipeline Integration Tests", () => {
 
         await mockRenderProject(project, settings.savePath)
 
-        const videoFile = new Blob([new Uint8Array(1024)], { type: "video/mp4" })
+        const videoFile = new Blob([new Uint8Array(1024)], {
+          type: "video/mp4",
+        })
         const uploadResult = await mockSocialNetworksService.uploadVideo("vimeo", videoFile, settings)
 
         expect(uploadResult.success).toBe(true)
@@ -1096,7 +1151,9 @@ describe("Export Pipeline Integration Tests", () => {
 
         await mockRenderProject(project, settings.savePath)
 
-        const videoFile = new Blob([new Uint8Array(512 * 1024)], { type: "video/mp4" })
+        const videoFile = new Blob([new Uint8Array(512 * 1024)], {
+          type: "video/mp4",
+        })
         const uploadResult = await mockSocialNetworksService.uploadVideo("telegram", videoFile, settings)
 
         expect(uploadResult.success).toBe(true)
@@ -1169,7 +1226,6 @@ describe("Export Pipeline Integration Tests", () => {
       await mockSocialNetworksService.uploadVideo("youtube", videoFile, settings, (_progress: number) => {
         // Progress callback
       })
-
       expect(progressUpdates.length).toBeGreaterThan(0)
       expect(progressUpdates[progressUpdates.length - 1]).toBe(100)
     })
@@ -1328,6 +1384,7 @@ describe("Export Pipeline Integration Tests", () => {
             processors: {},
           } as any,
         ],
+
         filters: [
           {
             id: "filter-1",
@@ -1466,10 +1523,18 @@ describe("Export Pipeline Integration Tests", () => {
     it("should handle concurrent exports with job tracking", async () => {
       const projects = [
         createMockProject({
-          metadata: { name: "Project A", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project A",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
         createMockProject({
-          metadata: { name: "Project B", created_at: new Date().toISOString(), modified_at: new Date().toISOString() },
+          metadata: {
+            name: "Project B",
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+          },
         }),
       ]
 

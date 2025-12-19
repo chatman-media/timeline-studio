@@ -141,16 +141,17 @@ export function EffectComparison({
   }, [isDragging])
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-oid=":f2wuj:">
       {/* Контейнер для видео */}
       <div
         ref={containerRef}
         className="relative overflow-hidden rounded-lg bg-black cursor-ew-resize"
         style={{ width: `${width}px`, height: `${height}px` }}
         onMouseDown={() => setIsDragging(true)}
+        data-oid="jbsquca"
       >
         {/* Оригинальное видео (левая часть) */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0" data-oid="7v92m7p">
           <video
             ref={originalVideoRef}
             src={videoPath}
@@ -158,8 +159,10 @@ export function EffectComparison({
             muted
             playsInline
             preload="auto"
+            data-oid="10:gukq"
           />
-          <div className="absolute bottom-4 left-4 bg-black/70 text-white px-2 py-1 rounded text-sm">
+
+          <div className="absolute bottom-4 left-4 bg-black/70 text-white px-2 py-1 rounded text-sm" data-oid="9kbf017">
             {t("effects.comparison.original", "Оригинал")}
           </div>
         </div>
@@ -170,6 +173,7 @@ export function EffectComparison({
           style={{
             clipPath: `polygon(${splitPosition}% 0, 100% 0, 100% 100%, ${splitPosition}% 100%)`,
           }}
+          data-oid="1ys_y-3"
         >
           <video
             ref={effectVideoRef}
@@ -178,8 +182,13 @@ export function EffectComparison({
             muted
             playsInline
             preload="auto"
+            data-oid="yihjp6o"
           />
-          <div className="absolute bottom-4 right-4 bg-black/70 text-white px-2 py-1 rounded text-sm">
+
+          <div
+            className="absolute bottom-4 right-4 bg-black/70 text-white px-2 py-1 rounded text-sm"
+            data-oid="8-hzbu4"
+          >
             {t("effects.comparison.withEffect", "С эффектом")}
           </div>
         </div>
@@ -188,30 +197,36 @@ export function EffectComparison({
         <div
           className="absolute top-0 bottom-0 w-1 bg-white shadow-lg pointer-events-none"
           style={{ left: `${splitPosition}%` }}
+          data-oid="r27wy6c"
         >
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-            <div className="flex gap-0.5">
-              <div className="w-0.5 h-4 bg-gray-400" />
-              <div className="w-0.5 h-4 bg-gray-400" />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center"
+            data-oid="xgkqq99"
+          >
+            <div className="flex gap-0.5" data-oid="ebmurd5">
+              <div className="w-0.5 h-4 bg-gray-400" data-oid="d4uh15f" />
+              <div className="w-0.5 h-4 bg-gray-400" data-oid="by35b4p" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Контролы */}
-      <div className="flex items-center gap-4">
-        <Button variant="secondary" size="sm" onClick={handlePlayPause}>
-          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+      <div className="flex items-center gap-4" data-oid="bnj8ckz">
+        <Button variant="secondary" size="sm" onClick={handlePlayPause} data-oid="z4y.wo-">
+          {isPlaying ? <Pause size={16} data-oid="lgfqv4o" /> : <Play size={16} data-oid="it307eb" />}
           {isPlaying ? t("common.pause", "Пауза") : t("common.play", "Воспроизвести")}
         </Button>
 
-        <Button variant="secondary" size="sm" onClick={handleReset}>
-          <RotateCcw size={16} />
+        <Button variant="secondary" size="sm" onClick={handleReset} data-oid=".mdun..">
+          <RotateCcw size={16} data-oid="-6ef2i6" />
           {t("common.reset", "Сброс")}
         </Button>
 
-        <div className="flex-1 flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t("effects.comparison.position", "Позиция")}:</span>
+        <div className="flex-1 flex items-center gap-2" data-oid="k1taiqx">
+          <span className="text-sm text-muted-foreground" data-oid="b_a1n95">
+            {t("effects.comparison.position", "Позиция")}:
+          </span>
           <Slider
             value={[splitPosition]}
             onValueChange={([value]) => setSplitPosition(value)}
@@ -219,8 +234,12 @@ export function EffectComparison({
             max={100}
             step={1}
             className="flex-1"
+            data-oid="q2m0vd-"
           />
-          <span className="text-sm font-mono text-muted-foreground w-12">{Math.round(splitPosition)}%</span>
+
+          <span className="text-sm font-mono text-muted-foreground w-12" data-oid="nq_-tw.">
+            {Math.round(splitPosition)}%
+          </span>
         </div>
       </div>
     </div>

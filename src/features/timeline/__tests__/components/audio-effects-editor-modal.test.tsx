@@ -15,14 +15,18 @@ vi.mock("@/domains/system-integration", () => ({
 // Mock UI components
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, variant, ...props }: any) => (
-    <button onClick={onClick} data-variant={variant} {...props}>
+    <button onClick={onClick} data-variant={variant} {...props} data-oid="o.-puu.">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/label", () => ({
-  Label: ({ children, ...props }: any) => <label {...props}>{children}</label>,
+  Label: ({ children, ...props }: any) => (
+    <label {...props} data-oid="_zc40go">
+      {children}
+    </label>
+  ),
 }))
 
 vi.mock("@/components/ui/slider", () => ({
@@ -36,6 +40,7 @@ vi.mock("@/components/ui/slider", () => ({
       step={step}
       data-testid="slider"
       {...props}
+      data-oid="5sr5z4-"
     />
   ),
 }))
@@ -48,6 +53,7 @@ vi.mock("@/components/ui/switch", () => ({
       onClick={() => onCheckedChange?.(!checked)}
       data-testid="switch"
       {...props}
+      data-oid="vfvf3zx"
     >
       {checked ? "ON" : "OFF"}
     </button>
@@ -62,7 +68,7 @@ vi.mock("@/components/ui/tabs", () => ({
     // Update active tab when value changes
     if (value) activeTab = value
     return (
-      <div data-value={activeTab} {...props}>
+      <div data-value={activeTab} {...props} data-oid="qel.6s2">
         {React.Children.map(children, (child) =>
           React.isValidElement(child) ? React.cloneElement(child as any, { onValueChange }) : child,
         )}
@@ -70,12 +76,13 @@ vi.mock("@/components/ui/tabs", () => ({
     )
   },
   TabsList: ({ children, onValueChange, ...props }: any) => (
-    <div {...props}>
+    <div {...props} data-oid="rfpmy7t">
       {React.Children.map(children, (child) =>
         React.isValidElement(child) ? React.cloneElement(child as any, { onValueChange }) : child,
       )}
     </div>
   ),
+
   TabsTrigger: ({ children, value, onValueChange, ...props }: any) => (
     <button
       data-tab-value={value}
@@ -84,12 +91,18 @@ vi.mock("@/components/ui/tabs", () => ({
         onValueChange?.(value)
       }}
       {...props}
+      data-oid="az1omwc"
     >
       {children}
     </button>
   ),
+
   TabsContent: ({ children, value, ...props }: any) => {
-    return activeTab === value ? <div {...props}>{children}</div> : null
+    return activeTab === value ? (
+      <div {...props} data-oid="njg6ddw">
+        {children}
+      </div>
+    ) : null
   },
 }))
 
@@ -134,7 +147,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("initial rendering", () => {
     it("should render with default tab selected", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="2:220_-" />)
 
       expect(screen.getByText("Базовые")).toBeInTheDocument()
       expect(screen.getByText("Динамика")).toBeInTheDocument()
@@ -143,7 +156,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should render basic effects in default tab", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="-q:aml6" />)
 
       expect(screen.getByText("Fade In")).toBeInTheDocument()
       expect(screen.getByText("Fade Out")).toBeInTheDocument()
@@ -151,7 +164,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should render action buttons", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="_w_rxvv" />)
 
       expect(screen.getByText("Отмена")).toBeInTheDocument()
       expect(screen.getByText("Применить эффекты")).toBeInTheDocument()
@@ -186,7 +199,7 @@ describe("AudioEffectsEditorModal", () => {
         openEffectDetail: vi.fn(),
       })
 
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="26wav1a" />)
 
       const fadeInSwitch = screen.getAllByRole("switch")[0]
       expect(fadeInSwitch).toHaveAttribute("aria-checked", "true")
@@ -195,7 +208,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("effect toggling", () => {
     it("should toggle fade in effect", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="8wg7z4v" />)
 
       const fadeInSwitch = screen.getAllByRole("switch")[0]
       expect(fadeInSwitch).toHaveAttribute("aria-checked", "false")
@@ -208,7 +221,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should toggle fade out effect", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="yxeq58m" />)
 
       const fadeOutSwitch = screen.getAllByRole("switch")[1]
       fireEvent.click(fadeOutSwitch)
@@ -218,7 +231,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should toggle equalizer effect", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="kzfn26-" />)
 
       const equalizerSwitch = screen.getAllByRole("switch")[2]
       fireEvent.click(equalizerSwitch)
@@ -230,7 +243,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should remove effect when toggled off", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="c-f0qkf" />)
 
       const fadeInSwitch = screen.getAllByRole("switch")[0]
 
@@ -246,7 +259,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("parameter adjustment", () => {
     it("should update fade in duration", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="3r6xti9" />)
 
       const fadeInSwitch = screen.getAllByRole("switch")[0]
       fireEvent.click(fadeInSwitch)
@@ -258,7 +271,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should update equalizer parameters", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="a9pxm8o" />)
 
       const equalizerSwitch = screen.getAllByRole("switch")[2]
       fireEvent.click(equalizerSwitch)
@@ -281,7 +294,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("tab navigation", () => {
     it("should switch to dynamics tab", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid=".h6d8xm" />)
 
       const dynamicsTab = screen.getByText("Динамика")
       fireEvent.click(dynamicsTab)
@@ -291,7 +304,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should show compressor controls when enabled", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="a2bc2f2" />)
 
       // Switch to dynamics tab
       const dynamicsTab = screen.getByText("Динамика")
@@ -305,7 +318,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should update compressor attack and release parameters", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid=".5eos6t" />)
 
       // Switch to dynamics tab
       const dynamicsTab = screen.getByText("Динамика")
@@ -327,7 +340,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should show normalize controls and update parameters", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="ww13ea4" />)
 
       // Switch to dynamics tab
       const dynamicsTab = screen.getByText("Динамика")
@@ -347,7 +360,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("spatial effects", () => {
     it("should show reverb controls", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="1w9mbc9" />)
 
       // Switch to spatial tab
       const spatialTab = screen.getByText("Пространство")
@@ -363,7 +376,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should update reverb damping parameter", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="e_p3rke" />)
 
       // Switch to spatial tab
       const spatialTab = screen.getByText("Пространство")
@@ -385,7 +398,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should show delay controls", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="5c4.s:_" />)
 
       // Switch to spatial tab
       const spatialTab = screen.getByText("Пространство")
@@ -403,7 +416,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("correction effects", () => {
     it("should show denoise controls", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="j3halt-" />)
 
       // Switch to correction tab
       const correctionTab = screen.getByText("Коррекция")
@@ -420,7 +433,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("applying effects", () => {
     it("should apply selected effects", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="yo242k7" />)
 
       // Enable fade in
       const fadeInSwitch = screen.getAllByRole("switch")[0]
@@ -453,7 +466,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should apply effects with modified parameters", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="haz6e7x" />)
 
       // Enable fade in and modify duration
       const fadeInSwitch = screen.getAllByRole("switch")[0]
@@ -495,7 +508,7 @@ describe("AudioEffectsEditorModal", () => {
         openEffectDetail: vi.fn(),
       })
 
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="w2vx9ws" />)
 
       const applyButton = screen.getByText("Применить эффекты")
       fireEvent.click(applyButton)
@@ -506,7 +519,7 @@ describe("AudioEffectsEditorModal", () => {
 
   describe("cancel functionality", () => {
     it("should close modal on cancel", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="y-qllig" />)
 
       const cancelButton = screen.getByText("Отмена")
       fireEvent.click(cancelButton)
@@ -535,7 +548,7 @@ describe("AudioEffectsEditorModal", () => {
         openEffectDetail: vi.fn(),
       })
 
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="2n_z7lu" />)
 
       expect(screen.getByText("Fade In")).toBeInTheDocument()
     })
@@ -561,7 +574,7 @@ describe("AudioEffectsEditorModal", () => {
         openEffectDetail: vi.fn(),
       })
 
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="wf3fqk." />)
 
       const switches = screen.getAllByRole("switch")
       switches.forEach((switchEl) => {
@@ -570,7 +583,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should maintain correct order when applying multiple effects", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="_::.mvd" />)
 
       // Enable fade in (order 0)
       const fadeInSwitch = screen.getAllByRole("switch")[0]
@@ -607,7 +620,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should preserve effects state when switching tabs", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="3iyrzlv" />)
 
       // Enable fade in in basic tab
       const fadeInSwitch = screen.getAllByRole("switch")[0]
@@ -651,7 +664,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should apply effects from multiple tabs correctly", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="kpy.wtd" />)
 
       // Enable effects from different tabs
       // Basic tab: Enable fade in and equalizer
@@ -701,7 +714,7 @@ describe("AudioEffectsEditorModal", () => {
     })
 
     it("should apply all effect parameters correctly", () => {
-      render(<AudioEffectsEditorModal />)
+      render(<AudioEffectsEditorModal data-oid="uurm5ht" />)
 
       // Enable and configure fade in
       const fadeInSwitch = screen.getAllByRole("switch")[0]

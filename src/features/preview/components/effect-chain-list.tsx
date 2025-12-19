@@ -180,22 +180,26 @@ export function EffectChainList({ className }: EffectChainListProps) {
   }
 
   return (
-    <div className={className}>
-      <div className="flex items-center justify-between mb-4">
-        <h4 className="font-medium">Effect Chains</h4>
-        <Button size="sm" onClick={addNewChain}>
-          <Plus className="w-4 h-4 mr-1" />
+    <div className={className} data-oid="309ivb6">
+      <div className="flex items-center justify-between mb-4" data-oid="4ib39h1">
+        <h4 className="font-medium" data-oid="otyc-3q">
+          Effect Chains
+        </h4>
+        <Button size="sm" onClick={addNewChain} data-oid="bzol_e5">
+          <Plus className="w-4 h-4 mr-1" data-oid="q0t0gcw" />
           Add Chain
         </Button>
       </div>
 
       {chains.length === 0 ? (
-        <Card className="p-6 text-center text-muted-foreground">
-          <p>No effect chains yet</p>
-          <p className="text-sm mt-1">Add a chain to start applying effects</p>
+        <Card className="p-6 text-center text-muted-foreground" data-oid="f6wk8j4">
+          <p data-oid="cqxkhwv">No effect chains yet</p>
+          <p className="text-sm mt-1" data-oid="-csg-.h">
+            Add a chain to start applying effects
+          </p>
         </Card>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2" data-oid="17f6_p_">
           {chains.map((chain) => (
             <Card
               key={chain.id}
@@ -204,68 +208,94 @@ export function EffectChainList({ className }: EffectChainListProps) {
               onDragStart={() => handleDragStart(chain.id)}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, chain.id)}
+              data-oid="qo7p._g"
             >
-              <Collapsible open={expandedChains.has(chain.id)} onOpenChange={() => toggleChainExpanded(chain.id)}>
-                <div className="flex items-center gap-2 p-3">
-                  <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" />
+              <Collapsible
+                open={expandedChains.has(chain.id)}
+                onOpenChange={() => toggleChainExpanded(chain.id)}
+                data-oid="ksrk7i."
+              >
+                <div className="flex items-center gap-2 p-3" data-oid="vrlj_0d">
+                  <GripVertical className="w-4 h-4 text-muted-foreground cursor-grab" data-oid="7ud:2e_" />
 
-                  <Switch checked={chain.enabled} onCheckedChange={() => toggleChainEnabled(chain.id)} />
+                  <Switch
+                    checked={chain.enabled}
+                    onCheckedChange={() => toggleChainEnabled(chain.id)}
+                    data-oid="53uln22"
+                  />
 
-                  <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left">
+                  <CollapsibleTrigger className="flex items-center gap-2 flex-1 text-left" data-oid="xu-1ide">
                     {expandedChains.has(chain.id) ? (
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="w-4 h-4" data-oid="g20r07y" />
                     ) : (
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-4 h-4" data-oid="m91gzzi" />
                     )}
 
-                    <span className="font-medium">{chain.name}</span>
+                    <span className="font-medium" data-oid="64jnb45">
+                      {chain.name}
+                    </span>
 
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="text-xs" data-oid="qod1we:">
                       {chain.effects.length} effects
                     </Badge>
                   </CollapsibleTrigger>
 
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreVertical className="w-4 h-4" />
+                  <DropdownMenu data-oid="tsg.6:5">
+                    <DropdownMenuTrigger asChild data-oid="xr1h-0g">
+                      <Button variant="ghost" size="sm" data-oid="pkdkmwp">
+                        <MoreVertical className="w-4 h-4" data-oid="cc.jb9p" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => duplicateChain(chain.id)}>
-                        <Copy className="w-4 h-4 mr-2" />
+                    <DropdownMenuContent align="end" data-oid="a42aqwi">
+                      <DropdownMenuItem onClick={() => duplicateChain(chain.id)} data-oid="p2z.a:d">
+                        <Copy className="w-4 h-4 mr-2" data-oid="z41hiau" />
                         Duplicate
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => removeChain(chain.id)} className="text-destructive">
-                        <Trash2 className="w-4 h-4 mr-2" />
+                      <DropdownMenuSeparator data-oid="oc3b-pt" />
+                      <DropdownMenuItem
+                        onClick={() => removeChain(chain.id)}
+                        className="text-destructive"
+                        data-oid="qy0_ful"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" data-oid="0bg_0b8" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
 
-                <CollapsibleContent>
-                  <div className="px-3 pb-3">
+                <CollapsibleContent data-oid="4qe7qep">
+                  <div className="px-3 pb-3" data-oid="vdpw01:">
                     {chain.effects.length === 0 ? (
-                      <div className="text-center py-4 text-muted-foreground text-sm">No effects in this chain</div>
+                      <div className="text-center py-4 text-muted-foreground text-sm" data-oid="gsm:.9s">
+                        No effects in this chain
+                      </div>
                     ) : (
-                      <div className="space-y-2">
+                      <div className="space-y-2" data-oid="696uc7y">
                         {chain.effects.map((effect) => (
-                          <div key={effect.id} className="flex items-center gap-3 p-2 bg-muted/30 rounded-md">
+                          <div
+                            key={effect.id}
+                            className="flex items-center gap-3 p-2 bg-muted/30 rounded-md"
+                            data-oid="ufqkql:"
+                          >
                             <Switch
                               checked={effect.enabled}
                               onCheckedChange={() => toggleEffectEnabled(chain.id, effect.id)}
+                              data-oid="yezm_-7"
                             />
 
-                            <span className="text-lg">{getEffectIcon(effect.type)}</span>
+                            <span className="text-lg" data-oid="..ibm-3">
+                              {getEffectIcon(effect.type)}
+                            </span>
 
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium text-sm">{getEffectName(effect.type)}</div>
+                            <div className="flex-1 min-w-0" data-oid="12t5yz2">
+                              <div className="font-medium text-sm" data-oid="uc2k6:5">
+                                {getEffectName(effect.type)}
+                              </div>
                             </div>
 
-                            <div className="flex items-center gap-2 w-24">
-                              <span className="text-xs text-muted-foreground">
+                            <div className="flex items-center gap-2 w-24" data-oid="2zed_w6">
+                              <span className="text-xs text-muted-foreground" data-oid="c0p3e93">
                                 {Math.round((effect.intensity || 1) * 100)}%
                               </span>
                               <Slider
@@ -274,6 +304,7 @@ export function EffectChainList({ className }: EffectChainListProps) {
                                 max={100}
                                 step={1}
                                 className="w-16"
+                                data-oid="tea5bt."
                               />
                             </div>
                           </div>

@@ -77,16 +77,18 @@ export function UniversalList<T extends ListItem>({
   // Обработка состояний загрузки и ошибок
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-muted-foreground">{t("common.loading")}</div>
+      <div className="flex h-full items-center justify-center" data-oid="jk._09-">
+        <div className="text-muted-foreground" data-oid="9l-x1ey">
+          {t("common.loading")}
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-red-500">
+      <div className="flex h-full items-center justify-center" data-oid="n4-_i78">
+        <div className="text-red-500" data-oid="dgv479n">
           {t("common.error")}: {error.message}
         </div>
       </div>
@@ -115,7 +117,7 @@ export function UniversalList<T extends ListItem>({
                       ? "subtitles"
                       : "media"
 
-    return <NoFiles type={mediaType} onImport={adapter.importHandlers?.importFile} />
+    return <NoFiles type={mediaType} onImport={adapter.importHandlers?.importFile} data-oid="hjwon2:" />
   }
 
   // Если после фильтрации нет элементов
@@ -141,16 +143,16 @@ export function UniversalList<T extends ListItem>({
                       : "media"
 
     return (
-      <div className="flex h-full flex-col">
-        <NoFiles type={mediaType} onImport={adapter.importHandlers?.importFile} />
+      <div className="flex h-full flex-col" data-oid="u3yx-9a">
+        <NoFiles type={mediaType} onImport={adapter.importHandlers?.importFile} data-oid="ad1sf8c" />
       </div>
     )
   }
 
   // Рендерим группы
   return (
-    <div className={cn("flex h-full flex-col", className)}>
-      <div className="flex-1 overflow-auto">
+    <div className={cn("flex h-full flex-col", className)} data-oid="0forak-">
+      <div className="flex-1 overflow-auto" data-oid="1b8rdhl">
         {groupedItems.map((group, index) => (
           <ContentGroup<T>
             key={`${group.title}-${index}`}
@@ -168,8 +170,10 @@ export function UniversalList<T extends ListItem>({
                 isSelected={false}
                 isFavorite={adapter.isFavorite?.(item) || false}
                 onToggleFavorite={() => {}}
+                data-oid="-bvhq3-"
               />
             )}
+            data-oid="r:r:33w"
           />
         ))}
       </div>

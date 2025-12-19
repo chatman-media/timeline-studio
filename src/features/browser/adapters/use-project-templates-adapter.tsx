@@ -60,38 +60,61 @@ const ProjectTemplatePreviewWrapper: React.FC<PreviewComponentProps<ProjectTempl
       <div
         className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
         onClick={handleClick}
+        data-oid="o4t06h4"
       >
         {/* Template preview thumbnail */}
-        <div className="shrink-0 w-16 h-9 bg-linear-to-br from-blue-500 to-purple-600 rounded overflow-hidden relative flex items-center justify-center">
+        <div
+          className="shrink-0 w-16 h-9 bg-linear-to-br from-blue-500 to-purple-600 rounded overflow-hidden relative flex items-center justify-center"
+          data-oid="x:lxncc"
+        >
           {template.thumbnail ? (
-            <img src={template.thumbnail} alt={template.name.ru} className="w-full h-full object-cover" />
+            <img
+              src={template.thumbnail}
+              alt={template.name.ru}
+              className="w-full h-full object-cover"
+              data-oid="jqzvrr0"
+            />
           ) : (
-            <div className="text-white text-xs font-bold">{template.aspectRatio}</div>
+            <div className="text-white text-xs font-bold" data-oid="1i15:2k">
+              {template.aspectRatio}
+            </div>
           )}
 
           {/* Aspect ratio badge */}
-          <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 rounded">
+          <div className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 rounded" data-oid=".x5jqpj">
             {template.aspectRatio}
           </div>
         </div>
 
         {/* Template Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{template.name.ru}</div>
-          <div className="text-xs text-muted-foreground truncate">{template.description?.ru || categoryLabel}</div>
+        <div className="flex-1 min-w-0" data-oid="adnew-v">
+          <div className="font-medium text-sm truncate" data-oid="1djoaar">
+            {template.name.ru}
+          </div>
+          <div className="text-xs text-muted-foreground truncate" data-oid="1armd93">
+            {template.description?.ru || categoryLabel}
+          </div>
         </div>
 
         {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground">{categoryLabel}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="cux-b4p">
+          {categoryLabel}
+        </div>
 
         {/* Platform */}
-        <div className="shrink-0 text-xs text-muted-foreground">{platformLabel}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="m-xxfdu">
+          {platformLabel}
+        </div>
 
         {/* Duration */}
-        <div className="shrink-0 text-xs text-muted-foreground">{formatDuration(template.estimatedDuration)}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="9sz79gx">
+          {formatDuration(template.estimatedDuration)}
+        </div>
 
         {/* Sections count */}
-        <div className="shrink-0 text-xs text-muted-foreground">{template.structure.sections.length} sections</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="wdw6qlu">
+          {template.structure.sections.length} sections
+        </div>
       </div>
     )
   }
@@ -101,38 +124,55 @@ const ProjectTemplatePreviewWrapper: React.FC<PreviewComponentProps<ProjectTempl
     <div
       className="group cursor-pointer rounded-lg border overflow-hidden transition-all hover:border-primary hover:shadow-md"
       onClick={handleClick}
+      data-oid="5tycisz"
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+      <div
+        className="relative aspect-video bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center"
+        data-oid="37c5my-"
+      >
         {template.thumbnail ? (
-          <img src={template.thumbnail} alt={template.name.ru} className="w-full h-full object-cover" />
+          <img
+            src={template.thumbnail}
+            alt={template.name.ru}
+            className="w-full h-full object-cover"
+            data-oid="oo4b4_e"
+          />
         ) : (
-          <div className="text-white text-2xl font-bold">{template.aspectRatio}</div>
+          <div className="text-white text-2xl font-bold" data-oid="ebk4b1h">
+            {template.aspectRatio}
+          </div>
         )}
 
         {/* Aspect ratio badge */}
-        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded" data-oid="qcqcuta">
           {template.aspectRatio}
         </div>
 
         {/* Duration badge */}
-        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded" data-oid="2nye65h">
           {formatDuration(template.estimatedDuration)}
         </div>
       </div>
 
       {/* Info */}
-      <div className="p-3">
-        <div className="font-medium text-sm mb-1 truncate">{template.name.ru}</div>
-        <div className="text-xs text-muted-foreground mb-2 line-clamp-2">
+      <div className="p-3" data-oid="pnj3fa1">
+        <div className="font-medium text-sm mb-1 truncate" data-oid="yn2ol4g">
+          {template.name.ru}
+        </div>
+        <div className="text-xs text-muted-foreground mb-2 line-clamp-2" data-oid="d9pn5ib">
           {template.description?.ru || categoryLabel}
         </div>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1">
-          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">{categoryLabel}</span>
-          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">{platformLabel}</span>
-          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">
+        <div className="flex flex-wrap gap-1" data-oid="8-8a488">
+          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid="g-gg.1.">
+            {categoryLabel}
+          </span>
+          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid=".no8.pl">
+            {platformLabel}
+          </span>
+          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid="plajov.">
             {template.structure.sections.length} частей
           </span>
         </div>
@@ -200,6 +240,7 @@ export function useProjectTemplatesAdapter(): ListAdapter<ProjectTemplateListIte
           ...(template.tags?.ru || []),
           ...(template.tags?.en || []),
         ]
+
         return texts.filter(Boolean)
       },
 

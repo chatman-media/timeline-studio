@@ -78,10 +78,18 @@ export function AppInitProvider({ children, fallback = null }: AppInitProviderPr
   // Блокируем рендеринг children до завершения инициализации
   // Это гарантирует, что DI контейнер будет готов для downstream провайдеров
   if (!state.initialized) {
-    return <AppInitContext.Provider value={state}>{fallback}</AppInitContext.Provider>
+    return (
+      <AppInitContext.Provider value={state} data-oid="i9f3hnr">
+        {fallback}
+      </AppInitContext.Provider>
+    )
   }
 
-  return <AppInitContext.Provider value={state}>{children}</AppInitContext.Provider>
+  return (
+    <AppInitContext.Provider value={state} data-oid="vn_n5b0">
+      {children}
+    </AppInitContext.Provider>
+  )
 }
 
 /**

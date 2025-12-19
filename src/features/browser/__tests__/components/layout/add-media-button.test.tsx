@@ -76,17 +76,19 @@ vi.mock("react-i18next", () => ({
 // Мокаем Lucide иконки
 vi.mock("lucide-react", () => ({
   Plus: ({ className, strokeWidth }: any) => (
-    <div data-testid="plus-icon" className={className} data-stroke-width={strokeWidth}>
+    <div data-testid="plus-icon" className={className} data-stroke-width={strokeWidth} data-oid="3anl0pp">
       Plus Icon
     </div>
   ),
+
   Check: ({ className, strokeWidth }: any) => (
-    <div data-testid="check-icon" className={className} data-stroke-width={strokeWidth}>
+    <div data-testid="check-icon" className={className} data-stroke-width={strokeWidth} data-oid="_r8ed5p">
       Check Icon
     </div>
   ),
+
   X: ({ className, strokeWidth }: any) => (
-    <div data-testid="x-icon" className={className} data-stroke-width={strokeWidth}>
+    <div data-testid="x-icon" className={className} data-stroke-width={strokeWidth} data-oid=":94e8a3">
       X Icon
     </div>
   ),
@@ -133,7 +135,7 @@ describe("AddMediaButton", () => {
 
   it("should render add button when isAdded is false", () => {
     // Рендерим компонент
-    render(<AddMediaButton resource={testResource} type="media" size={150} />)
+    render(<AddMediaButton resource={testResource} type="media" size={150} data-oid="pny8cyj" />)
 
     // Проверяем, что отображается иконка Plus
     expect(screen.getByTestId("plus-icon")).toBeInTheDocument()
@@ -152,7 +154,7 @@ describe("AddMediaButton", () => {
     mockUseResourcesReturn.isAdded.mockReturnValue(true)
 
     // Рендерим компонент
-    render(<AddMediaButton resource={testResource} type="media" size={150} />)
+    render(<AddMediaButton resource={testResource} type="media" size={150} data-oid="5o:x2rn" />)
 
     // Проверяем, что отображается иконка Check
     expect(screen.getByTestId("check-icon")).toBeInTheDocument()
@@ -170,7 +172,7 @@ describe("AddMediaButton", () => {
     mockUseResourcesReturn.isAdded.mockReturnValue(false)
 
     // Рендерим компонент
-    render(<AddMediaButton resource={testResource} type="media" size={150} />)
+    render(<AddMediaButton resource={testResource} type="media" size={150} data-oid="sfxd8i_" />)
 
     // Наводим мышь на кнопку (необходимо для срабатывания логики)
     const button = screen.getByTitle("Add to timeline")
@@ -193,7 +195,7 @@ describe("AddMediaButton", () => {
     mockUseResourcesReturn.isAdded.mockReturnValue(true)
 
     // Рендерим компонент
-    render(<AddMediaButton resource={testResource} type="media" size={150} />)
+    render(<AddMediaButton resource={testResource} type="media" size={150} data-oid="td.jih6" />)
 
     // Проверяем, что изначально отображается иконка Check
     expect(screen.getByTestId("check-icon")).toBeInTheDocument()
@@ -223,7 +225,7 @@ describe("AddMediaButton", () => {
     mockUseResourcesReturn.isAdded.mockReturnValue(true)
 
     // Рендерим компонент
-    const { rerender } = render(<AddMediaButton resource={testResource} type="media" size={150} />)
+    const { rerender } = render(<AddMediaButton resource={testResource} type="media" size={150} data-oid="_vzw16g" />)
 
     // Продвигаем таймеры вперед, чтобы сбросить флаг isRecentlyAdded (1 секунда из компонента)
     act(() => {
@@ -231,7 +233,7 @@ describe("AddMediaButton", () => {
     })
 
     // Перерисовываем чтобы убедиться что состояние обновилось
-    rerender(<AddMediaButton resource={testResource} type="media" size={150} />)
+    rerender(<AddMediaButton resource={testResource} type="media" size={150} data-oid="32pekfi" />)
 
     // Получаем кнопку
     const button = screen.getByTitle("Added to timeline")

@@ -78,6 +78,7 @@ describe("EffectParameterControls", () => {
         animatable: true,
       },
     ],
+
     presets: [],
     processors: {
       ffmpeg: {
@@ -96,8 +97,8 @@ describe("EffectParameterControls", () => {
 
   it("renders parameter controls for effect with params", () => {
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="cj1wtek">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="gjackft" />
       </BrowserProviders>,
     )
 
@@ -112,8 +113,12 @@ describe("EffectParameterControls", () => {
     const effectWithoutParams = { ...mockEffect, parameters: [] as any }
 
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={effectWithoutParams} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="j.h17wj">
+        <EffectParameterControls
+          effect={effectWithoutParams}
+          onParametersChange={mockOnParametersChange}
+          data-oid="gtzqeha"
+        />
       </BrowserProviders>,
     )
 
@@ -126,8 +131,12 @@ describe("EffectParameterControls", () => {
     const effectWithEmptyParams = { ...mockEffect, parameters: [] }
 
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={effectWithEmptyParams} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="f2.rb7q">
+        <EffectParameterControls
+          effect={effectWithEmptyParams}
+          onParametersChange={mockOnParametersChange}
+          data-oid="2xw1ph8"
+        />
       </BrowserProviders>,
     )
 
@@ -138,8 +147,8 @@ describe("EffectParameterControls", () => {
 
   it("displays current parameter values", () => {
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="bj1lbx0">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="619op-s" />
       </BrowserProviders>,
     )
 
@@ -153,8 +162,8 @@ describe("EffectParameterControls", () => {
     const user = userEvent.setup()
 
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="p0-uf_e">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="b-me8tr" />
       </BrowserProviders>,
     )
 
@@ -173,8 +182,8 @@ describe("EffectParameterControls", () => {
     const user = userEvent.setup()
 
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="9jerd-r">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="n8r.38q" />
       </BrowserProviders>,
     )
 
@@ -192,11 +201,12 @@ describe("EffectParameterControls", () => {
 
   it("shows save preset button when onSavePreset is provided", () => {
     render(
-      <BrowserProviders>
+      <BrowserProviders data-oid="qqtyyfr">
         <EffectParameterControls
           effect={mockEffect}
           onParametersChange={mockOnParametersChange}
           onSavePreset={mockOnSavePreset}
+          data-oid=".66nhlf"
         />
       </BrowserProviders>,
     )
@@ -206,8 +216,8 @@ describe("EffectParameterControls", () => {
 
   it("does not show save preset button when onSavePreset is not provided", () => {
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="i-xgfhq">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="lr0ab4h" />
       </BrowserProviders>,
     )
 
@@ -219,11 +229,12 @@ describe("EffectParameterControls", () => {
     global.prompt = vi.fn().mockReturnValue("My Custom Preset")
 
     render(
-      <BrowserProviders>
+      <BrowserProviders data-oid="_ltrjme">
         <EffectParameterControls
           effect={mockEffect}
           onParametersChange={mockOnParametersChange}
           onSavePreset={mockOnSavePreset}
+          data-oid="ua6s_66"
         />
       </BrowserProviders>,
     )
@@ -246,11 +257,12 @@ describe("EffectParameterControls", () => {
     global.prompt = vi.fn().mockReturnValue(null)
 
     render(
-      <BrowserProviders>
+      <BrowserProviders data-oid="vh:vppm">
         <EffectParameterControls
           effect={mockEffect}
           onParametersChange={mockOnParametersChange}
           onSavePreset={mockOnSavePreset}
+          data-oid="s_hpqv9"
         />
       </BrowserProviders>,
     )
@@ -268,11 +280,12 @@ describe("EffectParameterControls", () => {
     global.prompt = vi.fn().mockReturnValue("   ")
 
     render(
-      <BrowserProviders>
+      <BrowserProviders data-oid="vtzy9:5">
         <EffectParameterControls
           effect={mockEffect}
           onParametersChange={mockOnParametersChange}
           onSavePreset={mockOnSavePreset}
+          data-oid=":d.9ppj"
         />
       </BrowserProviders>,
     )
@@ -300,18 +313,23 @@ describe("EffectParameterControls", () => {
     }
 
     const { rerender } = render(
-      <BrowserProviders>
-        <EffectParameterControls effect={effectWithPresets} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="0_wvv3b">
+        <EffectParameterControls
+          effect={effectWithPresets}
+          onParametersChange={mockOnParametersChange}
+          data-oid="ulefy34"
+        />
       </BrowserProviders>,
     )
 
     // Re-render with selectedPreset
     rerender(
-      <BrowserProviders>
+      <BrowserProviders data-oid="heb43yu">
         <EffectParameterControls
           effect={effectWithPresets}
           onParametersChange={mockOnParametersChange}
           selectedPreset="light"
+          data-oid="6nkmhpv"
         />
       </BrowserProviders>,
     )
@@ -328,8 +346,8 @@ describe("EffectParameterControls", () => {
 
   it("displays current parameter values in info section", () => {
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="20jj:qg">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="4r194ia" />
       </BrowserProviders>,
     )
 
@@ -342,8 +360,8 @@ describe("EffectParameterControls", () => {
 
   it("shows tooltips with parameter descriptions", async () => {
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="_hc8.3i">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="d4t.15a" />
       </BrowserProviders>,
     )
 
@@ -371,8 +389,12 @@ describe("EffectParameterControls", () => {
     }
 
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={effectWithCustomParam} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid="x82i3gi">
+        <EffectParameterControls
+          effect={effectWithCustomParam}
+          onParametersChange={mockOnParametersChange}
+          data-oid="3nesxls"
+        />
       </BrowserProviders>,
     )
 
@@ -383,8 +405,8 @@ describe("EffectParameterControls", () => {
 
   it("uses correct language for labels and descriptions", () => {
     render(
-      <BrowserProviders>
-        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} />
+      <BrowserProviders data-oid=".0kuutg">
+        <EffectParameterControls effect={mockEffect} onParametersChange={mockOnParametersChange} data-oid="5j0euzk" />
       </BrowserProviders>,
     )
 

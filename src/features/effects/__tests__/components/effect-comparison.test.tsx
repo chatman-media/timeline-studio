@@ -17,7 +17,7 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
-    <button onClick={onClick} {...props}>
+    <button onClick={onClick} {...props} data-oid="1efu_6n">
       {children}
     </button>
   ),
@@ -34,14 +34,29 @@ vi.mock("@/components/ui/slider", () => ({
       max={max}
       step={step}
       {...props}
+      data-oid=".c093v3"
     />
   ),
 }))
 
 vi.mock("lucide-react", () => ({
-  Pause: () => <span data-testid="pause-icon">Pause</span>,
-  Play: () => <span data-testid="play-icon">Play</span>,
-  RotateCcw: () => <span data-testid="reset-icon">Reset</span>,
+  Pause: () => (
+    <span data-testid="pause-icon" data-oid="cc35uw9">
+      Pause
+    </span>
+  ),
+
+  Play: () => (
+    <span data-testid="play-icon" data-oid="i-bzj89">
+      Play
+    </span>
+  ),
+
+  RotateCcw: () => (
+    <span data-testid="reset-icon" data-oid="4cjj1oa">
+      Reset
+    </span>
+  ),
 }))
 
 vi.mock("../../utils/css-effects", () => ({
@@ -87,6 +102,7 @@ describe("EffectComparison", () => {
         animatable: true,
       },
     ],
+
     presets: [],
     processors: {
       css: {
@@ -151,7 +167,7 @@ describe("EffectComparison", () => {
 
   describe("Рендеринг", () => {
     it("должен отображать основные элементы", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="law7fqo" />)
 
       // Проверяем наличие видео элементов
       const videos = document.querySelectorAll("video")
@@ -164,7 +180,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен устанавливать правильные размеры контейнера", () => {
-      render(<EffectComparison effect={mockEffect} width={800} height={600} />)
+      render(<EffectComparison effect={mockEffect} width={800} height={600} data-oid="ty1uuu4" />)
 
       const container = document.querySelector(".relative.overflow-hidden")
       expect(container).toHaveStyle({
@@ -174,14 +190,14 @@ describe("EffectComparison", () => {
     })
 
     it("должен отображать лейблы оригинала и эффекта", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="6nx4_cb" />)
 
       expect(screen.getByText("Оригинал")).toBeInTheDocument()
       expect(screen.getByText("С эффектом")).toBeInTheDocument()
     })
 
     it("должен использовать переданный путь к видео", () => {
-      render(<EffectComparison effect={mockEffect} videoPath="/custom-video.mp4" />)
+      render(<EffectComparison effect={mockEffect} videoPath="/custom-video.mp4" data-oid="1pr.wqz" />)
 
       const videos = document.querySelectorAll("video")
       videos.forEach((video) => {
@@ -190,7 +206,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен использовать дефолтный путь к видео", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="80ddqjf" />)
 
       const videos = document.querySelectorAll("video")
       videos.forEach((video) => {
@@ -201,7 +217,7 @@ describe("EffectComparison", () => {
 
   describe("Применение эффектов", () => {
     it("должен применять CSS фильтры к видео с эффектом", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="8roro3i" />)
 
       expect(vi.mocked(generateCSSFilterForEffect)).toHaveBeenCalledWith(mockEffect)
 
@@ -212,7 +228,7 @@ describe("EffectComparison", () => {
     it("должен применять кастомные параметры к эффекту", () => {
       const customParams = { intensity: 75, brightness: 120 }
 
-      render(<EffectComparison effect={mockEffect} customParams={customParams} />)
+      render(<EffectComparison effect={mockEffect} customParams={customParams} data-oid="57u3l-1" />)
 
       const expectedEffect = {
         ...mockEffect,
@@ -228,7 +244,7 @@ describe("EffectComparison", () => {
     it("должен применять скорость воспроизведения", () => {
       vi.mocked(getPlaybackRate).mockReturnValue(0.8)
 
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="xlkaoj5" />)
 
       expect(vi.mocked(getPlaybackRate)).toHaveBeenCalledWith(mockEffect)
 
@@ -237,12 +253,12 @@ describe("EffectComparison", () => {
     })
 
     it("должен обновлять эффект при изменении параметров", () => {
-      const { rerender } = render(<EffectComparison effect={mockEffect} />)
+      const { rerender } = render(<EffectComparison effect={mockEffect} data-oid="u7fuqs5" />)
 
       expect(vi.mocked(generateCSSFilterForEffect)).toHaveBeenCalledTimes(1)
 
       const newCustomParams = { brightness: 150 }
-      rerender(<EffectComparison effect={mockEffect} customParams={newCustomParams} />)
+      rerender(<EffectComparison effect={mockEffect} customParams={newCustomParams} data-oid="n2oeedq" />)
 
       expect(vi.mocked(generateCSSFilterForEffect)).toHaveBeenCalledTimes(2)
     })
@@ -250,9 +266,11 @@ describe("EffectComparison", () => {
 
   describe("Воспроизведение видео", () => {
     it("должен начинать воспроизведение при клике на Play", async () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="simaufu" />)
 
-      const playButton = screen.getByRole("button", { name: /play|воспроизвести/i })
+      const playButton = screen.getByRole("button", {
+        name: /play|воспроизвести/i,
+      })
       fireEvent.click(playButton)
 
       // Кнопка должна изменится на паузу
@@ -262,9 +280,11 @@ describe("EffectComparison", () => {
     })
 
     it("должен ставить на паузу при клике на Pause", async () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="0:d-4c5" />)
 
-      const playButton = screen.getByRole("button", { name: /play|воспроизвести/i })
+      const playButton = screen.getByRole("button", {
+        name: /play|воспроизвести/i,
+      })
 
       // Сначала запускаем воспроизведение
       fireEvent.click(playButton)
@@ -284,10 +304,12 @@ describe("EffectComparison", () => {
     })
 
     it("должен сбрасывать видео при клике на Reset", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="vzffkds" />)
 
       // Сначала воспроизводим
-      const playButton = screen.getByRole("button", { name: /play|воспроизвести/i })
+      const playButton = screen.getByRole("button", {
+        name: /play|воспроизвести/i,
+      })
       fireEvent.click(playButton)
 
       const resetButton = screen.getByRole("button", { name: /reset|сброс/i })
@@ -298,7 +320,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен синхронизировать время воспроизведения между видео", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="5xd2kl_" />)
 
       // Проверяем что компонент рендерится с двумя видео элементами
       const videos = document.querySelectorAll("video")
@@ -308,7 +330,7 @@ describe("EffectComparison", () => {
 
   describe("Управление разделителем", () => {
     it("должен устанавливать начальную позицию разделителя на 50%", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="moevsyb" />)
 
       const slider = screen.getByTestId("slider")
       expect(slider).toHaveValue("50")
@@ -318,7 +340,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен изменять позицию разделителя через слайдер", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="y7vfp5f" />)
 
       const slider = screen.getByTestId("slider")
       fireEvent.change(slider, { target: { value: "75" } })
@@ -333,7 +355,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен начинать перетаскивание при mousedown на контейнере", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="jzaf0zt" />)
 
       const container = document.querySelector(".relative.overflow-hidden")
       expect(container).toBeInTheDocument()
@@ -348,7 +370,7 @@ describe("EffectComparison", () => {
     it("должен обновлять позицию при перетаскивании мышью", () => {
       const addEventListenerSpy = vi.spyOn(window, "addEventListener")
 
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="5bo_78n" />)
 
       const container = document.querySelector(".relative.overflow-hidden")
       fireEvent.mouseDown(container!)
@@ -359,7 +381,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен применять clipPath для видео с эффектом", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="qjwe34." />)
 
       const effectVideoContainer = document.querySelector('[style*="clip-path"]')
       expect(effectVideoContainer).toBeInTheDocument()
@@ -369,7 +391,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен обновлять clipPath при изменении позиции", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="y2to2ct" />)
 
       const slider = screen.getByTestId("slider")
       fireEvent.change(slider, { target: { value: "30" } })
@@ -385,7 +407,7 @@ describe("EffectComparison", () => {
     it("должен очищать слушатели событий при размонтировании", () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener")
 
-      const { unmount } = render(<EffectComparison effect={mockEffect} />)
+      const { unmount } = render(<EffectComparison effect={mockEffect} data-oid="jhmp6vl" />)
       unmount()
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith("mousemove", expect.any(Function))
@@ -395,12 +417,12 @@ describe("EffectComparison", () => {
     it("должен корректно обрабатывать отсутствие видео элементов", () => {
       // Просто проверяем что компонент рендерится без ошибок
       expect(() => {
-        render(<EffectComparison effect={mockEffect} />)
+        render(<EffectComparison effect={mockEffect} data-oid="bjp7c7l" />)
       }).not.toThrow()
     })
 
     it("должен ограничивать позицию разделителя между 0 и 100", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="jbizc1e" />)
 
       const slider = screen.getByTestId("slider")
 
@@ -416,9 +438,11 @@ describe("EffectComparison", () => {
 
   describe("Состояние компонента", () => {
     it("должен сохранять состояние воспроизведения", async () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="5dy7o:q" />)
 
-      const playButton = screen.getByRole("button", { name: /play|воспроизвести/i })
+      const playButton = screen.getByRole("button", {
+        name: /play|воспроизвести/i,
+      })
       fireEvent.click(playButton)
 
       await waitFor(() => {
@@ -427,7 +451,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен сбрасывать состояние при reset", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="001v.3r" />)
 
       // Изменяем позицию слайдера
       const slider = screen.getByTestId("slider")
@@ -443,7 +467,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен корректно обрабатывать изменения эффекта", () => {
-      const { rerender } = render(<EffectComparison effect={mockEffect} />)
+      const { rerender } = render(<EffectComparison effect={mockEffect} data-oid="0roituk" />)
 
       const newEffect: VideoEffect = {
         ...mockEffect,
@@ -451,7 +475,7 @@ describe("EffectComparison", () => {
         name: { en: "New Effect", ru: "Новый эффект" },
       }
 
-      rerender(<EffectComparison effect={newEffect} />)
+      rerender(<EffectComparison effect={newEffect} data-oid="vxest9o" />)
 
       expect(vi.mocked(generateCSSFilterForEffect)).toHaveBeenLastCalledWith(newEffect)
     })
@@ -459,7 +483,7 @@ describe("EffectComparison", () => {
 
   describe("Accessibility", () => {
     it("должен иметь правильную структуру для скринридеров", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="7i6l0sl" />)
 
       // Проверяем наличие кнопок с правильными ролями
       expect(screen.getByRole("button", { name: /play|воспроизвести/i })).toBeInTheDocument()
@@ -470,7 +494,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен отображать текущее значение позиции", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="cp8wxk2" />)
 
       expect(screen.getByText("50%")).toBeInTheDocument()
       expect(screen.getByText(/позиция/i)).toBeInTheDocument()
@@ -479,15 +503,21 @@ describe("EffectComparison", () => {
 
   describe("Синхронизация видео", () => {
     it("должен синхронизировать видео когда разница времени > 0.1", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="im06:-v" />)
 
       const videos = document.querySelectorAll("video")
       const originalVideo = videos[0]
       const effectVideo = videos[1]
 
       // Устанавливаем разное время
-      Object.defineProperty(originalVideo, "currentTime", { value: 5.0, writable: true })
-      Object.defineProperty(effectVideo, "currentTime", { value: 4.8, writable: true })
+      Object.defineProperty(originalVideo, "currentTime", {
+        value: 5.0,
+        writable: true,
+      })
+      Object.defineProperty(effectVideo, "currentTime", {
+        value: 4.8,
+        writable: true,
+      })
 
       // Симулируем событие timeupdate
       fireEvent(originalVideo, new Event("timeupdate"))
@@ -497,15 +527,21 @@ describe("EffectComparison", () => {
     })
 
     it("не должен синхронизировать видео когда разница времени < 0.1", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="eu_9nc3" />)
 
       const videos = document.querySelectorAll("video")
       const originalVideo = videos[0]
       const effectVideo = videos[1]
 
       // Устанавливаем близкое время
-      Object.defineProperty(originalVideo, "currentTime", { value: 5.0, writable: true })
-      Object.defineProperty(effectVideo, "currentTime", { value: 4.95, writable: true })
+      Object.defineProperty(originalVideo, "currentTime", {
+        value: 5.0,
+        writable: true,
+      })
+      Object.defineProperty(effectVideo, "currentTime", {
+        value: 4.95,
+        writable: true,
+      })
 
       // Симулируем событие timeupdate
       fireEvent(originalVideo, new Event("timeupdate"))
@@ -516,7 +552,7 @@ describe("EffectComparison", () => {
 
     it("должен корректно обрабатывать отсутствие видео элементов при синхронизации", () => {
       // Мокаем refs чтобы они возвращали null
-      const { container } = render(<EffectComparison effect={mockEffect} />)
+      const { container } = render(<EffectComparison effect={mockEffect} data-oid="m:i0xnb" />)
 
       // Удаляем video элементы из DOM
       const videos = container.querySelectorAll("video")
@@ -532,7 +568,7 @@ describe("EffectComparison", () => {
 
   describe("Обработка перетаскивания мыши", () => {
     it("должен игнорировать mousemove когда не в режиме перетаскивания", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="adp3-je" />)
 
       const slider = screen.getByTestId("slider")
       const initialValue = slider.getAttribute("value")
@@ -551,7 +587,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен игнорировать mousemove когда containerRef недоступен", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="f-aw.3j" />)
 
       const container = document.querySelector(".relative.overflow-hidden")
       const slider = screen.getByTestId("slider")
@@ -578,7 +614,7 @@ describe("EffectComparison", () => {
     })
 
     it("должен правильно рассчитывать позицию при mousemove на краях", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="wv7td8:" />)
 
       const container = document.querySelector(".relative.overflow-hidden")
       const slider = screen.getByTestId("slider")
@@ -610,7 +646,7 @@ describe("EffectComparison", () => {
     it("должен корректно завершать перетаскивание при mouseup", () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener")
 
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="_t3bnkv" />)
 
       const container = document.querySelector(".relative.overflow-hidden")
 
@@ -631,21 +667,21 @@ describe("EffectComparison", () => {
       let renderCount = 0
       const TestComponent = () => {
         renderCount++
-        return <EffectComparison effect={mockEffect} />
+        return <EffectComparison effect={mockEffect} data-oid="2xzg2n." />
       }
 
-      const { rerender } = render(<TestComponent />)
+      const { rerender } = render(<TestComponent data-oid="7yw14-8" />)
       expect(renderCount).toBe(1)
 
       // Повторный рендер с теми же пропсами
-      rerender(<TestComponent />)
+      rerender(<TestComponent data-oid="g4kvl79" />)
 
       // Рендер должен произойти, но это нормально для React
       expect(renderCount).toBe(2)
     })
 
     it("должен эффективно обрабатывать частые изменения позиции", () => {
-      render(<EffectComparison effect={mockEffect} />)
+      render(<EffectComparison effect={mockEffect} data-oid="6w4vb4k" />)
 
       const slider = screen.getByTestId("slider")
 

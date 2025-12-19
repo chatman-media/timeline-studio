@@ -15,7 +15,7 @@ describe("ExportPresets", () => {
 
   describe("Basic rendering", () => {
     it("should render all export presets", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="vtg-na6" />)
 
       // Check that all presets are rendered
       expect(screen.getByText("Custom Export")).toBeInTheDocument()
@@ -29,7 +29,7 @@ describe("ExportPresets", () => {
     })
 
     it("should render correct number of preset buttons", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="m1-.fuk" />)
 
       const buttons = screen.getAllByRole("button")
       expect(buttons).toHaveLength(EXPORT_PRESETS.length)
@@ -37,14 +37,14 @@ describe("ExportPresets", () => {
 
     it("should render without crashing", () => {
       expect(() =>
-        render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />),
+        render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="boyspex" />),
       ).not.toThrow()
     })
   })
 
   describe("Preset selection", () => {
     it("should highlight selected preset", () => {
-      render(<ExportPresets selectedPresetId="h264-master" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="h264-master" onSelectPreset={mockOnSelectPreset} data-oid="qn43ugr" />)
 
       const h264Button = screen.getByText("H.264 Master").closest("button")
       const customButton = screen.getByText("Custom Export").closest("button")
@@ -55,7 +55,7 @@ describe("ExportPresets", () => {
     })
 
     it("should call onSelectPreset when clicking a preset", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="bytw.m5" />)
 
       const h264Button = screen.getByText("H.264 Master")
       fireEvent.click(h264Button)
@@ -67,7 +67,7 @@ describe("ExportPresets", () => {
     })
 
     it("should handle multiple preset selections", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="g1.b6-w" />)
 
       // Click multiple presets
       fireEvent.click(screen.getByText("YouTube 1080p"))
@@ -158,7 +158,7 @@ describe("ExportPresets", () => {
 
   describe("Visual presentation", () => {
     it("should render preset icons", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="q0z5z1c" />)
 
       // Check that buttons contain icon containers
       const buttons = screen.getAllByRole("button")
@@ -169,14 +169,14 @@ describe("ExportPresets", () => {
     })
 
     it("should show hover styles on buttons", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="_pq4:.s" />)
 
       const button = screen.getByText("H.264 Master").closest("button")
       expect(button).toHaveClass("hover:bg-accent")
     })
 
     it("should have proper accessible focus styles", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="tlfz7ba" />)
 
       const button = screen.getByText("Custom Export").closest("button")
       expect(button).toHaveClass("focus:outline-none")
@@ -186,7 +186,12 @@ describe("ExportPresets", () => {
 
     it("should render with custom className", () => {
       const { container } = render(
-        <ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} className="custom-class" />,
+        <ExportPresets
+          selectedPresetId="custom"
+          onSelectPreset={mockOnSelectPreset}
+          className="custom-class"
+          data-oid="rvwzrr9"
+        />,
       )
 
       const mainContainer = container.firstChild
@@ -196,14 +201,14 @@ describe("ExportPresets", () => {
 
   describe("Accessibility", () => {
     it("should have proper button roles", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="jlpc-ry" />)
 
       const buttons = screen.getAllByRole("button")
       expect(buttons).toHaveLength(EXPORT_PRESETS.length)
     })
 
     it("should be keyboard navigable", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid=".4.qkdz" />)
 
       const firstButton = screen.getByText("Custom Export").closest("button")
       firstButton?.focus()
@@ -211,7 +216,7 @@ describe("ExportPresets", () => {
     })
 
     it("should have readable text content", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="chhg8-." />)
 
       // All preset names should be visible
       EXPORT_PRESETS.forEach((preset) => {
@@ -222,21 +227,25 @@ describe("ExportPresets", () => {
 
   describe("Component structure", () => {
     it("should have scrollable container", () => {
-      const { container } = render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      const { container } = render(
+        <ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="3udf1dm" />,
+      )
 
       const scrollContainer = container.querySelector(".overflow-x-auto")
       expect(scrollContainer).toBeInTheDocument()
     })
 
     it("should have proper spacing and layout classes", () => {
-      const { container } = render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      const { container } = render(
+        <ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="-223tzg" />,
+      )
 
       const mainContainer = container.firstChild
       expect(mainContainer).toHaveClass("flex")
     })
 
     it("should render buttons with minimum width", () => {
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={mockOnSelectPreset} data-oid="xnllpkq" />)
 
       const buttons = screen.getAllByRole("button")
       buttons.forEach((button) => {
@@ -248,13 +257,19 @@ describe("ExportPresets", () => {
   describe("Edge cases", () => {
     it("should handle invalid selectedPresetId gracefully", () => {
       expect(() =>
-        render(<ExportPresets selectedPresetId="non-existent-preset" onSelectPreset={mockOnSelectPreset} />),
+        render(
+          <ExportPresets
+            selectedPresetId="non-existent-preset"
+            onSelectPreset={mockOnSelectPreset}
+            data-oid="y-h:s__"
+          />,
+        ),
       ).not.toThrow()
     })
 
     it("should handle empty onSelectPreset function", () => {
       const emptyFunction = vi.fn()
-      render(<ExportPresets selectedPresetId="custom" onSelectPreset={emptyFunction} />)
+      render(<ExportPresets selectedPresetId="custom" onSelectPreset={emptyFunction} data-oid="ot6sgcw" />)
 
       const button = screen.getByText("Custom Export")
       fireEvent.click(button)

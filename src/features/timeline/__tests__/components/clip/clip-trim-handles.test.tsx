@@ -42,7 +42,7 @@ const createDefaultProps = () => ({
 
 // Провайдер тестов с EditModeProvider
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  return <EditModeProvider>{children}</EditModeProvider>
+  return <EditModeProvider data-oid="p3biyqc">{children}</EditModeProvider>
 }
 
 describe("ClipTrimHandles", () => {
@@ -59,7 +59,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockReturnValue(false)
       const props = createDefaultProps()
 
-      const { container } = render(<ClipTrimHandles {...props} />)
+      const { container } = render(<ClipTrimHandles {...props} data-oid="wylpjvj" />)
 
       expect(container.firstChild).toBeNull()
     })
@@ -68,7 +68,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="mglep_e" />)
 
       expect(screen.getByTestId("trim-handle-start")).toBeInTheDocument()
       expect(screen.getByTestId("trim-handle-end")).toBeInTheDocument()
@@ -78,7 +78,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.RIPPLE)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="096p:zl" />)
 
       expect(screen.getByTestId("trim-handle-start")).toBeInTheDocument()
       expect(screen.getByTestId("trim-handle-end")).toBeInTheDocument()
@@ -88,7 +88,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="_ng2r30" />)
 
       expect(screen.getByTestId("trim-handle-start")).toBeInTheDocument()
       expect(screen.getByTestId("trim-handle-end")).toBeInTheDocument()
@@ -98,7 +98,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = { ...createDefaultProps(), isSelected: false }
 
-      const { container } = render(<ClipTrimHandles {...props} />)
+      const { container } = render(<ClipTrimHandles {...props} data-oid="q1ivsgp" />)
 
       expect(container.firstChild).toBeNull()
     })
@@ -107,7 +107,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = { ...createDefaultProps(), className: "custom-class" }
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="83k19cq" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
       expect(startHandle).toHaveClass("custom-class")
@@ -119,7 +119,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="_zg4fyx" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
       fireEvent.mouseDown(startHandle, { clientX: 100 })
@@ -131,7 +131,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="xoez8u-" />)
 
       const endHandle = screen.getByTestId("trim-handle-end")
       fireEvent.mouseDown(endHandle, { clientX: 200 })
@@ -143,7 +143,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="tmy3_lh" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
 
@@ -171,7 +171,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = { ...createDefaultProps(), disabled: true }
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="of03amy" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
       fireEvent.mouseDown(startHandle, { clientX: 100 })
@@ -185,7 +185,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="hz_3449" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
 
@@ -205,7 +205,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="9puchdg" />)
 
       const endHandle = screen.getByTestId("trim-handle-end")
 
@@ -225,7 +225,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="lqnhub2" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
 
@@ -244,7 +244,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = createDefaultProps()
 
-      const { container } = render(<ClipTrimHandles {...props} />)
+      const { container } = render(<ClipTrimHandles {...props} data-oid="9zfms70" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
 
@@ -268,7 +268,7 @@ describe("ClipTrimHandles", () => {
       mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
       const props = { ...createDefaultProps(), disabled: true }
 
-      render(<ClipTrimHandles {...props} />)
+      render(<ClipTrimHandles {...props} data-oid="_wf0ctt" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
       const endHandle = screen.getByTestId("trim-handle-end")
@@ -286,7 +286,7 @@ describe("ClipTrimHandles", () => {
       const addEventListenerSpy = vi.spyOn(document, "addEventListener")
       const removeEventListenerSpy = vi.spyOn(document, "removeEventListener")
 
-      const { unmount } = render(<ClipTrimHandles {...props} />)
+      const { unmount } = render(<ClipTrimHandles {...props} data-oid="48l.cai" />)
 
       const startHandle = screen.getByTestId("trim-handle-start")
 
@@ -317,7 +317,7 @@ describe("RippleHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
     const props = createDefaultProps()
 
-    render(<RippleHandles {...props} />)
+    render(<RippleHandles {...props} data-oid="tklkle1" />)
 
     expect(screen.getByTestId("trim-handle-start")).toBeInTheDocument()
     expect(screen.getByTestId("trim-handle-end")).toBeInTheDocument()
@@ -327,7 +327,7 @@ describe("RippleHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.RIPPLE)
     const props = createDefaultProps()
 
-    const { container } = render(<RippleHandles {...props} />)
+    const { container } = render(<RippleHandles {...props} data-oid="0_clh2j" />)
 
     const handles = container.querySelector(".border-orange-500")
     expect(handles).toBeInTheDocument()
@@ -337,7 +337,7 @@ describe("RippleHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.RIPPLE)
     const props = { ...createDefaultProps(), isSelected: true }
 
-    const { container } = render(<RippleHandles {...props} showRippleIndicator={true} />)
+    const { container } = render(<RippleHandles {...props} showRippleIndicator={true} data-oid="0copcic" />)
 
     const indicator = container.querySelector("svg")
     expect(indicator).toBeInTheDocument()
@@ -347,7 +347,7 @@ describe("RippleHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.RIPPLE)
     const props = { ...createDefaultProps(), isSelected: true }
 
-    const { container } = render(<RippleHandles {...props} showRippleIndicator={false} />)
+    const { container } = render(<RippleHandles {...props} showRippleIndicator={false} data-oid="ltv-:jy" />)
 
     const indicator = container.querySelector("svg")
     expect(indicator).not.toBeInTheDocument()
@@ -357,7 +357,7 @@ describe("RippleHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.RIPPLE)
     const props = { ...createDefaultProps(), isSelected: false }
 
-    const { container } = render(<RippleHandles {...props} showRippleIndicator={true} />)
+    const { container } = render(<RippleHandles {...props} showRippleIndicator={true} data-oid="kge1lgn" />)
 
     const indicator = container.querySelector("svg")
     expect(indicator).not.toBeInTheDocument()
@@ -384,7 +384,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.TRIM)
     const props = createRollProps()
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="octh-f9" />)
 
     expect(container.firstChild).toBeNull()
   })
@@ -393,7 +393,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = { ...createRollProps(), isActive: false }
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="l345cj2" />)
 
     expect(container.firstChild).toBeNull()
   })
@@ -402,7 +402,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = createRollProps()
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="7f.byot" />)
 
     const handle = container.firstChild as HTMLElement
     expect(handle).toBeInTheDocument()
@@ -413,7 +413,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = createRollProps()
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="mbk.a-j" />)
 
     const handle = container.firstChild as HTMLElement
     fireEvent.mouseDown(handle, { clientX: 200 })
@@ -425,7 +425,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = createRollProps()
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="k3inbda" />)
 
     const handle = container.firstChild as HTMLElement
 
@@ -445,7 +445,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = createRollProps()
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="se6epb5" />)
 
     const handle = container.firstChild as HTMLElement
 
@@ -461,7 +461,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = { ...createRollProps(), disabled: true }
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="8m4b3mn" />)
 
     const handle = container.firstChild as HTMLElement
     fireEvent.mouseDown(handle, { clientX: 200 })
@@ -473,7 +473,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = { ...createRollProps(), disabled: true }
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="p-4kuo3" />)
 
     const handle = container.firstChild as HTMLElement
     expect(handle).toHaveClass("cursor-not-allowed opacity-50")
@@ -483,7 +483,7 @@ describe("RollHandles", () => {
     mockIsEditMode.mockImplementation((mode: string) => mode === EDIT_MODES.ROLL)
     const props = createRollProps()
 
-    const { container } = render(<RollHandles {...props} />)
+    const { container } = render(<RollHandles {...props} data-oid="d4tnuwl" />)
 
     const handle = container.firstChild as HTMLElement
     expect(handle).toHaveClass("bg-purple-500/30")

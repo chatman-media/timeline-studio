@@ -101,20 +101,25 @@ export function LevelMeter({
 
     if (orientation === "vertical") {
       return (
-        <div key={index} className="relative w-4 h-full bg-zinc-800 rounded">
+        <div key={index} className="relative w-4 h-full bg-zinc-800 rounded" data-oid="uyc.nv9">
           {/* Level bar */}
           <div
             className={cn("absolute bottom-0 left-0 right-0 transition-all duration-75", getColor(levelPercent))}
             style={{ height: `${levelPercent}%` }}
+            data-oid="cmw5abd"
           />
 
           {/* Peak indicator */}
-          <div className="absolute left-0 right-0 h-0.5 bg-white" style={{ bottom: `${peakPercent}%` }} />
+          <div
+            className="absolute left-0 right-0 h-0.5 bg-white"
+            style={{ bottom: `${peakPercent}%` }}
+            data-oid="o:5lok2"
+          />
 
           {/* Scale marks */}
-          <div className="absolute inset-0 flex flex-col justify-between py-1">
+          <div className="absolute inset-0 flex flex-col justify-between py-1" data-oid="apcpvlo">
             {[0, -6, -12, -24, -48].map((db, i) => (
-              <div key={db} className="h-px bg-zinc-600" style={{ opacity: i === 0 ? 1 : 0.5 }} />
+              <div key={db} className="h-px bg-zinc-600" style={{ opacity: i === 0 ? 1 : 0.5 }} data-oid="325q-1u" />
             ))}
           </div>
         </div>
@@ -123,21 +128,29 @@ export function LevelMeter({
 
     // Horizontal orientation
     return (
-      <div key={index} className="relative h-4 w-full bg-zinc-800 rounded">
+      <div key={index} className="relative h-4 w-full bg-zinc-800 rounded" data-oid="qzf3yl4">
         {/* Level bar */}
         <div
           className={cn("absolute top-0 left-0 bottom-0 transition-all duration-75", getColor(levelPercent))}
           style={{ width: `${levelPercent}%` }}
+          data-oid="ngt744p"
         />
 
         {/* Peak indicator */}
-        <div className="absolute top-0 bottom-0 w-0.5 bg-white" style={{ left: `${peakPercent}%` }} />
+        <div
+          className="absolute top-0 bottom-0 w-0.5 bg-white"
+          style={{ left: `${peakPercent}%` }}
+          data-oid="vwk3zhs"
+        />
       </div>
     )
   }
 
   return (
-    <div className={cn("flex gap-1", orientation === "vertical" ? "flex-row h-full" : "flex-col w-full", className)}>
+    <div
+      className={cn("flex gap-1", orientation === "vertical" ? "flex-row h-full" : "flex-col w-full", className)}
+      data-oid="cnu5kpa"
+    >
       {levels.map((level, i) => renderMeter(level, peaks[i], i))}
     </div>
   )

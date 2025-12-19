@@ -8,7 +8,7 @@ export const StyleTemplatesAdapterContent = memo(() => {
   const adapter = useStyleTemplatesAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="nbe2_yx" />
 })
 
 StyleTemplatesAdapterContent.displayName = "StyleTemplatesAdapterContent"

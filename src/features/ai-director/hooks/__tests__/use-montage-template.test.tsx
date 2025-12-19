@@ -11,7 +11,6 @@ describe("useMontageTemplate", () => {
   beforeEach(() => {
     // Reset any state if needed
   })
-
   describe("Initial State", () => {
     it("should initialize with null selected template", () => {
       const { result } = renderHook(() => useMontageTemplate())

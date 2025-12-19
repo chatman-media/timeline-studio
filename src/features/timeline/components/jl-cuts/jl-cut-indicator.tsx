@@ -36,6 +36,7 @@ export function JLCutIndicator({ audioClip, pixelsPerSecond, className }: JLCutI
               borderLeft: "2px dashed rgba(239, 68, 68, 0.5)",
             }),
       }}
+      data-oid="4tf-c23"
     >
       {/* Визуальный индикатор типа cut */}
       <div
@@ -44,18 +45,20 @@ export function JLCutIndicator({ audioClip, pixelsPerSecond, className }: JLCutI
           isJCut ? "bg-blue-500/20 text-blue-500" : "bg-red-500/20 text-red-500",
           isJCut ? "right-1" : "left-1",
         )}
+        data-oid="__c9z37"
       >
         {isJCut ? "J" : "L"}
       </div>
 
       {/* Линия связи между клипами */}
-      <svg className="absolute inset-0 w-full h-full" style={{ overflow: "visible" }}>
-        <defs>
-          <pattern id={`diagonal-${cutType}`} patternUnits="userSpaceOnUse" width="8" height="8">
+      <svg className="absolute inset-0 w-full h-full" style={{ overflow: "visible" }} data-oid="ri-aggg">
+        <defs data-oid="2fpe0-6">
+          <pattern id={`diagonal-${cutType}`} patternUnits="userSpaceOnUse" width="8" height="8" data-oid="5i-h4g-">
             <path
               d="M0,8 L8,0"
               stroke={isJCut ? "rgba(59, 130, 246, 0.3)" : "rgba(239, 68, 68, 0.3)"}
               strokeWidth="1"
+              data-oid="gs59h48"
             />
           </pattern>
         </defs>
@@ -66,6 +69,7 @@ export function JLCutIndicator({ audioClip, pixelsPerSecond, className }: JLCutI
           width={offsetPixels}
           height="100%"
           fill={`url(#diagonal-${cutType})`}
+          data-oid="33jnbhu"
         />
       </svg>
     </div>

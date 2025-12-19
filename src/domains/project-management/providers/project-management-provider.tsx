@@ -64,7 +64,9 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       await backend.getProjectState()
       logger.info("[ProjectProvider] Project state synced with backend")
     } catch (error) {
-      logger.error("[ProjectProvider] Failed to sync project state:", { error })
+      logger.error("[ProjectProvider] Failed to sync project state:", {
+        error,
+      })
     }
   }
 
@@ -166,7 +168,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     markDirty,
   }
 
-  return <ProjectContext.Provider value={contextValue}>{children}</ProjectContext.Provider>
+  return (
+    <ProjectContext.Provider value={contextValue} data-oid="vl.909n">
+      {children}
+    </ProjectContext.Provider>
+  )
 }
 
 export function useProject() {
@@ -233,7 +239,9 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
   }
 
   const updateAutoSave = (enabled: boolean, interval?: number) => {
-    const settings: Partial<UserSettingsContextType> = { autoSaveEnabled: enabled }
+    const settings: Partial<UserSettingsContextType> = {
+      autoSaveEnabled: enabled,
+    }
     if (interval !== undefined) {
       settings.autoSaveInterval = interval
     }
@@ -259,7 +267,11 @@ export function UserSettingsProvider({ children }: { children: ReactNode }) {
     isBackendConnected,
   }
 
-  return <UserSettingsContext.Provider value={contextValue}>{children}</UserSettingsContext.Provider>
+  return (
+    <UserSettingsContext.Provider value={contextValue} data-oid="lkqe:hz">
+      {children}
+    </UserSettingsContext.Provider>
+  )
 }
 
 export function useUserSettings() {
@@ -322,7 +334,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     backendStatus,
   }
 
-  return <AppStateContext.Provider value={contextValue}>{children}</AppStateContext.Provider>
+  return (
+    <AppStateContext.Provider value={contextValue} data-oid="07abyd2">
+      {children}
+    </AppStateContext.Provider>
+  )
 }
 
 export function useAppState() {
@@ -348,9 +364,9 @@ interface ProjectManagementProviderProps {
  */
 export function ProjectManagementProvider({ children }: ProjectManagementProviderProps) {
   return (
-    <AppStateProvider>
-      <ProjectProvider>
-        <UserSettingsProvider>{children}</UserSettingsProvider>
+    <AppStateProvider data-oid="fdns6d.">
+      <ProjectProvider data-oid="gh2o1du">
+        <UserSettingsProvider data-oid="111.4b4">{children}</UserSettingsProvider>
       </ProjectProvider>
     </AppStateProvider>
   )

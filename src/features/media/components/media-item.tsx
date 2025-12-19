@@ -75,16 +75,18 @@ export const MediaItem = memo<MediaItemProps>(
           )}
           style={{ height: `${listPreviewSize + 8}px` }} // Фиксированная высота для list режима
           data-testid="media-item"
+          data-oid="958xda7"
         >
-          <div className="relative mr-3 flex shrink-0 gap-1">
+          <div className="relative mr-3 flex shrink-0 gap-1" data-oid="zpaxg8o">
             <MediaPreview
               file={file}
               size={listPreviewSize}
               ignoreRatio={false}
               dimensions={[settings.aspectRatio.value.width, settings.aspectRatio.value.height]}
+              data-oid="hvgm_36"
             />
           </div>
-          <FileMetadata file={file} size={listPreviewSize} />
+          <FileMetadata file={file} size={listPreviewSize} data-oid="3sjmsh9" />
         </div>
       )
     }
@@ -99,15 +101,17 @@ export const MediaItem = memo<MediaItemProps>(
           )}
           style={gridStyles}
           data-testid="media-item"
+          data-oid="5x-f3l4"
         >
-          <div className="group relative w-full flex-1 grow flex-row">
+          <div className="group relative w-full flex-1 grow flex-row" data-oid="v.lai2y">
             <MediaPreview
               file={file}
               size={previewSize}
               dimensions={[settings.aspectRatio.value.width, settings.aspectRatio.value.height]}
+              data-oid="5fxkbm2"
             />
           </div>
-          <div className="truncate p-1 text-xs" style={{ fontSize }}>
+          <div className="truncate p-1 text-xs" style={{ fontSize }} data-oid="9penuq4">
             {file.name}
           </div>
         </div>
@@ -124,13 +128,15 @@ export const MediaItem = memo<MediaItemProps>(
             isAdded && "pointer-events-none",
           )}
           data-testid="media-item"
+          data-oid="7vstuia"
         >
-          <div className="group relative w-full flex-1 grow flex-row">
+          <div className="group relative w-full flex-1 grow flex-row" data-oid="02t06x4">
             <MediaPreview
               file={file}
               size={previewSize}
               showFileName
               ignoreRatio // В режиме thumbnails показываем оригинальные пропорции
+              data-oid=".fvhul0"
             />
           </div>
         </div>

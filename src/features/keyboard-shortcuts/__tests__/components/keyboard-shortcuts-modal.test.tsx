@@ -65,6 +65,7 @@ vi.mock("../../presets", () => ({
           ],
         },
       ],
+
       "Wondershare Filmora": [
         {
           id: "file",
@@ -72,6 +73,7 @@ vi.mock("../../presets", () => ({
           shortcuts: [{ id: "new-project", name: "New Project", keys: "⌘N" }],
         },
       ],
+
       "Adobe Premier Pro": [
         {
           id: "file",
@@ -117,7 +119,7 @@ describe("KeyboardShortcutsModal", () => {
 
   describe("Component Rendering", () => {
     it("should render modal with all main sections", () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="qhizb6o" />)
 
       // Check for preset selector
       expect(screen.getByText("Переключиться на другую предустановку ярлыков:")).toBeInTheDocument()
@@ -136,7 +138,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should render categories sidebar", () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="1ayzlvn" />)
 
       // Check for category buttons - use getAllByText since there might be multiple elements
       const fileElements = screen.getAllByText("File")
@@ -148,7 +150,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should render shortcuts for selected category", () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="r65z8v6" />)
 
       // Should show shortcuts for the first category by default
       expect(screen.getByText("New Project")).toBeInTheDocument()
@@ -161,7 +163,7 @@ describe("KeyboardShortcutsModal", () => {
     // Рекомендация: покрыть в E2E тестах (Playwright) или использовать screen.getByRole в baseElement
     it.skip("should switch presets when selected", async () => {
       // Skipped due to complex Select component portal rendering
-      const { baseElement } = render(<KeyboardShortcutsModal />)
+      const { baseElement } = render(<KeyboardShortcutsModal data-oid="4o03s:7" />)
 
       // Open preset selector
       const trigger = screen.getByRole("combobox")
@@ -188,7 +190,7 @@ describe("KeyboardShortcutsModal", () => {
     // Рекомендация: покрыть в E2E тестах (Playwright) или использовать screen.getByRole в baseElement
     it.skip("should display selected preset name", async () => {
       // Skipped due to complex Select component portal rendering
-      const { baseElement } = render(<KeyboardShortcutsModal />)
+      const { baseElement } = render(<KeyboardShortcutsModal data-oid="at2ycsq" />)
 
       const trigger = screen.getByRole("combobox")
       expect(trigger).toHaveTextContent("Timeline")
@@ -210,7 +212,7 @@ describe("KeyboardShortcutsModal", () => {
 
   describe("Search Functionality", () => {
     it("should filter shortcuts by name", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="q1ok6yb" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск сочетаний клавиш")
       await user.type(searchInput, "Undo")
@@ -222,7 +224,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should filter shortcuts by key combination", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="1cuv5v5" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск сочетаний клавиш")
       await user.type(searchInput, "⌘Z")
@@ -234,7 +236,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should show clear button when search has value", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="r2k_hh7" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск сочетаний клавиш")
 
@@ -255,7 +257,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should filter categories based on search", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="pw0-a9_" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск сочетаний клавиш")
       await user.type(searchInput, "Undo")
@@ -271,7 +273,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should handle keyboard shortcut search", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="0ok96ql" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск сочетаний клавиш")
 
@@ -286,7 +288,7 @@ describe("KeyboardShortcutsModal", () => {
 
   describe("Category Navigation", () => {
     it("should highlight active category", () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="puwf257" />)
 
       const fileButton = screen.getByRole("button", { name: "File" })
       const editButton = screen.getByRole("button", { name: "Edit" })
@@ -297,7 +299,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should switch categories on click", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="iqtrquv" />)
 
       const editButton = screen.getByRole("button", { name: "Edit" })
       await user.click(editButton)
@@ -313,7 +315,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should scroll to category section", async () => {
-      const { container } = render(<KeyboardShortcutsModal />)
+      const { container } = render(<KeyboardShortcutsModal data-oid="hed3dw-" />)
 
       // Mock scrollTop property
       const scrollContainer = container.querySelector("[ref]")
@@ -337,7 +339,7 @@ describe("KeyboardShortcutsModal", () => {
     // Компонент использует window.addEventListener для перехвата клавиш, что сложно тестировать в JSDOM
     it.skip("should enter edit mode on shortcut click", async () => {
       // Skip for now - component state management seems to have issues in test environment
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="ly1flsy" />)
 
       // Find the shortcut row for "New Project"
       const newProjectText = screen.getByText("New Project")
@@ -360,7 +362,7 @@ describe("KeyboardShortcutsModal", () => {
     // SKIP REASON: Требует симуляции глобальных KeyboardEvent на window с правильным bubbling
     it.skip("should capture key combination in edit mode", async () => {
       // Skip for now - component state management seems to have issues in test environment
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="ii31q0c" />)
 
       const newProjectText = screen.getByText("New Project")
       const shortcutRow = newProjectText.closest('div[role="button"]')
@@ -388,7 +390,7 @@ describe("KeyboardShortcutsModal", () => {
     // SKIP REASON: Требует симуляции Escape на document с правильной последовательностью событий
     it.skip("should cancel edit mode on Escape", async () => {
       // Skip for now - component state management seems to have issues in test environment
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="4xtlj-k" />)
 
       const newProjectText = screen.getByText("New Project")
       const shortcutRow = newProjectText.closest('div[role="button"]')
@@ -409,7 +411,7 @@ describe("KeyboardShortcutsModal", () => {
     // SKIP REASON: Требует симуляции mousedown event с правильным timing и event propagation
     it.skip("should cancel edit mode on outside click", async () => {
       // Skip for now - component state management seems to have issues in test environment
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="10wk2hr" />)
 
       const newProjectText = screen.getByText("New Project")
       const shortcutRow = newProjectText.closest('div[role="button"]')
@@ -431,7 +433,7 @@ describe("KeyboardShortcutsModal", () => {
 
   describe("Reset Functionality", () => {
     it("should reset shortcuts to defaults", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="zpj.rm9" />)
 
       const resetButton = screen.getByText("Восстановление значений по умолчанию")
       await user.click(resetButton)
@@ -443,7 +445,7 @@ describe("KeyboardShortcutsModal", () => {
     // SKIP REASON: Зависит от состояния edit mode, которое сложно тестировать в unit тестах
     it.skip("should exit edit mode on reset", async () => {
       // Skip for now - component state management seems to have issues in test environment
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="wfcdjiw" />)
 
       // Enter edit mode
       const newProjectText = screen.getByText("New Project")
@@ -465,7 +467,7 @@ describe("KeyboardShortcutsModal", () => {
 
   describe("Modal Actions", () => {
     it("should close modal on OK click", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="e919qtq" />)
 
       const okButton = screen.getByText("OK")
       await user.click(okButton)
@@ -474,7 +476,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should close modal on Cancel click", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="kwtpwzk" />)
 
       const cancelButton = screen.getByText("Отменить")
       await user.click(cancelButton)
@@ -487,7 +489,7 @@ describe("KeyboardShortcutsModal", () => {
     // SKIP REASON: Требует симуляции множества специальных клавиш через window events
     it.skip("should handle special keys in edit mode", async () => {
       // Skip for now - component state management seems to have issues in test environment
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="ijqsiln" />)
 
       const newProjectText = screen.getByText("New Project")
       const shortcutRow = newProjectText.closest('div[role="button"]')
@@ -527,7 +529,7 @@ describe("KeyboardShortcutsModal", () => {
     })
 
     it("should handle modifier keys in search", async () => {
-      render(<KeyboardShortcutsModal />)
+      render(<KeyboardShortcutsModal data-oid="vfjfth9" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск сочетаний клавиш")
 

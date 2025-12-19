@@ -214,6 +214,7 @@ export const VideoStream = memo(
             "MEDIA_ERR_DECODE (3): Ошибка декодирования",
             "MEDIA_ERR_SRC_NOT_SUPPORTED (4): Формат не поддерживается или URL недоступен",
           ]
+
           logger.errorSync("[VideoStream] Ошибка загрузки видео", {
             code: video.error.code,
             message: video.error.message,
@@ -257,12 +258,14 @@ export const VideoStream = memo(
                 ? width
                 : adaptiveWidth,
         }}
+        data-oid="cg92joi"
       >
         <div
           className={cn("group relative h-full w-full bg-muted", isAdded && "opacity-50 grayscale cursor-not-allowed")}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}
+          data-oid="z2o9y3q"
         >
           {/* Preview background - показывается сразу */}
           {(previewData || file.thumbnailPath) && (
@@ -276,6 +279,7 @@ export const VideoStream = memo(
                     : undefined,
                 zIndex: 0,
               }}
+              data-oid="3724j:a"
             />
           )}
 
@@ -295,6 +299,7 @@ export const VideoStream = memo(
             onKeyDown={handleKeyDown}
             streamIndex={stream.index}
             streamKey={key}
+            data-oid="kjlw6pr"
           />
 
           {/* Показываем overlay только если нет превью и видео не загружено */}
@@ -302,11 +307,18 @@ export const VideoStream = memo(
             <div
               className="absolute inset-0 flex flex-col items-center justify-center bg-muted/80 text-center pointer-events-none"
               style={{ zIndex: 2 }}
+              data-oid="agoowpg"
             >
-              <div className="truncate px-2 text-sm text-foreground/90 font-medium" style={{ maxWidth: "90%" }}>
+              <div
+                className="truncate px-2 text-sm text-foreground/90 font-medium"
+                style={{ maxWidth: "90%" }}
+                data-oid="nn.7b6n"
+              >
                 {file.name}
               </div>
-              <div className="mt-2 text-xs text-muted-foreground animate-pulse">Загрузка...</div>
+              <div className="mt-2 text-xs text-muted-foreground animate-pulse" data-oid="2dhu21d">
+                Загрузка...
+              </div>
             </div>
           )}
 
@@ -320,6 +332,7 @@ export const VideoStream = memo(
             streamHeight={stream.height}
             showFileName={showFileName}
             isLastStream={isLastStream}
+            data-oid="8720tev"
           />
         </div>
       </div>

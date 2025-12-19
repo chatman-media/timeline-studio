@@ -57,14 +57,21 @@ export function MediaPreview({
           width: ignoreRatio ? "100%" : `${((size * dimensions[0]) / dimensions[1]).toFixed(0)}px`,
           height: ignoreRatio ? "100%" : `${size}px`,
         }}
+        data-oid="s.fjh-r"
       >
-        <div className="flex flex-col items-center justify-center gap-3 px-4 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-400" />
-          <div className="flex flex-col gap-1">
-            <div className="truncate text-sm font-medium text-white/90" style={{ maxWidth: "200px" }}>
+        <div className="flex flex-col items-center justify-center gap-3 px-4 text-center" data-oid="pkw2mz7">
+          <Loader2 className="h-10 w-10 animate-spin text-blue-400" data-oid="2wxckbp" />
+          <div className="flex flex-col gap-1" data-oid="o88oxxv">
+            <div
+              className="truncate text-sm font-medium text-white/90"
+              style={{ maxWidth: "200px" }}
+              data-oid="cw:-flz"
+            >
               {file.name}
             </div>
-            <div className="text-xs text-white/60 animate-pulse">Загрузка метаданных...</div>
+            <div className="text-xs text-white/60 animate-pulse" data-oid="5tkfclb">
+              Загрузка метаданных...
+            </div>
           </div>
         </div>
       </div>
@@ -79,13 +86,16 @@ export function MediaPreview({
         showFileName={showFileName}
         dimensions={dimensions}
         ignoreRatio={ignoreRatio}
+        data-oid="2104mx3"
       />
     )
   }
 
   if (file.isAudio) {
-    return <AudioPreview file={file} size={size} showFileName={showFileName} dimensions={dimensions} />
+    return (
+      <AudioPreview file={file} size={size} showFileName={showFileName} dimensions={dimensions} data-oid="81ow1v." />
+    )
   }
 
-  return <ImagePreview file={file} size={size} showFileName={showFileName} dimensions={dimensions} />
+  return <ImagePreview file={file} size={size} showFileName={showFileName} dimensions={dimensions} data-oid="qzevt5p" />
 }

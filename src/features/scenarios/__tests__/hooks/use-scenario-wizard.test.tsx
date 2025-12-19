@@ -91,6 +91,7 @@ describe("useScenarioWizard", () => {
           optional: true,
         },
       ],
+
       settings: {
         allowSkipSteps: true,
         showPreview: true,

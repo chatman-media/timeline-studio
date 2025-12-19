@@ -24,12 +24,13 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("lucide-react", () => ({
   Star: ({ className, style }: any) => (
-    <div data-testid="star-icon" className={className} style={style}>
+    <div data-testid="star-icon" className={className} style={style} data-oid="ykun_tu">
       Star
     </div>
   ),
+
   StarOff: ({ className, style }: any) => (
-    <div data-testid="star-off-icon" className={className} style={style}>
+    <div data-testid="star-off-icon" className={className} style={style} data-oid="l:4ogsu">
       StarOff
     </div>
   ),
@@ -87,7 +88,7 @@ describe("FavoriteButton", () => {
   describe("основной рендеринг", () => {
     it("должен рендерить кнопку с иконкой звезды", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="-qj8a5e" />)
 
       const button = screen.getByRole("button")
       expect(button).toBeInTheDocument()
@@ -96,7 +97,7 @@ describe("FavoriteButton", () => {
 
     it("должен применять правильный title для не избранного файла", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="v3rgz4-" />)
 
       const button = screen.getByRole("button")
       expect(button).toHaveAttribute("title", "Add to favorites")
@@ -106,7 +107,7 @@ describe("FavoriteButton", () => {
       const file = createMockMediaFile()
       mockFavorites.media = [file]
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="-x2pnq3" />)
 
       const button = screen.getByRole("button")
       expect(button).toHaveAttribute("title", "In favorites")
@@ -114,7 +115,7 @@ describe("FavoriteButton", () => {
 
     it("должен применять правильные классы для не избранного файла", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="6flnxnb" />)
 
       const button = screen.getByRole("button")
       expect(button).toHaveClass("invisible")
@@ -124,7 +125,7 @@ describe("FavoriteButton", () => {
       const file = createMockMediaFile()
       mockFavorites.media = [file]
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="_.r1h4y" />)
 
       const button = screen.getByRole("button")
       expect(button).toHaveClass("visible")
@@ -134,7 +135,7 @@ describe("FavoriteButton", () => {
   describe("размеры иконки", () => {
     it("должен применять правильный размер иконки на основе prop size", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} size={300} />)
+      render(<FavoriteButton file={file} size={300} data-oid="3kl:-3u" />)
 
       const icon = screen.getByTestId("star-icon")
       const style = icon.getAttribute("style")
@@ -144,7 +145,7 @@ describe("FavoriteButton", () => {
 
     it("должен использовать размер по умолчанию", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="n1gukiw" />)
 
       const icon = screen.getByTestId("star-icon")
       const style = icon.getAttribute("style")
@@ -156,7 +157,7 @@ describe("FavoriteButton", () => {
   describe("взаимодействие", () => {
     it("должен добавлять файл в избранное при клике", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="e8cp.3v" />)
 
       const button = screen.getByRole("button")
       fireEvent.click(button)
@@ -171,7 +172,7 @@ describe("FavoriteButton", () => {
       // Используем фейковые таймеры для контроля времени
       vi.useFakeTimers()
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="2s-9p-u" />)
 
       const button = screen.getByRole("button")
 
@@ -189,7 +190,7 @@ describe("FavoriteButton", () => {
 
     it("должен обрабатывать нажатие Enter", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="h4hv2dh" />)
 
       const button = screen.getByRole("button")
       fireEvent.click(button)
@@ -199,7 +200,7 @@ describe("FavoriteButton", () => {
 
     it("должен обрабатывать нажатие пробела", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="5hltjjr" />)
 
       const button = screen.getByRole("button")
       fireEvent.click(button)
@@ -213,7 +214,7 @@ describe("FavoriteButton", () => {
       const file = createMockMediaFile()
       mockFavorites.media = [file]
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid=":5wbq6l" />)
 
       const button = screen.getByRole("button")
 
@@ -233,7 +234,7 @@ describe("FavoriteButton", () => {
       const file = createMockMediaFile()
       mockFavorites.media = [file]
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="abrcr:o" />)
 
       const button = screen.getByRole("button")
 
@@ -260,7 +261,7 @@ describe("FavoriteButton", () => {
       const file = createMockMediaFile()
       mockFavorites.media = [file]
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="5.jx.qr" />)
 
       const button = screen.getByRole("button")
 
@@ -281,7 +282,7 @@ describe("FavoriteButton", () => {
   describe("типы элементов", () => {
     it("должен работать с типом music", () => {
       const file = createMockMediaFile({ name: "test.mp3" })
-      render(<FavoriteButton file={file} type="music" />)
+      render(<FavoriteButton file={file} type="music" data-oid="eptcd_r" />)
 
       const button = screen.getByRole("button")
       fireEvent.click(button)
@@ -294,7 +295,7 @@ describe("FavoriteButton", () => {
       mockFavorites.music = [file]
       mockFavorites.media = [] // Пусто в media
 
-      render(<FavoriteButton file={file} type="music" />)
+      render(<FavoriteButton file={file} type="music" data-oid="e8jrgey" />)
 
       const button = screen.getByRole("button")
       expect(button).toHaveClass("visible") // Должен быть видимым, так как есть в music
@@ -310,7 +311,7 @@ describe("FavoriteButton", () => {
         mockFavorites[type] = [...(mockFavorites[type] || []), fileToAdd]
       })
 
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="40yc0oy" />)
 
       const button = screen.getByRole("button")
 
@@ -335,7 +336,7 @@ describe("FavoriteButton", () => {
   describe("предотвращение случайного удаления", () => {
     it("не должен удалять из избранного сразу после добавления", () => {
       const file = createMockMediaFile()
-      render(<FavoriteButton file={file} />)
+      render(<FavoriteButton file={file} data-oid="t5s2pe0" />)
 
       const button = screen.getByRole("button")
 

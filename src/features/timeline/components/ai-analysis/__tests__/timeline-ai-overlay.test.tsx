@@ -9,7 +9,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 // Mock framer-motion
 vi.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    div: ({ children, ...props }: any) => (
+      <div {...props} data-oid="b3fv-hx">
+        {children}
+      </div>
+    ),
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
 }))
@@ -68,19 +72,29 @@ const TestableTimelineAIOverlay = ({ timelineWidth, pixelsPerSecond, className, 
   }, [aiState])
 
   return (
-    <div className={cn("absolute inset-x-0 h-12 pointer-events-none select-none", className)}>
+    <div className={cn("absolute inset-x-0 h-12 pointer-events-none select-none", className)} data-oid=".ec6k1p">
       <canvas
         ref={canvasRef}
         width={timelineWidth}
         height={48}
         className="absolute inset-0 opacity-50"
         data-testid="visualization-canvas"
+        data-oid="i296nox"
       />
 
       {aiState.isAnalyzing && (
-        <div className="absolute top-0 right-0 bg-primary/90 text-primary-foreground px-3 py-1 rounded-bl-lg flex items-center gap-2 pointer-events-auto">
-          <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          <span className="text-xs font-medium">Анализ {Math.round(aiState.analysisProgress)}%</span>
+        <div
+          className="absolute top-0 right-0 bg-primary/90 text-primary-foreground px-3 py-1 rounded-bl-lg flex items-center gap-2 pointer-events-auto"
+          data-oid=":ds2x2e"
+        >
+          <div
+            className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
+            data-oid="yx_jokd"
+          />
+
+          <span className="text-xs font-medium" data-oid="hmhy4cb">
+            Анализ {Math.round(aiState.analysisProgress)}%
+          </span>
         </div>
       )}
 
@@ -97,6 +111,7 @@ const TestableTimelineAIOverlay = ({ timelineWidth, pixelsPerSecond, className, 
             data-testid={`segment-${segment.id}`}
             onMouseEnter={() => setHoveredSegment(segment.id)}
             onMouseLeave={() => setHoveredSegment(null)}
+            data-oid="bvjkia:"
           >
             <div
               className={cn(
@@ -109,15 +124,25 @@ const TestableTimelineAIOverlay = ({ timelineWidth, pixelsPerSecond, className, 
                 opacity: segment.confidence,
               }}
               data-testid={`marker-${segment.id}`}
+              data-oid="5ursabi"
             >
-              <Icon className={cn("text-white", isKeyMoment ? "w-3 h-3" : "w-2.5 h-2.5")} />
+              <Icon className={cn("text-white", isKeyMoment ? "w-3 h-3" : "w-2.5 h-2.5")} data-oid="b_7oclf" />
             </div>
 
             {hoveredSegment === segment.id && (
-              <div className="absolute top-8 left-0 bg-popover text-popover-foreground rounded p-2 shadow-md z-50 min-w-[200px]">
-                <div className="font-semibold">{segment.label}</div>
-                {segment.description && <div className="text-xs text-muted-foreground">{segment.description}</div>}
-                <div className="text-xs text-muted-foreground">
+              <div
+                className="absolute top-8 left-0 bg-popover text-popover-foreground rounded p-2 shadow-md z-50 min-w-[200px]"
+                data-oid="5s_qupc"
+              >
+                <div className="font-semibold" data-oid="xj23wey">
+                  {segment.label}
+                </div>
+                {segment.description && (
+                  <div className="text-xs text-muted-foreground" data-oid="ckr5x1p">
+                    {segment.description}
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground" data-oid="g:cp5z6">
                   Уверенность: {Math.round(segment.confidence * 100)}%
                 </div>
               </div>
@@ -130,11 +155,12 @@ const TestableTimelineAIOverlay = ({ timelineWidth, pixelsPerSecond, className, 
         <div
           className="absolute bottom-0 left-0 bg-background/90 backdrop-blur-sm rounded-tr-lg p-2 pointer-events-none"
           style={{ opacity: hoveredSegment ? 1 : 0 }}
+          data-oid="g6x5s2:"
         >
-          <div className="flex items-center gap-3 text-xs">
-            <span>Сцены</span>
-            <span>Ключевые моменты</span>
-            <span>Качество</span>
+          <div className="flex items-center gap-3 text-xs" data-oid="o6n1:ci">
+            <span data-oid="7k85ufz">Сцены</span>
+            <span data-oid="-5hcnzg">Ключевые моменты</span>
+            <span data-oid="31dnc7j">Качество</span>
           </div>
         </div>
       )}
@@ -163,7 +189,7 @@ describe("TimelineAIOverlay", () => {
   })
 
   it("should render without content when no analysis data", () => {
-    const { container } = render(<TestableTimelineAIOverlay {...defaultProps} />)
+    const { container } = render(<TestableTimelineAIOverlay {...defaultProps} data-oid="myifz8w" />)
 
     const overlay = container.querySelector(".absolute.inset-x-0")
     expect(overlay).toBeTruthy()
@@ -182,7 +208,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    render(<TestableTimelineAIOverlay {...props} />)
+    render(<TestableTimelineAIOverlay {...props} data-oid="3m4co46" />)
 
     expect(screen.getByText("Анализ 45%")).toBeTruthy()
 
@@ -216,7 +242,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    const { container } = render(<TestableTimelineAIOverlay {...props} />)
+    const { container } = render(<TestableTimelineAIOverlay {...props} data-oid="j8dx26i" />)
 
     const segments = container.querySelectorAll("[data-testid^='segment-']")
     expect(segments).toHaveLength(2)
@@ -249,7 +275,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    const { container } = render(<TestableTimelineAIOverlay {...props} />)
+    const { container } = render(<TestableTimelineAIOverlay {...props} data-oid="m_mbqu2" />)
 
     const segments = container.querySelectorAll("[data-testid^='segment-']")
     expect(segments).toHaveLength(2)
@@ -277,7 +303,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    const { container } = render(<TestableTimelineAIOverlay {...props} />)
+    const { container } = render(<TestableTimelineAIOverlay {...props} data-oid="m:fs0oo" />)
 
     const segment = container.querySelector("[data-testid='segment-scene-scene-1']")
     expect(segment).toBeTruthy()
@@ -303,7 +329,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    const { container } = render(<TestableTimelineAIOverlay {...props} />)
+    const { container } = render(<TestableTimelineAIOverlay {...props} data-oid="pmsm5zf" />)
 
     const segment = container.querySelector("[data-testid='segment-moment-moment-1']")
     expect(segment).toBeTruthy()
@@ -337,7 +363,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    const { container } = render(<TestableTimelineAIOverlay {...props} />)
+    const { container } = render(<TestableTimelineAIOverlay {...props} data-oid="_x4217n" />)
 
     const legend = screen.getByText("Сцены").parentElement
     expect(legend).toBeTruthy()
@@ -354,7 +380,7 @@ describe("TimelineAIOverlay", () => {
   })
 
   it("should render canvas for visualization", () => {
-    const { container } = render(<TestableTimelineAIOverlay {...defaultProps} />)
+    const { container } = render(<TestableTimelineAIOverlay {...defaultProps} data-oid="_o.u0oo" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas).toBeTruthy()
@@ -363,7 +389,9 @@ describe("TimelineAIOverlay", () => {
   })
 
   it("should apply custom className", () => {
-    const { container } = render(<TestableTimelineAIOverlay {...defaultProps} className="custom-class" />)
+    const { container } = render(
+      <TestableTimelineAIOverlay {...defaultProps} className="custom-class" data-oid="siiijm0" />,
+    )
 
     const overlay = container.querySelector(".custom-class")
     expect(overlay).toBeTruthy()
@@ -386,7 +414,7 @@ describe("TimelineAIOverlay", () => {
       },
     }
 
-    const { container } = render(<TestableTimelineAIOverlay {...props} />)
+    const { container } = render(<TestableTimelineAIOverlay {...props} data-oid="-zyu0vi" />)
 
     const marker = container.querySelector("[data-testid='marker-moment-moment-1']")
     expect(marker).toBeTruthy()

@@ -5,4 +5,7 @@
  * Этот файл оставлен для обратной совместимости с тестами и старым кодом
  */
 
-export { BrowserProvider as BrowserStateProvider, useBrowser as useBrowserState } from "@/domains/browser"
+export {
+  BrowserProvider as BrowserStateProvider,
+  useBrowser as useBrowserState,
+} from "@/domains/browser"

@@ -107,7 +107,9 @@ const createMockVideoElement = (overrides: Partial<HTMLVideoElement> = {}): HTML
   return element
 }
 
-const wrapper = ({ children }: { children: React.ReactNode }) => <PlayerProvider>{children}</PlayerProvider>
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <PlayerProvider data-oid="46jvl22">{children}</PlayerProvider>
+)
 
 describe("Video Player Advanced Tests", () => {
   let mockVideoElement: HTMLVideoElement
@@ -414,6 +416,7 @@ describe("Video Player Advanced Tests", () => {
         { time: 15, label: "Main", callback: vi.fn() },
         { time: 25, label: "Outro", callback: vi.fn() },
       ]
+
       const triggeredMarkers = new Set<number>()
 
       renderHook(
@@ -459,6 +462,7 @@ describe("Video Player Advanced Tests", () => {
         { time: 10, callback: vi.fn() },
         { time: 15, callback: vi.fn() },
       ]
+
       let lastTime = 0
 
       renderHook(
@@ -525,8 +529,14 @@ describe("Video Player Advanced Tests", () => {
       const videoRefs: Record<string, HTMLVideoElement> = {}
       const setVideoSource = vi.fn()
 
-      const video1 = createMockMediaFile({ id: "video-1", path: "/test/video1.mp4" })
-      const video2 = createMockMediaFile({ id: "video-2", path: "/test/video2.mp4" })
+      const video1 = createMockMediaFile({
+        id: "video-1",
+        path: "/test/video1.mp4",
+      })
+      const video2 = createMockMediaFile({
+        id: "video-2",
+        path: "/test/video2.mp4",
+      })
 
       act(() => {
         result.current.getOrCreateVideoElement(video1, videoRefs, 0.8, setVideoSource)
@@ -621,6 +631,7 @@ describe("Video Player Advanced Tests", () => {
         { startTime: 5, endTime: 10, text: "World" },
         { startTime: 10, endTime: 15, text: "Test" },
       ]
+
       let currentSubtitle: string | null = null
 
       renderHook(
@@ -659,6 +670,7 @@ describe("Video Player Advanced Tests", () => {
         { startTime: 0, endTime: 3, text: "First" },
         { startTime: 3, endTime: 6, text: "Second" },
       ]
+
       const transitions: string[] = []
 
       renderHook(
@@ -695,6 +707,7 @@ describe("Video Player Advanced Tests", () => {
         { startTime: 10, endTime: 15, text: "B" },
         { startTime: 20, endTime: 25, text: "C" },
       ]
+
       let currentSubtitle: string | null = null
 
       renderHook(
@@ -726,7 +739,10 @@ describe("Video Player Advanced Tests", () => {
       const onBackendSync = vi.fn()
       const syncInterval = 1000 // 1 second
 
-      Object.defineProperty(mockVideoElement, "paused", { value: false, configurable: true })
+      Object.defineProperty(mockVideoElement, "paused", {
+        value: false,
+        configurable: true,
+      })
 
       const { unmount } = renderHook(
         () =>
@@ -752,7 +768,9 @@ describe("Video Player Advanced Tests", () => {
     })
 
     it("should cleanup resources on unmount", () => {
-      const { result, unmount } = renderHook(() => useVideoElement(), { wrapper })
+      const { result, unmount } = renderHook(() => useVideoElement(), {
+        wrapper,
+      })
 
       const videoRefs: Record<string, HTMLVideoElement> = {}
       const setVideoSource = vi.fn()
@@ -827,7 +845,10 @@ describe("Video Player Advanced Tests", () => {
       const videoRefs: Record<string, HTMLVideoElement> = {}
       const setVideoSource = vi.fn()
 
-      const video = createMockMediaFile({ id: "video-1", path: "/old/path.mp4" })
+      const video = createMockMediaFile({
+        id: "video-1",
+        path: "/old/path.mp4",
+      })
 
       act(() => {
         result.current.getOrCreateVideoElement(video, videoRefs, 1.0, setVideoSource)
@@ -900,7 +921,9 @@ describe("Video Player Advanced Tests", () => {
       const onError = vi.fn()
       const onWaiting = vi.fn()
 
-      renderHook(() => useVideoEvents(videoRef, { onError, onWaiting }), { wrapper })
+      renderHook(() => useVideoEvents(videoRef, { onError, onWaiting }), {
+        wrapper,
+      })
 
       act(() => {
         mockVideoElement.dispatchEvent(new Event("waiting"))
@@ -927,7 +950,9 @@ describe("Video Player Advanced Tests", () => {
       const videoRef = { current: mockVideoElement }
       const onDurationChange = vi.fn()
 
-      renderHook(() => useVideoEvents(videoRef, { onDurationChange }), { wrapper })
+      renderHook(() => useVideoEvents(videoRef, { onDurationChange }), {
+        wrapper,
+      })
 
       // Simulate corrupted metadata with NaN duration
       Object.defineProperty(mockVideoElement, "duration", {
@@ -967,7 +992,9 @@ describe("Video Player Advanced Tests", () => {
       const onWaiting = vi.fn()
       const onCanPlay = vi.fn()
 
-      renderHook(() => useVideoEvents(videoRef, { onWaiting, onCanPlay }), { wrapper })
+      renderHook(() => useVideoEvents(videoRef, { onWaiting, onCanPlay }), {
+        wrapper,
+      })
 
       // Start buffering
       act(() => {
@@ -987,7 +1014,9 @@ describe("Video Player Advanced Tests", () => {
       const onLoadedData = vi.fn()
       const onCanPlay = vi.fn()
 
-      renderHook(() => useVideoEvents(videoRef, { onLoadedData, onCanPlay }), { wrapper })
+      renderHook(() => useVideoEvents(videoRef, { onLoadedData, onCanPlay }), {
+        wrapper,
+      })
 
       // Data loaded
       act(() => {
@@ -1057,7 +1086,10 @@ describe("Video Player Advanced Tests", () => {
       // Start playback
       await act(async () => {
         await result.current.play()
-        Object.defineProperty(mockVideoElement, "paused", { value: false, configurable: true })
+        Object.defineProperty(mockVideoElement, "paused", {
+          value: false,
+          configurable: true,
+        })
         mockVideoElement.dispatchEvent(new Event("play"))
       })
 
@@ -1075,7 +1107,10 @@ describe("Video Player Advanced Tests", () => {
       // Pause
       await act(async () => {
         await result.current.pause()
-        Object.defineProperty(mockVideoElement, "paused", { value: true, configurable: true })
+        Object.defineProperty(mockVideoElement, "paused", {
+          value: true,
+          configurable: true,
+        })
         mockVideoElement.dispatchEvent(new Event("pause"))
       })
 
@@ -1083,7 +1118,10 @@ describe("Video Player Advanced Tests", () => {
 
       // Play to end
       await act(async () => {
-        Object.defineProperty(mockVideoElement, "ended", { value: true, configurable: true })
+        Object.defineProperty(mockVideoElement, "ended", {
+          value: true,
+          configurable: true,
+        })
         mockVideoElement.dispatchEvent(new Event("ended"))
       })
 
@@ -1095,7 +1133,9 @@ describe("Video Player Advanced Tests", () => {
       const videoRef = { current: mockVideoElement }
       const onVolumeChange = vi.fn()
 
-      renderHook(() => useVideoEvents(videoRef, { onVolumeChange }), { wrapper })
+      renderHook(() => useVideoEvents(videoRef, { onVolumeChange }), {
+        wrapper,
+      })
 
       act(() => {
         result.current.setVolume(0.5)
@@ -1110,7 +1150,9 @@ describe("Video Player Advanced Tests", () => {
       const videoRef = { current: mockVideoElement }
       const onVolumeChange = vi.fn()
 
-      renderHook(() => useVideoEvents(videoRef, { onVolumeChange }), { wrapper })
+      renderHook(() => useVideoEvents(videoRef, { onVolumeChange }), {
+        wrapper,
+      })
 
       act(() => {
         mockVideoElement.muted = true

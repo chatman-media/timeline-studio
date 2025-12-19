@@ -55,8 +55,8 @@ describe("AppInitProvider", () => {
 
       expect(() => {
         render(
-          <AppInitProvider>
-            <div>Test</div>
+          <AppInitProvider data-oid="ysto8ke">
+            <div data-oid=":4zyo1.">Test</div>
           </AppInitProvider>,
         )
       }).not.toThrow()
@@ -67,8 +67,10 @@ describe("AppInitProvider", () => {
       vi.mocked(initTauriApp).mockResolvedValue(undefined as any)
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Desktop Content</div>
+        <AppInitProvider data-oid="_mr6l8k">
+          <div data-testid="content" data-oid="xy.f1fk">
+            Desktop Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -84,8 +86,10 @@ describe("AppInitProvider", () => {
       vi.mocked(initMockApp).mockReturnValue(undefined as any)
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Browser Content</div>
+        <AppInitProvider data-oid="1557.1a">
+          <div data-testid="content" data-oid="958.0pq">
+            Browser Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -112,8 +116,8 @@ describe("AppInitProvider", () => {
       vi.mocked(container.getStorage).mockReturnValue(mockStorage as any)
 
       render(
-        <AppInitProvider>
-          <div>Content</div>
+        <AppInitProvider data-oid="yjr0khl">
+          <div data-oid="c8a_-ae">Content</div>
         </AppInitProvider>,
       )
 
@@ -133,8 +137,10 @@ describe("AppInitProvider", () => {
       vi.mocked(container.hasStorage).mockReturnValue(false)
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid=":z2ln7w">
+          <div data-testid="content" data-oid="itl2jfk">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -161,8 +167,17 @@ describe("AppInitProvider", () => {
       )
 
       const { queryByTestId, getByTestId } = render(
-        <AppInitProvider fallback={<div data-testid="loading">Loading...</div>}>
-          <div data-testid="content">Content</div>
+        <AppInitProvider
+          fallback={
+            <div data-testid="loading" data-oid="gc1tagt">
+              Loading...
+            </div>
+          }
+          data-oid="0os9:qe"
+        >
+          <div data-testid="content" data-oid="mc6jb_5">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -176,8 +191,17 @@ describe("AppInitProvider", () => {
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
       const { queryByTestId, getByTestId } = render(
-        <AppInitProvider fallback={<div data-testid="loading">Loading...</div>}>
-          <div data-testid="content">Content</div>
+        <AppInitProvider
+          fallback={
+            <div data-testid="loading" data-oid="e4hfh2m">
+              Loading...
+            </div>
+          }
+          data-oid="mbm:bh0"
+        >
+          <div data-testid="content" data-oid="k4fyl8h">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -199,8 +223,10 @@ describe("AppInitProvider", () => {
       )
 
       const { container } = render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="8s2g6hh">
+          <div data-testid="content" data-oid="o7ad8nw">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -222,12 +248,16 @@ describe("AppInitProvider", () => {
 
       function TestComponent() {
         hookResult = useAppInit()
-        return <div data-testid="test">{hookResult.initialized ? "Ready" : "Loading"}</div>
+        return (
+          <div data-testid="test" data-oid="c6xk9wi">
+            {hookResult.initialized ? "Ready" : "Loading"}
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="m_qe7hv">
+          <TestComponent data-oid="qa8zfw-" />
         </AppInitProvider>,
       )
 
@@ -252,12 +282,12 @@ describe("AppInitProvider", () => {
 
       function TestComponent() {
         hookResult = useAppInit()
-        return <div>Test</div>
+        return <div data-oid="s8n44eq">Test</div>
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="e1apmn_">
+          <TestComponent data-oid="l5gqy8w" />
         </AppInitProvider>,
       )
 
@@ -284,12 +314,16 @@ describe("AppInitProvider", () => {
 
       function TestComponent() {
         isReady = useAppReady()
-        return <div data-testid="test">{isReady ? "Ready" : "Not Ready"}</div>
+        return (
+          <div data-testid="test" data-oid="16c2f5s">
+            {isReady ? "Ready" : "Not Ready"}
+          </div>
+        )
       }
 
       const { getByTestId } = render(
-        <AppInitProvider fallback={<div>Loading...</div>}>
-          <TestComponent />
+        <AppInitProvider fallback={<div data-oid="gwu9nbe">Loading...</div>} data-oid="pjz4_5k">
+          <TestComponent data-oid="j28uqwt" />
         </AppInitProvider>,
       )
 
@@ -315,12 +349,16 @@ describe("AppInitProvider", () => {
 
       function TestComponent() {
         isReady = useAppReady()
-        return <div data-testid="test">Ready: {isReady.toString()}</div>
+        return (
+          <div data-testid="test" data-oid="3dyafzs">
+            Ready: {isReady.toString()}
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="9pg7mpr">
+          <TestComponent data-oid="_3zao:q" />
         </AppInitProvider>,
       )
 
@@ -340,8 +378,10 @@ describe("AppInitProvider", () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="opuc244">
+          <div data-testid="content" data-oid="2ebf5cl">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -361,8 +401,10 @@ describe("AppInitProvider", () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="9ba26j:">
+          <div data-testid="content" data-oid="sscbpn4">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -383,11 +425,15 @@ describe("AppInitProvider", () => {
       vi.mocked(isDesktop).mockReturnValue(false)
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
-      const TestChild = () => <div data-testid="child">Child Component</div>
+      const TestChild = () => (
+        <div data-testid="child" data-oid="wrcut_u">
+          Child Component
+        </div>
+      )
 
       render(
-        <AppInitProvider>
-          <TestChild />
+        <AppInitProvider data-oid="zb82yz:">
+          <TestChild data-oid="e_2b7nf" />
         </AppInitProvider>,
       )
 
@@ -405,11 +451,15 @@ describe("AppInitProvider", () => {
           }) as any,
       )
 
-      const FallbackComponent = () => <div data-testid="fallback">Loading App...</div>
+      const FallbackComponent = () => (
+        <div data-testid="fallback" data-oid="e.g0pyn">
+          Loading App...
+        </div>
+      )
 
       render(
-        <AppInitProvider fallback={<FallbackComponent />}>
-          <div>Content</div>
+        <AppInitProvider fallback={<FallbackComponent data-oid="lizpnhe" />} data-oid="abkiwww">
+          <div data-oid="dsr6ky9">Content</div>
         </AppInitProvider>,
       ) as any
 
@@ -423,10 +473,16 @@ describe("AppInitProvider", () => {
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
       render(
-        <AppInitProvider>
-          <div data-testid="child1">Child 1</div>
-          <div data-testid="child2">Child 2</div>
-          <div data-testid="child3">Child 3</div>
+        <AppInitProvider data-oid="ycj1hhl">
+          <div data-testid="child1" data-oid="9uae72g">
+            Child 1
+          </div>
+          <div data-testid="child2" data-oid="9.fb24b">
+            Child 2
+          </div>
+          <div data-testid="child3" data-oid="kbj..q8">
+            Child 3
+          </div>
         </AppInitProvider>,
       )
 
@@ -444,8 +500,8 @@ describe("AppInitProvider", () => {
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
       const { rerender } = render(
-        <AppInitProvider>
-          <div>Content 1</div>
+        <AppInitProvider data-oid="id--nf_">
+          <div data-oid="kil8_55">Content 1</div>
         </AppInitProvider>,
       )
 
@@ -455,8 +511,8 @@ describe("AppInitProvider", () => {
 
       // Перерендер с новым контентом
       rerender(
-        <AppInitProvider>
-          <div>Content 2</div>
+        <AppInitProvider data-oid="nl9nk6s">
+          <div data-oid="s.mi7-x">Content 2</div>
         </AppInitProvider>,
       )
 

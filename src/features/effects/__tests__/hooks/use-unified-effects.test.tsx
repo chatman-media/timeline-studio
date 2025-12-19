@@ -155,6 +155,7 @@ describe("useUnifiedEffects", () => {
         enabled: true,
       },
     ],
+
     presets: [],
     processors: {
       css: {
@@ -310,7 +311,10 @@ describe("useUnifiedEffects", () => {
     it("should create preset from effect", async () => {
       const { result } = renderHook(() => useUnifiedEffects("clip1", "clip"))
 
-      const preset = result.current.createPreset("effect1", { en: "My Preset", ru: "Мой Пресет" })
+      const preset = result.current.createPreset("effect1", {
+        en: "My Preset",
+        ru: "Мой Пресет",
+      })
 
       expect(preset).toBeDefined()
       expect(preset.name).toEqual({ en: "My Preset", ru: "Мой Пресет" })

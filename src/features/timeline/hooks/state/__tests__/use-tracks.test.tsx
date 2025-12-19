@@ -85,6 +85,7 @@ const mockProject: Timeline = {
       tracks: [mockTracks[2]],
     },
   ],
+
   globalTracks: [],
   settings: {
     resolution: {

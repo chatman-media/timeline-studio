@@ -110,6 +110,7 @@ export function TransitionHandles({
           isLocked && "cursor-not-allowed opacity-50",
         )}
         onMouseDown={(e) => handleMouseDown(e, "start")}
+        data-oid="y5aroev"
       >
         <div
           className={cn(
@@ -117,6 +118,7 @@ export function TransitionHandles({
             "opacity-0 group-hover/handle:opacity-100 transition-opacity",
             "group-hover/handle:bg-white group-hover/handle:shadow-lg",
           )}
+          data-oid="-8u:r:o"
         />
       </div>
 
@@ -129,6 +131,7 @@ export function TransitionHandles({
           isLocked && "cursor-not-allowed opacity-50",
         )}
         onMouseDown={(e) => handleMouseDown(e, "end")}
+        data-oid="mnvd9_5"
       >
         <div
           className={cn(
@@ -136,12 +139,16 @@ export function TransitionHandles({
             "opacity-0 group-hover/handle:opacity-100 transition-opacity",
             "group-hover/handle:bg-white group-hover/handle:shadow-lg",
           )}
+          data-oid="zdbmi.c"
         />
       </div>
 
       {/* Индикатор длительности при перетаскивании */}
       {isDragging && (
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded pointer-events-none z-50">
+        <div
+          className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded pointer-events-none z-50"
+          data-oid="vp-d.7k"
+        >
           {duration.toFixed(2)}s
         </div>
       )}

@@ -96,6 +96,7 @@ const mockProject: TimelineProject = {
       ],
     },
   ],
+
   globalTracks: [
     {
       id: "music-track-1",
@@ -147,10 +148,9 @@ describe("useJLCutHotkeys", () => {
   afterEach(() => {
     // No cleanup needed - we don't use fake timers
   })
-
   it("должен регистрировать все горячие клавиши", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="rxyhg5z">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -167,7 +167,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен создавать J-Cut при нажатии J", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="h14p5n3">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -182,7 +182,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен создавать L-Cut при нажатии L", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="06sth82">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -197,7 +197,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен создавать J-Cut с большим смещением при нажатии Shift+J", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="5lmd810">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -214,7 +214,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен создавать L-Cut с большим смещением при нажатии Shift+L", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="eml:.zk">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -231,7 +231,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен создавать J/L-Cut если нет связанной пары", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="t84l2mg">{children}</MockTimelineProvider>
     )
 
     // Клип без связанной пары
@@ -256,7 +256,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен создавать J/L-Cut если не выбран клип", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="f7_u:c5">{children}</MockTimelineProvider>
     )
 
     // Нет выбранных клипов
@@ -275,7 +275,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен создавать J/L-Cut если выбрано больше одного клипа", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="7haivyq">{children}</MockTimelineProvider>
     )
 
     // Выбрано несколько клипов
@@ -294,7 +294,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен сбрасывать срез при нажатии R", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="1g-o2cz">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -310,7 +310,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен сбрасывать срез если не выбран клип", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid=":zisekc">{children}</MockTimelineProvider>
     )
 
     mockUiState.selectedClipIds = []
@@ -328,7 +328,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен связывать видео и аудио клипы при нажатии Cmd+Alt+L", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="8aj3zu0">{children}</MockTimelineProvider>
     )
 
     // Выбираем видео и аудио клипы
@@ -347,7 +347,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен связывать клипы в правильном порядке (видео, аудио)", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="6xi_bs0">{children}</MockTimelineProvider>
     )
 
     // Выбираем в обратном порядке - сначала аудио, потом видео
@@ -368,7 +368,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен связывать музыкальный трек с видео", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="lfbwm-m">{children}</MockTimelineProvider>
     )
 
     // Выбираем видео и музыкальный клип
@@ -388,7 +388,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен связывать клипы если выбрано не 2 клипа", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="-_l54xj">{children}</MockTimelineProvider>
     )
 
     // Выбран только один клип
@@ -415,7 +415,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен связывать клипы одного типа", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="cufcc5a">{children}</MockTimelineProvider>
     )
 
     // Добавляем еще один видео клип
@@ -447,7 +447,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен отвязывать клипы при нажатии Cmd+Alt+U", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="x1m9e::">{children}</MockTimelineProvider>
     )
 
     renderHook(() => useJLCutHotkeys(), { wrapper })
@@ -463,7 +463,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен отвязывать первый выбранный клип если выбрано несколько", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="-p_jydw">{children}</MockTimelineProvider>
     )
 
     mockUiState.selectedClipIds = ["video-clip-1", "audio-clip-1"]
@@ -482,7 +482,7 @@ describe("useJLCutHotkeys", () => {
 
   it("не должен отвязывать если нет выбранных клипов", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="71ha:m6">{children}</MockTimelineProvider>
     )
 
     mockUiState.selectedClipIds = []
@@ -501,7 +501,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен корректно обрабатывать отсутствие проекта", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="g6f:v:d">{children}</MockTimelineProvider>
     )
 
     // Временно удаляем проект
@@ -530,7 +530,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен корректно находить клипы в globalTracks", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="l34882t">{children}</MockTimelineProvider>
     )
 
     // Выбираем клип из globalTracks
@@ -553,7 +553,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен поддерживать различные типы аудио треков", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="tkypu2_">{children}</MockTimelineProvider>
     )
 
     // Сохраняем оригинальные globalTracks
@@ -609,7 +609,7 @@ describe("useJLCutHotkeys", () => {
 
   it("должен работать с изображениями как с видео", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="zdsat55">{children}</MockTimelineProvider>
     )
 
     // Проверяем что sections и tracks существуют

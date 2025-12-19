@@ -39,10 +39,22 @@ export function AutomationPanel({
     { id: "pan", name: t("fairlightAudio.automation.parameters.pan") },
     { id: "eq.lowGain", name: t("fairlightAudio.automation.parameters.eqLow") },
     { id: "eq.midGain", name: t("fairlightAudio.automation.parameters.eqMid") },
-    { id: "eq.highGain", name: t("fairlightAudio.automation.parameters.eqHigh") },
-    { id: "compressor.threshold", name: t("fairlightAudio.automation.parameters.compThreshold") },
-    { id: "compressor.ratio", name: t("fairlightAudio.automation.parameters.compRatio") },
-    { id: "reverb.wetLevel", name: t("fairlightAudio.automation.parameters.reverbWet") },
+    {
+      id: "eq.highGain",
+      name: t("fairlightAudio.automation.parameters.eqHigh"),
+    },
+    {
+      id: "compressor.threshold",
+      name: t("fairlightAudio.automation.parameters.compThreshold"),
+    },
+    {
+      id: "compressor.ratio",
+      name: t("fairlightAudio.automation.parameters.compRatio"),
+    },
+    {
+      id: "reverb.wetLevel",
+      name: t("fairlightAudio.automation.parameters.reverbWet"),
+    },
   ]
 
   const modeButtons = [
@@ -88,11 +100,13 @@ export function AutomationPanel({
   }
 
   return (
-    <div className={cn("bg-zinc-900 border-b border-zinc-800 p-3", className)}>
-      <div className="flex items-center gap-4">
+    <div className={cn("bg-zinc-900 border-b border-zinc-800 p-3", className)} data-oid="2l:x9qp">
+      <div className="flex items-center gap-4" data-oid=":_4-wl9">
         {/* Automation Mode Buttons */}
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-zinc-400 mr-2">{t("fairlightAudio.automation.controls.mode")}</span>
+        <div className="flex items-center gap-1" data-oid="ym3y:5p">
+          <span className="text-xs text-zinc-400 mr-2" data-oid="pj-n9pk">
+            {t("fairlightAudio.automation.controls.mode")}
+          </span>
           {modeButtons.map(({ mode: buttonMode, icon: Icon, label }) => (
             <Button
               key={buttonMode}
@@ -101,18 +115,19 @@ export function AutomationPanel({
               onClick={() => onModeChange(buttonMode)}
               className={cn("h-8 px-2", mode === buttonMode && "bg-blue-600 hover:bg-blue-700")}
               title={modeButtons.find((b) => b.mode === buttonMode)?.description}
+              data-oid="8xs.1ij"
             >
-              <Icon className="w-3 h-3 mr-1" />
+              <Icon className="w-3 h-3 mr-1" data-oid="ktdx5yt" />
               {label}
             </Button>
           ))}
         </div>
 
         {/* Recording Controls */}
-        <div className="flex items-center gap-2 ml-4">
+        <div className="flex items-center gap-2 ml-4" data-oid="mg2ul00">
           {isRecording ? (
-            <Button size="sm" variant="destructive" onClick={onStopRecording} className="h-8">
-              <Square className="w-3 h-3 mr-1 fill-current" />
+            <Button size="sm" variant="destructive" onClick={onStopRecording} className="h-8" data-oid="e34l.g:">
+              <Square className="w-3 h-3 mr-1 fill-current" data-oid="nrzurh9" />
               {t("fairlightAudio.automation.controls.stop")}
             </Button>
           ) : (
@@ -122,35 +137,36 @@ export function AutomationPanel({
               onClick={onStartRecording}
               disabled={mode === "off" || mode === "read"}
               className="h-8 bg-red-600 hover:bg-red-700"
+              data-oid="fovu-3l"
             >
-              <Circle className="w-3 h-3 mr-1 fill-current" />
+              <Circle className="w-3 h-3 mr-1 fill-current" data-oid="tbe:j.:" />
               {t("fairlightAudio.automation.controls.record")}
             </Button>
           )}
         </div>
 
         {/* Add Lane Controls */}
-        <div className="flex items-center gap-2 ml-auto">
-          <Select value={selectedChannel} onValueChange={setSelectedChannel}>
-            <SelectTrigger className="w-32 h-8">
-              <SelectValue placeholder={t("fairlightAudio.automation.controls.channel")} />
+        <div className="flex items-center gap-2 ml-auto" data-oid="djdm1x:">
+          <Select value={selectedChannel} onValueChange={setSelectedChannel} data-oid="hbk7szp">
+            <SelectTrigger className="w-32 h-8" data-oid="hpzy7yn">
+              <SelectValue placeholder={t("fairlightAudio.automation.controls.channel")} data-oid="6706_ce" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-oid="lnxc316">
               {uniqueChannels.map((channelId) => (
-                <SelectItem key={channelId} value={channelId}>
+                <SelectItem key={channelId} value={channelId} data-oid="top_7ku">
                   {channelId}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          <Select value={selectedParameter} onValueChange={setSelectedParameter}>
-            <SelectTrigger className="w-32 h-8">
-              <SelectValue placeholder={t("fairlightAudio.automation.controls.parameter")} />
+          <Select value={selectedParameter} onValueChange={setSelectedParameter} data-oid="9k3.7vo">
+            <SelectTrigger className="w-32 h-8" data-oid="9-sw37:">
+              <SelectValue placeholder={t("fairlightAudio.automation.controls.parameter")} data-oid="n4zreec" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-oid="wdm1y4e">
               {availableParameters.map((param) => (
-                <SelectItem key={param.id} value={param.id}>
+                <SelectItem key={param.id} value={param.id} data-oid="-j3gk3f">
                   {param.name}
                 </SelectItem>
               ))}
@@ -163,22 +179,23 @@ export function AutomationPanel({
             onClick={handleAddLane}
             disabled={!selectedChannel || !selectedParameter}
             className="h-8 px-2"
+            data-oid="2zqt4pb"
           >
-            <Plus className="w-3 h-3" />
+            <Plus className="w-3 h-3" data-oid="dpxdvs0" />
           </Button>
         </div>
       </div>
 
       {/* Status Bar */}
-      <div className="flex items-center justify-between mt-2 text-xs text-zinc-500">
-        <span>
+      <div className="flex items-center justify-between mt-2 text-xs text-zinc-500" data-oid="x-uqg.d">
+        <span data-oid="t5ac:g0">
           {t("fairlightAudio.automation.status.lanes", { count: lanes.length })} •{" "}
           {t("fairlightAudio.automation.status.mode", { mode })}
           {isRecording && ` • ${t("fairlightAudio.automation.status.recording")}`}
         </span>
 
         {mode !== "off" && (
-          <span>
+          <span data-oid="m_1j687">
             {mode === "read" && t("fairlightAudio.automation.status.reading")}
             {mode === "write" && t("fairlightAudio.automation.status.willOverwrite")}
             {mode === "touch" && t("fairlightAudio.automation.status.touchToStart")}

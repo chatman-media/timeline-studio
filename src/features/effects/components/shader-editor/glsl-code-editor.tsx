@@ -357,16 +357,19 @@ export function GLSLCodeEditor({
   }, [errors])
 
   return (
-    <div className={cn("relative flex h-full bg-gray-900 rounded-lg overflow-hidden", className)}>
+    <div className={cn("relative flex h-full bg-gray-900 rounded-lg overflow-hidden", className)} data-oid="tht.zna">
       {/* Line numbers */}
-      <div className="shrink-0 w-12 bg-gray-950 text-gray-500 text-right pr-2 pt-4 pb-4 text-sm font-mono select-none">
-        <div ref={lineNumbersRef} className="leading-6">
+      <div
+        className="shrink-0 w-12 bg-gray-950 text-gray-500 text-right pr-2 pt-4 pb-4 text-sm font-mono select-none"
+        data-oid=".wcc34z"
+      >
+        <div ref={lineNumbersRef} className="leading-6" data-oid="gamk1ja">
           1
         </div>
       </div>
 
       {/* Editor */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative" data-oid="74jog4l">
         <textarea
           ref={editorRef}
           value={value}
@@ -390,12 +393,14 @@ export function GLSLCodeEditor({
             MozTabSize: 2,
             WebkitTextFillColor: "transparent",
           }}
+          data-oid="opxi634"
         />
 
         {/* Syntax highlighted overlay */}
         <div
           className="absolute inset-0 pointer-events-none font-mono text-sm leading-6 pt-4 pb-4 pl-4 pr-4 overflow-auto whitespace-pre"
           dangerouslySetInnerHTML={{ __html: getHighlightedCode() }}
+          data-oid="az6hrt9"
         />
 
         {/* Error indicators */}
@@ -405,12 +410,16 @@ export function GLSLCodeEditor({
             className="absolute left-0 right-0 h-6 bg-red-500/10 border-l-2 border-red-500 pointer-events-none"
             style={{ top: `${(error.line - 1) * 24 + 16}px` }}
             title={error.message}
+            data-oid=".1l7d3i"
           />
         ))}
 
         {/* Autocomplete dropdown */}
         {showAutoComplete && autoCompleteItems.length > 0 && (
-          <div className="absolute z-10 mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-48 overflow-auto">
+          <div
+            className="absolute z-10 mt-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg max-h-48 overflow-auto"
+            data-oid=":zvy9nz"
+          >
             {autoCompleteItems.map((item, index) => (
               <button
                 key={index}
@@ -433,6 +442,7 @@ export function GLSLCodeEditor({
                     setShowAutoComplete(false)
                   }
                 }}
+                data-oid="ic:3_ud"
               >
                 <span
                   className={cn(
@@ -441,11 +451,18 @@ export function GLSLCodeEditor({
                     item.kind === "function" && "bg-green-600 text-white",
                     item.kind === "variable" && "bg-purple-600 text-white",
                   )}
+                  data-oid="h3n2.40"
                 >
                   {item.kind}
                 </span>
-                <span className="text-white">{item.label}</span>
-                {item.detail && <span className="text-gray-400 text-xs ml-auto">{item.detail}</span>}
+                <span className="text-white" data-oid="u8ljt03">
+                  {item.label}
+                </span>
+                {item.detail && (
+                  <span className="text-gray-400 text-xs ml-auto" data-oid="jgaiw:i">
+                    {item.detail}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -453,21 +470,28 @@ export function GLSLCodeEditor({
       </div>
 
       {/* Status bar */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-1 bg-gray-950 text-xs text-gray-500">
-        <div className="flex items-center gap-4">
-          <span>{shaderType === "vertex" ? "Vertex Shader" : "Fragment Shader"}</span>
-          <span>
+      <div
+        className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-1 bg-gray-950 text-xs text-gray-500"
+        data-oid="asyxhhq"
+      >
+        <div className="flex items-center gap-4" data-oid="m15t05p">
+          <span data-oid="gugj:35">{shaderType === "vertex" ? "Vertex Shader" : "Fragment Shader"}</span>
+          <span data-oid="mt0_:7b">
             Ln {cursorPosition.line}, Col {cursorPosition.column}
           </span>
-          {selectedText && <span>{selectedText.length} selected</span>}
+          {selectedText && <span data-oid="juwctcm">{selectedText.length} selected</span>}
         </div>
-        <div className="flex items-center gap-4">
-          {errors.length > 0 && <span className="text-red-400">{errors.length} errors</span>}
-          <span>GLSL ES 3.0</span>
+        <div className="flex items-center gap-4" data-oid="ddpsxoh">
+          {errors.length > 0 && (
+            <span className="text-red-400" data-oid="h.q.aow">
+              {errors.length} errors
+            </span>
+          )}
+          <span data-oid="2abq3oi">GLSL ES 3.0</span>
         </div>
       </div>
 
-      <style jsx>{`
+      <style jsx data-oid="9tw0z7d">{`
         .keyword {
           color: #569cd6;
         }

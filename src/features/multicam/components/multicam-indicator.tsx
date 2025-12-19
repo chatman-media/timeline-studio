@@ -35,14 +35,22 @@ export function MulticamIndicator({ currentAngle, totalAngles, angleName, classN
   }
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Camera className="w-4 h-4 text-muted-foreground" />
-      <Badge variant="secondary" className="gap-1">
-        <span className="font-bold">{currentAngle + 1}</span>
-        <span className="text-muted-foreground">/</span>
-        <span>{totalAngles}</span>
+    <div className={cn("flex items-center gap-2", className)} data-oid="fjcbcan">
+      <Camera className="w-4 h-4 text-muted-foreground" data-oid="u4u:_fi" />
+      <Badge variant="secondary" className="gap-1" data-oid="m4uruul">
+        <span className="font-bold" data-oid="rj6ogpf">
+          {currentAngle + 1}
+        </span>
+        <span className="text-muted-foreground" data-oid="4kdr6zp">
+          /
+        </span>
+        <span data-oid="c-1b1-v">{totalAngles}</span>
       </Badge>
-      {angleName && <span className="text-sm text-muted-foreground">{angleName}</span>}
+      {angleName && (
+        <span className="text-sm text-muted-foreground" data-oid="ca.otgy">
+          {angleName}
+        </span>
+      )}
     </div>
   )
 }

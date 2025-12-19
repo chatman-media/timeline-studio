@@ -88,7 +88,9 @@ export function VideoPlayer() {
           logger.error("Failed to play video", { error })
         })
       } else {
-        logger.debug("Waiting for canplay event", { readyState: videoElement.readyState })
+        logger.debug("Waiting for canplay event", {
+          readyState: videoElement.readyState,
+        })
         // Если видео не готово, ждём события canplay
         const handleCanPlay = () => {
           // Повторная проверка - может видео уже играет из-за другого события
@@ -187,12 +189,12 @@ export function VideoPlayer() {
       type: MediaType.Video,
     }
     return (
-      <div className="media-player-container relative flex h-full flex-col">
-        <div className="relative flex-1 bg-black" style={containerStyle}>
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="h-full w-full">
-              <AspectRatio ratio={aspectRatioValue} className="bg-black">
-                <div className="relative h-full w-full">
+      <div className="media-player-container relative flex h-full flex-col" data-oid="9688-f.">
+        <div className="relative flex-1 bg-black" style={containerStyle} data-oid="sza.w.9">
+          <div className="flex h-full w-full items-center justify-center" data-oid="hsdsy0t">
+            <div className="h-full w-full" data-oid="-l2-:ll">
+              <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="a48d7di">
+                <div className="relative h-full w-full" data-oid="qcyhsoi">
                   <video
                     key={file.id || "no-file"}
                     src={"#"}
@@ -214,24 +216,25 @@ export function VideoPlayer() {
                       display: "block",
                       zIndex: 1,
                     }}
+                    data-oid="s8a5two"
                   />
                 </div>
               </AspectRatio>
             </div>
           </div>
         </div>
-        <PlayerControls currentTime={0} file={file} />
+        <PlayerControls currentTime={0} file={file} data-oid="3ff_-r4" />
       </div>
     )
   }
 
   return (
-    <div className="media-player-container relative flex h-full flex-col">
-      <div className="relative flex-1 bg-black" style={containerStyle}>
-        <div className="flex h-full w-full items-center justify-center">
-          <div className="h-full w-full">
-            <AspectRatio ratio={aspectRatioValue} className="bg-black">
-              <div className="relative h-full w-full">
+    <div className="media-player-container relative flex h-full flex-col" data-oid="1djfz84">
+      <div className="relative flex-1 bg-black" style={containerStyle} data-oid="0iyhzrb">
+        <div className="flex h-full w-full items-center justify-center" data-oid="hpgq3a2">
+          <div className="h-full w-full" data-oid="mhdt8l1">
+            <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="wf_5-98">
+              <div className="relative h-full w-full" data-oid="jaqsiv0">
                 <video
                   ref={videoRef}
                   data-player-video // Атрибут для поиска через querySelector в usePlaybackTimeSync
@@ -255,33 +258,40 @@ export function VideoPlayer() {
                     display: showEffectsPreview && hasEffects() ? "none" : "block",
                     zIndex: 1,
                   }}
+                  data-oid="cw1:lzr"
                 />
+
                 {/* AI Analysis Overlay */}
-                <PlayerAIOverlay className="z-10" />
+                <PlayerAIOverlay className="z-10" data-oid="5vho-:e" />
                 {/* WebGL Effects Preview */}
-                {hasEffects() && showEffectsPreview && <TimelinePreview className="absolute inset-0 z-2" />}
+                {hasEffects() && showEffectsPreview && (
+                  <TimelinePreview className="absolute inset-0 z-2" data-oid="iallc_a" />
+                )}
               </div>
             </AspectRatio>
           </div>
         </div>
         {/* Effects Preview Toggle Button */}
         {hasEffects() && (
-          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          <div className="absolute top-4 right-4 z-20 flex items-center gap-2" data-oid="xg614w6">
             {showEffectsPreview && (
-              <div className="bg-primary/90 text-primary-foreground px-2 py-1 rounded text-xs">WebGL эффекты</div>
+              <div className="bg-primary/90 text-primary-foreground px-2 py-1 rounded text-xs" data-oid="l589s7g">
+                WebGL эффекты
+              </div>
             )}
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowEffectsPreview(!showEffectsPreview)}
               className="bg-background/80 backdrop-blur-sm"
+              data-oid="truqfa7"
             >
               {showEffectsPreview ? "Скрыть эффекты" : "Показать эффекты"}
             </Button>
           </div>
         )}
       </div>
-      <PlayerControls currentTime={currentTime} file={video} duration={duration} />
+      <PlayerControls currentTime={currentTime} file={video} duration={duration} data-oid="2z2cmnm" />
     </div>
   )
 }

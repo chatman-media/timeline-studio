@@ -107,26 +107,35 @@ export function PersonForm({ person, isOpen, onClose, onSave, isLoading = false 
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{person ? "Редактировать персону" : "Добавить персону"}</DialogTitle>
+    <Dialog open={isOpen} onOpenChange={onClose} data-oid="haow186">
+      <DialogContent className="sm:max-w-[500px]" data-oid="pxs.fph">
+        <DialogHeader data-oid="j8u_b1i">
+          <DialogTitle data-oid="szobzls">{person ? "Редактировать персону" : "Добавить персону"}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" data-oid="zsqh028">
           {/* Аватар */}
-          <div className="flex items-center space-x-4">
-            <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+          <div className="flex items-center space-x-4" data-oid="33e5mgw">
+            <div
+              className="h-16 w-16 rounded-full bg-muted flex items-center justify-center overflow-hidden"
+              data-oid="avftxpx"
+            >
               {thumbnailPreview ? (
-                <img src={thumbnailPreview} alt="Preview" className="h-16 w-16 object-cover" />
+                <img src={thumbnailPreview} alt="Preview" className="h-16 w-16 object-cover" data-oid="_l47eri" />
               ) : (
-                <User className="h-8 w-8 text-muted-foreground" />
+                <User className="h-8 w-8 text-muted-foreground" data-oid="16xf6jv" />
               )}
             </div>
 
-            <div className="space-y-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />
+            <div className="space-y-2" data-oid="de_l0bm">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                data-oid="hy0m7y2"
+              >
+                <Upload className="h-4 w-4 mr-2" data-oid="y-t.5wo" />
                 Загрузить фото
               </Button>
 
@@ -139,51 +148,70 @@ export function PersonForm({ person, isOpen, onClose, onSave, isLoading = false 
                     setThumbnailPreview(null)
                     setFormData((prev) => ({ ...prev, thumbnails: [] }))
                   }}
+                  data-oid="ezip7jr"
                 >
                   Удалить
                 </Button>
               )}
             </div>
 
-            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+              data-oid="f1j6jca"
+            />
           </div>
 
           {/* Имя */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Имя *</Label>
+          <div className="space-y-2" data-oid="y77s224">
+            <Label htmlFor="name" data-oid="fblpljj">
+              Имя *
+            </Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               placeholder="Введите имя персоны"
               required
+              data-oid="-y1grvg"
             />
           </div>
 
           {/* Примечания */}
-          <div className="space-y-2">
-            <Label htmlFor="notes">Примечания</Label>
+          <div className="space-y-2" data-oid="zzf900z">
+            <Label htmlFor="notes" data-oid="i3.z3h_">
+              Примечания
+            </Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => handleInputChange("notes", e.target.value)}
               placeholder="Дополнительная информация о персоне"
               rows={3}
+              data-oid="98g06f0"
             />
           </div>
 
           {/* Теги */}
-          <div className="space-y-2">
-            <Label>Теги</Label>
+          <div className="space-y-2" data-oid="g:lw03e">
+            <Label data-oid="g2uw:::">Теги</Label>
 
             {/* Существующие теги */}
             {formData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="flex flex-wrap gap-2 mb-2" data-oid="jp_c43f">
                 {formData.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                  <Badge key={tag} variant="secondary" className="flex items-center gap-1" data-oid="ykqds.w">
                     {tag}
-                    <button type="button" onClick={() => handleRemoveTag(tag)} className="ml-1 hover:text-destructive">
-                      <X className="h-3 w-3" />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="ml-1 hover:text-destructive"
+                      data-oid="-:72umq"
+                    >
+                      <X className="h-3 w-3" data-oid="3v::lad" />
                     </button>
                   </Badge>
                 ))}
@@ -191,31 +219,34 @@ export function PersonForm({ person, isOpen, onClose, onSave, isLoading = false 
             )}
 
             {/* Поле для добавления тега */}
-            <div className="flex space-x-2">
+            <div className="flex space-x-2" data-oid="g-_1ol5">
               <Input
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Добавить тег"
                 className="flex-1"
+                data-oid="pb4oku0"
               />
+
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={handleAddTag}
                 disabled={!newTag.trim() || formData.tags.includes(newTag.trim())}
+                data-oid="1y7-at-"
               >
-                <TagIcon className="h-4 w-4" />
+                <TagIcon className="h-4 w-4" data-oid="k-qhngb" />
               </Button>
             </div>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+          <DialogFooter data-oid="zr88e:r">
+            <Button type="button" variant="outline" onClick={onClose} data-oid=".7lx.qt">
               Отмена
             </Button>
-            <Button type="submit" disabled={!formData.name.trim() || isLoading}>
+            <Button type="submit" disabled={!formData.name.trim() || isLoading} data-oid="ndavpwr">
               {isLoading ? "Сохранение..." : "Сохранить"}
             </Button>
           </DialogFooter>

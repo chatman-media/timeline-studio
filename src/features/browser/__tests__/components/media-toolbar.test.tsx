@@ -44,7 +44,7 @@ vi.mock("react-i18next", () => ({
 // Mock UI components
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, className, onClick, disabled, ...props }: any) => (
-    <button className={className} onClick={onClick} disabled={disabled} {...props}>
+    <button className={className} onClick={onClick} disabled={disabled} {...props} data-oid="kei8xe_">
       {children}
     </button>
   ),
@@ -52,48 +52,85 @@ vi.mock("@/components/ui/button", () => ({
 
 vi.mock("@/components/ui/input", () => ({
   Input: ({ value, onChange, className, placeholder, ...props }: any) => (
-    <input value={value} onChange={onChange} className={className} placeholder={placeholder} {...props} />
+    <input
+      value={value}
+      onChange={onChange}
+      className={className}
+      placeholder={placeholder}
+      {...props}
+      data-oid="d.mjek5"
+    />
   ),
 }))
 
 vi.mock("@/components/ui/dropdown-menu", () => ({
-  DropdownMenu: ({ children }: any) => <div data-testid="dropdown-menu">{children}</div>,
-  DropdownMenuTrigger: ({ children, asChild }: any) => (asChild ? children : <div>{children}</div>),
+  DropdownMenu: ({ children }: any) => (
+    <div data-testid="dropdown-menu" data-oid="hvvs78q">
+      {children}
+    </div>
+  ),
+
+  DropdownMenuTrigger: ({ children, asChild }: any) => (asChild ? children : <div data-oid="kob7:2o">{children}</div>),
   DropdownMenuContent: ({ children, align }: any) => (
-    <div data-testid="dropdown-content" data-align={align}>
+    <div data-testid="dropdown-content" data-align={align} data-oid="_2f:9:p">
       {children}
     </div>
   ),
+
   DropdownMenuItem: ({ children, onClick }: any) => (
-    <div data-testid="dropdown-item" onClick={onClick}>
+    <div data-testid="dropdown-item" onClick={onClick} data-oid="altskhc">
       {children}
     </div>
   ),
-  DropdownMenuSeparator: () => <div data-testid="dropdown-separator" />,
+
+  DropdownMenuSeparator: () => <div data-testid="dropdown-separator" data-oid="032nkgy" />,
 }))
 
 vi.mock("@/components/ui/tooltip", () => ({
-  Tooltip: ({ children }: any) => <div data-testid="tooltip">{children}</div>,
-  TooltipProvider: ({ children }: any) => <div data-testid="tooltip-provider">{children}</div>,
-  TooltipTrigger: ({ children, asChild }: any) => (asChild ? children : <div>{children}</div>),
-  TooltipContent: ({ children }: any) => <div data-testid="tooltip-content">{children}</div>,
+  Tooltip: ({ children }: any) => (
+    <div data-testid="tooltip" data-oid="913au1x">
+      {children}
+    </div>
+  ),
+
+  TooltipProvider: ({ children }: any) => (
+    <div data-testid="tooltip-provider" data-oid="_61x4kg">
+      {children}
+    </div>
+  ),
+
+  TooltipTrigger: ({ children, asChild }: any) => (asChild ? children : <div data-oid="pc6j-0k">{children}</div>),
+  TooltipContent: ({ children }: any) => (
+    <div data-testid="tooltip-content" data-oid="_e.d002">
+      {children}
+    </div>
+  ),
 }))
 
 // Mock lucide-react icons
 vi.mock("lucide-react", () => ({
-  ArrowDownUp: ({ size }: any) => <div data-testid="arrow-down-up" data-size={size} />,
-  ArrowUpDown: ({ size }: any) => <div data-testid="arrow-up-down" data-size={size} />,
-  Check: ({ className }: any) => <div data-testid="check" className={className} />,
-  File: ({ size, className }: any) => <div data-testid="file-icon" data-size={size} className={className} />,
-  Filter: ({ size }: any) => <div data-testid="filter-icon" data-size={size} />,
-  Folder: ({ size, className }: any) => <div data-testid="folder-icon" data-size={size} className={className} />,
-  Grid2x2: ({ size }: any) => <div data-testid="grid-icon" data-size={size} />,
-  List: ({ size }: any) => <div data-testid="list-icon" data-size={size} />,
-  ListFilterPlus: ({ size }: any) => <div data-testid="list-filter-plus" data-size={size} />,
-  SortDesc: ({ size }: any) => <div data-testid="sort-desc" data-size={size} />,
-  Star: ({ size, className }: any) => <div data-testid="star-icon" data-size={size} className={className} />,
-  ZoomIn: ({ size }: any) => <div data-testid="zoom-in" data-size={size} />,
-  ZoomOut: ({ size }: any) => <div data-testid="zoom-out" data-size={size} />,
+  ArrowDownUp: ({ size }: any) => <div data-testid="arrow-down-up" data-size={size} data-oid="gtf9s2k" />,
+  ArrowUpDown: ({ size }: any) => <div data-testid="arrow-up-down" data-size={size} data-oid="aib0o_u" />,
+  Check: ({ className }: any) => <div data-testid="check" className={className} data-oid="ev:e3qd" />,
+  File: ({ size, className }: any) => (
+    <div data-testid="file-icon" data-size={size} className={className} data-oid="vrsf55g" />
+  ),
+
+  Filter: ({ size }: any) => <div data-testid="filter-icon" data-size={size} data-oid="inx:y68" />,
+  Folder: ({ size, className }: any) => (
+    <div data-testid="folder-icon" data-size={size} className={className} data-oid="mwy-80h" />
+  ),
+
+  Grid2x2: ({ size }: any) => <div data-testid="grid-icon" data-size={size} data-oid="8xji5-_" />,
+  List: ({ size }: any) => <div data-testid="list-icon" data-size={size} data-oid="4hwvlm5" />,
+  ListFilterPlus: ({ size }: any) => <div data-testid="list-filter-plus" data-size={size} data-oid="e8v.zzo" />,
+  SortDesc: ({ size }: any) => <div data-testid="sort-desc" data-size={size} data-oid="6wrmm17" />,
+  Star: ({ size, className }: any) => (
+    <div data-testid="star-icon" data-size={size} className={className} data-oid="kk:lptx" />
+  ),
+
+  ZoomIn: ({ size }: any) => <div data-testid="zoom-in" data-size={size} data-oid=".5v3r6_" />,
+  ZoomOut: ({ size }: any) => <div data-testid="zoom-out" data-size={size} data-oid="bj6:gl7" />,
 }))
 
 // Mock utils
@@ -119,6 +156,7 @@ describe("MediaToolbar", () => {
       { value: "date", label: "sort.date" },
       { value: "size", label: "sort.size" },
     ],
+
     groupOptions: [
       { value: "none", label: "group.none" },
       { value: "type", label: "group.type" },
@@ -144,12 +182,12 @@ describe("MediaToolbar", () => {
 
   describe("Basic rendering", () => {
     it("should render without crashing", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid=":qghtq5" />)
       expect(screen.getByPlaceholderText("Search")).toBeInTheDocument()
     })
 
     it("should render search input with placeholder", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="hbzpncj" />)
 
       const searchInput = screen.getByPlaceholderText("Search")
       expect(searchInput).toBeInTheDocument()
@@ -157,14 +195,14 @@ describe("MediaToolbar", () => {
     })
 
     it("should render with custom className", () => {
-      const { container } = render(<MediaToolbar {...mockProps} className="custom-toolbar" />)
+      const { container } = render(<MediaToolbar {...mockProps} className="custom-toolbar" data-oid="zww80hu" />)
 
       const toolbar = container.firstChild as HTMLElement
       expect(toolbar).toHaveClass("custom-toolbar")
     })
 
     it("should render default view mode buttons", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="izstc-l" />)
 
       expect(screen.getByTestId("list-view-button")).toBeInTheDocument()
       expect(screen.getByTestId("thumbnails-view-button")).toBeInTheDocument()
@@ -174,7 +212,7 @@ describe("MediaToolbar", () => {
   describe("Search functionality", () => {
     it("should call onSearch when typing in search input", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="a51cwxn" />)
 
       const searchInput = screen.getByPlaceholderText("Search")
       await user.clear(searchInput)
@@ -187,14 +225,14 @@ describe("MediaToolbar", () => {
     })
 
     it("should display current search query", () => {
-      render(<MediaToolbar {...mockProps} searchQuery="current search" />)
+      render(<MediaToolbar {...mockProps} searchQuery="current search" data-oid="-tf_474" />)
 
       const searchInput = screen.getByDisplayValue("current search")
       expect(searchInput).toBeInTheDocument()
     })
 
     it("should handle search input change", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="2nmdwjd" />)
 
       const searchInput = screen.getByPlaceholderText("Search")
       fireEvent.change(searchInput, { target: { value: "new search" } })
@@ -205,14 +243,22 @@ describe("MediaToolbar", () => {
 
   describe("Import functionality", () => {
     it("should render import buttons when showImport is true", () => {
-      render(<MediaToolbar {...mockProps} showImport={true} onImportFile={vi.fn()} onImportFolder={vi.fn()} />)
+      render(
+        <MediaToolbar
+          {...mockProps}
+          showImport={true}
+          onImportFile={vi.fn()}
+          onImportFolder={vi.fn()}
+          data-oid="kmhe151"
+        />,
+      )
 
       expect(screen.getByTestId("add-media-button")).toBeInTheDocument()
       expect(screen.getByTestId("add-folder-button")).toBeInTheDocument()
     })
 
     it("should not render import buttons when showImport is false", () => {
-      render(<MediaToolbar {...mockProps} showImport={false} />)
+      render(<MediaToolbar {...mockProps} showImport={false} data-oid="3-qh991" />)
 
       expect(screen.queryByTestId("add-media-button")).not.toBeInTheDocument()
       expect(screen.queryByTestId("add-folder-button")).not.toBeInTheDocument()
@@ -222,7 +268,7 @@ describe("MediaToolbar", () => {
       const onImportFile = vi.fn()
       const user = userEvent.setup()
 
-      render(<MediaToolbar {...mockProps} onImportFile={onImportFile} onImportFolder={vi.fn()} />)
+      render(<MediaToolbar {...mockProps} onImportFile={onImportFile} onImportFolder={vi.fn()} data-oid=".1e79e:" />)
 
       const fileButton = screen.getByTestId("add-media-button")
       await user.click(fileButton)
@@ -234,7 +280,7 @@ describe("MediaToolbar", () => {
       const onImportFolder = vi.fn()
       const user = userEvent.setup()
 
-      render(<MediaToolbar {...mockProps} onImportFile={vi.fn()} onImportFolder={onImportFolder} />)
+      render(<MediaToolbar {...mockProps} onImportFile={vi.fn()} onImportFolder={onImportFolder} data-oid="o9ml:br" />)
 
       const folderButton = screen.getByTestId("add-folder-button")
       await user.click(folderButton)
@@ -243,7 +289,7 @@ describe("MediaToolbar", () => {
     })
 
     it("should show importing state", () => {
-      render(<MediaToolbar {...mockProps} onImportFile={vi.fn()} isImporting={true} />)
+      render(<MediaToolbar {...mockProps} onImportFile={vi.fn()} isImporting={true} data-oid="119a3bc" />)
 
       expect(screen.getByText("Importing...")).toBeInTheDocument()
 
@@ -253,7 +299,15 @@ describe("MediaToolbar", () => {
     })
 
     it("should disable import buttons when importing", () => {
-      render(<MediaToolbar {...mockProps} onImportFile={vi.fn()} onImportFolder={vi.fn()} isImporting={true} />)
+      render(
+        <MediaToolbar
+          {...mockProps}
+          onImportFile={vi.fn()}
+          onImportFolder={vi.fn()}
+          isImporting={true}
+          data-oid="b7ga.em"
+        />,
+      )
 
       const importButton = screen.getByText("Importing...").closest("button")
       expect(importButton).toBeDisabled()
@@ -263,7 +317,7 @@ describe("MediaToolbar", () => {
       const onImportFile = vi.fn()
       const user = userEvent.setup()
 
-      render(<MediaToolbar {...mockProps} onImportFile={onImportFile} onImportFolder={vi.fn()} />)
+      render(<MediaToolbar {...mockProps} onImportFile={onImportFile} onImportFolder={vi.fn()} data-oid="vzdzb7g" />)
 
       const fileIcon = screen.getByTestId("add-media-button")
       await user.click(fileIcon)
@@ -274,7 +328,7 @@ describe("MediaToolbar", () => {
 
   describe("Favorites functionality", () => {
     it("should render favorites button", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="uc8rjvk" />)
 
       const favoritesButton = screen.getByTestId("star-icon")
       expect(favoritesButton).toBeInTheDocument()
@@ -282,7 +336,7 @@ describe("MediaToolbar", () => {
 
     it("should call onToggleFavorites when favorites button is clicked", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="luvwhse" />)
 
       const favoritesButton = screen.getByTestId("star-icon").closest("button")!
       await user.click(favoritesButton)
@@ -291,7 +345,7 @@ describe("MediaToolbar", () => {
     })
 
     it("should show active state when showFavoritesOnly is true", () => {
-      render(<MediaToolbar {...mockProps} showFavoritesOnly={true} />)
+      render(<MediaToolbar {...mockProps} showFavoritesOnly={true} data-oid="uayq_b." />)
 
       const favoritesButton = screen.getByTestId("star-icon").closest("button")!
       expect(favoritesButton).toHaveClass("bg-[#dddbdd]")
@@ -301,7 +355,7 @@ describe("MediaToolbar", () => {
     })
 
     it("should show inactive state when showFavoritesOnly is false", () => {
-      render(<MediaToolbar {...mockProps} showFavoritesOnly={false} />)
+      render(<MediaToolbar {...mockProps} showFavoritesOnly={false} data-oid="cpagivr" />)
 
       const starIcon = screen.getByTestId("star-icon")
       expect(starIcon).not.toHaveClass("fill-current")
@@ -310,23 +364,29 @@ describe("MediaToolbar", () => {
 
   describe("View mode functionality", () => {
     it("should render view mode buttons when multiple modes available", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="zwjs0m." />)
 
       expect(screen.getByTestId("list-view-button")).toBeInTheDocument()
       expect(screen.getByTestId("thumbnails-view-button")).toBeInTheDocument()
     })
 
     it("should not render view mode buttons when only one mode available", () => {
-      const singleViewMode = [{ value: "list" as ViewMode, icon: () => <div />, label: "browser.toolbar.list" }]
+      const singleViewMode = [
+        {
+          value: "list" as ViewMode,
+          icon: () => <div data-oid="d:19i22" />,
+          label: "browser.toolbar.list",
+        },
+      ]
 
-      render(<MediaToolbar {...mockProps} availableViewModes={singleViewMode} />)
+      render(<MediaToolbar {...mockProps} availableViewModes={singleViewMode} data-oid="nw50b-x" />)
 
       expect(screen.queryByTestId("list-view-button")).not.toBeInTheDocument()
     })
 
     it("should call onChangeViewMode when view mode button is clicked", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="-9j:.iy" />)
 
       const thumbnailsButton = screen.getByTestId("thumbnails-view-button")
       await user.click(thumbnailsButton)
@@ -335,7 +395,7 @@ describe("MediaToolbar", () => {
     })
 
     it("should show active state for current view mode", () => {
-      render(<MediaToolbar {...mockProps} viewMode="thumbnails" />)
+      render(<MediaToolbar {...mockProps} viewMode="thumbnails" data-oid=":3k-9vr" />)
 
       const thumbnailsButton = screen.getByTestId("thumbnails-view-button")
       expect(thumbnailsButton).toHaveClass("bg-[#dddbdd]")
@@ -345,19 +405,19 @@ describe("MediaToolbar", () => {
       const customViewModes = [
         {
           value: "grid" as ViewMode,
-          icon: () => <div data-testid="custom-grid" />,
+          icon: () => <div data-testid="custom-grid" data-oid="-6992_4" />,
           label: "Custom Grid",
           testId: "custom-grid-button",
         },
         {
           value: "list" as ViewMode,
-          icon: () => <div data-testid="custom-list" />,
+          icon: () => <div data-testid="custom-list" data-oid="c:trgb0" />,
           label: "Custom List",
           testId: "custom-list-button",
         },
       ]
 
-      render(<MediaToolbar {...mockProps} availableViewModes={customViewModes} />)
+      render(<MediaToolbar {...mockProps} availableViewModes={customViewModes} data-oid="70-8gmw" />)
 
       expect(screen.getByTestId("custom-grid-button")).toBeInTheDocument()
       expect(screen.getByTestId("custom-list-button")).toBeInTheDocument()
@@ -367,27 +427,27 @@ describe("MediaToolbar", () => {
 
   describe("Sort functionality", () => {
     it("should render sort dropdown", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="pk.p45m" />)
 
       expect(screen.getByTestId("sort-desc")).toBeInTheDocument()
     })
 
     it("should show active state when sort is not default", () => {
-      render(<MediaToolbar {...mockProps} sortBy="date" />)
+      render(<MediaToolbar {...mockProps} sortBy="date" data-oid="-:xdu.v" />)
 
       const sortButton = screen.getByTestId("sort-desc").closest("button")!
       expect(sortButton).toHaveClass("bg-[#dddbdd]")
     })
 
     it("should show inactive state when sort is default", () => {
-      render(<MediaToolbar {...mockProps} sortBy="name" />)
+      render(<MediaToolbar {...mockProps} sortBy="name" data-oid="mi260tc" />)
 
       const sortButton = screen.getByTestId("sort-desc").closest("button")!
       expect(sortButton).not.toHaveClass("bg-[#dddbdd]")
     })
 
     it("should render sort options in dropdown", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="-szsen1" />)
 
       const sortItems = screen.getAllByTestId("dropdown-item")
       expect(sortItems.length).toBeGreaterThan(0)
@@ -395,7 +455,7 @@ describe("MediaToolbar", () => {
 
     it("should call onSort when sort option is clicked", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="g-sz81t" />)
 
       const sortItems = screen.getAllByTestId("dropdown-item")
       await user.click(sortItems[1]) // Click second sort option
@@ -406,27 +466,27 @@ describe("MediaToolbar", () => {
 
   describe("Filter functionality", () => {
     it("should render filter dropdown", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="p:ixn8_" />)
 
       expect(screen.getByTestId("filter-icon")).toBeInTheDocument()
     })
 
     it("should show active state when filter is not 'all'", () => {
-      render(<MediaToolbar {...mockProps} filterType="mp4" />)
+      render(<MediaToolbar {...mockProps} filterType="mp4" data-oid="-nrho8a" />)
 
       const filterButton = screen.getByTestId("filter-icon").closest("button")!
       expect(filterButton).toHaveClass("bg-[#dddbdd]")
     })
 
     it("should show inactive state when filter is 'all'", () => {
-      render(<MediaToolbar {...mockProps} filterType="all" />)
+      render(<MediaToolbar {...mockProps} filterType="all" data-oid="aypn_fs" />)
 
       const filterButton = screen.getByTestId("filter-icon").closest("button")!
       expect(filterButton).not.toHaveClass("bg-[#dddbdd]")
     })
 
     it("should render default extension filters when no custom filters provided", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="tv:-1qk" />)
 
       // Should render extensions from availableExtensions
       const filterItems = screen.getAllByTestId("dropdown-item")
@@ -439,7 +499,7 @@ describe("MediaToolbar", () => {
         { value: "audio", label: "filter.audio" },
       ]
 
-      render(<MediaToolbar {...mockProps} filterOptions={filterOptions} />)
+      render(<MediaToolbar {...mockProps} filterOptions={filterOptions} data-oid="7k6tcg:" />)
 
       const filterItems = screen.getAllByTestId("dropdown-item")
       expect(filterItems.length).toBeGreaterThan(0)
@@ -447,7 +507,7 @@ describe("MediaToolbar", () => {
 
     it("should call onFilter when filter option is clicked", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="vic1d_t" />)
 
       // Find filter dropdown items specifically
       const filterDropdown = screen.getAllByTestId("dropdown-menu")[1] // Second dropdown is filter
@@ -460,19 +520,19 @@ describe("MediaToolbar", () => {
 
   describe("Group functionality", () => {
     it("should render group dropdown when showGroupBy is true", () => {
-      render(<MediaToolbar {...mockProps} showGroupBy={true} />)
+      render(<MediaToolbar {...mockProps} showGroupBy={true} data-oid="3y7-1cb" />)
 
       expect(screen.getByTestId("list-filter-plus")).toBeInTheDocument()
     })
 
     it("should not render group dropdown when showGroupBy is false", () => {
-      render(<MediaToolbar {...mockProps} showGroupBy={false} />)
+      render(<MediaToolbar {...mockProps} showGroupBy={false} data-oid="i0q0m5." />)
 
       expect(screen.queryByTestId("list-filter-plus")).not.toBeInTheDocument()
     })
 
     it("should show active state when group is not default", () => {
-      render(<MediaToolbar {...mockProps} groupBy="type" showGroupBy={true} />)
+      render(<MediaToolbar {...mockProps} groupBy="type" showGroupBy={true} data-oid="-a0i7x:" />)
 
       const groupButton = screen.getByTestId("list-filter-plus").closest("button")!
       expect(groupButton).toHaveClass("bg-[#dddbdd]")
@@ -480,7 +540,7 @@ describe("MediaToolbar", () => {
 
     it("should call onChangeGroupBy when group option is clicked", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} showGroupBy={true} />)
+      render(<MediaToolbar {...mockProps} showGroupBy={true} data-oid="86d3m0p" />)
 
       // Find group dropdown items specifically
       const groupDropdown = screen.getAllByTestId("dropdown-menu")[2] // Third dropdown is group
@@ -493,14 +553,14 @@ describe("MediaToolbar", () => {
 
   describe("Zoom functionality", () => {
     it("should render zoom buttons when showZoom is true", () => {
-      render(<MediaToolbar {...mockProps} showZoom={true} onZoomIn={vi.fn()} onZoomOut={vi.fn()} />)
+      render(<MediaToolbar {...mockProps} showZoom={true} onZoomIn={vi.fn()} onZoomOut={vi.fn()} data-oid="d8vtdwf" />)
 
       expect(screen.getByTestId("zoom-out")).toBeInTheDocument()
       expect(screen.getByTestId("zoom-in")).toBeInTheDocument()
     })
 
     it("should not render zoom buttons when showZoom is false", () => {
-      render(<MediaToolbar {...mockProps} showZoom={false} />)
+      render(<MediaToolbar {...mockProps} showZoom={false} data-oid="8haw_8a" />)
 
       expect(screen.queryByTestId("zoom-out")).not.toBeInTheDocument()
       expect(screen.queryByTestId("zoom-in")).not.toBeInTheDocument()
@@ -510,7 +570,16 @@ describe("MediaToolbar", () => {
       const onZoomIn = vi.fn()
       const user = userEvent.setup()
 
-      render(<MediaToolbar {...mockProps} showZoom={true} onZoomIn={onZoomIn} onZoomOut={vi.fn()} canZoomIn={true} />)
+      render(
+        <MediaToolbar
+          {...mockProps}
+          showZoom={true}
+          onZoomIn={onZoomIn}
+          onZoomOut={vi.fn()}
+          canZoomIn={true}
+          data-oid="2fhaekx"
+        />,
+      )
 
       const zoomInButton = screen.getByTestId("zoom-in").closest("button")!
       await user.click(zoomInButton)
@@ -522,7 +591,16 @@ describe("MediaToolbar", () => {
       const onZoomOut = vi.fn()
       const user = userEvent.setup()
 
-      render(<MediaToolbar {...mockProps} showZoom={true} onZoomIn={vi.fn()} onZoomOut={onZoomOut} canZoomOut={true} />)
+      render(
+        <MediaToolbar
+          {...mockProps}
+          showZoom={true}
+          onZoomIn={vi.fn()}
+          onZoomOut={onZoomOut}
+          canZoomOut={true}
+          data-oid="bwqqzms"
+        />,
+      )
 
       const zoomOutButton = screen.getByTestId("zoom-out").closest("button")!
       await user.click(zoomOutButton)
@@ -539,6 +617,7 @@ describe("MediaToolbar", () => {
           onZoomOut={vi.fn()}
           canZoomIn={false}
           canZoomOut={false}
+          data-oid="aay2jqf"
         />,
       )
 
@@ -554,20 +633,20 @@ describe("MediaToolbar", () => {
 
   describe("Sort order functionality", () => {
     it("should render sort order button", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="cwbqgcc" />)
 
       expect(screen.getByTestId("arrow-down-up")).toBeInTheDocument()
     })
 
     it("should show descending icon when sort order is asc", () => {
-      render(<MediaToolbar {...mockProps} sortOrder="asc" />)
+      render(<MediaToolbar {...mockProps} sortOrder="asc" data-oid="f-voxem" />)
 
       expect(screen.getByTestId("arrow-down-up")).toBeInTheDocument()
       expect(screen.queryByTestId("arrow-up-down")).not.toBeInTheDocument()
     })
 
     it("should show ascending icon when sort order is desc", () => {
-      render(<MediaToolbar {...mockProps} sortOrder="desc" />)
+      render(<MediaToolbar {...mockProps} sortOrder="desc" data-oid="fouwlun" />)
 
       expect(screen.getByTestId("arrow-up-down")).toBeInTheDocument()
       expect(screen.queryByTestId("arrow-down-up")).not.toBeInTheDocument()
@@ -575,7 +654,7 @@ describe("MediaToolbar", () => {
 
     it("should call onChangeOrder when sort order button is clicked", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="34o0yi8" />)
 
       const sortOrderButton = screen.getByTestId("arrow-down-up").closest("button")!
       await user.click(sortOrderButton)
@@ -586,15 +665,19 @@ describe("MediaToolbar", () => {
 
   describe("Extra buttons", () => {
     it("should render extra buttons when provided", () => {
-      const extraButtons = <button data-testid="extra-button">Extra</button>
+      const extraButtons = (
+        <button data-testid="extra-button" data-oid="u8pt3.8">
+          Extra
+        </button>
+      )
 
-      render(<MediaToolbar {...mockProps} extraButtons={extraButtons} />)
+      render(<MediaToolbar {...mockProps} extraButtons={extraButtons} data-oid="jlpyn10" />)
 
       expect(screen.getByTestId("extra-button")).toBeInTheDocument()
     })
 
     it("should not render extra buttons when not provided", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="4x_fv7a" />)
 
       expect(screen.queryByTestId("extra-button")).not.toBeInTheDocument()
     })
@@ -602,37 +685,39 @@ describe("MediaToolbar", () => {
 
   describe("Edge cases and error handling", () => {
     it("should handle empty sort options", () => {
-      render(<MediaToolbar {...mockProps} sortOptions={[]} />)
+      render(<MediaToolbar {...mockProps} sortOptions={[]} data-oid="k8cvf_z" />)
 
       expect(screen.getByTestId("sort-desc")).toBeInTheDocument()
     })
 
     it("should handle empty group options", () => {
-      render(<MediaToolbar {...mockProps} groupOptions={[]} showGroupBy={true} />)
+      render(<MediaToolbar {...mockProps} groupOptions={[]} showGroupBy={true} data-oid="-hktv9e" />)
 
       expect(screen.getByTestId("list-filter-plus")).toBeInTheDocument()
     })
 
     it("should handle empty available extensions", () => {
-      render(<MediaToolbar {...mockProps} availableExtensions={[]} />)
+      render(<MediaToolbar {...mockProps} availableExtensions={[]} data-oid="bqtb8b." />)
 
       expect(screen.getByTestId("filter-icon")).toBeInTheDocument()
     })
 
     it("should handle missing onImportFile callback", () => {
-      render(<MediaToolbar {...mockProps} onImportFile={undefined} />)
+      render(<MediaToolbar {...mockProps} onImportFile={undefined} data-oid="lh9rohu" />)
 
       expect(screen.queryByTestId("add-media-button")).not.toBeInTheDocument()
     })
 
     it("should handle missing onImportFolder callback", () => {
-      render(<MediaToolbar {...mockProps} onImportFolder={undefined} />)
+      render(<MediaToolbar {...mockProps} onImportFolder={undefined} data-oid="e.4c2h4" />)
 
       expect(screen.queryByTestId("add-folder-button")).not.toBeInTheDocument()
     })
 
     it("should handle missing zoom callbacks", () => {
-      render(<MediaToolbar {...mockProps} showZoom={false} onZoomIn={undefined} onZoomOut={undefined} />)
+      render(
+        <MediaToolbar {...mockProps} showZoom={false} onZoomIn={undefined} onZoomOut={undefined} data-oid="kva4z3f" />,
+      )
 
       expect(screen.queryByTestId("zoom-in")).not.toBeInTheDocument()
       expect(screen.queryByTestId("zoom-out")).not.toBeInTheDocument()
@@ -642,7 +727,7 @@ describe("MediaToolbar", () => {
   describe("Keyboard interactions", () => {
     it("should handle Enter key on search input", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="xn3cxsx" />)
 
       const searchInput = screen.getByPlaceholderText("Search")
       await user.clear(searchInput)
@@ -655,7 +740,7 @@ describe("MediaToolbar", () => {
 
     it("should handle keyboard navigation on buttons", async () => {
       const user = userEvent.setup()
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="1ob-hmq" />)
 
       const searchInput = screen.getByPlaceholderText("Search")
       const favoritesButton = screen.getByTestId("star-icon").closest("button")!
@@ -668,14 +753,14 @@ describe("MediaToolbar", () => {
 
   describe("Accessibility", () => {
     it("should have proper aria labels and roles", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="5phszt2" />)
 
       const searchInput = screen.getByPlaceholderText("Search")
       expect(searchInput).toHaveAttribute("type", "search")
     })
 
     it("should have tooltip content for all buttons", () => {
-      render(<MediaToolbar {...mockProps} />)
+      render(<MediaToolbar {...mockProps} data-oid="bqid_b5" />)
 
       const tooltipContents = screen.getAllByTestId("tooltip-content")
       expect(tooltipContents.length).toBeGreaterThan(0)

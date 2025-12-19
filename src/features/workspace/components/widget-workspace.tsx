@@ -101,12 +101,14 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
   }
 
   return (
-    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="relative h-full w-full overflow-hidden bg-background">
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} data-oid="nt6haqq">
+      <div className="relative h-full w-full overflow-hidden bg-background" data-oid="3f4d5j8">
         {activeWidgets.map((widget: Widget) => {
           const renderWidget = widgetRenderers[widget.type]
           if (!renderWidget) {
-            logger.warnSync("No renderer for widget type", { type: widget.type })
+            logger.warnSync("No renderer for widget type", {
+              type: widget.type,
+            })
             return null
           }
 
@@ -121,6 +123,7 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
               onMaximize={(id) => send({ type: "MAXIMIZE_WIDGET", widgetId: id })}
               onResize={updateWidgetBounds}
               enableResize={true}
+              data-oid="n:jvis5"
             >
               {renderWidget(widget)}
             </WidgetContainer>
@@ -128,10 +131,12 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
         })}
 
         {/* Drag overlay indicator */}
-        {isDragging && <div className="pointer-events-none absolute inset-0 bg-primary/5 transition-colors" />}
+        {isDragging && (
+          <div className="pointer-events-none absolute inset-0 bg-primary/5 transition-colors" data-oid="wywa07l" />
+        )}
 
         {/* Widget Dock for minimized widgets */}
-        <WidgetDock />
+        <WidgetDock data-oid="k8f.wjs" />
       </div>
     </DndContext>
   )

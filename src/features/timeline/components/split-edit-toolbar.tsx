@@ -86,14 +86,20 @@ export function SplitEditToolbar({ className, compact = false }: SplitEditToolba
 
   if (compact) {
     return (
-      <div className={cn("flex items-center gap-1 p-1", className)}>
-        <Toggle pressed={isEnabled} onPressedChange={toggleSplitEdit} size="sm" aria-label="Toggle Split Edit">
-          <Scissors className="h-4 w-4" />
+      <div className={cn("flex items-center gap-1 p-1", className)} data-oid="d94_7yq">
+        <Toggle
+          pressed={isEnabled}
+          onPressedChange={toggleSplitEdit}
+          size="sm"
+          aria-label="Toggle Split Edit"
+          data-oid="9n9n7iy"
+        >
+          <Scissors className="h-4 w-4" data-oid="7wpbmps" />
         </Toggle>
 
         {isEnabled && (
           <>
-            <Separator orientation="vertical" className="h-4" />
+            <Separator orientation="vertical" className="h-4" data-oid="hnwudmq" />
             {tools.map((tool) => (
               <Button
                 key={tool.id}
@@ -101,8 +107,9 @@ export function SplitEditToolbar({ className, compact = false }: SplitEditToolba
                 size="sm"
                 onClick={() => handleToolSelect(tool.id)}
                 className="px-2"
+                data-oid="3-xtoe9"
               >
-                <tool.icon className="h-3 w-3" />
+                <tool.icon className="h-3 w-3" data-oid="ie9brkn" />
               </Button>
             ))}
           </>
@@ -110,8 +117,8 @@ export function SplitEditToolbar({ className, compact = false }: SplitEditToolba
 
         {activeSplitEdits.length > 0 && (
           <>
-            <Separator orientation="vertical" className="h-4" />
-            <Badge variant="secondary" className="text-xs">
+            <Separator orientation="vertical" className="h-4" data-oid="fl3sa:s" />
+            <Badge variant="secondary" className="text-xs" data-oid="u09pzbl">
               {activeSplitEdits.length}
             </Badge>
           </>
@@ -121,44 +128,67 @@ export function SplitEditToolbar({ className, compact = false }: SplitEditToolba
   }
 
   return (
-    <TooltipProvider>
-      <div className={cn("flex items-center gap-2 p-2 bg-background border rounded-lg", className)}>
+    <TooltipProvider data-oid="-bsm08j">
+      <div className={cn("flex items-center gap-2 p-2 bg-background border rounded-lg", className)} data-oid="ib:025o">
         {/* Основное переключение */}
-        <div className="flex items-center gap-2">
-          <Toggle pressed={isEnabled} onPressedChange={toggleSplitEdit} size="sm" aria-label="Toggle Split Edit Mode">
-            <Scissors className="h-4 w-4" />
+        <div className="flex items-center gap-2" data-oid="e07p7eg">
+          <Toggle
+            pressed={isEnabled}
+            onPressedChange={toggleSplitEdit}
+            size="sm"
+            aria-label="Toggle Split Edit Mode"
+            data-oid="0v1mhj-"
+          >
+            <Scissors className="h-4 w-4" data-oid="b1vmxqh" />
           </Toggle>
 
-          <span className="text-sm font-medium">Split Edit</span>
+          <span className="text-sm font-medium" data-oid="63q1rdr">
+            Split Edit
+          </span>
 
-          {activeSplitEdits.length > 0 && <Badge variant="secondary">{activeSplitEdits.length} active</Badge>}
+          {activeSplitEdits.length > 0 && (
+            <Badge variant="secondary" data-oid="52qm7lp">
+              {activeSplitEdits.length} active
+            </Badge>
+          )}
         </div>
 
         {isEnabled && (
           <>
-            <Separator orientation="vertical" className="h-6" />
+            <Separator orientation="vertical" className="h-6" data-oid="xt_n8gu" />
 
             {/* Инструменты */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1" data-oid="x9qe5h0">
               {tools.map((tool) => (
-                <Tooltip key={tool.id}>
-                  <TooltipTrigger asChild>
+                <Tooltip key={tool.id} data-oid="5h6trs2">
+                  <TooltipTrigger asChild data-oid="5p49zgs">
                     <Button
                       variant={config.tool === tool.id ? "default" : "ghost"}
                       size="sm"
                       onClick={() => handleToolSelect(tool.id)}
                       className="px-3"
+                      data-oid="h3dnn7q"
                     >
-                      <tool.icon className="h-4 w-4" />
-                      {!compact && <span className="ml-1 text-xs">{tool.shortcut}</span>}
+                      <tool.icon className="h-4 w-4" data-oid="88llf6i" />
+                      {!compact && (
+                        <span className="ml-1 text-xs" data-oid="gg64d93">
+                          {tool.shortcut}
+                        </span>
+                      )}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <div className="text-center">
-                      <div className="font-medium">{tool.name}</div>
-                      <div className="text-xs text-muted-foreground">{tool.description}</div>
-                      <div className="text-xs mt-1">
-                        <kbd className="px-1 py-0.5 bg-muted rounded text-xs">{tool.shortcut}</kbd>
+                  <TooltipContent data-oid="ryv6xbh">
+                    <div className="text-center" data-oid="8x70714">
+                      <div className="font-medium" data-oid="vicugxs">
+                        {tool.name}
+                      </div>
+                      <div className="text-xs text-muted-foreground" data-oid="co69z0-">
+                        {tool.description}
+                      </div>
+                      <div className="text-xs mt-1" data-oid="wp:m1lj">
+                        <kbd className="px-1 py-0.5 bg-muted rounded text-xs" data-oid="l4p.7yw">
+                          {tool.shortcut}
+                        </kbd>
                       </div>
                     </div>
                   </TooltipContent>
@@ -166,99 +196,114 @@ export function SplitEditToolbar({ className, compact = false }: SplitEditToolba
               ))}
             </div>
 
-            <Separator orientation="vertical" className="h-6" />
+            <Separator orientation="vertical" className="h-6" data-oid="9:.r_ie" />
 
             {/* Настройки инструмента */}
-            <div className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
+            <div className="flex items-center gap-1" data-oid="frup1dv">
+              <Tooltip data-oid="k1hxd6p">
+                <TooltipTrigger asChild data-oid="x-9176h">
                   <Button
                     variant={toolSettings.magneticSnap ? "default" : "ghost"}
                     size="sm"
                     onClick={() => handleToggleSetting("magneticSnap")}
+                    data-oid="2a03xw:"
                   >
-                    <Magnet className="h-4 w-4" />
+                    <Magnet className="h-4 w-4" data-oid="6rw2hhd" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
-                  <div>Magnetic Snap</div>
-                  <div className="text-xs text-muted-foreground">Distance: {toolSettings.snapDistance}px</div>
+                <TooltipContent data-oid="gn35bxv">
+                  <div data-oid="4fvz32c">Magnetic Snap</div>
+                  <div className="text-xs text-muted-foreground" data-oid="s6yijd5">
+                    Distance: {toolSettings.snapDistance}px
+                  </div>
                 </TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
+              <Tooltip data-oid="bbz5_::">
+                <TooltipTrigger asChild data-oid="0zxvac4">
                   <Button
                     variant={toolSettings.autoAlign ? "default" : "ghost"}
                     size="sm"
                     onClick={() => handleToggleSetting("autoAlign")}
+                    data-oid="mg3la1z"
                   >
-                    <AlignCenter className="h-4 w-4" />
+                    <AlignCenter className="h-4 w-4" data-oid="njktbt0" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Auto Align</TooltipContent>
+                <TooltipContent data-oid="7qf8l91">Auto Align</TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
+              <Tooltip data-oid="ycc:2:c">
+                <TooltipTrigger asChild data-oid="ofcc7qj">
                   <Button
                     variant={toolSettings.showGuides ? "default" : "ghost"}
                     size="sm"
                     onClick={() => handleToggleSetting("showGuides")}
+                    data-oid="dss45f2"
                   >
-                    <Grid className="h-4 w-4" />
+                    <Grid className="h-4 w-4" data-oid="48ilii5" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Show Guides</TooltipContent>
+                <TooltipContent data-oid="ecfh_1f">Show Guides</TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
+              <Tooltip data-oid="za9w_6m">
+                <TooltipTrigger asChild data-oid="9hw-vv9">
                   <Button
                     variant={toolSettings.syncTracks ? "default" : "ghost"}
                     size="sm"
                     onClick={() => handleToggleSetting("syncTracks")}
+                    data-oid="gba6sq5"
                   >
-                    <Layers className="h-4 w-4" />
+                    <Layers className="h-4 w-4" data-oid="-6zf178" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Sync Tracks</TooltipContent>
+                <TooltipContent data-oid="2.1z-rx">Sync Tracks</TooltipContent>
               </Tooltip>
             </div>
 
-            <Separator orientation="vertical" className="h-6" />
+            <Separator orientation="vertical" className="h-6" data-oid="u:m2100" />
 
             {/* Визуальные настройки */}
-            <div className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant={visualSettings.showPreview ? "default" : "ghost"} size="sm">
-                    {visualSettings.showPreview ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            <div className="flex items-center gap-1" data-oid="ms4wj4h">
+              <Tooltip data-oid="q39jqoa">
+                <TooltipTrigger asChild data-oid="2xe6o2:">
+                  <Button variant={visualSettings.showPreview ? "default" : "ghost"} size="sm" data-oid="94a61gz">
+                    {visualSettings.showPreview ? (
+                      <Eye className="h-4 w-4" data-oid="zufy734" />
+                    ) : (
+                      <EyeOff className="h-4 w-4" data-oid="nt5:88:" />
+                    )}
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>{visualSettings.showPreview ? "Hide Preview" : "Show Preview"}</TooltipContent>
+                <TooltipContent data-oid="m78tylq">
+                  {visualSettings.showPreview ? "Hide Preview" : "Show Preview"}
+                </TooltipContent>
               </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
+              <Tooltip data-oid="7szug3l">
+                <TooltipTrigger asChild data-oid=":3205zx">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={clearAllSplitEdits}
                     disabled={activeSplitEdits.length === 0}
+                    data-oid="us0ohft"
                   >
-                    <Target className="h-4 w-4" />
+                    <Target className="h-4 w-4" data-oid="7x-2pxh" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Clear All Split Edits</TooltipContent>
+                <TooltipContent data-oid="sov4t06">Clear All Split Edits</TooltipContent>
               </Tooltip>
             </div>
 
             {/* Режим редактирования */}
-            <Separator orientation="vertical" className="h-6" />
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-muted-foreground">Mode:</span>
-              <Badge variant="outline" className="text-xs">
+            <Separator orientation="vertical" className="h-6" data-oid="k7-ahy6" />
+            <div className="flex items-center gap-1" data-oid="d:t7bu8">
+              <span className="text-xs text-muted-foreground" data-oid="g5:lfa5">
+                Mode:
+              </span>
+              <Badge variant="outline" className="text-xs" data-oid="qdtf5rn">
                 {toolSettings.mode}
               </Badge>
             </div>

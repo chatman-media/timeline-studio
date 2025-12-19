@@ -37,22 +37,33 @@ vi.mock("react-i18next", () => ({
 // Мокаем UI компоненты
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, variant, className, title, ...props }: any) => (
-    <button onClick={onClick} data-variant={variant} className={className} title={title} {...props}>
+    <button onClick={onClick} data-variant={variant} className={className} title={title} {...props} data-oid="7wjopu7">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/tooltip", () => ({
-  TooltipProvider: ({ children }: any) => <div data-testid="tooltip-provider">{children}</div>,
-  Tooltip: ({ children }: any) => <div data-testid="tooltip">{children}</div>,
-  TooltipTrigger: ({ children, asChild }: any) => (
-    <div data-testid="tooltip-trigger" data-as-child={asChild}>
+  TooltipProvider: ({ children }: any) => (
+    <div data-testid="tooltip-provider" data-oid="pt2366_">
       {children}
     </div>
   ),
+
+  Tooltip: ({ children }: any) => (
+    <div data-testid="tooltip" data-oid="qxr7l2g">
+      {children}
+    </div>
+  ),
+
+  TooltipTrigger: ({ children, asChild }: any) => (
+    <div data-testid="tooltip-trigger" data-as-child={asChild} data-oid="u88gka-">
+      {children}
+    </div>
+  ),
+
   TooltipContent: ({ children, side, className }: any) => (
-    <div data-testid="tooltip-content" data-side={side} className={className}>
+    <div data-testid="tooltip-content" data-side={side} className={className} data-oid="kcb1gjk">
       {children}
     </div>
   ),
@@ -60,10 +71,29 @@ vi.mock("@/components/ui/tooltip", () => ({
 
 // Мокаем иконки
 vi.mock("lucide-react", () => ({
-  ChevronDown: () => <span data-testid="chevron-down">ChevronDown</span>,
-  ChevronRight: () => <span data-testid="chevron-right">ChevronRight</span>,
-  Settings: () => <span data-testid="settings-icon">Settings</span>,
-  Trash2: () => <span data-testid="trash-icon">Trash2</span>,
+  ChevronDown: () => (
+    <span data-testid="chevron-down" data-oid="5c7vax2">
+      ChevronDown
+    </span>
+  ),
+
+  ChevronRight: () => (
+    <span data-testid="chevron-right" data-oid="7hpicll">
+      ChevronRight
+    </span>
+  ),
+
+  Settings: () => (
+    <span data-testid="settings-icon" data-oid="zxw4:ph">
+      Settings
+    </span>
+  ),
+
+  Trash2: () => (
+    <span data-testid="trash-icon" data-oid="dk1cinx">
+      Trash2
+    </span>
+  ),
 }))
 
 describe("EffectPresets", () => {
@@ -141,20 +171,20 @@ describe("EffectPresets", () => {
 
   describe("Рендеринг компонента", () => {
     it("должен отображать заголовок с количеством пресетов", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="_jj5233" />)
 
       expect(screen.getByText("Пресеты")).toBeInTheDocument()
       expect(screen.getByText("(2)")).toBeInTheDocument()
     })
 
     it("должен отображать иконку настроек", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="l8hjzd3" />)
 
       expect(screen.getByTestId("settings-icon")).toBeInTheDocument()
     })
 
     it("должен быть свернут по умолчанию", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="tqfl3dz" />)
 
       expect(screen.getByTestId("chevron-right")).toBeInTheDocument()
       expect(screen.queryByText("Легкий")).not.toBeInTheDocument()
@@ -162,7 +192,7 @@ describe("EffectPresets", () => {
 
     it("не должен отображаться если нет пресетов", () => {
       const effectWithoutPresets = { ...baseEffect, presets: [] as any }
-      const { container } = render(<EffectPresets {...mockProps} effect={effectWithoutPresets} />)
+      const { container } = render(<EffectPresets {...mockProps} effect={effectWithoutPresets} data-oid="vhjt:2g" />)
 
       expect(container.firstChild).toBeNull()
     })
@@ -170,7 +200,7 @@ describe("EffectPresets", () => {
 
   describe("Разворачивание/сворачивание", () => {
     it("должен разворачиваться при клике на заголовок", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="orle-i4" />)
 
       const header = screen.getByRole("button")
       fireEvent.click(header)
@@ -181,7 +211,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен сворачиваться при повторном клике", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="t7le92j" />)
 
       const header = screen.getByRole("button")
 
@@ -199,7 +229,7 @@ describe("EffectPresets", () => {
     beforeEach(() => {
       mockLocalStorage.clear()
       mockLocalStorage.getItem.mockReturnValue(null)
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="sadbc:x" />)
       const header = screen.getByRole("button")
       fireEvent.click(header) // Разворачиваем
     })
@@ -218,12 +248,11 @@ describe("EffectPresets", () => {
       // Этот тест нужно выполнить отдельно с selectedPreset
       // поэтому не используем beforeEach этого describe блока
     })
-
     it("должен выделять выбранный пресет - отдельный тест", () => {
       mockLocalStorage.clear()
       mockLocalStorage.getItem.mockReturnValue(null)
 
-      const { container } = render(<EffectPresets {...mockProps} selectedPreset="light" />)
+      const { container } = render(<EffectPresets {...mockProps} selectedPreset="light" data-oid="3dzjs46" />)
       const header = container.querySelector("button")!
       fireEvent.click(header)
 
@@ -277,7 +306,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен загружать пользовательские пресеты из localStorage", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="4.tf5ao" />)
 
       expect(mockLocalStorage.getItem).toHaveBeenCalledWith("effect_presets_test-effect")
 
@@ -290,7 +319,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен отображать индикатор пользовательского пресета", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="khzjv6z" />)
 
       const header = screen.getByRole("button")
       fireEvent.click(header)
@@ -301,7 +330,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен отображать кнопку удаления для пользовательских пресетов", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="hvc.mey" />)
 
       const header = screen.getByRole("button")
       fireEvent.click(header)
@@ -312,7 +341,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен удалять пользовательский пресет", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="pq9wtk:" />)
 
       const header = screen.getByRole("button")
       fireEvent.click(header)
@@ -327,7 +356,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен удалять ключ из localStorage когда нет пресетов", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="pv15td7" />)
 
       const header = screen.getByRole("button")
       fireEvent.click(header)
@@ -341,7 +370,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен отображать дату создания пользовательского пресета", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="-qvngx4" />)
 
       const header = screen.getByRole("button")
       fireEvent.click(header)
@@ -355,7 +384,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен обновлять количество пресетов с учетом пользовательских", async () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="2nt06w2" />)
 
       await waitFor(() => {
         expect(screen.getByText("(3)")).toBeInTheDocument() // 2 встроенных + 1 пользовательский
@@ -378,7 +407,7 @@ describe("EffectPresets", () => {
         ],
       }
 
-      render(<EffectPresets {...mockProps} effect={presetWithoutRu} />)
+      render(<EffectPresets {...mockProps} effect={presetWithoutRu} data-oid="g957_s8" />)
       const header = screen.getByRole("button")
       fireEvent.click(header)
 
@@ -392,14 +421,17 @@ describe("EffectPresets", () => {
           {
             id: "test",
             name: { ru: "Тест", en: "Test" },
-            description: { en: "English Description", ru: "English Description" },
+            description: {
+              en: "English Description",
+              ru: "English Description",
+            },
             parameters: { intensity: 50 },
             tags: [],
           },
         ],
       }
 
-      render(<EffectPresets {...mockProps} effect={presetWithoutRu} />)
+      render(<EffectPresets {...mockProps} effect={presetWithoutRu} data-oid="xy-aoez" />)
       const header = screen.getByRole("button")
       fireEvent.click(header)
 
@@ -412,7 +444,7 @@ describe("EffectPresets", () => {
       mockLocalStorage.getItem.mockReturnValue("invalid json")
 
       expect(() => {
-        render(<EffectPresets {...mockProps} />)
+        render(<EffectPresets {...mockProps} data-oid="7-uep1d" />)
       }).not.toThrow()
 
       await waitFor(() => {
@@ -429,7 +461,7 @@ describe("EffectPresets", () => {
       })
 
       expect(() => {
-        render(<EffectPresets {...mockProps} />)
+        render(<EffectPresets {...mockProps} data-oid="1f1x_7y" />)
       }).not.toThrow()
 
       await waitFor(() => {
@@ -443,7 +475,7 @@ describe("EffectPresets", () => {
     it("должен обрабатывать пустые пресеты", () => {
       const effectWithEmptyPresets = { ...baseEffect, presets: [] }
 
-      const { container } = render(<EffectPresets {...mockProps} effect={effectWithEmptyPresets} />)
+      const { container } = render(<EffectPresets {...mockProps} effect={effectWithEmptyPresets} data-oid="-q_yyh2" />)
       expect(container.firstChild).toBeNull()
     })
   })
@@ -452,7 +484,7 @@ describe("EffectPresets", () => {
     beforeEach(() => {
       mockLocalStorage.clear()
       mockLocalStorage.getItem.mockReturnValue(null)
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="0.vnkuh" />)
       const header = screen.getByRole("button")
       fireEvent.click(header)
     })
@@ -471,7 +503,7 @@ describe("EffectPresets", () => {
 
   describe("CSS и стили", () => {
     it("должен применять правильные классы к контейнеру", () => {
-      const { container } = render(<EffectPresets {...mockProps} />)
+      const { container } = render(<EffectPresets {...mockProps} data-oid="igf9xs_" />)
       const mainContainer = container.firstChild
 
       expect(mainContainer).toHaveClass("border")
@@ -479,7 +511,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен применять hover эффекты к заголовку", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="4azv-hs" />)
       const header = screen.getByRole("button")
 
       expect(header).toHaveClass("hover:bg-gray-50")
@@ -487,7 +519,7 @@ describe("EffectPresets", () => {
     })
 
     it("должен применять правильную высоту к кнопкам пресетов", () => {
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="2r-w0yn" />)
       const header = screen.getByRole("button")
       fireEvent.click(header)
 
@@ -510,9 +542,12 @@ describe("EffectPresets", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(customPresets))
 
-      const effectWithoutBuiltinPresets: BaseEffect = { ...baseEffect, presets: [] }
+      const effectWithoutBuiltinPresets: BaseEffect = {
+        ...baseEffect,
+        presets: [],
+      }
 
-      render(<EffectPresets {...mockProps} effect={effectWithoutBuiltinPresets} />)
+      render(<EffectPresets {...mockProps} effect={effectWithoutBuiltinPresets} data-oid="bzcv56m" />)
 
       expect(screen.getByText("(1)")).toBeInTheDocument()
     })
@@ -528,7 +563,7 @@ describe("EffectPresets", () => {
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(customPresets))
 
-      render(<EffectPresets {...mockProps} />)
+      render(<EffectPresets {...mockProps} data-oid="rwk88fq" />)
 
       await waitFor(() => {
         expect(screen.getByText("(3)")).toBeInTheDocument() // 2 встроенных + 1 пользовательский
@@ -561,18 +596,18 @@ describe("EffectPresets", () => {
       }
 
       const startTime = performance.now()
-      render(<EffectPresets {...mockProps} effect={effectWithManyPresets} />)
+      render(<EffectPresets {...mockProps} effect={effectWithManyPresets} data-oid="z2k--p:" />)
       const endTime = performance.now()
 
       expect(endTime - startTime).toBeLessThan(100)
     })
 
     it("должен правильно обрабатывать частые изменения selectedPreset", () => {
-      const { rerender } = render(<EffectPresets {...mockProps} />)
+      const { rerender } = render(<EffectPresets {...mockProps} data-oid="x8.h3:x" />)
 
       for (let i = 0; i < 10; i++) {
         const preset = i % 2 === 0 ? "light" : "strong"
-        rerender(<EffectPresets {...mockProps} selectedPreset={preset} />)
+        rerender(<EffectPresets {...mockProps} selectedPreset={preset} data-oid="_-nour4" />)
       }
 
       expect(screen.getByText("Пресеты")).toBeInTheDocument()

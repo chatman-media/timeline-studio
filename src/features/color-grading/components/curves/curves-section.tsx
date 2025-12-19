@@ -68,6 +68,7 @@ export function CurvesSection() {
       { x: 192, y: 80, id: "highlights" },
       { x: 256, y: 0, id: "end" },
     ]
+
     dispatch({
       type: "UPDATE_CURVE",
       curve: activeCurve,
@@ -76,9 +77,9 @@ export function CurvesSection() {
   }
 
   return (
-    <div className="space-y-4" data-testid="curves-section">
+    <div className="space-y-4" data-testid="curves-section" data-oid="oudln9k">
       {/* Заголовок секции */}
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground" data-oid="5mq8tnz">
         {t("colorGrading.curves.description", "Fine-tune tonal response with interactive curves")}
       </div>
 
@@ -87,43 +88,45 @@ export function CurvesSection() {
         value={activeCurve}
         onValueChange={(value) => setActiveCurve(value as typeof activeCurve)}
         className="w-full"
+        data-oid="0eax7o:"
       >
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="master" className="text-xs">
+        <TabsList className="grid w-full grid-cols-4" data-oid=":8:pcjq">
+          <TabsTrigger value="master" className="text-xs" data-oid="0l5cq8w">
             {t("colorGrading.curves.master", "Master")}
           </TabsTrigger>
-          <TabsTrigger value="red" className="text-xs text-red-400">
+          <TabsTrigger value="red" className="text-xs text-red-400" data-oid="kx34g0t">
             {t("colorGrading.curves.red", "Red")}
           </TabsTrigger>
-          <TabsTrigger value="green" className="text-xs text-green-400">
+          <TabsTrigger value="green" className="text-xs text-green-400" data-oid="eqqvihb">
             {t("colorGrading.curves.green", "Green")}
           </TabsTrigger>
-          <TabsTrigger value="blue" className="text-xs text-blue-400">
+          <TabsTrigger value="blue" className="text-xs text-blue-400" data-oid="9psawij">
             {t("colorGrading.curves.blue", "Blue")}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value={activeCurve} className="mt-4">
-          <div className="space-y-4">
+        <TabsContent value={activeCurve} className="mt-4" data-oid="lkm09ni">
+          <div className="space-y-4" data-oid="xyw5n6g">
             {/* Интерактивный редактор кривой */}
             <CurveEditor
               points={activeCurvePoints}
               onPointsChange={handlePointsChange}
               color={CURVE_COLORS[activeCurve]}
               className="w-full h-64"
+              data-oid="3nvv5g3"
             />
 
             {/* Кнопки управления */}
-            <div className="flex justify-between">
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={handleReset}>
+            <div className="flex justify-between" data-oid="bvf0ul:">
+              <div className="flex gap-2" data-oid="r6idxgj">
+                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={handleReset} data-oid="0yn6l1j">
                   {t("colorGrading.curves.reset", "Reset")}
                 </Button>
-                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={handleAuto}>
+                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={handleAuto} data-oid="tb-_gy5">
                   {t("colorGrading.curves.auto", "Auto")}
                 </Button>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground" data-oid="yp452u3">
                 {t("colorGrading.curves.hint", "Click to add points, drag to adjust")}
               </div>
             </div>

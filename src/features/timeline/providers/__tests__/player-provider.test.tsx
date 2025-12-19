@@ -164,7 +164,9 @@ describe("PlayerProvider", () => {
     mockOnEvent.mockReturnValue(vi.fn())
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => <PlayerProvider>{children}</PlayerProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <PlayerProvider data-oid="uz_3.3u">{children}</PlayerProvider>
+  )
 
   describe("Provider Initialization", () => {
     it("initializes with default state", () => {
@@ -579,7 +581,11 @@ describe("PlayerProvider", () => {
     it("applyFilter adds filter to local state", () => {
       const { result } = renderHook(() => usePlayer(), { wrapper })
 
-      const filter = { id: "vintage", name: "Vintage", params: { saturation: 0.8 } }
+      const filter = {
+        id: "vintage",
+        name: "Vintage",
+        params: { saturation: 0.8 },
+      }
 
       expect(result.current.appliedFilters).toEqual([])
 
@@ -610,7 +616,11 @@ describe("PlayerProvider", () => {
 
       act(() => {
         result.current.applyEffect({ id: "blur", name: "Blur", params: {} })
-        result.current.applyEffect({ id: "sharpen", name: "Sharpen", params: {} })
+        result.current.applyEffect({
+          id: "sharpen",
+          name: "Sharpen",
+          params: {},
+        })
       })
 
       expect(result.current.appliedEffects).toHaveLength(2)
@@ -626,7 +636,11 @@ describe("PlayerProvider", () => {
       const { result } = renderHook(() => usePlayer(), { wrapper })
 
       act(() => {
-        result.current.applyFilter({ id: "vintage", name: "Vintage", params: {} })
+        result.current.applyFilter({
+          id: "vintage",
+          name: "Vintage",
+          params: {},
+        })
       })
 
       expect(result.current.appliedFilters).toHaveLength(1)
@@ -773,7 +787,9 @@ describe("PlayerProvider", () => {
     it("playerApplyFilter sends apply filter command", async () => {
       const { result } = renderHook(() => usePlayer(), { wrapper })
 
-      await result.current.playerApplyFilter("vintage-filter", { saturation: 0.8 })
+      await result.current.playerApplyFilter("vintage-filter", {
+        saturation: 0.8,
+      })
 
       expect(AppCommands.playerApplyFilter).toHaveBeenCalledWith("vintage-filter", { saturation: 0.8 })
       expect(mockExecuteCommand).toHaveBeenCalledWith({
@@ -790,7 +806,10 @@ describe("PlayerProvider", () => {
       expect(AppCommands.playerApplyTemplate).toHaveBeenCalledWith("split-screen", ["media-1", "media-2"])
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerApplyTemplate",
-        params: { templateId: "split-screen", mediaIds: ["media-1", "media-2"] },
+        params: {
+          templateId: "split-screen",
+          mediaIds: ["media-1", "media-2"],
+        },
       })
     })
 

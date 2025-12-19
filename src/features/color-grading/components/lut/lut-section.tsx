@@ -162,29 +162,35 @@ export function LUTSection() {
   }, [])
 
   return (
-    <div className="space-y-4" data-testid="lut-section">
+    <div className="space-y-4" data-testid="lut-section" data-oid="z4ii_0h">
       {/* Заголовок секции */}
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground" data-oid="xvlpkys">
         {t("colorGrading.lut.description", "Apply professional color looks with LUT files")}
       </div>
 
       {/* Выбор LUT файла */}
-      <div className="space-y-2">
-        <Label className="text-sm text-foreground/90">{t("colorGrading.lut.file", "LUT File")}</Label>
-        <div className="flex items-center gap-2">
-          <Select value={selectedLUT} onValueChange={handleLUTChange}>
-            <SelectTrigger className="flex-1 h-8">
-              <SelectValue placeholder={t("colorGrading.lut.selectFile", "Select LUT")} />
+      <div className="space-y-2" data-oid="_xob5l2">
+        <Label className="text-sm text-foreground/90" data-oid="_vx-f:9">
+          {t("colorGrading.lut.file", "LUT File")}
+        </Label>
+        <div className="flex items-center gap-2" data-oid="4x_4vnd">
+          <Select value={selectedLUT} onValueChange={handleLUTChange} data-oid="b232im1">
+            <SelectTrigger className="flex-1 h-8" data-oid="cq0jz0o">
+              <SelectValue placeholder={t("colorGrading.lut.selectFile", "Select LUT")} data-oid="wltdd0x" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">{t("colorGrading.lut.none", "None")}</SelectItem>
+            <SelectContent data-oid="j:19fg-">
+              <SelectItem value="none" data-oid="i3watpd">
+                {t("colorGrading.lut.none", "None")}
+              </SelectItem>
 
               {/* Film Emulation категория */}
               {allLUTs.film.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Film Emulation</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground" data-oid="l56l.el">
+                    Film Emulation
+                  </div>
                   {allLUTs.film.map((lut) => (
-                    <SelectItem key={lut.id} value={lut.id}>
+                    <SelectItem key={lut.id} value={lut.id} data-oid="h4irzc4">
                       {lut.name}
                     </SelectItem>
                   ))}
@@ -194,9 +200,11 @@ export function LUTSection() {
               {/* Creative категория */}
               {allLUTs.creative.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Creative Looks</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground" data-oid="bsrn-59">
+                    Creative Looks
+                  </div>
                   {allLUTs.creative.map((lut) => (
-                    <SelectItem key={lut.id} value={lut.id}>
+                    <SelectItem key={lut.id} value={lut.id} data-oid="ng_pbi1">
                       {lut.name}
                     </SelectItem>
                   ))}
@@ -206,9 +214,11 @@ export function LUTSection() {
               {/* Technical категория */}
               {allLUTs.technical.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Technical</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground" data-oid="v3jya87">
+                    Technical
+                  </div>
                   {allLUTs.technical.map((lut) => (
-                    <SelectItem key={lut.id} value={lut.id}>
+                    <SelectItem key={lut.id} value={lut.id} data-oid="lr3.jx6">
                       {lut.name}
                     </SelectItem>
                   ))}
@@ -218,9 +228,11 @@ export function LUTSection() {
               {/* Custom LUTs */}
               {allLUTs.custom.length > 0 && (
                 <>
-                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">Custom LUTs</div>
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground" data-oid="s5s-.tl">
+                    Custom LUTs
+                  </div>
                   {allLUTs.custom.map((lut) => (
-                    <SelectItem key={lut.id} value={lut.id}>
+                    <SelectItem key={lut.id} value={lut.id} data-oid="gy.5gyl">
                       {lut.name}
                       {lut.category === "custom" && (
                         <Button
@@ -231,8 +243,9 @@ export function LUTSection() {
                             e.stopPropagation()
                             handleRemoveCustomLUT(lut.id)
                           }}
+                          data-oid="b5e.-qh"
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3 w-3" data-oid="jtptjgf" />
                         </Button>
                       )}
                     </SelectItem>
@@ -241,19 +254,30 @@ export function LUTSection() {
               )}
             </SelectContent>
           </Select>
-          <Button variant="ghost" size="sm" className="h-8 px-3" onClick={handleImportLUT} disabled={isLoading}>
-            {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-3"
+            onClick={handleImportLUT}
+            disabled={isLoading}
+            data-oid="t8dlm4."
+          >
+            {isLoading ? (
+              <RefreshCw className="h-4 w-4 animate-spin" data-oid="d:jaxq-" />
+            ) : (
+              <Upload className="h-4 w-4" data-oid="0-8.03-" />
+            )}
           </Button>
         </div>
       </div>
 
       {/* Enable/Disable переключатель */}
       {selectedLUT !== "none" && (
-        <div className="flex items-center justify-between">
-          <Label htmlFor="lut-enable" className="text-sm">
+        <div className="flex items-center justify-between" data-oid="d4gkh7h">
+          <Label htmlFor="lut-enable" className="text-sm" data-oid="aq.3row">
             {t("colorGrading.lut.enable", "Enable LUT")}
           </Label>
-          <Switch checked={state.lut.isEnabled} onCheckedChange={handleToggleLUT} />
+          <Switch checked={state.lut.isEnabled} onCheckedChange={handleToggleLUT} data-oid="61.._it" />
         </div>
       )}
 
@@ -268,32 +292,43 @@ export function LUTSection() {
           defaultValue={100}
           formatValue={(v) => `${v}%`}
           disabled={!state.lut.isEnabled}
+          data-oid="ynl-5v8"
         />
       )}
 
       {/* Превью эффектов */}
       {selectedLUT !== "none" && state.lut.isEnabled && (
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">{t("colorGrading.lut.preview", "Preview")}</span>
-            <Button variant="ghost" size="sm" className="h-6 px-2" onClick={handleRefreshPreviews}>
-              <RefreshCw className="h-3 w-3 mr-1" />
-              <span className="text-xs">{t("colorGrading.lut.refresh", "Refresh")}</span>
+        <div className="space-y-2" data-oid="bywqlle">
+          <div className="flex justify-between items-center" data-oid="ew7vg9.">
+            <span className="text-xs text-muted-foreground" data-oid="k.rprll">
+              {t("colorGrading.lut.preview", "Preview")}
+            </span>
+            <Button variant="ghost" size="sm" className="h-6 px-2" onClick={handleRefreshPreviews} data-oid="k-zcvqs">
+              <RefreshCw className="h-3 w-3 mr-1" data-oid="9ouk0f1" />
+              <span className="text-xs" data-oid="k51ogky">
+                {t("colorGrading.lut.refresh", "Refresh")}
+              </span>
             </Button>
           </div>
 
-          <div className="grid grid-cols-5 gap-1">
+          <div className="grid grid-cols-5 gap-1" data-oid=".gx7_zn">
             {PREVIEW_INTENSITIES.map((intensity) => (
-              <div key={intensity} className="relative group">
-                <div className="aspect-video bg-muted rounded overflow-hidden">
+              <div key={intensity} className="relative group" data-oid="8sngjsv">
+                <div className="aspect-video bg-muted rounded overflow-hidden" data-oid="c5oi:ef">
                   {/* В реальном приложении здесь будет реальное превью с WebGL */}
                   <div
                     className="w-full h-full bg-linear-to-br from-blue-900 to-purple-900"
                     style={{ opacity: 0.3 + (intensity / 100) * 0.7 }}
+                    data-oid="o42vm16"
                   />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-background/80 text-center py-0.5">
-                  <span className="text-[10px] text-foreground">{intensity === 0 ? "Original" : `${intensity}%`}</span>
+                <div
+                  className="absolute bottom-0 left-0 right-0 bg-background/80 text-center py-0.5"
+                  data-oid="-ey:1ol"
+                >
+                  <span className="text-[10px] text-foreground" data-oid="m8f5qvr">
+                    {intensity === 0 ? "Original" : `${intensity}%`}
+                  </span>
                 </div>
               </div>
             ))}
@@ -302,7 +337,7 @@ export function LUTSection() {
       )}
 
       {/* Информация о поддерживаемых форматах */}
-      <div className="text-xs text-muted-foreground/70 pt-2">
+      <div className="text-xs text-muted-foreground/70 pt-2" data-oid="f1nti.v">
         {t("colorGrading.lut.supportedFormats", "Supported formats: .cube, .3dl, .dat, .look, .mga, .m3d")}
       </div>
     </div>

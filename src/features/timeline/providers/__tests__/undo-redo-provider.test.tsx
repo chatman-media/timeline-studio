@@ -32,7 +32,12 @@ const { mockBackend, mockUndoRedo, mockEventHandlers } = vi.hoisted(() => {
     endGrouping: vi.fn(),
     canUndo: false,
     canRedo: false,
-    historyStats: { undoStackSize: 0, redoStackSize: 0, totalActions: 0, memoryUsage: 0 },
+    historyStats: {
+      undoStackSize: 0,
+      redoStackSize: 0,
+      totalActions: 0,
+      memoryUsage: 0,
+    },
     undoableActions: [],
     redoableActions: [],
     undo: vi.fn(),
@@ -128,7 +133,9 @@ describe("UndoRedoProvider", () => {
     })
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => <UndoRedoProvider>{children}</UndoRedoProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <UndoRedoProvider data-oid="d31amux">{children}</UndoRedoProvider>
+  )
 
   describe("Provider Initialization", () => {
     it("should render with children", () => {

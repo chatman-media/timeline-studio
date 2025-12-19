@@ -65,14 +65,16 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен отобразить canvas элемент", () => {
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="wmum2bh" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
   })
 
   it("должен использовать правильные размеры", () => {
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} width={800} height={600} />)
+    const { container } = render(
+      <YoloTrackOverlay yoloData={mockYoloData} currentTime={0} width={800} height={600} data-oid="lw6b6x." />,
+    )
 
     const canvas = container.querySelector("canvas")
     // Canvas width/height are scaled by devicePixelRatio (2x)
@@ -81,7 +83,7 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен использовать размеры по умолчанию", () => {
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="pto9so9" />)
 
     const canvas = container.querySelector("canvas")
     // Canvas width/height are scaled by devicePixelRatio (2x)
@@ -90,13 +92,13 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен отобразить заголовок", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="zke7q0d" />)
 
     expect(screen.getByText(/Треки объектов/)).toBeInTheDocument()
   })
 
   it("должен отобразить чекбокс для показа траекторий", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="91i._.2" />)
 
     expect(screen.getByText(/Показать траектории/)).toBeInTheDocument()
     const checkbox = screen.getByRole("checkbox")
@@ -106,7 +108,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен скрыть траектории при отключении", async () => {
     const user = userEvent.setup()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="y62atg6" />)
 
     const checkbox = screen.getByRole("checkbox")
     await user.click(checkbox)
@@ -117,7 +119,7 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен использовать initialShowTrajectories prop", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} showTrajectories={false} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} showTrajectories={false} data-oid="i6xx21h" />)
 
     const checkbox = screen.getByRole("checkbox")
     expect(checkbox).not.toBeChecked()
@@ -125,14 +127,14 @@ describe("YoloTrackOverlay", () => {
 
   it("должен отрисовать треки на canvas", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="241vx69" />)
 
     expect(mockCanvasContext.clearRect).toHaveBeenCalled()
     expect(mockCanvasContext.fillRect).toHaveBeenCalled()
   })
 
   it("должен создать историю треков из данных", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="_56u8:4" />)
 
     expect(screen.getByText(/Всего треков/)).toBeInTheDocument()
   })
@@ -153,7 +155,7 @@ describe("YoloTrackOverlay", () => {
       ],
     })
 
-    render(<YoloTrackOverlay yoloData={shortTrackData} currentTime={0} />)
+    render(<YoloTrackOverlay yoloData={shortTrackData} currentTime={0} data-oid="j35ym-y" />)
 
     // Треки с менее чем 3 точками должны быть отфильтрованы
     expect(screen.getByText(/Всего треков/)).toBeInTheDocument()
@@ -161,7 +163,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен отрисовать траектории", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="7xkajk9" />)
 
     // Проверяем, что рисовались линии траекторий
     expect(mockCanvasContext.beginPath).toHaveBeenCalled()
@@ -170,7 +172,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен отрисовать точки треков", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="fh6_k8v" />)
 
     // Проверяем, что рисовались круги (точки)
     expect(mockCanvasContext.arc).toHaveBeenCalled()
@@ -179,7 +181,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен выделить выбранный трек", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="q.lub.p" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -196,7 +198,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен показать информацию о треке при клике", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="gsgu6r2" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -213,7 +215,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен отменить выбор при повторном клике", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="5a9mgs0" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -227,14 +229,14 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен показать статистику треков", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="7475-ze" />)
 
     expect(screen.getByText(/Всего треков/)).toBeInTheDocument()
     expect(screen.getByText(/Выбранный трек/)).toBeInTheDocument()
   })
 
   it("должен отобразить легенду", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="r2q6jr1" />)
 
     // Легенда с цветами для разных классов - ищем в легенде
     const legendContainer = screen.getByText(/Всего треков/).closest("div")?.parentElement
@@ -247,7 +249,7 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен использовать разные цвета для разных классов", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="2-ml4bq" />)
 
     // Проверяем, что легенда отображается с цветными индикаторами
     const legendContainer = screen.getByText(/Всего треков/).closest("div")?.parentElement
@@ -258,7 +260,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен показать только видимые точки до currentTime", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={1} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={1} data-oid="8au8mrk" />)
 
     // Точки после currentTime не должны отрисовываться
     expect(mockCanvasContext.arc).toHaveBeenCalled()
@@ -266,18 +268,18 @@ describe("YoloTrackOverlay", () => {
 
   it("должен обновить треки при изменении currentTime", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    const { rerender } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { rerender } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="alpydc5" />)
 
     const initialCalls = mockCanvasContext.clearRect.mock.calls.length
 
-    rerender(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    rerender(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="eu5xvqy" />)
 
     expect(mockCanvasContext.clearRect.mock.calls.length).toBeGreaterThan(initialCalls)
   })
 
   it("должен выделить текущую точку трека", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="5c7u._d" />)
 
     // Текущая точка должна быть больше
     expect(mockCanvasContext.arc).toHaveBeenCalled()
@@ -285,7 +287,7 @@ describe("YoloTrackOverlay", () => {
 
   it("должен отрисовать пульсирующие круги для текущих обнаружений", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="s57k222" />)
 
     // Проверяем, что рисовались круги для текущих обнаружений
     expect(mockCanvasContext.arc).toHaveBeenCalled()
@@ -294,7 +296,7 @@ describe("YoloTrackOverlay", () => {
   it("должен показать подпись для выбранного трека", async () => {
     const { mockCanvasContext } = setupCanvasMock()
     const user = userEvent.setup()
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="f6it37s" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -311,13 +313,13 @@ describe("YoloTrackOverlay", () => {
 
   it("должен использовать devicePixelRatio для четкости", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="bxl_kkl" />)
 
     expect(mockCanvasContext.scale).toHaveBeenCalled()
   })
 
   it("должен иметь правильные aria атрибуты", () => {
-    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={0} data-oid="x9:8q0g" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas?.getAttribute("role")).toBe("img")
@@ -325,7 +327,7 @@ describe("YoloTrackOverlay", () => {
   })
 
   it("должен группировать обнаружения в треки", () => {
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="kjqk1ag" />)
 
     // Треки должны быть созданы на основе класса и позиции
     expect(screen.getByText(/Всего треков/)).toBeInTheDocument()
@@ -367,7 +369,7 @@ describe("YoloTrackOverlay", () => {
       ],
     })
 
-    render(<YoloTrackOverlay yoloData={closePointsData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={closePointsData} currentTime={2} data-oid="01m:vmc" />)
 
     // Близкие точки должны быть в одном треке
     expect(screen.getByText(/Всего треков/)).toBeInTheDocument()
@@ -376,7 +378,7 @@ describe("YoloTrackOverlay", () => {
   it("не должен рисовать траектории когда showTrajectories=false", async () => {
     const { mockCanvasContext } = setupCanvasMock()
     const user = userEvent.setup()
-    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} />)
+    render(<YoloTrackOverlay yoloData={mockYoloData} currentTime={2} data-oid="v.7685d" />)
 
     const checkbox = screen.getByRole("checkbox")
     await user.click(checkbox)

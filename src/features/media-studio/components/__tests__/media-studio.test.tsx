@@ -25,12 +25,12 @@ vi.mock("@/lib/tauri-logger", () => ({
 const mockUseUserSettings = vi.hoisted(() => vi.fn())
 vi.mock("@/features/user-settings", () => ({
   useUserSettings: mockUseUserSettings,
-  UserSettingsProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  UserSettingsProvider: ({ children }: { children: React.ReactNode }) => <div data-oid="ch1s3q:">{children}</div>,
 }))
 
 // Мокаем Timeline и useTimeline
 vi.mock("@/features/timeline", () => ({
-  TimelineProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TimelineProvider: ({ children }: { children: React.ReactNode }) => <div data-oid="ktudrqw">{children}</div>,
   useTimeline: () => ({
     timelineState: { clips: [], currentTime: 0, duration: 0 },
     addMediaClip: vi.fn(),
@@ -91,25 +91,56 @@ vi.mock("@/domains/system-integration", async (importOriginal) => {
 
 // Мокаем TopBar из media-studio
 vi.mock("../top-bar/top-bar", () => ({
-  TopBar: () => <div data-testid="top-bar">TopBar</div>,
+  TopBar: () => (
+    <div data-testid="top-bar" data-oid="bsj:7ux">
+      TopBar
+    </div>
+  ),
 }))
 
 // Мокаем ModalContainer - still using old path but component uses new architecture internally
 vi.mock("@/features/modals/components", () => ({
-  ModalContainer: () => <div data-testid="modal-container">ModalContainer</div>,
+  ModalContainer: () => (
+    <div data-testid="modal-container" data-oid="hivkaqc">
+      ModalContainer
+    </div>
+  ),
 }))
 
 // Мокаем ProjectLoadingOverlay
 vi.mock("../project-loading-overlay", () => ({
-  ProjectLoadingOverlay: () => <div data-testid="project-loading-overlay">ProjectLoadingOverlay</div>,
+  ProjectLoadingOverlay: () => (
+    <div data-testid="project-loading-overlay" data-oid="gm.0qpd">
+      ProjectLoadingOverlay
+    </div>
+  ),
 }))
 
 // Мокаем layouts
 vi.mock("../layout", () => ({
-  DefaultLayout: () => <div data-testid="default-layout">DefaultLayout</div>,
-  OptionsLayout: () => <div data-testid="options-layout">OptionsLayout</div>,
-  VerticalLayout: () => <div data-testid="vertical-layout">VerticalLayout</div>,
-  ChatLayout: () => <div data-testid="chat-layout">ChatLayout</div>,
+  DefaultLayout: () => (
+    <div data-testid="default-layout" data-oid="vbpoy_a">
+      DefaultLayout
+    </div>
+  ),
+
+  OptionsLayout: () => (
+    <div data-testid="options-layout" data-oid="5qnafmj">
+      OptionsLayout
+    </div>
+  ),
+
+  VerticalLayout: () => (
+    <div data-testid="vertical-layout" data-oid="17v7ztz">
+      VerticalLayout
+    </div>
+  ),
+
+  ChatLayout: () => (
+    <div data-testid="chat-layout" data-oid="o5yu_wa">
+      ChatLayout
+    </div>
+  ),
 }))
 
 describe("MediaStudio", () => {
@@ -137,7 +168,7 @@ describe("MediaStudio", () => {
   })
 
   it("рендерит основные компоненты", () => {
-    render(<MediaStudio />)
+    render(<MediaStudio data-oid="7:-sdfy" />)
 
     expect(screen.getByTestId("top-bar")).toBeInTheDocument()
     expect(screen.getByTestId("modal-container")).toBeInTheDocument()
@@ -147,7 +178,7 @@ describe("MediaStudio", () => {
     it("рендерит DefaultLayout при layoutMode='default'", () => {
       mockUseUserSettings.mockReturnValue({ layoutMode: "default" })
 
-      render(<MediaStudio />)
+      render(<MediaStudio data-oid="q73elmn" />)
 
       expect(screen.getByTestId("default-layout")).toBeInTheDocument()
       expect(screen.queryByTestId("options-layout")).not.toBeInTheDocument()
@@ -158,7 +189,7 @@ describe("MediaStudio", () => {
     it("рендерит OptionsLayout при layoutMode='options'", () => {
       mockUseUserSettings.mockReturnValue({ layoutMode: "options" })
 
-      render(<MediaStudio />)
+      render(<MediaStudio data-oid="xeafgt0" />)
 
       expect(screen.getByTestId("options-layout")).toBeInTheDocument()
       expect(screen.queryByTestId("default-layout")).not.toBeInTheDocument()
@@ -169,7 +200,7 @@ describe("MediaStudio", () => {
     it("рендерит VerticalLayout при layoutMode='vertical'", () => {
       mockUseUserSettings.mockReturnValue({ layoutMode: "vertical" })
 
-      render(<MediaStudio />)
+      render(<MediaStudio data-oid="6zd1j1k" />)
 
       expect(screen.getByTestId("vertical-layout")).toBeInTheDocument()
       expect(screen.queryByTestId("default-layout")).not.toBeInTheDocument()
@@ -180,7 +211,7 @@ describe("MediaStudio", () => {
     it("рендерит ChatLayout при layoutMode='chat'", () => {
       mockUseUserSettings.mockReturnValue({ layoutMode: "chat" })
 
-      render(<MediaStudio />)
+      render(<MediaStudio data-oid="0v9o-_o" />)
 
       expect(screen.getByTestId("chat-layout")).toBeInTheDocument()
       expect(screen.queryByTestId("default-layout")).not.toBeInTheDocument()
@@ -205,7 +236,7 @@ describe("MediaStudio", () => {
         error: null,
       })
 
-      const { container } = render(<MediaStudio />)
+      const { container } = render(<MediaStudio data-oid="iig5vwq" />)
 
       // Проверяем что компонент рендерится
       expect(container.querySelector(".flex.flex-col.h-screen.w-screen")).toBeInTheDocument()
@@ -227,7 +258,7 @@ describe("MediaStudio", () => {
         error,
       })
 
-      const { container } = render(<MediaStudio />)
+      const { container } = render(<MediaStudio data-oid="6_p_h44" />)
 
       // Проверяем что компонент рендерится
       expect(container.querySelector(".flex.flex-col.h-screen.w-screen")).toBeInTheDocument()
@@ -250,7 +281,7 @@ describe("MediaStudio", () => {
         error: null,
       })
 
-      const { container } = render(<MediaStudio />)
+      const { container } = render(<MediaStudio data-oid="la4ck4o" />)
 
       // Проверяем что компонент рендерится
       expect(container.querySelector(".flex.flex-col.h-screen.w-screen")).toBeInTheDocument()
@@ -258,7 +289,7 @@ describe("MediaStudio", () => {
   })
 
   it("имеет правильную структуру DOM", () => {
-    const { container } = render(<MediaStudio />)
+    const { container } = render(<MediaStudio data-oid="-p6j0x:" />)
 
     const mainDiv = container.querySelector(".flex.flex-col.h-screen.w-screen")
     expect(mainDiv).toBeInTheDocument()

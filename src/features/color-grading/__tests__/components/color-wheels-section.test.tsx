@@ -17,9 +17,11 @@ vi.mock("react-i18next", () => ({
 // Мокаем ColorWheel компонент
 vi.mock("../../components/color-wheels/color-wheel", () => ({
   ColorWheel: ({ type, label, onChange }: any) => (
-    <div data-testid={`color-wheel-${type}`}>
-      <span>{label}</span>
-      <button onClick={() => onChange({ r: 0.5, g: 0.5, b: 0.5 })}>Change {type}</button>
+    <div data-testid={`color-wheel-${type}`} data-oid="ngbo76o">
+      <span data-oid="r5f:jpw">{label}</span>
+      <button onClick={() => onChange({ r: 0.5, g: 0.5, b: 0.5 })} data-oid="sk183um">
+        Change {type}
+      </button>
     </div>
   ),
 }))
@@ -27,13 +29,14 @@ vi.mock("../../components/color-wheels/color-wheel", () => ({
 // Мокаем ParameterSlider компонент
 vi.mock("../../components/controls/parameter-slider", () => ({
   ParameterSlider: ({ label, value, onChange }: any) => (
-    <div data-testid={`parameter-slider-${label}`}>
-      <span>{label}</span>
+    <div data-testid={`parameter-slider-${label}`} data-oid="ex7z4bt">
+      <span data-oid="m0:hi0e">{label}</span>
       <input
         type="range"
         value={value.toString()}
         onChange={(e) => onChange(Number(e.target.value))}
         aria-label={label}
+        data-oid="fh4834v"
       />
     </div>
   ),
@@ -74,19 +77,19 @@ describe("ColorWheelsSection", () => {
   })
 
   it("should render color wheels section", () => {
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="r.42.26" />)
 
     expect(screen.getByTestId("color-wheels-section")).toBeInTheDocument()
   })
 
   it("should render description text", () => {
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="jo2tehr" />)
 
     expect(screen.getByText("Adjust shadows (Lift), midtones (Gamma), and highlights (Gain)")).toBeInTheDocument()
   })
 
   it("should render all three color wheels", () => {
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="9bgmgon" />)
 
     expect(screen.getByTestId("color-wheel-lift")).toBeInTheDocument()
     expect(screen.getByTestId("color-wheel-gamma")).toBeInTheDocument()
@@ -99,15 +102,19 @@ describe("ColorWheelsSection", () => {
 
   it("should call updateColorWheel when color wheel changes", async () => {
     const user = userEvent.setup()
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="-.y-mev" />)
 
     await user.click(screen.getByText("Change lift"))
 
-    expect(mockContextValue.updateColorWheel).toHaveBeenCalledWith("lift", { r: 0.5, g: 0.5, b: 0.5 })
+    expect(mockContextValue.updateColorWheel).toHaveBeenCalledWith("lift", {
+      r: 0.5,
+      g: 0.5,
+      b: 0.5,
+    })
   })
 
   it("should render all parameter sliders", () => {
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="k38h::h" />)
 
     expect(screen.getByTestId("parameter-slider-Temperature")).toBeInTheDocument()
     expect(screen.getByTestId("parameter-slider-Tint")).toBeInTheDocument()
@@ -117,7 +124,7 @@ describe("ColorWheelsSection", () => {
 
   it("should call updateBasicParameter when slider changes", async () => {
     const user = userEvent.setup()
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="8fj836a" />)
 
     const temperatureSlider = screen.getByLabelText("Temperature")
     // Для range input используем fireEvent вместо user.clear/type
@@ -149,7 +156,7 @@ describe("ColorWheelsSection", () => {
     // Mock the context to return our test values
     mockUseColorGradingContext.mockReturnValueOnce(testMockContextValue)
 
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="pd0owpq" />)
 
     // Debug: Давайте проверим, что находится на экране
     const temperatureSlider = screen.getByLabelText("Temperature")
@@ -164,7 +171,7 @@ describe("ColorWheelsSection", () => {
 
   it("should handle multiple parameter updates and color wheel changes", async () => {
     const user = userEvent.setup()
-    render(<ColorWheelsSection />)
+    render(<ColorWheelsSection data-oid="ms_3m34" />)
 
     // Test temperature update
     const temperatureSlider = screen.getByLabelText("Temperature")

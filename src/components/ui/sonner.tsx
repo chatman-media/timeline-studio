@@ -50,6 +50,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         },
       }}
       {...props}
+      data-oid="bsq1b3m"
     />
   )
 }

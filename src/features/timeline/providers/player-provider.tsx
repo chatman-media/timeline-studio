@@ -268,7 +268,10 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
           async () => {
             const result = await backendSync.executeCommand(command)
 
-            logger.debug("player command executed", { command: command.type, result })
+            logger.debug("player command executed", {
+              command: command.type,
+              result,
+            })
 
             if (!result?.success) {
               throw new Error(result?.error || "Command failed")
@@ -674,7 +677,11 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     ],
   )
 
-  return <PlayerContext.Provider value={contextValue}>{children}</PlayerContext.Provider>
+  return (
+    <PlayerContext.Provider value={contextValue} data-oid="-x1hxvz">
+      {children}
+    </PlayerContext.Provider>
+  )
 }
 
 export function usePlayer(): PlayerContextType {

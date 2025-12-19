@@ -26,6 +26,7 @@ vi.mock("@/components/ui/slider", () => ({
       onMouseUp={() => onValueCommit()}
       className={className}
       data-testid="volume-slider"
+      data-oid="1g-i4tc"
     />
   ),
 }))
@@ -43,7 +44,7 @@ describe("VolumeSlider", () => {
     const onValueCommit = vi.fn()
 
     // Рендерим компонент с начальным значением громкости 50
-    render(<VolumeSlider volume={50} onValueChange={onValueChange} onValueCommit={onValueCommit} />)
+    render(<VolumeSlider volume={50} onValueChange={onValueChange} onValueCommit={onValueCommit} data-oid="4s9hzsz" />)
 
     // Проверяем, что слайдер отрендерился с правильным значением
     const slider = screen.getByTestId("volume-slider")
@@ -57,7 +58,7 @@ describe("VolumeSlider", () => {
     const onValueCommit = vi.fn()
 
     // Рендерим компонент
-    render(<VolumeSlider volume={50} onValueChange={onValueChange} onValueCommit={onValueCommit} />)
+    render(<VolumeSlider volume={50} onValueChange={onValueChange} onValueCommit={onValueCommit} data-oid="fdqil4x" />)
 
     // Находим слайдер
     const slider = screen.getByTestId("volume-slider")
@@ -79,7 +80,13 @@ describe("VolumeSlider", () => {
 
     // Рендерим компонент с volumeRef
     render(
-      <VolumeSlider volume={50} volumeRef={volumeRef} onValueChange={onValueChange} onValueCommit={onValueCommit} />,
+      <VolumeSlider
+        volume={50}
+        volumeRef={volumeRef}
+        onValueChange={onValueChange}
+        onValueCommit={onValueCommit}
+        data-oid="m_2iz_i"
+      />,
     )
 
     // Находим слайдер
@@ -99,7 +106,7 @@ describe("VolumeSlider", () => {
 
     // Рендерим компонент с начальным значением громкости
     const { rerender } = render(
-      <VolumeSlider volume={50} onValueChange={onValueChange} onValueCommit={onValueCommit} />,
+      <VolumeSlider volume={50} onValueChange={onValueChange} onValueCommit={onValueCommit} data-oid="wqsae5n" />,
     )
 
     // Проверяем начальное значение
@@ -107,7 +114,9 @@ describe("VolumeSlider", () => {
     expect(slider).toHaveValue("50")
 
     // Перерендериваем компонент с новым значением громкости
-    rerender(<VolumeSlider volume={75} onValueChange={onValueChange} onValueCommit={onValueCommit} />)
+    rerender(
+      <VolumeSlider volume={75} onValueChange={onValueChange} onValueCommit={onValueCommit} data-oid="o-m-qzg" />,
+    )
 
     // Проверяем, что значение слайдера обновилось
     slider = screen.getByTestId("volume-slider")

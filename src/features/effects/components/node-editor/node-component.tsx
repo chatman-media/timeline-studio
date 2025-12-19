@@ -124,6 +124,7 @@ export function NodeComponent({
         minHeight: node.size?.height || 100,
       }}
       onMouseDown={handleMouseDown}
+      data-oid="khvipkz"
     >
       {/* Header */}
       <div
@@ -132,25 +133,29 @@ export function NodeComponent({
           "flex items-center justify-between",
           getCategoryColor(),
         )}
+        data-oid="_y4c-k2"
       >
-        <span className="truncate">{node.name}</span>
+        <span className="truncate" data-oid="wdn-zs1">
+          {node.name}
+        </span>
         <button
           onClick={(e) => {
             e.stopPropagation()
             setIsExpanded(!isExpanded)
           }}
           className="ml-2 text-xs opacity-70 hover:opacity-100"
+          data-oid="2m1adc4"
         >
           {isExpanded ? "−" : "+"}
         </button>
       </div>
 
       {/* Content */}
-      <div className={cn("p-2", !isExpanded && "hidden")}>
+      <div className={cn("p-2", !isExpanded && "hidden")} data-oid="ryhnzz_">
         {/* Input ports */}
-        <div className="space-y-1 mb-2">
+        <div className="space-y-1 mb-2" data-oid="bvox6ty">
           {node.inputs.map((port) => (
-            <div key={port.id} className="flex items-center">
+            <div key={port.id} className="flex items-center" data-oid="_l0hyns">
               <div
                 className={cn(
                   "port-input w-3 h-3 -ml-5 mr-2 rounded-full border-2",
@@ -159,30 +164,37 @@ export function NodeComponent({
                 )}
                 onClick={handlePortClick(port, false)}
                 title={`${port.name} (${port.type})`}
+                data-oid="ur_qjur"
               />
-              <span className="text-xs text-gray-300">{port.name}</span>
+
+              <span className="text-xs text-gray-300" data-oid="z_-7crr">
+                {port.name}
+              </span>
             </div>
           ))}
         </div>
 
         {/* Parameters */}
         {node.parameters.length > 0 && (
-          <div className="space-y-2 my-2 py-2 border-t border-gray-700">
+          <div className="space-y-2 my-2 py-2 border-t border-gray-700" data-oid="w4:ce0r">
             {node.parameters.map((param) => (
               <NodeParameterControl
                 key={param.id}
                 parameter={param}
                 onChange={(value) => onParameterChange(param.id, value)}
+                data-oid="6brqu_y"
               />
             ))}
           </div>
         )}
 
         {/* Output ports */}
-        <div className="space-y-1 mt-2">
+        <div className="space-y-1 mt-2" data-oid="_4w61y7">
           {node.outputs.map((port) => (
-            <div key={port.id} className="flex items-center justify-end">
-              <span className="text-xs text-gray-300">{port.name}</span>
+            <div key={port.id} className="flex items-center justify-end" data-oid="6x5qhxm">
+              <span className="text-xs text-gray-300" data-oid="sdrt8yw">
+                {port.name}
+              </span>
               <div
                 className={cn(
                   "port-output w-3 h-3 -mr-5 ml-2 rounded-full",
@@ -191,6 +203,7 @@ export function NodeComponent({
                 )}
                 onClick={handlePortClick(port, true)}
                 title={`${port.name} (${port.type})`}
+                data-oid="ykzokri"
               />
             </div>
           ))}
@@ -198,8 +211,11 @@ export function NodeComponent({
 
         {/* Preview */}
         {node.preview && (
-          <div className="mt-2 pt-2 border-t border-gray-700">
-            <div className="w-full h-16 bg-gray-900 rounded flex items-center justify-center text-xs text-gray-500">
+          <div className="mt-2 pt-2 border-t border-gray-700" data-oid="9d5u:k3">
+            <div
+              className="w-full h-16 bg-gray-900 rounded flex items-center justify-center text-xs text-gray-500"
+              data-oid="-269qob"
+            >
               Preview
             </div>
           </div>
@@ -207,13 +223,21 @@ export function NodeComponent({
 
         {/* Error message */}
         {node.error && (
-          <div className="mt-2 p-2 bg-red-900/20 border border-red-800 rounded text-xs text-red-400">{node.error}</div>
+          <div className="mt-2 p-2 bg-red-900/20 border border-red-800 rounded text-xs text-red-400" data-oid="usc2x7u">
+            {node.error}
+          </div>
         )}
 
         {/* Processing indicator */}
         {node.processing && (
-          <div className="absolute inset-0 bg-gray-900/50 rounded-lg flex items-center justify-center">
-            <div className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full" />
+          <div
+            className="absolute inset-0 bg-gray-900/50 rounded-lg flex items-center justify-center"
+            data-oid="z0ffx2l"
+          >
+            <div
+              className="animate-spin w-6 h-6 border-2 border-white border-t-transparent rounded-full"
+              data-oid="87jb8z."
+            />
           </div>
         )}
       </div>

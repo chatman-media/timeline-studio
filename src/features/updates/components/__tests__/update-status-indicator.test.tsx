@@ -40,12 +40,12 @@ describe("UpdateStatusIndicator", () => {
   })
 
   it("не рендерится в состоянии idle без onClick", () => {
-    const { container } = render(<UpdateStatusIndicator />)
+    const { container } = render(<UpdateStatusIndicator data-oid="3ee07bn" />)
     expect(container.firstChild).toBeNull()
   })
 
   it("рендерится в состоянии idle с onClick", () => {
-    render(<UpdateStatusIndicator onClick={() => {}} />)
+    render(<UpdateStatusIndicator onClick={() => {}} data-oid="zjqsn:8" />)
     expect(screen.getByRole("button")).toBeInTheDocument()
   })
 
@@ -56,7 +56,7 @@ describe("UpdateStatusIndicator", () => {
       isIdle: false,
       isChecking: true,
     })
-    const { rerender } = render(<UpdateStatusIndicator />)
+    const { rerender } = render(<UpdateStatusIndicator data-oid="58dj74a" />)
     expect(screen.getByRole("button")).toBeInTheDocument()
 
     // Доступно обновление
@@ -65,7 +65,7 @@ describe("UpdateStatusIndicator", () => {
       isIdle: false,
       isUpdateAvailable: true,
     })
-    rerender(<UpdateStatusIndicator />)
+    rerender(<UpdateStatusIndicator data-oid="j0otyt7" />)
     expect(screen.getByRole("button")).toBeInTheDocument()
 
     // Ошибка
@@ -74,7 +74,7 @@ describe("UpdateStatusIndicator", () => {
       isIdle: false,
       isError: true,
     })
-    rerender(<UpdateStatusIndicator />)
+    rerender(<UpdateStatusIndicator data-oid="z_74_d2" />)
     // Проверяем, что кнопка имеет вариант destructive (не класс)
     const button = screen.getByRole("button")
     expect(button.className).toContain("destructive")
@@ -87,7 +87,7 @@ describe("UpdateStatusIndicator", () => {
       isUpdateAvailable: true,
     })
 
-    render(<UpdateStatusIndicator showText />)
+    render(<UpdateStatusIndicator showText data-oid="w9cc7w0" />)
     expect(screen.getByText("Обновление")).toBeInTheDocument()
   })
 
@@ -99,7 +99,7 @@ describe("UpdateStatusIndicator", () => {
       availableUpdate: { version: "1.1.0" },
     })
 
-    render(<UpdateStatusIndicator showText />)
+    render(<UpdateStatusIndicator showText data-oid="n.21ff8" />)
     expect(screen.getByText("1.1.0")).toBeInTheDocument()
   })
 
@@ -114,7 +114,7 @@ describe("UpdateStatusIndicator", () => {
       ...defaultMockReturn,
       checkForUpdates,
     })
-    const { rerender } = render(<UpdateStatusIndicator />)
+    const { rerender } = render(<UpdateStatusIndicator data-oid="5ag2d:n" />)
     // В состоянии idle без onClick компонент не рендерится, поэтому пропускаем этот тест
 
     // Доступно обновление - загрузка
@@ -124,7 +124,7 @@ describe("UpdateStatusIndicator", () => {
       isUpdateAvailable: true,
       downloadUpdate,
     })
-    rerender(<UpdateStatusIndicator />)
+    rerender(<UpdateStatusIndicator data-oid="5v1ese3" />)
     await user.click(screen.getByRole("button"))
     expect(downloadUpdate).toHaveBeenCalled()
 
@@ -135,7 +135,7 @@ describe("UpdateStatusIndicator", () => {
       isReadyToInstall: true,
       installUpdate,
     })
-    rerender(<UpdateStatusIndicator />)
+    rerender(<UpdateStatusIndicator data-oid="47nytte" />)
     await user.click(screen.getByRole("button"))
     expect(installUpdate).toHaveBeenCalled()
   })
@@ -144,7 +144,7 @@ describe("UpdateStatusIndicator", () => {
     const user = userEvent.setup()
     const onClick = vi.fn()
 
-    render(<UpdateStatusIndicator onClick={onClick} />)
+    render(<UpdateStatusIndicator onClick={onClick} data-oid="cnh02gf" />)
     await user.click(screen.getByRole("button"))
     expect(onClick).toHaveBeenCalled()
   })
@@ -156,7 +156,7 @@ describe("UpdateStatusIndicator", () => {
       isChecking: true,
     })
 
-    render(<UpdateStatusIndicator />)
+    render(<UpdateStatusIndicator data-oid="jheysrl" />)
     expect(screen.getByRole("button")).toBeDisabled()
   })
 
@@ -169,7 +169,7 @@ describe("UpdateStatusIndicator", () => {
       progress: { percentage: 50 },
     })
 
-    render(<UpdateStatusIndicator />)
+    render(<UpdateStatusIndicator data-oid="mc85t:y" />)
 
     const button = screen.getByRole("button")
     await user.hover(button)
@@ -185,14 +185,14 @@ describe("UpdateStatusIndicator", () => {
       isUpdateAvailable: true,
     })
 
-    render(<UpdateStatusIndicator compact />)
+    render(<UpdateStatusIndicator compact data-oid="myndu1-" />)
 
     const button = screen.getByRole("button")
     expect(button).toHaveClass("h-6 w-6 p-0")
   })
 
   it("применяет переданные классы", () => {
-    render(<UpdateStatusIndicator onClick={() => {}} className="custom-class" />)
+    render(<UpdateStatusIndicator onClick={() => {}} className="custom-class" data-oid="p5::ih3" />)
 
     const button = screen.getByRole("button")
     expect(button).toHaveClass("custom-class")
@@ -219,7 +219,7 @@ describe("UpdateIconIndicator", () => {
       installUpdate: vi.fn(),
     })
 
-    render(<UpdateIconIndicator />)
+    render(<UpdateIconIndicator data-oid="neur_k2" />)
 
     const button = screen.getByRole("button")
     expect(button).toHaveClass("h-6 w-6 p-0")
@@ -246,7 +246,7 @@ describe("UpdateTextIndicator", () => {
       installUpdate: vi.fn(),
     })
 
-    render(<UpdateTextIndicator />)
+    render(<UpdateTextIndicator data-oid="iu3zr.z" />)
 
     expect(screen.getByText("Обновление")).toBeInTheDocument()
   })

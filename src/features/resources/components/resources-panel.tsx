@@ -59,21 +59,25 @@ export function ResourcesPanel() {
   const totalCount = allResources.length
 
   return (
-    <div className="flex h-full flex-col bg-background">
+    <div className="flex h-full flex-col bg-background" data-oid="a31x4p1">
       {/* Header */}
-      <div className="flex h-10 items-center justify-between border-b border-border px-3">
-        <h2 className="text-sm font-medium text-foreground">
+      <div className="flex h-10 items-center justify-between border-b border-border px-3" data-oid="ce8_b__">
+        <h2 className="text-sm font-medium text-foreground" data-oid="_s45o_6">
           {t("timeline.resources.title", "Ресурсы")}
-          {totalCount > 0 && <span className="ml-2 text-xs text-muted-foreground">({totalCount})</span>}
+          {totalCount > 0 && (
+            <span className="ml-2 text-xs text-muted-foreground" data-oid="hocsv13">
+              ({totalCount})
+            </span>
+          )}
         </h2>
       </div>
 
       {/* Горизонтальный скролл контейнер */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden" data-oid="ba--jxw">
         {totalCount === 0 ? (
           // Empty state
-          <div className="flex h-full items-center justify-center px-4">
-            <p className="text-center text-sm text-muted-foreground">
+          <div className="flex h-full items-center justify-center px-4" data-oid="t1n_i2o">
+            <p className="text-center text-sm text-muted-foreground" data-oid="1thpvvs">
               {t("timeline.resources.empty", "Перетащите сюда эффекты, фильтры, переходы или медиафайлы")}
             </p>
           </div>
@@ -85,9 +89,10 @@ export function ResourcesPanel() {
               scrollBehavior: "smooth",
               willChange: "scroll-position",
             }}
+            data-oid="1_gpitp"
           >
             {allResources.map((resource) => (
-              <ResourceThumbnail key={resource.id} resource={resource} onRemove={removeResource} />
+              <ResourceThumbnail key={resource.id} resource={resource} onRemove={removeResource} data-oid="4igmwb_" />
             ))}
           </div>
         )}

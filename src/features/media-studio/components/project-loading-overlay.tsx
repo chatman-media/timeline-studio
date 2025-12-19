@@ -10,18 +10,31 @@ export function ProjectLoadingOverlay() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <div className="flex flex-col items-center gap-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+      data-oid="knn99uq"
+    >
+      <div className="flex flex-col items-center gap-4" data-oid="6y8y8ov">
         {isConnecting && (
           <>
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <p className="text-lg font-medium">Загрузка проекта...</p>
+            <div
+              className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
+              data-oid="s3uffdl"
+            />
+
+            <p className="text-lg font-medium" data-oid="8_lg0nm">
+              Загрузка проекта...
+            </p>
           </>
         )}
         {connectionError && (
-          <div className="rounded-lg bg-destructive/10 p-4 text-destructive">
-            <p className="font-medium">Ошибка подключения</p>
-            <p className="text-sm">{connectionError}</p>
+          <div className="rounded-lg bg-destructive/10 p-4 text-destructive" data-oid="94vj_gv">
+            <p className="font-medium" data-oid="l.s_nk:">
+              Ошибка подключения
+            </p>
+            <p className="text-sm" data-oid="gciprj:">
+              {connectionError}
+            </p>
           </div>
         )}
       </div>

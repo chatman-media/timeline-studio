@@ -16,7 +16,11 @@ export const mockUseWorkspaceLayout = vi.fn(() => createMockWorkspaceContext())
  * Mock WorkspaceLayoutProvider component
  */
 export const MockWorkspaceLayoutProvider = ({ children }: { children: ReactNode }) => {
-  return <div data-testid="mock-workspace-layout-provider">{children}</div>
+  return (
+    <div data-testid="mock-workspace-layout-provider" data-oid="n3y_.xm">
+      {children}
+    </div>
+  )
 }
 
 /**

@@ -48,8 +48,20 @@ const CURVE_PRESETS: Record<string, TransitionCurve> = {
     type: "custom",
     points: [
       { id: "start", x: 0, y: 0, handleOut: { x: 0.1, y: 0.2 } },
-      { id: "bounce1", x: 0.4, y: 1.2, handleIn: { x: 0.3, y: 1.2 }, handleOut: { x: 0.5, y: 1.2 } },
-      { id: "bounce2", x: 0.7, y: 0.9, handleIn: { x: 0.6, y: 0.9 }, handleOut: { x: 0.8, y: 0.9 } },
+      {
+        id: "bounce1",
+        x: 0.4,
+        y: 1.2,
+        handleIn: { x: 0.3, y: 1.2 },
+        handleOut: { x: 0.5, y: 1.2 },
+      },
+      {
+        id: "bounce2",
+        x: 0.7,
+        y: 0.9,
+        handleIn: { x: 0.6, y: 0.9 },
+        handleOut: { x: 0.8, y: 0.9 },
+      },
       { id: "end", x: 1, y: 1, handleIn: { x: 0.9, y: 1 } },
     ],
   },
@@ -57,8 +69,20 @@ const CURVE_PRESETS: Record<string, TransitionCurve> = {
     type: "custom",
     points: [
       { id: "start", x: 0, y: 0, handleOut: { x: 0.1, y: -0.1 } },
-      { id: "elastic1", x: 0.3, y: -0.1, handleIn: { x: 0.2, y: -0.1 }, handleOut: { x: 0.4, y: -0.1 } },
-      { id: "elastic2", x: 0.6, y: 1.1, handleIn: { x: 0.5, y: 1.1 }, handleOut: { x: 0.7, y: 1.1 } },
+      {
+        id: "elastic1",
+        x: 0.3,
+        y: -0.1,
+        handleIn: { x: 0.2, y: -0.1 },
+        handleOut: { x: 0.4, y: -0.1 },
+      },
+      {
+        id: "elastic2",
+        x: 0.6,
+        y: 1.1,
+        handleIn: { x: 0.5, y: 1.1 },
+        handleOut: { x: 0.7, y: 1.1 },
+      },
       { id: "end", x: 1, y: 1, handleIn: { x: 0.9, y: 1 } },
     ],
   },
@@ -308,10 +332,10 @@ export function TransitionCurveEditor({
   )
 
   return (
-    <div className={cn("transition-curve-editor", className)}>
+    <div className={cn("transition-curve-editor", className)} data-oid="77ma:hn">
       {/* Предустановки */}
       {showPresets && (
-        <div className="mb-2 flex flex-wrap gap-1">
+        <div className="mb-2 flex flex-wrap gap-1" data-oid="plmb8m4">
           {Object.keys(CURVE_PRESETS).map((presetName) => (
             <button
               key={presetName}
@@ -323,6 +347,7 @@ export function TransitionCurveEditor({
               )}
               onClick={() => applyPreset(presetName)}
               disabled={isReadOnly}
+              data-oid="vbu_mss"
             >
               {presetName}
             </button>
@@ -338,10 +363,11 @@ export function TransitionCurveEditor({
         viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
         className={cn("border rounded bg-background", !isReadOnly && "cursor-crosshair")}
         onDoubleClick={addPoint}
+        data-oid="9po7pww"
       >
         {/* Сетка */}
         {showGrid && (
-          <g className="opacity-10">
+          <g className="opacity-10" data-oid="ybaue_3">
             {Array.from({ length: Math.floor(viewBoxWidth / gridSize) }).map((_, i) => (
               <line
                 key={`v-${i}`}
@@ -351,6 +377,7 @@ export function TransitionCurveEditor({
                 y2={viewBoxHeight}
                 stroke="currentColor"
                 strokeWidth={1}
+                data-oid="vaqxy-z"
               />
             ))}
             {Array.from({ length: Math.floor(viewBoxHeight / gridSize) }).map((_, i) => (
@@ -362,13 +389,14 @@ export function TransitionCurveEditor({
                 y2={i * gridSize}
                 stroke="currentColor"
                 strokeWidth={1}
+                data-oid="e0kakqf"
               />
             ))}
           </g>
         )}
 
         {/* Оси */}
-        <g className="opacity-20">
+        <g className="opacity-20" data-oid=":f9fbtc">
           <line
             x1={padding}
             y1={viewBoxHeight - padding}
@@ -376,7 +404,9 @@ export function TransitionCurveEditor({
             y2={viewBoxHeight - padding}
             stroke="currentColor"
             strokeWidth={2}
+            data-oid="jbc1q6o"
           />
+
           <line
             x1={padding}
             y1={padding}
@@ -384,11 +414,19 @@ export function TransitionCurveEditor({
             y2={viewBoxHeight - padding}
             stroke="currentColor"
             strokeWidth={2}
+            data-oid="1fwbwzw"
           />
         </g>
 
         {/* Кривая */}
-        <path d={curvePath} fill="none" stroke="hsl(var(--primary))" strokeWidth={3} className="pointer-events-none" />
+        <path
+          d={curvePath}
+          fill="none"
+          stroke="hsl(var(--primary))"
+          strokeWidth={3}
+          className="pointer-events-none"
+          data-oid=".50o.ne"
+        />
 
         {/* Точки и handles */}
         {curve.points.map((point, _index) => {
@@ -396,7 +434,7 @@ export function TransitionCurveEditor({
           const isSelected = selectedPointId === point.id
 
           return (
-            <g key={point.id}>
+            <g key={point.id} data-oid="eee6o1f">
               {/* Handle входа */}
               {point.handleIn && (
                 <>
@@ -408,7 +446,9 @@ export function TransitionCurveEditor({
                     stroke="hsl(var(--muted-foreground))"
                     strokeWidth={1}
                     strokeDasharray="2,2"
+                    data-oid="6pdpac3"
                   />
+
                   <circle
                     cx={normToSvg(point.handleIn.x, point.handleIn.y).x}
                     cy={normToSvg(point.handleIn.x, point.handleIn.y).y}
@@ -422,6 +462,7 @@ export function TransitionCurveEditor({
                       isSelected && "fill-primary",
                     )}
                     onMouseDown={(e) => handleMouseDown(e, point.id, "handleIn")}
+                    data-oid="sdc.jny"
                   />
                 </>
               )}
@@ -437,7 +478,9 @@ export function TransitionCurveEditor({
                     stroke="hsl(var(--muted-foreground))"
                     strokeWidth={1}
                     strokeDasharray="2,2"
+                    data-oid="emc.xma"
                   />
+
                   <circle
                     cx={normToSvg(point.handleOut.x, point.handleOut.y).x}
                     cy={normToSvg(point.handleOut.x, point.handleOut.y).y}
@@ -451,6 +494,7 @@ export function TransitionCurveEditor({
                       isSelected && "fill-primary",
                     )}
                     onMouseDown={(e) => handleMouseDown(e, point.id, "handleOut")}
+                    data-oid="1zw8nzz"
                   />
                 </>
               )}
@@ -469,6 +513,7 @@ export function TransitionCurveEditor({
                   e.stopPropagation()
                   deletePoint(point.id)
                 }}
+                data-oid="3qrql8v"
               />
 
               {/* Подпись с координатами */}
@@ -479,6 +524,7 @@ export function TransitionCurveEditor({
                   fontSize={10}
                   fill="hsl(var(--muted-foreground))"
                   className="pointer-events-none select-none"
+                  data-oid="h7opwb3"
                 >
                   {`${point.x.toFixed(2)}, ${point.y.toFixed(2)}`}
                 </text>
@@ -490,7 +536,7 @@ export function TransitionCurveEditor({
 
       {/* Инструкции */}
       {!isReadOnly && (
-        <div className="mt-2 text-xs text-muted-foreground">
+        <div className="mt-2 text-xs text-muted-foreground" data-oid="xqujcu9">
           Двойной клик - добавить точку • Двойной клик на точке - удалить • Перетаскивание - изменить положение
         </div>
       )}

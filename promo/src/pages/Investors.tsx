@@ -187,57 +187,116 @@ export const Investors: React.FC = () => {
         : content.en;
 
   return (
-    <div className="min-h-screen bg-[#12192C] flex flex-col">
+    <div className="min-h-screen bg-[#12192C] flex flex-col" data-oid="w:i1bz4">
       <SEO
         title="Investors"
         description="Investment opportunity in Timeline Studio. Join the AI video editing revolution. Seed round open."
         url="/investors"
+        data-oid="wkku-qv"
       />
-      <Navigation />
 
-      <main className="flex-1">
+      <Navigation data-oid="41a2:v2" />
+
+      <main className="flex-1" data-oid="8lohywo">
         {/* Hero */}
-        <section className="relative pt-32 pb-20 overflow-hidden">
-          <div className="absolute inset-0 hero-gradient" />
+        <section
+          className="relative pt-32 pb-20 overflow-hidden"
+          data-oid="dfto8-3"
+        >
+          <div className="absolute inset-0 hero-gradient" data-oid="q8p-qfi" />
 
-          <div className="relative container mx-auto px-6 md:px-8 lg:px-12">
+          <div
+            className="relative container mx-auto px-6 md:px-8 lg:px-12"
+            data-oid="ojaznrz"
+          >
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               className="max-w-4xl mx-auto text-center"
+              data-oid="9s3g1oe"
             >
               {/* Raising Badge */}
-              <div className="inline-flex items-center gap-2 px-6 py-3 mb-8 bg-linear-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full border border-green-500/30">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              <div
+                className="inline-flex items-center gap-2 px-6 py-3 mb-8 bg-linear-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-full border border-green-500/30"
+                data-oid="9636vyq"
+              >
+                <span className="relative flex h-3 w-3" data-oid="58t1:my">
+                  <span
+                    className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+                    data-oid="tzbyq9s"
+                  ></span>
+                  <span
+                    className="relative inline-flex rounded-full h-3 w-3 bg-green-500"
+                    data-oid="u6d.ymc"
+                  ></span>
                 </span>
-                <span className="text-green-300 font-medium">{t.raising}</span>
-                <span className="text-white font-bold text-xl">$1M</span>
-                <span className="text-green-300">{t.seedRound}</span>
+                <span className="text-green-300 font-medium" data-oid="fmo0y13">
+                  {t.raising}
+                </span>
+                <span
+                  className="text-white font-bold text-xl"
+                  data-oid="uue9g:j"
+                >
+                  $1M
+                </span>
+                <span className="text-green-300" data-oid="auksrw6">
+                  {t.seedRound}
+                </span>
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                <span className="text-gradient">{t.title}</span>
+              <h1
+                className="text-4xl md:text-6xl font-bold mb-6"
+                data-oid="dmkyb6t"
+              >
+                <span className="text-gradient" data-oid="3p0_mi-">
+                  {t.title}
+                </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-300 mb-8">
+              <p
+                className="text-xl md:text-2xl text-gray-300 mb-8"
+                data-oid="h9ebnd7"
+              >
                 {t.subtitle}
               </p>
 
               {/* Key Numbers */}
-              <div className="flex flex-wrap justify-center gap-8 mb-12">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-white">$1M</div>
-                  <div className="text-gray-400">{t.seedRound}</div>
+              <div
+                className="flex flex-wrap justify-center gap-8 mb-12"
+                data-oid="vyezw_f"
+              >
+                <div className="text-center" data-oid="3.xu5u4">
+                  <div
+                    className="text-4xl font-bold text-white"
+                    data-oid="modm.6b"
+                  >
+                    $1M
+                  </div>
+                  <div className="text-gray-400" data-oid="rs6yfhf">
+                    {t.seedRound}
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-white">10%</div>
-                  <div className="text-gray-400">Equity</div>
+                <div className="text-center" data-oid="1v2uhpw">
+                  <div
+                    className="text-4xl font-bold text-white"
+                    data-oid="_rzf4s7"
+                  >
+                    10%
+                  </div>
+                  <div className="text-gray-400" data-oid="59ob8xd">
+                    Equity
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-white">$9M</div>
-                  <div className="text-gray-400">Pre-money</div>
+                <div className="text-center" data-oid="nx41nbi">
+                  <div
+                    className="text-4xl font-bold text-white"
+                    data-oid="i148-sr"
+                  >
+                    $9M
+                  </div>
+                  <div className="text-gray-400" data-oid="q.n2fo0">
+                    Pre-money
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -245,9 +304,15 @@ export const Investors: React.FC = () => {
         </section>
 
         {/* Problem & Solution */}
-        <section className="py-20">
-          <div className="container mx-auto px-6 md:px-8 lg:px-12">
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <section className="py-20" data-oid="7hcyen0">
+          <div
+            className="container mx-auto px-6 md:px-8 lg:px-12"
+            data-oid="gn:j4rj"
+          >
+            <div
+              className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+              data-oid="wjp8f_o"
+            >
               {/* Problem */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
@@ -255,28 +320,40 @@ export const Investors: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
                 className="p-8 rounded-2xl bg-red-500/5 border border-red-500/20"
+                data-oid="w6_bgh7"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-red-500/20 rounded-lg">
+                <div
+                  className="flex items-center gap-3 mb-4"
+                  data-oid="vqac4k7"
+                >
+                  <div
+                    className="p-2 bg-red-500/20 rounded-lg"
+                    data-oid=".luz481"
+                  >
                     <svg
                       className="w-6 h-6 text-red-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      data-oid="r45qwn2"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        data-oid="cjjg9is"
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3
+                    className="text-2xl font-bold text-white"
+                    data-oid="7bb6hgy"
+                  >
                     {t.problem.title}
                   </h3>
                 </div>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed" data-oid="ain6sfq">
                   {t.problem.text}
                 </p>
               </motion.div>
@@ -288,28 +365,40 @@ export const Investors: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
                 className="p-8 rounded-2xl bg-green-500/5 border border-green-500/20"
+                data-oid="cl2a7yr"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-green-500/20 rounded-lg">
+                <div
+                  className="flex items-center gap-3 mb-4"
+                  data-oid="_b3ci_w"
+                >
+                  <div
+                    className="p-2 bg-green-500/20 rounded-lg"
+                    data-oid="71-o4w-"
+                  >
                     <svg
                       className="w-6 h-6 text-green-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      data-oid="6pym_fq"
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        data-oid="u7tgx.t"
                       />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3
+                    className="text-2xl font-bold text-white"
+                    data-oid="jdcp_gf"
+                  >
                     {t.solution.title}
                   </h3>
                 </div>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed" data-oid="x-u5bg9">
                   {t.solution.text}
                 </p>
               </motion.div>
@@ -318,26 +407,40 @@ export const Investors: React.FC = () => {
         </section>
 
         {/* Market & Traction */}
-        <section className="py-20 bg-[#0a0f1e]">
-          <div className="container mx-auto px-6 md:px-8 lg:px-12">
-            <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+        <section className="py-20 bg-[#0a0f1e]" data-oid="j55fggg">
+          <div
+            className="container mx-auto px-6 md:px-8 lg:px-12"
+            data-oid="p7bv0q:"
+          >
+            <div
+              className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto"
+              data-oid="tqeklhc"
+            >
               {/* Market */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
+                data-oid="7s7w46c"
               >
-                <h3 className="text-3xl font-bold text-white mb-6">
+                <h3
+                  className="text-3xl font-bold text-white mb-6"
+                  data-oid="qv9hjyn"
+                >
                   {t.market.title}
                 </h3>
-                <ul className="space-y-3">
+                <ul className="space-y-3" data-oid="sbim14q">
                   {t.market.items.map((item, i) => (
                     <li
                       key={i}
                       className="flex items-center gap-3 text-gray-300"
+                      data-oid="0742e27"
                     >
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <div
+                        className="w-2 h-2 bg-purple-500 rounded-full"
+                        data-oid="uj2qpw7"
+                      ></div>
                       {item}
                     </li>
                   ))}
@@ -350,20 +453,30 @@ export const Investors: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
+                data-oid="rv.ce17"
               >
-                <h3 className="text-3xl font-bold text-white mb-6">
+                <h3
+                  className="text-3xl font-bold text-white mb-6"
+                  data-oid="xzjj3jx"
+                >
                   {t.traction.title}
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4" data-oid="d7s78tv">
                   {t.traction.items.map((item, i) => (
                     <div
                       key={i}
                       className="p-4 bg-white/5 rounded-xl border border-white/10"
+                      data-oid="0gsiqsh"
                     >
-                      <div className="text-2xl font-bold text-purple-400">
+                      <div
+                        className="text-2xl font-bold text-purple-400"
+                        data-oid="04b5a9u"
+                      >
                         {item.value}
                       </div>
-                      <div className="text-sm text-gray-400">{item.label}</div>
+                      <div className="text-sm text-gray-400" data-oid="fzu19ee">
+                        {item.label}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -373,33 +486,48 @@ export const Investors: React.FC = () => {
         </section>
 
         {/* Use of Funds */}
-        <section className="py-20">
-          <div className="container mx-auto px-6 md:px-8 lg:px-12">
+        <section className="py-20" data-oid="l6b827n">
+          <div
+            className="container mx-auto px-6 md:px-8 lg:px-12"
+            data-oid="7_n2iwu"
+          >
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
               className="max-w-3xl mx-auto"
+              data-oid="0sukfrl"
             >
-              <h3 className="text-3xl font-bold text-white text-center mb-10">
+              <h3
+                className="text-3xl font-bold text-white text-center mb-10"
+                data-oid="7wr8k6p"
+              >
                 {t.useOfFunds.title}
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-4" data-oid=".w6g_4r">
                 {t.useOfFunds.items.map((item, i) => (
                   <div
                     key={i}
                     className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10"
+                    data-oid="jxb44nu"
                   >
-                    <div className="w-16 text-center">
-                      <span className="text-xl font-bold text-purple-400">
+                    <div className="w-16 text-center" data-oid="mq.qyn9">
+                      <span
+                        className="text-xl font-bold text-purple-400"
+                        data-oid="5-5kr52"
+                      >
                         {item.percent}
                       </span>
                     </div>
-                    <div className="flex-1">
-                      <span className="text-white">{item.label}</span>
+                    <div className="flex-1" data-oid="kackce6">
+                      <span className="text-white" data-oid="c7b.1i-">
+                        {item.label}
+                      </span>
                     </div>
-                    <div className="text-gray-400">{item.amount}</div>
+                    <div className="text-gray-400" data-oid="o3lhex0">
+                      {item.amount}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -408,23 +536,37 @@ export const Investors: React.FC = () => {
         </section>
 
         {/* CTA */}
-        <section className="py-20 bg-linear-to-b from-[#12192C] to-[#0a0f1e]">
-          <div className="container mx-auto px-6 md:px-8 lg:px-12">
+        <section
+          className="py-20 bg-linear-to-b from-[#12192C] to-[#0a0f1e]"
+          data-oid="2trp1cn"
+        >
+          <div
+            className="container mx-auto px-6 md:px-8 lg:px-12"
+            data-oid="j:g9mw3"
+          >
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
               className="max-w-2xl mx-auto text-center"
+              data-oid="4.wd74v"
             >
-              <h3 className="text-3xl font-bold text-white mb-8">
+              <h3
+                className="text-3xl font-bold text-white mb-8"
+                data-oid="x5yd_:u"
+              >
                 {t.cta.contact}
               </h3>
 
-              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+              <div
+                className="flex flex-col sm:flex-row justify-center gap-4 mb-8"
+                data-oid=".svunu7"
+              >
                 <Link
                   to="/project"
                   className="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors"
+                  data-oid="zfwmaep"
                 >
                   {t.cta.docs}
                 </Link>
@@ -433,24 +575,30 @@ export const Investors: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors border border-white/20 flex items-center gap-2"
+                  data-oid="vubdu9f"
                 >
                   <svg
                     className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
+                    data-oid="l.w.-8j"
                   >
-                    <path d="M11.944 0A12 12 0 1 0 24 12a12 12 0 0 0-12.056-12zM16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                    <path
+                      d="M11.944 0A12 12 0 1 0 24 12a12 12 0 0 0-12.056-12zM16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+                      data-oid="b6:3cwj"
+                    />
                   </svg>
                   @alexanderkireev
                 </a>
               </div>
 
-              <div className="flex justify-center gap-6">
+              <div className="flex justify-center gap-6" data-oid="4ofi1on">
                 <a
                   href="https://t.me/timelinestudio"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
+                  data-oid="m_3wlju"
                 >
                   Telegram Channel
                 </a>
@@ -459,6 +607,7 @@ export const Investors: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
+                  data-oid="p-isil5"
                 >
                   Discord
                 </a>
@@ -467,6 +616,7 @@ export const Investors: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
+                  data-oid="7x05f2."
                 >
                   GitHub
                 </a>
@@ -476,7 +626,7 @@ export const Investors: React.FC = () => {
         </section>
       </main>
 
-      <Footer />
+      <Footer data-oid="5m3vn5r" />
     </div>
   );
 };

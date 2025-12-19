@@ -71,7 +71,7 @@ export function AnalysisProgressIndicator({
   const displayProgress = Math.round(progress)
 
   return (
-    <AnimatePresence>
+    <AnimatePresence data-oid="9ifkjog">
       {isVisible && (
         <motion.div
           initial={{ opacity: 0, y: -20, x: 20 }}
@@ -79,9 +79,10 @@ export function AnalysisProgressIndicator({
           exit={{ opacity: 0, y: -20, x: 20 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
           className={cn("fixed top-4 right-4 z-50", className)}
+          data-oid="_:kisu_"
         >
-          <Popover>
-            <PopoverTrigger asChild>
+          <Popover data-oid="gyabu:f">
+            <PopoverTrigger asChild data-oid="iua40xl">
               <motion.div
                 animate={{
                   scale: [1, 1.02, 1],
@@ -91,6 +92,7 @@ export function AnalysisProgressIndicator({
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "easeInOut",
                 }}
+                data-oid="qhzn3l1"
               >
                 <Badge
                   variant="secondary"
@@ -99,59 +101,70 @@ export function AnalysisProgressIndicator({
                     "bg-background/95 backdrop-blur-lg border-border shadow-lg",
                     "hover:bg-accent transition-colors",
                   )}
+                  data-oid="comjuvg"
                 >
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="h-3 w-3 animate-spin text-primary" />
-                    <Sparkles className="h-3 w-3 text-primary" />
+                  <div className="flex items-center gap-2" data-oid="gy-fmhp">
+                    <Loader2 className="h-3 w-3 animate-spin text-primary" data-oid="ux6-it5" />
+                    <Sparkles className="h-3 w-3 text-primary" data-oid="7eqc1mg" />
                   </div>
-                  <div className="flex flex-col items-start text-xs">
-                    <span className="font-medium">{displayFileName}</span>
-                    <span className="text-muted-foreground text-[10px]">{displayProgress}%</span>
+                  <div className="flex flex-col items-start text-xs" data-oid="5gpni::">
+                    <span className="font-medium" data-oid="qwc5gth">
+                      {displayFileName}
+                    </span>
+                    <span className="text-muted-foreground text-[10px]" data-oid="s6r48rq">
+                      {displayProgress}%
+                    </span>
                   </div>
                 </Badge>
               </motion.div>
             </PopoverTrigger>
 
-            <PopoverContent align="end" className="w-80 p-4">
-              <div className="space-y-3">
+            <PopoverContent align="end" className="w-80 p-4" data-oid="gheis.-">
+              <div className="space-y-3" data-oid="303e1v2">
                 {/* Header */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <h4 className="font-semibold text-sm">AI Анализ в процессе</h4>
+                <div className="flex items-start justify-between gap-2" data-oid="btq7op0">
+                  <div className="flex items-center gap-2" data-oid="l5o:_lb">
+                    <Sparkles className="h-4 w-4 text-primary" data-oid="9e6j1eu" />
+                    <h4 className="font-semibold text-sm" data-oid="nq0kn9s">
+                      AI Анализ в процессе
+                    </h4>
                   </div>
                   {onDismiss && (
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onDismiss}>
-                      <X className="h-3 w-3" />
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onDismiss} data-oid=":vftpwr">
+                      <X className="h-3 w-3" data-oid="u4vjlnu" />
                     </Button>
                   )}
                 </div>
 
                 {/* File name */}
-                <div className="space-y-1">
-                  <p className="text-sm font-medium truncate" title={fileName}>
+                <div className="space-y-1" data-oid="85qzem8">
+                  <p className="text-sm font-medium truncate" title={fileName} data-oid="offfjeq">
                     {displayFileName}
                   </p>
                   {fileName && (
-                    <p className="text-xs text-muted-foreground truncate" title={fileName}>
+                    <p className="text-xs text-muted-foreground truncate" title={fileName} data-oid="7-cxn:e">
                       {fileName}
                     </p>
                   )}
                 </div>
 
                 {/* Progress */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">{displayStage}</span>
-                    <span className="font-medium">{displayProgress}%</span>
+                <div className="space-y-2" data-oid="8jgddd4">
+                  <div className="flex items-center justify-between text-xs" data-oid="l1q7rw8">
+                    <span className="text-muted-foreground" data-oid="7tgpeb.">
+                      {displayStage}
+                    </span>
+                    <span className="font-medium" data-oid="-_7-96.">
+                      {displayProgress}%
+                    </span>
                   </div>
-                  <Progress value={displayProgress} className="h-2" />
+                  <Progress value={displayProgress} className="h-2" data-oid="t1h9o:_" />
                 </div>
 
                 {/* Status */}
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  <span>Анализ может занять некоторое время...</span>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground" data-oid="9rhax..">
+                  <Loader2 className="h-3 w-3 animate-spin" data-oid="skua_hb" />
+                  <span data-oid="il2dqss">Анализ может занять некоторое время...</span>
                 </div>
               </div>
             </PopoverContent>

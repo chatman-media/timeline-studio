@@ -117,7 +117,7 @@ import { MediaManagementProvider } from "../media-management-provider"
 
 describe("MediaManagementProvider", () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MediaManagementProvider>{children}</MediaManagementProvider>
+    <MediaManagementProvider data-oid="rc9-zmp">{children}</MediaManagementProvider>
   )
 
   beforeEach(() => {
@@ -210,8 +210,18 @@ describe("MediaManagementProvider", () => {
     it("should handle partial import failures via orchestrator", async () => {
       // Mock orchestrator to return partial results
       mockImportFiles.mockResolvedValueOnce([
-        { id: "media-1", path: "/test/video1.mp4", name: "video1.mp4", type: "Video" },
-        { id: "media-3", path: "/test/video3.mp4", name: "video3.mp4", type: "Video" },
+        {
+          id: "media-1",
+          path: "/test/video1.mp4",
+          name: "video1.mp4",
+          type: "Video",
+        },
+        {
+          id: "media-3",
+          path: "/test/video3.mp4",
+          name: "video3.mp4",
+          type: "Video",
+        },
       ])
 
       const { result } = renderHook(() => useMediaManagement(), { wrapper })

@@ -53,14 +53,14 @@ describe("CacheStatisticsModal", () => {
   })
 
   it("должен отображать общую эффективность кэша", () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="l15cfnk" />)
 
     expect(screen.getByText("videoCompiler.cache.overallEfficiency")).toBeInTheDocument()
     expect(screen.getAllByText("75.0%")).toHaveLength(2) // overall and preview efficiency
   })
 
   it("должен отображать статистику превью", () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="h3k6jic" />)
 
     // Заголовок
     expect(screen.getByText("videoCompiler.cache.preview")).toBeInTheDocument()
@@ -72,7 +72,7 @@ describe("CacheStatisticsModal", () => {
   })
 
   it("должен отображать статистику метаданных", () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="5lz20di" />)
 
     // Заголовок
     expect(screen.getByText("videoCompiler.cache.metadata")).toBeInTheDocument()
@@ -84,7 +84,7 @@ describe("CacheStatisticsModal", () => {
   })
 
   it("должен отображать прогресс бар для hit rate", () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="_jh.g-g" />)
 
     const progressBar = screen.getByRole("progressbar")
     expect(progressBar).toBeInTheDocument()
@@ -92,7 +92,7 @@ describe("CacheStatisticsModal", () => {
   })
 
   it("должен очищать кэш превью при подтверждении", async () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="osk76ng" />)
 
     const clearPreviewButton = screen.getByText("videoCompiler.cache.clearPreview")
 
@@ -108,7 +108,7 @@ describe("CacheStatisticsModal", () => {
   })
 
   it("не должен очищать кэш при отмене", async () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="0.or25f" />)
 
     const clearPreviewButton = screen.getByText("videoCompiler.cache.clearPreview")
 
@@ -124,7 +124,7 @@ describe("CacheStatisticsModal", () => {
   })
 
   it("должен обновлять статистику при клике на refresh", async () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="27d_mgu" />)
 
     const refreshButton = screen.getByText("videoCompiler.cache.refresh")
 
@@ -146,7 +146,7 @@ describe("CacheStatisticsModal", () => {
       clearAllCache: vi.fn(),
     })
 
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="pdgl_fb" />)
 
     // Должен показывать спиннер
     expect(screen.getByTestId("loader2-icon")).toBeInTheDocument()
@@ -163,7 +163,7 @@ describe("CacheStatisticsModal", () => {
       clearAllCache: vi.fn(),
     })
 
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid=":vqcx.p" />)
 
     expect(screen.getByText("Failed to load cache statistics")).toBeInTheDocument()
     expect(screen.getByText("videoCompiler.cache.retry")).toBeInTheDocument()
@@ -180,14 +180,14 @@ describe("CacheStatisticsModal", () => {
       clearAllCache: vi.fn(),
     })
 
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="xa4otm8" />)
 
     expect(screen.getByText("videoCompiler.cache.noData")).toBeInTheDocument()
     expect(screen.getByText("videoCompiler.cache.loadData")).toBeInTheDocument()
   })
 
   it("должен применять правильные стили для эффективности кэша", () => {
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="z_tg_-8" />)
 
     // Находим badge с эффективностью превью (75%)
     const efficiencyBadges = screen.getAllByText("75.0%")
@@ -223,7 +223,7 @@ describe("CacheStatisticsModal", () => {
       clearAllCache: vi.fn(),
     })
 
-    renderWithBase(<CacheStatisticsModal />)
+    renderWithBase(<CacheStatisticsModal data-oid="e9kqbhg" />)
 
     const refreshButton = screen.getByText("videoCompiler.cache.refresh")
     expect(refreshButton).toBeDisabled()

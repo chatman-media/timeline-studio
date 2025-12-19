@@ -94,49 +94,62 @@ export function PresetGallery({ onPresetApplied, className }: PresetGalleryProps
   const presets = getPresets()
 
   return (
-    <div className={className}>
-      <div className="space-y-4">
+    <div className={className} data-oid="u-94s9m">
+      <div className="space-y-4" data-oid="_or3nmn">
         {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <div className="relative" data-oid="eci.n2e">
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground"
+            data-oid="k8l6m3b"
+          />
+
           <Input
             placeholder="Search presets..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
+            data-oid="24k1fn2"
           />
         </div>
 
         {/* Category Tabs */}
-        <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-          <TabsList className="grid grid-cols-6 w-full">
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} data-oid="laradiw">
+          <TabsList className="grid grid-cols-6 w-full" data-oid="ge43n:e">
             {categories.map((category) => {
               const Icon = category.icon
               return (
-                <TabsTrigger key={category.id} value={category.id} className="flex flex-col gap-1 p-2">
-                  <Icon className="w-4 h-4" />
-                  <span className="text-xs">{category.label}</span>
+                <TabsTrigger
+                  key={category.id}
+                  value={category.id}
+                  className="flex flex-col gap-1 p-2"
+                  data-oid="ygj8jmf"
+                >
+                  <Icon className="w-4 h-4" data-oid="6:ncht." />
+                  <span className="text-xs" data-oid="ew27tgk">
+                    {category.label}
+                  </span>
                 </TabsTrigger>
               )
             })}
           </TabsList>
 
-          <TabsContent value={selectedCategory} className="mt-4">
+          <TabsContent value={selectedCategory} className="mt-4" data-oid="mgpgx_f">
             {presets.length === 0 ? (
-              <Card className="p-6 text-center text-muted-foreground">
-                <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No presets found</p>
-                <p className="text-sm mt-1">
+              <Card className="p-6 text-center text-muted-foreground" data-oid="m:zn:yu">
+                <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" data-oid="4c:khsz" />
+                <p data-oid="0zk7is0">No presets found</p>
+                <p className="text-sm mt-1" data-oid="slgl0pi">
                   {searchQuery ? "Try a different search term" : "No presets in this category"}
                 </p>
               </Card>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3" data-oid="::elota">
                 {presets.map((preset) => (
                   <Card
                     key={preset.id}
                     className="group relative overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:scale-105"
                     onClick={() => applyPreset(preset.id)}
+                    data-oid="t06q9su"
                   >
                     {/* Thumbnail */}
                     <div
@@ -144,28 +157,36 @@ export function PresetGallery({ onPresetApplied, className }: PresetGalleryProps
                       style={{
                         background: getPresetThumbnail(preset),
                       }}
+                      data-oid="g1kr0-r"
                     />
 
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div
+                      className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                      data-oid=":5q9ie4"
+                    />
 
                     {/* Content */}
-                    <div className="p-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <h5 className="font-medium text-sm truncate">{preset.name}</h5>
+                    <div className="p-3" data-oid="3b_0x5r">
+                      <div className="flex items-start justify-between gap-2" data-oid="9t9z.1z">
+                        <div className="min-w-0 flex-1" data-oid="v-4dw-l">
+                          <h5 className="font-medium text-sm truncate" data-oid="f1dvd-c">
+                            {preset.name}
+                          </h5>
                           {preset.description && (
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{preset.description}</p>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2" data-oid="dnn8f.:">
+                              {preset.description}
+                            </p>
                           )}
                         </div>
 
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs" data-oid="fyhzerz">
                           {preset.effects.length}
                         </Badge>
                       </div>
 
                       {/* Effect types preview */}
-                      <div className="flex gap-1 mt-2">
+                      <div className="flex gap-1 mt-2" data-oid="rxap5_5">
                         {preset.effects.slice(0, 3).map((effect, index) => {
                           const icons = {
                             color_correction: "🎨",
@@ -177,20 +198,25 @@ export function PresetGallery({ onPresetApplied, className }: PresetGalleryProps
                           const icon = icons[effect.type as keyof typeof icons] || "⚡"
 
                           return (
-                            <span key={index} className="text-xs">
+                            <span key={index} className="text-xs" data-oid="i4ec93h">
                               {icon}
                             </span>
                           )
                         })}
                         {preset.effects.length > 3 && (
-                          <span className="text-xs text-muted-foreground">+{preset.effects.length - 3}</span>
+                          <span className="text-xs text-muted-foreground" data-oid="muc85ah">
+                            +{preset.effects.length - 3}
+                          </span>
                         )}
                       </div>
                     </div>
 
                     {/* Apply button (appears on hover) */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button size="sm" className="shadow-lg">
+                    <div
+                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      data-oid="7jr43o7"
+                    >
+                      <Button size="sm" className="shadow-lg" data-oid="-4e3fnl">
                         Apply
                       </Button>
                     </div>

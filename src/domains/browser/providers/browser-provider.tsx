@@ -278,7 +278,11 @@ export function BrowserProvider({ children }: BrowserProviderProps) {
     ],
   )
 
-  return <BrowserContext.Provider value={contextValue}>{children}</BrowserContext.Provider>
+  return (
+    <BrowserContext.Provider value={contextValue} data-oid="y_r1z6-">
+      {children}
+    </BrowserContext.Provider>
+  )
 }
 
 /**

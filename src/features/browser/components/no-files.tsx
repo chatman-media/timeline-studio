@@ -55,6 +55,7 @@ const BASE_MEDIA_CONFIGS: Record<MediaType, Omit<MediaTypeConfig, "folders">> = 
       "Аудио: MP3, WAV, AAC, ALAC, OGG, FLAC",
       "Фото: JPG, PNG, GIF, WEBP, TIFF, BMP",
     ],
+
     importText: "Импортировать медиафайлы",
     folderText: "Или поместите файлы в папку",
   },
@@ -157,53 +158,68 @@ export function NoFiles({ type, onImport, className }: NoFilesProps) {
   }, [type])
 
   return (
-    <div className={`flex h-full items-center justify-center p-8 ${className || ""}`} data-testid="no-files">
-      <Card className="w-full max-w-md">
-        <CardContent className="pt-6">
-          <div className="text-center space-y-4" data-testid="no-files-message">
+    <div
+      className={`flex h-full items-center justify-center p-8 ${className || ""}`}
+      data-testid="no-files"
+      data-oid="723.:h1"
+    >
+      <Card className="w-full max-w-md" data-oid="53tewz0">
+        <CardContent className="pt-6" data-oid="me0n3t9">
+          <div className="text-center space-y-4" data-testid="no-files-message" data-oid="edehxtg">
             {/* Иконка */}
-            <div className="flex justify-center">
-              <div className="p-3 rounded-full bg-muted">
-                <IconComponent className="h-8 w-8 text-muted-foreground" />
+            <div className="flex justify-center" data-oid="::g2x4b">
+              <div className="p-3 rounded-full bg-muted" data-oid="grcbe.m">
+                <IconComponent className="h-8 w-8 text-muted-foreground" data-oid="ush8elt" />
               </div>
             </div>
 
             {/* Заголовок и описание */}
-            <div className="space-y-2">
-              <h3 className="font-semibold text-foreground">{baseConfig.title}</h3>
-              <p className="text-sm text-muted-foreground">{baseConfig.description}</p>
+            <div className="space-y-2" data-oid="1hj7xwy">
+              <h3 className="font-semibold text-foreground" data-oid="67_6:x5">
+                {baseConfig.title}
+              </h3>
+              <p className="text-sm text-muted-foreground" data-oid="5vfg_fz">
+                {baseConfig.description}
+              </p>
             </div>
 
             {/* Кнопка импорта */}
             {onImport && (
-              <Button onClick={onImport} className="w-full">
-                <Upload className="h-4 w-4 mr-2" />
+              <Button onClick={onImport} className="w-full" data-oid="qrzx8_z">
+                <Upload className="h-4 w-4 mr-2" data-oid="ope-7u-" />
                 {baseConfig.importText}
               </Button>
             )}
 
             {/* Инструкции по папкам */}
             {!isLoadingFolders && folders.length > 0 && (
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <span>{baseConfig.folderText}</span>
+              <div className="space-y-3 pt-2" data-oid="zr:2dzg">
+                <div
+                  className="flex items-center justify-center gap-2 text-sm text-muted-foreground"
+                  data-oid=".aiitzw"
+                >
+                  <span data-oid="xdenvsv">{baseConfig.folderText}</span>
                 </div>
 
                 {folders.map((folder, index) => (
-                  <div key={index} className="flex items-center justify-center gap-2">
-                    <FolderOpen className="h-4 w-4 text-muted-foreground" />
-                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono">{folder}</code>
+                  <div key={index} className="flex items-center justify-center gap-2" data-oid="qmk:ul.">
+                    <FolderOpen className="h-4 w-4 text-muted-foreground" data-oid="m-q7bju" />
+                    <code className="text-xs bg-muted px-2 py-1 rounded font-mono" data-oid="z_7inmm">
+                      {folder}
+                    </code>
                   </div>
                 ))}
               </div>
             )}
 
             {/* Поддерживаемые форматы */}
-            <div className="space-y-2 pt-2">
-              <p className="text-xs text-muted-foreground">Поддерживаемые форматы:</p>
-              <div className="flex flex-wrap gap-1 justify-center">
+            <div className="space-y-2 pt-2" data-oid="bkse:0v">
+              <p className="text-xs text-muted-foreground" data-oid="0:fjlpb">
+                Поддерживаемые форматы:
+              </p>
+              <div className="flex flex-wrap gap-1 justify-center" data-oid=".7nl-ym">
                 {baseConfig.formats.map((format, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
+                  <Badge key={index} variant="outline" className="text-xs" data-oid="9:9aeu5">
                     {format}
                   </Badge>
                 ))}

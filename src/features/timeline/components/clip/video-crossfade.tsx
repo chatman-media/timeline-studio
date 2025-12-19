@@ -85,22 +85,30 @@ export const VideoCrossfade = memo(function VideoCrossfade({ clipA, clipB, class
   if (!overlap.isValid) return null
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className={cn("h-6 px-2", className)} title="Создать crossfade">
-          <Blend className="h-3 w-3" />
+    <Dialog open={isOpen} onOpenChange={setIsOpen} data-oid="u:sv6ku">
+      <DialogTrigger asChild data-oid="ewkn7yl">
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn("h-6 px-2", className)}
+          title="Создать crossfade"
+          data-oid="mqgz370"
+        >
+          <Blend className="h-3 w-3" data-oid="mvxb2-7" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Настройки Crossfade</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="sm:max-w-[425px]" data-oid="4fw4dns">
+        <DialogHeader data-oid="0ps1ag8">
+          <DialogTitle data-oid="pyrpz6-">Настройки Crossfade</DialogTitle>
+          <DialogDescription data-oid="sea2lf9">
             Создание плавного перехода между клипами "{clipA.name}" и "{clipB.name}"
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="duration">Длительность crossfade: {duration.toFixed(1)} сек</Label>
+        <div className="grid gap-4 py-4" data-oid="yg4peed">
+          <div className="space-y-2" data-oid="bt_7xh0">
+            <Label htmlFor="duration" data-oid="tls9qzt">
+              Длительность crossfade: {duration.toFixed(1)} сек
+            </Label>
             <Slider
               id="duration"
               min={0.1}
@@ -109,33 +117,55 @@ export const VideoCrossfade = memo(function VideoCrossfade({ clipA, clipB, class
               value={[duration]}
               onValueChange={([value]) => setDuration(value)}
               className="w-full"
+              data-oid="k9ht0-7"
             />
-            <p className="text-sm text-muted-foreground">Максимальное перекрытие: {overlap.duration.toFixed(1)} сек</p>
+
+            <p className="text-sm text-muted-foreground" data-oid="u.kl:0z">
+              Максимальное перекрытие: {overlap.duration.toFixed(1)} сек
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="fadeType">Тип перехода</Label>
-            <Select value={fadeType} onValueChange={(value) => setFadeType(value as any)}>
-              <SelectTrigger id="fadeType">
-                <SelectValue />
+          <div className="space-y-2" data-oid="i0x7q9n">
+            <Label htmlFor="fadeType" data-oid="_ds2yf_">
+              Тип перехода
+            </Label>
+            <Select value={fadeType} onValueChange={(value) => setFadeType(value as any)} data-oid="cjh.g-n">
+              <SelectTrigger id="fadeType" data-oid=".i47cy4">
+                <SelectValue data-oid="m6998k0" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="linear">Linear</SelectItem>
-                <SelectItem value="exponential">Exponential</SelectItem>
-                <SelectItem value="logarithmic">Logarithmic</SelectItem>
-                <SelectItem value="cosine">Cosine (рекомендуется)</SelectItem>
-                <SelectItem value="ease-in">Ease In</SelectItem>
-                <SelectItem value="ease-out">Ease Out</SelectItem>
-                <SelectItem value="ease-in-out">Ease In-Out</SelectItem>
+              <SelectContent data-oid="5nw5gyj">
+                <SelectItem value="linear" data-oid="3gsd186">
+                  Linear
+                </SelectItem>
+                <SelectItem value="exponential" data-oid="nwr5r5_">
+                  Exponential
+                </SelectItem>
+                <SelectItem value="logarithmic" data-oid="e02taek">
+                  Logarithmic
+                </SelectItem>
+                <SelectItem value="cosine" data-oid="_3e_u9w">
+                  Cosine (рекомендуется)
+                </SelectItem>
+                <SelectItem value="ease-in" data-oid=".rk4vtc">
+                  Ease In
+                </SelectItem>
+                <SelectItem value="ease-out" data-oid="z-rg_3x">
+                  Ease Out
+                </SelectItem>
+                <SelectItem value="ease-in-out" data-oid="dv7erdb">
+                  Ease In-Out
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
+          <div className="flex justify-end space-x-2" data-oid="17v-1zn">
+            <Button variant="outline" onClick={() => setIsOpen(false)} data-oid="jgrr3ga">
               Отмена
             </Button>
-            <Button onClick={handleApplyCrossfade}>Применить</Button>
+            <Button onClick={handleApplyCrossfade} data-oid="imr:wkp">
+              Применить
+            </Button>
           </div>
         </div>
       </DialogContent>

@@ -49,11 +49,15 @@ export function EffectPresets({ effect, onApplyPreset, selectedPreset }: EffectP
             setCustomPresets(converted)
           }
         } catch (parseError) {
-          void logger.error("Error parsing custom presets", { error: parseError })
+          void logger.error("Error parsing custom presets", {
+            error: parseError,
+          })
         }
       }
     } catch (storageError) {
-      void logger.error("Error accessing localStorage", { error: storageError })
+      void logger.error("Error accessing localStorage", {
+        error: storageError,
+      })
     }
   }, [effect.id])
 
@@ -96,49 +100,55 @@ export function EffectPresets({ effect, onApplyPreset, selectedPreset }: EffectP
   }
 
   return (
-    <div className="border rounded-lg">
+    <div className="border rounded-lg" data-oid="tdkm6d3">
       {/* Заголовок с кнопкой разворачивания */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+        data-oid="ws44p9e"
       >
-        <div className="flex items-center gap-2">
-          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <Settings size={16} />
-          <span className="text-sm font-medium">{t("effects.detail.presets", "Пресеты")}</span>
-          <span className="text-xs text-gray-500">({allPresets.length})</span>
+        <div className="flex items-center gap-2" data-oid="sggswwp">
+          {isExpanded ? <ChevronDown size={16} data-oid="xc5j_tr" /> : <ChevronRight size={16} data-oid="tnm9fhr" />}
+          <Settings size={16} data-oid="pr1k0:b" />
+          <span className="text-sm font-medium" data-oid="s-8dfwy">
+            {t("effects.detail.presets", "Пресеты")}
+          </span>
+          <span className="text-xs text-gray-500" data-oid="k6:4.-8">
+            ({allPresets.length})
+          </span>
         </div>
       </button>
 
       {/* Список пресетов */}
       {isExpanded && (
-        <div className="border-t p-2 space-y-2">
+        <div className="border-t p-2 space-y-2" data-oid="wy1t1hc">
           {allPresets.map((preset) => {
             const isCustom = preset.isUserPreset || preset.createdAt !== undefined
 
             return (
-              <div key={preset.id} className="space-y-1">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-2">
+              <div key={preset.id} className="space-y-1" data-oid="081-2aa">
+                <TooltipProvider data-oid="7knw:8p">
+                  <Tooltip data-oid="pawgyy:">
+                    <TooltipTrigger asChild data-oid="m_ud0dt">
+                      <div className="flex items-center gap-2" data-oid="vw8himd">
                         <Button
                           variant={selectedPreset === preset.id ? "default" : "outline"}
                           size="sm"
                           className="flex-1 justify-start text-left h-auto py-2"
                           onClick={() => onApplyPreset(preset.id, preset.parameters)}
+                          data-oid="vto61_v"
                         >
-                          <div className="flex flex-col items-start">
-                            <span className="font-medium">
+                          <div className="flex flex-col items-start" data-oid="vwiydsa">
+                            <span className="font-medium" data-oid="bu-aeyz">
                               {preset.name[currentLang] || preset.name.en}
                               {isCustom && (
-                                <span className="ml-2 text-xs text-blue-500">
+                                <span className="ml-2 text-xs text-blue-500" data-oid="_.-8dda">
                                   {t("effects.customPreset", "Пользовательский")}
                                 </span>
                               )}
                             </span>
                             {preset.description && (
-                              <span className="text-xs text-gray-500 font-normal">
+                              <span className="text-xs text-gray-500 font-normal" data-oid="8g7o:r9">
                                 {preset.description[currentLang] || preset.description.en}
                               </span>
                             )}
@@ -151,19 +161,24 @@ export function EffectPresets({ effect, onApplyPreset, selectedPreset }: EffectP
                             className="p-1"
                             onClick={() => handleDeleteCustomPreset(preset.id)}
                             title={t("effects.deletePreset", "Удалить пресет")}
+                            data-oid="4rkm0e1"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={14} data-oid="12i3.vz" />
                           </Button>
                         )}
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      <div className="space-y-1">
-                        <div className="font-medium">{preset.name[currentLang] || preset.name.en}</div>
+                    <TooltipContent side="right" className="max-w-xs" data-oid="2ccev3t">
+                      <div className="space-y-1" data-oid="_yxiqrx">
+                        <div className="font-medium" data-oid="v-ji1er">
+                          {preset.name[currentLang] || preset.name.en}
+                        </div>
                         {preset.description && (
-                          <div className="text-sm">{preset.description[currentLang] || preset.description.en}</div>
+                          <div className="text-sm" data-oid="kmt1_mt">
+                            {preset.description[currentLang] || preset.description.en}
+                          </div>
                         )}
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-gray-400" data-oid="rvov9hr">
                           {t("effects.detail.parameters", "Параметры")}:{" "}
                           {preset.parameters
                             ? Object.entries(preset.parameters)
@@ -172,7 +187,7 @@ export function EffectPresets({ effect, onApplyPreset, selectedPreset }: EffectP
                             : t("effects.noParameters", "Нет параметров")}
                         </div>
                         {isCustom && preset.createdAt && (
-                          <div className="text-xs text-gray-400">
+                          <div className="text-xs text-gray-400" data-oid="jy5sevq">
                             {t("effects.createdAt", "Создано")}:{" "}
                             {typeof preset.createdAt === "string"
                               ? new Date(preset.createdAt).toLocaleDateString()

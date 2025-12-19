@@ -34,13 +34,13 @@ export function Timeline({ className, style }: TimelineProps = {}) {
   const renderView = () => {
     switch (activeView) {
       case "timeline":
-        return <TimelineComponent />
+        return <TimelineComponent data-oid="nkw7y1s" />
       case "audio-mixer":
-        return <AudioMixerView />
+        return <AudioMixerView data-oid="dlq_xd2" />
       case "analysis":
-        return <AnalysisView />
+        return <AnalysisView data-oid="a:eczro" />
       default:
-        return <TimelineComponent />
+        return <TimelineComponent data-oid="_.n3vjo" />
     }
   }
 
@@ -50,22 +50,25 @@ export function Timeline({ className, style }: TimelineProps = {}) {
       className={cn("h-full timeline", className)}
       data-testid="timeline"
       style={style}
+      data-oid="yg1qgtj"
     >
-      <ResizablePanel defaultSize={20} minSize={5} maxSize={30}>
-        <ResourcesPanel />
+      <ResizablePanel defaultSize={20} minSize={5} maxSize={30} data-oid="6x5wiak">
+        <ResourcesPanel data-oid="lgu8bo4" />
       </ResizablePanel>
-      <ResizableHandle />
+      <ResizableHandle data-oid="lnpd__7" />
 
       {/* Средняя панель (основная часть) */}
-      <ResizablePanel defaultSize={80} minSize={40}>
-        <div className="flex h-full w-full flex-col">
+      <ResizablePanel defaultSize={80} minSize={40} data-oid="q4zgcab">
+        <div className="flex h-full w-full flex-col" data-oid="1wahhsu">
           {/* Вкладки для переключения видов */}
-          <div className="shrink-0">
-            <TimelineWorkspaceTabs activeView={activeView} onViewChange={setActiveView} />
+          <div className="shrink-0" data-oid=":61d-.3">
+            <TimelineWorkspaceTabs activeView={activeView} onViewChange={setActiveView} data-oid="sqgf-gl" />
           </div>
 
           {/* Основная часть - Timeline контент, Audio Mixer или Analysis */}
-          <div className="w-full grow overflow-hidden">{renderView()}</div>
+          <div className="w-full grow overflow-hidden" data-oid="amqilgc">
+            {renderView()}
+          </div>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

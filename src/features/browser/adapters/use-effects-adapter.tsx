@@ -46,25 +46,32 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
         className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
         onClick={handleClick}
         {...dragProps}
+        data-oid="gwtgevm"
       >
         {/* Effect Preview */}
-        <div className="shrink-0">
-          <EffectPreview effect={effect} onClick={handleClick} size={48} width={48} height={36} />
+        <div className="shrink-0" data-oid="kgc_4td">
+          <EffectPreview effect={effect} onClick={handleClick} size={48} width={48} height={36} data-oid="qz.jont" />
         </div>
 
         {/* Effect Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{effect.name?.ru || effect.name?.en || ""}</div>
-          <div className="text-xs text-muted-foreground truncate">
+        <div className="flex-1 min-w-0" data-oid="3g-nf4y">
+          <div className="font-medium text-sm truncate" data-oid="-s84lsw">
+            {effect.name?.ru || effect.name?.en || ""}
+          </div>
+          <div className="text-xs text-muted-foreground truncate" data-oid="z-.7crr">
             {effect.description?.ru || effect.description?.en || ""}
           </div>
         </div>
 
         {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground">{effect.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="h3p2p6h">
+          {effect.category}
+        </div>
 
         {/* Complexity */}
-        <div className="shrink-0 text-xs text-muted-foreground">{effect.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="s1i370j">
+          {effect.complexity}
+        </div>
       </div>
     )
   }
@@ -76,6 +83,7 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
       style={{ width: previewWidth }}
       onClick={handleClick}
       {...dragProps}
+      data-oid="6wk50rm"
     >
       {/* Effect Preview */}
       <EffectPreview
@@ -84,12 +92,17 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
         size={previewSize}
         width={previewWidth}
         height={previewHeight}
+        data-oid=":5cmqbj"
       />
 
       {/* Effect Info */}
-      <div className="text-center mt-2 w-full">
-        <div className="font-medium text-sm truncate">{effect.name?.ru || effect.name?.en || ""}</div>
-        <div className="text-xs text-muted-foreground truncate">{effect.category}</div>
+      <div className="text-center mt-2 w-full" data-oid="e1s.zti">
+        <div className="font-medium text-sm truncate" data-oid="lo5diki">
+          {effect.name?.ru || effect.name?.en || ""}
+        </div>
+        <div className="text-xs text-muted-foreground truncate" data-oid=".rrtvyt">
+          {effect.category}
+        </div>
       </div>
     </div>
   )
@@ -140,6 +153,7 @@ export function useEffectsAdapter(): ListAdapter<EffectListItem> {
           effect.processingType,
           ...(effect.tags || []),
         ]
+
         return texts.filter(Boolean)
       },
       getGroupValue: (effect: BaseEffect, groupBy: string) => {

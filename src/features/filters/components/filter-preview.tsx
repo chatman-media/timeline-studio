@@ -50,7 +50,10 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
   // Обработчик применения фильтра
   const handleApplyFilter = useCallback(
     (_resource: TimelineResource, _type: string) => {
-      logger.info("Applying filter", { filterName: filter.name, filterId: filter.id })
+      logger.info("Applying filter", {
+        filterName: filter.name,
+        filterId: filter.id,
+      })
       applyFilter({
         id: filter.id,
         name: filter.name,
@@ -214,7 +217,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" data-oid=".7qyxu_">
       {/* Контейнер превью фильтра */}
       <div
         className="group relative cursor-pointer rounded-xs bg-gray-800"
@@ -222,6 +225,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onClick={onClick}
+        data-oid="wb36mo."
       >
         {/* Видео для демонстрации фильтра */}
         <video
@@ -232,21 +236,24 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
           playsInline
           preload="auto"
           data-testid="filter-video"
+          data-oid="uo2w6k-"
         />
 
         {/* Индикатор сложности слева */}
-        <div className="absolute bottom-1 left-1">
+        <div className="absolute bottom-1 left-1" data-oid="hz4l0lb">
           <div
             className={`h-2 w-2 rounded-full ${getComplexityColor(filter.complexity || "basic")}`}
             title={t(`filters.complexity.${filter.complexity || "basic"}`)}
+            data-oid="vt0s5fn"
           />
         </div>
 
         {/* Индикатор категории справа */}
-        <div className="absolute top-1 left-1">
+        <div className="absolute top-1 left-1" data-oid="tiuqxi0">
           <div
             className="bg-black/70 text-white font-medium text-[10px] px-1.5 py-0.5 rounded-xs"
             title={t(`filters.categories.${filter.category}`)}
+            data-oid="dvwjo7i"
           >
             {getCategoryAbbreviation(filter.category)}
           </div>
@@ -254,9 +261,15 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
 
         {/* Кнопка добавления в избранное */}
         <FavoriteButton
-          file={{ id: filter.id, path: "", name: filter.name, type: MediaType.Unknown }}
+          file={{
+            id: filter.id,
+            path: "",
+            name: filter.name,
+            type: MediaType.Unknown,
+          }}
           size={size}
           type="filter"
+          data-oid="w6c4y42"
         />
 
         {/* Кнопка применения фильтра */}
@@ -272,25 +285,35 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
             size={size}
             type="filter"
             onApply={handleApplyFilter}
+            data-oid="5baah9l"
           />
         )}
 
         {/* Кнопка добавления фильтра в проект */}
         <div
           className={`${isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-200`}
+          data-oid="qo-anpb"
         >
           {filter && (
             <AddMediaButton
-              resource={{ id: filter.id, type: "filter", name: filter.name, filter: filter } as FilterResource}
+              resource={
+                {
+                  id: filter.id,
+                  type: "filter",
+                  name: filter.name,
+                  filter: filter,
+                } as FilterResource
+              }
               size={size}
               type="filter"
+              data-oid="_8:411c"
             />
           )}
         </div>
       </div>
 
       {/* Название фильтра */}
-      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${previewWidth}px` }}>
+      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${previewWidth}px` }} data-oid="y7z7we.">
         {filter.labels?.ru || filter.name}
       </div>
     </div>

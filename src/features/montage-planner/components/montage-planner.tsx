@@ -8,9 +8,9 @@ import { PlannerDashboard } from "./planner-dashboard/planner-dashboard"
 
 export function MontagePlanner() {
   return (
-    <MontagePlannerProvider>
-      <div className="h-full w-full">
-        <PlannerDashboard />
+    <MontagePlannerProvider data-oid="lk:gpwa">
+      <div className="h-full w-full" data-oid="aaj.nbo">
+        <PlannerDashboard data-oid="b6-:ht3" />
       </div>
     </MontagePlannerProvider>
   )

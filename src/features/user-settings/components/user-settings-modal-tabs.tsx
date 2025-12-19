@@ -23,57 +23,57 @@ export function UserSettingsModalTabs() {
   const isDevelopment = process.env.NODE_ENV === "development"
 
   return (
-    <div className="flex flex-col h-full">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
+    <div className="flex flex-col h-full" data-oid="77q8soy">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full" data-oid="3cco27a">
         {/* Список вкладок */}
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6">
-          <TabsTrigger value="general" className="text-xs">
+        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6" data-oid="xt:xm6c">
+          <TabsTrigger value="general" className="text-xs" data-oid="5qgvacg">
             {t("dialogs.userSettings.tabs.general", "Основные")}
           </TabsTrigger>
-          <TabsTrigger value="performance" className="text-xs">
+          <TabsTrigger value="performance" className="text-xs" data-oid="47xj-dl">
             {t("dialogs.userSettings.tabs.performance", "Производительность")}
           </TabsTrigger>
-          <TabsTrigger value="ai-services" className="text-xs">
+          <TabsTrigger value="ai-services" className="text-xs" data-oid="no71qiq">
             {t("dialogs.userSettings.tabs.aiServices", "AI Сервисы")}
           </TabsTrigger>
-          <TabsTrigger value="social-networks" className="text-xs">
+          <TabsTrigger value="social-networks" className="text-xs" data-oid="4jrz9jp">
             {t("dialogs.userSettings.tabs.socialNetworks", "Соц. сети")}
           </TabsTrigger>
-          <TabsTrigger value="version-control" className="text-xs">
+          <TabsTrigger value="version-control" className="text-xs" data-oid="1i808ht">
             {t("dialogs.userSettings.tabs.versionControl", "Версии")}
           </TabsTrigger>
           {isDevelopment && (
-            <TabsTrigger value="development" className="text-xs">
+            <TabsTrigger value="development" className="text-xs" data-oid="sfj3i0t">
               {t("dialogs.userSettings.tabs.development", "Разработка")}
             </TabsTrigger>
           )}
         </TabsList>
 
         {/* Содержимое вкладок */}
-        <div className="flex-1 mt-4 overflow-auto">
-          <TabsContent value="general" className="h-full mt-0">
-            <GeneralSettingsTab />
+        <div className="flex-1 mt-4 overflow-auto" data-oid="vhbz:ee">
+          <TabsContent value="general" className="h-full mt-0" data-oid="ac0:a26">
+            <GeneralSettingsTab data-oid="z-k0kw." />
           </TabsContent>
 
-          <TabsContent value="performance" className="h-full mt-0">
-            <PerformanceSettingsTab />
+          <TabsContent value="performance" className="h-full mt-0" data-oid="tw5pfrn">
+            <PerformanceSettingsTab data-oid="itz_eek" />
           </TabsContent>
 
-          <TabsContent value="ai-services" className="h-full mt-0">
-            <AiServicesTab />
+          <TabsContent value="ai-services" className="h-full mt-0" data-oid="dqeys7c">
+            <AiServicesTab data-oid="bvofasf" />
           </TabsContent>
 
-          <TabsContent value="social-networks" className="h-full mt-0">
-            <SocialNetworksTab />
+          <TabsContent value="social-networks" className="h-full mt-0" data-oid="icm7ioh">
+            <SocialNetworksTab data-oid="km:-8lv" />
           </TabsContent>
 
-          <TabsContent value="version-control" className="h-full mt-0">
-            <VersionControlTab />
+          <TabsContent value="version-control" className="h-full mt-0" data-oid="bww9g6j">
+            <VersionControlTab data-oid="yjok-d6" />
           </TabsContent>
 
           {isDevelopment && (
-            <TabsContent value="development" className="h-full mt-0">
-              <DevelopmentTab />
+            <TabsContent value="development" className="h-full mt-0" data-oid="._x4ff.">
+              <DevelopmentTab data-oid="r47pzoa" />
             </TabsContent>
           )}
         </div>

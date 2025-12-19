@@ -12,10 +12,16 @@ export const MockTimeline = vi.fn(({ onReady, onTimeUpdate, onSelectionChange, .
   }, [onReady])
 
   return (
-    <div data-testid="mock-timeline" {...props}>
-      <div data-testid="timeline-header">Timeline Header</div>
-      <div data-testid="timeline-tracks">Timeline Tracks</div>
-      <div data-testid="timeline-playhead">Playhead</div>
+    <div data-testid="mock-timeline" {...props} data-oid="dyeddoh">
+      <div data-testid="timeline-header" data-oid="km15d2h">
+        Timeline Header
+      </div>
+      <div data-testid="timeline-tracks" data-oid="bzmw__9">
+        Timeline Tracks
+      </div>
+      <div data-testid="timeline-playhead" data-oid="5-1u4ed">
+        Playhead
+      </div>
     </div>
   )
 })
@@ -27,9 +33,12 @@ export const MockTrack = vi.fn(({ track, onClipClick, onTrackClick, ...props }: 
     data-track-type={track.type}
     onClick={() => onTrackClick?.(track)}
     {...props}
+    data-oid="e03a:7f"
   >
-    <div data-testid="track-header">{track.name}</div>
-    <div data-testid="track-clips">
+    <div data-testid="track-header" data-oid="_i2wi.i">
+      {track.name}
+    </div>
+    <div data-testid="track-clips" data-oid="kgm30bb">
       {track.clips?.map((clip: any) => (
         <div
           key={clip.id}
@@ -38,6 +47,7 @@ export const MockTrack = vi.fn(({ track, onClipClick, onTrackClick, ...props }: 
             e.stopPropagation()
             onClipClick?.(clip)
           }}
+          data-oid="zskez9g"
         >
           Clip {clip.id}
         </div>
@@ -48,23 +58,37 @@ export const MockTrack = vi.fn(({ track, onClipClick, onTrackClick, ...props }: 
 
 // Mock Clip component
 export const MockClip = vi.fn(({ clip, selected, onSelect, onDrag, onResize, ...props }: any) => (
-  <div data-testid={`mock-clip-${clip.id}`} data-selected={selected} onClick={() => onSelect?.(clip)} {...props}>
-    <div data-testid="clip-thumbnail">Thumbnail</div>
-    <div data-testid="clip-duration">{clip.endTime - clip.startTime}s</div>
-    {clip.effects?.length > 0 && <div data-testid="clip-effects">{clip.effects.length} effects</div>}
+  <div
+    data-testid={`mock-clip-${clip.id}`}
+    data-selected={selected}
+    onClick={() => onSelect?.(clip)}
+    {...props}
+    data-oid="a:jc.dc"
+  >
+    <div data-testid="clip-thumbnail" data-oid="sha9jlt">
+      Thumbnail
+    </div>
+    <div data-testid="clip-duration" data-oid="iz.0wza">
+      {clip.endTime - clip.startTime}s
+    </div>
+    {clip.effects?.length > 0 && (
+      <div data-testid="clip-effects" data-oid="yu:ystv">
+        {clip.effects.length} effects
+      </div>
+    )}
   </div>
 ))
 
 // Mock TimelineScale component
 export const MockTimelineScale = vi.fn(({ duration, scale, onScaleChange, ...props }: any) => (
-  <div data-testid="mock-timeline-scale" {...props}>
-    <div data-testid="scale-ruler">
+  <div data-testid="mock-timeline-scale" {...props} data-oid="._yuc3n">
+    <div data-testid="scale-ruler" data-oid="cy0f8o8">
       Scale: {scale}x | Duration: {duration}s
     </div>
-    <button data-testid="zoom-in" onClick={() => onScaleChange?.(scale * 2)}>
+    <button data-testid="zoom-in" onClick={() => onScaleChange?.(scale * 2)} data-oid="jg8d5cj">
       Zoom In
     </button>
-    <button data-testid="zoom-out" onClick={() => onScaleChange?.(scale / 2)}>
+    <button data-testid="zoom-out" onClick={() => onScaleChange?.(scale / 2)} data-oid="f3hqbl7">
       Zoom Out
     </button>
   </div>
@@ -72,7 +96,7 @@ export const MockTimelineScale = vi.fn(({ duration, scale, onScaleChange, ...pro
 
 // Mock TimelineContent component
 export const MockTimelineContent = vi.fn(({ children, onScroll, ...props }: any) => (
-  <div data-testid="mock-timeline-content" onScroll={(e) => onScroll?.(e)} {...props}>
+  <div data-testid="mock-timeline-content" onScroll={(e) => onScroll?.(e)} {...props} data-oid="u:angar">
     {children}
   </div>
 ))

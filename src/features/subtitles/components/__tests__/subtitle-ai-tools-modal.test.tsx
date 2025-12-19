@@ -141,6 +141,7 @@ describe("SubtitleAIToolsModal", () => {
         ],
       },
     ],
+
     globalTracks: [],
   }
 
@@ -196,7 +197,7 @@ describe("SubtitleAIToolsModal", () => {
   })
 
   it("should render the modal with enhanced transcription panel", () => {
-    const { container } = render(<SubtitleAIToolsModal />)
+    const { container } = render(<SubtitleAIToolsModal data-oid="52a._2n" />)
 
     // Проверяем что модальное окно рендерится с правильной структурой
     // EnhancedTranscriptionPanel использует Tauri dialog для выбора файлов,

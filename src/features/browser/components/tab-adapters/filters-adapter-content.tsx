@@ -8,7 +8,7 @@ export const FiltersAdapterContent = memo(() => {
   const adapter = useFiltersAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="5_uj64u" />
 })
 
 FiltersAdapterContent.displayName = "FiltersAdapterContent"

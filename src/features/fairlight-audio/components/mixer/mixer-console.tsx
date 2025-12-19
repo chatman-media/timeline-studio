@@ -95,15 +95,19 @@ export function MixerConsole({ className }: MixerConsoleProps) {
   }
 
   return (
-    <div className={cn("flex h-full bg-zinc-950", className)}>
+    <div className={cn("flex h-full bg-zinc-950", className)} data-oid="xi32t-s">
       {/* Left section - Input channels */}
-      <div className="flex-1 flex overflow-x-auto">
-        <div className="flex gap-1 p-4">
+      <div className="flex-1 flex overflow-x-auto" data-oid="ohvp1ss">
+        <div className="flex gap-1 p-4" data-oid="ps9zi_x">
           {channels.length === 0 ? (
-            <div className="flex items-center justify-center w-full text-zinc-500">
-              <div className="text-center">
-                <p className="text-lg mb-2">{t("timeline.audioMixer.noTracks")}</p>
-                <p className="text-sm">{t("timeline.audioMixer.addTracksHint")}</p>
+            <div className="flex items-center justify-center w-full text-zinc-500" data-oid="98rmhn5">
+              <div className="text-center" data-oid="lhz2gqd">
+                <p className="text-lg mb-2" data-oid="bk5m4y.">
+                  {t("timeline.audioMixer.noTracks")}
+                </p>
+                <p className="text-sm" data-oid="-l_er_q">
+                  {t("timeline.audioMixer.addTracksHint")}
+                </p>
               </div>
             </div>
           ) : (
@@ -126,6 +130,7 @@ export function MixerConsole({ className }: MixerConsoleProps) {
                 onArm={() => toggleArm(channel.id)}
                 audioContext={engine?.audioContext}
                 analyser={getChannelAnalyser(channel.id) || undefined}
+                data-oid="z5d.7np"
               />
             ))
           )}
@@ -133,11 +138,11 @@ export function MixerConsole({ className }: MixerConsoleProps) {
       </div>
 
       {/* Right section - Buses and Master */}
-      <div className="w-64 border-l border-zinc-800 bg-zinc-900">
-        <div className="p-2 border-b border-zinc-800 flex justify-end">
-          <MidiIndicator />
+      <div className="w-64 border-l border-zinc-800 bg-zinc-900" data-oid="z7epep2">
+        <div className="p-2 border-b border-zinc-800 flex justify-end" data-oid="ddt2_h3">
+          <MidiIndicator data-oid="g60xzdu" />
         </div>
-        <MasterSection />
+        <MasterSection data-oid="jebliqw" />
       </div>
     </div>
   )

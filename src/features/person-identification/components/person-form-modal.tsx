@@ -129,16 +129,16 @@ export function PersonFormModal() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-oid="ag2m0ue">
       {/* Аватар */}
-      <div className="flex justify-center">
-        <div className="relative">
-          <div className="w-32 h-32 rounded-full overflow-hidden bg-muted">
+      <div className="flex justify-center" data-oid="pz5is8w">
+        <div className="relative" data-oid="rb7gjk-">
+          <div className="w-32 h-32 rounded-full overflow-hidden bg-muted" data-oid="zv:s_o6">
             {thumbnailPreview ? (
-              <img src={thumbnailPreview} alt="Превью" className="w-full h-full object-cover" />
+              <img src={thumbnailPreview} alt="Превью" className="w-full h-full object-cover" data-oid="64:ohfp" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <User className="w-16 h-16 text-muted-foreground" />
+              <div className="w-full h-full flex items-center justify-center" data-oid="wcmdnud">
+                <User className="w-16 h-16 text-muted-foreground" data-oid="0m9141s" />
               </div>
             )}
           </div>
@@ -148,41 +148,57 @@ export function PersonFormModal() {
             variant="secondary"
             className="absolute bottom-0 right-0 rounded-full"
             onClick={() => fileInputRef.current?.click()}
+            data-oid="jjvk1kx"
           >
-            <Upload className="w-4 h-4" />
+            <Upload className="w-4 h-4" data-oid="0spkxbb" />
           </Button>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+            data-oid="4jk4guu"
+          />
         </div>
       </div>
 
       {/* Форма */}
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="name">Имя *</Label>
+      <div className="space-y-4" data-oid="ew_2qgk">
+        <div data-oid=".o8z4xq">
+          <Label htmlFor="name" data-oid="62y3sp-">
+            Имя *
+          </Label>
           <Input
             id="name"
             value={formData.name}
             onChange={(e) => handleInputChange("name", e.target.value)}
             placeholder="Введите имя персоны"
             required
+            data-oid="fk02xl5"
           />
         </div>
 
-        <div>
-          <Label htmlFor="notes">Заметки</Label>
+        <div data-oid="1gql8cz">
+          <Label htmlFor="notes" data-oid="r2sq8d1">
+            Заметки
+          </Label>
           <Textarea
             id="notes"
             value={formData.notes}
             onChange={(e) => handleInputChange("notes", e.target.value)}
             placeholder="Добавьте заметки о персоне (должность, роль и т.д.)"
             rows={3}
+            data-oid="m580oe_"
           />
         </div>
 
-        <div>
-          <Label htmlFor="tags">Теги</Label>
-          <div className="space-y-2">
-            <div className="flex gap-2">
+        <div data-oid="2rxlrc.">
+          <Label htmlFor="tags" data-oid="km:u:b.">
+            Теги
+          </Label>
+          <div className="space-y-2" data-oid="macb3xx">
+            <div className="flex gap-2" data-oid="tnjjgp9">
               <Input
                 id="tags"
                 value={newTag}
@@ -194,18 +210,25 @@ export function PersonFormModal() {
                     handleAddTag()
                   }
                 }}
+                data-oid="xq-3l9t"
               />
-              <Button type="button" variant="secondary" onClick={handleAddTag}>
-                <TagIcon className="w-4 h-4" />
+
+              <Button type="button" variant="secondary" onClick={handleAddTag} data-oid="8h-irdw">
+                <TagIcon className="w-4 h-4" data-oid="jbthqux" />
               </Button>
             </div>
             {formData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2" data-oid=".c4cc8.">
                 {formData.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="gap-1">
+                  <Badge key={tag} variant="secondary" className="gap-1" data-oid="_x-ayvx">
                     {tag}
-                    <button type="button" onClick={() => handleRemoveTag(tag)} className="ml-1 hover:text-destructive">
-                      <X className="w-3 h-3" />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="ml-1 hover:text-destructive"
+                      data-oid="lynyw17"
+                    >
+                      <X className="w-3 h-3" data-oid="k2_3zee" />
                     </button>
                   </Badge>
                 ))}
@@ -215,11 +238,11 @@ export function PersonFormModal() {
         </div>
       </div>
 
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={closeModal} disabled={isLoading}>
+      <div className="flex justify-end gap-2" data-oid="g.ij9rd">
+        <Button variant="outline" onClick={closeModal} disabled={isLoading} data-oid="6t6mg13">
           Отмена
         </Button>
-        <Button onClick={handleSave} disabled={!formData.name.trim() || isLoading}>
+        <Button onClick={handleSave} disabled={!formData.name.trim() || isLoading} data-oid="1-dq656">
           {person ? "Сохранить" : "Создать"}
         </Button>
       </div>

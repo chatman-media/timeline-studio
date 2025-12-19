@@ -36,6 +36,7 @@ const mockTimelineState = {
           ],
         },
       ],
+
       sections: [],
     },
     currentTime: 5,
@@ -74,6 +75,7 @@ describe("useSpeedRampingPlayerIntegration", () => {
         { id: "kf1", time: 0, value: 0.5, interpolation: "linear" },
         { id: "kf2", time: 10, value: 2.0, interpolation: "linear" },
       ],
+
       maintainPitch: true,
       minSpeed: 0.1,
       maxSpeed: 10.0,

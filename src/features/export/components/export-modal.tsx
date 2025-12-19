@@ -101,15 +101,27 @@ export function ExportModal() {
   const currentSettings = getCurrentSettings()
 
   return (
-    <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "local" | "social" | "batch" | "sections")}>
-      <TabsList className="grid w-full grid-cols-4 mb-6">
-        <TabsTrigger value="local">{t("dialogs.export.local")}</TabsTrigger>
-        <TabsTrigger value="social">{t("dialogs.export.socialNetworks")}</TabsTrigger>
-        <TabsTrigger value="batch">{t("dialogs.export.batchTab")}</TabsTrigger>
-        <TabsTrigger value="sections">{t("dialogs.export.sectionsTab")}</TabsTrigger>
+    <Tabs
+      value={activeTab}
+      onValueChange={(value) => setActiveTab(value as "local" | "social" | "batch" | "sections")}
+      data-oid="wmlgapk"
+    >
+      <TabsList className="grid w-full grid-cols-4 mb-6" data-oid="ggjgj87">
+        <TabsTrigger value="local" data-oid="lwhk-.v">
+          {t("dialogs.export.local")}
+        </TabsTrigger>
+        <TabsTrigger value="social" data-oid=":eaocwf">
+          {t("dialogs.export.socialNetworks")}
+        </TabsTrigger>
+        <TabsTrigger value="batch" data-oid="_s6sscg">
+          {t("dialogs.export.batchTab")}
+        </TabsTrigger>
+        <TabsTrigger value="sections" data-oid="1sh7cyf">
+          {t("dialogs.export.sectionsTab")}
+        </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="local">
+      <TabsContent value="local" data-oid="bbgy3rz">
         <DetailedExportInterface
           settings={currentSettings as any}
           onSettingsChange={updateSettings}
@@ -120,10 +132,11 @@ export function ExportModal() {
           isRendering={isRendering}
           renderProgress={renderProgress as any}
           hasProject={!!project}
+          data-oid="xvmruj7"
         />
       </TabsContent>
 
-      <TabsContent value="social">
+      <TabsContent value="social" data-oid="ea19.wz">
         <SocialExportTab
           settings={socialSettings}
           onSettingsChange={(updates) => setSocialSettings((prev) => ({ ...prev, ...updates }))}
@@ -133,14 +146,15 @@ export function ExportModal() {
           isRendering={isRendering}
           renderProgress={renderProgress as any}
           hasProject={!!project}
+          data-oid="8zou43a"
         />
       </TabsContent>
 
-      <TabsContent value="batch">
-        <BatchExportTab onClose={() => closeModal()} defaultSettings={currentSettings} />
+      <TabsContent value="batch" data-oid="2oivd2g">
+        <BatchExportTab onClose={() => closeModal()} defaultSettings={currentSettings} data-oid="ipjbfkp" />
       </TabsContent>
 
-      <TabsContent value="sections">
+      <TabsContent value="sections" data-oid="prx:u08">
         <SectionExportTab
           defaultSettings={currentSettings}
           onExport={async (settings) => {
@@ -184,6 +198,7 @@ export function ExportModal() {
               showError(t("dialogs.export.errors.exportFailed"), "")
             }
           }}
+          data-oid="v_5sbw."
         />
       </TabsContent>
     </Tabs>

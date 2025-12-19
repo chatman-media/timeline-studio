@@ -13,14 +13,14 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 
 describe("SpeedSettings", () => {
   it("should render speed settings component", () => {
-    renderWithProviders(<SpeedSettings />)
+    renderWithProviders(<SpeedSettings data-oid="s3b47g7" />)
 
     // Проверяем, что компонент рендерится
     expect(screen.getByTestId("speed-settings")).toBeInTheDocument()
   })
 
   it("should render all speed setting controls", () => {
-    renderWithProviders(<SpeedSettings />)
+    renderWithProviders(<SpeedSettings data-oid="lvxznx9" />)
 
     // Проверяем новые элементы управления согласно обновленному дизайну (по ключам i18n)
     expect(screen.getByText("options.speed.basicSpeed")).toBeInTheDocument()

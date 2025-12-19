@@ -16,27 +16,31 @@ vi.mock("react-i18next", () => ({
 }))
 vi.mock("lucide-react", () => ({
   ExternalLink: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="6wou52t">
       ExternalLink
     </span>
   ),
+
   Eye: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="0hd2qak">
       Eye
     </span>
   ),
+
   EyeOff: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="3jr4rz1">
       EyeOff
     </span>
   ),
+
   Loader2: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="bb:kgl7">
       Loader2
     </span>
   ),
+
   X: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="g_zlnwq">
       X
     </span>
   ),
@@ -81,7 +85,7 @@ describe("DevelopmentTab", () => {
   })
 
   it("should render correctly in development mode", () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="999ckz4" />)
 
     expect(screen.getByText("Разработка")).toBeInTheDocument()
     expect(
@@ -115,13 +119,13 @@ describe("DevelopmentTab", () => {
 
   it("should not render in production mode", () => {
     vi.stubEnv("NODE_ENV", "production")
-    const { container } = render(<DevelopmentTab />)
+    const { container } = render(<DevelopmentTab data-oid="vt6hc4w" />)
     expect(container.firstChild).toBeNull()
   })
 
   it("should not render in test mode when set to production", () => {
     vi.stubEnv("NODE_ENV", "production")
-    const { container } = render(<DevelopmentTab />)
+    const { container } = render(<DevelopmentTab data-oid="r:.ugbc" />)
     expect(container.firstChild).toBeNull()
   })
 
@@ -129,7 +133,7 @@ describe("DevelopmentTab", () => {
     mockGetApiKeyInfo.mockReturnValueOnce({ has_value: true })
     mockGetApiKeyInfo.mockReturnValueOnce({ has_value: true })
 
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="ynu72:-" />)
 
     expect(mockGetApiKeyInfo).toHaveBeenCalledWith("codecov")
     expect(mockGetApiKeyInfo).toHaveBeenCalledWith("tauri_analytics")
@@ -143,12 +147,14 @@ describe("DevelopmentTab", () => {
   })
 
   it("should handle Codecov token input changes", async () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="ffe2f-4" />)
 
     const codecovInput = screen.getByPlaceholderText("your_codecov_token_here")
 
     act(() => {
-      fireEvent.change(codecovInput, { target: { value: "codecov-test-token" } })
+      fireEvent.change(codecovInput, {
+        target: { value: "codecov-test-token" },
+      })
     })
 
     expect(codecovInput).toHaveValue("codecov-test-token")
@@ -159,12 +165,14 @@ describe("DevelopmentTab", () => {
   })
 
   it("should handle Tauri Analytics key input changes", async () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="3zkw884" />)
 
     const tauriInput = screen.getByPlaceholderText("your_tauri_analytics_key")
 
     act(() => {
-      fireEvent.change(tauriInput, { target: { value: "tauri-analytics-key" } })
+      fireEvent.change(tauriInput, {
+        target: { value: "tauri-analytics-key" },
+      })
     })
 
     expect(tauriInput).toHaveValue("tauri-analytics-key")
@@ -175,7 +183,7 @@ describe("DevelopmentTab", () => {
   })
 
   it("should not save keys with masked characters", () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="._w4j4c" />)
 
     const codecovInput = screen.getByPlaceholderText("your_codecov_token_here")
 
@@ -187,7 +195,7 @@ describe("DevelopmentTab", () => {
   })
 
   it("should not save empty keys", () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="14m9lga" />)
 
     const codecovInput = screen.getByPlaceholderText("your_codecov_token_here")
 
@@ -201,7 +209,7 @@ describe("DevelopmentTab", () => {
   it("should handle link button clicks to open external URLs", () => {
     const mockWindowOpen = vi.spyOn(window, "open").mockImplementation(() => null)
 
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="3jl.qw8" />)
 
     const linkButtons = screen.getAllByRole("button")
 
@@ -219,21 +227,21 @@ describe("DevelopmentTab", () => {
   })
 
   it("should render API key inputs without test buttons", () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="kd-:edt" />)
 
     const testButtons = screen.queryAllByText("Тест")
     expect(testButtons).toHaveLength(0)
   })
 
   it("should display all separator elements", () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="c0ipn-4" />)
 
     const separators = document.querySelectorAll('[role="none"]')
     expect(separators).toHaveLength(2)
   })
 
   it("should maintain separate state for each API key input", async () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="j-3sgjx" />)
 
     const codecovInput = screen.getByPlaceholderText("your_codecov_token_here")
     const tauriInput = screen.getByPlaceholderText("your_tauri_analytics_key")
@@ -258,7 +266,7 @@ describe("DevelopmentTab", () => {
   it("should load different values for different services", () => {
     mockGetApiKeyInfo.mockReturnValueOnce({ has_value: true }).mockReturnValueOnce({ has_value: false })
 
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="r2x1c6h" />)
 
     // The inputs are password type, so we need to find them by placeholder
     const codecovInput = screen.getByPlaceholderText("your_codecov_token_here")
@@ -269,7 +277,7 @@ describe("DevelopmentTab", () => {
   })
 
   it("should handle multiple quick changes correctly", async () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="izt.qzo" />)
 
     const codecovInput = screen.getByPlaceholderText("your_codecov_token_here")
 
@@ -291,7 +299,7 @@ describe("DevelopmentTab", () => {
   })
 
   it("should render development warning box with correct styling", () => {
-    render(<DevelopmentTab />)
+    render(<DevelopmentTab data-oid="c0awkfs" />)
 
     const warningBox = screen.getByText("Режим разработки").parentElement
     expect(warningBox).toHaveClass("bg-amber-50")

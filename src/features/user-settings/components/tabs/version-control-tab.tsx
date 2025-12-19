@@ -11,8 +11,8 @@ import { VersionControlManager } from "@/features/version-control/components/ver
  */
 export function VersionControlTab() {
   return (
-    <div className="space-y-6">
-      <VersionControlManager />
+    <div className="space-y-6" data-oid="u9:aixm">
+      <VersionControlManager data-oid="h11l8zi" />
     </div>
   )
 }

@@ -43,16 +43,24 @@ vi.mock("../../hooks/use-webgl2-preview", () => ({
 
 // Mock child components
 vi.mock("../../components/effect-chain-list", () => ({
-  EffectChainList: () => <div data-testid="effect-chain-list">Effect Chain List</div>,
+  EffectChainList: () => (
+    <div data-testid="effect-chain-list" data-oid="j6as.cy">
+      Effect Chain List
+    </div>
+  ),
 }))
 
 vi.mock("../../components/preset-gallery", () => ({
-  PresetGallery: () => <div data-testid="preset-gallery">Preset Gallery</div>,
+  PresetGallery: () => (
+    <div data-testid="preset-gallery" data-oid="gsk9onq">
+      Preset Gallery
+    </div>
+  ),
 }))
 
 vi.mock("../../components/quality-controls", () => ({
   QualityControls: ({ quality, gpuTier }: any) => (
-    <div data-testid="quality-controls">
+    <div data-testid="quality-controls" data-oid="j5jh.v:">
       Quality Controls - {gpuTier} - {quality.fps} FPS
     </div>
   ),
@@ -65,20 +73,20 @@ describe("PreviewPanel", () => {
 
   describe("rendering", () => {
     it("should render preview panel", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="85iyhlo" />)
 
       expect(screen.getByText("Real-time Preview")).toBeInTheDocument()
     })
 
     it("should render canvas element", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="sw6b9u." />)
 
       const canvas = container.querySelector("canvas")
       expect(canvas).toBeInTheDocument()
     })
 
     it("should render hidden video element", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="vwboqkd" />)
 
       const video = container.querySelector("video")
       expect(video).toBeInTheDocument()
@@ -86,13 +94,13 @@ describe("PreviewPanel", () => {
     })
 
     it("should display GPU tier badge", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="gx3ddx0" />)
 
       expect(screen.getByText(/GPU: MEDIUM/i)).toBeInTheDocument()
     })
 
     it("should display cache statistics", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="2nyp-2f" />)
 
       // Cache stats might not be rendered if cacheStats is null in the hook
       // The mock provides cacheStats, but if the component flow doesn't show it,
@@ -106,14 +114,14 @@ describe("PreviewPanel", () => {
     })
 
     it("should display performance stats", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="xd1ehhm" />)
 
       expect(screen.getByText(/FPS: 30/i)).toBeInTheDocument()
       expect(screen.getByText(/Resolution: 100%/i)).toBeInTheDocument()
     })
 
     it("should show live status when initialized", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="-jorsw8" />)
 
       // When initialized, the preview should not show "Updating..." or "Initializing..."
       expect(screen.queryByText(/Initializing preview renderer/i)).not.toBeInTheDocument()
@@ -124,7 +132,7 @@ describe("PreviewPanel", () => {
   describe("preview toggle", () => {
     it("should toggle preview enabled/disabled", async () => {
       const user = userEvent.setup()
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="3ojs23x" />)
 
       // Find the eye icon button by test id or class
       const eyeButtons = screen.getAllByRole("button")
@@ -141,7 +149,7 @@ describe("PreviewPanel", () => {
 
     it("should hide canvas when preview is disabled", async () => {
       const user = userEvent.setup()
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="o:a1kb0" />)
 
       // Find the eye icon button
       const eyeButtons = screen.getAllByRole("button")
@@ -160,7 +168,7 @@ describe("PreviewPanel", () => {
   describe("controls toggle", () => {
     it("should toggle effects panel", async () => {
       const user = userEvent.setup()
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="was-ib9" />)
 
       const effectsButton = screen.getByRole("button", { name: /Effects/i })
 
@@ -175,7 +183,7 @@ describe("PreviewPanel", () => {
 
     it("should toggle presets panel", async () => {
       const user = userEvent.setup()
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="scfgati" />)
 
       const presetsButton = screen.getByRole("button", { name: /Presets/i })
 
@@ -190,7 +198,7 @@ describe("PreviewPanel", () => {
 
     it("should toggle quality panel", async () => {
       const user = userEvent.setup()
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="wdif9l_" />)
 
       const qualityButton = screen.getByRole("button", { name: /Quality/i })
 
@@ -205,7 +213,7 @@ describe("PreviewPanel", () => {
 
     it("should show button variants based on panel state", async () => {
       const user = userEvent.setup()
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="vw8fjnv" />)
 
       const effectsButton = screen.getByRole("button", { name: /Effects/i })
 
@@ -222,21 +230,21 @@ describe("PreviewPanel", () => {
 
   describe("layout", () => {
     it("should apply custom className", () => {
-      const { container } = render(<PreviewPanel className="custom-class" />)
+      const { container } = render(<PreviewPanel className="custom-class" data-oid=":ahllov" />)
 
       const card = container.querySelector(".custom-class")
       expect(card).toBeInTheDocument()
     })
 
     it("should use flexbox layout", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="muhmd7l" />)
 
       const card = container.querySelector(".flex.flex-col")
       expect(card).toBeInTheDocument()
     })
 
     it("should have header with controls", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="0vl2el1" />)
 
       expect(screen.getByText("Real-time Preview")).toBeInTheDocument()
       expect(screen.getByRole("button", { name: /Effects/i })).toBeInTheDocument()
@@ -245,7 +253,7 @@ describe("PreviewPanel", () => {
     })
 
     it("should have canvas container with black background", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="5h-.ieq" />)
 
       const canvasContainer = container.querySelector(".bg-black")
       expect(canvasContainer).toBeInTheDocument()
@@ -258,7 +266,7 @@ describe("PreviewPanel", () => {
       // which has isInitialized: true. To test the loading state, we'd need to
       // create a separate test file or modify the component to accept props.
       // For now, we just verify the component renders without crashing.
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="ja7arko" />)
 
       // When initialized, it should show the canvas
       const canvas = container.querySelector("canvas")
@@ -268,14 +276,14 @@ describe("PreviewPanel", () => {
 
   describe("accessibility", () => {
     it("should have accessible buttons", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="p5ag094" />)
 
       const buttons = screen.getAllByRole("button")
       expect(buttons.length).toBeGreaterThan(0)
     })
 
     it("should have meaningful button labels", () => {
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="4r73y1f" />)
 
       expect(screen.getByRole("button", { name: /Effects/i })).toBeInTheDocument()
       expect(screen.getByRole("button", { name: /Presets/i })).toBeInTheDocument()
@@ -285,21 +293,21 @@ describe("PreviewPanel", () => {
 
   describe("canvas attributes", () => {
     it("should set canvas crossOrigin attribute on video", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="5t5g1--" />)
 
       const video = container.querySelector("video")
       expect(video).toHaveAttribute("crossOrigin", "anonymous")
     })
 
     it("should preload video metadata", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="vrdd0ky" />)
 
       const video = container.querySelector("video")
       expect(video).toHaveAttribute("preload", "metadata")
     })
 
     it("should apply image rendering based on antialiasing", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="ch:::h0" />)
 
       const canvas = container.querySelector("canvas")
       const style = canvas?.getAttribute("style")
@@ -310,7 +318,7 @@ describe("PreviewPanel", () => {
 
   describe("responsive behavior", () => {
     it("should use ResizeObserver for canvas sizing", () => {
-      const { container } = render(<PreviewPanel />)
+      const { container } = render(<PreviewPanel data-oid="r-i8u9." />)
 
       const canvasContainer = container.querySelector(".flex-1.relative")
       expect(canvasContainer).toBeInTheDocument()
@@ -337,7 +345,7 @@ describe("PreviewPanel", () => {
         }),
       }))
 
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="lk5qq6d" />)
 
       // Should not crash with null cache stats
       expect(screen.getByText("Real-time Preview")).toBeInTheDocument()
@@ -346,7 +354,7 @@ describe("PreviewPanel", () => {
     it("should handle different GPU tiers", () => {
       // The mock is set with "medium" tier at module level
       // We can only test the tier that's mocked
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="le3:80i" />)
 
       expect(screen.getByText(/GPU: MEDIUM/i)).toBeInTheDocument()
     })
@@ -370,7 +378,7 @@ describe("PreviewPanel", () => {
         }),
       }))
 
-      render(<PreviewPanel />)
+      render(<PreviewPanel data-oid="eg9l7ku" />)
 
       expect(screen.getByText("Updating...")).toBeInTheDocument()
     })

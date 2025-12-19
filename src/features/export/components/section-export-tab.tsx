@@ -214,37 +214,38 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
   const selectedCount = sections.filter((s) => s.includeInExport).length
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-oid="o13mmnk">
       {/* Export Mode Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("export.sections.exportMode")}</CardTitle>
-          <CardDescription>{t("export.sections.exportModeDescription")}</CardDescription>
+      <Card data-oid="38_t.dh">
+        <CardHeader data-oid="fv6-s5s">
+          <CardTitle data-oid="6zq6hqu">{t("export.sections.exportMode")}</CardTitle>
+          <CardDescription data-oid="4lf1xhx">{t("export.sections.exportModeDescription")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent data-oid=".7nkoq-">
           <RadioGroup
             value={exportMode}
             onValueChange={(value) => setExportMode(value as "markers" | "manual" | "clips")}
+            data-oid="wg1651y"
           >
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="markers" id={markersId} />
-                <Label htmlFor={markersId} className="flex items-center gap-2 cursor-pointer">
-                  <Flag className="h-4 w-4" />
+            <div className="space-y-2" data-oid="bz9oqk.">
+              <div className="flex items-center space-x-2" data-oid="sk7ys.8">
+                <RadioGroupItem value="markers" id={markersId} data-oid="zw-em0_" />
+                <Label htmlFor={markersId} className="flex items-center gap-2 cursor-pointer" data-oid="d3sr7qm">
+                  <Flag className="h-4 w-4" data-oid="4z7xsz:" />
                   {t("export.sections.byMarkers")}
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="clips" id={clipsId} />
-                <Label htmlFor={clipsId} className="flex items-center gap-2 cursor-pointer">
-                  <Video className="h-4 w-4" />
+              <div className="flex items-center space-x-2" data-oid="ik.rvx_">
+                <RadioGroupItem value="clips" id={clipsId} data-oid="0axxhh:" />
+                <Label htmlFor={clipsId} className="flex items-center gap-2 cursor-pointer" data-oid="rnq9voa">
+                  <Video className="h-4 w-4" data-oid="ek_ydok" />
                   {t("export.sections.byClips")}
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="manual" id={manualId} />
-                <Label htmlFor={manualId} className="flex items-center gap-2 cursor-pointer">
-                  <Scissors className="h-4 w-4" />
+              <div className="flex items-center space-x-2" data-oid="t19:vr6">
+                <RadioGroupItem value="manual" id={manualId} data-oid="vtg8tir" />
+                <Label htmlFor={manualId} className="flex items-center gap-2 cursor-pointer" data-oid="l297yf6">
+                  <Scissors className="h-4 w-4" data-oid=".6ipqws" />
                   {t("export.sections.manual")}
                 </Label>
               </div>
@@ -253,18 +254,28 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
 
           {/* Manual Time Input */}
           {exportMode === "manual" && (
-            <div className="mt-4 space-y-2">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>{t("export.sections.startTime")}</Label>
-                  <Input value={manualStart} onChange={(e) => setManualStart(e.target.value)} placeholder="00:00:00" />
+            <div className="mt-4 space-y-2" data-oid="qckfwew">
+              <div className="grid grid-cols-2 gap-4" data-oid=":d40ste">
+                <div className="space-y-2" data-oid="8s:ro4s">
+                  <Label data-oid="y:pxq3w">{t("export.sections.startTime")}</Label>
+                  <Input
+                    value={manualStart}
+                    onChange={(e) => setManualStart(e.target.value)}
+                    placeholder="00:00:00"
+                    data-oid="78h4iqz"
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label>{t("export.sections.endTime")}</Label>
-                  <Input value={manualEnd} onChange={(e) => setManualEnd(e.target.value)} placeholder="00:00:10" />
+                <div className="space-y-2" data-oid="wes8d9r">
+                  <Label data-oid="u60o0g7">{t("export.sections.endTime")}</Label>
+                  <Input
+                    value={manualEnd}
+                    onChange={(e) => setManualEnd(e.target.value)}
+                    placeholder="00:00:10"
+                    data-oid="46_70c."
+                  />
                 </div>
               </div>
-              <Button onClick={handleManualSection} size="sm" className="w-full">
+              <Button onClick={handleManualSection} size="sm" className="w-full" data-oid="9266f:l">
                 {t("export.sections.createSection")}
               </Button>
             </div>
@@ -273,36 +284,49 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
       </Card>
 
       {/* Quality Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("export.sections.qualityPreset")}</CardTitle>
-          <CardDescription>{t("export.sections.qualityPresetDescription")}</CardDescription>
+      <Card data-oid="_z5g8ul">
+        <CardHeader data-oid="zi8ji_9">
+          <CardTitle data-oid="-hdagf4">{t("export.sections.qualityPreset")}</CardTitle>
+          <CardDescription data-oid="vvp0jvh">{t("export.sections.qualityPresetDescription")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent data-oid="-xapb2w">
           <Select
             value={selectedQuality}
             onValueChange={(value) => setSelectedQuality(value as "preview" | "draft" | "final")}
+            data-oid="1sxzq68"
           >
-            <SelectTrigger>
-              <SelectValue />
+            <SelectTrigger data-oid="29xi8n7">
+              <SelectValue data-oid="uz-ytcl" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="preview">
-                <div>
-                  <div className="font-medium">{t("export.sections.preview")}</div>
-                  <div className="text-xs text-muted-foreground">720p, Low bitrate, Fast encoding</div>
+            <SelectContent data-oid="yp8::.e">
+              <SelectItem value="preview" data-oid="deacomi">
+                <div data-oid="gglb95q">
+                  <div className="font-medium" data-oid="cif9t.z">
+                    {t("export.sections.preview")}
+                  </div>
+                  <div className="text-xs text-muted-foreground" data-oid="hr-hkhm">
+                    720p, Low bitrate, Fast encoding
+                  </div>
                 </div>
               </SelectItem>
-              <SelectItem value="draft">
-                <div>
-                  <div className="font-medium">{t("export.sections.draft")}</div>
-                  <div className="text-xs text-muted-foreground">1080p, Medium quality</div>
+              <SelectItem value="draft" data-oid="bv.np_r">
+                <div data-oid="2gggaae">
+                  <div className="font-medium" data-oid="lpacesk">
+                    {t("export.sections.draft")}
+                  </div>
+                  <div className="text-xs text-muted-foreground" data-oid="xolilsz">
+                    1080p, Medium quality
+                  </div>
                 </div>
               </SelectItem>
-              <SelectItem value="final">
-                <div>
-                  <div className="font-medium">{t("export.sections.final")}</div>
-                  <div className="text-xs text-muted-foreground">Full quality, project settings</div>
+              <SelectItem value="final" data-oid="0vaffjm">
+                <div data-oid="aixoud_">
+                  <div className="font-medium" data-oid="yc5zjl9">
+                    {t("export.sections.final")}
+                  </div>
+                  <div className="text-xs text-muted-foreground" data-oid="vslg4qy">
+                    Full quality, project settings
+                  </div>
                 </div>
               </SelectItem>
             </SelectContent>
@@ -312,63 +336,71 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
 
       {/* Sections List */}
       {sections.length > 0 && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>{t("export.sections.sectionsTitle")}</CardTitle>
-                <CardDescription>
-                  {t("export.sections.selectedCount", { selected: selectedCount, total: sections.length })}
+        <Card data-oid="d3qj3wz">
+          <CardHeader data-oid="_o-ve2o">
+            <div className="flex items-center justify-between" data-oid="-yrjd:5">
+              <div data-oid="68bps56">
+                <CardTitle data-oid="ag6tmws">{t("export.sections.sectionsTitle")}</CardTitle>
+                <CardDescription data-oid="3ibe:kv">
+                  {t("export.sections.selectedCount", {
+                    selected: selectedCount,
+                    total: sections.length,
+                  })}
                 </CardDescription>
               </div>
-              <Button variant="outline" size="sm" onClick={handleSelectAll}>
+              <Button variant="outline" size="sm" onClick={handleSelectAll} data-oid="9rnq_:r">
                 {sections.every((s) => s.includeInExport)
                   ? t("export.sections.deselectAll")
                   : t("export.sections.selectAll")}
               </Button>
             </div>
           </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[300px]">
-              <div className="space-y-2">
+          <CardContent data-oid="txz1x3e">
+            <ScrollArea className="h-[300px]" data-oid="9v0yt-y">
+              <div className="space-y-2" data-oid="spq8_l9">
                 {sections.map((section) => (
                   <div
                     key={section.id}
                     className="flex items-center space-x-3 p-3 border rounded-md hover:bg-accent/50"
+                    data-oid="tvw81n8"
                   >
                     <Checkbox
                       checked={section.includeInExport}
                       onCheckedChange={() => handleToggleSection(section.id)}
+                      data-oid="vrym3y0"
                     />
 
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
+                    <div className="flex-1 space-y-1" data-oid="w5gsrg3">
+                      <div className="flex items-center justify-between" data-oid="fvseo1f">
                         <Input
                           value={section.customFileName || section.name}
                           onChange={(e) => handleUpdateSectionName(section.id, e.target.value)}
                           className="h-7 text-sm"
                           placeholder={t("export.sections.fileName")}
+                          data-oid="f056rei"
                         />
-                        <div className="flex items-center gap-2 ml-2">
+
+                        <div className="flex items-center gap-2 ml-2" data-oid="h6k230u">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handlePreviewSection(section)}
                             className="h-7 px-2"
                             title={t("export.sections.preview")}
+                            data-oid="ce8fcdk"
                           >
-                            <Play className="h-3 w-3" />
+                            <Play className="h-3 w-3" data-oid="35othbi" />
                           </Button>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="h-3 w-3" />
-                            <span>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground" data-oid="0.3qp8f">
+                            <Clock className="h-3 w-3" data-oid="f7d.3x-" />
+                            <span data-oid="3qy-a44">
                               {formatTimeShort(section.startTime)} - {formatTimeShort(section.endTime)}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-muted-foreground" data-oid="5z0n4r_">
                         {t("export.sections.duration", {
                           duration: formatTimeShort(section.endTime - section.startTime),
                         })}
@@ -383,8 +415,8 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
       )}
 
       {/* Export Actions */}
-      <div className="flex justify-end gap-2">
-        <Button onClick={handleStartExport} disabled={selectedCount === 0}>
+      <div className="flex justify-end gap-2" data-oid="0r_329z">
+        <Button onClick={handleStartExport} disabled={selectedCount === 0} data-oid=".19yp2h">
           {t("export.sections.exportSections", { count: selectedCount })}
         </Button>
       </div>

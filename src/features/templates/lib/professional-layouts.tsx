@@ -30,6 +30,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         fitMode: "cover",
       }),
     ],
+
     cellLayouts: [
       {
         position: "absolute",
@@ -56,6 +57,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -67,7 +69,11 @@ const lShapeTemplates: MediaTemplateConfig[] = [
     screens: 4,
     cells: Array.from({ length: 4 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -105,6 +111,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -116,7 +123,11 @@ const lShapeTemplates: MediaTemplateConfig[] = [
     screens: 3,
     cells: Array.from({ length: 3 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -146,6 +157,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -157,7 +169,11 @@ const lShapeTemplates: MediaTemplateConfig[] = [
     screens: 4,
     cells: Array.from({ length: 4 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -195,6 +211,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -206,7 +223,11 @@ const lShapeTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -252,6 +273,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -263,7 +285,11 @@ const lShapeTemplates: MediaTemplateConfig[] = [
     screens: 6,
     cells: Array.from({ length: 6 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -317,6 +343,7 @@ const lShapeTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 ]
@@ -342,6 +369,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         fitMode: "cover",
       }),
     ],
+
     dividers: createDividerConfig("thick"),
   },
 
@@ -362,6 +390,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         fitMode: "cover",
       }),
     ],
+
     dividers: createDividerConfig("thick"),
   },
 
@@ -382,6 +411,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         fitMode: "cover",
       }),
     ],
+
     dividers: createDividerConfig("thick"),
   },
 
@@ -406,6 +436,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         fitMode: "cover",
       }),
     ],
+
     dividers: createDividerConfig("thick"),
   },
 
@@ -418,7 +449,11 @@ const interviewTemplates: MediaTemplateConfig[] = [
     gridConfig: { columns: 2, rows: 2 },
     cells: Array.from({ length: 4 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: true, position: "bottom-left", text: `Speaker ${i + 1}` },
+        title: {
+          show: true,
+          position: "bottom-left",
+          text: `Speaker ${i + 1}`,
+        },
         fitMode: "cover",
       }),
     ),
@@ -457,6 +492,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         fitMode: "cover",
       }),
     ],
+
     cellLayouts: [
       {
         position: "absolute",
@@ -475,6 +511,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     layout: {
       backgroundColor: "#1f2937",
       gap: "5%", // Центральная полоса 5%
@@ -540,6 +577,7 @@ const interviewTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 ]
@@ -556,7 +594,11 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
     screens: 4,
     cells: Array.from({ length: 4 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -594,6 +636,7 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -605,7 +648,11 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -651,6 +698,7 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -662,7 +710,11 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
     screens: 6,
     cells: Array.from({ length: 6 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -716,6 +768,7 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -727,7 +780,11 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
     screens: 4,
     cells: Array.from({ length: 4 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -765,6 +822,7 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -776,7 +834,11 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
     screens: 4,
     cells: Array.from({ length: 4 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -814,6 +876,7 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 
@@ -825,7 +888,11 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
     screens: 7,
     cells: Array.from({ length: 7 }, (_, i) =>
       createCellConfig(i, {
-        title: { show: i === 0, position: "center", text: i === 0 ? "Main" : undefined },
+        title: {
+          show: i === 0,
+          position: "center",
+          text: i === 0 ? "Main" : undefined,
+        },
         fitMode: "cover",
       }),
     ),
@@ -889,6 +956,7 @@ const sportsEventTemplates: MediaTemplateConfig[] = [
         zIndex: 1,
       },
     ],
+
     dividers: createDividerConfig("default"),
   },
 ]

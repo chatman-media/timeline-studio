@@ -34,6 +34,7 @@ const mockDevices = {
     { id: "input1", name: "MIDI Input 1" },
     { id: "input2", name: "MIDI Input 2" },
   ],
+
   output: [
     { id: "output1", name: "MIDI Output 1" },
     { id: "output2", name: "MIDI Output 2" },
@@ -60,7 +61,7 @@ describe("MidiRouterView", () => {
 
   describe("Rendering", () => {
     it("should render with title and controls", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="r5ute59" />)
 
       expect(screen.getByText("fairlightAudio.midi.router.title")).toBeInTheDocument()
       // Multiple zap icons exist (header and placeholder)
@@ -70,7 +71,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should render tabs", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="6t-_zmh" />)
 
       expect(screen.getByText("fairlightAudio.midi.router.tabs.routes")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.router.tabs.matrixView")).toBeInTheDocument()
@@ -78,7 +79,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should show empty state when no routes", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="qa157mw" />)
 
       expect(screen.getByTestId("music-icon")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.router.noRoutes")).toBeInTheDocument()
@@ -91,7 +92,7 @@ describe("MidiRouterView", () => {
         devices: { input: [], output: [] },
       } as any)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="h5cb9rd" />)
 
       expect(screen.getByText("fairlightAudio.midi.router.engineNotInitialized")).toBeInTheDocument()
     })
@@ -110,6 +111,7 @@ describe("MidiRouterView", () => {
           { id: "dest1", type: "device", deviceId: "output1" },
           { id: "dest2", type: "channel", targetChannel: 2 },
         ],
+
         processors: [],
       },
       {
@@ -130,7 +132,7 @@ describe("MidiRouterView", () => {
     it("should display routes", () => {
       mockEngine.router.getRoutes.mockReturnValue(mockRoutes)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="6lfhcxs" />)
 
       expect(screen.getByText("Test Route 1")).toBeInTheDocument()
       expect(screen.getByText("Test Route 2")).toBeInTheDocument()
@@ -139,7 +141,7 @@ describe("MidiRouterView", () => {
     it("should show route status badges", () => {
       mockEngine.router.getRoutes.mockReturnValue(mockRoutes)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="n44gqm:" />)
 
       const badges = screen.getAllByText(/fairlightAudio.midi.router.route.(active|inactive)/)
       expect(badges[0]).toHaveTextContent("fairlightAudio.midi.router.route.active")
@@ -149,7 +151,7 @@ describe("MidiRouterView", () => {
     it("should display source information", () => {
       mockEngine.router.getRoutes.mockReturnValue(mockRoutes)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="02nqos8" />)
 
       expect(screen.getByText(/MIDI Input 1/)).toBeInTheDocument()
       expect(screen.getByText(/fairlightAudio.midi.router.source.anyDevice/)).toBeInTheDocument()
@@ -158,7 +160,7 @@ describe("MidiRouterView", () => {
     it("should display destination badges", () => {
       mockEngine.router.getRoutes.mockReturnValue(mockRoutes)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="izaw6uq" />)
 
       expect(screen.getByText(/MIDI Output 1/)).toBeInTheDocument()
       expect(screen.getByText(/fairlightAudio.midi.router.destination.channel 2/)).toBeInTheDocument()
@@ -168,7 +170,7 @@ describe("MidiRouterView", () => {
     it("should display processor badges", () => {
       mockEngine.router.getRoutes.mockReturnValue(mockRoutes)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="s9enk2b" />)
 
       const filterBadges = screen.getAllByText("filter")
       const transformBadges = screen.getAllByText("transform")
@@ -214,7 +216,7 @@ describe("MidiRouterView", () => {
 
       mockEngine.router.getRoutes.mockReturnValue(routesWithProcessors)
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="nluxq0_" />)
 
       // Verify routes are rendered
       expect(screen.getByText("Test Route 1")).toBeInTheDocument()
@@ -242,18 +244,20 @@ describe("MidiRouterView", () => {
     it("should toggle route enabled state", () => {
       mockEngine.router.getRoutes.mockReturnValue([mockRoute])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="ffl:dq7" />)
 
       const switch_ = screen.getByRole("switch")
       fireEvent.click(switch_)
 
-      expect(mockEngine.router.updateRoute).toHaveBeenCalledWith("route1", { enabled: false })
+      expect(mockEngine.router.updateRoute).toHaveBeenCalledWith("route1", {
+        enabled: false,
+      })
     })
 
     it("should delete route", async () => {
       mockEngine.router.getRoutes.mockReturnValue([mockRoute])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="cq20op7" />)
 
       // Verify route is rendered
       expect(screen.getByText("Test Route")).toBeInTheDocument()
@@ -265,7 +269,7 @@ describe("MidiRouterView", () => {
     it("should show route menu options", async () => {
       mockEngine.router.getRoutes.mockReturnValue([mockRoute])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="npz.l:g" />)
 
       // Verify route exists with source and destination info
       expect(screen.getByText("Test Route")).toBeInTheDocument()
@@ -276,7 +280,7 @@ describe("MidiRouterView", () => {
 
   describe("Preset Creation", () => {
     it("should show preset options", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="-uo-dh_" />)
 
       // With real Radix UI, preset options are not rendered until select is opened
       // Just verify the select exists
@@ -284,7 +288,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should create keyboard split preset", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="_gmq3py" />)
 
       // With real Radix UI, we can't easily test select interactions
       // Just verify the create button exists and is initially disabled
@@ -293,7 +297,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should create channel filter preset", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="e9ztifh" />)
 
       // With real Radix UI, we can't easily test select interactions
       // Verify button state and UI elements
@@ -303,7 +307,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should create CC remap preset", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="_x5guvl" />)
 
       // With real Radix UI, we can't easily test select interactions
       // Just verify UI elements exist
@@ -312,14 +316,14 @@ describe("MidiRouterView", () => {
     })
 
     it("should disable create button when no preset selected", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="c-tlqeq" />)
 
       const createButton = screen.getByText("fairlightAudio.midi.router.create")
       expect(createButton).toBeDisabled()
     })
 
     it("should reset preset selection after creation", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="e6r.b:a" />)
 
       // Initial state - button is disabled
       const createButton = screen.getByText("fairlightAudio.midi.router.create")
@@ -333,7 +337,7 @@ describe("MidiRouterView", () => {
 
   describe("Tab Content", () => {
     it("should show routes tab content by default", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="v4jo5zm" />)
 
       // With real Radix UI tabs, we just check that the content is visible
       expect(screen.getByText("fairlightAudio.midi.router.noRoutes")).toBeInTheDocument()
@@ -341,7 +345,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should show matrix view placeholder", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="r0-xd__" />)
 
       // Verify tabs exist
       expect(screen.getByText("fairlightAudio.midi.router.tabs.matrixView")).toBeInTheDocument()
@@ -349,7 +353,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should show monitor placeholder", () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="ft2l-ol" />)
 
       // Verify routes tab is active by default
       const routesTab = screen.getByText("fairlightAudio.midi.router.tabs.routes")
@@ -359,7 +363,7 @@ describe("MidiRouterView", () => {
 
   describe("Event Listeners", () => {
     it("should register event listeners on mount", async () => {
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="hm6x276" />)
 
       await waitFor(() => {
         expect(mockEngine.router.on).toHaveBeenCalledWith("routeCreated", expect.any(Function))
@@ -370,7 +374,7 @@ describe("MidiRouterView", () => {
     })
 
     it("should unregister event listeners on unmount", async () => {
-      const { unmount } = render(<MidiRouterView />)
+      const { unmount } = render(<MidiRouterView data-oid="730rqvi" />)
 
       unmount()
 
@@ -391,7 +395,7 @@ describe("MidiRouterView", () => {
         processors: [],
       }
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="90vlddv" />)
 
       // Capture the event handler
       const routeCreatedHandler = mockEngine.router.on.mock.calls.find((call) => call[0] === "routeCreated")?.[1]
@@ -421,7 +425,7 @@ describe("MidiRouterView", () => {
 
       mockEngine.router.getRoutes.mockReturnValue([route])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="zs7q66h" />)
 
       expect(screen.getByText(/fairlightAudio.midi.router.source.anyDevice/)).toBeInTheDocument()
     })
@@ -438,7 +442,7 @@ describe("MidiRouterView", () => {
 
       mockEngine.router.getRoutes.mockReturnValue([route])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="urx7_ve" />)
 
       expect(screen.getByText(/unknown-device/)).toBeInTheDocument()
       expect(screen.getByText(/unknown-output/)).toBeInTheDocument()
@@ -455,7 +459,7 @@ describe("MidiRouterView", () => {
 
       mockEngine.router.getRoutes.mockReturnValue([route])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="zkj7znw" />)
 
       expect(screen.getByText("fairlightAudio.midi.router.destination.functionCallback")).toBeInTheDocument()
     })
@@ -471,7 +475,7 @@ describe("MidiRouterView", () => {
 
       mockEngine.router.getRoutes.mockReturnValue([route])
 
-      render(<MidiRouterView />)
+      render(<MidiRouterView data-oid="f822yw5" />)
 
       expect(screen.getByText("fairlightAudio.midi.router.destination.unknown")).toBeInTheDocument()
     })

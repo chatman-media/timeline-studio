@@ -57,36 +57,50 @@ export function PersonIdentificationExample() {
   // Пример 4: Получение статистики
   const stats = getStatistics()
 
-  if (isLoading) return <div>Загрузка...</div>
-  if (error) return <div>Ошибка: {error}</div>
+  if (isLoading) return <div data-oid="9:7_dr7">Загрузка...</div>
+  if (error) return <div data-oid="4c5kz5i">Ошибка: {error}</div>
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Person Identification</h2>
+    <div className="p-4" data-oid="z352efr">
+      <h2 className="text-xl font-bold mb-4" data-oid="c.stnyv">
+        Person Identification
+      </h2>
 
-      <div className="mb-4">
-        <h3 className="font-semibold">Статистика</h3>
-        <ul className="text-sm">
-          <li>Всего персон: {stats.totalPersons}</li>
-          <li>Всего лиц: {stats.totalFaces}</li>
-          <li>Всего появлений: {stats.totalAppearances}</li>
-          <li>В среднем лиц на персону: {stats.averageFacesPerPerson.toFixed(1)}</li>
+      <div className="mb-4" data-oid="ldszwje">
+        <h3 className="font-semibold" data-oid="32c1fz7">
+          Статистика
+        </h3>
+        <ul className="text-sm" data-oid="p:dwaab">
+          <li data-oid="hwtyk41">Всего персон: {stats.totalPersons}</li>
+          <li data-oid="dzmygs:">Всего лиц: {stats.totalFaces}</li>
+          <li data-oid="ayd2.4g">Всего появлений: {stats.totalAppearances}</li>
+          <li data-oid="7l7s5o:">В среднем лиц на персону: {stats.averageFacesPerPerson.toFixed(1)}</li>
         </ul>
       </div>
 
-      <div className="mb-4">
-        <h3 className="font-semibold mb-2">Персоны</h3>
-        <div className="grid grid-cols-3 gap-2">
+      <div className="mb-4" data-oid="xd_3-se">
+        <h3 className="font-semibold mb-2" data-oid="3fcrkk2">
+          Персоны
+        </h3>
+        <div className="grid grid-cols-3 gap-2" data-oid="2u5k632">
           {persons.map((person) => (
-            <div key={person.id} className="border p-2 rounded">
-              <h4 className="font-medium">{person.name || "Без имени"}</h4>
-              <p className="text-xs text-gray-600">Лиц: {person.faceEmbeddings?.length || 0}</p>
+            <div key={person.id} className="border p-2 rounded" data-oid=":3a:ext">
+              <h4 className="font-medium" data-oid="z:a53_1">
+                {person.name || "Без имени"}
+              </h4>
+              <p className="text-xs text-gray-600" data-oid="xozvprs">
+                Лиц: {person.faceEmbeddings?.length || 0}
+              </p>
             </div>
           ))}
         </div>
       </div>
 
-      <button onClick={handleCreatePerson} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      <button
+        onClick={handleCreatePerson}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        data-oid="b3wx8ro"
+      >
         Создать персону
       </button>
     </div>

@@ -13,12 +13,16 @@ vi.mock("../../hooks/use-project-settings", () => ({
 
 describe("ProjectSettingsProvider", () => {
   it("должен рендериться без ошибок", () => {
-    const TestComponent = () => <div data-testid="test">Test</div>
+    const TestComponent = () => (
+      <div data-testid="test" data-oid=":wfyn:s">
+        Test
+      </div>
+    )
 
     expect(() => {
       render(
-        <ProjectSettingsProvider>
-          <TestComponent />
+        <ProjectSettingsProvider data-oid="53kmnz0">
+          <TestComponent data-oid="._6koab" />
         </ProjectSettingsProvider>,
       )
     }).not.toThrow()
@@ -29,11 +33,15 @@ describe("ProjectSettingsProvider", () => {
   })
 
   it("должен принимать children prop", () => {
-    const TestComponent = () => <div data-testid="test">Test</div>
+    const TestComponent = () => (
+      <div data-testid="test" data-oid="8djqq93">
+        Test
+      </div>
+    )
 
     const { getByTestId } = render(
-      <ProjectSettingsProvider>
-        <TestComponent />
+      <ProjectSettingsProvider data-oid="rrwskcg">
+        <TestComponent data-oid="m2kh852" />
       </ProjectSettingsProvider>,
     )
 

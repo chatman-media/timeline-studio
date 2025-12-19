@@ -40,7 +40,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("renders with default configuration", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="wbwn:jz" />)
 
     // Check switches
     expect(screen.getByLabelText("Маркеры смены сцен")).toBeChecked()
@@ -68,7 +68,7 @@ describe("AIMarkerSettingsModal", () => {
       groupingThreshold: 3,
     }
 
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="2rc9du:" />)
 
     // Check switches
     expect(screen.getByLabelText("Маркеры смены сцен")).not.toBeChecked()
@@ -84,7 +84,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("toggles marker type switches", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="2dislht" />)
 
     const sceneSwitch = screen.getByLabelText("Маркеры смены сцен")
     const momentSwitch = screen.getByLabelText("Ключевые моменты")
@@ -105,7 +105,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("displays confidence slider correctly", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="3_v4nak" />)
 
     // Check that confidence slider is present
     expect(screen.getByText("Минимальная уверенность")).toBeInTheDocument()
@@ -117,7 +117,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("shows quality score slider only when quality markers are enabled", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="ik0ry-d" />)
 
     // Initially quality markers are disabled
     expect(screen.queryByText("Минимальное качество")).not.toBeInTheDocument()
@@ -132,7 +132,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("shows grouping threshold slider only when grouping is enabled", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="28lwuig" />)
 
     // Initially grouping is enabled
     expect(screen.getByText("Порог группировки (сек)")).toBeInTheDocument()
@@ -146,7 +146,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("saves configuration and closes modal", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="z_tmq8t" />)
 
     // Make some changes
     const qualitySwitch = screen.getByLabelText("Маркеры качества")
@@ -171,7 +171,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("cancels without saving", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="zpj330." />)
 
     // Make some changes
     const qualitySwitch = screen.getByLabelText("Маркеры качества")
@@ -187,7 +187,7 @@ describe("AIMarkerSettingsModal", () => {
   it("handles missing onSave callback gracefully", () => {
     mockModalData.onSave = undefined as any
 
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="j0mi-v7" />)
 
     const saveButton = screen.getByRole("button", { name: "Сохранить" })
 
@@ -197,7 +197,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("updates all configuration values correctly", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="lsls0s4" />)
 
     // Toggle all switches
     fireEvent.click(screen.getByLabelText("Маркеры смены сцен"))
@@ -223,7 +223,7 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("renders section headers", () => {
-    render(<AIMarkerSettingsModal />)
+    render(<AIMarkerSettingsModal data-oid="qk_xr3g" />)
 
     expect(screen.getByText("Типы маркеров")).toBeInTheDocument()
     expect(screen.getByText("Параметры фильтрации")).toBeInTheDocument()
@@ -231,13 +231,13 @@ describe("AIMarkerSettingsModal", () => {
   })
 
   it("maintains configuration state between renders", () => {
-    const { rerender } = render(<AIMarkerSettingsModal />)
+    const { rerender } = render(<AIMarkerSettingsModal data-oid="748pn56" />)
 
     // Make changes
     fireEvent.click(screen.getByLabelText("Маркеры качества"))
 
     // Re-render component
-    rerender(<AIMarkerSettingsModal />)
+    rerender(<AIMarkerSettingsModal data-oid="d._jzha" />)
 
     // State should be preserved
     expect(screen.getByLabelText("Маркеры качества")).toBeChecked()

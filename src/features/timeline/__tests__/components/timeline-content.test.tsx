@@ -82,7 +82,11 @@ const mockTracks = vi.hoisted(() => ({
   getTracksByType: vi.fn(() => []),
   getTracksBySection: vi.fn(() => []),
   canAddTrackToSection: vi.fn(() => true),
-  getTrackStats: vi.fn(() => ({ clipCount: 0, totalDuration: 0, isEmpty: true })),
+  getTrackStats: vi.fn(() => ({
+    clipCount: 0,
+    totalDuration: 0,
+    isEmpty: true,
+  })),
   addTrack: vi.fn(),
   removeTrack: vi.fn(),
   updateTrack: vi.fn(),
@@ -106,28 +110,42 @@ const mockDragState = vi.hoisted(() => ({
 
 // Mock все внешние зависимости
 vi.mock("@/components/ui/badge", () => ({
-  Badge: ({ children, variant }: any) => <span data-variant={variant}>{children}</span>,
+  Badge: ({ children, variant }: any) => (
+    <span data-variant={variant} data-oid="rx5:arb">
+      {children}
+    </span>
+  ),
 }))
 
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
-    <button onClick={onClick} {...props}>
+    <button onClick={onClick} {...props} data-oid="n8pvdld">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/card", () => ({
-  Card: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardContent: ({ children }: any) => <div>{children}</div>,
-  CardHeader: ({ children }: any) => <div>{children}</div>,
-  CardTitle: ({ children }: any) => <h3>{children}</h3>,
+  Card: ({ children, className }: any) => (
+    <div className={className} data-oid="2s95f7e">
+      {children}
+    </div>
+  ),
+
+  CardContent: ({ children }: any) => <div data-oid="0e9btrz">{children}</div>,
+  CardHeader: ({ children }: any) => <div data-oid="r9hhngx">{children}</div>,
+  CardTitle: ({ children }: any) => <h3 data-oid="qa5h32q">{children}</h3>,
 }))
 
 vi.mock("@/components/ui/resizable", () => ({
-  ResizableHandle: () => <div data-testid="resizable-handle" />,
-  ResizablePanel: ({ children, defaultSize }: any) => <div data-default-size={defaultSize}>{children}</div>,
-  ResizablePanelGroup: ({ children }: any) => <div>{children}</div>,
+  ResizableHandle: () => <div data-testid="resizable-handle" data-oid="sq-shbz" />,
+  ResizablePanel: ({ children, defaultSize }: any) => (
+    <div data-default-size={defaultSize} data-oid="vcsm2mc">
+      {children}
+    </div>
+  ),
+
+  ResizablePanelGroup: ({ children }: any) => <div data-oid="-d0s3vl">{children}</div>,
 }))
 
 vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
@@ -178,7 +196,12 @@ vi.mock("../../hooks/drag-drop/use-drag-drop-timeline", () => ({
 vi.mock("../../context/timeline-ui-context", () => ({
   TimelineUIProvider: ({ children }: any) => children,
   useTimelineUI: () => ({
-    uiState: { timeScale: 60, scrollPosition: { x: 0, y: 0 }, minTimeScale: 10, maxTimeScale: 200 },
+    uiState: {
+      timeScale: 60,
+      scrollPosition: { x: 0, y: 0 },
+      minTimeScale: 10,
+      maxTimeScale: 200,
+    },
     setTimeScale: vi.fn(),
     setScrollPosition: vi.fn(),
     zoomIn: vi.fn(),
@@ -203,66 +226,70 @@ vi.mock("../../hooks/integration/use-timeline-player-sync", () => ({
 }))
 
 vi.mock("../../hooks/editing/use-edit-mode", () => ({
-  EditModeProvider: ({ children }: any) => <div>{children}</div>,
+  EditModeProvider: ({ children }: any) => <div data-oid="vf2p8lc">{children}</div>,
 }))
 
 // Mock child components
 vi.mock("../../components/timeline-hotkeys", () => ({
-  TimelineHotkeys: () => <div data-testid="timeline-hotkeys" />,
+  TimelineHotkeys: () => <div data-testid="timeline-hotkeys" data-oid="redq8u0" />,
 }))
 
 vi.mock("../../components/timeline-speed-ramping-integration", () => ({
-  TimelineSpeedRampingIntegration: () => <div data-testid="timeline-speed-ramping-integration" />,
-  SpeedRampingIndicator: () => <div data-testid="speed-ramping-indicator" />,
-  TimelineSpeedRampingStatus: () => <div data-testid="timeline-speed-ramping-status" />,
+  TimelineSpeedRampingIntegration: () => <div data-testid="timeline-speed-ramping-integration" data-oid="rax840-" />,
+  SpeedRampingIndicator: () => <div data-testid="speed-ramping-indicator" data-oid="z_8oqg1" />,
+  TimelineSpeedRampingStatus: () => <div data-testid="timeline-speed-ramping-status" data-oid=":y4f_6q" />,
 }))
 
 vi.mock("../../components/edit-mode-selector", () => ({
-  EditModeSelector: () => <div data-testid="edit-mode-selector" />,
+  EditModeSelector: () => <div data-testid="edit-mode-selector" data-oid="i326.c2" />,
 }))
 
 vi.mock("../../components/edit-tools/edit-mode-overlay", () => ({
-  EditModeOverlay: () => <div data-testid="edit-mode-overlay" />,
+  EditModeOverlay: () => <div data-testid="edit-mode-overlay" data-oid="4zyx:4l" />,
 }))
 
 vi.mock("../../components/ai-markers/ai-marker-controls", () => ({
-  AIMarkerControls: () => <div data-testid="ai-marker-controls" />,
+  AIMarkerControls: () => <div data-testid="ai-marker-controls" data-oid="jd_wahk" />,
 }))
 
 vi.mock("../../components/track-controls-panel", () => ({
-  TrackControlsPanel: () => <div data-testid="track-controls-panel" />,
+  TrackControlsPanel: () => <div data-testid="track-controls-panel" data-oid="l5y.t3v" />,
 }))
 
 vi.mock("../../components/drag-drop-provider", () => ({
-  DragDropProvider: ({ children }: any) => <div>{children}</div>,
+  DragDropProvider: ({ children }: any) => <div data-oid="68suli7">{children}</div>,
 }))
 
 vi.mock("../../components/markers", () => ({
-  TimelineMarkersLayer: () => <div data-testid="timeline-markers-layer" />,
+  TimelineMarkersLayer: () => <div data-testid="timeline-markers-layer" data-oid="pib3ts7" />,
 }))
 
 vi.mock("../../components/ai-analysis/timeline-ai-overlay", () => ({
-  TimelineAIOverlay: () => <div data-testid="timeline-ai-overlay" />,
+  TimelineAIOverlay: () => <div data-testid="timeline-ai-overlay" data-oid="v848l99" />,
 }))
 
 vi.mock("../../components/edit-tools/split-indicator", () => ({
-  SplitIndicator: () => <div data-testid="split-indicator" />,
+  SplitIndicator: () => <div data-testid="split-indicator" data-oid="oegfad2" />,
 }))
 
 vi.mock("../../components/track-insertion-zone", () => ({
-  TrackInsertionZones: () => <div data-testid="track-insertion-zones" />,
+  TrackInsertionZones: () => <div data-testid="track-insertion-zones" data-oid="dw03rzl" />,
 }))
 
 vi.mock("../../components/timeline-preview-strip", () => ({
-  TimelinePreviewStrip: () => <div data-testid="timeline-preview-strip" />,
+  TimelinePreviewStrip: () => <div data-testid="timeline-preview-strip" data-oid="xo6oi25" />,
 }))
 
 vi.mock("../../components/timeline-scale", () => ({
-  TimelineScale: () => <div data-testid="timeline-scale" />,
+  TimelineScale: () => <div data-testid="timeline-scale" data-oid="e::k5iw" />,
 }))
 
 vi.mock("../../components/track/track", () => ({
-  TrackComponent: ({ track }: any) => <div data-testid={`track-${track.id}`}>{track.name}</div>,
+  TrackComponent: ({ track }: any) => (
+    <div data-testid={`track-${track.id}`} data-oid="kag.vj4">
+      {track.name}
+    </div>
+  ),
 }))
 
 // TODO: Набор тестов пропущен (1/33 тестов проходит, 32 падают)
@@ -290,7 +317,7 @@ describe("TimelineContent", () => {
 
   describe("Loading and error states", () => {
     it("should render without loading state when project is not initialized", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="bxhw9db" />)
 
       // Компонент больше не показывает loading state - Timeline рендерится сразу
       // Проект создается автоматически в useEffect
@@ -300,7 +327,7 @@ describe("TimelineContent", () => {
     it("should show error state when there is an error", () => {
       mockTimelineState.error = "Failed to load timeline"
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="gc76-h8" />)
 
       expect(screen.getByText("Ошибка Timeline")).toBeInTheDocument()
       expect(screen.getByText("Failed to load timeline")).toBeInTheDocument()
@@ -310,7 +337,7 @@ describe("TimelineContent", () => {
     it("should clear error when clicking close button", () => {
       mockTimelineState.error = "Some error"
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="yb5ofpp" />)
 
       const closeButton = screen.getByText("Закрыть")
       fireEvent.click(closeButton)
@@ -321,7 +348,7 @@ describe("TimelineContent", () => {
 
   describe("Project initialization", () => {
     it("should create project on mount when no project exists", async () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="l.i38cv" />)
 
       await waitFor(() => {
         expect(mockTimelineState.createProject).toHaveBeenCalledWith("Test Project")
@@ -337,7 +364,7 @@ describe("TimelineContent", () => {
         duration: 300,
       }
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="q8f9cta" />)
 
       await waitFor(() => {
         expect(mockTimelineState.addSection).toHaveBeenCalledWith("Main Section", 0, 300)
@@ -353,7 +380,7 @@ describe("TimelineContent", () => {
         duration: 300,
       }
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="1qkg-9b" />)
 
       expect(mockTimelineState.addSection).not.toHaveBeenCalled()
     })
@@ -371,7 +398,7 @@ describe("TimelineContent", () => {
     })
 
     it("should render all main components", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="xladxth" />)
 
       expect(screen.getByTestId("timeline-hotkeys")).toBeInTheDocument()
       expect(screen.getByTestId("timeline-speed-ramping-integration")).toBeInTheDocument()
@@ -382,7 +409,7 @@ describe("TimelineContent", () => {
     })
 
     it("should display project information", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="5kl49gl" />)
 
       expect(screen.getByText("Test Project")).toBeInTheDocument()
       expect(screen.getByText("1920x1080 @ 30fps")).toBeInTheDocument()
@@ -392,7 +419,7 @@ describe("TimelineContent", () => {
       mockTracks.tracks = [{ id: "t1" }, { id: "t2" }]
       mockClips.clips = [{ id: "c1" }, { id: "c2" }, { id: "c3" }]
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="gdjz54i" />)
 
       expect(screen.getByText("1 секций")).toBeInTheDocument()
       expect(screen.getByText("2 треков")).toBeInTheDocument()
@@ -414,7 +441,7 @@ describe("TimelineContent", () => {
     it("should show empty state when no tracks", () => {
       mockTracks.tracks = []
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="zcu-c3e" />)
 
       expect(screen.getByText("Треки не найдены")).toBeInTheDocument()
       expect(screen.getByText("Добавить видео трек")).toBeInTheDocument()
@@ -423,7 +450,7 @@ describe("TimelineContent", () => {
     it("should add track when clicking add button", () => {
       mockTracks.tracks = []
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="81yf0f2" />)
 
       const addButton = screen.getByText("Добавить видео трек")
       fireEvent.click(addButton)
@@ -437,7 +464,7 @@ describe("TimelineContent", () => {
         { id: "track-2", name: "Audio Track 1", type: "audio", clips: [] },
       ]
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="n8ko:04" />)
 
       expect(screen.getByTestId("track-track-1")).toBeInTheDocument()
       expect(screen.getByTestId("track-track-2")).toBeInTheDocument()
@@ -459,25 +486,25 @@ describe("TimelineContent", () => {
     })
 
     it("should render timeline scale", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="xzldfb-" />)
 
       expect(screen.getByTestId("timeline-scale")).toBeInTheDocument()
     })
 
     it("should render markers layer", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="3phpere" />)
 
       expect(screen.getByTestId("timeline-markers-layer")).toBeInTheDocument()
     })
 
     it("should render AI overlay", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="fw9y46g" />)
 
       expect(screen.getByTestId("timeline-ai-overlay")).toBeInTheDocument()
     })
 
     it("should render split indicator", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="0eyddoq" />)
 
       expect(screen.getByTestId("split-indicator")).toBeInTheDocument()
     })
@@ -485,7 +512,7 @@ describe("TimelineContent", () => {
     it("should render track insertion zones when dragging", () => {
       mockDragState.dragState.isDragging = true
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="r2srj_8" />)
 
       expect(screen.getByTestId("track-insertion-zones")).toBeInTheDocument()
     })
@@ -506,14 +533,22 @@ describe("TimelineContent", () => {
       mockTracks.tracks = [{ id: "track-1", name: "Audio Track", type: "audio", clips: [] }]
       mockClips.clips = []
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="q5brdg8" />)
 
       expect(screen.queryByTestId("timeline-preview-strip")).not.toBeInTheDocument()
     })
 
     it.skip("should render preview strip for video clips with media", () => {
       // SKIP: Preview strip был удален при рефакторинге - теперь tracks рендерятся через TracksWithTimeScale
-      mockTracks.tracks = [{ id: "track-1", name: "Video Track", type: "video", clips: ["clip-1"] }]
+      mockTracks.tracks = [
+        {
+          id: "track-1",
+          name: "Video Track",
+          type: "video",
+          clips: ["clip-1"],
+        },
+      ]
+
       mockClips.clips = [
         {
           id: "clip-1",
@@ -524,7 +559,7 @@ describe("TimelineContent", () => {
         },
       ]
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="w9bd9l9" />)
 
       expect(screen.getByTestId("timeline-preview-strip")).toBeInTheDocument()
     })
@@ -543,7 +578,7 @@ describe("TimelineContent", () => {
     })
 
     it("should handle scroll events", () => {
-      const { container } = renderWithTimeline(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent data-oid="26f1dfv" />)
 
       const scrollContainer = container.querySelector(".overflow-auto")
       expect(scrollContainer).toBeTruthy()
@@ -563,7 +598,7 @@ describe("TimelineContent", () => {
         unobserve = vi.fn()
       } as any
 
-      const { unmount } = renderWithTimeline(<TimelineContent />)
+      const { unmount } = renderWithTimeline(<TimelineContent data-oid="3pxejn1" />)
 
       expect(mockObserve).toHaveBeenCalled()
 
@@ -596,14 +631,14 @@ describe("TimelineContent", () => {
       mockTimelineState.selectedTrackIds = ["track-1"]
       mockTimelineState.currentTime = 5
 
-      const { container } = renderWithTimeline(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent data-oid="we:kxdy" />)
 
       const track = container.querySelector('[data-testid="track-track-1"]')
       expect(track).toBeTruthy()
     })
 
     it("should handle track selection", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="srfdwkk" />)
 
       // Since Track is mocked, we can't test the actual selection,
       // but we can verify the component receives the correct props
@@ -624,13 +659,13 @@ describe("TimelineContent", () => {
     })
 
     it("should render timeline header with label", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="8qkv99e" />)
 
       expect(screen.getByText("Временная шкала")).toBeInTheDocument()
     })
 
     it("should render resizable panels", () => {
-      const { container } = renderWithTimeline(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent data-oid="bxw9_qj" />)
 
       const panels = container.querySelectorAll("[data-default-size]")
       expect(panels).toHaveLength(2)
@@ -639,7 +674,7 @@ describe("TimelineContent", () => {
     })
 
     it("should render resizable handle", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="bfmzfub" />)
 
       expect(screen.getByTestId("resizable-handle")).toBeInTheDocument()
     })
@@ -665,7 +700,7 @@ describe("TimelineContent", () => {
     })
 
     it("should setup split indicator with correct props", () => {
-      const { container } = renderWithTimeline(<TimelineContent />)
+      const { container } = renderWithTimeline(<TimelineContent data-oid="jwinep-" />)
 
       expect(screen.getByTestId("split-indicator")).toBeInTheDocument()
 
@@ -690,7 +725,7 @@ describe("TimelineContent", () => {
     it("should setup window resize listener", () => {
       const addEventListenerSpy = vi.spyOn(window, "addEventListener")
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="m.5e-gd" />)
 
       expect(addEventListenerSpy).toHaveBeenCalledWith("resize", expect.any(Function))
     })
@@ -698,7 +733,7 @@ describe("TimelineContent", () => {
     it("should cleanup listeners on unmount", () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener")
 
-      const { unmount } = renderWithTimeline(<TimelineContent />)
+      const { unmount } = renderWithTimeline(<TimelineContent data-oid="c473aiw" />)
 
       unmount()
 
@@ -726,7 +761,7 @@ describe("TimelineContent", () => {
     })
 
     it("should pass update handler to tracks", () => {
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="02u66:t" />)
 
       // Verify updateTrack function is available
       expect(mockTimelineState.updateTrack).toBeDefined()
@@ -744,9 +779,11 @@ describe("TimelineContent", () => {
       }
 
       // Temporarily set projectSettings to null
-      vi.mocked(useProjectSettings).mockReturnValueOnce({ settings: null } as any)
+      vi.mocked(useProjectSettings).mockReturnValueOnce({
+        settings: null,
+      } as any)
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="eb09em8" />)
 
       expect(screen.getByText("1280x720 @ 25fps")).toBeInTheDocument()
     })
@@ -767,7 +804,7 @@ describe("TimelineContent", () => {
     it("should not show track insertion zones when not dragging", () => {
       mockDragState.dragState.isDragging = false
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="id91p:o" />)
 
       // TrackInsertionZones should still be rendered but with isVisible=false
       expect(screen.getByTestId("track-insertion-zones")).toBeInTheDocument()
@@ -776,7 +813,7 @@ describe("TimelineContent", () => {
     it("should show track insertion zones when dragging", () => {
       mockDragState.dragState.isDragging = true
 
-      renderWithTimeline(<TimelineContent />)
+      renderWithTimeline(<TimelineContent data-oid="b9z32_u" />)
 
       expect(screen.getByTestId("track-insertion-zones")).toBeInTheDocument()
     })

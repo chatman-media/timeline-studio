@@ -193,31 +193,35 @@ export function CacheSettingsModal() {
 
   if (isLoading || !cacheStats) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="flex items-center justify-center py-8" data-oid="5iimu52">
+        <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" data-oid="x15db9h" />
       </div>
     )
   }
 
   return (
-    <div className="space-y-4 max-h-[70vh] overflow-y-auto px-1">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5" />
+    <div className="space-y-4 max-h-[70vh] overflow-y-auto px-1" data-oid="0ly5a_r">
+      <Card data-oid="9.mayt8">
+        <CardHeader data-oid="ph1nueb">
+          <CardTitle className="flex items-center gap-2" data-oid="-hujskr">
+            <Database className="h-5 w-5" data-oid="rb9w8cd" />
             {t("browser.media.cache.title")}
           </CardTitle>
-          <CardDescription>{t("browser.media.cache.description")}</CardDescription>
+          <CardDescription data-oid="ym4ocnn">{t("browser.media.cache.description")}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6" data-oid="fjgavfb">
           {/* Общая статистика */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium">{t("browser.media.cache.totalSize")}</span>
-              <span className="text-muted-foreground">{formatFileSize(cacheStats.totalSize)}</span>
+          <div className="space-y-2" data-oid="x73_aih">
+            <div className="flex items-center justify-between text-sm" data-oid="az4bvdn">
+              <span className="font-medium" data-oid="wrngd1q">
+                {t("browser.media.cache.totalSize")}
+              </span>
+              <span className="text-muted-foreground" data-oid="-2yxht7">
+                {formatFileSize(cacheStats.totalSize)}
+              </span>
             </div>
-            <Progress value={(cacheStats.totalSize / (500 * 1024 * 1024)) * 100} className="h-2" />
-            <p className="text-xs text-muted-foreground">
+            <Progress value={(cacheStats.totalSize / (500 * 1024 * 1024)) * 100} className="h-2" data-oid="ogfoypw" />
+            <p className="text-xs text-muted-foreground" data-oid="m4wqo3k">
               {t("browser.media.cache.usage", {
                 used: formatFileSize(cacheStats.totalSize),
                 total: "500 MB",
@@ -225,71 +229,85 @@ export function CacheSettingsModal() {
             </p>
           </div>
 
-          <Separator />
+          <Separator data-oid="9fy:zu7" />
 
           {/* Кэш превью */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h4 className="text-sm font-medium">{t("browser.media.cache.previewCache.title")}</h4>
-                <p className="text-xs text-muted-foreground">
+          <div className="space-y-3" data-oid="ea9wt:q">
+            <div className="flex items-center justify-between" data-oid="unl_mtt">
+              <div className="space-y-1" data-oid="6lcbnvp">
+                <h4 className="text-sm font-medium" data-oid="t-n51s5">
+                  {t("browser.media.cache.previewCache.title")}
+                </h4>
+                <p className="text-xs text-muted-foreground" data-oid="bwlhjcd">
                   {t("browser.media.cache.previewCache.info", {
                     count: cacheStats.previewCache.count,
                     size: formatFileSize(cacheStats.previewCache.size),
                   })}
                 </p>
               </div>
-              <Button variant="outline" size="sm" onClick={clearPreviewCache} disabled={isClearing}>
-                <Trash2 className="mr-2 h-4 w-4" />
+              <Button variant="outline" size="sm" onClick={clearPreviewCache} disabled={isClearing} data-oid="dey512x">
+                <Trash2 className="mr-2 h-4 w-4" data-oid="gu3j9fn" />
                 {t("browser.media.cache.actions.clear")}
               </Button>
             </div>
           </div>
 
           {/* Кэш кадров */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h4 className="text-sm font-medium">{t("browser.media.cache.frameCache.title")}</h4>
-                <p className="text-xs text-muted-foreground">
+          <div className="space-y-3" data-oid="khl:esi">
+            <div className="flex items-center justify-between" data-oid="uo46.a:">
+              <div className="space-y-1" data-oid="c6ng48j">
+                <h4 className="text-sm font-medium" data-oid="uqp5hh:">
+                  {t("browser.media.cache.frameCache.title")}
+                </h4>
+                <p className="text-xs text-muted-foreground" data-oid="8sd:5su">
                   {t("browser.media.cache.frameCache.info", {
                     count: cacheStats.frameCache.count,
                     size: formatFileSize(cacheStats.frameCache.size),
                   })}
                 </p>
               </div>
-              <Button variant="outline" size="sm" onClick={clearFrameCache} disabled={isClearing}>
-                <Trash2 className="mr-2 h-4 w-4" />
+              <Button variant="outline" size="sm" onClick={clearFrameCache} disabled={isClearing} data-oid="q.fntxt">
+                <Trash2 className="mr-2 h-4 w-4" data-oid="alz.6h6" />
                 {t("browser.media.cache.actions.clear")}
               </Button>
             </div>
           </div>
 
           {/* Кэш распознавания */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h4 className="text-sm font-medium">{t("browser.media.cache.recognitionCache.title")}</h4>
-                <p className="text-xs text-muted-foreground">
+          <div className="space-y-3" data-oid="0llaepj">
+            <div className="flex items-center justify-between" data-oid=":.m4xpo">
+              <div className="space-y-1" data-oid=".xy22nx">
+                <h4 className="text-sm font-medium" data-oid="8dp7-8b">
+                  {t("browser.media.cache.recognitionCache.title")}
+                </h4>
+                <p className="text-xs text-muted-foreground" data-oid="gdefcn:">
                   {t("browser.media.cache.recognitionCache.info", {
                     count: cacheStats.recognitionCache.count,
                     size: formatFileSize(cacheStats.recognitionCache.size),
                   })}
                 </p>
               </div>
-              <Button variant="outline" size="sm" onClick={clearRecognitionCache} disabled={isClearing}>
-                <Trash2 className="mr-2 h-4 w-4" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearRecognitionCache}
+                disabled={isClearing}
+                data-oid="b2ksgsl"
+              >
+                <Trash2 className="mr-2 h-4 w-4" data-oid="_a16n-8" />
                 {t("browser.media.cache.actions.clear")}
               </Button>
             </div>
           </div>
 
           {/* Кэш субтитров */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h4 className="text-sm font-medium">{t("browser.media.cache.subtitleCache.title")}</h4>
-                <p className="text-xs text-muted-foreground">
+          <div className="space-y-3" data-oid="cs6tio4">
+            <div className="flex items-center justify-between" data-oid="a-acm4u">
+              <div className="space-y-1" data-oid="dvtn2ab">
+                <h4 className="text-sm font-medium" data-oid="fryi47:">
+                  {t("browser.media.cache.subtitleCache.title")}
+                </h4>
+                <p className="text-xs text-muted-foreground" data-oid="qth1wsx">
                   {t("browser.media.cache.subtitleCache.info", {
                     count: cacheStats.subtitleCache.count,
                     size: formatFileSize(cacheStats.subtitleCache.size),
@@ -327,39 +345,46 @@ export function CacheSettingsModal() {
                   }
                 }}
                 disabled={isClearing}
+                data-oid="nqs:43v"
               >
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-4 w-4" data-oid="vf1uh8e" />
                 {t("browser.media.cache.actions.clear")}
               </Button>
             </div>
           </div>
 
-          <Separator />
+          <Separator data-oid="j:ff3s-" />
 
           {/* Прогресс очистки */}
           {clearingProgress > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>{t("browser.media.cache.clearing")}</span>
-                <span>{clearingProgress}%</span>
+            <div className="space-y-2" data-oid="6dwcoiu">
+              <div className="flex items-center justify-between text-sm" data-oid="-c-8.sg">
+                <span data-oid="_jqd.g7">{t("browser.media.cache.clearing")}</span>
+                <span data-oid="23jd4sf">{clearingProgress}%</span>
               </div>
-              <Progress value={clearingProgress} className="h-2" />
+              <Progress value={clearingProgress} className="h-2" data-oid="w2kgmz." />
             </div>
           )}
 
           {/* Кнопка очистки всего */}
-          <div className="flex-1 items-center justify-between">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <span>{t("browser.media.cache.warning")}</span>
+          <div className="flex-1 items-center justify-between" data-oid="co.0oxd">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4" data-oid="6h7y2rn">
+              <AlertCircle className="h-4 w-4" data-oid="1u-qkbf" />
+              <span data-oid="cwb9k6b">{t("browser.media.cache.warning")}</span>
             </div>
-            <div className="flex gap-2 justify-between">
-              <Button variant="outline" size="sm" onClick={cleanupExpiredCache} disabled={isClearing}>
-                <RefreshCw className="mr-2 h-4 w-4" />
+            <div className="flex gap-2 justify-between" data-oid=":b1ftvn">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={cleanupExpiredCache}
+                disabled={isClearing}
+                data-oid=":p9tz9:"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" data-oid="p05ldta" />
                 {t("browser.media.cache.actions.cleanupExpired")}
               </Button>
-              <Button variant="destructive" onClick={clearAllCache} disabled={isClearing}>
-                <Trash2 className="mr-2 h-4 w-4" />
+              <Button variant="destructive" onClick={clearAllCache} disabled={isClearing} data-oid="j9mc7_k">
+                <Trash2 className="mr-2 h-4 w-4" data-oid="4glnlua" />
                 {t("browser.media.cache.actions.clearAll")}
               </Button>
             </div>
@@ -368,26 +393,38 @@ export function CacheSettingsModal() {
       </Card>
 
       {/* Информация о хранилище */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <HardDrive className="h-5 w-5" />
+      <Card data-oid="awsb-ow">
+        <CardHeader data-oid="7xzse5s">
+          <CardTitle className="flex items-center gap-2" data-oid="jfe-tww">
+            <HardDrive className="h-5 w-5" data-oid="x2fgl9g" />
             {t("browser.media.cache.storage.title")}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">{t("browser.media.cache.storage.technology")}</span>
-              <span className="font-medium">IndexedDB</span>
+        <CardContent data-oid="ju8.evh">
+          <div className="space-y-3 text-sm" data-oid="cpoe_j:">
+            <div className="flex items-center justify-between" data-oid=":8r.m4d">
+              <span className="text-muted-foreground" data-oid="37aa459">
+                {t("browser.media.cache.storage.technology")}
+              </span>
+              <span className="font-medium" data-oid="c345q50">
+                IndexedDB
+              </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">{t("browser.media.cache.storage.maxSize")}</span>
-              <span className="font-medium">500 MB</span>
+            <div className="flex items-center justify-between" data-oid="wiv.t_i">
+              <span className="text-muted-foreground" data-oid="c1x2g5z">
+                {t("browser.media.cache.storage.maxSize")}
+              </span>
+              <span className="font-medium" data-oid="jz8z5ec">
+                500 MB
+              </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">{t("browser.media.cache.storage.autoCleanup")}</span>
-              <span className="font-medium">{t("browser.media.cache.storage.autoCleanupValue")}</span>
+            <div className="flex items-center justify-between" data-oid="4k21qx0">
+              <span className="text-muted-foreground" data-oid="1rop3hf">
+                {t("browser.media.cache.storage.autoCleanup")}
+              </span>
+              <span className="font-medium" data-oid="t1yffx:">
+                {t("browser.media.cache.storage.autoCleanupValue")}
+              </span>
             </div>
           </div>
         </CardContent>

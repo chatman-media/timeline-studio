@@ -57,23 +57,31 @@ describe("VideoEditingProvider", () => {
     vi.clearAllMocks()
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => <VideoEditingProvider>{children}</VideoEditingProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <VideoEditingProvider data-oid="ohmaokr">{children}</VideoEditingProvider>
+  )
 
   describe("Provider Initialization", () => {
     it("should render without errors", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result.current).toBeDefined()
     })
 
     it("should provide orchestrator instance", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result.current.orchestrator).toBe(mockOrchestrator)
     })
 
     it("should provide same orchestrator instance on re-render", () => {
-      const { result, rerender } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result, rerender } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       const firstOrchestrator = result.current.orchestrator
       rerender()
@@ -91,7 +99,9 @@ describe("VideoEditingProvider", () => {
     })
 
     it("should provide context value within provider", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result.current.orchestrator).toBeDefined()
       expect(typeof result.current.orchestrator).toBe("object")
@@ -100,7 +110,9 @@ describe("VideoEditingProvider", () => {
 
   describe("Orchestrator Access", () => {
     it("should expose timeline methods", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result.current.orchestrator.getTimelineState).toBeDefined()
       expect(result.current.orchestrator.subscribeToTimeline).toBeDefined()
@@ -109,7 +121,9 @@ describe("VideoEditingProvider", () => {
     })
 
     it("should expose player methods", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result.current.orchestrator.getPlayerState).toBeDefined()
       expect(result.current.orchestrator.subscribeToPlayer).toBeDefined()
@@ -119,7 +133,9 @@ describe("VideoEditingProvider", () => {
     })
 
     it("should expose project methods", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result.current.orchestrator.createProject).toBeDefined()
       expect(result.current.orchestrator.loadProject).toBeDefined()
@@ -127,7 +143,9 @@ describe("VideoEditingProvider", () => {
     })
 
     it("should expose actor access", () => {
-      const { result } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       const actors = result.current.orchestrator.getActors()
       expect(actors.timeline).toBeDefined()
@@ -137,8 +155,12 @@ describe("VideoEditingProvider", () => {
 
   describe("Multiple Children", () => {
     it("should provide context to multiple children", () => {
-      const { result: result1 } = renderHook(() => useVideoEditingContext(), { wrapper })
-      const { result: result2 } = renderHook(() => useVideoEditingContext(), { wrapper })
+      const { result: result1 } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
+      const { result: result2 } = renderHook(() => useVideoEditingContext(), {
+        wrapper,
+      })
 
       expect(result1.current.orchestrator).toBe(mockOrchestrator)
       expect(result2.current.orchestrator).toBe(mockOrchestrator)

@@ -63,7 +63,7 @@ describe("YoloDataOverlay", () => {
   })
 
   it("должен отобразить оверлей с обнаружениями", async () => {
-    render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="j0p4y6q" />)
 
     await waitFor(() => {
       expect(screen.getByText(/Обнаружено объектов/)).toBeInTheDocument()
@@ -71,7 +71,7 @@ describe("YoloDataOverlay", () => {
   })
 
   it("должен показать количество обнаруженных объектов", async () => {
-    render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="nrqzpmu" />)
 
     await waitFor(() => {
       const text = screen.getByText(/Обнаружено объектов/)
@@ -80,7 +80,7 @@ describe("YoloDataOverlay", () => {
   })
 
   it("должен отобразить рамки для каждого объекта", async () => {
-    render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="l._cpsj" />)
 
     await waitFor(() => {
       // Проверяем, что есть рамки (DetectionBox компоненты)
@@ -91,7 +91,7 @@ describe("YoloDataOverlay", () => {
 
   it("не должен ничего отображать без обнаружений", async () => {
     mockGetYoloDataAtTimestamp.mockResolvedValue([])
-    const { container } = render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    const { container } = render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="wel.afd" />)
 
     await waitFor(() => {
       expect(container.firstChild).toBeNull()
@@ -99,7 +99,7 @@ describe("YoloDataOverlay", () => {
   })
 
   it("должен загрузить данные для текущего времени", async () => {
-    render(<YoloDataOverlay video={mockVideo} currentTime={5.7} />)
+    render(<YoloDataOverlay video={mockVideo} currentTime={5.7} data-oid="kozaj_b" />)
 
     await waitFor(() => {
       // Время должно быть округлено до ближайшей секунды
@@ -108,13 +108,13 @@ describe("YoloDataOverlay", () => {
   })
 
   it("должен обновить данные при изменении времени", async () => {
-    const { rerender } = render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    const { rerender } = render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="ye9vnep" />)
 
     await waitFor(() => {
       expect(mockGetYoloDataAtTimestamp).toHaveBeenCalledWith("test-video", 5)
     })
 
-    rerender(<YoloDataOverlay video={mockVideo} currentTime={10} />)
+    rerender(<YoloDataOverlay video={mockVideo} currentTime={10} data-oid="b.9uthg" />)
 
     await waitFor(() => {
       expect(mockGetYoloDataAtTimestamp).toHaveBeenCalledWith("test-video", 10)
@@ -122,7 +122,7 @@ describe("YoloDataOverlay", () => {
   })
 
   it("должен показать кнопку для копирования контекста сцены", async () => {
-    render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="55h.2z_" />)
 
     await waitFor(() => {
       expect(screen.getByText(/Обнаружено объектов/)).toBeInTheDocument()
@@ -136,12 +136,24 @@ describe("YoloDataOverlay", () => {
 
   it("должен показать уникальные классы объектов", async () => {
     mockGetYoloDataAtTimestamp.mockResolvedValue([
-      { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.2, width: 0.3, height: 0.6 } },
-      { class: "person", confidence: 0.92, bbox: { x: 0.2, y: 0.3, width: 0.25, height: 0.5 } },
-      { class: "car", confidence: 0.87, bbox: { x: 0.5, y: 0.4, width: 0.2, height: 0.3 } },
+      {
+        class: "person",
+        confidence: 0.95,
+        bbox: { x: 0.1, y: 0.2, width: 0.3, height: 0.6 },
+      },
+      {
+        class: "person",
+        confidence: 0.92,
+        bbox: { x: 0.2, y: 0.3, width: 0.25, height: 0.5 },
+      },
+      {
+        class: "car",
+        confidence: 0.87,
+        bbox: { x: 0.5, y: 0.4, width: 0.2, height: 0.3 },
+      },
     ])
 
-    render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+    render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="lgr9w6_" />)
 
     await waitFor(() => {
       // Должны быть показаны уникальные классы
@@ -151,7 +163,7 @@ describe("YoloDataOverlay", () => {
 
   it("должен обработать отсутствие video id", async () => {
     const videoWithoutId = { ...mockVideo, id: "" }
-    const { container } = render(<YoloDataOverlay video={videoWithoutId} currentTime={5} />)
+    const { container } = render(<YoloDataOverlay video={videoWithoutId} currentTime={5} data-oid="m.e_j4g" />)
 
     await waitFor(() => {
       expect(container.firstChild).toBeNull()
@@ -160,7 +172,7 @@ describe("YoloDataOverlay", () => {
 
   describe("DetectionBox", () => {
     it("должен отображать класс и уверенность", async () => {
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="jyb0td6" />)
 
       await waitFor(() => {
         expect(screen.getByText(/person \(95%\)/)).toBeInTheDocument()
@@ -168,7 +180,7 @@ describe("YoloDataOverlay", () => {
     })
 
     it("должен использовать правильные цвета для классов", async () => {
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="mws98to" />)
 
       await waitFor(() => {
         const boxes = document.querySelectorAll('div[style*="border"]')
@@ -181,10 +193,14 @@ describe("YoloDataOverlay", () => {
 
     it("должен правильно позиционировать рамки", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.5, y: 0.5, width: 0.2, height: 0.3 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.5, y: 0.5, width: 0.2, height: 0.3 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="r2yjog7" />)
 
       await waitFor(() => {
         const boxes = document.querySelectorAll('div[style*="left"]')
@@ -201,10 +217,14 @@ describe("YoloDataOverlay", () => {
   describe("calculatePosition", () => {
     it("должен определить верхнюю левую позицию", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.1 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.1 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="nb9_hjn" />)
 
       await waitFor(() => {
         const copyButton = screen.getByText(/Скопировать контекст сцены/)
@@ -214,10 +234,14 @@ describe("YoloDataOverlay", () => {
 
     it("должен определить центральную позицию", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.4, y: 0.4, width: 0.2, height: 0.2 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.4, y: 0.4, width: 0.2, height: 0.2 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="_7092w_" />)
 
       await waitFor(() => {
         const copyButton = screen.getByText(/Скопировать контекст сцены/)
@@ -227,10 +251,14 @@ describe("YoloDataOverlay", () => {
 
     it("должен определить нижнюю правую позицию", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.7, y: 0.7, width: 0.2, height: 0.2 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.7, y: 0.7, width: 0.2, height: 0.2 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="sgwkrj2" />)
 
       await waitFor(() => {
         const copyButton = screen.getByText(/Скопировать контекст сцены/)
@@ -242,10 +270,14 @@ describe("YoloDataOverlay", () => {
   describe("calculateSize", () => {
     it("должен определить маленький размер", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.2 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.1, height: 0.2 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="kinudrz" />)
 
       await waitFor(() => {
         expect(screen.getAllByText(/person/)[0]).toBeInTheDocument()
@@ -254,10 +286,14 @@ describe("YoloDataOverlay", () => {
 
     it("должен определить средний размер", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.1, width: 0.2, height: 0.3 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.2, height: 0.3 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="97ojl8y" />)
 
       await waitFor(() => {
         expect(screen.getAllByText(/person/)[0]).toBeInTheDocument()
@@ -266,10 +302,14 @@ describe("YoloDataOverlay", () => {
 
     it("должен определить большой размер", async () => {
       mockGetYoloDataAtTimestamp.mockResolvedValue([
-        { class: "person", confidence: 0.95, bbox: { x: 0.1, y: 0.1, width: 0.4, height: 0.5 } },
+        {
+          class: "person",
+          confidence: 0.95,
+          bbox: { x: 0.1, y: 0.1, width: 0.4, height: 0.5 },
+        },
       ])
 
-      render(<YoloDataOverlay video={mockVideo} currentTime={5} />)
+      render(<YoloDataOverlay video={mockVideo} currentTime={5} data-oid="w8::gqz" />)
 
       await waitFor(() => {
         expect(screen.getAllByText(/person/)[0]).toBeInTheDocument()

@@ -152,7 +152,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
   // Функция для выполнения backend команд
   const executeCommand = useCallback(
     async (command: any) => {
-      logInfo("ResourcesProvider: Executing command", { commandType: command.type })
+      logInfo("ResourcesProvider: Executing command", {
+        commandType: command.type,
+      })
       try {
         setIsLoading(true)
         setError(null)
@@ -162,7 +164,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           throw new Error(result.error || "Command failed")
         }
 
-        logInfo("ResourcesProvider: Command executed successfully", { commandType: command.type })
+        logInfo("ResourcesProvider: Command executed successfully", {
+          commandType: command.type,
+        })
         return result.data
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Unknown error"
@@ -247,7 +251,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           return "path" in mediaItem && mediaItem.path === file.path
         })
         if (alreadyExists) {
-          logInfo("ResourcesProvider: Media already exists, skipping", { path: file.path })
+          logInfo("ResourcesProvider: Media already exists, skipping", {
+            path: file.path,
+          })
           return
         }
       }
@@ -331,7 +337,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           return "path" in mediaItem && mediaItem.path === file.path
         })
         if (alreadyExists) {
-          logInfo("ResourcesProvider: Music already exists, skipping", { path: file.path })
+          logInfo("ResourcesProvider: Music already exists, skipping", {
+            path: file.path,
+          })
           return
         }
       }
@@ -363,7 +371,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           })
         }
 
-        logInfo("ResourcesProvider: Music added successfully", { path: file.path })
+        logInfo("ResourcesProvider: Music added successfully", {
+          path: file.path,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add music", {
           path: file.path,
@@ -377,7 +387,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
 
   const addSubtitle = useCallback(
     async (style: SubtitleStyleTemplate) => {
-      logInfo("ResourcesProvider: Adding subtitle resource", { styleId: style.id })
+      logInfo("ResourcesProvider: Adding subtitle resource", {
+        styleId: style.id,
+      })
       try {
         await executeCommand({
           type: "SaveResource",
@@ -388,7 +400,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             metadata: {},
           },
         })
-        logInfo("ResourcesProvider: Subtitle resource added successfully", { styleId: style.id })
+        logInfo("ResourcesProvider: Subtitle resource added successfully", {
+          styleId: style.id,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add subtitle", {
           styleId: style.id,
@@ -416,7 +430,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             metadata: {},
           },
         })
-        logInfo("ResourcesProvider: Effect resource added successfully", { effectId: effect.id })
+        logInfo("ResourcesProvider: Effect resource added successfully", {
+          effectId: effect.id,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add effect", {
           effectId: effect.id,
@@ -444,7 +460,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             metadata: {},
           },
         })
-        logInfo("ResourcesProvider: Filter resource added successfully", { filterId: filter.id })
+        logInfo("ResourcesProvider: Filter resource added successfully", {
+          filterId: filter.id,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add filter", {
           filterId: filter.id,
@@ -472,7 +490,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             metadata: {},
           },
         })
-        logInfo("ResourcesProvider: Transition resource added successfully", { transitionId: transition.id })
+        logInfo("ResourcesProvider: Transition resource added successfully", {
+          transitionId: transition.id,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add transition", {
           transitionId: transition.id,
@@ -499,7 +519,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             metadata: {},
           },
         })
-        logInfo("ResourcesProvider: Template resource added successfully", { templateId: template.id })
+        logInfo("ResourcesProvider: Template resource added successfully", {
+          templateId: template.id,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to add template", {
           templateId: template.id,
@@ -561,7 +583,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
             },
           })
         }
-        logInfo("ResourcesProvider: Resource removed successfully", { resourceId })
+        logInfo("ResourcesProvider: Resource removed successfully", {
+          resourceId,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to remove resource", {
           resourceId,
@@ -584,7 +608,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           type: "UpdateMedia",
           params: { media_id: resourceId, updates: params },
         })
-        logInfo("ResourcesProvider: Resource updated successfully", { resourceId })
+        logInfo("ResourcesProvider: Resource updated successfully", {
+          resourceId,
+        })
       } catch (error) {
         logError("ResourcesProvider: Failed to update resource", {
           resourceId,
@@ -601,7 +627,9 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     try {
       const resourceTypes = ["effect", "filter", "transition", "template", "styleTemplate", "subtitle"]
       for (const resourceType of resourceTypes) {
-        logInfo("ResourcesProvider: Loading resources for type", { resourceType })
+        logInfo("ResourcesProvider: Loading resources for type", {
+          resourceType,
+        })
         await executeCommand({
           type: "LoadResources",
           params: {
@@ -1001,7 +1029,11 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     },
   }
 
-  return <ResourcesContext.Provider value={contextValue}>{children}</ResourcesContext.Provider>
+  return (
+    <ResourcesContext.Provider value={contextValue} data-oid="4c7mbat">
+      {children}
+    </ResourcesContext.Provider>
+  )
 }
 
 export function useResources(): ResourcesContextType {

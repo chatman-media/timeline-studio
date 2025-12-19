@@ -12,7 +12,7 @@ import { MediaPreview } from "../../../components/preview/media-preview"
 // Мокаем lucide-react иконки
 vi.mock("lucide-react", () => ({
   Loader2: ({ className }: any) => (
-    <div data-testid="loader" className={className}>
+    <div data-testid="loader" className={className} data-oid="jqpyff:">
       Loading...
     </div>
   ),
@@ -33,6 +33,7 @@ vi.mock("../../../components/preview/video-preview", () => ({
       data-show-filename={showFileName}
       data-dimensions={dimensions.join(",")}
       data-ignore-ratio={ignoreRatio}
+      data-oid="yyuwdmd"
     >
       Video Preview
     </div>
@@ -47,6 +48,7 @@ vi.mock("../../../components/preview/audio-preview", () => ({
       data-size={size}
       data-show-filename={showFileName}
       data-dimensions={dimensions.join(",")}
+      data-oid="_mqo:vh"
     >
       Audio Preview
     </div>
@@ -61,6 +63,7 @@ vi.mock("../../../components/preview/image-preview", () => ({
       data-size={size}
       data-show-filename={showFileName}
       data-dimensions={dimensions.join(",")}
+      data-oid=":9mn:a_"
     >
       Image Preview
     </div>
@@ -100,7 +103,7 @@ describe("MediaPreview", () => {
   }
 
   it("should render VideoPreview for video files", () => {
-    render(<MediaPreview file={videoFile} />)
+    render(<MediaPreview file={videoFile} data-oid="j2e3-v8" />)
 
     const videoPreview = screen.getByTestId("video-preview")
     expect(videoPreview).toBeInTheDocument()
@@ -112,7 +115,7 @@ describe("MediaPreview", () => {
   })
 
   it("should render AudioPreview for audio files", () => {
-    render(<MediaPreview file={audioFile} />)
+    render(<MediaPreview file={audioFile} data-oid="0q1zfsh" />)
 
     const audioPreview = screen.getByTestId("audio-preview")
     expect(audioPreview).toBeInTheDocument()
@@ -120,7 +123,7 @@ describe("MediaPreview", () => {
   })
 
   it("should render ImagePreview for image files", () => {
-    render(<MediaPreview file={imageFile} />)
+    render(<MediaPreview file={imageFile} data-oid="e74c0jq" />)
 
     const imagePreview = screen.getByTestId("image-preview")
     expect(imagePreview).toBeInTheDocument()
@@ -128,7 +131,7 @@ describe("MediaPreview", () => {
   })
 
   it("should pass custom props to child components", () => {
-    render(<MediaPreview file={videoFile} size={150} showFileName dimensions={[4, 3]} ignoreRatio />)
+    render(<MediaPreview file={videoFile} size={150} showFileName dimensions={[4, 3]} ignoreRatio data-oid="t2qvlr3" />)
 
     const videoPreview = screen.getByTestId("video-preview")
     expect(videoPreview).toHaveAttribute("data-size", "150")

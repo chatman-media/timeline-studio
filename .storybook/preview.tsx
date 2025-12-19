@@ -1,8 +1,8 @@
-import type { Preview } from "@storybook/react"
-import React from "react"
-import { withThemeByClassName } from "@storybook/addon-themes"
+import type { Preview } from "@storybook/react";
+import React from "react";
+import { withThemeByClassName } from "@storybook/addon-themes";
 
-import "../src/styles/globals.css"
+import "../src/styles/globals.css";
 
 const preview: Preview = {
   parameters: {
@@ -25,11 +25,11 @@ const preview: Preview = {
       defaultTheme: "light",
     }),
     (Story) => (
-      <div className="p-8">
-        <Story />
+      <div className="p-8" data-oid="rk2cbmh">
+        <Story data-oid="3hoyt6i" />
       </div>
     ),
   ],
-}
+};
 
-export default preview
+export default preview;

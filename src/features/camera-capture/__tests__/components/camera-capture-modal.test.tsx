@@ -49,6 +49,7 @@ vi.mock("../../hooks/camera-capture-hooks", () => ({
         height: 1080,
       },
     ],
+
     supportedResolutions: [
       {
         value: "1920x1080",
@@ -57,6 +58,7 @@ vi.mock("../../hooks/camera-capture-hooks", () => ({
         height: 1080,
       },
     ],
+
     supportedFrameRates: [30],
     isLoadingCapabilities: false,
     getDeviceCapabilities: vi.fn(),
@@ -98,25 +100,25 @@ vi.mock("../../hooks/use-recording", () => ({
 // Мокируем компоненты
 vi.mock("../../components/camera-permission-request", () => ({
   CameraPermissionRequest: ({ permissionStatus, errorMessage }: any) => (
-    <div data-testid="camera-permission-request">
+    <div data-testid="camera-permission-request" data-oid="wz2pxwf">
       Status: {permissionStatus}
-      {errorMessage && <div>Error: {errorMessage}</div>}
+      {errorMessage && <div data-oid="9ei19m2">Error: {errorMessage}</div>}
     </div>
   ),
 }))
 
 vi.mock("../../components/camera-preview", () => ({
   CameraPreview: ({ isDeviceReady, showCountdown, countdown }: any) => (
-    <div data-testid="camera-preview">
+    <div data-testid="camera-preview" data-oid="461y7tn">
       Device ready: {isDeviceReady ? "yes" : "no"}
-      {showCountdown && <div>Countdown: {countdown}</div>}
+      {showCountdown && <div data-oid="pb2lru6">Countdown: {countdown}</div>}
     </div>
   ),
 }))
 
 vi.mock("../../components/camera-settings", () => ({
   CameraSettings: (props: any) => (
-    <div data-testid="camera-settings">
+    <div data-testid="camera-settings" data-oid="csd8aon">
       Device: {props.selectedDevice}
       Audio: {props.selectedAudioDevice}
       Resolution: {props.selectedResolution}
@@ -127,7 +129,7 @@ vi.mock("../../components/camera-settings", () => ({
 
 vi.mock("../../components/recording-controls", () => ({
   RecordingControls: ({ isRecording, recordingTime, isDeviceReady }: any) => (
-    <div data-testid="recording-controls">
+    <div data-testid="recording-controls" data-oid="e3j19zt">
       Recording: {isRecording ? "yes" : "no"}
       Time: {recordingTime}
       Device ready: {isDeviceReady ? "yes" : "no"}
@@ -167,7 +169,7 @@ describe("CameraCaptureModal", () => {
   })
 
   it("renders all components correctly", async () => {
-    renderWithBase(<CameraCaptureModal />)
+    renderWithBase(<CameraCaptureModal data-oid="tfq29hj" />)
 
     // Проверяем, что компоненты отображаются
     // Заголовок не отображается в моке, поэтому пропускаем эту проверку
@@ -188,7 +190,7 @@ describe("CameraCaptureModal", () => {
   })
 
   it("renders with correct layout", async () => {
-    renderWithBase(<CameraCaptureModal />)
+    renderWithBase(<CameraCaptureModal data-oid=".a1vez4" />)
 
     // Проверяем, что есть flex контейнер для разделения на колонки
     const flexContainer = screen.getByText("Device ready: yes").closest(".flex.flex-row")

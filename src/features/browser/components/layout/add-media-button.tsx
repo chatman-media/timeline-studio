@@ -186,6 +186,7 @@ export const AddMediaButton = memo(function AddMediaButton({
             : t("browser.media.added")
           : t("browser.media.add")
       }
+      data-oid=".u3psz3"
     >
       {isAdded(resource.id, type) ? (
         isHovering && canShowRemoveButton ? (
@@ -197,6 +198,7 @@ export const AddMediaButton = memo(function AddMediaButton({
               height: `${6 + size / 30}px`,
               width: `${6 + size / 30}px`,
             }}
+            data-oid="70tqjxl"
           />
         ) : (
           <Check
@@ -206,6 +208,7 @@ export const AddMediaButton = memo(function AddMediaButton({
               height: `${6 + size / 30}px`,
               width: `${6 + size / 30}px`,
             }}
+            data-oid="42dj_qz"
           />
         )
       ) : (
@@ -217,6 +220,7 @@ export const AddMediaButton = memo(function AddMediaButton({
             height: `${6 + size / 30}px`,
             width: `${6 + size / 30}px`,
           }}
+          data-oid="_x2rkzt"
         />
       )}
     </button>

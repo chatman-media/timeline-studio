@@ -67,9 +67,10 @@ const AngleVideoItem = memo(function AngleVideoItem({
           : "border-muted hover:border-muted-foreground",
       )}
       onClick={handleClick}
+      data-oid="e.a43n2"
     >
       {/* Видео превью */}
-      <div className="aspect-video relative">
+      <div className="aspect-video relative" data-oid="q2ha47g">
         <video
           ref={setVideoRef}
           className="w-full h-full object-cover"
@@ -78,50 +79,62 @@ const AngleVideoItem = memo(function AngleVideoItem({
           loop
           onError={() => {
             setLoadError(true)
-            logger.error("[AngleVideoItem] Video load error", { angle: angle.id })
+            logger.error("[AngleVideoItem] Video load error", {
+              angle: angle.id,
+            })
           }}
           onLoadedData={() => {
             setLoadError(false)
           }}
+          data-oid="8hdn_ct"
         >
           {/* Загружаем видео только если оно было видимым хотя бы раз */}
-          {hasBeenVisible && angle.mediaPath && <source src={`media-loader://${angle.mediaPath}`} type="video/mp4" />}
-          {hasBeenVisible && angle.preview && <source src={angle.preview} type="video/mp4" />}
+          {hasBeenVisible && angle.mediaPath && (
+            <source src={`media-loader://${angle.mediaPath}`} type="video/mp4" data-oid="175ufg6" />
+          )}
+          {hasBeenVisible && angle.preview && <source src={angle.preview} type="video/mp4" data-oid="ry.pvjd" />}
         </video>
 
         {/* Показываем заглушку при ошибке загрузки */}
         {loadError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted gap-2">
-            <Camera className="w-8 h-8 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Ошибка загрузки видео</span>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted gap-2" data-oid="zd.x7ae">
+            <Camera className="w-8 h-8 text-muted-foreground" data-oid="jamnlyd" />
+            <span className="text-xs text-muted-foreground" data-oid="6gs2k_8">
+              Ошибка загрузки видео
+            </span>
           </div>
         )}
 
         {/* Показываем placeholder пока не загружено */}
         {!hasBeenVisible && (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted">
-            <Camera className="w-8 h-8 text-muted-foreground animate-pulse" />
+          <div className="absolute inset-0 flex items-center justify-center bg-muted" data-oid="2bscw4f">
+            <Camera className="w-8 h-8 text-muted-foreground animate-pulse" data-oid="ub04mhz" />
           </div>
         )}
 
         {/* Затемнение для неактивных */}
-        {!angle.isActive && <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />}
+        {!angle.isActive && (
+          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" data-oid="p9dwtch" />
+        )}
       </div>
 
       {/* Метка камеры */}
       {showLabels && (
-        <div className="absolute top-2 left-2">
-          <Badge variant={angle.isActive ? "default" : "secondary"}>{angle.name}</Badge>
+        <div className="absolute top-2 left-2" data-oid="vnod9:c">
+          <Badge variant={angle.isActive ? "default" : "secondary"} data-oid="k58ku_e">
+            {angle.name}
+          </Badge>
         </div>
       )}
 
       {/* Номер камеры */}
-      <div className="absolute bottom-2 right-2">
+      <div className="absolute bottom-2 right-2" data-oid="8l53n0r">
         <div
           className={cn(
             "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
             angle.isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
           )}
+          data-oid="-qki3-m"
         >
           {index + 1}
         </div>
@@ -129,15 +142,17 @@ const AngleVideoItem = memo(function AngleVideoItem({
 
       {/* Таймкод */}
       {showTimecode && (
-        <div className="absolute bottom-2 left-2">
-          <div className="bg-black/70 text-white text-xs px-2 py-1 rounded">00:00:00</div>
+        <div className="absolute bottom-2 left-2" data-oid=".yp18zy">
+          <div className="bg-black/70 text-white text-xs px-2 py-1 rounded" data-oid="3f2su00">
+            00:00:00
+          </div>
         </div>
       )}
 
       {/* Индикатор синхронизации */}
       {Math.abs(syncOffset) > 0.1 && (
-        <div className="absolute top-2 right-2">
-          <Badge variant="outline" className="text-xs">
+        <div className="absolute top-2 right-2" data-oid=":0.fyye">
+          <Badge variant="outline" className="text-xs" data-oid="xcd3__u">
             {syncOffset > 0 ? "+" : ""}
             {syncOffset.toFixed(1)}s
           </Badge>
@@ -253,28 +268,34 @@ export function AngleViewer({
 
   if (multicam.angles.length === 0) {
     return (
-      <div className={cn("flex items-center justify-center p-8 text-muted-foreground", className)}>
-        <div className="text-center">
-          <Camera className="w-12 h-12 mx-auto mb-2 opacity-50" />
-          <p>Нет доступных углов камер</p>
+      <div className={cn("flex items-center justify-center p-8 text-muted-foreground", className)} data-oid="t69xezz">
+        <div className="text-center" data-oid="r1br25o">
+          <Camera className="w-12 h-12 mx-auto mb-2 opacity-50" data-oid="0939xl9" />
+          <p data-oid="puc2d76">Нет доступных углов камер</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} data-oid="jl_uj.s">
       {/* Контролы воспроизведения и синхронизации */}
-      <div className="absolute top-2 right-2 z-10 flex gap-2">
+      <div className="absolute top-2 right-2 z-10 flex gap-2" data-oid="q4o35ri">
         <SyncControls
           baseClipId={baseClipId}
           className="shadow-lg"
           onSyncComplete={() => {
             console.log("[AngleViewer] Sync completed")
           }}
+          data-oid="6rfvcj_"
         />
-        <Button size="sm" variant="secondary" onClick={togglePlayback} className="shadow-lg">
-          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+
+        <Button size="sm" variant="secondary" onClick={togglePlayback} className="shadow-lg" data-oid="m22kal4">
+          {isPlaying ? (
+            <Pause className="w-4 h-4" data-oid="13mtnum" />
+          ) : (
+            <Play className="w-4 h-4" data-oid="cx5z.fr" />
+          )}
         </Button>
       </div>
 
@@ -284,6 +305,7 @@ export function AngleViewer({
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,
         }}
+        data-oid="wzy_8-8"
       >
         {multicam.angles.map((angle, index) => (
           <AngleVideoItem
@@ -297,6 +319,7 @@ export function AngleViewer({
             onVideoRef={(idx, video) => {
               videoRefs.current[idx] = video
             }}
+            data-oid="rkh.3r6"
           />
         ))}
       </div>

@@ -237,31 +237,37 @@ export function EffectParameterControls({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-oid="zfsrsr5">
       {/* Заголовок с кнопками действий */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-medium">{t("effects.detail.parameters", "Параметры")}</h3>
-        <div className="flex gap-2">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="sm" onClick={handleReset}>
-                  <RotateCcw size={14} />
+      <div className="flex items-center justify-between" data-oid="16r1vw5">
+        <h3 className="font-medium" data-oid="aw.2lno">
+          {t("effects.detail.parameters", "Параметры")}
+        </h3>
+        <div className="flex gap-2" data-oid="x8kzykw">
+          <TooltipProvider data-oid="nm8ef34">
+            <Tooltip data-oid="p.p5ur:">
+              <TooltipTrigger asChild data-oid="99jsz-z">
+                <Button variant="outline" size="sm" onClick={handleReset} data-oid="hwo97ex">
+                  <RotateCcw size={14} data-oid="45.4k2m" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>{t("effects.detail.resetToDefault", "Сбросить к значениям по умолчанию")}</TooltipContent>
+              <TooltipContent data-oid="4dienqa">
+                {t("effects.detail.resetToDefault", "Сбросить к значениям по умолчанию")}
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
           {onSavePreset && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm" onClick={handleSavePreset}>
-                    <Save size={14} />
+            <TooltipProvider data-oid="klgbu_-">
+              <Tooltip data-oid="b2-1laf">
+                <TooltipTrigger asChild data-oid="x0r3rs.">
+                  <Button variant="outline" size="sm" onClick={handleSavePreset} data-oid=":qyy74b">
+                    <Save size={14} data-oid="e2:w.du" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>{t("effects.detail.savePreset", "Сохранить как пресет")}</TooltipContent>
+                <TooltipContent data-oid="f.spdv1">
+                  {t("effects.detail.savePreset", "Сохранить как пресет")}
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           )}
@@ -269,7 +275,7 @@ export function EffectParameterControls({
       </div>
 
       {/* Контролы параметров */}
-      <div className="space-y-4">
+      <div className="space-y-4" data-oid="5:flm5p">
         {effect.parameters.map((param) => {
           const config = getParameterConfig(param)
           const currentValue = parameters[param.id] ?? param.defaultValue
@@ -289,10 +295,12 @@ export function EffectParameterControls({
           const sliderValue = param.type === "boolean" ? (currentValue ? 1 : 0) : currentValue
 
           return (
-            <div key={param.id} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">{config.label[currentLang] || config.label.en}</Label>
-                <span className="text-sm text-gray-500 font-mono">
+            <div key={param.id} className="space-y-2" data-oid="tzhuyue">
+              <div className="flex items-center justify-between" data-oid="7:ea:10">
+                <Label className="text-sm font-medium" data-oid="_pn8cqp">
+                  {config.label[currentLang] || config.label.en}
+                </Label>
+                <span className="text-sm text-gray-500 font-mono" data-oid="sqtrq0n">
                   {param.type === "boolean"
                     ? currentValue
                       ? "Вкл"
@@ -305,10 +313,10 @@ export function EffectParameterControls({
                 </span>
               </div>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
+              <TooltipProvider data-oid="v8y_ql:">
+                <Tooltip data-oid="nh-o6mr">
+                  <TooltipTrigger asChild data-oid="6ti2zma">
+                    <div data-oid="5ku.x7f">
                       <Slider
                         value={[sliderValue]}
                         onValueChange={(value) => {
@@ -322,16 +330,19 @@ export function EffectParameterControls({
                         max={config.max}
                         step={config.step}
                         className="w-full"
+                        data-oid="4l6uv5k"
                       />
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <div className="text-center">
-                      <div className="font-medium">{config.label[currentLang] || config.label.en}</div>
-                      <div className="text-sm text-gray-400">
+                  <TooltipContent data-oid="fe.rumt">
+                    <div className="text-center" data-oid="clwm0p.">
+                      <div className="font-medium" data-oid="gc2nk0s">
+                        {config.label[currentLang] || config.label.en}
+                      </div>
+                      <div className="text-sm text-gray-400" data-oid="8vk_.nk">
                         {config.description[currentLang] || config.description.en}
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-gray-500 mt-1" data-oid="2101qdh">
                         {config.min} - {config.max}
                       </div>
                     </div>
@@ -344,11 +355,11 @@ export function EffectParameterControls({
       </div>
 
       {/* Информация о текущих параметрах */}
-      <div className="text-xs text-gray-500 space-y-1">
-        <div>{t("effects.detail.currentValues", "Текущие значения")}:</div>
-        <div className="font-mono bg-gray-50 dark:bg-gray-800 p-2 rounded">
+      <div className="text-xs text-gray-500 space-y-1" data-oid="xq6:e0y">
+        <div data-oid="yccbxa9">{t("effects.detail.currentValues", "Текущие значения")}:</div>
+        <div className="font-mono bg-gray-50 dark:bg-gray-800 p-2 rounded" data-oid="t9c7x0n">
           {Object.entries(parameters).map(([key, value]) => (
-            <div key={key}>
+            <div key={key} data-oid="tnd1fd3">
               {key}: {typeof value === "boolean" ? (value ? "true" : "false") : value}
             </div>
           ))}

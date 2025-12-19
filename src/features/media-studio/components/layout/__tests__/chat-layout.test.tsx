@@ -34,16 +34,24 @@ vi.mock("@/features/project-settings/hooks", () => ({
 }))
 
 vi.mock("@/features/browser/components/browser", () => ({
-  Browser: () => <div data-testid="browser">Browser</div>,
+  Browser: () => (
+    <div data-testid="browser" data-oid=":ikaeqx">
+      Browser
+    </div>
+  ),
 }))
 
 vi.mock("@/features/video-player/components/video-player", () => ({
-  VideoPlayer: () => <div data-testid="video-player">VideoPlayer</div>,
+  VideoPlayer: () => (
+    <div data-testid="video-player" data-oid="ll5.vgp">
+      VideoPlayer
+    </div>
+  ),
 }))
 
 vi.mock("@/features/timeline/components/timeline", () => ({
   Timeline: ({ noChat }: { noChat?: boolean }) => (
-    <div data-testid="timeline" data-nochat={noChat}>
+    <div data-testid="timeline" data-nochat={noChat} data-oid="md-kadt">
       Timeline
     </div>
   ),
@@ -63,11 +71,19 @@ vi.mock("@/features/timeline/hooks", () => ({
 }))
 
 vi.mock("@/features/options", () => ({
-  Options: () => <div data-testid="options">Options</div>,
+  Options: () => (
+    <div data-testid="options" data-oid="melzj8d">
+      Options
+    </div>
+  ),
 }))
 
 vi.mock("@/features/ai-chat/components/ai-chat", () => ({
-  AiChat: () => <div data-testid="ai-chat">AiChat</div>,
+  AiChat: () => (
+    <div data-testid="ai-chat" data-oid="hba-5w9">
+      AiChat
+    </div>
+  ),
 }))
 
 vi.mock("@/features/video-compiler/hooks/use-prerender", () => ({
@@ -90,7 +106,12 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
 }))
 
 vi.mock("@/domains/video-editing", () => ({
-  PlayerProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="player-provider">{children}</div>,
+  PlayerProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="player-provider" data-oid="blx9gza">
+      {children}
+    </div>
+  ),
+
   usePlayer: () => ({
     video: null,
     play: vi.fn(),
@@ -120,17 +141,25 @@ const mockTimelineContext = {
 // Мокаем ResizablePanel компоненты
 vi.mock("@/components/ui/resizable", () => ({
   ResizablePanel: ({ children, defaultSize, minSize, maxSize }: any) => (
-    <div data-testid="resizable-panel" data-default-size={defaultSize} data-min-size={minSize} data-max-size={maxSize}>
+    <div
+      data-testid="resizable-panel"
+      data-default-size={defaultSize}
+      data-min-size={minSize}
+      data-max-size={maxSize}
+      data-oid="c.yq-h9"
+    >
       {children}
     </div>
   ),
-  ResizableHandle: () => <div data-testid="resizable-handle" />,
+
+  ResizableHandle: () => <div data-testid="resizable-handle" data-oid="g7t-u3e" />,
   ResizablePanelGroup: ({ children, direction, autoSaveId }: any) => (
     <div
       data-testid="resizable-panel-group"
       data-direction={direction}
       data-auto-save-id={autoSaveId}
       className="flex h-full w-full"
+      data-oid="wl_0:by"
     >
       {children}
     </div>
@@ -160,7 +189,7 @@ describe("ChatLayout", () => {
 
   describe("Основная структура", () => {
     it("должен рендерить все компоненты когда все панели видимы", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="d.g0lsc" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -170,7 +199,7 @@ describe("ChatLayout", () => {
     })
 
     it("должен иметь правильную структуру ResizablePanelGroup", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="zrb:sax" />)
 
       const mainPanelGroup = screen.getAllByTestId("resizable-panel-group")[0]
       expect(mainPanelGroup).toHaveAttribute("data-direction", "horizontal")
@@ -184,7 +213,7 @@ describe("ChatLayout", () => {
       mockUserSettings.isOptionsVisible = false
       mockUserSettings.isTimelineVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="hmda1hm" />)
 
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
@@ -203,7 +232,7 @@ describe("ChatLayout", () => {
     it("должен показывать Browser + VideoPlayer когда Options скрыт", () => {
       mockUserSettings.isOptionsVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="4s5a.lw" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -215,7 +244,7 @@ describe("ChatLayout", () => {
     it("должен показывать VideoPlayer + Options когда Browser скрыт", () => {
       mockUserSettings.isBrowserVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="n.rml2x" />)
 
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -225,7 +254,7 @@ describe("ChatLayout", () => {
     })
 
     it("должен показывать Browser + VideoPlayer + Options", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="luj-eut" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -235,20 +264,20 @@ describe("ChatLayout", () => {
     })
 
     it("должен использовать правильные autoSaveId для разных конфигураций", () => {
-      const { rerender } = render(<ChatLayout />)
+      const { rerender } = render(<ChatLayout data-oid="01v-f.m" />)
 
       let panelGroups = screen.getAllByTestId("resizable-panel-group")
       expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "chat-layout-3")).toBe(true)
 
       mockUserSettings.isOptionsVisible = false
-      rerender(<ChatLayout />)
+      rerender(<ChatLayout data-oid="uxps924" />)
 
       panelGroups = screen.getAllByTestId("resizable-panel-group")
       expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "chat-layout-1")).toBe(true)
 
       mockUserSettings.isOptionsVisible = true
       mockUserSettings.isBrowserVisible = false
-      rerender(<ChatLayout />)
+      rerender(<ChatLayout data-oid="rmdrm_0" />)
 
       panelGroups = screen.getAllByTestId("resizable-panel-group")
       expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "chat-layout-2")).toBe(true)
@@ -260,7 +289,7 @@ describe("ChatLayout", () => {
       mockUserSettings.isBrowserVisible = false
       mockUserSettings.isOptionsVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="eqqetwd" />)
 
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -272,7 +301,7 @@ describe("ChatLayout", () => {
     it("должен показывать Browser + VideoPlayer + Timeline когда Options скрыт", () => {
       mockUserSettings.isOptionsVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="zuo5qrt" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -284,7 +313,7 @@ describe("ChatLayout", () => {
     it("должен показывать VideoPlayer + Options + Timeline когда Browser скрыт", () => {
       mockUserSettings.isBrowserVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="3zo_f9w" />)
 
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -297,7 +326,7 @@ describe("ChatLayout", () => {
       mockUserSettings.isBrowserVisible = false
       mockUserSettings.isOptionsVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="8.:viuj" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const verticalGroup = panelGroups.find(
@@ -310,7 +339,7 @@ describe("ChatLayout", () => {
 
   describe("Размеры панелей", () => {
     it("должен устанавливать правильные размеры для главных панелей", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="_6eemur" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
       const mainLeftPanel = panels.find((p) => p.getAttribute("data-default-size") === "70")
@@ -321,7 +350,7 @@ describe("ChatLayout", () => {
     })
 
     it("должен устанавливать правильные ограничения размеров", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="33eo5i9" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
 
@@ -337,7 +366,7 @@ describe("ChatLayout", () => {
       // Конфигурация с 3 панелями горизонтально
       mockUserSettings.isTimelineVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="urvo1_i" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
       const panel25 = panels.filter((p) => p.getAttribute("data-default-size") === "25")
@@ -350,14 +379,14 @@ describe("ChatLayout", () => {
 
   describe("Обработка ResizableHandle", () => {
     it("должен добавлять ResizableHandle между панелями", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="73-u.b5" />)
 
       const handles = screen.getAllByTestId("resizable-handle")
       expect(handles.length).toBeGreaterThan(0)
     })
 
     it("должен добавлять правильное количество handles для разных конфигураций", () => {
-      const { rerender } = render(<ChatLayout />)
+      const { rerender } = render(<ChatLayout data-oid="fxso:9." />)
 
       let handles = screen.getAllByTestId("resizable-handle")
       const fullConfigHandles = handles.length
@@ -365,7 +394,7 @@ describe("ChatLayout", () => {
       // Только VideoPlayer + Timeline
       mockUserSettings.isBrowserVisible = false
       mockUserSettings.isOptionsVisible = false
-      rerender(<ChatLayout />)
+      rerender(<ChatLayout data-oid="4:soy04" />)
 
       handles = screen.getAllByTestId("resizable-handle")
       expect(handles.length).toBeLessThan(fullConfigHandles)
@@ -374,7 +403,7 @@ describe("ChatLayout", () => {
 
   describe("Вложенные ResizablePanelGroup", () => {
     it("должен создавать вложенные группы для сложных layout", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="n5lxw0r" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       // Должно быть минимум 2 группы: основная и вложенная
@@ -382,7 +411,7 @@ describe("ChatLayout", () => {
     })
 
     it("должен использовать разные autoSaveId для вложенных групп", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid=".e1k1jv" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const autoSaveIds = panelGroups.map((pg) => pg.getAttribute("data-auto-save-id"))
@@ -395,7 +424,7 @@ describe("ChatLayout", () => {
     it("должен использовать правильные направления для вложенных групп", () => {
       mockUserSettings.isOptionsVisible = false
 
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid=":3pic3g" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const horizontalGroups = panelGroups.filter((pg) => pg.getAttribute("data-direction") === "horizontal")
@@ -441,14 +470,14 @@ describe("ChatLayout", () => {
         mockUserSettings.isOptionsVisible = config.isOptionsVisible
         mockUserSettings.isTimelineVisible = config.isTimelineVisible
 
-        const { unmount } = render(<ChatLayout />)
+        const { unmount } = render(<ChatLayout data-oid="tmq1:df" />)
         expect(screen.getByTestId("ai-chat")).toBeInTheDocument()
         unmount()
       })
     })
 
     it("должен размещать AiChat в отдельной панели", () => {
-      render(<ChatLayout />)
+      render(<ChatLayout data-oid="v5t3pg0" />)
 
       const aiChat = screen.getByTestId("ai-chat")
       const parentPanel = aiChat.closest('[data-testid="resizable-panel"]')

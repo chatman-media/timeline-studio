@@ -13,10 +13,10 @@ import { I18nProvider } from "@/i18n/services/i18n-provider"
 // ✅ Базовые провайдеры (минимум для большинства компонентов)
 export const BaseProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <ThemeProvider>
-      <I18nProvider>
-        <AppProvider>
-          <ModalProvider>{children}</ModalProvider>
+    <ThemeProvider data-oid="-z180nx">
+      <I18nProvider data-oid="zdb4jne">
+        <AppProvider data-oid="tbx3hpt">
+          <ModalProvider data-oid="o_ef8r6">{children}</ModalProvider>
         </AppProvider>
       </I18nProvider>
     </ThemeProvider>
@@ -26,8 +26,8 @@ export const BaseProviders = ({ children }: { children: ReactNode }) => {
 // ✅ Провайдеры для медиа компонентов
 export const MediaProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <ResourcesProvider>{children}</ResourcesProvider>
+    <BaseProviders data-oid="csylne6">
+      <ResourcesProvider data-oid="0:lpksz">{children}</ResourcesProvider>
     </BaseProviders>
   )
 }
@@ -35,9 +35,9 @@ export const MediaProviders = ({ children }: { children: ReactNode }) => {
 // ✅ Провайдеры для видеоплеера
 export const PlayerProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <UserSettingsProvider>
-        <PlayerProvider>{children}</PlayerProvider>
+    <BaseProviders data-oid="-xuoqoy">
+      <UserSettingsProvider data-oid="wwy91oy">
+        <PlayerProvider data-oid="fryi5rz">{children}</PlayerProvider>
       </UserSettingsProvider>
     </BaseProviders>
   )
@@ -46,14 +46,14 @@ export const PlayerProviders = ({ children }: { children: ReactNode }) => {
 // ✅ Провайдеры для Timeline
 export const TimelineProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <ModalProvider>
-        <ProjectSettingsProvider>
-          <UserSettingsProvider>
-            <ResourcesProvider>
-              <PlayerProvider>
-                <ChatProvider>
-                  <TimelineProvider>{children}</TimelineProvider>
+    <BaseProviders data-oid="d3vf352">
+      <ModalProvider data-oid="9roh4hm">
+        <ProjectSettingsProvider data-oid="37jv90h">
+          <UserSettingsProvider data-oid="pg-:qf4">
+            <ResourcesProvider data-oid="_7-2mxm">
+              <PlayerProvider data-oid="i.kwh2t">
+                <ChatProvider data-oid="_nujffq">
+                  <TimelineProvider data-oid="ft438l0">{children}</TimelineProvider>
                 </ChatProvider>
               </PlayerProvider>
             </ResourcesProvider>
@@ -67,10 +67,10 @@ export const TimelineProviders = ({ children }: { children: ReactNode }) => {
 // ✅ Провайдеры для модалов
 export const ModalProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <ModalProvider>
-        <ProjectSettingsProvider>
-          <UserSettingsProvider>{children}</UserSettingsProvider>
+    <BaseProviders data-oid="j8:93-c">
+      <ModalProvider data-oid="-fuaw2d">
+        <ProjectSettingsProvider data-oid="_r494fo">
+          <UserSettingsProvider data-oid="osrj24x">{children}</UserSettingsProvider>
         </ProjectSettingsProvider>
       </ModalProvider>
     </BaseProviders>
@@ -80,10 +80,10 @@ export const ModalProviders = ({ children }: { children: ReactNode }) => {
 // ✅ Провайдеры для чата
 export const ChatProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <UserSettingsProvider>
-        <ModalProvider>
-          <ChatProvider>{children}</ChatProvider>
+    <BaseProviders data-oid="5eaagia">
+      <UserSettingsProvider data-oid="ezhcck4">
+        <ModalProvider data-oid="8y6zkwe">
+          <ChatProvider data-oid="19gqig.">{children}</ChatProvider>
         </ModalProvider>
       </UserSettingsProvider>
     </BaseProviders>
@@ -92,10 +92,10 @@ export const ChatProviders = ({ children }: { children: ReactNode }) => {
 
 const TemplateProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <UserSettingsProvider>
-        <ResourcesProvider>
-          <PlayerProvider>{children}</PlayerProvider>
+    <BaseProviders data-oid="wq0xjzc">
+      <UserSettingsProvider data-oid="1pv4m5q">
+        <ResourcesProvider data-oid="mtl2.i-">
+          <PlayerProvider data-oid="1_gz-.8">{children}</PlayerProvider>
         </ResourcesProvider>
       </UserSettingsProvider>
     </BaseProviders>
@@ -105,11 +105,11 @@ const TemplateProviders = ({ children }: { children: ReactNode }) => {
 // ✅ Провайдеры для браузера (субтитры, эффекты и т.д.)
 export const BrowserProviders = ({ children }: { children: ReactNode }) => {
   return (
-    <BaseProviders>
-      <ProjectSettingsProvider>
-        <UserSettingsProvider>
-          <ResourcesProvider>
-            <BrowserStateProvider>{children}</BrowserStateProvider>
+    <BaseProviders data-oid="hbjvpb5">
+      <ProjectSettingsProvider data-oid="692.2-1">
+        <UserSettingsProvider data-oid="4td.7-5">
+          <ResourcesProvider data-oid="v3oxspu">
+            <BrowserStateProvider data-oid="_ts:.pg">{children}</BrowserStateProvider>
           </ResourcesProvider>
         </UserSettingsProvider>
       </ProjectSettingsProvider>

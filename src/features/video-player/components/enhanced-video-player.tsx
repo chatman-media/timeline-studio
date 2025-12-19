@@ -221,10 +221,12 @@ export function EnhancedVideoPlayer() {
 
   if (!video?.path) {
     return (
-      <div className="media-player-container relative flex h-full flex-col">
-        <div className="relative flex-1 bg-black">
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="text-muted-foreground">Нет видео</div>
+      <div className="media-player-container relative flex h-full flex-col" data-oid="60r9utq">
+        <div className="relative flex-1 bg-black" data-oid="urbree3">
+          <div className="flex h-full w-full items-center justify-center" data-oid="6jx0p:6">
+            <div className="text-muted-foreground" data-oid="vcvfqii">
+              Нет видео
+            </div>
           </div>
         </div>
         <PlayerControls
@@ -239,18 +241,19 @@ export function EnhancedVideoPlayer() {
               isVideo: true,
             }
           }
+          data-oid="f:-8a1t"
         />
       </div>
     )
   }
 
   return (
-    <div className="media-player-container relative flex h-full flex-col">
-      <div className="relative flex-1 bg-black">
-        <div className="flex h-full w-full items-center justify-center">
-          <div className="max-h-[calc(100%-85px)] w-full max-w-full">
-            <AspectRatio ratio={aspectRatioValue} className="bg-black">
-              <div className="relative h-full w-full">
+    <div className="media-player-container relative flex h-full flex-col" data-oid="x2bf6zz">
+      <div className="relative flex-1 bg-black" data-oid="fnxrp7p">
+        <div className="flex h-full w-full items-center justify-center" data-oid="enb03db">
+          <div className="max-h-[calc(100%-85px)] w-full max-w-full" data-oid="vz9u01c">
+            <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="0i-aj:j">
+              <div className="relative h-full w-full" data-oid="mmtl6qv">
                 <video
                   ref={videoRef}
                   key={videoSource}
@@ -272,6 +275,7 @@ export function EnhancedVideoPlayer() {
                     height: "100%",
                     display: "block",
                   }}
+                  data-oid="c71y:.c"
                 />
 
                 {/* Canvas для realtime эффектов */}
@@ -281,12 +285,13 @@ export function EnhancedVideoPlayer() {
                   style={{
                     display: currentClipWithEffects && effectsEnabled ? "block" : "none",
                   }}
+                  data-oid="450hm2z"
                 />
 
                 {/* Индикатор активных эффектов */}
                 {currentClipWithEffects && effectsEnabled && (
-                  <div className="absolute right-4 bottom-20 rounded bg-purple-500/20 px-3 py-2">
-                    <span className="text-sm text-purple-400">
+                  <div className="absolute right-4 bottom-20 rounded bg-purple-500/20 px-3 py-2" data-oid="46eg9qa">
+                    <span className="text-sm text-purple-400" data-oid="5-5ayyb">
                       Эффекты: {currentClipWithEffects.effects?.length || 0}
                     </span>
                   </div>
@@ -294,16 +299,23 @@ export function EnhancedVideoPlayer() {
 
                 {/* Индикатор пререндера */}
                 {isRendering && (
-                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded bg-black/50 px-3 py-2">
-                    <Skeleton className="h-4 w-4 rounded-full" />
-                    <span className="text-sm text-white">Рендеринг...</span>
+                  <div
+                    className="absolute left-4 top-4 flex items-center gap-2 rounded bg-black/50 px-3 py-2"
+                    data-oid="4rpz5ld"
+                  >
+                    <Skeleton className="h-4 w-4 rounded-full" data-oid="s6pq7kv" />
+                    <span className="text-sm text-white" data-oid="ms-k91t">
+                      Рендеринг...
+                    </span>
                   </div>
                 )}
 
                 {/* Индикатор использования пререндера */}
                 {currentSegment && !isRendering && (
-                  <div className="absolute left-4 top-4 rounded bg-green-500/20 px-3 py-2">
-                    <span className="text-sm text-green-500">Пререндер активен</span>
+                  <div className="absolute left-4 top-4 rounded bg-green-500/20 px-3 py-2" data-oid="sgl4e6v">
+                    <span className="text-sm text-green-500" data-oid="0g3k1d0">
+                      Пререндер активен
+                    </span>
                   </div>
                 )}
 
@@ -313,6 +325,7 @@ export function EnhancedVideoPlayer() {
                   size="sm"
                   onClick={togglePrerender}
                   className="absolute right-4 top-4 bg-black/50 hover:bg-black/70"
+                  data-oid=".p8wmms"
                 >
                   {prerenderOptions.enabled ? "Отключить" : "Включить"} пререндер
                 </Button>
@@ -321,7 +334,7 @@ export function EnhancedVideoPlayer() {
           </div>
         </div>
       </div>
-      <PlayerControls currentTime={currentTime} file={video} />
+      <PlayerControls currentTime={currentTime} file={video} data-oid="-29azan" />
     </div>
   )
 }

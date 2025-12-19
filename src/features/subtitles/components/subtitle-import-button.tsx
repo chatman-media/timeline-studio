@@ -45,32 +45,36 @@ export function SubtitleImportButton({
   return (
     <>
       {isImporting ? (
-        <div className="flex items-center gap-2">
-          <Progress value={importProgress} className="w-24 h-2" />
-          <span className="text-xs text-muted-foreground">{importProgress}%</span>
+        <div className="flex items-center gap-2" data-oid="v5uh1ft">
+          <Progress value={importProgress} className="w-24 h-2" data-oid="y4qaj-r" />
+          <span className="text-xs text-muted-foreground" data-oid="se8k.mo">
+            {importProgress}%
+          </span>
         </div>
       ) : (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant={variant} size={size} className={className}>
-              <Upload className="mr-2 h-4 w-4" />
+        <DropdownMenu data-oid="92aimov">
+          <DropdownMenuTrigger asChild data-oid="_2x9d4j">
+            <Button variant={variant} size={size} className={className} data-oid="8e.q1c-">
+              <Upload className="mr-2 h-4 w-4" data-oid="yu2xil_" />
               Импорт субтитров
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={handleImportFromFile}>
-              <Upload className="mr-2 h-4 w-4" />
+          <DropdownMenuContent align="end" className="w-48" data-oid="4rf-3x8">
+            <DropdownMenuItem onClick={handleImportFromFile} data-oid="sd6179r">
+              <Upload className="mr-2 h-4 w-4" data-oid=":.p956q" />
               Из файла
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <div className="px-2 py-1.5 text-xs text-muted-foreground">Поддерживаемые форматы:</div>
-            <DropdownMenuItem disabled className="text-xs">
+            <DropdownMenuSeparator data-oid="g06rlmm" />
+            <div className="px-2 py-1.5 text-xs text-muted-foreground" data-oid="e0i3sjm">
+              Поддерживаемые форматы:
+            </div>
+            <DropdownMenuItem disabled className="text-xs" data-oid="wnc1wp4">
               • SRT (SubRip)
             </DropdownMenuItem>
-            <DropdownMenuItem disabled className="text-xs">
+            <DropdownMenuItem disabled className="text-xs" data-oid="b3tgutt">
               • VTT (WebVTT)
             </DropdownMenuItem>
-            <DropdownMenuItem disabled className="text-xs">
+            <DropdownMenuItem disabled className="text-xs" data-oid="gxn2kd8">
               • ASS/SSA (Advanced SubStation)
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -47,8 +47,20 @@ vi.mock("../../../hooks/use-midi", () => ({
 
 describe("MidiLearnModal", () => {
   const mockDevices: MidiDevice[] = [
-    { id: "device1", name: "MIDI Device 1", type: "input", manufacturer: "", state: "connected" },
-    { id: "device2", name: "MIDI Device 2", type: "input", manufacturer: "", state: "connected" },
+    {
+      id: "device1",
+      name: "MIDI Device 1",
+      type: "input",
+      manufacturer: "",
+      state: "connected",
+    },
+    {
+      id: "device2",
+      name: "MIDI Device 2",
+      type: "input",
+      manufacturer: "",
+      state: "connected",
+    },
   ]
 
   beforeEach(() => {
@@ -65,14 +77,14 @@ describe("MidiLearnModal", () => {
 
   describe("Rendering", () => {
     it("should render modal content", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="2r6qeo6" />)
 
       expect(screen.getByText("fairlightAudio.midi.learnDialog.midiDevice")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.learnDialog.targetParameter")).toBeInTheDocument()
     })
 
     it("should render with correct structure", () => {
-      const { container } = render(<MidiLearnModal />)
+      const { container } = render(<MidiLearnModal data-oid="xdqqg6y" />)
 
       const wrapper = container.firstChild as HTMLElement
       expect(wrapper).toHaveClass("sm:max-w-md")
@@ -82,7 +94,7 @@ describe("MidiLearnModal", () => {
     })
 
     it("should render all devices from modal data", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="wu:8rgi" />)
 
       // With real Radix UI, we can only verify the select components exist
       const selects = screen.getAllByRole("combobox")
@@ -92,7 +104,7 @@ describe("MidiLearnModal", () => {
     it("should handle empty devices array", () => {
       mockModalData.devices = []
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="ip.1bg0" />)
 
       // With real Radix UI, we can only verify the select components exist
       const selects = screen.getAllByRole("combobox")
@@ -104,7 +116,7 @@ describe("MidiLearnModal", () => {
       mockModalData.devices = undefined as any
       mockModalData.onComplete = undefined as any
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="tudi8zv" />)
 
       // Should render without errors
       expect(screen.getByText("fairlightAudio.midi.learnDialog.midiDevice")).toBeInTheDocument()
@@ -113,7 +125,7 @@ describe("MidiLearnModal", () => {
 
   describe("State Management", () => {
     it("should reset state when modal data changes", () => {
-      const { rerender } = render(<MidiLearnModal />)
+      const { rerender } = render(<MidiLearnModal data-oid="3n7ct1d" />)
 
       // Verify initial state
       const selects = screen.getAllByRole("combobox")
@@ -121,9 +133,16 @@ describe("MidiLearnModal", () => {
 
       // Simulate modal data change
       mockModalData.devices = [
-        { id: "device3", name: "New Device", type: "input", manufacturer: "", state: "connected" },
+        {
+          id: "device3",
+          name: "New Device",
+          type: "input",
+          manufacturer: "",
+          state: "connected",
+        },
       ]
-      rerender(<MidiLearnModal />)
+
+      rerender(<MidiLearnModal data-oid="xwol8n7" />)
 
       // Check that selects still exist after data change
       const newSelects = screen.getAllByRole("combobox")
@@ -133,7 +152,7 @@ describe("MidiLearnModal", () => {
 
   describe("Device and Parameter Selection", () => {
     it("should handle device selection", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="2m3avmi" />)
 
       // With real Radix UI, we can only verify the select exists
       const selects = screen.getAllByRole("combobox")
@@ -141,7 +160,7 @@ describe("MidiLearnModal", () => {
     })
 
     it("should handle parameter selection", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="3f3z6db" />)
 
       // With real Radix UI, we can only verify the select exists
       const selects = screen.getAllByRole("combobox")
@@ -149,7 +168,7 @@ describe("MidiLearnModal", () => {
     })
 
     it("should render all parameter options", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="kz48nqd" />)
 
       // With real Radix UI, parameter options are not rendered until select is opened
       // We can only verify the parameter select exists
@@ -163,7 +182,7 @@ describe("MidiLearnModal", () => {
       const mockStopLearning = vi.fn()
       mockStartLearning.mockReturnValue(mockStopLearning)
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="6b8n.j." />)
 
       // Since we can't test selection with real Radix UI, we'll just verify
       // that the start button exists and is initially disabled
@@ -172,7 +191,7 @@ describe("MidiLearnModal", () => {
     })
 
     it("should disable start button when selections incomplete", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="xt81a4p" />)
 
       const startButton = screen.getByText("fairlightAudio.midi.learnDialog.buttons.startListening")
       expect(startButton).toBeDisabled()
@@ -182,7 +201,7 @@ describe("MidiLearnModal", () => {
       const mockStopLearning = vi.fn()
       mockStartLearning.mockReturnValue(mockStopLearning)
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="wmjvtm0" />)
 
       // Initial state
       expect(screen.getByTestId("music-icon")).toHaveClass("text-zinc-600")
@@ -201,7 +220,7 @@ describe("MidiLearnModal", () => {
         return mockStopLearning
       })
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="g.q1pfe" />)
 
       // Since we can't test the full flow with real Radix UI,
       // we'll just verify the component renders correctly
@@ -213,7 +232,7 @@ describe("MidiLearnModal", () => {
       const mockStopLearning = vi.fn()
       mockStartLearning.mockReturnValue(mockStopLearning)
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="arz:36p" />)
 
       // Since we can't test the full flow with real Radix UI,
       // we'll just verify the hook is setup correctly
@@ -223,7 +242,7 @@ describe("MidiLearnModal", () => {
 
   describe("Completing the Mapping", () => {
     it("should call onComplete and close modal", async () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="o.3rn83" />)
 
       // Verify cancel button works
       const cancelButton = screen.getByText("fairlightAudio.midi.learnDialog.buttons.cancel")
@@ -235,7 +254,7 @@ describe("MidiLearnModal", () => {
     it("should not complete if onComplete is missing", async () => {
       mockModalData.onComplete = undefined as any
 
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="w82tq1u" />)
 
       // Verify component renders even without onComplete
       expect(screen.getByText("fairlightAudio.midi.learnDialog.midiDevice")).toBeInTheDocument()
@@ -244,7 +263,7 @@ describe("MidiLearnModal", () => {
 
   describe("Modal Controls", () => {
     it("should close modal when cancel clicked", () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="x8k3hlc" />)
 
       const cancelButton = screen.getByText("fairlightAudio.midi.learnDialog.buttons.cancel")
       fireEvent.click(cancelButton)
@@ -253,7 +272,7 @@ describe("MidiLearnModal", () => {
     })
 
     it("should show save button with correct styling", async () => {
-      render(<MidiLearnModal />)
+      render(<MidiLearnModal data-oid="c-8ygec" />)
 
       // Verify start button exists with correct initial state
       const startButton = screen.getByText("fairlightAudio.midi.learnDialog.buttons.startListening")
@@ -267,7 +286,7 @@ describe("MidiLearnModal", () => {
       const mockStopLearning = vi.fn()
       mockStartLearning.mockReturnValue(mockStopLearning)
 
-      const { unmount } = render(<MidiLearnModal />)
+      const { unmount } = render(<MidiLearnModal data-oid="w_v:ecq" />)
 
       // Unmount immediately to test cleanup
       unmount()

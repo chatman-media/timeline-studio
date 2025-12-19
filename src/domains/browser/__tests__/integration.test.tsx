@@ -19,7 +19,7 @@ import { MOCK_FILE_IDS } from "../__mocks__"
 import { BrowserProvider, useBrowser } from "../providers/browser-provider"
 
 function createWrapper() {
-  return ({ children }: { children: ReactNode }) => <BrowserProvider>{children}</BrowserProvider>
+  return ({ children }: { children: ReactNode }) => <BrowserProvider data-oid="sszoap:">{children}</BrowserProvider>
 }
 
 describe("Browser Domain Integration Tests", () => {

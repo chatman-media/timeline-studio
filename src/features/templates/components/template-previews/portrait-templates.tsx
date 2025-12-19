@@ -9,7 +9,7 @@ export const portraitTemplates: MediaTemplate[] = [
     resizable: true,
     splitPosition: 50, // Позиция разделения в процентах (50% - посередине)
     render: () => (
-      <div className="flex h-full w-full">
+      <div className="flex h-full w-full" data-oid="6gwf.2-">
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -18,10 +18,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="vf6rka4"
         >
           1
         </div>
-        <div className="h-full w-px bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-full w-px bg-gray-400" style={{ opacity: 0.3 }} data-oid="t2drhri" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -30,6 +31,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="jb8_55x"
         >
           2
         </div>
@@ -43,7 +45,7 @@ export const portraitTemplates: MediaTemplate[] = [
     resizable: true,
     splitPosition: 50, // Позиция разделения в процентах (50% - посередине)
     render: () => (
-      <div className="flex h-full w-full flex-col">
+      <div className="flex h-full w-full flex-col" data-oid="rwdduz2">
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -52,10 +54,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="furb3qf"
         >
           1
         </div>
-        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} data-oid="y-_9n.p" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -64,6 +67,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="uka6grs"
         >
           2
         </div>
@@ -81,7 +85,7 @@ export const portraitTemplates: MediaTemplate[] = [
       { x: 100, y: 60 }, // Конечная точка (правый край, 60% от верха)
     ],
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="coxdyd8">
         {/* Первый экран (верхний) */}
         <div
           className="absolute inset-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -93,8 +97,11 @@ export const portraitTemplates: MediaTemplate[] = [
             justifyContent: "center",
             border: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="txnl:fo"
         >
-          <div style={{ position: "relative", top: "-25%" }}>1</div>
+          <div style={{ position: "relative", top: "-25%" }} data-oid="o7vswwl">
+            1
+          </div>
         </div>
 
         {/* Линия разделения */}
@@ -104,6 +111,7 @@ export const portraitTemplates: MediaTemplate[] = [
             clipPath: "polygon(0 39.8%, 0 40.2%, 100% 60.2%, 100% 59.8%)",
             opacity: 0.3,
           }}
+          data-oid="e1vpix."
         />
 
         {/* Второй экран (нижний) */}
@@ -117,8 +125,11 @@ export const portraitTemplates: MediaTemplate[] = [
             alignItems: "center",
             justifyContent: "center",
           }}
+          data-oid="9u5rzrj"
         >
-          <div style={{ position: "relative", top: "25%" }}>2</div>
+          <div style={{ position: "relative", top: "25%" }} data-oid="tefbhfl">
+            2
+          </div>
         </div>
       </div>
     ),
@@ -130,7 +141,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 3,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="ix8ap0h">
         {/* Верхняя секция */}
         <div
           className="absolute top-0 right-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -141,6 +152,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="lg6v4oh"
         >
           1
         </div>
@@ -155,6 +167,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="it-pr:j"
         />
 
         {/* Нижняя левая секция */}
@@ -167,6 +180,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="kgtp:nc"
         >
           2
         </div>
@@ -181,6 +195,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="addxguo"
         />
 
         {/* Нижняя правая секция */}
@@ -193,6 +208,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="n57hc58"
         >
           3
         </div>
@@ -207,7 +223,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 3,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="yn4nu.u">
         {/* Левая секция */}
         <div
           className="absolute top-0 bottom-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -218,6 +234,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="-2ysqd5"
         >
           1
         </div>
@@ -232,6 +249,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="w3jg9i_"
         />
 
         {/* Верхняя правая секция */}
@@ -244,6 +262,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="gkguvyv"
         >
           2
         </div>
@@ -258,6 +277,7 @@ export const portraitTemplates: MediaTemplate[] = [
             right: "0",
             opacity: 0.3,
           }}
+          data-oid="qa88rzv"
         />
 
         {/* Нижняя правая секция */}
@@ -270,6 +290,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="muwn4-8"
         >
           3
         </div>
@@ -284,7 +305,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 3,
     resizable: true,
     render: () => (
-      <div className="flex h-full w-full">
+      <div className="flex h-full w-full" data-oid="vhirj5.">
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -293,10 +314,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="qdi7qnn"
         >
           1
         </div>
-        <div className="h-full w-px bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-full w-px bg-gray-400" style={{ opacity: 0.3 }} data-oid="1pk5v_y" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -304,10 +326,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="6q8s_lj"
         >
           2
         </div>
-        <div className="h-full w-px bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-full w-px bg-gray-400" style={{ opacity: 0.3 }} data-oid="4tw0_95" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -316,6 +339,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="n4d9a.5"
         >
           3
         </div>
@@ -328,7 +352,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 3,
     resizable: true,
     render: () => (
-      <div className="flex h-full w-full flex-col">
+      <div className="flex h-full w-full flex-col" data-oid="73t1_fi">
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -337,10 +361,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="eic9uf9"
         >
           1
         </div>
-        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} data-oid="65p88fx" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -348,10 +373,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="-.ujhwc"
         >
           2
         </div>
-        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} data-oid="1.-85o-" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -360,6 +386,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="x8r88kt"
         >
           3
         </div>
@@ -374,7 +401,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 4,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="80dzbza">
         {/* Верхний левый экран */}
         <div
           className="absolute top-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -385,6 +412,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="ds2f4:_"
         >
           1
         </div>
@@ -399,6 +427,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="f5sok36"
         >
           2
         </div>
@@ -413,6 +442,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="id.np_."
         >
           3
         </div>
@@ -427,6 +457,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="3ac_mhy"
         >
           4
         </div>
@@ -441,6 +472,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="9zjy_44"
         />
 
         {/* Вертикальная линия разделения */}
@@ -453,6 +485,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="r4dxsfa"
         />
       </div>
     ),
@@ -463,7 +496,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 4,
     resizable: true,
     render: () => (
-      <div className="flex h-full w-full flex-col">
+      <div className="flex h-full w-full flex-col" data-oid="3oxonwr">
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -473,10 +506,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid=":claakk"
         >
           1
         </div>
-        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} data-oid="m5hy16-" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -485,10 +519,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="u_rzbj7"
         >
           2
         </div>
-        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} data-oid="o49a:bx" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -497,10 +532,11 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="cb5quna"
         >
           3
         </div>
-        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} />
+        <div className="h-px w-full bg-gray-400" style={{ opacity: 0.3 }} data-oid=".vbmn_s" />
         <div
           className="flex flex-1 items-center justify-center text-lg font-normal text-gray-400"
           style={{
@@ -510,6 +546,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="uy7escz"
         >
           4
         </div>
@@ -523,7 +560,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 6,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="utu24kn">
         {/* Верхний левый экран */}
         <div
           className="absolute top-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -534,6 +571,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="j6zqi5."
         >
           1
         </div>
@@ -548,6 +586,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="_zqvgr-"
         >
           2
         </div>
@@ -562,6 +601,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "33.33%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="_0tg5u3"
         >
           3
         </div>
@@ -576,6 +616,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "33.33%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="tlzhcyr"
         >
           4
         </div>
@@ -590,6 +631,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="kqrecn:"
         >
           5
         </div>
@@ -604,6 +646,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="b:ev9go"
         >
           6
         </div>
@@ -618,6 +661,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="4of2rsc"
         />
 
         {/* Горизонтальная линия разделения 2 */}
@@ -630,6 +674,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="h2w9lp_"
         />
 
         {/* Вертикальная линия разделения */}
@@ -642,6 +687,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="m1s335l"
         />
       </div>
     ),
@@ -654,7 +700,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 5,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="2ydg4zd">
         {/* Верхняя большая секция */}
         <div
           className="absolute top-0 right-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -665,6 +711,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="n245dum"
         >
           1
         </div>
@@ -679,6 +726,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="7adbdgv"
         />
 
         {/* Нижняя левая верхняя секция */}
@@ -691,6 +739,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "50%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="xp.ya8r"
         >
           2
         </div>
@@ -705,6 +754,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "50%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="r_-3r0x"
         >
           3
         </div>
@@ -719,6 +769,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="30u4mj3"
         />
 
         {/* Горизонтальная линия разделения в нижней секции */}
@@ -731,6 +782,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="-pa55w6"
         />
 
         {/* Нижняя левая нижняя секция */}
@@ -743,6 +795,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="oz-8fpp"
         >
           4
         </div>
@@ -757,6 +810,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="cu0ysy."
         >
           5
         </div>
@@ -771,6 +825,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="bc-9qe7"
         />
       </div>
     ),
@@ -783,7 +838,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 5,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid=":mb:g8-">
         {/* Нижняя большая секция */}
         <div
           className="absolute right-0 bottom-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -794,6 +849,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="fxbtcgc"
         >
           5
         </div>
@@ -808,6 +864,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="csar14o"
         />
 
         {/* Верхняя левая верхняя секция */}
@@ -820,6 +877,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="vct.ynb"
         >
           1
         </div>
@@ -834,6 +892,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="i2.j:h3"
         >
           2
         </div>
@@ -848,6 +907,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="p_yuhbi"
         />
 
         {/* Горизонтальная линия разделения в верхней секции */}
@@ -860,6 +920,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="a7q2-8:"
         />
 
         {/* Верхняя левая нижняя секция */}
@@ -872,6 +933,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "25%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="-d.w:5."
         >
           3
         </div>
@@ -886,6 +948,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "25%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="ildhr62"
         >
           4
         </div>
@@ -900,6 +963,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="51dpln:"
         />
       </div>
     ),
@@ -912,7 +976,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 5,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid=".km0o_v">
         {/* Верхний левый экран */}
         <div
           className="absolute top-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -923,6 +987,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="cwbwx::"
         >
           1
         </div>
@@ -937,6 +1002,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="nuz1vjz"
         >
           2
         </div>
@@ -951,6 +1017,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="g:2hydo"
         >
           3
         </div>
@@ -965,6 +1032,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="v.9y06_"
         >
           4
         </div>
@@ -979,6 +1047,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="rvbc-_7"
         >
           5
         </div>
@@ -993,7 +1062,9 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="mzb.k6h"
         />
+
         <div
           className="absolute z-10 bg-gray-400"
           style={{
@@ -1003,6 +1074,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="yu-rkg2"
         />
 
         {/* Вертикальные линии разделения */}
@@ -1015,7 +1087,9 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="o.2fdki"
         />
+
         <div
           className="absolute z-10 bg-gray-400"
           style={{
@@ -1025,6 +1099,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="_ce976q"
         />
       </div>
     ),
@@ -1037,7 +1112,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 6,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="g7vk6cw">
         {/* Верхний левый экран */}
         <div
           className="absolute top-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -1048,6 +1123,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="89r4.80"
         >
           1
         </div>
@@ -1062,6 +1138,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="no3m0bu"
         >
           2
         </div>
@@ -1076,6 +1153,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="u6ghgot"
         >
           3
         </div>
@@ -1090,6 +1168,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="j4axhxj"
         >
           4
         </div>
@@ -1104,6 +1183,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="-7latdk"
         >
           5
         </div>
@@ -1118,6 +1198,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="jml.j7x"
         >
           6
         </div>
@@ -1132,6 +1213,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="ch125ng"
         />
 
         {/* Вертикальная линия разделения 1 */}
@@ -1144,6 +1226,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             opacity: 0.3,
           }}
+          data-oid="w_ip-cq"
         />
 
         {/* Вертикальная линия разделения 2 */}
@@ -1156,6 +1239,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "66.66%",
             opacity: 0.3,
           }}
+          data-oid="i_5wu27"
         />
       </div>
     ),
@@ -1168,7 +1252,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 10,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="4-jeml-">
         {/* Левый столбец */}
         {/* Левый первый экран */}
         <div
@@ -1180,6 +1264,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="j8hebqa"
         >
           1
         </div>
@@ -1194,6 +1279,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "20%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="k:x2pmp"
         >
           3
         </div>
@@ -1208,6 +1294,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "40%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="ox4dlbc"
         >
           5
         </div>
@@ -1222,6 +1309,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "60%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="c7jq-99"
         >
           7
         </div>
@@ -1236,6 +1324,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="dljf5dy"
         >
           9
         </div>
@@ -1251,6 +1340,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="no:_rcc"
         >
           2
         </div>
@@ -1265,6 +1355,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "20%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="7jes3e0"
         >
           4
         </div>
@@ -1279,6 +1370,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "40%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="7lvp.9s"
         >
           6
         </div>
@@ -1293,6 +1385,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "60%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="agy2u5."
         >
           8
         </div>
@@ -1307,6 +1400,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="7luqcwu"
         >
           10
         </div>
@@ -1321,6 +1415,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="hm36kl7"
         />
 
         {/* Горизонтальные линии разделения */}
@@ -1333,7 +1428,9 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid=":c92eci"
         />
+
         <div
           className="absolute z-10 bg-gray-400"
           style={{
@@ -1343,7 +1440,9 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="dh03s5o"
         />
+
         <div
           className="absolute z-10 bg-gray-400"
           style={{
@@ -1353,7 +1452,9 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="98som.p"
         />
+
         <div
           className="absolute z-10 bg-gray-400"
           style={{
@@ -1363,6 +1464,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="qxzstz6"
         />
       </div>
     ),
@@ -1375,8 +1477,8 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 12,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
-        <div className="grid h-full w-full grid-cols-3 grid-rows-4">
+      <div className="relative h-full w-full" data-oid="e-j5wwb">
+        <div className="grid h-full w-full grid-cols-3 grid-rows-4" data-oid="gk-ealn">
           {Array.from({ length: 12 }).map((_, index) => {
             const row = Math.floor(index / 3)
             const col = index % 3
@@ -1393,6 +1495,7 @@ export const portraitTemplates: MediaTemplate[] = [
                   borderLeft: col === 0 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                   borderRight: col === 2 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                 }}
+                data-oid="9t98ov9"
               >
                 {index + 1}
               </div>
@@ -1410,6 +1513,7 @@ export const portraitTemplates: MediaTemplate[] = [
               left: `${i * 33.33}%`,
               opacity: 0.3,
             }}
+            data-oid="8l.jbic"
           />
         ))}
 
@@ -1423,6 +1527,7 @@ export const portraitTemplates: MediaTemplate[] = [
               top: `${i * 25}%`,
               opacity: 0.3,
             }}
+            data-oid="2v:ow53"
           />
         ))}
       </div>
@@ -1436,8 +1541,8 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 12,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
-        <div className="grid h-full w-full grid-cols-4 grid-rows-3">
+      <div className="relative h-full w-full" data-oid="8asilfp">
+        <div className="grid h-full w-full grid-cols-4 grid-rows-3" data-oid="lnykw6.">
           {Array.from({ length: 12 }).map((_, index) => {
             const row = Math.floor(index / 4)
             const col = index % 4
@@ -1454,6 +1559,7 @@ export const portraitTemplates: MediaTemplate[] = [
                   borderLeft: col === 0 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                   borderRight: col === 3 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                 }}
+                data-oid="ythlk7r"
               >
                 {index + 1}
               </div>
@@ -1471,6 +1577,7 @@ export const portraitTemplates: MediaTemplate[] = [
               left: `${i * 25}%`,
               opacity: 0.3,
             }}
+            data-oid="rv5dkjz"
           />
         ))}
 
@@ -1484,6 +1591,7 @@ export const portraitTemplates: MediaTemplate[] = [
               top: `${i * 33.33}%`,
               opacity: 0.3,
             }}
+            data-oid="nzeej-b"
           />
         ))}
       </div>
@@ -1497,8 +1605,8 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 8,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
-        <div className="grid h-full w-full grid-cols-2 grid-rows-4">
+      <div className="relative h-full w-full" data-oid="9i3-i:u">
+        <div className="grid h-full w-full grid-cols-2 grid-rows-4" data-oid="55uy0zw">
           {Array.from({ length: 8 }).map((_, index) => {
             const row = Math.floor(index / 2)
             const col = index % 2
@@ -1515,6 +1623,7 @@ export const portraitTemplates: MediaTemplate[] = [
                   borderLeft: col === 0 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                   borderRight: col === 1 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                 }}
+                data-oid="23o_mhw"
               >
                 {index + 1}
               </div>
@@ -1530,6 +1639,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="mqhyjgv"
         />
 
         {/* Горизонтальные линии */}
@@ -1542,6 +1652,7 @@ export const portraitTemplates: MediaTemplate[] = [
               top: `${i * 25}%`,
               opacity: 0.3,
             }}
+            data-oid="juq43t0"
           />
         ))}
       </div>
@@ -1553,7 +1664,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 4,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="h8_fbg4">
         {/* Верхняя большая секция */}
         <div
           className="absolute top-0 right-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -1564,6 +1675,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="8w3q9cq"
         >
           1
         </div>
@@ -1578,6 +1690,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="8awtng3"
         />
 
         {/* Нижняя левая секция */}
@@ -1590,6 +1703,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="iwq.og6"
         >
           2
         </div>
@@ -1604,6 +1718,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             opacity: 0.3,
           }}
+          data-oid="7gvs:sw"
         />
 
         {/* Нижняя средняя секция */}
@@ -1616,6 +1731,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="ikws6nj"
         >
           3
         </div>
@@ -1630,6 +1746,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "66.66%",
             opacity: 0.3,
           }}
+          data-oid="2mn2nma"
         />
 
         {/* Нижняя правая секция */}
@@ -1642,6 +1759,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid=".rdrjnd"
         >
           4
         </div>
@@ -1654,7 +1772,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 4,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="-wze2.6">
         {/* Левая верхняя секция */}
         <div
           className="absolute top-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -1665,6 +1783,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="eb0rf-k"
         >
           1
         </div>
@@ -1679,6 +1798,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="9v_8stf"
         />
 
         {/* Левая средняя секция */}
@@ -1691,6 +1811,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "33.33%",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="96m4oa8"
         >
           2
         </div>
@@ -1705,6 +1826,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid="r_l.ebh"
         />
 
         {/* Левая нижняя секция */}
@@ -1717,6 +1839,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="jbz7rk2"
         >
           3
         </div>
@@ -1731,6 +1854,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="61lgd9y"
         />
 
         {/* Правая секция */}
@@ -1743,6 +1867,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="zb73q09"
         >
           4
         </div>
@@ -1757,7 +1882,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 4,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid=":xwx4w1">
         {/* Левая секция */}
         <div
           className="absolute top-0 bottom-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -1768,6 +1893,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="f631vsx"
         >
           4
         </div>
@@ -1782,6 +1908,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "50%",
             opacity: 0.3,
           }}
+          data-oid="_-5tlv4"
         />
 
         {/* Правая верхняя секция */}
@@ -1794,6 +1921,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="arbwozg"
         >
           1
         </div>
@@ -1808,6 +1936,7 @@ export const portraitTemplates: MediaTemplate[] = [
             right: "0",
             opacity: 0.3,
           }}
+          data-oid="_hxpg2y"
         />
 
         {/* Правая средняя секция */}
@@ -1820,6 +1949,7 @@ export const portraitTemplates: MediaTemplate[] = [
             top: "33.33%",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="h629iou"
         >
           2
         </div>
@@ -1834,6 +1964,7 @@ export const portraitTemplates: MediaTemplate[] = [
             right: "0",
             opacity: 0.3,
           }}
+          data-oid="gsgqv3t"
         />
 
         {/* Правая нижняя секция */}
@@ -1846,6 +1977,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderBottom: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="b8mbi97"
         >
           3
         </div>
@@ -1858,7 +1990,7 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 4,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="rk74uh.">
         {/* Нижняя большая секция */}
         <div
           className="absolute right-0 bottom-0 left-0 flex items-center justify-center text-lg font-normal text-gray-400"
@@ -1869,6 +2001,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="crtzlg:"
         >
           4
         </div>
@@ -1883,6 +2016,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "0",
             opacity: 0.3,
           }}
+          data-oid=":0dg70c"
         />
 
         {/* Верхняя левая секция */}
@@ -1895,6 +2029,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderLeft: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="x5dq41a"
         >
           1
         </div>
@@ -1909,6 +2044,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             opacity: 0.3,
           }}
+          data-oid="yr9xbk2"
         />
 
         {/* Верхняя средняя секция */}
@@ -1921,6 +2057,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "33.33%",
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="-1sei_c"
         >
           2
         </div>
@@ -1935,6 +2072,7 @@ export const portraitTemplates: MediaTemplate[] = [
             left: "66.66%",
             opacity: 0.3,
           }}
+          data-oid="de7spbq"
         />
 
         {/* Верхняя правая секция */}
@@ -1947,6 +2085,7 @@ export const portraitTemplates: MediaTemplate[] = [
             borderTop: "1px solid rgba(156, 163, 175, 0.3)",
             borderRight: "1px solid rgba(156, 163, 175, 0.3)",
           }}
+          data-oid="qf6fupe"
         >
           3
         </div>
@@ -1960,8 +2099,8 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 9,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
-        <div className="grid h-full w-full grid-cols-3 grid-rows-3">
+      <div className="relative h-full w-full" data-oid="z304yaa">
+        <div className="grid h-full w-full grid-cols-3 grid-rows-3" data-oid="jfutxa.">
           {Array.from({ length: 9 }).map((_, index) => {
             const row = Math.floor(index / 3)
             const col = index % 3
@@ -1978,6 +2117,7 @@ export const portraitTemplates: MediaTemplate[] = [
                   borderLeft: col === 0 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                   borderRight: col === 2 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                 }}
+                data-oid="qkl_dq8"
               >
                 {index + 1}
               </div>
@@ -1995,6 +2135,7 @@ export const portraitTemplates: MediaTemplate[] = [
               left: `${i * 33.33}%`,
               opacity: 0.3,
             }}
+            data-oid="equxwkh"
           />
         ))}
 
@@ -2008,6 +2149,7 @@ export const portraitTemplates: MediaTemplate[] = [
               top: `${i * 33.33}%`,
               opacity: 0.3,
             }}
+            data-oid="w7rkm2d"
           />
         ))}
       </div>
@@ -2021,8 +2163,8 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 16,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
-        <div className="grid h-full w-full grid-cols-4 grid-rows-4">
+      <div className="relative h-full w-full" data-oid="l7w:qxo">
+        <div className="grid h-full w-full grid-cols-4 grid-rows-4" data-oid="n4v3fds">
           {Array.from({ length: 16 }).map((_, index) => {
             const row = Math.floor(index / 4)
             const col = index % 4
@@ -2039,6 +2181,7 @@ export const portraitTemplates: MediaTemplate[] = [
                   borderLeft: col === 0 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                   borderRight: col === 3 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                 }}
+                data-oid="q6_yty6"
               >
                 {index + 1}
               </div>
@@ -2056,6 +2199,7 @@ export const portraitTemplates: MediaTemplate[] = [
               left: `${i * 25}%`,
               opacity: 0.3,
             }}
+            data-oid="j:ulv-h"
           />
         ))}
 
@@ -2069,6 +2213,7 @@ export const portraitTemplates: MediaTemplate[] = [
               top: `${i * 25}%`,
               opacity: 0.3,
             }}
+            data-oid="cj_4xlr"
           />
         ))}
       </div>
@@ -2082,10 +2227,10 @@ export const portraitTemplates: MediaTemplate[] = [
     screens: 25,
     resizable: true,
     render: () => (
-      <div className="relative h-full w-full">
+      <div className="relative h-full w-full" data-oid="lv_oief">
         {/* Создаем сетку 5x5 */}
         {Array.from({ length: 5 }).map((_i, rowIndex) => (
-          <div key={`row-${rowIndex}`}>
+          <div key={`row-${rowIndex}`} data-oid="rfvyxo6">
             {Array.from({ length: 5 }).map((_, colIndex) => {
               const cellIndex = rowIndex * 5 + colIndex + 1
               const isEvenCell = (rowIndex + colIndex) % 2 === 0
@@ -2104,6 +2249,7 @@ export const portraitTemplates: MediaTemplate[] = [
                     borderLeft: colIndex === 0 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                     borderRight: colIndex === 4 ? "1px solid rgba(156, 163, 175, 0.3)" : "none",
                   }}
+                  data-oid="f39zec3"
                 >
                   {cellIndex}
                 </div>
@@ -2124,6 +2270,7 @@ export const portraitTemplates: MediaTemplate[] = [
               left: "0",
               opacity: 0.3,
             }}
+            data-oid="hakqtzq"
           />
         ))}
 
@@ -2139,6 +2286,7 @@ export const portraitTemplates: MediaTemplate[] = [
               left: `${(i + 1) * 20}%`,
               opacity: 0.3,
             }}
+            data-oid="4qejpmm"
           />
         ))}
       </div>

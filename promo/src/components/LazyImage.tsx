@@ -1,12 +1,12 @@
-import type React from "react"
-import { useEffect, useRef, useState } from "react"
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  src: string
-  alt: string
-  placeholder?: string
-  className?: string
-  loading?: "lazy" | "eager"
+  src: string;
+  alt: string;
+  placeholder?: string;
+  className?: string;
+  loading?: "lazy" | "eager";
 }
 
 export const LazyImage: React.FC<LazyImageProps> = ({
@@ -17,15 +17,15 @@ export const LazyImage: React.FC<LazyImageProps> = ({
   loading = "lazy",
   ...props
 }) => {
-  const [imageSrc, setImageSrc] = useState(placeholder)
-  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const observerRef = useRef<IntersectionObserver | null>(null)
+  const [imageSrc, setImageSrc] = useState(placeholder);
+  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     if (!imageRef || loading === "eager") {
-      setImageSrc(src)
-      return
+      setImageSrc(src);
+      return;
     }
 
     if ("IntersectionObserver" in window) {
@@ -33,26 +33,26 @@ export const LazyImage: React.FC<LazyImageProps> = ({
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              setImageSrc(src)
-              observerRef.current?.disconnect()
+              setImageSrc(src);
+              observerRef.current?.disconnect();
             }
-          })
+          });
         },
         {
           rootMargin: "50px",
         },
-      )
+      );
 
-      observerRef.current.observe(imageRef)
+      observerRef.current.observe(imageRef);
     } else {
       // Fallback for browsers that don't support IntersectionObserver
-      setImageSrc(src)
+      setImageSrc(src);
     }
 
     return () => {
-      observerRef.current?.disconnect()
-    }
-  }, [imageRef, src, loading])
+      observerRef.current?.disconnect();
+    };
+  }, [imageRef, src, loading]);
 
   return (
     <img
@@ -63,6 +63,7 @@ export const LazyImage: React.FC<LazyImageProps> = ({
       onLoad={() => setIsLoaded(true)}
       loading={loading}
       {...props}
+      data-oid="bqeowd-"
     />
-  )
-}
+  );
+};

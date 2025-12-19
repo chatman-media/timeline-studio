@@ -110,7 +110,9 @@ export function HDRVideoPlayer() {
         // Ждем загрузки метаданных
         if (videoElement.readyState < 1) {
           await new Promise((resolve) => {
-            videoElement.addEventListener("loadedmetadata", resolve, { once: true })
+            videoElement.addEventListener("loadedmetadata", resolve, {
+              once: true,
+            })
           })
         }
 
@@ -216,28 +218,40 @@ export function HDRVideoPlayer() {
 
   if (!video?.path) {
     return (
-      <div className="media-player-container relative flex h-full flex-col">
-        <div className="relative flex-1 bg-black">
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="text-muted-foreground">Нет видео</div>
+      <div className="media-player-container relative flex h-full flex-col" data-oid="izib-c4">
+        <div className="relative flex-1 bg-black" data-oid="lwz1-:r">
+          <div className="flex h-full w-full items-center justify-center" data-oid="_h-dris">
+            <div className="text-muted-foreground" data-oid="0m4u0-z">
+              Нет видео
+            </div>
           </div>
         </div>
         <PlayerControls
           currentTime={0}
-          file={video || { id: "", path: "", name: "Нет видео", type: MediaType.Video, size: 0, isVideo: true }}
+          file={
+            video || {
+              id: "",
+              path: "",
+              name: "Нет видео",
+              type: MediaType.Video,
+              size: 0,
+              isVideo: true,
+            }
+          }
+          data-oid="6:qgpq8"
         />
       </div>
     )
   }
 
   return (
-    <TooltipProvider>
-      <div className="media-player-container relative flex h-full flex-col">
-        <div className="relative flex-1 bg-black">
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="max-h-[calc(100%-85px)] w-full max-w-[100%]">
-              <AspectRatio ratio={aspectRatioValue} className="bg-black">
-                <div className="relative h-full w-full">
+    <TooltipProvider data-oid=":k81_6z">
+      <div className="media-player-container relative flex h-full flex-col" data-oid="lmykkqm">
+        <div className="relative flex-1 bg-black" data-oid="ui._9fj">
+          <div className="flex h-full w-full items-center justify-center" data-oid="kglnrv6">
+            <div className="max-h-[calc(100%-85px)] w-full max-w-[100%]" data-oid="9dudhqs">
+              <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="c9.3aj-">
+                <div className="relative h-full w-full" data-oid="6h-6koh">
                   <video
                     ref={videoRef}
                     key={video.id || "no-video"}
@@ -260,6 +274,7 @@ export function HDRVideoPlayer() {
                       display: hdrSettings.toneMappingEnabled && hdrMetadata?.isHdr ? "none" : "block",
                       zIndex: 1,
                     }}
+                    data-oid="e021b9z"
                   />
 
                   {/* Canvas для HDR tone mapping */}
@@ -275,19 +290,22 @@ export function HDRVideoPlayer() {
                         height: "100%",
                         zIndex: 2,
                       }}
+                      data-oid="yu.w-vj"
                     />
                   )}
 
                   {/* HDR информация */}
                   {hdrMetadata?.isHdr && (
-                    <div className="absolute left-4 top-4 flex flex-col gap-2">
-                      <div className="rounded bg-purple-500/20 px-3 py-1">
-                        <span className="text-sm text-purple-300 font-medium">HDR {hdrMetadata.format}</span>
+                    <div className="absolute left-4 top-4 flex flex-col gap-2" data-oid="7hb5y1w">
+                      <div className="rounded bg-purple-500/20 px-3 py-1" data-oid="n7z1jdl">
+                        <span className="text-sm text-purple-300 font-medium" data-oid="r.qt8g.">
+                          HDR {hdrMetadata.format}
+                        </span>
                       </div>
 
                       {codecInfo && (
-                        <div className="rounded bg-blue-500/20 px-3 py-1">
-                          <span className="text-xs text-blue-300">
+                        <div className="rounded bg-blue-500/20 px-3 py-1" data-oid="8k_77j.">
+                          <span className="text-xs text-blue-300" data-oid="e:x9xzs">
                             {codecInfo.codec.toUpperCase()} • {codecInfo.width}×{codecInfo.height} •{" "}
                             {Math.round(codecInfo.frameRate)}fps
                           </span>
@@ -295,20 +313,23 @@ export function HDRVideoPlayer() {
                       )}
 
                       {hdrSettings.gpuAcceleration && codecInfo?.gpuAcceleration && (
-                        <div className="rounded bg-green-500/20 px-3 py-1">
-                          <span className="text-xs text-green-300">GPU ускорение</span>
+                        <div className="rounded bg-green-500/20 px-3 py-1" data-oid="wtun5a:">
+                          <span className="text-xs text-green-300" data-oid="swgtoj2">
+                            GPU ускорение
+                          </span>
                         </div>
                       )}
                     </div>
                   )}
 
                   {/* Кнопка HDR настроек */}
-                  <div className="absolute right-4 top-4 flex flex-col gap-2">
+                  <div className="absolute right-4 top-4 flex flex-col gap-2" data-oid="k2ou59:">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setShowHDRControls(!showHDRControls)}
                       className="bg-black/50 hover:bg-black/70"
+                      data-oid="dpz3ie7"
                     >
                       HDR настройки
                     </Button>
@@ -316,26 +337,29 @@ export function HDRVideoPlayer() {
 
                   {/* HDR Controls Panel */}
                   {showHDRControls && hdrMetadata?.isHdr && (
-                    <Card className="absolute right-4 top-16 w-80 bg-black/90 border-gray-700">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm text-white">HDR Настройки</CardTitle>
+                    <Card className="absolute right-4 top-16 w-80 bg-black/90 border-gray-700" data-oid="k9abigp">
+                      <CardHeader className="pb-3" data-oid="u7n8f8t">
+                        <CardTitle className="text-sm text-white" data-oid="8nue-tv">
+                          HDR Настройки
+                        </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-4" data-oid="8jhnfm9">
                         {/* HDR Toggle */}
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor={`${id}-hdr-enabled`} className="text-sm text-gray-300">
+                        <div className="flex items-center justify-between" data-oid="ida.g_t">
+                          <Label htmlFor={`${id}-hdr-enabled`} className="text-sm text-gray-300" data-oid="flghjw.">
                             HDR обработка
                           </Label>
                           <Switch
                             id={`${id}-hdr-enabled`}
                             checked={hdrSettings.hdrEnabled}
                             onCheckedChange={(checked) => updateHDRSettings("hdrEnabled", checked)}
+                            data-oid="gcl9sid"
                           />
                         </div>
 
                         {/* Tone Mapping Toggle */}
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor={`${id}-tone-mapping`} className="text-sm text-gray-300">
+                        <div className="flex items-center justify-between" data-oid="wo7rc8d">
+                          <Label htmlFor={`${id}-tone-mapping`} className="text-sm text-gray-300" data-oid="b6.wc.b">
                             Tone mapping
                           </Label>
                           <Switch
@@ -343,12 +367,13 @@ export function HDRVideoPlayer() {
                             checked={hdrSettings.toneMappingEnabled}
                             onCheckedChange={(checked) => updateHDRSettings("toneMappingEnabled", checked)}
                             disabled={!hdrSettings.hdrEnabled}
+                            data-oid="glxuata"
                           />
                         </div>
 
                         {/* Target Nits */}
-                        <div className="space-y-2">
-                          <Label className="text-sm text-gray-300">
+                        <div className="space-y-2" data-oid="7jyn0-u">
+                          <Label className="text-sm text-gray-300" data-oid="xgpqy_5">
                             Яркость дисплея: {hdrSettings.targetNits} nits
                           </Label>
                           <Slider
@@ -359,12 +384,13 @@ export function HDRVideoPlayer() {
                             step={10}
                             disabled={!hdrSettings.hdrEnabled || !hdrSettings.toneMappingEnabled}
                             className="w-full"
+                            data-oid="x:bdr7c"
                           />
                         </div>
 
                         {/* Gamma Correction */}
-                        <div className="space-y-2">
-                          <Label className="text-sm text-gray-300">
+                        <div className="space-y-2" data-oid="q9.1mhn">
+                          <Label className="text-sm text-gray-300" data-oid="6rk2m.a">
                             Гамма коррекция: {hdrSettings.gammaCorrection.toFixed(1)}
                           </Label>
                           <Slider
@@ -375,12 +401,13 @@ export function HDRVideoPlayer() {
                             step={0.1}
                             disabled={!hdrSettings.hdrEnabled || !hdrSettings.toneMappingEnabled}
                             className="w-full"
+                            data-oid=":ov573g"
                           />
                         </div>
 
                         {/* Saturation */}
-                        <div className="space-y-2">
-                          <Label className="text-sm text-gray-300">
+                        <div className="space-y-2" data-oid="3f4mscg">
+                          <Label className="text-sm text-gray-300" data-oid="260mq64">
                             Насыщенность: {hdrSettings.saturation.toFixed(1)}
                           </Label>
                           <Slider
@@ -391,49 +418,68 @@ export function HDRVideoPlayer() {
                             step={0.1}
                             disabled={!hdrSettings.hdrEnabled || !hdrSettings.toneMappingEnabled}
                             className="w-full"
+                            data-oid="tdo6cd_"
                           />
                         </div>
 
                         {/* Preferred Codec */}
-                        <div className="space-y-2">
-                          <Label className="text-sm text-gray-300">Предпочитаемый кодек</Label>
+                        <div className="space-y-2" data-oid="jmtk9x5">
+                          <Label className="text-sm text-gray-300" data-oid="i1d5jui">
+                            Предпочитаемый кодек
+                          </Label>
                           <Select
                             value={hdrSettings.preferredCodec}
                             onValueChange={(value) => updateHDRSettings("preferredCodec", value)}
+                            data-oid="pi54u9s"
                           >
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
+                            <SelectTrigger className="w-full" data-oid="zflid8m">
+                              <SelectValue data-oid="lprdvw8" />
                             </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="auto">Автоматически</SelectItem>
-                              <SelectItem value="h264">H.264</SelectItem>
-                              <SelectItem value="h265">H.265/HEVC</SelectItem>
-                              <SelectItem value="vp9">VP9</SelectItem>
-                              <SelectItem value="av1">AV1</SelectItem>
+                            <SelectContent data-oid="gb6qj8o">
+                              <SelectItem value="auto" data-oid="1rhwq3a">
+                                Автоматически
+                              </SelectItem>
+                              <SelectItem value="h264" data-oid="3dkcgca">
+                                H.264
+                              </SelectItem>
+                              <SelectItem value="h265" data-oid="5fqc:3x">
+                                H.265/HEVC
+                              </SelectItem>
+                              <SelectItem value="vp9" data-oid="4mwbsli">
+                                VP9
+                              </SelectItem>
+                              <SelectItem value="av1" data-oid="ikpik9m">
+                                AV1
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
                         {/* GPU Acceleration */}
-                        <div className="flex items-center justify-between">
-                          <Label htmlFor={`${id}-gpu-accel`} className="text-sm text-gray-300">
+                        <div className="flex items-center justify-between" data-oid="0x174gi">
+                          <Label htmlFor={`${id}-gpu-accel`} className="text-sm text-gray-300" data-oid="lg8gd.c">
                             GPU ускорение
                           </Label>
                           <Switch
                             id={`${id}-gpu-accel`}
                             checked={hdrSettings.gpuAcceleration}
                             onCheckedChange={(checked) => updateHDRSettings("gpuAcceleration", checked)}
+                            data-oid="617h-w7"
                           />
                         </div>
 
                         {/* Device Info */}
                         {deviceCapabilities && (
-                          <div className="pt-2 border-t border-gray-700">
-                            <Label className="text-xs text-gray-400">Возможности устройства:</Label>
-                            <div className="text-xs text-gray-500 mt-1 space-y-1">
-                              <div>HDR: {deviceCapabilities.isHDRSupported ? "Да" : "Нет"}</div>
-                              <div>Цветовая гамма: {deviceCapabilities.colorGamut}</div>
-                              <div>Макс. яркость: {deviceCapabilities.maxDisplayMasteringLuminance} nits</div>
+                          <div className="pt-2 border-t border-gray-700" data-oid="thoa1:o">
+                            <Label className="text-xs text-gray-400" data-oid="k541s20">
+                              Возможности устройства:
+                            </Label>
+                            <div className="text-xs text-gray-500 mt-1 space-y-1" data-oid="whi45n4">
+                              <div data-oid="5-84zye">HDR: {deviceCapabilities.isHDRSupported ? "Да" : "Нет"}</div>
+                              <div data-oid="lylqh9s">Цветовая гамма: {deviceCapabilities.colorGamut}</div>
+                              <div data-oid="1uv.1uh">
+                                Макс. яркость: {deviceCapabilities.maxDisplayMasteringLuminance} nits
+                              </div>
                             </div>
                           </div>
                         )}
@@ -442,13 +488,13 @@ export function HDRVideoPlayer() {
                   )}
 
                   {/* AI Analysis Overlay */}
-                  <PlayerAIOverlay className="z-10" />
+                  <PlayerAIOverlay className="z-10" data-oid="0dx_yu." />
                 </div>
               </AspectRatio>
             </div>
           </div>
         </div>
-        <PlayerControls currentTime={currentTime} file={video} />
+        <PlayerControls currentTime={currentTime} file={video} data-oid="legmoqu" />
       </div>
     </TooltipProvider>
   )

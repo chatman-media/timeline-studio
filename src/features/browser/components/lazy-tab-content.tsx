@@ -13,19 +13,27 @@ const getAdapterComponent = (tabValue: string) => {
   switch (tabValue) {
     case "media":
       return React.lazy(() =>
-        import("./tab-adapters/media-adapter-content").then((module) => ({ default: module.MediaAdapterContent })),
+        import("./tab-adapters/media-adapter-content").then((module) => ({
+          default: module.MediaAdapterContent,
+        })),
       )
     case "music":
       return React.lazy(() =>
-        import("./tab-adapters/music-adapter-content").then((module) => ({ default: module.MusicAdapterContent })),
+        import("./tab-adapters/music-adapter-content").then((module) => ({
+          default: module.MusicAdapterContent,
+        })),
       )
     case "effects":
       return React.lazy(() =>
-        import("./tab-adapters/effects-adapter-content").then((module) => ({ default: module.EffectsAdapterContent })),
+        import("./tab-adapters/effects-adapter-content").then((module) => ({
+          default: module.EffectsAdapterContent,
+        })),
       )
     case "filters":
       return React.lazy(() =>
-        import("./tab-adapters/filters-adapter-content").then((module) => ({ default: module.FiltersAdapterContent })),
+        import("./tab-adapters/filters-adapter-content").then((module) => ({
+          default: module.FiltersAdapterContent,
+        })),
       )
     case "transitions":
       return React.lazy(() =>
@@ -79,12 +87,15 @@ export const LazyTabContent = memo(({ tabValue, activeTab }: LazyTabContentProps
   return (
     <Suspense
       fallback={
-        <div className="flex h-full items-center justify-center">
-          <div className="text-muted-foreground">Загрузка...</div>
+        <div className="flex h-full items-center justify-center" data-oid="yqdcfjh">
+          <div className="text-muted-foreground" data-oid="h8m1h3v">
+            Загрузка...
+          </div>
         </div>
       }
+      data-oid="p7wm:j-"
     >
-      <AdapterComponent />
+      <AdapterComponent data-oid="fqxqo69" />
     </Suspense>
   )
 })

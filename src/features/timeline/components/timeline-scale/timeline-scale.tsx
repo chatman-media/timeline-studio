@@ -67,16 +67,17 @@ export function TimelineScale({
     })
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col" data-oid="xk7:6.3">
       {/* Линия времени с метками */}
-      <div className="flex w-full">
-        <div className="relative w-full">
+      <div className="flex w-full" data-oid="0wim26f">
+        <div className="relative w-full" data-oid="hh5mqfn">
           {/* Горизонтальная линия */}
           <div
             className="h-[1px] w-full"
             style={{
               background: "rgb(47, 61, 62)",
             }}
+            data-oid="wfgkzi:"
           />
 
           {/* Метки времени */}
@@ -89,6 +90,7 @@ export function TimelineScale({
             isActive={isActive}
             timeToPosition={calculatePosition}
             sectionId={`section-${startTime?.toFixed(0) || "0"}-${endTime?.toFixed(0) || "0"}`}
+            data-oid="c8jku81"
           />
         </div>
       </div>

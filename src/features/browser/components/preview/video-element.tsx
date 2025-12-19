@@ -79,6 +79,7 @@ export const VideoElement = memo(
         onPlay={onPlay}
         onTimeUpdate={onTimeUpdate}
         onKeyDown={onKeyDown}
+        data-oid="7stx7mn"
       />
     )
   },

@@ -79,76 +79,92 @@ export function ClipContextMenu({
   }
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-64">
-        <ContextMenuItem onClick={handleCopy}>
-          <Copy className="mr-2 h-4 w-4" />
+    <ContextMenu data-oid=".r6dm3e">
+      <ContextMenuTrigger asChild data-oid="vkx0rh8">
+        {children}
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-64" data-oid="r1u-q5m">
+        <ContextMenuItem onClick={handleCopy} data-oid="i-0h_an">
+          <Copy className="mr-2 h-4 w-4" data-oid="m7fl.-z" />
           {t("timeline.clip.copy", "Копировать")}
-          <span className="ml-auto text-xs">Ctrl+C</span>
+          <span className="ml-auto text-xs" data-oid="thjm-ph">
+            Ctrl+C
+          </span>
         </ContextMenuItem>
 
-        <ContextMenuItem onClick={handleCut}>
-          <Copy className="mr-2 h-4 w-4" />
+        <ContextMenuItem onClick={handleCut} data-oid="5cbbm2y">
+          <Copy className="mr-2 h-4 w-4" data-oid="l6etwi9" />
           {t("timeline.clip.cut", "Вырезать")}
-          <span className="ml-auto text-xs">Ctrl+X</span>
+          <span className="ml-auto text-xs" data-oid="7_vraev">
+            Ctrl+X
+          </span>
         </ContextMenuItem>
 
-        <ContextMenuSeparator />
+        <ContextMenuSeparator data-oid="likl_xb" />
 
-        <ContextMenuItem onClick={handleSplit}>
-          <Scissors className="mr-2 h-4 w-4" />
+        <ContextMenuItem onClick={handleSplit} data-oid="ag--w3:">
+          <Scissors className="mr-2 h-4 w-4" data-oid="rbjvwo1" />
           {t("timeline.clip.split", "Разделить")}
-          <span className="ml-auto text-xs">S</span>
+          <span className="ml-auto text-xs" data-oid="77ukdyy">
+            S
+          </span>
         </ContextMenuItem>
 
-        <ContextMenuSeparator />
+        <ContextMenuSeparator data-oid="w4z5773" />
 
-        <ContextMenuSub>
-          <ContextMenuSubTrigger>
-            <Settings2 className="mr-2 h-4 w-4" />
+        <ContextMenuSub data-oid="7q.07mp">
+          <ContextMenuSubTrigger data-oid="dvdkbef">
+            <Settings2 className="mr-2 h-4 w-4" data-oid="09e1_1i" />
             {t("timeline.clip.properties", "Свойства")}
           </ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-48">
-            <ContextMenuItem onClick={onShowEffects}>
-              <Layers className="mr-2 h-4 w-4" />
+          <ContextMenuSubContent className="w-48" data-oid="_3szf64">
+            <ContextMenuItem onClick={onShowEffects} data-oid="atyw6m4">
+              <Layers className="mr-2 h-4 w-4" data-oid="caih7p:" />
               {t("timeline.clip.effects", "Эффекты")}
               {clip.effects && clip.effects.length > 0 && (
-                <span className="ml-auto text-xs">{clip.effects.length}</span>
+                <span className="ml-auto text-xs" data-oid=".vuz5vc">
+                  {clip.effects.length}
+                </span>
               )}
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={onShowTransitions}>
-              <Film className="mr-2 h-4 w-4" />
+            <ContextMenuItem onClick={onShowTransitions} data-oid=".v-ixhe">
+              <Film className="mr-2 h-4 w-4" data-oid="gsm7a7t" />
               {t("timeline.clip.transitions", "Переходы")}
               {clip.transitions && clip.transitions.length > 0 && (
-                <span className="ml-auto text-xs">{clip.transitions.length}</span>
+                <span className="ml-auto text-xs" data-oid="43jahjc">
+                  {clip.transitions.length}
+                </span>
               )}
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={onShowFilters}>
-              <Settings2 className="mr-2 h-4 w-4" />
+            <ContextMenuItem onClick={onShowFilters} data-oid="p1j3x:e">
+              <Settings2 className="mr-2 h-4 w-4" data-oid=":._8-pu" />
               {t("timeline.clip.filters", "Фильтры")}
               {clip.filters && clip.filters.length > 0 && (
-                <span className="ml-auto text-xs">{clip.filters.length}</span>
+                <span className="ml-auto text-xs" data-oid="fw31-tv">
+                  {clip.filters.length}
+                </span>
               )}
             </ContextMenuItem>
 
-            <ContextMenuSeparator />
+            <ContextMenuSeparator data-oid="d_ge2d." />
 
-            <ContextMenuItem>
-              <Volume2 className="mr-2 h-4 w-4" />
+            <ContextMenuItem data-oid="sj:rpfz">
+              <Volume2 className="mr-2 h-4 w-4" data-oid="vgie81x" />
               {t("timeline.clip.volume", "Громкость")}
             </ContextMenuItem>
           </ContextMenuSubContent>
         </ContextMenuSub>
 
-        <ContextMenuSeparator />
+        <ContextMenuSeparator data-oid="bfit7eb" />
 
-        <ContextMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
-          <Trash2 className="mr-2 h-4 w-4" />
+        <ContextMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive" data-oid="wj-5sbe">
+          <Trash2 className="mr-2 h-4 w-4" data-oid="s1gk4.p" />
           {t("timeline.clip.delete", "Удалить")}
-          <span className="ml-auto text-xs">Delete</span>
+          <span className="ml-auto text-xs" data-oid="fpfluc0">
+            Delete
+          </span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

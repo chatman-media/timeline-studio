@@ -452,73 +452,81 @@ export function KeyboardShortcutsModal() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden p-4">
+    <div className="flex flex-col h-full overflow-hidden p-4" data-oid="vo_atq1">
       {/* Верхняя часть с поиском и выбором предустановки */}
-      <div className="shrink-0 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex w-1/2 items-center space-x-2">
-            <label className="text-sm whitespace-nowrap">
+      <div className="shrink-0 space-y-4" data-oid="6aomlxp">
+        <div className="flex items-center justify-between" data-oid=".xgi9xa">
+          <div className="flex w-1/2 items-center space-x-2" data-oid="zxtyrmt">
+            <label className="text-sm whitespace-nowrap" data-oid="fyvtxx5">
               {t("dialogs.keyboardShortcuts.switchPreset", "Переключиться на другую предустановку ярлыков:")}
             </label>
-            <Select value={selectedPreset} onValueChange={handlePresetChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue />
+            <Select value={selectedPreset} onValueChange={handlePresetChange} data-oid="0lwu2tn">
+              <SelectTrigger className="w-full" data-oid="vnh3zr9">
+                <SelectValue data-oid="huvqtq0" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Timeline">{t("dialogs.keyboardShortcuts.presets.timeline", "Timeline")}</SelectItem>
-                <SelectItem value="Wondershare Filmora">
+              <SelectContent data-oid="_iz71fx">
+                <SelectItem value="Timeline" data-oid="6.gmqh7">
+                  {t("dialogs.keyboardShortcuts.presets.timeline", "Timeline")}
+                </SelectItem>
+                <SelectItem value="Wondershare Filmora" data-oid="1baxokf">
                   {t("dialogs.keyboardShortcuts.presets.filmora", "Wondershare Filmora")}
                 </SelectItem>
-                <SelectItem value="Adobe Premier Pro">
+                <SelectItem value="Adobe Premier Pro" data-oid="tmwpmwf">
                   {t("dialogs.keyboardShortcuts.presets.premiere", "Adobe Premier Pro")}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="relative w-1/3">
-            <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <div className="relative w-1/3" data-oid="as1wq5r">
+            <Search className="absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-gray-500" data-oid="sh:9nmw" />
             <Input
               placeholder={t("dialogs.keyboardShortcuts.searchShortcuts", "Поиск сочетаний клавиш")}
               value={searchQuery}
               onChange={handleSearchChange}
               onKeyDown={handleSearchKeyDown}
               className="pr-8 pl-8"
+              data-oid="a5nmppc"
             />
+
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
                 className="absolute top-1/2 right-2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 aria-label={t("dialogs.keyboardShortcuts.clearSearch", "Очистить поиск")}
+                data-oid="jides.g"
               >
-                <X />
+                <X data-oid="_q-a7eo" />
               </button>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col rounded bg-gray-50 px-2 py-1 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-          <p>
+        <div
+          className="flex flex-col rounded bg-gray-50 px-2 py-1 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+          data-oid="qs0kb2h"
+        >
+          <p data-oid="zwzp:c-">
             {t(
               "dialogs.keyboardShortcuts.editHint",
               "Нажмите на сочетание клавиш, чтобы изменить его. Нажмите нужные клавиши для установки нового сочетания.",
             )}
           </p>
           {/* <p className="mt-1">
-            {t(
-              "dialogs.keyboardShortcuts.searchHint",
-              "Вы можете искать по названию или нажать комбинацию клавиш в поле поиска.",
-            )}
-          </p> */}
+               {t(
+                 "dialogs.keyboardShortcuts.searchHint",
+                 "Вы можете искать по названию или нажать комбинацию клавиш в поле поиска.",
+               )}
+              </p> */}
         </div>
       </div>
 
       {/* Средняя часть с категориями и горячими клавишами */}
-      <div className="mt-4 mb-4 flex flex-1 min-h-0 overflow-hidden">
+      <div className="mt-4 mb-4 flex flex-1 min-h-0 overflow-hidden" data-oid="k35hon7">
         {/* Левая панель с категориями */}
-        <div className="w-1/4 overflow-y-auto border-r border-gray-200 pr-2 dark:border-gray-700">
-          <div className="space-y-1">
+        <div className="w-1/4 overflow-y-auto border-r border-gray-200 pr-2 dark:border-gray-700" data-oid="b:dsc28">
+          <div className="space-y-1" data-oid="npeyjt4">
             {filteredCategories.map((category, index) => (
               <Button
                 key={category.id}
@@ -530,6 +538,7 @@ export function KeyboardShortcutsModal() {
                   logger.info(`Clicked on category ${index}: ${category.name}`)
                   scrollToCategory(index)
                 }}
+                data-oid="nx_qv5a"
               >
                 {category.name}
               </Button>
@@ -538,12 +547,14 @@ export function KeyboardShortcutsModal() {
         </div>
 
         {/* Правая панель с горячими клавишами */}
-        <div className="w-3/4 overflow-y-auto pl-4 flex-1" ref={scrollContainerRef}>
+        <div className="w-3/4 overflow-y-auto pl-4 flex-1" ref={scrollContainerRef} data-oid="lwe6s-t">
           {filteredCategories.map((category, index) => {
             return (
-              <div key={category.id} id={`category-${index}`} className="mb-6">
-                <h3 className="mb-2 text-lg font-medium">{category.name}</h3>
-                <div className="space-y-2">
+              <div key={category.id} id={`category-${index}`} className="mb-6" data-oid="i2kfwu1">
+                <h3 className="mb-2 text-lg font-medium" data-oid="1trbxfu">
+                  {category.name}
+                </h3>
+                <div className="space-y-2" data-oid="s2z5j6d">
                   {category.shortcuts.map((shortcut, shortcutIndex) => {
                     const isEditing =
                       editingShortcut &&
@@ -564,17 +575,23 @@ export function KeyboardShortcutsModal() {
                           handleKeyDown(e as unknown as React.KeyboardEvent<HTMLDivElement>)
                         }}
                         aria-label={`Edit shortcut ${shortcut.name}`}
+                        data-oid="coxrs.3"
                       >
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{shortcut.name}</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300" data-oid="qic14ic">
+                          {shortcut.name}
+                        </span>
                         <div
                           className={`px-3 py-1.5 ${isEditing ? "bg-[#00CCC0] text-black" : "bg-gray-100 dark:bg-gray-700"} min-w-[100px] rounded text-center font-sans text-sm tracking-wide shadow-sm transition-all`}
+                          data-oid="96pekvc"
                         >
                           {isEditing ? (
-                            <span className="animate-pulse">
+                            <span className="animate-pulse" data-oid="-wtsl53">
                               {t("dialogs.keyboardShortcuts.pressKeys", "Нажмите клавиши...")}
                             </span>
                           ) : (
-                            <span className="font-medium tracking-wide">{shortcut.keys}</span>
+                            <span className="font-medium tracking-wide" data-oid="20y29wp">
+                              {shortcut.keys}
+                            </span>
                           )}
                         </div>
                       </button>
@@ -588,8 +605,11 @@ export function KeyboardShortcutsModal() {
       </div>
 
       {/* Нижняя часть с кнопками */}
-      <div className="mt-4 shrink-0 flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
-        <div className="flex gap-2">
+      <div
+        className="mt-4 shrink-0 flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700"
+        data-oid="8wx.lq:"
+      >
+        <div className="flex gap-2" data-oid="7s3iyd.">
           <Button
             variant="outline"
             className="cursor-pointer px-4"
@@ -603,6 +623,7 @@ export function KeyboardShortcutsModal() {
               setEditingShortcut(null)
               setListeningForKeys(false)
             }}
+            data-oid="m7__v-7"
           >
             {t("dialogs.keyboardShortcuts.resetDefaults", "Восстановление значений по умолчанию")}
           </Button>
@@ -611,15 +632,27 @@ export function KeyboardShortcutsModal() {
             className="cursor-pointer px-4"
             onClick={handleExport}
             title={t("dialogs.keyboardShortcuts.export", "Экспортировать")}
+            data-oid="61tftfs"
           >
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="h-4 w-4 mr-2" data-oid="a3pym-r" />
             {t("dialogs.keyboardShortcuts.export", "Экспортировать")}
           </Button>
-          <Button variant="outline" className="cursor-pointer px-4" asChild>
-            <label htmlFor="import-shortcuts" title={t("dialogs.keyboardShortcuts.import", "Импортировать")}>
-              <Upload className="h-4 w-4 mr-2" />
+          <Button variant="outline" className="cursor-pointer px-4" asChild data-oid="_wq3big">
+            <label
+              htmlFor="import-shortcuts"
+              title={t("dialogs.keyboardShortcuts.import", "Импортировать")}
+              data-oid="xovir-q"
+            >
+              <Upload className="h-4 w-4 mr-2" data-oid="d:t0wc4" />
               {t("dialogs.keyboardShortcuts.import", "Импортировать")}
-              <input id="import-shortcuts" type="file" accept=".json" className="hidden" onChange={handleImport} />
+              <input
+                id="import-shortcuts"
+                type="file"
+                accept=".json"
+                className="hidden"
+                onChange={handleImport}
+                data-oid="hjvdb5d"
+              />
             </label>
           </Button>
           <Button
@@ -628,6 +661,7 @@ export function KeyboardShortcutsModal() {
             onClick={() => {
               closeModal()
             }}
+            data-oid="tkn4qxp"
           >
             {t("dialogs.keyboardShortcuts.cancel", "Отменить")}
           </Button>
@@ -637,6 +671,7 @@ export function KeyboardShortcutsModal() {
           onClick={() => {
             closeModal()
           }}
+          data-oid="pw906vh"
         >
           {t("dialogs.keyboardShortcuts.ok", "OK")}
         </Button>

@@ -21,17 +21,22 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
   const videoStream = file.probeData?.streams.find((s) => s.codec_type === "video")
 
   return (
-    <div className="grid w-full grid-rows-2 overflow-hidden" style={{ height: `${size}px` }}>
-      <div className="flex w-full justify-between p-2">
-        <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">{file.name}</p>
+    <div className="grid w-full grid-rows-2 overflow-hidden" style={{ height: `${size}px` }} data-oid="k74eh-_">
+      <div className="flex w-full justify-between p-2" data-oid="wcoshkw">
+        <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100" data-oid="kf-ri93">
+          {file.name}
+        </p>
         {!file.isImage && file.probeData?.format.duration && (
-          <p className="shrink-0 font-medium" style={{ fontSize: size > 100 ? "13px" : "12px" }}>
+          <p className="shrink-0 font-medium" style={{ fontSize: size > 100 ? "13px" : "12px" }} data-oid="nfw8o2k">
             {formatDuration(file.probeData.format.duration, 3, true)}
           </p>
         )}
 
         {file.isImage && file.createdAt && (
-          <span className="shrink-0 text-sm font-medium whitespace-nowrap text-gray-700 dark:text-gray-200">
+          <span
+            className="shrink-0 text-sm font-medium whitespace-nowrap text-gray-700 dark:text-gray-200"
+            data-oid="l-gxdws"
+          >
             {new Date(file.createdAt).toLocaleDateString(i18n.language === "en" ? "en-US" : "ru-RU", {
               year: "numeric",
               month: "long",
@@ -42,27 +47,31 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
       </div>
 
       {file.isVideo ? (
-        <div className="flex w-full items-end p-2">
-          <span className="shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
+        <div className="flex w-full items-end p-2" data-oid="0rjgsiy">
+          <span className="shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200" data-oid="r7xe2ax">
             {formatTimeWithMilliseconds(file.startTime ?? 0, true, true, false)}
           </span>
 
-          <div className="ml-2 min-w-0 flex-1 overflow-hidden">
-            <p className="flex items-center justify-between truncate text-xs">
+          <div className="ml-2 min-w-0 flex-1 overflow-hidden" data-oid="k6:xwmm">
+            <p className="flex items-center justify-between truncate text-xs" data-oid=":69_6-8">
               {videoStream && (
-                <span>
-                  <span className="ml-3 text-gray-700 dark:text-gray-200">
+                <span data-oid="upy.vlr">
+                  <span className="ml-3 text-gray-700 dark:text-gray-200" data-oid="6j3:d3b">
                     {videoStream.width}x{videoStream.height}
                   </span>
-                  <span className="ml-3 text-gray-700 dark:text-gray-200">
+                  <span className="ml-3 text-gray-700 dark:text-gray-200" data-oid="ove9g7f">
                     {(((videoStream.width ?? 0) * (videoStream.height ?? 0)) / 1000000).toFixed(1)} MP
                   </span>
-                  <span className="ml-3 text-gray-700 dark:text-gray-200">{getAspectRatio(videoStream)}</span>
-                  <span className="ml-3 text-gray-700 dark:text-gray-200">
+                  <span className="ml-3 text-gray-700 dark:text-gray-200" data-oid="j8khu13">
+                    {getAspectRatio(videoStream)}
+                  </span>
+                  <span className="ml-3 text-gray-700 dark:text-gray-200" data-oid="aijby8a">
                     {formatBitrate(Number(videoStream.bit_rate))}
                   </span>
                   {getFps(videoStream) && (
-                    <span className="ml-3 text-gray-700 dark:text-gray-200">{getFps(videoStream)} fps</span>
+                    <span className="ml-3 text-gray-700 dark:text-gray-200" data-oid="tc8prr:">
+                      {getFps(videoStream)} fps
+                    </span>
                   )}
                 </span>
               )}
@@ -70,15 +79,15 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
           </div>
 
           {file.probeData?.format.size && (
-            <p className="ml-2 shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
+            <p className="ml-2 shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200" data-oid="n6jr6zn">
               {formatFileSize(file.probeData.format.size)}
             </p>
           )}
         </div>
       ) : (
-        <div className="flex w-full items-end justify-end p-2">
+        <div className="flex w-full items-end justify-end p-2" data-oid="u-ui954">
           {file.probeData?.format.size && (
-            <p className="shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200">
+            <p className="shrink-0 text-xs whitespace-nowrap text-gray-700 dark:text-gray-200" data-oid="hdumlly">
               {formatFileSize(file.probeData.format.size)}
             </p>
           )}

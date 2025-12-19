@@ -9,7 +9,11 @@ import type { EffectResource, MediaResource } from "../../types"
 
 // Mock dependencies
 vi.mock("@/features/browser/components/preview/media-preview", () => ({
-  MediaPreview: ({ file }: any) => <div data-testid="media-preview">{file.name}</div>,
+  MediaPreview: ({ file }: any) => (
+    <div data-testid="media-preview" data-oid="f89v96h">
+      {file.name}
+    </div>
+  ),
 }))
 
 vi.mock("@/features/drag-drop", () => ({
@@ -23,9 +27,9 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("lucide-react")>()
   return {
     ...actual,
-    X: () => <div data-testid="x-icon" />,
-    Sparkles: () => <div data-testid="sparkles-icon" />,
-    Palette: () => <div data-testid="palette-icon" />,
+    X: () => <div data-testid="x-icon" data-oid="4z7oq5l" />,
+    Sparkles: () => <div data-testid="sparkles-icon" data-oid="xp..76w" />,
+    Palette: () => <div data-testid="palette-icon" data-oid="nwi4gsk" />,
   }
 })
 
@@ -55,7 +59,7 @@ describe("ResourceThumbnail", () => {
       params: {},
     }
 
-    render(<ResourceThumbnail resource={mediaResource} onRemove={mockOnRemove} />)
+    render(<ResourceThumbnail resource={mediaResource} onRemove={mockOnRemove} data-oid="v_zcdlf" />)
 
     // File name appears both in preview mock and as resource name
     expect(screen.getAllByText("Video.mp4").length).toBeGreaterThan(0)
@@ -78,7 +82,7 @@ describe("ResourceThumbnail", () => {
       params: {},
     }
 
-    render(<ResourceThumbnail resource={effectResource} onRemove={mockOnRemove} />)
+    render(<ResourceThumbnail resource={effectResource} onRemove={mockOnRemove} data-oid=".dss6.v" />)
 
     expect(screen.getByText("Blur Effect")).toBeInTheDocument()
     expect(screen.getByText("EFX")).toBeInTheDocument() // Type badge
@@ -98,9 +102,11 @@ describe("ResourceThumbnail", () => {
       params: {},
     }
 
-    render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} />)
+    render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} data-oid="1tj.._j" />)
 
-    const removeButton = screen.getByRole("button", { name: /remove resource/i })
+    const removeButton = screen.getByRole("button", {
+      name: /remove resource/i,
+    })
     await user.click(removeButton)
 
     expect(mockOnRemove).toHaveBeenCalledWith("effect-1", "effect")
@@ -111,19 +117,53 @@ describe("ResourceThumbnail", () => {
       {
         type: "media",
         badge: "VID",
-        extra: { file: { id: "1", name: "test.mp4", path: "/test.mp4", type: "video", size: 100, duration: 10 } },
+        extra: {
+          file: {
+            id: "1",
+            name: "test.mp4",
+            path: "/test.mp4",
+            type: "video",
+            size: 100,
+            duration: 10,
+          },
+        },
       },
       {
         type: "music",
         badge: "MUS",
-        extra: { file: { id: "1", name: "test.mp3", path: "/test.mp3", type: "audio", size: 100, duration: 10 } },
+        extra: {
+          file: {
+            id: "1",
+            name: "test.mp3",
+            path: "/test.mp3",
+            type: "audio",
+            size: 100,
+            duration: 10,
+          },
+        },
       },
-      { type: "effect", badge: "EFX", extra: { effect: { id: "1", name: "Effect", type: "blur" } } },
-      { type: "filter", badge: "FLT", extra: { filter: { id: "1", name: "Filter" } } },
+      {
+        type: "effect",
+        badge: "EFX",
+        extra: { effect: { id: "1", name: "Effect", type: "blur" } },
+      },
+      {
+        type: "filter",
+        badge: "FLT",
+        extra: { filter: { id: "1", name: "Filter" } },
+      },
       { type: "transition", badge: "TRN", extra: { transition: { id: "1" } } },
       { type: "template", badge: "TPL", extra: { template: { id: "1" } } },
-      { type: "styleTemplate", badge: "STY", extra: { template: { id: "1", name: { ru: "Template" } } } },
-      { type: "subtitle", badge: "SUB", extra: { style: { id: "1", name: "Style" } } },
+      {
+        type: "styleTemplate",
+        badge: "STY",
+        extra: { template: { id: "1", name: { ru: "Template" } } },
+      },
+      {
+        type: "subtitle",
+        badge: "SUB",
+        extra: { style: { id: "1", name: "Style" } },
+      },
     ] as const
 
     types.forEach(({ type, badge, extra }) => {
@@ -137,7 +177,7 @@ describe("ResourceThumbnail", () => {
         ...extra,
       } as any
 
-      const { unmount } = render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} />)
+      const { unmount } = render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} data-oid="b1dl.bd" />)
       expect(screen.getByText(badge)).toBeInTheDocument()
       unmount()
     })
@@ -154,7 +194,7 @@ describe("ResourceThumbnail", () => {
       params: {},
     }
 
-    render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} />)
+    render(<ResourceThumbnail resource={resource} onRemove={mockOnRemove} data-oid="_991:or" />)
 
     const nameElement = screen.getByTitle("Very Long Effect Name That Should Be Truncated In The UI")
     expect(nameElement).toBeInTheDocument()

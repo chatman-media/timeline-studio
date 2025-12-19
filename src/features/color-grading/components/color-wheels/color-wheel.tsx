@@ -166,17 +166,20 @@ export function ColorWheel({ type, label, value, onChange, size = 80, disabled =
   const position = rgbToPosition(value)
 
   return (
-    <div className="text-center space-y-2">
-      <label className="text-xs font-medium text-foreground/90">{label}</label>
+    <div className="text-center space-y-2" data-oid="sblog.-">
+      <label className="text-xs font-medium text-foreground/90" data-oid="jjmiaz7">
+        {label}
+      </label>
 
       <div
         ref={containerRef}
         className="relative mx-auto cursor-pointer"
         style={{ width: size, height: size }}
         onMouseDown={handleMouseDown}
+        data-oid=":s_f53x"
       >
         {/* Canvas для цветового колеса */}
-        <canvas ref={canvasRef} width={size} height={size} className="absolute inset-0" />
+        <canvas ref={canvasRef} width={size} height={size} className="absolute inset-0" data-oid="lkpjxxa" />
 
         {/* Индикатор текущей позиции */}
         <div
@@ -185,30 +188,34 @@ export function ColorWheel({ type, label, value, onChange, size = 80, disabled =
             left: position.x,
             top: position.y,
           }}
+          data-oid="avg3q1o"
         >
-          <div className="w-full h-full bg-foreground rounded-full border-2 border-background shadow-md" />
+          <div
+            className="w-full h-full bg-foreground rounded-full border-2 border-background shadow-md"
+            data-oid="vnsx0k3"
+          />
         </div>
       </div>
 
       {/* Численные значения */}
-      <div className="grid grid-cols-3 gap-1 text-xs font-mono tabular-nums">
-        <div className="text-muted-foreground">
+      <div className="grid grid-cols-3 gap-1 text-xs font-mono tabular-nums" data-oid="1nrs7ty">
+        <div className="text-muted-foreground" data-oid="k1vp0vj">
           R:{" "}
-          <span className="text-red-400">
+          <span className="text-red-400" data-oid="u_i64sf">
             {value.r >= 0 ? "+" : ""}
             {value.r.toFixed(2)}
           </span>
         </div>
-        <div className="text-muted-foreground">
+        <div className="text-muted-foreground" data-oid="mhzb-ef">
           G:{" "}
-          <span className="text-green-400">
+          <span className="text-green-400" data-oid="8onags-">
             {value.g >= 0 ? "+" : ""}
             {value.g.toFixed(2)}
           </span>
         </div>
-        <div className="text-muted-foreground">
+        <div className="text-muted-foreground" data-oid="x79q2e5">
           B:{" "}
-          <span className="text-blue-400">
+          <span className="text-blue-400" data-oid="e9zn-ba">
             {value.b >= 0 ? "+" : ""}
             {value.b.toFixed(2)}
           </span>

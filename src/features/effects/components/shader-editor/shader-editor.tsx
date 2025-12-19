@@ -138,11 +138,11 @@ export function ShaderEditor({ initialProject, onSave, onExport, className }: Sh
   )
 
   return (
-    <div className={cn("flex flex-col h-full bg-gray-950", className)}>
+    <div className={cn("flex flex-col h-full bg-gray-950", className)} data-oid="9kp:k0-">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-800">
-        <div className="flex items-center gap-4">
-          <Code className="h-5 w-5 text-blue-400" />
+      <div className="flex items-center justify-between p-4 border-b border-gray-800" data-oid="vw738di">
+        <div className="flex items-center gap-4" data-oid="wksb8y:">
+          <Code className="h-5 w-5 text-blue-400" data-oid="j2h-158" />
           <Input
             value={project.name}
             onChange={(e) => {
@@ -151,73 +151,89 @@ export function ShaderEditor({ initialProject, onSave, onExport, className }: Sh
             }}
             className="w-48 bg-gray-900 border-gray-700"
             placeholder="Shader name..."
+            data-oid="6pbrvd."
           />
-          {project.isDirty && <span className="text-xs text-yellow-400">• Unsaved changes</span>}
+
+          {project.isDirty && (
+            <span className="text-xs text-yellow-400" data-oid="7ke_ut9">
+              • Unsaved changes
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={handleSave} disabled={!project.isDirty}>
-            <Save className="h-4 w-4 mr-2" />
+        <div className="flex items-center gap-2" data-oid="82gwt:l">
+          <Button size="sm" variant="ghost" onClick={handleSave} disabled={!project.isDirty} data-oid="gxm:psl">
+            <Save className="h-4 w-4 mr-2" data-oid="lbewu6n" />
             Save
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleExport}>
-            <Package className="h-4 w-4 mr-2" />
+          <Button size="sm" variant="ghost" onClick={handleExport} data-oid="55bq8fx">
+            <Package className="h-4 w-4 mr-2" data-oid="8ajyymq" />
             Export
           </Button>
-          <Button size="sm" variant="ghost">
-            <BookOpen className="h-4 w-4 mr-2" />
+          <Button size="sm" variant="ghost" data-oid=":on50zd">
+            <BookOpen className="h-4 w-4 mr-2" data-oid="cs-5r5v" />
             Examples
           </Button>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden" data-oid="in37gj6">
         {/* Left panel - Code editor */}
-        <div className="flex-1 flex flex-col">
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className="w-full justify-start rounded-none bg-gray-900 border-b border-gray-800">
-              <TabsTrigger value="vertex" className="data-[state=active]:bg-gray-800">
-                <FileText className="h-4 w-4 mr-2" />
+        <div className="flex-1 flex flex-col" data-oid="j3z97:s">
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} data-oid="-agnl2:">
+            <TabsList
+              className="w-full justify-start rounded-none bg-gray-900 border-b border-gray-800"
+              data-oid="r1pk.lw"
+            >
+              <TabsTrigger value="vertex" className="data-[state=active]:bg-gray-800" data-oid="kaz_7s-">
+                <FileText className="h-4 w-4 mr-2" data-oid="67k:tdg" />
                 Vertex Shader
               </TabsTrigger>
-              <TabsTrigger value="fragment" className="data-[state=active]:bg-gray-800">
-                <FileText className="h-4 w-4 mr-2" />
+              <TabsTrigger value="fragment" className="data-[state=active]:bg-gray-800" data-oid="vmu8n_5">
+                <FileText className="h-4 w-4 mr-2" data-oid="x0e5czl" />
                 Fragment Shader
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="vertex" className="flex-1 m-0">
+            <TabsContent value="vertex" className="flex-1 m-0" data-oid="91a7f9:">
               <GLSLCodeEditor
                 value={project.vertexShader}
                 onChange={(value) => updateShader("vertex", value)}
                 shaderType="vertex"
                 errors={project.compilationResult?.errors.filter((e) => e.type === "syntax")}
                 className="h-full"
+                data-oid="836u:75"
               />
             </TabsContent>
 
-            <TabsContent value="fragment" className="flex-1 m-0">
+            <TabsContent value="fragment" className="flex-1 m-0" data-oid=".a-1:wn">
               <GLSLCodeEditor
                 value={project.fragmentShader}
                 onChange={(value) => updateShader("fragment", value)}
                 shaderType="fragment"
                 errors={project.compilationResult?.errors.filter((e) => e.type === "syntax")}
                 className="h-full"
+                data-oid="7lx430b"
               />
             </TabsContent>
           </Tabs>
         </div>
 
         {/* Right panel - Preview and uniforms */}
-        <div className="w-1/2 flex">
+        <div className="w-1/2 flex" data-oid="-l2kqe:">
           {/* Uniforms panel */}
-          <div className="w-64 border-l border-gray-800">
-            <UniformsPanel uniforms={project.uniforms} onChange={handleUniformChange} className="h-full" />
+          <div className="w-64 border-l border-gray-800" data-oid="9-__nje">
+            <UniformsPanel
+              uniforms={project.uniforms}
+              onChange={handleUniformChange}
+              className="h-full"
+              data-oid="5wlk1yi"
+            />
           </div>
 
           {/* Preview */}
-          <div className="flex-1 border-l border-gray-800">
+          <div className="flex-1 border-l border-gray-800" data-oid="_:d-nno">
             <ShaderPreview
               vertexShader={project.vertexShader}
               fragmentShader={project.fragmentShader}
@@ -225,29 +241,35 @@ export function ShaderEditor({ initialProject, onSave, onExport, className }: Sh
               compilationResult={project.compilationResult}
               onPerformanceReport={setPerformanceMetrics}
               className="h-full"
+              data-oid="-ajuano"
             />
           </div>
         </div>
       </div>
 
       {/* Status bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-t border-gray-800 text-xs text-gray-500">
-        <div className="flex items-center gap-4">
+      <div
+        className="flex items-center justify-between px-4 py-2 border-t border-gray-800 text-xs text-gray-500"
+        data-oid="2jknrqp"
+      >
+        <div className="flex items-center gap-4" data-oid="0flecq_">
           {project.compilationResult?.success ? (
-            <span className="text-green-400">✓ Compilation successful</span>
+            <span className="text-green-400" data-oid="s9nd1f0">
+              ✓ Compilation successful
+            </span>
           ) : project.compilationResult ? (
-            <span className="text-red-400">
+            <span className="text-red-400" data-oid="4h3zdxv">
               ✗ {project.compilationResult.errors.length} errors, {project.compilationResult.warnings.length} warnings
             </span>
           ) : (
-            <span>Ready</span>
+            <span data-oid=".aq43l9">Ready</span>
           )}
-          <span>{project.uniforms.length} uniforms</span>
+          <span data-oid="mlou2j-">{project.uniforms.length} uniforms</span>
         </div>
-        <div className="flex items-center gap-4">
-          <span>Draw: {performanceMetrics.drawTime.toFixed(2)}ms</span>
-          <span>Fragments: {(performanceMetrics.fragmentsProcessed / 1000).toFixed(0)}K</span>
-          <span>Version: {project.version}</span>
+        <div className="flex items-center gap-4" data-oid="yaaja3n">
+          <span data-oid="-26:zv7">Draw: {performanceMetrics.drawTime.toFixed(2)}ms</span>
+          <span data-oid="v0rctof">Fragments: {(performanceMetrics.fragmentsProcessed / 1000).toFixed(0)}K</span>
+          <span data-oid="le-en2p">Version: {project.version}</span>
         </div>
       </div>
     </div>

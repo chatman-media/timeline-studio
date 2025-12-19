@@ -42,21 +42,21 @@ export function KeyStatusIndicator({
         }
       case "testing":
         return {
-          icon: <Loader2 className="h-3 w-3 animate-spin" />,
+          icon: <Loader2 className="h-3 w-3 animate-spin" data-oid=":9_9xaz" />,
           color: "text-blue-600",
           bgColor: "bg-blue-100 dark:bg-blue-900/20",
           text: t("dialogs.userSettings.status.testing", "Проверка..."),
         }
       case "invalid":
         return {
-          icon: <XCircle className="h-3 w-3" />,
+          icon: <XCircle className="h-3 w-3" data-oid="h-_wf8u" />,
           color: "text-red-600",
           bgColor: "bg-red-100 dark:bg-red-900/20",
           text: t("dialogs.userSettings.status.invalid", "Ошибка"),
         }
       case "valid":
         return {
-          icon: <CheckCircle className="h-3 w-3" />,
+          icon: <CheckCircle className="h-3 w-3" data-oid="oukv_1u" />,
           color: "text-green-600",
           bgColor: "bg-green-100 dark:bg-green-900/20",
           text: t("dialogs.userSettings.status.valid", "Работает"),
@@ -96,9 +96,10 @@ export function KeyStatusIndicator({
         config.bgColor,
         className,
       )}
+      data-oid="-aqdgav"
     >
       {config.icon}
-      <span>{config.text}</span>
+      <span data-oid="klo18dk">{config.text}</span>
     </div>
   )
 
@@ -109,33 +110,39 @@ export function KeyStatusIndicator({
   const hasDetails = errorMessage || lastValidated || createdAt
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>{indicator}</TooltipTrigger>
+    <Tooltip data-oid="vzrjzbc">
+      <TooltipTrigger asChild data-oid="j4ph_g3">
+        {indicator}
+      </TooltipTrigger>
       {hasDetails && (
-        <TooltipContent side="right" className="max-w-xs">
-          <div className="space-y-1.5">
-            <div className="font-semibold">{config.text}</div>
+        <TooltipContent side="right" className="max-w-xs" data-oid="fdqo1el">
+          <div className="space-y-1.5" data-oid="rpbx-he">
+            <div className="font-semibold" data-oid="f631k5s">
+              {config.text}
+            </div>
 
             {errorMessage && (
-              <div className="flex items-start gap-1.5 text-red-400">
-                <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" />
-                <span className="text-xs">{errorMessage}</span>
+              <div className="flex items-start gap-1.5 text-red-400" data-oid="e_o8ugv">
+                <AlertCircle className="h-3 w-3 mt-0.5 shrink-0" data-oid="ui8glmo" />
+                <span className="text-xs" data-oid="0bh-vkz">
+                  {errorMessage}
+                </span>
               </div>
             )}
 
             {lastValidated && (
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <CheckCircle className="h-3 w-3 shrink-0" />
-                <span className="text-xs">
+              <div className="flex items-center gap-1.5 text-muted-foreground" data-oid="cwi2ryr">
+                <CheckCircle className="h-3 w-3 shrink-0" data-oid="z8zar9." />
+                <span className="text-xs" data-oid="7kqa.1v">
                   {t("dialogs.userSettings.lastValidated", "Проверено")}: {formatDate(lastValidated)}
                 </span>
               </div>
             )}
 
             {createdAt && (
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Clock className="h-3 w-3 shrink-0" />
-                <span className="text-xs">
+              <div className="flex items-center gap-1.5 text-muted-foreground" data-oid="_bg7pbs">
+                <Clock className="h-3 w-3 shrink-0" data-oid="it8p:2t" />
+                <span className="text-xs" data-oid="5mxnbdd">
                   {t("dialogs.userSettings.created", "Создано")}: {formatDate(createdAt)}
                 </span>
               </div>

@@ -74,7 +74,9 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   const [currentContext, setCurrentContextState] = useState<ShortcutContext>("global")
   const [isEnabled, setIsEnabled] = useState(true)
   const [isGlobalEnabled, setIsGlobalEnabled] = useState(false)
-  const [shortcutUsageStats, setShortcutUsageStats] = useState<{ [shortcutId: string]: number }>({})
+  const [shortcutUsageStats, setShortcutUsageStats] = useState<{
+    [shortcutId: string]: number
+  }>({})
 
   // Note: Shortcuts are USER SETTINGS (local-only), stored in IndexedDB
   // They don't need backend project state sync, only analytics logging
@@ -99,7 +101,9 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
 
       logger.info("[ShortcutsProvider] Shortcuts synced (analytics logged)")
     } catch (error) {
-      logger.error("[ShortcutsProvider] Failed to sync shortcuts analytics:", { error })
+      logger.error("[ShortcutsProvider] Failed to sync shortcuts analytics:", {
+        error,
+      })
     }
   }
 
@@ -416,10 +420,10 @@ export function ShortcutsProvider({ children }: ShortcutsProviderProps) {
   usePanelShortcuts()
 
   return (
-    <ShortcutsContext.Provider value={contextValue}>
+    <ShortcutsContext.Provider value={contextValue} data-oid="8z1yxzz">
       {/* Рендерим обработчики только для активных shortcuts в текущем контексте */}
       {activeShortcuts.map((shortcut) => (
-        <ShortcutHandler key={shortcut.id} shortcut={shortcut} enabled={isEnabled} />
+        <ShortcutHandler key={shortcut.id} shortcut={shortcut} enabled={isEnabled} data-oid="fr.43-9" />
       ))}
       {children}
     </ShortcutsContext.Provider>

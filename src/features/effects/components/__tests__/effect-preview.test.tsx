@@ -17,18 +17,18 @@ vi.mock("react-i18next", () => ({
 // Мокаем все зависимости
 vi.mock("@/features", () => ({
   ApplyButton: ({ children, ...props }: any) => (
-    <button data-testid="apply-button" {...props}>
+    <button data-testid="apply-button" {...props} data-oid="_afxf2d">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({
-  AddMediaButton: (props: any) => <button data-testid="add-media-button" {...props} />,
+  AddMediaButton: (props: any) => <button data-testid="add-media-button" {...props} data-oid="5_oct3u" />,
 }))
 
 vi.mock("@/features/browser/components/layout/favorite-button", () => ({
-  FavoriteButton: (props: any) => <button data-testid="favorite-button" {...props} />,
+  FavoriteButton: (props: any) => <button data-testid="favorite-button" {...props} data-oid="waef0mc" />,
 }))
 
 vi.mock("@/domains/video-editing", () => ({
@@ -47,7 +47,7 @@ vi.mock("@/features/video-player", () => ({
 }))
 
 vi.mock("../effect-indicators", () => ({
-  EffectIndicators: (props: any) => <div data-testid="effect-indicators" {...props} />,
+  EffectIndicators: (props: any) => <div data-testid="effect-indicators" {...props} data-oid="y48_ln_" />,
 }))
 
 vi.mock("../../utils/css-effects", () => ({
@@ -89,6 +89,7 @@ describe("EffectPreview", () => {
         max: 1,
       },
     ],
+
     presets: [],
     processors: {
       css: {
@@ -109,14 +110,14 @@ describe("EffectPreview", () => {
 
   describe("Рендеринг", () => {
     it("должен отображать превью эффекта", () => {
-      render(<EffectPreview {...mockProps} />)
+      render(<EffectPreview {...mockProps} data-oid="587nfkc" />)
 
       // Проверяем, что компонент отрендерился (только название, placeholder не показывается когда есть videoSrc)
       expect(screen.getByText("Тестовый эффект")).toBeInTheDocument()
     })
 
     it("должен отображать название на правильном языке", () => {
-      render(<EffectPreview {...mockProps} />)
+      render(<EffectPreview {...mockProps} data-oid="etkccup" />)
 
       // Проверяем русское название в заголовке
       const title = document.querySelector(".mt-1.text-xs.text-center")
@@ -124,7 +125,7 @@ describe("EffectPreview", () => {
     })
 
     it("должен показывать название эффекта", () => {
-      render(<EffectPreview {...mockProps} />)
+      render(<EffectPreview {...mockProps} data-oid="y041g5e" />)
 
       // Проверяем, что название отображается (placeholder показывается только без videoSrc)
       const title = document.querySelector(".mt-1.text-xs.text-center")
@@ -132,7 +133,7 @@ describe("EffectPreview", () => {
     })
 
     it("должен отображать индикатор сложности", () => {
-      render(<EffectPreview {...mockProps} />)
+      render(<EffectPreview {...mockProps} data-oid="_:5m.ko" />)
 
       // Проверяем, что есть цветовой индикатор сложности
       const complexityIndicator = document.querySelector(".bg-green-500")
@@ -140,7 +141,7 @@ describe("EffectPreview", () => {
     })
 
     it("должен отображать индикаторы эффекта", () => {
-      render(<EffectPreview {...mockProps} />)
+      render(<EffectPreview {...mockProps} data-oid="k-b-dab" />)
 
       expect(screen.getByTestId("effect-indicators")).toBeInTheDocument()
     })
@@ -149,7 +150,7 @@ describe("EffectPreview", () => {
   describe("Взаимодействие", () => {
     it("должен вызывать onClick при клике", () => {
       const onClick = vi.fn()
-      render(<EffectPreview {...mockProps} onClick={onClick} />)
+      render(<EffectPreview {...mockProps} onClick={onClick} data-oid="28yb31k" />)
 
       // Кликаем на превью
       const preview = document.querySelector(".cursor-pointer")
@@ -164,14 +165,14 @@ describe("EffectPreview", () => {
   describe("Кастомные параметры", () => {
     it("должен применять кастомные параметры", () => {
       const customParams = { intensity: 0.8 }
-      render(<EffectPreview {...mockProps} customParams={customParams} />)
+      render(<EffectPreview {...mockProps} customParams={customParams} data-oid="gaoi9up" />)
 
       // Компонент должен отрендериться с кастомными параметрами
       expect(screen.getByText("Тестовый эффект")).toBeInTheDocument()
     })
 
     it("должен использовать кастомные размеры", () => {
-      render(<EffectPreview {...mockProps} width={200} height={120} />)
+      render(<EffectPreview {...mockProps} width={200} height={120} data-oid="1a8z-mt" />)
 
       // Проверяем, что контейнер имеет правильные размеры
       const container = document.querySelector('[style*="width: 200px"]')
@@ -196,7 +197,7 @@ describe("EffectPreview", () => {
         processors: {},
       }
 
-      render(<EffectPreview {...mockProps} effect={minimalEffect} />)
+      render(<EffectPreview {...mockProps} effect={minimalEffect} data-oid="52zvxcu" />)
 
       expect(screen.getByText("Минимальный")).toBeInTheDocument()
     })

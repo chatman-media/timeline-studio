@@ -3,7 +3,7 @@ import type React from "react"
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <NextThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <NextThemeProvider attribute="class" defaultTheme="system" enableSystem data-oid="atma0oi">
       {children}
     </NextThemeProvider>
   )

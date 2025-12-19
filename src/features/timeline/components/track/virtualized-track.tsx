@@ -46,8 +46,11 @@ export function VirtualizedTrack({
         data-testid="timeline-track"
         className={cn("flex border-b border-border bg-background track", className)}
         style={style}
+        data-oid="3q4d-r9"
       >
-        <div className="p-4 text-muted-foreground">Invalid track</div>
+        <div className="p-4 text-muted-foreground" data-oid="e31jl5q">
+          Invalid track
+        </div>
       </div>
     )
   }
@@ -82,14 +85,15 @@ export function VirtualizedTrack({
           handleSelect()
         }
       }}
+      data-oid="-y_v079"
     >
       {/* Заголовок трека (фиксированная ширина) */}
-      <div className="shrink-0 w-48 border-r border-border">
-        <TrackHeader track={track} isSelected={isSelected} onUpdate={handleUpdate} />
+      <div className="shrink-0 w-48 border-r border-border" data-oid=":kd3prw">
+        <TrackHeader track={track} isSelected={isSelected} onUpdate={handleUpdate} data-oid=":hen97c" />
       </div>
 
       {/* Виртуализированное содержимое трека */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden" data-oid="vmf1qqr">
         <VirtualizedTrackContent
           track={track}
           timeScale={timeScale}
@@ -97,12 +101,18 @@ export function VirtualizedTrack({
           containerWidth={containerWidth}
           scrollOffset={scrollOffset}
           onUpdate={handleUpdate}
+          data-oid="w7jz.:1"
         />
       </div>
 
       {/* Регулятор высоты трека */}
       {onHeightChange && (
-        <TrackHeightAdjuster trackId={track.id} currentHeight={track.height} onHeightChange={onHeightChange} />
+        <TrackHeightAdjuster
+          trackId={track.id}
+          currentHeight={track.height}
+          onHeightChange={onHeightChange}
+          data-oid="5cy34_."
+        />
       )}
     </div>
   )

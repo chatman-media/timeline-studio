@@ -26,7 +26,10 @@ describe("TemplatePicker", () => {
       {
         id: "youtube-1",
         name: { en: "YouTube Standard", ru: "YouTube стандарт" },
-        description: { en: "Standard YouTube video", ru: "Стандартное видео для YouTube" },
+        description: {
+          en: "Standard YouTube video",
+          ru: "Стандартное видео для YouTube",
+        },
         category: "youtube",
         targetPlatform: "youtube",
         aspectRatio: "16:9",
@@ -48,7 +51,10 @@ describe("TemplatePicker", () => {
       {
         id: "instagram-1",
         name: { en: "Instagram Reel", ru: "Instagram Reel" },
-        description: { en: "Short vertical video", ru: "Короткое вертикальное видео" },
+        description: {
+          en: "Short vertical video",
+          ru: "Короткое вертикальное видео",
+        },
         category: "social",
         targetPlatform: "instagram",
         aspectRatio: "9:16",
@@ -75,35 +81,35 @@ describe("TemplatePicker", () => {
 
   describe("rendering", () => {
     it("should render template picker", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="icaontc" />)
 
       expect(screen.getByText("Шаблоны проектов")).toBeInTheDocument()
       expect(screen.getByPlaceholderText("Поиск шаблонов...")).toBeInTheDocument()
     })
 
     it("should render header when showHeader is true", () => {
-      render(<TemplatePicker showHeader={true} />)
+      render(<TemplatePicker showHeader={true} data-oid="l.j9rqy" />)
 
       expect(screen.getByText("Шаблоны проектов")).toBeInTheDocument()
       expect(screen.getByText("Выберите шаблон для быстрого старта проекта")).toBeInTheDocument()
     })
 
     it("should not render header when showHeader is false", () => {
-      render(<TemplatePicker showHeader={false} />)
+      render(<TemplatePicker showHeader={false} data-oid="983g9zz" />)
 
       expect(screen.queryByText("Шаблоны проектов")).not.toBeInTheDocument()
     })
 
     it("should render close button when onClose is provided", () => {
       const onClose = vi.fn()
-      render(<TemplatePicker onClose={onClose} />)
+      render(<TemplatePicker onClose={onClose} data-oid="y949q3s" />)
 
       const closeButton = screen.getByRole("button", { name: "X" })
       expect(closeButton).toBeInTheDocument()
     })
 
     it("should render all templates in grid view", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="azvjbw9" />)
 
       expect(screen.getByText("YouTube стандарт")).toBeInTheDocument()
       expect(screen.getByText("Instagram Reel")).toBeInTheDocument()
@@ -112,7 +118,7 @@ describe("TemplatePicker", () => {
     it("should show empty state when no templates", () => {
       vi.spyOn(projectTemplateManager, "getAllTemplates").mockReturnValue([])
 
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="4xwz2_:" />)
 
       expect(screen.getByText("Шаблоны не найдены")).toBeInTheDocument()
     })
@@ -120,14 +126,14 @@ describe("TemplatePicker", () => {
 
   describe("view modes", () => {
     it("should render grid view by default", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="mm3ki:0" />)
 
       const gridContainer = screen.getByText("YouTube стандарт").closest(".grid")
       expect(gridContainer).toBeInTheDocument()
     })
 
     it("should switch to list view", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="w09yfxw" />)
 
       const listButton = screen.getAllByRole("tab")[1]
       fireEvent.click(listButton)
@@ -140,7 +146,7 @@ describe("TemplatePicker", () => {
 
   describe("search", () => {
     it("should update search query", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="86dkvw1" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск шаблонов...")
       fireEvent.change(searchInput, { target: { value: "youtube" } })
@@ -151,7 +157,7 @@ describe("TemplatePicker", () => {
     it("should call searchTemplates when query changes", () => {
       const searchSpy = vi.spyOn(projectTemplateManager, "searchTemplates")
 
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="4-5daho" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск шаблонов...")
       fireEvent.change(searchInput, { target: { value: "youtube" } })
@@ -162,7 +168,7 @@ describe("TemplatePicker", () => {
 
   describe("filters", () => {
     it("should show filters popover when showFilters is true", () => {
-      render(<TemplatePicker showFilters={true} />)
+      render(<TemplatePicker showFilters={true} data-oid="ka6p.40" />)
 
       const filterButton = screen.getByRole("button", { name: "Filter" })
       fireEvent.click(filterButton)
@@ -172,14 +178,14 @@ describe("TemplatePicker", () => {
     })
 
     it("should not show filter button when showFilters is false", () => {
-      render(<TemplatePicker showFilters={false} />)
+      render(<TemplatePicker showFilters={false} data-oid="ds_gt.8" />)
 
       // Filter button should not be present
       expect(screen.queryByRole("button", { name: "Filter" })).not.toBeInTheDocument()
     })
 
     it("should clear filters", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="12rgtxc" />)
 
       // Open filters
       const filterButton = screen.getAllByRole("button").find((b) => b.querySelector("svg"))
@@ -200,7 +206,7 @@ describe("TemplatePicker", () => {
     it("should select template in single mode", () => {
       const onSelect = vi.fn()
 
-      render(<TemplatePicker mode="single" onSelect={onSelect} />)
+      render(<TemplatePicker mode="single" onSelect={onSelect} data-oid="8ivwown" />)
 
       const templateCard = screen.getByText("YouTube стандарт").closest(".cursor-pointer")
       if (templateCard) {
@@ -217,7 +223,7 @@ describe("TemplatePicker", () => {
     it("should close after selection in single mode with onClose", () => {
       const onClose = vi.fn()
 
-      render(<TemplatePicker mode="single" onClose={onClose} />)
+      render(<TemplatePicker mode="single" onClose={onClose} data-oid="oemo29-" />)
 
       const templateCard = screen.getByText("YouTube стандарт").closest(".cursor-pointer")
       if (templateCard) {
@@ -228,7 +234,7 @@ describe("TemplatePicker", () => {
     })
 
     it("should toggle selection in multiple mode", () => {
-      render(<TemplatePicker mode="multiple" />)
+      render(<TemplatePicker mode="multiple" data-oid="7-94u.q" />)
 
       const templateCard = screen.getByText("YouTube стандарт").closest(".cursor-pointer")
       if (templateCard) {
@@ -241,7 +247,7 @@ describe("TemplatePicker", () => {
     })
 
     it("should show multiple selection footer", () => {
-      render(<TemplatePicker mode="multiple" />)
+      render(<TemplatePicker mode="multiple" data-oid="v:77ti4" />)
 
       // Select a template
       const templateCard = screen.getByText("YouTube стандарт").closest(".cursor-pointer")
@@ -254,7 +260,7 @@ describe("TemplatePicker", () => {
     })
 
     it("should clear selection", () => {
-      render(<TemplatePicker mode="multiple" />)
+      render(<TemplatePicker mode="multiple" data-oid="fk4qndm" />)
 
       // Select a template
       const templateCard = screen.getByText("YouTube стандарт").closest(".cursor-pointer")
@@ -274,40 +280,40 @@ describe("TemplatePicker", () => {
 
   describe("template card rendering", () => {
     it("should display template name", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="uunp.8:" />)
 
       expect(screen.getByText("YouTube стандарт")).toBeInTheDocument()
     })
 
     it("should display template description", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="nkxw9:o" />)
 
       expect(screen.getByText("Стандартное видео для YouTube")).toBeInTheDocument()
     })
 
     it("should display template category", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="1t:v_64" />)
 
       const categories = screen.getAllByText("youtube")
       expect(categories.length).toBeGreaterThan(0)
     })
 
     it("should display template platform badge", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="lyt9o6u" />)
 
       const badges = screen.getAllByText("youtube")
       expect(badges.length).toBeGreaterThan(0)
     })
 
     it("should display template duration", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="mz815b7" />)
 
       // 600 seconds = 10:00
       expect(screen.getByText(/10:\s*0+\s*мин/)).toBeInTheDocument()
     })
 
     it("should display template resolution", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="qko1ljj" />)
 
       expect(screen.getByText("1920x1080")).toBeInTheDocument()
     })
@@ -315,14 +321,14 @@ describe("TemplatePicker", () => {
 
   describe("accessibility", () => {
     it("should have proper role for search input", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="-gqx8e5" />)
 
       const searchInput = screen.getByPlaceholderText("Поиск шаблонов...")
       expect(searchInput).toBeInTheDocument()
     })
 
     it("should have clickable template cards", () => {
-      render(<TemplatePicker />)
+      render(<TemplatePicker data-oid="d7ljxns" />)
 
       // Templates should be displayed
       expect(screen.getByText("YouTube стандарт")).toBeInTheDocument()
@@ -334,7 +340,7 @@ describe("TemplatePicker", () => {
     it("should call onSelectionChange", () => {
       const onSelectionChange = vi.fn()
 
-      render(<TemplatePicker mode="multiple" onSelectionChange={onSelectionChange} />)
+      render(<TemplatePicker mode="multiple" onSelectionChange={onSelectionChange} data-oid="ep50wv:" />)
 
       const templateCard = screen.getByText("YouTube стандарт").closest(".cursor-pointer")
       if (templateCard) {
@@ -347,7 +353,7 @@ describe("TemplatePicker", () => {
     it("should call onClose when close button clicked", () => {
       const onClose = vi.fn()
 
-      render(<TemplatePicker onClose={onClose} />)
+      render(<TemplatePicker onClose={onClose} data-oid="s0l6as:" />)
 
       const closeButtons = screen.getAllByRole("button")
       const closeButton = closeButtons.find((b) => {

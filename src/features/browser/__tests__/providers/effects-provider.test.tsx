@@ -47,6 +47,7 @@ vi.mock("../../services/resource-loaders", () => ({
           labels: { en: "Test Effect 2", ru: "Тестовый эффект 2" },
         },
       ],
+
       source: "built-in",
       timestamp: Date.now(),
     },
@@ -64,6 +65,7 @@ vi.mock("../../services/resource-loaders", () => ({
           params: { brightness: 0, contrast: 0, saturation: 0 },
         },
       ],
+
       source: "built-in",
       timestamp: Date.now(),
     },
@@ -82,6 +84,7 @@ vi.mock("../../services/resource-loaders", () => ({
           ffmpegCommand: () => "fade",
         },
       ],
+
       source: "built-in",
       timestamp: Date.now(),
     },
@@ -115,13 +118,21 @@ function TestComponent() {
   }, [api, isInitialized])
 
   return (
-    <div>
-      <div data-testid="initialized">{String(isInitialized)}</div>
-      <div data-testid="effects-count">{effects.length}</div>
-      <div data-testid="filters-count">{filters.length}</div>
-      <div data-testid="transitions-count">{transitions.length}</div>
+    <div data-oid="k_jnejl">
+      <div data-testid="initialized" data-oid="-m76spz">
+        {String(isInitialized)}
+      </div>
+      <div data-testid="effects-count" data-oid="s:tbrbx">
+        {effects.length}
+      </div>
+      <div data-testid="filters-count" data-oid="1w3:u0d">
+        {filters.length}
+      </div>
+      <div data-testid="transitions-count" data-oid=":7mvdp7">
+        {transitions.length}
+      </div>
       {effects.map((effect) => (
-        <div key={effect.id} data-testid="effect-item">
+        <div key={effect.id} data-testid="effect-item" data-oid="6084l4u">
           {effect.name}
         </div>
       ))}
@@ -137,8 +148,8 @@ describe("EffectsProvider", () => {
 
   it("должен инициализироваться с встроенными ресурсами", async () => {
     render(
-      <EffectsProvider>
-        <TestComponent />
+      <EffectsProvider data-oid="d.ah8r8">
+        <TestComponent data-oid=".l-:dt0" />
       </EffectsProvider>,
     )
 
@@ -170,8 +181,8 @@ describe("EffectsProvider", () => {
     const onError = vi.fn()
 
     render(
-      <EffectsProvider onError={onError}>
-        <TestComponent />
+      <EffectsProvider onError={onError} data-oid="nfqv8lq">
+        <TestComponent data-oid="zddzynh" />
       </EffectsProvider>,
     )
 
@@ -192,7 +203,7 @@ describe("EffectsProvider", () => {
     console.error = vi.fn()
 
     expect(() => {
-      render(<TestComponent />)
+      render(<TestComponent data-oid="pawsi67" />)
     }).toThrow("useBrowserResourcesProvider must be used within a BrowserResourcesProvider")
 
     console.error = originalError
@@ -212,9 +223,13 @@ describe("EffectsProvider API", () => {
     }, [providerAPI, isInitialized])
 
     return (
-      <div>
-        <div data-testid="api-ready">{String(isInitialized)}</div>
-        <div data-testid="api-available">{String(!!providerAPI)}</div>
+      <div data-oid="4700:qo">
+        <div data-testid="api-ready" data-oid="-dvak69">
+          {String(isInitialized)}
+        </div>
+        <div data-testid="api-available" data-oid="5_au4c4">
+          {String(!!providerAPI)}
+        </div>
       </div>
     )
   }
@@ -224,8 +239,8 @@ describe("EffectsProvider API", () => {
     api = undefined
 
     render(
-      <EffectsProvider>
-        <APITestComponent />
+      <EffectsProvider data-oid="lnvsv2m">
+        <APITestComponent data-oid="g.byw6o" />
       </EffectsProvider>,
     )
 
@@ -295,7 +310,10 @@ describe("EffectsProvider API", () => {
     expect(basicResults[0].complexity).toBe("basic")
 
     // Комбинированный поиск: query + complexity
-    const testBasicResults = api.searchResources("effect", { query: "test", complexity: "basic" })
+    const testBasicResults = api.searchResources("effect", {
+      query: "test",
+      complexity: "basic",
+    })
     expect(testBasicResults).toHaveLength(1)
     expect(testBasicResults[0].name).toContain("Test")
     expect(testBasicResults[0].complexity).toBe("basic")
@@ -310,7 +328,9 @@ describe("EffectsProvider API", () => {
     expect(colorIntermediateResults[0].complexity).toBe("intermediate")
 
     // Поиск с несуществующей сложностью
-    const advancedResults = api.searchResources("effect", { complexity: "advanced" })
+    const advancedResults = api.searchResources("effect", {
+      complexity: "advanced",
+    })
     expect(advancedResults).toHaveLength(0)
   })
 
@@ -400,8 +420,10 @@ describe("EffectsProvider Events", () => {
     }, [providerAPI, isInitialized])
 
     return (
-      <div>
-        <div data-testid="api-ready">{String(isInitialized)}</div>
+      <div data-oid="lvganbz">
+        <div data-testid="api-ready" data-oid="go7afup">
+          {String(isInitialized)}
+        </div>
       </div>
     )
   }
@@ -410,8 +432,8 @@ describe("EffectsProvider Events", () => {
     api = undefined
 
     render(
-      <EffectsProvider>
-        <APITestComponent />
+      <EffectsProvider data-oid="kwsiywo">
+        <APITestComponent data-oid="26an7tp" />
       </EffectsProvider>,
     )
 
@@ -482,9 +504,13 @@ describe("EffectsProvider BackendSync Integration", () => {
     }, [providerAPI, isInitialized])
 
     return (
-      <div>
-        <div data-testid="api-ready">{String(isInitialized)}</div>
-        <div data-testid="backend-connected">{String(isBackendConnected)}</div>
+      <div data-oid=":47le9l">
+        <div data-testid="api-ready" data-oid="k11brks">
+          {String(isInitialized)}
+        </div>
+        <div data-testid="backend-connected" data-oid="jlxeqso">
+          {String(isBackendConnected)}
+        </div>
       </div>
     )
   }
@@ -493,8 +519,8 @@ describe("EffectsProvider BackendSync Integration", () => {
     api = undefined
 
     render(
-      <EffectsProvider>
-        <APITestComponent />
+      <EffectsProvider data-oid="sow6yxo">
+        <APITestComponent data-oid="_3vcyrq" />
       </EffectsProvider>,
     )
 
@@ -535,11 +561,17 @@ describe("EffectsProvider BackendSync Integration", () => {
       category: "artistic",
       complexity: "basic",
       tags: ["test"],
-      description: { ru: "Тестовый импортированный эффект", en: "Test Imported Effect" },
+      description: {
+        ru: "Тестовый импортированный эффект",
+        en: "Test Imported Effect",
+      },
       ffmpegCommand: () => "blur=5",
       params: { intensity: 50 },
       previewPath: "/test-imported.mp4",
-      labels: { en: "Test Imported Effect", ru: "Тестовый импортированный эффект" },
+      labels: {
+        en: "Test Imported Effect",
+        ru: "Тестовый импортированный эффект",
+      },
     }
 
     const result = await api.importResource("effect", testResource)

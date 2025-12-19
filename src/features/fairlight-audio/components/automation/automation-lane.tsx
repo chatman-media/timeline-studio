@@ -232,20 +232,30 @@ export function AutomationLaneComponent({
   }
 
   return (
-    <div className="flex items-center gap-2 bg-zinc-900 border-b border-zinc-800">
+    <div className="flex items-center gap-2 bg-zinc-900 border-b border-zinc-800" data-oid="z7xjy0l">
       {/* Заголовок линии */}
-      <div className="w-32 px-2 py-1 flex items-center gap-1 border-r border-zinc-800">
-        <Button size="sm" variant="ghost" onClick={onVisibilityToggle} className="h-6 w-6 p-0">
-          {lane.isVisible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+      <div className="w-32 px-2 py-1 flex items-center gap-1 border-r border-zinc-800" data-oid="ri-nl7y">
+        <Button size="sm" variant="ghost" onClick={onVisibilityToggle} className="h-6 w-6 p-0" data-oid="y745l3l">
+          {lane.isVisible ? (
+            <Eye className="w-3 h-3" data-oid="01bvl63" />
+          ) : (
+            <EyeOff className="w-3 h-3" data-oid=":.y:vsz" />
+          )}
         </Button>
 
-        <span className="text-xs text-zinc-400 truncate flex-1">{lane.parameterId}</span>
+        <span className="text-xs text-zinc-400 truncate flex-1" data-oid="ufdk-8b">
+          {lane.parameterId}
+        </span>
 
-        {lane.isEnabled ? <Unlock className="w-3 h-3 text-green-400" /> : <Lock className="w-3 h-3 text-zinc-600" />}
+        {lane.isEnabled ? (
+          <Unlock className="w-3 h-3 text-green-400" data-oid="3bbhzzt" />
+        ) : (
+          <Lock className="w-3 h-3 text-zinc-600" data-oid="-fj9-8d" />
+        )}
       </div>
 
       {/* Canvas для автоматизации */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative" data-oid="ej7956g">
         <canvas
           ref={canvasRef}
           width={width}
@@ -257,6 +267,7 @@ export function AutomationLaneComponent({
           )}
           onMouseDown={handleMouseDown}
           onDoubleClick={handleDoubleClick}
+          data-oid="hm-ay4u"
         />
       </div>
     </div>

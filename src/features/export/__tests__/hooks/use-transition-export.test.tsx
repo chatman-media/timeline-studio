@@ -308,8 +308,16 @@ describe("useTransitionExport", () => {
           onProgress?: (status: TransitionExportStatus) => void,
         ) => {
           if (onProgress) {
-            onProgress({ transitionId: "t1", status: "processing", progress: 50 })
-            onProgress({ transitionId: "t1", status: "completed", progress: 100 })
+            onProgress({
+              transitionId: "t1",
+              status: "processing",
+              progress: 50,
+            })
+            onProgress({
+              transitionId: "t1",
+              status: "completed",
+              progress: 100,
+            })
           }
           return mockResult
         },
@@ -532,6 +540,7 @@ function createMockProject(): TimelineProject {
         ],
       },
     ],
+
     globalTracks: [],
     resources: {
       timelineTransitions: [transition1],

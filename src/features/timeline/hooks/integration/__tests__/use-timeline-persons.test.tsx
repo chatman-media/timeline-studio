@@ -69,6 +69,7 @@ const {
       updatedAt: new Date(),
     },
   ],
+
   mockUseTimeline: vi.fn(),
 }))
 
@@ -164,6 +165,7 @@ const mockProject = {
       ],
     },
   ],
+
   globalTracks: [],
 }
 
@@ -218,7 +220,7 @@ describe("useTimelinePersons", () => {
 
   it("должен инициализироваться с начальным состоянием", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="-19_y91">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -236,7 +238,7 @@ describe("useTimelinePersons", () => {
 
   it("должен возвращать персон из person identification", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="du-bmzc">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -248,7 +250,7 @@ describe("useTimelinePersons", () => {
 
   it("должен анализировать клип на наличие персон", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="kx5kycf">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -276,7 +278,7 @@ describe("useTimelinePersons", () => {
 
   it("должен правильно создавать appearance записи", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="fdijrdb">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -302,7 +304,7 @@ describe("useTimelinePersons", () => {
 
   it("должен фильтровать лица с низкой уверенностью", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="p5hleb_">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -330,7 +332,7 @@ describe("useTimelinePersons", () => {
 
   it("должен получать персон для конкретного клипа", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="dw344v:">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -349,7 +351,7 @@ describe("useTimelinePersons", () => {
 
   it("должен получать appearances для конкретного клипа", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="ta2k:lj">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -372,7 +374,7 @@ describe("useTimelinePersons", () => {
   // Требуется исправление логики хука для корректной работы analyzeTimelineForPersons.
   it.skip("должен анализировать весь timeline", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="lwjhafr">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -391,7 +393,7 @@ describe("useTimelinePersons", () => {
 
   it("должен очищать анализ персон", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="3prbivw">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -420,7 +422,7 @@ describe("useTimelinePersons", () => {
 
   it("должен показывать детали персоны", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="9t.r.p9">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -436,7 +438,7 @@ describe("useTimelinePersons", () => {
 
   it("должен обрабатывать ошибки при анализе", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid=".8xq0m-">{children}</MockTimelineProvider>
     )
 
     mockDetectFaces.mockRejectedValueOnce(new Error("Ошибка обнаружения лиц"))
@@ -455,7 +457,7 @@ describe("useTimelinePersons", () => {
 
   it("должен переключать обнаружение персон", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="sf0via.">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -471,7 +473,7 @@ describe("useTimelinePersons", () => {
 
   it("должен устанавливать порог уверенности", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="6lf36oz">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -487,7 +489,7 @@ describe("useTimelinePersons", () => {
 
   it("не должен анализировать клип без медиафайла", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="t32_cwv">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -525,7 +527,7 @@ describe("useTimelinePersons", () => {
 
   it("не должен анализировать когда обнаружение персон отключено", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="hbp.d56">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -545,7 +547,7 @@ describe("useTimelinePersons", () => {
 
   it("не должен запускать новый анализ пока идет текущий", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="t.1:q04">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -596,7 +598,7 @@ describe("useTimelinePersons", () => {
     vi.useFakeTimers()
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="uo39x13">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -620,7 +622,7 @@ describe("useTimelinePersons", () => {
 
   it("должен обновлять appearances при повторном анализе клипа", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="8.t9.0b">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })
@@ -688,7 +690,7 @@ describe("useTimelinePersons", () => {
 
   it("должен обрабатывать неизвестные лица с высокой уверенностью", async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
-      <MockTimelineProvider>{children}</MockTimelineProvider>
+      <MockTimelineProvider data-oid="1:f81m9">{children}</MockTimelineProvider>
     )
 
     const { result } = renderHook(() => useTimelinePersons(), { wrapper })

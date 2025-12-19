@@ -18,7 +18,14 @@ vi.mock("react-i18next", () => ({
 
 describe("CameraPermissionRequest", () => {
   it("renders pending state", () => {
-    render(<CameraPermissionRequest permissionStatus="pending" errorMessage="" onRequestPermissions={vi.fn()} />)
+    render(
+      <CameraPermissionRequest
+        permissionStatus="pending"
+        errorMessage=""
+        onRequestPermissions={vi.fn()}
+        data-oid="n::mj.z"
+      />,
+    )
 
     // Проверяем, что отображается текст о запросе разрешений
     expect(screen.getByText("dialogs.cameraCapture.requestingPermissions")).toBeInTheDocument()
@@ -33,6 +40,7 @@ describe("CameraPermissionRequest", () => {
         permissionStatus="denied"
         errorMessage={errorMessage}
         onRequestPermissions={mockOnRequestPermissions}
+        data-oid="s2-0ogg"
       />,
     )
 
@@ -53,7 +61,14 @@ describe("CameraPermissionRequest", () => {
   })
 
   it("renders denied state with empty error message", () => {
-    render(<CameraPermissionRequest permissionStatus="denied" errorMessage="" onRequestPermissions={vi.fn()} />)
+    render(
+      <CameraPermissionRequest
+        permissionStatus="denied"
+        errorMessage=""
+        onRequestPermissions={vi.fn()}
+        data-oid="wb_wz_f"
+      />,
+    )
 
     // Проверяем, что есть кнопка для повторного запроса разрешений
     expect(screen.getByText("dialogs.cameraCapture.retryRequest")).toBeInTheDocument()
@@ -68,6 +83,7 @@ describe("CameraPermissionRequest", () => {
         permissionStatus="error"
         errorMessage={errorMessage}
         onRequestPermissions={mockOnRequestPermissions}
+        data-oid="eih27h1"
       />,
     )
 
@@ -88,7 +104,14 @@ describe("CameraPermissionRequest", () => {
   })
 
   it("renders granted state", () => {
-    render(<CameraPermissionRequest permissionStatus="granted" errorMessage="" onRequestPermissions={vi.fn()} />)
+    render(
+      <CameraPermissionRequest
+        permissionStatus="granted"
+        errorMessage=""
+        onRequestPermissions={vi.fn()}
+        data-oid="38im3-i"
+      />,
+    )
 
     // Проверяем, что компонент не отображает никакого содержимого при предоставленных разрешениях
     expect(screen.queryByText("dialogs.cameraCapture.permissionsNeeded")).not.toBeInTheDocument()
@@ -103,6 +126,7 @@ describe("CameraPermissionRequest", () => {
         permissionStatus="unknown"
         errorMessage=""
         onRequestPermissions={vi.fn()}
+        data-oid="7iig0.r"
       />,
     )
 

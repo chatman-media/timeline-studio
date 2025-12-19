@@ -136,7 +136,9 @@ export function ChatProvider({ children }: ChatProviderProps) {
         setWasUpdated(true)
       }
     } catch (error) {
-      void logger.error("Failed to load chat sessions from localStorage", { error: String(error) })
+      void logger.error("Failed to load chat sessions from localStorage", {
+        error: String(error),
+      })
     }
   }, [])
 
@@ -146,7 +148,9 @@ export function ChatProvider({ children }: ChatProviderProps) {
       try {
         localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(sessions))
       } catch (error) {
-        void logger.error("Failed to save chat sessions to localStorage", { error: String(error) })
+        void logger.error("Failed to save chat sessions to localStorage", {
+          error: String(error),
+        })
       }
     }
   }, [sessions, wasUpdated])
@@ -266,7 +270,9 @@ export function ChatProvider({ children }: ChatProviderProps) {
         }
         throw new Error("Failed to create chat session")
       } catch (error) {
-        void logger.error("Failed to create chat session via backend", { error: String(error) })
+        void logger.error("Failed to create chat session via backend", {
+          error: String(error),
+        })
 
         // Fallback на локальное создание
         const newSession: ChatSession = {
@@ -295,7 +301,9 @@ export function ChatProvider({ children }: ChatProviderProps) {
           params: { session_id: sessionId },
         })
       } catch (error) {
-        void logger.error("Failed to delete chat session via backend", { error: String(error) })
+        void logger.error("Failed to delete chat session via backend", {
+          error: String(error),
+        })
       }
 
       setSessions((prev) => {
@@ -366,7 +374,9 @@ export function ChatProvider({ children }: ChatProviderProps) {
         })
         projectContext = contextResult
       } catch (error) {
-        void logger.error("Failed to get project context", { error: String(error) })
+        void logger.error("Failed to get project context", {
+          error: String(error),
+        })
       }
 
       // Добавляем сообщение пользователя локально для немедленного отображения
@@ -691,7 +701,11 @@ export function ChatProvider({ children }: ChatProviderProps) {
     removeMessage,
   }
 
-  return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>
+  return (
+    <ChatContext.Provider value={contextValue} data-oid="mqoyckm">
+      {children}
+    </ChatContext.Provider>
+  )
 }
 
 export function useChat(): ChatContextType {

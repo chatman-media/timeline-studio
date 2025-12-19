@@ -118,22 +118,22 @@ export function AISuggestionsPanel({
   const analysisSummary = getAnalysisSummary()
 
   return (
-    <div className={cn("border-b border-border bg-muted/30 p-3", className)}>
+    <div className={cn("border-b border-border bg-muted/30 p-3", className)} data-oid="omj5y8u">
       {/* Сообщение о результатах анализа */}
       {analysisSummary && (
-        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-          <Sparkles className="h-4 w-4 text-blue-500" />
-          <span>{analysisSummary}</span>
+        <div className="mb-2 flex items-center gap-2 text-sm text-muted-foreground" data-oid="c:8s-y3">
+          <Sparkles className="h-4 w-4 text-blue-500" data-oid="y.48hcd" />
+          <span data-oid="hzew:bi">{analysisSummary}</span>
         </div>
       )}
 
       {/* Заголовок */}
-      <div className="mb-2 text-xs font-medium text-foreground">
+      <div className="mb-2 text-xs font-medium text-foreground" data-oid="5z7iy4u">
         💡 {t("ai.suggestions.whatCanDo", "Что можно сделать")}:
       </div>
 
       {/* Промты */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" data-oid="no5hybk">
         {prompts.map((prompt) => (
           <Button
             key={prompt.id}
@@ -156,16 +156,21 @@ export function AISuggestionsPanel({
             }}
             className="h-auto whitespace-normal py-1.5 text-left text-xs hover:bg-accent hover:text-accent-foreground"
             title={prompt.text}
+            data-oid="g5sfg55"
           >
-            <span className="mr-1">{prompt.emoji}</span>
-            <span className="line-clamp-2">{prompt.text}</span>
+            <span className="mr-1" data-oid="u2:9.1s">
+              {prompt.emoji}
+            </span>
+            <span className="line-clamp-2" data-oid=".rh7t4m">
+              {prompt.text}
+            </span>
           </Button>
         ))}
       </div>
 
       {/* Подсказка */}
       {mediaFilesCount === 0 && (
-        <div className="mt-2 text-xs text-muted-foreground">
+        <div className="mt-2 text-xs text-muted-foreground" data-oid="xz5:8gz">
           {t("ai.suggestions.emptyHint", "Добавьте видео в браузер медиа или используйте AI для помощи с импортом")}
         </div>
       )}

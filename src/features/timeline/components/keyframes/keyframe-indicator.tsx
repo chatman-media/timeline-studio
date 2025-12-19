@@ -38,9 +38,9 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
   if (keyframeGroups.length === 0) return null
 
   return (
-    <div className={cn("absolute inset-0 pointer-events-none", className)}>
+    <div className={cn("absolute inset-0 pointer-events-none", className)} data-oid="qiv7f6r">
       {keyframeGroups.map(({ property, keyframes, color }, groupIndex) => (
-        <div key={property} className="relative h-full">
+        <div key={property} className="relative h-full" data-oid="_:5ublq">
           {keyframes.map((keyframe: { id: string; time: number }, index: number) => {
             const leftPosition = (keyframe.time / clip.duration) * 100
 
@@ -49,9 +49,10 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
                 key={keyframe.id}
                 className="absolute top-0 h-full flex items-center"
                 style={{ left: `${leftPosition}%` }}
+                data-oid="srv:02z"
               >
                 {/* Вертикальная линия keyframe */}
-                <div className="w-0.5 h-full opacity-80" style={{ backgroundColor: color }} />
+                <div className="w-0.5 h-full opacity-80" style={{ backgroundColor: color }} data-oid="r1upgl8" />
 
                 {/* Маркер keyframe */}
                 <div
@@ -64,6 +65,7 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
                     backgroundColor: color,
                     top: `${groupIndex * 8 + 4}px`,
                   }}
+                  data-oid="s0_f-69"
                 />
 
                 {/* Подпись для первого keyframe каждого свойства */}
@@ -75,6 +77,7 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
                       "transform -translate-x-1/2 -translate-y-full",
                     )}
                     style={{ top: `${groupIndex * 8 - 2}px` }}
+                    data-oid="4yj.d4l"
                   >
                     {getPropertyLabel(property)}
                   </div>
@@ -86,9 +89,9 @@ export function KeyframeIndicator({ clip, className, showLabels = false }: Keyfr
       ))}
 
       {/* Общий индикатор наличия keyframes */}
-      <div className="absolute top-1 right-1">
-        <div className="bg-blue-500 text-white rounded-full p-1">
-          <Zap className="h-3 w-3" />
+      <div className="absolute top-1 right-1" data-oid="hnm-:r:">
+        <div className="bg-blue-500 text-white rounded-full p-1" data-oid="orkhxwv">
+          <Zap className="h-3 w-3" data-oid="1:9hpcd" />
         </div>
       </div>
     </div>

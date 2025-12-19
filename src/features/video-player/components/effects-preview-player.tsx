@@ -240,16 +240,23 @@ export function EffectsPreviewPlayer() {
    */
   const renderEffectParameters = (effect: EffectSettings, index: number) => {
     return (
-      <div key={`${effect.effectId}-${index}`} className="space-y-3 p-4 border border-gray-700 rounded">
-        <div className="flex items-center justify-between">
-          <h4 className="font-medium text-white capitalize">{effect.effectId}</h4>
-          <div className="flex items-center gap-2">
-            <Switch checked={effect.enabled} onCheckedChange={() => toggleEffect(index)} />
+      <div
+        key={`${effect.effectId}-${index}`}
+        className="space-y-3 p-4 border border-gray-700 rounded"
+        data-oid="027jtk0"
+      >
+        <div className="flex items-center justify-between" data-oid="2dd73aw">
+          <h4 className="font-medium text-white capitalize" data-oid="z4gz:oo">
+            {effect.effectId}
+          </h4>
+          <div className="flex items-center gap-2" data-oid="prgqgl0">
+            <Switch checked={effect.enabled} onCheckedChange={() => toggleEffect(index)} data-oid="ctp3qdf" />
             <Button
               variant="ghost"
               size="sm"
               onClick={() => removeEffect(index)}
               className="text-red-400 hover:text-red-300"
+              data-oid="zifgr4j"
             >
               ✕
             </Button>
@@ -257,8 +264,10 @@ export function EffectsPreviewPlayer() {
         </div>
 
         {/* Intensity slider */}
-        <div className="space-y-2">
-          <Label className="text-sm text-gray-300">Интенсивность: {effect.intensity.toFixed(2)}</Label>
+        <div className="space-y-2" data-oid="rusihz_">
+          <Label className="text-sm text-gray-300" data-oid="_umu6gt">
+            Интенсивность: {effect.intensity.toFixed(2)}
+          </Label>
           <Slider
             value={[effect.intensity]}
             onValueChange={([value]) => updateEffectIntensity(index, value)}
@@ -267,13 +276,14 @@ export function EffectsPreviewPlayer() {
             step={0.01}
             disabled={!effect.enabled}
             className="w-full"
+            data-oid="b9-9whk"
           />
         </div>
 
         {/* Effect parameters */}
         {Object.entries(effect.parameters).map(([paramName, value]) => (
-          <div key={paramName} className="space-y-2">
-            <Label className="text-sm text-gray-300 capitalize">
+          <div key={paramName} className="space-y-2" data-oid="-s4e0mv">
+            <Label className="text-sm text-gray-300 capitalize" data-oid="fduf8un">
               {paramName.replace(/([A-Z])/g, " $1")}:{" "}
               {Array.isArray(value)
                 ? `[${value.map((v) => v.toFixed(2)).join(", ")}]`
@@ -290,6 +300,7 @@ export function EffectsPreviewPlayer() {
                 step={getParameterStep(paramName)}
                 disabled={!effect.enabled}
                 className="w-full"
+                data-oid="qqqptuw"
               />
             )}
           </div>
@@ -358,28 +369,39 @@ export function EffectsPreviewPlayer() {
 
   if (!video?.path) {
     return (
-      <div className="media-player-container relative flex h-full flex-col">
-        <div className="relative flex-1 bg-black">
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="text-muted-foreground">Нет видео</div>
+      <div className="media-player-container relative flex h-full flex-col" data-oid="y-drc5n">
+        <div className="relative flex-1 bg-black" data-oid="oh12eu5">
+          <div className="flex h-full w-full items-center justify-center" data-oid="b4:f1_d">
+            <div className="text-muted-foreground" data-oid="_ktvfw:">
+              Нет видео
+            </div>
           </div>
         </div>
         <PlayerControls
           currentTime={0}
-          file={video || { id: "", name: "Нет видео", path: "", type: MediaType.Video, size: 0 }}
+          file={
+            video || {
+              id: "",
+              name: "Нет видео",
+              path: "",
+              type: MediaType.Video,
+              size: 0,
+            }
+          }
+          data-oid="um_lq:9"
         />
       </div>
     )
   }
 
   return (
-    <TooltipProvider>
-      <div className="media-player-container relative flex h-full flex-col">
-        <div className="relative flex-1 bg-black">
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="max-h-[calc(100%-85px)] w-full max-w-[100%]">
-              <AspectRatio ratio={aspectRatioValue} className="bg-black">
-                <div className="relative h-full w-full">
+    <TooltipProvider data-oid="ex0ixi9">
+      <div className="media-player-container relative flex h-full flex-col" data-oid="l79dg-0">
+        <div className="relative flex-1 bg-black" data-oid="z8cy3nh">
+          <div className="flex h-full w-full items-center justify-center" data-oid="eb94ktp">
+            <div className="max-h-[calc(100%-85px)] w-full max-w-[100%]" data-oid="9_r-g_2">
+              <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="javjb8r">
+                <div className="relative h-full w-full" data-oid="xwf5ck:">
                   {/* Original video (hidden when effects active) */}
                   <video
                     ref={videoRef}
@@ -403,6 +425,7 @@ export function EffectsPreviewPlayer() {
                       display: isPreviewActive && activeEffects.length > 0 ? "none" : "block",
                       zIndex: 1,
                     }}
+                    data-oid="lcnjc__"
                   />
 
                   {/* Effects canvas */}
@@ -418,33 +441,37 @@ export function EffectsPreviewPlayer() {
                       display: isPreviewActive && activeEffects.length > 0 ? "block" : "none",
                       zIndex: 2,
                     }}
+                    data-oid="yuko7:-"
                   />
 
                   {/* Effects status indicator */}
                   {activeEffects.length > 0 && (
-                    <div className="absolute left-4 top-4 flex flex-col gap-1">
-                      <div className="rounded bg-purple-500/20 px-3 py-1">
-                        <span className="text-sm text-purple-300 font-medium">
+                    <div className="absolute left-4 top-4 flex flex-col gap-1" data-oid="e8m.55u">
+                      <div className="rounded bg-purple-500/20 px-3 py-1" data-oid="zgc.j0z">
+                        <span className="text-sm text-purple-300 font-medium" data-oid="627jbgb">
                           Эффекты: {activeEffects.filter((e) => e.enabled).length}/{activeEffects.length}
                         </span>
                       </div>
 
                       {isPreviewActive && (
-                        <div className="rounded bg-green-500/20 px-3 py-1">
-                          <span className="text-xs text-green-300">Real-time preview</span>
+                        <div className="rounded bg-green-500/20 px-3 py-1" data-oid="bi5l7w7">
+                          <span className="text-xs text-green-300" data-oid=".8aiter">
+                            Real-time preview
+                          </span>
                         </div>
                       )}
                     </div>
                   )}
 
                   {/* Effects controls */}
-                  <div className="absolute right-4 top-4 flex flex-col gap-2">
+                  <div className="absolute right-4 top-4 flex flex-col gap-2" data-oid="6x2841l">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setIsPreviewActive(!isPreviewActive)}
                       className="bg-black/50 hover:bg-black/70"
                       disabled={activeEffects.length === 0}
+                      data-oid="487lje5"
                     >
                       {isPreviewActive ? "Стоп" : "Превью"} эффектов
                     </Button>
@@ -454,6 +481,7 @@ export function EffectsPreviewPlayer() {
                       size="sm"
                       onClick={() => setShowEffectsPanel(!showEffectsPanel)}
                       className="bg-black/50 hover:bg-black/70"
+                      data-oid="q66ce7h"
                     >
                       Настройки эффектов
                     </Button>
@@ -461,89 +489,130 @@ export function EffectsPreviewPlayer() {
 
                   {/* Effects Panel */}
                   {showEffectsPanel && (
-                    <Card className="absolute right-4 top-24 w-96 max-h-[calc(100vh-200px)] overflow-y-auto bg-black/90 border-gray-700">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-sm text-white">Эффекты</CardTitle>
+                    <Card
+                      className="absolute right-4 top-24 w-96 max-h-[calc(100vh-200px)] overflow-y-auto bg-black/90 border-gray-700"
+                      data-oid=".b26v.d"
+                    >
+                      <CardHeader className="pb-3" data-oid="sjlqno6">
+                        <CardTitle className="text-sm text-white" data-oid="_11wx7e">
+                          Эффекты
+                        </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-4">
+                      <CardContent className="space-y-4" data-oid="v31zc1m">
                         {/* Add effect */}
-                        <div className="space-y-2">
-                          <Label className="text-sm text-gray-300">Добавить эффект</Label>
-                          <div className="flex gap-2">
-                            <Select value={selectedEffectId} onValueChange={setSelectedEffectId}>
-                              <SelectTrigger className="flex-1">
-                                <SelectValue />
+                        <div className="space-y-2" data-oid="hgy8biw">
+                          <Label className="text-sm text-gray-300" data-oid="pl6-4oc">
+                            Добавить эффект
+                          </Label>
+                          <div className="flex gap-2" data-oid="uamvj2w">
+                            <Select value={selectedEffectId} onValueChange={setSelectedEffectId} data-oid="bdafesi">
+                              <SelectTrigger className="flex-1" data-oid="6y24osp">
+                                <SelectValue data-oid="7rlaaou" />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent data-oid="il4s2y9">
                                 {availableEffects.map((effect) => (
-                                  <SelectItem key={effect.id} value={effect.id}>
+                                  <SelectItem key={effect.id} value={effect.id} data-oid="qc2qubq">
                                     {effect.name}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
                             </Select>
-                            <Button onClick={() => selectedEffectId && addEffect(selectedEffectId)} size="sm">
+                            <Button
+                              onClick={() => selectedEffectId && addEffect(selectedEffectId)}
+                              size="sm"
+                              data-oid="7ay02.-"
+                            >
                               Добавить
                             </Button>
                           </div>
                         </div>
 
                         {/* Preview settings */}
-                        <div className="space-y-3 p-3 border border-gray-700 rounded">
-                          <h4 className="font-medium text-white">Настройки предпросмотра</h4>
+                        <div className="space-y-3 p-3 border border-gray-700 rounded" data-oid="adhebi5">
+                          <h4 className="font-medium text-white" data-oid="vextl53">
+                            Настройки предпросмотра
+                          </h4>
 
-                          <div className="flex items-center justify-between">
-                            <Label className="text-sm text-gray-300">Real-time preview</Label>
+                          <div className="flex items-center justify-between" data-oid="vp_m369">
+                            <Label className="text-sm text-gray-300" data-oid="d3y2jcr">
+                              Real-time preview
+                            </Label>
                             <Switch
                               checked={previewOptions.realTime}
                               onCheckedChange={(checked) =>
-                                setPreviewOptions((prev) => ({ ...prev, realTime: checked }))
+                                setPreviewOptions((prev) => ({
+                                  ...prev,
+                                  realTime: checked,
+                                }))
                               }
+                              data-oid="zd2s.:z"
                             />
                           </div>
 
-                          <div className="space-y-2">
-                            <Label className="text-sm text-gray-300">Качество</Label>
+                          <div className="space-y-2" data-oid="6qhz1nl">
+                            <Label className="text-sm text-gray-300" data-oid="_y_a_0_">
+                              Качество
+                            </Label>
                             <Select
                               value={previewOptions.quality}
                               onValueChange={(value: "low" | "medium" | "high") =>
-                                setPreviewOptions((prev) => ({ ...prev, quality: value }))
+                                setPreviewOptions((prev) => ({
+                                  ...prev,
+                                  quality: value,
+                                }))
                               }
+                              data-oid=":282ku2"
                             >
-                              <SelectTrigger>
-                                <SelectValue />
+                              <SelectTrigger data-oid="k2c7tc5">
+                                <SelectValue data-oid="zf_bkf8" />
                               </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="low">Низкое</SelectItem>
-                                <SelectItem value="medium">Среднее</SelectItem>
-                                <SelectItem value="high">Высокое</SelectItem>
+                              <SelectContent data-oid="71odn-0">
+                                <SelectItem value="low" data-oid="fke2s-r">
+                                  Низкое
+                                </SelectItem>
+                                <SelectItem value="medium" data-oid="ag32oca">
+                                  Среднее
+                                </SelectItem>
+                                <SelectItem value="high" data-oid="jw:t97h">
+                                  Высокое
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
 
-                          <div className="space-y-2">
-                            <Label className="text-sm text-gray-300">Max FPS: {previewOptions.maxFrameRate}</Label>
+                          <div className="space-y-2" data-oid="-_p_0iz">
+                            <Label className="text-sm text-gray-300" data-oid="f8brq8u">
+                              Max FPS: {previewOptions.maxFrameRate}
+                            </Label>
                             <Slider
                               value={[previewOptions.maxFrameRate]}
                               onValueChange={([value]) =>
-                                setPreviewOptions((prev) => ({ ...prev, maxFrameRate: value }))
+                                setPreviewOptions((prev) => ({
+                                  ...prev,
+                                  maxFrameRate: value,
+                                }))
                               }
                               max={60}
                               min={15}
                               step={5}
                               className="w-full"
+                              data-oid="6c988hg"
                             />
                           </div>
                         </div>
 
                         {/* Active effects */}
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-white">Активные эффекты ({activeEffects.length})</h4>
+                        <div className="space-y-3" data-oid="08bz35v">
+                          <h4 className="font-medium text-white" data-oid="vgl0rji">
+                            Активные эффекты ({activeEffects.length})
+                          </h4>
 
                           {activeEffects.length === 0 ? (
-                            <div className="text-sm text-gray-500 text-center py-4">Эффекты не добавлены</div>
+                            <div className="text-sm text-gray-500 text-center py-4" data-oid="kg-84w-">
+                              Эффекты не добавлены
+                            </div>
                           ) : (
-                            <div className="space-y-3 max-h-96 overflow-y-auto">
+                            <div className="space-y-3 max-h-96 overflow-y-auto" data-oid="cetzk4p">
                               {activeEffects.map((effect, index) => renderEffectParameters(effect, index))}
                             </div>
                           )}
@@ -555,6 +624,7 @@ export function EffectsPreviewPlayer() {
                               size="sm"
                               onClick={() => setActiveEffects([])}
                               className="w-full text-red-400 border-red-400 hover:bg-red-400/10"
+                              data-oid="k7anyw:"
                             >
                               Очистить все эффекты
                             </Button>
@@ -568,7 +638,7 @@ export function EffectsPreviewPlayer() {
             </div>
           </div>
         </div>
-        <PlayerControls currentTime={currentTime} file={video} />
+        <PlayerControls currentTime={currentTime} file={video} data-oid="mdsb1-w" />
       </div>
     </TooltipProvider>
   )

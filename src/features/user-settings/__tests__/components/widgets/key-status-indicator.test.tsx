@@ -13,17 +13,19 @@ vi.mock("react-i18next", () => ({
 }))
 vi.mock("lucide-react", () => ({
   CheckCircle: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="n11.fgp">
       CheckCircle
     </span>
   ),
+
   Loader2: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="3dunn_r">
       Loader2
     </span>
   ),
+
   XCircle: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="9edf7bi">
       XCircle
     </span>
   ),
@@ -31,7 +33,7 @@ vi.mock("lucide-react", () => ({
 
 describe("KeyStatusIndicator", () => {
   it("should render not_set status correctly", () => {
-    render(<KeyStatusIndicator status="not_set" />)
+    render(<KeyStatusIndicator status="not_set" data-oid="nws2-ek" />)
 
     expect(screen.getByText("Не настроено")).toBeInTheDocument()
 
@@ -44,7 +46,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render testing status with spinner", () => {
-    render(<KeyStatusIndicator status="testing" />)
+    render(<KeyStatusIndicator status="testing" data-oid="b6oawxf" />)
 
     expect(screen.getByText("Проверка...")).toBeInTheDocument()
 
@@ -59,7 +61,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render invalid status with X icon", () => {
-    render(<KeyStatusIndicator status="invalid" />)
+    render(<KeyStatusIndicator status="invalid" data-oid="x8w:h34" />)
 
     expect(screen.getByText("Ошибка")).toBeInTheDocument()
 
@@ -74,7 +76,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render valid status with check icon", () => {
-    render(<KeyStatusIndicator status="valid" />)
+    render(<KeyStatusIndicator status="valid" data-oid="s_rnxip" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
 
@@ -89,14 +91,14 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should apply custom className", () => {
-    render(<KeyStatusIndicator status="valid" className="custom-class" />)
+    render(<KeyStatusIndicator status="valid" className="custom-class" data-oid="644hjs7" />)
 
     const container = screen.getByText("Работает").parentElement
     expect(container).toHaveClass("custom-class")
   })
 
   it("should have correct base styles", () => {
-    render(<KeyStatusIndicator status="not_set" />)
+    render(<KeyStatusIndicator status="not_set" data-oid="-5hxptc" />)
 
     const container = screen.getByText("Не настроено").parentElement
     expect(container).toHaveClass("inline-flex")
@@ -111,7 +113,7 @@ describe("KeyStatusIndicator", () => {
 
   it("should handle unknown status gracefully", () => {
     // @ts-expect-error Testing invalid status
-    render(<KeyStatusIndicator status="unknown" />)
+    render(<KeyStatusIndicator status="unknown" data-oid="1ofh5hr" />)
 
     expect(screen.getByText("Unknown")).toBeInTheDocument()
 
@@ -121,7 +123,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render status text inside span element", () => {
-    render(<KeyStatusIndicator status="valid" />)
+    render(<KeyStatusIndicator status="valid" data-oid="975av-4" />)
 
     const textElement = screen.getByText("Работает")
     expect(textElement.tagName).toBe("SPAN")
@@ -131,7 +133,7 @@ describe("KeyStatusIndicator", () => {
     const statuses: Array<"not_set" | "testing" | "invalid" | "valid"> = ["not_set", "testing", "invalid", "valid"]
 
     statuses.forEach((status) => {
-      const { container } = render(<KeyStatusIndicator status={status} />)
+      const { container } = render(<KeyStatusIndicator status={status} data-oid="plpr61-" />)
       const indicatorDiv = container.firstElementChild
 
       expect(indicatorDiv).toBeInTheDocument()
@@ -141,7 +143,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render with correct structure when icon is present", () => {
-    render(<KeyStatusIndicator status="valid" />)
+    render(<KeyStatusIndicator status="valid" data-oid="0g55pxy" />)
 
     const container = screen.getByText("Работает").parentElement
     const children = Array.from(container?.children || [])
@@ -153,7 +155,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render with correct structure when icon is not present", () => {
-    render(<KeyStatusIndicator status="not_set" />)
+    render(<KeyStatusIndicator status="not_set" data-oid="2.wjo:7" />)
 
     const container = screen.getByText("Не настроено").parentElement
     const children = Array.from(container?.children || [])
@@ -164,10 +166,10 @@ describe("KeyStatusIndicator", () => {
 
   it("should use translation keys correctly", () => {
     // The mock is already set up at the top of the file, so we just need to verify the text
-    render(<KeyStatusIndicator status="not_set" />)
-    render(<KeyStatusIndicator status="testing" />)
-    render(<KeyStatusIndicator status="invalid" />)
-    render(<KeyStatusIndicator status="valid" />)
+    render(<KeyStatusIndicator status="not_set" data-oid="norpzwb" />)
+    render(<KeyStatusIndicator status="testing" data-oid="e0g0u50" />)
+    render(<KeyStatusIndicator status="invalid" data-oid="yg:yyrn" />)
+    render(<KeyStatusIndicator status="valid" data-oid="6ts3cs." />)
 
     expect(screen.getByText("Не настроено")).toBeInTheDocument()
     expect(screen.getByText("Проверка...")).toBeInTheDocument()
@@ -176,7 +178,7 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should have proper accessibility structure", () => {
-    const { container } = render(<KeyStatusIndicator status="valid" />)
+    const { container } = render(<KeyStatusIndicator status="valid" data-oid="zj2erre" />)
 
     const indicator = container.firstElementChild
     expect(indicator).toBeInTheDocument()
@@ -186,39 +188,41 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should render tooltip when showTooltip is true", () => {
-    render(<KeyStatusIndicator status="valid" showTooltip={true} />)
+    render(<KeyStatusIndicator status="valid" showTooltip={true} data-oid=".o9maco" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should not render tooltip trigger when showTooltip is false", () => {
-    render(<KeyStatusIndicator status="valid" showTooltip={false} />)
+    render(<KeyStatusIndicator status="valid" showTooltip={false} data-oid="kjdrfxo" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should accept errorMessage prop", () => {
-    render(<KeyStatusIndicator status="invalid" errorMessage="Unauthorized access" showTooltip={false} />)
+    render(
+      <KeyStatusIndicator status="invalid" errorMessage="Unauthorized access" showTooltip={false} data-oid="kyfgtb0" />,
+    )
 
     expect(screen.getByText("Ошибка")).toBeInTheDocument()
   })
 
   it("should accept lastValidated prop", () => {
     const isoDate = new Date().toISOString()
-    render(<KeyStatusIndicator status="valid" lastValidated={isoDate} showTooltip={false} />)
+    render(<KeyStatusIndicator status="valid" lastValidated={isoDate} showTooltip={false} data-oid="0n8bp72" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should accept createdAt prop", () => {
     const isoDate = new Date().toISOString()
-    render(<KeyStatusIndicator status="valid" createdAt={isoDate} showTooltip={false} />)
+    render(<KeyStatusIndicator status="valid" createdAt={isoDate} showTooltip={false} data-oid="oacqvrm" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should handle invalid date format in lastValidated", () => {
-    render(<KeyStatusIndicator status="valid" lastValidated="invalid-date" showTooltip={false} />)
+    render(<KeyStatusIndicator status="valid" lastValidated="invalid-date" showTooltip={false} data-oid="qscxkpx" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
@@ -227,7 +231,9 @@ describe("KeyStatusIndicator", () => {
     const dates = ["2024-11-29T10:30:00Z", "2024-11-29T10:30:00+00:00", "2024-11-29T10:30:00-05:00"]
 
     dates.forEach((date) => {
-      const { unmount } = render(<KeyStatusIndicator status="valid" lastValidated={date} showTooltip={false} />)
+      const { unmount } = render(
+        <KeyStatusIndicator status="valid" lastValidated={date} showTooltip={false} data-oid=":fyaw.5" />,
+      )
       expect(screen.getByText("Работает")).toBeInTheDocument()
       unmount()
     })
@@ -243,6 +249,7 @@ describe("KeyStatusIndicator", () => {
         lastValidated={now.toISOString()}
         createdAt={new Date(2024, 0, 1).toISOString()}
         showTooltip={false}
+        data-oid="fhboptl"
       />,
     )
 
@@ -250,46 +257,48 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should show only selected details in tooltip", () => {
-    render(<KeyStatusIndicator status="invalid" errorMessage="Invalid credentials" showTooltip={false} />)
+    render(
+      <KeyStatusIndicator status="invalid" errorMessage="Invalid credentials" showTooltip={false} data-oid="ell4ngp" />,
+    )
 
     expect(screen.getByText("Ошибка")).toBeInTheDocument()
   })
 
   it("should handle long error messages", () => {
     const longError = "a".repeat(500)
-    render(<KeyStatusIndicator status="invalid" errorMessage={longError} showTooltip={false} />)
+    render(<KeyStatusIndicator status="invalid" errorMessage={longError} showTooltip={false} data-oid="-duh9og" />)
 
     expect(screen.getByText("Ошибка")).toBeInTheDocument()
   })
 
   it("should handle past dates", () => {
     const pastDate = new Date(2020, 0, 1).toISOString()
-    render(<KeyStatusIndicator status="valid" lastValidated={pastDate} showTooltip={false} />)
+    render(<KeyStatusIndicator status="valid" lastValidated={pastDate} showTooltip={false} data-oid="_v73gdh" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should handle future dates", () => {
     const futureDate = new Date(2099, 11, 31).toISOString()
-    render(<KeyStatusIndicator status="valid" lastValidated={futureDate} showTooltip={false} />)
+    render(<KeyStatusIndicator status="valid" lastValidated={futureDate} showTooltip={false} data-oid="4y6_6ed" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should render without tooltip details when no details provided", () => {
-    render(<KeyStatusIndicator status="valid" showTooltip={true} />)
+    render(<KeyStatusIndicator status="valid" showTooltip={true} data-oid="n:9l1f_" />)
 
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 
   it("should handle empty error message", () => {
-    render(<KeyStatusIndicator status="invalid" errorMessage="" />)
+    render(<KeyStatusIndicator status="invalid" errorMessage="" data-oid="is2_asa" />)
 
     expect(screen.getByText("Ошибка")).toBeInTheDocument()
   })
 
   it("should have consistent styling for dark mode", () => {
-    const { container } = render(<KeyStatusIndicator status="valid" />)
+    const { container } = render(<KeyStatusIndicator status="valid" data-oid="7j7zyp_" />)
 
     const indicator = container.querySelector(".inline-flex")
     expect(indicator).toHaveClass("text-green-600")
@@ -297,17 +306,17 @@ describe("KeyStatusIndicator", () => {
   })
 
   it("should support all status transitions", () => {
-    const { rerender } = render(<KeyStatusIndicator status="not_set" />)
+    const { rerender } = render(<KeyStatusIndicator status="not_set" data-oid="t4:vxuz" />)
 
     expect(screen.getByText("Не настроено")).toBeInTheDocument()
 
-    rerender(<KeyStatusIndicator status="testing" />)
+    rerender(<KeyStatusIndicator status="testing" data-oid="wllmt:t" />)
     expect(screen.getByText("Проверка...")).toBeInTheDocument()
 
-    rerender(<KeyStatusIndicator status="invalid" />)
+    rerender(<KeyStatusIndicator status="invalid" data-oid="f.21scy" />)
     expect(screen.getByText("Ошибка")).toBeInTheDocument()
 
-    rerender(<KeyStatusIndicator status="valid" />)
+    rerender(<KeyStatusIndicator status="valid" data-oid="f-h9shf" />)
     expect(screen.getByText("Работает")).toBeInTheDocument()
   })
 })

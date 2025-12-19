@@ -21,8 +21,10 @@ describe("WorkspaceLayoutProvider", () => {
 
   it("должен рендерить дочерние элементы", () => {
     render(
-      <WorkspaceLayoutProvider>
-        <div data-testid="test-child">Test Content</div>
+      <WorkspaceLayoutProvider data-oid="uf0os4e">
+        <div data-testid="test-child" data-oid="n4d:8:1">
+          Test Content
+        </div>
       </WorkspaceLayoutProvider>,
     )
 
@@ -34,17 +36,23 @@ describe("WorkspaceLayoutProvider", () => {
     const TestComponent = () => {
       const workspace = useWorkspaceLayout()
       return (
-        <div>
-          <div data-testid="current-preset">{workspace.currentPresetId}</div>
-          <div data-testid="active-widgets-count">{workspace.activeWidgets.length}</div>
-          <div data-testid="is-dragging">{workspace.isDragging.toString()}</div>
+        <div data-oid="a05i1j6">
+          <div data-testid="current-preset" data-oid="4i:ptat">
+            {workspace.currentPresetId}
+          </div>
+          <div data-testid="active-widgets-count" data-oid="hgzwpw0">
+            {workspace.activeWidgets.length}
+          </div>
+          <div data-testid="is-dragging" data-oid="w9ds5kg">
+            {workspace.isDragging.toString()}
+          </div>
         </div>
       )
     }
 
     render(
-      <WorkspaceLayoutProvider>
-        <TestComponent />
+      <WorkspaceLayoutProvider data-oid="7-k55vi">
+        <TestComponent data-oid="ke0k9_e" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -58,16 +66,20 @@ describe("WorkspaceLayoutProvider", () => {
       const TestComponent = () => {
         const workspace = useWorkspaceLayout()
         return (
-          <div>
-            <button onClick={() => workspace.switchPreset("vertical")}>Switch to Vertical</button>
-            <div data-testid="current-preset">{workspace.currentPresetId}</div>
+          <div data-oid="-697dk7">
+            <button onClick={() => workspace.switchPreset("vertical")} data-oid="d8u-l2d">
+              Switch to Vertical
+            </button>
+            <div data-testid="current-preset" data-oid="rfl3989">
+              {workspace.currentPresetId}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="_hoza50">
+          <TestComponent data-oid="sn4-:2-" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -90,16 +102,20 @@ describe("WorkspaceLayoutProvider", () => {
         const newWidget = createMockWidget("new-1", "ai-chat")
 
         return (
-          <div>
-            <button onClick={() => workspace.addWidget(newWidget)}>Add Widget</button>
-            <div data-testid="widgets-count">{workspace.activeWidgets.length}</div>
+          <div data-oid="y_g41oe">
+            <button onClick={() => workspace.addWidget(newWidget)} data-oid="q.wzhjk">
+              Add Widget
+            </button>
+            <div data-testid="widgets-count" data-oid="fzlautu">
+              {workspace.activeWidgets.length}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="fu_851v">
+          <TestComponent data-oid="o1bfppt" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -122,16 +138,20 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.removeWidget(widgetId)}>Remove Widget</button>
-            <div data-testid="widgets-count">{workspace.activeWidgets.length}</div>
+          <div data-oid="hdhvin_">
+            <button onClick={() => widgetId && workspace.removeWidget(widgetId)} data-oid="2zwk-np">
+              Remove Widget
+            </button>
+            <div data-testid="widgets-count" data-oid="3kkk.7r">
+              {workspace.activeWidgets.length}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="7rp31n-">
+          <TestComponent data-oid="ngf-jkk" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -155,16 +175,20 @@ describe("WorkspaceLayoutProvider", () => {
         const newBounds = { x: 10, y: 20, width: 30, height: 40 }
 
         return (
-          <div>
-            <button onClick={() => widget && workspace.updateWidgetBounds(widget.id, newBounds)}>Update Bounds</button>
-            <div data-testid="widget-x">{workspace.activeWidgets[0]?.bounds.x}</div>
+          <div data-oid="6ln6p95">
+            <button onClick={() => widget && workspace.updateWidgetBounds(widget.id, newBounds)} data-oid="91a6s78">
+              Update Bounds
+            </button>
+            <div data-testid="widget-x" data-oid="kerkhst">
+              {workspace.activeWidgets[0]?.bounds.x}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="oo6mim3">
+          <TestComponent data-oid="vr1jij5" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -187,17 +211,23 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.minimizeWidget(widgetId)}>Minimize</button>
-            <button onClick={() => widgetId && workspace.maximizeWidget(widgetId)}>Maximize</button>
-            <div data-testid="is-minimized">{workspace.activeWidgets[0]?.isMinimized.toString()}</div>
+          <div data-oid="na9swos">
+            <button onClick={() => widgetId && workspace.minimizeWidget(widgetId)} data-oid="p1pr5nv">
+              Minimize
+            </button>
+            <button onClick={() => widgetId && workspace.maximizeWidget(widgetId)} data-oid="8:xx1tj">
+              Maximize
+            </button>
+            <div data-testid="is-minimized" data-oid="n-86:it">
+              {workspace.activeWidgets[0]?.isMinimized.toString()}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid=".3y844c">
+          <TestComponent data-oid="62_w09n" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -231,16 +261,20 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.selectWidget(widgetId)}>Select Widget</button>
-            <div data-testid="selected-widget">{workspace.selectedWidgetId || "none"}</div>
+          <div data-oid="s7fpzld">
+            <button onClick={() => widgetId && workspace.selectWidget(widgetId)} data-oid="5lkthti">
+              Select Widget
+            </button>
+            <div data-testid="selected-widget" data-oid="7sp-4jx">
+              {workspace.selectedWidgetId || "none"}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="8gwmsd5">
+          <TestComponent data-oid="x-8y22a" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -263,17 +297,23 @@ describe("WorkspaceLayoutProvider", () => {
         const layoutId = workspace.customLayouts[0]?.id
 
         return (
-          <div>
-            <button onClick={() => workspace.saveCustomLayout("My Layout", "Test description")}>Save Layout</button>
-            <button onClick={() => layoutId && workspace.deleteCustomLayout(layoutId)}>Delete Layout</button>
-            <div data-testid="layouts-count">{workspace.customLayouts.length}</div>
+          <div data-oid="jx2tcnk">
+            <button onClick={() => workspace.saveCustomLayout("My Layout", "Test description")} data-oid="4pxyopo">
+              Save Layout
+            </button>
+            <button onClick={() => layoutId && workspace.deleteCustomLayout(layoutId)} data-oid="mj6cknr">
+              Delete Layout
+            </button>
+            <div data-testid="layouts-count" data-oid="dthbon2">
+              {workspace.customLayouts.length}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="eg2qkxy">
+          <TestComponent data-oid="s::cyb0" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -308,21 +348,34 @@ describe("WorkspaceLayoutProvider", () => {
         const widget = workspace.activeWidgets[0]
 
         return (
-          <div>
+          <div data-oid="pfpfnca">
             <button
-              onClick={() => widget && workspace.updateWidgetBounds(widget.id, { x: 99, y: 99, width: 10, height: 10 })}
+              onClick={() =>
+                widget &&
+                workspace.updateWidgetBounds(widget.id, {
+                  x: 99,
+                  y: 99,
+                  width: 10,
+                  height: 10,
+                })
+              }
+              data-oid="6kybzr6"
             >
               Modify Widget
             </button>
-            <button onClick={() => workspace.resetToPreset()}>Reset</button>
-            <div data-testid="widget-x">{workspace.activeWidgets[0]?.bounds.x}</div>
+            <button onClick={() => workspace.resetToPreset()} data-oid="e6j452a">
+              Reset
+            </button>
+            <div data-testid="widget-x" data-oid="jgs5gjt">
+              {workspace.activeWidgets[0]?.bounds.x}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="fyyf:xo">
+          <TestComponent data-oid="dh1br73" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -388,16 +441,20 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.toggleWidgetVisibility(widgetId)}>Toggle Visibility</button>
-            <div data-testid="is-visible">{workspace.activeWidgets[0]?.isVisible.toString()}</div>
+          <div data-oid="8f.t:mz">
+            <button onClick={() => widgetId && workspace.toggleWidgetVisibility(widgetId)} data-oid="izjx:ls">
+              Toggle Visibility
+            </button>
+            <div data-testid="is-visible" data-oid="j9w_d7_">
+              {workspace.activeWidgets[0]?.isVisible.toString()}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="jis:s0y">
+          <TestComponent data-oid="bb104ip" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -433,16 +490,20 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.startResize(widgetId, "se")}>Start Resize</button>
-            <div data-testid="is-resizing">{workspace.isResizing.toString()}</div>
+          <div data-oid="-addine">
+            <button onClick={() => widgetId && workspace.startResize(widgetId, "se")} data-oid="1qflne9">
+              Start Resize
+            </button>
+            <div data-testid="is-resizing" data-oid="eqd7u16">
+              {workspace.isResizing.toString()}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="6nm7k5x">
+          <TestComponent data-oid="ft6fv7f" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -467,17 +528,23 @@ describe("WorkspaceLayoutProvider", () => {
         const newBounds = { x: 5, y: 10, width: 25, height: 35 }
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.startResize(widgetId, "se")}>Start Resize</button>
-            <button onClick={() => workspace.updateResize(newBounds)}>Update Resize</button>
-            <div data-testid="widget-width">{workspace.activeWidgets[0]?.bounds.width}</div>
+          <div data-oid="-wy6w-1">
+            <button onClick={() => widgetId && workspace.startResize(widgetId, "se")} data-oid="6wsf1up">
+              Start Resize
+            </button>
+            <button onClick={() => workspace.updateResize(newBounds)} data-oid="382n25z">
+              Update Resize
+            </button>
+            <div data-testid="widget-width" data-oid="olvslhm">
+              {workspace.activeWidgets[0]?.bounds.width}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="8d_qwrf">
+          <TestComponent data-oid="tssta-0" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -505,17 +572,23 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.startResize(widgetId, "e")}>Start Resize</button>
-            <button onClick={() => workspace.endResize()}>End Resize</button>
-            <div data-testid="is-resizing">{workspace.isResizing.toString()}</div>
+          <div data-oid="q9kbrfi">
+            <button onClick={() => widgetId && workspace.startResize(widgetId, "e")} data-oid="un.p8xz">
+              Start Resize
+            </button>
+            <button onClick={() => workspace.endResize()} data-oid="-bcaq99">
+              End Resize
+            </button>
+            <div data-testid="is-resizing" data-oid="uib-u34">
+              {workspace.isResizing.toString()}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="gzi5e9v">
+          <TestComponent data-oid="pxvy2l9" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -590,18 +663,20 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.send({ type: "SELECT_WIDGET", widgetId })}>
+          <div data-oid="ya_gwfz">
+            <button onClick={() => widgetId && workspace.send({ type: "SELECT_WIDGET", widgetId })} data-oid="z4084f3">
               Send Select Event
             </button>
-            <div data-testid="selected-widget">{workspace.selectedWidgetId || "none"}</div>
+            <div data-testid="selected-widget" data-oid="pwzsmkj">
+              {workspace.selectedWidgetId || "none"}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="ai85::7">
+          <TestComponent data-oid="hmo4n9." />
         </WorkspaceLayoutProvider>,
       )
 
@@ -623,15 +698,17 @@ describe("WorkspaceLayoutProvider", () => {
         const workspace = useWorkspaceLayout()
 
         return (
-          <div>
-            <div data-testid="is-dragging">{workspace.isDragging.toString()}</div>
+          <div data-oid="_3tihds">
+            <div data-testid="is-dragging" data-oid="papqaf3">
+              {workspace.isDragging.toString()}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="y445f5:">
+          <TestComponent data-oid="9hmtw12" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -644,16 +721,20 @@ describe("WorkspaceLayoutProvider", () => {
         const workspace = useWorkspaceLayout()
 
         return (
-          <div>
-            <button onClick={() => workspace.saveCustomLayout("Test Layout")}>Save</button>
-            <div data-testid="layouts-count">{workspace.customLayouts.length}</div>
+          <div data-oid="u__:sr-">
+            <button onClick={() => workspace.saveCustomLayout("Test Layout")} data-oid="a8yw7kp">
+              Save
+            </button>
+            <div data-testid="layouts-count" data-oid=":r3yffo">
+              {workspace.customLayouts.length}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="t9nnp23">
+          <TestComponent data-oid="kpd_.5t" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -679,17 +760,23 @@ describe("WorkspaceLayoutProvider", () => {
         const widgetId = workspace.activeWidgets[0]?.id
 
         return (
-          <div>
-            <button onClick={() => widgetId && workspace.selectWidget(widgetId)}>Select</button>
-            <button onClick={() => workspace.selectWidget(null)}>Deselect</button>
-            <div data-testid="selected-widget">{workspace.selectedWidgetId || "none"}</div>
+          <div data-oid="84kvwp8">
+            <button onClick={() => widgetId && workspace.selectWidget(widgetId)} data-oid="t5.0ew.">
+              Select
+            </button>
+            <button onClick={() => workspace.selectWidget(null)} data-oid="_-6vxqj">
+              Deselect
+            </button>
+            <div data-testid="selected-widget" data-oid="5ouhb_v">
+              {workspace.selectedWidgetId || "none"}
+            </div>
           </div>
         )
       }
 
       render(
-        <WorkspaceLayoutProvider>
-          <TestComponent />
+        <WorkspaceLayoutProvider data-oid="mb:j9um">
+          <TestComponent data-oid="q6p:i1_" />
         </WorkspaceLayoutProvider>,
       )
 

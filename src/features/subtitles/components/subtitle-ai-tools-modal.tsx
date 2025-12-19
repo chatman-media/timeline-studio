@@ -72,15 +72,17 @@ export function SubtitleAIToolsModal() {
 
     showSuccess(
       t("subtitles.ai.success", "Субтитры добавлены"),
-      t("subtitles.ai.successDesc", "Добавлено {{count}} субтитров", { count: segments.length }),
+      t("subtitles.ai.successDesc", "Добавлено {{count}} субтитров", {
+        count: segments.length,
+      }),
     )
 
     closeModal()
   }
 
   return (
-    <div className="w-full h-[700px]">
-      <EnhancedTranscriptionPanel onAddToTimeline={handleAddToTimeline} />
+    <div className="w-full h-[700px]" data-oid="id47wc3">
+      <EnhancedTranscriptionPanel onAddToTimeline={handleAddToTimeline} data-oid="c7usu0s" />
     </div>
   )
 }

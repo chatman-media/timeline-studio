@@ -28,8 +28,8 @@ const TabContentContainer = memo(({ activeTab }: { activeTab: string }) => {
   const contentClassName = "bg-background m-0 px-0.5 flex-1 overflow-auto"
 
   return (
-    <div className={contentClassName}>
-      <LazyTabContent tabValue={activeTab} activeTab={activeTab} />
+    <div className={contentClassName} data-oid="8qkh7.t">
+      <LazyTabContent tabValue={activeTab} activeTab={activeTab} data-oid="jocd.dx" />
     </div>
   )
 })
@@ -167,30 +167,30 @@ export const BrowserContent = memo(() => {
   // Дополнительные кнопки для разных вкладок
   const extraButtons =
     activeTab === "effects" ? (
-      <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} />
+      <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} data-oid=":hl:yjm" />
     ) : activeTab === "media" && selectedFiles.size > 0 ? (
-      <AlertDialog>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="icon" className="ml-2 h-6 w-6 cursor-pointer">
-                <Trash2 className="h-4 w-4" />
+      <AlertDialog data-oid="4ewytq3">
+        <Tooltip data-oid="ledfi0a">
+          <TooltipTrigger asChild data-oid="01a9u4e">
+            <AlertDialogTrigger asChild data-oid="2rq:qhd">
+              <Button variant="ghost" size="icon" className="ml-2 h-6 w-6 cursor-pointer" data-oid="m_9f.n2">
+                <Trash2 className="h-4 w-4" data-oid="w36j1g6" />
               </Button>
             </AlertDialogTrigger>
           </TooltipTrigger>
-          <TooltipContent>{t("browser.clearSelected")}</TooltipContent>
+          <TooltipContent data-oid="q:xmres">{t("browser.clearSelected")}</TooltipContent>
         </Tooltip>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("browser.clearSelectedConfirm.title")}</AlertDialogTitle>
-            <AlertDialogDescription>
+        <AlertDialogContent data-oid=":6.44mj">
+          <AlertDialogHeader data-oid="i9i:5vw">
+            <AlertDialogTitle data-oid="ewft_c9">{t("browser.clearSelectedConfirm.title")}</AlertDialogTitle>
+            <AlertDialogDescription data-oid="4t3cl-w">
               {t("browser.clearSelectedConfirm.description")} ({selectedFiles.size}{" "}
               {t("common.files", { count: selectedFiles.size })})
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t("browser.clearSelectedConfirm.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleClearSelectedMedia}>
+          <AlertDialogFooter data-oid="e6pz-3p">
+            <AlertDialogCancel data-oid="-28qwvq">{t("browser.clearSelectedConfirm.cancel")}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleClearSelectedMedia} data-oid="w.5goab">
               {t("browser.clearSelectedConfirm.confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -201,7 +201,7 @@ export const BrowserContent = memo(() => {
   return (
     <>
       {/* Индикатор загрузки ресурсов */}
-      <BrowserLoadingIndicator />
+      <BrowserLoadingIndicator data-oid="stnv5za" />
 
       {/* Общий тулбар для всех вкладок */}
       <BrowserToolbarWrapper
@@ -232,13 +232,14 @@ export const BrowserContent = memo(() => {
         isImportingMusic={isImportingMusic}
         // Дополнительные кнопки для конкретных вкладок
         extraButtons={extraButtons}
+        data-oid="zt0-4u3"
       />
 
       {/* Контент только для активной вкладки */}
-      <TabContentContainer activeTab={activeTab} />
+      <TabContentContainer activeTab={activeTab} data-oid="35equkz" />
 
       {/* Developer Tools модалка */}
-      <DeveloperToolsModal open={showDeveloperTools} onOpenChange={setShowDeveloperTools} />
+      <DeveloperToolsModal open={showDeveloperTools} onOpenChange={setShowDeveloperTools} data-oid="aicu1h4" />
     </>
   )
 })

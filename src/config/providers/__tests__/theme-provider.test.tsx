@@ -12,8 +12,11 @@ import { ThemeProvider, useTheme } from "../theme-provider"
 // Mock next-themes
 vi.mock("next-themes", () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="next-theme-provider">{children}</div>
+    <div data-testid="next-theme-provider" data-oid=":z9q.5n">
+      {children}
+    </div>
   ),
+
   useTheme: vi.fn(() => ({
     theme: "dark",
     setTheme: vi.fn(),
@@ -24,8 +27,10 @@ vi.mock("next-themes", () => ({
 describe("ThemeProvider", () => {
   it("should render children", () => {
     render(
-      <ThemeProvider>
-        <div data-testid="child">Test Child</div>
+      <ThemeProvider data-oid="w2l2dc0">
+        <div data-testid="child" data-oid="1bkec.m">
+          Test Child
+        </div>
       </ThemeProvider>,
     )
 
@@ -35,8 +40,8 @@ describe("ThemeProvider", () => {
 
   it("should wrap children in NextThemeProvider", () => {
     render(
-      <ThemeProvider>
-        <div>Content</div>
+      <ThemeProvider data-oid="za_ujgp">
+        <div data-oid="._._13v">Content</div>
       </ThemeProvider>,
     )
 
@@ -45,9 +50,13 @@ describe("ThemeProvider", () => {
 
   it("should render multiple children", () => {
     render(
-      <ThemeProvider>
-        <div data-testid="child-1">Child 1</div>
-        <div data-testid="child-2">Child 2</div>
+      <ThemeProvider data-oid="vt.von6">
+        <div data-testid="child-1" data-oid="5_-4q-c">
+          Child 1
+        </div>
+        <div data-testid="child-2" data-oid="kb35nm3">
+          Child 2
+        </div>
       </ThemeProvider>,
     )
 

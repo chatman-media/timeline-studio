@@ -31,10 +31,11 @@ vi.mock("@/lib/utils", () => ({
 vi.mock("@/components/ui/tooltip", () => ({
   Tooltip: ({ children }: any) => children,
   TooltipContent: ({ children, className }: any) => (
-    <div data-testid="tooltip-content" className={className}>
+    <div data-testid="tooltip-content" className={className} data-oid="fjqc-qk">
       {children}
     </div>
   ),
+
   TooltipProvider: ({ children }: any) => children,
   TooltipTrigger: ({ children }: any) => children,
 }))
@@ -133,14 +134,16 @@ describe("RollEditHandle", () => {
     it("должен не отображаться когда editMode !== ROLL", () => {
       mockEditModeContext.editMode = EDIT_MODES.SELECT
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} data-oid=":x7gv4-" />)
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).not.toBeInTheDocument()
     })
 
     it("должен не отображаться когда isHovered = false", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isHovered={false} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} isHovered={false} data-oid="l5bm.z-" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).not.toBeInTheDocument()
@@ -152,14 +155,16 @@ describe("RollEditHandle", () => {
         startTime: 35, // Gap of 5 seconds
       }
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} rightClip={nonAdjacentRightClip} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} rightClip={nonAdjacentRightClip} data-oid=".-hk7-t" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).not.toBeInTheDocument()
     })
 
     it("должен отображаться когда все условия выполнены", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="e5civur" />)
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).toBeInTheDocument()
@@ -171,7 +176,9 @@ describe("RollEditHandle", () => {
         startTime: 30.0005, // Gap of 0.0005 < 0.001
       }
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} rightClip={almostAdjacentRightClip} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} rightClip={almostAdjacentRightClip} data-oid="cmklxo4" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).toBeInTheDocument()
@@ -183,7 +190,9 @@ describe("RollEditHandle", () => {
         startTime: 30.002, // Gap of 0.002 > 0.001
       }
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} rightClip={gappedRightClip} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} rightClip={gappedRightClip} data-oid="8_icv60" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).not.toBeInTheDocument()
@@ -192,7 +201,7 @@ describe("RollEditHandle", () => {
 
   describe("Позиционирование", () => {
     it("должен позиционироваться на границе клипов", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="dboz4kw" />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -202,7 +211,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен корректно масштабироваться с timeScale", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} timeScale={5} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} timeScale={5} data-oid="dndmjoe" />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -216,7 +225,7 @@ describe("RollEditHandle", () => {
       const earlyRightClip = { ...rightClip, startTime: 5, duration: 10 }
 
       const { container } = renderWithTimeline(
-        <RollEditHandle {...defaultProps} leftClip={earlyLeftClip} rightClip={earlyRightClip} />,
+        <RollEditHandle {...defaultProps} leftClip={earlyLeftClip} rightClip={earlyRightClip} data-oid="g.e95-4" />,
       )
 
       const handle = container.querySelector(".cursor-ew-resize")!
@@ -231,7 +240,9 @@ describe("RollEditHandle", () => {
     it("должен вызывать onRollStart при mouseDown", () => {
       const onRollStart = vi.fn()
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} onRollStart={onRollStart} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} onRollStart={onRollStart} data-oid="lju-32p" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -246,7 +257,9 @@ describe("RollEditHandle", () => {
       const onRollStart = vi.fn()
       const stopPropagation = vi.fn()
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} onRollStart={onRollStart} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} onRollStart={onRollStart} data-oid="ubaaq28" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -259,7 +272,9 @@ describe("RollEditHandle", () => {
     })
 
     it("не должен вызывать onRollStart если не передан", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} onRollStart={undefined} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} onRollStart={undefined} data-oid="ok9ufmm" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -273,7 +288,7 @@ describe("RollEditHandle", () => {
 
   describe("Визуальное состояние", () => {
     it("должен иметь базовые стили когда не активен", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={false} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={false} data-oid="t7wod5d" />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -289,7 +304,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен иметь активные стили когда isActive = true", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={true} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={true} data-oid="e74jgdq" />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -300,7 +315,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен отображать индикаторы когда активен", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={true} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={true} data-oid="-a1xsi5" />)
 
       // Проверяем левый индикатор
       const leftIndicator = container.querySelector(".right-full")
@@ -322,7 +337,7 @@ describe("RollEditHandle", () => {
     })
 
     it("не должен отображать индикаторы когда не активен", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={false} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} isActive={false} data-oid="x5uzpse" />)
 
       const leftIndicator = container.querySelector(".right-full")
       expect(leftIndicator).not.toBeInTheDocument()
@@ -334,7 +349,7 @@ describe("RollEditHandle", () => {
 
   describe("Иконка", () => {
     it("должен отображать иконку GripVertical", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="mlq14px" />)
 
       const icon = container.querySelector("svg")
       expect(icon).toBeInTheDocument()
@@ -347,7 +362,7 @@ describe("RollEditHandle", () => {
 
   describe("Tooltip", () => {
     it("должен отображать tooltip с правильным содержимым", () => {
-      renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="yy0h1-t" />)
 
       const tooltipContent = screen.getByTestId("tooltip-content")
       expect(tooltipContent).toBeInTheDocument()
@@ -362,7 +377,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен иметь правильные стили для tooltip", () => {
-      renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="m58g9e1" />)
 
       const tooltipContent = screen.getByTestId("tooltip-content")
       expect(tooltipContent).toHaveClass("bg-gray-900 text-white")
@@ -375,7 +390,7 @@ describe("RollEditHandle", () => {
       const tinyRightClip = { ...rightClip, startTime: 0.001, duration: 0.001 }
 
       const { container } = renderWithTimeline(
-        <RollEditHandle {...defaultProps} leftClip={tinyLeftClip} rightClip={tinyRightClip} />,
+        <RollEditHandle {...defaultProps} leftClip={tinyLeftClip} rightClip={tinyRightClip} data-oid="avgt5o6" />,
       )
 
       const handle = container.querySelector(".cursor-ew-resize")!
@@ -388,7 +403,7 @@ describe("RollEditHandle", () => {
       const lateRightClip = { ...rightClip, startTime: 15000, duration: 3000 }
 
       const { container } = renderWithTimeline(
-        <RollEditHandle {...defaultProps} leftClip={lateLeftClip} rightClip={lateRightClip} />,
+        <RollEditHandle {...defaultProps} leftClip={lateLeftClip} rightClip={lateRightClip} data-oid="6wl2rva" />,
       )
 
       const handle = container.querySelector(".cursor-ew-resize")!
@@ -397,7 +412,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен работать с отрицательным timeScale", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} timeScale={-10} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} timeScale={-10} data-oid="vezytpw" />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -405,7 +420,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен работать с нулевым timeScale", () => {
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} timeScale={0} />)
+      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} timeScale={0} data-oid="n58xvw8" />)
 
       const handle = container.querySelector(".cursor-ew-resize")!
       expect(handle).toBeInTheDocument()
@@ -418,7 +433,9 @@ describe("RollEditHandle", () => {
         trackId: leftClip.trackId,
       }
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} rightClip={sameTrackRightClip} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} rightClip={sameTrackRightClip} data-oid="9d0h5te" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).toBeInTheDocument()
@@ -430,7 +447,9 @@ describe("RollEditHandle", () => {
         trackId: "track-2",
       }
 
-      const { container } = renderWithTimeline(<RollEditHandle {...defaultProps} rightClip={differentTrackRightClip} />)
+      const { container } = renderWithTimeline(
+        <RollEditHandle {...defaultProps} rightClip={differentTrackRightClip} data-oid="ucl2c68" />,
+      )
 
       const handle = container.querySelector(".cursor-ew-resize")
       expect(handle).toBeInTheDocument()
@@ -439,7 +458,7 @@ describe("RollEditHandle", () => {
 
   describe("Производительность", () => {
     it("не должен перерендериваться при изменении неиспользуемых свойств клипа", () => {
-      const { rerender, container } = renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      const { rerender, container } = renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="2465iu_" />)
 
       const handle1 = container.querySelector(".cursor-ew-resize")
 
@@ -451,7 +470,7 @@ describe("RollEditHandle", () => {
         effects: [{ id: "effect1", effectId: "effect1", enabled: true, order: 0 }] as any,
       }
 
-      rerender(<RollEditHandle {...defaultProps} leftClip={updatedLeftClip} />)
+      rerender(<RollEditHandle {...defaultProps} leftClip={updatedLeftClip} data-oid="3h63jhq" />)
 
       const handle2 = container.querySelector(".cursor-ew-resize")
 
@@ -460,7 +479,7 @@ describe("RollEditHandle", () => {
     })
 
     it("должен перерендериваться при изменении позиции клипов", () => {
-      const { rerender, container } = renderWithTimeline(<RollEditHandle {...defaultProps} />)
+      const { rerender, container } = renderWithTimeline(<RollEditHandle {...defaultProps} data-oid="nng5at5" />)
 
       const handle1 = container.querySelector(".cursor-ew-resize")!
       expect(handle1).toHaveStyle({ left: "300px" })
@@ -475,7 +494,9 @@ describe("RollEditHandle", () => {
         startTime: 35, // Also need to move right clip to keep them adjacent
       }
 
-      rerender(<RollEditHandle {...defaultProps} leftClip={movedLeftClip} rightClip={movedRightClip} />)
+      rerender(
+        <RollEditHandle {...defaultProps} leftClip={movedLeftClip} rightClip={movedRightClip} data-oid="zyji1zy" />,
+      )
 
       const handle2 = container.querySelector(".cursor-ew-resize")!
       expect(handle2).toBeInTheDocument()

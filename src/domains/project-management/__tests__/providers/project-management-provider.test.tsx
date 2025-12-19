@@ -301,11 +301,11 @@ describe("Project Management Providers", () => {
 
   describe("ProjectManagementProvider", () => {
     it("should render children", () => {
-      const TestComponent = () => <div>Test Content</div>
+      const TestComponent = () => <div data-oid="3_8l4cz">Test Content</div>
 
       render(
-        <ProjectManagementProvider>
-          <TestComponent />
+        <ProjectManagementProvider data-oid="bgiwjy0">
+          <TestComponent data-oid="u9fl9ec" />
         </ProjectManagementProvider>,
       )
 
@@ -314,7 +314,7 @@ describe("Project Management Providers", () => {
 
     it("should provide all nested contexts", () => {
       const wrapper = ({ children }: { children: ReactNode }) => (
-        <ProjectManagementProvider>{children}</ProjectManagementProvider>
+        <ProjectManagementProvider data-oid="9:duf5g">{children}</ProjectManagementProvider>
       )
 
       const { result } = renderHook(
@@ -333,8 +333,8 @@ describe("Project Management Providers", () => {
 
     it("should initialize backend sync on mount", () => {
       render(
-        <ProjectManagementProvider>
-          <div>Test</div>
+        <ProjectManagementProvider data-oid="w-ed5:e">
+          <div data-oid="l6i5or9">Test</div>
         </ProjectManagementProvider>,
       )
 
@@ -344,8 +344,8 @@ describe("Project Management Providers", () => {
 
     it("should cleanup backend sync on unmount", () => {
       const { unmount } = render(
-        <ProjectManagementProvider>
-          <div>Test</div>
+        <ProjectManagementProvider data-oid="xzgyj3_">
+          <div data-oid="gfkow6r">Test</div>
         </ProjectManagementProvider>,
       )
 
@@ -358,7 +358,7 @@ describe("Project Management Providers", () => {
   describe("Integration Tests", () => {
     it("should allow cross-provider communication", async () => {
       const wrapper = ({ children }: { children: ReactNode }) => (
-        <ProjectManagementProvider>{children}</ProjectManagementProvider>
+        <ProjectManagementProvider data-oid="eiok9h4">{children}</ProjectManagementProvider>
       )
 
       const { result } = renderHook(
@@ -389,7 +389,7 @@ describe("Project Management Providers", () => {
 
     it("should handle backend connection changes", async () => {
       const wrapper = ({ children }: { children: ReactNode }) => (
-        <ProjectManagementProvider>{children}</ProjectManagementProvider>
+        <ProjectManagementProvider data-oid="cea0u5q">{children}</ProjectManagementProvider>
       )
 
       const { result } = renderHook(() => useAppState(), { wrapper })

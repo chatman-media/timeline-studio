@@ -44,72 +44,92 @@ export function TransitionPreviewSettings({
   const id = useId()
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center gap-2", className)} data-oid="-_c:3_8">
       {/* Быстрые переключатели */}
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
+      <TooltipProvider data-oid="h1lr2fy">
+        <Tooltip data-oid="2toc728">
+          <TooltipTrigger asChild data-oid="5l12cvc">
             <Button
               variant={isEnabled ? "default" : "outline"}
               size="sm"
               onClick={() => onEnabledChange(!isEnabled)}
               className="h-8"
+              data-oid="r8m:9u9"
             >
-              {isEnabled ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+              {isEnabled ? (
+                <Eye className="h-4 w-4" data-oid="uo.fcxs" />
+              ) : (
+                <EyeOff className="h-4 w-4" data-oid="7j02caw" />
+              )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent data-oid="tpt85ib">
             {isEnabled ? "Отключить предпросмотр переходов" : "Включить предпросмотр переходов"}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
       {/* Подробные настройки */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="h-8">
-            <Settings className="h-4 w-4" />
+      <Popover data-oid="f4cc.1c">
+        <PopoverTrigger asChild data-oid="f19uyv1">
+          <Button variant="outline" size="sm" className="h-8" data-oid="ivdq-q-">
+            <Settings className="h-4 w-4" data-oid="06_7k26" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80" align="end">
-          <Card className="border-0 shadow-none">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Настройки предпросмотра</CardTitle>
+        <PopoverContent className="w-80" align="end" data-oid="m:fx0nu">
+          <Card className="border-0 shadow-none" data-oid="kt.f2f5">
+            <CardHeader className="pb-3" data-oid="nr46421">
+              <CardTitle className="text-base" data-oid="uqzqhrt">
+                Настройки предпросмотра
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4" data-oid="14:g:tz">
               {/* Основные настройки */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor={`${id}-enable-preview`}>Включить предпросмотр</Label>
-                  <Switch id={`${id}-enable-preview`} checked={isEnabled} onCheckedChange={onEnabledChange} />
+              <div className="space-y-3" data-oid="lv-gsft">
+                <div className="flex items-center justify-between" data-oid="abex7hn">
+                  <Label htmlFor={`${id}-enable-preview`} data-oid="k-s4fx3">
+                    Включить предпросмотр
+                  </Label>
+                  <Switch
+                    id={`${id}-enable-preview`}
+                    checked={isEnabled}
+                    onCheckedChange={onEnabledChange}
+                    data-oid="4m-5h2r"
+                  />
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <Label htmlFor={`${id}-show-overlay`}>Показывать информацию</Label>
+                <div className="flex items-center justify-between" data-oid="bi8cwyh">
+                  <Label htmlFor={`${id}-show-overlay`} data-oid="s859v9y">
+                    Показывать информацию
+                  </Label>
                   <Switch
                     id={`${id}-show-overlay`}
                     checked={showOverlay}
                     onCheckedChange={onShowOverlayChange}
                     disabled={!isEnabled}
+                    data-oid="z-6otuj"
                   />
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <Label htmlFor={`${id}-show-indicator`}>Мини-индикатор</Label>
+                <div className="flex items-center justify-between" data-oid="9pnyzmv">
+                  <Label htmlFor={`${id}-show-indicator`} data-oid="-rladd8">
+                    Мини-индикатор
+                  </Label>
                   <Switch
                     id={`${id}-show-indicator`}
                     checked={showMiniIndicator}
                     onCheckedChange={onShowMiniIndicatorChange}
                     disabled={!isEnabled}
+                    data-oid="73p43jb"
                   />
                 </div>
               </div>
 
-              <Separator />
+              <Separator data-oid="oy46j4n" />
 
               {/* Настройки качества */}
-              <div className="space-y-3">
-                <Label>Качество рендеринга: {quality}%</Label>
+              <div className="space-y-3" data-oid="81zfupg">
+                <Label data-oid="fnkkrqf">Качество рендеринга: {quality}%</Label>
                 <Slider
                   value={[quality]}
                   onValueChange={([value]) => onQualityChange(value)}
@@ -118,26 +138,32 @@ export function TransitionPreviewSettings({
                   step={25}
                   disabled={!isEnabled}
                   className="w-full"
+                  data-oid="va11e3r"
                 />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Низкое</span>
-                  <span>Среднее</span>
-                  <span>Высокое</span>
-                  <span>Максимальное</span>
+
+                <div className="flex justify-between text-xs text-muted-foreground" data-oid="b-:b4qe">
+                  <span data-oid="ft70xwl">Низкое</span>
+                  <span data-oid="n:oq9-0">Среднее</span>
+                  <span data-oid="7n40ueb">Высокое</span>
+                  <span data-oid="wpg7fsh">Максимальное</span>
                 </div>
               </div>
 
-              <Separator />
+              <Separator data-oid="wcd9m68" />
 
               {/* Дополнительная информация */}
-              <div className="text-sm text-muted-foreground space-y-1">
-                <div className="flex justify-between">
-                  <span>WebGL2:</span>
-                  <span className="text-green-600">Поддерживается</span>
+              <div className="text-sm text-muted-foreground space-y-1" data-oid="zi2qt6.">
+                <div className="flex justify-between" data-oid="m55xvlf">
+                  <span data-oid="e3ihd9v">WebGL2:</span>
+                  <span className="text-green-600" data-oid="1sf:646">
+                    Поддерживается
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>GPU ускорение:</span>
-                  <span className="text-green-600">Активно</span>
+                <div className="flex justify-between" data-oid="aw9a9r_">
+                  <span data-oid="1wx.sm9">GPU ускорение:</span>
+                  <span className="text-green-600" data-oid="194_hq6">
+                    Активно
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -163,19 +189,24 @@ export function TransitionPreviewToggle({
   className?: string
 }) {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
+    <TooltipProvider data-oid="zao0:0_">
+      <Tooltip data-oid="n:q1.x9">
+        <TooltipTrigger asChild data-oid="d:5ue.s">
           <Button
             variant={isEnabled ? "default" : "outline"}
             size="sm"
             onClick={() => onToggle(!isEnabled)}
             className={cn("h-8 w-8 p-0", hasActiveTransition && isEnabled && "ring-2 ring-primary/50", className)}
+            data-oid="9ut_0t2"
           >
-            {isEnabled ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            {isEnabled ? (
+              <Eye className="h-4 w-4" data-oid="itbwg0p" />
+            ) : (
+              <EyeOff className="h-4 w-4" data-oid="qmeuz3h" />
+            )}
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent data-oid=":wz0aum">
           {isEnabled ? "Отключить предпросмотр переходов" : "Включить предпросмотр переходов"}
         </TooltipContent>
       </Tooltip>
@@ -200,10 +231,14 @@ export function TransitionPreviewStatus({
   if (!isEnabled || !hasActiveTransition) return null
 
   return (
-    <div className={cn("flex items-center gap-2 text-sm", className)}>
-      <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-      <span className="text-muted-foreground">Переход:</span>
-      <span className="font-medium">{transitionName || "Неизвестный"}</span>
+    <div className={cn("flex items-center gap-2 text-sm", className)} data-oid=":5ml4qr">
+      <div className="w-2 h-2 bg-primary rounded-full animate-pulse" data-oid="ctrz5.j" />
+      <span className="text-muted-foreground" data-oid="7wstq_-">
+        Переход:
+      </span>
+      <span className="font-medium" data-oid="3__vlha">
+        {transitionName || "Неизвестный"}
+      </span>
     </div>
   )
 }

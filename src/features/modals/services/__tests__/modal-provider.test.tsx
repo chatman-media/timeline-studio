@@ -25,8 +25,10 @@ describe("ModalProvider", () => {
 
   it("должен рендерить дочерние элементы", () => {
     render(
-      <ModalProvider>
-        <div data-testid="test-child">Test Content</div>
+      <ModalProvider data-oid="pdzjyf7">
+        <div data-testid="test-child" data-oid="yj1cc5u">
+          Test Content
+        </div>
       </ModalProvider>,
     )
 
@@ -38,17 +40,23 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
-          <div data-testid="modal-type">{modal.activeModal}</div>
-          <div data-testid="modal-data">{JSON.stringify(modal.modalData)}</div>
-          <div data-testid="is-open">{modal.isModalOpen.toString()}</div>
+        <div data-oid="b1dg67g">
+          <div data-testid="modal-type" data-oid="k4acfrv">
+            {modal.activeModal}
+          </div>
+          <div data-testid="modal-data" data-oid="1o-4ne2">
+            {JSON.stringify(modal.modalData)}
+          </div>
+          <div data-testid="is-open" data-oid="9jwwyzk">
+            {modal.isModalOpen.toString()}
+          </div>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="o5.ozsn">
+        <TestComponent data-oid="-9col5:" />
       </ModalProvider>,
     )
 
@@ -61,17 +69,23 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
-          <button onClick={() => modal.openModal("project-settings")}>Open Modal</button>
-          <div data-testid="modal-type">{modal.activeModal}</div>
-          <div data-testid="is-open">{modal.isModalOpen.toString()}</div>
+        <div data-oid="1adprb5">
+          <button onClick={() => modal.openModal("project-settings")} data-oid="283.dvz">
+            Open Modal
+          </button>
+          <div data-testid="modal-type" data-oid="-k50tc1">
+            {modal.activeModal}
+          </div>
+          <div data-testid="is-open" data-oid="rlfvl70">
+            {modal.isModalOpen.toString()}
+          </div>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="x1sohje">
+        <TestComponent data-oid="htjb30-" />
       </ModalProvider>,
     )
 
@@ -91,7 +105,7 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
+        <div data-oid="dedo_zj">
           <button
             onClick={() =>
               modal.openModal("user-settings", {
@@ -99,17 +113,20 @@ describe("ModalProvider", () => {
                 testData: "test-value",
               })
             }
+            data-oid="jlb3ytr"
           >
             Open Modal with Data
           </button>
-          <div data-testid="modal-data">{JSON.stringify(modal.modalData)}</div>
+          <div data-testid="modal-data" data-oid="r:xnum:">
+            {JSON.stringify(modal.modalData)}
+          </div>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="ci6t7k7">
+        <TestComponent data-oid=":e_wjuz" />
       </ModalProvider>,
     )
 
@@ -132,17 +149,23 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
-          <button onClick={() => modal.openModal("export")}>Open</button>
-          <button onClick={() => modal.closeModal()}>Close</button>
-          <div data-testid="is-open">{modal.isModalOpen.toString()}</div>
+        <div data-oid="mxg7q2p">
+          <button onClick={() => modal.openModal("export")} data-oid="qrcp69v">
+            Open
+          </button>
+          <button onClick={() => modal.closeModal()} data-oid="h424qxq">
+            Close
+          </button>
+          <div data-testid="is-open" data-oid="on5tdjp">
+            {modal.isModalOpen.toString()}
+          </div>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="zq8t99t">
+        <TestComponent data-oid="fl1udu." />
       </ModalProvider>,
     )
 
@@ -172,16 +195,20 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
-          <button onClick={() => modal.openModal("camera-capture")}>Open</button>
-          <button onClick={() => modal.submitModal({ result: "success" })}>Submit</button>
+        <div data-oid="_:-vzar">
+          <button onClick={() => modal.openModal("camera-capture")} data-oid="uc4s.p1">
+            Open
+          </button>
+          <button onClick={() => modal.submitModal({ result: "success" })} data-oid="_1:sa04">
+            Submit
+          </button>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="0kgwv87">
+        <TestComponent data-oid="n8cvuqp" />
       </ModalProvider>,
     )
 
@@ -195,9 +222,7 @@ describe("ModalProvider", () => {
 
     await waitFor(() => {
       // Ждем пока модальное окно откроется
-    })
-
-    // Отправляем данные
+    }) // Отправляем данные
     act(() => {
       submitButton.click()
     })
@@ -213,17 +238,23 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
-          <button onClick={() => modal.openModal("keyboard-shortcuts")}>Open Shortcuts</button>
-          <button onClick={() => modal.openModal("voice-recording")}>Open Voice</button>
-          <div data-testid="modal-type">{modal.activeModal}</div>
+        <div data-oid="bj1wky6">
+          <button onClick={() => modal.openModal("keyboard-shortcuts")} data-oid=".zagnaq">
+            Open Shortcuts
+          </button>
+          <button onClick={() => modal.openModal("voice-recording")} data-oid="-y3p83.">
+            Open Voice
+          </button>
+          <div data-testid="modal-type" data-oid="40ku2bg">
+            {modal.activeModal}
+          </div>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="v21wuq0">
+        <TestComponent data-oid="0_dpntb" />
       </ModalProvider>,
     )
 
@@ -289,20 +320,22 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
+        <div data-oid="wzm_770">
           {modalTypes.map((type) => (
-            <button key={type} onClick={() => modal.openModal(type)}>
+            <button key={type} onClick={() => modal.openModal(type)} data-oid="mh6lhum">
               {type}
             </button>
           ))}
-          <div data-testid="current-modal">{modal.activeModal}</div>
+          <div data-testid="current-modal" data-oid="q2z6yub">
+            {modal.activeModal}
+          </div>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="x6d9h71">
+        <TestComponent data-oid="tc-1qu-" />
       </ModalProvider>,
     )
 
@@ -338,16 +371,20 @@ describe("ModalProvider", () => {
     const TestComponent = () => {
       const modal = useModal()
       return (
-        <div>
-          <button onClick={() => modal.openModal("subtitle-editor", complexData)}>Open Complex</button>
-          <pre data-testid="modal-data">{JSON.stringify(modal.modalData, null, 2)}</pre>
+        <div data-oid="0z3hiz7">
+          <button onClick={() => modal.openModal("subtitle-editor", complexData)} data-oid="anvr2ac">
+            Open Complex
+          </button>
+          <pre data-testid="modal-data" data-oid="2eudx4-">
+            {JSON.stringify(modal.modalData, null, 2)}
+          </pre>
         </div>
       )
     }
 
     render(
-      <ModalProvider>
-        <TestComponent />
+      <ModalProvider data-oid="ko-fm08">
+        <TestComponent data-oid="-otc60n" />
       </ModalProvider>,
     )
 

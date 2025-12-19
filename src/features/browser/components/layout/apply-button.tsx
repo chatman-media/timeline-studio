@@ -56,11 +56,17 @@ export const ApplyButton = memo(function ApplyButton({
       )}
       style={{ color: "#fff", bottom: `${20 + size / 25}px` }}
       onClick={(e) => handleClick(e)}
+      data-oid="2-nhdvi"
     >
       <ArrowRight
         className={"transition-transform duration-150 hover:scale-110"}
         strokeWidth={2}
-        style={{ color: "#fff", height: `${6 + size / 30}px`, width: `${6 + size / 30}px` }}
+        style={{
+          color: "#fff",
+          height: `${6 + size / 30}px`,
+          width: `${6 + size / 30}px`,
+        }}
+        data-oid="7b495r8"
       />
     </button>
   )

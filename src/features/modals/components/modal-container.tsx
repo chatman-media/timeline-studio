@@ -30,44 +30,44 @@ export function ModalContainer() {
   const renderAllModals = () => {
     switch (activeModal) {
       case "project-settings":
-        return <ProjectSettingsModal />
+        return <ProjectSettingsModal data-oid="57:eax3" />
       // Temporarily disabled - keyboard-shortcuts feature needs review
       // case "keyboard-shortcuts":
       //   return <KeyboardShortcutsModal />
       case "user-settings":
-        return <UserSettingsModal />
+        return <UserSettingsModal data-oid="rv00w9b" />
       case "camera-capture":
-        return <CameraCaptureModal />
+        return <CameraCaptureModal data-oid="f2i6s-a" />
       case "voice-recording":
-        return <VoiceRecordModal />
+        return <VoiceRecordModal data-oid="f7i.sio" />
       case "export":
-        return <ExportModal />
+        return <ExportModal data-oid="ass50fv" />
       case "cache-settings":
-        return <CacheSettingsModal />
+        return <CacheSettingsModal data-oid=".2vovbs" />
       case "cache-statistics":
-        return <CacheStatisticsModal />
+        return <CacheStatisticsModal data-oid="89l_m7_" />
       case "subtitle-editor":
-        return <SubtitleEditorModal />
+        return <SubtitleEditorModal data-oid="zs37a38" />
       case "person-form":
-        return <PersonFormModal />
+        return <PersonFormModal data-oid="82qoklk" />
       case "missing-files":
-        return <MissingFilesModal />
+        return <MissingFilesModal data-oid="p:57.f0" />
       case "ai-marker-settings":
-        return <AIMarkerSettingsModal />
+        return <AIMarkerSettingsModal data-oid="16ehakn" />
       case "subtitle-ai-tools":
-        return <SubtitleAIToolsModal />
+        return <SubtitleAIToolsModal data-oid="i0duie8" />
       case "audio-effects":
-        return <AudioEffectsEditorModal />
+        return <AudioEffectsEditorModal data-oid="15vhjo." />
       case "midi-learn":
-        return <MidiLearnModal />
+        return <MidiLearnModal data-oid=":wd32_n" />
       case "midi-mapping":
-        return <MidiMappingEditorModal />
+        return <MidiMappingEditorModal data-oid="ejdwqiz" />
       case "midi-configuration":
-        return <MidiConfigurationModalComponent />
+        return <MidiConfigurationModalComponent data-oid=":yb14pb" />
       case "effect-detail":
-        return <EffectDetailModal />
+        return <EffectDetailModal data-oid="a96j87q" />
       case "color-grading":
-        return <ColorGradingSavePresetModal />
+        return <ColorGradingSavePresetModal data-oid="o08d-s0" />
       default:
         return null
     }
@@ -173,15 +173,20 @@ export function ModalContainer() {
   const dialogClass = modalData?.dialogClass ?? getDialogClassForType(activeModal)
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={(open) => !open && closeModal()}>
+    <Dialog open={isModalOpen} onOpenChange={(open) => !open && closeModal()} data-oid="wbiilah">
       <DialogContent
         aria-describedby="modal"
         className={`${dialogClass} bg-[#dfdfdf] dark:bg-[#1e1e1e] [&>button]:cursor-pointer p-4 flex flex-col`}
+        data-oid="u6zm4ok"
       >
-        <DialogHeader className="shrink-0 h-[50px] flex items-center justify-center">
-          <DialogTitle className="text-center">{getModalTitle()}</DialogTitle>
+        <DialogHeader className="shrink-0 h-[50px] flex items-center justify-center" data-oid="cs7sojv">
+          <DialogTitle className="text-center" data-oid="k.:5t8m">
+            {getModalTitle()}
+          </DialogTitle>
         </DialogHeader>
-        <div className="flex-1 overflow-auto">{renderAllModals()}</div>
+        <div className="flex-1 overflow-auto" data-oid="-ulq5d:">
+          {renderAllModals()}
+        </div>
       </DialogContent>
     </Dialog>
   )

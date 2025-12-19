@@ -63,6 +63,7 @@ vi.mock("@/features/templates/lib/templates", () => ({
         render: () => null,
       },
     ],
+
     portrait: [
       {
         id: "portrait-1",
@@ -73,6 +74,7 @@ vi.mock("@/features/templates/lib/templates", () => ({
         render: () => null,
       },
     ],
+
     square: [
       {
         id: "square-1",
@@ -98,15 +100,21 @@ describe("useTemplatesAdapter", () => {
         const { items, loading, error } = adapter.useData()
 
         return (
-          <div>
-            <div data-testid="items-count">{items.length}</div>
-            <div data-testid="loading">{loading.toString()}</div>
-            <div data-testid="error">{error?.message || "null"}</div>
+          <div data-oid="mhcn-h1">
+            <div data-testid="items-count" data-oid=":9pzhy0">
+              {items.length}
+            </div>
+            <div data-testid="loading" data-oid="4g.85gd">
+              {loading.toString()}
+            </div>
+            <div data-testid="error" data-oid="20kd-.6">
+              {error?.message || "null"}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="hdk6ge8" />)
 
       expect(screen.getByTestId("items-count")).toHaveTextContent("2")
       expect(screen.getByTestId("loading")).toHaveTextContent("false")
@@ -131,10 +139,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const { items } = adapter.useData()
 
-        return <div data-testid="items-count">{items.length}</div>
+        return (
+          <div data-testid="items-count" data-oid="ciygi9u">
+            {items.length}
+          </div>
+        )
       }
 
-      const { rerender } = render(<TestComponent />)
+      const { rerender } = render(<TestComponent data-oid="8nrf7._" />)
 
       expect(screen.getByTestId("items-count")).toHaveTextContent("2")
 
@@ -148,7 +160,7 @@ describe("useTemplatesAdapter", () => {
         },
       } as any)
 
-      rerender(<TestComponent />)
+      rerender(<TestComponent data-oid="94btg1x" />)
 
       // Should show portrait templates
       expect(screen.getByTestId("items-count")).toHaveTextContent("1")
@@ -168,10 +180,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const sortValue = adapter.getSortValue(mockTemplate, "name")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="i6hc:sb">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="b02o0z3" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("template-one")
     })
@@ -188,10 +204,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const sortValue = adapter.getSortValue(mockTemplate, "screens")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="hugeccz">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="suc1f-v" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("4")
     })
@@ -208,10 +228,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const sortValue = adapter.getSortValue(mockTemplate, "resizable")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="2008:-1">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="_c7ymnl" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("1")
     })
@@ -230,10 +254,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const searchableText = adapter.getSearchableText(mockTemplate)
 
-        return <div data-testid="searchable">{searchableText.join(", ")}</div>
+        return (
+          <div data-testid="searchable" data-oid="y04r-df">
+            {searchableText.join(", ")}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="dci43ss" />)
 
       const text = screen.getByTestId("searchable").textContent
       expect(text).toContain("vertical-split")
@@ -256,10 +284,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const groupValue = adapter.getGroupValue(mockTemplate, "split")
 
-        return <div data-testid="group-value">{groupValue}</div>
+        return (
+          <div data-testid="group-value" data-oid="w1oca7b">
+            {groupValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="n:5p.50" />)
 
       expect(screen.getByTestId("group-value")).toHaveTextContent("horizontal")
     })
@@ -276,10 +308,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const groupValue = adapter.getGroupValue(mockTemplate, "screens")
 
-        return <div data-testid="group-value">{groupValue}</div>
+        return (
+          <div data-testid="group-value" data-oid="9asbsgo">
+            {groupValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="w-lwf7m" />)
 
       expect(screen.getByTestId("group-value")).toHaveTextContent("3-4 экрана")
     })
@@ -305,14 +341,18 @@ describe("useTemplatesAdapter", () => {
         const group2 = adapter.getGroupValue(mockTemplate2, "resizable")
 
         return (
-          <div>
-            <div data-testid="group-1">{group1}</div>
-            <div data-testid="group-2">{group2}</div>
+          <div data-oid="l_fz-ym">
+            <div data-testid="group-1" data-oid=":ogxjoe">
+              {group1}
+            </div>
+            <div data-testid="group-2" data-oid="iaqmgzk">
+              {group2}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="uf01zwn" />)
 
       expect(screen.getByTestId("group-1")).toHaveTextContent("Изменяемые")
       expect(screen.getByTestId("group-2")).toHaveTextContent("Фиксированные")
@@ -332,10 +372,14 @@ describe("useTemplatesAdapter", () => {
         const adapter = useTemplatesAdapter()
         const matches = adapter.matchesFilter?.(mockTemplate, "all")
 
-        return <div data-testid="matches">{matches?.toString()}</div>
+        return (
+          <div data-testid="matches" data-oid="93o2cvm">
+            {matches?.toString()}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="8-ma2f8" />)
 
       expect(screen.getByTestId("matches")).toHaveTextContent("true")
     })
@@ -354,14 +398,18 @@ describe("useTemplatesAdapter", () => {
         const matchesHorizontal = adapter.matchesFilter?.(mockTemplate, "horizontal")
 
         return (
-          <div>
-            <div data-testid="matches-vertical">{matchesVertical?.toString()}</div>
-            <div data-testid="matches-horizontal">{matchesHorizontal?.toString()}</div>
+          <div data-oid="27ijwhl">
+            <div data-testid="matches-vertical" data-oid="3lf52q8">
+              {matchesVertical?.toString()}
+            </div>
+            <div data-testid="matches-horizontal" data-oid="0z1fgl0">
+              {matchesHorizontal?.toString()}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="_n1v15h" />)
 
       expect(screen.getByTestId("matches-vertical")).toHaveTextContent("true")
       expect(screen.getByTestId("matches-horizontal")).toHaveTextContent("false")
@@ -381,14 +429,18 @@ describe("useTemplatesAdapter", () => {
         const matches3 = adapter.matchesFilter?.(mockTemplate, "screens-3")
 
         return (
-          <div>
-            <div data-testid="matches-2">{matches2?.toString()}</div>
-            <div data-testid="matches-3">{matches3?.toString()}</div>
+          <div data-oid="ve8-i11">
+            <div data-testid="matches-2" data-oid="s2hy23d">
+              {matches2?.toString()}
+            </div>
+            <div data-testid="matches-3" data-oid="a9-6zes">
+              {matches3?.toString()}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="_-08ogd" />)
 
       expect(screen.getByTestId("matches-2")).toHaveTextContent("true")
       expect(screen.getByTestId("matches-3")).toHaveTextContent("false")
@@ -415,14 +467,18 @@ describe("useTemplatesAdapter", () => {
         const fixedMatches = adapter.matchesFilter?.(fixedTemplate, "fixed")
 
         return (
-          <div>
-            <div data-testid="resizable-matches">{resizableMatches?.toString()}</div>
-            <div data-testid="fixed-matches">{fixedMatches?.toString()}</div>
+          <div data-oid="koj78gc">
+            <div data-testid="resizable-matches" data-oid="wc:zp:z">
+              {resizableMatches?.toString()}
+            </div>
+            <div data-testid="fixed-matches" data-oid="mrw3vnx">
+              {fixedMatches?.toString()}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="x4c0:-t" />)
 
       expect(screen.getByTestId("resizable-matches")).toHaveTextContent("true")
       expect(screen.getByTestId("fixed-matches")).toHaveTextContent("true")
@@ -434,10 +490,14 @@ describe("useTemplatesAdapter", () => {
       function TestComponent() {
         const adapter = useTemplatesAdapter()
 
-        return <div data-testid="favorite-type">{adapter.favoriteType}</div>
+        return (
+          <div data-testid="favorite-type" data-oid="0ukw66b">
+            {adapter.favoriteType}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="2uakf-a" />)
 
       expect(screen.getByTestId("favorite-type")).toHaveTextContent("template")
     })
@@ -448,10 +508,14 @@ describe("useTemplatesAdapter", () => {
       function TestComponent() {
         const adapter = useTemplatesAdapter()
 
-        return <div data-testid="has-import">{(adapter.importHandlers === undefined).toString()}</div>
+        return (
+          <div data-testid="has-import" data-oid="d_2kblg">
+            {(adapter.importHandlers === undefined).toString()}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="c8tpy59" />)
 
       expect(screen.getByTestId("has-import")).toHaveTextContent("true")
     })

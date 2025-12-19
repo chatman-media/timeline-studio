@@ -11,16 +11,16 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = (await importOriginal()) as any
   return {
     ...actual,
-    AlertCircle: ({ ...props }: any) => <svg data-testid="alert-circle-icon" {...props} />,
-    CheckCircle: ({ ...props }: any) => <svg data-testid="check-circle-icon" {...props} />,
-    Cpu: ({ ...props }: any) => <svg data-testid="cpu-icon" {...props} />,
-    Download: ({ ...props }: any) => <svg data-testid="download-icon" {...props} />,
-    FileAudio: ({ ...props }: any) => <svg data-testid="file-audio-icon" {...props} />,
-    Loader2: ({ ...props }: any) => <svg data-testid="loader2-icon" {...props} />,
-    Mic: ({ ...props }: any) => <svg data-testid="mic-icon" {...props} />,
-    Upload: ({ ...props }: any) => <svg data-testid="upload-icon" {...props} />,
-    Zap: ({ ...props }: any) => <svg data-testid="zap-icon" {...props} />,
-    HardDrive: ({ ...props }: any) => <svg data-testid="hard-drive-icon" {...props} />,
+    AlertCircle: ({ ...props }: any) => <svg data-testid="alert-circle-icon" {...props} data-oid="1hzij8f" />,
+    CheckCircle: ({ ...props }: any) => <svg data-testid="check-circle-icon" {...props} data-oid="7lvofj4" />,
+    Cpu: ({ ...props }: any) => <svg data-testid="cpu-icon" {...props} data-oid="8-p0.5w" />,
+    Download: ({ ...props }: any) => <svg data-testid="download-icon" {...props} data-oid="7p3aq1f" />,
+    FileAudio: ({ ...props }: any) => <svg data-testid="file-audio-icon" {...props} data-oid="w1azq::" />,
+    Loader2: ({ ...props }: any) => <svg data-testid="loader2-icon" {...props} data-oid="pdk81ft" />,
+    Mic: ({ ...props }: any) => <svg data-testid="mic-icon" {...props} data-oid="6bcq8n4" />,
+    Upload: ({ ...props }: any) => <svg data-testid="upload-icon" {...props} data-oid="tw8517b" />,
+    Zap: ({ ...props }: any) => <svg data-testid="zap-icon" {...props} data-oid="jpuarg3" />,
+    HardDrive: ({ ...props }: any) => <svg data-testid="hard-drive-icon" {...props} data-oid="jt37jrg" />,
   }
 })
 
@@ -66,26 +66,26 @@ describe("TranscriptionPanel", () => {
   })
 
   it("should render transcription panel", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="ibutgzj" />)
 
     expect(screen.getAllByText("Транскрипция").length).toBeGreaterThan(0)
   })
 
   it("should display file selection button", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="-ygw0rb" />)
 
     expect(screen.getByText("Выбрать файл")).toBeInTheDocument()
   })
 
   it("should display transcribe button as disabled initially", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="ku132_r" />)
 
     const transcribeButton = screen.getByText("Начать транскрипцию")
     expect(transcribeButton).toBeDisabled()
   })
 
   it("should display tabs for settings", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="ksybmq0" />)
 
     expect(screen.getByText("Основные")).toBeInTheDocument()
     expect(screen.getByText("Расширенные")).toBeInTheDocument()
@@ -93,26 +93,26 @@ describe("TranscriptionPanel", () => {
   })
 
   it("should display model selector in basic settings", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="j2d8ubk" />)
 
     expect(screen.getByText("Модель")).toBeInTheDocument()
   })
 
   it("should display language selector in basic settings", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="bs33j2-" />)
 
     expect(screen.getByText("Язык")).toBeInTheDocument()
   })
 
   it("should display task selector in basic settings", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="ha.mth4" />)
 
     expect(screen.getByText("Задача")).toBeInTheDocument()
   })
 
   it("should call onAddToTimeline when provided", () => {
     const onAddToTimeline = vi.fn()
-    render(<TranscriptionPanel onAddToTimeline={onAddToTimeline} />)
+    render(<TranscriptionPanel onAddToTimeline={onAddToTimeline} data-oid="ek_poyh" />)
 
     // Panel should render without errors
     expect(screen.getAllByText("Транскрипция").length).toBeGreaterThan(0)
@@ -129,7 +129,11 @@ describe("TranscriptionPanel - Edge Cases", () => {
     vi.mock("../../hooks/use-transcription", () => ({
       useTranscription: () => ({
         isTranscribing: true,
-        progress: { status: "processing", progress: 50, message: "Processing..." },
+        progress: {
+          status: "processing",
+          progress: 50,
+          message: "Processing...",
+        },
         result: null,
         error: null,
         transcribe: mockTranscribe,
@@ -139,10 +143,10 @@ describe("TranscriptionPanel - Edge Cases", () => {
       }),
     }))
 
-    const { rerender } = render(<TranscriptionPanel />)
+    const { rerender } = render(<TranscriptionPanel data-oid="waovsaq" />)
 
     // Force re-render to pick up mocked hook
-    rerender(<TranscriptionPanel />)
+    rerender(<TranscriptionPanel data-oid="8.r0me4" />)
 
     // Progress should be visible
     // Note: This test would need the mock to be properly set up before render
@@ -162,8 +166,8 @@ describe("TranscriptionPanel - Edge Cases", () => {
       }),
     }))
 
-    const { rerender } = render(<TranscriptionPanel />)
-    rerender(<TranscriptionPanel />)
+    const { rerender } = render(<TranscriptionPanel data-oid="5gzn7au" />)
+    rerender(<TranscriptionPanel data-oid="u8j437p" />)
 
     // Error message should be visible
     // Note: This would require proper mock setup
@@ -171,7 +175,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should handle provider selection", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="39mnnut" />)
 
     // Switch to advanced tab
     const advancedTab = screen.getByText("Расширенные")
@@ -185,7 +189,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should handle device selection", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="0aszex2" />)
 
     // Switch to advanced tab
     const advancedTab = screen.getByText("Расширенные")
@@ -199,7 +203,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should handle word timestamps toggle", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="ozdn9.m" />)
 
     // Switch to advanced tab
     const advancedTab = screen.getByText("Расширенные")
@@ -213,7 +217,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should handle VAD filter toggle", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="ab-hjkd" />)
 
     // Switch to advanced tab
     const advancedTab = screen.getByText("Расширенные")
@@ -226,7 +230,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
   })
 
   it("should display model selector in models tab", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="4:.pted" />)
 
     // Models tab should exist
     const modelsTabs = screen.queryAllByText("Модели")
@@ -234,7 +238,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
   })
 
   it("should handle task switching between transcribe and translate", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="sycx3o3" />)
 
     // Task selector is in basic settings
     const taskLabels = screen.queryAllByText("Задача")
@@ -243,14 +247,14 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should show status icons for different progress states", () => {
     // This would need multiple renders with different progress states
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="kb-errl" />)
 
     // Initial state should show idle icon
     expect(screen.getAllByText("Транскрипция").length).toBeGreaterThan(0)
   })
 
   it("should handle rapid tab switching", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="-vm-5wq" />)
 
     // Should have all tabs available
     expect(screen.getAllByText("Основные").length).toBeGreaterThan(0)
@@ -260,7 +264,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should maintain settings when switching tabs", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="aya8kcp" />)
 
     // Select a model in basic settings
     const modelLabel = screen.getByText("Модель")
@@ -279,7 +283,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
   })
 
   it("should handle all model size options", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="phvau8r" />)
 
     // Model selector should display all model sizes
     expect(screen.getByText("Модель")).toBeInTheDocument()
@@ -287,7 +291,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should handle all provider options", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="7jpwrw2" />)
 
     const advancedTab = screen.getByText("Расширенные")
     await user.click(advancedTab)
@@ -299,7 +303,7 @@ describe("TranscriptionPanel - Edge Cases", () => {
 
   it("should handle all device options including GPU", async () => {
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="c-9ly-7" />)
 
     const advancedTab = screen.getByText("Расширенные")
     await user.click(advancedTab)
@@ -310,21 +314,21 @@ describe("TranscriptionPanel - Edge Cases", () => {
   })
 
   it("should reset state when reset is called", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="mhoaw8u" />)
 
     // Reset should be called when needed
     expect(mockReset).not.toHaveBeenCalled()
   })
 
   it("should handle transcription with default options", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="b:jhly9" />)
 
     // Default options should be set
     expect(screen.getByText("Модель")).toBeInTheDocument()
   })
 
   it("should handle transcription with custom options", () => {
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="dupa4s2" />)
 
     // Should be able to customize all options
     expect(screen.getByText("Основные")).toBeInTheDocument()
@@ -342,7 +346,7 @@ describe("TranscriptionPanel - File Handling", () => {
     vi.mocked(open).mockResolvedValue("/path/to/test.mp4")
 
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="qs26b91" />)
 
     const fileButton = screen.getByText("Выбрать файл")
     await user.click(fileButton)
@@ -358,7 +362,7 @@ describe("TranscriptionPanel - File Handling", () => {
     vi.mocked(open).mockResolvedValue("/path/to/my-video.mp4")
 
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="d6i20rj" />)
 
     const fileButton = screen.getByText("Выбрать файл")
     await user.click(fileButton)
@@ -373,7 +377,7 @@ describe("TranscriptionPanel - File Handling", () => {
     vi.mocked(open).mockResolvedValue(null)
 
     const user = userEvent.setup()
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="nxe40q-" />)
 
     const fileButton = screen.getByText("Выбрать файл")
     await user.click(fileButton)
@@ -386,7 +390,7 @@ describe("TranscriptionPanel - File Handling", () => {
   it("should accept various media formats", async () => {
     const { open } = await import("@tauri-apps/plugin-dialog")
 
-    render(<TranscriptionPanel />)
+    render(<TranscriptionPanel data-oid="xkbbvim" />)
 
     const user = userEvent.setup()
     const fileButton = screen.getByText("Выбрать файл")

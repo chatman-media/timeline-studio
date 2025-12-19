@@ -125,44 +125,51 @@ export const ScenarioBrowser: React.FC<ScenarioBrowserProps> = ({
         key={scenario.id}
         className={`cursor-pointer transition-all hover:shadow-md ${isSelected ? "ring-2 ring-primary" : ""}`}
         onClick={() => handleScenarioClick(scenario)}
+        data-oid="tp4t4dz"
       >
-        <CardHeader>
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1">
-              <CardTitle className="text-base">{scenario.name.ru}</CardTitle>
-              <CardDescription className="text-xs">{scenario.description.ru}</CardDescription>
+        <CardHeader data-oid="ezb7n87">
+          <div className="flex items-start justify-between gap-2" data-oid="77ct3n_">
+            <div className="flex-1" data-oid="a-wb5bw">
+              <CardTitle className="text-base" data-oid="76935d6">
+                {scenario.name.ru}
+              </CardTitle>
+              <CardDescription className="text-xs" data-oid="1c-g1hq">
+                {scenario.description.ru}
+              </CardDescription>
             </div>
             {scenario.requirements.aiAssisted && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Sparkles className="h-3 w-3" />
+              <Badge variant="secondary" className="flex items-center gap-1" data-oid="6oepz-.">
+                <Sparkles className="h-3 w-3" data-oid="aj4:jws" />
                 AI
               </Badge>
             )}
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3" data-oid="4guryev">
           {/* Статистика */}
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
+          <div className="flex items-center gap-4 text-xs text-muted-foreground" data-oid="ln2n.0c">
+            <div className="flex items-center gap-1" data-oid="ks_k639">
+              <Clock className="h-3 w-3" data-oid="543tupg" />
               {formatTime(scenario.estimatedTime)}
             </div>
-            <div className="flex items-center gap-1">
-              <Zap className="h-3 w-3" />
+            <div className="flex items-center gap-1" data-oid="_p-dnug">
+              <Zap className="h-3 w-3" data-oid="3.ze1ja" />
               {scenario.steps.length} шагов
             </div>
           </div>
 
           {/* Бейджи */}
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className={difficultyColor}>
+          <div className="flex flex-wrap gap-2" data-oid="1tj-.iq">
+            <Badge variant="outline" className={difficultyColor} data-oid=":_8fvjr">
               {scenario.difficulty === "beginner"
                 ? "Начальный"
                 : scenario.difficulty === "intermediate"
                   ? "Средний"
                   : "Продвинутый"}
             </Badge>
-            <Badge variant="outline">{scenario.category}</Badge>
+            <Badge variant="outline" data-oid="94csaj3">
+              {scenario.category}
+            </Badge>
           </div>
         </CardContent>
       </Card>
@@ -170,18 +177,22 @@ export const ScenarioBrowser: React.FC<ScenarioBrowserProps> = ({
   }
 
   return (
-    <div className="flex h-full flex-col" style={{ height }}>
+    <div className="flex h-full flex-col" style={{ height }} data-oid="uiy_-0p">
       {/* Header */}
       {showHeader && (
-        <div className="border-b p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">Сценарии монтажа</h2>
-              <p className="text-muted-foreground text-sm">Выберите сценарий для автоматического монтажа</p>
+        <div className="border-b p-4" data-oid="rq6_f4u">
+          <div className="flex items-center justify-between" data-oid="3c.z9_.">
+            <div data-oid="u7d_ezf">
+              <h2 className="text-2xl font-semibold" data-oid=":.9b.79">
+                Сценарии монтажа
+              </h2>
+              <p className="text-muted-foreground text-sm" data-oid="nlohidg">
+                Выберите сценарий для автоматического монтажа
+              </p>
             </div>
             {onClose && (
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="h-4 w-4" />
+              <Button variant="ghost" size="icon" onClick={onClose} data-oid="mxt_cry">
+                <X className="h-4 w-4" data-oid="xhsvx-l" />
               </Button>
             )}
           </div>
@@ -189,94 +200,125 @@ export const ScenarioBrowser: React.FC<ScenarioBrowserProps> = ({
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center gap-2 border-b p-4">
+      <div className="flex items-center gap-2 border-b p-4" data-oid="qzumtr:">
         {/* Search */}
-        <div className="relative flex-1">
-          <Search className="text-muted-foreground absolute left-2 top-2.5 h-4 w-4" />
+        <div className="relative flex-1" data-oid="bioz8wu">
+          <Search className="text-muted-foreground absolute left-2 top-2.5 h-4 w-4" data-oid="2gdn.ni" />
           <Input
             placeholder="Поиск сценариев..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="pl-8"
+            data-oid="dobjd:w"
           />
         </div>
 
         {/* View mode toggle */}
-        <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")}>
-          <TabsList>
-            <TabsTrigger value="grid">
-              <Grid className="h-4 w-4" />
+        <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "grid" | "list")} data-oid="7dkkdew">
+          <TabsList data-oid=":s_zsu.">
+            <TabsTrigger value="grid" data-oid="uqmag08">
+              <Grid className="h-4 w-4" data-oid="0_t6j_w" />
             </TabsTrigger>
-            <TabsTrigger value="list">
-              <List className="h-4 w-4" />
+            <TabsTrigger value="list" data-oid="ro.:0-n">
+              <List className="h-4 w-4" data-oid="e5pcofd" />
             </TabsTrigger>
           </TabsList>
         </Tabs>
 
         {/* Filters toggle */}
         {showFilters && (
-          <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
+          <Popover open={filtersOpen} onOpenChange={setFiltersOpen} data-oid="9ygt0gw">
+            <PopoverTrigger asChild data-oid="5:11iu1">
+              <Button variant="outline" size="icon" data-oid="xl5omm:">
+                <Filter className="h-4 w-4" data-oid="opn-bhu" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium">Фильтры</h4>
-                  <p className="text-muted-foreground text-xs">Уточните поиск сценариев</p>
+            <PopoverContent className="w-80" data-oid="ag5_n1k">
+              <div className="space-y-4" data-oid="2jn_:g8">
+                <div className="space-y-2" data-oid="g-zim1k">
+                  <h4 className="font-medium" data-oid="d-fo4p1">
+                    Фильтры
+                  </h4>
+                  <p className="text-muted-foreground text-xs" data-oid="43xm93p">
+                    Уточните поиск сценариев
+                  </p>
                 </div>
 
-                <Separator />
+                <Separator data-oid="_zeaes9" />
 
                 {/* Category filter */}
-                <div className="space-y-2">
-                  <Label>Категория</Label>
+                <div className="space-y-2" data-oid="l4hy1oj">
+                  <Label data-oid="ze6siil">Категория</Label>
                   <Select
                     value={currentCategory || "all"}
                     onValueChange={(v) => setCurrentCategory(v === "all" ? null : v)}
+                    data-oid=".06r755"
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Все категории" />
+                    <SelectTrigger data-oid="vyn07yl">
+                      <SelectValue placeholder="Все категории" data-oid="_wvmmu5" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Все категории</SelectItem>
-                      <SelectItem value="automation">Автоматизация</SelectItem>
-                      <SelectItem value="structure">Структура</SelectItem>
-                      <SelectItem value="effects">Эффекты</SelectItem>
-                      <SelectItem value="workflow">Workflow</SelectItem>
+                    <SelectContent data-oid="kz8w.yb">
+                      <SelectItem value="all" data-oid="ihhzk58">
+                        Все категории
+                      </SelectItem>
+                      <SelectItem value="automation" data-oid="7kqmqeh">
+                        Автоматизация
+                      </SelectItem>
+                      <SelectItem value="structure" data-oid="o3jtcv1">
+                        Структура
+                      </SelectItem>
+                      <SelectItem value="effects" data-oid="t8nxwc2">
+                        Эффекты
+                      </SelectItem>
+                      <SelectItem value="workflow" data-oid="d241nti">
+                        Workflow
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 {/* Difficulty filter */}
-                <div className="space-y-2">
-                  <Label>Сложность</Label>
+                <div className="space-y-2" data-oid="rcihodt">
+                  <Label data-oid="3srt87q">Сложность</Label>
                   <Select
                     value={currentDifficulty || "all"}
                     onValueChange={(v) => setCurrentDifficulty(v === "all" ? null : v)}
+                    data-oid="pvd.xy8"
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Любая сложность" />
+                    <SelectTrigger data-oid="-:743th">
+                      <SelectValue placeholder="Любая сложность" data-oid="pghqb_w" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Любая сложность</SelectItem>
-                      <SelectItem value="beginner">Начальный</SelectItem>
-                      <SelectItem value="intermediate">Средний</SelectItem>
-                      <SelectItem value="advanced">Продвинутый</SelectItem>
+                    <SelectContent data-oid=":3zbnl-">
+                      <SelectItem value="all" data-oid="xd5eici">
+                        Любая сложность
+                      </SelectItem>
+                      <SelectItem value="beginner" data-oid="qwpubyi">
+                        Начальный
+                      </SelectItem>
+                      <SelectItem value="intermediate" data-oid="g09ruqi">
+                        Средний
+                      </SelectItem>
+                      <SelectItem value="advanced" data-oid="wbaf665">
+                        Продвинутый
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <Separator />
+                <Separator data-oid="sle-::3" />
 
                 {/* Actions */}
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1" onClick={handleClearFilters}>
+                <div className="flex gap-2" data-oid="rjygck5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={handleClearFilters}
+                    data-oid="x6nxtrc"
+                  >
                     Сбросить
                   </Button>
-                  <Button size="sm" className="flex-1" onClick={handleApplyFilters}>
+                  <Button size="sm" className="flex-1" onClick={handleApplyFilters} data-oid="di1:mhx">
                     Применить
                   </Button>
                 </div>
@@ -287,32 +329,48 @@ export const ScenarioBrowser: React.FC<ScenarioBrowserProps> = ({
       </div>
 
       {/* Content */}
-      <ScrollArea className="flex-1">
-        <div className="p-4">
+      <ScrollArea className="flex-1" data-oid="g-s24xp">
+        <div className="p-4" data-oid="_7u4qrm">
           {scenarios.length === 0 ? (
-            <div className="text-muted-foreground flex h-[300px] items-center justify-center text-center">
-              <div>
-                <p className="text-lg font-medium">Сценарии не найдены</p>
-                <p className="text-sm">Попробуйте изменить фильтры или поисковый запрос</p>
+            <div
+              className="text-muted-foreground flex h-[300px] items-center justify-center text-center"
+              data-oid=".ghhqv-"
+            >
+              <div data-oid="-r24g1r">
+                <p className="text-lg font-medium" data-oid="5ah-agk">
+                  Сценарии не найдены
+                </p>
+                <p className="text-sm" data-oid="ub:--_7">
+                  Попробуйте изменить фильтры или поисковый запрос
+                </p>
               </div>
             </div>
           ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" data-oid="t5lth7e">
               {scenarios.map(renderScenarioCard)}
             </div>
           ) : (
-            <div className="space-y-2">{scenarios.map(renderScenarioCard)}</div>
+            <div className="space-y-2" data-oid="n6ukqzu">
+              {scenarios.map(renderScenarioCard)}
+            </div>
           )}
         </div>
       </ScrollArea>
 
       {/* Footer */}
-      <div className="border-t p-4">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Найдено сценариев: <span className="font-medium">{scenarios.length}</span>
+      <div className="border-t p-4" data-oid="_ycc946">
+        <div className="flex items-center justify-between" data-oid="i1e1dc4">
+          <p className="text-muted-foreground text-sm" data-oid="piovzb-">
+            Найдено сценариев:{" "}
+            <span className="font-medium" data-oid="_4930tu">
+              {scenarios.length}
+            </span>
           </p>
-          {selectedScenario && <Button onClick={() => onSelect?.(selectedScenario)}>Выбрать сценарий</Button>}
+          {selectedScenario && (
+            <Button onClick={() => onSelect?.(selectedScenario)} data-oid=":h0jt6l">
+              Выбрать сценарий
+            </Button>
+          )}
         </div>
       </div>
     </div>

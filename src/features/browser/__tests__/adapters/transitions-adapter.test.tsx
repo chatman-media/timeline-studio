@@ -66,15 +66,21 @@ describe("useTransitionsAdapter", () => {
         const { items, loading, error } = adapter.useData()
 
         return (
-          <div>
-            <div data-testid="items-count">{items.length}</div>
-            <div data-testid="loading">{loading.toString()}</div>
-            <div data-testid="error">{error?.message || "null"}</div>
+          <div data-oid="harbjac">
+            <div data-testid="items-count" data-oid="pb6xtil">
+              {items.length}
+            </div>
+            <div data-testid="loading" data-oid="qbboywj">
+              {loading.toString()}
+            </div>
+            <div data-testid="error" data-oid="zlb5gvn">
+              {error?.message || "null"}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="oz.5ral" />)
 
       expect(screen.getByTestId("items-count")).toHaveTextContent("0")
       expect(screen.getByTestId("loading")).toHaveTextContent("false")
@@ -139,10 +145,14 @@ describe("useTransitionsAdapter", () => {
         const adapter = useTransitionsAdapter()
         const { items } = adapter.useData()
 
-        return <div data-testid="items-count">{items.length}</div>
+        return (
+          <div data-testid="items-count" data-oid="_iebbxx">
+            {items.length}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="4y5lwic" />)
 
       expect(screen.getByTestId("items-count")).toHaveTextContent("2")
     })
@@ -157,10 +167,14 @@ describe("useTransitionsAdapter", () => {
         const adapter = useTransitionsAdapter()
         const { loading } = adapter.useData()
 
-        return <div data-testid="loading">{loading.toString()}</div>
+        return (
+          <div data-testid="loading" data-oid="obv4krg">
+            {loading.toString()}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="q:1m95n" />)
 
       expect(screen.getByTestId("loading")).toHaveTextContent("true")
     })
@@ -175,10 +189,14 @@ describe("useTransitionsAdapter", () => {
         const adapter = useTransitionsAdapter()
         const { error } = adapter.useData()
 
-        return <div data-testid="error">{error?.message || "null"}</div>
+        return (
+          <div data-testid="error" data-oid="pqzqa_j">
+            {error?.message || "null"}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="7n8s_wa" />)
 
       expect(screen.getByTestId("error")).toHaveTextContent("Failed to load transitions")
     })
@@ -221,15 +239,21 @@ describe("useTransitionsAdapter", () => {
         const durationValue = adapter.getSortValue(mockTransition as any, "duration")
 
         return (
-          <div>
-            <div data-testid="name-value">{String(nameValue)}</div>
-            <div data-testid="category-value">{String(categoryValue)}</div>
-            <div data-testid="duration-value">{String(durationValue)}</div>
+          <div data-oid="a5.vtzl">
+            <div data-testid="name-value" data-oid="hfnsfcq">
+              {String(nameValue)}
+            </div>
+            <div data-testid="category-value" data-oid="6-01grn">
+              {String(categoryValue)}
+            </div>
+            <div data-testid="duration-value" data-oid="r56lowr">
+              {String(durationValue)}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="zcjf-9z" />)
 
       expect(mockGetSortValue).toHaveBeenCalledWith(mockTransition, "name")
       expect(mockGetSortValue).toHaveBeenCalledWith(mockTransition, "category")
@@ -275,10 +299,14 @@ describe("useTransitionsAdapter", () => {
         const adapter = useTransitionsAdapter()
         const searchableText = adapter.getSearchableText(mockTransition as any)
 
-        return <div data-testid="searchable">{searchableText.join(", ")}</div>
+        return (
+          <div data-testid="searchable" data-oid="64na9pn">
+            {searchableText.join(", ")}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="716e4o0" />)
 
       expect(mockGetSearchableText).toHaveBeenCalledWith(mockTransition)
     })
@@ -321,14 +349,18 @@ describe("useTransitionsAdapter", () => {
         const durationGroup = adapter.getGroupValue(mockTransition as any, "duration")
 
         return (
-          <div>
-            <div data-testid="category-group">{categoryGroup}</div>
-            <div data-testid="duration-group">{durationGroup}</div>
+          <div data-oid="u7sqdvc">
+            <div data-testid="category-group" data-oid="03w.e0a">
+              {categoryGroup}
+            </div>
+            <div data-testid="duration-group" data-oid="17lejtt">
+              {durationGroup}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="yvsyzcb" />)
 
       expect(mockGetGroupValue).toHaveBeenCalledWith(mockTransition, "category")
       expect(mockGetGroupValue).toHaveBeenCalledWith(mockTransition, "duration")
@@ -367,15 +399,21 @@ describe("useTransitionsAdapter", () => {
         const matchesAdvanced = adapter.matchesFilter?.(mockTransition as any, "advanced")
 
         return (
-          <div>
-            <div data-testid="matches-all">{matchesAll?.toString()}</div>
-            <div data-testid="matches-basic">{matchesBasic?.toString()}</div>
-            <div data-testid="matches-advanced">{matchesAdvanced?.toString()}</div>
+          <div data-oid="4-fqs2b">
+            <div data-testid="matches-all" data-oid="c.nfrdk">
+              {matchesAll?.toString()}
+            </div>
+            <div data-testid="matches-basic" data-oid="y2qrw8h">
+              {matchesBasic?.toString()}
+            </div>
+            <div data-testid="matches-advanced" data-oid="5u3:ku1">
+              {matchesAdvanced?.toString()}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="jdsq:-f" />)
 
       expect(mockMatchesFilter).toHaveBeenCalledWith(mockTransition, "all")
       expect(mockMatchesFilter).toHaveBeenCalledWith(mockTransition, "basic")
@@ -388,10 +426,14 @@ describe("useTransitionsAdapter", () => {
       function TestComponent() {
         const adapter = useTransitionsAdapter()
 
-        return <div data-testid="favorite-type">{adapter.favoriteType}</div>
+        return (
+          <div data-testid="favorite-type" data-oid="4s0-g4y">
+            {adapter.favoriteType}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="615.91v" />)
 
       expect(screen.getByTestId("favorite-type")).toHaveTextContent("transition")
     })
@@ -422,10 +464,14 @@ describe("useTransitionsAdapter", () => {
         const adapter = useTransitionsAdapter()
         const isFavorite = adapter.isFavorite ? adapter.isFavorite(mockTransition as any) : false
 
-        return <div data-testid="is-favorite">{isFavorite.toString()}</div>
+        return (
+          <div data-testid="is-favorite" data-oid="egp8k88">
+            {isFavorite.toString()}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="hjqdmyd" />)
 
       expect(mockIsItemFavorite).toHaveBeenCalledWith(mockTransition, "transition")
       expect(screen.getByTestId("is-favorite")).toHaveTextContent("true")

@@ -91,7 +91,14 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
       case "video":
       case "image":
         return (
-          <VideoClip clip={clip} track={track} pixelsPerSecond={timeScale} onUpdate={onUpdate} onRemove={onRemove} />
+          <VideoClip
+            clip={clip}
+            track={track}
+            pixelsPerSecond={timeScale}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+            data-oid="j4wrx3v"
+          />
         )
 
       case "audio":
@@ -99,24 +106,41 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
       case "voiceover":
       case "sfx":
       case "ambient":
-        return <AudioClip clip={clip} track={track} onUpdate={onUpdate} onRemove={onRemove} />
+        return <AudioClip clip={clip} track={track} onUpdate={onUpdate} onRemove={onRemove} data-oid=":m40j-t" />
 
       case "subtitle":
       case "title":
         // Type guard for subtitle clips
         if ("text" in clip && typeof clip.text === "string") {
-          return <SubtitleClip clip={clip as any} trackHeight={track.height} isSelected={clip.isSelected} />
+          return (
+            <SubtitleClip
+              clip={clip as any}
+              trackHeight={track.height}
+              isSelected={clip.isSelected}
+              data-oid="dgl8c0i"
+            />
+          )
         }
         return (
-          <div className="h-full w-full bg-muted border border-border rounded flex items-center justify-center">
-            <span className="text-xs text-muted-foreground">Invalid subtitle clip</span>
+          <div
+            className="h-full w-full bg-muted border border-border rounded flex items-center justify-center"
+            data-oid="k-o0936"
+          >
+            <span className="text-xs text-muted-foreground" data-oid="9ullwd2">
+              Invalid subtitle clip
+            </span>
           </div>
         )
 
       default:
         return (
-          <div className="h-full w-full bg-muted border border-border rounded flex items-center justify-center">
-            <span className="text-xs text-muted-foreground">{track.type}</span>
+          <div
+            className="h-full w-full bg-muted border border-border rounded flex items-center justify-center"
+            data-oid="efspe:e"
+          >
+            <span className="text-xs text-muted-foreground" data-oid="n3e1hm-">
+              {track.type}
+            </span>
           </div>
         )
     }
@@ -197,6 +221,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
         onShowFilters={() => {
           /* TODO: Implement filters panel */
         }}
+        data-oid="k:lk16y"
       >
         <div
           className={cn(
@@ -214,11 +239,12 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
           data-testid="timeline-clip"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          data-oid="8u:rdkw"
         >
           {renderClipContent()}
 
           {/* Linked clip indicator */}
-          <LinkedClipIndicator isLinked={clip.isLinked || false} />
+          <LinkedClipIndicator isLinked={clip.isLinked || false} data-oid="s5erf5y" />
 
           {/* J/L Cut indicator */}
           {linkedClip && clip.audioOffset !== undefined && clip.audioOffset !== 0 && (
@@ -227,42 +253,46 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
                 videoClip={track.type === "video" || track.type === "image" ? clip : linkedClip}
                 audioClip={["audio", "music", "voiceover", "sfx", "ambient"].includes(track.type) ? clip : linkedClip}
                 pixelsPerSecond={timeScale}
+                data-oid="sw-mjah"
               />
+
               {/* J/L Cut drag handle */}
               <JLCutDragHandle
                 clip={clip}
                 linkedClip={linkedClip}
                 cutType={getCutType(clip.audioOffset || 0)}
                 pixelsPerSecond={timeScale}
+                data-oid="hb-ruzg"
               />
             </>
           )}
 
           {/* J/L Cut tool */}
           {isHovered && linkedClip && (
-            <div className="absolute top-0 right-0 m-1 z-10">
-              <JLCutTool clip={clip} />
+            <div className="absolute top-0 right-0 m-1 z-10" data-oid="pcmk1xg">
+              <JLCutTool clip={clip} data-oid="kaftdym" />
             </div>
           )}
 
           {/* Group indicator */}
           {group && !group.collapsed && (
-            <div className="absolute top-0 left-0 m-1 z-10">
+            <div className="absolute top-0 left-0 m-1 z-10" data-oid="va:27.q">
               <GroupIndicator
                 group={group}
                 onToggleCollapse={() => toggleCollapse(group.id)}
                 onToggleLock={() => lockGroup(group.id, !group.locked)}
                 className="scale-75 origin-top-left"
+                data-oid="jnauxu6"
               />
             </div>
           )}
 
           {/* AI Analysis indicator */}
-          <ClipAIIndicator clip={clip} className="absolute top-1 left-1 z-10" />
+          <ClipAIIndicator clip={clip} className="absolute top-1 left-1 z-10" data-oid="io6u3m5" />
 
           {/* Person indicators для видео клипов */}
           {(track.type === "video" || track.type === "image") && clipPersons.length > 0 && (
-            <div className="absolute bottom-1 left-1 z-10">
+            <div className="absolute bottom-1 left-1 z-10" data-oid="fpa12tx">
               <PersonIndicator
                 persons={clipPersons}
                 appearances={clipAppearances}
@@ -270,6 +300,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
                 compact={width < 80} // Компактный режим для узких клипов
                 maxVisible={3}
                 onClick={showPersonDetail}
+                data-oid="3t_n0yh"
               />
             </div>
           )}
@@ -282,6 +313,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
               onTrimEnd={handleTrimEnd}
               isSelected={clip.isSelected || false}
               disabled={clip.isLocked}
+              data-oid="ipzka2x"
             />
           )}
 
@@ -298,6 +330,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
             timeScale={timeScale}
             onSlipStart={editMode === EDIT_MODES.SLIP ? handleSlipSlideStart : undefined}
             onSlideStart={editMode === EDIT_MODES.SLIDE ? handleSlipSlideStart : undefined}
+            data-oid="ax-17_4"
           />
 
           {/* Rate Stretch handles */}
@@ -312,11 +345,12 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
             isActive={isEditing}
             timeScale={timeScale}
             onRateStretchStart={handleTrimStart}
+            data-oid="wb1n5s2"
           />
 
           {/* Speed ramping indicator */}
           {speedRampingConfig && speedRampingConfig.enabled && (
-            <div className="absolute top-1 right-1 z-10">
+            <div className="absolute top-1 right-1 z-10" data-oid="0hl-y2n">
               <button
                 className={cn(
                   "p-1 rounded bg-purple-500/20 hover:bg-purple-500/30 transition-colors",
@@ -324,13 +358,21 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
                 )}
                 onClick={() => setShowSpeedCurve(!showSpeedCurve)}
                 title="Toggle Speed Curve Editor"
+                data-oid="l3urk3w"
               >
-                <svg className="w-3 h-3 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <svg
+                  className="w-3 h-3 text-purple-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  data-oid="xvvpv92"
+                >
                   <path
                     d="M3 12c0-3 1-6 4-6s4 3 4 6-1 6-4 6-4-3-4-6m8 0c0-3 1-6 4-6s4 3 4 6-1 6-4 6-4-3-4-6"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    data-oid="iz:bth-"
                   />
                 </svg>
               </button>
@@ -339,7 +381,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
 
           {/* Speed curve editor */}
           {showSpeedCurve && speedRampingConfig && speedRampingConfig.enabled && (
-            <div className="absolute top-full mt-2 left-0 z-50">
+            <div className="absolute top-full mt-2 left-0 z-50" data-oid="b1blv-y">
               <SpeedCurveEditor
                 clipId={clip.id}
                 clipDuration={clip.duration}
@@ -347,6 +389,7 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
                 height={speedRampingConfig.graphHeight || 120}
                 onClose={() => setShowSpeedCurve(false)}
                 className="shadow-lg"
+                data-oid="0s8a7xt"
               />
             </div>
           )}
@@ -354,9 +397,9 @@ export const Clip = memo(function Clip({ clip, track, timeScale, onUpdate, onRem
       </ClipContextMenu>
 
       {/* Диалог панели эффектов */}
-      <Dialog open={showEffectsPanel} onOpenChange={setShowEffectsPanel}>
-        <DialogContent className="max-w-4xl h-[80vh]">
-          <ClipEffectsPanel clip={clip} onClose={() => setShowEffectsPanel(false)} />
+      <Dialog open={showEffectsPanel} onOpenChange={setShowEffectsPanel} data-oid="-bg9bvn">
+        <DialogContent className="max-w-4xl h-[80vh]" data-oid="xfz0fxj">
+          <ClipEffectsPanel clip={clip} onClose={() => setShowEffectsPanel(false)} data-oid=":k_66b8" />
         </DialogContent>
       </Dialog>
     </>

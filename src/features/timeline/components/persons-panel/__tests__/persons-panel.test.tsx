@@ -22,7 +22,7 @@ import { PersonsPanel } from "../persons-panel"
 // Mock для UI компонентов
 vi.mock("@/components/ui/badge", () => ({
   Badge: ({ children, onClick, className, variant }: any) => (
-    <span onClick={onClick} className={className} data-testid="badge" data-variant={variant}>
+    <span onClick={onClick} className={className} data-testid="badge" data-variant={variant} data-oid=":d_4m0o">
       {children}
     </span>
   ),
@@ -37,6 +37,7 @@ vi.mock("@/components/ui/button", () => ({
       data-testid="button"
       data-variant={variant}
       data-size={size}
+      data-oid="f48lgp3"
     >
       {children}
     </button>
@@ -45,22 +46,25 @@ vi.mock("@/components/ui/button", () => ({
 
 vi.mock("@/components/ui/card", () => ({
   Card: ({ children, className }: any) => (
-    <div className={className} data-testid="card">
+    <div className={className} data-testid="card" data-oid="pvbgn56">
       {children}
     </div>
   ),
+
   CardContent: ({ children, className }: any) => (
-    <div className={className} data-testid="card-content">
+    <div className={className} data-testid="card-content" data-oid="ybpmoxf">
       {children}
     </div>
   ),
+
   CardHeader: ({ children, className }: any) => (
-    <div className={className} data-testid="card-header">
+    <div className={className} data-testid="card-header" data-oid="n-.a1ck">
       {children}
     </div>
   ),
+
   CardTitle: ({ children, className }: any) => (
-    <h3 className={className} data-testid="card-title">
+    <h3 className={className} data-testid="card-title" data-oid="2bb56sg">
       {children}
     </h3>
   ),
@@ -68,13 +72,20 @@ vi.mock("@/components/ui/card", () => ({
 
 vi.mock("@/components/ui/input", () => ({
   Input: ({ placeholder, value, onChange, className }: any) => (
-    <input placeholder={placeholder} value={value} onChange={onChange} className={className} data-testid="input" />
+    <input
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      className={className}
+      data-testid="input"
+      data-oid="vyrxr2u"
+    />
   ),
 }))
 
 vi.mock("@/components/ui/scroll-area", () => ({
   ScrollArea: ({ children, className }: any) => (
-    <div className={className} data-testid="scroll-area">
+    <div className={className} data-testid="scroll-area" data-oid="ai3.-01">
       {children}
     </div>
   ),
@@ -91,50 +102,71 @@ vi.mock("@/components/ui/slider", () => ({
       step={step}
       className={className}
       data-testid="slider"
+      data-oid="5__ehi8"
     />
   ),
 }))
 
 vi.mock("@/components/ui/switch", () => ({
   Switch: ({ checked, onCheckedChange }: any) => (
-    <input type="checkbox" checked={checked} onChange={(e) => onCheckedChange(e.target.checked)} data-testid="switch" />
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={(e) => onCheckedChange(e.target.checked)}
+      data-testid="switch"
+      data-oid="c9z25gp"
+    />
   ),
 }))
 
 vi.mock("@/components/ui/tooltip", () => ({
-  Tooltip: ({ children }: any) => <div>{children}</div>,
-  TooltipTrigger: ({ children }: any) => <div data-testid="tooltip-trigger">{children}</div>,
-  TooltipContent: ({ children }: any) => <div data-testid="tooltip-content">{children}</div>,
+  Tooltip: ({ children }: any) => <div data-oid=".6spu62">{children}</div>,
+  TooltipTrigger: ({ children }: any) => (
+    <div data-testid="tooltip-trigger" data-oid="6wcm378">
+      {children}
+    </div>
+  ),
+
+  TooltipContent: ({ children }: any) => (
+    <div data-testid="tooltip-content" data-oid="aukr-xi">
+      {children}
+    </div>
+  ),
 }))
 
 vi.mock("lucide-react", () => ({
   Eye: ({ className }: any) => (
-    <span className={className} data-testid="eye-icon">
+    <span className={className} data-testid="eye-icon" data-oid="-zxxbqm">
       Eye
     </span>
   ),
+
   EyeOff: ({ className }: any) => (
-    <span className={className} data-testid="eye-off-icon">
+    <span className={className} data-testid="eye-off-icon" data-oid="clk7xzc">
       EyeOff
     </span>
   ),
+
   Filter: ({ className }: any) => (
-    <span className={className} data-testid="filter-icon">
+    <span className={className} data-testid="filter-icon" data-oid="jmck7fk">
       Filter
     </span>
   ),
+
   Search: ({ className }: any) => (
-    <span className={className} data-testid="search-icon">
+    <span className={className} data-testid="search-icon" data-oid="m.r4pqy">
       Search
     </span>
   ),
+
   Settings: ({ className }: any) => (
-    <span className={className} data-testid="settings-icon">
+    <span className={className} data-testid="settings-icon" data-oid="z2jodqu">
       Settings
     </span>
   ),
+
   Users: ({ className }: any) => (
-    <span className={className} data-testid="users-icon">
+    <span className={className} data-testid="users-icon" data-oid="-7g5ce8">
       Users
     </span>
   ),
@@ -167,6 +199,7 @@ describe("PersonsPanel", () => {
           isGenerated: false,
         },
       ],
+
       privacy: {
         blurFace: false,
         hideFromSearch: false,
@@ -278,7 +311,7 @@ describe("PersonsPanel", () => {
 
   describe("Базовое отображение", () => {
     it("отображает компонент", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid=":d0teq0" />)
 
       expect(screen.getByTestId("card")).toBeInTheDocument()
       expect(screen.getByTestId("card-header")).toBeInTheDocument()
@@ -286,7 +319,7 @@ describe("PersonsPanel", () => {
     })
 
     it("отображает заголовок с количеством персон", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="70cpdjr" />)
 
       expect(screen.getByTestId("card-title")).toHaveTextContent("Персоны (3)")
       // Один в заголовке + 2 для персон без аватара
@@ -294,7 +327,7 @@ describe("PersonsPanel", () => {
     })
 
     it("отображает кнопки управления", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="ed3u9.u" />)
 
       const buttons = screen.getAllByTestId("button")
       expect(buttons).toHaveLength(3) // Settings, Analyze, Clear
@@ -305,7 +338,7 @@ describe("PersonsPanel", () => {
     })
 
     it("отображает поле поиска", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="4qk3xgh" />)
 
       const searchInput = screen.getByTestId("input")
       expect(searchInput).toHaveAttribute("placeholder", "Поиск персон...")
@@ -313,7 +346,7 @@ describe("PersonsPanel", () => {
     })
 
     it("отображает список персон", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="ormdw3j" />)
 
       expect(screen.getByText("Иван Петров")).toBeInTheDocument()
       expect(screen.getByText("Анна Сидорова")).toBeInTheDocument()
@@ -321,7 +354,7 @@ describe("PersonsPanel", () => {
     })
 
     it("отображает статистику появлений", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="y_yk-3s" />)
 
       expect(screen.getByText("Появлений: 3")).toBeInTheDocument()
       expect(screen.getByText("Средняя уверенность: 85%")).toBeInTheDocument()
@@ -330,7 +363,7 @@ describe("PersonsPanel", () => {
 
   describe("Действия кнопок", () => {
     it("вызывает анализ Timeline при клике на кнопку анализа", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="k.c.6no" />)
 
       const analyzeButton = screen.getAllByTestId("button")[1]
       fireEvent.click(analyzeButton)
@@ -339,7 +372,7 @@ describe("PersonsPanel", () => {
     })
 
     it("очищает анализ при клике на кнопку очистки", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="y.llg:n" />)
 
       const clearButton = screen.getAllByTestId("button")[2]
       fireEvent.click(clearButton)
@@ -348,7 +381,7 @@ describe("PersonsPanel", () => {
     })
 
     it("показывает детали персоны при клике на персону", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="z7z6yra" />)
 
       const personElement = screen.getByText("Иван Петров").closest("div")
       fireEvent.click(personElement!)
@@ -359,7 +392,7 @@ describe("PersonsPanel", () => {
 
   describe("Настройки", () => {
     it("показывает настройки при клике на кнопку настроек", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="3tsfums" />)
 
       const settingsButton = screen.getAllByTestId("button")[0]
       fireEvent.click(settingsButton)
@@ -371,7 +404,7 @@ describe("PersonsPanel", () => {
     })
 
     it("переключает автообнаружение", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="8hcs-1-" />)
 
       const settingsButton = screen.getAllByTestId("button")[0]
       fireEvent.click(settingsButton)
@@ -385,7 +418,7 @@ describe("PersonsPanel", () => {
     })
 
     it("изменяет порог уверенности", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="66th2-i" />)
 
       const settingsButton = screen.getAllByTestId("button")[0]
       fireEvent.click(settingsButton)
@@ -399,7 +432,7 @@ describe("PersonsPanel", () => {
 
   describe("Поиск персон", () => {
     it("фильтрует персон по имени", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="dlc3d3u" />)
 
       const searchInput = screen.getByTestId("input")
       fireEvent.change(searchInput, { target: { value: "Иван" } })
@@ -409,7 +442,7 @@ describe("PersonsPanel", () => {
     })
 
     it("показывает сообщение когда персоны не найдены", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid=".emhtex" />)
 
       const searchInput = screen.getByTestId("input")
       fireEvent.change(searchInput, {
@@ -422,7 +455,7 @@ describe("PersonsPanel", () => {
 
   describe("Фильтр по тегам", () => {
     it("отображает доступные теги", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="raj.xk." />)
 
       expect(screen.getAllByText("актер")).toHaveLength(2) // В фильтре и в персоне
       expect(screen.getAllByText("главный")).toHaveLength(2) // В фильтре и в персоне
@@ -431,7 +464,7 @@ describe("PersonsPanel", () => {
     })
 
     it("фильтрует персон по выбранным тегам", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="zc1o7y0" />)
 
       const actorTags = screen.getAllByText("актер")
       const filterTag = actorTags[0] // Первый тег - в фильтре
@@ -444,14 +477,14 @@ describe("PersonsPanel", () => {
 
   describe("Отображение персон", () => {
     it("отображает аватар персоны если есть thumbnail", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid=":988wiw" />)
 
       const avatar = screen.getByAltText("Иван Петров")
       expect(avatar).toHaveAttribute("src", "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAg")
     })
 
     it("отображает статистику появлений для каждой персоны", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="om7q6c4" />)
 
       expect(screen.getByText("2 появлений")).toBeInTheDocument() // person-1
       expect(screen.getByText("1 появлений")).toBeInTheDocument() // person-2
@@ -459,7 +492,7 @@ describe("PersonsPanel", () => {
     })
 
     it("отображает теги персон", () => {
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="lf4r1jc" />)
 
       const tagBadges = screen.getAllByTestId("badge")
       // Теги отображаются как в фильтре по тегам, так и в каждой персоне
@@ -479,7 +512,7 @@ describe("PersonsPanel", () => {
       mockHookReturn.state.analysisProgress = 45
       vi.mocked(useTimelinePersons).mockReturnValue(mockHookReturn)
 
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="_:3tuy9" />)
 
       expect(screen.getByText("Анализ...")).toBeInTheDocument()
       expect(screen.getByText("45%")).toBeInTheDocument()
@@ -489,7 +522,7 @@ describe("PersonsPanel", () => {
       mockHookReturn.state.error = "Ошибка анализа"
       vi.mocked(useTimelinePersons).mockReturnValue(mockHookReturn)
 
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="lqwcl5u" />)
 
       expect(screen.getByText("Ошибка анализа")).toBeInTheDocument()
     })
@@ -499,7 +532,7 @@ describe("PersonsPanel", () => {
       mockHookReturn.state.appearances = []
       vi.mocked(useTimelinePersons).mockReturnValue(mockHookReturn)
 
-      render(<PersonsPanel />)
+      render(<PersonsPanel data-oid="7i6pm85" />)
 
       expect(screen.getByText("Персоны не обнаружены. Запустите анализ Timeline.")).toBeInTheDocument()
     })
@@ -507,7 +540,7 @@ describe("PersonsPanel", () => {
 
   describe("Пропсы компонента", () => {
     it("применяет переданный className", () => {
-      render(<PersonsPanel className="custom-class" />)
+      render(<PersonsPanel className="custom-class" data-oid="f:j754l" />)
 
       expect(screen.getByTestId("card")).toHaveClass("custom-class")
     })

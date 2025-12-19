@@ -13,6 +13,7 @@ describe("CurveEditor Component", () => {
     {
       propertyId: "prop-1",
       keyframes: [createKeyframe(0, 0, "linear"), createKeyframe(1, 100, "linear")],
+
       preInfinity: "constant",
       postInfinity: "constant",
       visible: true,
@@ -33,13 +34,13 @@ describe("CurveEditor Component", () => {
   }
 
   it("renders curve editor", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="8gz688a" />)
 
     expect(screen.getAllByRole("slider").length).toBeGreaterThan(0)
   })
 
   it("displays playback controls", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="ffwfwn9" />)
 
     // Check for play button
     const buttons = screen.getAllByRole("button")
@@ -47,7 +48,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("renders canvas element", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="53iuah4" />)
 
     const canvas = document.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
@@ -55,21 +56,21 @@ describe("CurveEditor Component", () => {
 
   it("calls onTimeChange when slider is moved", () => {
     const onTimeChange = vi.fn()
-    renderWithBase(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} />)
+    renderWithBase(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} data-oid="6ux09cb" />)
 
     // Component should render with sliders
     expect(screen.getAllByRole("slider").length).toBeGreaterThan(0)
   })
 
   it("displays time information", () => {
-    renderWithBase(<CurveEditor {...defaultProps} currentTime={2.5} />)
+    renderWithBase(<CurveEditor {...defaultProps} currentTime={2.5} data-oid="zxdqo8-" />)
 
     // Component should render without errors
     expect(screen.getAllByRole("slider").length).toBeGreaterThan(0)
   })
 
   it("renders interpolation type selector", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="t89.57d" />)
 
     // Combobox for interpolation type
     const comboboxes = screen.getAllByRole("combobox")
@@ -77,14 +78,14 @@ describe("CurveEditor Component", () => {
   })
 
   it("displays curve list", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="a1r0zj:" />)
 
     expect(screen.getByText(/Property prop-1/)).toBeInTheDocument()
   })
 
   it("handles curve selection", () => {
     const onCurveSelect = vi.fn()
-    renderWithBase(<CurveEditor {...defaultProps} onCurveSelect={onCurveSelect} />)
+    renderWithBase(<CurveEditor {...defaultProps} onCurveSelect={onCurveSelect} data-oid="-cx40se" />)
 
     const curveItem = screen.getByText(/Property prop-1/)
     fireEvent.click(curveItem)
@@ -93,24 +94,24 @@ describe("CurveEditor Component", () => {
   })
 
   it("highlights selected curve", () => {
-    renderWithBase(<CurveEditor {...defaultProps} selectedCurveId="prop-1" />)
+    renderWithBase(<CurveEditor {...defaultProps} selectedCurveId="prop-1" data-oid="83s0:t6" />)
 
     const curveItem = screen.getByText(/Property prop-1/).closest("div")
     expect(curveItem).toHaveClass("bg-muted")
   })
 
   it("respects snapToGrid prop", () => {
-    const { rerender } = renderWithBase(<CurveEditor {...defaultProps} snapToGrid={false} />)
+    const { rerender } = renderWithBase(<CurveEditor {...defaultProps} snapToGrid={false} data-oid="-5:yaa7" />)
 
     // Re-render with snapToGrid enabled
-    rerender(<CurveEditor {...defaultProps} snapToGrid={true} />)
+    rerender(<CurveEditor {...defaultProps} snapToGrid={true} data-oid="28f-5f-" />)
 
     // Component should render without errors
     expect(screen.getAllByRole("slider").length).toBeGreaterThan(0)
   })
 
   it("uses custom height", () => {
-    renderWithBase(<CurveEditor {...defaultProps} height={600} />)
+    renderWithBase(<CurveEditor {...defaultProps} height={600} data-oid="mdj-vhf" />)
 
     const canvas = document.querySelector("canvas")
     expect(canvas?.height).toBe(600)
@@ -130,20 +131,20 @@ describe("CurveEditor Component", () => {
       },
     ]
 
-    renderWithBase(<CurveEditor {...defaultProps} curves={multipleCurves} />)
+    renderWithBase(<CurveEditor {...defaultProps} curves={multipleCurves} data-oid="ragvm9k" />)
 
     expect(screen.getByText(/Property prop-1/)).toBeInTheDocument()
     expect(screen.getByText(/Property prop-2/)).toBeInTheDocument()
   })
 
   it("handles empty curves array", () => {
-    renderWithBase(<CurveEditor {...defaultProps} curves={[]} />)
+    renderWithBase(<CurveEditor {...defaultProps} curves={[]} data-oid="-erwgti" />)
 
     expect(screen.getAllByRole("slider").length).toBeGreaterThan(0)
   })
 
   it("handles mouse wheel for zoom", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="aoxhgmq" />)
 
     const canvas = document.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
@@ -156,7 +157,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("resets zoom and pan when reset button clicked", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="j90ov1m" />)
 
     // Find the maximize/reset button
     const buttons = screen.getAllByRole("button")
@@ -165,7 +166,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("toggles play/pause state", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="my5gisg" />)
 
     const buttons = screen.getAllByRole("button")
     // Play/pause button should be first
@@ -174,7 +175,7 @@ describe("CurveEditor Component", () => {
 
   it("navigates to start of timeline", () => {
     const onTimeChange = vi.fn()
-    renderWithBase(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} />)
+    renderWithBase(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} data-oid="l2x60kr" />)
 
     // Component renders buttons
     const buttons = screen.getAllByRole("button")
@@ -183,7 +184,7 @@ describe("CurveEditor Component", () => {
 
   it("navigates to end of timeline", () => {
     const onTimeChange = vi.fn()
-    renderWithBase(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} />)
+    renderWithBase(<CurveEditor {...defaultProps} onTimeChange={onTimeChange} data-oid="xswbkb5" />)
 
     // Component renders buttons
     const buttons = screen.getAllByRole("button")
@@ -191,7 +192,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("toggles grid visibility", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="dk19o.-" />)
 
     // Grid toggle button should be available
     const buttons = screen.getAllByRole("button")
@@ -207,6 +208,7 @@ describe("CurveEditor Component", () => {
         selectedCurveId="prop-1"
         onKeyframeAdd={onKeyframeAdd}
         onCurveSelect={onCurveSelect}
+        data-oid="h66yod_"
       />,
     )
 
@@ -219,7 +221,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("handles mouse move on canvas", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="b-19763" />)
 
     const canvas = document.querySelector("canvas")
     if (canvas) {
@@ -230,7 +232,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("handles mouse up on canvas", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="kh1g8w5" />)
 
     const canvas = document.querySelector("canvas")
     if (canvas) {
@@ -241,7 +243,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("handles mouse leave on canvas", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="c1zg9r." />)
 
     const canvas = document.querySelector("canvas")
     if (canvas) {
@@ -252,14 +254,14 @@ describe("CurveEditor Component", () => {
   })
 
   it("changes interpolation type", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="_u:6h6p" />)
 
     const comboboxes = screen.getAllByRole("combobox")
     expect(comboboxes.length).toBeGreaterThan(0)
   })
 
   it("updates zoom via slider", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="bm0tx79" />)
 
     // Zoom slider should be present
     const sliders = screen.getAllByRole("slider")
@@ -267,7 +269,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("renders time scrubber", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="p_q.sca" />)
 
     const sliders = screen.getAllByRole("slider")
     // Should have time scrubber
@@ -275,7 +277,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("handles curve visibility toggle", () => {
-    renderWithBase(<CurveEditor {...defaultProps} />)
+    renderWithBase(<CurveEditor {...defaultProps} data-oid="sf9h1da" />)
 
     const curveItem = screen.getByText(/Property prop-1/)
     const parent = curveItem.closest("div")
@@ -287,7 +289,7 @@ describe("CurveEditor Component", () => {
   })
 
   it("uses custom gridSize", () => {
-    renderWithBase(<CurveEditor {...defaultProps} snapToGrid={true} gridSize={5} />)
+    renderWithBase(<CurveEditor {...defaultProps} snapToGrid={true} gridSize={5} data-oid="70lpquc" />)
 
     expect(screen.getAllByRole("slider").length).toBeGreaterThan(0)
   })
@@ -297,9 +299,18 @@ describe("CurveEditor Component", () => {
       {
         propertyId: "prop-bezier",
         keyframes: [
-          { ...createKeyframe(0, 0, "bezier"), easeOut: [0.5, 0.5], easeIn: [0.5, 0.5] },
-          { ...createKeyframe(1, 100, "bezier"), easeOut: [0.5, 0.5], easeIn: [0.5, 0.5] },
+          {
+            ...createKeyframe(0, 0, "bezier"),
+            easeOut: [0.5, 0.5],
+            easeIn: [0.5, 0.5],
+          },
+          {
+            ...createKeyframe(1, 100, "bezier"),
+            easeOut: [0.5, 0.5],
+            easeIn: [0.5, 0.5],
+          },
         ],
+
         preInfinity: "constant",
         postInfinity: "constant",
         visible: true,
@@ -309,6 +320,7 @@ describe("CurveEditor Component", () => {
       {
         propertyId: "prop-hold",
         keyframes: [createKeyframe(0, 0, "hold"), createKeyframe(1, 100, "hold")],
+
         preInfinity: "constant",
         postInfinity: "constant",
         visible: true,
@@ -317,7 +329,7 @@ describe("CurveEditor Component", () => {
       },
     ]
 
-    renderWithBase(<CurveEditor {...defaultProps} curves={curvesWithDifferentInterpolation} />)
+    renderWithBase(<CurveEditor {...defaultProps} curves={curvesWithDifferentInterpolation} data-oid="wm1mb-n" />)
 
     expect(screen.getByText(/Property prop-bezier/)).toBeInTheDocument()
     expect(screen.getByText(/Property prop-hold/)).toBeInTheDocument()
@@ -328,6 +340,7 @@ describe("CurveEditor Component", () => {
       {
         propertyId: "prop-1",
         keyframes: [{ ...createKeyframe(0, 0, "linear"), selected: true }, createKeyframe(1, 100, "linear")],
+
         preInfinity: "constant",
         postInfinity: "constant",
         visible: true,
@@ -336,7 +349,7 @@ describe("CurveEditor Component", () => {
       },
     ]
 
-    renderWithBase(<CurveEditor {...defaultProps} curves={curveWithSelectedKeyframe} />)
+    renderWithBase(<CurveEditor {...defaultProps} curves={curveWithSelectedKeyframe} data-oid="tz33knp" />)
 
     const canvas = document.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
@@ -347,6 +360,7 @@ describe("CurveEditor Component", () => {
       {
         propertyId: "prop-1",
         keyframes: [createKeyframe(0, 0, "linear"), createKeyframe(1, 100, "linear")],
+
         preInfinity: "constant",
         postInfinity: "constant",
         visible: false,
@@ -355,7 +369,7 @@ describe("CurveEditor Component", () => {
       },
     ]
 
-    renderWithBase(<CurveEditor {...defaultProps} curves={invisibleCurve} />)
+    renderWithBase(<CurveEditor {...defaultProps} curves={invisibleCurve} data-oid="qqlj1t8" />)
 
     expect(screen.getByText(/Property prop-1/)).toBeInTheDocument()
   })
@@ -373,7 +387,7 @@ describe("CurveEditor Component", () => {
       },
     ]
 
-    renderWithBase(<CurveEditor {...defaultProps} curves={singleKeyframeCurve} />)
+    renderWithBase(<CurveEditor {...defaultProps} curves={singleKeyframeCurve} data-oid="_5j.:1t" />)
 
     const canvas = document.querySelector("canvas")
     expect(canvas).toBeInTheDocument()

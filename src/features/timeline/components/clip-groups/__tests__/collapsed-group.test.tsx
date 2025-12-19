@@ -16,6 +16,7 @@ const createMockGroup = (overrides: Partial<ClipGroup> = {}): ClipGroup => ({
     { clipId: "clip-1", trackId: "track-1" },
     { clipId: "clip-2", trackId: "track-1" },
   ],
+
   locked: false,
   color: "#3b82f6",
   syncMode: "none",
@@ -68,11 +69,12 @@ describe("CollapsedGroup", () => {
       createMockClip({ id: "clip-1", startTime: 5, duration: 10 }),
       createMockClip({ id: "clip-2", startTime: 20, duration: 15 }),
     ],
+
     timeScale: 10,
   }
 
   it("should render collapsed group with basic information", () => {
-    render(<CollapsedGroup {...defaultProps} />)
+    render(<CollapsedGroup {...defaultProps} data-oid="05b-zn6" />)
 
     expect(screen.getByText("Test Group")).toBeInTheDocument()
     expect(screen.getByText("(2)")).toBeInTheDocument()
@@ -80,7 +82,7 @@ describe("CollapsedGroup", () => {
   })
 
   it("should calculate correct position and width based on clips", () => {
-    const { container } = render(<CollapsedGroup {...defaultProps} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} data-oid="0w6vvm3" />)
 
     const groupElement = container.firstChild as HTMLElement
 
@@ -93,7 +95,7 @@ describe("CollapsedGroup", () => {
   })
 
   it("should apply group color to styling", () => {
-    const { container } = render(<CollapsedGroup {...defaultProps} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} data-oid="3cy4qvg" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveStyle({
@@ -109,7 +111,7 @@ describe("CollapsedGroup", () => {
       clips: [],
     }
 
-    const { container } = render(<CollapsedGroup {...props} />)
+    const { container } = render(<CollapsedGroup {...props} data-oid="_o:mwt." />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveStyle({
@@ -121,14 +123,14 @@ describe("CollapsedGroup", () => {
   })
 
   it("should show selected state when isSelected is true", () => {
-    const { container } = render(<CollapsedGroup {...defaultProps} isSelected={true} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} isSelected={true} data-oid="n.m9nqc" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveClass("ring-2 ring-primary ring-offset-1")
   })
 
   it("should not show selected state when isSelected is false", () => {
-    const { container } = render(<CollapsedGroup {...defaultProps} isSelected={false} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} isSelected={false} data-oid="99jwgkf" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).not.toHaveClass("ring-2 ring-primary ring-offset-1")
@@ -136,21 +138,21 @@ describe("CollapsedGroup", () => {
 
   it("should show lock indicator when group is locked", () => {
     const lockedGroup = createMockGroup({ locked: true })
-    render(<CollapsedGroup {...defaultProps} group={lockedGroup} />)
+    render(<CollapsedGroup {...defaultProps} group={lockedGroup} data-oid="uxd5t8b" />)
 
     expect(screen.getByTestId("lock-icon")).toBeInTheDocument()
   })
 
   it("should not show lock indicator when group is unlocked", () => {
     const unlockedGroup = createMockGroup({ locked: false })
-    render(<CollapsedGroup {...defaultProps} group={unlockedGroup} />)
+    render(<CollapsedGroup {...defaultProps} group={unlockedGroup} data-oid="bydh7g-" />)
 
     expect(screen.queryByTestId("lock-icon")).not.toBeInTheDocument()
   })
 
   it("should apply opacity when group is locked", () => {
     const lockedGroup = createMockGroup({ locked: true })
-    const { container } = render(<CollapsedGroup {...defaultProps} group={lockedGroup} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} group={lockedGroup} data-oid=".6pztqy" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveClass("opacity-60")
@@ -160,7 +162,7 @@ describe("CollapsedGroup", () => {
     const onSelect = vi.fn()
     const user = userEvent.setup()
 
-    render(<CollapsedGroup {...defaultProps} onSelect={onSelect} />)
+    render(<CollapsedGroup {...defaultProps} onSelect={onSelect} data-oid=":rmevx8" />)
 
     const groupElement = screen.getByText("Test Group").closest("div")
     await user.click(groupElement!)
@@ -172,7 +174,7 @@ describe("CollapsedGroup", () => {
     const onToggleCollapse = vi.fn()
     const user = userEvent.setup()
 
-    render(<CollapsedGroup {...defaultProps} onToggleCollapse={onToggleCollapse} />)
+    render(<CollapsedGroup {...defaultProps} onToggleCollapse={onToggleCollapse} data-oid="zq6_c1m" />)
 
     const groupElement = screen.getByText("Test Group").closest("div")
     await user.dblClick(groupElement!)
@@ -184,7 +186,9 @@ describe("CollapsedGroup", () => {
     const onSelect = vi.fn()
     const onToggleCollapse = vi.fn()
 
-    render(<CollapsedGroup {...defaultProps} onSelect={onSelect} onToggleCollapse={onToggleCollapse} />)
+    render(
+      <CollapsedGroup {...defaultProps} onSelect={onSelect} onToggleCollapse={onToggleCollapse} data-oid="i28e709" />,
+    )
 
     const groupElement = screen.getByText("Test Group").closest("div")
 
@@ -196,14 +200,14 @@ describe("CollapsedGroup", () => {
 
   it("should apply custom className", () => {
     const customClass = "custom-group-class"
-    const { container } = render(<CollapsedGroup {...defaultProps} className={customClass} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} className={customClass} data-oid="v49djcb" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveClass(customClass)
   })
 
   it("should have proper hover styling", () => {
-    const { container } = render(<CollapsedGroup {...defaultProps} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} data-oid="dhfgm3v" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveClass("hover:shadow-md transition-all")
@@ -215,7 +219,7 @@ describe("CollapsedGroup", () => {
       timeScale: 20, // Удваиваем масштаб
     }
 
-    const { container } = render(<CollapsedGroup {...props} />)
+    const { container } = render(<CollapsedGroup {...props} data-oid="sbpk:d4" />)
 
     const groupElement = container.firstChild as HTMLElement
 
@@ -231,7 +235,7 @@ describe("CollapsedGroup", () => {
       name: "Very Long Group Name That Should Be Truncated",
     })
 
-    render(<CollapsedGroup {...defaultProps} group={longNameGroup} />)
+    render(<CollapsedGroup {...defaultProps} group={longNameGroup} data-oid=".x___vs" />)
 
     const nameElement = screen.getByText("Very Long Group Name That Should Be Truncated")
     expect(nameElement).toHaveClass("truncate")
@@ -239,7 +243,7 @@ describe("CollapsedGroup", () => {
 
   it("should calculate bounds correctly for single clip", () => {
     const singleClip = [createMockClip({ startTime: 10, duration: 5 })]
-    const { container } = render(<CollapsedGroup {...defaultProps} clips={singleClip} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} clips={singleClip} data-oid="jb..t-h" />)
 
     const groupElement = container.firstChild as HTMLElement
 
@@ -256,7 +260,7 @@ describe("CollapsedGroup", () => {
       createMockClip({ startTime: 10, duration: 0 }),
     ]
 
-    const { container } = render(<CollapsedGroup {...defaultProps} clips={zeroDurationClips} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} clips={zeroDurationClips} data-oid="z58vuys" />)
 
     const groupElement = container.firstChild as HTMLElement
 
@@ -268,7 +272,7 @@ describe("CollapsedGroup", () => {
   })
 
   it("should have cursor pointer for interactivity", () => {
-    const { container } = render(<CollapsedGroup {...defaultProps} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} data-oid="-ppr160" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveClass("cursor-pointer")
@@ -279,7 +283,7 @@ describe("CollapsedGroup", () => {
       createMockClip({ id: `clip-${i}`, startTime: i * 10, duration: 5 }),
     )
 
-    render(<CollapsedGroup {...defaultProps} clips={manyClips} />)
+    render(<CollapsedGroup {...defaultProps} clips={manyClips} data-oid="55hakwr" />)
 
     expect(screen.getByText("(5)")).toBeInTheDocument()
   })
@@ -288,7 +292,7 @@ describe("CollapsedGroup", () => {
     const user = userEvent.setup()
 
     // Рендерим без onSelect и onToggleCollapse
-    render(<CollapsedGroup {...defaultProps} />)
+    render(<CollapsedGroup {...defaultProps} data-oid="mmsl28b" />)
 
     const groupElement = screen.getByText("Test Group").closest("div")
 
@@ -301,7 +305,7 @@ describe("CollapsedGroup", () => {
 
   it("should render with different group colors", () => {
     const redGroup = createMockGroup({ color: "#ef4444" })
-    const { container } = render(<CollapsedGroup {...defaultProps} group={redGroup} />)
+    const { container } = render(<CollapsedGroup {...defaultProps} group={redGroup} data-oid="h5-9ig6" />)
 
     const groupElement = container.firstChild as HTMLElement
     expect(groupElement).toHaveStyle({
@@ -314,7 +318,7 @@ describe("CollapsedGroup", () => {
   describe("Accessibility", () => {
     it("should be keyboard accessible", () => {
       const onSelect = vi.fn()
-      render(<CollapsedGroup {...defaultProps} onSelect={onSelect} />)
+      render(<CollapsedGroup {...defaultProps} onSelect={onSelect} data-oid="qhsr362" />)
 
       const groupElement = screen.getByText("Test Group").closest("div")
 
@@ -323,7 +327,7 @@ describe("CollapsedGroup", () => {
     })
 
     it("should have meaningful content for screen readers", () => {
-      render(<CollapsedGroup {...defaultProps} />)
+      render(<CollapsedGroup {...defaultProps} data-oid="l791ear" />)
 
       expect(screen.getByText("Test Group")).toBeInTheDocument()
       expect(screen.getByText("(2)")).toBeInTheDocument()

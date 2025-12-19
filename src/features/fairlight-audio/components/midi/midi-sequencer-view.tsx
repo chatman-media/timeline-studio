@@ -326,22 +326,26 @@ export function MidiSequencerView() {
   }, [midi, t])
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="w-5 h-5" />
+    <Card className="w-full" data-oid="h-jjds5">
+      <CardHeader data-oid="hm9cckm">
+        <CardTitle className="flex items-center gap-2" data-oid="w_riuj5">
+          <Clock className="w-5 h-5" data-oid="j465ejg" />
           {t("fairlightAudio.midi.sequencer.title")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4" data-oid="phir458">
         {/* Transport controls */}
-        <div className="flex items-center gap-4">
-          <Button size="icon" variant={isPlaying ? "secondary" : "default"} onClick={handlePlay}>
-            {isPlaying ? <Square className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+        <div className="flex items-center gap-4" data-oid="2ftx3.3">
+          <Button size="icon" variant={isPlaying ? "secondary" : "default"} onClick={handlePlay} data-oid="_x--068">
+            {isPlaying ? (
+              <Square className="w-4 h-4" data-oid="b:p21b7" />
+            ) : (
+              <Play className="w-4 h-4" data-oid="kfsxld2" />
+            )}
           </Button>
 
-          <Button size="icon" variant="outline" onClick={handleStop}>
-            <Square className="w-4 h-4" />
+          <Button size="icon" variant="outline" onClick={handleStop} data-oid="tbwve35">
+            <Square className="w-4 h-4" data-oid="4d1r-uw" />
           </Button>
 
           <Button
@@ -349,12 +353,13 @@ export function MidiSequencerView() {
             variant={isRecording ? "destructive" : "outline"}
             onClick={handleRecord}
             disabled={!selectedTrack}
+            data-oid="je89si_"
           >
-            <Circle className="w-4 h-4" />
+            <Circle className="w-4 h-4" data-oid="kmofac4" />
           </Button>
 
-          <div className="flex items-center gap-2 ml-4">
-            <Label>{t("fairlightAudio.midi.sequencer.bpm")}</Label>
+          <div className="flex items-center gap-2 ml-4" data-oid="c9..p5-">
+            <Label data-oid="7yl4rnj">{t("fairlightAudio.midi.sequencer.bpm")}</Label>
             <Slider
               value={[bpm]}
               onValueChange={handleBpmChange}
@@ -363,41 +368,51 @@ export function MidiSequencerView() {
               step={1}
               className="w-32"
               disabled={syncMode === "external"}
+              data-oid="2gvi_5c"
             />
-            <span className="text-sm w-12">{Math.round(bpm)}</span>
+
+            <span className="text-sm w-12" data-oid="8v8t8:j">
+              {Math.round(bpm)}
+            </span>
           </div>
 
-          <div className="flex items-center gap-2 ml-4">
-            <Label>{t("fairlightAudio.midi.sequencer.sync")}</Label>
-            <Select value={syncMode} onValueChange={handleSyncModeChange}>
-              <SelectTrigger className="w-32">
-                <SelectValue />
+          <div className="flex items-center gap-2 ml-4" data-oid="elnh6y8">
+            <Label data-oid="plnbly_">{t("fairlightAudio.midi.sequencer.sync")}</Label>
+            <Select value={syncMode} onValueChange={handleSyncModeChange} data-oid="ao:5aax">
+              <SelectTrigger className="w-32" data-oid="pp2kmns">
+                <SelectValue data-oid="kxuogg4" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="internal">{t("fairlightAudio.midi.sequencer.syncModes.internal")}</SelectItem>
-                <SelectItem value="external">{t("fairlightAudio.midi.sequencer.syncModes.external")}</SelectItem>
+              <SelectContent data-oid="g43il0_">
+                <SelectItem value="internal" data-oid="zd-:f8t">
+                  {t("fairlightAudio.midi.sequencer.syncModes.internal")}
+                </SelectItem>
+                <SelectItem value="external" data-oid="n1.t3c7">
+                  {t("fairlightAudio.midi.sequencer.syncModes.external")}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div className="flex items-center gap-2 ml-4">
-            <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
-            <Label>{t("fairlightAudio.midi.sequencer.loop")}</Label>
+          <div className="flex items-center gap-2 ml-4" data-oid="qm6kbm6">
+            <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} data-oid="an9t5si" />
+            <Label data-oid="38f00sp">{t("fairlightAudio.midi.sequencer.loop")}</Label>
           </div>
         </div>
 
         {/* Track list */}
-        <div className="flex gap-4">
-          <div className="w-48 space-y-2">
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="text-sm font-medium">{t("fairlightAudio.midi.sequencer.tracks")}</h4>
-              <Button size="icon" variant="ghost" onClick={handleAddTrack}>
-                <Plus className="w-4 h-4" />
+        <div className="flex gap-4" data-oid="eikni5h">
+          <div className="w-48 space-y-2" data-oid="yntwbo6">
+            <div className="flex justify-between items-center mb-2" data-oid="6r9n_mq">
+              <h4 className="text-sm font-medium" data-oid="_1u7p7q">
+                {t("fairlightAudio.midi.sequencer.tracks")}
+              </h4>
+              <Button size="icon" variant="ghost" onClick={handleAddTrack} data-oid="35rgaco">
+                <Plus className="w-4 h-4" data-oid="f0hi63t" />
               </Button>
             </div>
 
-            <ScrollArea className="h-96">
-              <div className="space-y-1">
+            <ScrollArea className="h-96" data-oid="7vua52s">
+              <div className="space-y-1" data-oid="skfrwf_">
                 {tracks.map((track) => (
                   <div
                     key={track.id}
@@ -405,10 +420,13 @@ export function MidiSequencerView() {
                       selectedTrack === track.id ? "bg-secondary" : "hover:bg-secondary/50"
                     }`}
                     onClick={() => setSelectedTrack(track.id)}
+                    data-oid="6__pj83"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">{track.name}</span>
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-between" data-oid="ohtsqzc">
+                      <span className="text-sm" data-oid="fg1p-gk">
+                        {track.name}
+                      </span>
+                      <div className="flex items-center gap-1" data-oid="chwtuth">
                         <Button
                           size="icon"
                           variant="ghost"
@@ -417,6 +435,7 @@ export function MidiSequencerView() {
                             e.stopPropagation()
                             handleTrackMute(track.id, !track.muted)
                           }}
+                          data-oid="pyaz.mu"
                         >
                           {track.muted ? t("fairlightAudio.midi.sequencer.mute") : ""}
                         </Button>
@@ -428,12 +447,13 @@ export function MidiSequencerView() {
                             e.stopPropagation()
                             handleTrackSolo(track.id, !track.solo)
                           }}
+                          data-oid="m3ye.i-"
                         >
                           {track.solo ? t("fairlightAudio.midi.sequencer.solo") : ""}
                         </Button>
                       </div>
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-muted-foreground" data-oid="09vb4ht">
                       {t("fairlightAudio.midi.sequencer.channel")} {track.channel} • {track.events.length}{" "}
                       {t("fairlightAudio.midi.sequencer.events")}
                     </div>
@@ -443,32 +463,45 @@ export function MidiSequencerView() {
             </ScrollArea>
 
             {selectedTrack && (
-              <Button size="sm" variant="destructive" onClick={handleDeleteTrack} className="w-full">
-                <Trash2 className="w-4 h-4 mr-2" />
+              <Button size="sm" variant="destructive" onClick={handleDeleteTrack} className="w-full" data-oid="-3kfzn5">
+                <Trash2 className="w-4 h-4 mr-2" data-oid="3lrykjp" />
                 {t("fairlightAudio.midi.sequencer.deleteTrack")}
               </Button>
             )}
           </div>
 
           {/* Piano roll */}
-          <div className="flex-1">
-            <canvas ref={canvasRef} width={800} height={400} className="border rounded bg-background" />
+          <div className="flex-1" data-oid=":hnf8tt">
+            <canvas
+              ref={canvasRef}
+              width={800}
+              height={400}
+              className="border rounded bg-background"
+              data-oid="laf4uno"
+            />
           </div>
         </div>
 
         {/* File operations */}
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={handleImport}>
-            <Upload className="w-4 h-4 mr-2" />
+        <div className="flex gap-2" data-oid="f-tjxv7">
+          <Button size="sm" variant="outline" onClick={handleImport} data-oid="qw:lw5x">
+            <Upload className="w-4 h-4 mr-2" data-oid="0b2e6j0" />
             {t("fairlightAudio.midi.sequencer.importMidi")}
           </Button>
 
-          <Button size="sm" variant="outline" onClick={handleExport} disabled={tracks.length === 0}>
-            <Download className="w-4 h-4 mr-2" />
+          <Button size="sm" variant="outline" onClick={handleExport} disabled={tracks.length === 0} data-oid="8i.lshy">
+            <Download className="w-4 h-4 mr-2" data-oid=":x6ycb9" />
             {t("fairlightAudio.midi.sequencer.exportMidi")}
           </Button>
 
-          <input ref={fileInputRef} type="file" accept=".mid,.midi" onChange={handleFileSelect} className="hidden" />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".mid,.midi"
+            onChange={handleFileSelect}
+            className="hidden"
+            data-oid="bg1szp."
+          />
         </div>
       </CardContent>
     </Card>

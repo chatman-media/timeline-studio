@@ -31,13 +31,69 @@ const ANIMATABLE_PROPERTIES: {
   max?: number
   step?: number
 }[] = [
-  { value: "opacity", label: "Прозрачность", group: "Видимость", defaultValue: 1, min: 0, max: 1, step: 0.01 },
-  { value: "position.x", label: "Позиция X", group: "Позиция", defaultValue: 0, min: -2, max: 2, step: 0.01 },
-  { value: "position.y", label: "Позиция Y", group: "Позиция", defaultValue: 0, min: -2, max: 2, step: 0.01 },
-  { value: "position.width", label: "Ширина", group: "Размер", defaultValue: 1, min: 0, max: 3, step: 0.01 },
-  { value: "position.height", label: "Высота", group: "Размер", defaultValue: 1, min: 0, max: 3, step: 0.01 },
-  { value: "position.scaleX", label: "Масштаб X", group: "Трансформация", defaultValue: 1, min: 0, max: 3, step: 0.01 },
-  { value: "position.scaleY", label: "Масштаб Y", group: "Трансформация", defaultValue: 1, min: 0, max: 3, step: 0.01 },
+  {
+    value: "opacity",
+    label: "Прозрачность",
+    group: "Видимость",
+    defaultValue: 1,
+    min: 0,
+    max: 1,
+    step: 0.01,
+  },
+  {
+    value: "position.x",
+    label: "Позиция X",
+    group: "Позиция",
+    defaultValue: 0,
+    min: -2,
+    max: 2,
+    step: 0.01,
+  },
+  {
+    value: "position.y",
+    label: "Позиция Y",
+    group: "Позиция",
+    defaultValue: 0,
+    min: -2,
+    max: 2,
+    step: 0.01,
+  },
+  {
+    value: "position.width",
+    label: "Ширина",
+    group: "Размер",
+    defaultValue: 1,
+    min: 0,
+    max: 3,
+    step: 0.01,
+  },
+  {
+    value: "position.height",
+    label: "Высота",
+    group: "Размер",
+    defaultValue: 1,
+    min: 0,
+    max: 3,
+    step: 0.01,
+  },
+  {
+    value: "position.scaleX",
+    label: "Масштаб X",
+    group: "Трансформация",
+    defaultValue: 1,
+    min: 0,
+    max: 3,
+    step: 0.01,
+  },
+  {
+    value: "position.scaleY",
+    label: "Масштаб Y",
+    group: "Трансформация",
+    defaultValue: 1,
+    min: 0,
+    max: 3,
+    step: 0.01,
+  },
   {
     value: "position.rotation",
     label: "Поворот",
@@ -47,8 +103,24 @@ const ANIMATABLE_PROPERTIES: {
     max: 360,
     step: 1,
   },
-  { value: "volume", label: "Громкость", group: "Аудио", defaultValue: 1, min: 0, max: 2, step: 0.01 },
-  { value: "speed", label: "Скорость", group: "Воспроизведение", defaultValue: 1, min: 0.1, max: 4, step: 0.1 },
+  {
+    value: "volume",
+    label: "Громкость",
+    group: "Аудио",
+    defaultValue: 1,
+    min: 0,
+    max: 2,
+    step: 0.01,
+  },
+  {
+    value: "speed",
+    label: "Скорость",
+    group: "Воспроизведение",
+    defaultValue: 1,
+    min: 0.1,
+    max: 4,
+    step: 0.1,
+  },
 ]
 
 const INTERPOLATION_TYPES: { value: InterpolationType; label: string }[] = [
@@ -95,9 +167,11 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
   const clip = clips.find((c) => c.id === clipId)
   if (!clip) {
     return (
-      <Card className="w-full max-w-4xl">
-        <CardContent className="pt-6">
-          <p className="text-center text-muted-foreground">Клип не найден</p>
+      <Card className="w-full max-w-4xl" data-oid="ntt5mz-">
+        <CardContent className="pt-6" data-oid="ldhsewa">
+          <p className="text-center text-muted-foreground" data-oid="oxdi::1">
+            Клип не найден
+          </p>
         </CardContent>
       </Card>
     )
@@ -155,41 +229,53 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
   const propertyInfo = ANIMATABLE_PROPERTIES.find((p) => p.value === selectedProperty)
 
   return (
-    <Card className="w-full max-w-6xl">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5" />
+    <Card className="w-full max-w-6xl" data-oid="znogx3z">
+      <CardHeader data-oid="f0.vf39">
+        <div className="flex items-center justify-between" data-oid="3g17:bw">
+          <CardTitle className="flex items-center gap-2" data-oid="1io5zww">
+            <Zap className="h-5 w-5" data-oid="f1g:h92" />
             Keyframe Анимация - {clip.name}
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary">{clip.duration.toFixed(1)}s</Badge>
-            <Button variant="outline" size="sm" onClick={onClose}>
+          <div className="flex items-center gap-2" data-oid="8emz2a1">
+            <Badge variant="secondary" data-oid="vi1t4gw">
+              {clip.duration.toFixed(1)}s
+            </Badge>
+            <Button variant="outline" size="sm" onClick={onClose} data-oid="ksxc-.a">
               Закрыть
             </Button>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="editor" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="editor">Редактор</TabsTrigger>
-            <TabsTrigger value="presets">Предустановки</TabsTrigger>
-            <TabsTrigger value="timeline">Временная линия</TabsTrigger>
+      <CardContent data-oid="_zy5xvu">
+        <Tabs defaultValue="editor" className="w-full" data-oid="b6e-1qc">
+          <TabsList className="grid w-full grid-cols-3" data-oid="uf73q9q">
+            <TabsTrigger value="editor" data-oid=".v1vqld">
+              Редактор
+            </TabsTrigger>
+            <TabsTrigger value="presets" data-oid="uf3.tlk">
+              Предустановки
+            </TabsTrigger>
+            <TabsTrigger value="timeline" data-oid="nohuj54">
+              Временная линия
+            </TabsTrigger>
           </TabsList>
 
           {/* Редактор keyframes */}
-          <TabsContent value="editor" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="editor" className="space-y-4" data-oid="bz6vcj5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-oid="-omlrih">
               {/* Левая панель - настройки */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Свойство для анимации</Label>
-                  <Select value={selectedProperty} onValueChange={(v) => setSelectedProperty(v as AnimatableProperty)}>
-                    <SelectTrigger>
-                      <SelectValue />
+              <div className="space-y-4" data-oid="hjiwbtm">
+                <div className="space-y-2" data-oid=":89vwb_">
+                  <Label data-oid="9-j73n2">Свойство для анимации</Label>
+                  <Select
+                    value={selectedProperty}
+                    onValueChange={(v) => setSelectedProperty(v as AnimatableProperty)}
+                    data-oid="290ta9r"
+                  >
+                    <SelectTrigger data-oid="d-v-f55">
+                      <SelectValue data-oid="yh6zrjd" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent data-oid="v2ymzq3">
                       {Object.entries(
                         ANIMATABLE_PROPERTIES.reduce(
                           (groups, prop) => {
@@ -200,22 +286,24 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
                           {} as Record<string, typeof ANIMATABLE_PROPERTIES>,
                         ),
                       ).map(([group, props]) => (
-                        <div key={group}>
-                          <div className="px-2 py-1 text-sm font-medium text-muted-foreground">{group}</div>
+                        <div key={group} data-oid="9qrxwoc">
+                          <div className="px-2 py-1 text-sm font-medium text-muted-foreground" data-oid="8sdd0k9">
+                            {group}
+                          </div>
                           {props.map((prop) => (
-                            <SelectItem key={prop.value} value={prop.value}>
+                            <SelectItem key={prop.value} value={prop.value} data-oid="jggnr3j">
                               {prop.label}
                             </SelectItem>
                           ))}
-                          <Separator className="my-1" />
+                          <Separator className="my-1" data-oid="-i4daj6" />
                         </div>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Время keyframe (сек)</Label>
+                <div className="space-y-2" data-oid="8k8:y9m">
+                  <Label data-oid="h85kb41">Время keyframe (сек)</Label>
                   <Input
                     type="number"
                     value={keyframeTime}
@@ -223,13 +311,14 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
                     min={0}
                     max={clip.duration}
                     step={0.1}
+                    data-oid="91z0afx"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Значение</Label>
+                <div className="space-y-2" data-oid="_-89.e7">
+                  <Label data-oid="wfj28y_">Значение</Label>
                   {propertyInfo && propertyInfo.min !== undefined && propertyInfo.max !== undefined ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2" data-oid="w354pax">
                       <Slider
                         value={[keyframeValue]}
                         onValueChange={([v]) => setKeyframeValue(v)}
@@ -237,11 +326,13 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
                         max={propertyInfo.max}
                         step={propertyInfo.step || 0.01}
                         className="w-full"
+                        data-oid="hm-uh.-"
                       />
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>{propertyInfo.min}</span>
-                        <span>{keyframeValue.toFixed(2)}</span>
-                        <span>{propertyInfo.max}</span>
+
+                      <div className="flex justify-between text-xs text-muted-foreground" data-oid="wf9znds">
+                        <span data-oid="ww4109w">{propertyInfo.min}</span>
+                        <span data-oid="mkr8uum">{keyframeValue.toFixed(2)}</span>
+                        <span data-oid="ih1rc-g">{propertyInfo.max}</span>
                       </div>
                     </div>
                   ) : (
@@ -250,19 +341,24 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
                       value={keyframeValue}
                       onChange={(e) => setKeyframeValue(Number(e.target.value))}
                       step={propertyInfo?.step || 0.01}
+                      data-oid="mpubm1r"
                     />
                   )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Интерполяция</Label>
-                  <Select value={interpolationType} onValueChange={(v) => setInterpolationType(v as InterpolationType)}>
-                    <SelectTrigger>
-                      <SelectValue />
+                <div className="space-y-2" data-oid="_60waq0">
+                  <Label data-oid="su8zloc">Интерполяция</Label>
+                  <Select
+                    value={interpolationType}
+                    onValueChange={(v) => setInterpolationType(v as InterpolationType)}
+                    data-oid="_9pik8p"
+                  >
+                    <SelectTrigger data-oid="xnj66_z">
+                      <SelectValue data-oid="7f_o1yn" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent data-oid="qzehrlo">
                       {INTERPOLATION_TYPES.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
+                        <SelectItem key={type.value} value={type.value} data-oid="xct8ygr">
                           {type.label}
                         </SelectItem>
                       ))}
@@ -270,24 +366,24 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
                   </Select>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button onClick={handleAddKeyframe} className="flex-1">
-                    <Plus className="h-4 w-4 mr-2" />
+                <div className="flex gap-2" data-oid="ha6slro">
+                  <Button onClick={handleAddKeyframe} className="flex-1" data-oid="vipq5f-">
+                    <Plus className="h-4 w-4 mr-2" data-oid="6.ytm-." />
                     Добавить Keyframe
                   </Button>
                 </div>
 
-                <Separator />
+                <Separator data-oid="9qtwy46" />
 
-                <div className="space-y-2">
-                  <Label>Управление</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" onClick={handleClearProperty} size="sm">
-                      <Trash2 className="h-4 w-4 mr-2" />
+                <div className="space-y-2" data-oid="tqhr-6f">
+                  <Label data-oid="fj97lcz">Управление</Label>
+                  <div className="grid grid-cols-2 gap-2" data-oid="9pwj22j">
+                    <Button variant="outline" onClick={handleClearProperty} size="sm" data-oid="mem30oo">
+                      <Trash2 className="h-4 w-4 mr-2" data-oid="6.8x5g5" />
                       Очистить свойство
                     </Button>
-                    <Button variant="outline" onClick={handleOptimize} size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
+                    <Button variant="outline" onClick={handleOptimize} size="sm" data-oid="k7xk8vd">
+                      <Settings className="h-4 w-4 mr-2" data-oid="f-l2jij" />
                       Оптимизировать
                     </Button>
                   </div>
@@ -295,38 +391,48 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
               </div>
 
               {/* Правая панель - список keyframes */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Keyframes ({propertyKeyframes.length})</Label>
-                  <Badge variant={propertyKeyframes.length > 0 ? "default" : "secondary"}>{propertyInfo?.label}</Badge>
+              <div className="space-y-4" data-oid=".:nc.lm">
+                <div className="flex items-center justify-between" data-oid="soi:vp.">
+                  <Label data-oid="172-we9">Keyframes ({propertyKeyframes.length})</Label>
+                  <Badge variant={propertyKeyframes.length > 0 ? "default" : "secondary"} data-oid="htot58l">
+                    {propertyInfo?.label}
+                  </Badge>
                 </div>
 
-                <div className="space-y-2 max-h-96 overflow-y-auto">
+                <div className="space-y-2 max-h-96 overflow-y-auto" data-oid="f_8j7dp">
                   {propertyKeyframes.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-8">
-                      <Zap className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p>Нет keyframes для этого свойства</p>
-                      <p className="text-sm">Добавьте keyframe используя форму слева</p>
+                    <div className="text-center text-muted-foreground py-8" data-oid=":9ddxbv">
+                      <Zap className="h-8 w-8 mx-auto mb-2 opacity-50" data-oid="t5t.u.a" />
+
+                      <p data-oid="emhb:8n">Нет keyframes для этого свойства</p>
+                      <p className="text-sm" data-oid="zh2:s3s">
+                        Добавьте keyframe используя форму слева
+                      </p>
                     </div>
                   ) : (
                     propertyKeyframes.map((keyframe) => (
-                      <Card key={keyframe.id} className="p-3">
-                        <div className="flex items-center justify-between">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
+                      <Card key={keyframe.id} className="p-3" data-oid="k2mzbf9">
+                        <div className="flex items-center justify-between" data-oid="i2_8wyg">
+                          <div className="space-y-1" data-oid="9no2n..">
+                            <div className="flex items-center gap-2" data-oid="2-ndg3j">
+                              <Badge variant="outline" className="text-xs" data-oid="2ellc27">
                                 {keyframe.time.toFixed(2)}s
                               </Badge>
-                              <span className="font-medium">
+                              <span className="font-medium" data-oid="yh1:ii6">
                                 {typeof keyframe.value === "number" ? keyframe.value.toFixed(2) : keyframe.value}
                               </span>
                             </div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs text-muted-foreground" data-oid="llnq6-m">
                               {INTERPOLATION_TYPES.find((t) => t.value === keyframe.interpolation)?.label}
                             </div>
                           </div>
-                          <Button variant="ghost" size="sm" onClick={() => handleRemoveKeyframe(keyframe.id)}>
-                            <Trash2 className="h-4 w-4" />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveKeyframe(keyframe.id)}
+                            data-oid="nocs1ci"
+                          >
+                            <Trash2 className="h-4 w-4" data-oid="rk1q8wv" />
                           </Button>
                         </div>
                       </Card>
@@ -338,14 +444,18 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
           </TabsContent>
 
           {/* Предустановленные анимации */}
-          <TabsContent value="presets" className="space-y-4">
-            <div className="space-y-4">
-              <div>
-                <Label className="text-base">Быстрые анимации</Label>
-                <p className="text-sm text-muted-foreground">Выберите готовую анимацию для применения к клипу</p>
+          <TabsContent value="presets" className="space-y-4" data-oid="zd-w1cc">
+            <div className="space-y-4" data-oid="rinwmc0">
+              <div data-oid="-d3shys">
+                <Label className="text-base" data-oid="j8kx.wj">
+                  Быстрые анимации
+                </Label>
+                <p className="text-sm text-muted-foreground" data-oid="xokwsoz">
+                  Выберите готовую анимацию для применения к клипу
+                </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-4" data-oid="unv80wy">
                 {PRESET_ANIMATIONS.map((preset) => {
                   const Icon = preset.icon
                   return (
@@ -353,10 +463,13 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
                       key={preset.key}
                       className="p-4 cursor-pointer hover:bg-accent"
                       onClick={() => handlePresetAnimation(preset.key)}
+                      data-oid="dffakjh"
                     >
-                      <div className="text-center space-y-2">
-                        <Icon className="h-8 w-8 mx-auto" />
-                        <p className="font-medium">{preset.label}</p>
+                      <div className="text-center space-y-2" data-oid="-p50b79">
+                        <Icon className="h-8 w-8 mx-auto" data-oid="3s_:c3n" />
+                        <p className="font-medium" data-oid="bv:1454">
+                          {preset.label}
+                        </p>
                       </div>
                     </Card>
                   )
@@ -366,16 +479,22 @@ export function KeyframeEditor({ clipId, onClose }: KeyframeEditorProps) {
           </TabsContent>
 
           {/* Временная линия keyframes */}
-          <TabsContent value="timeline" className="space-y-4">
-            <div className="space-y-4">
-              <div>
-                <Label className="text-base">Временная линия keyframes</Label>
-                <p className="text-sm text-muted-foreground">Визуальное представление всех keyframes клипа</p>
+          <TabsContent value="timeline" className="space-y-4" data-oid="kndm.1v">
+            <div className="space-y-4" data-oid="-bg7qzl">
+              <div data-oid="7nwshy1">
+                <Label className="text-base" data-oid="aayiuj:">
+                  Временная линия keyframes
+                </Label>
+                <p className="text-sm text-muted-foreground" data-oid=":d3kad8">
+                  Визуальное представление всех keyframes клипа
+                </p>
               </div>
 
               {/* TODO: Добавить визуальную временную линию с keyframes */}
-              <div className="bg-muted rounded-lg p-8 text-center">
-                <p className="text-muted-foreground">Визуальная временная линия будет добавлена в следующей версии</p>
+              <div className="bg-muted rounded-lg p-8 text-center" data-oid="mxf12vl">
+                <p className="text-muted-foreground" data-oid="k2uc73a">
+                  Визуальная временная линия будет добавлена в следующей версии
+                </p>
               </div>
             </div>
           </TabsContent>

@@ -31,7 +31,11 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
 
 // Mock ResourcesPanel before any imports
 vi.mock("@/features/resources/components/resources-panel", () => ({
-  ResourcesPanel: () => <div data-testid="resources-panel">Resources</div>,
+  ResourcesPanel: () => (
+    <div data-testid="resources-panel" data-oid="04my1iu">
+      Resources
+    </div>
+  ),
 }))
 
 // Import mocks before components
@@ -57,12 +61,12 @@ describe("Timeline Component", () => {
 
     it("should render without errors", () => {
       expect(() => {
-        renderTimeline(<Timeline />)
+        renderTimeline(<Timeline data-oid="cxm5m--" />)
       }).not.toThrow()
     })
 
     it("should render timeline structure", () => {
-      renderTimeline(<Timeline />)
+      renderTimeline(<Timeline data-oid="6_uobj7" />)
 
       // Проверяем, что основная структура отрендерилась через testid
       const timelineElement = screen.getByTestId("timeline")
@@ -72,7 +76,7 @@ describe("Timeline Component", () => {
 
   describe("Component Structure", () => {
     it("should render timeline content", () => {
-      renderTimeline(<Timeline />)
+      renderTimeline(<Timeline data-oid="5g8ietz" />)
 
       // Проверяем, что компонент содержит основные элементы
       const timelineElement = screen.getByTestId("timeline")
@@ -85,7 +89,7 @@ describe("Timeline Component", () => {
       const customStyle = { backgroundColor: "red", width: "100%" }
 
       expect(() => {
-        renderTimeline(<Timeline className="custom-timeline" style={customStyle} />)
+        renderTimeline(<Timeline className="custom-timeline" style={customStyle} data-oid=".dbcjj_" />)
       }).not.toThrow()
 
       const timelineElement = screen.getByTestId("timeline")
@@ -95,7 +99,7 @@ describe("Timeline Component", () => {
 
   describe("Component Accessibility", () => {
     it("should have proper ARIA attributes", () => {
-      renderTimeline(<Timeline />)
+      renderTimeline(<Timeline data-oid="ohyhcid" />)
 
       const timelineElement = screen.getByTestId("timeline")
       // Проверяем базовые атрибуты доступности
@@ -103,7 +107,7 @@ describe("Timeline Component", () => {
     })
 
     it("should be keyboard accessible", () => {
-      renderTimeline(<Timeline />)
+      renderTimeline(<Timeline data-oid="u_fh3.8" />)
 
       const timelineElement = screen.getByTestId("timeline")
       expect(timelineElement).toBeInTheDocument()
@@ -116,8 +120,8 @@ describe("Timeline Component", () => {
   describe("Component Responsiveness", () => {
     it("should handle different container sizes", () => {
       const { rerender } = renderTimeline(
-        <div style={{ width: "800px", height: "400px" }}>
-          <Timeline />
+        <div style={{ width: "800px", height: "400px" }} data-oid="9h92dml">
+          <Timeline data-oid="wuv56y:" />
         </div>,
       )
 
@@ -125,9 +129,9 @@ describe("Timeline Component", () => {
 
       // Перерендерим с другим размером
       rerender(
-        <TimelineProviders>
-          <div style={{ width: "1200px", height: "600px" }}>
-            <Timeline />
+        <TimelineProviders data-oid="03tmgby">
+          <div style={{ width: "1200px", height: "600px" }} data-oid="gxojik:">
+            <Timeline data-oid="s3v_lsy" />
           </div>
         </TimelineProviders>,
       )
@@ -140,7 +144,7 @@ describe("Timeline Component", () => {
     it("should render efficiently", () => {
       const startTime = performance.now()
 
-      renderTimeline(<Timeline />)
+      renderTimeline(<Timeline data-oid="pnow-f4" />)
 
       const endTime = performance.now()
       const renderTime = endTime - startTime
@@ -152,13 +156,13 @@ describe("Timeline Component", () => {
     })
 
     it("should handle multiple re-renders", () => {
-      const { rerender } = renderTimeline(<Timeline />)
+      const { rerender } = renderTimeline(<Timeline data-oid="kqq.x0k" />)
 
       // Множественные перерендеры не должны вызывать ошибок
       for (let i = 0; i < 10; i++) {
         rerender(
-          <TimelineProviders>
-            <Timeline key={i} />
+          <TimelineProviders data-oid="mol43lb">
+            <Timeline key={i} data-oid="37jpv4i" />
           </TimelineProviders>,
         )
       }
@@ -170,13 +174,13 @@ describe("Timeline Component", () => {
   describe("Component Error Handling", () => {
     it("should handle missing props gracefully", () => {
       expect(() => {
-        renderTimeline(<Timeline />)
+        renderTimeline(<Timeline data-oid="6rfs_o8" />)
       }).not.toThrow()
     })
 
     it("should handle invalid props gracefully", () => {
       expect(() => {
-        renderTimeline(<Timeline className={null as any} />)
+        renderTimeline(<Timeline className={null as any} data-oid="e3wawjd" />)
       }).not.toThrow()
     })
   })
@@ -185,8 +189,8 @@ describe("Timeline Component", () => {
     it("should work with React Suspense", () => {
       expect(() => {
         renderTimeline(
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <Timeline />
+          <React.Suspense fallback={<div data-oid="urrl51d">Loading...</div>} data-oid="msv2q02">
+            <Timeline data-oid="rztjsx3" />
           </React.Suspense>,
         )
       }).not.toThrow()
@@ -195,8 +199,8 @@ describe("Timeline Component", () => {
     it("should work with React.StrictMode", () => {
       expect(() => {
         renderTimeline(
-          <React.StrictMode>
-            <Timeline />
+          <React.StrictMode data-oid="7p.i38k">
+            <Timeline data-oid="3rryeeh" />
           </React.StrictMode>,
         )
       }).not.toThrow()

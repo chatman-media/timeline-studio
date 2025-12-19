@@ -34,19 +34,35 @@ vi.mock("@/features/project-settings/hooks", () => ({
 }))
 
 vi.mock("@/features/browser/components/browser", () => ({
-  Browser: () => <div data-testid="browser">Browser</div>,
+  Browser: () => (
+    <div data-testid="browser" data-oid="kxowcfy">
+      Browser
+    </div>
+  ),
 }))
 
 vi.mock("@/features/video-player/components/video-player", () => ({
-  VideoPlayer: () => <div data-testid="video-player">VideoPlayer</div>,
+  VideoPlayer: () => (
+    <div data-testid="video-player" data-oid="6:p1b_0">
+      VideoPlayer
+    </div>
+  ),
 }))
 
 vi.mock("@/features/timeline/components/timeline", () => ({
-  Timeline: () => <div data-testid="timeline">Timeline</div>,
+  Timeline: () => (
+    <div data-testid="timeline" data-oid="629v4rw">
+      Timeline
+    </div>
+  ),
 }))
 
 vi.mock("@/features/options/components/options", () => ({
-  Options: () => <div data-testid="options">Options</div>,
+  Options: () => (
+    <div data-testid="options" data-oid="z_w1e73">
+      Options
+    </div>
+  ),
 }))
 
 vi.mock("@/features/timeline/hooks", () => ({
@@ -81,8 +97,17 @@ const mockTimelineContext = {
 }
 
 vi.mock("@/features/panels/components", () => ({
-  LeftPanel: () => <div data-testid="left-panel">LeftPanel</div>,
-  RightPanel: () => <div data-testid="right-panel">RightPanel</div>,
+  LeftPanel: () => (
+    <div data-testid="left-panel" data-oid="rkeg:9:">
+      LeftPanel
+    </div>
+  ),
+
+  RightPanel: () => (
+    <div data-testid="right-panel" data-oid="dmyb00a">
+      RightPanel
+    </div>
+  ),
 }))
 
 vi.mock("@/features/video-compiler/hooks/use-prerender", () => ({
@@ -105,7 +130,12 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
 }))
 
 vi.mock("@/domains/video-editing", () => ({
-  PlayerProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="player-provider">{children}</div>,
+  PlayerProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="player-provider" data-oid="2kx86zv">
+      {children}
+    </div>
+  ),
+
   usePlayer: () => ({
     video: null,
     play: vi.fn(),
@@ -123,11 +153,13 @@ vi.mock("@/components/ui/resizable", () => ({
       data-min-size={minSize}
       data-max-size={maxSize}
       data-panel-group-direction="horizontal"
+      data-oid="r5g_v3i"
     >
       {children}
     </div>
   ),
-  ResizableHandle: () => <div data-testid="resizable-handle" />,
+
+  ResizableHandle: () => <div data-testid="resizable-handle" data-oid="w2nzo1w" />,
   ResizablePanelGroup: ({ children, direction, autoSaveId }: any) => (
     <div
       data-testid="resizable-panel-group"
@@ -135,6 +167,7 @@ vi.mock("@/components/ui/resizable", () => ({
       data-auto-save-id={autoSaveId}
       data-panel-group-direction={direction}
       className="flex h-full w-full"
+      data-oid="kjowi_:"
     >
       {children}
     </div>
@@ -164,7 +197,7 @@ describe("VerticalLayout", () => {
 
   describe("Основная структура", () => {
     it("должен рендерить все компоненты когда все панели видимы", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="75vupdp" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
@@ -173,7 +206,7 @@ describe("VerticalLayout", () => {
     })
 
     it("должен иметь правильную структуру ResizablePanelGroup", () => {
-      const { container } = render(<VerticalLayout />)
+      const { container } = render(<VerticalLayout data-oid="47uffuo" />)
 
       const mainPanelGroup = screen.getAllByTestId("resizable-panel-group")[0]
       expect(mainPanelGroup).toHaveAttribute("data-direction", "horizontal")
@@ -181,7 +214,7 @@ describe("VerticalLayout", () => {
     })
 
     it("должен правильно разделять левую и правую части", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="n.pg44s" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
       const leftPanel = panels.find((p) => p.getAttribute("data-default-size") === "67")
@@ -198,7 +231,7 @@ describe("VerticalLayout", () => {
       mockUserSettings.isOptionsVisible = false
       mockUserSettings.isTimelineVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="jkryjhe" />)
 
       expect(screen.getByTestId("video-player")).toBeInTheDocument()
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
@@ -215,7 +248,7 @@ describe("VerticalLayout", () => {
       mockUserSettings.isBrowserVisible = false
       mockUserSettings.isTimelineVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid=":ly_7co" />)
 
       expect(screen.getByTestId("options")).toBeInTheDocument()
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
@@ -227,7 +260,7 @@ describe("VerticalLayout", () => {
       mockUserSettings.isBrowserVisible = false
       mockUserSettings.isOptionsVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="d6oqh8a" />)
 
       expect(screen.getByTestId("timeline")).toBeInTheDocument()
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
@@ -239,7 +272,7 @@ describe("VerticalLayout", () => {
       mockUserSettings.isOptionsVisible = false
       mockUserSettings.isTimelineVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="qr5:.pq" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.queryByTestId("options")).not.toBeInTheDocument()
@@ -252,7 +285,7 @@ describe("VerticalLayout", () => {
     it("должен показывать Browser + Options когда Timeline скрыт", () => {
       mockUserSettings.isTimelineVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="gy.h1vv" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.getByTestId("options")).toBeInTheDocument()
@@ -267,7 +300,7 @@ describe("VerticalLayout", () => {
     it("должен показывать Options + Timeline когда Browser скрыт", () => {
       mockUserSettings.isBrowserVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="wfe3-u4" />)
 
       expect(screen.queryByTestId("browser")).not.toBeInTheDocument()
       expect(screen.getByTestId("options")).toBeInTheDocument()
@@ -282,7 +315,7 @@ describe("VerticalLayout", () => {
     it("должен показывать Browser + Timeline когда Options скрыт", () => {
       mockUserSettings.isOptionsVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="st:d60c" />)
 
       expect(screen.getByTestId("browser")).toBeInTheDocument()
       expect(screen.queryByTestId("options")).not.toBeInTheDocument()
@@ -299,7 +332,7 @@ describe("VerticalLayout", () => {
     it("должен устанавливать правильные размеры для Browser + Options", () => {
       mockUserSettings.isTimelineVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid=":fdthmn" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
 
@@ -318,7 +351,7 @@ describe("VerticalLayout", () => {
     it("должен устанавливать правильные размеры для Options + Timeline", () => {
       mockUserSettings.isBrowserVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid=".yq3tg5" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
 
@@ -337,7 +370,7 @@ describe("VerticalLayout", () => {
     it("должен устанавливать правильные размеры для Browser + Timeline", () => {
       mockUserSettings.isOptionsVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="1_kyqhp" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
 
@@ -354,7 +387,7 @@ describe("VerticalLayout", () => {
     })
 
     it("должен устанавливать правильные размеры когда все компоненты видимы", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="4iu-xur" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
 
@@ -375,7 +408,7 @@ describe("VerticalLayout", () => {
     it("должен использовать вертикальное направление для левой части с двумя компонентами", () => {
       mockUserSettings.isTimelineVisible = false
 
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="asrywl7" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const verticalGroup = panelGroups.find(
@@ -388,7 +421,7 @@ describe("VerticalLayout", () => {
     })
 
     it("должен использовать смешанную структуру когда все компоненты видимы", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="9k_3_02" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
 
@@ -420,14 +453,14 @@ describe("VerticalLayout", () => {
 
   describe("ResizableHandle", () => {
     it("должен добавлять handles между панелями", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid=".3gmjj3" />)
 
       const handles = screen.getAllByTestId("resizable-handle")
       expect(handles.length).toBeGreaterThan(0)
     })
 
     it("должен иметь разное количество handles для разных конфигураций", () => {
-      const { rerender } = render(<VerticalLayout />)
+      const { rerender } = render(<VerticalLayout data-oid="r:93g-e" />)
 
       let handles = screen.getAllByTestId("resizable-handle")
       const fullConfigHandles = handles.length
@@ -435,7 +468,7 @@ describe("VerticalLayout", () => {
       // Только один компонент - нет handles в левой части
       mockUserSettings.isBrowserVisible = false
       mockUserSettings.isOptionsVisible = false
-      rerender(<VerticalLayout />)
+      rerender(<VerticalLayout data-oid="0ovbh1." />)
 
       handles = screen.getAllByTestId("resizable-handle")
       expect(handles.length).toBeLessThan(fullConfigHandles)
@@ -444,7 +477,7 @@ describe("VerticalLayout", () => {
 
   describe("Ограничения размеров", () => {
     it("должен устанавливать правильные ограничения minSize и maxSize", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="nd4.87y" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
 
@@ -468,11 +501,31 @@ describe("VerticalLayout", () => {
   describe("Интеграция с VideoPlayer", () => {
     it("должен всегда показывать VideoPlayer в правой панели", () => {
       const configurations = [
-        { isBrowserVisible: true, isOptionsVisible: true, isTimelineVisible: true },
-        { isBrowserVisible: false, isOptionsVisible: true, isTimelineVisible: true },
-        { isBrowserVisible: true, isOptionsVisible: false, isTimelineVisible: true },
-        { isBrowserVisible: true, isOptionsVisible: true, isTimelineVisible: false },
-        { isBrowserVisible: false, isOptionsVisible: false, isTimelineVisible: false },
+        {
+          isBrowserVisible: true,
+          isOptionsVisible: true,
+          isTimelineVisible: true,
+        },
+        {
+          isBrowserVisible: false,
+          isOptionsVisible: true,
+          isTimelineVisible: true,
+        },
+        {
+          isBrowserVisible: true,
+          isOptionsVisible: false,
+          isTimelineVisible: true,
+        },
+        {
+          isBrowserVisible: true,
+          isOptionsVisible: true,
+          isTimelineVisible: false,
+        },
+        {
+          isBrowserVisible: false,
+          isOptionsVisible: false,
+          isTimelineVisible: false,
+        },
       ]
 
       configurations.forEach((config) => {
@@ -480,14 +533,14 @@ describe("VerticalLayout", () => {
         mockUserSettings.isOptionsVisible = config.isOptionsVisible
         mockUserSettings.isTimelineVisible = config.isTimelineVisible
 
-        const { unmount } = render(<VerticalLayout />)
+        const { unmount } = render(<VerticalLayout data-oid="8uets2l" />)
         expect(screen.getByTestId("video-player")).toBeInTheDocument()
         unmount()
       })
     })
 
     it("должен размещать VideoPlayer в правой панели", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid=".kc7c-u" />)
 
       const videoPlayer = screen.getByTestId("video-player")
       const parentPanel = videoPlayer.closest('[data-testid="resizable-panel"]')
@@ -503,7 +556,7 @@ describe("VerticalLayout", () => {
 
   describe("Дублирование autoSaveId", () => {
     it("должен использовать одинаковый autoSaveId для вложенной горизонтальной группы", () => {
-      render(<VerticalLayout />)
+      render(<VerticalLayout data-oid="pzfmq:x" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const groupsWithSameId = panelGroups.filter((pg) => pg.getAttribute("data-auto-save-id") === "vertical-layout-4")

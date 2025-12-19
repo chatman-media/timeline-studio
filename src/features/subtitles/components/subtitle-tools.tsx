@@ -24,45 +24,57 @@ export function SubtitleTools() {
   const { exportSubtitleFile, isExporting } = useSubtitlesExport()
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2" data-oid="0d.p2g_">
       {/* Кнопка импорта */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" disabled={isImporting}>
-            {isImporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileUp className="mr-2 h-4 w-4" />}
+      <DropdownMenu data-oid="_nfa0sj">
+        <DropdownMenuTrigger asChild data-oid="8cftn2-">
+          <Button variant="outline" size="sm" disabled={isImporting} data-oid="4_z3w3w">
+            {isImporting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" data-oid="64.x4l5" />
+            ) : (
+              <FileUp className="mr-2 h-4 w-4" data-oid="y1fq24f" />
+            )}
             {t("subtitles.import.title", "Импорт")}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{t("subtitles.import.selectFormat", "Выберите формат")}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={importSubtitleFile}>
+        <DropdownMenuContent align="end" data-oid="zmhctax">
+          <DropdownMenuLabel data-oid="3ly.lvx">
+            {t("subtitles.import.selectFormat", "Выберите формат")}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator data-oid=".toi950" />
+          <DropdownMenuItem onClick={importSubtitleFile} data-oid="o7o.ov-">
             {t("subtitles.import.singleFile", "Импортировать один файл")}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={importSubtitleFiles}>
+          <DropdownMenuItem onClick={importSubtitleFiles} data-oid="ydmf4e4">
             {t("subtitles.import.multipleFiles", "Импортировать несколько файлов")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       {/* Кнопка экспорта */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" disabled={isExporting}>
-            {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileDown className="mr-2 h-4 w-4" />}
+      <DropdownMenu data-oid="cogf8mm">
+        <DropdownMenuTrigger asChild data-oid="53oao9y">
+          <Button variant="outline" size="sm" disabled={isExporting} data-oid="c7zfvch">
+            {isExporting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" data-oid="v7ewvzq" />
+            ) : (
+              <FileDown className="mr-2 h-4 w-4" data-oid="-h:67w." />
+            )}
             {t("subtitles.export.title", "Экспорт")}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{t("subtitles.export.selectFormat", "Выберите формат")}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => exportSubtitleFile("srt")}>
+        <DropdownMenuContent align="end" data-oid="9n.n5fh">
+          <DropdownMenuLabel data-oid="3b_8pe1">
+            {t("subtitles.export.selectFormat", "Выберите формат")}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator data-oid="a0hqaqo" />
+          <DropdownMenuItem onClick={() => exportSubtitleFile("srt")} data-oid="o:boqa3">
             {t("subtitles.export.srt", "SubRip (.srt)")}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => exportSubtitleFile("vtt")}>
+          <DropdownMenuItem onClick={() => exportSubtitleFile("vtt")} data-oid="e262mur">
             {t("subtitles.export.vtt", "WebVTT (.vtt)")}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => exportSubtitleFile("ass")}>
+          <DropdownMenuItem onClick={() => exportSubtitleFile("ass")} data-oid="5goecko">
             {t("subtitles.export.ass", "Advanced SSA (.ass)")}
           </DropdownMenuItem>
         </DropdownMenuContent>

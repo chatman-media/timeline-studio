@@ -23,9 +23,11 @@ vi.mock("react-i18next", () => ({
 // Mock ResourceThumbnail
 vi.mock("../../components/resource-thumbnail", () => ({
   ResourceThumbnail: ({ resource, onRemove }: any) => (
-    <div data-testid={`thumbnail-${resource.id}`}>
-      <span>{resource.name}</span>
-      <button onClick={() => onRemove(resource.id, resource.type)}>Remove</button>
+    <div data-testid={`thumbnail-${resource.id}`} data-oid="4caj64.">
+      <span data-oid="20ym6eb">{resource.name}</span>
+      <button onClick={() => onRemove(resource.id, resource.type)} data-oid="orlz-5j">
+        Remove
+      </button>
     </div>
   ),
 }))
@@ -93,7 +95,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    render(<ResourcesPanel />)
+    render(<ResourcesPanel data-oid="1l5g_9:" />)
 
     expect(screen.getByText("Resources")).toBeInTheDocument()
     expect(screen.getByText("Drag here effects, filters, transitions or media files")).toBeInTheDocument()
@@ -116,7 +118,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    render(<ResourcesPanel />)
+    render(<ResourcesPanel data-oid="8:fp6dj" />)
 
     expect(screen.getByText("Resources")).toBeInTheDocument()
     expect(screen.getByText("(3)")).toBeInTheDocument() // Total count
@@ -144,7 +146,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    const { container } = render(<ResourcesPanel />)
+    const { container } = render(<ResourcesPanel data-oid="z819kgj" />)
 
     const thumbnails = container.querySelectorAll("[data-testid^='thumbnail-']")
     expect(thumbnails).toHaveLength(3)
@@ -172,7 +174,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    render(<ResourcesPanel />)
+    render(<ResourcesPanel data-oid="kiqndz:" />)
 
     const removeButton = screen.getByRole("button", { name: "Remove" })
     await user.click(removeButton)
@@ -193,7 +195,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    const { container } = render(<ResourcesPanel />)
+    const { container } = render(<ResourcesPanel data-oid="r0z53gk" />)
 
     const scrollContainer = container.querySelector(".overflow-x-auto")
     expect(scrollContainer).toBeInTheDocument()
@@ -214,7 +216,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    render(<ResourcesPanel />)
+    render(<ResourcesPanel data-oid="2k.mjsv" />)
 
     expect(screen.getByText("(4)")).toBeInTheDocument()
   })
@@ -232,7 +234,7 @@ describe("ResourcesPanel - Simplified Architecture", () => {
       removeResource: mockRemoveResource,
     })
 
-    render(<ResourcesPanel />)
+    render(<ResourcesPanel data-oid="wmmvmca" />)
 
     // All three resources should be rendered
     expect(screen.getByTestId("thumbnail-effect-1")).toBeInTheDocument()

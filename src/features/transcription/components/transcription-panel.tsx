@@ -82,14 +82,14 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
   const getStatusIcon = () => {
     switch (progress.status) {
       case "idle":
-        return <FileAudio className="h-5 w-5 text-muted-foreground" />
+        return <FileAudio className="h-5 w-5 text-muted-foreground" data-oid="8e51355" />
       case "initializing":
       case "processing":
-        return <Loader2 className="h-5 w-5 animate-spin" />
+        return <Loader2 className="h-5 w-5 animate-spin" data-oid="vs.zxb7" />
       case "completed":
-        return <CheckCircle className="h-5 w-5 text-green-500" />
+        return <CheckCircle className="h-5 w-5 text-green-500" data-oid="48o6qip" />
       case "error":
-        return <AlertCircle className="h-5 w-5 text-red-500" />
+        return <AlertCircle className="h-5 w-5 text-red-500" data-oid="2odv1-o" />
     }
   }
 
@@ -97,48 +97,54 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
     switch (device) {
       case "cuda":
       case "mps":
-        return <Zap className="h-4 w-4" />
+        return <Zap className="h-4 w-4" data-oid="izdwg3n" />
       default:
-        return <Cpu className="h-4 w-4" />
+        return <Cpu className="h-4 w-4" data-oid=":uplzov" />
     }
   }
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Mic className="h-5 w-5" />
+    <Card className="h-full flex flex-col" data-oid="kev1eg5">
+      <CardHeader data-oid="6p_pp3e">
+        <CardTitle className="flex items-center gap-2" data-oid="3y1m048">
+          <Mic className="h-5 w-5" data-oid="a4acaml" />
           {t("transcription.title", "Транскрипция")}
         </CardTitle>
-        <CardDescription>
+        <CardDescription data-oid="a0w3q7i">
           {t("transcription.description", "Автоматическое создание субтитров с помощью AI")}
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col gap-4">
+      <CardContent className="flex-1 flex flex-col gap-4" data-oid="hwuwsk6">
         {/* Выбор файла */}
-        <div className="space-y-2">
-          <Label>{t("transcription.selectFile", "Выберите медиафайл")}</Label>
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={handleFileSelect}>
-              <Upload className="mr-2 h-4 w-4" />
+        <div className="space-y-2" data-oid="k-_d0de">
+          <Label data-oid="2_g:qyq">{t("transcription.selectFile", "Выберите медиафайл")}</Label>
+          <div className="flex gap-2" data-oid="g6.-m16">
+            <Button variant="outline" className="flex-1" onClick={handleFileSelect} data-oid="r9o43hx">
+              <Upload className="mr-2 h-4 w-4" data-oid="202xmtb" />
               {selectedFile ? selectedFile.split("/").pop() : t("transcription.chooseFile", "Выбрать файл")}
             </Button>
           </div>
         </div>
 
         {/* Настройки */}
-        <Tabs defaultValue="basic" className="flex-1">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="basic">{t("transcription.basicSettings", "Основные")}</TabsTrigger>
-            <TabsTrigger value="advanced">{t("transcription.advancedSettings", "Расширенные")}</TabsTrigger>
-            <TabsTrigger value="models">{t("transcription.models", "Модели")}</TabsTrigger>
+        <Tabs defaultValue="basic" className="flex-1" data-oid="to_2_w3">
+          <TabsList className="grid w-full grid-cols-3" data-oid="t-udmm0">
+            <TabsTrigger value="basic" data-oid="o5kd.h7">
+              {t("transcription.basicSettings", "Основные")}
+            </TabsTrigger>
+            <TabsTrigger value="advanced" data-oid="a7sbm-h">
+              {t("transcription.advancedSettings", "Расширенные")}
+            </TabsTrigger>
+            <TabsTrigger value="models" data-oid="0qzxcml">
+              {t("transcription.models", "Модели")}
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="basic" className="space-y-4">
+          <TabsContent value="basic" className="space-y-4" data-oid="qg7i3m:">
             {/* Модель */}
-            <div className="space-y-2">
-              <Label>{t("transcription.model", "Модель")}</Label>
+            <div className="space-y-2" data-oid="3i:xv63">
+              <Label data-oid="-u368vs">{t("transcription.model", "Модель")}</Label>
               <Select
                 value={options.modelSize}
                 onValueChange={(value) =>
@@ -147,16 +153,27 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
                     modelSize: value as TranscriptionOptions["modelSize"],
                   }))
                 }
+                data-oid="busie_m"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="s.nk.60">
+                  <SelectValue data-oid="7vrigoa" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="tiny">Tiny (39M) - Быстрая</SelectItem>
-                  <SelectItem value="base">Base (74M) - Баланс</SelectItem>
-                  <SelectItem value="small">Small (244M) - Качественная</SelectItem>
-                  <SelectItem value="medium">Medium (769M) - Точная</SelectItem>
-                  <SelectItem value="large-v3">Large v3 (1.5G) - Максимальная</SelectItem>
+                <SelectContent data-oid="qz0czbp">
+                  <SelectItem value="tiny" data-oid="veo57h0">
+                    Tiny (39M) - Быстрая
+                  </SelectItem>
+                  <SelectItem value="base" data-oid="ybmp29-">
+                    Base (74M) - Баланс
+                  </SelectItem>
+                  <SelectItem value="small" data-oid="0qhn_.z">
+                    Small (244M) - Качественная
+                  </SelectItem>
+                  <SelectItem value="medium" data-oid="lomtv6z">
+                    Medium (769M) - Точная
+                  </SelectItem>
+                  <SelectItem value="large-v3" data-oid="r-crcgc">
+                    Large v3 (1.5G) - Максимальная
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -164,12 +181,18 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
             {/* Язык */}
             <LanguageSelector
               value={options.language}
-              onChange={(language) => setOptions((prev: TranscriptionOptions) => ({ ...prev, language }))}
+              onChange={(language) =>
+                setOptions((prev: TranscriptionOptions) => ({
+                  ...prev,
+                  language,
+                }))
+              }
+              data-oid="8s8ghmd"
             />
 
             {/* Задача */}
-            <div className="space-y-2">
-              <Label>{t("transcription.task", "Задача")}</Label>
+            <div className="space-y-2" data-oid="9ca:sj4">
+              <Label data-oid="gevbu3b">{t("transcription.task", "Задача")}</Label>
               <Select
                 value={options.task}
                 onValueChange={(value) =>
@@ -178,22 +201,27 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
                     task: value as TranscriptionOptions["task"],
                   }))
                 }
+                data-oid="9nxvwq6"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="c_.4tn1">
+                  <SelectValue data-oid="7urf8ie" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="transcribe">{t("transcription.transcribe", "Транскрипция")}</SelectItem>
-                  <SelectItem value="translate">{t("transcription.translate", "Перевод на английский")}</SelectItem>
+                <SelectContent data-oid="txx91mr">
+                  <SelectItem value="transcribe" data-oid="n0lh4zx">
+                    {t("transcription.transcribe", "Транскрипция")}
+                  </SelectItem>
+                  <SelectItem value="translate" data-oid="56uhk-m">
+                    {t("transcription.translate", "Перевод на английский")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </TabsContent>
 
-          <TabsContent value="advanced" className="space-y-4">
+          <TabsContent value="advanced" className="space-y-4" data-oid="bz9g52y">
             {/* Провайдер */}
-            <div className="space-y-2">
-              <Label>{t("transcription.provider", "Провайдер")}</Label>
+            <div className="space-y-2" data-oid="9fri5.9">
+              <Label data-oid="8t6kce-">{t("transcription.provider", "Провайдер")}</Label>
               <Select
                 value={options.provider}
                 onValueChange={(value) =>
@@ -202,21 +230,28 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
                     provider: value as TranscriptionOptions["provider"],
                   }))
                 }
+                data-oid="jwjxxxx"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="k2jg:71">
+                  <SelectValue data-oid="lk_rf6h" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="faster-whisper">Faster Whisper (Рекомендуется)</SelectItem>
-                  <SelectItem value="openai">OpenAI Whisper API</SelectItem>
-                  <SelectItem value="local">Локальный Whisper</SelectItem>
+                <SelectContent data-oid="bwvdwfw">
+                  <SelectItem value="faster-whisper" data-oid="k:c:hda">
+                    Faster Whisper (Рекомендуется)
+                  </SelectItem>
+                  <SelectItem value="openai" data-oid="-49:f90">
+                    OpenAI Whisper API
+                  </SelectItem>
+                  <SelectItem value="local" data-oid="t2q3.iq">
+                    Локальный Whisper
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Устройство */}
-            <div className="space-y-2">
-              <Label>{t("transcription.device", "Устройство")}</Label>
+            <div className="space-y-2" data-oid="8ha_2-a">
+              <Label data-oid="pp4s4zc">{t("transcription.device", "Устройство")}</Label>
               <Select
                 value={options.device}
                 onValueChange={(value) =>
@@ -225,29 +260,32 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
                     device: value as TranscriptionOptions["device"],
                   }))
                 }
+                data-oid="0mcql24"
               >
-                <SelectTrigger>
-                  <SelectValue />
+                <SelectTrigger data-oid="6:hyzgv">
+                  <SelectValue data-oid="hhc0-.t" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto">
-                    <div className="flex items-center gap-2">Авто</div>
+                <SelectContent data-oid="v294o8_">
+                  <SelectItem value="auto" data-oid="-d6qz.s">
+                    <div className="flex items-center gap-2" data-oid="cppdch8">
+                      Авто
+                    </div>
                   </SelectItem>
-                  <SelectItem value="cpu">
-                    <div className="flex items-center gap-2">
-                      <Cpu className="h-4 w-4" />
+                  <SelectItem value="cpu" data-oid="6k.2m6i">
+                    <div className="flex items-center gap-2" data-oid="uz3-5am">
+                      <Cpu className="h-4 w-4" data-oid="t74s3rn" />
                       CPU
                     </div>
                   </SelectItem>
-                  <SelectItem value="cuda">
-                    <div className="flex items-center gap-2">
-                      <Zap className="h-4 w-4" />
+                  <SelectItem value="cuda" data-oid="-s9tl1_">
+                    <div className="flex items-center gap-2" data-oid="_25:m_d">
+                      <Zap className="h-4 w-4" data-oid="xczqhg:" />
                       NVIDIA GPU (CUDA)
                     </div>
                   </SelectItem>
-                  <SelectItem value="mps">
-                    <div className="flex items-center gap-2">
-                      <Zap className="h-4 w-4" />
+                  <SelectItem value="mps" data-oid="g8mzy-a">
+                    <div className="flex items-center gap-2" data-oid="yt-ydy3">
+                      <Zap className="h-4 w-4" data-oid="7i8q671" />
                       Apple Silicon (Metal)
                     </div>
                   </SelectItem>
@@ -256,60 +294,77 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
             </div>
 
             {/* Дополнительные опции */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="word-timestamps">{t("transcription.wordTimestamps", "Временные метки слов")}</Label>
+            <div className="space-y-3" data-oid="p1ozxr:">
+              <div className="flex items-center justify-between" data-oid="225v8g2">
+                <Label htmlFor="word-timestamps" data-oid="mvdqfzf">
+                  {t("transcription.wordTimestamps", "Временные метки слов")}
+                </Label>
                 <Switch
                   id="word-timestamps"
                   checked={options.wordTimestamps}
                   onCheckedChange={(checked) =>
-                    setOptions((prev: TranscriptionOptions) => ({ ...prev, wordTimestamps: checked }))
+                    setOptions((prev: TranscriptionOptions) => ({
+                      ...prev,
+                      wordTimestamps: checked,
+                    }))
                   }
+                  data-oid="qcsr9_o"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="vad-filter">{t("transcription.vadFilter", "Фильтр активности голоса")}</Label>
+              <div className="flex items-center justify-between" data-oid="wu.6.6z">
+                <Label htmlFor="vad-filter" data-oid="6yf99u.">
+                  {t("transcription.vadFilter", "Фильтр активности голоса")}
+                </Label>
                 <Switch
                   id="vad-filter"
                   checked={options.vadFilter}
                   onCheckedChange={(checked) =>
-                    setOptions((prev: TranscriptionOptions) => ({ ...prev, vadFilter: checked }))
+                    setOptions((prev: TranscriptionOptions) => ({
+                      ...prev,
+                      vadFilter: checked,
+                    }))
                   }
+                  data-oid="ru_1vnd"
                 />
               </div>
             </div>
           </TabsContent>
 
-          <TabsContent value="models">
-            <ModelSelector />
+          <TabsContent value="models" data-oid=".6qm34c">
+            <ModelSelector data-oid="eqwl4ud" />
           </TabsContent>
         </Tabs>
 
         {/* Прогресс */}
         {progress.status !== "idle" && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2">
+          <div className="space-y-2" data-oid="kswja30">
+            <div className="flex items-center justify-between text-sm" data-oid="0dheejc">
+              <div className="flex items-center gap-2" data-oid="7ikp9zm">
                 {getStatusIcon()}
-                <span>{progress.message || t("transcription.processing", "Обработка...")}</span>
+                <span data-oid="m370d7l">{progress.message || t("transcription.processing", "Обработка...")}</span>
               </div>
-              <span>{Math.round(progress.progress)}%</span>
+              <span data-oid="ls:am3q">{Math.round(progress.progress)}%</span>
             </div>
-            <Progress value={progress.progress} />
+            <Progress value={progress.progress} data-oid="bgbp1gh" />
           </div>
         )}
 
         {/* Кнопка транскрипции */}
-        <Button onClick={handleTranscribe} disabled={!selectedFile || isTranscribing} className="w-full">
+        <Button
+          onClick={handleTranscribe}
+          disabled={!selectedFile || isTranscribing}
+          className="w-full"
+          data-oid="6u9dik."
+        >
           {isTranscribing ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" data-oid=".fy01t2" />
               {t("transcription.processing", "Обработка...")}
             </>
           ) : (
             <>
-              <Mic className="mr-2 h-4 w-4" />
+              <Mic className="mr-2 h-4 w-4" data-oid="oerpann" />
               {t("transcription.start", "Начать транскрипцию")}
             </>
           )}
@@ -317,41 +372,45 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
 
         {/* Результаты */}
         {result && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">{result.language.toUpperCase()}</Badge>
-                <span className="text-sm text-muted-foreground">
+          <div className="space-y-4" data-oid="8u:325_">
+            <div className="flex items-center justify-between" data-oid="kqlpsna">
+              <div className="flex items-center gap-2" data-oid="-c-1e:w">
+                <Badge variant="secondary" data-oid="cm3:4hf">
+                  {result.language.toUpperCase()}
+                </Badge>
+                <span className="text-sm text-muted-foreground" data-oid="ny.1-q-">
                   {result.segments.length} сегментов • {Math.round(result.duration)}с
                 </span>
               </div>
 
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={() => handleExportSubtitles("srt")}>
-                  <Download className="mr-2 h-4 w-4" />
+              <div className="flex gap-2" data-oid="ckaw4l4">
+                <Button size="sm" variant="outline" onClick={() => handleExportSubtitles("srt")} data-oid="m5z.p2c">
+                  <Download className="mr-2 h-4 w-4" data-oid="-d82bs1" />
                   SRT
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => handleExportSubtitles("vtt")}>
-                  <Download className="mr-2 h-4 w-4" />
+                <Button size="sm" variant="outline" onClick={() => handleExportSubtitles("vtt")} data-oid="rat48.z">
+                  <Download className="mr-2 h-4 w-4" data-oid="h:-ybqr" />
                   VTT
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => handleExportSubtitles("ass")}>
-                  <Download className="mr-2 h-4 w-4" />
+                <Button size="sm" variant="outline" onClick={() => handleExportSubtitles("ass")} data-oid="yrwvv53">
+                  <Download className="mr-2 h-4 w-4" data-oid="clvseju" />
                   ASS
                 </Button>
               </div>
             </div>
 
-            <TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} />
+            <TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} data-oid="c7t10q7" />
           </div>
         )}
 
         {/* Ошибка */}
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-            <div className="flex items-center gap-2 text-red-800">
-              <AlertCircle className="h-5 w-5" />
-              <p className="text-sm font-medium">{error}</p>
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4" data-oid="0ie5fmv">
+            <div className="flex items-center gap-2 text-red-800" data-oid="n7xw6cy">
+              <AlertCircle className="h-5 w-5" data-oid="qsu:4ar" />
+              <p className="text-sm font-medium" data-oid="syik.r3">
+                {error}
+              </p>
             </div>
           </div>
         )}

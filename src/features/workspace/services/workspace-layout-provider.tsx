@@ -151,7 +151,11 @@ export function WorkspaceLayoutProvider({ children }: WorkspaceLayoutProviderPro
     send,
   }
 
-  return <WorkspaceLayoutContext.Provider value={value}>{children}</WorkspaceLayoutContext.Provider>
+  return (
+    <WorkspaceLayoutContext.Provider value={value} data-oid="m0q:j6j">
+      {children}
+    </WorkspaceLayoutContext.Provider>
+  )
 }
 
 export function useWorkspaceLayout() {

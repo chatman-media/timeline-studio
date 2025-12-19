@@ -38,14 +38,19 @@ export function TransitionGroup({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-oid="7.2_xiw">
       {/* Заголовок группы (если есть) */}
-      {title && <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{title}</h3>}
+      {title && (
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300" data-oid="2dymwtn">
+          {title}
+        </h3>
+      )}
 
       {/* Сетка переходов */}
       <div
         className="grid grid-cols-[repeat(auto-fill,minmax(0,calc(var(--preview-size)+12px)))] gap-2"
         style={{ "--preview-size": `${previewWidth}px` } as React.CSSProperties}
+        data-oid="ggexj8n"
       >
         {transitions.map((transition) => (
           <TransitionPreview
@@ -58,6 +63,7 @@ export function TransitionGroup({
             size={previewSize}
             previewWidth={previewWidth}
             previewHeight={previewHeight}
+            data-oid="zbkv9_f"
           />
         ))}
       </div>

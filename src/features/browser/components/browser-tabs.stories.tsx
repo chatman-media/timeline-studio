@@ -34,6 +34,7 @@ const meta = {
         "style_templates",
         "scenarios",
       ],
+
       description: "Активная вкладка",
     },
     onTabChange: {

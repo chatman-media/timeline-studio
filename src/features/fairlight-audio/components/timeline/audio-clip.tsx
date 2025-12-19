@@ -164,42 +164,56 @@ export function AudioClipComponent({
         height: `${trackHeight - 8}px`,
       }}
       onMouseDown={(e) => handleMouseDown(e, "drag")}
+      data-oid="932ds2i"
     >
       {/* Левый край для изменения размера */}
       <div
         className="absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-blue-500/50"
         onMouseDown={(e) => handleMouseDown(e, "resize-left")}
+        data-oid="w3mdnys"
       />
 
       {/* Правый край для изменения размера */}
       <div
         className="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-blue-500/50"
         onMouseDown={(e) => handleMouseDown(e, "resize-right")}
+        data-oid="a5o589v"
       />
 
       {/* Waveform */}
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" data-oid="c8c4jf4" />
 
       {/* Информация о клипе */}
-      <div className="absolute top-1 left-2 right-2 flex items-center justify-between pointer-events-none">
-        <span className="text-xs text-white/80 truncate">{clip.id.split("_")[0]}</span>
-        <div className="flex items-center gap-1">
+      <div
+        className="absolute top-1 left-2 right-2 flex items-center justify-between pointer-events-none"
+        data-oid="-81og.8"
+      >
+        <span className="text-xs text-white/80 truncate" data-oid="-n.99.k">
+          {clip.id.split("_")[0]}
+        </span>
+        <div className="flex items-center gap-1" data-oid="l5p5:5:">
           {clip.gain === 0 ? (
-            <VolumeX className="w-3 h-3 text-red-400" />
+            <VolumeX className="w-3 h-3 text-red-400" data-oid="lsrwif1" />
           ) : (
-            <Volume2 className="w-3 h-3 text-white/60" />
+            <Volume2 className="w-3 h-3 text-white/60" data-oid=".njwa_:" />
           )}
         </div>
       </div>
 
       {/* Индикаторы fade */}
       {clip.fadeIn > 0 && (
-        <div className="absolute top-1/2 left-2 -translate-y-1/2 text-xs text-white/60 pointer-events-none">
+        <div
+          className="absolute top-1/2 left-2 -translate-y-1/2 text-xs text-white/60 pointer-events-none"
+          data-oid="6j5u:b:"
+        >
           ↗ {clip.fadeIn.toFixed(1)}s
         </div>
       )}
       {clip.fadeOut > 0 && (
-        <div className="absolute top-1/2 right-2 -translate-y-1/2 text-xs text-white/60 pointer-events-none">
+        <div
+          className="absolute top-1/2 right-2 -translate-y-1/2 text-xs text-white/60 pointer-events-none"
+          data-oid=":jtq6kh"
+        >
           {clip.fadeOut.toFixed(1)}s ↘
         </div>
       )}

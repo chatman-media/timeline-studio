@@ -20,7 +20,11 @@ vi.mock("@/features/timeline/hooks/editing/use-edit-mode", () => ({
 
 vi.mock("../../../components/edit-tools/roll-edit-handle", () => ({
   RollEditHandle: vi.fn(({ leftClip, rightClip, onRollStart }) => (
-    <div data-testid={`roll-handle-${leftClip.id}-${rightClip.id}`} onClick={() => onRollStart?.(100)}>
+    <div
+      data-testid={`roll-handle-${leftClip.id}-${rightClip.id}`}
+      onClick={() => onRollStart?.(100)}
+      data-oid="w8f.5sk"
+    >
       Roll Handle {leftClip.id}-{rightClip.id}
     </div>
   )),
@@ -120,7 +124,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="_h.-a:m" />)
 
       expect(screen.getByTestId("roll-handle-clip-1-clip-2")).toBeInTheDocument()
       const mockCall = mockRollEditHandle.mock.calls[0]
@@ -144,7 +148,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { container } = render(<TrackRollHandles track={track} timeScale={10} data-oid="5:0yy29" />)
 
       expect(container.firstChild).toBeNull()
       expect(mockRollEditHandle).not.toHaveBeenCalled()
@@ -153,7 +157,7 @@ describe("TrackRollHandles", () => {
     it("не должен рендерить handles для пустого трека", () => {
       const track = createTrack({ clips: [] })
 
-      const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { container } = render(<TrackRollHandles track={track} timeScale={10} data-oid="58900a." />)
 
       expect(container.firstChild).toBeNull()
       expect(mockRollEditHandle).not.toHaveBeenCalled()
@@ -163,7 +167,7 @@ describe("TrackRollHandles", () => {
       const clip1 = createClip({ id: "clip-1", startTime: 0, duration: 10 })
       const track = createTrack({ clips: [clip1] })
 
-      const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { container } = render(<TrackRollHandles track={track} timeScale={10} data-oid="kjplrgy" />)
 
       expect(container.firstChild).toBeNull()
       expect(mockRollEditHandle).not.toHaveBeenCalled()
@@ -175,7 +179,7 @@ describe("TrackRollHandles", () => {
       const clip3 = createClip({ id: "clip-3", startTime: 20, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2, clip3] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="v10s72t" />)
 
       expect(screen.getByTestId("roll-handle-clip-1-clip-2")).toBeInTheDocument()
       expect(screen.getByTestId("roll-handle-clip-2-clip-3")).toBeInTheDocument()
@@ -189,7 +193,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="0f6qy_1" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -201,10 +205,14 @@ describe("TrackRollHandles", () => {
 
     it("должен находить смежные клипы с минимальным зазором (в пределах толерантности)", () => {
       const clip1 = createClip({ id: "clip-1", startTime: 0, duration: 10 })
-      const clip2 = createClip({ id: "clip-2", startTime: 10.0005, duration: 10 }) // gap = 0.0005
+      const clip2 = createClip({
+        id: "clip-2",
+        startTime: 10.0005,
+        duration: 10,
+      }) // gap = 0.0005
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="3:omvoo" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -219,7 +227,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 15, duration: 10 }) // gap = 5
       const track = createTrack({ clips: [clip1, clip2] })
 
-      const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { container } = render(<TrackRollHandles track={track} timeScale={10} data-oid="s-ilay3" />)
 
       expect(container.firstChild).toBeNull()
       expect(mockRollEditHandle).not.toHaveBeenCalled()
@@ -227,10 +235,14 @@ describe("TrackRollHandles", () => {
 
     it("должен обрабатывать перекрывающиеся клипы (отрицательный зазор)", () => {
       const clip1 = createClip({ id: "clip-1", startTime: 0, duration: 10 })
-      const clip2 = createClip({ id: "clip-2", startTime: 9.9995, duration: 10 }) // minimal gap = 0.0005
+      const clip2 = createClip({
+        id: "clip-2",
+        startTime: 9.9995,
+        duration: 10,
+      }) // minimal gap = 0.0005
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="yq16f06" />)
 
       expect(RollEditHandle).toHaveBeenCalledTimes(1)
       const mockCall = mockRollEditHandle.mock.calls[0]
@@ -248,7 +260,7 @@ describe("TrackRollHandles", () => {
       const clip3 = createClip({ id: "clip-3", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2, clip3] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="1rf1rrs" />)
 
       expect(RollEditHandle).toHaveBeenCalledTimes(2)
       // Должны быть созданы handles в правильном порядке: clip-2->clip-3, clip-3->clip-1
@@ -261,7 +273,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { container } = render(<TrackRollHandles track={track} timeScale={10} data-oid="1fepux9" />)
 
       // Клипы начинаются в одно время, поэтому они не смежные в обычном понимании
       expect(container.firstChild).toBeNull()
@@ -275,7 +287,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} onRollStart={onRollStart} />)
+      render(<TrackRollHandles track={track} timeScale={10} onRollStart={onRollStart} data-oid="kz.dhmu" />)
 
       // Simulate click on roll handle
       screen.getByTestId("roll-handle-clip-1-clip-2").click()
@@ -289,7 +301,7 @@ describe("TrackRollHandles", () => {
       const track = createTrack({ clips: [clip1, clip2] })
 
       expect(() => {
-        render(<TrackRollHandles track={track} timeScale={10} />)
+        render(<TrackRollHandles track={track} timeScale={10} data-oid="6c1g9pa" />)
       }).not.toThrow()
 
       // Should not throw when clicking
@@ -305,7 +317,7 @@ describe("TrackRollHandles", () => {
       const clip3 = createClip({ id: "clip-3", startTime: 20, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2, clip3] })
 
-      render(<TrackRollHandles track={track} timeScale={10} onRollStart={onRollStart} />)
+      render(<TrackRollHandles track={track} timeScale={10} onRollStart={onRollStart} data-oid="_3qee-:" />)
 
       screen.getByTestId("roll-handle-clip-1-clip-2").click()
       screen.getByTestId("roll-handle-clip-2-clip-3").click()
@@ -322,7 +334,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={25} />)
+      render(<TrackRollHandles track={track} timeScale={25} data-oid="wk0q82p" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -336,7 +348,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      const { rerender } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { rerender } = render(<TrackRollHandles track={track} timeScale={10} data-oid="keklazm" />)
 
       let mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -344,7 +356,7 @@ describe("TrackRollHandles", () => {
       })
       expect(typeof mockCall[0].onRollStart).toBe("function")
 
-      rerender(<TrackRollHandles track={track} timeScale={50} />)
+      rerender(<TrackRollHandles track={track} timeScale={50} data-oid="sa8.r0g" />)
 
       mockCall = mockRollEditHandle.mock.calls[1]
       expect(mockCall[0]).toMatchObject({
@@ -360,12 +372,12 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      const { rerender } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { rerender } = render(<TrackRollHandles track={track} timeScale={10} data-oid="z6jd5n8" />)
 
       expect(RollEditHandle).toHaveBeenCalledTimes(1)
 
       // Rerender with same clips but different timeScale
-      rerender(<TrackRollHandles track={track} timeScale={20} />)
+      rerender(<TrackRollHandles track={track} timeScale={20} data-oid="18xf5ec" />)
 
       // adjacentPairs should be memoized, so RollEditHandle called only for re-render
       expect(RollEditHandle).toHaveBeenCalledTimes(2)
@@ -376,9 +388,10 @@ describe("TrackRollHandles", () => {
         createClip({ id: "clip-4", startTime: 5, duration: 5 }),
         createClip({ id: "clip-5", startTime: 10, duration: 5 }),
       ]
+
       const newTrack = createTrack({ clips: newClips })
 
-      rerender(<TrackRollHandles track={newTrack} timeScale={20} />)
+      rerender(<TrackRollHandles track={newTrack} timeScale={20} data-oid="zef0d1m" />)
 
       // Should call for 2 new adjacent pairs
       expect(RollEditHandle).toHaveBeenCalledTimes(4)
@@ -388,7 +401,7 @@ describe("TrackRollHandles", () => {
       const clip1 = createClip({ id: "clip-1", startTime: 0, duration: 10 })
       const track = createTrack({ clips: [clip1] })
 
-      const { rerender, container } = render(<TrackRollHandles track={track} timeScale={10} />)
+      const { rerender, container } = render(<TrackRollHandles track={track} timeScale={10} data-oid="834.8f:" />)
 
       // No handles for single clip
       expect(container.firstChild).toBeNull()
@@ -397,7 +410,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 10, duration: 10 })
       const updatedTrack = createTrack({ clips: [clip1, clip2] })
 
-      rerender(<TrackRollHandles track={updatedTrack} timeScale={10} />)
+      rerender(<TrackRollHandles track={updatedTrack} timeScale={10} data-oid="pfg:3vi" />)
 
       expect(screen.getByTestId("roll-handle-clip-1-clip-2")).toBeInTheDocument()
     })
@@ -409,7 +422,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 0, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="fhhhjnv" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -424,7 +437,7 @@ describe("TrackRollHandles", () => {
       const clip2 = createClip({ id: "clip-2", startTime: 5, duration: 10 })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="9lknlr1" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -435,11 +448,19 @@ describe("TrackRollHandles", () => {
     })
 
     it("должен обрабатывать очень большие значения времени", () => {
-      const clip1 = createClip({ id: "clip-1", startTime: 1000000, duration: 1000 })
-      const clip2 = createClip({ id: "clip-2", startTime: 1001000, duration: 1000 })
+      const clip1 = createClip({
+        id: "clip-1",
+        startTime: 1000000,
+        duration: 1000,
+      })
+      const clip2 = createClip({
+        id: "clip-2",
+        startTime: 1001000,
+        duration: 1000,
+      })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={0.01} />)
+      render(<TrackRollHandles track={track} timeScale={0.01} data-oid="5du4v7v" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -456,7 +477,7 @@ describe("TrackRollHandles", () => {
       const track = createTrack({ clips: [clip1, clip2] })
 
       expect(() => {
-        render(<TrackRollHandles track={track} timeScale={10} />)
+        render(<TrackRollHandles track={track} timeScale={10} data-oid="o_z653l" />)
       }).not.toThrow()
 
       // Should still render handle (React key might be problematic, but component should work)
@@ -464,11 +485,19 @@ describe("TrackRollHandles", () => {
     })
 
     it("должен обрабатывать дробные значения времени", () => {
-      const clip1 = createClip({ id: "clip-1", startTime: 0.333, duration: 10.666 })
-      const clip2 = createClip({ id: "clip-2", startTime: 10.999, duration: 10.001 })
+      const clip1 = createClip({
+        id: "clip-1",
+        startTime: 0.333,
+        duration: 10.666,
+      })
+      const clip2 = createClip({
+        id: "clip-2",
+        startTime: 10.999,
+        duration: 10.001,
+      })
       const track = createTrack({ clips: [clip1, clip2] })
 
-      render(<TrackRollHandles track={track} timeScale={10} />)
+      render(<TrackRollHandles track={track} timeScale={10} data-oid="hqmszn3" />)
 
       const mockCall = mockRollEditHandle.mock.calls[0]
       expect(mockCall[0]).toMatchObject({
@@ -491,7 +520,7 @@ describe("TrackRollHandles", () => {
           editMode: mode,
         })
 
-        const { container } = render(<TrackRollHandles track={track} timeScale={10} />)
+        const { container } = render(<TrackRollHandles track={track} timeScale={10} data-oid=":mqtou-" />)
 
         // Roll handles should NOT appear for these modes
         expect(container.firstChild).toBeNull()

@@ -13,7 +13,9 @@ import { PerformanceSettingsTab } from "../../../components/tabs/performance-set
 // Mock the GPU status component
 vi.mock("@/features/video-compiler/components/gpu-status", () => ({
   GpuStatus: ({ showDetails }: { showDetails: boolean }) => (
-    <div data-testid="gpu-status">GPU Status {showDetails ? "with details" : ""}</div>
+    <div data-testid="gpu-status" data-oid="r525fdl">
+      GPU Status {showDetails ? "with details" : ""}
+    </div>
   ),
 }))
 
@@ -73,14 +75,14 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("renders GPU acceleration section", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="q7yb04w" />)
 
     expect(screen.getByText("dialogs.userSettings.performance.gpuAcceleration")).toBeInTheDocument()
     expect(screen.getByTestId("gpu-status")).toBeInTheDocument()
   })
 
   it("renders rendering settings section", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid=":cphbth" />)
 
     expect(screen.getByText("dialogs.userSettings.performance.renderingSettings")).toBeInTheDocument()
     expect(screen.getByText("dialogs.userSettings.performance.renderQuality")).toBeInTheDocument()
@@ -88,13 +90,13 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("renders proxy server section", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="9h-4mqg" />)
 
     expect(screen.getByText("dialogs.userSettings.performance.proxyServer")).toBeInTheDocument()
   })
 
   it("shows GPU encoder selection when GPU acceleration is enabled", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="vh9azmv" />)
 
     expect(screen.getByText("dialogs.userSettings.performance.preferredGpuEncoder")).toBeInTheDocument()
   })
@@ -105,13 +107,13 @@ describe("PerformanceSettingsTab", () => {
       gpuAccelerationEnabled: false,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="wqxzvzo" />)
 
     expect(screen.queryByText("dialogs.userSettings.performance.preferredGpuEncoder")).not.toBeInTheDocument()
   })
 
   it("handles GPU acceleration toggle", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="sm0ecyn" />)
 
     // Find GPU switch by looking for the label
     const gpuLabel = screen.getByText("dialogs.userSettings.performance.gpuAcceleration")
@@ -125,7 +127,7 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("shows GPU encoder selection when GPU acceleration is enabled", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="ndop._o" />)
 
     // Check that GPU encoder section is rendered
     expect(screen.getByText("dialogs.userSettings.performance.preferredGpuEncoder")).toBeInTheDocument()
@@ -140,7 +142,7 @@ describe("PerformanceSettingsTab", () => {
       proxyEnabled: true,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="s40o6-n" />)
 
     expect(screen.getByText("dialogs.userSettings.performance.proxyType")).toBeInTheDocument()
     expect(screen.getByText("dialogs.userSettings.performance.proxyHost")).toBeInTheDocument()
@@ -149,14 +151,14 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("hides proxy settings when proxy is disabled", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="1h15l3." />)
 
     expect(screen.queryByText("dialogs.userSettings.performance.proxyType")).not.toBeInTheDocument()
     expect(screen.queryByText("dialogs.userSettings.performance.proxyHost")).not.toBeInTheDocument()
   })
 
   it("handles proxy enable toggle", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="x5-od:." />)
 
     // Find proxy switch by looking for the label
     const proxyLabel = screen.getByText("dialogs.userSettings.performance.proxyServer")
@@ -175,7 +177,7 @@ describe("PerformanceSettingsTab", () => {
       proxyEnabled: true,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="-gn1tw4" />)
 
     // Check that proxy type label is shown
     expect(screen.getByText("dialogs.userSettings.performance.proxyType")).toBeInTheDocument()
@@ -192,7 +194,7 @@ describe("PerformanceSettingsTab", () => {
       proxyEnabled: true,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="q955pru" />)
 
     const hostInput = screen.getByPlaceholderText("proxy.example.com")
     await user.type(hostInput, "my-proxy.com")
@@ -207,7 +209,7 @@ describe("PerformanceSettingsTab", () => {
       proxyEnabled: true,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="41wbq7j" />)
 
     const portInput = screen.getByPlaceholderText("8080")
     await user.type(portInput, "3128")
@@ -222,7 +224,7 @@ describe("PerformanceSettingsTab", () => {
       proxyEnabled: true,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="p9m65j0" />)
 
     const usernameInput = screen.getByPlaceholderText("dialogs.userSettings.performance.usernamePlaceholder")
     await user.type(usernameInput, "testuser")
@@ -238,7 +240,7 @@ describe("PerformanceSettingsTab", () => {
       proxyPassword: "secret123",
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="fy072hd" />)
 
     const passwordInput = screen.getByPlaceholderText("dialogs.userSettings.performance.passwordPlaceholder")
 
@@ -259,7 +261,7 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("shows render delay settings when background rendering is enabled", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="yw.5ke-" />)
 
     expect(screen.getByText("dialogs.userSettings.performance.renderDelay")).toBeInTheDocument()
     expect(screen.getByDisplayValue("13")).toBeInTheDocument()
@@ -271,13 +273,13 @@ describe("PerformanceSettingsTab", () => {
       backgroundRenderingEnabled: false,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="fnuscx4" />)
 
     expect(screen.queryByText("dialogs.userSettings.performance.renderDelay")).not.toBeInTheDocument()
   })
 
   it("handles background rendering toggle", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="r-fmhkr" />)
 
     // Find background rendering switch by looking for the label
     const backgroundLabel = screen.getByText("dialogs.userSettings.performance.backgroundRendering")
@@ -291,7 +293,7 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("handles render delay change", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="01c2kz4" />)
 
     const delayInput = screen.getByDisplayValue("13")
 
@@ -302,7 +304,7 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("shows render quality selector", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="y2ceu_p" />)
 
     // Check that render quality section is rendered
     expect(screen.getByText("dialogs.userSettings.performance.renderQuality")).toBeInTheDocument()
@@ -312,7 +314,7 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("shows max concurrent jobs selector", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="l-szh6m" />)
 
     // Check that concurrent jobs section is rendered
     expect(screen.getByText("dialogs.userSettings.performance.maxConcurrentJobs")).toBeInTheDocument()
@@ -327,7 +329,7 @@ describe("PerformanceSettingsTab", () => {
       proxyEnabled: true,
     })
 
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="qdpbcth" />)
 
     // Check that all proxy-related fields are shown
     expect(screen.getByText("dialogs.userSettings.performance.proxyType")).toBeInTheDocument()
@@ -337,7 +339,7 @@ describe("PerformanceSettingsTab", () => {
   })
 
   it("shows tooltip for render delay", () => {
-    renderWithModal(<PerformanceSettingsTab />)
+    renderWithModal(<PerformanceSettingsTab data-oid="xeta8u1" />)
 
     // Check that render delay section with tooltip is rendered
     const renderDelayText = screen.getByText("dialogs.userSettings.performance.renderDelay")

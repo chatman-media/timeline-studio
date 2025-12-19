@@ -19,18 +19,23 @@ vi.mock("react-i18next", () => ({
 // Мокаем CurveEditor
 vi.mock("../../components/curves/curve-editor", () => ({
   CurveEditor: ({ points, onPointsChange, color, className }: any) => (
-    <div data-testid="curve-editor" data-color={color} className={className}>
-      <span data-testid="curve-points">{JSON.stringify(points)}</span>
-      <button onClick={() => onPointsChange([{ x: 128, y: 128, id: "test" }])}>Change Points</button>
+    <div data-testid="curve-editor" data-color={color} className={className} data-oid="-d1ua3o">
+      <span data-testid="curve-points" data-oid="lpt78-9">
+        {JSON.stringify(points)}
+      </span>
+      <button onClick={() => onPointsChange([{ x: 128, y: 128, id: "test" }])} data-oid="nv6wytp">
+        Change Points
+      </button>
     </div>
   ),
+
   CurvePoint: {} as any,
 }))
 
 // Мокаем UI компоненты
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
-    <button onClick={onClick} {...props}>
+    <button onClick={onClick} {...props} data-oid="evwmnr7">
       {children}
     </button>
   ),
@@ -38,25 +43,35 @@ vi.mock("@/components/ui/button", () => ({
 
 vi.mock("@/components/ui/tabs", () => ({
   Tabs: ({ children, value, onValueChange, className }: any) => (
-    <div data-testid="tabs" data-value={value} className={className}>
+    <div data-testid="tabs" data-value={value} className={className} data-oid="pmsuo:n">
       {React.Children.map(children, (child) =>
-        React.cloneElement(child, { _activeValue: value, _onValueChange: onValueChange }),
+        React.cloneElement(child, {
+          _activeValue: value,
+          _onValueChange: onValueChange,
+        }),
       )}
     </div>
   ),
+
   TabsList: ({ children, className, _activeValue, _onValueChange }: any) => (
-    <div className={className}>
+    <div className={className} data-oid="n9o4720">
       {React.Children.map(children, (child) => React.cloneElement(child, { _activeValue, _onValueChange }))}
     </div>
   ),
+
   TabsTrigger: ({ children, value, className, _activeValue, _onValueChange }: any) => (
-    <button data-tab-value={value} className={className} onClick={() => _onValueChange?.(value)}>
+    <button data-tab-value={value} className={className} onClick={() => _onValueChange?.(value)} data-oid=":cpea3o">
       {children}
     </button>
   ),
+
   TabsContent: ({ children, value, className, _activeValue }: any) => {
     if (value === _activeValue) {
-      return <div className={className}>{children}</div>
+      return (
+        <div className={className} data-oid="ha6c4-8">
+          {children}
+        </div>
+      )
     }
     return null
   },
@@ -69,6 +84,7 @@ const mockState = {
       { x: 0, y: 256, id: "start" },
       { x: 256, y: 0, id: "end" },
     ],
+
     red: null,
     green: null,
     blue: null,
@@ -90,19 +106,19 @@ describe("CurvesSection", () => {
   })
 
   it("should render curves section", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="34r3tmr" />)
 
     expect(screen.getByTestId("curves-section")).toBeInTheDocument()
   })
 
   it("should render description text", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="azkp8vq" />)
 
     expect(screen.getByText("Fine-tune tonal response with interactive curves")).toBeInTheDocument()
   })
 
   it("should render all curve type tabs", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="y_gz0xd" />)
 
     expect(screen.getByText("Master")).toBeInTheDocument()
     expect(screen.getByText("Red")).toBeInTheDocument()
@@ -111,26 +127,26 @@ describe("CurvesSection", () => {
   })
 
   it("should render curve editor", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="p4lr::0" />)
 
     expect(screen.getByTestId("curve-editor")).toBeInTheDocument()
   })
 
   it("should render control buttons", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="b6z80-t" />)
 
     expect(screen.getByText("Reset")).toBeInTheDocument()
     expect(screen.getByText("Auto")).toBeInTheDocument()
   })
 
   it("should render hint text", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="lsr9ivu" />)
 
     expect(screen.getByText("Click to add points, drag to adjust")).toBeInTheDocument()
   })
 
   it("should start with master curve active", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="ttamdk." />)
 
     const tabs = screen.getByTestId("tabs")
     expect(tabs).toHaveAttribute("data-value", "master")
@@ -142,7 +158,7 @@ describe("CurvesSection", () => {
   it("should switch to red curve", async () => {
     // This test would require a more complex setup with actual state management
     // For now, we'll just verify the tab structure exists
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid=":fjrxc-" />)
 
     const redTab = screen.getByText("Red")
     expect(redTab).toBeInTheDocument()
@@ -151,7 +167,7 @@ describe("CurvesSection", () => {
 
   it("should handle points change", async () => {
     const user = userEvent.setup()
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="nfa5_bm" />)
 
     const changeButton = screen.getByText("Change Points")
     await user.click(changeButton)
@@ -165,7 +181,7 @@ describe("CurvesSection", () => {
 
   it("should reset curve", async () => {
     const user = userEvent.setup()
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="7p-esd-" />)
 
     const resetButton = screen.getByText("Reset")
     await user.click(resetButton)
@@ -182,7 +198,7 @@ describe("CurvesSection", () => {
 
   it("should apply auto curve", async () => {
     const user = userEvent.setup()
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="tsyqvl1" />)
 
     const autoButton = screen.getByText("Auto")
     await user.click(autoButton)
@@ -200,7 +216,7 @@ describe("CurvesSection", () => {
   })
 
   it("should use default points for curves without data", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="6s0kbd9" />)
 
     const pointsText = screen.getByTestId("curve-points").textContent
     const points = JSON.parse(pointsText!)
@@ -220,7 +236,7 @@ describe("CurvesSection", () => {
 
     mockState.curves.master = customPoints
 
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="di_xfi4" />)
 
     const pointsText = screen.getByTestId("curve-points").textContent
     const points = JSON.parse(pointsText!)
@@ -229,7 +245,7 @@ describe("CurvesSection", () => {
   })
 
   it("should handle all curve types", async () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="d-.2h:2" />)
 
     // Verify all tabs exist
     const curveTypes = ["master", "red", "green", "blue"] as const
@@ -253,7 +269,7 @@ describe("CurvesSection", () => {
   })
 
   it("should apply correct styles to tabs", () => {
-    const { container } = render(<CurvesSection />)
+    const { container } = render(<CurvesSection data-oid="-236qko" />)
 
     const redTab = screen.getByText("Red")
     expect(redTab).toHaveClass("text-red-400")
@@ -266,7 +282,7 @@ describe("CurvesSection", () => {
   })
 
   it("should pass correct className to CurveEditor", () => {
-    render(<CurvesSection />)
+    render(<CurvesSection data-oid="5c6njxc" />)
 
     const editor = screen.getByTestId("curve-editor")
     expect(editor).toHaveClass("w-full")

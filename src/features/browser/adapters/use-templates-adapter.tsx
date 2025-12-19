@@ -51,36 +51,59 @@ const TemplatePreviewWrapper: React.FC<PreviewComponentProps<MediaTemplate>> = (
         onClick={handleClick}
         onDragStart={handleDragStart}
         draggable
+        data-oid="ldc4zga"
       >
         {/* Template preview thumbnail */}
-        <div className="shrink-0 w-12 h-9 bg-gray-100 rounded overflow-hidden">
-          <TemplatePreview template={template} size={32} dimensions={dimensions} onClick={handleClick} />
+        <div className="shrink-0 w-12 h-9 bg-gray-100 rounded overflow-hidden" data-oid="-.668e2">
+          <TemplatePreview
+            template={template}
+            size={32}
+            dimensions={dimensions}
+            onClick={handleClick}
+            data-oid="rb.qhiy"
+          />
         </div>
 
         {/* Template Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{template.id}</div>
-          <div className="text-xs text-muted-foreground truncate">
+        <div className="flex-1 min-w-0" data-oid="cr436ur">
+          <div className="font-medium text-sm truncate" data-oid="y.h.4l2">
+            {template.id}
+          </div>
+          <div className="text-xs text-muted-foreground truncate" data-oid="b_8y_cr">
             {template.screens} экран{template.screens > 1 ? "а" : ""}
           </div>
         </div>
 
         {/* Split type */}
-        <div className="shrink-0 text-xs text-muted-foreground">{template.split}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="7clq56y">
+          {template.split}
+        </div>
 
         {/* Screens count */}
-        <div className="shrink-0 text-xs text-muted-foreground">{template.screens}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="l_-6a1p">
+          {template.screens}
+        </div>
 
         {/* Resizable indicator */}
-        {template.resizable && <div className="shrink-0 text-xs text-green-600">Resizable</div>}
+        {template.resizable && (
+          <div className="shrink-0 text-xs text-green-600" data-oid="taow40w">
+            Resizable
+          </div>
+        )}
       </div>
     )
   }
 
   // Thumbnails mode - use the original TemplatePreview component
   return (
-    <div onDragStart={handleDragStart} draggable>
-      <TemplatePreview template={template} size={previewSize} dimensions={dimensions} onClick={handleClick} />
+    <div onDragStart={handleDragStart} draggable data-oid="deyqhnv">
+      <TemplatePreview
+        template={template}
+        size={previewSize}
+        dimensions={dimensions}
+        onClick={handleClick}
+        data-oid="_oakipk"
+      />
     </div>
   )
 }
@@ -139,6 +162,7 @@ export function useTemplatesAdapter(): ListAdapter<TemplateListItem> {
         template.screens.toString(),
         template.resizable ? "resizable" : "fixed",
       ]
+
       return texts.filter(Boolean)
     },
 

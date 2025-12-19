@@ -57,7 +57,7 @@ describe("ChatList", () => {
   }
 
   it("should render chat list with sessions", () => {
-    const { getByText } = render(<ChatList {...defaultProps} />)
+    const { getByText } = render(<ChatList {...defaultProps} data-oid="7u.oxtp" />)
 
     expect(getByText("Previous Threads")).toBeInTheDocument()
     expect(getByText("First chat session")).toBeInTheDocument()
@@ -66,7 +66,7 @@ describe("ChatList", () => {
   })
 
   it("should show only first 3 sessions by default", () => {
-    const { queryByText, getByText } = render(<ChatList {...defaultProps} />)
+    const { queryByText, getByText } = render(<ChatList {...defaultProps} data-oid="-b57nu4" />)
 
     // First 3 should be visible
     expect(getByText("First chat session")).toBeInTheDocument()
@@ -81,7 +81,7 @@ describe("ChatList", () => {
   })
 
   it("should expand to show all sessions when Show more is clicked", () => {
-    const { getByText, queryByText } = render(<ChatList {...defaultProps} />)
+    const { getByText, queryByText } = render(<ChatList {...defaultProps} data-oid="-y9vcke" />)
 
     const showMoreButton = getByText(/Show 1 more/)
     fireEvent.click(showMoreButton)
@@ -94,14 +94,14 @@ describe("ChatList", () => {
   })
 
   it("should highlight current session", () => {
-    const { getByText } = render(<ChatList {...defaultProps} />)
+    const { getByText } = render(<ChatList {...defaultProps} data-oid="4peeedo" />)
 
     const currentSession = getByText("First chat session").closest("div")
     expect(currentSession).toHaveClass("bg-muted")
   })
 
   it("should call onSelectSession when session is clicked", () => {
-    const { getByText } = render(<ChatList {...defaultProps} />)
+    const { getByText } = render(<ChatList {...defaultProps} data-oid="6bmtm_g" />)
 
     const secondSession = getByText("Second chat session").closest("div")!
     fireEvent.click(secondSession)
@@ -110,7 +110,7 @@ describe("ChatList", () => {
   })
 
   it("should show delete button on hover", async () => {
-    const { getByText, getByLabelText } = render(<ChatList {...defaultProps} />)
+    const { getByText, getByLabelText } = render(<ChatList {...defaultProps} data-oid="m4cwu49" />)
 
     const sessionButton = getByText("Second chat session").closest("div")!
 
@@ -127,7 +127,7 @@ describe("ChatList", () => {
   })
 
   it("should show copy button on hover", async () => {
-    const { getByText, getByLabelText } = render(<ChatList {...defaultProps} />)
+    const { getByText, getByLabelText } = render(<ChatList {...defaultProps} data-oid="_sfv.cn" />)
 
     const sessionButton = getByText("Second chat session").closest("div")!
 
@@ -144,13 +144,13 @@ describe("ChatList", () => {
   })
 
   it("should show loading state when creating new chat", () => {
-    const { getByText } = render(<ChatList {...defaultProps} isCreatingNew={true} />)
+    const { getByText } = render(<ChatList {...defaultProps} isCreatingNew={true} data-oid="dez3fnp" />)
 
     expect(getByText("составь план рефакторинга")).toBeInTheDocument()
   })
 
   it("should show message count for each session", () => {
-    const { getByText } = render(<ChatList {...defaultProps} />)
+    const { getByText } = render(<ChatList {...defaultProps} data-oid="y_au34r" />)
 
     expect(getByText("5 messages")).toBeInTheDocument() // First session message count
     expect(getByText("3 messages")).toBeInTheDocument() // Second session message count
@@ -170,14 +170,14 @@ describe("ChatList", () => {
       },
     ]
 
-    const { container } = render(<ChatList {...defaultProps} sessions={longTitleSessions} />)
+    const { container } = render(<ChatList {...defaultProps} sessions={longTitleSessions} data-oid="4.4l37e" />)
 
     const titleElement = container.querySelector(".truncate")
     expect(titleElement).toHaveClass("truncate")
   })
 
   it("should handle empty sessions list", () => {
-    const { getByText, queryByText } = render(<ChatList {...defaultProps} sessions={[]} />)
+    const { getByText, queryByText } = render(<ChatList {...defaultProps} sessions={[]} data-oid="8dyopli" />)
 
     expect(getByText("Previous Threads")).toBeInTheDocument()
     expect(queryByText(/Show \d+ more/)).not.toBeInTheDocument()

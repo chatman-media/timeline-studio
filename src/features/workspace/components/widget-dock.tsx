@@ -40,18 +40,24 @@ export function WidgetDock({ className }: WidgetDockProps) {
         "absolute bottom-0 left-0 right-0 z-50 flex h-12 items-center gap-2 border-t bg-muted/30 px-4 backdrop-blur-sm",
         className,
       )}
+      data-oid="x8uj34z"
     >
-      <div className="text-xs text-muted-foreground">Minimized:</div>
-      <div className="flex flex-1 items-center gap-2 overflow-x-auto">
+      <div className="text-xs text-muted-foreground" data-oid="68_v5hk">
+        Minimized:
+      </div>
+      <div className="flex flex-1 items-center gap-2 overflow-x-auto" data-oid="3wwmez8">
         {minimizedWidgets.map((widget) => (
           <button
             key={widget.id}
             onClick={() => maximizeWidget(widget.id)}
             className="flex items-center gap-2 rounded bg-background px-3 py-1.5 text-sm shadow-sm transition-all hover:bg-accent hover:shadow"
             title={`Restore ${widget.type}`}
+            data-oid="a-jb:eq"
           >
-            <Maximize2 className="h-3 w-3" />
-            <span className="capitalize">{widget.type}</span>
+            <Maximize2 className="h-3 w-3" data-oid="f8vswvp" />
+            <span className="capitalize" data-oid="m7lpxgg">
+              {widget.type}
+            </span>
           </button>
         ))}
       </div>

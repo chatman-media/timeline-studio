@@ -8,7 +8,7 @@ export const ScenariosAdapterContent = memo(() => {
   const adapter = useScenariosAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="f.frktn" />
 })
 
 ScenariosAdapterContent.displayName = "ScenariosAdapterContent"

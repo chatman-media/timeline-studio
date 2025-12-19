@@ -181,45 +181,46 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
   const getStatusIcon = (status: RenderStatus) => {
     switch (status as any) {
       case "Pending":
-        return <Square className="h-4 w-4 text-muted-foreground" />
+        return <Square className="h-4 w-4 text-muted-foreground" data-oid="_fgwme_" />
       case "Processing":
-        return <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />
+        return <Loader2 className="h-4 w-4 text-blue-500 animate-spin" data-oid="9-pht70" />
       case "Completed":
-        return <CheckSquare className="h-4 w-4 text-green-500" />
+        return <CheckSquare className="h-4 w-4 text-green-500" data-oid="qvtm4no" />
       case "Failed":
-        return <X className="h-4 w-4 text-red-500" />
+        return <X className="h-4 w-4 text-red-500" data-oid="v1x5cz-" />
       case "Cancelled":
-        return <Square className="h-4 w-4 text-orange-500" />
+        return <Square className="h-4 w-4 text-orange-500" data-oid="8nys21g" />
       default:
-        return <Square className="h-4 w-4 text-muted-foreground" />
+        return <Square className="h-4 w-4 text-muted-foreground" data-oid="k72h8f_" />
     }
   }
 
   return (
-    <div className="space-y-6" data-testid="batch-export-tab">
+    <div className="space-y-6" data-testid="batch-export-tab" data-oid="hgf_aiz">
       {/* Настройки экспорта */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("dialogs.export.batchSettings")}</CardTitle>
-          <CardDescription>{t("dialogs.export.batchSettingsDescription")}</CardDescription>
+      <Card data-oid="vk7ueof">
+        <CardHeader data-oid="ugsymhz">
+          <CardTitle data-oid="035pqf2">{t("dialogs.export.batchSettings")}</CardTitle>
+          <CardDescription data-oid="uhvq36q">{t("dialogs.export.batchSettingsDescription")}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4" data-oid="f6cowj3">
           {/* Пресеты */}
           <ExportPresets
             selectedPresetId={selectedPresetId}
             onSelectPreset={handlePresetSelect}
             className="-mx-6 px-6"
+            data-oid="-xvrunj"
           />
 
           {/* Папка вывода */}
-          <div className="space-y-2">
-            <Label>{t("dialogs.export.outputFolder")}</Label>
-            <div className="flex gap-2">
-              <div className="flex-1 px-3 py-2 border rounded-md text-sm">
+          <div className="space-y-2" data-oid="_w.gbi7">
+            <Label data-oid="sien3v5">{t("dialogs.export.outputFolder")}</Label>
+            <div className="flex gap-2" data-oid=":ma5kcr">
+              <div className="flex-1 px-3 py-2 border rounded-md text-sm" data-oid="xa-xgpe">
                 {outputFolder || t("dialogs.export.noFolderSelected")}
               </div>
-              <Button variant="outline" size="icon" onClick={handleChooseOutputFolder}>
-                <Folder className="h-4 w-4" />
+              <Button variant="outline" size="icon" onClick={handleChooseOutputFolder} data-oid="78.0u8f">
+                <Folder className="h-4 w-4" data-oid="dbk0q6y" />
               </Button>
             </div>
           </div>
@@ -228,30 +229,35 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
       {/* Проекты для добавления */}
       {pendingProjects.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("dialogs.export.pendingProjects")}</CardTitle>
-            <CardDescription>
-              {t("dialogs.export.pendingProjectsCount", { count: pendingProjects.length })}
+        <Card data-oid="d:rjo06">
+          <CardHeader data-oid="y5647pv">
+            <CardTitle data-oid="awxr1r8">{t("dialogs.export.pendingProjects")}</CardTitle>
+            <CardDescription data-oid="tedh8ck">
+              {t("dialogs.export.pendingProjectsCount", {
+                count: pendingProjects.length,
+              })}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[200px] pr-4">
-              <div className="space-y-2">
+          <CardContent data-oid=".kqe0q2">
+            <ScrollArea className="h-[200px] pr-4" data-oid="ebf2dzb">
+              <div className="space-y-2" data-oid="mepve6u">
                 {pendingProjects.map((project, index) => (
                   <div
                     key={`${project.projectPath}-${index}`}
                     className="flex items-center gap-3 p-3 rounded-lg border"
+                    data-oid="resj3tx"
                   >
-                    <FileVideo className="h-4 w-4 text-muted-foreground" />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{project.projectName}</div>
-                      <div className="text-sm text-muted-foreground truncate">
+                    <FileVideo className="h-4 w-4 text-muted-foreground" data-oid="qifj38q" />
+                    <div className="flex-1 min-w-0" data-oid="yeqzr2g">
+                      <div className="font-medium truncate" data-oid="q0slxo7">
+                        {project.projectName}
+                      </div>
+                      <div className="text-sm text-muted-foreground truncate" data-oid=".nh31dv">
                         {project.outputPath || t("dialogs.export.noOutputPath")}
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removePendingProject(index)}>
-                      <Trash2 className="h-4 w-4" />
+                    <Button variant="ghost" size="icon" onClick={() => removePendingProject(index)} data-oid="kq74fzx">
+                      <Trash2 className="h-4 w-4" data-oid="_rci1_9" />
                     </Button>
                   </div>
                 ))}
@@ -262,38 +268,46 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
       )}
 
       {/* Очередь рендеринга */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t("dialogs.export.renderQueue")}</CardTitle>
-              <CardDescription>
+      <Card data-oid="-9jv2sj">
+        <CardHeader data-oid="h9fvyyu">
+          <div className="flex items-center justify-between" data-oid="ze1dbs.">
+            <div data-oid="m4lk7c-">
+              <CardTitle data-oid="uco2751">{t("dialogs.export.renderQueue")}</CardTitle>
+              <CardDescription data-oid="w_26s.2">
                 {activeJobsCount > 0
                   ? t("dialogs.export.activeJobs", { count: activeJobsCount })
                   : t("dialogs.export.noActiveJobs")}
               </CardDescription>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleAddProjects} disabled={isProcessing}>
-                <FileVideo className="h-4 w-4 mr-2" />
+            <div className="flex gap-2" data-oid="tul5z3u">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddProjects}
+                disabled={isProcessing}
+                data-oid="cob7-xd"
+              >
+                <FileVideo className="h-4 w-4 mr-2" data-oid="26ber72" />
                 {t("dialogs.export.addProjects")}
               </Button>
-              <Button variant="outline" size="sm" onClick={() => void refreshQueue()}>
-                <RefreshCw className="h-4 w-4" />
+              <Button variant="outline" size="sm" onClick={() => void refreshQueue()} data-oid="zxrs0:t">
+                <RefreshCw className="h-4 w-4" data-oid="g292s:h" />
               </Button>
               {stats.completed > 0 && (
-                <Button variant="outline" size="sm" onClick={clearCompleted}>
+                <Button variant="outline" size="sm" onClick={clearCompleted} data-oid="udgjhmn">
                   {t("dialogs.export.clearCompleted")}
                 </Button>
               )}
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[300px] pr-4">
-            <div className="space-y-2">
+        <CardContent data-oid="a:5o-ng">
+          <ScrollArea className="h-[300px] pr-4" data-oid="81powr4">
+            <div className="space-y-2" data-oid="oegn3d3">
               {renderJobs.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">{t("dialogs.export.emptyQueue")}</div>
+                <div className="text-center py-8 text-muted-foreground" data-oid="thf7.xo">
+                  {t("dialogs.export.emptyQueue")}
+                </div>
               ) : (
                 renderJobs.map((job) => (
                   <div
@@ -304,30 +318,37 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
                       (job.status as any) === "Completed" && "border-green-500/50",
                       (job.status as any) === "Failed" && "border-red-500/50",
                     )}
+                    data-oid="mmo4qa."
                   >
                     {getStatusIcon(job.status)}
 
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{job.project_name}</div>
-                      <div className="text-sm text-muted-foreground truncate">{job.output_path}</div>
+                    <div className="flex-1 min-w-0" data-oid="juy6sbv">
+                      <div className="font-medium truncate" data-oid="reh.cdw">
+                        {job.project_name}
+                      </div>
+                      <div className="text-sm text-muted-foreground truncate" data-oid="_0-90_f">
+                        {job.output_path}
+                      </div>
 
                       {(job.status as any) === "Processing" && job.progress && (
-                        <div className="mt-2 space-y-1">
-                          <Progress value={job.progress.percentage} className="h-1" />
-                          <div className="text-xs text-muted-foreground">
+                        <div className="mt-2 space-y-1" data-oid="jv4k_ja">
+                          <Progress value={job.progress.percentage} className="h-1" data-oid="odky4mt" />
+                          <div className="text-xs text-muted-foreground" data-oid="5scue78">
                             {job.progress.message || `${Math.round(job.progress.percentage)}%`}
                           </div>
                         </div>
                       )}
 
                       {(job.status as any) === "Failed" && job.progress?.message && (
-                        <div className="mt-1 text-xs text-red-500">{job.progress.message}</div>
+                        <div className="mt-1 text-xs text-red-500" data-oid="n760:5v">
+                          {job.progress.message}
+                        </div>
                       )}
                     </div>
 
                     {(job.status as any) === "Processing" && (
-                      <Button variant="ghost" size="icon" onClick={() => void cancelJob(job.id)}>
-                        <Pause className="h-4 w-4" />
+                      <Button variant="ghost" size="icon" onClick={() => void cancelJob(job.id)} data-oid="f.o.etm">
+                        <Pause className="h-4 w-4" data-oid="b6wfz_t" />
                       </Button>
                     )}
                   </div>
@@ -338,7 +359,7 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
 
           {/* Статистика */}
           {renderJobs.length > 0 && (
-            <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
+            <div className="mt-4 pt-4 border-t text-sm text-muted-foreground" data-oid="v25v-as">
               {t("dialogs.export.queueStats", {
                 total: stats.total,
                 completed: stats.completed,
@@ -350,27 +371,30 @@ export function BatchExportTab({ onClose, defaultSettings }: BatchExportTabProps
       </Card>
 
       {/* Кнопки управления */}
-      <div className="flex gap-2">
+      <div className="flex gap-2" data-oid="fa_5z1o">
         {isProcessing ? (
           <>
-            <Button variant="outline" onClick={() => void cancelAllJobs()} className="flex-1">
+            <Button variant="outline" onClick={() => void cancelAllJobs()} className="flex-1" data-oid="t4pfagk">
               {t("dialogs.export.cancelAll")}
             </Button>
-            <Button disabled className="flex-1">
+            <Button disabled className="flex-1" data-oid="mzpael8">
               {t("dialogs.export.processing", { count: stats.processing })}...
             </Button>
           </>
         ) : (
           <>
-            <Button variant="outline" onClick={onClose} className="flex-1">
+            <Button variant="outline" onClick={onClose} className="flex-1" data-oid="nwj3zp_">
               {t("dialogs.export.close")}
             </Button>
             <Button
               onClick={() => void handleStartExport()}
               disabled={pendingProjects.length === 0 || !outputFolder}
               className="flex-1 bg-[#00CCC0] hover:bg-[#00B8B0] text-black"
+              data-oid="q:_yx--"
             >
-              {t("dialogs.export.startBatchExport", { count: pendingProjects.length })}
+              {t("dialogs.export.startBatchExport", {
+                count: pendingProjects.length,
+              })}
             </Button>
           </>
         )}

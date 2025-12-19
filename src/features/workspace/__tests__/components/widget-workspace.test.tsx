@@ -26,6 +26,7 @@ vi.mock("@dnd-kit/core", async () => {
           data-testid="dnd-context"
           data-ondragstart={onDragStart ? "true" : "false"}
           data-ondragend={onDragEnd ? "true" : "false"}
+          data-oid="48n31zu"
         >
           {children}
         </div>
@@ -47,12 +48,41 @@ vi.mock("@dnd-kit/core", async () => {
 
 describe("WidgetWorkspace", () => {
   const mockWidgetRenderers = {
-    timeline: (widget: Widget) => <div data-testid={`widget-${widget.id}`}>Timeline Widget</div>,
-    player: (widget: Widget) => <div data-testid={`widget-${widget.id}`}>Player Widget</div>,
-    browser: (widget: Widget) => <div data-testid={`widget-${widget.id}`}>Browser Widget</div>,
-    options: (widget: Widget) => <div data-testid={`widget-${widget.id}`}>Options Widget</div>,
-    "ai-chat": (widget: Widget) => <div data-testid={`widget-${widget.id}`}>AI Chat Widget</div>,
-    "ai-suggestions": (widget: Widget) => <div data-testid={`widget-${widget.id}`}>AI Suggestions Widget</div>,
+    timeline: (widget: Widget) => (
+      <div data-testid={`widget-${widget.id}`} data-oid="kzn5ff6">
+        Timeline Widget
+      </div>
+    ),
+
+    player: (widget: Widget) => (
+      <div data-testid={`widget-${widget.id}`} data-oid="-9-dvdk">
+        Player Widget
+      </div>
+    ),
+
+    browser: (widget: Widget) => (
+      <div data-testid={`widget-${widget.id}`} data-oid="59kpcct">
+        Browser Widget
+      </div>
+    ),
+
+    options: (widget: Widget) => (
+      <div data-testid={`widget-${widget.id}`} data-oid="c71m::2">
+        Options Widget
+      </div>
+    ),
+
+    "ai-chat": (widget: Widget) => (
+      <div data-testid={`widget-${widget.id}`} data-oid="-c7cy_1">
+        AI Chat Widget
+      </div>
+    ),
+
+    "ai-suggestions": (widget: Widget) => (
+      <div data-testid={`widget-${widget.id}`} data-oid="orj.cv-">
+        AI Suggestions Widget
+      </div>
+    ),
   } as Record<WidgetType, (widget: Widget) => ReactElement>
 
   beforeEach(() => {
@@ -61,8 +91,8 @@ describe("WidgetWorkspace", () => {
 
   it("должен рендерить workspace контейнер", () => {
     const { container } = render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <WorkspaceLayoutProvider data-oid="la-1.51">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="rv17bwy" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -73,8 +103,8 @@ describe("WidgetWorkspace", () => {
 
   it("должен рендерить виджеты из текущего preset", () => {
     render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <WorkspaceLayoutProvider data-oid="tynkkh9">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="qmj7x8h" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -86,8 +116,8 @@ describe("WidgetWorkspace", () => {
 
   it("должен применить bounds виджета как inline стили", () => {
     render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <WorkspaceLayoutProvider data-oid="fwr_hp:">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="bbr.9pz" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -101,7 +131,7 @@ describe("WidgetWorkspace", () => {
 
   it("не должен рендерить виджеты без рендерера", () => {
     const incompleteRenderers = {
-      timeline: (_widget: Widget) => <div>Timeline</div>,
+      timeline: (_widget: Widget) => <div data-oid="hukyt59">Timeline</div>,
       // Намеренно пропускаем другие типы
     } as Record<WidgetType, (widget: Widget) => ReactElement>
 
@@ -109,8 +139,8 @@ describe("WidgetWorkspace", () => {
     const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
 
     render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={incompleteRenderers} />
+      <WorkspaceLayoutProvider data-oid="p-_c625">
+        <WidgetWorkspace widgetRenderers={incompleteRenderers} data-oid="u-jbsf6" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -124,12 +154,12 @@ describe("WidgetWorkspace", () => {
   it("не должен рендерить минимизированные виджеты", () => {
     // Используем собственный провайдер с минимизированным виджетом
     const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-      return <WorkspaceLayoutProvider>{children}</WorkspaceLayoutProvider>
+      return <WorkspaceLayoutProvider data-oid="g746ku8">{children}</WorkspaceLayoutProvider>
     }
 
     const { rerender } = render(
-      <TestWrapper>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <TestWrapper data-oid="3wonm7z">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="l-4ve:8" />
       </TestWrapper>,
     )
 
@@ -141,8 +171,8 @@ describe("WidgetWorkspace", () => {
 
   it("должен показывать drag overlay во время перетаскивания", () => {
     render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <WorkspaceLayoutProvider data-oid="u.055aq">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="u.f.zvt" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -152,8 +182,8 @@ describe("WidgetWorkspace", () => {
 
   it("должен применить правильный z-index для виджетов", () => {
     render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <WorkspaceLayoutProvider data-oid="ny3rv5x">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid=".atwjm8" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -166,7 +196,7 @@ describe("WidgetWorkspace", () => {
   })
 
   it("должен передавать виджет в renderer функцию", () => {
-    const customRenderer = vi.fn((widget: Widget) => <div>Custom {widget.type}</div>)
+    const customRenderer = vi.fn((widget: Widget) => <div data-oid="0s7_kt9">Custom {widget.type}</div>)
 
     const customRenderers = {
       timeline: customRenderer,
@@ -178,8 +208,8 @@ describe("WidgetWorkspace", () => {
     } as Record<WidgetType, (widget: Widget) => ReactElement>
 
     render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={customRenderers} />
+      <WorkspaceLayoutProvider data-oid="99z1p4.">
+        <WidgetWorkspace widgetRenderers={customRenderers} data-oid="tem-pv9" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -191,8 +221,8 @@ describe("WidgetWorkspace", () => {
 
   it("должен корректно работать с пустым списком виджетов", () => {
     const { container } = render(
-      <WorkspaceLayoutProvider>
-        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+      <WorkspaceLayoutProvider data-oid="57f:em.">
+        <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="ihyaxlu" />
       </WorkspaceLayoutProvider>,
     )
 
@@ -204,8 +234,8 @@ describe("WidgetWorkspace", () => {
   describe("DnD Configuration", () => {
     it("должен настраивать DndContext с обработчиками", () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="x.rjaus">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="ht1jbgo" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -216,8 +246,8 @@ describe("WidgetWorkspace", () => {
 
     it("должен рендерить WidgetDock для минимизированных виджетов", () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="4r0blx5">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="k8y7v0v" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -231,8 +261,8 @@ describe("WidgetWorkspace", () => {
   describe("Widget Selection", () => {
     it("должен выделять виджет при клике через onSelect", async () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="7:c6hp9">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="c2s4ml5" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -257,8 +287,8 @@ describe("WidgetWorkspace", () => {
   describe("Widget Actions", () => {
     it("должен отображать кнопки управления виджетом", () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="c0:p6:1">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="-umsrbh" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -275,8 +305,8 @@ describe("WidgetWorkspace", () => {
 
     it("должен удалять виджет при клике на Close", async () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="3cnbak6">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="ytw.ivk" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -297,8 +327,8 @@ describe("WidgetWorkspace", () => {
 
     it("должен минимизировать виджет при клике на Minimize", async () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="mfujo_d">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="2m:yzwn" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -320,8 +350,8 @@ describe("WidgetWorkspace", () => {
   describe("Drag Handles", () => {
     it("должен отображать drag handle для каждого виджета", () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="limfd_b">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="6d-ptnw" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -334,8 +364,8 @@ describe("WidgetWorkspace", () => {
   describe("Resize Handles", () => {
     it("должен отображать resize handles для виджетов когда enableResize=true", () => {
       const { container } = render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="5ihnw9m">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="z7q8-6i" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -348,8 +378,8 @@ describe("WidgetWorkspace", () => {
   describe("Widget Types Display", () => {
     it("должен отображать тип виджета в header", () => {
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="m.yqqa8">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="9bmya57" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -365,8 +395,8 @@ describe("WidgetWorkspace", () => {
       // Поведение невидимых виджетов тестируется через widget-container
       // Здесь проверяем что виджеты изначально видимы
       const { container } = render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="wq.8v_b">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="dn95y68" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -383,24 +413,49 @@ describe("WidgetWorkspace", () => {
     it("должен корректно работать когда renderer возвращает сложный JSX", () => {
       const complexRenderers = {
         timeline: (widget: Widget) => (
-          <div data-testid={`complex-${widget.id}`}>
-            <header>Timeline Header</header>
-            <main>
-              <p>Timeline Content</p>
+          <div data-testid={`complex-${widget.id}`} data-oid="u-4z02c">
+            <header data-oid="-xfh2__">Timeline Header</header>
+            <main data-oid="lh5x6yk">
+              <p data-oid="3_a8q-7">Timeline Content</p>
             </main>
-            <footer>Timeline Footer</footer>
+            <footer data-oid="s-ot181">Timeline Footer</footer>
           </div>
         ),
-        player: (widget: Widget) => <span data-testid={`complex-${widget.id}`}>Player</span>,
-        browser: (widget: Widget) => <span data-testid={`complex-${widget.id}`}>Browser</span>,
-        options: (widget: Widget) => <span data-testid={`complex-${widget.id}`}>Options</span>,
-        "ai-chat": (widget: Widget) => <span data-testid={`complex-${widget.id}`}>AI Chat</span>,
-        "ai-suggestions": (widget: Widget) => <span data-testid={`complex-${widget.id}`}>AI Suggestions</span>,
+
+        player: (widget: Widget) => (
+          <span data-testid={`complex-${widget.id}`} data-oid="lxbnfs1">
+            Player
+          </span>
+        ),
+
+        browser: (widget: Widget) => (
+          <span data-testid={`complex-${widget.id}`} data-oid="5m4_ua0">
+            Browser
+          </span>
+        ),
+
+        options: (widget: Widget) => (
+          <span data-testid={`complex-${widget.id}`} data-oid="6568eft">
+            Options
+          </span>
+        ),
+
+        "ai-chat": (widget: Widget) => (
+          <span data-testid={`complex-${widget.id}`} data-oid="1zajiiw">
+            AI Chat
+          </span>
+        ),
+
+        "ai-suggestions": (widget: Widget) => (
+          <span data-testid={`complex-${widget.id}`} data-oid="o5n5-b6">
+            AI Suggestions
+          </span>
+        ),
       } as Record<WidgetType, (widget: Widget) => ReactElement>
 
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={complexRenderers} />
+        <WorkspaceLayoutProvider data-oid="a9a0p83">
+          <WidgetWorkspace widgetRenderers={complexRenderers} data-oid="5t2icf5" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -411,17 +466,46 @@ describe("WidgetWorkspace", () => {
 
     it("должен передавать widget.id в renderer", () => {
       const idTrackingRenderers = {
-        timeline: (widget: Widget) => <div data-widget-id={widget.id}>Timeline</div>,
-        player: (widget: Widget) => <div data-widget-id={widget.id}>Player</div>,
-        browser: (widget: Widget) => <div data-widget-id={widget.id}>Browser</div>,
-        options: (widget: Widget) => <div data-widget-id={widget.id}>Options</div>,
-        "ai-chat": (widget: Widget) => <div data-widget-id={widget.id}>AI Chat</div>,
-        "ai-suggestions": (widget: Widget) => <div data-widget-id={widget.id}>AI Suggestions</div>,
+        timeline: (widget: Widget) => (
+          <div data-widget-id={widget.id} data-oid="7csd_8h">
+            Timeline
+          </div>
+        ),
+
+        player: (widget: Widget) => (
+          <div data-widget-id={widget.id} data-oid=":a.wv9w">
+            Player
+          </div>
+        ),
+
+        browser: (widget: Widget) => (
+          <div data-widget-id={widget.id} data-oid=".89ago-">
+            Browser
+          </div>
+        ),
+
+        options: (widget: Widget) => (
+          <div data-widget-id={widget.id} data-oid="2--2:7h">
+            Options
+          </div>
+        ),
+
+        "ai-chat": (widget: Widget) => (
+          <div data-widget-id={widget.id} data-oid="1hgthh9">
+            AI Chat
+          </div>
+        ),
+
+        "ai-suggestions": (widget: Widget) => (
+          <div data-widget-id={widget.id} data-oid="j6hehii">
+            AI Suggestions
+          </div>
+        ),
       } as Record<WidgetType, (widget: Widget) => ReactElement>
 
       const { container } = render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={idTrackingRenderers} />
+        <WorkspaceLayoutProvider data-oid="4ly0yd4">
+          <WidgetWorkspace widgetRenderers={idTrackingRenderers} data-oid="770atyg" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -436,7 +520,9 @@ describe("WidgetWorkspace", () => {
 
     it("должен передавать widget.bounds в renderer", () => {
       const boundsTrackingRenderer = vi.fn((widget: Widget) => (
-        <div data-bounds={JSON.stringify(widget.bounds)}>Widget</div>
+        <div data-bounds={JSON.stringify(widget.bounds)} data-oid="okd9rq7">
+          Widget
+        </div>
       ))
 
       const boundsRenderers = {
@@ -449,8 +535,8 @@ describe("WidgetWorkspace", () => {
       } as Record<WidgetType, (widget: Widget) => ReactElement>
 
       render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={boundsRenderers} />
+        <WorkspaceLayoutProvider data-oid=".kh2kcd">
+          <WidgetWorkspace widgetRenderers={boundsRenderers} data-oid="::9k0lg" />
         </WorkspaceLayoutProvider>,
       )
 
@@ -471,8 +557,8 @@ describe("WidgetWorkspace", () => {
   describe("Workspace Container Styling", () => {
     it("должен иметь правильные классы контейнера", () => {
       const { container } = render(
-        <WorkspaceLayoutProvider>
-          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} />
+        <WorkspaceLayoutProvider data-oid="3dl4wti">
+          <WidgetWorkspace widgetRenderers={mockWidgetRenderers} data-oid="vfrlkod" />
         </WorkspaceLayoutProvider>,
       )
 

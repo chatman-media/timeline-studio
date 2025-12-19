@@ -701,27 +701,31 @@ export function AiChat() {
   }
 
   return (
-    <TooltipProvider>
-      <div className="relative z-50 flex h-full flex-col bg-background text-foreground">
+    <TooltipProvider data-oid="vfvgxp1">
+      <div className="relative z-50 flex h-full flex-col bg-background text-foreground" data-oid="e75x7u_">
         {/* Header */}
-        <div className="flex h-10 items-center justify-between border-b border-border px-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-medium text-foreground">{t("timeline.chat.title", "Chat")}</h2>
+        <div className="flex h-10 items-center justify-between border-b border-border px-3" data-oid="nppz-ja">
+          <div className="flex items-center gap-2" data-oid="2z9yu3i">
+            <h2 className="text-sm font-medium text-foreground" data-oid="e-:s2.-">
+              {t("timeline.chat.title", "Chat")}
+            </h2>
             {isIntegrated && (
-              <div className="flex items-center gap-1 text-[10px] text-green-500">
-                <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                <span>{t("timeline.chat.ai_connected", "AI подключен")}</span>
+              <div className="flex items-center gap-1 text-[10px] text-green-500" data-oid="-9sjv06">
+                <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" data-oid="ay.v_h1" />
+
+                <span data-oid="d8ka6wx">{t("timeline.chat.ai_connected", "AI подключен")}</span>
               </div>
             )}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1" data-oid="_ar7jcl">
             <Button
               size="icon"
               variant="ghost"
               className="h-8 w-8 text-muted-foreground hover:text-white"
               onClick={() => createNewChat()}
+              data-oid="mmwv07u"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4" data-oid="yv6dzim" />
             </Button>
             <Button
               size="icon"
@@ -732,25 +736,27 @@ export function AiChat() {
                 void clearMessages()
                 setShowHistory(!showHistory)
               }}
+              data-oid="ruhaakq"
             >
-              <History className="h-4 w-4" />
+              <History className="h-4 w-4" data-oid="yf3xrtt" />
             </Button>
             <Button
               size="icon"
               variant="ghost"
               className="h-8 w-8 text-muted-foreground hover:text-white"
               onClick={() => openModal("user-settings")}
+              data-oid="inc5gyi"
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-4 w-4" data-oid="plti-v:" />
             </Button>
           </div>
         </div>
 
         {/* Main content area */}
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex flex-1 flex-col overflow-hidden" data-oid="p3k.nwe">
           {/* Input area - positioned at top when no messages */}
           {chatMessages.length === 0 && (
-            <div className="p-4">
+            <div className="p-4" data-oid="3myrf15">
               {/* AI Suggestions Panel */}
               <AISuggestionsPanel
                 mediaFilesCount={resourceStats?.totalMedia || 0}
@@ -766,13 +772,16 @@ export function AiChat() {
                   setAutoSendTrigger(true)
                 }}
                 className="mb-3"
+                data-oid="0m:7:ez"
               />
 
               {/* Подсказка для пустого проекта */}
               {resourceStats && resourceStats.totalMedia === 0 && (
-                <div className="mb-3 rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground">
-                  <p className="mb-2">💡 {t("timeline.chat.empty_project_hint", "Проект пока пустой. Начните с:")}</p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="mb-3 rounded-lg bg-muted/50 p-3 text-sm text-muted-foreground" data-oid="36vvql-">
+                  <p className="mb-2" data-oid="0h9:w_c">
+                    💡 {t("timeline.chat.empty_project_hint", "Проект пока пустой. Начните с:")}
+                  </p>
+                  <div className="flex flex-wrap gap-2" data-oid="4iojuq.">
                     <Button
                       size="sm"
                       variant="outline"
@@ -784,6 +793,7 @@ export function AiChat() {
                           logger.info(`Импортировано ${importedFiles.length} файлов`)
                         }
                       }}
+                      data-oid="4-ut3u4"
                     >
                       {t("timeline.chat.import_media", "Импортировать медиа")}
                     </Button>
@@ -792,6 +802,7 @@ export function AiChat() {
                       variant="outline"
                       className="h-7 text-xs"
                       onClick={() => setMessage("помоги импортировать видео для монтажа")}
+                      data-oid="98-km2_"
                     >
                       {t("timeline.chat.ask_ai_import", "Спросить AI")}
                     </Button>
@@ -799,7 +810,7 @@ export function AiChat() {
                 </div>
               )}
 
-              <div className="relative">
+              <div className="relative" data-oid="ogn7kzx">
                 <textarea
                   ref={inputRef}
                   value={message}
@@ -819,7 +830,9 @@ export function AiChat() {
                   disabled={isProcessing || isStreaming}
                   rows={4}
                   data-testid="chat-input"
+                  data-oid="e59hdv0"
                 />
+
                 <Button
                   onClick={isProcessing || isStreaming ? handleStopProcessing : handleSendMessage}
                   disabled={!message.trim() && !isProcessing && !isStreaming}
@@ -831,53 +844,63 @@ export function AiChat() {
                       : "bg-muted text-muted-foreground hover:bg-muted/50",
                   )}
                   data-testid="send-button"
+                  data-oid="kanpn3_"
                 >
                   {isProcessing || isStreaming ? (
-                    <StopCircle className="h-4 w-4" />
+                    <StopCircle className="h-4 w-4" data-oid="az:ore." />
                   ) : (
-                    <Send className="h-4 w-4 rotate-45" />
+                    <Send className="h-4 w-4 rotate-45" data-oid="qq3vgkv" />
                   )}
                 </Button>
               </div>
 
               {/* Mode and model selectors */}
-              <div className="mt-3 flex gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+              <div className="mt-3 flex gap-2" data-oid="f-t3yoo">
+                <DropdownMenu data-oid="b3ztjxx">
+                  <DropdownMenuTrigger asChild data-oid="79gusw8">
                     <Button
                       variant="outline"
                       className="h-9 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                       data-testid="chat-mode-selector"
+                      data-oid=":gi6l5x"
                     >
                       {CHAT_MODES.find((m) => m.id === chatMode)?.name}
-                      <ChevronDown className="ml-2 h-4 w-4" />
+                      <ChevronDown className="ml-2 h-4 w-4" data-oid="d5l:c9-" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[200px] border-border bg-muted">
+                  <DropdownMenuContent align="start" className="w-[200px] border-border bg-muted" data-oid="zwa_d4m">
                     {CHAT_MODES.map((mode) => (
                       <DropdownMenuItem
                         key={mode.id}
                         onClick={() => setChatMode(mode.id)}
                         className="flex items-center justify-between text-foreground hover:bg-accent hover:text-white"
+                        data-oid="8qz:.kr"
                       >
-                        <div>
-                          <div className="font-medium">{mode.name}</div>
-                          <div className="text-xs text-muted-foreground/70">{mode.description}</div>
+                        <div data-oid="jtylqin">
+                          <div className="font-medium" data-oid="llqmtak">
+                            {mode.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground/70" data-oid="w9p8w9_">
+                            {mode.description}
+                          </div>
                         </div>
-                        {chatMode === mode.id && <div className="ml-2 h-2 w-2 rounded-full bg-teal" />}
+                        {chatMode === mode.id && (
+                          <div className="ml-2 h-2 w-2 rounded-full bg-teal" data-oid="2-3cqrm" />
+                        )}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                <DropdownMenu data-oid="yv0igt8">
+                  <DropdownMenuTrigger asChild data-oid="x3.6d:t">
                     <Button
                       variant="outline"
                       className="h-9 flex-1 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                       data-testid="agent-selector"
+                      data-oid="frt03nl"
                     >
-                      <span className="truncate">
+                      <span className="truncate" data-oid="3bfxc9:">
                         {isLoadingModels
                           ? t("timeline.chat.loading_models", "Загрузка моделей...")
                           : selectedAgentId
@@ -886,20 +909,21 @@ export function AiChat() {
                               ? displayedModels[0].name
                               : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" data-oid="i4bocu2" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
                     className="w-[250px] border-border bg-muted"
                     data-testid="agent-dropdown"
+                    data-oid="e6xk1qk"
                   >
                     {isLoadingModels ? (
-                      <DropdownMenuItem disabled className="text-muted-foreground">
+                      <DropdownMenuItem disabled className="text-muted-foreground" data-oid="b5n1495">
                         {t("timeline.chat.loading_models", "Загрузка моделей...")}
                       </DropdownMenuItem>
                     ) : displayedModels.length === 0 ? (
-                      <DropdownMenuItem disabled className="text-muted-foreground">
+                      <DropdownMenuItem disabled className="text-muted-foreground" data-oid="i73lh9z">
                         {chatMode === "agent"
                           ? t("timeline.chat.no_tool_models", "Нет моделей с поддержкой инструментов")
                           : t("timeline.chat.no_models", "Нет доступных моделей")}
@@ -911,6 +935,7 @@ export function AiChat() {
                           onClick={() => selectAgent(agent.id)}
                           className="text-foreground hover:bg-accent hover:text-white"
                           data-testid={`agent-option-${agent.id}`}
+                          data-oid="61wjd9l"
                         >
                           {agent.name}
                         </DropdownMenuItem>
@@ -924,8 +949,8 @@ export function AiChat() {
 
           {/* Messages area */}
           {chatMessages.length > 0 && (
-            <ScrollArea className="flex-1">
-              <div className="p-4">
+            <ScrollArea className="flex-1" data-oid="44z4edh">
+              <div className="p-4" data-oid="be.69_-">
                 {/* AI Action Preview - показываем когда есть pending actions */}
                 {pendingActions.length > 0 && (
                   <AIActionPreview
@@ -933,15 +958,21 @@ export function AiChat() {
                     onConfirm={handleConfirmActions}
                     onCancel={handleCancelActions}
                     className="mb-3"
+                    data-oid=":.ld-ey"
                   />
                 )}
 
                 {/* AI Processing Indicator - показываем когда нет pending actions */}
                 {pendingActions.length === 0 && (isProcessing || isStreaming) && processingStage !== "idle" && (
-                  <AIProcessingIndicator stage={processingStage} toolsInUse={toolsInUse} className="mb-3" />
+                  <AIProcessingIndicator
+                    stage={processingStage}
+                    toolsInUse={toolsInUse}
+                    className="mb-3"
+                    data-oid="ywslo6h"
+                  />
                 )}
 
-                <div className="flex flex-col gap-3" data-testid="messages-container">
+                <div className="flex flex-col gap-3" data-testid="messages-container" data-oid="zfm_xa9">
                   {chatMessages.map((msg) => (
                     <div
                       key={msg.id}
@@ -950,33 +981,47 @@ export function AiChat() {
                         msg.role === "user" ? "ml-auto bg-teal text-white" : "bg-muted text-foreground",
                       )}
                       data-testid={`message-${msg.role}-${msg.id}`}
+                      data-oid="11yml_p"
                     >
-                      <div className="flex items-start gap-2">
-                        <div className="mt-0.5 shrink-0">
-                          {msg.role === "user" ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5" />}
+                      <div className="flex items-start gap-2" data-oid="2lw.jwn">
+                        <div className="mt-0.5 shrink-0" data-oid="4gbrnq-">
+                          {msg.role === "user" ? (
+                            <User className="h-3.5 w-3.5" data-oid="-1y4zz5" />
+                          ) : (
+                            <Bot className="h-3.5 w-3.5" data-oid="44ivwyg" />
+                          )}
                         </div>
-                        <div className="text-sm leading-relaxed">{msg.content}</div>
+                        <div className="text-sm leading-relaxed" data-oid="lk37pq.">
+                          {msg.content}
+                        </div>
                       </div>
-                      <div className="mt-1.5 text-right text-[10px] opacity-0 transition-opacity group-hover:opacity-100">
+                      <div
+                        className="mt-1.5 text-right text-[10px] opacity-0 transition-opacity group-hover:opacity-100"
+                        data-oid="gfzndui"
+                      >
                         {formatTime(msg.timestamp)}
                       </div>
                     </div>
                   ))}
                   {/* Показываем стриминг контента (если есть) */}
                   {isStreaming && streamingContent && (
-                    <div className="flex max-w-[90%] flex-col rounded-lg bg-muted p-3" data-testid="streaming-message">
-                      <div className="flex items-start gap-2">
-                        <div className="mt-0.5 shrink-0">
-                          <Bot className="h-3.5 w-3.5 text-foreground" />
+                    <div
+                      className="flex max-w-[90%] flex-col rounded-lg bg-muted p-3"
+                      data-testid="streaming-message"
+                      data-oid="_xhih3p"
+                    >
+                      <div className="flex items-start gap-2" data-oid="d14d64a">
+                        <div className="mt-0.5 shrink-0" data-oid="h9q5xxh">
+                          <Bot className="h-3.5 w-3.5 text-foreground" data-oid="io3duih" />
                         </div>
-                        <div className="text-sm leading-relaxed text-foreground">
+                        <div className="text-sm leading-relaxed text-foreground" data-oid="zbsyos3">
                           {streamingContent}
-                          <span className="inline-block ml-1 h-4 w-2 animate-pulse bg-teal" />
+                          <span className="inline-block ml-1 h-4 w-2 animate-pulse bg-teal" data-oid="9b-fvg0" />
                         </div>
                       </div>
                     </div>
                   )}
-                  <div ref={messagesEndRef} />
+                  <div ref={messagesEndRef} data-oid="vgaaq64" />
                 </div>
               </div>
             </ScrollArea>
@@ -984,8 +1029,8 @@ export function AiChat() {
 
           {/* Input area when messages exist */}
           {chatMessages.length > 0 && (
-            <div className="border-t border-border p-4">
-              <div className="relative">
+            <div className="border-t border-border p-4" data-oid="n_mi4n.">
+              <div className="relative" data-oid="f4f6ngo">
                 <textarea
                   ref={inputRef}
                   value={message}
@@ -1005,7 +1050,9 @@ export function AiChat() {
                   disabled={isProcessing || isStreaming}
                   rows={1}
                   data-testid="chat-input-with-messages"
+                  data-oid="d3h10nf"
                 />
+
                 <Button
                   onClick={isProcessing || isStreaming ? handleStopProcessing : handleSendMessage}
                   disabled={!message.trim() && !isProcessing && !isStreaming}
@@ -1017,52 +1064,62 @@ export function AiChat() {
                       : "bg-muted text-muted-foreground hover:bg-muted/50",
                   )}
                   data-testid="send-button-with-messages"
+                  data-oid="bx.hivt"
                 >
                   {isProcessing || isStreaming ? (
-                    <StopCircle className="h-4 w-4" />
+                    <StopCircle className="h-4 w-4" data-oid="4j_e.0f" />
                   ) : (
-                    <Send className="h-4 w-4 rotate-45" />
+                    <Send className="h-4 w-4 rotate-45" data-oid="z_-7rle" />
                   )}
                 </Button>
               </div>
 
               {/* Mode and model selectors */}
-              <div className="mt-3 flex gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+              <div className="mt-3 flex gap-2" data-oid="kxg57.g">
+                <DropdownMenu data-oid="9vhbe49">
+                  <DropdownMenuTrigger asChild data-oid="sp69jgq">
                     <Button
                       variant="outline"
                       className="h-9 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
+                      data-oid="x7iots_"
                     >
                       {CHAT_MODES.find((m) => m.id === chatMode)?.name}
-                      <ChevronDown className="ml-2 h-4 w-4" />
+                      <ChevronDown className="ml-2 h-4 w-4" data-oid="i-hnxoo" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-[200px] border-border bg-muted">
+                  <DropdownMenuContent align="start" className="w-[200px] border-border bg-muted" data-oid="pfemn4j">
                     {CHAT_MODES.map((mode) => (
                       <DropdownMenuItem
                         key={mode.id}
                         onClick={() => setChatMode(mode.id)}
                         className="flex items-center justify-between text-foreground hover:bg-accent hover:text-white"
+                        data-oid="vu0p8yk"
                       >
-                        <div>
-                          <div className="font-medium">{mode.name}</div>
-                          <div className="text-xs text-muted-foreground/70">{mode.description}</div>
+                        <div data-oid="t56y17r">
+                          <div className="font-medium" data-oid="w:xs5._">
+                            {mode.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground/70" data-oid="e0llwrg">
+                            {mode.description}
+                          </div>
                         </div>
-                        {chatMode === mode.id && <div className="ml-2 h-2 w-2 rounded-full bg-teal" />}
+                        {chatMode === mode.id && (
+                          <div className="ml-2 h-2 w-2 rounded-full bg-teal" data-oid="gaohdf8" />
+                        )}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                <DropdownMenu data-oid="ypmxp_s">
+                  <DropdownMenuTrigger asChild data-oid="zzztftb">
                     <Button
                       variant="outline"
                       className="h-9 flex-1 justify-between border-border bg-muted text-sm text-foreground hover:bg-accent"
                       data-testid="agent-selector"
+                      data-oid="h-_7e-."
                     >
-                      <span className="truncate">
+                      <span className="truncate" data-oid="2kw2ok6">
                         {isLoadingModels
                           ? t("timeline.chat.loading_models", "Загрузка моделей...")
                           : selectedAgentId
@@ -1071,20 +1128,21 @@ export function AiChat() {
                               ? displayedModels[0].name
                               : t("timeline.chat.no_models", "Нет доступных моделей")}
                       </span>
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0" data-oid="l95c3a1" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
                     className="w-[250px] border-border bg-muted"
                     data-testid="agent-dropdown"
+                    data-oid="a7600yr"
                   >
                     {isLoadingModels ? (
-                      <DropdownMenuItem disabled className="text-muted-foreground">
+                      <DropdownMenuItem disabled className="text-muted-foreground" data-oid="znyszy:">
                         {t("timeline.chat.loading_models", "Загрузка моделей...")}
                       </DropdownMenuItem>
                     ) : displayedModels.length === 0 ? (
-                      <DropdownMenuItem disabled className="text-muted-foreground">
+                      <DropdownMenuItem disabled className="text-muted-foreground" data-oid="zy:cfa_">
                         {chatMode === "agent"
                           ? t("timeline.chat.no_tool_models", "Нет моделей с поддержкой инструментов")
                           : t("timeline.chat.no_models", "Нет доступных моделей")}
@@ -1096,6 +1154,7 @@ export function AiChat() {
                           onClick={() => selectAgent(agent.id)}
                           className="text-foreground hover:bg-accent hover:text-white"
                           data-testid={`agent-option-${agent.id}`}
+                          data-oid="2ow:zd_"
                         >
                           {agent.name}
                         </DropdownMenuItem>
@@ -1109,7 +1168,7 @@ export function AiChat() {
 
           {/* Previous threads section */}
           {chatMessages.length === 0 && (
-            <div className="flex-1" data-testid="chat-list-container">
+            <div className="flex-1" data-testid="chat-list-container" data-oid="tcnnk24">
               <ChatList
                 sessions={sessions}
                 currentSessionId={currentSessionId}
@@ -1126,6 +1185,7 @@ export function AiChat() {
                     sessionId: id,
                   })
                 }}
+                data-oid="elzplzi"
               />
             </div>
           )}

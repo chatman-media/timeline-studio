@@ -35,21 +35,21 @@ describe("ColorGradingSavePresetModal", () => {
   })
 
   it("should render modal with preset name input", () => {
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="ei.ha4q" />)
 
     expect(screen.getByLabelText("Name")).toBeInTheDocument()
     expect(screen.getByPlaceholderText("My Preset")).toBeInTheDocument()
   })
 
   it("should render cancel and save buttons", () => {
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="dv5bze2" />)
 
     expect(screen.getByText("Cancel")).toBeInTheDocument()
     expect(screen.getByText("Save")).toBeInTheDocument()
   })
 
   it("should have save button disabled when input is empty", () => {
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="xz6bnb0" />)
 
     const saveButton = screen.getByText("Save")
     expect(saveButton).toBeDisabled()
@@ -57,7 +57,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should enable save button when input has value", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="mv8z__t" />)
 
     const input = screen.getByPlaceholderText("My Preset")
     await user.type(input, "Test Preset")
@@ -68,7 +68,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should keep save button disabled when input has only whitespace", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="j:9-349" />)
 
     const input = screen.getByPlaceholderText("My Preset")
     await user.type(input, "   ")
@@ -79,7 +79,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should update input value when typing", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="2cd9swn" />)
 
     const input = screen.getByPlaceholderText("My Preset") as HTMLInputElement
     await user.type(input, "My Custom Preset")
@@ -89,7 +89,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should call onSave and closeModal when save is clicked with valid input", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="_3dlin1" />)
 
     const input = screen.getByPlaceholderText("My Preset")
     await user.type(input, "Test Preset")
@@ -103,7 +103,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should trim whitespace from preset name before saving", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="xhpc6nz" />)
 
     const input = screen.getByPlaceholderText("My Preset")
     await user.type(input, "  Test Preset  ")
@@ -116,7 +116,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should call closeModal when cancel is clicked", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="7hrwyku" />)
 
     const cancelButton = screen.getByText("Cancel")
     await user.click(cancelButton)
@@ -127,7 +127,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should not call onSave when save is clicked with empty input", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="gx5pfdn" />)
 
     const saveButton = screen.getByText("Save")
     // Button should be disabled, but test clicking anyway
@@ -138,7 +138,7 @@ describe("ColorGradingSavePresetModal", () => {
   })
 
   it("should have proper styling classes", () => {
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="et57f4q" />)
 
     const container = screen.getByText("Name").closest(".bg-card")
     expect(container).toBeInTheDocument()
@@ -146,7 +146,7 @@ describe("ColorGradingSavePresetModal", () => {
   })
 
   it("should have grid layout for input field", () => {
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid=":mx.y.r" />)
 
     const label = screen.getByText("Name")
     expect(label).toHaveClass("text-right")
@@ -158,7 +158,7 @@ describe("ColorGradingSavePresetModal", () => {
   })
 
   it("should have proper button styling", () => {
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="p:r4ol-" />)
 
     const cancelButton = screen.getByText("Cancel")
     expect(cancelButton).toHaveClass("hover:bg-accent")
@@ -169,7 +169,7 @@ describe("ColorGradingSavePresetModal", () => {
   })
 
   it("should use unique id for input field", () => {
-    const { container } = render(<ColorGradingSavePresetModal />)
+    const { container } = render(<ColorGradingSavePresetModal data-oid="pb6kh6q" />)
 
     const input = screen.getByPlaceholderText("My Preset")
     const inputId = input.getAttribute("id")
@@ -183,7 +183,7 @@ describe("ColorGradingSavePresetModal", () => {
 
   it("should clear input after successful save", async () => {
     const user = userEvent.setup()
-    render(<ColorGradingSavePresetModal />)
+    render(<ColorGradingSavePresetModal data-oid="4g88t93" />)
 
     const input = screen.getByPlaceholderText("My Preset") as HTMLInputElement
     await user.type(input, "Test Preset")

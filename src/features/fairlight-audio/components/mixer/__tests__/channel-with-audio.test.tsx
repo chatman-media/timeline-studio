@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 // Mock dependencies before importing the component
 vi.mock("../channel-strip", () => ({
   ChannelStrip: ({ name, ...props }: any) => (
-    <div data-testid="channel-strip" data-name={name} {...props}>
+    <div data-testid="channel-strip" data-name={name} {...props} data-oid="x8o_1jg">
       {name}
     </div>
   ),
@@ -33,6 +33,7 @@ vi.mock("../../waveform/simple-waveform", () => ({
       data-audio-element={audioElement ? "present" : "absent"}
       data-height={height}
       className={className}
+      data-oid="hn52::s"
     >
       Waveform
     </div>
@@ -78,7 +79,7 @@ describe("ChannelWithAudio", () => {
   })
 
   it("should render channel strip with correct props", () => {
-    render(<ChannelWithAudio {...defaultProps} />)
+    render(<ChannelWithAudio {...defaultProps} data-oid=":c9fxx." />)
 
     const channelStrip = screen.getByTestId("channel-strip")
     expect(channelStrip).toBeTruthy()
@@ -97,7 +98,7 @@ describe("ChannelWithAudio", () => {
       seek: vi.fn(),
     })
 
-    render(<ChannelWithAudio {...defaultProps} />)
+    render(<ChannelWithAudio {...defaultProps} data-oid="px32pfm" />)
 
     const channelStrip = screen.getByTestId("channel-strip")
     expect(channelStrip.getAttribute("data-name")).toBe("Test Channel (Loading...)")
@@ -115,14 +116,14 @@ describe("ChannelWithAudio", () => {
       seek: vi.fn(),
     })
 
-    render(<ChannelWithAudio {...defaultProps} />)
+    render(<ChannelWithAudio {...defaultProps} data-oid="jcjoz1n" />)
 
     const channelStrip = screen.getByTestId("channel-strip")
     expect(channelStrip.getAttribute("data-name")).toBe("Test Channel (!)")
   })
 
   it("should not render waveform when trackId is not provided", () => {
-    render(<ChannelWithAudio {...defaultProps} />)
+    render(<ChannelWithAudio {...defaultProps} data-oid="x1_i0k5" />)
 
     const waveform = screen.queryByTestId("simple-waveform")
     expect(waveform).toBeNull()
@@ -141,7 +142,7 @@ describe("ChannelWithAudio", () => {
       seek: vi.fn(),
     })
 
-    render(<ChannelWithAudio {...defaultProps} trackId="track-1" />)
+    render(<ChannelWithAudio {...defaultProps} trackId="track-1" data-oid="47cj2j0" />)
 
     const waveform = screen.getByTestId("simple-waveform")
     expect(waveform).toBeTruthy()
@@ -151,13 +152,13 @@ describe("ChannelWithAudio", () => {
   })
 
   it("should call useChannelAudio with correct parameters", () => {
-    render(<ChannelWithAudio {...defaultProps} trackId="track-1" />)
+    render(<ChannelWithAudio {...defaultProps} trackId="track-1" data-oid="h-g8d8p" />)
 
     expect(mockedUseChannelAudio).toHaveBeenCalledWith("channel-1", "track-1")
   })
 
   it("should apply custom className", () => {
-    const { container } = render(<ChannelWithAudio {...defaultProps} className="custom-class" />)
+    const { container } = render(<ChannelWithAudio {...defaultProps} className="custom-class" data-oid="go2t9e3" />)
 
     const wrapper = container.firstChild as HTMLElement | null
     expect(wrapper?.className).toContain("custom-class")
@@ -173,7 +174,7 @@ describe("ChannelWithAudio", () => {
       extraProp: "should-pass-through",
     }
 
-    render(<ChannelWithAudio {...extraProps} />)
+    render(<ChannelWithAudio {...extraProps} data-oid="1j0qf39" />)
 
     const channelStrip = screen.getByTestId("channel-strip")
     expect(channelStrip.getAttribute("data-name")).toBe("Test Channel")
@@ -184,7 +185,7 @@ describe("ChannelWithAudio", () => {
   })
 
   it("should render waveform container with correct spacing", () => {
-    render(<ChannelWithAudio {...defaultProps} trackId="track-1" />)
+    render(<ChannelWithAudio {...defaultProps} trackId="track-1" data-oid=":cp.od4" />)
 
     const waveform = screen.getByTestId("simple-waveform")
     const waveformContainer = waveform.parentElement
@@ -204,7 +205,7 @@ describe("ChannelWithAudio", () => {
       seek: vi.fn(),
     })
 
-    render(<ChannelWithAudio {...defaultProps} trackId="track-1" />)
+    render(<ChannelWithAudio {...defaultProps} trackId="track-1" data-oid="f_1yyem" />)
 
     const waveform = screen.getByTestId("simple-waveform")
     expect(waveform.getAttribute("data-audio-element")).toBe("absent")
@@ -222,7 +223,7 @@ describe("ChannelWithAudio", () => {
       seek: vi.fn(),
     })
 
-    render(<ChannelWithAudio {...defaultProps} />)
+    render(<ChannelWithAudio {...defaultProps} data-oid="tjq_fm7" />)
 
     // All props should still be passed to ChannelStrip
     const channelStrip = screen.getByTestId("channel-strip")
@@ -243,7 +244,7 @@ describe("ChannelWithAudio", () => {
       seek: vi.fn(),
     })
 
-    render(<ChannelWithAudio {...defaultProps} />)
+    render(<ChannelWithAudio {...defaultProps} data-oid="ijgww9o" />)
 
     // All props should still be passed to ChannelStrip
     const channelStrip = screen.getByTestId("channel-strip")

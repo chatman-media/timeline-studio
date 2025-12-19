@@ -115,8 +115,10 @@ export const OptimizedClip = memo(function OptimizedClip({
       }[track.type] || "bg-muted"
 
     return (
-      <div className={cn("h-full w-full rounded border border-border", bgColor)}>
-        <div className="p-1 text-xs text-foreground/70 truncate">{clip.name || clip.mediaFile?.name || track.type}</div>
+      <div className={cn("h-full w-full rounded border border-border", bgColor)} data-oid="xqrehyq">
+        <div className="p-1 text-xs text-foreground/70 truncate" data-oid="erhm.18">
+          {clip.name || clip.mediaFile?.name || track.type}
+        </div>
       </div>
     )
   }, [track.type, clip.name, clip.mediaFile?.name])
@@ -133,7 +135,14 @@ export const OptimizedClip = memo(function OptimizedClip({
       case "video":
       case "image":
         return (
-          <VideoClip clip={clip} track={track} pixelsPerSecond={timeScale} onUpdate={onUpdate} onRemove={onRemove} />
+          <VideoClip
+            clip={clip}
+            track={track}
+            pixelsPerSecond={timeScale}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+            data-oid="8cnv0d4"
+          />
         )
 
       case "audio":
@@ -141,12 +150,19 @@ export const OptimizedClip = memo(function OptimizedClip({
       case "voiceover":
       case "sfx":
       case "ambient":
-        return <AudioClip clip={clip} track={track} onUpdate={onUpdate} onRemove={onRemove} />
+        return <AudioClip clip={clip} track={track} onUpdate={onUpdate} onRemove={onRemove} data-oid="lqwu.se" />
 
       case "subtitle":
       case "title":
         if (isSubtitleClip(clip)) {
-          return <SubtitleClip clip={clip} trackHeight={track.height || 64} isSelected={clip.isSelected || false} />
+          return (
+            <SubtitleClip
+              clip={clip}
+              trackHeight={track.height || 64}
+              isSelected={clip.isSelected || false}
+              data-oid=":j2og8c"
+            />
+          )
         }
         return renderSimplifiedContent()
 
@@ -231,6 +247,7 @@ export const OptimizedClip = memo(function OptimizedClip({
         onShowFilters={() => {
           /* TODO */
         }}
+        data-oid="hzbissb"
       >
         <div
           className={cn(
@@ -249,6 +266,7 @@ export const OptimizedClip = memo(function OptimizedClip({
           data-testid="timeline-clip"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          data-oid="1a5cgrp"
         >
           {renderClipContent()}
 
@@ -256,7 +274,7 @@ export const OptimizedClip = memo(function OptimizedClip({
           {renderDetails && width > 80 && (
             <>
               {/* Linked clip indicator */}
-              <LinkedClipIndicator isLinked={clip.isLinked || false} />
+              <LinkedClipIndicator isLinked={clip.isLinked || false} data-oid="5u25lpz" />
 
               {/* J/L Cut indicators - только если есть связанный клип */}
               {linkedClip && clip.audioOffset !== undefined && clip.audioOffset !== 0 && (
@@ -267,41 +285,45 @@ export const OptimizedClip = memo(function OptimizedClip({
                       ["audio", "music", "voiceover", "sfx", "ambient"].includes(track.type) ? clip : linkedClip
                     }
                     pixelsPerSecond={timeScale}
+                    data-oid="0199qwn"
                   />
+
                   <JLCutDragHandle
                     clip={clip}
                     linkedClip={linkedClip}
                     cutType={getCutType(clip.audioOffset || 0)}
                     pixelsPerSecond={timeScale}
+                    data-oid="4tmb4_1"
                   />
                 </>
               )}
 
               {/* J/L Cut tool - только при наведении */}
               {isHovered && linkedClip && (
-                <div className="absolute top-0 right-0 m-1 z-10">
-                  <JLCutTool clip={clip} />
+                <div className="absolute top-0 right-0 m-1 z-10" data-oid=":32_r00">
+                  <JLCutTool clip={clip} data-oid="y-afg33" />
                 </div>
               )}
 
               {/* Group indicator */}
               {group && !group.collapsed && (
-                <div className="absolute top-0 left-0 m-1 z-10">
+                <div className="absolute top-0 left-0 m-1 z-10" data-oid="qt_byl9">
                   <GroupIndicator
                     group={group}
                     onToggleCollapse={() => toggleCollapse(group.id)}
                     onToggleLock={() => lockGroup(group.id, !group.locked)}
                     className="scale-75 origin-top-left"
+                    data-oid="w6m3t53"
                   />
                 </div>
               )}
 
               {/* AI Analysis indicator */}
-              <ClipAIIndicator clip={clip} className="absolute top-1 left-1 z-10" />
+              <ClipAIIndicator clip={clip} className="absolute top-1 left-1 z-10" data-oid="y_56d1g" />
 
               {/* Person indicators - только для видео */}
               {clipPersons.length > 0 && (
-                <div className="absolute bottom-1 left-1 z-10">
+                <div className="absolute bottom-1 left-1 z-10" data-oid="x6h5yoa">
                   <PersonIndicator
                     persons={clipPersons}
                     appearances={clipAppearances}
@@ -309,13 +331,14 @@ export const OptimizedClip = memo(function OptimizedClip({
                     compact={true}
                     maxVisible={2}
                     onClick={showPersonDetail}
+                    data-oid="01o-3p5"
                   />
                 </div>
               )}
 
               {/* Speed ramping indicator */}
               {speedRampingConfig && speedRampingConfig.enabled && (
-                <div className="absolute top-1 right-1 z-10">
+                <div className="absolute top-1 right-1 z-10" data-oid="1.42a65">
                   <button
                     className={cn(
                       "p-1 rounded bg-purple-500/20 hover:bg-purple-500/30 transition-colors",
@@ -323,13 +346,21 @@ export const OptimizedClip = memo(function OptimizedClip({
                     )}
                     onClick={() => setShowSpeedCurve(!showSpeedCurve)}
                     title="Toggle Speed Curve Editor"
+                    data-oid="qh4i1__"
                   >
-                    <svg className="w-3 h-3 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg
+                      className="w-3 h-3 text-purple-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      data-oid="8lip89u"
+                    >
                       <path
                         d="M3 12c0-3 1-6 4-6s4 3 4 6-1 6-4 6-4-3-4-6m8 0c0-3 1-6 4-6s4 3 4 6-1 6-4 6-4-3-4-6"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        data-oid="uy6ez3t"
                       />
                     </svg>
                   </button>
@@ -346,6 +377,7 @@ export const OptimizedClip = memo(function OptimizedClip({
               onTrimEnd={handleTrimEnd}
               isSelected={true}
               disabled={clip.isLocked}
+              data-oid="xajmwpb"
             />
           )}
 
@@ -363,6 +395,7 @@ export const OptimizedClip = memo(function OptimizedClip({
               timeScale={timeScale}
               onSlipStart={editMode === EDIT_MODES.SLIP ? handleSlipSlideStart : undefined}
               onSlideStart={editMode === EDIT_MODES.SLIDE ? handleSlipSlideStart : undefined}
+              data-oid="k0-k8uv"
             />
           )}
 
@@ -379,12 +412,13 @@ export const OptimizedClip = memo(function OptimizedClip({
               isActive={isEditing}
               timeScale={timeScale}
               onRateStretchStart={handleTrimStart}
+              data-oid="w57xg8d"
             />
           )}
 
           {/* Speed curve editor - отдельное окно */}
           {showSpeedCurve && speedRampingConfig && speedRampingConfig.enabled && (
-            <div className="absolute top-full mt-2 left-0 z-50">
+            <div className="absolute top-full mt-2 left-0 z-50" data-oid="193j79t">
               <SpeedCurveEditor
                 clipId={clip.id}
                 clipDuration={clip.duration}
@@ -392,6 +426,7 @@ export const OptimizedClip = memo(function OptimizedClip({
                 height={speedRampingConfig.graphHeight || 120}
                 onClose={() => setShowSpeedCurve(false)}
                 className="shadow-lg"
+                data-oid="-9h5gvu"
               />
             </div>
           )}
@@ -399,9 +434,9 @@ export const OptimizedClip = memo(function OptimizedClip({
       </ClipContextMenu>
 
       {/* Диалог панели эффектов */}
-      <Dialog open={showEffectsPanel} onOpenChange={setShowEffectsPanel}>
-        <DialogContent className="max-w-4xl h-[80vh]">
-          <ClipEffectsPanel clip={clip} onClose={() => setShowEffectsPanel(false)} />
+      <Dialog open={showEffectsPanel} onOpenChange={setShowEffectsPanel} data-oid="6bjvtgm">
+        <DialogContent className="max-w-4xl h-[80vh]" data-oid="yxy:y8t">
+          <ClipEffectsPanel clip={clip} onClose={() => setShowEffectsPanel(false)} data-oid="602g_ml" />
         </DialogContent>
       </Dialog>
     </>

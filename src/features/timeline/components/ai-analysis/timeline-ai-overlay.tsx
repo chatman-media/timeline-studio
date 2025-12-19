@@ -151,8 +151,8 @@ export function TimelineAIOverlay({
   }, [segments, pixelsPerSecond])
 
   return (
-    <TooltipProvider>
-      <div className={cn("absolute inset-x-0 h-12 pointer-events-none select-none", className)}>
+    <TooltipProvider data-oid="mcre0sg">
+      <div className={cn("absolute inset-x-0 h-12 pointer-events-none select-none", className)} data-oid="wt5zpod">
         {/* Canvas для фоновой визуализации */}
         <canvas
           ref={canvasRef}
@@ -160,6 +160,7 @@ export function TimelineAIOverlay({
           height={48}
           className="absolute inset-0 opacity-50"
           style={{ mixBlendMode: "screen" }}
+          data-oid="qio9g9z"
         />
 
         {/* Индикатор анализа */}
@@ -169,14 +170,21 @@ export function TimelineAIOverlay({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="absolute top-0 right-0 bg-primary/90 text-primary-foreground px-3 py-1 rounded-bl-lg flex items-center gap-2 pointer-events-auto"
+            data-oid="enr_xw5"
           >
-            <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            <span className="text-xs font-medium">Анализ {Math.round(aiState.analysisProgress)}%</span>
+            <div
+              className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
+              data-oid="z80rleh"
+            />
+
+            <span className="text-xs font-medium" data-oid="5gtwq_p">
+              Анализ {Math.round(aiState.analysisProgress)}%
+            </span>
           </motion.div>
         )}
 
         {/* Интерактивные маркеры сегментов */}
-        <AnimatePresence>
+        <AnimatePresence data-oid="wecmdde">
           {segments.map((segment) => {
             const Icon = segment.icon
             const x = segment.startTime * pixelsPerSecond
@@ -192,9 +200,10 @@ export function TimelineAIOverlay({
                 style={{ left: `${x}px` }}
                 onMouseEnter={() => setHoveredSegment(segment.id)}
                 onMouseLeave={() => setHoveredSegment(null)}
+                data-oid="5yxw-tu"
               >
-                <Tooltip open={hoveredSegment === segment.id}>
-                  <TooltipTrigger asChild>
+                <Tooltip open={hoveredSegment === segment.id} data-oid="yxj75m_">
+                  <TooltipTrigger asChild data-oid="af4hy9s">
                     <div
                       className={cn(
                         "flex items-center justify-center rounded-full transition-all cursor-pointer",
@@ -205,23 +214,26 @@ export function TimelineAIOverlay({
                         backgroundColor: segment.color,
                         opacity: segment.confidence,
                       }}
+                      data-oid="pvl_vvx"
                     >
-                      <Icon className={cn("text-white", isKeyMoment ? "w-3 h-3" : "w-2.5 h-2.5")} />
+                      <Icon className={cn("text-white", isKeyMoment ? "w-3 h-3" : "w-2.5 h-2.5")} data-oid="7e_p0xx" />
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-xs">
-                    <div className="space-y-1">
-                      <div className="font-semibold flex items-center gap-1">
-                        <Icon className="w-3 h-3" />
+                  <TooltipContent side="bottom" className="max-w-xs" data-oid="wl-h.tm">
+                    <div className="space-y-1" data-oid="eiwr05z">
+                      <div className="font-semibold flex items-center gap-1" data-oid="7-:joyi">
+                        <Icon className="w-3 h-3" data-oid="t0iz8t-" />
                         {segment.label}
                       </div>
                       {segment.description && (
-                        <div className="text-xs text-muted-foreground">{segment.description}</div>
+                        <div className="text-xs text-muted-foreground" data-oid="x-b9vd0">
+                          {segment.description}
+                        </div>
                       )}
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-muted-foreground" data-oid="lb:4fc:">
                         {segment.startTime.toFixed(1)}с - {segment.endTime.toFixed(1)}с
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-muted-foreground" data-oid="9-rxx3.">
                         Уверенность: {Math.round(segment.confidence * 100)}%
                       </div>
                     </div>
@@ -238,19 +250,20 @@ export function TimelineAIOverlay({
             initial={{ opacity: 0 }}
             animate={{ opacity: hoveredSegment ? 1 : 0 }}
             className="absolute bottom-0 left-0 bg-background/90 backdrop-blur-sm rounded-tr-lg p-2 pointer-events-none"
+            data-oid="x25j-y9"
           >
-            <div className="flex items-center gap-3 text-xs">
-              <div className="flex items-center gap-1">
-                <Camera className="w-3 h-3" />
-                <span>Сцены</span>
+            <div className="flex items-center gap-3 text-xs" data-oid="4hx.s3.">
+              <div className="flex items-center gap-1" data-oid="xltzs5c">
+                <Camera className="w-3 h-3" data-oid="ej.-mpx" />
+                <span data-oid="9-a12ue">Сцены</span>
               </div>
-              <div className="flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
-                <span>Ключевые моменты</span>
+              <div className="flex items-center gap-1" data-oid="k9tfbrf">
+                <Sparkles className="w-3 h-3" data-oid="ex1:-6e" />
+                <span data-oid="d84ec4y">Ключевые моменты</span>
               </div>
-              <div className="flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" />
-                <span>Качество</span>
+              <div className="flex items-center gap-1" data-oid="oq8fpp1">
+                <TrendingUp className="w-3 h-3" data-oid="6kkp243" />
+                <span data-oid="3734l3n">Качество</span>
               </div>
             </div>
           </motion.div>

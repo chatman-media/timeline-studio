@@ -46,7 +46,9 @@ describe("ChatProvider", () => {
     mockExecuteCommand.mockResolvedValue({ success: true, data: null })
   })
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => <ChatProvider>{children}</ChatProvider>
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <ChatProvider data-oid="c2zmc-b">{children}</ChatProvider>
+  )
 
   describe("Инициализация", () => {
     it("должен инициализироваться с дефолтным состоянием", async () => {
@@ -74,10 +76,12 @@ describe("ChatProvider", () => {
               timestamp: new Date().toISOString(),
             },
           ],
+
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
       ]
+
       localStorage.setItem("timeline-studio-chat-sessions", JSON.stringify(storedSessions))
 
       const { result } = renderHook(() => useChat(), { wrapper })
@@ -686,6 +690,7 @@ describe("ChatProvider", () => {
           updatedAt: new Date().toISOString(),
         },
       ]
+
       localStorage.setItem("timeline-studio-chat-sessions", JSON.stringify(storedSessions))
 
       const { result } = renderHook(() => useChat(), { wrapper })

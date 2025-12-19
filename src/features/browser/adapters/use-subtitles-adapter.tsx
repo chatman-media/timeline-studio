@@ -40,9 +40,13 @@ const SubtitlePreviewWrapper: React.FC<PreviewComponentProps<SubtitleStyleTempla
         onClick={handleClick}
         onDragStart={handleDragStart}
         draggable
+        data-oid="-dr23hy"
       >
         {/* Subtitle preview sample */}
-        <div className="shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+        <div
+          className="shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden flex items-center justify-center"
+          data-oid="uvni9im"
+        >
           <span
             className="text-xs text-center"
             style={{
@@ -52,40 +56,50 @@ const SubtitlePreviewWrapper: React.FC<PreviewComponentProps<SubtitleStyleTempla
               color: style.style.color || "#000",
               textShadow: style.style.textShadow || "none",
             }}
+            data-oid="ds-tgyf"
           >
             Abc
           </span>
         </div>
 
         {/* Style Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{style.labels?.ru || style.labels?.en || style.name}</div>
-          <div className="text-xs text-muted-foreground truncate">
+        <div className="flex-1 min-w-0" data-oid="dt7942o">
+          <div className="font-medium text-sm truncate" data-oid="9.epp8_">
+            {style.labels?.ru || style.labels?.en || style.name}
+          </div>
+          <div className="text-xs text-muted-foreground truncate" data-oid=".afs:4v">
             {style.description?.ru || style.description?.en || ""}
           </div>
         </div>
 
         {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground">{style.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="-bh.e_3">
+          {style.category}
+        </div>
 
         {/* Complexity */}
-        <div className="shrink-0 text-xs text-muted-foreground">{style.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="wb3w54.">
+          {style.complexity}
+        </div>
 
         {/* Font Family */}
-        <div className="shrink-0 text-xs text-muted-foreground">{style.style.fontFamily || "default"}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="ct1x22t">
+          {style.style.fontFamily || "default"}
+        </div>
       </div>
     )
   }
 
   // Thumbnails mode - use the original SubtitlePreview component
   return (
-    <div onDragStart={handleDragStart} draggable>
+    <div onDragStart={handleDragStart} draggable data-oid="atr61_w">
       <SubtitlePreview
         style={style}
         onClick={handleClick}
         size={previewSize}
         previewWidth={previewWidth}
         previewHeight={previewHeight}
+        data-oid="odvei_6"
       />
     </div>
   )
@@ -144,6 +158,7 @@ export function useSubtitlesAdapter(): ListAdapter<SubtitleListItem> {
         style.style.fontFamily || "",
         ...(style.tags || []),
       ]
+
       return texts.filter(Boolean)
     },
 

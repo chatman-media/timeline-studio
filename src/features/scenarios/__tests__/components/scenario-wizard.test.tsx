@@ -19,35 +19,35 @@ vi.mock("../../hooks/use-scenario-wizard", () => ({
 
 // Mock lucide icons
 vi.mock("lucide-react", () => ({
-  AlertCircle: () => <div />,
-  ArrowLeft: () => <div />,
-  ArrowRight: () => <div />,
-  Check: () => <div />,
-  SkipForward: () => <div />,
-  X: () => <div />,
+  AlertCircle: () => <div data-oid="_prt4mc" />,
+  ArrowLeft: () => <div data-oid="33d7759" />,
+  ArrowRight: () => <div data-oid="1iz:prd" />,
+  Check: () => <div data-oid="3exo54k" />,
+  SkipForward: () => <div data-oid="m39cnvr" />,
+  X: () => <div data-oid="yb6mgu3" />,
 }))
 
 // Mock Dialog components
 vi.mock("@/components/ui/dialog", () => ({
-  Dialog: ({ open, children }: any) => (open ? <div>{children}</div> : null),
-  DialogContent: ({ children }: any) => <div>{children}</div>,
-  DialogHeader: ({ children }: any) => <div>{children}</div>,
-  DialogTitle: ({ children }: any) => <div>{children}</div>,
-  DialogDescription: ({ children }: any) => <div>{children}</div>,
+  Dialog: ({ open, children }: any) => (open ? <div data-oid="qmbhl:i">{children}</div> : null),
+  DialogContent: ({ children }: any) => <div data-oid="ddzg_d.">{children}</div>,
+  DialogHeader: ({ children }: any) => <div data-oid="p-znu8o">{children}</div>,
+  DialogTitle: ({ children }: any) => <div data-oid="j94_:gs">{children}</div>,
+  DialogDescription: ({ children }: any) => <div data-oid="32o4kpp">{children}</div>,
 }))
 
 // Mock other UI components
 vi.mock("@/components/ui/progress", () => ({
-  Progress: ({ value }: any) => <div data-testid="progress" data-value={value} />,
+  Progress: ({ value }: any) => <div data-testid="progress" data-value={value} data-oid="8z49w1j" />,
 }))
 
 vi.mock("@/components/ui/scroll-area", () => ({
-  ScrollArea: ({ children }: any) => <div>{children}</div>,
+  ScrollArea: ({ children }: any) => <div data-oid="-obk-q:">{children}</div>,
 }))
 
 vi.mock("@/components/ui/alert", () => ({
-  Alert: ({ children }: any) => <div>{children}</div>,
-  AlertDescription: ({ children }: any) => <div>{children}</div>,
+  Alert: ({ children }: any) => <div data-oid="d7ywd.m">{children}</div>,
+  AlertDescription: ({ children }: any) => <div data-oid="8f0xz.8">{children}</div>,
 }))
 
 describe("ScenarioWizard", () => {
@@ -158,6 +158,7 @@ describe("ScenarioWizard", () => {
         optional: true,
       },
     ],
+
     settings: {
       allowSkipSteps: true,
       showPreview: true,
@@ -197,6 +198,7 @@ describe("ScenarioWizard", () => {
         isValid: true,
       },
     ],
+
     isFirstStep: true,
     isLastStep: false,
     canGoNext: false,
@@ -238,6 +240,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="l1vwmp6"
       />,
     )
 
@@ -252,6 +255,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="r2m.4a1"
       />,
     )
 
@@ -267,6 +271,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="yh_:sy."
       />,
     )
 
@@ -281,6 +286,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="3jhro3u"
       />,
     )
 
@@ -295,6 +301,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="c8-.0m7"
       />,
     )
 
@@ -322,6 +329,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="zism4:4"
       />,
     )
 
@@ -340,6 +348,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={mockOnClose}
         onComplete={vi.fn()}
+        data-oid="2ulcm9q"
       />,
     )
 
@@ -370,6 +379,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={mockOnComplete}
+        data-oid="of49nwl"
       />,
     )
 
@@ -397,6 +407,7 @@ describe("ScenarioWizard", () => {
         onClose={vi.fn()}
         onComplete={vi.fn()}
         allowBackNavigation={true}
+        data-oid="5::67my"
       />,
     )
 
@@ -415,6 +426,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="757tc5m"
       />,
     )
 
@@ -447,6 +459,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={vi.fn()}
+        data-oid="rkq01so"
       />,
     )
 
@@ -475,6 +488,7 @@ describe("ScenarioWizard", () => {
         project={mockProject}
         onClose={vi.fn()}
         onComplete={mockOnNext}
+        data-oid="lfoex9t"
       />,
     )
 

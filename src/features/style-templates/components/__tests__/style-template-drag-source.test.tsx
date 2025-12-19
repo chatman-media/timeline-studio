@@ -49,8 +49,8 @@ describe("StyleTemplateDragSource", () => {
   describe("rendering", () => {
     it("должен рендерить дочерние элементы", () => {
       render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test Content</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="irxxa17">
+          <div data-oid="6h4v073">Test Content</div>
         </StyleTemplateDragSource>,
       )
 
@@ -59,8 +59,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("должен применять правильный className", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate} className="custom-class">
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} className="custom-class" data-oid="t85u827">
+          <div data-oid="784:kck">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -70,8 +70,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("должен применять базовые классы", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="gw0s0x_">
+          <div data-oid="cuqpkx2">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -83,8 +83,8 @@ describe("StyleTemplateDragSource", () => {
   describe("draggable configuration", () => {
     it("должен вызывать useDraggable с правильными параметрами", () => {
       render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="ignpp6t">
+          <div data-oid=".07-k88">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -102,8 +102,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("должен передавать disabled в useDraggable", () => {
       render(
-        <StyleTemplateDragSource template={mockTemplate} disabled>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} disabled data-oid="rtlux.z">
+          <div data-oid="05gb6rv">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -116,8 +116,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("должен применять attributes из useDraggable", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="fzah1pq">
+          <div data-oid="q_qt.wx">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -137,8 +137,8 @@ describe("StyleTemplateDragSource", () => {
       })
 
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="9vpq9m7">
+          <div data-oid="782g9yv">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -157,8 +157,8 @@ describe("StyleTemplateDragSource", () => {
       })
 
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="kp9oddu">
+          <div data-oid=":iwnw0h">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -177,8 +177,8 @@ describe("StyleTemplateDragSource", () => {
       })
 
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="qi1589e">
+          <div data-oid="o2-94g-">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -196,8 +196,8 @@ describe("StyleTemplateDragSource", () => {
       })
 
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="e29vl2d">
+          <div data-oid="sy8.p8_">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -209,8 +209,8 @@ describe("StyleTemplateDragSource", () => {
   describe("disabled state", () => {
     it("должен быть disabled когда передан disabled prop", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate} disabled>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} disabled data-oid="y2cd7mn">
+          <div data-oid="ejg2zmn">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -221,8 +221,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("не должен применять cursor-grab когда disabled", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate} disabled>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} disabled data-oid="b.ou:3t">
+          <div data-oid="sdb7vxu">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -233,8 +233,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("не должен применять hover:opacity-90 когда disabled", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate} disabled>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} disabled data-oid="qdcl6wc">
+          <div data-oid="w9v21bk">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -252,8 +252,8 @@ describe("StyleTemplateDragSource", () => {
       }
 
       render(
-        <StyleTemplateDragSource template={outroTemplate}>
-          <div>Outro</div>
+        <StyleTemplateDragSource template={outroTemplate} data-oid="5qyu85k">
+          <div data-oid=".z.2leo">Outro</div>
         </StyleTemplateDragSource>,
       )
 
@@ -273,8 +273,8 @@ describe("StyleTemplateDragSource", () => {
       }
 
       render(
-        <StyleTemplateDragSource template={lowerThirdTemplate}>
-          <div>Lower Third</div>
+        <StyleTemplateDragSource template={lowerThirdTemplate} data-oid="fq.tyer">
+          <div data-oid="f2lhk1g">Lower Third</div>
         </StyleTemplateDragSource>,
       )
 
@@ -297,8 +297,8 @@ describe("StyleTemplateDragSource", () => {
       })
 
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="1ju4.4j">
+          <div data-oid="v9twddh">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -316,8 +316,8 @@ describe("StyleTemplateDragSource", () => {
       })
 
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="64ae2-r">
+          <div data-oid="1nqiw0k">Test</div>
         </StyleTemplateDragSource>,
       )
 
@@ -327,8 +327,8 @@ describe("StyleTemplateDragSource", () => {
 
     it("должен работать без className", () => {
       const { container } = render(
-        <StyleTemplateDragSource template={mockTemplate}>
-          <div>Test</div>
+        <StyleTemplateDragSource template={mockTemplate} data-oid="wgu20u8">
+          <div data-oid="0irmggm">Test</div>
         </StyleTemplateDragSource>,
       )
 

@@ -20,16 +20,20 @@ vi.mock("@/domains/video-editing", async (importOriginal) => {
 // Мокаем компоненты resizable UI
 vi.mock("@/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children, direction }: any) => (
-    <div data-testid="resizable-panel-group" data-direction={direction}>
+    <div data-testid="resizable-panel-group" data-direction={direction} data-oid="o9k55qa">
       {children}
     </div>
   ),
+
   ResizablePanel: ({ children, defaultSize, minSize }: any) => (
-    <div data-testid="resizable-panel" data-default-size={defaultSize} data-min-size={minSize}>
+    <div data-testid="resizable-panel" data-default-size={defaultSize} data-min-size={minSize} data-oid=".-3vpd8">
       {children}
     </div>
   ),
-  ResizableHandle: ({ className }: any) => <div data-testid="resizable-handle" className={className} />,
+
+  ResizableHandle: ({ className }: any) => (
+    <div data-testid="resizable-handle" className={className} data-oid="d-:hy.m" />
+  ),
 }))
 
 // Мокаем VideoPanelComponent
@@ -40,6 +44,7 @@ vi.mock("../../components/video-panel-component", () => ({
       className={className}
       data-video-id={video?.id}
       data-is-active={isActive}
+      data-oid=".axe2ml"
     >
       Video Panel {index ?? video?.id ?? "unknown"} - {video?.name || "No Video"}
     </div>
@@ -142,7 +147,12 @@ describe("ResizableTemplate", () => {
 
   it("should render without crashing", () => {
     renderWithTemplates(
-      <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+      <ResizableTemplate
+        appliedTemplate={mockAppliedTemplate}
+        videos={mockVideos}
+        activeVideoId={null}
+        data-oid="4mmqhgr"
+      />,
     )
 
     // Проверяем, что компонент отрендерился (используем SplitVertical для vertical template)
@@ -152,7 +162,12 @@ describe("ResizableTemplate", () => {
 
   it("should render video panels for each screen", () => {
     renderWithTemplates(
-      <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+      <ResizableTemplate
+        appliedTemplate={mockAppliedTemplate}
+        videos={mockVideos}
+        activeVideoId={null}
+        data-oid="rhlk8jy"
+      />,
     )
 
     // Проверяем, что отрендерились панели для каждого экрана
@@ -161,7 +176,9 @@ describe("ResizableTemplate", () => {
   })
 
   it("should render template even when no videos", () => {
-    renderWithTemplates(<ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={[]} activeVideoId={null} />)
+    renderWithTemplates(
+      <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={[]} activeVideoId={null} data-oid="d_iwk7r" />,
+    )
 
     // Проверяем, что компонент отрендерился - в новой системе может отрендерить TemplateRenderer
     // Если конфигурация найдена, то покажет шаблон, если нет - сообщение о ошибке
@@ -181,7 +198,12 @@ describe("ResizableTemplate", () => {
     }
 
     renderWithTemplates(
-      <ResizableTemplate appliedTemplate={horizontalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+      <ResizableTemplate
+        appliedTemplate={horizontalAppliedTemplate}
+        videos={mockVideos}
+        activeVideoId={null}
+        data-oid="4a5tw-8"
+      />,
     )
 
     // Проверяем, что компонент отрендерился (используем SplitHorizontal для horizontal template)
@@ -203,7 +225,12 @@ describe("ResizableTemplate", () => {
     }
 
     renderWithTemplates(
-      <ResizableTemplate appliedTemplate={gridAppliedTemplate} videos={mockVideosForGrid} activeVideoId={null} />,
+      <ResizableTemplate
+        appliedTemplate={gridAppliedTemplate}
+        videos={mockVideosForGrid}
+        activeVideoId={null}
+        data-oid="1viv:n_"
+      />,
     )
 
     // Проверяем, что компонент отрендерился (используем SplitGrid2x2 для grid template)
@@ -247,7 +274,12 @@ describe("ResizableTemplate", () => {
 
     it("should render ResizablePanelGroup when in resizable mode for vertical split", () => {
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={mockAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="m4gd6kq"
+        />,
       )
 
       // Проверяем, что рендерится ResizablePanelGroup
@@ -275,7 +307,12 @@ describe("ResizableTemplate", () => {
       }
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={horizontalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={horizontalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="g2a89ad"
+        />,
       )
 
       // Проверяем, что рендерится ResizablePanelGroup с вертикальным направлением
@@ -295,7 +332,12 @@ describe("ResizableTemplate", () => {
       }
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={nonResizableAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={nonResizableAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="tr:z3to"
+        />,
       )
 
       // ResizablePanelGroup не должен рендериться для non-resizable шаблонов
@@ -317,7 +359,12 @@ describe("ResizableTemplate", () => {
       }
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={gridAppliedTemplate} videos={mockVideosForGrid} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={gridAppliedTemplate}
+          videos={mockVideosForGrid}
+          activeVideoId={null}
+          data-oid="7wixb47"
+        />,
       )
 
       // Grid шаблоны не должны использовать ResizablePanelGroup
@@ -335,6 +382,7 @@ describe("ResizableTemplate", () => {
         { x: 66.67, y: 0 },
         { x: 33.33, y: 100 },
       ],
+
       render: () => React.createElement("div", {}, "Diagonal Template"),
     }
 
@@ -349,7 +397,12 @@ describe("ResizableTemplate", () => {
       })
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="fn1ib4h"
+        />,
       )
 
       expect(screen.getByTestId("video-panel-0")).toBeInTheDocument()
@@ -362,7 +415,12 @@ describe("ResizableTemplate", () => {
       })
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="-j0_6b0"
+        />,
       )
 
       // Проверяем, что есть SVG элемент
@@ -389,6 +447,7 @@ describe("ResizableTemplate", () => {
         { x: 66.67, y: 0 },
         { x: 33.33, y: 100 },
       ],
+
       render: () => React.createElement("div", {}, "Diagonal Template"),
     }
 
@@ -405,7 +464,12 @@ describe("ResizableTemplate", () => {
 
     it("should handle mouse down on first drag point", () => {
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid=".fv65.x"
+        />,
       )
 
       const circles = document.querySelectorAll("circle")
@@ -425,7 +489,12 @@ describe("ResizableTemplate", () => {
 
     it("should handle mouse down on second drag point", () => {
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="ktno2na"
+        />,
       )
 
       const circles = document.querySelectorAll("circle")
@@ -445,7 +514,12 @@ describe("ResizableTemplate", () => {
 
     it("should handle mouse down on diagonal line", () => {
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="9etdici"
+        />,
       )
 
       const line = document.querySelector("line")
@@ -463,7 +537,12 @@ describe("ResizableTemplate", () => {
 
     it("should handle mouse move during dragging", async () => {
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="yacp:0."
+        />,
       )
 
       const circles = document.querySelectorAll("circle")
@@ -505,7 +584,12 @@ describe("ResizableTemplate", () => {
       }
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={invalidAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={invalidAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="o:jzf0d"
+        />,
       )
 
       // Должно показать сообщение об ошибке
@@ -513,7 +597,9 @@ describe("ResizableTemplate", () => {
     })
 
     it("should handle empty videos array", () => {
-      renderWithTemplates(<ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={[]} activeVideoId={null} />)
+      renderWithTemplates(
+        <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={[]} activeVideoId={null} data-oid="meo-wra" />,
+      )
 
       // Компонент должен отрендериться без ошибок
       expect(document.body).toBeInTheDocument()
@@ -544,7 +630,12 @@ describe("ResizableTemplate", () => {
       ]
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={videosWithoutPaths} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={mockAppliedTemplate}
+          videos={videosWithoutPaths}
+          activeVideoId={null}
+          data-oid="s9k9zmj"
+        />,
       )
 
       // Компонент должен отрендериться без ошибок
@@ -558,7 +649,12 @@ describe("ResizableTemplate", () => {
       }
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={nullAppliedTemplate as any} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={nullAppliedTemplate as any}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="os6k1j."
+        />,
       )
 
       // Должно показать сообщение об ошибке
@@ -580,7 +676,12 @@ describe("ResizableTemplate", () => {
       }
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={diagonalAppliedTemplate} videos={mockVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={diagonalAppliedTemplate}
+          videos={mockVideos}
+          activeVideoId={null}
+          data-oid="g7.9kfn"
+        />,
       )
 
       // Компонент должен использовать дефолтные splitPoints
@@ -601,7 +702,12 @@ describe("ResizableTemplate", () => {
       }))
 
       renderWithTemplates(
-        <ResizableTemplate appliedTemplate={mockAppliedTemplate} videos={manyVideos} activeVideoId={null} />,
+        <ResizableTemplate
+          appliedTemplate={mockAppliedTemplate}
+          videos={manyVideos}
+          activeVideoId={null}
+          data-oid="u12ctiz"
+        />,
       )
 
       // Должно рендерить только количество видео, равное screens шаблона (2)

@@ -22,7 +22,7 @@ describe("SocialNetworksTab", () => {
   })
 
   it("should render correctly with all UI elements", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="u0z:gk5" />)
 
     expect(screen.getByText("Социальные сети")).toBeInTheDocument()
     expect(
@@ -45,7 +45,7 @@ describe("SocialNetworksTab", () => {
   })
 
   it("should render all social network buttons in disabled state", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="gtkhg4h" />)
 
     const youtubeButton = screen.getByRole("button", { name: "YouTube" })
     const tiktokButton = screen.getByRole("button", { name: "TikTok" })
@@ -66,7 +66,7 @@ describe("SocialNetworksTab", () => {
   })
 
   it("should have correct button styles", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="_7fjdo3" />)
 
     const buttons = screen.getAllByRole("button")
 
@@ -78,35 +78,37 @@ describe("SocialNetworksTab", () => {
   })
 
   it("should display separator element", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="le01p8b" />)
 
     const separator = document.querySelector('[role="none"]')
     expect(separator).toBeInTheDocument()
   })
 
   it("should render coming soon section with correct layout", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="6b5bl:6" />)
 
     const comingSoonSection = screen.getByText("Скоро").parentElement?.parentElement
     expect(comingSoonSection).toHaveClass("flex flex-col items-center justify-center py-12 space-y-4")
   })
 
   it("should render information box with correct styling", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="ec.eftc" />)
 
     const infoBox = screen.getByText("Текущая реализация").parentElement
     expect(infoBox).toHaveClass("mt-6 p-4 bg-muted/50 rounded-md")
   })
 
   it("should render buttons container with correct layout", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="tlazlsw" />)
 
-    const buttonsContainer = screen.getByRole("button", { name: "YouTube" }).parentElement
+    const buttonsContainer = screen.getByRole("button", {
+      name: "YouTube",
+    }).parentElement
     expect(buttonsContainer).toHaveClass("flex flex-wrap gap-2 justify-center")
   })
 
   it("should have all text content properly styled", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="f_7rgy5" />)
 
     const heading = screen.getByText("Социальные сети")
     expect(heading).toHaveClass("text-lg font-semibold")
@@ -134,14 +136,14 @@ describe("SocialNetworksTab", () => {
   })
 
   it("should render exactly 4 social network buttons", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="yi4ulj1" />)
 
     const buttons = screen.getAllByRole("button")
     expect(buttons).toHaveLength(4)
   })
 
   it("should render content in correct order", () => {
-    const { container } = render(<SocialNetworksTab />)
+    const { container } = render(<SocialNetworksTab data-oid="0b:r9zz" />)
 
     const sections = container.querySelectorAll(".space-y-6 > *")
     expect(sections).toHaveLength(4)
@@ -154,7 +156,7 @@ describe("SocialNetworksTab", () => {
   })
 
   it("should apply correct spacing classes", () => {
-    render(<SocialNetworksTab />)
+    render(<SocialNetworksTab data-oid="-098kky" />)
 
     const mainContainer = screen.getByText("Социальные сети").closest(".space-y-6")
     expect(mainContainer).toBeInTheDocument()

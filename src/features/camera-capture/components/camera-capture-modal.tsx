@@ -103,13 +103,16 @@ export function CameraCaptureModal() {
       // Создаем директорию если не существует
       const { mkdir } = await import("@tauri-apps/plugin-fs")
       try {
-        await mkdir("recordings", { baseDir: BaseDirectory.AppLocalData, recursive: true })
+        await mkdir("recordings", {
+          baseDir: BaseDirectory.AppLocalData,
+          recursive: true,
+        })
       } catch {
         // Директория уже существует
-      }
-
-      // Записываем файл
-      await writeFile(tempPath, uint8Array, { baseDir: BaseDirectory.AppLocalData })
+      } // Записываем файл
+      await writeFile(tempPath, uint8Array, {
+        baseDir: BaseDirectory.AppLocalData,
+      })
 
       // Получаем полный путь к файлу для импорта
       const { resolve } = await import("@tauri-apps/api/path")
@@ -303,17 +306,17 @@ export function CameraCaptureModal() {
   // Если MediaDevices не поддерживается, показываем сообщение
   if (!isMediaDevicesSupported) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
-        <h3 className="text-lg font-semibold mb-4">
+      <div className="flex flex-col items-center justify-center p-8 text-center" data-oid="ift6en9">
+        <h3 className="text-lg font-semibold mb-4" data-oid="dyv-cx0">
           {t("dialogs.cameraCapture.notSupported", "Запись с камеры недоступна")}
         </h3>
-        <p className="text-muted-foreground mb-6">
+        <p className="text-muted-foreground mb-6" data-oid=".p3sao4">
           {t(
             "dialogs.cameraCapture.notSupportedDescription",
             "Запись с камеры не поддерживается в десктопном приложении. Эта функция доступна только при использовании Timeline Studio в веб-браузере.",
           )}
         </p>
-        <Button onClick={closeModal} variant="outline">
+        <Button onClick={closeModal} variant="outline" data-oid="omdb6gg">
           {t("common.close", "Закрыть")}
         </Button>
       </div>
@@ -327,18 +330,20 @@ export function CameraCaptureModal() {
         permissionStatus={permissionStatus}
         errorMessage={permissionError || errorMessage}
         onRequestPermissions={requestPermissions}
+        data-oid="pfcbqoc"
       />
 
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-row gap-4" data-oid="enm9j9q">
         {/* Левая колонка - видео */}
-        <div className="flex flex-col w-3/5">
+        <div className="flex flex-col w-3/5" data-oid="1ybqcus">
           {/* Кнопки переключения режима */}
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-4" data-oid="2eyibg4">
             <Button
               variant={captureMode === "camera" ? "default" : "outline"}
               onClick={() => handleCaptureModeChange("camera")}
               disabled={isRecording}
               className="flex-1"
+              data-oid="lubmduz"
             >
               {t("cameraCapture.cameraMode", "Camera")}
             </Button>
@@ -347,6 +352,7 @@ export function CameraCaptureModal() {
               onClick={() => handleCaptureModeChange("screen")}
               disabled={isRecording}
               className="flex-1"
+              data-oid="xfhgt:b"
             >
               {t("cameraCapture.screenMode", "Screen")}
             </Button>
@@ -358,6 +364,7 @@ export function CameraCaptureModal() {
             isDeviceReady={captureMode === "camera" ? isDeviceReady : isScreenSharing}
             showCountdown={showCountdown}
             countdown={countdown}
+            data-oid="4_2351j"
           />
 
           {/* Управление записью */}
@@ -368,12 +375,13 @@ export function CameraCaptureModal() {
             onStartRecording={startCountdown}
             onStopRecording={stopRecording}
             formatRecordingTime={formatRecordingTime}
+            data-oid="k5cg:yw"
           />
 
           {/* Индикатор сохранения */}
           {isSaving && (
-            <div className="mt-2 p-2 bg-blue-100 dark:bg-blue-900/20 rounded-md text-center">
-              <div className="text-sm text-blue-700 dark:text-blue-300">
+            <div className="mt-2 p-2 bg-blue-100 dark:bg-blue-900/20 rounded-md text-center" data-oid="npo5.9z">
+              <div className="text-sm text-blue-700 dark:text-blue-300" data-oid="_mbtkee">
                 {t("cameraCapture.saving", "Сохранение записи...")}
               </div>
             </div>
@@ -381,7 +389,7 @@ export function CameraCaptureModal() {
         </div>
 
         {/* Правая колонка - настройки */}
-        <div className="flex flex-col w-2/5">
+        <div className="flex flex-col w-2/5" data-oid="5i7stpm">
           {/* Настройки камеры - показываем только в режиме камеры */}
           {captureMode === "camera" ? (
             <CameraSettings
@@ -402,30 +410,36 @@ export function CameraCaptureModal() {
               onCountdownChange={handleCountdownChange}
               isRecording={isRecording}
               isLoadingCapabilities={isLoadingCapabilities}
+              data-oid="4a5ik8_"
             />
           ) : (
             // Настройки для записи экрана
-            <div className="space-y-4 p-4">
-              <h3 className="text-lg font-semibold">
+            <div className="space-y-4 p-4" data-oid="g2rppq_">
+              <h3 className="text-lg font-semibold" data-oid="owqq4dn">
                 {t("cameraCapture.screenSettings", "Screen Recording Settings")}
               </h3>
 
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground" data-oid="nnjtzye">
                 {t("cameraCapture.screenInfo", "Select a window, tab, or entire screen to record")}
               </div>
 
               {/* Аудио устройство для записи экрана */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t("cameraCapture.microphone", "Microphone")}</label>
+              <div className="space-y-2" data-oid="9.qa17d">
+                <label className="text-sm font-medium" data-oid="::.34ly">
+                  {t("cameraCapture.microphone", "Microphone")}
+                </label>
                 <select
                   value={selectedAudioDevice || ""}
                   onChange={(e) => setSelectedAudioDevice(e.target.value)}
                   className="w-full rounded-md border border-input bg-background px-3 py-2"
                   disabled={isRecording}
+                  data-oid="scarc.2"
                 >
-                  <option value="">{t("cameraCapture.noAudio", "No Audio")}</option>
+                  <option value="" data-oid="9.s986i">
+                    {t("cameraCapture.noAudio", "No Audio")}
+                  </option>
                   {audioDevices.map((device) => (
-                    <option key={device.deviceId} value={device.deviceId}>
+                    <option key={device.deviceId} value={device.deviceId} data-oid="qucpzq2">
                       {device.label}
                     </option>
                   ))}
@@ -433,30 +447,47 @@ export function CameraCaptureModal() {
               </div>
 
               {/* Настройки обратного отсчета */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t("cameraCapture.countdown", "Countdown")}</label>
+              <div className="space-y-2" data-oid=":p-b20b">
+                <label className="text-sm font-medium" data-oid="alr:95n">
+                  {t("cameraCapture.countdown", "Countdown")}
+                </label>
                 <select
                   value={countdown}
                   onChange={(e) => handleCountdownChange(Number(e.target.value))}
                   className="w-full rounded-md border border-input bg-background px-3 py-2"
                   disabled={isRecording}
+                  data-oid="evs_qx."
                 >
-                  <option value={0}>{t("cameraCapture.noCountdown", "No countdown")}</option>
-                  <option value={3}>3 {t("cameraCapture.seconds", "seconds")}</option>
-                  <option value={5}>5 {t("cameraCapture.seconds", "seconds")}</option>
-                  <option value={10}>10 {t("cameraCapture.seconds", "seconds")}</option>
+                  <option value={0} data-oid="_6ck8g2">
+                    {t("cameraCapture.noCountdown", "No countdown")}
+                  </option>
+                  <option value={3} data-oid="6-_njm6">
+                    3 {t("cameraCapture.seconds", "seconds")}
+                  </option>
+                  <option value={5} data-oid="vpjn843">
+                    5 {t("cameraCapture.seconds", "seconds")}
+                  </option>
+                  <option value={10} data-oid="nhkdxrk">
+                    10 {t("cameraCapture.seconds", "seconds")}
+                  </option>
                 </select>
               </div>
 
               {screenError && (
-                <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">{screenError}</div>
+                <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" data-oid="fcyrf2h">
+                  {screenError}
+                </div>
               )}
             </div>
           )}
         </div>
       </div>
-      <div className="flex justify-end border-t border-[#333] p-4">
-        <Button className="bg-[#0CC] px-6 font-medium text-black hover:bg-[#0AA]" onClick={closeModal}>
+      <div className="flex justify-end border-t border-[#333] p-4" data-oid="djc.320">
+        <Button
+          className="bg-[#0CC] px-6 font-medium text-black hover:bg-[#0AA]"
+          onClick={closeModal}
+          data-oid="stf77oc"
+        >
           {t("common.ok")}
         </Button>
       </div>

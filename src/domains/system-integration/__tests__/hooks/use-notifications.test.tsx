@@ -154,7 +154,9 @@ describe("useNotifications", () => {
       const { result } = renderHook(() => useNotifications())
 
       act(() => {
-        result.current.showNotification("info", "Test", "Message", { duration: 1000 })
+        result.current.showNotification("info", "Test", "Message", {
+          duration: 1000,
+        })
       })
 
       act(() => {

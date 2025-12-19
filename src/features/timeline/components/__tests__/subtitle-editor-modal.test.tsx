@@ -44,7 +44,7 @@ describe("SubtitleEditorModal", () => {
   })
 
   it("рендерит форму редактирования субтитров", () => {
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="_c2a:na" />)
 
     expect(screen.getByLabelText("Текст субтитра")).toBeInTheDocument()
     expect(screen.getByLabelText("Время начала (сек)")).toBeInTheDocument()
@@ -85,7 +85,7 @@ describe("SubtitleEditorModal", () => {
       updatedAt: new Date(),
     }
 
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="64uevs7" />)
 
     expect(screen.getByDisplayValue("Тестовый текст")).toBeInTheDocument()
     expect(screen.getByDisplayValue("5")).toBeInTheDocument()
@@ -99,7 +99,7 @@ describe("SubtitleEditorModal", () => {
     const user = userEvent.setup()
     mockModalData.subtitle = null
 
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="1n6eyxp" />)
 
     // Заполняем только текст, остальные поля оставляем со значениями по умолчанию
     await user.type(screen.getByLabelText("Текст субтитра"), "Новый текст")
@@ -128,7 +128,7 @@ describe("SubtitleEditorModal", () => {
 
   it("выбор стиля работает правильно", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="33zf-na" />)
 
     // Сначала заполняем текст субтитра
     await user.type(screen.getByLabelText("Текст субтитра"), "Тест")
@@ -153,7 +153,7 @@ describe("SubtitleEditorModal", () => {
 
   it("настройки анимации работают правильно", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="1h_uc1l" />)
 
     // Сначала заполняем текст субтитра
     await user.type(screen.getByLabelText("Текст субтитра"), "Тест")
@@ -180,7 +180,7 @@ describe("SubtitleEditorModal", () => {
 
   it("настройки позиции работают правильно", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="zfngr6f" />)
 
     // Сначала заполняем текст субтитра
     await user.type(screen.getByLabelText("Текст субтитра"), "Тест")
@@ -206,7 +206,7 @@ describe("SubtitleEditorModal", () => {
 
   it("переключатель переноса слов работает", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="dcw2vg6" />)
 
     // Сначала заполняем текст субтитра
     await user.type(screen.getByLabelText("Текст субтитра"), "Тест")
@@ -227,7 +227,7 @@ describe("SubtitleEditorModal", () => {
 
   it("настройка максимальной ширины работает", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="wj9o5x7" />)
 
     // Сначала заполняем текст субтитра
     await user.type(screen.getByLabelText("Текст субтитра"), "Тест")
@@ -250,7 +250,7 @@ describe("SubtitleEditorModal", () => {
 
   it("отмена закрывает модальное окно без сохранения", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid=":giwvz7" />)
 
     // Вводим текст
     await user.type(screen.getByLabelText("Текст субтитра"), "Несохраненный текст")
@@ -264,7 +264,7 @@ describe("SubtitleEditorModal", () => {
 
   it("показывает дополнительные настройки анимации при выборе", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="ko6oc1f" />)
 
     // Изначально поля длительности анимации скрыты
     expect(screen.queryByPlaceholderText("Длительность")).not.toBeInTheDocument()
@@ -283,7 +283,7 @@ describe("SubtitleEditorModal", () => {
 
   it("кнопка сохранения отключена при пустом тексте", async () => {
     const user = userEvent.setup()
-    render(<SubtitleEditorModal />)
+    render(<SubtitleEditorModal data-oid="ohsunl5" />)
 
     // Очищаем текст
     const textArea = screen.getByLabelText("Текст субтитра")

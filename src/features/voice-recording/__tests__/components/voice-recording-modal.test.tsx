@@ -60,6 +60,7 @@ let mockAudioDevices = [
   { deviceId: "device-1", label: "Microphone 1" },
   { deviceId: "device-2", label: "Microphone 2" },
 ]
+
 let mockSelectedAudioDevice = "device-1"
 let mockIsRecording = false
 let mockShowCountdown = false
@@ -140,9 +141,13 @@ vi.mock("@/domains/system-integration", () => ({
 // Мокаем AudioPermissionRequest компонент
 vi.mock("../../components/audio-permission-request", () => ({
   AudioPermissionRequest: ({ permissionStatus, onRequestPermissions }: any) => (
-    <div data-testid="audio-permission-request">
-      <div>Permission Status: {permissionStatus}</div>
-      {permissionStatus !== "granted" && <button onClick={onRequestPermissions}>Request Permissions</button>}
+    <div data-testid="audio-permission-request" data-oid="vfwtde3">
+      <div data-oid="b5a8ln4">Permission Status: {permissionStatus}</div>
+      {permissionStatus !== "granted" && (
+        <button onClick={onRequestPermissions} data-oid="6ui8_u4">
+          Request Permissions
+        </button>
+      )}
     </div>
   ),
 }))
@@ -208,6 +213,7 @@ describe("VoiceRecordModal", () => {
       { deviceId: "device-1", label: "Microphone 1" },
       { deviceId: "device-2", label: "Microphone 2" },
     ]
+
     mockSelectedAudioDevice = "device-1"
     mockIsRecording = false
     mockShowCountdown = false
@@ -219,7 +225,7 @@ describe("VoiceRecordModal", () => {
   describe("Базовый рендеринг", () => {
     it("должен рендериться без ошибок", () => {
       expect(() => {
-        renderWithModal(<VoiceRecordModal />)
+        renderWithModal(<VoiceRecordModal data-oid="bh8m.i7" />)
       }).not.toThrow()
     })
 
@@ -230,7 +236,7 @@ describe("VoiceRecordModal", () => {
         value: undefined,
       })
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="1:xs0a9" />)
 
       expect(screen.getByText("Запись звука недоступна")).toBeInTheDocument()
       expect(screen.getByText("Запись звука не поддерживается в десктопном приложении.")).toBeInTheDocument()
@@ -256,7 +262,7 @@ describe("VoiceRecordModal", () => {
         },
       })
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="i9mffe_" />)
 
       // AudioPermissionRequest должен рендериться только если MediaDevices поддерживается
       expect(screen.getByTestId("audio-permission-request")).toBeInTheDocument()
@@ -265,7 +271,7 @@ describe("VoiceRecordModal", () => {
     it("должен скрывать основной контент, если разрешения не предоставлены", () => {
       mockPermissionStatus = "denied"
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="icz9.4." />)
 
       // Основные элементы не должны отображаться
       expect(screen.queryByRole("combobox")).not.toBeInTheDocument()
@@ -275,7 +281,7 @@ describe("VoiceRecordModal", () => {
 
   describe("Выбор устройств", () => {
     it("должен отображать список аудиоустройств", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="3dj0hfc" />)
 
       const deviceSelects = screen.getAllByRole("combobox")
       // Первый select - это выбор устройства
@@ -286,7 +292,7 @@ describe("VoiceRecordModal", () => {
 
     it("должен вызывать setSelectedAudioDevice при выборе устройства", async () => {
       const user = userEvent.setup()
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid=":gagu9:" />)
 
       const deviceSelects = screen.getAllByRole("combobox")
       // Первый select - это выбор устройства
@@ -300,7 +306,7 @@ describe("VoiceRecordModal", () => {
     it("должен отключать выбор устройств во время записи", () => {
       mockIsRecording = true
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="trs1wd3" />)
 
       const deviceSelects = screen.getAllByRole("combobox")
       // Первый select - это выбор устройства
@@ -312,7 +318,7 @@ describe("VoiceRecordModal", () => {
     it("должен вызывать getDevices при клике на кнопку обновления", async () => {
       const user = userEvent.setup()
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="lomnm4_" />)
 
       const refreshButton = screen.getByTitle("Обновить устройства")
 
@@ -328,7 +334,7 @@ describe("VoiceRecordModal", () => {
 
   describe("Настройки записи", () => {
     it("должен отображать поле для пути сохранения", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="ean8x-c" />)
 
       const savePathInput = screen.getByPlaceholderText("/Users/username/Movies")
       expect(savePathInput).toBeInTheDocument()
@@ -337,7 +343,7 @@ describe("VoiceRecordModal", () => {
 
     it("должен обновлять путь сохранения при вводе", async () => {
       const user = userEvent.setup()
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="nc1x9y9" />)
 
       const savePathInput = screen.getByPlaceholderText("/Users/username/Movies")
       await user.type(savePathInput, "/custom/path")
@@ -348,14 +354,14 @@ describe("VoiceRecordModal", () => {
     it("должен отключать поле пути во время записи", () => {
       mockIsRecording = true
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="x8ww22n" />)
 
       const savePathInput = screen.getByPlaceholderText("/Users/username/Movies")
       expect(savePathInput).toBeDisabled()
     })
 
     it("должен отображать поле для настройки обратного отсчета", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="m:j:81j" />)
 
       const countdownInput = screen.getByDisplayValue("3")
       expect(countdownInput).toBeInTheDocument()
@@ -365,7 +371,7 @@ describe("VoiceRecordModal", () => {
     })
 
     it("должен вызывать setCountdown при изменении значения", async () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="m.imeh0" />)
 
       const countdownInput = screen.getByDisplayValue("3")
 
@@ -377,7 +383,7 @@ describe("VoiceRecordModal", () => {
 
     it("должен обрабатывать некорректные значения обратного отсчета", async () => {
       const user = userEvent.setup()
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="hbn1x2h" />)
 
       const countdownInput = screen.getByDisplayValue("3")
       await user.clear(countdownInput)
@@ -389,7 +395,7 @@ describe("VoiceRecordModal", () => {
     it("должен отключать настройки во время записи", () => {
       mockIsRecording = true
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid=".:mfgta" />)
 
       const countdownInput = screen.getByDisplayValue("3")
       expect(countdownInput).toBeDisabled()
@@ -398,7 +404,7 @@ describe("VoiceRecordModal", () => {
 
   describe("Процесс записи", () => {
     it("должен отображать кнопку начала записи когда не записывает", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="u.c9tqe" />)
 
       const recordButton = screen.getByTitle("Начать запись")
       expect(recordButton).toBeInTheDocument()
@@ -408,7 +414,7 @@ describe("VoiceRecordModal", () => {
     it("должен отключать кнопку записи если устройство не готово", () => {
       mockIsDeviceReady = false
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="qq8hy6j" />)
 
       const recordButton = screen.getByTitle("Начать запись")
       expect(recordButton).toBeDisabled()
@@ -416,7 +422,7 @@ describe("VoiceRecordModal", () => {
 
     it("должен вызывать startCountdown при клике на кнопку записи", async () => {
       const user = userEvent.setup()
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="2wqta79" />)
 
       const recordButton = screen.getByTitle("Начать запись")
       await user.click(recordButton)
@@ -427,7 +433,7 @@ describe("VoiceRecordModal", () => {
     it("должен отображать кнопку остановки во время записи", () => {
       mockIsRecording = true
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="z9fmkpc" />)
 
       const stopButton = screen.getByTitle("Остановить запись")
       expect(stopButton).toBeInTheDocument()
@@ -437,7 +443,7 @@ describe("VoiceRecordModal", () => {
       mockIsRecording = true
       const user = userEvent.setup()
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="ywwnonk" />)
 
       const stopButton = screen.getByTitle("Остановить запись")
       await user.click(stopButton)
@@ -451,7 +457,7 @@ describe("VoiceRecordModal", () => {
       mockShowCountdown = true
       mockCountdown = 2
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid=":1qcntv" />)
 
       const countdownDisplay = screen.getByText("2")
       expect(countdownDisplay).toBeInTheDocument()
@@ -461,7 +467,7 @@ describe("VoiceRecordModal", () => {
     it("должен скрывать обратный отсчет когда showCountdown = false", () => {
       mockShowCountdown = false
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="hp_ff0m" />)
 
       expect(screen.queryByText("3")).not.toBeInTheDocument()
     })
@@ -473,7 +479,7 @@ describe("VoiceRecordModal", () => {
       mockIsRecording = true
       mockRecordingTime = 65 // 1 минута 5 секунд
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="ywrs5zf" />)
 
       // Ищем части текста отдельно, так как они могут быть в разных элементах
       expect(screen.getByText(/время записи/i)).toBeInTheDocument()
@@ -485,7 +491,7 @@ describe("VoiceRecordModal", () => {
       mockIsRecording = true
       mockRecordingTime = 150 // 2.5 минуты
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid=":3ny1xh" />)
 
       // Ищем любое время в формате MM:SS и проверяем прогресс-бар рядом с ним
       const timeElement = screen.getByText(/\d{2}:\d{2}/)
@@ -499,7 +505,7 @@ describe("VoiceRecordModal", () => {
       mockIsRecording = true
       mockRecordingTime = 400 // больше 5 минут
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="u4r-8tr" />)
 
       // Ищем любое время и проверяем что прогресс-бар имеет максимальную ширину
       const timeElement = screen.getByText(/\d{2}:\d{2}/)
@@ -510,7 +516,7 @@ describe("VoiceRecordModal", () => {
     it("должен скрывать время записи когда не записывает", () => {
       mockIsRecording = false
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="11o8xcf" />)
 
       expect(screen.queryByText(/время записи/i)).not.toBeInTheDocument()
     })
@@ -525,7 +531,7 @@ describe("VoiceRecordModal", () => {
       })
 
       const user = userEvent.setup()
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="wuq.sei" />)
 
       const closeButton = screen.getByText("Закрыть")
       await user.click(closeButton)
@@ -545,7 +551,7 @@ describe("VoiceRecordModal", () => {
 
   describe("Аудио элемент", () => {
     it("должен рендерить скрытый аудио элемент", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="mhnaoec" />)
 
       const audioElement = document.querySelector("audio")
       expect(audioElement).toBeInTheDocument()
@@ -556,13 +562,13 @@ describe("VoiceRecordModal", () => {
 
   describe("Подсказки и сообщения", () => {
     it("должен отображать подсказку о использовании", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="_.49_rh" />)
 
       expect(screen.getByText("Нажмите кнопку записи для начала.")).toBeInTheDocument()
     })
 
     it("должен отображать правильные aria-label для кнопок", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="jjy4o_:" />)
 
       const recordButton = screen.getByLabelText("Начать запись")
       expect(recordButton).toBeInTheDocument()
@@ -571,7 +577,7 @@ describe("VoiceRecordModal", () => {
     it("должен отображать правильные aria-label для кнопки остановки", () => {
       mockIsRecording = true
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="t2t1t0h" />)
 
       const stopButton = screen.getByLabelText("Остановить запись")
       expect(stopButton).toBeInTheDocument()
@@ -583,7 +589,7 @@ describe("VoiceRecordModal", () => {
       // Тестируем через console.error spy
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="f4.xyeb" />)
 
       // Здесь мы можем только проверить что компонент рендерится без ошибок
       // Реальная обработка ошибок происходит в saveAudioToServer
@@ -595,7 +601,7 @@ describe("VoiceRecordModal", () => {
 
   describe("Интеграция с хуками", () => {
     it("должен передавать правильные props в useVoiceRecording", () => {
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="ek:w4qk" />)
 
       // Проверяем что хук был вызван (неявно через рендеринг)
       expect(screen.getByTestId("audio-permission-request")).toBeInTheDocument()
@@ -604,7 +610,7 @@ describe("VoiceRecordModal", () => {
     it("должен корректно работать с различными состояниями разрешений", () => {
       mockPermissionStatus = "prompt"
 
-      renderWithModal(<VoiceRecordModal />)
+      renderWithModal(<VoiceRecordModal data-oid="zmcb1_a" />)
 
       // Основной контент не должен отображаться при статусе prompt
       expect(screen.queryByRole("combobox")).not.toBeInTheDocument()

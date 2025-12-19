@@ -55,6 +55,7 @@ export function StyleTemplateDragSource({
       )}
       {...listeners}
       {...attributes}
+      data-oid="_ws7.0s"
     >
       {children}
     </div>

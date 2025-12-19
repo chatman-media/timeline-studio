@@ -177,7 +177,9 @@ describe("usePlayerAIAnalysis", () => {
     const { result } = renderHook(() => usePlayerAIAnalysis())
 
     // Устанавливаем videoRef на null
-    mockPlayerContext.videoRef = { current: null as unknown as HTMLVideoElement }
+    mockPlayerContext.videoRef = {
+      current: null as unknown as HTMLVideoElement,
+    }
 
     expect(() => {
       act(() => {

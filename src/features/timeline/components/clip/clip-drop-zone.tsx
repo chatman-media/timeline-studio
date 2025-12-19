@@ -218,6 +218,7 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
       onDragOver={handleNativeDragOver}
       onDragLeave={handleNativeDragLeave}
       onDrop={handleNativeDrop}
+      data-oid="yabtifl"
     >
       {children}
 
@@ -231,12 +232,14 @@ export const ClipDropZone = memo(function ClipDropZone({ clip, className, childr
               ? "bg-blue-500/20 border-2 border-blue-400 border-dashed"
               : "bg-red-500/20 border-2 border-red-400 border-dashed",
           )}
+          data-oid="at9rcgc"
         >
           <div
             className={cn(
               "px-3 py-1 rounded-full text-sm font-medium",
               canAcceptDrag ? "bg-blue-500 text-white" : "bg-red-500 text-white",
             )}
+            data-oid="uf:ut0v"
           >
             {canAcceptDrag
               ? dragType === "effect"

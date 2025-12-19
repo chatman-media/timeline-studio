@@ -168,7 +168,12 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
     const step = 10 // каждые 10 секунд
     for (let time = 0; time <= maxTime; time += step) {
       lines.push(
-        <div key={time} className="absolute top-0 bottom-0 w-px bg-border/30" style={{ left: time * timeScale }} />,
+        <div
+          key={time}
+          className="absolute top-0 bottom-0 w-px bg-border/30"
+          style={{ left: time * timeScale }}
+          data-oid="efysocq"
+        />,
       )
     }
     return lines
@@ -188,12 +193,18 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
         dragState.isDragging && isValidTarget && "border-dashed border-2",
         dragState.isDragging && !isValidTarget && "opacity-50",
       )}
+      data-oid="-mr:bzs"
     >
       {/* Drop zone visual feedback */}
       {showDropFeedback && (
-        <div className="absolute inset-0 bg-primary/5 border-2 border-primary border-dashed rounded-md pointer-events-none z-30">
-          <div className="flex items-center justify-center h-full">
-            <span className="text-primary font-medium">Drop here</span>
+        <div
+          className="absolute inset-0 bg-primary/5 border-2 border-primary border-dashed rounded-md pointer-events-none z-30"
+          data-oid="jo58jxa"
+        >
+          <div className="flex items-center justify-center h-full" data-oid="tnl_o35">
+            <span className="text-primary font-medium" data-oid="92voy5b">
+              Drop here
+            </span>
           </div>
         </div>
       )}
@@ -203,20 +214,24 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
         <div
           className="absolute top-0 bottom-0 w-0.5 bg-primary z-25 pointer-events-none"
           style={{ left: dragState.dropPosition.startTime * timeScale }}
+          data-oid="kl424wa"
         />
       )}
 
       {/* Сетка временной шкалы */}
-      <div className="absolute inset-0 pointer-events-none">{gridLines}</div>
+      <div className="absolute inset-0 pointer-events-none" data-oid="70u6yih">
+        {gridLines}
+      </div>
 
       {/* Playhead (указатель текущего времени) */}
       <div
         className="absolute top-0 bottom-0 w-0.5 bg-primary z-20 pointer-events-none"
         style={{ left: currentTime * timeScale }}
+        data-oid="l8.ocw7"
       />
 
       {/* Клипы и свернутые группы */}
-      <div className="relative h-full">
+      <div className="relative h-full" data-oid="hlc.7gl">
         {/* Отображаем видимые клипы */}
         {visibleClips.map((clip) => (
           <Clip
@@ -226,6 +241,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             timeScale={timeScale}
             onUpdate={(updates) => handleClipUpdate(clip.id, updates)}
             onRemove={() => handleClipRemove(clip.id)}
+            data-oid="9t5p15:"
           />
         ))}
 
@@ -239,6 +255,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
             onToggleCollapse={() => toggleCollapse(group.id)}
             onSelect={() => selectMultiple({ clipIds: clips.map((c) => c.id) })}
             isSelected={clips.some((c) => c.isSelected)}
+            data-oid="x.oq4t4"
           />
         ))}
 
@@ -275,18 +292,24 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
                     trackHeight={48}
                     onUpdate={(updates) => {
                       // TODO: Обновление перехода через backend API
-                      logger.info("Updating transition parameters:", { transitionId: outTransition.id, updates })
+                      logger.info("Updating transition parameters:", {
+                        transitionId: outTransition.id,
+                        updates,
+                      })
                     }}
                     onDelete={async () => {
                       // Удаление перехода через backend API
                       try {
                         // TODO: Добавить removeTransition команду в backend
-                        logger.info("Deleting transition:", { transitionId: outTransition.id })
+                        logger.info("Deleting transition:", {
+                          transitionId: outTransition.id,
+                        })
                         await saveProject()
                       } catch (error) {
                         logger.error("Failed to delete transition:", { error })
                       }
                     }}
+                    data-oid="l-vb4pd"
                   />
                 )
               }
@@ -306,6 +329,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
                 trackId={track.id}
                 timeScale={timeScale}
                 onDrop={(transition) => handleTransitionDrop(leftClip.id, rightClip.id, transition)}
+                data-oid="95ofuc9"
               />
             )
           })}
@@ -316,14 +340,19 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
           timeScale={timeScale}
           onRollStart={(leftClipId, rightClipId, mouseX) => {
             // This would typically trigger a roll edit operation
-            logger.info("Roll edit started:", { leftClipId, rightClipId, mouseX })
+            logger.info("Roll edit started:", {
+              leftClipId,
+              rightClipId,
+              mouseX,
+            })
           }}
+          data-oid="78qc797"
         />
       </div>
 
       {/* Индикатор коллизий переходов */}
       {collisions.length > 0 && (
-        <div className="absolute top-1 right-1 z-30">
+        <div className="absolute top-1 right-1 z-30" data-oid="btxlj2-">
           <TransitionCollisionIndicator
             collisions={collisions}
             compact
@@ -331,16 +360,21 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
               logger.info("Resolve collision:", { collision })
               // TODO: Интегрировать с системой исправления коллизий
             }}
+            data-oid="q:e0yxh"
           />
         </div>
       )}
 
       {/* Область для добавления клипов (drop zone) */}
       {track.clips.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-          <div className="text-center">
-            <div className="text-sm">Перетащите медиафайлы сюда</div>
-            <div className="text-xs mt-1">или используйте Browser</div>
+        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground" data-oid="0nal1o.">
+          <div className="text-center" data-oid="edp6qap">
+            <div className="text-sm" data-oid="ibi5ay3">
+              Перетащите медиафайлы сюда
+            </div>
+            <div className="text-xs mt-1" data-oid="_46_02b">
+              или используйте Browser
+            </div>
           </div>
         </div>
       )}

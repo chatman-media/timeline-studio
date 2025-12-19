@@ -25,7 +25,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен отобразить canvas элемент", () => {
     const { container } = render(
-      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} />,
+      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} data-oid="v3o4yzl" />,
     )
 
     const canvas = container.querySelector("canvas")
@@ -33,7 +33,9 @@ describe("YoloGraphOverlay", () => {
   })
 
   it("должен использовать правильные размеры", () => {
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={150} />)
+    const { container } = render(
+      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={150} data-oid="u74t.s2" />,
+    )
 
     const canvas = container.querySelector("canvas")
     // Canvas width/height are scaled by devicePixelRatio (2x)
@@ -42,7 +44,7 @@ describe("YoloGraphOverlay", () => {
   })
 
   it("должен использовать размеры по умолчанию", () => {
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="mfydcxq" />)
 
     const canvas = container.querySelector("canvas")
     // Canvas width/height are scaled by devicePixelRatio (2x)
@@ -52,7 +54,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен отрисовать график на canvas", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="fyesbg8" />)
 
     expect(mockCanvasContext.clearRect).toHaveBeenCalled()
     expect(mockCanvasContext.fillRect).toHaveBeenCalled()
@@ -62,7 +64,7 @@ describe("YoloGraphOverlay", () => {
   it("должен вызвать onTimeChange при клике", async () => {
     const user = userEvent.setup()
     const { container } = render(
-      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} />,
+      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} data-oid="v9b9msa" />,
     )
 
     const canvas = container.querySelector("canvas")
@@ -77,7 +79,7 @@ describe("YoloGraphOverlay", () => {
 
   it("не должен вызывать onTimeChange если не передан", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="kd45vvv" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -89,7 +91,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен показать tooltip при наведении", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="5tplbrj" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -104,7 +106,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен скрыть tooltip при уходе мыши", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="xk9j1ar" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -122,7 +124,7 @@ describe("YoloGraphOverlay", () => {
   })
 
   it("должен отображать легенду", () => {
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="ifm:o1o" />)
 
     expect(screen.getByText(/Количество обнаружений/)).toBeInTheDocument()
     expect(screen.getByText(/Текущее время/)).toBeInTheDocument()
@@ -131,7 +133,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен отрисовать сетку", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="j2o0ctl" />)
 
     // Проверяем, что рисовались линии (сетка)
     expect(mockCanvasContext.moveTo).toHaveBeenCalled()
@@ -140,7 +142,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен отрисовать линию графика", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="tlbora6" />)
 
     // Проверяем, что рисовалась линия графика
     expect(mockCanvasContext.beginPath).toHaveBeenCalled()
@@ -149,7 +151,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен отрисовать точки данных", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="9-66zc-" />)
 
     // Проверяем, что рисовались круги (точки)
     expect(mockCanvasContext.arc).toHaveBeenCalled()
@@ -158,7 +160,7 @@ describe("YoloGraphOverlay", () => {
 
   it("должен отрисовать индикатор текущего времени", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={5} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={5} data-oid="g9mx-k-" />)
 
     // Проверяем, что рисовалась вертикальная линия для текущего времени
     expect(mockCanvasContext.moveTo).toHaveBeenCalled()
@@ -167,18 +169,18 @@ describe("YoloGraphOverlay", () => {
 
   it("должен обновить график при изменении currentTime", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    const { rerender } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { rerender } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="xx2hjc2" />)
 
     const initialCalls = mockCanvasContext.clearRect.mock.calls.length
 
-    rerender(<YoloGraphOverlay yoloData={mockYoloData} currentTime={5} />)
+    rerender(<YoloGraphOverlay yoloData={mockYoloData} currentTime={5} data-oid="w3xge1b" />)
 
     expect(mockCanvasContext.clearRect.mock.calls.length).toBeGreaterThan(initialCalls)
   })
 
   it("должен обновить график при изменении данных", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    const { rerender } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { rerender } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="pq:d:.9" />)
 
     const initialCalls = mockCanvasContext.clearRect.mock.calls.length
 
@@ -186,13 +188,13 @@ describe("YoloGraphOverlay", () => {
       ...mockYoloData,
       frames: [...mockYoloData.frames, { timestamp: 15, detections: [] }],
     }
-    rerender(<YoloGraphOverlay yoloData={newData} currentTime={0} />)
+    rerender(<YoloGraphOverlay yoloData={newData} currentTime={0} data-oid="25il0eb" />)
 
     expect(mockCanvasContext.clearRect.mock.calls.length).toBeGreaterThan(initialCalls)
   })
 
   it("должен правильно масштабировать график", () => {
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={200} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} width={800} height={200} data-oid=".u2gp0h" />)
 
     // График должен заполнять доступное пространство с учетом отступов
     expect(true).toBe(true) // Визуальный тест, проверяется через canvas API
@@ -200,14 +202,14 @@ describe("YoloGraphOverlay", () => {
 
   it("должен использовать devicePixelRatio для четкости", () => {
     const { mockCanvasContext } = setupCanvasMock()
-    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid=":bpj:x." />)
 
     expect(mockCanvasContext.scale).toHaveBeenCalled()
   })
 
   it("должен найти ближайшие данные к позиции мыши", async () => {
     const user = userEvent.setup()
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="8q2xt99" />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -226,7 +228,13 @@ describe("YoloGraphOverlay", () => {
   it("должен правильно рассчитать время из позиции клика", async () => {
     const user = userEvent.setup()
     const { container } = render(
-      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} width={600} />,
+      <YoloGraphOverlay
+        yoloData={mockYoloData}
+        currentTime={0}
+        onTimeChange={mockOnTimeChange}
+        width={600}
+        data-oid="bne7goz"
+      />,
     )
 
     const canvas = container.querySelector("canvas")
@@ -246,7 +254,7 @@ describe("YoloGraphOverlay", () => {
   it("должен ограничивать время в пределах данных", async () => {
     const user = userEvent.setup()
     const { container } = render(
-      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} />,
+      <YoloGraphOverlay yoloData={mockYoloData} currentTime={0} onTimeChange={mockOnTimeChange} data-oid="ohlhu58" />,
     )
 
     const canvas = container.querySelector("canvas")
@@ -267,7 +275,7 @@ describe("YoloGraphOverlay", () => {
   it("должен отрисовать индикатор hover времени", async () => {
     const { mockCanvasContext } = setupCanvasMock()
     const user = userEvent.setup()
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="ncvonw." />)
 
     const canvas = container.querySelector("canvas")
     if (canvas) {
@@ -281,7 +289,7 @@ describe("YoloGraphOverlay", () => {
   })
 
   it("должен иметь правильные aria атрибуты", () => {
-    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} />)
+    const { container } = render(<YoloGraphOverlay yoloData={mockYoloData} currentTime={0} data-oid="zyn4nm5" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas?.getAttribute("role")).toBe("img")

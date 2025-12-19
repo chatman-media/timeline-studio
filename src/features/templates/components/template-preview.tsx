@@ -77,7 +77,9 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
   // Обработчик применения шаблона
   const handleApplyTemplate = useCallback(
     (_resource: TimelineResource, _type: string) => {
-      logger.info("[TemplatePreview] Applying template:", { templateId: template.id })
+      logger.info("[TemplatePreview] Applying template:", {
+        templateId: template.id,
+      })
       const videos = getVideosForPreview()
       applyTemplate(
         {
@@ -147,6 +149,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
         width: `${previewWidth}px`,
       }}
       onClick={onClick}
+      data-oid="x.o:ogp"
     >
       {/* Рендерим шаблон с добавлением ключа для React */}
       {React.cloneElement(renderedTemplate, {
@@ -155,9 +158,15 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
 
       {/* Кнопка добавления в избранное */}
       <FavoriteButton
-        file={{ id: template.id, path: "", name: template.id, type: MediaType.Graphics }}
+        file={{
+          id: template.id,
+          path: "",
+          name: template.id,
+          type: MediaType.Graphics,
+        }}
         size={size}
         type="template"
+        data-oid=".9.3m_c"
       />
 
       {/* Кнопка применения шаблона */}
@@ -172,6 +181,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
         size={size}
         type="template"
         onApply={handleApplyTemplate}
+        data-oid="vgwoa0h"
       />
 
       {/* Контейнер для кнопки добавления/удаления шаблона */}
@@ -182,12 +192,20 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
           isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         }`}
         style={{ visibility: isAdded ? "visible" : "inherit" }}
+        data-oid="6ommqj0"
       >
         {/* Кнопка добавления/удаления шаблона */}
         <AddMediaButton
-          resource={{ id: template.id, type: "template", name: template.id } as TemplateResource}
+          resource={
+            {
+              id: template.id,
+              type: "template",
+              name: template.id,
+            } as TemplateResource
+          }
           size={size}
           type="template"
+          data-oid="4bj_nz:"
         />
       </div>
     </div>

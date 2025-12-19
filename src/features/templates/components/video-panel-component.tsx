@@ -35,14 +35,20 @@ export function VideoPanelComponent({
   // Эффект для регистрации видео в videoRefs и обновления src при изменении источника
   useEffect(() => {
     if (videoRef.current && video.id && videoRefs) {
-      logger.info("[VideoPanel] Регистрация видео", { videoId: video.id, startTime: video.startTime })
+      logger.info("[VideoPanel] Регистрация видео", {
+        videoId: video.id,
+        startTime: video.startTime,
+      })
 
       // Сохраняем ссылку на видео элемент
       videoRefs[video.id] = videoRef.current
 
       // Проверяем, что src установлен правильно
       if (video.path && !videoRef.current.src?.includes(video.id)) {
-        logger.info("[VideoPanel] Принудительно обновляем src для видео", { videoId: video.id, path: video.path })
+        logger.info("[VideoPanel] Принудительно обновляем src для видео", {
+          videoId: video.id,
+          path: video.path,
+        })
 
         // Сохраняем текущее время и состояние воспроизведения
         const currentTime = videoRef.current.currentTime
@@ -78,7 +84,6 @@ export function VideoPanelComponent({
       }
     }
   }, [video, videoRefs])
-
   const videoKey = video.path ? video.path : `empty-${video.id}`
 
   logger.info("[VideoPanel] Рендеринг видео", { videoKey })
@@ -88,6 +93,7 @@ export function VideoPanelComponent({
       className="video-panel-template relative h-full w-full cursor-pointer"
       style={{ overflow: "visible" }}
       key={`panel-${videoKey}`}
+      data-oid="i23awfk"
     >
       <div
         className={`absolute inset-0 ${isActive ? "border-2 border-white" : ""}`}
@@ -97,6 +103,7 @@ export function VideoPanelComponent({
           overflow: "visible",
           transition: "border 0.2s ease-in-out", // Добавляем плавный переход для рамки
         }}
+        data-oid="hacn6t3"
       >
         {video.path ? (
           <video
@@ -119,13 +126,18 @@ export function VideoPanelComponent({
             muted={!isActive} // Звук только из активного видео
             data-video-id={video.id}
             data-start-time={video.startTime}
+            data-oid="3hrrdxn"
           />
         ) : (
           // Если нет пути к видео, отображаем сообщение
-          <div className="absolute inset-0 flex items-center justify-center bg-black text-white">
-            <div className="text-center">
-              <div className="mb-2 text-3xl">📹</div>
-              <div className="text-sm">{t("timeline.player.noVideoSelected")}</div>
+          <div className="absolute inset-0 flex items-center justify-center bg-black text-white" data-oid="p2ao3xw">
+            <div className="text-center" data-oid="-ku6_f2">
+              <div className="mb-2 text-3xl" data-oid="--n176s">
+                📹
+              </div>
+              <div className="text-sm" data-oid="vl0eg0e">
+                {t("timeline.player.noVideoSelected")}
+              </div>
             </div>
           </div>
         )}
@@ -137,6 +149,7 @@ export function VideoPanelComponent({
             opacity: isActive && video.path ? 1 : 0,
             transition: "opacity 0.2s ease-in-out", // Плавное появление/исчезновение
           }}
+          data-oid="a434may"
         />
 
         {/* Надпись с названием камеры - всегда рендерим, но скрываем через opacity */}
@@ -149,6 +162,7 @@ export function VideoPanelComponent({
             transition: "opacity 0.2s ease-in-out", // Плавное появление/исчезновение
             pointerEvents: !hideLabel && video.name && video.path ? "auto" : "none", // Отключаем события мыши, когда скрыто
           }}
+          data-oid="-h80r63"
         >
           {video.name || ""}
         </div>
@@ -161,8 +175,12 @@ export function VideoPanelComponent({
             transition: "opacity 0.3s ease-in-out", // Плавное появление/исчезновение
             pointerEvents: !isReady && video.path ? "auto" : "none", // Отключаем события мыши, когда скрыто
           }}
+          data-oid="y3dcf9c"
         >
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          <div
+            className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent"
+            data-oid="i9alwv5"
+          />
         </div>
       </div>
     </div>

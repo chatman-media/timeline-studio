@@ -40,8 +40,8 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-[600px] p-8">
-        <Story />
+      <div className="w-[600px] p-8" data-oid="qh:4p.u">
+        <Story data-oid="efsvdre" />
       </div>
     ),
   ],
@@ -154,6 +154,7 @@ export const WithManyTools: Story = {
       "web_fetch",
       "list_files",
     ],
+
     progress: 35,
   },
 }

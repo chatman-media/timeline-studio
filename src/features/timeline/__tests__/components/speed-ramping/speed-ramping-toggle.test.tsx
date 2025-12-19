@@ -7,17 +7,17 @@ import { SpeedRampingToggle } from "../../../components/speed-ramping/speed-ramp
 // Mock компонентов
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
-    <button onClick={onClick} {...props}>
+    <button onClick={onClick} {...props} data-oid="fo3dggj">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/tooltip", () => ({
-  TooltipProvider: ({ children }: any) => <div>{children}</div>,
-  Tooltip: ({ children }: any) => <div>{children}</div>,
-  TooltipContent: ({ children }: any) => <div>{children}</div>,
-  TooltipTrigger: ({ children }: any) => <div>{children}</div>,
+  TooltipProvider: ({ children }: any) => <div data-oid="dr3owfl">{children}</div>,
+  Tooltip: ({ children }: any) => <div data-oid="76po3b4">{children}</div>,
+  TooltipContent: ({ children }: any) => <div data-oid="4qqvgaa">{children}</div>,
+  TooltipTrigger: ({ children }: any) => <div data-oid="h0sshsv">{children}</div>,
 }))
 
 // Mock хука speed ramping
@@ -43,7 +43,7 @@ describe("SpeedRampingToggle", () => {
   it("показывает неактивное состояние когда speed ramping выключен", () => {
     mockUseSpeedRamping.getConfig.mockReturnValue(null)
 
-    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} data-oid="qmwkh5o" />)
 
     const button = screen.getByRole("button")
     expect(button).toBeInTheDocument()
@@ -65,7 +65,7 @@ describe("SpeedRampingToggle", () => {
       graphOpacity: 0.8,
     })
 
-    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} data-oid="goai9pd" />)
 
     expect(screen.getByText("Disable Speed Ramping")).toBeInTheDocument()
   })
@@ -73,7 +73,7 @@ describe("SpeedRampingToggle", () => {
   it("включает speed ramping при клике когда выключен", () => {
     mockUseSpeedRamping.getConfig.mockReturnValue(null)
 
-    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} data-oid="q6t9ke3" />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
@@ -93,7 +93,7 @@ describe("SpeedRampingToggle", () => {
       graphOpacity: 0.8,
     })
 
-    renderWithTimeline(<SpeedRampingToggle {...defaultProps} />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} data-oid="eg-un98" />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
@@ -104,7 +104,7 @@ describe("SpeedRampingToggle", () => {
   it("применяет дополнительные CSS классы", () => {
     mockUseSpeedRamping.getConfig.mockReturnValue(null)
 
-    renderWithTimeline(<SpeedRampingToggle {...defaultProps} className="custom-class" />)
+    renderWithTimeline(<SpeedRampingToggle {...defaultProps} className="custom-class" data-oid="j4ixpye" />)
 
     const button = screen.getByRole("button")
     expect(button).toHaveClass("custom-class")

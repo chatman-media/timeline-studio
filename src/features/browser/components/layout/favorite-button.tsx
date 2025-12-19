@@ -169,6 +169,7 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
             : t("browser.media.inFavorites")
           : t("browser.media.addToFavorites")
       }
+      data-oid="2l4o0v4"
     >
       {isFavorite && isHovering && canShowRemoveButton ? (
         <StarOff
@@ -179,6 +180,7 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
             width: `${6 + size / 30}px`,
           }}
           strokeWidth={1}
+          data-oid="61pa8o."
         />
       ) : (
         <Star
@@ -189,6 +191,7 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
             width: `${6 + size / 30}px`,
           }}
           strokeWidth={2}
+          data-oid="bx5-47h"
         />
       )}
     </button>

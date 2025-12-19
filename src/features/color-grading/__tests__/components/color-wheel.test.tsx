@@ -43,13 +43,13 @@ describe("ColorWheel", () => {
   })
 
   it("should render color wheel with label", () => {
-    render(<ColorWheel {...defaultProps} />)
+    render(<ColorWheel {...defaultProps} data-oid="-gc35te" />)
 
     expect(screen.getByText("Lift")).toBeInTheDocument()
   })
 
   it("should display RGB values", () => {
-    render(<ColorWheel {...defaultProps} value={{ r: 0.5, g: -0.3, b: 0.2 }} />)
+    render(<ColorWheel {...defaultProps} value={{ r: 0.5, g: -0.3, b: 0.2 }} data-oid="r66egw1" />)
 
     expect(screen.getByText("+0.50")).toBeInTheDocument()
     expect(screen.getByText("-0.30")).toBeInTheDocument()
@@ -57,7 +57,7 @@ describe("ColorWheel", () => {
   })
 
   it("should render canvas with correct size", () => {
-    const { container } = render(<ColorWheel {...defaultProps} size={100} />)
+    const { container } = render(<ColorWheel {...defaultProps} size={100} data-oid="3:ec1.1" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
@@ -67,7 +67,7 @@ describe("ColorWheel", () => {
 
   it("should call onChange when clicking on wheel", () => {
     const onChange = vi.fn()
-    const { container } = render(<ColorWheel {...defaultProps} onChange={onChange} />)
+    const { container } = render(<ColorWheel {...defaultProps} onChange={onChange} data-oid=".xns4jn" />)
 
     const wheelContainer = container.querySelector('[style*="width"]')
     if (wheelContainer) {
@@ -92,7 +92,7 @@ describe("ColorWheel", () => {
 
   it("should not call onChange when disabled", () => {
     const onChange = vi.fn()
-    const { container } = render(<ColorWheel {...defaultProps} onChange={onChange} disabled />)
+    const { container } = render(<ColorWheel {...defaultProps} onChange={onChange} disabled data-oid="kop8h:7" />)
 
     const wheelContainer = container.querySelector('[style*="width"]')
     if (wheelContainer) {
@@ -104,7 +104,7 @@ describe("ColorWheel", () => {
 
   it("should handle drag operations", () => {
     const onChange = vi.fn()
-    const { container } = render(<ColorWheel {...defaultProps} onChange={onChange} />)
+    const { container } = render(<ColorWheel {...defaultProps} onChange={onChange} data-oid="1ct:md0" />)
 
     const wheelContainer = container.querySelector('[style*="width"]')
     if (wheelContainer) {
@@ -138,13 +138,15 @@ describe("ColorWheel", () => {
   })
 
   it("should position indicator based on value", () => {
-    const { container, rerender } = render(<ColorWheel {...defaultProps} value={{ r: 0, g: 0, b: 0 }} />)
+    const { container, rerender } = render(
+      <ColorWheel {...defaultProps} value={{ r: 0, g: 0, b: 0 }} data-oid=":.tixh8" />,
+    )
 
     let indicator = container.querySelector('[style*="left"]')
     expect(indicator).toHaveStyle({ left: "40px", top: "40px" })
 
     // Update value
-    rerender(<ColorWheel {...defaultProps} value={{ r: 0.5, g: 0.5, b: 0 }} />)
+    rerender(<ColorWheel {...defaultProps} value={{ r: 0.5, g: 0.5, b: 0 }} data-oid="6enln6s" />)
 
     indicator = container.querySelector('[style*="left"]')
     // The position should change based on the new value
@@ -152,21 +154,21 @@ describe("ColorWheel", () => {
   })
 
   it("should draw different gradients for different wheel types", () => {
-    const { rerender } = render(<ColorWheel {...defaultProps} type="lift" />)
+    const { rerender } = render(<ColorWheel {...defaultProps} type="lift" data-oid="vgrfh9p" />)
 
     expect(mockContext.createRadialGradient).toHaveBeenCalled()
 
     vi.clearAllMocks()
-    rerender(<ColorWheel {...defaultProps} type="gamma" />)
+    rerender(<ColorWheel {...defaultProps} type="gamma" data-oid="c1xnck:" />)
     expect(mockContext.createRadialGradient).toHaveBeenCalled()
 
     vi.clearAllMocks()
-    rerender(<ColorWheel {...defaultProps} type="gain" />)
+    rerender(<ColorWheel {...defaultProps} type="gain" data-oid="9l2b2m6" />)
     expect(mockContext.createRadialGradient).toHaveBeenCalled()
   })
 
   it("should handle mouse events cleanup on unmount", () => {
-    const { container, unmount } = render(<ColorWheel {...defaultProps} />)
+    const { container, unmount } = render(<ColorWheel {...defaultProps} data-oid="c2ce5a7" />)
 
     const wheelContainer = container.querySelector('[style*="width"]')
     if (wheelContainer) {

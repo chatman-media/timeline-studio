@@ -18,6 +18,7 @@ vi.mock("@/features/browser", () => ({
       data-show-filename={showFileName}
       data-ignore-ratio={ignoreRatio}
       onClick={() => onAddMedia?.(file)}
+      data-oid="5777cu9"
     >
       Media Preview
     </div>
@@ -27,7 +28,7 @@ vi.mock("@/features/browser", () => ({
 // Мокаем FileMetadata
 vi.mock("../../components/file-metadata", () => ({
   FileMetadata: ({ file, size }: { file: any; size: number }) => (
-    <div data-testid="file-metadata" data-file-id={file.id} data-size={size}>
+    <div data-testid="file-metadata" data-file-id={file.id} data-size={size} data-oid="l2-o78p">
       File Metadata
     </div>
   ),
@@ -91,7 +92,7 @@ describe("MediaItem", () => {
   })
 
   it("should render in list mode", () => {
-    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="list" previewSize={100} />)
+    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="list" previewSize={100} data-oid="kozpptk" />)
 
     // Проверяем, что компоненты отрендерились
     expect(screen.getByTestId("media-preview")).toBeInTheDocument()
@@ -106,7 +107,7 @@ describe("MediaItem", () => {
   })
 
   it("should render in grid mode", () => {
-    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="grid" previewSize={100} />)
+    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="grid" previewSize={100} data-oid="csrvyfr" />)
 
     // Проверяем, что компонент превью отрендерился
     expect(screen.getByTestId("media-preview")).toBeInTheDocument()
@@ -121,7 +122,9 @@ describe("MediaItem", () => {
   })
 
   it("should render in thumbnails mode", () => {
-    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="thumbnails" previewSize={100} />)
+    renderWithProviders(
+      <MediaItem file={mockFile} index={0} viewMode="thumbnails" previewSize={100} data-oid="t-0nr7i" />,
+    )
 
     // Проверяем, что компонент превью отрендерился
     expect(screen.getByTestId("media-preview")).toBeInTheDocument()
@@ -134,7 +137,7 @@ describe("MediaItem", () => {
   })
 
   it("should handle click events on preview component", () => {
-    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="list" previewSize={100} />)
+    renderWithProviders(<MediaItem file={mockFile} index={0} viewMode="list" previewSize={100} data-oid="4p6bwmt" />)
 
     // Кликаем на превью - компонент должен корректно обрабатывать клики
     expect(() => {
@@ -162,7 +165,9 @@ describe("MediaItem", () => {
       isItemFavorite: vi.fn(),
     } as any)
 
-    renderWithProviders(<MediaItem file={mockAddedFile} index={0} viewMode="list" previewSize={100} />)
+    renderWithProviders(
+      <MediaItem file={mockAddedFile} index={0} viewMode="list" previewSize={100} data-oid="xf7bwl8" />,
+    )
 
     // Проверяем, что компонент имеет класс pointer-events-none
     const container = screen.getByTestId("media-preview").parentElement?.parentElement

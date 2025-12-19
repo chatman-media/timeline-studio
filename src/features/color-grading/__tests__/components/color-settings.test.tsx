@@ -77,38 +77,62 @@ vi.mock("../../services/color-grading-provider", () => ({
 
 // Мокаем дочерние компоненты
 vi.mock("../../components/color-wheels/color-wheels-section", () => ({
-  ColorWheelsSection: () => <div data-testid="color-wheels-section">Color Wheels Section</div>,
+  ColorWheelsSection: () => (
+    <div data-testid="color-wheels-section" data-oid="n7eimy6">
+      Color Wheels Section
+    </div>
+  ),
 }))
 
 vi.mock("../../components/curves/curves-section", () => ({
-  CurvesSection: () => <div data-testid="curves-section">Curves Section</div>,
+  CurvesSection: () => (
+    <div data-testid="curves-section" data-oid="g79noe6">
+      Curves Section
+    </div>
+  ),
 }))
 
 vi.mock("../../components/hsl/hsl-section", () => ({
-  HSLSection: () => <div data-testid="hsl-section">HSL Section</div>,
+  HSLSection: () => (
+    <div data-testid="hsl-section" data-oid="01_1zo0">
+      HSL Section
+    </div>
+  ),
 }))
 
 vi.mock("../../components/lut/lut-section", () => ({
-  LUTSection: () => <div data-testid="lut-section">LUT Section</div>,
+  LUTSection: () => (
+    <div data-testid="lut-section" data-oid="kt01j74">
+      LUT Section
+    </div>
+  ),
 }))
 
 vi.mock("../../components/scopes/scopes-section", () => ({
-  ScopesSection: () => <div data-testid="scopes-section">Scopes Section</div>,
+  ScopesSection: () => (
+    <div data-testid="scopes-section" data-oid="tmpbn2j">
+      Scopes Section
+    </div>
+  ),
 }))
 
 vi.mock("../../components/controls/color-grading-controls", () => ({
-  ColorGradingControls: () => <div data-testid="color-grading-controls">Color Grading Controls</div>,
+  ColorGradingControls: () => (
+    <div data-testid="color-grading-controls" data-oid="r11rhcv">
+      Color Grading Controls
+    </div>
+  ),
 }))
 
 describe("ColorSettings", () => {
   it("should render color settings panel", () => {
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="a4f79ip" />)
 
     expect(screen.getByTestId("color-settings")).toBeInTheDocument()
   })
 
   it("should render all collapsible sections", () => {
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="9:ooex-" />)
 
     // Проверяем наличие всех секций
     expect(screen.getByTestId("color-wheels-trigger")).toBeInTheDocument()
@@ -126,7 +150,7 @@ describe("ColorSettings", () => {
   })
 
   it("should have color wheels section open by default", () => {
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="._yj9gm" />)
 
     // Color wheels должны быть открыты по умолчанию
     expect(screen.getByTestId("color-wheels-section")).toBeInTheDocument()
@@ -140,7 +164,7 @@ describe("ColorSettings", () => {
 
   it("should toggle sections when clicking triggers", async () => {
     const user = userEvent.setup()
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="ez-yksy" />)
 
     // Изначально только color wheels открыты
     expect(screen.getByTestId("color-wheels-section")).toBeInTheDocument()
@@ -158,13 +182,13 @@ describe("ColorSettings", () => {
   })
 
   it("should render color grading controls at the bottom", () => {
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="dse8r4." />)
 
     expect(screen.getByTestId("color-grading-controls")).toBeInTheDocument()
   })
 
   it("should have proper scrollable container", () => {
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="vnj:q02" />)
 
     const scrollableContainer = screen.getByTestId("color-settings").querySelector(".overflow-y-auto")
     expect(scrollableContainer).toBeInTheDocument()
@@ -172,13 +196,13 @@ describe("ColorSettings", () => {
   })
 
   it("should apply custom className when provided", () => {
-    render(<ColorSettings className="test-custom-class" />)
+    render(<ColorSettings className="test-custom-class" data-oid="3uyjq:s" />)
 
     expect(screen.getByTestId("color-settings")).toHaveClass("test-custom-class")
   })
 
   it("should have proper flex layout structure", () => {
-    render(<ColorSettings />)
+    render(<ColorSettings data-oid="h2:r0y-" />)
 
     const container = screen.getByTestId("color-settings")
     expect(container).toHaveClass("h-full")

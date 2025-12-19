@@ -49,6 +49,7 @@ export function TrackRollHandles({ track, timeScale, onRollStart }: TrackRollHan
           isActive={false}
           timeScale={timeScale}
           onRollStart={(mouseX) => onRollStart?.(left.id, right.id, mouseX)}
+          data-oid="kby::o0"
         />
       ))}
     </>

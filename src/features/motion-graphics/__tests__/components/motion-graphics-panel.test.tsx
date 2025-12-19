@@ -48,6 +48,7 @@ describe("MotionGraphicsPanel Component", () => {
         ]),
       },
     ],
+
     enabled: true,
   }
 
@@ -68,13 +69,13 @@ describe("MotionGraphicsPanel Component", () => {
   }
 
   it("renders motion graphics panel", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="tosgf:3" />)
 
     expect(screen.getAllByText("Motion Graphics").length).toBeGreaterThan(0)
   })
 
   it("displays playback controls", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="2gpbsf9" />)
 
     // Check for play/pause, stop, reset buttons
     const buttons = screen.getAllByRole("button")
@@ -82,14 +83,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("shows play button when not playing", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} playing={false} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} playing={false} data-oid="jxbgrwl" />)
 
     // Component should render without errors
     expect(screen.getAllByText("Motion Graphics").length).toBeGreaterThan(0)
   })
 
   it("shows pause button when playing", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} playing={true} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} playing={true} data-oid="kb:n7_p" />)
 
     // Component should render without errors
     expect(screen.getAllByText("Motion Graphics").length).toBeGreaterThan(0)
@@ -97,7 +98,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("calls onPlayPause when play/pause clicked", () => {
     const onPlayPause = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPlayPause={onPlayPause} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPlayPause={onPlayPause} data-oid="-8m_4s9" />)
 
     // Component should render without errors
     expect(screen.getAllByRole("button").length).toBeGreaterThan(0)
@@ -105,7 +106,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("calls onStop when stop button clicked", () => {
     const onStop = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onStop={onStop} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onStop={onStop} data-oid="okrb-v7" />)
 
     const buttons = screen.getAllByRole("button")
     // Stop button should be the second playback control button
@@ -114,7 +115,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("calls onReset when reset button clicked", () => {
     const onReset = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onReset={onReset} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onReset={onReset} data-oid="m-b23sx" />)
 
     const buttons = screen.getAllByRole("button")
     // Reset button should be one of the playback control buttons
@@ -122,7 +123,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays time slider", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid=":..swq7" />)
 
     const slider = screen.getByRole("slider")
     expect(slider).toBeInTheDocument()
@@ -130,7 +131,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("calls onTimeChange when slider is moved", () => {
     const onTimeChange = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onTimeChange={onTimeChange} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onTimeChange={onTimeChange} data-oid=":tmqnsi" />)
 
     const slider = screen.getByRole("slider")
     fireEvent.change(slider, { target: { value: "5" } })
@@ -139,14 +140,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays current time and duration", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} currentTime={2.5} duration={10} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} currentTime={2.5} duration={10} data-oid="38::i5x" />)
 
     expect(screen.getByText(/2\.50s/)).toBeInTheDocument()
     expect(screen.getByText(/10\.00s/)).toBeInTheDocument()
   })
 
   it("renders tabs for presets, layers, and properties", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid=".soa5he" />)
 
     expect(screen.getByText("Presets")).toBeInTheDocument()
     expect(screen.getByText("Layers")).toBeInTheDocument()
@@ -154,14 +155,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays search input in presets tab", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="4ilkrc:" />)
 
     const searchInput = screen.getByPlaceholderText("Search presets...")
     expect(searchInput).toBeInTheDocument()
   })
 
   it("filters presets by search query", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="qi92q80" />)
 
     const searchInput = screen.getByPlaceholderText("Search presets...")
     fireEvent.change(searchInput, { target: { value: "fade" } })
@@ -171,14 +172,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays category filter", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="f9ngmqc" />)
 
     const select = screen.getByText("All Categories")
     expect(select).toBeInTheDocument()
   })
 
   it("toggles between grid and list view", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="d5k4.my" />)
 
     const buttons = screen.getAllByRole("button")
     // Grid and list view buttons should be present
@@ -186,7 +187,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays preset cards", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="d-85tms" />)
 
     // Preset should be visible
     expect(screen.getByText("Fade In")).toBeInTheDocument()
@@ -194,14 +195,14 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("calls onPresetApply when preset is clicked", () => {
     const onPresetApply = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPresetApply={onPresetApply} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPresetApply={onPresetApply} data-oid="5tm.685" />)
 
     // Component should render preset UI
     expect(screen.getByPlaceholderText("Search presets...")).toBeInTheDocument()
   })
 
   it("displays animation layers in layers tab", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="3ie.trs" />)
 
     // Click on Layers tab
     const layersTab = screen.getByText("Layers")
@@ -212,7 +213,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays track information", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="8ghynet" />)
 
     // Switch to Layers tab
     const layersTab = screen.getByText("Layers")
@@ -223,7 +224,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays layer count badge", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="iqr.iuc" />)
 
     // Switch to Layers tab
     const layersTab = screen.getByText("Layers")
@@ -234,14 +235,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("shows empty state when no layers selected", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} data-oid="uvim6ki" />)
 
     expect(screen.getAllByText("Motion Graphics")[0]).toBeInTheDocument()
     expect(screen.getByText(/Select a layer to edit animation curves/)).toBeInTheDocument()
   })
 
   it("displays properties in properties tab", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="dn1hw4q" />)
 
     // Switch to Properties tab
     const propertiesTab = screen.getByText("Properties")
@@ -251,7 +252,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("shows message when no layer is selected", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} data-oid="u9:6xb_" />)
 
     // Switch to Properties tab
     const propertiesTab = screen.getByText("Properties")
@@ -262,13 +263,13 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("handles empty tracks array", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} data-oid="78cfbue" />)
 
     expect(screen.getAllByText("Motion Graphics")[0]).toBeInTheDocument()
   })
 
   it("displays toolbar buttons", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="b.w0lw6" />)
 
     // Upload, Download, Settings buttons should be present
     const buttons = screen.getAllByRole("button")
@@ -276,7 +277,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("switches between grid and list view modes", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="2h0q8py" />)
 
     const buttons = screen.getAllByRole("button")
     // Multiple buttons including view mode toggles
@@ -285,7 +286,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("applies preset when clicked in grid view", () => {
     const onPresetApply = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPresetApply={onPresetApply} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPresetApply={onPresetApply} data-oid="r6xubp9" />)
 
     // Find and click preset card
     const presetCard = screen.getByText("Fade In")
@@ -293,14 +294,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays preset tags", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="8l1w29k" />)
 
     // Preset tags should be visible
     expect(screen.getByText("Fade In")).toBeInTheDocument()
   })
 
   it("filters by category selection", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="yisdasf" />)
 
     const categorySelect = screen.getByText("All Categories")
     expect(categorySelect).toBeInTheDocument()
@@ -316,7 +317,7 @@ describe("MotionGraphicsPanel Component", () => {
       ],
     }
 
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[trackWithMultipleLayers]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[trackWithMultipleLayers]} data-oid="exdvsxz" />)
 
     // Switch to Layers tab
     const layersTab = screen.getByText("Layers")
@@ -326,7 +327,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("selects track when clicked", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid=".uto:d7" />)
 
     // Switch to Layers tab
     const layersTab = screen.getByText("Layers")
@@ -336,7 +337,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("selects layer when clicked", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="jel70wb" />)
 
     // Switch to Layers tab
     const layersTab = screen.getByText("Layers")
@@ -346,7 +347,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays layer properties when layer is selected", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="qyi.b2-" />)
 
     // Switch to Properties tab
     const propertiesTab = screen.getByText("Properties")
@@ -356,7 +357,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("shows property type badges", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="b-o4zpl" />)
 
     // Switch to Properties tab
     const propertiesTab = screen.getByText("Properties")
@@ -366,7 +367,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("shows keyframe count for properties", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="cp41obc" />)
 
     // Switch to Properties tab
     const propertiesTab = screen.getByText("Properties")
@@ -376,14 +377,14 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("renders curve editor when layer is selected", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="8i.eai0" />)
 
     // Component should render
     expect(screen.getAllByText("Motion Graphics")[0]).toBeInTheDocument()
   })
 
   it("handles preset search clearing", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="a9zaf42" />)
 
     const searchInput = screen.getByPlaceholderText("Search presets...")
     fireEvent.change(searchInput, { target: { value: "test" } })
@@ -394,32 +395,34 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays multiple preset categories", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="9lmeq-h" />)
 
     const categorySelect = screen.getByText("All Categories")
     expect(categorySelect).toBeInTheDocument()
   })
 
   it("shows empty state when no preset matches search", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="g_5iidz" />)
 
     const searchInput = screen.getByPlaceholderText("Search presets...")
     // Search for something that doesn't exist
-    fireEvent.change(searchInput, { target: { value: "nonexistent-preset-xyz" } })
+    fireEvent.change(searchInput, {
+      target: { value: "nonexistent-preset-xyz" },
+    })
 
     // Component should still render search input
     expect(searchInput).toBeInTheDocument()
   })
 
   it("displays preset descriptions in grid view", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="31cf5kc" />)
 
     // Preset description should be visible
     expect(screen.getByText("Smooth fade in animation")).toBeInTheDocument()
   })
 
   it("displays preset descriptions in list view", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="tyd8q4x" />)
 
     // Switch to list view (click list button)
     const buttons = screen.getAllByRole("button")
@@ -436,35 +439,35 @@ describe("MotionGraphicsPanel Component", () => {
       targetType: "effect",
     }
 
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[mockTrack, effectTrack]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[mockTrack, effectTrack]} data-oid="wyjftys" />)
 
     expect(screen.getAllByText("Motion Graphics")[0]).toBeInTheDocument()
   })
 
   it("updates current time display dynamically", () => {
-    const { rerender } = renderWithBase(<MotionGraphicsPanel {...defaultProps} currentTime={0} />)
+    const { rerender } = renderWithBase(<MotionGraphicsPanel {...defaultProps} currentTime={0} data-oid="qfmlwlw" />)
 
     expect(screen.getByText(/0\.00s/)).toBeInTheDocument()
 
-    rerender(<MotionGraphicsPanel {...defaultProps} currentTime={5.5} />)
+    rerender(<MotionGraphicsPanel {...defaultProps} currentTime={5.5} data-oid=":5r5hbb" />)
 
     expect(screen.getByText(/5\.50s/)).toBeInTheDocument()
   })
 
   it("handles zero duration", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} duration={0} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} duration={0} data-oid="bmwn424" />)
 
     expect(screen.getByText(/0\.00s/)).toBeInTheDocument()
   })
 
   it("handles very long duration", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} duration={3600} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} duration={3600} data-oid="0d6o_ad" />)
 
     expect(screen.getByText(/3600\.00s/)).toBeInTheDocument()
   })
 
   it("filters presets by selected category", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="aq_0:0e" />)
 
     const categorySelect = screen.getByText("All Categories").closest("select")
     if (categorySelect) {
@@ -474,7 +477,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("renders with selected track and layer", () => {
-    const { rerender } = renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    const { rerender } = renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="_8fmn6:" />)
 
     // Switch to Layers tab
     const layersTab = screen.getByText("Layers")
@@ -484,13 +487,13 @@ describe("MotionGraphicsPanel Component", () => {
     expect(layersTab).toBeInTheDocument()
 
     // Re-render to trigger layer selection
-    rerender(<MotionGraphicsPanel {...defaultProps} />)
+    rerender(<MotionGraphicsPanel {...defaultProps} data-oid="nok_f2r" />)
 
     expect(screen.getByText("Layers")).toBeInTheDocument()
   })
 
   it("shows layer properties after layer selection", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="uetmswc" />)
 
     // Switch to Layers tab
     fireEvent.click(screen.getByText("Layers"))
@@ -507,7 +510,13 @@ describe("MotionGraphicsPanel Component", () => {
     const onReset = vi.fn()
 
     renderWithBase(
-      <MotionGraphicsPanel {...defaultProps} onPlayPause={onPlayPause} onStop={onStop} onReset={onReset} />,
+      <MotionGraphicsPanel
+        {...defaultProps}
+        onPlayPause={onPlayPause}
+        onStop={onStop}
+        onReset={onReset}
+        data-oid=":gop-kh"
+      />,
     )
 
     const buttons = screen.getAllByRole("button")
@@ -522,19 +531,19 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays correct playing state icon", () => {
-    const { rerender } = renderWithBase(<MotionGraphicsPanel {...defaultProps} playing={false} />)
+    const { rerender } = renderWithBase(<MotionGraphicsPanel {...defaultProps} playing={false} data-oid="k-gzr9n" />)
 
     // Component renders
     expect(screen.getAllByText("Motion Graphics")[0]).toBeInTheDocument()
 
-    rerender(<MotionGraphicsPanel {...defaultProps} playing={true} />)
+    rerender(<MotionGraphicsPanel {...defaultProps} playing={true} data-oid="z3dzw:_" />)
 
     // Component still renders
     expect(screen.getAllByText("Motion Graphics")[0]).toBeInTheDocument()
   })
 
   it("shows add layer button in layers tab", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="weqbph3" />)
 
     fireEvent.click(screen.getByText("Layers"))
 
@@ -544,7 +553,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("applies preset to selected track", () => {
     const onPresetApply = vi.fn()
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPresetApply={onPresetApply} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} onPresetApply={onPresetApply} data-oid="vnmgsq8" />)
 
     // Preset tab is active by default
     expect(screen.getByText("Presets")).toBeInTheDocument()
@@ -552,7 +561,7 @@ describe("MotionGraphicsPanel Component", () => {
 
   it("renders empty preset list gracefully", () => {
     // This test checks that empty preset handling works
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="kgwo..n" />)
 
     // Search for something that won't match
     const searchInput = screen.getByPlaceholderText("Search presets...")
@@ -563,7 +572,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("toggles between all presets and filtered", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="1dcmq5c" />)
 
     const searchInput = screen.getByPlaceholderText("Search presets...")
 
@@ -577,7 +586,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("displays layer with properties when selected", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} data-oid="wdkld.y" />)
 
     // Go to Properties tab
     fireEvent.click(screen.getByText("Properties"))
@@ -587,7 +596,7 @@ describe("MotionGraphicsPanel Component", () => {
   })
 
   it("shows curve editor empty state", () => {
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[]} data-oid="29x360i" />)
 
     // Empty state message
     expect(
@@ -612,7 +621,7 @@ describe("MotionGraphicsPanel Component", () => {
       ],
     }
 
-    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[trackWithLayers]} />)
+    renderWithBase(<MotionGraphicsPanel {...defaultProps} tracks={[trackWithLayers]} data-oid="vod6tka" />)
 
     fireEvent.click(screen.getByText("Layers"))
 

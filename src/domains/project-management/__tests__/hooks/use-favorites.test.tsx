@@ -84,10 +84,26 @@ describe("useFavorites Hook", () => {
       const { result } = renderHook(() => useFavorites())
 
       const testCases = [
-        { item: { id: "t-1", name: "Transition" }, type: "transition", expectedTab: "transitions" },
-        { item: { id: "e-1", name: "Effect" }, type: "effect", expectedTab: "effects" },
-        { item: { id: "f-1", name: "Filter" }, type: "filter", expectedTab: "filters" },
-        { item: { id: "m-1", name: "Media" }, type: "media", expectedTab: "media" },
+        {
+          item: { id: "t-1", name: "Transition" },
+          type: "transition",
+          expectedTab: "transitions",
+        },
+        {
+          item: { id: "e-1", name: "Effect" },
+          type: "effect",
+          expectedTab: "effects",
+        },
+        {
+          item: { id: "f-1", name: "Filter" },
+          type: "filter",
+          expectedTab: "filters",
+        },
+        {
+          item: { id: "m-1", name: "Media" },
+          type: "media",
+          expectedTab: "media",
+        },
       ]
 
       for (const { item, type, expectedTab } of testCases) {

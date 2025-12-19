@@ -17,14 +17,14 @@ describe("HistogramScope", () => {
   })
 
   it("should render canvas element", () => {
-    const { container } = render(<HistogramScope width={320} height={240} refreshRate={30} />)
+    const { container } = render(<HistogramScope width={320} height={240} refreshRate={30} data-oid="lla3_ti" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
   })
 
   it("should set canvas dimensions", () => {
-    const { container } = render(<HistogramScope width={640} height={480} refreshRate={30} />)
+    const { container } = render(<HistogramScope width={640} height={480} refreshRate={30} data-oid="qli9-d0" />)
 
     const canvas = container.querySelector("canvas") as HTMLCanvasElement
     expect(canvas.width).toBe(640)
@@ -32,9 +32,11 @@ describe("HistogramScope", () => {
   })
 
   it("should update dimensions when props change", () => {
-    const { container, rerender } = render(<HistogramScope width={320} height={240} refreshRate={30} />)
+    const { container, rerender } = render(
+      <HistogramScope width={320} height={240} refreshRate={30} data-oid="0a03ip6" />,
+    )
 
-    rerender(<HistogramScope width={640} height={480} refreshRate={30} />)
+    rerender(<HistogramScope width={640} height={480} refreshRate={30} data-oid="a_x6vlo" />)
 
     const canvas = container.querySelector("canvas") as HTMLCanvasElement
     expect(canvas.width).toBe(640)

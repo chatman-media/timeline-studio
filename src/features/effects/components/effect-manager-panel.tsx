@@ -130,16 +130,18 @@ export function EffectManagerPanel({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-muted-foreground">{t("effects.loading", "Загрузка эффектов...")}</div>
+      <div className="flex items-center justify-center h-full" data-oid="32wy.hr">
+        <div className="text-muted-foreground" data-oid="051ma3d">
+          {t("effects.loading", "Загрузка эффектов...")}
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-destructive">
+      <div className="flex items-center justify-center h-full" data-oid="-sv3mvg">
+        <div className="text-destructive" data-oid="10ztyxa">
           {t("effects.error", "Ошибка загрузки эффектов")}: {error}
         </div>
       </div>
@@ -147,54 +149,73 @@ export function EffectManagerPanel({
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" data-oid="_gwald0">
       {/* Панель инструментов */}
-      <div className="flex items-center gap-4 p-4 border-b">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+      <div className="flex items-center gap-4 p-4 border-b" data-oid="xhrrkn3">
+        <div className="flex-1 relative" data-oid="_b1s-v5">
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"
+            data-oid="gwai0ps"
+          />
+
           <Input
             placeholder={t("effects.search", "Поиск эффектов...")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
+            data-oid="g7q9wp7"
           />
         </div>
 
-        <Select value={filterScope} onValueChange={(value: any) => setFilterScope(value)}>
-          <SelectTrigger className="w-[140px]">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue />
+        <Select value={filterScope} onValueChange={(value: any) => setFilterScope(value)} data-oid="_kd743l">
+          <SelectTrigger className="w-[140px]" data-oid="q_4_.1c">
+            <Filter className="w-4 h-4 mr-2" data-oid="efpb33p" />
+            <SelectValue data-oid="qdgss3d" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("effects.scope.all", "Все")}</SelectItem>
-            <SelectItem value="clip">{t("effects.scope.clip", "Клип")}</SelectItem>
-            <SelectItem value="track">{t("effects.scope.track", "Трек")}</SelectItem>
-            <SelectItem value="global">{t("effects.scope.global", "Глобальные")}</SelectItem>
+          <SelectContent data-oid="meuyp-u">
+            <SelectItem value="all" data-oid="p07vxyt">
+              {t("effects.scope.all", "Все")}
+            </SelectItem>
+            <SelectItem value="clip" data-oid="_b-i6cy">
+              {t("effects.scope.clip", "Клип")}
+            </SelectItem>
+            <SelectItem value="track" data-oid="6:49c2m">
+              {t("effects.scope.track", "Трек")}
+            </SelectItem>
+            <SelectItem value="global" data-oid="rurjh_y">
+              {t("effects.scope.global", "Глобальные")}
+            </SelectItem>
           </SelectContent>
         </Select>
 
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleImportClick} disabled={isImporting}>
-            <Upload className="w-4 h-4 mr-2" />
+        <div className="flex gap-2" data-oid="2.svfb:">
+          <Button variant="outline" size="sm" onClick={handleImportClick} disabled={isImporting} data-oid="ee1qwlk">
+            <Upload className="w-4 h-4 mr-2" data-oid="cf00inh" />
             {t("effects.import", "Импорт")}
           </Button>
 
-          <Button variant="outline" size="sm" onClick={handleImportLUTClick} disabled={isImporting}>
-            <Plus className="w-4 h-4 mr-2" />
+          <Button variant="outline" size="sm" onClick={handleImportLUTClick} disabled={isImporting} data-oid="-q9eb.:">
+            <Plus className="w-4 h-4 mr-2" data-oid="lixyv::" />
             LUT
           </Button>
         </div>
       </div>
 
       {/* Категории */}
-      <Tabs value={activeCategory} onValueChange={setActiveCategory} className="flex-1 flex flex-col">
-        <TabsList className="w-full justify-start px-4 h-auto flex-wrap">
+      <Tabs
+        value={activeCategory}
+        onValueChange={setActiveCategory}
+        className="flex-1 flex flex-col"
+        data-oid="9xmtp3h"
+      >
+        <TabsList className="w-full justify-start px-4 h-auto flex-wrap" data-oid="vn5njo.">
           <TabsTrigger
             value="all"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            data-oid=".r::7zv"
           >
             {EFFECT_CATEGORIES.all[i18n.language as "en" | "ru"]}
-            <Badge variant="secondary" className="ml-2">
+            <Badge variant="secondary" className="ml-2" data-oid="o3hk0a-">
               {effects.length}
             </Badge>
           </TabsTrigger>
@@ -208,9 +229,10 @@ export function EffectManagerPanel({
                 key={key}
                 value={key}
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                data-oid="24qq7sd"
               >
                 {categoryInfo[i18n.language as "en" | "ru"]}
-                <Badge variant="secondary" className="ml-2">
+                <Badge variant="secondary" className="ml-2" data-oid="p:v2pyb">
                   {categoryEffects.length}
                 </Badge>
               </TabsTrigger>
@@ -219,9 +241,9 @@ export function EffectManagerPanel({
         </TabsList>
 
         {/* Контент */}
-        <TabsContent value={activeCategory} className="flex-1 mt-0">
-          <ScrollArea className="h-full">
-            <div className="p-4 space-y-6">
+        <TabsContent value={activeCategory} className="flex-1 mt-0" data-oid="1e5oyv5">
+          <ScrollArea className="h-full" data-oid="dl9g2e7">
+            <div className="p-4 space-y-6" data-oid="su-0ix1">
               {activeCategory === "all" ? (
                 // Показываем все категории
                 Object.entries(groupedEffects).map(([category, categoryEffects]) => {
@@ -237,6 +259,7 @@ export function EffectManagerPanel({
                       previewWidth={previewSize}
                       previewHeight={previewSize}
                       onEffectClick={handleEffectClick}
+                      data-oid="dkq2vbc"
                     />
                   )
                 })
@@ -247,33 +270,45 @@ export function EffectManagerPanel({
                   style={{
                     gridTemplateColumns: `repeat(auto-fill, minmax(${previewSize}px, 1fr))`,
                   }}
+                  data-oid="4ld:pv9"
                 >
                   {filteredEffects.map((effect, _index) => (
                     <div
                       key={effect.id}
                       className="relative group cursor-pointer"
                       onClick={() => handleEffectClick(effect)}
+                      data-oid="qm4namj"
                     >
-                      <div className="aspect-square rounded-lg overflow-hidden bg-muted">
+                      <div className="aspect-square rounded-lg overflow-hidden bg-muted" data-oid="w0gfjnp">
                         {/* TODO: Добавить превью эффекта */}
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Settings2 className="w-8 h-8 text-muted-foreground" />
+                        <div className="w-full h-full flex items-center justify-center" data-oid="-_bi8tu">
+                          <Settings2 className="w-8 h-8 text-muted-foreground" data-oid="a9:-h_2" />
                         </div>
                       </div>
 
-                      <div className="mt-2 space-y-1">
-                        <h4 className="text-sm font-medium truncate">{effect.name[i18n.language] || effect.name.en}</h4>
-                        {effect.author && <p className="text-xs text-muted-foreground">{effect.author}</p>}
+                      <div className="mt-2 space-y-1" data-oid="5trnz.7">
+                        <h4 className="text-sm font-medium truncate" data-oid="y3vutd0">
+                          {effect.name[i18n.language] || effect.name.en}
+                        </h4>
+                        {effect.author && (
+                          <p className="text-xs text-muted-foreground" data-oid="nqrp7u5">
+                            {effect.author}
+                          </p>
+                        )}
                       </div>
 
                       {/* Кнопка применения при наведении */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                      <div
+                        className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center"
+                        data-oid="j1c_ihs"
+                      >
                         <Button
                           size="sm"
                           onClick={(e) => {
                             e.stopPropagation()
                             onApplyEffect(effect)
                           }}
+                          data-oid="9q3-c3g"
                         >
                           {t("effects.apply", "Применить")}
                         </Button>
@@ -288,7 +323,7 @@ export function EffectManagerPanel({
       </Tabs>
 
       {/* Детали выбранного эффекта */}
-      {selectedEffect && <EffectDetail effect={selectedEffect} onApplyEffect={onApplyEffect} />}
+      {selectedEffect && <EffectDetail effect={selectedEffect} onApplyEffect={onApplyEffect} data-oid="yyl7860" />}
     </div>
   )
 }

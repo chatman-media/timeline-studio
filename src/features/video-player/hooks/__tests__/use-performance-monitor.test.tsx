@@ -208,7 +208,11 @@ describe("usePerformanceMonitor", () => {
       vi.clearAllMocks()
 
       // Устанавливаем моки для reset state
-      const resetMetrics = { ...mockMetrics, totalCommands: 0, failedCommands: 0 }
+      const resetMetrics = {
+        ...mockMetrics,
+        totalCommands: 0,
+        failedCommands: 0,
+      }
       mockGetMetrics.mockReturnValue(resetMetrics)
 
       act(() => {

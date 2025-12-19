@@ -114,7 +114,10 @@ const mockFilters: VideoFilter[] = [
     category: "color-correction",
     complexity: "basic",
     tags: ["standard"],
-    description: { en: "Saturation adjustment", ru: "Регулировка насыщенности" },
+    description: {
+      en: "Saturation adjustment",
+      ru: "Регулировка насыщенности",
+    },
     labels: { en: "Saturation", ru: "Насыщенность" },
     params: { saturation: 0 },
   },
@@ -134,7 +137,10 @@ const mockFilters: VideoFilter[] = [
     category: "artistic",
     complexity: "basic",
     tags: ["fallback"],
-    description: { en: "Convert to grayscale", ru: "Преобразование в черно-белое" },
+    description: {
+      en: "Convert to grayscale",
+      ru: "Преобразование в черно-белое",
+    },
     labels: { en: "Grayscale", ru: "Черно-белое" },
     params: {},
   },
@@ -235,9 +241,14 @@ const ResourceItem = memo(function ResourceItem({ resource, type, icon }: Resour
         "border border-transparent hover:border-border",
         isDragging && "opacity-50",
       )}
+      data-oid="vjjk3bt"
     >
-      <div className="text-muted-foreground">{icon}</div>
-      <span className="text-sm">{getResourceName()}</span>
+      <div className="text-muted-foreground" data-oid=":oco6mq">
+        {icon}
+      </div>
+      <span className="text-sm" data-oid="5upu4km">
+        {getResourceName()}
+      </span>
     </div>
   )
 })
@@ -253,20 +264,29 @@ const CategorySection = memo(function CategorySection({ title, items, type, icon
   const [isExpanded, setIsExpanded] = useState(true)
 
   return (
-    <div className="mb-4">
+    <div className="mb-4" data-oid="vjde3cj">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex items-center gap-2 w-full p-2 hover:bg-accent rounded transition-colors"
+        data-oid="ok-1r_v"
       >
-        {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-        <span className="font-medium text-sm">{title}</span>
-        <span className="ml-auto text-xs text-muted-foreground">{items.length}</span>
+        {isExpanded ? (
+          <ChevronDown className="w-4 h-4" data-oid="pzhwoax" />
+        ) : (
+          <ChevronRight className="w-4 h-4" data-oid="yyw5qom" />
+        )}
+        <span className="font-medium text-sm" data-oid="fa8s.r1">
+          {title}
+        </span>
+        <span className="ml-auto text-xs text-muted-foreground" data-oid="ouk_461">
+          {items.length}
+        </span>
       </button>
 
       {isExpanded && (
-        <div className="mt-1 ml-6">
+        <div className="mt-1 ml-6" data-oid="ijb_f_6">
           {items.map((item) => (
-            <ResourceItem key={item.id} resource={item} type={type} icon={icon} />
+            <ResourceItem key={item.id} resource={item} type={type} icon={icon} data-oid="-ysozcw" />
           ))}
         </div>
       )}
@@ -322,87 +342,101 @@ export const ResourceBrowser = memo(function ResourceBrowser() {
   const groupedTransitions = groupByCategory<Transition>(filteredTransitions)
 
   return (
-    <div className="h-full flex flex-col bg-background border-l">
-      <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold mb-3">Resources</h2>
-        <div className="relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+    <div className="h-full flex flex-col bg-background border-l" data-oid="0.u-gjt">
+      <div className="p-4 border-b" data-oid="6wwpv-x">
+        <h2 className="text-lg font-semibold mb-3" data-oid="3rmr4.l">
+          Resources
+        </h2>
+        <div className="relative" data-oid="jt0zzcm">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" data-oid="-evdapt" />
           <Input
             placeholder="Search resources..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-8"
+            data-oid=".96mk6i"
           />
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <TabsList className="w-full justify-start px-4">
-          <TabsTrigger value="effects" className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4" />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col" data-oid="suat3c3">
+        <TabsList className="w-full justify-start px-4" data-oid="pkyo9kk">
+          <TabsTrigger value="effects" className="flex items-center gap-2" data-oid="m0a8sqz">
+            <Sparkles className="w-4 h-4" data-oid="wy.x42j" />
             Effects
           </TabsTrigger>
-          <TabsTrigger value="filters" className="flex items-center gap-2">
-            <Filter className="w-4 h-4" />
+          <TabsTrigger value="filters" className="flex items-center gap-2" data-oid="_o6x4go">
+            <Filter className="w-4 h-4" data-oid="h79oduw" />
             Filters
           </TabsTrigger>
-          <TabsTrigger value="transitions" className="flex items-center gap-2">
-            <Shuffle className="w-4 h-4" />
+          <TabsTrigger value="transitions" className="flex items-center gap-2" data-oid="cyk6y7_">
+            <Shuffle className="w-4 h-4" data-oid="0vyd_3c" />
             Transitions
           </TabsTrigger>
         </TabsList>
 
-        <ScrollArea className="flex-1">
-          <TabsContent value="effects" className="px-4">
+        <ScrollArea className="flex-1" data-oid="xz:tghm">
+          <TabsContent value="effects" className="px-4" data-oid="i046jvp">
             {Object.entries(groupedEffects).map(([category, effects]) => (
               <CategorySection
                 key={category}
                 title={category.charAt(0).toUpperCase() + category.slice(1)}
                 items={effects}
                 type="effect"
-                icon={<Sparkles className="w-4 h-4" />}
+                icon={<Sparkles className="w-4 h-4" data-oid="aij3_os" />}
+                data-oid="lyf5u6b"
               />
             ))}
             {filteredEffects.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-8">No effects found</p>
+              <p className="text-sm text-muted-foreground text-center py-8" data-oid="m5.j:n3">
+                No effects found
+              </p>
             )}
           </TabsContent>
 
-          <TabsContent value="filters" className="px-4">
+          <TabsContent value="filters" className="px-4" data-oid="uesrsad">
             {Object.entries(groupedFilters).map(([category, filters]) => (
               <CategorySection
                 key={category}
                 title={category.charAt(0).toUpperCase() + category.slice(1)}
                 items={filters}
                 type="filter"
-                icon={<Palette className="w-4 h-4" />}
+                icon={<Palette className="w-4 h-4" data-oid="z4m4k4b" />}
+                data-oid="5a7wity"
               />
             ))}
             {filteredFilters.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-8">No filters found</p>
+              <p className="text-sm text-muted-foreground text-center py-8" data-oid="fl_cvax">
+                No filters found
+              </p>
             )}
           </TabsContent>
 
-          <TabsContent value="transitions" className="px-4">
+          <TabsContent value="transitions" className="px-4" data-oid="q6p.tjh">
             {Object.entries(groupedTransitions).map(([category, transitions]) => (
               <CategorySection
                 key={category}
                 title={category.charAt(0).toUpperCase() + category.slice(1)}
                 items={transitions}
                 type="transition"
-                icon={<Layers className="w-4 h-4" />}
+                icon={<Layers className="w-4 h-4" data-oid="34s9:w0" />}
+                data-oid="m91zfvb"
               />
             ))}
             {filteredTransitions.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-8">No transitions found</p>
+              <p className="text-sm text-muted-foreground text-center py-8" data-oid="y2g7loe">
+                No transitions found
+              </p>
             )}
           </TabsContent>
         </ScrollArea>
       </Tabs>
 
       {/* Информация о drag & drop */}
-      <div className="p-4 border-t bg-muted/50">
-        <p className="text-xs text-muted-foreground">Drag resources onto clips or between clips to apply them</p>
+      <div className="p-4 border-t bg-muted/50" data-oid="5615xd5">
+        <p className="text-xs text-muted-foreground" data-oid="sby_jfn">
+          Drag resources onto clips or between clips to apply them
+        </p>
       </div>
     </div>
   )

@@ -66,15 +66,21 @@ describe("useMusicAdapter", () => {
         const { items, loading, error } = adapter.useData()
 
         return (
-          <div>
-            <div data-testid="items-count">{items.length}</div>
-            <div data-testid="loading">{loading.toString()}</div>
-            <div data-testid="error">{error?.message || "null"}</div>
+          <div data-oid="64xr-x2">
+            <div data-testid="items-count" data-oid="0n1.63:">
+              {items.length}
+            </div>
+            <div data-testid="loading" data-oid="qq304:.">
+              {loading.toString()}
+            </div>
+            <div data-testid="error" data-oid="4-_2xo_">
+              {error?.message || "null"}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="vo3iqo1" />)
 
       expect(screen.getByTestId("items-count")).toHaveTextContent("0")
       expect(screen.getByTestId("loading")).toHaveTextContent("false")
@@ -151,10 +157,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const { items } = adapter.useData()
 
-        return <div data-testid="items-count">{items.length}</div>
+        return (
+          <div data-testid="items-count" data-oid="nyt.qp3">
+            {items.length}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="zpguf37" />)
 
       expect(screen.getByTestId("items-count")).toHaveTextContent("2")
     })
@@ -193,10 +203,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const sortValue = adapter.getSortValue(mockFile as any, "name")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="n629i3k">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="vkk3srq" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("song.mp3")
     })
@@ -239,10 +253,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const sortValue = adapter.getSortValue(mockFile as any, "title")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="23ae44h">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="pvlhvva" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("beautiful song")
     })
@@ -285,10 +303,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const sortValue = adapter.getSortValue(mockFile as any, "artist")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="eycdeuf">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="vflqozp" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("the beatles")
     })
@@ -327,10 +349,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const sortValue = adapter.getSortValue(mockFile as any, "duration")
 
-        return <div data-testid="sort-value">{sortValue}</div>
+        return (
+          <div data-testid="sort-value" data-oid="yebpjqx">
+            {sortValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="nivieee" />)
 
       expect(screen.getByTestId("sort-value")).toHaveTextContent("180.5")
     })
@@ -381,10 +407,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const searchableText = adapter.getSearchableText(mockFile as any)
 
-        return <div data-testid="searchable">{searchableText.join(", ")}</div>
+        return (
+          <div data-testid="searchable" data-oid="gp9_.7a">
+            {searchableText.join(", ")}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="6rqu1:f" />)
 
       const text = screen.getByTestId("searchable").textContent
       expect(text).toContain("song.mp3")
@@ -434,10 +464,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const groupValue = adapter.getGroupValue(mockFile as any, "artist")
 
-        return <div data-testid="group-value">{groupValue}</div>
+        return (
+          <div data-testid="group-value" data-oid="l995n2r">
+            {groupValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="e-vrwrf" />)
 
       expect(screen.getByTestId("group-value")).toHaveTextContent("The Beatles")
     })
@@ -477,10 +511,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const groupValue = adapter.getGroupValue(mockFile as any, "artist")
 
-        return <div data-testid="group-value">{groupValue}</div>
+        return (
+          <div data-testid="group-value" data-oid="honokrf">
+            {groupValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="2:3ckph" />)
 
       expect(screen.getByTestId("group-value")).toHaveTextContent("Неизвестный исполнитель")
     })
@@ -523,10 +561,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const groupValue = adapter.getGroupValue(mockFile as any, "genre")
 
-        return <div data-testid="group-value">{groupValue}</div>
+        return (
+          <div data-testid="group-value" data-oid="8nf_m6h">
+            {groupValue}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="2bjdnsb" />)
 
       expect(screen.getByTestId("group-value")).toHaveTextContent("Rock")
     })
@@ -568,10 +610,14 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
         const matches = adapter.matchesFilter?.(mockFile as any, "all") ?? false
 
-        return <div data-testid="matches">{matches.toString()}</div>
+        return (
+          <div data-testid="matches" data-oid="6lszh:2">
+            {matches.toString()}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="3f-s7z_" />)
 
       expect(screen.getByTestId("matches")).toHaveTextContent("true")
     })
@@ -613,14 +659,18 @@ describe("useMusicAdapter", () => {
         const matchesWav = adapter.matchesFilter?.(mockFile as any, "wav") ?? false
 
         return (
-          <div>
-            <div data-testid="matches-mp3">{matchesMp3.toString()}</div>
-            <div data-testid="matches-wav">{matchesWav.toString()}</div>
+          <div data-oid="o570.7i">
+            <div data-testid="matches-mp3" data-oid="2wmauzu">
+              {matchesMp3.toString()}
+            </div>
+            <div data-testid="matches-wav" data-oid="02w_q-i">
+              {matchesWav.toString()}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="w_.qm9t" />)
 
       expect(screen.getByTestId("matches-mp3")).toHaveTextContent("true")
       expect(screen.getByTestId("matches-wav")).toHaveTextContent("false")
@@ -643,14 +693,18 @@ describe("useMusicAdapter", () => {
         const adapter = useMusicAdapter()
 
         return (
-          <div>
-            <div data-testid="has-import">{(!!adapter.importHandlers).toString()}</div>
-            <div data-testid="is-importing">{adapter.importHandlers?.isImporting?.toString()}</div>
+          <div data-oid="leekmuf">
+            <div data-testid="has-import" data-oid="-kpjxg6">
+              {(!!adapter.importHandlers).toString()}
+            </div>
+            <div data-testid="is-importing" data-oid="xr4z8zy">
+              {adapter.importHandlers?.isImporting?.toString()}
+            </div>
           </div>
         )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="tcpi3a-" />)
 
       expect(screen.getByTestId("has-import")).toHaveTextContent("true")
       expect(screen.getByTestId("is-importing")).toHaveTextContent("true")
@@ -662,10 +716,14 @@ describe("useMusicAdapter", () => {
       function TestComponent() {
         const adapter = useMusicAdapter()
 
-        return <div data-testid="favorite-type">{adapter.favoriteType}</div>
+        return (
+          <div data-testid="favorite-type" data-oid="pci:o1x">
+            {adapter.favoriteType}
+          </div>
+        )
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="on1lwm_" />)
 
       expect(screen.getByTestId("favorite-type")).toHaveTextContent("music")
     })

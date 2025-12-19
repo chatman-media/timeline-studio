@@ -58,17 +58,25 @@ export function ParameterSlider({
   }, [defaultValue, disabled, onChange])
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <div className="flex justify-between items-center">
-        <label className="text-sm text-foreground/90">{label}</label>
+    <div className={cn("space-y-2", className)} data-oid="::_15r7">
+      <div className="flex justify-between items-center" data-oid="vsohxf9">
+        <label className="text-sm text-foreground/90" data-oid="5kc:qf3">
+          {label}
+        </label>
         {showValue && (
-          <span className="text-xs text-muted-foreground min-w-[3rem] text-right">{formatValue(value)}</span>
+          <span className="text-xs text-muted-foreground min-w-[3rem] text-right" data-oid="pv:bnw6">
+            {formatValue(value)}
+          </span>
         )}
       </div>
 
-      <div className="relative group">
+      <div className="relative group" data-oid="-:sl8.e">
         {/* Фоновый трек */}
-        <div className="absolute inset-y-0 w-full h-2 bg-muted rounded-lg" onDoubleClick={handleDoubleClick} />
+        <div
+          className="absolute inset-y-0 w-full h-2 bg-muted rounded-lg"
+          onDoubleClick={handleDoubleClick}
+          data-oid="cov0t5g"
+        />
 
         {/* Заполненная часть */}
         <div
@@ -78,6 +86,7 @@ export function ParameterSlider({
             isDragging ? "transition-none" : "transition-all duration-100",
           )}
           style={{ width: `${percentage}%` }}
+          data-oid="0ug3k4e"
         />
 
         {/* Центральная метка (если есть defaultValue) */}
@@ -85,6 +94,7 @@ export function ParameterSlider({
           <div
             className="absolute top-1/2 -translate-y-1/2 w-[2px] h-3 bg-border"
             style={{ left: `${((defaultValue - min) / (max - min)) * 100}%` }}
+            data-oid="v7sp.xe"
           />
         )}
 
@@ -123,11 +133,15 @@ export function ParameterSlider({
             "[&::-moz-range-thumb]:border-0",
             disabled && "opacity-50 cursor-not-allowed",
           )}
+          data-oid="9:1g-aj"
         />
 
         {/* Подсказка при наведении */}
         {!disabled && defaultValue !== undefined && (
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-popover text-xs text-popover-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-border">
+          <div
+            className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-popover text-xs text-popover-foreground rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-border"
+            data-oid="cj237z."
+          >
             Double-click to reset
           </div>
         )}

@@ -28,7 +28,7 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("lucide-react", () => ({
   CopyPlus: ({ size }: { size: number }) => (
-    <div data-testid="copy-plus-icon" data-size={size}>
+    <div data-testid="copy-plus-icon" data-size={size} data-oid="8k2l3f4">
       CopyPlus
     </div>
   ),
@@ -36,7 +36,15 @@ vi.mock("lucide-react", () => ({
 
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled, className, title, ...props }: any) => (
-    <button className={className} onClick={onClick} disabled={disabled} title={title} data-testid="button" {...props}>
+    <button
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      data-testid="button"
+      {...props}
+      data-oid="jmr3arc"
+    >
       {children}
     </button>
   ),
@@ -113,7 +121,7 @@ describe("StatusBar", () => {
     it("должен отображать сообщение когда все файлы добавлены", () => {
       const media = [createMockMediaFile({ path: "/video1.mp4" }), createMockMediaFile({ path: "/video2.mp4" })]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={media} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={media} data-oid="uvlplq6" />)
 
       expect(screen.getByText("All files added")).toBeInTheDocument()
       expect(screen.queryByText("Add all")).not.toBeInTheDocument()
@@ -122,7 +130,7 @@ describe("StatusBar", () => {
     it("должен отображать кнопку добавления всех файлов", () => {
       const media = [createMockMediaFile({ path: "/video1.mp4" }), createMockMediaFile({ path: "/video2.mp4" })]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} data-oid="oe4-5k7" />)
 
       const addAllButton = screen.getByText("Add all").closest("button")
       expect(addAllButton).toBeInTheDocument()
@@ -137,7 +145,7 @@ describe("StatusBar", () => {
         createMockMediaFile({ path: "/file.mp3" }),
       ]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} data-oid=":nnxyo:" />)
 
       expect(screen.getByText(/2 video/)).toBeInTheDocument()
     })
@@ -149,7 +157,7 @@ describe("StatusBar", () => {
         createMockMediaFile({ path: "/file.mp4" }),
       ]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} data-oid="yuz9urz" />)
 
       expect(screen.getByText(/2 audio/)).toBeInTheDocument()
     })
@@ -158,7 +166,14 @@ describe("StatusBar", () => {
       const videoFile = createMockMediaFile({ path: "/video1.mp4" })
       const audioFile = createMockMediaFile({ path: "/audio1.mp3" })
 
-      render(<StatusBar {...defaultProps} media={[videoFile, audioFile]} addedFiles={[videoFile, audioFile]} />)
+      render(
+        <StatusBar
+          {...defaultProps}
+          media={[videoFile, audioFile]}
+          addedFiles={[videoFile, audioFile]}
+          data-oid="uggtmrs"
+        />,
+      )
 
       expect(screen.queryByText(/video/)).not.toBeInTheDocument()
       expect(screen.queryByText(/audio/)).not.toBeInTheDocument()
@@ -176,7 +191,7 @@ describe("StatusBar", () => {
         },
       ]
 
-      render(<StatusBar {...defaultProps} media={files} sortedDates={sortedDates} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={files} sortedDates={sortedDates} addedFiles={[]} data-oid="2.pdf.n" />)
 
       expect(screen.getByText(/2 video 2025-06-25/)).toBeInTheDocument()
     })
@@ -191,7 +206,9 @@ describe("StatusBar", () => {
         },
       ]
 
-      render(<StatusBar {...defaultProps} media={files} sortedDates={sortedDates} addedFiles={files} />)
+      render(
+        <StatusBar {...defaultProps} media={files} sortedDates={sortedDates} addedFiles={files} data-oid=":fnx_iq" />,
+      )
 
       expect(screen.queryByText(/2025-06-25/)).not.toBeInTheDocument()
     })
@@ -201,7 +218,7 @@ describe("StatusBar", () => {
     it("должен вызывать onAddAllVideoFiles при клике", () => {
       const media = [createMockMediaFile({ path: "/file.mp4" }), createMockMediaFile({ path: "/file.mov" })]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} data-oid="nkb:lfn" />)
 
       const videoButton = screen.getByText(/2 video/).closest("button")
       fireEvent.click(videoButton!)
@@ -212,7 +229,7 @@ describe("StatusBar", () => {
     it("должен вызывать onAddAllAudioFiles при клике", () => {
       const media = [createMockMediaFile({ path: "/file.mp3" }), createMockMediaFile({ path: "/file.wav" })]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} data-oid="2epxs90" />)
 
       const audioButton = screen.getByText(/2 audio/).closest("button")
       fireEvent.click(audioButton!)
@@ -230,7 +247,7 @@ describe("StatusBar", () => {
         },
       ]
 
-      render(<StatusBar {...defaultProps} media={files} sortedDates={sortedDates} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={files} sortedDates={sortedDates} addedFiles={[]} data-oid="x0ts6n9" />)
 
       const dateButton = screen.getByText(/2025-06-25/).closest("button")
       fireEvent.click(dateButton!)
@@ -241,7 +258,7 @@ describe("StatusBar", () => {
     it("должен вызывать onAddAllFiles при клике", () => {
       const media = [createMockMediaFile({ path: "/file.mp4" }), createMockMediaFile({ path: "/file.mp3" })]
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={[]} data-oid="x3k06uu" />)
 
       const addAllButton = screen.getByText("Add all").closest("button")
       fireEvent.click(addAllButton!)
@@ -259,7 +276,7 @@ describe("StatusBar", () => {
       const media = [video1, video2, audio1]
       const addedFiles = [video1] // Только один видео файл добавлен
 
-      render(<StatusBar {...defaultProps} media={media} addedFiles={addedFiles} />)
+      render(<StatusBar {...defaultProps} media={media} addedFiles={addedFiles} data-oid="s6fs83x" />)
 
       // Должна показывать 1 оставшийся видео файл
       expect(screen.getByText(/1 video/)).toBeInTheDocument()
@@ -285,6 +302,7 @@ describe("StatusBar", () => {
           media={[...files1, ...files2]}
           sortedDates={sortedDates}
           addedFiles={files1} // Первая дата полностью добавлена
+          data-oid="v63.0yj"
         />,
       )
 

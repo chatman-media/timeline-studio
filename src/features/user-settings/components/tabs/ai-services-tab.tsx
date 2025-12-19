@@ -92,11 +92,13 @@ export function AiServicesTab() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-oid="2n5wu4g">
       {/* Заголовок и описание */}
-      <div className="space-y-2">
-        <h3 className="text-lg font-semibold">{t("dialogs.userSettings.tabs.aiServices", "AI Сервисы")}</h3>
-        <p className="text-sm text-muted-foreground">
+      <div className="space-y-2" data-oid="kwsol3d">
+        <h3 className="text-lg font-semibold" data-oid="ga-56i1">
+          {t("dialogs.userSettings.tabs.aiServices", "AI Сервисы")}
+        </h3>
+        <p className="text-sm text-muted-foreground" data-oid="rph5e-x">
           {t(
             "dialogs.userSettings.aiServicesDescription",
             "Настройте API ключи для интеграции с AI ассистентами. Ключи безопасно хранятся локально.",
@@ -104,13 +106,15 @@ export function AiServicesTab() {
         </p>
       </div>
 
-      <Separator />
+      <Separator data-oid="ngqzani" />
 
       {/* OpenAI настройки */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">{t("dialogs.userSettings.openAiApiKey", "OpenAI API ключ")}</Label>
-          <p className="text-xs text-muted-foreground">
+      <div className="space-y-4" data-oid=":h58sc3">
+        <div className="space-y-2" data-oid="9fviwt9">
+          <Label className="text-sm font-medium" data-oid="25vksp-">
+            {t("dialogs.userSettings.openAiApiKey", "OpenAI API ключ")}
+          </Label>
+          <p className="text-xs text-muted-foreground" data-oid="1663p4c">
             {t(
               "dialogs.userSettings.openAiDescription",
               "Используется для ChatGPT интеграции и генерации контента. Получите ключ на platform.openai.com",
@@ -130,19 +134,25 @@ export function AiServicesTab() {
               url: "https://platform.openai.com/api-keys",
             },
           ]}
+          data-oid=":4-lr5m"
         />
+
         {getValidationError("openai") && (
-          <p className="text-xs text-destructive mt-1">{getValidationError("openai")}</p>
+          <p className="text-xs text-destructive mt-1" data-oid="71.bomm">
+            {getValidationError("openai")}
+          </p>
         )}
       </div>
 
-      <Separator />
+      <Separator data-oid="9weoegi" />
 
       {/* Claude настройки */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">{t("dialogs.userSettings.claudeApiKey", "Claude API ключ")}</Label>
-          <p className="text-xs text-muted-foreground">
+      <div className="space-y-4" data-oid="4ah-45i">
+        <div className="space-y-2" data-oid="bry5agh">
+          <Label className="text-sm font-medium" data-oid="aabr4qj">
+            {t("dialogs.userSettings.claudeApiKey", "Claude API ключ")}
+          </Label>
+          <p className="text-xs text-muted-foreground" data-oid="uy6eeaz">
             {t(
               "dialogs.userSettings.claudeDescription",
               "Используется для Claude AI ассистента и продвинутого анализа контента. Получите ключ в консоли Anthropic",
@@ -162,19 +172,25 @@ export function AiServicesTab() {
               url: "https://console.anthropic.com/settings/keys",
             },
           ]}
+          data-oid="9ljy-o4"
         />
+
         {getValidationError("claude") && (
-          <p className="text-xs text-destructive mt-1">{getValidationError("claude")}</p>
+          <p className="text-xs text-destructive mt-1" data-oid="smeoct0">
+            {getValidationError("claude")}
+          </p>
         )}
       </div>
 
-      <Separator />
+      <Separator data-oid="serucz6" />
 
       {/* Grok настройки */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">{t("dialogs.userSettings.grokApiKey", "Grok API ключ")}</Label>
-          <p className="text-xs text-muted-foreground">
+      <div className="space-y-4" data-oid="0e8glfo">
+        <div className="space-y-2" data-oid="hegjkjn">
+          <Label className="text-sm font-medium" data-oid="mxmp1ns">
+            {t("dialogs.userSettings.grokApiKey", "Grok API ключ")}
+          </Label>
+          <p className="text-xs text-muted-foreground" data-oid="t41a-k4">
             {t(
               "dialogs.userSettings.grokDescription",
               "Используется для моделей Grok от xAI. Получите ключ на console.x.ai",
@@ -194,17 +210,25 @@ export function AiServicesTab() {
               url: "https://console.x.ai",
             },
           ]}
+          data-oid="64u2vyg"
         />
-        {getValidationError("grok") && <p className="text-xs text-destructive mt-1">{getValidationError("grok")}</p>}
+
+        {getValidationError("grok") && (
+          <p className="text-xs text-destructive mt-1" data-oid="r2hmaf_">
+            {getValidationError("grok")}
+          </p>
+        )}
       </div>
 
-      <Separator />
+      <Separator data-oid="q5yz7de" />
 
       {/* DeepSeek настройки */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">{t("dialogs.userSettings.deepSeekApiKey", "DeepSeek API ключ")}</Label>
-          <p className="text-xs text-muted-foreground">
+      <div className="space-y-4" data-oid="loo3w2e">
+        <div className="space-y-2" data-oid="_tolxci">
+          <Label className="text-sm font-medium" data-oid="vyxzvno">
+            {t("dialogs.userSettings.deepSeekApiKey", "DeepSeek API ключ")}
+          </Label>
+          <p className="text-xs text-muted-foreground" data-oid="p1:78oe">
             {t(
               "dialogs.userSettings.deepSeekDescription",
               "Используется для моделей DeepSeek. Получите ключ на platform.deepseek.com",
@@ -224,21 +248,25 @@ export function AiServicesTab() {
               url: "https://platform.deepseek.com/api_keys",
             },
           ]}
+          data-oid="7nh:5-5"
         />
+
         {getValidationError("deepseek") && (
-          <p className="text-xs text-destructive mt-1">{getValidationError("deepseek")}</p>
+          <p className="text-xs text-destructive mt-1" data-oid="45bp71g">
+            {getValidationError("deepseek")}
+          </p>
         )}
       </div>
 
-      <Separator />
+      <Separator data-oid="6zb:sl." />
 
       {/* MCP (Model Context Protocol) настройки */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">
+      <div className="space-y-4" data-oid="jtue6cb">
+        <div className="space-y-2" data-oid="0bh6x-t">
+          <Label className="text-sm font-medium" data-oid="y3u6ufu">
             {t("dialogs.userSettings.mcpClaudeApiKey", "Claude API ключ для MCP")}
           </Label>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground" data-oid="y1-cbov">
             {t(
               "dialogs.userSettings.mcpDescription",
               "Model Context Protocol (MCP) - расширенная интеграция с Claude для доступа к инструментам видеомонтажа. Позволяет использовать Claude Code подписку прямо в редакторе.",
@@ -262,40 +290,51 @@ export function AiServicesTab() {
               url: "https://modelcontextprotocol.io/",
             },
           ]}
+          data-oid="f4x_9sc"
         />
+
         {getValidationError("mcp_claude") && (
-          <p className="text-xs text-destructive mt-1">{getValidationError("mcp_claude")}</p>
+          <p className="text-xs text-destructive mt-1" data-oid="a8_kfj:">
+            {getValidationError("mcp_claude")}
+          </p>
         )}
 
-        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
-          <div className="flex items-start space-x-2">
-            <div className="text-blue-500 mt-0.5">ℹ️</div>
-            <div className="flex-1">
-              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+        <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-md" data-oid="3v2.a8-">
+          <div className="flex items-start space-x-2" data-oid="d22c59t">
+            <div className="text-blue-500 mt-0.5" data-oid="b8u.783">
+              ℹ️
+            </div>
+            <div className="flex-1" data-oid="0ta7qv.">
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium" data-oid="yh87d45">
                 {t("dialogs.userSettings.mcpFeatures", "Возможности MCP:")}
               </p>
-              <ul className="mt-1 text-xs text-blue-600/80 dark:text-blue-400/80 space-y-0.5 list-disc list-inside">
-                <li>{t("dialogs.userSettings.mcpFeature1", "Анализ видео и аудио контента")}</li>
-                <li>{t("dialogs.userSettings.mcpFeature2", "Управление таймлайном и клипами")}</li>
-                <li>{t("dialogs.userSettings.mcpFeature3", "Применение эффектов и переходов")}</li>
-                <li>{t("dialogs.userSettings.mcpFeature4", "Экспорт и создание превью")}</li>
-                <li>{t("dialogs.userSettings.mcpFeature5", "18 специализированных инструментов")}</li>
+              <ul
+                className="mt-1 text-xs text-blue-600/80 dark:text-blue-400/80 space-y-0.5 list-disc list-inside"
+                data-oid="9xev6p6"
+              >
+                <li data-oid="d9x.21f">{t("dialogs.userSettings.mcpFeature1", "Анализ видео и аудио контента")}</li>
+                <li data-oid="qgxu4ua">{t("dialogs.userSettings.mcpFeature2", "Управление таймлайном и клипами")}</li>
+                <li data-oid="5r:.t:s">{t("dialogs.userSettings.mcpFeature3", "Применение эффектов и переходов")}</li>
+                <li data-oid="66z.e7a">{t("dialogs.userSettings.mcpFeature4", "Экспорт и создание превью")}</li>
+                <li data-oid="i16fppo">
+                  {t("dialogs.userSettings.mcpFeature5", "18 специализированных инструментов")}
+                </li>
               </ul>
             </div>
           </div>
         </div>
       </div>
 
-      <Separator />
+      <Separator data-oid="le0cdb1" />
 
-      <LocalModelsSection />
+      <LocalModelsSection data-oid=".p-kdua" />
 
       {/* Дополнительная информация */}
-      <div className="mt-6 p-4 bg-muted/50 rounded-md">
-        <h4 className="text-sm font-medium mb-2">
+      <div className="mt-6 p-4 bg-muted/50 rounded-md" data-oid="a8mktmj">
+        <h4 className="text-sm font-medium mb-2" data-oid="bzps.i.">
           {t("dialogs.userSettings.securityNote", "Примечание о безопасности")}
         </h4>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground" data-oid="tsxmnew">
           {t(
             "dialogs.userSettings.securityNoteText",
             "Все API ключи шифруются и хранятся локально на вашем устройстве. Они никогда не передаются третьим лицам.",
@@ -370,14 +409,20 @@ function LocalModelsSection() {
 
   if (loading) {
     return (
-      <div className="space-y-3">
-        <Label className="text-sm font-medium">{t("dialogs.userSettings.localModels.title", "Локальные модели")}</Label>
-        <p className="text-xs text-muted-foreground">
+      <div className="space-y-3" data-oid="5xt0g1u">
+        <Label className="text-sm font-medium" data-oid="cn5tvql">
+          {t("dialogs.userSettings.localModels.title", "Локальные модели")}
+        </Label>
+        <p className="text-xs text-muted-foreground" data-oid=".iea13x">
           {t("dialogs.userSettings.localModels.description", "Модели из Ollama (localhost:11434)")}
         </p>
-        <div className="flex items-center space-x-2">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="text-sm text-muted-foreground">
+        <div className="flex items-center space-x-2" data-oid="y05o6f0">
+          <div
+            className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"
+            data-oid="q4-:4fa"
+          />
+
+          <span className="text-sm text-muted-foreground" data-oid="e_kopke">
             {t("dialogs.userSettings.localModels.checking", "Проверка доступных моделей...")}
           </span>
         </div>
@@ -387,19 +432,21 @@ function LocalModelsSection() {
 
   if (error) {
     return (
-      <div className="space-y-3">
-        <Label className="text-sm font-medium">{t("dialogs.userSettings.localModels.title", "Локальные модели")}</Label>
-        <p className="text-xs text-muted-foreground">
+      <div className="space-y-3" data-oid="-5nxwj1">
+        <Label className="text-sm font-medium" data-oid="n2s2r.-">
+          {t("dialogs.userSettings.localModels.title", "Локальные модели")}
+        </Label>
+        <p className="text-xs text-muted-foreground" data-oid="ljcytjp">
           {t("dialogs.userSettings.localModels.description", "Модели из Ollama (localhost:11434)")}
         </p>
-        <div className="rounded-lg border border-dashed p-4 text-center">
-          <div className="text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed p-4 text-center" data-oid="2s6-gh-">
+          <div className="text-sm text-muted-foreground" data-oid="jz4zaf7">
             {t(
               "dialogs.userSettings.localModels.notAvailable",
               "Локальные модели недоступны. Убедитесь, что Ollama запущен на localhost:11434",
             )}
           </div>
-          <button onClick={checkLocalModels} className="mt-2 text-sm text-primary hover:underline">
+          <button onClick={checkLocalModels} className="mt-2 text-sm text-primary hover:underline" data-oid="voehrrq">
             Повторить проверку
           </button>
         </div>
@@ -408,28 +455,36 @@ function LocalModelsSection() {
   }
 
   return (
-    <div className="space-y-3">
-      <Label className="text-sm font-medium">{t("dialogs.userSettings.localModels.title", "Локальные модели")}</Label>
-      <p className="text-xs text-muted-foreground">
+    <div className="space-y-3" data-oid="ay96ex6">
+      <Label className="text-sm font-medium" data-oid="892qdp7">
+        {t("dialogs.userSettings.localModels.title", "Локальные модели")}
+      </Label>
+      <p className="text-xs text-muted-foreground" data-oid=":u2gb96">
         {t("dialogs.userSettings.localModels.description", "Модели из Ollama (localhost:11434)")}
       </p>
 
       {models.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-4 text-center">
-          <div className="text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed p-4 text-center" data-oid="c54l4o.">
+          <div className="text-sm text-muted-foreground" data-oid="27kgi_3">
             {t("dialogs.userSettings.localModels.noModels", "Нет доступных локальных моделей")}
           </div>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2" data-oid="nryughr">
           {models.map((model, index) => (
-            <div key={index} className="rounded-lg border p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-sm">{model.name}</div>
-                  <div className="text-xs text-muted-foreground">{getModelDescription(model.name)}</div>
+            <div key={index} className="rounded-lg border p-3" data-oid=":-xm18a">
+              <div className="flex items-center justify-between" data-oid="xrwoknp">
+                <div data-oid="twuth6.">
+                  <div className="font-medium text-sm" data-oid="d7j68dx">
+                    {model.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground" data-oid="blrribd">
+                    {getModelDescription(model.name)}
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground">{formatSize(model.size)}</div>
+                <div className="text-xs text-muted-foreground" data-oid="69e14cv">
+                  {formatSize(model.size)}
+                </div>
               </div>
             </div>
           ))}

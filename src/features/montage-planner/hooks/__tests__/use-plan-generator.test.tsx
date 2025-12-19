@@ -10,7 +10,10 @@ import { ClipRole, PacingType, SequencePurpose, SequenceType } from "../../types
 
 // Helper function to create a valid MontagePlan
 function createMontagePlan(
-  overrides: Partial<MontagePlan> & { sequences: Sequence[]; totalDuration: number },
+  overrides: Partial<MontagePlan> & {
+    sequences: Sequence[]
+    totalDuration: number
+  },
 ): MontagePlan {
   return {
     id: overrides.id || "plan-1",
@@ -659,6 +662,7 @@ describe("usePlanGenerator", () => {
             },
           },
         ],
+
         totalDuration: 20,
       })
 
@@ -691,6 +695,7 @@ describe("usePlanGenerator", () => {
             },
           },
         ],
+
         totalDuration: 120,
       })
       mockContext.targetDuration = 120

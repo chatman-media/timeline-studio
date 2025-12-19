@@ -149,11 +149,13 @@ export function SimpleWaveform({ audioElement, height = 60, className }: SimpleW
   }, [audioElement, height, waveformData])
 
   return (
-    <div className={cn("relative", className)}>
-      <canvas ref={canvasRef} className="w-full" style={{ height: `${height}px` }} />
+    <div className={cn("relative", className)} data-oid="oaoej8e">
+      <canvas ref={canvasRef} className="w-full" style={{ height: `${height}px` }} data-oid="h.5f5:-" />
       {isAnalyzing && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <span className="text-xs text-white">Analyzing...</span>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50" data-oid="d_-p9a0">
+          <span className="text-xs text-white" data-oid="dm94.vy">
+            Analyzing...
+          </span>
         </div>
       )}
     </div>

@@ -90,9 +90,21 @@ describe("Drag-Drop Timeline Integration", () => {
 
   it("should handle track insertion zones", () => {
     const trackInsertionZones = [
-      { id: "insert-above-track-1", position: "above", targetTrackId: "track-1" },
-      { id: "insert-below-track-1", position: "below", targetTrackId: "track-1" },
-      { id: "insert-above-track-2", position: "above", targetTrackId: "track-2" },
+      {
+        id: "insert-above-track-1",
+        position: "above",
+        targetTrackId: "track-1",
+      },
+      {
+        id: "insert-below-track-1",
+        position: "below",
+        targetTrackId: "track-1",
+      },
+      {
+        id: "insert-above-track-2",
+        position: "above",
+        targetTrackId: "track-2",
+      },
     ]
 
     const findInsertionZone = (zoneId: string) => {

@@ -10,5 +10,5 @@ interface AISuggestionsPanelProps {
 }
 
 export function AISuggestionsPanel({ className }: AISuggestionsPanelProps) {
-  return <EnhancedAIPanel className={className} />
+  return <EnhancedAIPanel className={className} data-oid="2k5_1gl" />
 }

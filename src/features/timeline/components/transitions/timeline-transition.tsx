@@ -53,36 +53,46 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
       case "dissolve":
       case "fade":
         return (
-          <svg className="absolute inset-0" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id={`fade-${transition.id}`}>
-                <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
-                <stop offset="50%" stopColor="currentColor" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
+          <svg className="absolute inset-0" preserveAspectRatio="none" data-oid=".ynydlk">
+            <defs data-oid="8g3m77j">
+              <linearGradient id={`fade-${transition.id}`} data-oid="9m4abyx">
+                <stop offset="0%" stopColor="currentColor" stopOpacity="1" data-oid="a9asw.v" />
+                <stop offset="50%" stopColor="currentColor" stopOpacity="0.5" data-oid="31fv8.n" />
+                <stop offset="100%" stopColor="currentColor" stopOpacity="1" data-oid="ja31.i4" />
               </linearGradient>
             </defs>
-            <rect x="0" y="0" width="100%" height="100%" fill={`url(#fade-${transition.id})`} />
+            <rect x="0" y="0" width="100%" height="100%" fill={`url(#fade-${transition.id})`} data-oid="pmoelsy" />
           </svg>
         )
 
       case "wipe":
       case "slide":
         return (
-          <svg className="absolute inset-0" preserveAspectRatio="none">
-            <defs>
-              <pattern id={`diag-${transition.id}`} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                <rect x="0" y="0" width="10" height="10" fill="currentColor" opacity="0.3" />
-                <path d="M0,10 L10,0" stroke="currentColor" strokeWidth="2" opacity="0.5" />
+          <svg className="absolute inset-0" preserveAspectRatio="none" data-oid="6_c_n69">
+            <defs data-oid="-u-thi3">
+              <pattern
+                id={`diag-${transition.id}`}
+                x="0"
+                y="0"
+                width="10"
+                height="10"
+                patternUnits="userSpaceOnUse"
+                data-oid="hmvyv-b"
+              >
+                <rect x="0" y="0" width="10" height="10" fill="currentColor" opacity="0.3" data-oid="pc_aws3" />
+                <path d="M0,10 L10,0" stroke="currentColor" strokeWidth="2" opacity="0.5" data-oid="4wf144f" />
               </pattern>
             </defs>
-            <rect x="0" y="0" width="100%" height="100%" fill={`url(#diag-${transition.id})`} />
+            <rect x="0" y="0" width="100%" height="100%" fill={`url(#diag-${transition.id})`} data-oid="s3dvt0z" />
           </svg>
         )
 
       default:
         return (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-xs font-medium opacity-50">T</div>
+          <div className="absolute inset-0 flex items-center justify-center" data-oid="zis7pzi">
+            <div className="text-xs font-medium opacity-50" data-oid="8nr8ng.">
+              T
+            </div>
           </div>
         )
     }
@@ -103,6 +113,7 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
         top: 0,
       }}
       onClick={onSelect}
+      data-oid="npvp5js"
     >
       {/* Фон перехода */}
       <div
@@ -113,26 +124,33 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
           isSelected ? "border-primary shadow-lg" : "border-primary/50 hover:border-primary",
           "transition-all duration-200",
         )}
+        data-oid=".bxvm6d"
       >
         {renderTransitionVisual()}
       </div>
 
       {/* Индикатор длительности */}
-      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-primary-foreground bg-primary/80 px-1 rounded">
+      <div
+        className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-primary-foreground bg-primary/80 px-1 rounded"
+        data-oid="v5uufbd"
+      >
         {transition.duration.toFixed(1)}s
       </div>
 
       {/* Контролы при наведении */}
       {(isSelected || onDelete) && (
-        <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity" data-oid="vbw1omp">
           <button
             onClick={(e) => {
               e.stopPropagation()
               onDelete?.()
             }}
             className="w-4 h-4 bg-destructive text-destructive-foreground rounded flex items-center justify-center hover:bg-destructive/80"
+            data-oid="8nt68_q"
           >
-            <span className="text-xs">×</span>
+            <span className="text-xs" data-oid="aavhwji">
+              ×
+            </span>
           </button>
         </div>
       )}
@@ -146,13 +164,16 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
               e.stopPropagation()
               // TODO: Implement duration adjustment
             }}
+            data-oid=":yuo7gm"
           />
+
           <div
             className="absolute top-0 bottom-0 right-0 w-2 bg-primary cursor-ew-resize opacity-0 hover:opacity-100 transition-opacity"
             onMouseDown={(e) => {
               e.stopPropagation()
               // TODO: Implement duration adjustment
             }}
+            data-oid="kqisp93"
           />
         </>
       )}

@@ -111,19 +111,22 @@ export function AudioTimeline({ tracks, pixelsPerSecond = 50, trackHeight = 80, 
     : null
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full" data-oid="r8aihr6">
       {/* Timeline tracks */}
-      <div className="flex-1 bg-zinc-950 overflow-x-auto overflow-y-auto">
-        <div className="min-w-[2000px]">
+      <div className="flex-1 bg-zinc-950 overflow-x-auto overflow-y-auto" data-oid="yfdbpkb">
+        <div className="min-w-[2000px]" data-oid="uv9_x3i">
           {/* Time ruler */}
-          <div className="h-8 bg-zinc-900 border-b border-zinc-800 relative">
+          <div className="h-8 bg-zinc-900 border-b border-zinc-800 relative" data-oid="zbqh:qh">
             {Array.from({ length: 41 }).map((_, i) => (
               <div
                 key={i}
                 className="absolute top-0 h-full border-l border-zinc-700"
                 style={{ left: `${i * pixelsPerSecond}px` }}
+                data-oid="vmi:-qc"
               >
-                <span className="absolute top-1 left-1 text-xs text-zinc-400">{i}s</span>
+                <span className="absolute top-1 left-1 text-xs text-zinc-400" data-oid="gcw9vmt">
+                  {i}s
+                </span>
               </div>
             ))}
           </div>
@@ -134,14 +137,20 @@ export function AudioTimeline({ tracks, pixelsPerSecond = 50, trackHeight = 80, 
               key={track.id}
               className={cn("relative border-b border-zinc-800", track.isMuted && "opacity-50")}
               style={{ height: `${trackHeight}px` }}
+              data-oid="6i_c4ln"
             >
               {/* Track header */}
-              <div className="absolute left-0 top-0 w-32 h-full bg-zinc-900 border-r border-zinc-800 flex items-center px-2 z-10">
-                <span className="text-sm text-zinc-300 truncate">{track.name}</span>
+              <div
+                className="absolute left-0 top-0 w-32 h-full bg-zinc-900 border-r border-zinc-800 flex items-center px-2 z-10"
+                data-oid="wjw2dhm"
+              >
+                <span className="text-sm text-zinc-300 truncate" data-oid="0y452r5">
+                  {track.name}
+                </span>
               </div>
 
               {/* Clips */}
-              <div className="absolute left-32 right-0 top-0 bottom-0">
+              <div className="absolute left-32 right-0 top-0 bottom-0" data-oid="7ycl6ve">
                 {track.clips.map((clip) => (
                   <AudioClipComponent
                     key={clip.id}
@@ -152,6 +161,7 @@ export function AudioTimeline({ tracks, pixelsPerSecond = 50, trackHeight = 80, 
                     onSelect={() => setSelectedClip({ trackId: track.id, clipId: clip.id })}
                     onPositionChange={(time) => handleClipPositionChange(track.id, clip.id, time)}
                     onDurationChange={(duration) => handleClipDurationChange(track.id, clip.id, duration)}
+                    data-oid="0vcbqpv"
                   />
                 ))}
               </div>
@@ -162,11 +172,12 @@ export function AudioTimeline({ tracks, pixelsPerSecond = 50, trackHeight = 80, 
 
       {/* Clip editor panel */}
       {selectedClipData && selectedClip && (
-        <div className="w-80 bg-zinc-900 border-l border-zinc-800 p-4 overflow-y-auto">
+        <div className="w-80 bg-zinc-900 border-l border-zinc-800 p-4 overflow-y-auto" data-oid="1ngydgi">
           <AudioClipEditorComponent
             clip={selectedClipData}
             onUpdate={(updatedClip) => handleClipUpdate(selectedClip.trackId, updatedClip)}
             onSplit={(splitTime) => handleClipSplit(selectedClip.trackId, selectedClip.clipId, splitTime)}
+            data-oid="6r6eyhc"
           />
         </div>
       )}

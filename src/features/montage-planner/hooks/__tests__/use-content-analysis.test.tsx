@@ -87,6 +87,7 @@ describe("useContentAnalysis", () => {
             { label: "person", confidence: 0.9, box: [0, 0, 100, 100] },
             { label: "car", confidence: 0.85, box: [100, 100, 200, 200] },
           ],
+
           sceneType: SceneType.Outdoor,
           lighting: LightingCondition.Bright,
         },
@@ -201,6 +202,7 @@ describe("useContentAnalysis", () => {
             { label: "car", confidence: 0.8, box: [100, 100, 200, 200] },
             { label: "tree", confidence: 0.75, box: [200, 200, 300, 300] },
           ],
+
           sceneType: SceneType.Outdoor,
           lighting: LightingCondition.Bright,
         },
@@ -326,7 +328,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 0,
             duration: 10,
-            scores: { visual: 95, technical: 90, emotional: 85, narrative: 88, action: 92, composition: 90 },
+            scores: {
+              visual: 95,
+              technical: 90,
+              emotional: 85,
+              narrative: 88,
+              action: 92,
+              composition: 90,
+            },
             totalScore: 90,
             category: MomentCategory.Highlight,
           },
@@ -343,7 +352,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 10,
             duration: 10,
-            scores: { visual: 80, technical: 75, emotional: 70, narrative: 78, action: 82, composition: 75 },
+            scores: {
+              visual: 80,
+              technical: 75,
+              emotional: 70,
+              narrative: 78,
+              action: 82,
+              composition: 75,
+            },
             totalScore: 75,
             category: MomentCategory.Transition,
           },
@@ -377,28 +393,56 @@ describe("useContentAnalysis", () => {
         {
           timestamp: 0,
           duration: 5,
-          scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
+          scores: {
+            visual: 80,
+            technical: 75,
+            emotional: 70,
+            narrative: 85,
+            action: 90,
+            composition: 80,
+          },
           totalScore: 80,
           category: MomentCategory.Highlight,
         },
         {
           timestamp: 10,
           duration: 5,
-          scores: { visual: 75, technical: 70, emotional: 65, narrative: 80, action: 85, composition: 75 },
+          scores: {
+            visual: 75,
+            technical: 70,
+            emotional: 65,
+            narrative: 80,
+            action: 85,
+            composition: 75,
+          },
           totalScore: 75,
           category: MomentCategory.Highlight,
         },
         {
           timestamp: 20,
           duration: 5,
-          scores: { visual: 90, technical: 85, emotional: 80, narrative: 88, action: 95, composition: 88 },
+          scores: {
+            visual: 90,
+            technical: 85,
+            emotional: 80,
+            narrative: 88,
+            action: 95,
+            composition: 88,
+          },
           totalScore: 88,
           category: MomentCategory.Action,
         },
         {
           timestamp: 30,
           duration: 5,
-          scores: { visual: 70, technical: 65, emotional: 85, narrative: 75, action: 60, composition: 70 },
+          scores: {
+            visual: 70,
+            technical: 65,
+            emotional: 85,
+            narrative: 75,
+            action: 60,
+            composition: 70,
+          },
           totalScore: 71,
           category: MomentCategory.Drama,
         },
@@ -436,7 +480,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 0,
             duration: 10,
-            scores: { visual: 90, technical: 85, emotional: 80, narrative: 88, action: 92, composition: 88 },
+            scores: {
+              visual: 90,
+              technical: 85,
+              emotional: 80,
+              narrative: 88,
+              action: 92,
+              composition: 88,
+            },
             totalScore: 88,
             category: MomentCategory.Action,
           },
@@ -453,7 +504,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 10,
             duration: 10,
-            scores: { visual: 85, technical: 80, emotional: 75, narrative: 83, action: 87, composition: 83 },
+            scores: {
+              visual: 85,
+              technical: 80,
+              emotional: 75,
+              narrative: 83,
+              action: 87,
+              composition: 83,
+            },
             totalScore: 82,
             category: MomentCategory.Action,
           },
@@ -470,7 +528,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 20,
             duration: 10,
-            scores: { visual: 75, technical: 70, emotional: 85, narrative: 78, action: 65, composition: 75 },
+            scores: {
+              visual: 75,
+              technical: 70,
+              emotional: 85,
+              narrative: 78,
+              action: 65,
+              composition: 75,
+            },
             totalScore: 75,
             category: MomentCategory.Drama,
           },
@@ -504,7 +569,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 0,
             duration: 10,
-            scores: { visual: 96, technical: 95, emotional: 94, narrative: 95, action: 96, composition: 95 },
+            scores: {
+              visual: 96,
+              technical: 95,
+              emotional: 94,
+              narrative: 95,
+              action: 96,
+              composition: 95,
+            },
             totalScore: 96,
             category: MomentCategory.Highlight,
           },
@@ -521,7 +593,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 10,
             duration: 10,
-            scores: { visual: 85, technical: 82, emotional: 80, narrative: 84, action: 86, composition: 83 },
+            scores: {
+              visual: 85,
+              technical: 82,
+              emotional: 80,
+              narrative: 84,
+              action: 86,
+              composition: 83,
+            },
             totalScore: 85,
             category: MomentCategory.Action,
           },
@@ -538,7 +617,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 20,
             duration: 10,
-            scores: { visual: 65, technical: 60, emotional: 62, narrative: 64, action: 66, composition: 63 },
+            scores: {
+              visual: 65,
+              technical: 60,
+              emotional: 62,
+              narrative: 64,
+              action: 66,
+              composition: 63,
+            },
             totalScore: 65,
             category: MomentCategory.Transition,
           },
@@ -555,7 +641,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 30,
             duration: 10,
-            scores: { visual: 55, technical: 50, emotional: 52, narrative: 54, action: 56, composition: 53 },
+            scores: {
+              visual: 55,
+              technical: 50,
+              emotional: 52,
+              narrative: 54,
+              action: 56,
+              composition: 53,
+            },
             totalScore: 55,
             category: MomentCategory.BRoll,
           },
@@ -614,13 +707,19 @@ describe("useContentAnalysis", () => {
                 { box: [0, 0, 100, 100], confidence: 0.9 },
                 { box: [100, 100, 200, 200], confidence: 0.85 },
               ],
+
               objects: [
                 { label: "person", confidence: 0.9, box: [0, 0, 100, 100] },
                 { label: "car", confidence: 0.85, box: [100, 100, 200, 200] },
                 { label: "tree", confidence: 0.8, box: [200, 200, 300, 300] },
-                { label: "building", confidence: 0.75, box: [300, 300, 400, 400] },
+                {
+                  label: "building",
+                  confidence: 0.75,
+                  box: [300, 300, 400, 400],
+                },
                 { label: "dog", confidence: 0.7, box: [400, 400, 500, 500] },
               ],
+
               sceneType: SceneType.Outdoor,
               lighting: LightingCondition.Bright,
             },
@@ -632,6 +731,7 @@ describe("useContentAnalysis", () => {
             },
           },
         ],
+
         [
           "video-2",
           {
@@ -652,11 +752,16 @@ describe("useContentAnalysis", () => {
                 { label: "car", confidence: 0.9, box: [100, 100, 200, 200] },
                 { label: "bike", confidence: 0.85, box: [200, 200, 300, 300] },
                 { label: "tree", confidence: 0.8, box: [300, 300, 400, 400] },
-                { label: "building", confidence: 0.75, box: [400, 400, 500, 500] },
+                {
+                  label: "building",
+                  confidence: 0.75,
+                  box: [400, 400, 500, 500],
+                },
                 { label: "bench", confidence: 0.7, box: [500, 500, 600, 600] },
                 { label: "lamp", confidence: 0.65, box: [600, 600, 700, 700] },
                 { label: "sign", confidence: 0.6, box: [700, 700, 800, 800] },
               ],
+
               sceneType: SceneType.Urban,
               lighting: LightingCondition.Bright,
             },
@@ -689,6 +794,7 @@ describe("useContentAnalysis", () => {
             },
           },
         ],
+
         [
           "video-2",
           {
@@ -762,13 +868,19 @@ describe("useContentAnalysis", () => {
                 { box: [0, 0, 100, 100], confidence: 0.9 },
                 { box: [100, 100, 200, 200], confidence: 0.85 },
               ],
+
               objects: [
                 { label: "person", confidence: 0.9, box: [0, 0, 100, 100] },
                 { label: "car", confidence: 0.85, box: [100, 100, 200, 200] },
                 { label: "tree", confidence: 0.8, box: [200, 200, 300, 300] },
-                { label: "building", confidence: 0.75, box: [300, 300, 400, 400] },
+                {
+                  label: "building",
+                  confidence: 0.75,
+                  box: [300, 300, 400, 400],
+                },
                 { label: "dog", confidence: 0.7, box: [400, 400, 500, 500] },
               ],
+
               sceneType: SceneType.Outdoor,
               lighting: LightingCondition.Bright,
             },
@@ -802,7 +914,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 0,
             duration: 10,
-            scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
+            scores: {
+              visual: 80,
+              technical: 75,
+              emotional: 70,
+              narrative: 85,
+              action: 90,
+              composition: 80,
+            },
             totalScore: 80,
             category: MomentCategory.Highlight,
           },
@@ -819,7 +938,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 10,
             duration: 10,
-            scores: { visual: 85, technical: 80, emotional: 75, narrative: 83, action: 87, composition: 83 },
+            scores: {
+              visual: 85,
+              technical: 80,
+              emotional: 75,
+              narrative: 83,
+              action: 87,
+              composition: 83,
+            },
             totalScore: 82,
             category: MomentCategory.Action,
           },
@@ -836,7 +962,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 20,
             duration: 10,
-            scores: { visual: 75, technical: 70, emotional: 65, narrative: 78, action: 82, composition: 75 },
+            scores: {
+              visual: 75,
+              technical: 70,
+              emotional: 65,
+              narrative: 78,
+              action: 82,
+              composition: 75,
+            },
             totalScore: 75,
             category: MomentCategory.Transition,
           },
@@ -863,7 +996,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 0,
             duration: 10,
-            scores: { visual: 80, technical: 75, emotional: 70, narrative: 85, action: 90, composition: 80 },
+            scores: {
+              visual: 80,
+              technical: 75,
+              emotional: 70,
+              narrative: 85,
+              action: 90,
+              composition: 80,
+            },
             totalScore: 80,
             category: MomentCategory.Highlight,
           },
@@ -880,7 +1020,14 @@ describe("useContentAnalysis", () => {
           score: {
             timestamp: 10,
             duration: 10,
-            scores: { visual: 90, technical: 85, emotional: 80, narrative: 88, action: 92, composition: 88 },
+            scores: {
+              visual: 90,
+              technical: 85,
+              emotional: 80,
+              narrative: 88,
+              action: 92,
+              composition: 88,
+            },
             totalScore: 90,
             category: MomentCategory.Action,
           },
@@ -913,7 +1060,9 @@ describe("useContentAnalysis", () => {
       const { useContentAnalysis } = await import("../use-content-analysis")
       const { result } = renderHook(() => useContentAnalysis())
 
-      expect(result.current.analysisOptions).toEqual({ quality_threshold: 0.8 })
+      expect(result.current.analysisOptions).toEqual({
+        quality_threshold: 0.8,
+      })
     })
   })
 })

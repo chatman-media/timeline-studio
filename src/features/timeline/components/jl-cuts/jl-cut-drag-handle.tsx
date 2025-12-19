@@ -83,6 +83,7 @@ export function JLCutDragHandle({ clip, cutType, pixelsPerSecond, onOffsetChange
       style={{
         [isJCut ? "marginLeft" : "marginRight"]: `${currentOffset * pixelsPerSecond}px`,
       }}
+      data-oid="nz_cgld"
     >
       {/* Visual handle */}
       <div
@@ -91,6 +92,7 @@ export function JLCutDragHandle({ clip, cutType, pixelsPerSecond, onOffsetChange
           "bg-primary/50 hover:bg-primary/70 transition-colors",
           isJCut ? "right-0" : "left-0",
         )}
+        data-oid="bc-iy28"
       />
 
       {/* Offset tooltip */}
@@ -102,6 +104,7 @@ export function JLCutDragHandle({ clip, cutType, pixelsPerSecond, onOffsetChange
             "shadow-md pointer-events-none whitespace-nowrap",
             isJCut ? "right-full mr-2" : "left-full ml-2",
           )}
+          data-oid="bd0p3rd"
         >
           {currentOffset.toFixed(1)}s
         </div>

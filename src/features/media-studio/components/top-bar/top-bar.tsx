@@ -186,19 +186,24 @@ const TopBarComponent = function TopBar() {
   )
 
   return (
-    <div className="relative flex w-full items-center bg-[#DDDDDD] px-1 py-0 dark:bg-[#3D3D3D]">
+    <div className="relative flex w-full items-center bg-[#DDDDDD] px-1 py-0 dark:bg-[#3D3D3D]" data-oid="d5sq5mi">
       {/* Используем grid для равномерного распределения групп */}
-      <div className="grid w-full grid-cols-5 items-center">
+      <div className="grid w-full grid-cols-5 items-center" data-oid="9pkn0z3">
         {/* Группа 1: Переключатель браузера и макет */}
-        <div className="flex items-start">
+        <div className="flex items-start" data-oid="by5prge">
           <Button
             variant="ghost"
             size="icon"
             className={TOP_BAR_BUTTON_CLASS}
             onClick={toggleBrowserVisibility}
             title={buttonTitles.browser}
+            data-oid="ai7mg4h"
           >
-            {isBrowserVisible ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
+            {isBrowserVisible ? (
+              <PanelLeftClose size={16} data-oid="p0stl63" />
+            ) : (
+              <PanelLeftOpen size={16} data-oid="4d1vcve" />
+            )}
           </Button>
 
           <Button
@@ -207,8 +212,13 @@ const TopBarComponent = function TopBar() {
             className={TOP_BAR_BUTTON_CLASS}
             onClick={toggleTimelineVisibility}
             title={buttonTitles.timeline}
+            data-oid="74h1c1b"
           >
-            {isTimelineVisible ? <PanelBottomClose size={16} /> : <PanelBottomOpen size={16} />}
+            {isTimelineVisible ? (
+              <PanelBottomClose size={16} data-oid="l606sl3" />
+            ) : (
+              <PanelBottomOpen size={16} data-oid="k475s1v" />
+            )}
           </Button>
 
           <Button
@@ -217,32 +227,38 @@ const TopBarComponent = function TopBar() {
             className={TOP_BAR_BUTTON_CLASS}
             onClick={toggleOptionsVisibility}
             title={buttonTitles.layout}
+            data-oid="_9:aw.p"
           >
-            {isOptionsVisible ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
+            {isOptionsVisible ? (
+              <PanelRightClose size={16} data-oid="g2z0_ih" />
+            ) : (
+              <PanelRightOpen size={16} data-oid="r7_m1lt" />
+            )}
           </Button>
 
-          <Popover>
-            <PopoverTrigger asChild>
+          <Popover data-oid="6:6v.g6">
+            <PopoverTrigger asChild data-oid="d.y_su4">
               <Button
                 className={TOP_BAR_BUTTON_CLASS}
                 variant="ghost"
                 size="icon"
                 title={buttonTitles.layout}
                 data-testid="layout-button"
+                data-oid="x82ldo_"
               >
-                <LayoutTemplate className="h-5 w-5" />
+                <LayoutTemplate className="h-5 w-5" data-oid="bahkboj" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[400px] p-3 rounded-none mt-0.5 ml-0" sideOffset={0}>
-              <LayoutPreviews />
+            <PopoverContent className="w-[400px] p-3 rounded-none mt-0.5 ml-0" sideOffset={0} data-oid="k0v29tk">
+              <LayoutPreviews data-oid="w4ozcgb" />
             </PopoverContent>
           </Popover>
         </div>
 
         {/* Группа 2: Переключатель темы, настройки пользователя */}
-        <div className="flex items-center justify-start ml-[20%]">
-          <div data-testid="theme-toggle">
-            <ThemeToggle />
+        <div className="flex items-center justify-start ml-[20%]" data-oid="21noqd9">
+          <div data-testid="theme-toggle" data-oid="ty_:wjf">
+            <ThemeToggle data-oid="1lu90n:" />
           </div>
           <Button
             className={TOP_BAR_BUTTON_CLASS}
@@ -251,8 +267,9 @@ const TopBarComponent = function TopBar() {
             title={buttonTitles.userSettings}
             onClick={() => handleOpenModal("user-settings")}
             data-testid="user-settings-button"
+            data-oid="e56sy-7"
           >
-            <UserCog className="h-5 w-5" />
+            <UserCog className="h-5 w-5" data-oid="jgkvmpa" />
           </Button>
           <Button
             className={TOP_BAR_BUTTON_CLASS}
@@ -261,13 +278,14 @@ const TopBarComponent = function TopBar() {
             title={buttonTitles.projectSettings}
             onClick={() => handleOpenModal("project-settings")}
             data-testid="project-settings-button"
+            data-oid="u1v.rd8"
           >
-            <MonitorCog className="h-5 w-5" />
+            <MonitorCog className="h-5 w-5" data-oid=".encry-" />
           </Button>
         </div>
 
         {/* Группа 3: Открытие, сохранение и редактирование названия */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center" data-oid="sxkfcin">
           <Button
             className={TOP_BAR_BUTTON_CLASS}
             variant="ghost"
@@ -275,8 +293,9 @@ const TopBarComponent = function TopBar() {
             title={buttonTitles.newProject}
             onClick={handleCreateNewProject}
             data-testid="new-project-button"
+            data-oid="jv4:hm9"
           >
-            <FilePlus className="h-5 w-5" />
+            <FilePlus className="h-5 w-5" data-oid="ake6cyg" />
           </Button>
           <Button
             className={TOP_BAR_BUTTON_CLASS}
@@ -285,8 +304,9 @@ const TopBarComponent = function TopBar() {
             title={buttonTitles.openProject}
             onClick={handleOpenProject}
             data-testid="open-project-button"
+            data-oid="g1mwj5z"
           >
-            <FolderOpen className="h-5 w-5" />
+            <FolderOpen className="h-5 w-5" data-oid="rix:xud" />
           </Button>
 
           <Button
@@ -297,11 +317,12 @@ const TopBarComponent = function TopBar() {
             onClick={handleSave}
             disabled={!currentProject?.metadata?.is_dirty}
             data-testid="save-button"
+            data-oid="g.27mti"
           >
-            <Save className="h-5 w-5" />
+            <Save className="h-5 w-5" data-oid="p99ny5a" />
           </Button>
 
-          <div className={projectNameClassName} onClick={() => setIsEditing(true)}>
+          <div className={projectNameClassName} onClick={() => setIsEditing(true)} data-oid="gbgdf9x">
             {isEditing ? (
               <input
                 id={projectNameInputId}
@@ -312,23 +333,26 @@ const TopBarComponent = function TopBar() {
                 onBlur={() => setIsEditing(false)}
                 className="w-full h-5 bg-transparent pl-px text-xs focus:outline-none"
                 autoFocus
+                data-oid="p0afci0"
               />
             ) : (
-              <span className="block truncate pl-px hover:border hover:border-teal hover:pl-0">{projectName}</span>
+              <span className="block truncate pl-px hover:border hover:border-teal hover:pl-0" data-oid="mmc2st-">
+                {projectName}
+              </span>
             )}
           </div>
         </div>
 
         {/* Группа 4: Video Toolbox - GPU status */}
-        <div className="flex items-center justify-end mr-[30%]">
-          <GpuStatusBadge />
+        <div className="flex items-center justify-end mr-[30%]" data-oid="y0kp8ib">
+          <GpuStatusBadge data-oid="8xkdlr4" />
         </div>
 
         {/* Группа 5: Задачи и экспорт */}
-        <div className="flex items-center justify-end">
-          <AnalysisTasksDropdown />
-          <RenderQueueDropdown />
-          <RenderJobsDropdown />
+        <div className="flex items-center justify-end" data-oid="d:7tl68">
+          <AnalysisTasksDropdown data-oid="tq3mz.0" />
+          <RenderQueueDropdown data-oid="rkz5..g" />
+          <RenderJobsDropdown data-oid="j4uljdf" />
 
           <Button
             variant="outline"
@@ -336,9 +360,12 @@ const TopBarComponent = function TopBar() {
             className="h-6 w-24 cursor-pointer items-center gap-1 border-none rounded-sm bg-teal px-1 text-sm text-black hover:bg-teal hover:text-black dark:bg-teal dark:hover:bg-teal"
             onClick={() => handleOpenModal("export")}
             data-testid="export-button"
+            data-oid="-khfb9i"
           >
-            <span className="px-2 text-xs">{buttonTitles.export}</span>
-            <Upload className="h-5 w-5" />
+            <span className="px-2 text-xs" data-oid="6u0gvvv">
+              {buttonTitles.export}
+            </span>
+            <Upload className="h-5 w-5" data-oid="f39-14j" />
           </Button>
         </div>
       </div>

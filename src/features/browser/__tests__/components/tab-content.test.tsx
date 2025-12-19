@@ -139,7 +139,7 @@ vi.mock("@/features/browser/adapters/use-scenarios-adapter", () => ({
 
 vi.mock("@/features/browser/components/universal-list", () => ({
   UniversalList: ({ adapter }: any) => (
-    <div data-testid="universal-list" data-favorite-type={adapter.favoriteType}>
+    <div data-testid="universal-list" data-favorite-type={adapter.favoriteType} data-oid="n14i3:e">
       Universal List
     </div>
   ),
@@ -153,7 +153,7 @@ vi.mock("@/features/timeline/hooks", () => ({
 
 vi.mock("@/components/ui/tabs", () => ({
   TabsContent: ({ value, children }: any) => (
-    <div data-testid={`tabs-content-${value}`} data-value={value}>
+    <div data-testid={`tabs-content-${value}`} data-value={value} data-oid="390zs:a">
       {children}
     </div>
   ),
@@ -166,77 +166,79 @@ describe("TabContent", () => {
 
   describe("rendering", () => {
     it("should render loading state for inactive tab", () => {
-      render(<TabContent tabValue="media" activeTab="music" className="test-class" />)
+      render(<TabContent tabValue="media" activeTab="music" className="test-class" data-oid=".p75u_y" />)
 
       expect(screen.getByTestId("tabs-content-media")).toBeInTheDocument()
       expect(screen.getByText("Загрузка...")).toBeInTheDocument()
     })
 
     it("should render media tab content when active", () => {
-      render(<TabContent tabValue="media" activeTab="media" className="test-class" />)
+      render(<TabContent tabValue="media" activeTab="media" className="test-class" data-oid="k52dy4." />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "media")
     })
 
     it("should render music tab content when active", () => {
-      render(<TabContent tabValue="music" activeTab="music" className="test-class" />)
+      render(<TabContent tabValue="music" activeTab="music" className="test-class" data-oid=".4i0o9k" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "music")
     })
 
     it("should render effects tab content when active", () => {
-      render(<TabContent tabValue="effects" activeTab="effects" className="test-class" />)
+      render(<TabContent tabValue="effects" activeTab="effects" className="test-class" data-oid="tt3-2lw" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "effect")
     })
 
     it("should render filters tab content when active", () => {
-      render(<TabContent tabValue="filters" activeTab="filters" className="test-class" />)
+      render(<TabContent tabValue="filters" activeTab="filters" className="test-class" data-oid="bzf592v" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "filter")
     })
 
     it("should render transitions tab content when active", () => {
-      render(<TabContent tabValue="transitions" activeTab="transitions" className="test-class" />)
+      render(<TabContent tabValue="transitions" activeTab="transitions" className="test-class" data-oid="9:-o1ez" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "transition")
     })
 
     it("should render subtitles tab content when active", () => {
-      render(<TabContent tabValue="subtitles" activeTab="subtitles" className="test-class" />)
+      render(<TabContent tabValue="subtitles" activeTab="subtitles" className="test-class" data-oid="t:p:fc2" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "subtitle")
     })
 
     it("should render templates tab content when active", () => {
-      render(<TabContent tabValue="templates" activeTab="templates" className="test-class" />)
+      render(<TabContent tabValue="templates" activeTab="templates" className="test-class" data-oid="zr88.f." />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "template")
     })
 
     it("should render style_templates tab content when active", () => {
-      render(<TabContent tabValue="style_templates" activeTab="style_templates" className="test-class" />)
+      render(
+        <TabContent tabValue="style_templates" activeTab="style_templates" className="test-class" data-oid="_uc26zz" />,
+      )
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "styleTemplate")
     })
 
     it("should render projects tab content when active", () => {
-      render(<TabContent tabValue="projects" activeTab="projects" className="test-class" />)
+      render(<TabContent tabValue="projects" activeTab="projects" className="test-class" data-oid="22.jw6w" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "projectTemplate")
     })
 
     it("should render scenarios tab content when active", () => {
-      render(<TabContent tabValue="scenarios" activeTab="scenarios" className="test-class" />)
+      render(<TabContent tabValue="scenarios" activeTab="scenarios" className="test-class" data-oid="ripjf0w" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "scenario")
@@ -245,7 +247,7 @@ describe("TabContent", () => {
 
   describe("unknown tab handling", () => {
     it("should show error message for unknown tab", () => {
-      render(<TabContent tabValue="unknown" activeTab="unknown" className="test-class" />)
+      render(<TabContent tabValue="unknown" activeTab="unknown" className="test-class" data-oid="onhxq7z" />)
 
       expect(screen.getByText('Адаптер для "unknown" не найден')).toBeInTheDocument()
     })
@@ -253,12 +255,14 @@ describe("TabContent", () => {
 
   describe("memo optimization", () => {
     it("should render with memo to prevent unnecessary re-renders", () => {
-      const { rerender } = render(<TabContent tabValue="media" activeTab="media" className="test-class" />)
+      const { rerender } = render(
+        <TabContent tabValue="media" activeTab="media" className="test-class" data-oid="88dt5-t" />,
+      )
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
 
       // Force re-render with same props
-      rerender(<TabContent tabValue="media" activeTab="media" className="test-class" />)
+      rerender(<TabContent tabValue="media" activeTab="media" className="test-class" data-oid="xfzxsip" />)
 
       // Component should still be rendered
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
@@ -267,21 +271,25 @@ describe("TabContent", () => {
 
   describe("tab switching", () => {
     it("should update content when switching tabs", () => {
-      const { rerender } = render(<TabContent tabValue="media" activeTab="media" className="test-class" />)
+      const { rerender } = render(
+        <TabContent tabValue="media" activeTab="media" className="test-class" data-oid="tpsv86." />,
+      )
 
       expect(screen.getByTestId("universal-list")).toHaveAttribute("data-favorite-type", "media")
 
-      rerender(<TabContent tabValue="media" activeTab="music" className="test-class" />)
+      rerender(<TabContent tabValue="media" activeTab="music" className="test-class" data-oid="lqxx_m9" />)
 
       expect(screen.getByText("Загрузка...")).toBeInTheDocument()
     })
 
     it("should load new tab content when switched", () => {
-      const { rerender } = render(<TabContent tabValue="media" activeTab="music" className="test-class" />)
+      const { rerender } = render(
+        <TabContent tabValue="media" activeTab="music" className="test-class" data-oid="nsj.lw:" />,
+      )
 
       expect(screen.getByText("Загрузка...")).toBeInTheDocument()
 
-      rerender(<TabContent tabValue="media" activeTab="media" className="test-class" />)
+      rerender(<TabContent tabValue="media" activeTab="media" className="test-class" data-oid="u1i3own" />)
 
       expect(screen.getByTestId("universal-list")).toBeInTheDocument()
     })
@@ -289,7 +297,7 @@ describe("TabContent", () => {
 
   describe("className prop", () => {
     it("should apply className to TabsContent", () => {
-      render(<TabContent tabValue="media" activeTab="media" className="custom-class" />)
+      render(<TabContent tabValue="media" activeTab="media" className="custom-class" data-oid="u:c8sqn" />)
 
       const tabsContent = screen.getByTestId("tabs-content-media")
       expect(tabsContent).toBeInTheDocument()

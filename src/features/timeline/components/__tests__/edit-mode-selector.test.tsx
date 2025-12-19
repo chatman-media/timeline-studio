@@ -25,7 +25,7 @@ describe("EditModeSelector", () => {
   })
 
   it("рендерит все режимы редактирования", () => {
-    render(<EditModeSelector />)
+    render(<EditModeSelector data-oid="m636o6f" />)
 
     Object.values(EDIT_MODE_CONFIGS).forEach((config) => {
       expect(screen.getByRole("button", { name: config.name })).toBeInTheDocument()
@@ -33,17 +33,21 @@ describe("EditModeSelector", () => {
   })
 
   it("показывает активный режим", () => {
-    render(<EditModeSelector />)
+    render(<EditModeSelector data-oid="svg8lae" />)
 
-    const selectButton = screen.getByRole("button", { name: EDIT_MODE_CONFIGS.select.name })
+    const selectButton = screen.getByRole("button", {
+      name: EDIT_MODE_CONFIGS.select.name,
+    })
     expect(selectButton).toHaveAttribute("aria-pressed", "true")
   })
 
   it("меняет режим при клике", async () => {
     const user = userEvent.setup()
-    render(<EditModeSelector />)
+    render(<EditModeSelector data-oid="y2tovlq" />)
 
-    const trimButton = screen.getByRole("button", { name: EDIT_MODE_CONFIGS.trim.name })
+    const trimButton = screen.getByRole("button", {
+      name: EDIT_MODE_CONFIGS.trim.name,
+    })
     await user.click(trimButton)
 
     expect(mockSetEditMode).toHaveBeenCalledWith("trim")
@@ -51,9 +55,11 @@ describe("EditModeSelector", () => {
 
   it("показывает тултип с горячей клавишей", async () => {
     const user = userEvent.setup()
-    render(<EditModeSelector />)
+    render(<EditModeSelector data-oid="ke4fxz2" />)
 
-    const selectButton = screen.getByRole("button", { name: EDIT_MODE_CONFIGS.select.name })
+    const selectButton = screen.getByRole("button", {
+      name: EDIT_MODE_CONFIGS.select.name,
+    })
     await user.hover(selectButton)
 
     // Ждем появления тултипа
@@ -71,33 +77,37 @@ describe("EditModeSelector", () => {
   })
 
   it("поддерживает разные размеры", () => {
-    const { rerender } = render(<EditModeSelector size="sm" />)
+    const { rerender } = render(<EditModeSelector size="sm" data-oid="1behelr" />)
     let button = screen.getAllByRole("button")[0]
     expect(button.className).toContain("h-8")
     expect(button.className).toContain("w-8")
 
-    rerender(<EditModeSelector size="md" />)
+    rerender(<EditModeSelector size="md" data-oid="zhr5sr2" />)
     button = screen.getAllByRole("button")[0]
     expect(button.className).toContain("h-10")
     expect(button.className).toContain("w-10")
 
-    rerender(<EditModeSelector size="lg" />)
+    rerender(<EditModeSelector size="lg" data-oid="txh3r.s" />)
     button = screen.getAllByRole("button")[0]
     expect(button.className).toContain("h-12")
     expect(button.className).toContain("w-12")
   })
 
   it("поддерживает вертикальную ориентацию", () => {
-    render(<EditModeSelector orientation="vertical" />)
+    render(<EditModeSelector orientation="vertical" data-oid="c3ml1n9" />)
 
-    const container = screen.getByRole("button", { name: EDIT_MODE_CONFIGS.select.name }).parentElement
+    const container = screen.getByRole("button", {
+      name: EDIT_MODE_CONFIGS.select.name,
+    }).parentElement
     expect(container).toHaveClass("flex-col")
   })
 
   it("применяет кастомные классы", () => {
-    render(<EditModeSelector className="custom-class" />)
+    render(<EditModeSelector className="custom-class" data-oid="atf6n00" />)
 
-    const container = screen.getByRole("button", { name: EDIT_MODE_CONFIGS.select.name }).parentElement
+    const container = screen.getByRole("button", {
+      name: EDIT_MODE_CONFIGS.select.name,
+    }).parentElement
     expect(container).toHaveClass("custom-class")
   })
 })
@@ -108,7 +118,7 @@ describe("EditModeButtonGroup", () => {
   })
 
   it("рендерит только первые 4 режима", () => {
-    render(<EditModeButtonGroup />)
+    render(<EditModeButtonGroup data-oid="-_a_j2b" />)
 
     const buttons = screen.getAllByRole("button")
     expect(buttons).toHaveLength(4)
@@ -121,7 +131,7 @@ describe("EditModeButtonGroup", () => {
   })
 
   it("показывает активный режим с другим вариантом", () => {
-    render(<EditModeButtonGroup />)
+    render(<EditModeButtonGroup data-oid="--4k1:2" />)
 
     const selectButton = screen.getByTitle(`${EDIT_MODE_CONFIGS.select.name} (${EDIT_MODE_CONFIGS.select.hotkey})`)
     // Проверяем что кнопка содержит класс bg-secondary который указывает на активный вариант
@@ -130,7 +140,7 @@ describe("EditModeButtonGroup", () => {
 
   it("меняет режим при клике", async () => {
     const user = userEvent.setup()
-    render(<EditModeButtonGroup />)
+    render(<EditModeButtonGroup data-oid="98iwdvv" />)
 
     const trimButton = screen.getByTitle(`${EDIT_MODE_CONFIGS.trim.name} (${EDIT_MODE_CONFIGS.trim.hotkey})`)
     await user.click(trimButton)
@@ -139,7 +149,7 @@ describe("EditModeButtonGroup", () => {
   })
 
   it("правильно применяет закругления к кнопкам", () => {
-    render(<EditModeButtonGroup />)
+    render(<EditModeButtonGroup data-oid="bquc.s5" />)
 
     const buttons = screen.getAllByRole("button")
     expect(buttons[0]).toHaveClass("rounded-l-md")
@@ -151,7 +161,7 @@ describe("EditModeButtonGroup", () => {
   })
 
   it("применяет кастомные классы", () => {
-    render(<EditModeButtonGroup className="custom-class" />)
+    render(<EditModeButtonGroup className="custom-class" data-oid="9a2p7x1" />)
 
     const container = screen.getByLabelText("Edit mode selection").parentElement
     expect(container).toHaveClass("custom-class")

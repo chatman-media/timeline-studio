@@ -65,20 +65,24 @@ vi.mock("@/lib/utils", () => ({
 // Mock components
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({
   AddMediaButton: ({ onAddMedia, isAdded }: any) => (
-    <div data-testid={isAdded ? "remove-button" : "add-button"} onClick={onAddMedia}>
+    <div data-testid={isAdded ? "remove-button" : "add-button"} onClick={onAddMedia} data-oid="a48p_wy">
       {isAdded ? "Remove" : "Add"}
     </div>
   ),
 }))
 
 vi.mock("@/features/browser/components/layout/favorite-button", () => ({
-  FavoriteButton: ({ file }: any) => <div data-testid="favorite-button">Favorite {file.name}</div>,
+  FavoriteButton: ({ file }: any) => (
+    <div data-testid="favorite-button" data-oid="_-rzvne">
+      Favorite {file.name}
+    </div>
+  ),
 }))
 
 // Apply button mock
 vi.mock("@/features/browser/components/layout/apply-button", () => ({
   ApplyButton: ({ file, size }: any) => (
-    <button data-testid="apply-button" data-file={file.name} data-size={size}>
+    <button data-testid="apply-button" data-file={file.name} data-size={size} data-oid="_-g.5o0">
       Apply
     </button>
   ),
@@ -98,26 +102,26 @@ const mockFile = {
 
 describe("ImagePreview", () => {
   it("should render correctly with default props", () => {
-    render(<ImagePreview file={mockFile} size={100} />)
+    render(<ImagePreview file={mockFile} size={100} data-oid=".cegexi" />)
 
     expect(screen.getByRole("img")).toBeInTheDocument()
   })
 
   it("should show filename when showFileName is true", () => {
-    render(<ImagePreview file={mockFile} size={100} showFileName />)
+    render(<ImagePreview file={mockFile} size={100} showFileName data-oid="pgvbk88" />)
 
     expect(screen.getByText("test-image.jpg")).toBeInTheDocument()
   })
 
   it("should render with custom size and dimensions", () => {
-    render(<ImagePreview file={mockFile} size={200} dimensions={[16, 9]} />)
+    render(<ImagePreview file={mockFile} size={200} dimensions={[16, 9]} data-oid="eeqv_3p" />)
 
     const img = screen.getByRole("img")
     expect(img).toBeInTheDocument()
   })
 
   it("should render add media button when onAddMedia is provided", () => {
-    render(<ImagePreview file={mockFile} size={100} />)
+    render(<ImagePreview file={mockFile} size={100} data-oid="nmsqqua" />)
 
     expect(screen.getByTestId("add-button")).toBeInTheDocument()
   })

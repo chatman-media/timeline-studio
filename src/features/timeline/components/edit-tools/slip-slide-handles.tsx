@@ -48,23 +48,29 @@ export function SlipSlideHandles({
             left: `${clipLeft - offsetPixels}px`,
             width: `${totalMediaWidth}px`,
           }}
+          data-oid="1_ot:7a"
         >
           {/* Left media boundary */}
-          {offsetPixels > 0 && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500/50" />}
+          {offsetPixels > 0 && (
+            <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500/50" data-oid="gjtvjsj" />
+          )}
 
           {/* Right media boundary */}
           {mediaDuration - clip.offset - clip.duration > 0 && (
-            <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-blue-500/50" />
+            <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-blue-500/50" data-oid="d8f6f1f" />
           )}
 
           {/* Available media indicator */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-blue-500/20 rounded-full" />
+          <div
+            className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-blue-500/20 rounded-full"
+            data-oid="36p-qha"
+          />
         </div>
 
         {/* Slip handle */}
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
+        <TooltipProvider delayDuration={0} data-oid="k.qzt8j">
+          <Tooltip data-oid="lbe9im:">
+            <TooltipTrigger asChild data-oid="v2dpcsm">
               <div
                 className={cn(
                   "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
@@ -80,13 +86,18 @@ export function SlipSlideHandles({
                   e.stopPropagation()
                   onSlipStart?.(e.clientX)
                 }}
+                data-oid="1awcujb"
               >
-                <MoveHorizontal className="w-6 h-6 text-blue-500" />
+                <MoveHorizontal className="w-6 h-6 text-blue-500" data-oid="upk51x6" />
               </div>
             </TooltipTrigger>
-            <TooltipContent side="top" className="bg-gray-900 text-white">
-              <p className="text-sm">Slip Edit (Y)</p>
-              <p className="text-xs opacity-80">Drag to slip media content</p>
+            <TooltipContent side="top" className="bg-gray-900 text-white" data-oid="tsuany6">
+              <p className="text-sm" data-oid="rm-e0de">
+                Slip Edit (Y)
+              </p>
+              <p className="text-xs opacity-80" data-oid="e6knsfl">
+                Drag to slip media content
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -105,34 +116,37 @@ export function SlipSlideHandles({
             left: `${clipLeft}px`,
             width: `${clipWidth}px`,
           }}
+          data-oid="o74ah_d"
         >
           {/* Left arrow */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full">
-            <div className="w-8 h-0.5 bg-green-500/50" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full" data-oid="p7lhzgj">
+            <div className="w-8 h-0.5 bg-green-500/50" data-oid="latjq2s" />
             <div
               className="absolute left-0 top-1/2 -translate-y-1/2 w-0 h-0 
               border-t-4 border-t-transparent
               border-r-4 border-r-green-500/50
               border-b-4 border-b-transparent"
+              data-oid="7nraro_"
             />
           </div>
 
           {/* Right arrow */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full">
-            <div className="w-8 h-0.5 bg-green-500/50" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full" data-oid="xkcjr5q">
+            <div className="w-8 h-0.5 bg-green-500/50" data-oid="1x421v1" />
             <div
               className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 
               border-t-4 border-t-transparent
               border-l-4 border-l-green-500/50
               border-b-4 border-b-transparent"
+              data-oid="dzl:18:"
             />
           </div>
         </div>
 
         {/* Slide handle */}
-        <TooltipProvider delayDuration={0}>
-          <Tooltip>
-            <TooltipTrigger asChild>
+        <TooltipProvider delayDuration={0} data-oid="89kxu52">
+          <Tooltip data-oid="8vhc1sf">
+            <TooltipTrigger asChild data-oid="-qhar3x">
               <div
                 className={cn(
                   "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
@@ -148,13 +162,18 @@ export function SlipSlideHandles({
                   e.stopPropagation()
                   onSlideStart?.(e.clientX)
                 }}
+                data-oid="atemdzy"
               >
-                <Maximize2 className="w-6 h-6 text-green-500 rotate-90" />
+                <Maximize2 className="w-6 h-6 text-green-500 rotate-90" data-oid="4k3179h" />
               </div>
             </TooltipTrigger>
-            <TooltipContent side="top" className="bg-gray-900 text-white">
-              <p className="text-sm">Slide Edit (U)</p>
-              <p className="text-xs opacity-80">Drag to slide clip</p>
+            <TooltipContent side="top" className="bg-gray-900 text-white" data-oid="uqibfa:">
+              <p className="text-sm" data-oid="ggp0cez">
+                Slide Edit (U)
+              </p>
+              <p className="text-xs opacity-80" data-oid="4fmvae.">
+                Drag to slide clip
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

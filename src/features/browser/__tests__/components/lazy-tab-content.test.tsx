@@ -7,14 +7,53 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 // Mock компонентов должен быть определен до импорта LazyTabContent
 // Используем vi.hoisted для гарантии, что моки доступны до импорта
 const mockComponents = vi.hoisted(() => ({
-  MediaAdapterContent: () => <div data-testid="media-content">Media Content</div>,
-  MusicAdapterContent: () => <div data-testid="music-content">Music Content</div>,
-  EffectsAdapterContent: () => <div data-testid="effects-content">Effects Content</div>,
-  FiltersAdapterContent: () => <div data-testid="filters-content">Filters Content</div>,
-  TransitionsAdapterContent: () => <div data-testid="transitions-content">Transitions Content</div>,
-  SubtitlesAdapterContent: () => <div data-testid="subtitles-content">Subtitles Content</div>,
-  TemplatesAdapterContent: () => <div data-testid="templates-content">Templates Content</div>,
-  StyleTemplatesAdapterContent: () => <div data-testid="style-templates-content">Style Templates Content</div>,
+  MediaAdapterContent: () => (
+    <div data-testid="media-content" data-oid="0107s.t">
+      Media Content
+    </div>
+  ),
+
+  MusicAdapterContent: () => (
+    <div data-testid="music-content" data-oid=".arzptm">
+      Music Content
+    </div>
+  ),
+
+  EffectsAdapterContent: () => (
+    <div data-testid="effects-content" data-oid="tazy.-:">
+      Effects Content
+    </div>
+  ),
+
+  FiltersAdapterContent: () => (
+    <div data-testid="filters-content" data-oid="yd:wfl_">
+      Filters Content
+    </div>
+  ),
+
+  TransitionsAdapterContent: () => (
+    <div data-testid="transitions-content" data-oid="16r0516">
+      Transitions Content
+    </div>
+  ),
+
+  SubtitlesAdapterContent: () => (
+    <div data-testid="subtitles-content" data-oid="b.z1bku">
+      Subtitles Content
+    </div>
+  ),
+
+  TemplatesAdapterContent: () => (
+    <div data-testid="templates-content" data-oid="pj9m0g5">
+      Templates Content
+    </div>
+  ),
+
+  StyleTemplatesAdapterContent: () => (
+    <div data-testid="style-templates-content" data-oid="n7m85bo">
+      Style Templates Content
+    </div>
+  ),
 }))
 
 // Mock динамических импортов для React.lazy()
@@ -67,13 +106,13 @@ describe("LazyTabContent", () => {
 
   describe("rendering", () => {
     it("should not render anything for inactive tab", () => {
-      const { container } = render(<LazyTabContent tabValue="media" activeTab="music" />)
+      const { container } = render(<LazyTabContent tabValue="media" activeTab="music" data-oid="ode90xw" />)
 
       expect(container.firstChild).toBeNull()
     })
 
     it("should render loading fallback initially", async () => {
-      render(<LazyTabContent tabValue="media" activeTab="media" />)
+      render(<LazyTabContent tabValue="media" activeTab="media" data-oid=".vdp.j9" />)
 
       // В начальный момент должен показываться fallback
       expect(screen.getByText("Загрузка...")).toBeInTheDocument()
@@ -85,7 +124,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load media adapter content", async () => {
-      render(<LazyTabContent tabValue="media" activeTab="media" />)
+      render(<LazyTabContent tabValue="media" activeTab="media" data-oid="k3euxpp" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("media-content")).toBeInTheDocument()
@@ -95,7 +134,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load music adapter content", async () => {
-      render(<LazyTabContent tabValue="music" activeTab="music" />)
+      render(<LazyTabContent tabValue="music" activeTab="music" data-oid="f.ag68e" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("music-content")).toBeInTheDocument()
@@ -105,7 +144,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load effects adapter content", async () => {
-      render(<LazyTabContent tabValue="effects" activeTab="effects" />)
+      render(<LazyTabContent tabValue="effects" activeTab="effects" data-oid="7.sc1rp" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("effects-content")).toBeInTheDocument()
@@ -115,7 +154,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load filters adapter content", async () => {
-      render(<LazyTabContent tabValue="filters" activeTab="filters" />)
+      render(<LazyTabContent tabValue="filters" activeTab="filters" data-oid="5kftjbd" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("filters-content")).toBeInTheDocument()
@@ -125,7 +164,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load transitions adapter content", async () => {
-      render(<LazyTabContent tabValue="transitions" activeTab="transitions" />)
+      render(<LazyTabContent tabValue="transitions" activeTab="transitions" data-oid="fw:mddy" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("transitions-content")).toBeInTheDocument()
@@ -135,7 +174,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load subtitles adapter content", async () => {
-      render(<LazyTabContent tabValue="subtitles" activeTab="subtitles" />)
+      render(<LazyTabContent tabValue="subtitles" activeTab="subtitles" data-oid="iaj9sfj" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("subtitles-content")).toBeInTheDocument()
@@ -145,7 +184,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load templates adapter content", async () => {
-      render(<LazyTabContent tabValue="templates" activeTab="templates" />)
+      render(<LazyTabContent tabValue="templates" activeTab="templates" data-oid="9l392j9" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("templates-content")).toBeInTheDocument()
@@ -155,7 +194,7 @@ describe("LazyTabContent", () => {
     })
 
     it("should lazy load style_templates adapter content", async () => {
-      render(<LazyTabContent tabValue="style_templates" activeTab="style_templates" />)
+      render(<LazyTabContent tabValue="style_templates" activeTab="style_templates" data-oid="ljnc2bs" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("style-templates-content")).toBeInTheDocument()
@@ -167,7 +206,7 @@ describe("LazyTabContent", () => {
 
   describe("tab switching", () => {
     it("should unload content when tab becomes inactive", async () => {
-      const { rerender, container } = render(<LazyTabContent tabValue="media" activeTab="media" />)
+      const { rerender, container } = render(<LazyTabContent tabValue="media" activeTab="media" data-oid="0b8:zd3" />)
 
       // Wait for content to load
       await waitFor(() => {
@@ -175,20 +214,20 @@ describe("LazyTabContent", () => {
       })
 
       // Switch to another tab
-      rerender(<LazyTabContent tabValue="media" activeTab="music" />)
+      rerender(<LazyTabContent tabValue="media" activeTab="music" data-oid="ey-:cqn" />)
 
       // Content should be unloaded
       expect(container.firstChild).toBeNull()
     })
 
     it("should reload content when tab becomes active again", async () => {
-      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="music" />)
+      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="music" data-oid="g7n1vu0" />)
 
       // Initially not rendered
       expect(screen.queryByTestId("media-content")).not.toBeInTheDocument()
 
       // Switch to media tab
-      rerender(<LazyTabContent tabValue="media" activeTab="media" />)
+      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="bhvf1m6" />)
 
       // Content should load
       await waitFor(() => {
@@ -199,14 +238,14 @@ describe("LazyTabContent", () => {
 
   describe("edge cases", () => {
     it("should handle unknown tab value", () => {
-      const { container } = render(<LazyTabContent tabValue="unknown" activeTab="unknown" />)
+      const { container } = render(<LazyTabContent tabValue="unknown" activeTab="unknown" data-oid="n2jc8kj" />)
 
       // Should not render anything for unknown tab (returns null)
       expect(container.firstChild).toBeNull()
     })
 
     it("should handle null activeTab", () => {
-      const { container } = render(<LazyTabContent tabValue="media" activeTab="" />)
+      const { container } = render(<LazyTabContent tabValue="media" activeTab="" data-oid="9w3g8_l" />)
 
       // Should not render anything
       expect(container.firstChild).toBeNull()
@@ -215,7 +254,7 @@ describe("LazyTabContent", () => {
 
   describe("memo optimization", () => {
     it("should not re-render if props don't change", async () => {
-      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="media" />)
+      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="media" data-oid="olt35ei" />)
 
       // Дождаться загрузки контента
       await waitFor(() => {
@@ -223,7 +262,7 @@ describe("LazyTabContent", () => {
       })
 
       // Force re-render with same props
-      rerender(<LazyTabContent tabValue="media" activeTab="media" />)
+      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="sbrzqzv" />)
 
       // Component should be memoized and not cause unnecessary re-renders
       // (This is more of a performance test, hard to assert directly)
@@ -231,11 +270,11 @@ describe("LazyTabContent", () => {
     })
 
     it("should re-render when activeTab changes", async () => {
-      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="music" />)
+      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="music" data-oid="65q::kz" />)
 
       expect(screen.queryByTestId("media-content")).not.toBeInTheDocument()
 
-      rerender(<LazyTabContent tabValue="media" activeTab="media" />)
+      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="ifz1-6l" />)
 
       await waitFor(() => {
         expect(screen.getByTestId("media-content")).toBeInTheDocument()

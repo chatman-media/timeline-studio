@@ -38,21 +38,26 @@ export function GroupStrip({
         borderLeftColor: group.color,
         borderLeftWidth: "3px",
       }}
+      data-oid="qm4m8ul"
     >
       {/* Group Header */}
-      <div className="w-full space-y-1">
+      <div className="w-full space-y-1" data-oid="edh-w52">
         {/* Group Name */}
-        <div className="text-xs font-semibold text-zinc-200 text-center truncate">{group.name}</div>
+        <div className="text-xs font-semibold text-zinc-200 text-center truncate" data-oid="aomxt5o">
+          {group.name}
+        </div>
 
         {/* Channel Count */}
-        <div className="flex items-center justify-center gap-1">
-          <Users className="w-3 h-3 text-zinc-400" />
-          <span className="text-xs text-zinc-400">{group.channelIds.length}</span>
+        <div className="flex items-center justify-center gap-1" data-oid="1eqcj:1">
+          <Users className="w-3 h-3 text-zinc-400" data-oid="m4.vd74" />
+          <span className="text-xs text-zinc-400" data-oid="ahgaxjb">
+            {group.channelIds.length}
+          </span>
         </div>
       </div>
 
       {/* Group Controls */}
-      <div className="w-full space-y-1">
+      <div className="w-full space-y-1" data-oid="ziufxof">
         {/* Edit Channels Button */}
         <Button
           size="sm"
@@ -60,8 +65,9 @@ export function GroupStrip({
           onClick={onEditChannels}
           className="h-6 w-full p-0 text-zinc-400 hover:text-zinc-200"
           title="Edit channels in group"
+          data-oid="40:3or2"
         >
-          <Settings className="w-3 h-3" />
+          <Settings className="w-3 h-3" data-oid="h34fwws" />
         </Button>
 
         {/* Delete Group Button */}
@@ -71,13 +77,14 @@ export function GroupStrip({
           onClick={onDelete}
           className="h-6 w-full p-0 text-red-400 hover:text-red-300"
           title="Delete group"
+          data-oid="bt8e9iz"
         >
-          <X className="w-3 h-3" />
+          <X className="w-3 h-3" data-oid="1:w9yn1" />
         </Button>
       </div>
 
       {/* Group Fader */}
-      <div className="flex-1 flex flex-col items-center">
+      <div className="flex-1 flex flex-col items-center" data-oid="m.m5zps">
         <Fader
           value={value}
           onChange={onGainChange}
@@ -89,17 +96,20 @@ export function GroupStrip({
           channelId={group.id}
           parameterId="groupGain"
           className="h-full"
+          data-oid="dnzedrx"
         />
       </div>
 
       {/* Group Status */}
-      <div className="w-full text-center">
-        <div className="text-xs text-zinc-500">{group.isMuted ? "MUTED" : group.isSolo ? "SOLO" : "ACTIVE"}</div>
+      <div className="w-full text-center" data-oid=":dy2qge">
+        <div className="text-xs text-zinc-500" data-oid="4vcv.fu">
+          {group.isMuted ? "MUTED" : group.isSolo ? "SOLO" : "ACTIVE"}
+        </div>
       </div>
 
       {/* Bus Assignment */}
-      <div className="w-full text-center">
-        <div className="text-xs text-zinc-400 truncate" title={group.busId}>
+      <div className="w-full text-center" data-oid=":zdg3-3">
+        <div className="text-xs text-zinc-400 truncate" title={group.busId} data-oid="h33z-sf">
           → {group.busId.replace("_bus", "")}
         </div>
       </div>

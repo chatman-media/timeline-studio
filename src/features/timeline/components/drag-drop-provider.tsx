@@ -32,23 +32,32 @@ function DraggedVideoOverlay({ mediaFile, count }: { mediaFile: MediaFile; count
   const isMultiSelect = count && count > 1
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 opacity-90">
-      <div className="flex items-center gap-2">
-        <div className="w-16 h-10 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center relative">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+    <div
+      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 opacity-90"
+      data-oid="ozzrtez"
+    >
+      <div className="flex items-center gap-2" data-oid="stwqj72">
+        <div
+          className="w-16 h-10 bg-gray-100 dark:bg-gray-700 rounded flex items-center justify-center relative"
+          data-oid="y5o3ay."
+        >
+          <span className="text-xs text-gray-500 dark:text-gray-400" data-oid="yos:k_c">
             {mediaFile.isVideo ? "Video" : mediaFile.isAudio ? "Audio" : "Image"}
           </span>
           {isMultiSelect && (
-            <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            <div
+              className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center"
+              data-oid="hxc94rw"
+            >
               {count}
             </div>
           )}
         </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-32">
+        <div className="flex flex-col" data-oid="awdr7wm">
+          <span className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-32" data-oid="xr-_.gl">
             {isMultiSelect ? `${count} files` : mediaFile.name}
           </span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <span className="text-xs text-gray-500 dark:text-gray-400" data-oid="lfkg5sx">
             {isMultiSelect ? "Multiple files selected" : mediaFile.duration ? `${Math.round(mediaFile.duration)}s` : ""}
           </span>
         </div>
@@ -98,12 +107,17 @@ export function DragDropProvider({ children }: DragDropProviderProps) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       modifiers={[snapToGridModifier]}
+      data-oid="o-:_05l"
     >
       {children}
 
-      <DragOverlay>
+      <DragOverlay data-oid="uicxzjl">
         {dragState.isDragging && dragState.draggedItem ? (
-          <DraggedVideoOverlay mediaFile={dragState.draggedItem.mediaFile} count={dragState.draggedCount} />
+          <DraggedVideoOverlay
+            mediaFile={dragState.draggedItem.mediaFile}
+            count={dragState.draggedCount}
+            data-oid="4xqjuzm"
+          />
         ) : null}
       </DragOverlay>
     </DndContext>

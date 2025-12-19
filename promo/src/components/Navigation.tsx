@@ -93,14 +93,17 @@ export function Navigation() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-[padding] duration-300 ease-out ${isScrolled ? "py-0" : "py-3"}`}
+      data-oid="28i7l8a"
     >
       <div
         className={`transition-[padding] duration-300 ease-out ${isScrolled ? "px-2 md:px-2 pt-3" : "px-2 md:px-2 lg:px-2"}`}
+        data-oid="jopqldy"
       >
         <div
           className={`flex items-center justify-between outline-none border border-transparent px-3 md:px-5 py-3 transition-[background-color,border-radius,box-shadow] duration-300 ease-out ${
             isScrolled ? "nav-glass-scrolled rounded-2xl" : ""
           }`}
+          data-oid="obfclv1"
         >
           {/* Logo */}
           <motion.div
@@ -108,9 +111,10 @@ export function Navigation() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
             style={{ position: "relative" }}
+            data-oid="r1y3wf8"
           >
-            <Link to="/" className="inline-block">
-              <Logo size="medium" />
+            <Link to="/" className="inline-block" data-oid="8i8-pom">
+              <Logo size="medium" data-oid="ssulblm" />
             </Link>
           </motion.div>
 
@@ -121,17 +125,22 @@ export function Navigation() {
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
             className="flex items-center space-x-2 lg:space-x-6"
             style={{ position: "relative" }}
+            data-oid="4._zv7x"
           >
             {/* Navigation Items */}
-            <ul className="hidden lg:flex items-center space-x-0.5 lg:space-x-1 xl:space-x-2">
+            <ul
+              className="hidden lg:flex items-center space-x-0.5 lg:space-x-1 xl:space-x-2"
+              data-oid="tgur92c"
+            >
               {[...navItems, ...rightNavItems].map((item) => (
-                <li key={item.href}>
+                <li key={item.href} data-oid="sl_ad9b">
                   {item.isExternal ? (
                     <a
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block px-2 lg:px-3 py-2 text-xs font-medium text-gray-300 hover:text-white transition-colors duration-200 tracking-wider"
+                      data-oid="fgc0sd_"
                     >
                       {item.label}
                     </a>
@@ -144,6 +153,7 @@ export function Navigation() {
                           ? "text-white"
                           : "text-gray-300 hover:text-white"
                       }`}
+                      data-oid="gsq_bfo"
                     >
                       {item.label}
                     </a>
@@ -151,6 +161,7 @@ export function Navigation() {
                     <Link
                       to={item.href}
                       className="block px-2 lg:px-3 py-2 text-xs font-medium text-gray-300 hover:text-white transition-colors duration-200 tracking-wider"
+                      data-oid="a2h29mf"
                     >
                       {item.label}
                     </Link>
@@ -160,8 +171,11 @@ export function Navigation() {
             </ul>
 
             {/* Language Toggle */}
-            <div className="hidden min-[560px]:flex items-center mr-1 xl:mr-2">
-              <LanguageToggle className="mr-2 xl:mr-4" />
+            <div
+              className="hidden min-[560px]:flex items-center mr-1 xl:mr-2"
+              data-oid="m_89fm5"
+            >
+              <LanguageToggle className="mr-2 xl:mr-4" data-oid="a:8z_dc" />
             </div>
 
             {/* Download Button */}
@@ -170,15 +184,25 @@ export function Navigation() {
               target="_blank"
               rel="noopener noreferrer"
               className="group relative inline-flex px-3 lg:px-4 py-2 lg:py-3 rounded-xl text-xs lg:text-sm font-medium text-white overflow-hidden mr-3 lg:mr-7 cursor-pointer"
+              data-oid="rgnt1qm"
             >
               {/* Background with purple base */}
-              <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+              <div
+                className="absolute inset-0 bg-[#8b5cf6] rounded-xl"
+                data-oid="3yy51z3"
+              />
 
               {/* Kiro-style spreading effect on hover */}
-              <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220" />
+              <div
+                className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220"
+                data-oid="7o6zu3v"
+              />
 
               {/* Text */}
-              <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
+              <span
+                className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500"
+                data-oid="1a2208t"
+              >
                 {t("nav.download")}
               </span>
             </a>
@@ -189,6 +213,7 @@ export function Navigation() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
+              data-oid="xxfaldf"
             >
               {isMobileMenuOpen ? (
                 <svg
@@ -196,12 +221,14 @@ export function Navigation() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  data-oid="se8jytt"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
                     d="M6 18L18 6M6 6l12 12"
+                    data-oid="x19w8np"
                   />
                 </svg>
               ) : (
@@ -210,12 +237,14 @@ export function Navigation() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  data-oid="7ekcram"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
                     d="M4 6h16M4 12h16M4 18h16"
+                    data-oid="yuia14q"
                   />
                 </svg>
               )}
@@ -231,10 +260,11 @@ export function Navigation() {
             exit={{ opacity: 0, y: -20 }}
             style={{ position: "relative" }}
             className="lg:hidden mt-2 nav-glass-scrolled rounded-2xl p-4"
+            data-oid="1:qwwht"
           >
-            <ul className="space-y-2">
+            <ul className="space-y-2" data-oid="7rsncq6">
               {[...navItems, ...rightNavItems].map((item) => (
-                <li key={item.href}>
+                <li key={item.href} data-oid="g4plsd6">
                   {item.isExternal ? (
                     <a
                       href={item.href}
@@ -242,6 +272,7 @@ export function Navigation() {
                       rel="noopener noreferrer"
                       className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
                       onClick={() => setIsMobileMenuOpen(false)}
+                      data-oid="4fwadyc"
                     >
                       {item.label}
                     </a>
@@ -257,6 +288,7 @@ export function Navigation() {
                           ? "text-white bg-white/10"
                           : "text-gray-300 hover:text-white"
                       }`}
+                      data-oid="djbn_vo"
                     >
                       {item.label}
                     </a>
@@ -265,6 +297,7 @@ export function Navigation() {
                       to={item.href}
                       className="block px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
                       onClick={() => setIsMobileMenuOpen(false)}
+                      data-oid="rw_ocq0"
                     >
                       {item.label}
                     </Link>
@@ -273,27 +306,37 @@ export function Navigation() {
               ))}
 
               {/* Language toggle in mobile menu */}
-              <li className="pt-2 border-t border-gray-700">
-                <LanguageToggle isMobile={true} />
+              <li className="pt-2 border-t border-gray-700" data-oid="cqg95u6">
+                <LanguageToggle isMobile={true} data-oid="rgt59fw" />
               </li>
 
               {/* Download button in mobile menu */}
-              <li className="pt-2">
+              <li className="pt-2" data-oid="3q_wiwt">
                 <a
                   href="https://github.com/chatman-media/timeline-studio/releases/latest"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative block mx-4 px-5 py-2 rounded-xl text-sm font-medium text-white text-center overflow-hidden"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  data-oid="tvmizrl"
                 >
                   {/* Background with purple base */}
-                  <div className="absolute inset-0 bg-[#8b5cf6] rounded-xl" />
+                  <div
+                    className="absolute inset-0 bg-[#8b5cf6] rounded-xl"
+                    data-oid="0u1cvhm"
+                  />
 
                   {/* Kiro-style spreading effect on hover */}
-                  <div className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220" />
+                  <div
+                    className="absolute inset-0 z-10 rounded-xl bg-white transition-transform duration-500 translate-y-[50%] scale-0 group-hover:scale-x-150 group-hover:scale-y-220"
+                    data-oid="d-n9.h7"
+                  />
 
                   {/* Text */}
-                  <span className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500">
+                  <span
+                    className="relative z-20 group-hover:text-[#8b5cf6] transition-colors duration-500"
+                    data-oid="ci1.0e5"
+                  >
                     Download
                   </span>
                 </a>

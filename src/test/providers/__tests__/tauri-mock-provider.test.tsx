@@ -50,8 +50,8 @@ describe("TauriMockProvider", () => {
   describe("рендеринг и children", () => {
     it("должен рендерить children", () => {
       const { getByText } = render(
-        <TauriMockProvider>
-          <div>Test Content</div>
+        <TauriMockProvider data-oid="ul1i4i3">
+          <div data-oid="mm3p6t3">Test Content</div>
         </TauriMockProvider>,
       )
 
@@ -60,9 +60,9 @@ describe("TauriMockProvider", () => {
 
     it("должен рендерить несколько children", () => {
       const { getByText } = render(
-        <TauriMockProvider>
-          <div>First</div>
-          <div>Second</div>
+        <TauriMockProvider data-oid="xc3pdo5">
+          <div data-oid="h-t-rn3">First</div>
+          <div data-oid="sszawas">Second</div>
         </TauriMockProvider>,
       )
 
@@ -79,8 +79,8 @@ describe("TauriMockProvider", () => {
       }
 
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="j.dbxba">
+          <div data-oid="qgtj:9q">Content</div>
         </TauriMockProvider>,
       )
 
@@ -90,8 +90,8 @@ describe("TauriMockProvider", () => {
 
     it("должен мокать navigator.mediaDevices в не-Tauri окружении", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid=".d2xe9.">
+          <div data-oid="me:g.tm">Content</div>
         </TauriMockProvider>,
       )
 
@@ -103,8 +103,8 @@ describe("TauriMockProvider", () => {
   describe("mock navigator.mediaDevices", () => {
     it("должен создать mock getUserMedia", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="l7reuzc">
+          <div data-oid="s_4pc52">Content</div>
         </TauriMockProvider>,
       )
 
@@ -115,8 +115,8 @@ describe("TauriMockProvider", () => {
 
     it("должен создать mock getDisplayMedia", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="2pfs1_y">
+          <div data-oid="lhx0vx5">Content</div>
         </TauriMockProvider>,
       )
 
@@ -127,8 +127,8 @@ describe("TauriMockProvider", () => {
 
     it("должен создать mock enumerateDevices", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="x4ilvr:">
+          <div data-oid="laqdgaj">Content</div>
         </TauriMockProvider>,
       )
 
@@ -138,8 +138,8 @@ describe("TauriMockProvider", () => {
 
     it("должен логировать предупреждения при вызове mock методов", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="5g8j4e-">
+          <div data-oid="w8avare">Content</div>
         </TauriMockProvider>,
       )
 
@@ -148,7 +148,6 @@ describe("TauriMockProvider", () => {
       } catch (e) {
         // Expected to throw
       }
-
       expect(mockLogger.warn).toHaveBeenCalledWith(
         expect.stringContaining("navigator.mediaDevices.getUserMedia not available"),
       )
@@ -158,8 +157,8 @@ describe("TauriMockProvider", () => {
   describe("mock __TAURI_INTERNALS__", () => {
     it("должен создать __TAURI_INTERNALS__ с invoke функцией", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="sqfll81">
+          <div data-oid="go7esnt">Content</div>
         </TauriMockProvider>,
       )
 
@@ -169,8 +168,8 @@ describe("TauriMockProvider", () => {
 
     it("должен создать transformCallback функцию", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid=".-5gwwo">
+          <div data-oid="v7z_391">Content</div>
         </TauriMockProvider>,
       )
 
@@ -179,8 +178,8 @@ describe("TauriMockProvider", () => {
 
     it("должен создать callbacks Map", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="lv_5iqr">
+          <div data-oid="yf1huqu">Content</div>
         </TauriMockProvider>,
       )
 
@@ -191,8 +190,8 @@ describe("TauriMockProvider", () => {
   describe("mock invoke команды", () => {
     it("должен возвращать mock данные для get_app_language_tauri", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="ku35a:s">
+          <div data-oid="y:fxx52">Content</div>
         </TauriMockProvider>,
       )
 
@@ -203,8 +202,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать пустой массив для get_media_files", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="clhh1as">
+          <div data-oid="_iw1a47">Content</div>
         </TauriMockProvider>,
       )
 
@@ -215,8 +214,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать false для file_exists", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="k0.o1.y">
+          <div data-oid="fllii6i">Content</div>
         </TauriMockProvider>,
       )
 
@@ -227,8 +226,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать директории для get_app_directories", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="k:j10-t">
+          <div data-oid="9tw:-bv">Content</div>
         </TauriMockProvider>,
       )
 
@@ -242,8 +241,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать GPU capabilities", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="j1h4fqq">
+          <div data-oid="a8l2g14">Content</div>
         </TauriMockProvider>,
       )
 
@@ -256,8 +255,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать system info", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="ekvcwv7">
+          <div data-oid="dcyqj.5">Content</div>
         </TauriMockProvider>,
       )
 
@@ -271,8 +270,8 @@ describe("TauriMockProvider", () => {
 
     it("должен логировать неизвестные команды", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="l0:662p">
+          <div data-oid="vqn-sy0">Content</div>
         </TauriMockProvider>,
       )
 
@@ -288,8 +287,8 @@ describe("TauriMockProvider", () => {
   describe("mock event plugin", () => {
     it("должен создать __TAURI_EVENT_PLUGIN_INTERNALS__", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="avwf1oz">
+          <div data-oid="8tm_kox">Content</div>
         </TauriMockProvider>,
       )
 
@@ -299,8 +298,8 @@ describe("TauriMockProvider", () => {
 
     it("должен обрабатывать plugin:event|listen", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="5e_mh98">
+          <div data-oid="6du_u7k">Content</div>
         </TauriMockProvider>,
       )
 
@@ -315,8 +314,8 @@ describe("TauriMockProvider", () => {
 
     it("должен обрабатывать plugin:event|unlisten", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="d_-5dfo">
+          <div data-oid="r_ysjl2">Content</div>
         </TauriMockProvider>,
       )
 
@@ -329,8 +328,8 @@ describe("TauriMockProvider", () => {
   describe("mock store plugin", () => {
     it("должен обрабатывать plugin:store|load", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="bkjs:nu">
+          <div data-oid="r_ec7u4">Content</div>
         </TauriMockProvider>,
       )
 
@@ -341,8 +340,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать app-settings", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="11cd6m6">
+          <div data-oid="3hh_yjf">Content</div>
         </TauriMockProvider>,
       )
 
@@ -357,8 +356,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать [null, false] для несуществующего ключа", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="8nmwp4n">
+          <div data-oid="gz88f9p">Content</div>
         </TauriMockProvider>,
       )
 
@@ -372,8 +371,8 @@ describe("TauriMockProvider", () => {
 
     it("должен обрабатывать plugin:store|set", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="owtrg66">
+          <div data-oid="09izrw5">Content</div>
         </TauriMockProvider>,
       )
 
@@ -386,8 +385,8 @@ describe("TauriMockProvider", () => {
   describe("mock filesystem plugin", () => {
     it("должен возвращать true для .tlsp файлов", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid=".abytp7">
+          <div data-oid="f91h:yq">Content</div>
         </TauriMockProvider>,
       )
 
@@ -400,8 +399,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать false для не-.tlsp файлов", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="za0u9.y">
+          <div data-oid="_8gyya0">Content</div>
         </TauriMockProvider>,
       )
 
@@ -414,8 +413,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать JSON для .tlsp файлов", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="kgkg3me">
+          <div data-oid="-:509.j">Content</div>
         </TauriMockProvider>,
       )
 
@@ -431,8 +430,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать пустой объект для JSON файлов", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="ok3.0f-">
+          <div data-oid="7d1s.e9">Content</div>
         </TauriMockProvider>,
       )
 
@@ -445,8 +444,8 @@ describe("TauriMockProvider", () => {
 
     it("должен обрабатывать plugin:fs|write_text_file", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="hewyeky">
+          <div data-oid="n5hdqmp">Content</div>
         </TauriMockProvider>,
       )
 
@@ -462,8 +461,8 @@ describe("TauriMockProvider", () => {
   describe("mock path plugin", () => {
     it("должен объединять пути", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="f58naj5">
+          <div data-oid="sw6m3qq">Content</div>
         </TauriMockProvider>,
       )
 
@@ -478,8 +477,8 @@ describe("TauriMockProvider", () => {
   describe("mock dialog plugin", () => {
     it("должен возвращать пустой массив для open_file", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="fnzyiw4">
+          <div data-oid="2l05olr">Content</div>
         </TauriMockProvider>,
       )
 
@@ -490,8 +489,8 @@ describe("TauriMockProvider", () => {
 
     it("должен возвращать null для open_folder", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="upppv5l">
+          <div data-oid="2me.hp8">Content</div>
         </TauriMockProvider>,
       )
 
@@ -504,8 +503,8 @@ describe("TauriMockProvider", () => {
   describe("callback система", () => {
     it("должен регистрировать callbacks", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="8iqvzut">
+          <div data-oid=".f73rqr">Content</div>
         </TauriMockProvider>,
       )
 
@@ -518,8 +517,8 @@ describe("TauriMockProvider", () => {
 
     it("должен удалять callbacks", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="r08h3k9">
+          <div data-oid="e88iekn">Content</div>
         </TauriMockProvider>,
       )
 
@@ -533,8 +532,8 @@ describe("TauriMockProvider", () => {
 
     it("должен вызывать callbacks с данными", () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="ckutrrq">
+          <div data-oid="uvk9q3f">Content</div>
         </TauriMockProvider>,
       )
 
@@ -555,8 +554,8 @@ describe("TauriMockProvider", () => {
       // Просто проверяем, что компонент рендерится без ошибок
       expect(() => {
         render(
-          <TauriMockProvider>
-            <div>Content</div>
+          <TauriMockProvider data-oid="phzsip1">
+            <div data-oid="wo0n9df">Content</div>
           </TauriMockProvider>,
         )
       }).not.toThrow()
@@ -566,8 +565,8 @@ describe("TauriMockProvider", () => {
   describe("логирование", () => {
     it("должен логировать команды invoke", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="gbu5mm7">
+          <div data-oid="7e3ux51">Content</div>
         </TauriMockProvider>,
       )
 
@@ -581,8 +580,8 @@ describe("TauriMockProvider", () => {
 
     it("должен логировать регистрацию event listeners", async () => {
       render(
-        <TauriMockProvider>
-          <div>Content</div>
+        <TauriMockProvider data-oid="2f_i2ks">
+          <div data-oid="2as8nau">Content</div>
         </TauriMockProvider>,
       )
 

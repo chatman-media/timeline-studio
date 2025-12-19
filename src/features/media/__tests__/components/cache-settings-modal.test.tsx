@@ -72,7 +72,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should render cache settings component", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="_x59ypj" />)
 
     // Ждем загрузки статистики
     await waitFor(() => {
@@ -84,14 +84,14 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should display loading state initially", () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="6r:g-x0" />)
 
     // Проверяем спиннер загрузки
     expect(document.querySelector(".animate-spin")).toBeInTheDocument()
   })
 
   it("should display cache statistics after loading", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="cmxwgfh" />)
 
     // Ждем загрузки статистики
     await waitFor(() => {
@@ -110,7 +110,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should clear preview cache", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="_8eixbg" />)
 
     // Ждем загрузки компонента
     await waitFor(() => {
@@ -131,7 +131,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should clear frame cache", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="gvvqky:" />)
 
     // Ждем загрузки компонента
     await waitFor(() => {
@@ -148,7 +148,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should clear recognition cache", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="f8km7gm" />)
 
     // Ждем загрузки компонента
     await waitFor(() => {
@@ -165,7 +165,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should clear subtitle cache", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="319-l2z" />)
 
     // Ждем загрузки компонента
     await waitFor(() => {
@@ -182,7 +182,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should clear all cache at once", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="u59o2ly" />)
 
     // Ждем загрузки компонента
     await waitFor(() => {
@@ -202,7 +202,7 @@ describe("CacheSettingsModal", () => {
   })
 
   it("should test cleanup expired cache", async () => {
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="bqi796." />)
 
     // Ждем загрузки компонента
     await waitFor(() => {
@@ -232,7 +232,7 @@ describe("CacheSettingsModal", () => {
 
     vi.mocked(indexedDBCacheService.getCacheStatistics).mockResolvedValue(emptyStatistics)
 
-    renderWithProviders(<CacheSettingsModal />)
+    renderWithProviders(<CacheSettingsModal data-oid="52tl8z9" />)
 
     // Ждем загрузки компонента
     await waitFor(() => {

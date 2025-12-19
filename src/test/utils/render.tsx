@@ -64,50 +64,42 @@ const getProviders = async () => {
   } catch (_e) {
     // Provider not available
   }
-
   try {
     const { BrowserStateProvider } = await import("@/features/browser/services/browser-state-provider")
     providers.BrowserStateProvider = BrowserStateProvider
   } catch (_e) {
     // Provider not available
   }
-
   try {
     const { PlayerProvider } = await import("@/domains/video-editing")
     providers.PlayerProvider = PlayerProvider
   } catch (_e) {
     // Provider not available
   }
-
   try {
     const { AppProvider } = await import("@/domains/project-management/providers/app-provider")
     providers.AppSettingsProvider = AppProvider
   } catch (_e) {
     // Provider not available
-  }
-
-  // IMPORTANT: import via barrel so test setup mock applies and provider becomes a no-op in tests
+  } // IMPORTANT: import via barrel so test setup mock applies and provider becomes a no-op in tests
   try {
     const { UserSettingsProvider } = await import("@/features/user-settings")
     providers.UserSettingsProvider = UserSettingsProvider
   } catch (_e) {
     // Provider not available (or mocked as no-op in tests)
   }
-
   try {
     const { ProjectSettingsProvider } = await import("@/domains/project-management/providers")
     providers.ProjectSettingsProvider = ProjectSettingsProvider
   } catch (_e) {
     // Provider not available
   }
-
   try {
     const { ResourcesProvider } = await import("@/domains/video-editing")
     providers.ResourcesProvider = ResourcesProvider
   } catch (_e) {
     // Provider not available
   }
-
   return providers
 }
 
@@ -119,11 +111,11 @@ export function createWrapper(options: RenderOptions = {}) {
 
     // Always wrap with basic providers first
     if (providers.includes("i18n")) {
-      wrapped = <I18nProvider>{wrapped}</I18nProvider>
+      wrapped = <I18nProvider data-oid="f5hrkhe">{wrapped}</I18nProvider>
     }
 
     if (providers.includes("theme")) {
-      wrapped = <ThemeProvider>{wrapped}</ThemeProvider>
+      wrapped = <ThemeProvider data-oid="03kv7uy">{wrapped}</ThemeProvider>
     }
 
     // Wrap with feature providers (these require dynamic imports)
@@ -158,7 +150,7 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("resources") && availableProviders.ResourcesProvider) {
       const config = providerConfig.resources || {}
       wrapped = (
-        <availableProviders.ResourcesProvider initialResources={config.initialResources}>
+        <availableProviders.ResourcesProvider initialResources={config.initialResources} data-oid="6h92a5.">
           {wrapped}
         </availableProviders.ResourcesProvider>
       )
@@ -167,7 +159,7 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("projectSettings") && availableProviders.ProjectSettingsProvider) {
       const config = providerConfig.projectSettings || {}
       wrapped = (
-        <availableProviders.ProjectSettingsProvider initialSettings={config.initialSettings}>
+        <availableProviders.ProjectSettingsProvider initialSettings={config.initialSettings} data-oid="gy3upnv">
           {wrapped}
         </availableProviders.ProjectSettingsProvider>
       )
@@ -176,7 +168,7 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("userSettings") && availableProviders.UserSettingsProvider) {
       const config = providerConfig.userSettings || {}
       wrapped = (
-        <availableProviders.UserSettingsProvider initialSettings={config.initialSettings}>
+        <availableProviders.UserSettingsProvider initialSettings={config.initialSettings} data-oid="dc8crhn">
           {wrapped}
         </availableProviders.UserSettingsProvider>
       )
@@ -185,7 +177,7 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("appSettings") && availableProviders.AppSettingsProvider) {
       const config = providerConfig.appSettings || {}
       wrapped = (
-        <availableProviders.AppSettingsProvider initialSettings={config.initialSettings}>
+        <availableProviders.AppSettingsProvider initialSettings={config.initialSettings} data-oid="::yqq_.">
           {wrapped}
         </availableProviders.AppSettingsProvider>
       )
@@ -194,7 +186,7 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("player") && availableProviders.PlayerProvider) {
       const config = providerConfig.player || {}
       wrapped = (
-        <availableProviders.PlayerProvider initialState={config.initialState}>
+        <availableProviders.PlayerProvider initialState={config.initialState} data-oid="ig4oeo5">
           {wrapped}
         </availableProviders.PlayerProvider>
       )
@@ -203,7 +195,7 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("media") && availableProviders.BrowserStateProvider) {
       const config = providerConfig.media || {}
       wrapped = (
-        <availableProviders.BrowserStateProvider initialState={config.initialState}>
+        <availableProviders.BrowserStateProvider initialState={config.initialState} data-oid="0b32_-q">
           {wrapped}
         </availableProviders.BrowserStateProvider>
       )
@@ -212,18 +204,18 @@ export async function renderAsync(ui: React.ReactElement, options: RenderOptions
     if (providers.includes("timeline") && availableProviders.TimelineProvider) {
       const config = providerConfig.timeline || {}
       wrapped = (
-        <availableProviders.TimelineProvider initialState={config.initialState}>
+        <availableProviders.TimelineProvider initialState={config.initialState} data-oid="n_782a1">
           {wrapped}
         </availableProviders.TimelineProvider>
       )
     }
 
     if (providers.includes("theme")) {
-      wrapped = <ThemeProvider>{wrapped}</ThemeProvider>
+      wrapped = <ThemeProvider data-oid="n-2c5qi">{wrapped}</ThemeProvider>
     }
 
     if (providers.includes("i18n")) {
-      wrapped = <I18nProvider>{wrapped}</I18nProvider>
+      wrapped = <I18nProvider data-oid="2zrw5e3">{wrapped}</I18nProvider>
     }
 
     return wrapped

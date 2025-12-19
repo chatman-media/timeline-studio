@@ -62,6 +62,7 @@ export const EffectGroup: React.FC<EffectGroupProps> = ({
         aria-label={`${effect.name.en || effect.name.ru} effect`}
         className="focus:outline-none focus:ring-2 focus:ring-primary rounded-sm p-0 border-0 bg-transparent"
         onClick={() => onEffectClick(effect, actualIndex)}
+        data-oid=":9_3__u"
       >
         <EffectPreview
           effect={effect}
@@ -69,6 +70,7 @@ export const EffectGroup: React.FC<EffectGroupProps> = ({
           size={previewSize}
           width={previewWidth}
           height={previewHeight}
+          data-oid="69pok:8"
         />
       </button>
     )
@@ -86,6 +88,7 @@ export const EffectGroup: React.FC<EffectGroupProps> = ({
       itemsContainerStyle={{
         gridTemplateColumns: `repeat(auto-fill, minmax(${previewWidth}px, 1fr))`,
       }}
+      data-oid="kyzky0:"
     />
   )
 }

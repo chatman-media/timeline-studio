@@ -39,6 +39,7 @@ vi.mock("../../lib/scenarios", () => ({
           config: {},
         },
       ],
+
       settings: {
         allowSkipSteps: true,
         showPreview: true,
@@ -49,7 +50,10 @@ vi.mock("../../lib/scenarios", () => ({
     {
       id: "pro-montage",
       name: { en: "Pro Montage", ru: "Профессиональный монтаж" },
-      description: { en: "Professional montage", ru: "Профессиональный монтаж" },
+      description: {
+        en: "Professional montage",
+        ru: "Профессиональный монтаж",
+      },
       category: "effects",
       difficulty: "advanced",
       estimatedTime: 30,
@@ -68,6 +72,7 @@ vi.mock("../../lib/scenarios", () => ({
           config: {},
         },
       ],
+
       settings: {
         allowSkipSteps: false,
         showPreview: true,
@@ -90,6 +95,7 @@ vi.mock("../../lib/scenarios", () => ({
           config: {},
         },
       ],
+
       settings: {
         allowSkipSteps: true,
         showPreview: true,

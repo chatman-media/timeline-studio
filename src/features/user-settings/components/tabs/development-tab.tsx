@@ -56,11 +56,13 @@ export function DevelopmentTab() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-oid="91rqn5p">
       {/* Заголовок и описание */}
-      <div className="space-y-2">
-        <h3 className="text-lg font-semibold">{t("dialogs.userSettings.tabs.development", "Разработка")}</h3>
-        <p className="text-sm text-muted-foreground">
+      <div className="space-y-2" data-oid="wedwc21">
+        <h3 className="text-lg font-semibold" data-oid="qv7n31a">
+          {t("dialogs.userSettings.tabs.development", "Разработка")}
+        </h3>
+        <p className="text-sm text-muted-foreground" data-oid="1447syw">
           {t(
             "dialogs.userSettings.developmentDescription",
             "Настройки для инструментов разработки и аналитики. Доступно только в режиме разработки.",
@@ -68,13 +70,15 @@ export function DevelopmentTab() {
         </p>
       </div>
 
-      <Separator />
+      <Separator data-oid="38-m9tu" />
 
       {/* Codecov Token */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">{t("dialogs.userSettings.codecovToken", "Codecov Token")}</Label>
-          <p className="text-xs text-muted-foreground">
+      <div className="space-y-4" data-oid="oml-1mp">
+        <div className="space-y-2" data-oid="oux:fcs">
+          <Label className="text-sm font-medium" data-oid="qm6dgxk">
+            {t("dialogs.userSettings.codecovToken", "Codecov Token")}
+          </Label>
+          <p className="text-xs text-muted-foreground" data-oid="y04sx.g">
             {t(
               "dialogs.userSettings.codecovDescription",
               "Токен для отправки отчетов покрытия тестами в Codecov. Используется в CI/CD pipeline.",
@@ -94,18 +98,19 @@ export function DevelopmentTab() {
               url: "https://app.codecov.io/settings",
             },
           ]}
+          data-oid="ln-8oj."
         />
       </div>
 
-      <Separator />
+      <Separator data-oid="i2q_8ur" />
 
       {/* Tauri Analytics */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">
+      <div className="space-y-4" data-oid="n97zfpv">
+        <div className="space-y-2" data-oid="g3y-0v_">
+          <Label className="text-sm font-medium" data-oid="1gm:762">
             {t("dialogs.userSettings.tauriAnalyticsKey", "Tauri Analytics Key")}
           </Label>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground" data-oid="_rb9q6r">
             {t(
               "dialogs.userSettings.tauriAnalyticsDescription",
               "Ключ для аналитики Tauri приложения. Используется для сбора метрик производительности.",
@@ -125,15 +130,19 @@ export function DevelopmentTab() {
               url: "https://tauri.app/v1/guides/features/analytics/",
             },
           ]}
+          data-oid="blpwlwb"
         />
       </div>
 
       {/* Информация о разработке */}
-      <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md">
-        <h4 className="text-sm font-medium mb-2 text-amber-800 dark:text-amber-200">
+      <div
+        className="mt-6 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md"
+        data-oid="mo32-uo"
+      >
+        <h4 className="text-sm font-medium mb-2 text-amber-800 dark:text-amber-200" data-oid="ujuxtry">
           {t("dialogs.userSettings.devModeNote", "Режим разработки")}
         </h4>
-        <p className="text-xs text-amber-700 dark:text-amber-300">
+        <p className="text-xs text-amber-700 dark:text-amber-300" data-oid="0czuvm6">
           {t(
             "dialogs.userSettings.devModeNoteText",
             "Эта вкладка видна только в режиме разработки. В production сборке настройки разработки недоступны.",

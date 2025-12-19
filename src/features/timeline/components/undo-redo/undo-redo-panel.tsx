@@ -124,26 +124,26 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
 
   if (compact) {
     return (
-      <div className="flex items-center gap-1">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" onClick={undo} disabled={!canUndo}>
-                <Undo className="h-4 w-4" />
+      <div className="flex items-center gap-1" data-oid="falrw89">
+        <TooltipProvider data-oid="mg2e--k">
+          <Tooltip data-oid="qrv7smw">
+            <TooltipTrigger asChild data-oid="pzstbpc">
+              <Button variant="ghost" size="sm" onClick={undo} disabled={!canUndo} data-oid="at2wb-1">
+                <Undo className="h-4 w-4" data-oid="wz7g8a1" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent data-oid="k_trzwc">
               {canUndo ? `Отменить: ${undoableActions[0]?.description}` : "Нечего отменять"}
             </TooltipContent>
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" onClick={redo} disabled={!canRedo}>
-                <Redo className="h-4 w-4" />
+          <Tooltip data-oid="p3jf:zv">
+            <TooltipTrigger asChild data-oid="t1gvcu3">
+              <Button variant="ghost" size="sm" onClick={redo} disabled={!canRedo} data-oid="nadbj4_">
+                <Redo className="h-4 w-4" data-oid="ilf31z8" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent data-oid="uge0n32">
               {canRedo ? `Повторить: ${redoableActions[0]?.description}` : "Нечего повторять"}
             </TooltipContent>
           </Tooltip>
@@ -153,46 +153,47 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <History className="h-5 w-5" />
+    <Card className="w-full" data-oid="5zoq60x">
+      <CardHeader data-oid="ek:_lbk">
+        <div className="flex items-center justify-between" data-oid="wvv3kg6">
+          <CardTitle className="flex items-center gap-2" data-oid="pp6h4n7">
+            <History className="h-5 w-5" data-oid="2e:6nyo" />
             История действий
           </CardTitle>
           {showStats && (
-            <Badge variant="secondary">
+            <Badge variant="secondary" data-oid="br.232.">
               {historyStats.historySize}/{historyStats.maxHistorySize}
             </Badge>
           )}
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent data-oid="7r29kbs">
+        <div className="space-y-4" data-oid=":oqgim.">
           {/* Основные кнопки */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2" data-oid="8i2z0xz">
+            <div className="flex items-center gap-1" data-oid="g4jtedd">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={undo}
                 disabled={!canUndo}
                 className="flex items-center gap-2"
+                data-oid="ggqarbl"
               >
-                <Undo className="h-4 w-4" />
+                <Undo className="h-4 w-4" data-oid="cka..qx" />
                 Отменить
               </Button>
 
               {showDropdowns && undoableActions.length > 1 && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" disabled={!canUndo}>
-                      <ChevronDown className="h-4 w-4" />
+                <DropdownMenu data-oid="ptqbnzi">
+                  <DropdownMenuTrigger asChild data-oid="t0mgmrd">
+                    <Button variant="outline" size="sm" disabled={!canUndo} data-oid="lhrucl7">
+                      <ChevronDown className="h-4 w-4" data-oid="8y1i5rf" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-80">
-                    <DropdownMenuLabel>Отменить действия</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                  <DropdownMenuContent align="start" className="w-80" data-oid="7.hnt.8">
+                    <DropdownMenuLabel data-oid="r_6dv8p">Отменить действия</DropdownMenuLabel>
+                    <DropdownMenuSeparator data-oid="mec7v7v" />
                     {undoableActions.slice(0, 10).map((action, index) => {
                       const Icon = ACTION_ICONS[action.type]
                       return (
@@ -200,16 +201,19 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
                           key={action.id}
                           onClick={() => handleUndoMultiple(index + 1)}
                           className="flex items-center gap-2"
+                          data-oid="5:wiynv"
                         >
-                          <Icon className="h-4 w-4" />
-                          <div className="flex-1">
-                            <div className="font-medium">{action.description}</div>
-                            <div className="text-xs text-muted-foreground">
+                          <Icon className="h-4 w-4" data-oid="h8vipo." />
+                          <div className="flex-1" data-oid="l.b7_hz">
+                            <div className="font-medium" data-oid="bx.5jbn">
+                              {action.description}
+                            </div>
+                            <div className="text-xs text-muted-foreground" data-oid="fs3i2fp">
                               {new Date(action.timestamp).toLocaleTimeString()}
                             </div>
                           </div>
                           {action.groupId && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs" data-oid="zhak.sc">
                               Группа
                             </Badge>
                           )}
@@ -221,28 +225,29 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
               )}
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1" data-oid="8tu-a-6">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={redo}
                 disabled={!canRedo}
                 className="flex items-center gap-2"
+                data-oid="ekqxj7i"
               >
-                <Redo className="h-4 w-4" />
+                <Redo className="h-4 w-4" data-oid="03eu:za" />
                 Повторить
               </Button>
 
               {showDropdowns && redoableActions.length > 1 && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" disabled={!canRedo}>
-                      <ChevronDown className="h-4 w-4" />
+                <DropdownMenu data-oid="gd:0_:e">
+                  <DropdownMenuTrigger asChild data-oid="wyrd:_7">
+                    <Button variant="outline" size="sm" disabled={!canRedo} data-oid="89vkrqx">
+                      <ChevronDown className="h-4 w-4" data-oid="7ed60yf" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-80">
-                    <DropdownMenuLabel>Повторить действия</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
+                  <DropdownMenuContent align="start" className="w-80" data-oid="3g_g.xh">
+                    <DropdownMenuLabel data-oid="y:qmfkl">Повторить действия</DropdownMenuLabel>
+                    <DropdownMenuSeparator data-oid="fv99dz6" />
                     {redoableActions.slice(0, 10).map((action, index) => {
                       const Icon = ACTION_ICONS[action.type]
                       return (
@@ -250,16 +255,19 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
                           key={action.id}
                           onClick={() => handleRedoMultiple(index + 1)}
                           className="flex items-center gap-2"
+                          data-oid="saja-vs"
                         >
-                          <Icon className="h-4 w-4" />
-                          <div className="flex-1">
-                            <div className="font-medium">{action.description}</div>
-                            <div className="text-xs text-muted-foreground">
+                          <Icon className="h-4 w-4" data-oid="::iec26" />
+                          <div className="flex-1" data-oid="v8c-f75">
+                            <div className="font-medium" data-oid="0p8nt2a">
+                              {action.description}
+                            </div>
+                            <div className="text-xs text-muted-foreground" data-oid="vphm-63">
                               {new Date(action.timestamp).toLocaleTimeString()}
                             </div>
                           </div>
                           {action.groupId && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs" data-oid="1__w4p5">
                               Группа
                             </Badge>
                           )}
@@ -275,34 +283,46 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
           {/* Статистика */}
           {showStats && (
             <>
-              <Separator />
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span>Всего действий:</span>
-                    <span className="font-medium">{historyStats.totalActions}</span>
+              <Separator data-oid="8k0bwdo" />
+              <div className="grid grid-cols-2 gap-4 text-sm" data-oid="36phagg">
+                <div className="space-y-1" data-oid="h.fz2l-">
+                  <div className="flex justify-between" data-oid="h713jzb">
+                    <span data-oid="jomm7d3">Всего действий:</span>
+                    <span className="font-medium" data-oid="uy8vn0i">
+                      {historyStats.totalActions}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Отмен:</span>
-                    <span className="font-medium">{historyStats.undoCount}</span>
+                  <div className="flex justify-between" data-oid="6upb9ry">
+                    <span data-oid="spd7ro_">Отмен:</span>
+                    <span className="font-medium" data-oid="uivde1r">
+                      {historyStats.undoCount}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Повторов:</span>
-                    <span className="font-medium">{historyStats.redoCount}</span>
+                  <div className="flex justify-between" data-oid="e56uy85">
+                    <span data-oid="dgjh3ik">Повторов:</span>
+                    <span className="font-medium" data-oid="dm176ke">
+                      {historyStats.redoCount}
+                    </span>
                   </div>
                 </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span>В истории:</span>
-                    <span className="font-medium">{historyStats.historySize}</span>
+                <div className="space-y-1" data-oid="e941ck.">
+                  <div className="flex justify-between" data-oid="6.:ggad">
+                    <span data-oid="dzij09-">В истории:</span>
+                    <span className="font-medium" data-oid="th5xgy3">
+                      {historyStats.historySize}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Макс. размер:</span>
-                    <span className="font-medium">{historyStats.maxHistorySize}</span>
+                  <div className="flex justify-between" data-oid="w4z_b6j">
+                    <span data-oid="i0u8diz">Макс. размер:</span>
+                    <span className="font-medium" data-oid="7m6iti4">
+                      {historyStats.maxHistorySize}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Текущий индекс:</span>
-                    <span className="font-medium">{historyStats.currentIndex}</span>
+                  <div className="flex justify-between" data-oid="cps1wyj">
+                    <span data-oid="mq0jm.6">Текущий индекс:</span>
+                    <span className="font-medium" data-oid="s:0_4hf">
+                      {historyStats.currentIndex}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -310,24 +330,26 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
           )}
 
           {/* Управление */}
-          <Separator />
-          <div className="flex items-center gap-2">
-            <Dialog open={isHistoryDialogOpen} onOpenChange={setIsHistoryDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <History className="h-4 w-4 mr-2" />
+          <Separator data-oid="taehlq6" />
+          <div className="flex items-center gap-2" data-oid="6-o3fhj">
+            <Dialog open={isHistoryDialogOpen} onOpenChange={setIsHistoryDialogOpen} data-oid="1yox7gw">
+              <DialogTrigger asChild data-oid="4l85yyv">
+                <Button variant="outline" size="sm" data-oid="q4vwkif">
+                  <History className="h-4 w-4 mr-2" data-oid="oqphrvh" />
                   История
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>История действий</DialogTitle>
+              <DialogContent className="max-w-2xl" data-oid=".b:xyjm">
+                <DialogHeader data-oid="cyxl__n">
+                  <DialogTitle data-oid="mcsntj0">История действий</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="maxHistorySize">Максимальный размер истории</Label>
-                      <div className="flex gap-2 mt-1">
+                <div className="space-y-4" data-oid="2_job6f">
+                  <div className="grid grid-cols-2 gap-4" data-oid="6ys.ngn">
+                    <div data-oid="uahuyo5">
+                      <Label htmlFor="maxHistorySize" data-oid="14ntly1">
+                        Максимальный размер истории
+                      </Label>
+                      <div className="flex gap-2 mt-1" data-oid="h6_2sk.">
                         <Input
                           id="maxHistorySize"
                           type="number"
@@ -335,48 +357,57 @@ export function UndoRedoPanel({ compact = false, showDropdowns = true, showStats
                           onChange={(e) => setMaxHistorySizeState(Number(e.target.value))}
                           min={10}
                           max={1000}
+                          data-oid="g9usavm"
                         />
-                        <Button onClick={handleSetMaxHistorySize} size="sm">
+
+                        <Button onClick={handleSetMaxHistorySize} size="sm" data-oid="q8phl:l">
                           Применить
                         </Button>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={optimizeHistory} size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
+                  <div className="flex gap-2" data-oid="41bx4p.">
+                    <Button variant="outline" onClick={optimizeHistory} size="sm" data-oid="j8oxmz.">
+                      <Settings className="h-4 w-4 mr-2" data-oid="4cgb0et" />
                       Оптимизировать
                     </Button>
-                    <Button variant="destructive" onClick={clearHistory} size="sm">
-                      <Trash2 className="h-4 w-4 mr-2" />
+                    <Button variant="destructive" onClick={clearHistory} size="sm" data-oid="g9tzm9p">
+                      <Trash2 className="h-4 w-4 mr-2" data-oid="ym0gs6h" />
                       Очистить историю
                     </Button>
                   </div>
 
-                  <div className="max-h-96 overflow-y-auto space-y-2">
+                  <div className="max-h-96 overflow-y-auto space-y-2" data-oid="zan_a.8">
                     {undoableActions.map((action, _index) => {
                       const Icon = ACTION_ICONS[action.type]
                       return (
-                        <Card key={action.id} className="p-3">
-                          <div className="flex items-center gap-3">
-                            <Icon className="h-4 w-4 text-muted-foreground" />
-                            <div className="flex-1">
-                              <div className="font-medium">{action.description}</div>
-                              <div className="text-xs text-muted-foreground flex items-center gap-4">
-                                <span>{ACTION_LABELS[action.type]}</span>
-                                <span>{action.timestamp.toLocaleString()}</span>
+                        <Card key={action.id} className="p-3" data-oid="4z25uyd">
+                          <div className="flex items-center gap-3" data-oid="d3k34zk">
+                            <Icon className="h-4 w-4 text-muted-foreground" data-oid=":6g8_-k" />
+                            <div className="flex-1" data-oid="ri_jdfd">
+                              <div className="font-medium" data-oid="ux8jbp3">
+                                {action.description}
+                              </div>
+                              <div className="text-xs text-muted-foreground flex items-center gap-4" data-oid="jyotlhe">
+                                <span data-oid="i2g-8a-">{ACTION_LABELS[action.type]}</span>
+                                <span data-oid="n8:4_l6">{action.timestamp.toLocaleString()}</span>
                                 {action.priority && (
                                   <Badge
                                     variant={action.priority === "high" ? "default" : "secondary"}
                                     className="text-xs"
+                                    data-oid="h0chfcj"
                                   >
                                     {action.priority}
                                   </Badge>
                                 )}
                               </div>
                             </div>
-                            {action.groupId && <Badge variant="outline">Группа</Badge>}
+                            {action.groupId && (
+                              <Badge variant="outline" data-oid="k-qzhl2">
+                                Группа
+                              </Badge>
+                            )}
                           </div>
                         </Card>
                       )

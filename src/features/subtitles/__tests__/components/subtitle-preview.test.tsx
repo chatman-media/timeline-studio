@@ -10,19 +10,19 @@ import type { SubtitleStyleTemplate } from "../../types/subtitles"
 
 // Мокаем дополнительные зависимости
 vi.mock("@/features/browser", () => ({
-  ApplyButton: () => <button>Применить</button>,
+  ApplyButton: () => <button data-oid="nbo5ds9">Применить</button>,
 }))
 
 vi.mock("@/features/browser/components/layout/apply-button", () => ({
-  ApplyButton: () => <button>Применить</button>,
+  ApplyButton: () => <button data-oid="wehh8-u">Применить</button>,
 }))
 
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({
-  AddMediaButton: () => <button>Добавить</button>,
+  AddMediaButton: () => <button data-oid="3oby.px">Добавить</button>,
 }))
 
 vi.mock("@/features/browser/components/layout/favorite-button", () => ({
-  FavoriteButton: () => <button>Избранное</button>,
+  FavoriteButton: () => <button data-oid="h3llir6">Избранное</button>,
 }))
 
 vi.mock("@/domains/video-editing", async (importOriginal) => {
@@ -73,12 +73,12 @@ describe("SubtitlePreview", () => {
   }
 
   it("должен рендериться без ошибок", () => {
-    render(<SubtitlePreview {...defaultProps} />)
+    render(<SubtitlePreview {...defaultProps} data-oid="e6nokog" />)
     expect(screen.getByText("Базовый белый")).toBeInTheDocument()
   })
 
   it("должен отображать превью текста со стилями", () => {
-    render(<SubtitlePreview {...defaultProps} />)
+    render(<SubtitlePreview {...defaultProps} data-oid="-2jbg2w" />)
 
     // Ищем элемент с примером текста
     const preview = screen.getByText("Timeline Studio")
@@ -91,12 +91,12 @@ describe("SubtitlePreview", () => {
   })
 
   it("должен отображать название субтитра", () => {
-    render(<SubtitlePreview {...defaultProps} />)
+    render(<SubtitlePreview {...defaultProps} data-oid="rjeol:7" />)
     expect(screen.getByText("Базовый белый")).toBeInTheDocument()
   })
 
   it("должен отображать индикатор категории", () => {
-    render(<SubtitlePreview {...defaultProps} />)
+    render(<SubtitlePreview {...defaultProps} data-oid="_muee9r" />)
     expect(screen.getByText("BAS")).toBeInTheDocument()
   })
 
@@ -109,13 +109,13 @@ describe("SubtitlePreview", () => {
       },
     }
 
-    render(<SubtitlePreview {...defaultProps} style={animatedSubtitle} />)
+    render(<SubtitlePreview {...defaultProps} style={animatedSubtitle} data-oid="_j_j.2g" />)
     expect(screen.getByText("ANI")).toBeInTheDocument()
   })
 
   it("должен вызывать onClick при клике", () => {
     const onClick = vi.fn()
-    render(<SubtitlePreview {...defaultProps} onClick={onClick} />)
+    render(<SubtitlePreview {...defaultProps} onClick={onClick} data-oid="g4ai_z_" />)
 
     // Кликаем на контейнер превью
     const previewElement = screen.getByText("Timeline Studio").closest(".cursor-pointer")
@@ -136,7 +136,7 @@ describe("SubtitlePreview", () => {
       },
     }
 
-    render(<SubtitlePreview {...defaultProps} style={gradientSubtitle} />)
+    render(<SubtitlePreview {...defaultProps} style={gradientSubtitle} data-oid="h0f6aob" />)
     const preview = screen.getByText("Timeline Studio")
     const styles = getComputedStyle(preview)
     expect(styles.backgroundImage || styles.background).toContain("linear-gradient")
@@ -151,7 +151,7 @@ describe("SubtitlePreview", () => {
       },
     }
 
-    render(<SubtitlePreview {...defaultProps} style={shadowSubtitle} />)
+    render(<SubtitlePreview {...defaultProps} style={shadowSubtitle} data-oid="2uop.6v" />)
     const preview = screen.getByText("Timeline Studio")
     const styles = getComputedStyle(preview)
     expect(styles.textShadow).toBe("2px 2px 4px rgba(0,0,0,0.8)")
@@ -166,26 +166,26 @@ describe("SubtitlePreview", () => {
       },
     }
 
-    render(<SubtitlePreview {...defaultProps} style={animatedSubtitle} />)
+    render(<SubtitlePreview {...defaultProps} style={animatedSubtitle} data-oid="flbu44l" />)
     const preview = screen.getByText("Timeline Studio")
     const styles = getComputedStyle(preview)
     expect(styles.animation || styles.animationName).toContain("fadeIn")
   })
 
   it("должен корректно отображать размеры превью", () => {
-    render(<SubtitlePreview {...defaultProps} size={120} previewWidth={180} previewHeight={100} />)
+    render(<SubtitlePreview {...defaultProps} size={120} previewWidth={180} previewHeight={100} data-oid="_x5:nc_" />)
 
     const container = screen.getByText("Timeline Studio").closest(".cursor-pointer")
     expect(container).toHaveStyle({ width: "180px", height: "100px" })
   })
 
   it("должен отображать кнопку добавления", () => {
-    render(<SubtitlePreview {...defaultProps} />)
+    render(<SubtitlePreview {...defaultProps} data-oid="xfjzamj" />)
     expect(screen.getByText(/добавить/i)).toBeInTheDocument()
   })
 
   it("должен отображать кнопку избранного", () => {
-    render(<SubtitlePreview {...defaultProps} />)
+    render(<SubtitlePreview {...defaultProps} data-oid="uwxtcd2" />)
     expect(screen.getByText(/избранное/i)).toBeInTheDocument()
   })
 })

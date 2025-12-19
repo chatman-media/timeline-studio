@@ -31,7 +31,7 @@ vi.mock("@/domains/video-editing", async (importOriginal) => {
 
 vi.mock("@/features/browser/components/layout/apply-button", () => ({
   ApplyButton: vi.fn(({ resource, size, type }) => (
-    <div data-testid="apply-button" data-resource-id={resource.id} data-size={size} data-type={type}>
+    <div data-testid="apply-button" data-resource-id={resource.id} data-size={size} data-type={type} data-oid="y59v7lu">
       Apply
     </div>
   )),
@@ -39,7 +39,13 @@ vi.mock("@/features/browser/components/layout/apply-button", () => ({
 
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({
   AddMediaButton: vi.fn(({ resource, size, type }) => (
-    <div data-testid="add-media-button" data-resource-id={resource.id} data-size={size} data-type={type}>
+    <div
+      data-testid="add-media-button"
+      data-resource-id={resource.id}
+      data-size={size}
+      data-type={type}
+      data-oid="5jfsc_x"
+    >
       Add
     </div>
   )),
@@ -47,7 +53,7 @@ vi.mock("@/features/browser/components/layout/add-media-button", () => ({
 
 vi.mock("@/features/browser/components/layout/favorite-button", () => ({
   FavoriteButton: vi.fn(({ file, size, type }) => (
-    <div data-testid="favorite-button" data-file-id={file.id} data-size={size} data-type={type}>
+    <div data-testid="favorite-button" data-file-id={file.id} data-size={size} data-type={type} data-oid="5lwhq-_">
       Favorite
     </div>
   )),
@@ -83,7 +89,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should render template preview with thumbnail", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="ik9.dv3" />)
 
     const thumbnail = screen.getByAltText("Тестовый шаблон")
     expect(thumbnail).toBeInTheDocument()
@@ -98,20 +104,20 @@ describe("StyleTemplatePreview", () => {
   it("should render placeholder when no thumbnail", () => {
     const templateWithoutThumbnail = { ...mockTemplate, thumbnail: undefined }
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} template={templateWithoutThumbnail} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} template={templateWithoutThumbnail} data-oid="0xd03bn" />)
 
     expect(screen.getByText(/styleTemplates.categories.intro/)).toBeInTheDocument()
   })
 
   it("should show template name", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="4bvszr_" />)
 
     expect(screen.getByText("Тестовый шаблон")).toBeInTheDocument()
   })
 
   it("should show play button on hover when preview video exists", async () => {
     const user = userEvent.setup()
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="j4fqc_b" />)
 
     const previewContainer = screen.getByAltText("Тестовый шаблон").parentElement
 
@@ -131,7 +137,7 @@ describe("StyleTemplatePreview", () => {
     const user = userEvent.setup()
     const templateWithoutVideo = { ...mockTemplate, previewVideo: undefined }
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} template={templateWithoutVideo} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} template={templateWithoutVideo} data-oid="tobw:sm" />)
 
     const previewContainer = screen.getByAltText("Тестовый шаблон").parentElement
     await user.hover(previewContainer!)
@@ -141,7 +147,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should show style indicator", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="xr7-:_s" />)
 
     // Style indicator shows first 3 letters uppercase
     // There are two indicators with "STY" - both style and category
@@ -151,7 +157,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should show category indicator", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="pccsw4w" />)
 
     // Category indicator shows first 3 letters uppercase
     // There should be two indicators - style (top) and category (bottom)
@@ -160,7 +166,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should render favorite button", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="c2jf9tr" />)
 
     const favoriteButton = screen.getByTestId("favorite-button")
     expect(favoriteButton).toBeInTheDocument()
@@ -169,7 +175,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should render apply button", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="u771dy_" />)
 
     const applyButton = screen.getByTestId("apply-button")
     expect(applyButton).toBeInTheDocument()
@@ -178,7 +184,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should render add media button", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="mh0m-1a" />)
 
     const addButton = screen.getByTestId("add-media-button")
     expect(addButton).toBeInTheDocument()
@@ -187,7 +193,7 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should show add button with opacity when not added", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="7en4.pp" />)
 
     const addButtonContainer = screen.getByTestId("add-media-button").parentElement
     expect(addButtonContainer).toHaveClass("opacity-0")
@@ -196,7 +202,7 @@ describe("StyleTemplatePreview", () => {
   it("should show add button with full opacity when added", () => {
     mockIsStyleTemplateAdded.mockReturnValue(true)
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="nx8-ali" />)
 
     const addButtonContainer = screen.getByTestId("add-media-button").parentElement
     expect(addButtonContainer).toHaveClass("opacity-100")
@@ -206,7 +212,7 @@ describe("StyleTemplatePreview", () => {
     const user = userEvent.setup()
     const onSelectMock = vi.fn()
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} onSelect={onSelectMock} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} onSelect={onSelectMock} data-oid="f4nw9en" />)
 
     const previewContainer = screen.getByAltText("Тестовый шаблон").parentElement
     await user.click(previewContainer!)
@@ -221,7 +227,7 @@ describe("StyleTemplatePreview", () => {
     const onSelectMock = vi.fn()
     mockIsStyleTemplateAdded.mockReturnValue(true)
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} onSelect={onSelectMock} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} onSelect={onSelectMock} data-oid="azhl74u" />)
 
     const previewContainer = screen.getByAltText("Тестовый шаблон").parentElement
     await user.click(previewContainer!)
@@ -235,7 +241,7 @@ describe("StyleTemplatePreview", () => {
     const user = userEvent.setup()
     const onSelectMock = vi.fn()
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} onSelect={onSelectMock} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} onSelect={onSelectMock} data-oid="e2j85v9" />)
 
     const previewContainer = screen.getByAltText("Тестовый шаблон").parentElement
 
@@ -257,7 +263,9 @@ describe("StyleTemplatePreview", () => {
   })
 
   it("should use custom preview dimensions", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} previewWidth={300} previewHeight={169} />)
+    renderWithBrowser(
+      <StyleTemplatePreview {...defaultProps} previewWidth={300} previewHeight={169} data-oid="phvmpoc" />,
+    )
 
     const thumbnail = screen.getByAltText("Тестовый шаблон")
     expect(thumbnail).toHaveStyle({
@@ -268,7 +276,7 @@ describe("StyleTemplatePreview", () => {
 
   it("should handle mouse enter and leave", async () => {
     const user = userEvent.setup()
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="wiu4v4-" />)
 
     const previewContainer = screen.getByAltText("Тестовый шаблон").parentElement
 
@@ -296,7 +304,7 @@ describe("StyleTemplatePreview", () => {
 
     categories.forEach((category) => {
       const { unmount } = renderWithBrowser(
-        <StyleTemplatePreview {...defaultProps} template={{ ...mockTemplate, category }} />,
+        <StyleTemplatePreview {...defaultProps} template={{ ...mockTemplate, category }} data-oid="tcu9nog" />,
       )
 
       // Category indicator should show "STY" as translation key prefix
@@ -311,7 +319,7 @@ describe("StyleTemplatePreview", () => {
 
     styles.forEach((style) => {
       const { unmount } = renderWithBrowser(
-        <StyleTemplatePreview {...defaultProps} template={{ ...mockTemplate, style }} />,
+        <StyleTemplatePreview {...defaultProps} template={{ ...mockTemplate, style }} data-oid="ps-i3bt" />,
       )
 
       // Style indicator should show "STY" as translation key prefix
@@ -329,7 +337,7 @@ describe("StyleTemplatePreview", () => {
       ready: true,
     } as any)
 
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} />)
+    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="w8rogj2" />)
 
     // Should show English name
     expect(screen.getByText("Test Template")).toBeInTheDocument()

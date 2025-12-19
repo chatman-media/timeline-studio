@@ -45,29 +45,30 @@ export function EffectIndicators({ effect, size = "sm" }: EffectIndicatorsProps)
   }
 
   return (
-    <div className={`flex items-center ${gap}`}>
+    <div className={`flex items-center ${gap}`} data-oid="i.kdal4">
       {/* Индикатор категории */}
       <div
         className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`}
         title={t(`effects.categories.${effect.category}`)}
+        data-oid="8kqv90s"
       >
         {getCategoryAbbreviation(effect.category)}
       </div>
 
       {/* Индикаторы тегов - только самые важные */}
       {tags.includes("popular") && (
-        <div className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`}>
-          <span>POP</span>
+        <div className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`} data-oid="s:p3o0x">
+          <span data-oid="j2-d142">POP</span>
         </div>
       )}
       {tags.includes("professional") && (
-        <div className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`}>
-          <span>PRO</span>
+        <div className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`} data-oid="ehorv34">
+          <span data-oid="d:vjkb:">PRO</span>
         </div>
       )}
       {tags.includes("experimental") && (
-        <div className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`}>
-          <span>EXP</span>
+        <div className={`bg-black/70 text-white font-medium ${textSize} ${padding} rounded-xs`} data-oid="f:5e_i_">
+          <span data-oid="t38yh5r">EXP</span>
         </div>
       )}
     </div>

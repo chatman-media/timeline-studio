@@ -153,6 +153,7 @@ export const ImagePreview = memo(function ImagePreview({
       className="group relative h-full shrink-0 cursor-pointer"
       style={{ height: `${size}px`, width: `${calculateWidth().toFixed(0)}px` }}
       onClick={handleImageClick}
+      data-oid="6njq.3e"
     >
       {showFileName && (
         <div
@@ -161,11 +162,15 @@ export const ImagePreview = memo(function ImagePreview({
             fontSize: size > 100 ? "13px" : "11px",
             color: "#fff", // Явно задаем чисто белый цвет для Tauri
           }}
+          data-oid="ffns_jp"
         >
           {file.name}
         </div>
       )}
-      <div className="relative flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
+      <div
+        className="relative flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700"
+        data-oid="nqg28ek"
+      >
         <img
           src={imageUrl || undefined}
           alt={file.name}
@@ -225,6 +230,7 @@ export const ImagePreview = memo(function ImagePreview({
               })
             }
           }}
+          data-oid="lre6gfy"
         />
       </div>
       <div
@@ -232,11 +238,17 @@ export const ImagePreview = memo(function ImagePreview({
         style={{
           color: "#fff", // Явно задаем чисто белый цвет для Tauri
         }}
+        data-oid="xi:p2e0"
       >
-        <Image size={size > 100 ? 16 : 12} />
+        <Image size={size > 100 ? 16 : 12} data-oid="v.u8-79" />
       </div>
-      <FavoriteButton file={file} size={size} type="media" />
-      <AddMediaButton resource={{ id: file.id, type: "media", file } as TimelineResource} size={size} type="media" />
+      <FavoriteButton file={file} size={size} type="media" data-oid="-z00:f6" />
+      <AddMediaButton
+        resource={{ id: file.id, type: "media", file } as TimelineResource}
+        size={size}
+        type="media"
+        data-oid="6nz4v6y"
+      />
     </div>
   )
 })

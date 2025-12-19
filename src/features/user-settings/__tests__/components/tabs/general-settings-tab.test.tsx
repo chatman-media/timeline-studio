@@ -93,37 +93,43 @@ vi.mock("react-i18next", () => ({
 }))
 vi.mock("lucide-react", () => ({
   Database: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="565zaja">
       Database
     </span>
   ),
+
   Folder: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="z54rlyg">
       Folder
     </span>
   ),
+
   X: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="pqi-j.0">
       X
     </span>
   ),
+
   ChevronDownIcon: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="5ca1xb0">
       ChevronDown
     </span>
   ),
+
   ChevronUpIcon: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="e6h:pq8">
       ChevronUp
     </span>
   ),
+
   CheckIcon: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="uj-s7iu">
       Check
     </span>
   ),
+
   Save: ({ className }: { className?: string }) => (
-    <span className={className} role="img" aria-hidden="true">
+    <span className={className} role="img" aria-hidden="true" data-oid="1vouks5">
       Save
     </span>
   ),
@@ -164,7 +170,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should render all UI elements correctly", () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="x67:krs" />)
 
     expect(screen.getByText("dialogs.userSettings.interfaceLanguage")).toBeInTheDocument()
     expect(screen.getByText("dialogs.userSettings.screenshotsPath")).toBeInTheDocument()
@@ -176,7 +182,7 @@ describe("GeneralSettingsTab", () => {
 
   it("should handle language selection and console log the change", async () => {
     const consoleSpy = vi.spyOn(console, "info")
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="skbxj0s" />)
 
     const selectTrigger = screen.getByRole("combobox")
     act(() => {
@@ -210,7 +216,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should update selectedLanguage state when language is changed", async () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="ggcrm51" />)
 
     const selectTrigger = screen.getByRole("combobox")
     expect(selectTrigger).toHaveTextContent("ru")
@@ -237,24 +243,28 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should handle screenshots path input changes", () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="l4yi.yi" />)
 
     const inputs = screen.getAllByRole("textbox")
     const screenshotsInput = inputs[0]
     act(() => {
-      fireEvent.change(screenshotsInput, { target: { value: "new/screenshots/path" } })
+      fireEvent.change(screenshotsInput, {
+        target: { value: "new/screenshots/path" },
+      })
     })
 
     expect(mockHandleScreenshotsPathChange).toHaveBeenCalledWith("new/screenshots/path")
   })
 
   it("should handle player screenshots path input changes", () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="lo8t7cg" />)
 
     const inputs = screen.getAllByRole("textbox")
     const playerScreenshotsInput = inputs[1]
     act(() => {
-      fireEvent.change(playerScreenshotsInput, { target: { value: "new/player/path" } })
+      fireEvent.change(playerScreenshotsInput, {
+        target: { value: "new/player/path" },
+      })
     })
 
     expect(mockHandlePlayerScreenshotsPathChange).toHaveBeenCalledWith("new/player/path")
@@ -270,7 +280,7 @@ describe("GeneralSettingsTab", () => {
       }),
     )
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="ki6rhd1" />)
 
     const clearButton = screen.getByTitle("dialogs.userSettings.clearPath")
     expect(clearButton).toBeInTheDocument()
@@ -285,7 +295,7 @@ describe("GeneralSettingsTab", () => {
   it("should handle folder selection for screenshots path", async () => {
     mockShowOpenDialog.mockResolvedValue(["selected/folder/path"])
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="98e8o7." />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const screenshotsFolderButton = folderButtons[0]
@@ -313,7 +323,7 @@ describe("GeneralSettingsTab", () => {
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("fallback/path")
     const consoleSpy = vi.spyOn(console, "error")
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="vtj:.pq" />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const screenshotsFolderButton = folderButtons[0]
@@ -346,7 +356,7 @@ describe("GeneralSettingsTab", () => {
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("player/fallback/path")
     const consoleSpy = vi.spyOn(console, "error")
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="hnt2o3i" />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const playerFolderButton = folderButtons[1]
@@ -378,7 +388,7 @@ describe("GeneralSettingsTab", () => {
 
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("  path/with/spaces  ")
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="90slqo_" />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const playerFolderButton = folderButtons[1]
@@ -399,7 +409,7 @@ describe("GeneralSettingsTab", () => {
 
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue(null)
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid=":3vh8i6" />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const playerFolderButton = folderButtons[1]
@@ -418,7 +428,7 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should open cache statistics modal", () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="ezfy3cv" />)
 
     const cacheStatsButton = screen.getByText("Статистика кэша")
     act(() => {
@@ -429,18 +439,20 @@ describe("GeneralSettingsTab", () => {
   })
 
   it("should open cache settings modal", () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="sm8ti5a" />)
 
     const cacheSettingsButton = screen.getByText("Настройки кэша")
     act(() => {
       fireEvent.click(cacheSettingsButton)
     })
 
-    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
+    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-settings", {
+      returnTo: "user-settings",
+    })
   })
 
   it("should render all language options", async () => {
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="3bnv9m-" />)
 
     const selectTrigger = screen.getByRole("combobox")
     act(() => {
@@ -462,7 +474,7 @@ describe("GeneralSettingsTab", () => {
 
     const consoleSpy = vi.spyOn(console, "info")
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid="e:-ab2m" />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const screenshotsFolderButton = folderButtons[0]
@@ -485,7 +497,7 @@ describe("GeneralSettingsTab", () => {
   it("should not update path when folder selection returns empty array", async () => {
     mockShowOpenDialog.mockResolvedValue([])
 
-    render(<GeneralSettingsTab />)
+    render(<GeneralSettingsTab data-oid=":-ex4j5" />)
 
     const folderButtons = screen.getAllByTitle("dialogs.userSettings.selectFolder")
     const screenshotsFolderButton = folderButtons[0]

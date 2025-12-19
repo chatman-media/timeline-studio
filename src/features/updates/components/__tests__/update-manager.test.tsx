@@ -26,23 +26,29 @@ vi.mock("../../hooks/use-update-manager", () => ({
 vi.mock("framer-motion", () => ({
   AnimatePresence: ({ children }: any) => children,
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    div: ({ children, ...props }: any) => (
+      <div {...props} data-oid="zuak2g_">
+        {children}
+      </div>
+    ),
   },
 }))
 
 // Мокаем UpdateNotification
 vi.mock("../update-notification", () => ({
   UpdateNotification: ({ onClose, showProgress }: any) => (
-    <div data-testid="update-notification">
-      <button onClick={onClose}>Закрыть</button>
-      {showProgress && <div>Прогресс</div>}
+    <div data-testid="update-notification" data-oid="ha2kp59">
+      <button onClick={onClose} data-oid="xz5j417">
+        Закрыть
+      </button>
+      {showProgress && <div data-oid=":j-an8_">Прогресс</div>}
     </div>
   ),
 }))
 
 describe("UpdateManager", () => {
   it("рендерится без ошибок", () => {
-    render(<UpdateManager />)
+    render(<UpdateManager data-oid="ak90y:v" />)
     // Компонент должен отрендериться, но не показывать уведомление
     expect(screen.queryByTestId("update-notification")).not.toBeInTheDocument()
   })
@@ -59,7 +65,7 @@ describe("UpdateManager", () => {
       enableAutoCheck: vi.fn(),
     } as any)
 
-    render(<UpdateManager />)
+    render(<UpdateManager data-oid="k0_.qv:" />)
 
     await waitFor(() => {
       expect(screen.getByTestId("update-notification")).toBeInTheDocument()
@@ -67,7 +73,7 @@ describe("UpdateManager", () => {
   })
 
   it("применяет правильные классы позиционирования", () => {
-    const { container } = render(<UpdateManager position="bottom-left" />)
+    const { container } = render(<UpdateManager position="bottom-left" data-oid="f08y-i6" />)
     const positionDiv = container.firstChild as HTMLElement
     expect(positionDiv.className).toContain("bottom-4 left-4")
   })
@@ -86,7 +92,7 @@ describe("UpdateManager", () => {
       enableAutoCheck: vi.fn(),
     } as any)
 
-    const { rerender } = render(<UpdateManager autoHideDelay={1000} />)
+    const { rerender } = render(<UpdateManager autoHideDelay={1000} data-oid="3ggymi-" />)
 
     expect(screen.getByTestId("update-notification")).toBeInTheDocument()
 
@@ -94,7 +100,7 @@ describe("UpdateManager", () => {
       vi.advanceTimersByTime(1100)
     })
 
-    rerender(<UpdateManager autoHideDelay={1000} />)
+    rerender(<UpdateManager autoHideDelay={1000} data-oid="z6z.wri" />)
 
     expect(screen.queryByTestId("update-notification")).not.toBeInTheDocument()
 
@@ -113,7 +119,7 @@ describe("UpdateManager", () => {
       enableAutoCheck: vi.fn(),
     } as any)
 
-    render(<UpdateManager showProgress={true} />)
+    render(<UpdateManager showProgress={true} data-oid="yk7r8jg" />)
 
     await waitFor(() => {
       expect(screen.getByText("Прогресс")).toBeInTheDocument()
@@ -133,7 +139,7 @@ describe("UpdateManager", () => {
       enableAutoCheck,
     } as any)
 
-    render(<UpdateManager />)
+    render(<UpdateManager data-oid="_d17ply" />)
 
     expect(enableAutoCheck).toHaveBeenCalledWith(60)
   })
@@ -141,7 +147,7 @@ describe("UpdateManager", () => {
 
 describe("InlineUpdateManager", () => {
   it("не показывается когда нет обновлений", () => {
-    const { container } = render(<InlineUpdateManager />)
+    const { container } = render(<InlineUpdateManager data-oid="eh-grqb" />)
     expect(container.firstChild).toBeNull()
   })
 
@@ -156,7 +162,7 @@ describe("InlineUpdateManager", () => {
       isError: false,
     } as any)
 
-    render(<InlineUpdateManager />)
+    render(<InlineUpdateManager data-oid="gp_4t1p" />)
 
     expect(screen.getByTestId("update-notification")).toBeInTheDocument()
   })
@@ -172,7 +178,7 @@ describe("InlineUpdateManager", () => {
       isError: false,
     } as any)
 
-    const { container } = render(<InlineUpdateManager className="custom-class" />)
+    const { container } = render(<InlineUpdateManager className="custom-class" data-oid=":it_mqw" />)
 
     const wrapper = container.firstChild as HTMLElement
     expect(wrapper.className).toContain("custom-class")

@@ -177,7 +177,9 @@ describe("useProjectTemplate", () => {
         result.current.filterTemplates({ category: "youtube" })
       })
 
-      expect(projectTemplateManager.getFilteredTemplates).toHaveBeenCalledWith({ category: "youtube" })
+      expect(projectTemplateManager.getFilteredTemplates).toHaveBeenCalledWith({
+        category: "youtube",
+      })
     })
 
     it("should search templates", () => {
@@ -305,7 +307,14 @@ describe("useProjectTemplate", () => {
       vi.spyOn(projectTemplateManager, "getTemplateById").mockReturnValue(mockTemplates[0])
       vi.spyOn(templateValidator, "validate").mockReturnValue({
         valid: false,
-        errors: [{ field: "settings", message: "Invalid settings", severity: "error" as const }],
+        errors: [
+          {
+            field: "settings",
+            message: "Invalid settings",
+            severity: "error" as const,
+          },
+        ],
+
         warnings: [],
       })
 
@@ -349,7 +358,14 @@ describe("useProjectTemplate", () => {
     it("should not add invalid custom template", () => {
       vi.spyOn(templateValidator, "validate").mockReturnValue({
         valid: false,
-        errors: [{ field: "settings", message: "Invalid settings", severity: "error" as const }],
+        errors: [
+          {
+            field: "settings",
+            message: "Invalid settings",
+            severity: "error" as const,
+          },
+        ],
+
         warnings: [],
       })
 

@@ -116,7 +116,9 @@ describe("ShortcutsProvider", () => {
     vi.restoreAllMocks()
   })
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => <ShortcutsProvider>{children}</ShortcutsProvider>
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <ShortcutsProvider data-oid="8.e71hw">{children}</ShortcutsProvider>
+  )
 
   describe("initialization", () => {
     it("должен инициализировать провайдер", () => {
@@ -448,7 +450,9 @@ describe("ShortcutsProvider", () => {
     })
 
     it("должен вычислять общее использование", () => {
-      const { result: statsResult } = renderHook(() => useShortcutStats(), { wrapper })
+      const { result: statsResult } = renderHook(() => useShortcutStats(), {
+        wrapper,
+      })
 
       // Проверяем начальное значение
       expect(statsResult.current.totalUsage).toBe(0)

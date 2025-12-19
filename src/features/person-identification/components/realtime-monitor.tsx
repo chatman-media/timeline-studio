@@ -231,110 +231,154 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
   }, [isProcessing])
 
   return (
-    <Card className={cn("w-full", className)}>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Camera className="h-5 w-5" />
+    <Card className={cn("w-full", className)} data-oid="ge3iroz">
+      <CardHeader data-oid="m9mxgb5">
+        <div className="flex items-center justify-between" data-oid=".eno9_a">
+          <div data-oid="21zisv2">
+            <CardTitle className="flex items-center gap-2" data-oid="ckp_0oa">
+              <Camera className="h-5 w-5" data-oid="hwp0w3." />
               Real-time Face Recognition
             </CardTitle>
-            <CardDescription>Продвинутое распознавание лиц в реальном времени</CardDescription>
+            <CardDescription data-oid="yfet_sr">Продвинутое распознавание лиц в реальном времени</CardDescription>
           </div>
-          <Button onClick={toggleProcessing} variant={isProcessing ? "destructive" : "default"} size="sm">
+          <Button
+            onClick={toggleProcessing}
+            variant={isProcessing ? "destructive" : "default"}
+            size="sm"
+            data-oid="9a5kt8q"
+          >
             {isProcessing ? (
               <>
-                <Pause className="h-4 w-4 mr-2" />
+                <Pause className="h-4 w-4 mr-2" data-oid="ovgqqdd" />
                 Остановить
               </>
             ) : (
               <>
-                <Play className="h-4 w-4 mr-2" />
+                <Play className="h-4 w-4 mr-2" data-oid="lxkxy33" />
                 Запустить
               </>
             )}
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6" data-oid="jmau94m">
         {/* Видео и Canvas */}
-        <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-          <video ref={videoRef} autoPlay playsInline muted className="absolute inset-0 w-full h-full object-contain" />
-          <canvas ref={canvasRef} width={1280} height={720} className="absolute inset-0 w-full h-full object-contain" />
+        <div className="relative aspect-video bg-black rounded-lg overflow-hidden" data-oid="qlo0od:">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="absolute inset-0 w-full h-full object-contain"
+            data-oid="ur375h8"
+          />
+
+          <canvas
+            ref={canvasRef}
+            width={1280}
+            height={720}
+            className="absolute inset-0 w-full h-full object-contain"
+            data-oid="p.3rqk_"
+          />
 
           {!videoStream && (
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              <Camera className="h-12 w-12 opacity-20" />
+            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground" data-oid="hguln::">
+              <Camera className="h-12 w-12 opacity-20" data-oid="nsdihbn" />
             </div>
           )}
         </div>
 
         {/* Статус и настройки */}
-        <Tabs defaultValue="status" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="status">Статус</TabsTrigger>
-            <TabsTrigger value="faces">Лица</TabsTrigger>
-            <TabsTrigger value="settings">Настройки</TabsTrigger>
+        <Tabs defaultValue="status" className="w-full" data-oid="n.iv8jo">
+          <TabsList className="grid w-full grid-cols-3" data-oid=".k139o4">
+            <TabsTrigger value="status" data-oid="bv093l6">
+              Статус
+            </TabsTrigger>
+            <TabsTrigger value="faces" data-oid="yml6zx_">
+              Лица
+            </TabsTrigger>
+            <TabsTrigger value="settings" data-oid="szkhf48">
+              Настройки
+            </TabsTrigger>
           </TabsList>
 
           {/* Статус */}
-          <TabsContent value="status" className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Activity className="h-4 w-4" />
+          <TabsContent value="status" className="space-y-4" data-oid="zyivn6_">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4" data-oid="fvb2pt5">
+              <div className="space-y-2" data-oid="xrw821l">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground" data-oid="i70rasz">
+                  <Activity className="h-4 w-4" data-oid="i88eya5" />
                   FPS
                 </div>
-                <div className="text-2xl font-bold">{status.fps.toFixed(1)}</div>
+                <div className="text-2xl font-bold" data-oid="j6up8nn">
+                  {status.fps.toFixed(1)}
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Users className="h-4 w-4" />
+              <div className="space-y-2" data-oid="h9::762">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground" data-oid="9yss7h4">
+                  <Users className="h-4 w-4" data-oid="i:suky7" />
                   Лица
                 </div>
-                <div className="text-2xl font-bold">{status.detectedFaces}</div>
+                <div className="text-2xl font-bold" data-oid="wxib43t">
+                  {status.detectedFaces}
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Zap className="h-4 w-4" />
+              <div className="space-y-2" data-oid="cg9spmv">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground" data-oid="o85.y4b">
+                  <Zap className="h-4 w-4" data-oid="_enrz3f" />
                   Задержка
                 </div>
-                <div className="text-2xl font-bold">{status.averageLatency.toFixed(0)}ms</div>
+                <div className="text-2xl font-bold" data-oid="gjk._j_">
+                  {status.averageLatency.toFixed(0)}ms
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Cpu className="h-4 w-4" />
+              <div className="space-y-2" data-oid="hjyfj0r">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground" data-oid="42:4zb4">
+                  <Cpu className="h-4 w-4" data-oid="ky_8d_i" />
                   {config.useGPU ? "GPU" : "CPU"}
                 </div>
-                <Progress value={status.cpuUsage || 0} className="h-2" />
+                <Progress value={status.cpuUsage || 0} className="h-2" data-oid="f8z6:i5" />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Обработано кадров</Label>
-              <div className="text-lg font-mono">{status.processedFrames}</div>
+            <div className="space-y-2" data-oid="u.wgty7">
+              <Label data-oid="j:zb42i">Обработано кадров</Label>
+              <div className="text-lg font-mono" data-oid="l0jbof_">
+                {status.processedFrames}
+              </div>
             </div>
           </TabsContent>
 
           {/* Обнаруженные лица */}
-          <TabsContent value="faces" className="space-y-4">
+          <TabsContent value="faces" className="space-y-4" data-oid="ydmko90">
             {detectedFaces.length === 0 ? (
-              <div className="text-center text-muted-foreground py-8">Лица не обнаружены</div>
+              <div className="text-center text-muted-foreground py-8" data-oid="gl4xpqc">
+                Лица не обнаружены
+              </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-3" data-oid="4n_w.cb">
                 {detectedFaces.map((face, index) => (
-                  <div key={face.id || index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Eye className="h-6 w-6 text-primary" />
+                  <div
+                    key={face.id || index}
+                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                    data-oid="_v0-8r-"
+                  >
+                    <div className="flex items-center gap-3" data-oid="7op.k_1">
+                      <div
+                        className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center"
+                        data-oid="kl.-k7o"
+                      >
+                        <Eye className="h-6 w-6 text-primary" data-oid="614amci" />
                       </div>
-                      <div>
-                        <div className="font-medium">{face.name || `Лицо ${index + 1}`}</div>
+                      <div data-oid=":_:52lm">
+                        <div className="font-medium" data-oid="la49mz0">
+                          {face.name || `Лицо ${index + 1}`}
+                        </div>
                         {face.advancedAttributes && (
-                          <div className="text-sm text-muted-foreground">
+                          <div className="text-sm text-muted-foreground" data-oid="nqy-0gq">
                             {face.advancedAttributes.ageRange &&
                               `${face.advancedAttributes.ageRange.min}-${face.advancedAttributes.ageRange.max} лет`}
                             {face.advancedAttributes.gender && `, ${face.advancedAttributes.gender}`}
@@ -343,11 +387,15 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={face.confidence > 0.8 ? "default" : "secondary"}>
+                    <div className="flex items-center gap-2" data-oid="adr0oi2">
+                      <Badge variant={face.confidence > 0.8 ? "default" : "secondary"} data-oid="1uc3tsg">
                         {(face.confidence * 100).toFixed(0)}%
                       </Badge>
-                      {face.trackingId && <Badge variant="outline">Track #{face.trackingId.slice(-4)}</Badge>}
+                      {face.trackingId && (
+                        <Badge variant="outline" data-oid="7zy2o3c">
+                          Track #{face.trackingId.slice(-4)}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -356,21 +404,28 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
           </TabsContent>
 
           {/* Настройки */}
-          <TabsContent value="settings" className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="gpu-switch">Использовать GPU</Label>
+          <TabsContent value="settings" className="space-y-4" data-oid="ek3f4m4">
+            <div className="space-y-3" data-oid="fx37h4-">
+              <div className="flex items-center justify-between" data-oid="ppggsaf">
+                <Label htmlFor="gpu-switch" data-oid="rh4hkcu">
+                  Использовать GPU
+                </Label>
                 <Switch
                   id="gpu-switch"
                   checked={config.useGPU}
                   onCheckedChange={(checked) => updateConfig({ useGPU: checked })}
+                  data-oid="ltl3ltz"
                 />
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="fps-slider">Макс. FPS</Label>
-                  <span className="text-sm text-muted-foreground">{config.maxFPS}</span>
+              <div className="space-y-2" data-oid="65jkppx">
+                <div className="flex items-center justify-between" data-oid="gh8iip:">
+                  <Label htmlFor="fps-slider" data-oid="aiwh8rl">
+                    Макс. FPS
+                  </Label>
+                  <span className="text-sm text-muted-foreground" data-oid="5xmpf-r">
+                    {config.maxFPS}
+                  </span>
                 </div>
                 <Slider
                   id="fps-slider"
@@ -379,13 +434,16 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
                   step={5}
                   value={[config.maxFPS || 30]}
                   onValueChange={([value]) => updateConfig({ maxFPS: value })}
+                  data-oid="7tl-e:n"
                 />
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="threshold-slider">Порог качества</Label>
-                  <span className="text-sm text-muted-foreground">
+              <div className="space-y-2" data-oid="sr5lbfh">
+                <div className="flex items-center justify-between" data-oid="dzfvenn">
+                  <Label htmlFor="threshold-slider" data-oid="i60itiu">
+                    Порог качества
+                  </Label>
+                  <span className="text-sm text-muted-foreground" data-oid="_1pz6.j">
                     {((config.qualityThreshold || 0.7) * 100).toFixed(0)}%
                   </span>
                 </div>
@@ -396,33 +454,43 @@ export function RealtimeMonitor({ videoStream, onPersonDetected, className }: Re
                   step={0.05}
                   value={[config.qualityThreshold || 0.7]}
                   onValueChange={([value]) => updateConfig({ qualityThreshold: value })}
+                  data-oid="44xqrqp"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="emotions-switch">Распознавать эмоции</Label>
+              <div className="flex items-center justify-between" data-oid="um80uft">
+                <Label htmlFor="emotions-switch" data-oid="l5_st_3">
+                  Распознавать эмоции
+                </Label>
                 <Switch
                   id="emotions-switch"
                   checked={config.detectEmotions}
                   onCheckedChange={(checked) => updateConfig({ detectEmotions: checked })}
+                  data-oid="jmuvbs1"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="age-gender-switch">Определять возраст/пол</Label>
+              <div className="flex items-center justify-between" data-oid="lj5_pn1">
+                <Label htmlFor="age-gender-switch" data-oid="2lnm0il">
+                  Определять возраст/пол
+                </Label>
                 <Switch
                   id="age-gender-switch"
                   checked={config.detectAgeGender}
                   onCheckedChange={(checked) => updateConfig({ detectAgeGender: checked })}
+                  data-oid="ewqd_xg"
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <Label htmlFor="landmarks-switch">Показывать ключевые точки</Label>
+              <div className="flex items-center justify-between" data-oid="8qryz5e">
+                <Label htmlFor="landmarks-switch" data-oid="eza8ix.">
+                  Показывать ключевые точки
+                </Label>
                 <Switch
                   id="landmarks-switch"
                   checked={config.detectLandmarks}
                   onCheckedChange={(checked) => updateConfig({ detectLandmarks: checked })}
+                  data-oid="kxgcqss"
                 />
               </div>
             </div>

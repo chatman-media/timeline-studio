@@ -63,20 +63,25 @@ export function TrackControlsPanel({ className }: TrackControlsPanelProps) {
   const { tracks, toggleTrackVisibility, toggleTrackLock } = useTracks()
 
   return (
-    <div className={cn("h-full bg-muted/30 border-r", className)}>
-      <ResizablePanelGroup direction="vertical">
+    <div className={cn("h-full bg-muted/30 border-r", className)} data-oid="ycgnrb0">
+      <ResizablePanelGroup direction="vertical" data-oid="-co_pf8">
         {/* Панель треков */}
-        <ResizablePanel defaultSize={60} minSize={40}>
-          <div className="flex flex-col h-full">
+        <ResizablePanel defaultSize={60} minSize={40} data-oid="f-1_1uk">
+          <div className="flex flex-col h-full" data-oid="pf24u.8">
             {/* Список треков */}
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto" data-oid="ap25.g4">
               {tracks.length === 0 ? (
-                <div className="p-4 text-center">
-                  <p className="text-xs text-muted-foreground">Треки не найдены</p>
+                <div className="p-4 text-center" data-oid="63rl8mz">
+                  <p className="text-xs text-muted-foreground" data-oid="sk.urai">
+                    Треки не найдены
+                  </p>
                 </div>
               ) : (
-                <div className="p-2 space-y-2">
-                  <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-2">
+                <div className="p-2 space-y-2" data-oid="hooi21m">
+                  <h4
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide px-2"
+                    data-oid="v9hn4uu"
+                  >
                     Треки проекта
                   </h4>
                   {tracks.map((track) => {
@@ -84,26 +89,34 @@ export function TrackControlsPanel({ className }: TrackControlsPanelProps) {
                     const Icon = trackTypeInfo?.icon || Video
 
                     return (
-                      <div key={track.id} className="p-3 bg-background rounded-md border shadow-sm space-y-2">
+                      <div
+                        key={track.id}
+                        className="p-3 bg-background rounded-md border shadow-sm space-y-2"
+                        data-oid="kx2w2vo"
+                      >
                         {/* Заголовок трека */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center min-w-0 flex-1">
+                        <div className="flex items-center justify-between" data-oid="ew9trke">
+                          <div className="flex items-center min-w-0 flex-1" data-oid="z-0.l0g">
                             <div
                               className={cn(
                                 "w-2 h-2 rounded-full mr-2 shrink-0",
                                 trackTypeInfo?.color || "bg-gray-500",
                               )}
+                              data-oid="lp4_sqk"
                             />
-                            <Icon className="w-3 h-3 mr-2 shrink-0" />
-                            <span className="text-xs font-medium truncate">{track.name}</span>
+
+                            <Icon className="w-3 h-3 mr-2 shrink-0" data-oid="4_fc8u2" />
+                            <span className="text-xs font-medium truncate" data-oid="12pnxwe">
+                              {track.name}
+                            </span>
                           </div>
-                          <Badge variant="secondary" className="text-xs ml-2">
+                          <Badge variant="secondary" className="text-xs ml-2" data-oid="5v033me">
                             {track.type}
                           </Badge>
                         </div>
 
                         {/* Контролы трека */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1" data-oid="wa_:u1s">
                           <Button
                             variant="ghost"
                             size="sm"
@@ -111,11 +124,12 @@ export function TrackControlsPanel({ className }: TrackControlsPanelProps) {
                             onClick={() => toggleTrackVisibility(track.id)}
                             aria-label="toggle visibility"
                             title={track.isHidden ? "Показать трек" : "Скрыть трек"}
+                            data-oid=":tgou8b"
                           >
                             {!track.isHidden ? (
-                              <Eye className="w-3 h-3" />
+                              <Eye className="w-3 h-3" data-oid="4un9bn6" />
                             ) : (
-                              <EyeOff className="w-3 h-3 text-muted-foreground" />
+                              <EyeOff className="w-3 h-3 text-muted-foreground" data-oid="d_8y-28" />
                             )}
                           </Button>
 
@@ -126,11 +140,12 @@ export function TrackControlsPanel({ className }: TrackControlsPanelProps) {
                             onClick={() => toggleTrackLock(track.id)}
                             aria-label="toggle lock"
                             title={track.isLocked ? "Разблокировать трек" : "Заблокировать трек"}
+                            data-oid="m4r5zkb"
                           >
                             {track.isLocked ? (
-                              <Lock className="w-3 h-3 text-muted-foreground" />
+                              <Lock className="w-3 h-3 text-muted-foreground" data-oid=":rww41:" />
                             ) : (
-                              <Unlock className="w-3 h-3" />
+                              <Unlock className="w-3 h-3" data-oid="3dher49" />
                             )}
                           </Button>
                         </div>
@@ -143,12 +158,12 @@ export function TrackControlsPanel({ className }: TrackControlsPanelProps) {
           </div>
         </ResizablePanel>
 
-        <ResizableHandle />
+        <ResizableHandle data-oid="t7w5lj8" />
 
         {/* Панель персон */}
-        <ResizablePanel defaultSize={40} minSize={30}>
-          <div className="p-2">
-            <PersonsPanel />
+        <ResizablePanel defaultSize={40} minSize={30} data-oid="6so24fm">
+          <div className="p-2" data-oid="6ryd89p">
+            <PersonsPanel data-oid="w7tbuep" />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

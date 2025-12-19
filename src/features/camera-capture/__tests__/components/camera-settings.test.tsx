@@ -18,35 +18,43 @@ vi.mock("react-i18next", () => ({
 // Мокируем компоненты Select из @/components/ui/select
 vi.mock("@/components/ui/select", () => ({
   Select: ({ children, value, onValueChange, disabled }: any) => (
-    <div data-testid="select" data-value={value} data-disabled={disabled}>
-      <button onClick={() => !disabled && onValueChange?.("test-value")} data-testid="select-trigger">
+    <div data-testid="select" data-value={value} data-disabled={disabled} data-oid="-r9_2k4">
+      <button
+        onClick={() => !disabled && onValueChange?.("test-value")}
+        data-testid="select-trigger"
+        data-oid="rwzvkl7"
+      >
         Select
       </button>
       {children}
     </div>
   ),
+
   SelectContent: ({ children, ...props }: any) => (
-    <div data-testid="select-content" {...props}>
+    <div data-testid="select-content" {...props} data-oid="e6-4251">
       {children}
     </div>
   ),
+
   SelectItem: ({ children, value, ...props }: any) => (
-    <div data-testid="select-item" data-value={value} {...props}>
+    <div data-testid="select-item" data-value={value} {...props} data-oid="9s8.1yy">
       {children}
     </div>
   ),
+
   SelectTrigger: ({ children, ...props }: any) => (
-    <div data-testid="select-trigger-component" {...props}>
+    <div data-testid="select-trigger-component" {...props} data-oid="st0jht4">
       {children}
     </div>
   ),
-  SelectValue: (props: any) => <div data-testid="select-value" {...props} />,
+
+  SelectValue: (props: any) => <div data-testid="select-value" {...props} data-oid="ot6ve-3" />,
 }))
 
 // Мокируем компонент Input из @/components/ui/input
 vi.mock("@/components/ui/input", () => ({
   Input: ({ value, onChange, ...props }: any) => (
-    <input data-testid="input" value={value} onChange={onChange} {...props} />
+    <input data-testid="input" value={value} onChange={onChange} {...props} data-oid="kr11pl0" />
   ),
 }))
 
@@ -107,7 +115,7 @@ describe("CameraSettings", () => {
   })
 
   it("renders all settings correctly", () => {
-    render(<CameraSettings {...defaultProps} />)
+    render(<CameraSettings {...defaultProps} data-oid="lhc1kaw" />)
 
     // Проверяем, что все селекты отображаются
     expect(screen.getAllByTestId("select")).toHaveLength(4)
@@ -119,7 +127,7 @@ describe("CameraSettings", () => {
   })
 
   it("calls onDeviceChange when device select changes", () => {
-    render(<CameraSettings {...defaultProps} />)
+    render(<CameraSettings {...defaultProps} data-oid="v:.05ou" />)
 
     // Находим селект устройств и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger")
@@ -134,7 +142,7 @@ describe("CameraSettings", () => {
   })
 
   it("calls onAudioDeviceChange when audio device select changes", () => {
-    render(<CameraSettings {...defaultProps} />)
+    render(<CameraSettings {...defaultProps} data-oid="vke.izo" />)
 
     // Находим селект аудио устройств и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger")
@@ -149,7 +157,7 @@ describe("CameraSettings", () => {
   })
 
   it("calls onResolutionChange when resolution select changes", () => {
-    render(<CameraSettings {...defaultProps} />)
+    render(<CameraSettings {...defaultProps} data-oid="efnm3zr" />)
 
     // Находим селект разрешений и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger")
@@ -164,7 +172,7 @@ describe("CameraSettings", () => {
   })
 
   it("calls onFrameRateChange when frame rate select changes", () => {
-    render(<CameraSettings {...defaultProps} />)
+    render(<CameraSettings {...defaultProps} data-oid="1vp3zs." />)
 
     // Находим селект частоты кадров и кликаем по нему
     const selects = screen.getAllByTestId("select-trigger")
@@ -179,7 +187,7 @@ describe("CameraSettings", () => {
   })
 
   it("calls onCountdownChange when countdown input changes", () => {
-    render(<CameraSettings {...defaultProps} />)
+    render(<CameraSettings {...defaultProps} data-oid="dhn4186" />)
 
     // Находим поле ввода обратного отсчета и изменяем его значение
     const countdownInput = screen.getByTestId("input")
@@ -194,7 +202,7 @@ describe("CameraSettings", () => {
   })
 
   it("disables controls when isRecording is true", () => {
-    render(<CameraSettings {...defaultProps} isRecording />)
+    render(<CameraSettings {...defaultProps} isRecording data-oid="_jp-6-z" />)
 
     // Проверяем, что все селекты отключены
     const selects = screen.getAllByTestId("select")
@@ -208,7 +216,7 @@ describe("CameraSettings", () => {
   })
 
   it("shows loading state when isLoadingCapabilities is true", () => {
-    render(<CameraSettings {...defaultProps} isLoadingCapabilities />)
+    render(<CameraSettings {...defaultProps} isLoadingCapabilities data-oid="zu4hm72" />)
 
     // Проверяем, что отображаются элементы загрузки
     const loadingElements = screen.getAllByText("dialogs.cameraCapture.determiningCapabilities")

@@ -29,33 +29,59 @@ vi.mock("@/components/ui/tabs", async () => {
 // Mock other UI components
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled, variant, size, className }: any) => (
-    <button onClick={onClick} disabled={disabled} data-variant={variant} data-size={size} className={className}>
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      data-variant={variant}
+      data-size={size}
+      className={className}
+      data-oid="81z-_ib"
+    >
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/card", () => ({
-  Card: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardContent: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardHeader: ({ children, className }: any) => <div className={className}>{children}</div>,
-  CardTitle: ({ children, className }: any) => <h3 className={className}>{children}</h3>,
+  Card: ({ children, className }: any) => (
+    <div className={className} data-oid="c7n5ct9">
+      {children}
+    </div>
+  ),
+
+  CardContent: ({ children, className }: any) => (
+    <div className={className} data-oid="5x:89la">
+      {children}
+    </div>
+  ),
+
+  CardHeader: ({ children, className }: any) => (
+    <div className={className} data-oid="r6j5ke:">
+      {children}
+    </div>
+  ),
+
+  CardTitle: ({ children, className }: any) => (
+    <h3 className={className} data-oid="kdsqe4r">
+      {children}
+    </h3>
+  ),
 }))
 
 vi.mock("@/components/ui/label", () => ({
   Label: ({ children, htmlFor, className }: any) => (
-    <label htmlFor={htmlFor} className={className}>
+    <label htmlFor={htmlFor} className={className} data-oid="3r1xddw">
       {children}
     </label>
   ),
 }))
 
 vi.mock("@/components/ui/select", () => ({
-  Select: ({ children }: any) => <div>{children}</div>,
-  SelectContent: ({ children }: any) => <div>{children}</div>,
-  SelectItem: ({ children }: any) => <div>{children}</div>,
-  SelectTrigger: ({ children }: any) => <div>{children}</div>,
-  SelectValue: ({ placeholder }: any) => <span>{placeholder}</span>,
+  Select: ({ children }: any) => <div data-oid="267-p39">{children}</div>,
+  SelectContent: ({ children }: any) => <div data-oid="nme6vvh">{children}</div>,
+  SelectItem: ({ children }: any) => <div data-oid="z6pzpbr">{children}</div>,
+  SelectTrigger: ({ children }: any) => <div data-oid="kyid0in">{children}</div>,
+  SelectValue: ({ placeholder }: any) => <span data-oid="s:3yedp">{placeholder}</span>,
 }))
 
 // Mock useModals hook
@@ -81,20 +107,46 @@ vi.mock("@/domains/system-integration", () => ({
 
 vi.mock("../midi-mapping-editor", () => ({
   MidiMappingEditor: ({ mapping, onSave }: any) => (
-    <button onClick={() => onSave?.({ min: 0.5, max: 1 })}>Edit {mapping.targetParameter}</button>
+    <button onClick={() => onSave?.({ min: 0.5, max: 1 })} data-oid="s6t8zcw">
+      Edit {mapping.targetParameter}
+    </button>
   ),
 }))
 
 vi.mock("../midi-router-view", () => ({
-  MidiRouterView: () => <div>MidiRouterView</div>,
+  MidiRouterView: () => <div data-oid="dz-730t">MidiRouterView</div>,
 }))
 
 // Mock MIDI hook
 const mockDevices: MidiDevice[] = [
-  { id: "input1", name: "MIDI Input 1", type: "input", manufacturer: "Test Manufacturer", state: "connected" },
-  { id: "input2", name: "MIDI Input 2", type: "input", manufacturer: "Test Manufacturer", state: "connected" },
-  { id: "output1", name: "MIDI Output 1", type: "output", manufacturer: "Test Manufacturer", state: "connected" },
-  { id: "output2", name: "MIDI Output 2", type: "output", manufacturer: "Test Manufacturer", state: "disconnected" },
+  {
+    id: "input1",
+    name: "MIDI Input 1",
+    type: "input",
+    manufacturer: "Test Manufacturer",
+    state: "connected",
+  },
+  {
+    id: "input2",
+    name: "MIDI Input 2",
+    type: "input",
+    manufacturer: "Test Manufacturer",
+    state: "connected",
+  },
+  {
+    id: "output1",
+    name: "MIDI Output 1",
+    type: "output",
+    manufacturer: "Test Manufacturer",
+    state: "connected",
+  },
+  {
+    id: "output2",
+    name: "MIDI Output 2",
+    type: "output",
+    manufacturer: "Test Manufacturer",
+    state: "disconnected",
+  },
 ]
 
 const mockMappings: MidiMapping[] = [
@@ -157,7 +209,7 @@ describe("MidiSetup", () => {
 
   describe("Rendering", () => {
     it("should render tabs", () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="79l7j6a" />)
 
       expect(screen.getByText("fairlightAudio.midi.setup.tabs.devices")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.setup.tabs.mappings")).toBeInTheDocument()
@@ -167,7 +219,7 @@ describe("MidiSetup", () => {
     it("should show loading state", () => {
       mockUseMidi.isInitialized = false
 
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="nod4ipe" />)
 
       expect(screen.getByTestId("loader2-icon")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.setup.initializing")).toBeInTheDocument()
@@ -176,7 +228,7 @@ describe("MidiSetup", () => {
     it("should show error state", () => {
       mockUseMidi.error = "Failed to initialize MIDI" as any // Mock error for test
 
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="7mgjd:y" />)
 
       expect(screen.getByTestId("info-icon")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.setup.error")).toBeInTheDocument()
@@ -186,7 +238,7 @@ describe("MidiSetup", () => {
 
   describe("Devices Tab", () => {
     it("should display input devices", () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="7mcxf2s" />)
 
       expect(screen.getByText("fairlightAudio.midi.setup.devices.inputDevices")).toBeInTheDocument()
       // Multiple elements with same text exist (device list and select options)
@@ -197,7 +249,7 @@ describe("MidiSetup", () => {
     })
 
     it("should display output devices", () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="z6balhl" />)
 
       expect(screen.getByText("fairlightAudio.midi.setup.devices.outputDevices")).toBeInTheDocument()
       // Multiple elements with same text exist (device list and select options)
@@ -211,14 +263,14 @@ describe("MidiSetup", () => {
       mockUseMidi.inputDevices = []
       mockUseMidi.outputDevices = []
 
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="kmk3xhg" />)
 
       expect(screen.getByText("fairlightAudio.midi.setup.devices.noInputDevices")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.setup.devices.noOutputDevices")).toBeInTheDocument()
     })
 
     it("should display device manufacturer", () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="2.k963j" />)
 
       // Verify devices are displayed with manufacturer info
       const inputDevices = screen.getAllByText("MIDI Input 1")
@@ -230,7 +282,7 @@ describe("MidiSetup", () => {
     })
 
     it("should show device connection status", () => {
-      const { container } = render(<MidiSetup />)
+      const { container } = render(<MidiSetup data-oid="_tj9mjn" />)
 
       // Find all device items
       const deviceItems = container.querySelectorAll(".flex.items-center.justify-between.p-2")
@@ -249,7 +301,7 @@ describe("MidiSetup", () => {
     })
 
     it("should render default device selectors", () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="4g6svj4" />)
 
       expect(screen.getByText("fairlightAudio.midi.setup.devices.defaultDevices")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.setup.devices.defaultInput")).toBeInTheDocument()
@@ -259,10 +311,12 @@ describe("MidiSetup", () => {
 
   describe("Mappings Tab", () => {
     it("should display mappings", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="l9hdtbz" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Debug: check what's rendered after click
@@ -283,10 +337,12 @@ describe("MidiSetup", () => {
     })
 
     it("should show mapping details", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="l53:5_e" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -316,10 +372,12 @@ describe("MidiSetup", () => {
     it("should show no mappings message", async () => {
       mockUseMidi.mappings = []
 
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="vebo-0h" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -334,10 +392,12 @@ describe("MidiSetup", () => {
     })
 
     it("should render add mapping button", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="fw8_d:k" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -355,17 +415,25 @@ describe("MidiSetup", () => {
         if (modalId === "midi-learn" && props.onComplete) {
           // Simulate completing MIDI learn
           props.onComplete(
-            { id: "device1", name: "MIDI Device 1", type: "input", manufacturer: "Test", state: "connected" },
+            {
+              id: "device1",
+              name: "MIDI Device 1",
+              type: "input",
+              manufacturer: "Test",
+              state: "connected",
+            },
             { type: "cc", channel: 1, data: { controller: 7 } },
             "test.param",
           )
         }
       })
 
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="cc3d4vx" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -390,10 +458,12 @@ describe("MidiSetup", () => {
     })
 
     it("should handle updating mapping", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="ugapj7l" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -404,14 +474,19 @@ describe("MidiSetup", () => {
       const editButton = screen.getByText("Edit channel.1.volume")
       fireEvent.click(editButton)
 
-      expect(mockUseMidi.updateMapping).toHaveBeenCalledWith("mapping1", { min: 0.5, max: 1 })
+      expect(mockUseMidi.updateMapping).toHaveBeenCalledWith("mapping1", {
+        min: 0.5,
+        max: 1,
+      })
     })
 
     it("should handle removing mapping", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="9zynpsg" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -435,10 +510,12 @@ describe("MidiSetup", () => {
         },
       ]
 
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="3tue8f:" />)
 
       // Click on mappings tab
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
       fireEvent.click(mappingsTab)
 
       // Wait for mappings title to appear
@@ -461,10 +538,12 @@ describe("MidiSetup", () => {
 
   describe("Router Tab", () => {
     it("should render router view", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="shoz0bk" />)
 
       // Click on router tab
-      const routerTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.router" })
+      const routerTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.router",
+      })
       fireEvent.click(routerTab)
 
       // Wait for router view to appear
@@ -476,13 +555,15 @@ describe("MidiSetup", () => {
 
   describe("Tab Content", () => {
     it("should show devices tab by default", () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="shdwz7l" />)
 
       // Devices tab content should be visible
       expect(screen.getByText("fairlightAudio.midi.setup.devices.inputDevices")).toBeInTheDocument()
 
       // Check that devices tab is active
-      const devicesTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.devices" })
+      const devicesTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.devices",
+      })
       expect(devicesTab).toHaveAttribute("aria-selected", "true")
 
       // Other tabs content should not be rendered with our mock
@@ -490,12 +571,18 @@ describe("MidiSetup", () => {
     })
 
     it("should switch between tabs", async () => {
-      render(<MidiSetup />)
+      render(<MidiSetup data-oid="1oly9ys" />)
 
       // All content is rendered, just check tab selection state
-      const devicesTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.devices" })
-      const mappingsTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.mappings" })
-      const routerTab = screen.getByRole("tab", { name: "fairlightAudio.midi.setup.tabs.router" })
+      const devicesTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.devices",
+      })
+      const mappingsTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.mappings",
+      })
+      const routerTab = screen.getByRole("tab", {
+        name: "fairlightAudio.midi.setup.tabs.router",
+      })
 
       // Initially devices tab is active
       expect(devicesTab).toHaveAttribute("aria-selected", "true")

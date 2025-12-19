@@ -346,7 +346,7 @@ export function EffectPreview({
   }, [isHovering, videoSrc])
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center" data-oid="35ky8.d">
       {/* Контейнер превью эффекта */}
       <div
         className="group relative cursor-pointer rounded-xs bg-gray-800"
@@ -354,6 +354,7 @@ export function EffectPreview({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onClick={onClick}
+        data-oid="..x:kez"
       >
         {/* Видео для демонстрации эффекта */}
         {videoSrc && (
@@ -372,7 +373,9 @@ export function EffectPreview({
               playsInline
               preload="metadata"
               data-testid="effect-video"
+              data-oid="l9t68ek"
             />
+
             {/* Canvas для WebGL рендеринга */}
             {useWebGL && (
               <canvas
@@ -384,6 +387,7 @@ export function EffectPreview({
                   objectFit: "cover",
                 }}
                 data-testid="effect-canvas"
+                data-oid="bcujjw-"
               />
             )}
           </>
@@ -397,8 +401,9 @@ export function EffectPreview({
               width: `${width}px`,
               height: `${height}px`,
             }}
+            data-oid="v24:tst"
           >
-            <div className="text-gray-400 text-xs text-center">
+            <div className="text-gray-400 text-xs text-center" data-oid="m4lfyij">
               {processedEffect
                 ? typeof processedEffect.name === "object"
                   ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
@@ -406,7 +411,9 @@ export function EffectPreview({
                 : "Effect"}
             </div>
             {!currentVideo && size > 100 && (
-              <div className="text-gray-600 text-[10px] text-center">Откройте видео для превью</div>
+              <div className="text-gray-600 text-[10px] text-center" data-oid="4x-vfny">
+                Откройте видео для превью
+              </div>
             )}
           </div>
         )}
@@ -415,7 +422,7 @@ export function EffectPreview({
         {processedEffect && (
           <>
             {/* Цветовой индикатор сложности слева */}
-            <div className="absolute bottom-1 left-1">
+            <div className="absolute bottom-1 left-1" data-oid="5hva8vu">
               <div
                 className={`h-2 w-2 rounded-full ${
                   processedEffect.complexity === "low"
@@ -429,12 +436,13 @@ export function EffectPreview({
                           : "bg-gray-500"
                 }`}
                 title={`effects.complexity.${processedEffect.complexity || "low"}`}
+                data-oid="g4m8p9d"
               />
             </div>
 
             {/* Индикаторы категории и тегов справа */}
-            <div className="absolute top-1 left-1">
-              <EffectIndicators effect={processedEffect} size={size > 150 ? "md" : "sm"} />
+            <div className="absolute top-1 left-1" data-oid="3r24312">
+              <EffectIndicators effect={processedEffect} size={size > 150 ? "md" : "sm"} data-oid="e4kodtk" />
             </div>
           </>
         )}
@@ -453,6 +461,7 @@ export function EffectPreview({
             }}
             size={size}
             type="effect"
+            data-oid="ktak2-m"
           />
         )}
         {processedEffect && (
@@ -474,10 +483,11 @@ export function EffectPreview({
             size={size}
             type="effect"
             onApply={handleApplyEffect}
+            data-oid="xzerv:o"
           />
         )}
         {/* Кнопка добавления эффекта в проект */}
-        <div className={isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"}>
+        <div className={isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"} data-oid="60brkwd">
           {processedEffect && (
             <AddMediaButton
               resource={
@@ -496,12 +506,13 @@ export function EffectPreview({
               }
               size={size}
               type="effect"
+              data-oid="l1ml38d"
             />
           )}
         </div>
       </div>
       {/* Название эффекта */}
-      <div className="mt-1 text-xs text-center">
+      <div className="mt-1 text-xs text-center" data-oid="-88elbe">
         {processedEffect
           ? typeof processedEffect.name === "object"
             ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id

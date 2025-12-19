@@ -8,14 +8,14 @@ export function HSLSection() {
   const { state, updateBasicParameter } = useColorGradingContext()
 
   return (
-    <div className="space-y-4" data-testid="hsl-section">
+    <div className="space-y-4" data-testid="hsl-section" data-oid="kfaoyea">
       {/* Заголовок секции */}
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground" data-oid="8sx4:ne">
         {t("colorGrading.hsl.description", "Advanced HSL adjustments and secondary color correction")}
       </div>
 
       {/* HSL слайдеры */}
-      <div className="space-y-3">
+      <div className="space-y-3" data-oid="kxqb0dl">
         <ParameterSlider
           label={t("colorGrading.hsl.hue", "Hue")}
           value={state.basicParameters.hue}
@@ -25,6 +25,7 @@ export function HSLSection() {
           defaultValue={0}
           formatValue={(v) => `${v}°`}
           className="[&_input]:bg-linear-to-r [&_input]:from-red-500 [&_input]:via-yellow-500 [&_input]:via-green-500 [&_input]:via-cyan-500 [&_input]:via-blue-500 [&_input]:via-purple-500 [&_input]:to-red-500"
+          data-oid="rg_6j5h"
         />
 
         <ParameterSlider
@@ -36,6 +37,7 @@ export function HSLSection() {
           defaultValue={0}
           formatValue={(v) => (v > 0 ? `+${v}` : v.toString())}
           className="[&_input]:bg-linear-to-r [&_input]:from-muted [&_input]:to-purple-500"
+          data-oid="kaycsm."
         />
 
         <ParameterSlider
@@ -47,14 +49,17 @@ export function HSLSection() {
           defaultValue={0}
           formatValue={(v) => (v > 0 ? `+${v}` : v.toString())}
           className="[&_input]:bg-linear-to-r [&_input]:from-background [&_input]:via-muted [&_input]:to-foreground"
+          data-oid="4opm0h9"
         />
       </div>
 
       {/* Дополнительные параметры */}
-      <div className="border-t border-border pt-4 mt-6">
-        <div className="text-sm text-muted-foreground mb-3">{t("colorGrading.hsl.advanced", "Advanced")}</div>
+      <div className="border-t border-border pt-4 mt-6" data-oid="8mo7e5f">
+        <div className="text-sm text-muted-foreground mb-3" data-oid="h:30oy5">
+          {t("colorGrading.hsl.advanced", "Advanced")}
+        </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3" data-oid="k2gcw92">
           <ParameterSlider
             label={t("colorGrading.hsl.pivot", "Contrast Pivot")}
             value={state.basicParameters.pivot}
@@ -64,6 +69,7 @@ export function HSLSection() {
             step={0.01}
             defaultValue={0.5}
             formatValue={(v) => v.toFixed(2)}
+            data-oid="zv:0gss"
           />
 
           <ParameterSlider
@@ -74,6 +80,7 @@ export function HSLSection() {
             max={100}
             defaultValue={0}
             formatValue={(v) => (v > 0 ? `+${v}` : v.toString())}
+            data-oid="xjie4dj"
           />
         </div>
       </div>

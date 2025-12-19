@@ -8,7 +8,7 @@ export const TemplatesAdapterContent = memo(() => {
   const adapter = useTemplatesAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="u0xqqru" />
 })
 
 TemplatesAdapterContent.displayName = "TemplatesAdapterContent"

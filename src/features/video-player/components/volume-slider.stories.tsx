@@ -39,9 +39,9 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <UserSettingsProvider>
-        <div className="p-8">
-          <Story />
+      <UserSettingsProvider data-oid="1wa81t0">
+        <div className="p-8" data-oid="p6m_qx6">
+          <Story data-oid="mu4w8dl" />
         </div>
       </UserSettingsProvider>
     ),

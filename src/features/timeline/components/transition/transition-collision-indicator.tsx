@@ -33,28 +33,34 @@ export function TransitionCollisionIndicator({
   // В компактном режиме показываем только иконку с тултипом
   if (compact) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className={cn("flex items-center gap-1", className)}>
+      <TooltipProvider data-oid="mhg7p.4">
+        <Tooltip data-oid="_0uwbmw">
+          <TooltipTrigger asChild data-oid="-xfqoi3">
+            <div className={cn("flex items-center gap-1", className)} data-oid="5x5xh_g">
               {collisions.some((c) => c.severity === "error") ? (
-                <AlertCircle className="h-4 w-4 text-destructive" />
+                <AlertCircle className="h-4 w-4 text-destructive" data-oid="b_k10qq" />
               ) : (
-                <AlertTriangle className="h-4 w-4 text-warning" />
+                <AlertTriangle className="h-4 w-4 text-warning" data-oid=".pk38bu" />
               )}
-              <span className="text-sm font-medium">{collisions.length}</span>
+              <span className="text-sm font-medium" data-oid="p1elf00">
+                {collisions.length}
+              </span>
             </div>
           </TooltipTrigger>
-          <TooltipContent className="max-w-xs">
-            <div className="space-y-2">
-              <p className="font-medium">Обнаружены коллизии переходов</p>
+          <TooltipContent className="max-w-xs" data-oid="4t82lgv">
+            <div className="space-y-2" data-oid="fajmpca">
+              <p className="font-medium" data-oid="f4l_p_r">
+                Обнаружены коллизии переходов
+              </p>
               {collisions.slice(0, 3).map((collision, index) => (
-                <p key={index} className="text-sm">
+                <p key={index} className="text-sm" data-oid="4pe4yn0">
                   • {collision.message}
                 </p>
               ))}
               {collisions.length > 3 && (
-                <p className="text-sm text-muted-foreground">и ещё {collisions.length - 3}...</p>
+                <p className="text-sm text-muted-foreground" data-oid="e8rwken">
+                  и ещё {collisions.length - 3}...
+                </p>
               )}
             </div>
           </TooltipContent>
@@ -65,26 +71,33 @@ export function TransitionCollisionIndicator({
 
   // Полный режим отображения
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn("space-y-2", className)} data-oid="pdftau9">
       {collisions.map((collision, index) => (
         <Alert
           key={`${collision.transition1.id}-${collision.transition2.id}-${index}`}
           variant={collision.severity === "error" ? "destructive" : "default"}
+          data-oid="ktn9aul"
         >
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2" data-oid="m42d2hb">
             {collision.severity === "error" ? (
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle className="h-4 w-4" data-oid="o7ljlsj" />
             ) : (
-              <AlertTriangle className="h-4 w-4" />
+              <AlertTriangle className="h-4 w-4" data-oid="n_wg4dr" />
             )}
-            <div className="flex-1">
-              <AlertTitle>Коллизия переходов</AlertTitle>
-              <AlertDescription className="mt-1">
-                <p>{collision.message}</p>
+            <div className="flex-1" data-oid="3:lzhmc">
+              <AlertTitle data-oid="26z59f:">Коллизия переходов</AlertTitle>
+              <AlertDescription className="mt-1" data-oid="-ii3wpl">
+                <p data-oid="8_ite_t">{collision.message}</p>
                 {getCollisionDetails(collision)}
               </AlertDescription>
               {onResolve && (
-                <Button variant="outline" size="sm" className="mt-2" onClick={() => onResolve(collision)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => onResolve(collision)}
+                  data-oid="s4ysdco"
+                >
                   Исправить
                 </Button>
               )}
@@ -103,12 +116,12 @@ function getCollisionDetails(collision: TransitionCollision) {
   switch (collision.type) {
     case "overlap":
       return (
-        <div className="mt-2 text-xs text-muted-foreground">
-          <p>
+        <div className="mt-2 text-xs text-muted-foreground" data-oid="dx-63on">
+          <p data-oid="pw19gr8">
             Переход 1: {collision.transition1.position.toFixed(2)}s -{" "}
             {(collision.transition1.position + collision.transition1.duration).toFixed(2)}s
           </p>
-          <p>
+          <p data-oid="baz180o">
             Переход 2: {collision.transition2.position.toFixed(2)}s -{" "}
             {(collision.transition2.position + collision.transition2.duration).toFixed(2)}s
           </p>
@@ -116,10 +129,18 @@ function getCollisionDetails(collision: TransitionCollision) {
       )
 
     case "adjacent":
-      return <p className="mt-2 text-xs text-muted-foreground">Переходы расположены слишком близко друг к другу</p>
+      return (
+        <p className="mt-2 text-xs text-muted-foreground" data-oid="18i8i6b">
+          Переходы расположены слишком близко друг к другу
+        </p>
+      )
 
     case "clip-boundary":
-      return <p className="mt-2 text-xs text-muted-foreground">Переход выходит за границы клипа</p>
+      return (
+        <p className="mt-2 text-xs text-muted-foreground" data-oid="5sdp_g7">
+          Переход выходит за границы клипа
+        </p>
+      )
 
     default:
       return null

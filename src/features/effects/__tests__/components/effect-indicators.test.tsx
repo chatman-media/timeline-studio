@@ -36,63 +36,63 @@ describe("EffectIndicators", () => {
   describe("Category Indicators", () => {
     it("should display CC abbreviation for color-correction category", () => {
       const effect = createMockEffect("color-correction")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="oywvy5h" />)
 
       expect(screen.getByText("CC")).toBeInTheDocument()
     })
 
     it("should display ART abbreviation for artistic category", () => {
       const effect = createMockEffect("artistic")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="81r.pqy" />)
 
       expect(screen.getByText("ART")).toBeInTheDocument()
     })
 
     it("should display VIN abbreviation for vintage category", () => {
       const effect = createMockEffect("vintage")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="b2-gvzu" />)
 
       expect(screen.getByText("VIN")).toBeInTheDocument()
     })
 
     it("should display CIN abbreviation for cinematic category", () => {
       const effect = createMockEffect("cinematic")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="8sspft8" />)
 
       expect(screen.getByText("CIN")).toBeInTheDocument()
     })
 
     it("should display CRE abbreviation for creative category", () => {
       const effect = createMockEffect("creative")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="c_2_.tg" />)
 
       expect(screen.getByText("CRE")).toBeInTheDocument()
     })
 
     it("should display TEC abbreviation for technical category", () => {
       const effect = createMockEffect("technical")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="c67w-31" />)
 
       expect(screen.getByText("TEC")).toBeInTheDocument()
     })
 
     it("should display MOT abbreviation for motion category", () => {
       const effect = createMockEffect("motion")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="d2tv1_d" />)
 
       expect(screen.getByText("MOT")).toBeInTheDocument()
     })
 
     it("should display DIS abbreviation for distortion category", () => {
       const effect = createMockEffect("distortion")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="yx74fo8" />)
 
       expect(screen.getByText("DIS")).toBeInTheDocument()
     })
 
     it("should display EFF abbreviation for unknown category", () => {
       const effect = createMockEffect("unknown-category")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="qct--b9" />)
 
       expect(screen.getByText("EFF")).toBeInTheDocument()
     })
@@ -101,28 +101,28 @@ describe("EffectIndicators", () => {
   describe("Tag Indicators", () => {
     it("should display POP tag when effect is popular", () => {
       const effect = createMockEffect("artistic", ["popular"])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="9_hkdih" />)
 
       expect(screen.getByText("POP")).toBeInTheDocument()
     })
 
     it("should display PRO tag when effect is professional", () => {
       const effect = createMockEffect("artistic", ["professional"])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="-rzk16h" />)
 
       expect(screen.getByText("PRO")).toBeInTheDocument()
     })
 
     it("should display EXP tag when effect is experimental", () => {
       const effect = createMockEffect("artistic", ["experimental"])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="hdyz_c6" />)
 
       expect(screen.getByText("EXP")).toBeInTheDocument()
     })
 
     it("should display multiple tags when present", () => {
       const effect = createMockEffect("artistic", ["popular", "professional", "experimental"])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="nvfmp46" />)
 
       expect(screen.getByText("POP")).toBeInTheDocument()
       expect(screen.getByText("PRO")).toBeInTheDocument()
@@ -131,7 +131,7 @@ describe("EffectIndicators", () => {
 
     it("should not display tags when effect has no special tags", () => {
       const effect = createMockEffect("artistic", [])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="56dxk5a" />)
 
       expect(screen.queryByText("POP")).not.toBeInTheDocument()
       expect(screen.queryByText("PRO")).not.toBeInTheDocument()
@@ -140,7 +140,7 @@ describe("EffectIndicators", () => {
 
     it("should not display tags when effect has unrecognized tags", () => {
       const effect = createMockEffect("artistic", ["custom-tag", "another-tag"])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid=".dsnmmx" />)
 
       expect(screen.queryByText("POP")).not.toBeInTheDocument()
       expect(screen.queryByText("PRO")).not.toBeInTheDocument()
@@ -151,7 +151,7 @@ describe("EffectIndicators", () => {
   describe("Size Variants", () => {
     it("should render with small size by default", () => {
       const effect = createMockEffect("artistic", ["popular"])
-      const { container } = render(<EffectIndicators effect={effect} />)
+      const { container } = render(<EffectIndicators effect={effect} data-oid="h2pd3.e" />)
 
       const categoryTag = screen.getByText("ART")
       expect(categoryTag).toHaveClass("text-[9px]")
@@ -161,7 +161,7 @@ describe("EffectIndicators", () => {
 
     it("should render with medium size when specified", () => {
       const effect = createMockEffect("artistic", ["popular"])
-      const { container } = render(<EffectIndicators effect={effect} size="md" />)
+      const { container } = render(<EffectIndicators effect={effect} size="md" data-oid="676v6ad" />)
 
       const categoryTag = screen.getByText("ART")
       expect(categoryTag).toHaveClass("text-[10px]")
@@ -173,7 +173,7 @@ describe("EffectIndicators", () => {
   describe("Accessibility", () => {
     it("should have title attribute for category with translation key", () => {
       const effect = createMockEffect("color-correction")
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="4r3v4_d" />)
 
       const categoryTag = screen.getByText("CC")
       expect(categoryTag).toHaveAttribute("title", "effects.categories.color-correction")
@@ -181,7 +181,7 @@ describe("EffectIndicators", () => {
 
     it("should render with proper semantic HTML", () => {
       const effect = createMockEffect("artistic", ["popular", "professional"])
-      const { container } = render(<EffectIndicators effect={effect} />)
+      const { container } = render(<EffectIndicators effect={effect} data-oid="_4zi9ez" />)
 
       const wrapper = container.querySelector(".flex.items-center")
       expect(wrapper).toBeInTheDocument()
@@ -195,7 +195,7 @@ describe("EffectIndicators", () => {
         tags: undefined,
       } as unknown as VideoEffect
 
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="-0hp5on" />)
 
       expect(screen.getByText("ART")).toBeInTheDocument()
       expect(screen.queryByText("POP")).not.toBeInTheDocument()
@@ -203,7 +203,7 @@ describe("EffectIndicators", () => {
 
     it("should handle effects with empty tags array", () => {
       const effect = createMockEffect("artistic", [])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="kpat:y." />)
 
       expect(screen.getByText("ART")).toBeInTheDocument()
       expect(screen.queryByText("POP")).not.toBeInTheDocument()
@@ -213,7 +213,7 @@ describe("EffectIndicators", () => {
   describe("Styling", () => {
     it("should render all indicators with proper structure", () => {
       const effect = createMockEffect("artistic", ["popular", "professional"])
-      render(<EffectIndicators effect={effect} />)
+      render(<EffectIndicators effect={effect} data-oid="1:zmmfs" />)
 
       const indicators = screen.getAllByText(/ART|POP|PRO/)
       expect(indicators.length).toBe(3)
@@ -226,8 +226,8 @@ describe("EffectIndicators", () => {
 
     it("should render with different size variants", () => {
       const effect = createMockEffect("artistic", ["popular"])
-      const { container: smallContainer } = render(<EffectIndicators effect={effect} size="sm" />)
-      const { container: mediumContainer } = render(<EffectIndicators effect={effect} size="md" />)
+      const { container: smallContainer } = render(<EffectIndicators effect={effect} size="sm" data-oid="6o91dmd" />)
+      const { container: mediumContainer } = render(<EffectIndicators effect={effect} size="md" data-oid="t00ijv8" />)
 
       // Both should render successfully
       expect(smallContainer.querySelector(".flex.items-center")).toBeInTheDocument()

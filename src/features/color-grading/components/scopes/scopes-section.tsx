@@ -51,80 +51,104 @@ export function ScopesSection() {
   }, [isFullscreen])
 
   return (
-    <div className="space-y-4" data-testid="scopes-section">
+    <div className="space-y-4" data-testid="scopes-section" data-oid="a.6qrzi">
       {/* Заголовок секции */}
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground" data-oid="-:d35iy">
         {t("colorGrading.scopes.description", "Real-time analysis of color and exposure")}
       </div>
 
       {/* Управление скопами */}
-      <div className="space-y-3">
+      <div className="space-y-3" data-oid="npqstnq">
         {/* Waveform переключатель */}
-        <div className="flex items-center justify-between">
-          <Label htmlFor="waveform-enable" className="text-sm flex items-center gap-2 text-foreground">
-            <Activity className="h-4 w-4" />
+        <div className="flex items-center justify-between" data-oid="92w9tzw">
+          <Label
+            htmlFor="waveform-enable"
+            className="text-sm flex items-center gap-2 text-foreground"
+            data-oid="xflww6f"
+          >
+            <Activity className="h-4 w-4" data-oid="0ukr:jl" />
             {t("colorGrading.scopes.waveform", "Waveform")}
           </Label>
           <Switch
             checked={state.scopes.waveformEnabled}
             onCheckedChange={(checked) => handleToggleScope("waveform", checked)}
+            data-oid="ogmokal"
           />
         </div>
 
         {/* Vectorscope переключатель */}
-        <div className="flex items-center justify-between">
-          <Label htmlFor="vectorscope-enable" className="text-sm flex items-center gap-2 text-foreground">
-            <CircleDot className="h-4 w-4" />
+        <div className="flex items-center justify-between" data-oid="tlqo4.k">
+          <Label
+            htmlFor="vectorscope-enable"
+            className="text-sm flex items-center gap-2 text-foreground"
+            data-oid="hyh.:z7"
+          >
+            <CircleDot className="h-4 w-4" data-oid="qksdr_x" />
             {t("colorGrading.scopes.vectorscope", "Vectorscope")}
           </Label>
           <Switch
             checked={state.scopes.vectorscopeEnabled}
             onCheckedChange={(checked) => handleToggleScope("vectorscope", checked)}
+            data-oid="attnegk"
           />
         </div>
 
         {/* Histogram переключатель */}
-        <div className="flex items-center justify-between">
-          <Label htmlFor="histogram-enable" className="text-sm flex items-center gap-2 text-foreground">
-            <BarChart3 className="h-4 w-4" />
+        <div className="flex items-center justify-between" data-oid="ois_82o">
+          <Label
+            htmlFor="histogram-enable"
+            className="text-sm flex items-center gap-2 text-foreground"
+            data-oid="pc8.q78"
+          >
+            <BarChart3 className="h-4 w-4" data-oid="1pn-xne" />
             {t("colorGrading.scopes.histogram", "Histogram")}
           </Label>
           <Switch
             checked={state.scopes.histogramEnabled}
             onCheckedChange={(checked) => handleToggleScope("histogram", checked)}
+            data-oid="yra6le6"
           />
         </div>
       </div>
 
       {/* Настройки частоты обновления */}
-      <div className="space-y-2">
-        <Label className="text-sm text-foreground/90">{t("colorGrading.scopes.refreshRate", "Refresh Rate")}</Label>
-        <Select value={state.scopes.refreshRate.toString()} onValueChange={handleRefreshRateChange}>
-          <SelectTrigger className="h-8">
-            <SelectValue />
+      <div className="space-y-2" data-oid="y:xll8r">
+        <Label className="text-sm text-foreground/90" data-oid="9nokqrf">
+          {t("colorGrading.scopes.refreshRate", "Refresh Rate")}
+        </Label>
+        <Select value={state.scopes.refreshRate.toString()} onValueChange={handleRefreshRateChange} data-oid="kz57no_">
+          <SelectTrigger className="h-8" data-oid="57-1rlg">
+            <SelectValue data-oid="d848le_" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="15">15 FPS</SelectItem>
-            <SelectItem value="30">30 FPS</SelectItem>
-            <SelectItem value="60">60 FPS</SelectItem>
+          <SelectContent data-oid="8nhdd_2">
+            <SelectItem value="15" data-oid="qr10cpl">
+              15 FPS
+            </SelectItem>
+            <SelectItem value="30" data-oid="w0y7:6k">
+              30 FPS
+            </SelectItem>
+            <SelectItem value="60" data-oid=":brfix:">
+              60 FPS
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Отображение скопов */}
       {(state.scopes.waveformEnabled || state.scopes.vectorscopeEnabled || state.scopes.histogramEnabled) && (
-        <div className="mt-4 space-y-4">
+        <div className="mt-4 space-y-4" data-oid="owo-6ft">
           {/* Переключатель типов скопов */}
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2">
+          <div className="flex items-center justify-between" data-oid="grhovsv">
+            <div className="flex gap-2" data-oid="2l_u7g-">
               {state.scopes.waveformEnabled && (
                 <Button
                   variant={activeScope === "waveform" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => handleScopeChange("waveform")}
                   className="h-7"
+                  data-oid="gt3c_il"
                 >
-                  <Activity className="h-4 w-4 mr-1" />
+                  <Activity className="h-4 w-4 mr-1" data-oid="vf.8.vm" />
                   {t("colorGrading.scopes.waveform", "Waveform")}
                 </Button>
               )}
@@ -134,8 +158,9 @@ export function ScopesSection() {
                   size="sm"
                   onClick={() => handleScopeChange("vectorscope")}
                   className="h-7"
+                  data-oid="q:vcgys"
                 >
-                  <CircleDot className="h-4 w-4 mr-1" />
+                  <CircleDot className="h-4 w-4 mr-1" data-oid="xxk2_cp" />
                   {t("colorGrading.scopes.vectorscope", "Vectorscope")}
                 </Button>
               )}
@@ -145,29 +170,31 @@ export function ScopesSection() {
                   size="sm"
                   onClick={() => handleScopeChange("histogram")}
                   className="h-7"
+                  data-oid="7bwjl5j"
                 >
-                  <BarChart3 className="h-4 w-4 mr-1" />
+                  <BarChart3 className="h-4 w-4 mr-1" data-oid="3rb3q0i" />
                   {t("colorGrading.scopes.histogram", "Histogram")}
                 </Button>
               )}
             </div>
-            <Button variant="ghost" size="sm" onClick={toggleFullscreen} className="h-7">
-              <Settings className="h-4 w-4" />
+            <Button variant="ghost" size="sm" onClick={toggleFullscreen} className="h-7" data-oid=".fpsswc">
+              <Settings className="h-4 w-4" data-oid="y5b7fq9" />
             </Button>
           </div>
 
           {/* Viewer для активного скопа */}
-          <div className={`relative ${isFullscreen ? "fixed inset-0 z-50 bg-black/95 p-8" : ""}`}>
+          <div className={`relative ${isFullscreen ? "fixed inset-0 z-50 bg-black/95 p-8" : ""}`} data-oid="fj-y62h">
             <ScopeViewer
               type={activeScope}
               refreshRate={state.scopes.refreshRate}
               isFullscreen={isFullscreen}
               onClose={isFullscreen ? toggleFullscreen : undefined}
+              data-oid="fytroyu"
             />
           </div>
 
           {/* Подсказки для скопов */}
-          <div className="text-xs text-muted-foreground/70 mt-2">
+          <div className="text-xs text-muted-foreground/70 mt-2" data-oid="nsj30x_">
             {activeScope === "waveform" &&
               t("colorGrading.scopes.waveformHint", "Shows luminance distribution across the image")}
             {activeScope === "vectorscope" &&

@@ -22,7 +22,12 @@ vi.mock("@dnd-kit/core", () => ({
 }))
 
 describe("WidgetContainer Dragging States", () => {
-  const mockWidget = createMockWidget("test-1", "timeline", { x: 10, y: 20, width: 50, height: 30 })
+  const mockWidget = createMockWidget("test-1", "timeline", {
+    x: 10,
+    y: 20,
+    width: 50,
+    height: 30,
+  })
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -47,8 +52,8 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="kv9zis1">
+          <div data-oid="7pzei42">Content</div>
         </WidgetContainer>,
       )
 
@@ -68,8 +73,8 @@ describe("WidgetContainer Dragging States", () => {
       const widgetWithZIndex = createMockWidget("test-drag", "timeline", undefined, { zIndex: 5 })
 
       const { container } = render(
-        <WidgetContainer widget={widgetWithZIndex}>
-          <div>Content</div>
+        <WidgetContainer widget={widgetWithZIndex} data-oid="zc5zz.2">
+          <div data-oid="d.c:5ja">Content</div>
         </WidgetContainer>,
       )
 
@@ -87,8 +92,8 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="0xxurr:">
+          <div data-oid="6r1tv4q">Content</div>
         </WidgetContainer>,
       )
 
@@ -109,13 +114,15 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="6cr06ft">
+          <div data-oid="3l56_5v">Content</div>
         </WidgetContainer>,
       )
 
       const widgetElement = container.querySelector(".rounded-lg.border.bg-background") as HTMLElement
-      expect(widgetElement).toHaveStyle({ transform: "translate3d(50px, 30px, 0)" })
+      expect(widgetElement).toHaveStyle({
+        transform: "translate3d(50px, 30px, 0)",
+      })
     })
 
     it("должен применять отрицательный transform", () => {
@@ -128,13 +135,15 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="9bmkks-">
+          <div data-oid="3ain0uv">Content</div>
         </WidgetContainer>,
       )
 
       const widgetElement = container.querySelector(".rounded-lg.border.bg-background") as HTMLElement
-      expect(widgetElement).toHaveStyle({ transform: "translate3d(-20px, -15px, 0)" })
+      expect(widgetElement).toHaveStyle({
+        transform: "translate3d(-20px, -15px, 0)",
+      })
     })
 
     it("должен не применять transform когда transform=null", () => {
@@ -147,8 +156,8 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="6:7.r6n">
+          <div data-oid="-8bbioc">Content</div>
         </WidgetContainer>,
       )
 
@@ -169,13 +178,15 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="au75b._">
+          <div data-oid="lr7h.hs">Content</div>
         </WidgetContainer>,
       )
 
       const widgetElement = container.querySelector(".rounded-lg.border.bg-background") as HTMLElement
-      expect(widgetElement).toHaveStyle({ transform: "translate3d(0px, 0px, 0)" })
+      expect(widgetElement).toHaveStyle({
+        transform: "translate3d(0px, 0px, 0)",
+      })
     })
   })
 
@@ -196,8 +207,8 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="j7w.810">
+          <div data-oid="eex_05y">Content</div>
         </WidgetContainer>,
       )
 
@@ -222,8 +233,8 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="vnjo353">
+          <div data-oid="0n8bs5b">Content</div>
         </WidgetContainer>,
       )
 
@@ -250,8 +261,8 @@ describe("WidgetContainer Dragging States", () => {
       const widgetWithZIndex = createMockWidget("combined-test", "player", undefined, { zIndex: 3 })
 
       const { container } = render(
-        <WidgetContainer widget={widgetWithZIndex}>
-          <div>Content</div>
+        <WidgetContainer widget={widgetWithZIndex} data-oid=".7kzquz">
+          <div data-oid="nk1oi7x">Content</div>
         </WidgetContainer>,
       )
 
@@ -275,8 +286,8 @@ describe("WidgetContainer Dragging States", () => {
       })
 
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="pz-ea-8">
+          <div data-oid="8-z2ycv">Content</div>
         </WidgetContainer>,
       )
 
@@ -285,7 +296,9 @@ describe("WidgetContainer Dragging States", () => {
       // При isDragging=false не должно быть opacity-50
       expect(widgetElement).not.toHaveClass("opacity-50")
       // Но transform должен применяться
-      expect(widgetElement).toHaveStyle({ transform: "translate3d(5px, 5px, 0)" })
+      expect(widgetElement).toHaveStyle({
+        transform: "translate3d(5px, 5px, 0)",
+      })
     })
   })
 })

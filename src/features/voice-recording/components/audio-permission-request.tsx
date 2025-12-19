@@ -24,14 +24,18 @@ export function AudioPermissionRequest({
   }
 
   return (
-    <div className="mb-4">
-      {permissionStatus === "pending" && <div className="text-center text-sm">Запрашиваем разрешения...</div>}
+    <div className="mb-4" data-oid="be00u--">
+      {permissionStatus === "pending" && (
+        <div className="text-center text-sm" data-oid="adnk8go">
+          Запрашиваем разрешения...
+        </div>
+      )}
 
       {permissionStatus === "denied" && (
-        <div className="rounded-md bg-red-900/50 p-3 text-sm text-red-100">
+        <div className="rounded-md bg-red-900/50 p-3 text-sm text-red-100" data-oid="t060m:w">
           {errorMessage || "Доступ к микрофону запрещен."}
-          <div className="mt-2">
-            <Button className="w-full bg-red-600 hover:bg-red-700" onClick={onRequestPermissions}>
+          <div className="mt-2" data-oid="hx.czv0">
+            <Button className="w-full bg-red-600 hover:bg-red-700" onClick={onRequestPermissions} data-oid="_._9gs.">
               Повторить запрос
             </Button>
           </div>
@@ -39,10 +43,10 @@ export function AudioPermissionRequest({
       )}
 
       {permissionStatus === "error" && (
-        <div className="rounded-md bg-red-900/50 p-3 text-sm text-red-100">
+        <div className="rounded-md bg-red-900/50 p-3 text-sm text-red-100" data-oid="h8lzrqy">
           {errorMessage}
-          <div className="mt-2">
-            <Button className="w-full bg-red-600 hover:bg-red-700" onClick={onRequestPermissions}>
+          <div className="mt-2" data-oid="hz8z_zt">
+            <Button className="w-full bg-red-600 hover:bg-red-700" onClick={onRequestPermissions} data-oid="jarvno.">
               Повторить
             </Button>
           </div>

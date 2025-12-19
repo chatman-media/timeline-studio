@@ -23,16 +23,16 @@ export function UserSettingsModal() {
   const { t } = useTranslation()
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" data-oid="0x3u41x">
       {/* Основное содержимое с вкладками */}
-      <div className="flex-1 min-h-0">
-        <UserSettingsModalTabs />
+      <div className="flex-1 min-h-0" data-oid=".-ybxl6">
+        <UserSettingsModalTabs data-oid="es2k2_p" />
       </div>
 
       {/* Кнопки действий в нижней части модального окна */}
-      <DialogFooter className="flex justify-between space-x-4 mt-4 pt-4 border-t">
+      <DialogFooter className="flex justify-between space-x-4 mt-4 pt-4 border-t" data-oid="cve8-0v">
         {/* Кнопка отмены */}
-        <Button variant="default" className="flex-1 cursor-pointer" onClick={() => closeModal()}>
+        <Button variant="default" className="flex-1 cursor-pointer" onClick={() => closeModal()} data-oid="075ddi6">
           {t("dialogs.userSettings.cancel")}
         </Button>
 
@@ -45,6 +45,7 @@ export function UserSettingsModal() {
             logger.info("Closing modal with save button, all changes already applied")
             closeModal()
           }}
+          data-oid="ur9g9uu"
         >
           {t("dialogs.userSettings.save")}
         </Button>

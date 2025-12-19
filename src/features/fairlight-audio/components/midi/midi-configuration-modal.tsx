@@ -9,7 +9,7 @@ export function MidiConfigurationModal() {
   }
 
   return (
-    <Button variant="outline" onClick={handleOpen}>
+    <Button variant="outline" onClick={handleOpen} data-oid="npc4lf3">
       Настройки MIDI
     </Button>
   )

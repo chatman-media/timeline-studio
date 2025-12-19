@@ -87,6 +87,7 @@ export function PreviewTimeline({ time, duration, videoRef }: PreviewTimelinePro
       style={{
         left: `${positionPercent}%`,
       }}
+      data-oid="sglrh6-"
     />
   )
 }

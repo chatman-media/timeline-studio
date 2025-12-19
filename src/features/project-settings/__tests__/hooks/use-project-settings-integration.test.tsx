@@ -67,10 +67,12 @@ describe("useProjectSettings - интеграционные тесты", () => {
   describe("совместимость с различными провайдерами", () => {
     it("должен работать в вложенных провайдерах", () => {
       const MultipleProvidersWrapper = ({ children }: { children: React.ReactNode }) => (
-        <ProjectSettingsProvider>
-          <div data-testid="outer-provider">
-            <ProjectSettingsProvider>
-              <div data-testid="inner-provider">{children}</div>
+        <ProjectSettingsProvider data-oid="p_8toz3">
+          <div data-testid="outer-provider" data-oid="q_s-pcu">
+            <ProjectSettingsProvider data-oid="tub.inb">
+              <div data-testid="inner-provider" data-oid="dmrma78">
+                {children}
+              </div>
             </ProjectSettingsProvider>
           </div>
         </ProjectSettingsProvider>

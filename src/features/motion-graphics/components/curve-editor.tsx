@@ -194,25 +194,29 @@ export function CurveEditor({
   }, [])
 
   return (
-    <Card className="p-4">
+    <Card className="p-4" data-oid="9hfw01c">
       {/* Toolbar */}
-      <div className="flex items-center gap-2 mb-4">
-        <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)}>
-          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+      <div className="flex items-center gap-2 mb-4" data-oid="ja6czre">
+        <Button size="sm" variant="ghost" onClick={() => setIsPlaying(!isPlaying)} data-oid="zrubl8m">
+          {isPlaying ? (
+            <Pause className="h-4 w-4" data-oid="o835qv." />
+          ) : (
+            <Play className="h-4 w-4" data-oid="wvqf1mf" />
+          )}
         </Button>
 
-        <Button size="sm" variant="ghost" onClick={() => onTimeChange(0)}>
-          <SkipBack className="h-4 w-4" />
+        <Button size="sm" variant="ghost" onClick={() => onTimeChange(0)} data-oid="8seph7g">
+          <SkipBack className="h-4 w-4" data-oid="67--hui" />
         </Button>
 
-        <Button size="sm" variant="ghost" onClick={() => onTimeChange(duration)}>
-          <SkipForward className="h-4 w-4" />
+        <Button size="sm" variant="ghost" onClick={() => onTimeChange(duration)} data-oid="umiyogw">
+          <SkipForward className="h-4 w-4" data-oid="lbapasz" />
         </Button>
 
-        <div className="h-4 w-px bg-border" />
+        <div className="h-4 w-px bg-border" data-oid="t_acqx6" />
 
-        <Button size="sm" variant="ghost" onClick={() => setShowGrid(!showGrid)}>
-          <Grid className="h-4 w-4" />
+        <Button size="sm" variant="ghost" onClick={() => setShowGrid(!showGrid)} data-oid="r06rn5a">
+          <Grid className="h-4 w-4" data-oid="787w..p" />
         </Button>
 
         <Button
@@ -223,38 +227,73 @@ export function CurveEditor({
             setPanX(0)
             setPanY(0)
           }}
+          data-oid="weha1i2"
         >
-          <Maximize2 className="h-4 w-4" />
+          <Maximize2 className="h-4 w-4" data-oid="zin1gpo" />
         </Button>
 
-        <div className="h-4 w-px bg-border" />
+        <div className="h-4 w-px bg-border" data-oid=":t2g2mt" />
 
-        <Select value={selectedInterpolation} onValueChange={(v) => setSelectedInterpolation(v as InterpolationType)}>
-          <SelectTrigger className="w-32 h-8">
-            <SelectValue />
+        <Select
+          value={selectedInterpolation}
+          onValueChange={(v) => setSelectedInterpolation(v as InterpolationType)}
+          data-oid="8wgkni7"
+        >
+          <SelectTrigger className="w-32 h-8" data-oid="jyoybf:">
+            <SelectValue data-oid="f__z-8a" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="linear">Linear</SelectItem>
-            <SelectItem value="bezier">Bezier</SelectItem>
-            <SelectItem value="hold">Hold</SelectItem>
-            <SelectItem value="ease">Ease</SelectItem>
-            <SelectItem value="ease-in">Ease In</SelectItem>
-            <SelectItem value="ease-out">Ease Out</SelectItem>
-            <SelectItem value="ease-in-out">Ease In Out</SelectItem>
-            <SelectItem value="bounce">Bounce</SelectItem>
-            <SelectItem value="elastic">Elastic</SelectItem>
-            <SelectItem value="back">Back</SelectItem>
-            <SelectItem value="expo">Expo</SelectItem>
+          <SelectContent data-oid="63qoyhr">
+            <SelectItem value="linear" data-oid="7f-0zgr">
+              Linear
+            </SelectItem>
+            <SelectItem value="bezier" data-oid="3w-urnj">
+              Bezier
+            </SelectItem>
+            <SelectItem value="hold" data-oid="a-wml9g">
+              Hold
+            </SelectItem>
+            <SelectItem value="ease" data-oid="0417:0n">
+              Ease
+            </SelectItem>
+            <SelectItem value="ease-in" data-oid="dpg.2-x">
+              Ease In
+            </SelectItem>
+            <SelectItem value="ease-out" data-oid="x7_eu2x">
+              Ease Out
+            </SelectItem>
+            <SelectItem value="ease-in-out" data-oid=".bsuyl4">
+              Ease In Out
+            </SelectItem>
+            <SelectItem value="bounce" data-oid="k1a4ftp">
+              Bounce
+            </SelectItem>
+            <SelectItem value="elastic" data-oid="g4ifbrl">
+              Elastic
+            </SelectItem>
+            <SelectItem value="back" data-oid=":d3tj1e">
+              Back
+            </SelectItem>
+            <SelectItem value="expo" data-oid="je-i.r2">
+              Expo
+            </SelectItem>
           </SelectContent>
         </Select>
 
-        <div className="flex-1" />
+        <div className="flex-1" data-oid="i-v10dt" />
 
-        <Slider value={[zoom]} onValueChange={([v]) => setZoom(v)} min={0.1} max={10} step={0.1} className="w-32" />
+        <Slider
+          value={[zoom]}
+          onValueChange={([v]) => setZoom(v)}
+          min={0.1}
+          max={10}
+          step={0.1}
+          className="w-32"
+          data-oid="f8x5abm"
+        />
       </div>
 
       {/* Canvas */}
-      <div className="relative overflow-hidden rounded-md bg-muted">
+      <div className="relative overflow-hidden rounded-md bg-muted" data-oid="rgxbdv9">
         <canvas
           ref={canvasRef}
           width={800}
@@ -265,6 +304,7 @@ export function CurveEditor({
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onWheel={handleWheel}
+          data-oid="_mq4lh-"
         />
 
         {/* Time scrubber */}
@@ -276,11 +316,12 @@ export function CurveEditor({
           max={duration}
           step={0.01}
           className="absolute bottom-0 left-0 right-0 w-full"
+          data-oid="6da5s8m"
         />
       </div>
 
       {/* Curve list */}
-      <div className="mt-4 space-y-2">
+      <div className="mt-4 space-y-2" data-oid="1056w26">
         {curves.map((curve) => (
           <div
             key={curve.propertyId}
@@ -288,9 +329,12 @@ export function CurveEditor({
               curve.propertyId === selectedCurveId ? "bg-muted" : ""
             }`}
             onClick={() => onCurveSelect(curve.propertyId)}
+            data-oid="r0dpoot"
           >
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: curve.color }} />
-            <span className="text-sm flex-1">Property {curve.propertyId}</span>
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: curve.color }} data-oid="0m:zvh7" />
+            <span className="text-sm flex-1" data-oid="7_--nu6">
+              Property {curve.propertyId}
+            </span>
             <Button
               size="sm"
               variant="ghost"
@@ -298,8 +342,13 @@ export function CurveEditor({
                 e.stopPropagation()
                 // Toggle visibility
               }}
+              data-oid="vbtn36l"
             >
-              {curve.visible ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+              {curve.visible ? (
+                <Unlock className="h-3 w-3" data-oid="px94knu" />
+              ) : (
+                <Lock className="h-3 w-3" data-oid="fmj1xep" />
+              )}
             </Button>
           </div>
         ))}

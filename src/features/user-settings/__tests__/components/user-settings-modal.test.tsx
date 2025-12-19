@@ -120,7 +120,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should render correctly", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="m.j73qm" />)
 
     // Проверяем, что компонент отрендерился с табами
     expect(screen.getByText("dialogs.userSettings.tabs.general")).toBeInTheDocument()
@@ -136,7 +136,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle language change", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid=":0.p30t" />)
 
     // Проверяем, что селект языка отображается
     expect(screen.getByText("dialogs.userSettings.interfaceLanguage")).toBeInTheDocument()
@@ -150,7 +150,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle screenshots path change", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="_ml6lcn" />)
 
     // Находим инпут пути скриншотов
     const inputs = screen.getAllByRole("textbox")
@@ -159,7 +159,9 @@ describe("UserSettingsModal", () => {
     // Вводим новый путь
     act(() => {
       act(() => {
-        fireEvent.change(screenshotsPathInput, { target: { value: "new/path" } })
+        fireEvent.change(screenshotsPathInput, {
+          target: { value: "new/path" },
+        })
       })
     })
 
@@ -176,7 +178,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should render tabs correctly", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="6sqiwsv" />)
 
     // Проверяем, что табы отображаются
     expect(screen.getByText("dialogs.userSettings.tabs.general")).toBeInTheDocument()
@@ -188,7 +190,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle cancel button click", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="bdk:vxj" />)
 
     // Нажимаем кнопку "Отмена"
     const cancelButton = screen.getByText("dialogs.userSettings.cancel")
@@ -212,7 +214,7 @@ describe("UserSettingsModal", () => {
       }),
     )
 
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="wnw6o_t" />)
 
     // Находим кнопку X рядом с инпутом пути скриншотов
     const clearButton = screen.getByTitle("dialogs.userSettings.clearPath")
@@ -230,7 +232,7 @@ describe("UserSettingsModal", () => {
 
   it("should update state when language changes in context", () => {
     // Рендерим компонент
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="k1l0558" />)
 
     // Проверяем, что начальное значение языка установлено правильно
     const selectValue = screen.getByRole("combobox")
@@ -248,7 +250,7 @@ describe("UserSettingsModal", () => {
     }))
 
     // Перерендериваем компонент
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="xft_0n1" />)
 
     // Проверяем, что значение языка обновилось
     const updatedSelectValue = screen.getAllByRole("combobox")[1]
@@ -257,7 +259,7 @@ describe("UserSettingsModal", () => {
 
   it.skip("should update state when screenshotsPath changes in context", () => {
     // Рендерим компонент
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="8onfwwa" />)
 
     // Проверяем, что начальное значение пути скриншотов установлено правильно
     const inputs = screen.getAllByRole("textbox")
@@ -274,7 +276,7 @@ describe("UserSettingsModal", () => {
     )
 
     // Перерендериваем компонент
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="lijv8qc" />)
 
     // Проверяем, что значение пути скриншотов обновилось
     const updatedInputs = screen.getAllByRole("textbox")
@@ -286,7 +288,7 @@ describe("UserSettingsModal", () => {
     mockShowOpenDialog.mockResolvedValue(["selected/directory/path"])
 
     // Рендерим компонент
-    const { rerender } = render(<UserSettingsModal />)
+    const { rerender } = render(<UserSettingsModal data-oid=":zgnzbk" />)
 
     // Находим кнопки выбора папки (у нас их две - для screenshotsPath и playerScreenshotsPath)
     const folderButtons = screen.getAllByRole("button", {
@@ -326,7 +328,7 @@ describe("UserSettingsModal", () => {
 
     // Перерендериваем компонент
     act(() => {
-      rerender(<UserSettingsModal />)
+      rerender(<UserSettingsModal data-oid="p8pvwii" />)
     })
 
     // Проверяем, что путь скриншотов был обновлен
@@ -339,7 +341,7 @@ describe("UserSettingsModal", () => {
     mockShowOpenDialog.mockResolvedValue(["selected/directory/path"])
 
     // Рендерим компонент
-    const { rerender } = render(<UserSettingsModal />)
+    const { rerender } = render(<UserSettingsModal data-oid="2o0ykom" />)
 
     // Находим кнопки выбора папки (у нас их две - для screenshotsPath и playerScreenshotsPath)
     const folderButtons = screen.getAllByRole("button", {
@@ -379,7 +381,7 @@ describe("UserSettingsModal", () => {
 
     // Перерендериваем компонент
     act(() => {
-      rerender(<UserSettingsModal />)
+      rerender(<UserSettingsModal data-oid="neril7c" />)
     })
 
     // Проверяем, что путь скриншотов плеера был обновлен
@@ -392,7 +394,7 @@ describe("UserSettingsModal", () => {
     mockShowOpenDialog.mockResolvedValue([])
 
     // Рендерим компонент
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="p8ggwb1" />)
 
     // Находим кнопки выбора папки (у нас их две - для screenshotsPath и playerScreenshotsPath)
     const folderButtons = screen.getAllByRole("button", {
@@ -434,7 +436,7 @@ describe("UserSettingsModal", () => {
     const mockPrompt = vi.spyOn(window, "prompt").mockReturnValue("custom/path")
 
     // Рендерим компонент
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="x.2:646" />)
 
     // Находим кнопки выбора папки
     const folderButtons = screen.getAllByRole("button", {
@@ -464,7 +466,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should handle player screenshots path change input", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="._nw3ff" />)
 
     // Находим инпут пути скриншотов плеера
     const inputs = screen.getAllByRole("textbox")
@@ -473,7 +475,9 @@ describe("UserSettingsModal", () => {
     // Вводим новый путь
     act(() => {
       act(() => {
-        fireEvent.change(playerScreenshotsPathInput, { target: { value: "new/player/path" } })
+        fireEvent.change(playerScreenshotsPathInput, {
+          target: { value: "new/player/path" },
+        })
       })
     })
 
@@ -503,7 +507,7 @@ describe("UserSettingsModal", () => {
       }),
     )
 
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="sltbljp" />)
 
     // Находим кнопку X рядом с инпутом пути скриншотов плеера
     // Since the player screenshots path is not default, there should be a clear button for it
@@ -523,7 +527,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should open cache statistics modal when button is clicked", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="xbu35gk" />)
 
     // Находим кнопку статистики кэша
     const cacheStatsButton = screen.getByText("dialogs.userSettings.cacheStats")
@@ -538,7 +542,7 @@ describe("UserSettingsModal", () => {
   })
 
   it("should open cache settings modal when button is clicked", () => {
-    render(<UserSettingsModal />)
+    render(<UserSettingsModal data-oid="pe-xucu" />)
 
     // Находим кнопку настроек кэша
     const cacheSettingsButton = screen.getByText("dialogs.userSettings.cacheSettings")
@@ -549,6 +553,8 @@ describe("UserSettingsModal", () => {
     })
 
     // Проверяем, что openModal был вызван с правильными параметрами
-    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-settings", { returnTo: "user-settings" })
+    expect(mockOrchestrator.openModal).toHaveBeenCalledWith("cache-settings", {
+      returnTo: "user-settings",
+    })
   })
 })

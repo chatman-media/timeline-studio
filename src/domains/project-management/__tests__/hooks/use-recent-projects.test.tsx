@@ -86,7 +86,15 @@ describe("useRecentProjects Hook", () => {
         expect(result.current.recentProjects).toEqual(mockProjects)
       })
 
-      const newProjects = [{ path: "/new-project.tls", name: "New Project", lastOpened: Date.now() }, ...mockProjects]
+      const newProjects = [
+        {
+          path: "/new-project.tls",
+          name: "New Project",
+          lastOpened: Date.now(),
+        },
+        ...mockProjects,
+      ]
+
       mockGetRecentProjects.mockResolvedValueOnce(newProjects)
 
       await result.current.addRecentProject("/new-project.tls", "New Project")
@@ -198,8 +206,16 @@ describe("useRecentProjects Hook", () => {
 
     it("should handle special characters in project names", async () => {
       const specialProjects = [
-        { path: "/project [1].tls", name: "Project [1]", lastOpened: Date.now() - 1000 },
-        { path: "/проект.tls", name: "Русский проект", lastOpened: Date.now() - 2000 },
+        {
+          path: "/project [1].tls",
+          name: "Project [1]",
+          lastOpened: Date.now() - 1000,
+        },
+        {
+          path: "/проект.tls",
+          name: "Русский проект",
+          lastOpened: Date.now() - 2000,
+        },
         { path: "/项目.tls", name: "中文项目", lastOpened: Date.now() - 3000 },
       ]
 

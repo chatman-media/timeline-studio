@@ -56,7 +56,12 @@ describe("SurroundPanner", () => {
   describe("rendering", () => {
     it("renders stereo format correctly", () => {
       const { getByText } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="t3o4jz:"
+        />,
       )
 
       expect(getByText("STEREO Surround Panner")).toBeInTheDocument()
@@ -67,7 +72,12 @@ describe("SurroundPanner", () => {
 
     it("renders 5.1 format with all speakers", () => {
       const { getByText } = renderWithProviders(
-        <SurroundPanner format="5.1" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="5.1"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="o0hywh5"
+        />,
       )
 
       expect(getByText("5.1 Surround Panner")).toBeInTheDocument()
@@ -81,7 +91,12 @@ describe("SurroundPanner", () => {
 
     it("renders 7.1 format with all speakers", () => {
       const { getByText } = renderWithProviders(
-        <SurroundPanner format="7.1" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="7.1"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="lbsu4zd"
+        />,
       )
 
       expect(getByText("7.1 Surround Panner")).toBeInTheDocument()
@@ -97,7 +112,12 @@ describe("SurroundPanner", () => {
 
     it("displays position values correctly", () => {
       const { getByText } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 25.5, y: 75.3 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 25.5, y: 75.3 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="1qwr2_5"
+        />,
       )
 
       // The component rounds values, so we expect X:26% Y:75%
@@ -111,6 +131,7 @@ describe("SurroundPanner", () => {
           position={{ x: 50, y: 50 }}
           onPositionChange={mockOnPositionChange}
           className="custom-class"
+          data-oid="kamu-kp"
         />,
       )
 
@@ -124,7 +145,12 @@ describe("SurroundPanner", () => {
   describe("interaction", () => {
     it("calls onPositionChange when clicking on panning field", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="pyw5o36"
+        />,
       )
 
       const panningField = container.querySelector(".cursor-crosshair")!
@@ -148,7 +174,12 @@ describe("SurroundPanner", () => {
 
     it("handles drag interaction correctly", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="aq6vo4b"
+        />,
       )
 
       const panningField = container.querySelector(".cursor-crosshair")!
@@ -187,7 +218,12 @@ describe("SurroundPanner", () => {
 
     it("clamps position values to valid range", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="iax8rdc"
+        />,
       )
 
       const panningField = container.querySelector(".cursor-crosshair")!
@@ -214,7 +250,12 @@ describe("SurroundPanner", () => {
 
     it("stops drag on mouse leave", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="potl48i"
+        />,
       )
 
       const panningField = container.querySelector(".cursor-crosshair")!
@@ -249,6 +290,7 @@ describe("SurroundPanner", () => {
           format="stereo"
           position={{ x: 10, y: 50 }} // Much closer to left speaker
           onPositionChange={mockOnPositionChange}
+          data-oid="z0_d2b."
         />,
       )
 
@@ -274,7 +316,12 @@ describe("SurroundPanner", () => {
 
     it("shows source position indicator", () => {
       const { getByText } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="qpqmfxj"
+        />,
       )
 
       expect(getByText("Source")).toBeInTheDocument()
@@ -282,7 +329,12 @@ describe("SurroundPanner", () => {
 
     it("scales source indicator when dragging", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid=":v4-prk"
+        />,
       )
 
       const panningField = container.querySelector(".cursor-crosshair")!
@@ -317,6 +369,7 @@ describe("SurroundPanner", () => {
           format="stereo"
           position={{ x: 30, y: 50 }} // Closer to left speaker
           onPositionChange={mockOnPositionChange}
+          data-oid=".p4u5z9"
         />,
       )
 
@@ -338,6 +391,7 @@ describe("SurroundPanner", () => {
           format="5.1"
           position={{ x: 0, y: 0 }} // Far corner, some channels should be silent
           onPositionChange={mockOnPositionChange}
+          data-oid="1jnc-sj"
         />,
       )
 
@@ -350,7 +404,12 @@ describe("SurroundPanner", () => {
 
     it("shows level bars for each channel", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="1n4_t:o"
+        />,
       )
 
       const levelBars = container.querySelectorAll(".h-1 .bg-primary.transition-all")
@@ -361,7 +420,12 @@ describe("SurroundPanner", () => {
   describe("reference elements", () => {
     it("shows center reference dot", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="w:e07vy"
+        />,
       )
 
       const centerDot = container.querySelector(".w-1.h-1.bg-muted-foreground.rounded-full")
@@ -370,7 +434,12 @@ describe("SurroundPanner", () => {
 
     it("shows distance rings", () => {
       const { container } = renderWithProviders(
-        <SurroundPanner format="stereo" position={{ x: 50, y: 50 }} onPositionChange={mockOnPositionChange} />,
+        <SurroundPanner
+          format="stereo"
+          position={{ x: 50, y: 50 }}
+          onPositionChange={mockOnPositionChange}
+          data-oid="tfbz.0r"
+        />,
       )
 
       const rings = container.querySelectorAll(".border.rounded-full")

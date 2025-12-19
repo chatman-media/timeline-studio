@@ -21,7 +21,7 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("lucide-react", () => ({
   CopyPlus: ({ className }: { className: string }) => (
-    <div data-testid="copy-plus-icon" className={className}>
+    <div data-testid="copy-plus-icon" className={className} data-oid="jq5lb9.">
       CopyPlus Icon
     </div>
   ),
@@ -29,7 +29,14 @@ vi.mock("lucide-react", () => ({
 
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, className, onClick, disabled, ...props }: any) => (
-    <button className={className} onClick={onClick} disabled={disabled} data-testid="group-button" {...props}>
+    <button
+      className={className}
+      onClick={onClick}
+      disabled={disabled}
+      data-testid="group-button"
+      {...props}
+      data-oid="lm7b.u4"
+    >
       {children}
     </button>
   ),
@@ -52,7 +59,7 @@ const createTestItems = (count: number): TestItem[] =>
   }))
 
 const defaultRenderItem = (item: TestItem) => (
-  <div key={item.id} data-testid={`item-${item.id}`}>
+  <div key={item.id} data-testid={`item-${item.id}`} data-oid="w5-0gj-">
     {item.name}
   </div>
 )
@@ -64,14 +71,16 @@ describe("ContentGroup", () => {
 
   describe("основной рендеринг", () => {
     it("должен возвращать null для пустой группы", () => {
-      const { container } = render(<ContentGroup title="Test Group" items={[]} renderItem={defaultRenderItem} />)
+      const { container } = render(
+        <ContentGroup title="Test Group" items={[]} renderItem={defaultRenderItem} data-oid="d-vddvs" />,
+      )
 
       expect(container.firstChild).toBeNull()
     })
 
     it("должен рендерить группу с заголовком и элементами", () => {
       const items = createTestItems(3)
-      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} />)
+      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} data-oid="af9h8do" />)
 
       expect(screen.getByText("Test Group")).toBeInTheDocument()
       expect(screen.getByTestId("item-item-1")).toBeInTheDocument()
@@ -81,7 +90,9 @@ describe("ContentGroup", () => {
 
     it("должен рендерить только элементы без обертки, если нет заголовка", () => {
       const items = createTestItems(2)
-      const { container } = render(<ContentGroup title="" items={items} renderItem={defaultRenderItem} />)
+      const { container } = render(
+        <ContentGroup title="" items={items} renderItem={defaultRenderItem} data-oid="ggn3ah1" />,
+      )
 
       // Проверяем, что нет заголовка
       expect(screen.queryByRole("heading")).not.toBeInTheDocument()
@@ -98,7 +109,15 @@ describe("ContentGroup", () => {
   describe("режимы отображения", () => {
     it("должен применять правильные классы для режима thumbnails", () => {
       const items = createTestItems(2)
-      render(<ContentGroup title="Test Group" items={items} viewMode="thumbnails" renderItem={defaultRenderItem} />)
+      render(
+        <ContentGroup
+          title="Test Group"
+          items={items}
+          viewMode="thumbnails"
+          renderItem={defaultRenderItem}
+          data-oid="ght3zw."
+        />,
+      )
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
       const expectedClasses = ["flex", "flex-wrap", "justify-between", "gap-3"]
@@ -109,7 +128,15 @@ describe("ContentGroup", () => {
 
     it("должен применять правильные классы для режима grid", () => {
       const items = createTestItems(2)
-      render(<ContentGroup title="Test Group" items={items} viewMode="grid" renderItem={defaultRenderItem} />)
+      render(
+        <ContentGroup
+          title="Test Group"
+          items={items}
+          viewMode="grid"
+          renderItem={defaultRenderItem}
+          data-oid="tmu42vo"
+        />,
+      )
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
       const expectedClasses = ["items-left", "flex", "flex-wrap", "gap-3"]
@@ -120,7 +147,15 @@ describe("ContentGroup", () => {
 
     it("должен применять правильные классы для режима list", () => {
       const items = createTestItems(2)
-      render(<ContentGroup title="Test Group" items={items} viewMode="list" renderItem={defaultRenderItem} />)
+      render(
+        <ContentGroup
+          title="Test Group"
+          items={items}
+          viewMode="list"
+          renderItem={defaultRenderItem}
+          data-oid="ssoxbon"
+        />,
+      )
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
       expect(itemsContainer).toHaveClass("space-y-1")
@@ -128,7 +163,7 @@ describe("ContentGroup", () => {
 
     it("должен использовать режим thumbnails по умолчанию", () => {
       const items = createTestItems(2)
-      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} />)
+      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} data-oid="fpi-4vb" />)
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
       const expectedClasses = ["flex", "flex-wrap", "justify-between", "gap-3"]
@@ -143,7 +178,15 @@ describe("ContentGroup", () => {
       const items = createTestItems(2)
       const onAddAll = vi.fn()
 
-      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} onAddAll={onAddAll} />)
+      render(
+        <ContentGroup
+          title="Test Group"
+          items={items}
+          renderItem={defaultRenderItem}
+          onAddAll={onAddAll}
+          data-oid="bts8wte"
+        />,
+      )
 
       const button = screen.getByTestId("group-button")
       expect(button).toBeInTheDocument()
@@ -154,7 +197,7 @@ describe("ContentGroup", () => {
     it("не должен отображать кнопку добавления без onAddAll", () => {
       const items = createTestItems(2)
 
-      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} />)
+      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} data-oid="dq5lfcm" />)
 
       expect(screen.queryByTestId("group-button")).not.toBeInTheDocument()
     })
@@ -163,7 +206,15 @@ describe("ContentGroup", () => {
       const items = createTestItems(2)
       const onAddAll = vi.fn()
 
-      render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} onAddAll={onAddAll} />)
+      render(
+        <ContentGroup
+          title="Test Group"
+          items={items}
+          renderItem={defaultRenderItem}
+          onAddAll={onAddAll}
+          data-oid="zv1cpmy"
+        />,
+      )
 
       const button = screen.getByTestId("group-button")
       fireEvent.click(button)
@@ -183,6 +234,7 @@ describe("ContentGroup", () => {
           renderItem={defaultRenderItem}
           onAddAll={onAddAll}
           areAllItemsAdded={areAllItemsAdded}
+          data-oid="9orn9w_"
         />,
       )
 
@@ -206,6 +258,7 @@ describe("ContentGroup", () => {
           renderItem={defaultRenderItem}
           onAddAll={onAddAll}
           addButtonText="Add All Items"
+          data-oid="381i_1x"
         />,
       )
 
@@ -221,6 +274,7 @@ describe("ContentGroup", () => {
           onAddAll={onAddAll}
           areAllItemsAdded={areAllItemsAdded}
           addedButtonText="Everything Added"
+          data-oid="18gzf3v"
         />,
       )
 
@@ -238,6 +292,7 @@ describe("ContentGroup", () => {
           items={items}
           renderItem={defaultRenderItem}
           itemsContainerClassName="custom-class-1 custom-class-2"
+          data-oid="cz5p47u"
         />,
       )
 
@@ -261,6 +316,7 @@ describe("ContentGroup", () => {
           items={items}
           renderItem={defaultRenderItem}
           itemsContainerStyle={customStyle}
+          data-oid="2cuf-y-"
         />,
       )
 
@@ -282,6 +338,7 @@ describe("ContentGroup", () => {
           renderItem={defaultRenderItem}
           itemsContainerClassName="custom-class"
           itemsContainerStyle={{ marginTop: "10px" }}
+          data-oid="mz6_tjf"
         />,
       )
 
@@ -295,12 +352,12 @@ describe("ContentGroup", () => {
     it("должен передавать правильный индекс в renderItem", () => {
       const items = createTestItems(3)
       const renderItem = vi.fn((item: TestItem, index: number) => (
-        <div key={item.id} data-index={index}>
+        <div key={item.id} data-index={index} data-oid="srge_nl">
           {item.name}
         </div>
       ))
 
-      render(<ContentGroup title="Test Group" items={items} renderItem={renderItem} />)
+      render(<ContentGroup title="Test Group" items={items} renderItem={renderItem} data-oid="hppewmx" />)
 
       expect(renderItem).toHaveBeenCalledTimes(3)
       expect(renderItem).toHaveBeenNthCalledWith(1, items[0], 0)
@@ -312,7 +369,12 @@ describe("ContentGroup", () => {
   describe("интеграционные тесты", () => {
     it("должен корректно обрабатывать динамическое изменение элементов", () => {
       const { rerender } = render(
-        <ContentGroup title="Test Group" items={createTestItems(2)} renderItem={defaultRenderItem} />,
+        <ContentGroup
+          title="Test Group"
+          items={createTestItems(2)}
+          renderItem={defaultRenderItem}
+          data-oid="lcj46i9"
+        />,
       )
 
       expect(screen.getByTestId("item-item-1")).toBeInTheDocument()
@@ -320,7 +382,14 @@ describe("ContentGroup", () => {
       expect(screen.queryByTestId("item-item-3")).not.toBeInTheDocument()
 
       // Добавляем элемент
-      rerender(<ContentGroup title="Test Group" items={createTestItems(3)} renderItem={defaultRenderItem} />)
+      rerender(
+        <ContentGroup
+          title="Test Group"
+          items={createTestItems(3)}
+          renderItem={defaultRenderItem}
+          data-oid="vtg8zhc"
+        />,
+      )
 
       expect(screen.getByTestId("item-item-3")).toBeInTheDocument()
     })
@@ -338,6 +407,7 @@ describe("ContentGroup", () => {
           renderItem={defaultRenderItem}
           onAddAll={onAddAll}
           areAllItemsAdded={areAllItemsAdded}
+          data-oid="8zylrx:"
         />,
       )
 
@@ -354,6 +424,7 @@ describe("ContentGroup", () => {
           renderItem={defaultRenderItem}
           onAddAll={onAddAll}
           areAllItemsAdded={areAllItemsAdded}
+          data-oid="rwqpgn1"
         />,
       )
 
@@ -374,12 +445,12 @@ describe("ContentGroup", () => {
       ]
 
       const renderCustomItem = (item: CustomItem) => (
-        <div key={item.uuid} data-testid={item.uuid}>
+        <div key={item.uuid} data-testid={item.uuid} data-oid="c.0uzwf">
           {item.title}: {item.data.value}
         </div>
       )
 
-      render(<ContentGroup title="Custom Group" items={customItems} renderItem={renderCustomItem} />)
+      render(<ContentGroup title="Custom Group" items={customItems} renderItem={renderCustomItem} data-oid="2gsa:k0" />)
 
       expect(screen.getByText("Custom 1: 100")).toBeInTheDocument()
       expect(screen.getByText("Custom 2: 200")).toBeInTheDocument()

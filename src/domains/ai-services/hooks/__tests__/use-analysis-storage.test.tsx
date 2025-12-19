@@ -123,16 +123,30 @@ describe("useAnalysisStorage", () => {
     mockStorageService = module.analysisStorageService
 
     // Default successful responses
-    vi.mocked(mockStorageService.saveComprehensiveAnalysis).mockResolvedValue({ success: true, data: "test-id" })
+    vi.mocked(mockStorageService.saveComprehensiveAnalysis).mockResolvedValue({
+      success: true,
+      data: "test-id",
+    })
     vi.mocked(mockStorageService.loadComprehensiveAnalysis).mockResolvedValue({
       success: true,
       data: mockComprehensiveAnalysis,
     })
     vi.mocked(mockStorageService.deleteComprehensiveAnalysis).mockResolvedValue({ success: true })
-    vi.mocked(mockStorageService.saveMontageAnalysis).mockResolvedValue({ success: true, data: "test-id" })
-    vi.mocked(mockStorageService.loadMontageAnalysis).mockResolvedValue({ success: true, data: mockMontageAnalysis })
-    vi.mocked(mockStorageService.saveUnifiedAnalysis).mockResolvedValue({ success: true })
-    vi.mocked(mockStorageService.loadUnifiedAnalysis).mockResolvedValue({ success: true, data: mockUnifiedAnalysis })
+    vi.mocked(mockStorageService.saveMontageAnalysis).mockResolvedValue({
+      success: true,
+      data: "test-id",
+    })
+    vi.mocked(mockStorageService.loadMontageAnalysis).mockResolvedValue({
+      success: true,
+      data: mockMontageAnalysis,
+    })
+    vi.mocked(mockStorageService.saveUnifiedAnalysis).mockResolvedValue({
+      success: true,
+    })
+    vi.mocked(mockStorageService.loadUnifiedAnalysis).mockResolvedValue({
+      success: true,
+      data: mockUnifiedAnalysis,
+    })
     vi.mocked(mockStorageService.loadAnalysisMetadata).mockResolvedValue(mockMetadata)
     vi.mocked(mockStorageService.hasAnalysis).mockResolvedValue(true)
     vi.mocked(mockStorageService.getAnalyzedVideos).mockResolvedValue(["/test/video1.mp4", "/test/video2.mp4"])

@@ -53,17 +53,17 @@ vi.mock("../../hooks/editing/use-split-edit", () => ({
 
 describe("SplitEditToolbar - упрощенные тесты", () => {
   it("рендерит компонент без ошибок", () => {
-    render(<SplitEditToolbar />)
+    render(<SplitEditToolbar data-oid="34qs.lz" />)
     expect(screen.getByText("Split Edit")).toBeInTheDocument()
   })
 
   it("рендерит компонент в компактном режиме", () => {
-    const { container } = render(<SplitEditToolbar compact={true} />)
+    const { container } = render(<SplitEditToolbar compact={true} data-oid="1hj.bw9" />)
     expect(container.querySelector('[aria-label="Toggle Split Edit"]')).toBeInTheDocument()
   })
 
   it("применяет кастомный className", () => {
-    const { container } = render(<SplitEditToolbar className="custom-class" />)
+    const { container } = render(<SplitEditToolbar className="custom-class" data-oid="pkeq7-8" />)
     expect(container.querySelector(".custom-class")).toBeInTheDocument()
   })
 })

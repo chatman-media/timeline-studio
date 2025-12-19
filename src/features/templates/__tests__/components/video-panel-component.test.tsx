@@ -23,7 +23,7 @@ describe("VideoPanelComponent", () => {
   })
 
   it("should render without crashing", () => {
-    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={false} />)
+    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={false} data-oid="0vxp7o0" />)
 
     // Проверяем, что компонент отрендерился (ищем контейнер)
     const container = document.querySelector(".video-panel-template")
@@ -31,7 +31,7 @@ describe("VideoPanelComponent", () => {
   })
 
   it("should display video when path is provided", () => {
-    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} />)
+    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} data-oid="0qtic74" />)
 
     // Проверяем, что видео элемент отрендерился
     const videoElement = document.querySelector('video[data-video-id="test-video-1"]')
@@ -40,7 +40,7 @@ describe("VideoPanelComponent", () => {
   })
 
   it("should show active indicator when video is active", () => {
-    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} />)
+    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} data-oid=":b_5bnc" />)
 
     // Проверяем, что контейнер отрендерился и имеет активную рамку
     const activeContainer = document.querySelector(".border-2.border-white")
@@ -48,14 +48,14 @@ describe("VideoPanelComponent", () => {
   })
 
   it("should display video name when provided", () => {
-    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} hideLabel={false} />)
+    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} hideLabel={false} data-oid="m0scnpn" />)
 
     // Проверяем, что название видео отображается
     expect(screen.getByText("Test Video")).toBeInTheDocument()
   })
 
   it("should hide label when hideLabel is true", () => {
-    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} hideLabel={true} />)
+    renderWithTemplates(<VideoPanelComponent video={mockVideo} isActive={true} hideLabel={true} data-oid="5o801yq" />)
 
     // Проверяем, что название видео скрыто (opacity: 0)
     const labelElement = screen.getByText("Test Video")
@@ -65,7 +65,7 @@ describe("VideoPanelComponent", () => {
   it("should show no video message when path is missing", () => {
     const videoWithoutPath = { ...mockVideo, path: "" }
 
-    renderWithTemplates(<VideoPanelComponent video={videoWithoutPath} isActive={true} />)
+    renderWithTemplates(<VideoPanelComponent video={videoWithoutPath} isActive={true} data-oid="zv.-_kq" />)
 
     // Проверяем, что отображается сообщение об отсутствии видео
     expect(screen.getByText("timeline.player.noVideoSelected")).toBeInTheDocument()

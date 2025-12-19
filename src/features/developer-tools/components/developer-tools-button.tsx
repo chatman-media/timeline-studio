@@ -16,15 +16,22 @@ export function DeveloperToolsButton({ onClick }: DeveloperToolsButtonProps) {
   const { t } = useTranslation()
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="sm" onClick={onClick} className="h-8" data-testid="developer-tools-button">
-            <Code2 className="h-4 w-4" />
+    <TooltipProvider data-oid="w3abdpn">
+      <Tooltip data-oid="clv0vh5">
+        <TooltipTrigger asChild data-oid="4qbglng">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClick}
+            className="h-8"
+            data-testid="developer-tools-button"
+            data-oid="2:40dpn"
+          >
+            <Code2 className="h-4 w-4" data-oid="kzs5ky:" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          <p>{t("developerTools.openButton", "Open Developer Tools")}</p>
+        <TooltipContent data-oid="9yopebb">
+          <p data-oid="fo2_o88">{t("developerTools.openButton", "Open Developer Tools")}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -109,49 +109,64 @@ export function QualityControls({ quality, gpuTier, onChange, className }: Quali
   const performanceLabel = getPerformanceLabel(performanceScore)
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-6 ${className}`} data-oid="fr05ev2">
       {/* GPU Information */}
-      <Card className="p-4">
-        <div className="flex items-center gap-3 mb-3">
-          <Monitor className="w-5 h-5" />
-          <h4 className="font-medium">GPU Information</h4>
-          <Badge variant="outline">
-            <div className={`w-2 h-2 rounded-full ${gpuInfo.color} mr-2`} />
+      <Card className="p-4" data-oid="1.j9u.l">
+        <div className="flex items-center gap-3 mb-3" data-oid="czp9009">
+          <Monitor className="w-5 h-5" data-oid="zh8ynv:" />
+          <h4 className="font-medium" data-oid="i2g8iih">
+            GPU Information
+          </h4>
+          <Badge variant="outline" data-oid="o809bgw">
+            <div className={`w-2 h-2 rounded-full ${gpuInfo.color} mr-2`} data-oid="v3bw6r3" />
             {gpuTier.toUpperCase()} TIER
           </Badge>
         </div>
 
-        <p className="text-sm text-muted-foreground mb-2">{gpuInfo.description}</p>
+        <p className="text-sm text-muted-foreground mb-2" data-oid="qtq8mvb">
+          {gpuInfo.description}
+        </p>
 
-        <div className="flex items-center gap-2 text-sm">
-          <Zap className="w-4 h-4 text-muted-foreground" />
-          <span className="text-muted-foreground">{gpuInfo.recommendations}</span>
+        <div className="flex items-center gap-2 text-sm" data-oid="5_ez4pw">
+          <Zap className="w-4 h-4 text-muted-foreground" data-oid=":h.w:07" />
+          <span className="text-muted-foreground" data-oid="_7ao.8c">
+            {gpuInfo.recommendations}
+          </span>
         </div>
       </Card>
 
       {/* Performance Estimate */}
-      <Card className="p-4">
-        <div className="flex items-center gap-3 mb-3">
-          <Gauge className="w-5 h-5" />
-          <h4 className="font-medium">Performance Estimate</h4>
-          <Badge variant="outline" className={performanceLabel.color}>
+      <Card className="p-4" data-oid="meggvsu">
+        <div className="flex items-center gap-3 mb-3" data-oid="py_0gch">
+          <Gauge className="w-5 h-5" data-oid="1elrklo" />
+          <h4 className="font-medium" data-oid="4ie1x7b">
+            Performance Estimate
+          </h4>
+          <Badge variant="outline" className={performanceLabel.color} data-oid=":02m:7-">
             {performanceLabel.label}
           </Badge>
         </div>
 
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Expected Performance</span>
-            <span className={`font-medium ${performanceLabel.color}`}>{Math.round(performanceScore)}%</span>
+        <div className="space-y-2" data-oid="d1hy047">
+          <div className="flex justify-between text-sm" data-oid="d:bd269">
+            <span data-oid="97n14la">Expected Performance</span>
+            <span className={`font-medium ${performanceLabel.color}`} data-oid="0_zt-zb">
+              {Math.round(performanceScore)}%
+            </span>
           </div>
 
-          <div className="w-full bg-muted rounded-full h-2">
-            <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${performanceScore}%` }} />
+          <div className="w-full bg-muted rounded-full h-2" data-oid="t0_80_q">
+            <div
+              className="bg-primary h-2 rounded-full transition-all"
+              style={{ width: `${performanceScore}%` }}
+              data-oid="jt0m1b6"
+            />
           </div>
 
           <button
             onClick={applyRecommended}
             className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors mt-2"
+            data-oid="6rlpwha"
           >
             Apply recommended settings for {gpuTier} tier GPU
           </button>
@@ -159,17 +174,23 @@ export function QualityControls({ quality, gpuTier, onChange, className }: Quali
       </Card>
 
       {/* Quality Settings */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-3">
-          <Settings className="w-5 h-5" />
-          <h4 className="font-medium">Quality Settings</h4>
+      <div className="space-y-4" data-oid="1201ckc">
+        <div className="flex items-center gap-3" data-oid="v:ps82b">
+          <Settings className="w-5 h-5" data-oid="54:xws6" />
+          <h4 className="font-medium" data-oid="nyair-3">
+            Quality Settings
+          </h4>
         </div>
 
         {/* Resolution */}
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <label className="text-sm font-medium">Resolution</label>
-            <span className="text-sm text-muted-foreground">{Math.round(quality.resolution * 100)}%</span>
+        <div className="space-y-2" data-oid="wjq_oiy">
+          <div className="flex justify-between" data-oid="-3iu83g">
+            <label className="text-sm font-medium" data-oid="btz:k-e">
+              Resolution
+            </label>
+            <span className="text-sm text-muted-foreground" data-oid="f1vu41a">
+              {Math.round(quality.resolution * 100)}%
+            </span>
           </div>
           <Slider
             value={[quality.resolution * 100]}
@@ -178,47 +199,52 @@ export function QualityControls({ quality, gpuTier, onChange, className }: Quali
             min={25}
             step={25}
             className="w-full"
+            data-oid=":lj8t8d"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>25%</span>
-            <span>50%</span>
-            <span>75%</span>
-            <span>100%</span>
+
+          <div className="flex justify-between text-xs text-muted-foreground" data-oid="_f7rfw5">
+            <span data-oid="jdvmdny">25%</span>
+            <span data-oid="5f9v-q-">50%</span>
+            <span data-oid="cxe5f4i">75%</span>
+            <span data-oid=".o9y0mt">100%</span>
           </div>
         </div>
 
         {/* Effects Quality */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Effects Quality</label>
+        <div className="space-y-2" data-oid="gf7m04y">
+          <label className="text-sm font-medium" data-oid="fc49gqf">
+            Effects Quality
+          </label>
           <Select
             value={quality.effects}
             onValueChange={(value: "all" | "basic" | "none") => updateQuality({ effects: value })}
+            data-oid="kg6x:jh"
           >
-            <SelectTrigger>
-              <SelectValue />
+            <SelectTrigger data-oid="yrkw:yj">
+              <SelectValue data-oid="vvj85-7" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4" />
+            <SelectContent data-oid="hlhhiqn">
+              <SelectItem value="all" data-oid="nx8iydv">
+                <div className="flex items-center gap-2" data-oid="uz5zcum">
+                  <Eye className="w-4 h-4" data-oid="pxu09t0" />
                   All Effects
                 </div>
               </SelectItem>
-              <SelectItem value="basic">
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 opacity-60" />
+              <SelectItem value="basic" data-oid="0.sg07i">
+                <div className="flex items-center gap-2" data-oid="zm5824v">
+                  <Eye className="w-4 h-4 opacity-60" data-oid="l_-el-i" />
                   Basic Effects Only
                 </div>
               </SelectItem>
-              <SelectItem value="none">
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 opacity-30" />
+              <SelectItem value="none" data-oid="vdeikme">
+                <div className="flex items-center gap-2" data-oid="7kb4v9i">
+                  <Eye className="w-4 h-4 opacity-30" data-oid="j2y82a_" />
                   No Effects
                 </div>
               </SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground" data-oid="1s6:uby">
             {quality.effects === "all" && "All effects enabled for maximum quality"}
             {quality.effects === "basic" && "Only color correction and transforms"}
             {quality.effects === "none" && "Effects disabled for maximum performance"}
@@ -226,10 +252,14 @@ export function QualityControls({ quality, gpuTier, onChange, className }: Quali
         </div>
 
         {/* Frame Rate */}
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <label className="text-sm font-medium">Frame Rate</label>
-            <span className="text-sm text-muted-foreground">{quality.fps} FPS</span>
+        <div className="space-y-2" data-oid="k:snly8">
+          <div className="flex justify-between" data-oid="2o9rz25">
+            <label className="text-sm font-medium" data-oid="bg154vi">
+              Frame Rate
+            </label>
+            <span className="text-sm text-muted-foreground" data-oid="qc4gn6o">
+              {quality.fps} FPS
+            </span>
           </div>
           <Slider
             value={[quality.fps]}
@@ -238,23 +268,30 @@ export function QualityControls({ quality, gpuTier, onChange, className }: Quali
             min={10}
             step={5}
             className="w-full"
+            data-oid="6:timrr"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>10 FPS</span>
-            <span>30 FPS</span>
-            <span>60 FPS</span>
+
+          <div className="flex justify-between text-xs text-muted-foreground" data-oid="ywtgbul">
+            <span data-oid="4evm0ge">10 FPS</span>
+            <span data-oid="md.-ukq">30 FPS</span>
+            <span data-oid="0nxn9kq">60 FPS</span>
           </div>
         </div>
 
         {/* Antialiasing */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <label className="text-sm font-medium">Antialiasing</label>
-            <p className="text-xs text-muted-foreground">Smooth edges but requires more GPU power</p>
+        <div className="flex items-center justify-between" data-oid="c9cx-ix">
+          <div className="space-y-0.5" data-oid="i47w2rw">
+            <label className="text-sm font-medium" data-oid="m0-60a-">
+              Antialiasing
+            </label>
+            <p className="text-xs text-muted-foreground" data-oid=":r:hznq">
+              Smooth edges but requires more GPU power
+            </p>
           </div>
           <Switch
             checked={quality.antialiasing}
             onCheckedChange={(checked) => updateQuality({ antialiasing: checked })}
+            data-oid="dnpg4aw"
           />
         </div>
       </div>

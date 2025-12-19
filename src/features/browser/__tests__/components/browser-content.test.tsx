@@ -146,14 +146,14 @@ vi.mock("../../components/browser-toolbar-wrapper", () => ({
     sortBy,
     sortOrder,
   }: any) => (
-    <div data-testid="media-toolbar">
-      <button data-testid="search-btn" onClick={() => onSearch?.("test query")}>
+    <div data-testid="media-toolbar" data-oid="k_ekjc.">
+      <button data-testid="search-btn" onClick={() => onSearch?.("test query")} data-oid="1s8p_.d">
         Search
       </button>
-      <button data-testid="sort-btn" onClick={() => onSort?.("size", sortOrder)}>
+      <button data-testid="sort-btn" onClick={() => onSort?.("size", sortOrder)} data-oid="6wxyigt">
         Sort
       </button>
-      <button data-testid="filter-btn" onClick={() => onFilter?.("video")}>
+      <button data-testid="filter-btn" onClick={() => onFilter?.("video")} data-oid="fo661yk">
         Filter
       </button>
       <button
@@ -162,22 +162,23 @@ vi.mock("../../components/browser-toolbar-wrapper", () => ({
           const newOrder = sortOrder === "asc" ? "desc" : "asc"
           onSort?.(sortBy, newOrder)
         }}
+        data-oid="lh_v3xv"
       >
         Order
       </button>
-      <button data-testid="view-btn" onClick={() => onViewModeChange?.("list")}>
+      <button data-testid="view-btn" onClick={() => onViewModeChange?.("list")} data-oid="fk:y51m">
         View
       </button>
-      <button data-testid="group-btn" onClick={() => onGroupBy?.("type")}>
+      <button data-testid="group-btn" onClick={() => onGroupBy?.("type")} data-oid="sadtehy">
         Group
       </button>
-      <button data-testid="fav-btn" onClick={() => onToggleFavorites?.()}>
+      <button data-testid="fav-btn" onClick={() => onToggleFavorites?.()} data-oid="_u-v6sp">
         Favorites
       </button>
-      <button data-testid="zoom-in-btn" onClick={() => onZoomIn?.()}>
+      <button data-testid="zoom-in-btn" onClick={() => onZoomIn?.()} data-oid="3f2tfry">
         Zoom In
       </button>
-      <button data-testid="zoom-out-btn" onClick={() => onZoomOut?.()}>
+      <button data-testid="zoom-out-btn" onClick={() => onZoomOut?.()} data-oid="dr3:3g:">
         Zoom Out
       </button>
     </div>
@@ -187,17 +188,24 @@ vi.mock("../../components/browser-toolbar-wrapper", () => ({
 // Мок для toolbar configs уже не нужен, так как используется в BrowserToolbarWrapper
 
 vi.mock("../../components/browser-loading-indicator", () => ({
-  BrowserLoadingIndicator: () => <div data-testid="loading-indicator">Loading</div>,
+  BrowserLoadingIndicator: () => (
+    <div data-testid="loading-indicator" data-oid="lvgvfjh">
+      Loading
+    </div>
+  ),
 }))
 
 // Мок для UniversalList с поддержкой onItemSelect - теперь не используется напрямую
 vi.mock("../../components/universal-list", () => ({
   UniversalList: ({ adapter, onItemSelect }: any) => (
-    <div data-testid="universal-list">
-      <div data-testid="adapter-type">{adapter?.type || "no-adapter"}</div>
+    <div data-testid="universal-list" data-oid="uolpg38">
+      <div data-testid="adapter-type" data-oid="ctllo7p">
+        {adapter?.type || "no-adapter"}
+      </div>
       <button
         data-testid="item-select-btn"
         onClick={() => onItemSelect?.({ id: "1", name: "test-item.mp4", path: "/test/path" })}
+        data-oid="-_16_fu"
       >
         Select Item
       </button>
@@ -227,14 +235,20 @@ vi.mock("../../components/lazy-tab-content", () => ({
     if (!knownTabs.includes(activeTab)) return null
 
     return (
-      <div data-testid="lazy-tab-content">
-        <div data-testid="universal-list">
-          <div data-testid="adapter-type">{activeTab}</div>
+      <div data-testid="lazy-tab-content" data-oid="g8.h2.o">
+        <div data-testid="universal-list" data-oid="i-t3r-p">
+          <div data-testid="adapter-type" data-oid="cll9obb">
+            {activeTab}
+          </div>
           <button
             data-testid="item-select-btn"
             onClick={() => {
               // Эмулируем выбор элемента в зависимости от типа вкладки
-              const item = { id: "1", name: "test-item.mp4", path: "/test/path" }
+              const item = {
+                id: "1",
+                name: "test-item.mp4",
+                path: "/test/path",
+              }
               // Вызываем соответствующий обработчик в зависимости от activeTab
               if (activeTab === "media" && mockMediaAdapter.importHandlers?.importFile) {
                 mockMediaAdapter.importHandlers.importFile(item as any)
@@ -262,6 +276,7 @@ vi.mock("../../components/lazy-tab-content", () => ({
                 }
               }
             }}
+            data-oid="ahs2_7s"
           >
             Select Item
           </button>
@@ -272,7 +287,10 @@ vi.mock("../../components/lazy-tab-content", () => ({
 }))
 
 // Создаем простые моки адаптеров
-const mockMediaAdapter = { type: "media", importHandlers: { importFile: vi.fn() } }
+const mockMediaAdapter = {
+  type: "media",
+  importHandlers: { importFile: vi.fn() },
+}
 const mockMusicAdapter = { type: "music" }
 const mockEffectsAdapter = { type: "effects" }
 const mockFiltersAdapter = { type: "filters" }
@@ -380,7 +398,7 @@ describe("BrowserContent", () => {
 
   describe("Рендеринг", () => {
     it("должен рендерить основные компоненты", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="evuj4.e" />)
 
       expect(screen.getByTestId("media-toolbar")).toBeInTheDocument()
       expect(screen.getByTestId("loading-indicator")).toBeInTheDocument()
@@ -390,7 +408,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен применять правильные классы к контенту", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="ilgu2zh" />)
 
       // Теперь ищем контейнер контента по классу
       const content = document.querySelector(".bg-background.m-0.flex-1.overflow-auto")
@@ -402,7 +420,7 @@ describe("BrowserContent", () => {
       mockBrowserState.activeTab = "unknown" as any
       currentAdapters.media = undefined as any
 
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="nc6:nel" />)
 
       // LazyTabContent возвращает null для неизвестных вкладок
       expect(screen.queryByTestId("lazy-tab-content")).not.toBeInTheDocument()
@@ -411,7 +429,7 @@ describe("BrowserContent", () => {
 
   describe("Обработчики событий тулбара", () => {
     it("должен вызывать setSearchQuery при поиске", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="c42cdh-" />)
 
       const searchBtn = screen.getByTestId("search-btn")
       fireEvent.click(searchBtn)
@@ -420,7 +438,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать setSort при сортировке", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="7t-84i6" />)
 
       const sortBtn = screen.getByTestId("sort-btn")
       fireEvent.click(sortBtn)
@@ -429,7 +447,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать setFilter при фильтрации", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid=":ga16-." />)
 
       const filterBtn = screen.getByTestId("filter-btn")
       fireEvent.click(filterBtn)
@@ -438,7 +456,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен переключать порядок сортировки", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="4f70obl" />)
 
       const orderBtn = screen.getByTestId("order-btn")
       fireEvent.click(orderBtn)
@@ -448,7 +466,7 @@ describe("BrowserContent", () => {
 
     it("должен переключать порядок сортировки с desc на asc", () => {
       mockBrowserState.currentTabSettings.sort_order = "desc"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="vk0zxbj" />)
 
       const orderBtn = screen.getByTestId("order-btn")
       fireEvent.click(orderBtn)
@@ -457,7 +475,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать setViewMode при изменении режима отображения", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="i0uwioi" />)
 
       const viewBtn = screen.getByTestId("view-btn")
       fireEvent.click(viewBtn)
@@ -466,7 +484,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать setGroupBy при группировке", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="nqkg--i" />)
 
       const groupBtn = screen.getByTestId("group-btn")
       fireEvent.click(groupBtn)
@@ -475,7 +493,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен вызывать toggleFavorites при переключении избранного", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="gvmm6n9" />)
 
       const favBtn = screen.getByTestId("fav-btn")
       fireEvent.click(favBtn)
@@ -486,7 +504,7 @@ describe("BrowserContent", () => {
 
   describe("Зум функциональность", () => {
     it("должен увеличивать размер превью при zoom in", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="4o1umvi" />)
 
       const zoomInBtn = screen.getByTestId("zoom-in-btn")
       fireEvent.click(zoomInBtn)
@@ -495,7 +513,7 @@ describe("BrowserContent", () => {
     })
 
     it("должен уменьшать размер превью при zoom out", () => {
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="w60bgfx" />)
 
       const zoomOutBtn = screen.getByTestId("zoom-out-btn")
       fireEvent.click(zoomOutBtn)
@@ -505,7 +523,7 @@ describe("BrowserContent", () => {
 
     it("должен вызывать setPreviewSize с увеличенным индексом даже при максимальном размере", () => {
       mockBrowserState.currentTabSettings.preview_size_index = 2 // максимальный индекс
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="sjzyyed" />)
 
       const zoomInBtn = screen.getByTestId("zoom-in-btn")
       fireEvent.click(zoomInBtn)
@@ -516,7 +534,7 @@ describe("BrowserContent", () => {
 
     it("должен вызывать setPreviewSize с уменьшенным индексом даже при минимальном размере", () => {
       mockBrowserState.currentTabSettings.preview_size_index = 0 // минимальный индекс
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="u43u0j5" />)
 
       const zoomOutBtn = screen.getByTestId("zoom-out-btn")
       fireEvent.click(zoomOutBtn)
@@ -530,7 +548,7 @@ describe("BrowserContent", () => {
     it("должен использовать media адаптер для media вкладки", () => {
       mockBrowserState.activeTab = "media"
       currentAdapters.media = mockMediaAdapter // Убеждаемся что адаптер есть
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="g00yp73" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("media")
@@ -538,7 +556,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать music адаптер для music вкладки", () => {
       mockBrowserState.activeTab = "music"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="pe81i5p" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("music")
@@ -546,7 +564,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать effects адаптер для effects вкладки", () => {
       mockBrowserState.activeTab = "effects"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="vto69yn" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("effects")
@@ -554,7 +572,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать filters адаптер для filters вкладки", () => {
       mockBrowserState.activeTab = "filters"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="pg_svxf" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("filters")
@@ -562,7 +580,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать transitions адаптер для transitions вкладки", () => {
       mockBrowserState.activeTab = "transitions"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="wol014b" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("transitions")
@@ -570,7 +588,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать subtitles адаптер для subtitles вкладки", () => {
       mockBrowserState.activeTab = "subtitles"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="ua4-gim" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("subtitles")
@@ -578,7 +596,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать templates адаптер для templates вкладки", () => {
       mockBrowserState.activeTab = "templates"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid=":pygu.s" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("templates")
@@ -586,7 +604,7 @@ describe("BrowserContent", () => {
 
     it("должен использовать style_templates адаптер для style_templates вкладки", () => {
       mockBrowserState.activeTab = "style_templates"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="fuq5e1t" />)
 
       const adapterType = screen.getByTestId("adapter-type")
       expect(adapterType.textContent).toBe("style_templates")
@@ -597,7 +615,7 @@ describe("BrowserContent", () => {
     it("должен добавлять медиафайл на таймлайн при выборе", () => {
       mockBrowserState.activeTab = "media"
       currentAdapters.media = mockMediaAdapter // Убеждаемся что адаптер есть
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="4ia5har" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -612,7 +630,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор музыкального файла", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "music"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="3_o_t89" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -623,7 +641,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор эффекта", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "effects"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="lloguaj" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -634,7 +652,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор фильтра", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "filters"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="3jv7ht4" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -645,7 +663,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор перехода", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "transitions"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="i8blhy2" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -656,7 +674,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор стиля субтитров", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "subtitles"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid=".zvk-xs" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -667,7 +685,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор шаблона", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "templates"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="jxcwaly" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)
@@ -678,7 +696,7 @@ describe("BrowserContent", () => {
     it("должен логировать выбор стилистического шаблона", () => {
       const consoleSpy = vi.spyOn(console, "log")
       mockBrowserState.activeTab = "style_templates"
-      render(<BrowserContent />)
+      render(<BrowserContent data-oid="4jz-aes" />)
 
       const selectBtn = screen.getByTestId("item-select-btn")
       fireEvent.click(selectBtn)

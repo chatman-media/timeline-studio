@@ -15,12 +15,14 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
         className,
       )}
       {...props}
+      data-oid="ho-5-o."
     >
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
         className="flex items-center justify-center text-current transition-none"
+        data-oid="oe0zf-6"
       >
-        <CheckIcon className="size-3.5" />
+        <CheckIcon className="size-3.5" data-oid="k0y_j:h" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

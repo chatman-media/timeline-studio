@@ -45,8 +45,11 @@ export function TrackComponent({
         data-testid="timeline-track"
         className={cn("flex border-b border-border bg-background track", className)}
         style={style}
+        data-oid="6ahqklv"
       >
-        <div className="p-4 text-muted-foreground">Invalid track</div>
+        <div className="p-4 text-muted-foreground" data-oid="is26a_5">
+          Invalid track
+        </div>
       </div>
     )
   }
@@ -81,20 +84,32 @@ export function TrackComponent({
           handleSelect()
         }
       }}
+      data-oid="24jz58."
     >
       {/* Заголовок трека (фиксированная ширина) */}
-      <div className="shrink-0 w-48 border-r border-border">
-        <TrackHeader track={track} isSelected={isSelected} onUpdate={handleUpdate} />
+      <div className="shrink-0 w-48 border-r border-border" data-oid="yd7yl83">
+        <TrackHeader track={track} isSelected={isSelected} onUpdate={handleUpdate} data-oid="u4m:.4p" />
       </div>
 
       {/* Содержимое трека (клипы) */}
-      <div className="flex-1 relative overflow-hidden">
-        <TrackContent track={track} timeScale={timeScale} currentTime={currentTime} onUpdate={handleUpdate} />
+      <div className="flex-1 relative overflow-hidden" data-oid="864hk0d">
+        <TrackContent
+          track={track}
+          timeScale={timeScale}
+          currentTime={currentTime}
+          onUpdate={handleUpdate}
+          data-oid="5y7m8_f"
+        />
       </div>
 
       {/* Регулятор высоты трека */}
       {onHeightChange && (
-        <TrackHeightAdjuster trackId={track.id} currentHeight={track.height} onHeightChange={onHeightChange} />
+        <TrackHeightAdjuster
+          trackId={track.id}
+          currentHeight={track.height}
+          onHeightChange={onHeightChange}
+          data-oid="ycq6jhz"
+        />
       )}
     </div>
   )

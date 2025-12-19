@@ -9,14 +9,26 @@ import { AudioPermissionRequest } from "../../components/audio-permission-reques
 describe("AudioPermissionRequest", () => {
   it("renders nothing when permission is granted", () => {
     const renderResult = render(
-      <AudioPermissionRequest permissionStatus="granted" errorMessage="" onRequestPermissions={() => {}} />,
+      <AudioPermissionRequest
+        permissionStatus="granted"
+        errorMessage=""
+        onRequestPermissions={() => {}}
+        data-oid="i-4z6q8"
+      />,
     )
 
     expect(renderResult.container.firstChild).toBeNull()
   })
 
   it("renders pending state correctly", () => {
-    render(<AudioPermissionRequest permissionStatus="pending" errorMessage="" onRequestPermissions={() => {}} />)
+    render(
+      <AudioPermissionRequest
+        permissionStatus="pending"
+        errorMessage=""
+        onRequestPermissions={() => {}}
+        data-oid="ywj93qu"
+      />,
+    )
 
     expect(screen.getByText("Запрашиваем разрешения...")).toBeInTheDocument()
   })
@@ -24,7 +36,12 @@ describe("AudioPermissionRequest", () => {
   it("renders denied state with error message", () => {
     const errorMessage = "Доступ к микрофону запрещен"
     render(
-      <AudioPermissionRequest permissionStatus="denied" errorMessage={errorMessage} onRequestPermissions={() => {}} />,
+      <AudioPermissionRequest
+        permissionStatus="denied"
+        errorMessage={errorMessage}
+        onRequestPermissions={() => {}}
+        data-oid="8fda654"
+      />,
     )
 
     expect(screen.getByText(errorMessage)).toBeInTheDocument()
@@ -34,7 +51,12 @@ describe("AudioPermissionRequest", () => {
   it("renders error state with error message", () => {
     const errorMessage = "Произошла ошибка при запросе разрешений"
     render(
-      <AudioPermissionRequest permissionStatus="error" errorMessage={errorMessage} onRequestPermissions={() => {}} />,
+      <AudioPermissionRequest
+        permissionStatus="error"
+        errorMessage={errorMessage}
+        onRequestPermissions={() => {}}
+        data-oid="k4y:1b:"
+      />,
     )
 
     expect(screen.getByText(errorMessage)).toBeInTheDocument()
@@ -48,10 +70,13 @@ describe("AudioPermissionRequest", () => {
         permissionStatus="denied"
         errorMessage="Доступ запрещен"
         onRequestPermissions={onRequestPermissionsMock}
+        data-oid="q.ks1v7"
       />,
     )
 
-    const retryButton = screen.getByRole("button", { name: "Повторить запрос" })
+    const retryButton = screen.getByRole("button", {
+      name: "Повторить запрос",
+    })
     fireEvent.click(retryButton)
 
     expect(onRequestPermissionsMock).toHaveBeenCalledTimes(1)

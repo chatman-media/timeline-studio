@@ -65,14 +65,53 @@ vi.mock("react-i18next", () => ({
 
 // Mock Lucide icons
 vi.mock("lucide-react", () => ({
-  Clock: ({ className }: { className?: string }) => <div className={className}>Clock</div>,
-  GitBranch: ({ className }: { className?: string }) => <div className={className}>GitBranch</div>,
-  History: ({ className }: { className?: string }) => <div className={className}>History</div>,
-  MessageCircle: ({ className }: { className?: string }) => <div className={className}>MessageCircle</div>,
-  Plus: ({ className }: { className?: string }) => <div className={className}>Plus</div>,
-  RotateCcw: ({ className }: { className?: string }) => <div className={className}>RotateCcw</div>,
-  Settings: ({ className }: { className?: string }) => <div className={className}>Settings</div>,
-  User: ({ className }: { className?: string }) => <div className={className}>User</div>,
+  Clock: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="5b:j3nz">
+      Clock
+    </div>
+  ),
+
+  GitBranch: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="6set4h0">
+      GitBranch
+    </div>
+  ),
+
+  History: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="alb4zeu">
+      History
+    </div>
+  ),
+
+  MessageCircle: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="td_k6:c">
+      MessageCircle
+    </div>
+  ),
+
+  Plus: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="w24xb9p">
+      Plus
+    </div>
+  ),
+
+  RotateCcw: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="hny2bou">
+      RotateCcw
+    </div>
+  ),
+
+  Settings: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="n9lhkr7">
+      Settings
+    </div>
+  ),
+
+  User: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="q93yrzc">
+      User
+    </div>
+  ),
 }))
 
 // Mock window.confirm
@@ -129,7 +168,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("renders the component with default state", () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="0.-d-f." />)
 
     // There are multiple elements with "История версий", check at least one exists
     const historyTexts = screen.getAllByText("История версий")
@@ -140,7 +179,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("displays auto-save status", () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="njwl.k0" />)
 
     expect(screen.getByText("Автосохранение: включено (30с)")).toBeInTheDocument()
   })
@@ -151,13 +190,13 @@ describe("VersionHistoryPanel", () => {
       autoSaveEnabled: false,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="upw4ts:" />)
 
     expect(screen.getByText("Автосохранение: отключено")).toBeInTheDocument()
   })
 
   it("toggles auto-save settings panel", () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="v4sirc1" />)
 
     // Find the settings button by looking for the button next to auto-save status
     const autoSaveContainer = screen.getByText("Автосохранение: включено (30с)").closest("div")?.parentElement
@@ -182,7 +221,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("toggles auto-save enabled state", async () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="ffrphw9" />)
 
     // Open settings
     const autoSaveContainer = screen.getByText("Автосохранение: включено (30с)").closest("div")?.parentElement
@@ -199,7 +238,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("changes auto-save interval", async () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="y.3zr9i" />)
 
     // Open settings
     const autoSaveContainer = screen.getByText("Автосохранение: включено (30с)").closest("div")?.parentElement
@@ -222,7 +261,7 @@ describe("VersionHistoryPanel", () => {
       createSnapshot,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="2q1kdp2" />)
 
     const input = screen.getByPlaceholderText("Описание версии (опционально)")
     const createButton = screen.getByRole("button", { name: /Создать/i })
@@ -241,7 +280,7 @@ describe("VersionHistoryPanel", () => {
       createSnapshot,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid=":e-3s0c" />)
 
     const createButton = screen.getByRole("button", { name: /Создать/i })
     fireEvent.click(createButton)
@@ -256,7 +295,7 @@ describe("VersionHistoryPanel", () => {
       createSnapshot,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="yovpc57" />)
 
     const input = screen.getByPlaceholderText("Описание версии (опционально)") as HTMLInputElement
     const createButton = screen.getByRole("button", { name: /Создать/i })
@@ -270,7 +309,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("loads version history on mount", async () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="lt_2c7:" />)
 
     await waitFor(() => {
       expect(defaultMockValues.getVersionHistory).toHaveBeenCalledWith(20)
@@ -278,7 +317,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("displays version history", async () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="6hhui7q" />)
 
     await waitFor(() => {
       expect(screen.getByText("Initial commit")).toBeInTheDocument()
@@ -292,7 +331,7 @@ describe("VersionHistoryPanel", () => {
       getVersionHistory: vi.fn().mockImplementation(() => new Promise(() => {})), // Never resolves
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="k5z.c0z" />)
 
     expect(screen.getByText("Загрузка...")).toBeInTheDocument()
   })
@@ -303,7 +342,7 @@ describe("VersionHistoryPanel", () => {
       getVersionHistory: vi.fn().mockResolvedValue([]),
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="cwql02:" />)
 
     await waitFor(() => {
       expect(screen.getByText("Нет сохранённых версий")).toBeInTheDocument()
@@ -316,13 +355,13 @@ describe("VersionHistoryPanel", () => {
       error: "Failed to load versions",
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="bm_:6jo" />)
 
     expect(screen.getByText("Failed to load versions")).toBeInTheDocument()
   })
 
   it("highlights current version", async () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="447.4gm" />)
 
     await waitFor(() => {
       const currentVersionCard = screen.getByText("Initial commit").closest("div[class*='border']")
@@ -335,7 +374,7 @@ describe("VersionHistoryPanel", () => {
   it("restores a version with confirmation", async () => {
     mockConfirm.mockReturnValue(true)
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="85dlk4k" />)
 
     await waitFor(() => {
       expect(screen.getByText("Added new feature")).toBeInTheDocument()
@@ -359,7 +398,7 @@ describe("VersionHistoryPanel", () => {
   it("does not restore version when cancelled", async () => {
     mockConfirm.mockReturnValue(false)
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="l7i2nnw" />)
 
     await waitFor(() => {
       expect(screen.getByText("Added new feature")).toBeInTheDocument()
@@ -378,7 +417,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("does not show restore button for current version", async () => {
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid=":lg:jx." />)
 
     await waitFor(() => {
       expect(screen.getByText("Initial commit")).toBeInTheDocument()
@@ -421,7 +460,7 @@ describe("VersionHistoryPanel", () => {
       getVersionHistory: vi.fn().mockResolvedValue(versions),
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="v2pugzu" />)
 
     await waitFor(() => {
       // Just check that versions are displayed
@@ -438,7 +477,7 @@ describe("VersionHistoryPanel", () => {
       lastSnapshotTime,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="c_3yog6" />)
 
     // Check that the last snapshot text exists (exact text depends on formatting)
     const lastSnapshotElement = screen.getByText((content) => {
@@ -448,7 +487,7 @@ describe("VersionHistoryPanel", () => {
   })
 
   it("applies custom className", () => {
-    const { container } = render(<VersionHistoryPanel className="custom-class" />)
+    const { container } = render(<VersionHistoryPanel className="custom-class" data-oid="gm29i6b" />)
     const card = container.querySelector(".custom-class")
     expect(card).toBeInTheDocument()
   })
@@ -459,7 +498,7 @@ describe("VersionHistoryPanel", () => {
       isLoading: true,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="k3jugyo" />)
 
     const input = screen.getByPlaceholderText("Описание версии (опционально)")
     const createButton = screen.getByRole("button", { name: /Создать/i })
@@ -478,7 +517,7 @@ describe("VersionHistoryPanel", () => {
       getVersionHistory,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="tgbt::b" />)
 
     // Initial load
     await waitFor(() => {
@@ -506,7 +545,7 @@ describe("VersionHistoryPanel", () => {
       getVersionHistory,
     })
 
-    render(<VersionHistoryPanel />)
+    render(<VersionHistoryPanel data-oid="jjynngy" />)
 
     await waitFor(() => {
       expect(getVersionHistory).toHaveBeenCalledTimes(1)

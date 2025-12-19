@@ -17,14 +17,14 @@ describe("VectorscopeScope", () => {
   })
 
   it("should render canvas element", () => {
-    const { container } = render(<VectorscopeScope width={320} height={240} refreshRate={30} />)
+    const { container } = render(<VectorscopeScope width={320} height={240} refreshRate={30} data-oid="1x3gptt" />)
 
     const canvas = container.querySelector("canvas")
     expect(canvas).toBeInTheDocument()
   })
 
   it("should set canvas dimensions", () => {
-    const { container } = render(<VectorscopeScope width={640} height={480} refreshRate={30} />)
+    const { container } = render(<VectorscopeScope width={640} height={480} refreshRate={30} data-oid="m7rrc9_" />)
 
     const canvas = container.querySelector("canvas") as HTMLCanvasElement
     expect(canvas.width).toBe(640)
@@ -32,9 +32,11 @@ describe("VectorscopeScope", () => {
   })
 
   it("should update dimensions when props change", () => {
-    const { container, rerender } = render(<VectorscopeScope width={320} height={240} refreshRate={30} />)
+    const { container, rerender } = render(
+      <VectorscopeScope width={320} height={240} refreshRate={30} data-oid="cog:8aj" />,
+    )
 
-    rerender(<VectorscopeScope width={640} height={480} refreshRate={30} />)
+    rerender(<VectorscopeScope width={640} height={480} refreshRate={30} data-oid=".2v2:3_" />)
 
     const canvas = container.querySelector("canvas") as HTMLCanvasElement
     expect(canvas.width).toBe(640)

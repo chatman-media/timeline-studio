@@ -44,8 +44,8 @@ vi.mock("@/lib/tauri-logger", async (importOriginal) => {
 // Вспомогательная функция для рендеринга с провайдерами
 const renderWithProviders = (ui: React.ReactElement) => {
   return render(
-    <TimelineProjectProvider>
-      <TimelineProvider>{ui}</TimelineProvider>
+    <TimelineProjectProvider data-oid="6a0y53u">
+      <TimelineProvider data-oid="5q46p1w">{ui}</TimelineProvider>
     </TimelineProjectProvider>,
   )
 }
@@ -56,77 +56,91 @@ vi.mock("lucide-react", async (importOriginal) => {
   return {
     ...actual,
     Play: (props: any) => (
-      <svg data-testid="play-icon" data-icon="Play" {...props}>
+      <svg data-testid="play-icon" data-icon="Play" {...props} data-oid="--4jrjw">
         Play
       </svg>
     ),
+
     Pause: (props: any) => (
-      <svg data-testid="pause-icon" data-icon="Pause" {...props}>
+      <svg data-testid="pause-icon" data-icon="Pause" {...props} data-oid="yf16z8h">
         Pause
       </svg>
     ),
+
     StepBack: (props: any) => (
-      <svg data-testid="stepback-icon" data-icon="StepBack" {...props}>
+      <svg data-testid="stepback-icon" data-icon="StepBack" {...props} data-oid="9-o3kcp">
         StepBack
       </svg>
     ),
+
     StepForward: (props: any) => (
-      <svg data-testid="stepforward-icon" data-icon="StepForward" {...props}>
+      <svg data-testid="stepforward-icon" data-icon="StepForward" {...props} data-oid="baup:g-">
         StepForward
       </svg>
     ),
+
     Maximize2: (props: any) => (
-      <svg data-testid="maximize2-icon" data-icon="Maximize2" {...props}>
+      <svg data-testid="maximize2-icon" data-icon="Maximize2" {...props} data-oid="k1-p.gx">
         Maximize2
       </svg>
     ),
+
     Minimize2: (props: any) => (
-      <svg data-testid="minimize2-icon" data-icon="Minimize2" {...props}>
+      <svg data-testid="minimize2-icon" data-icon="Minimize2" {...props} data-oid=".4sqz8c">
         Minimize2
       </svg>
     ),
+
     CircleDot: (props: any) => (
-      <svg data-testid="circledot-icon" data-icon="CircleDot" {...props}>
+      <svg data-testid="circledot-icon" data-icon="CircleDot" {...props} data-oid="usi_598">
         CircleDot
       </svg>
     ),
+
     Volume2: (props: any) => (
-      <svg data-testid="volume2-icon" data-icon="Volume2" {...props}>
+      <svg data-testid="volume2-icon" data-icon="Volume2" {...props} data-oid="0.o.cwr">
         Volume2
       </svg>
     ),
+
     VolumeX: (props: any) => (
-      <svg data-testid="volumex-icon" data-icon="VolumeX" {...props}>
+      <svg data-testid="volumex-icon" data-icon="VolumeX" {...props} data-oid="tv_3j53">
         VolumeX
       </svg>
     ),
+
     TvMinimalPlay: (props: any) => (
-      <svg data-testid="tvminimalplay-icon" data-icon="TvMinimalPlay" {...props}>
+      <svg data-testid="tvminimalplay-icon" data-icon="TvMinimalPlay" {...props} data-oid="p5hd6g4">
         TvMinimalPlay
       </svg>
     ),
+
     ImagePlay: (props: any) => (
-      <svg data-testid="imageplay-icon" data-icon="ImagePlay" {...props}>
+      <svg data-testid="imageplay-icon" data-icon="ImagePlay" {...props} data-oid="homq.n2">
         ImagePlay
       </svg>
     ),
+
     UnfoldHorizontal: (props: any) => (
-      <svg data-testid="unfoldhorizontal-icon" data-icon="UnfoldHorizontal" {...props}>
+      <svg data-testid="unfoldhorizontal-icon" data-icon="UnfoldHorizontal" {...props} data-oid="qjg1qe5">
         UnfoldHorizontal
       </svg>
     ),
+
     Camera: (props: any) => (
-      <svg data-testid="camera-icon" data-icon="Camera" {...props}>
+      <svg data-testid="camera-icon" data-icon="Camera" {...props} data-oid="_lpusnc">
         Camera
       </svg>
     ),
+
     ChevronFirst: (props: any) => (
-      <svg data-testid="chevronfirst-icon" data-icon="ChevronFirst" {...props}>
+      <svg data-testid="chevronfirst-icon" data-icon="ChevronFirst" {...props} data-oid="9qrycsq">
         ChevronFirst
       </svg>
     ),
+
     ChevronLast: (props: any) => (
-      <svg data-testid="chevronlast-icon" data-icon="ChevronLast" {...props}>
+      <svg data-testid="chevronlast-icon" data-icon="ChevronLast" {...props} data-oid="g642hjr">
         ChevronLast
       </svg>
     ),
@@ -136,7 +150,14 @@ vi.mock("lucide-react", async (importOriginal) => {
 // Мокаем компоненты UI
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, variant, size, className, ...props }: any) => (
-    <button onClick={onClick} className={className} data-variant={variant} data-size={size} {...props}>
+    <button
+      onClick={onClick}
+      className={className}
+      data-variant={variant}
+      data-size={size}
+      {...props}
+      data-oid="kcdcp6m"
+    >
       {children}
     </button>
   ),
@@ -153,13 +174,18 @@ vi.mock("@/components/ui/slider", () => ({
       step={step}
       className={className}
       disabled={disabled}
+      data-oid="ox-zs2b"
     />
   ),
 }))
 
 // Мокаем дочерние компоненты
 vi.mock("../prerender-controls", () => ({
-  PrerenderControls: vi.fn(() => <div data-testid="prerender-controls">Prerender Controls</div>),
+  PrerenderControls: vi.fn(() => (
+    <div data-testid="prerender-controls" data-oid="7_kuvsq">
+      Prerender Controls
+    </div>
+  )),
 }))
 
 vi.mock("../volume-slider", () => ({
@@ -171,6 +197,7 @@ vi.mock("../volume-slider", () => ({
         if (onValueChange) onValueChange([0.5])
         if (onValueCommit) onValueCommit([0.5])
       }}
+      data-oid="m0szx-n"
     >
       Volume Slider
     </div>
@@ -393,7 +420,7 @@ describe("PlayerControls", () => {
 
   describe("Отображение элементов управления", () => {
     it("должен отображать все основные элементы управления", () => {
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="xoto1t9" />)
 
       expect(screen.getByTestId("stepback-icon")).toBeInTheDocument()
       // Ищем основную play иконку через кнопку
@@ -423,7 +450,7 @@ describe("PlayerControls", () => {
         setVideoSource: vi.fn(),
       })
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="ty-x7wn" />)
 
       expect(screen.getByTestId("pause-icon")).toBeInTheDocument()
       // Проверяем что основная play кнопка не отображается (но маленькая play иконка в AI Analysis может остаться)
@@ -449,7 +476,7 @@ describe("PlayerControls", () => {
         setVideoSource: vi.fn(),
       })
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid=":vp:w20" />)
 
       expect(screen.getByTestId("circledot-icon")).toBeInTheDocument()
     })
@@ -463,7 +490,7 @@ describe("PlayerControls", () => {
         toggleFullscreen: vi.fn(),
       })
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="sdblnki" />)
 
       expect(screen.getByTestId("minimize2-icon")).toBeInTheDocument()
       expect(screen.queryByTestId("maximize2-icon")).not.toBeInTheDocument()
@@ -480,7 +507,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="d6ncayc" />)
 
       const playButton = screen.getByTitle("timeline.controls.play")
       fireEvent.click(playButton)
@@ -497,7 +524,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="cg7vsqq" />)
 
       const pauseButton = screen.getByTitle("timeline.controls.pause")
       fireEvent.click(pauseButton)
@@ -514,7 +541,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid=".tmd0ue" />)
 
       const recordButton = screen.getByTitle("timeline.controls.record")
       expect(recordButton).not.toBeDisabled() // Проверяем что кнопка активна
@@ -532,7 +559,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="0-eyo1l" />)
 
       const stopRecordButton = screen.getByTitle("timeline.controls.stopRecord")
       fireEvent.click(stopRecordButton)
@@ -550,7 +577,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={30} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={30} file={mockFile} data-oid="61d5y-n" />)
 
       const slider = screen.getByTestId("slider")
       fireEvent.change(slider, { target: { value: "60" } })
@@ -568,7 +595,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="j38p93y" />)
 
       const slider = screen.getByTestId("slider")
       // Мокаем onValueChange для триггера isSeeking
@@ -586,7 +613,7 @@ describe("PlayerControls", () => {
       }
       // currentTime=65.5 секунд: 1 минута 5 секунд 12 кадров (при 25fps)
       // duration=120 секунд через prop: 2 минуты
-      renderWithProviders(<PlayerControls currentTime={65.5} file={fileWithTime} duration={120} />)
+      renderWithProviders(<PlayerControls currentTime={65.5} file={fileWithTime} duration={120} data-oid="_mp5c9z" />)
 
       // Компонент отображает currentTime и duration в timecode формате
       expect(screen.getByText("00:01:05:12")).toBeInTheDocument()
@@ -599,7 +626,7 @@ describe("PlayerControls", () => {
         startTime: undefined,
         duration: undefined,
       }
-      renderWithProviders(<PlayerControls currentTime={0} file={fileWithoutTime} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={fileWithoutTime} data-oid="ztb:mut" />)
 
       // Показывает значения по умолчанию - должно быть два элемента с текстом 00:00:00:00
       const defaultTimeElements = screen.getAllByText("00:00:00:00")
@@ -609,7 +636,7 @@ describe("PlayerControls", () => {
 
   describe("Управление громкостью", () => {
     it("должен отображать текущую громкость", () => {
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="go1o_d." />)
 
       const volumeSlider = screen.getByTestId("volume-slider")
       expect(volumeSlider).toHaveAttribute("data-volume", "0.75")
@@ -623,7 +650,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid=":k27p:3" />)
 
       const volumeSlider = screen.getByTestId("volume-slider")
       fireEvent.click(volumeSlider)
@@ -647,7 +674,7 @@ describe("PlayerControls", () => {
       mockContainer.className = "media-player-container"
       document.body.appendChild(mockContainer)
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="ejbx17." />)
 
       const fullscreenButton = screen.getByTitle("timeline.controls.fullscreen")
       fireEvent.click(fullscreenButton)
@@ -667,7 +694,7 @@ describe("PlayerControls", () => {
         toggleFullscreen: mockToggleFullscreen,
       })
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="bi_ttb6" />)
 
       const fullscreenButton = screen.getByTitle("timeline.controls.fullscreen")
       fireEvent.click(fullscreenButton)
@@ -697,7 +724,7 @@ describe("PlayerControls", () => {
         setVideoSource: vi.fn(),
       })
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="gl52-ys" />)
 
       const resizeButton = screen.getByTitle("timeline.controlsMain.resizableMode")
       fireEvent.click(resizeButton)
@@ -723,7 +750,7 @@ describe("PlayerControls", () => {
         setVideoSource: vi.fn(),
       })
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="lnvhcj4" />)
 
       // В режиме изменения размера title меняется на fixedSizeMode
       expect(screen.getByTitle("timeline.controlsMain.fixedSizeMode")).toBeInTheDocument()
@@ -740,7 +767,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="0v.dxam" />)
 
       // В режиме timeline показывается иконка TvMinimalPlay
       const sourceButton = screen.getByTestId("tvminimalplay-icon").closest("button")
@@ -758,7 +785,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="wf9uzcs" />)
 
       // В режиме browser показывается иконка ImagePlay
       const sourceButton = screen.getByTestId("imageplay-icon").closest("button")
@@ -775,7 +802,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      const { rerender } = renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      const { rerender } = renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="4rr3o:7" />)
 
       // В режиме timeline
       expect(screen.getByTestId("tvminimalplay-icon")).toBeInTheDocument()
@@ -789,9 +816,9 @@ describe("PlayerControls", () => {
       )
 
       rerender(
-        <TimelineProjectProvider>
-          <TimelineProvider>
-            <PlayerControls currentTime={0} file={mockFile} />
+        <TimelineProjectProvider data-oid="jt:e9.e">
+          <TimelineProvider data-oid="4k52xis">
+            <PlayerControls currentTime={0} file={mockFile} data-oid="hth_k4x" />
           </TimelineProvider>
         </TimelineProjectProvider>,
       )
@@ -806,7 +833,7 @@ describe("PlayerControls", () => {
     it("должен корректно обрабатывать Unix timestamp", () => {
       // Unix timestamp (больше года в секундах)
       const unixTime = Date.now() / 1000
-      renderWithProviders(<PlayerControls currentTime={unixTime} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={unixTime} file={mockFile} data-oid="xhsaupa" />)
 
       // Проверяем что слайдер использует правильное значение
       const slider = screen.getByTestId("slider")
@@ -821,7 +848,7 @@ describe("PlayerControls", () => {
           streams: [{ r_frame_rate: "60/1" }],
         } as any,
       }
-      renderWithProviders(<PlayerControls currentTime={0} file={fileWith60fps} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={fileWith60fps} data-oid="mv9c8ih" />)
 
       // getFrameTime мокнут для возврата 1/30, проверяем что слайдер использует step
       const slider = screen.getByTestId("slider")
@@ -838,7 +865,7 @@ describe("PlayerControls", () => {
         }),
       )
 
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="39m68tj" />)
 
       const playButton = screen.getByTitle("timeline.controls.play")
       expect(playButton).toBeDisabled()
@@ -848,7 +875,7 @@ describe("PlayerControls", () => {
     })
 
     it("должен показывать prerender controls", () => {
-      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} />)
+      renderWithProviders(<PlayerControls currentTime={0} file={mockFile} data-oid="-5ig3.e" />)
 
       expect(screen.getByTestId("prerender-controls")).toBeInTheDocument()
     })

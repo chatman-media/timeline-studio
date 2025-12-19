@@ -18,18 +18,26 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("@/features/browser", () => ({
   ApplyButton: ({ resource, onClick }: any) => (
-    <button data-testid="apply-button" onClick={onClick}>
+    <button data-testid="apply-button" onClick={onClick} data-oid="086esj9">
       Apply {resource.id}
     </button>
   ),
 }))
 
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({
-  AddMediaButton: ({ resource }: any) => <button data-testid="add-media-button">Add {resource.id}</button>,
+  AddMediaButton: ({ resource }: any) => (
+    <button data-testid="add-media-button" data-oid="1m7x3kh">
+      Add {resource.id}
+    </button>
+  ),
 }))
 
 vi.mock("@/features/browser/components/layout/favorite-button", () => ({
-  FavoriteButton: ({ file }: any) => <button data-testid="favorite-button">Favorite {file.id}</button>,
+  FavoriteButton: ({ file }: any) => (
+    <button data-testid="favorite-button" data-oid="2nsc.og">
+      Favorite {file.id}
+    </button>
+  ),
 }))
 
 vi.mock("../../hooks/use-transitions", () => ({
@@ -128,7 +136,7 @@ describe("TransitionPreview", () => {
 
   describe("Component Rendering", () => {
     it("should render with basic props", () => {
-      render(<TransitionPreview {...defaultProps} />)
+      render(<TransitionPreview {...defaultProps} data-oid="q7r-b4j" />)
 
       // Check that video elements are rendered
       expect(screen.getByTestId("source-video")).toBeInTheDocument()
@@ -140,27 +148,27 @@ describe("TransitionPreview", () => {
     })
 
     it("should render with transition prop", () => {
-      render(<TransitionPreview {...defaultProps} transition={mockTransition} />)
+      render(<TransitionPreview {...defaultProps} transition={mockTransition} data-oid="ydngfln" />)
 
       // Should show add media button when transition is provided
       expect(screen.getByTestId("add-media-button")).toBeInTheDocument()
     })
 
     it("should render with custom preview dimensions", () => {
-      render(<TransitionPreview {...defaultProps} previewWidth={200} previewHeight={150} />)
+      render(<TransitionPreview {...defaultProps} previewWidth={200} previewHeight={150} data-oid="u2hpwc4" />)
 
       const container = screen.getByTestId("source-video").closest("div")?.parentElement
       expect(container).toHaveStyle({ width: "200px", height: "150px" })
     })
 
     it("should display transition name", () => {
-      render(<TransitionPreview {...defaultProps} transition={mockTransition} />)
+      render(<TransitionPreview {...defaultProps} transition={mockTransition} data-oid=".o:qtf1" />)
 
       expect(screen.getByText("Затухание")).toBeInTheDocument()
     })
 
     it("should display category indicator", () => {
-      render(<TransitionPreview {...defaultProps} transition={mockTransition} />)
+      render(<TransitionPreview {...defaultProps} transition={mockTransition} data-oid="948k7ao" />)
 
       const categoryIndicator = screen.getByText("BSC")
       expect(categoryIndicator).toBeInTheDocument()
@@ -171,7 +179,7 @@ describe("TransitionPreview", () => {
     })
 
     it("should display duration indicator", () => {
-      render(<TransitionPreview {...defaultProps} transition={mockTransition} />)
+      render(<TransitionPreview {...defaultProps} transition={mockTransition} data-oid="t8yhqna" />)
 
       expect(screen.getByText("1.0s")).toBeInTheDocument()
     })
@@ -179,7 +187,7 @@ describe("TransitionPreview", () => {
 
   describe("Video Error Handling", () => {
     it("should display error message when video fails to load", async () => {
-      render(<TransitionPreview {...defaultProps} />)
+      render(<TransitionPreview {...defaultProps} data-oid="z40mp7c" />)
 
       const sourceVideo = screen.getByTestId("source-video")
       fireEvent.error(sourceVideo)
@@ -189,7 +197,7 @@ describe("TransitionPreview", () => {
     })
 
     it("should not start transition when video has error", async () => {
-      render(<TransitionPreview {...defaultProps} />)
+      render(<TransitionPreview {...defaultProps} data-oid="bsy6z76" />)
 
       const sourceVideo = screen.getByTestId("source-video")
       fireEvent.error(sourceVideo)
@@ -209,7 +217,7 @@ describe("TransitionPreview", () => {
 
   describe("Hover Interactions", () => {
     it("should respond to mouse enter and leave events", async () => {
-      const { container } = render(<TransitionPreview {...defaultProps} />)
+      const { container } = render(<TransitionPreview {...defaultProps} data-oid="eg1rs-l" />)
 
       // Find the preview container with onMouseEnter/onMouseLeave handlers
       const previewContainer = container.querySelector('[style*="width"][style*="height"]')
@@ -229,7 +237,7 @@ describe("TransitionPreview", () => {
   describe("Click Interactions", () => {
     it("should call onClick when preview is clicked", () => {
       const onClick = vi.fn()
-      const { container } = render(<TransitionPreview {...defaultProps} onClick={onClick} />)
+      const { container } = render(<TransitionPreview {...defaultProps} onClick={onClick} data-oid="q-k-na:" />)
 
       // Click on the actual preview container div that has onClick
       const previewDiv = container.querySelector(".cursor-pointer.rounded-xs")
@@ -242,7 +250,7 @@ describe("TransitionPreview", () => {
 
   describe("Transition Effects", () => {
     it("should apply fade transition effect", async () => {
-      const { container } = render(<TransitionPreview {...defaultProps} transitionType="fade" />)
+      const { container } = render(<TransitionPreview {...defaultProps} transitionType="fade" data-oid="pn06tyq" />)
 
       const sourceVideo = screen.getByTestId("source-video")
       const targetVideo = screen.getByTestId("target-video")
@@ -263,7 +271,7 @@ describe("TransitionPreview", () => {
     })
 
     it("should apply zoom transition effect", async () => {
-      const { container } = render(<TransitionPreview {...defaultProps} transitionType="zoom" />)
+      const { container } = render(<TransitionPreview {...defaultProps} transitionType="zoom" data-oid=".:6st0e" />)
 
       const sourceVideo = screen.getByTestId("source-video")
       const targetVideo = screen.getByTestId("target-video")
@@ -284,7 +292,7 @@ describe("TransitionPreview", () => {
     })
 
     it("should apply slide transition effect", async () => {
-      const { container } = render(<TransitionPreview {...defaultProps} transitionType="slide" />)
+      const { container } = render(<TransitionPreview {...defaultProps} transitionType="slide" data-oid="nc5irjl" />)
 
       const sourceVideo = screen.getByTestId("source-video")
       const targetVideo = screen.getByTestId("target-video")
@@ -324,7 +332,7 @@ describe("TransitionPreview", () => {
 
     transitionTypes.forEach((type) => {
       it(`should render ${type} transition without errors`, () => {
-        const { container } = render(<TransitionPreview {...defaultProps} transitionType={type} />)
+        const { container } = render(<TransitionPreview {...defaultProps} transitionType={type} data-oid="yxu2m9_" />)
 
         // Verify the component renders correctly with the transition type
         expect(screen.getByTestId("source-video")).toBeInTheDocument()
@@ -343,50 +351,65 @@ describe("TransitionPreview", () => {
 
   describe("Category Indicators", () => {
     it("should show correct indicator for basic category", () => {
-      render(<TransitionPreview {...defaultProps} transition={mockTransition} />)
+      render(<TransitionPreview {...defaultProps} transition={mockTransition} data-oid="r6j-tl." />)
       expect(screen.getByText("BSC")).toBeInTheDocument()
     })
 
     it("should show correct indicator for advanced category", () => {
-      const advancedTransition = { ...mockTransition, category: "advanced" as const }
-      render(<TransitionPreview {...defaultProps} transition={advancedTransition} />)
+      const advancedTransition = {
+        ...mockTransition,
+        category: "advanced" as const,
+      }
+      render(<TransitionPreview {...defaultProps} transition={advancedTransition} data-oid="xq5pfo." />)
       expect(screen.getByText("ADV")).toBeInTheDocument()
     })
 
     it("should show correct indicator for creative category", () => {
-      const creativeTransition = { ...mockTransition, category: "creative" as const }
-      render(<TransitionPreview {...defaultProps} transition={creativeTransition} />)
+      const creativeTransition = {
+        ...mockTransition,
+        category: "creative" as const,
+      }
+      render(<TransitionPreview {...defaultProps} transition={creativeTransition} data-oid="ke:n521" />)
       expect(screen.getByText("CRE")).toBeInTheDocument()
     })
 
     it("should show correct indicator for 3d category", () => {
       const threeDTransition = { ...mockTransition, category: "3d" as const }
-      render(<TransitionPreview {...defaultProps} transition={threeDTransition} />)
+      render(<TransitionPreview {...defaultProps} transition={threeDTransition} data-oid="mzsupe-" />)
       expect(screen.getByText("3D")).toBeInTheDocument()
     })
 
     it("should show correct indicator for artistic category", () => {
-      const artisticTransition = { ...mockTransition, category: "artistic" as const }
-      render(<TransitionPreview {...defaultProps} transition={artisticTransition} />)
+      const artisticTransition = {
+        ...mockTransition,
+        category: "artistic" as const,
+      }
+      render(<TransitionPreview {...defaultProps} transition={artisticTransition} data-oid="phwrtkb" />)
       expect(screen.getByText("ART")).toBeInTheDocument()
     })
 
     it("should show correct indicator for cinematic category", () => {
-      const cinematicTransition = { ...mockTransition, category: "cinematic" as const }
-      render(<TransitionPreview {...defaultProps} transition={cinematicTransition} />)
+      const cinematicTransition = {
+        ...mockTransition,
+        category: "cinematic" as const,
+      }
+      render(<TransitionPreview {...defaultProps} transition={cinematicTransition} data-oid="5wru-gv" />)
       expect(screen.getByText("CIN")).toBeInTheDocument()
     })
 
     it("should show UNK for unknown category", () => {
-      const unknownTransition = { ...mockTransition, category: "unknown" as any }
-      render(<TransitionPreview {...defaultProps} transition={unknownTransition} />)
+      const unknownTransition = {
+        ...mockTransition,
+        category: "unknown" as any,
+      }
+      render(<TransitionPreview {...defaultProps} transition={unknownTransition} data-oid="u0rxe4t" />)
       expect(screen.getByText("UNK")).toBeInTheDocument()
     })
   })
 
   describe("Transition Lookup", () => {
     it("should find transition by type when transition prop is not provided", () => {
-      render(<TransitionPreview {...defaultProps} transitionType="zoom" />)
+      render(<TransitionPreview {...defaultProps} transitionType="zoom" data-oid="mou:qks" />)
 
       // Should display the zoom transition name from the mocked transitions
       expect(screen.getByText("Увеличение")).toBeInTheDocument()
@@ -398,7 +421,9 @@ describe("TransitionPreview", () => {
         id: "custom",
         labels: { ru: "Пользовательский", en: "Custom" },
       }
-      render(<TransitionPreview {...defaultProps} transition={customTransition} transitionType="zoom" />)
+      render(
+        <TransitionPreview {...defaultProps} transition={customTransition} transitionType="zoom" data-oid="1foeqlh" />,
+      )
 
       // Should display the custom transition name, not zoom
       expect(screen.getByText("Пользовательский")).toBeInTheDocument()
@@ -408,7 +433,7 @@ describe("TransitionPreview", () => {
 
   describe("Video Reset Behavior", () => {
     it("should reset video styles on mouse leave", async () => {
-      render(<TransitionPreview {...defaultProps} transitionType="zoom" />)
+      render(<TransitionPreview {...defaultProps} transitionType="zoom" data-oid="7hvq2-1" />)
 
       const sourceVideo = screen.getByTestId("source-video")
       const targetVideo = screen.getByTestId("target-video")

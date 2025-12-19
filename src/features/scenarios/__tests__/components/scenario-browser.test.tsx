@@ -38,6 +38,7 @@ vi.mock("../../hooks/use-scenario", () => ({
             config: {},
           },
         ],
+
         settings: {
           allowSkipSteps: false,
           showPreview: true,
@@ -70,6 +71,7 @@ vi.mock("../../hooks/use-scenario", () => ({
             config: {},
           },
         ],
+
         settings: {
           allowSkipSteps: true,
           showPreview: true,
@@ -78,6 +80,7 @@ vi.mock("../../hooks/use-scenario", () => ({
         },
       },
     ],
+
     selectedScenario: null,
     selectScenario: vi.fn(),
     searchScenarios: vi.fn(),
@@ -96,20 +99,20 @@ describe("ScenarioBrowser", () => {
   })
 
   it("должен отображать заголовок по умолчанию", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="y4_b2xk" />)
 
     expect(screen.getByText("Сценарии монтажа")).toBeInTheDocument()
     expect(screen.getByText("Выберите сценарий для автоматического монтажа")).toBeInTheDocument()
   })
 
   it("не должен отображать заголовок, если showHeader=false", () => {
-    render(<ScenarioBrowser showHeader={false} />)
+    render(<ScenarioBrowser showHeader={false} data-oid=".95dkkw" />)
 
     expect(screen.queryByText("Сценарии монтажа")).not.toBeInTheDocument()
   })
 
   it("должен отображать все сценарии в сетке по умолчанию", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="-auuu-k" />)
 
     expect(screen.getByText("Добавить одинаковые интро и аутро")).toBeInTheDocument()
     expect(screen.getByText("Вырезки в начале (Cold Open)")).toBeInTheDocument()
@@ -117,7 +120,7 @@ describe("ScenarioBrowser", () => {
 
   it("должен переключаться между режимами сетки и списка", async () => {
     const user = userEvent.setup()
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="pik0l.:" />)
 
     // Проверяем исходную сетку
     const gridButtons = screen.getAllByRole("tab")
@@ -131,7 +134,7 @@ describe("ScenarioBrowser", () => {
   })
 
   it("должен показывать кнопку закрытия при передаче onClose", () => {
-    render(<ScenarioBrowser onClose={mockOnClose} />)
+    render(<ScenarioBrowser onClose={mockOnClose} data-oid="yt5q8ue" />)
 
     // Ищем кнопку закрытия с иконкой X
     const buttons = screen.getAllByRole("button")
@@ -140,7 +143,7 @@ describe("ScenarioBrowser", () => {
 
   it("должен вызывать onSelect при клике на сценарий", async () => {
     const user = userEvent.setup()
-    render(<ScenarioBrowser onSelect={mockOnSelect} />)
+    render(<ScenarioBrowser onSelect={mockOnSelect} data-oid="1m7t7hx" />)
 
     const scenarioCard = screen.getByText("Добавить одинаковые интро и аутро")
     const parentDiv = scenarioCard.closest("div")
@@ -155,21 +158,21 @@ describe("ScenarioBrowser", () => {
   })
 
   it("должен отображать поле поиска", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="8qqad.2" />)
 
     const searchInput = screen.getByPlaceholderText("Поиск сценариев...")
     expect(searchInput).toBeInTheDocument()
   })
 
   it("должен отображать фильтры, если showFilters=true", () => {
-    render(<ScenarioBrowser showFilters={true} />)
+    render(<ScenarioBrowser showFilters={true} data-oid="sq0w.zx" />)
 
     const filterButton = screen.getByRole("button")
     expect(filterButton).toBeInTheDocument()
   })
 
   it("не должен отображать фильтры, если showFilters=false", () => {
-    const { container } = render(<ScenarioBrowser showFilters={false} />)
+    const { container } = render(<ScenarioBrowser showFilters={false} data-oid="-62319-" />)
 
     // Проверяем, что кнопка фильтра отсутствует
     const filterButtons = container.querySelectorAll('button[class*="Filter"]')
@@ -177,13 +180,13 @@ describe("ScenarioBrowser", () => {
   })
 
   it("должен отображать количество найденных сценариев", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="_a.gf3m" />)
 
     expect(screen.getByText(/Найдено сценариев:/)).toBeInTheDocument()
   })
 
   it("должен отображать бейджи AI для AI-сценариев", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="8a8trv2" />)
 
     // Только второй сценарий имеет AI
     const aiBadges = screen.getAllByText("AI")
@@ -191,21 +194,21 @@ describe("ScenarioBrowser", () => {
   })
 
   it("должен отображать правильные уровни сложности", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="pf_p_7r" />)
 
     expect(screen.getByText("Начальный")).toBeInTheDocument()
     expect(screen.getByText("Средний")).toBeInTheDocument()
   })
 
   it("должен отображать время выполнения в минутах", () => {
-    render(<ScenarioBrowser />)
+    render(<ScenarioBrowser data-oid="a9i3frs" />)
 
     expect(screen.getByText("2 мин")).toBeInTheDocument()
     expect(screen.getByText("5 мин")).toBeInTheDocument()
   })
 
   it("должен использовать переданные высоту", () => {
-    const { container } = render(<ScenarioBrowser height="400px" />)
+    const { container } = render(<ScenarioBrowser height="400px" data-oid="we7_i7-" />)
 
     const wrapper = container.firstChild as HTMLElement
     expect(wrapper.style.height).toBe("400px")

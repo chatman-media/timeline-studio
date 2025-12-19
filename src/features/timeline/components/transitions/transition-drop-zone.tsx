@@ -191,18 +191,20 @@ export const TransitionDropZone = memo(function TransitionDropZone({
       onDragLeave={handleNativeDragLeave}
       onDrop={handleNativeDrop}
       title={hasExistingTransition ? "Переход применен" : "Перетащите переход сюда"}
+      data-oid="-m5ho3w"
     >
       {/* Визуальный индикатор */}
-      <div className={cn("w-0.5 h-full", hasExistingTransition ? "bg-purple-400" : "bg-white/30")} />
+      <div className={cn("w-0.5 h-full", hasExistingTransition ? "bg-purple-400" : "bg-white/30")} data-oid="vmqil72" />
 
       {/* Индикатор при перетаскивании */}
       {isDragOver && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center" data-oid="rfl5_-j">
           <div
             className={cn(
               "px-2 py-1 rounded text-xs font-medium whitespace-nowrap",
               canAcceptDrag ? "bg-blue-500 text-white" : "bg-red-500 text-white",
             )}
+            data-oid=".ocfoq9"
           >
             {canAcceptDrag ? "Добавить переход" : "Несовместимо"}
           </div>
@@ -233,15 +235,25 @@ export const AppliedTransition = memo(function AppliedTransition({
   const transitionName = outTransition?.transitionId || inTransition?.transitionId || "Переход"
 
   return (
-    <div className="relative w-full h-full group">
+    <div className="relative w-full h-full group" data-oid="93dd-p7">
       {/* Визуализация перехода */}
-      <div className="absolute inset-0 bg-linear-to-r from-transparent via-purple-500/50 to-transparent" />
+      <div
+        className="absolute inset-0 bg-linear-to-r from-transparent via-purple-500/50 to-transparent"
+        data-oid="247fctn"
+      />
 
       {/* Информация о переходе */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-        <div className="bg-black/80 rounded px-2 py-1 text-xs text-white">
-          <div className="font-medium">{transitionName}</div>
-          <div className="text-white/70">{duration.toFixed(1)}s</div>
+      <div
+        className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        data-oid="4q-6p-r"
+      >
+        <div className="bg-black/80 rounded px-2 py-1 text-xs text-white" data-oid="moumf0i">
+          <div className="font-medium" data-oid="d0qzlpm">
+            {transitionName}
+          </div>
+          <div className="text-white/70" data-oid="-90-7pm">
+            {duration.toFixed(1)}s
+          </div>
         </div>
       </div>
 
@@ -250,6 +262,7 @@ export const AppliedTransition = memo(function AppliedTransition({
         <button
           onClick={onRemove}
           className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs hover:bg-red-600"
+          data-oid=":apsit_"
         >
           ×
         </button>

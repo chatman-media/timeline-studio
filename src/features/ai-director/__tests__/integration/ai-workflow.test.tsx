@@ -201,6 +201,7 @@ const createMockAnalysisResult = (id: string): ComprehensiveAnalysisResult => ({
         transition: null,
       },
     ],
+
     total_scenes: 2,
     avg_scene_duration: 30,
     scene_types_distribution: {},
@@ -345,6 +346,7 @@ describe("AI Director Workflow Integration Tests", () => {
         createMockAnalysisResult("batch-2"),
         createMockAnalysisResult("batch-3"),
       ]
+
       mockCommands.aiDirectorAnalyzeBatch.mockResolvedValue({
         status: "ok",
         data: mockResults,

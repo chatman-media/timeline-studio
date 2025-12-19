@@ -43,9 +43,9 @@ export function RollEditHandle({
   const handlePosition = leftEnd * timeScale
 
   return (
-    <TooltipProvider delayDuration={0}>
-      <Tooltip>
-        <TooltipTrigger asChild>
+    <TooltipProvider delayDuration={0} data-oid="5o7iap8">
+      <Tooltip data-oid="3jzqt-k">
+        <TooltipTrigger asChild data-oid="w::hgp9">
           <div
             className={cn(
               "absolute top-0 bottom-0 w-4 -translate-x-1/2",
@@ -59,6 +59,7 @@ export function RollEditHandle({
               e.stopPropagation()
               onRollStart?.(e.clientX)
             }}
+            data-oid="vit4gub"
           >
             {/* Handle background */}
             <div
@@ -67,32 +68,37 @@ export function RollEditHandle({
                 "border-x-2 border-purple-500",
                 isActive && "bg-purple-500/40",
               )}
+              data-oid="jr-qf0s"
             />
 
             {/* Handle icon */}
-            <div className="relative z-10">
-              <GripVertical className="w-4 h-4 text-purple-500" />
+            <div className="relative z-10" data-oid="y022xqw">
+              <GripVertical className="w-4 h-4 text-purple-500" data-oid="_wc090e" />
             </div>
 
             {/* Visual indicators */}
             {isActive && (
               <>
                 {/* Left clip indicator */}
-                <div className="absolute top-1/2 -translate-y-1/2 right-full mr-1">
-                  <div className="w-8 h-0.5 bg-purple-500/50" />
+                <div className="absolute top-1/2 -translate-y-1/2 right-full mr-1" data-oid="14cm9qc">
+                  <div className="w-8 h-0.5 bg-purple-500/50" data-oid="vytucz3" />
                 </div>
 
                 {/* Right clip indicator */}
-                <div className="absolute top-1/2 -translate-y-1/2 left-full ml-1">
-                  <div className="w-8 h-0.5 bg-purple-500/50" />
+                <div className="absolute top-1/2 -translate-y-1/2 left-full ml-1" data-oid="vwheyi4">
+                  <div className="w-8 h-0.5 bg-purple-500/50" data-oid="6jnxqd0" />
                 </div>
               </>
             )}
           </div>
         </TooltipTrigger>
-        <TooltipContent side="top" className="bg-gray-900 text-white">
-          <p className="text-sm">Roll Edit (W)</p>
-          <p className="text-xs opacity-80">Drag to adjust edit point</p>
+        <TooltipContent side="top" className="bg-gray-900 text-white" data-oid="s6f_u:m">
+          <p className="text-sm" data-oid="qfoj5hr">
+            Roll Edit (W)
+          </p>
+          <p className="text-xs opacity-80" data-oid="2.chgdo">
+            Drag to adjust edit point
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

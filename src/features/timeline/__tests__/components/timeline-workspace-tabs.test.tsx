@@ -27,7 +27,14 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("@/components/ui/button", () => ({
   Button: vi.fn(({ children, variant, size, onClick, className, ...props }) => (
-    <button data-variant={variant} data-size={size} onClick={onClick} className={className} {...props}>
+    <button
+      data-variant={variant}
+      data-size={size}
+      onClick={onClick}
+      className={className}
+      {...props}
+      data-oid="jdlvm.c"
+    >
       {children}
     </button>
   )),
@@ -38,9 +45,9 @@ vi.mock("@/lib/utils", () => ({
 }))
 
 vi.mock("lucide-react", () => ({
-  BarChart3: vi.fn(() => <div data-testid="barchart3-icon" />),
-  Layers: vi.fn(() => <div data-testid="layers-icon" />),
-  Sliders: vi.fn(() => <div data-testid="sliders-icon" />),
+  BarChart3: vi.fn(() => <div data-testid="barchart3-icon" data-oid="m7ve0wc" />),
+  Layers: vi.fn(() => <div data-testid="layers-icon" data-oid="et8._wh" />),
+  Sliders: vi.fn(() => <div data-testid="sliders-icon" data-oid="h.:4c5z" />),
 }))
 
 describe("TimelineWorkspaceTabs", () => {
@@ -57,7 +64,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("rendering", () => {
     it("должен рендерить контейнер с правильными классами", () => {
-      const { container } = render(<TimelineWorkspaceTabs {...defaultProps} />)
+      const { container } = render(<TimelineWorkspaceTabs {...defaultProps} data-oid="ufpi2ef" />)
 
       const wrapper = container.firstChild as HTMLElement
       expect(wrapper.className).toContain("flex")
@@ -66,7 +73,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен рендерить обе кнопки табов", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="s9wu_g." />)
 
       const analysisButton = screen.getByText("Analysis")
       const timelineButton = screen.getByText("Timeline")
@@ -78,7 +85,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен рендерить иконки для каждого таба", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="pr2khni" />)
 
       expect(screen.getByTestId("barchart3-icon")).toBeInTheDocument()
       expect(screen.getByTestId("layers-icon")).toBeInTheDocument()
@@ -86,7 +93,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен вызывать useTranslation для переводов", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="x4k3c.h" />)
 
       expect(useTranslation).toHaveBeenCalled()
     })
@@ -96,7 +103,7 @@ describe("TimelineWorkspaceTabs", () => {
       // @ts-expect-error - Mock doesn't need full TFunction interface
       vi.mocked(useTranslation).mockReturnValue({ t: mockT })
 
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="ffve7dp" />)
 
       expect(mockT).toHaveBeenCalledWith("timeline.workspace.analysis")
       expect(mockT).toHaveBeenCalledWith("timeline.workspace.timeline")
@@ -106,7 +113,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("active state - timeline", () => {
     it("должен показать timeline как активный по умолчанию", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="uu-g3.9" />)
 
       const timelineButton = screen.getByText("Timeline").closest("button")
       const audioMixerButton = screen.getByText("Audio Mixer").closest("button")
@@ -116,7 +123,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен применить правильные CSS классы для активного timeline", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="3woblf2" />)
 
       expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", "bg-secondary")
       expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", false)
@@ -125,7 +132,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("active state - audio-mixer", () => {
     it("должен показать audio-mixer как активный", () => {
-      render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} />)
+      render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} data-oid="4e.p.xk" />)
 
       const timelineButton = screen.getByText("Timeline").closest("button")
       const audioMixerButton = screen.getByText("Audio Mixer").closest("button")
@@ -135,7 +142,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен применить правильные CSS классы для активного audio-mixer", () => {
-      render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} />)
+      render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} data-oid="4gu5rgx" />)
 
       expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", false)
       expect(cn).toHaveBeenCalledWith("h-7 cursor-pointer gap-3", "bg-secondary")
@@ -145,7 +152,7 @@ describe("TimelineWorkspaceTabs", () => {
   describe("user interactions", () => {
     it("должен вызвать onViewChange при клике на timeline", async () => {
       const user = userEvent.setup()
-      render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} />)
+      render(<TimelineWorkspaceTabs activeView="audio-mixer" onViewChange={mockOnViewChange} data-oid="p0rhd93" />)
 
       const timelineButton = screen.getByText("Timeline").closest("button")!
       await user.click(timelineButton)
@@ -156,7 +163,7 @@ describe("TimelineWorkspaceTabs", () => {
 
     it("должен вызвать onViewChange при клике на audio-mixer", async () => {
       const user = userEvent.setup()
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="145jnpx" />)
 
       const audioMixerButton = screen.getByText("Audio Mixer").closest("button")!
       await user.click(audioMixerButton)
@@ -167,7 +174,7 @@ describe("TimelineWorkspaceTabs", () => {
 
     it("должен вызывать onViewChange при повторном клике на активный таб", async () => {
       const user = userEvent.setup()
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid=".aj0hxp" />)
 
       const timelineButton = screen.getByText("Timeline").closest("button")!
       await user.click(timelineButton)
@@ -177,7 +184,7 @@ describe("TimelineWorkspaceTabs", () => {
 
     it("должен обрабатывать множественные клики", async () => {
       const user = userEvent.setup()
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="2nodzky" />)
 
       const timelineButton = screen.getByText("Timeline").closest("button")!
       const audioMixerButton = screen.getByText("Audio Mixer").closest("button")!
@@ -195,7 +202,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("button configuration", () => {
     it("должен передать правильные props для timeline кнопки", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="t.pnx6w" />)
 
       expect(Button).toHaveBeenCalledWith(
         {
@@ -210,7 +217,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен передать правильные props для audio-mixer кнопки", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="pcrr80t" />)
 
       expect(Button).toHaveBeenCalledWith(
         {
@@ -225,7 +232,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен использовать размер sm для обеих кнопок", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="0ivq1ve" />)
 
       const buttons = screen.getAllByRole("button")
       buttons.forEach((button) => {
@@ -236,7 +243,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("accessibility", () => {
     it("должен иметь доступные кнопки", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="jk-6489" />)
 
       const buttons = screen.getAllByRole("button")
       expect(buttons).toHaveLength(3)
@@ -248,7 +255,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен иметь читаемый текст для screen readers", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid=":da:qgb" />)
 
       expect(screen.getByText("Analysis")).toBeInTheDocument()
       expect(screen.getByText("Timeline")).toBeInTheDocument()
@@ -256,7 +263,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен поддерживать keyboard navigation", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="btgie.w" />)
 
       const buttons = screen.getAllByRole("button")
       buttons.forEach((button) => {
@@ -267,7 +274,7 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("layout structure", () => {
     it("должен иметь правильную структуру DOM", () => {
-      const { container } = render(<TimelineWorkspaceTabs {...defaultProps} />)
+      const { container } = render(<TimelineWorkspaceTabs {...defaultProps} data-oid="u2hm1c0" />)
 
       const wrapper = container.querySelector(".flex.h-10.items-center")
       const innerContainer = wrapper?.querySelector(".flex.gap-1")
@@ -279,7 +286,7 @@ describe("TimelineWorkspaceTabs", () => {
     })
 
     it("должен правильно организовать иконки и текст", () => {
-      render(<TimelineWorkspaceTabs {...defaultProps} />)
+      render(<TimelineWorkspaceTabs {...defaultProps} data-oid="yl080j6" />)
 
       const analysisButton = screen.getByText("Analysis").closest("button")
       const timelineButton = screen.getByText("Timeline").closest("button")
@@ -294,11 +301,11 @@ describe("TimelineWorkspaceTabs", () => {
 
   describe("performance", () => {
     it("не должен вызывать лишние перерендеры", () => {
-      const { rerender } = render(<TimelineWorkspaceTabs {...defaultProps} />)
+      const { rerender } = render(<TimelineWorkspaceTabs {...defaultProps} data-oid="mzedk_9" />)
 
       const initialCallCount = vi.mocked(Button).mock.calls.length
 
-      rerender(<TimelineWorkspaceTabs {...defaultProps} />)
+      rerender(<TimelineWorkspaceTabs {...defaultProps} data-oid="19z7c:o" />)
 
       const afterRerenderCallCount = vi.mocked(Button).mock.calls.length
 
@@ -310,11 +317,11 @@ describe("TimelineWorkspaceTabs", () => {
       // @ts-expect-error - Mock doesn't need full TFunction interface
       vi.mocked(useTranslation).mockReturnValue({ t: mockT })
 
-      const { rerender } = render(<TimelineWorkspaceTabs {...defaultProps} />)
+      const { rerender } = render(<TimelineWorkspaceTabs {...defaultProps} data-oid="moblnmu" />)
 
       const initialTCallCount = mockT.mock.calls.length
 
-      rerender(<TimelineWorkspaceTabs {...defaultProps} />)
+      rerender(<TimelineWorkspaceTabs {...defaultProps} data-oid="l1qehif" />)
 
       expect(mockT.mock.calls.length).toBe(initialTCallCount + 3) // Переводы вызываются заново
     })
@@ -323,13 +330,19 @@ describe("TimelineWorkspaceTabs", () => {
   describe("edge cases", () => {
     it("должен обрабатывать undefined onViewChange", () => {
       expect(() => {
-        render(<TimelineWorkspaceTabs activeView="timeline" onViewChange={undefined as any} />)
+        render(<TimelineWorkspaceTabs activeView="timeline" onViewChange={undefined as any} data-oid="unhq1ar" />)
       }).not.toThrow()
     })
 
     it("должен обрабатывать неизвестные activeView значения", () => {
       expect(() => {
-        render(<TimelineWorkspaceTabs activeView={"unknown" as WorkspaceView} onViewChange={mockOnViewChange} />)
+        render(
+          <TimelineWorkspaceTabs
+            activeView={"unknown" as WorkspaceView}
+            onViewChange={mockOnViewChange}
+            data-oid="u7-m-.l"
+          />,
+        )
       }).not.toThrow()
     })
 
@@ -342,7 +355,7 @@ describe("TimelineWorkspaceTabs", () => {
       } as any)
 
       expect(() => {
-        render(<TimelineWorkspaceTabs {...defaultProps} />)
+        render(<TimelineWorkspaceTabs {...defaultProps} data-oid="2ypta69" />)
       }).not.toThrow()
     })
   })

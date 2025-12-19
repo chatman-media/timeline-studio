@@ -48,6 +48,7 @@ const createMockMediaFile = (id: string, timecode: string, creationTime: string)
         duration: "120",
       },
     ],
+
     format: {
       format_name: "mp4",
       duration: 120,
@@ -571,8 +572,18 @@ describe("Multicam Editing Integration", () => {
         })),
         activeAngleIndex: 0,
         syncResults: [
-          { clipId: "clip-cam2", offset: 2.5, confidence: 0.92, method: "audio" as SyncMethod },
-          { clipId: "clip-cam3", offset: 5.0, confidence: 0.88, method: "audio" as SyncMethod },
+          {
+            clipId: "clip-cam2",
+            offset: 2.5,
+            confidence: 0.92,
+            method: "audio" as SyncMethod,
+          },
+          {
+            clipId: "clip-cam3",
+            offset: 5.0,
+            confidence: 0.88,
+            method: "audio" as SyncMethod,
+          },
         ],
       }
 

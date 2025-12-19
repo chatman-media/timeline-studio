@@ -54,7 +54,11 @@ export function WidgetContainer({
   const containerRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
   const [resizeHandle, setResizeHandle] = useState<ResizeHandle | null>(null)
-  const resizeStartRef = useRef<{ x: number; y: number; bounds: WidgetBounds } | null>(null)
+  const resizeStartRef = useRef<{
+    x: number
+    y: number
+    bounds: WidgetBounds
+  } | null>(null)
 
   const handleResizeStart = useCallback(
     (handle: ResizeHandle, e: React.MouseEvent) => {
@@ -199,24 +203,28 @@ export function WidgetContainer({
         isResizing && "cursor-grabbing",
       )}
       onClick={() => onSelect?.(widget.id)}
+      data-oid="mq6lk.u"
     >
       {/* Widget Header */}
-      <div className="flex h-8 items-center justify-between border-b bg-muted/50 px-2">
-        <div className="flex items-center gap-1">
+      <div className="flex h-8 items-center justify-between border-b bg-muted/50 px-2" data-oid="9.r0tn0">
+        <div className="flex items-center gap-1" data-oid="8r.8m2q">
           {/* Drag Handle */}
           <button
             {...listeners}
             {...attributes}
             className="cursor-grab touch-none p-1 hover:bg-muted active:cursor-grabbing"
             title="Drag to move"
+            data-oid="q6hd68y"
           >
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
+            <GripVertical className="h-4 w-4 text-muted-foreground" data-oid="4:nc4jd" />
           </button>
-          <span className="text-xs font-medium capitalize">{widget.type}</span>
+          <span className="text-xs font-medium capitalize" data-oid="no54qe5">
+            {widget.type}
+          </span>
         </div>
 
         {/* Widget Actions */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" data-oid="chvthla">
           {onMinimize && (
             <button
               onClick={(e) => {
@@ -225,8 +233,9 @@ export function WidgetContainer({
               }}
               className="p-1 hover:bg-muted"
               title="Minimize"
+              data-oid="u8f84x5"
             >
-              <Minimize2 className="h-3 w-3 text-muted-foreground" />
+              <Minimize2 className="h-3 w-3 text-muted-foreground" data-oid="3-8cq1x" />
             </button>
           )}
           {onMaximize && (
@@ -237,8 +246,9 @@ export function WidgetContainer({
               }}
               className="p-1 hover:bg-muted"
               title="Maximize"
+              data-oid="2ygecv2"
             >
-              <Maximize2 className="h-3 w-3 text-muted-foreground" />
+              <Maximize2 className="h-3 w-3 text-muted-foreground" data-oid="x:geucj" />
             </button>
           )}
           {onRemove && (
@@ -249,15 +259,18 @@ export function WidgetContainer({
               }}
               className="p-1 hover:bg-destructive/10 hover:text-destructive"
               title="Close"
+              data-oid="74keqhr"
             >
-              <X className="h-3 w-3" />
+              <X className="h-3 w-3" data-oid="paov6ws" />
             </button>
           )}
         </div>
       </div>
 
       {/* Widget Content */}
-      <div className="h-[calc(100%-2rem)] overflow-hidden">{children}</div>
+      <div className="h-[calc(100%-2rem)] overflow-hidden" data-oid="zj9zcsh">
+        {children}
+      </div>
 
       {/* Resize Handles */}
       {enableResize && !widget.isMinimized && (
@@ -266,36 +279,50 @@ export function WidgetContainer({
           <div
             className="absolute right-0 top-0 h-full w-1 cursor-ew-resize hover:bg-primary/20"
             onMouseDown={(e) => handleResizeStart("e", e)}
+            data-oid="8f92f05"
           />
+
           <div
             className="absolute bottom-0 left-0 h-1 w-full cursor-ns-resize hover:bg-primary/20"
             onMouseDown={(e) => handleResizeStart("s", e)}
+            data-oid=".3.iv.n"
           />
+
           <div
             className="absolute left-0 top-0 h-full w-1 cursor-ew-resize hover:bg-primary/20"
             onMouseDown={(e) => handleResizeStart("w", e)}
+            data-oid="rfk_64p"
           />
+
           <div
             className="absolute left-0 top-0 h-1 w-full cursor-ns-resize hover:bg-primary/20"
             onMouseDown={(e) => handleResizeStart("n", e)}
+            data-oid="erp8znz"
           />
 
           {/* Corner handles */}
           <div
             className="absolute -bottom-1 -right-1 h-3 w-3 cursor-nwse-resize rounded-full border-2 border-primary bg-background"
             onMouseDown={(e) => handleResizeStart("se", e)}
+            data-oid="rx.pin-"
           />
+
           <div
             className="absolute -right-1 -top-1 h-3 w-3 cursor-nesw-resize rounded-full border-2 border-primary bg-background"
             onMouseDown={(e) => handleResizeStart("ne", e)}
+            data-oid="ypp6zt3"
           />
+
           <div
             className="absolute -bottom-1 -left-1 h-3 w-3 cursor-nesw-resize rounded-full border-2 border-primary bg-background"
             onMouseDown={(e) => handleResizeStart("sw", e)}
+            data-oid="26vtt29"
           />
+
           <div
             className="absolute -left-1 -top-1 h-3 w-3 cursor-nwse-resize rounded-full border-2 border-primary bg-background"
             onMouseDown={(e) => handleResizeStart("nw", e)}
+            data-oid="csx672g"
           />
         </>
       )}

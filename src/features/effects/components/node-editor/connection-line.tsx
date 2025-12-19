@@ -78,7 +78,7 @@ export function ConnectionLine({
   }
 
   return (
-    <g className="connection-line">
+    <g className="connection-line" data-oid="pq89hyx">
       {/* Invisible wider path for easier selection */}
       <path
         d={path}
@@ -88,6 +88,7 @@ export function ConnectionLine({
         className="cursor-pointer"
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
+        data-oid="9u.py.3"
       />
 
       {/* Shadow */}
@@ -98,6 +99,7 @@ export function ConnectionLine({
         fill="none"
         style={{ transform: "translate(1px, 1px)" }}
         pointerEvents="none"
+        data-oid="mpcih3s"
       />
 
       {/* Main connection line */}
@@ -108,12 +110,13 @@ export function ConnectionLine({
         fill="none"
         className={cn("transition-all", !connection.active && "opacity-50 stroke-dasharray-5")}
         pointerEvents="none"
+        data-oid="f.e-pyd"
       />
 
       {/* Flow animation */}
       {connection.active && (
-        <circle r="3" fill={getTypeColor()}>
-          <animateMotion dur="2s" repeatCount="indefinite" path={path} />
+        <circle r="3" fill={getTypeColor()} data-oid="5wxoc4z">
+          <animateMotion dur="2s" repeatCount="indefinite" path={path} data-oid="mahkzd2" />
         </circle>
       )}
 
@@ -125,7 +128,9 @@ export function ConnectionLine({
         fill={getTypeColor()}
         stroke="#1f2937"
         strokeWidth="1"
+        data-oid="xu0qe7z"
       />
+
       <circle
         cx={targetNode.position.x}
         cy={targetNode.position.y + 40 + targetNode.inputs.findIndex((p) => p.id === targetPort.id) * 20}
@@ -133,6 +138,7 @@ export function ConnectionLine({
         fill={getTypeColor()}
         stroke="#1f2937"
         strokeWidth="1"
+        data-oid="5rfov-:"
       />
     </g>
   )

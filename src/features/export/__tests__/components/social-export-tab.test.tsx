@@ -26,15 +26,25 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("lucide-react")>()
   return {
     ...actual,
-    LogIn: ({ className }: { className?: string }) => <div data-testid="login-icon" className={className} />,
-    Upload: ({ className }: { className?: string }) => <div data-testid="upload-icon" className={className} />,
+    LogIn: ({ className }: { className?: string }) => (
+      <div data-testid="login-icon" className={className} data-oid="-hrq6mj" />
+    ),
+
+    Upload: ({ className }: { className?: string }) => (
+      <div data-testid="upload-icon" className={className} data-oid="n.ojj.i" />
+    ),
+
     AlertCircle: ({ className }: { className?: string }) => (
-      <div data-testid="alert-circle-icon" className={className} />
+      <div data-testid="alert-circle-icon" className={className} data-oid="-5eb.vu" />
     ),
+
     CheckCircle: ({ className }: { className?: string }) => (
-      <div data-testid="check-circle-icon" className={className} />
+      <div data-testid="check-circle-icon" className={className} data-oid="q7bsxbi" />
     ),
-    Info: ({ className }: { className?: string }) => <div data-testid="info-icon" className={className} />,
+
+    Info: ({ className }: { className?: string }) => (
+      <div data-testid="info-icon" className={className} data-oid="y0ezcwf" />
+    ),
   }
 })
 
@@ -95,7 +105,7 @@ describe("SocialExportTab", () => {
 
   describe("Basic rendering", () => {
     it("should render social networks", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="wmx44i0" />)
 
       expect(screen.getByText("YouTube")).toBeInTheDocument()
       expect(screen.getByText("TikTok")).toBeInTheDocument()
@@ -103,7 +113,7 @@ describe("SocialExportTab", () => {
     })
 
     it("should show network specifications", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="e35mici" />)
 
       // Should show max resolution and fps for each network
       // Check YouTube specifications
@@ -126,7 +136,7 @@ describe("SocialExportTab", () => {
     })
 
     it("should highlight selected network", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="8_gbjpe" />)
 
       // YouTube should be selected by default and show additional UI
       expect(screen.getByText("dialogs.export.login")).toBeInTheDocument()
@@ -135,7 +145,7 @@ describe("SocialExportTab", () => {
 
   describe("Authentication", () => {
     it("should show login button when not logged in", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="k_yqv8b" />)
 
       expect(screen.getByText("dialogs.export.login")).toBeInTheDocument()
     })
@@ -144,7 +154,7 @@ describe("SocialExportTab", () => {
       const loggedInSettings = { ...mockSettings, isLoggedIn: true }
       const loggedInProps = { ...mockProps, settings: loggedInSettings }
 
-      render(<SocialExportTab {...loggedInProps} />)
+      render(<SocialExportTab {...loggedInProps} data-oid="yd728xc" />)
 
       // Simulate login state
       const loginButton = screen.getByText("dialogs.export.login")
@@ -156,7 +166,7 @@ describe("SocialExportTab", () => {
     })
 
     it("should handle login button click", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="8:j7i80" />)
 
       const loginButton = screen.getByText("dialogs.export.login")
       fireEvent.click(loginButton)
@@ -168,7 +178,7 @@ describe("SocialExportTab", () => {
 
   describe("Upload settings", () => {
     it("should render video title input", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="_ncfqpk" />)
 
       // Form fields are shown after network is selected
       expect(screen.getByText("dialogs.export.videoTitle")).toBeInTheDocument()
@@ -176,20 +186,20 @@ describe("SocialExportTab", () => {
     })
 
     it("should render description textarea", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="n8xw6jc" />)
 
       expect(screen.getByText("dialogs.export.description")).toBeInTheDocument()
       expect(screen.getByPlaceholderText("dialogs.export.enterDescription")).toBeInTheDocument()
     })
 
     it("should render privacy selector", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="7dq7qhp" />)
 
       expect(screen.getByText("dialogs.export.privacy")).toBeInTheDocument()
     })
 
     it("should show YouTube-specific fields", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="3brc15-" />)
 
       // YouTube is selected by default, so these fields should be visible
       expect(screen.getByText("dialogs.export.tags")).toBeInTheDocument()
@@ -198,7 +208,7 @@ describe("SocialExportTab", () => {
 
     it("should handle settings changes", () => {
       const onSettingsChange = vi.fn()
-      render(<SocialExportTab {...mockProps} onSettingsChange={onSettingsChange} />)
+      render(<SocialExportTab {...mockProps} onSettingsChange={onSettingsChange} data-oid="bqbzzd4" />)
 
       const titleInput = screen.getByPlaceholderText("dialogs.export.enterTitle")
       fireEvent.change(titleInput, { target: { value: "New Title" } })
@@ -209,7 +219,7 @@ describe("SocialExportTab", () => {
 
   describe("Network selection", () => {
     it("should allow selecting different networks", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="vit:12v" />)
 
       // Click on TikTok card
       const tiktokCard = screen.getByText("TikTok").closest(".cursor-pointer")
@@ -220,7 +230,7 @@ describe("SocialExportTab", () => {
     })
 
     it("should show different fields for different networks", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="vceccdx" />)
 
       // YouTube is selected by default and should show tags and category
       expect(screen.getByText("dialogs.export.tags")).toBeInTheDocument()
@@ -235,22 +245,24 @@ describe("SocialExportTab", () => {
   describe("Export functionality", () => {
     it("should render upload button", () => {
       const loggedInSettings = { ...mockSettings, isLoggedIn: true }
-      render(<SocialExportTab {...mockProps} settings={loggedInSettings} />)
+      render(<SocialExportTab {...mockProps} settings={loggedInSettings} data-oid="zg1_rs3" />)
 
       expect(screen.getByText(/dialogs.export.uploadTo/)).toBeInTheDocument()
     })
 
     it("should disable upload button when not logged in", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="d87is73" />)
 
-      const uploadButton = screen.getByRole("button", { name: /dialogs.export.uploadTo/ })
+      const uploadButton = screen.getByRole("button", {
+        name: /dialogs.export.uploadTo/,
+      })
       expect(uploadButton).toBeDisabled()
     })
 
     it("should handle export button click", async () => {
       const onExport = vi.fn()
       const loggedInSettings = { ...mockSettings, isLoggedIn: true }
-      render(<SocialExportTab {...mockProps} settings={loggedInSettings} onExport={onExport} />)
+      render(<SocialExportTab {...mockProps} settings={loggedInSettings} onExport={onExport} data-oid="ghkxbmo" />)
 
       // First, simulate login to enable the button
       const loginButton = screen.getByText("dialogs.export.login")
@@ -264,7 +276,9 @@ describe("SocialExportTab", () => {
       })
 
       // Now find and click the upload button
-      const uploadButton = screen.getByRole("button", { name: /dialogs.export.uploadTo/ })
+      const uploadButton = screen.getByRole("button", {
+        name: /dialogs.export.uploadTo/,
+      })
 
       await act(async () => {
         fireEvent.click(uploadButton)
@@ -286,7 +300,7 @@ describe("SocialExportTab", () => {
         renderProgress: { percentage: 50, message: "Uploading..." },
       }
 
-      render(<SocialExportTab {...renderingProps} />)
+      render(<SocialExportTab {...renderingProps} data-oid="u:x4o0b" />)
 
       expect(screen.getByText("dialogs.export.uploadProgress")).toBeInTheDocument()
       expect(screen.getByText("50%")).toBeInTheDocument()
@@ -299,7 +313,7 @@ describe("SocialExportTab", () => {
         renderProgress: { percentage: 25 },
       }
 
-      render(<SocialExportTab {...renderingProps} />)
+      render(<SocialExportTab {...renderingProps} data-oid="36p6._g" />)
 
       expect(screen.getByText("dialogs.export.cancel")).toBeInTheDocument()
       expect(screen.getByText("dialogs.export.uploading...")).toBeInTheDocument()
@@ -311,7 +325,7 @@ describe("SocialExportTab", () => {
         isRendering: true,
       }
 
-      render(<SocialExportTab {...renderingProps} />)
+      render(<SocialExportTab {...renderingProps} data-oid="jipnaa7" />)
 
       const titleInput = screen.getByPlaceholderText("dialogs.export.enterTitle")
       expect(titleInput).toBeDisabled()
@@ -320,20 +334,22 @@ describe("SocialExportTab", () => {
 
   describe("Error handling", () => {
     it("should handle component without errors", () => {
-      expect(() => render(<SocialExportTab {...mockProps} />)).not.toThrow()
+      expect(() => render(<SocialExportTab {...mockProps} data-oid="mdw1z96" />)).not.toThrow()
     })
 
     it("should handle missing project", () => {
       const noProjectProps = { ...mockProps, hasProject: false }
 
-      render(<SocialExportTab {...noProjectProps} />)
+      render(<SocialExportTab {...noProjectProps} data-oid="v8m1aqh" />)
 
-      const uploadButton = screen.getByRole("button", { name: /dialogs.export.uploadTo/ })
+      const uploadButton = screen.getByRole("button", {
+        name: /dialogs.export.uploadTo/,
+      })
       expect(uploadButton).toBeDisabled()
     })
 
     it("should handle network switching", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="5f9wgvt" />)
 
       // Component should render different networks without errors
       expect(screen.getByText("TikTok")).toBeInTheDocument()
@@ -344,19 +360,19 @@ describe("SocialExportTab", () => {
 
   describe("Integration", () => {
     it("should integrate with social export hook", () => {
-      render(<SocialExportTab {...mockProps} />)
+      render(<SocialExportTab {...mockProps} data-oid="lu9-6:l" />)
 
       // Component should use the mocked hook without errors
       expect(screen.getByText("YouTube")).toBeInTheDocument()
     })
 
     it("should pass all required props", () => {
-      expect(() => render(<SocialExportTab {...mockProps} />)).not.toThrow()
+      expect(() => render(<SocialExportTab {...mockProps} data-oid="olx3_4k" />)).not.toThrow()
     })
 
     it("should handle close button click", () => {
       const onClose = vi.fn()
-      render(<SocialExportTab {...mockProps} onClose={onClose} />)
+      render(<SocialExportTab {...mockProps} onClose={onClose} data-oid="k40z_yg" />)
 
       const closeButton = screen.getByText("dialogs.export.close")
       fireEvent.click(closeButton)

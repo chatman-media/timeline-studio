@@ -211,18 +211,19 @@ export function TransitionCurveVisualizer({
   }
 
   return (
-    <div className={cn("transition-curve-visualizer", className)}>
+    <div className={cn("transition-curve-visualizer", className)} data-oid="lh6xtbe">
       <canvas
         ref={canvasRef}
         className={cn("border rounded", onTimeChange && "cursor-pointer")}
         onClick={handleClick}
+        data-oid="x8ojxm8"
       />
 
       {/* Информация о переходе */}
-      <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-        <span>Тип: {curve.type}</span>
-        <span>Длительность: {duration.toFixed(1)}s</span>
-        {showProgress && <span>Время: {currentTime.toFixed(2)}s</span>}
+      <div className="mt-2 flex justify-between text-xs text-muted-foreground" data-oid=".d0y980">
+        <span data-oid="aqktbme">Тип: {curve.type}</span>
+        <span data-oid="7:-w9-.">Длительность: {duration.toFixed(1)}s</span>
+        {showProgress && <span data-oid="v7plop0">Время: {currentTime.toFixed(2)}s</span>}
       </div>
     </div>
   )

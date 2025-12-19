@@ -174,7 +174,9 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
       const video = validVideos[index]
       const isActive = video.id === activeVideoId
 
-      return <VideoPanelComponent video={video} isActive={isActive} videoRefs={videoRefs} index={index} />
+      return (
+        <VideoPanelComponent video={video} isActive={isActive} videoRefs={videoRefs} index={index} data-oid="55z.np9" />
+      )
     },
     [validVideos, activeVideoId, videoRefs],
   )
@@ -182,7 +184,7 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
   // Если нет шаблона или конфигурации, показываем заглушку
   if (!template || !templateConfig) {
     logger.warn(`No configuration found for template: ${template?.id}`)
-    return <div>Template configuration not found</div>
+    return <div data-oid="05t4suc">Template configuration not found</div>
   }
 
   // Обновляем конфигурацию с актуальными splitPoints для диагональных шаблонов
@@ -193,11 +195,13 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
     const isVertical = template.split === "vertical"
 
     return (
-      <ResizablePanelGroup direction={isVertical ? "horizontal" : "vertical"}>
+      <ResizablePanelGroup direction={isVertical ? "horizontal" : "vertical"} data-oid="loww9u0">
         {panelSizes.map((size, index) => (
           <React.Fragment key={index}>
-            {index > 0 && <PanelResizeHandle className={isVertical ? "w-px bg-gray-600" : "h-px bg-gray-600"} />}
-            <ResizablePanel defaultSize={size} minSize={10}>
+            {index > 0 && (
+              <PanelResizeHandle className={isVertical ? "w-px bg-gray-600" : "h-px bg-gray-600"} data-oid="it.g8ss" />
+            )}
+            <ResizablePanel defaultSize={size} minSize={10} data-oid="nai9sj.">
               {index < validVideos.length && renderCell(index, templateConfig.cells?.[index] || {})}
             </ResizablePanel>
           </React.Fragment>
@@ -209,11 +213,15 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
   // Для диагональных шаблонов с возможностью изменения
   if (template.split === "diagonal" && isResizableMode) {
     return (
-      <div ref={diagonalContainerRef} className="relative h-full w-full">
-        <TemplateRenderer config={configWithUpdatedPoints} renderCell={renderCell} />
+      <div ref={diagonalContainerRef} className="relative h-full w-full" data-oid="4lknpuv">
+        <TemplateRenderer config={configWithUpdatedPoints} renderCell={renderCell} data-oid="lvvta5q" />
 
         {/* Интерактивные элементы для перетаскивания диагонали */}
-        <svg className="absolute inset-0" style={{ width: "100%", height: "100%", pointerEvents: "none" }}>
+        <svg
+          className="absolute inset-0"
+          style={{ width: "100%", height: "100%", pointerEvents: "none" }}
+          data-oid="yz:r033"
+        >
           {/* Точки для перетаскивания */}
           <circle
             cx={`${splitPoints[0].x}%`}
@@ -224,7 +232,9 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
             strokeWidth="2"
             style={{ cursor: "move", pointerEvents: "all" }}
             onMouseDown={(e) => handleMouseDown(e, 0)}
+            data-oid="sn058c2"
           />
+
           <circle
             cx={`${splitPoints[1].x}%`}
             cy={`${splitPoints[1].y}%`}
@@ -234,6 +244,7 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
             strokeWidth="2"
             style={{ cursor: "move", pointerEvents: "all" }}
             onMouseDown={(e) => handleMouseDown(e, 1)}
+            data-oid="0y4y3c1"
           />
 
           {/* Невидимая линия для перетаскивания всей диагонали */}
@@ -246,6 +257,7 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
             strokeWidth="20"
             style={{ cursor: "move", pointerEvents: "all" }}
             onMouseDown={(e) => handleMouseDown(e, 2)}
+            data-oid="-kor1md"
           />
         </svg>
       </div>
@@ -253,5 +265,5 @@ export function ResizableTemplate({ appliedTemplate, videos, activeVideoId, vide
   }
 
   // Для всех остальных шаблонов используем TemplateRenderer
-  return <TemplateRenderer config={configWithUpdatedPoints} renderCell={renderCell} />
+  return <TemplateRenderer config={configWithUpdatedPoints} renderCell={renderCell} data-oid="-hwz_39" />
 }

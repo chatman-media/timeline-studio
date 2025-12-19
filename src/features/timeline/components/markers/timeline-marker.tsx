@@ -29,16 +29,16 @@ interface TimelineMarkerProps {
 }
 
 const markerIcons: Record<MarkerType, React.ReactNode> = {
-  chapter: <Bookmark className="w-3 h-3" />,
-  section: <FolderOpen className="w-3 h-3" />,
-  note: <StickyNote className="w-3 h-3" />,
-  export: <Download className="w-3 h-3" />,
-  todo: <CheckSquare className="w-3 h-3" />,
-  sync: <RefreshCw className="w-3 h-3" />,
-  cue: <PlayCircle className="w-3 h-3" />,
-  important: <AlertCircle className="w-3 h-3" />,
-  warning: <AlertTriangle className="w-3 h-3" />,
-  timeline: <Bookmark className="w-3 h-3" />,
+  chapter: <Bookmark className="w-3 h-3" data-oid=":j-i0-c" />,
+  section: <FolderOpen className="w-3 h-3" data-oid="7:7lfc6" />,
+  note: <StickyNote className="w-3 h-3" data-oid="gjhu132" />,
+  export: <Download className="w-3 h-3" data-oid="wpu74jn" />,
+  todo: <CheckSquare className="w-3 h-3" data-oid="okfu5rw" />,
+  sync: <RefreshCw className="w-3 h-3" data-oid="-cmx__p" />,
+  cue: <PlayCircle className="w-3 h-3" data-oid="a0wxnz0" />,
+  important: <AlertCircle className="w-3 h-3" data-oid="ld5npaw" />,
+  warning: <AlertTriangle className="w-3 h-3" data-oid="f:_:_vh" />,
+  timeline: <Bookmark className="w-3 h-3" data-oid="fi-2gos" />,
 }
 
 export function TimelineMarker({ marker, timeScale, isSelected, onDrag, onClick, onDelete }: TimelineMarkerProps) {
@@ -49,7 +49,7 @@ export function TimelineMarker({ marker, timeScale, isSelected, onDrag, onClick,
 
   const markerType = marker.type!
   const markerColor = MarkerColors[markerType] || "#6b7280"
-  const markerIcon = markerIcons[markerType] || <Bookmark className="w-3 h-3" />
+  const markerIcon = markerIcons[markerType] || <Bookmark className="w-3 h-3" data-oid="cil7285" />
 
   // Начало перетаскивания
   const handleMouseDown = useCallback(
@@ -118,11 +118,11 @@ export function TimelineMarker({ marker, timeScale, isSelected, onDrag, onClick,
   }
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
+    <ContextMenu data-oid="6-akepd">
+      <ContextMenuTrigger data-oid="p_uhyjb">
+        <TooltipProvider data-oid="8:036q8">
+          <Tooltip data-oid="j5soiw4">
+            <TooltipTrigger asChild data-oid="3:9:b:p">
               <div
                 ref={markerRef}
                 data-testid="timeline-marker"
@@ -139,14 +139,23 @@ export function TimelineMarker({ marker, timeScale, isSelected, onDrag, onClick,
                 }}
                 onMouseDown={handleMouseDown}
                 onClick={handleClick}
+                data-oid=".5nbqm2"
               >
                 {/* Треугольник маркера */}
-                <svg width="24" height="24" viewBox="0 0 24 24" className="absolute top-0 left-0">
-                  <path d="M12 2 L20 10 L12 18 L4 10 Z" fill={markerColor} stroke="white" strokeWidth="1" />
+                <svg width="24" height="24" viewBox="0 0 24 24" className="absolute top-0 left-0" data-oid="-pjfjp5">
+                  <path
+                    d="M12 2 L20 10 L12 18 L4 10 Z"
+                    fill={markerColor}
+                    stroke="white"
+                    strokeWidth="1"
+                    data-oid="i9wcwt7"
+                  />
                 </svg>
 
                 {/* Иконка маркера */}
-                <div className="absolute top-1.5 left-1/2 -translate-x-1/2 text-white">{markerIcon}</div>
+                <div className="absolute top-1.5 left-1/2 -translate-x-1/2 text-white" data-oid="rmd58ti">
+                  {markerIcon}
+                </div>
 
                 {/* Флаг для маркеров с длительностью */}
                 {marker.duration && marker.duration > 0 && (
@@ -157,25 +166,36 @@ export function TimelineMarker({ marker, timeScale, isSelected, onDrag, onClick,
                       backgroundColor: markerColor,
                       left: "50%",
                     }}
+                    data-oid="joqpiz3"
                   />
                 )}
               </div>
             </TooltipTrigger>
-            <TooltipContent>
-              <div className="space-y-1">
-                <div className="font-semibold">{marker.name}</div>
-                <div className="text-xs text-muted-foreground">{formatTime(marker.time)}</div>
-                {marker.description && <div className="text-xs">{marker.description}</div>}
+            <TooltipContent data-oid="a5kp_ey">
+              <div className="space-y-1" data-oid="x_e4pap">
+                <div className="font-semibold" data-oid="fkwvnhf">
+                  {marker.name}
+                </div>
+                <div className="text-xs text-muted-foreground" data-oid="mcrpl:.">
+                  {formatTime(marker.time)}
+                </div>
+                {marker.description && (
+                  <div className="text-xs" data-oid="c3xvgs8">
+                    {marker.description}
+                  </div>
+                )}
               </div>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </ContextMenuTrigger>
 
-      <ContextMenuContent>
-        <ContextMenuItem onClick={() => onClick?.(marker.id)}>Go to Marker</ContextMenuItem>
-        <ContextMenuItem onClick={() => onDelete?.(marker.id)} className="text-destructive">
-          <Trash2 className="w-4 h-4 mr-2" />
+      <ContextMenuContent data-oid="bywl:7_">
+        <ContextMenuItem onClick={() => onClick?.(marker.id)} data-oid="bbnlqx1">
+          Go to Marker
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => onDelete?.(marker.id)} className="text-destructive" data-oid="xvycnp0">
+          <Trash2 className="w-4 h-4 mr-2" data-oid="c.a48_q" />
           Delete Marker
         </ContextMenuItem>
       </ContextMenuContent>

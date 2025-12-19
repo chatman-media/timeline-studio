@@ -98,7 +98,7 @@ describe("GpuStatus", () => {
   })
 
   it("should render GPU status with acceleration available", () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="k09kokz" />)
 
     expect(screen.getByText("videoCompiler.gpu.acceleration")).toBeInTheDocument()
     expect(screen.getByText("videoCompiler.gpu.accelerationAvailable")).toBeInTheDocument()
@@ -111,7 +111,7 @@ describe("GpuStatus", () => {
       isLoading: true,
     })
 
-    const { container } = render(<GpuStatus />)
+    const { container } = render(<GpuStatus data-oid="h:nuf8v" />)
 
     expect(container.querySelector('[data-slot="skeleton"]')).toBeInTheDocument()
   })
@@ -123,7 +123,7 @@ describe("GpuStatus", () => {
       error: errorMessage,
     })
 
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="3e_a_ps" />)
 
     expect(screen.getByText("videoCompiler.gpu.error")).toBeInTheDocument()
     expect(screen.getByText(errorMessage)).toBeInTheDocument()
@@ -137,7 +137,7 @@ describe("GpuStatus", () => {
       error: errorMessage,
     })
 
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="q55_orp" />)
 
     const retryButton = screen.getByText("videoCompiler.gpu.retry")
     fireEvent.click(retryButton)
@@ -146,7 +146,7 @@ describe("GpuStatus", () => {
   })
 
   it("should toggle GPU acceleration", async () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="5361_8z" />)
 
     const switchElement = screen.getByRole("switch")
     expect(switchElement).toBeChecked()
@@ -170,14 +170,14 @@ describe("GpuStatus", () => {
       },
     })
 
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="pe:2uf7" />)
 
     const switchElement = screen.getByRole("switch")
     expect(switchElement).toBeDisabled()
   })
 
   it("should show GPU memory usage", () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="12h:6vy" />)
 
     expect(screen.getByText("videoCompiler.gpu.videoMemory")).toBeInTheDocument()
     expect(screen.getByText("videoCompiler.gpu.memoryUsed")).toBeInTheDocument()
@@ -186,7 +186,7 @@ describe("GpuStatus", () => {
   })
 
   it("should show GPU utilization", () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="fiyw_l_" />)
 
     expect(screen.getByText("videoCompiler.gpu.gpuLoad")).toBeInTheDocument()
     expect(screen.getByText("videoCompiler.gpu.usage")).toBeInTheDocument()
@@ -194,7 +194,7 @@ describe("GpuStatus", () => {
   })
 
   it("should show available encoders", () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="_cvqzqt" />)
 
     expect(screen.getByText("videoCompiler.gpu.encoders")).toBeInTheDocument()
     expect(screen.getByText("Nvenc")).toBeInTheDocument()
@@ -202,7 +202,7 @@ describe("GpuStatus", () => {
   })
 
   it("should show system info", () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="kej8vdr" />)
 
     expect(screen.getByText("videoCompiler.gpu.system")).toBeInTheDocument()
     expect(screen.getByText(/Linux.*5\.15\.0.*x86_64/)).toBeInTheDocument()
@@ -210,7 +210,7 @@ describe("GpuStatus", () => {
   })
 
   it("should show recommendations", () => {
-    render(<GpuStatus />)
+    render(<GpuStatus data-oid="4w7vx7u" />)
 
     expect(screen.getByText("videoCompiler.gpu.recommendations")).toBeInTheDocument()
   })
@@ -218,7 +218,7 @@ describe("GpuStatus", () => {
   it("should call settings callback when button clicked", () => {
     const mockSettingsClick = vi.fn()
 
-    render(<GpuStatus onSettingsClick={mockSettingsClick} />)
+    render(<GpuStatus onSettingsClick={mockSettingsClick} data-oid="2zh1sa2" />)
 
     const settingsButton = screen.getByTestId("settings-icon").closest("button")
     expect(settingsButton).toBeInTheDocument()
@@ -228,7 +228,7 @@ describe("GpuStatus", () => {
   })
 
   it("should hide details when showDetails is false", () => {
-    render(<GpuStatus showDetails={false} />)
+    render(<GpuStatus showDetails={false} data-oid="ebb5nwk" />)
 
     expect(screen.queryByText("videoCompiler.gpu.videoMemory")).not.toBeInTheDocument()
     expect(screen.queryByText("videoCompiler.gpu.system")).not.toBeInTheDocument()
@@ -274,7 +274,7 @@ describe("GpuStatusBadge", () => {
   })
 
   it("should render badge with GPU encoder", () => {
-    render(<GpuStatusBadge />)
+    render(<GpuStatusBadge data-oid="94pd__d" />)
 
     expect(screen.getByText("Nvenc")).toBeInTheDocument()
   })
@@ -285,7 +285,7 @@ describe("GpuStatusBadge", () => {
       isLoading: true,
     })
 
-    const { container } = render(<GpuStatusBadge />)
+    const { container } = render(<GpuStatusBadge data-oid="z5coc5f" />)
 
     expect(container.querySelector('[data-slot="skeleton"]')).toBeInTheDocument()
   })
@@ -301,13 +301,13 @@ describe("GpuStatusBadge", () => {
       },
     })
 
-    render(<GpuStatusBadge />)
+    render(<GpuStatusBadge data-oid="kq3a3g0" />)
 
     expect(screen.getByText("videoCompiler.gpu.cpuOnly")).toBeInTheDocument()
   })
 
   it("should render as tooltip trigger", () => {
-    const { container } = render(<GpuStatusBadge />)
+    const { container } = render(<GpuStatusBadge data-oid="1n4z1v3" />)
 
     const badge = screen.getByText("Nvenc")
     expect(badge).toBeInTheDocument()

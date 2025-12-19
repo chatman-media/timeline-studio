@@ -150,36 +150,51 @@ export function SubtitleClip({
       onClick={handleClick}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
+      data-oid="xnd2_7p"
     >
       {/* Градиент для визуальной глубины */}
-      <div className="absolute inset-0 bg-linear-to-b from-white/20 to-transparent" style={{ pointerEvents: "none" }} />
+      <div
+        className="absolute inset-0 bg-linear-to-b from-white/20 to-transparent"
+        style={{ pointerEvents: "none" }}
+        data-oid="jgx_bqj"
+      />
 
       {/* Информация о клипе */}
-      <div className="relative h-full flex flex-col justify-between p-2">
+      <div className="relative h-full flex flex-col justify-between p-2" data-oid="d7blsei">
         {/* Текст субтитра */}
-        <div className="flex items-start gap-2">
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-white truncate">{truncateText(clip.text, 50)}</p>
+        <div className="flex items-start gap-2" data-oid="ay98ozj">
+          <div className="flex-1 min-w-0" data-oid="f43105v">
+            <p className="text-xs font-medium text-white truncate" data-oid="21730i8">
+              {truncateText(clip.text, 50)}
+            </p>
             {subtitleStyle && width > 120 && (
-              <p className="text-[10px] text-white/60 truncate mt-1">{subtitleStyle.name}</p>
+              <p className="text-[10px] text-white/60 truncate mt-1" data-oid="lr0ily4">
+                {subtitleStyle.name}
+              </p>
             )}
           </div>
         </div>
 
         {/* Индикаторы анимаций */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" data-oid="ualkux4">
           {clip.animationIn && (
-            <span className="text-[10px] bg-black/30 text-white px-1 rounded">{clip.animationIn.type}</span>
+            <span className="text-[10px] bg-black/30 text-white px-1 rounded" data-oid=".dok1as">
+              {clip.animationIn.type}
+            </span>
           )}
           {clip.animationOut && (
-            <span className="text-[10px] bg-black/30 text-white px-1 rounded">{clip.animationOut.type}</span>
+            <span className="text-[10px] bg-black/30 text-white px-1 rounded" data-oid="9mtm.k7">
+              {clip.animationOut.type}
+            </span>
           )}
         </div>
 
         {/* Временные метки */}
         {width > 80 && (
-          <div className="absolute bottom-1 right-1">
-            <span className="text-[10px] text-white/80">{clip.duration.toFixed(1)}s</span>
+          <div className="absolute bottom-1 right-1" data-oid="qvdyyiv">
+            <span className="text-[10px] text-white/80" data-oid="oy:1y56">
+              {clip.duration.toFixed(1)}s
+            </span>
           </div>
         )}
       </div>
@@ -191,11 +206,14 @@ export function SubtitleClip({
             className="absolute left-0 top-0 bottom-0 w-2 bg-black/20 hover:bg-black/40 cursor-ew-resize transition-colors"
             onMouseDown={(e) => startResize("start", e)}
             title="Изменить начало клипа"
+            data-oid="rvsavjf"
           />
+
           <div
             className="absolute right-0 top-0 bottom-0 w-2 bg-black/20 hover:bg-black/40 cursor-ew-resize transition-colors"
             onMouseDown={(e) => startResize("end", e)}
             title="Изменить конец клипа"
+            data-oid="5aiwhrw"
           />
         </>
       )}

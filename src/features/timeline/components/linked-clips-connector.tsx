@@ -127,36 +127,42 @@ export function LinkedClipsConnector({
   }
 
   return (
-    <div className={cn("absolute inset-0 pointer-events-none", className)}>
-      <svg width={timelineWidth} height={timelineHeight} className="absolute inset-0" style={{ zIndex: 1 }}>
-        <defs>
+    <div className={cn("absolute inset-0 pointer-events-none", className)} data-oid="f3v7rbk">
+      <svg
+        width={timelineWidth}
+        height={timelineHeight}
+        className="absolute inset-0"
+        style={{ zIndex: 1 }}
+        data-oid="e_fe:jf"
+      >
+        <defs data-oid="ijs74lc">
           {/* Градиенты для разных типов связей */}
-          <linearGradient id="video-audio-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
+          <linearGradient id="video-audio-gradient" x1="0%" y1="0%" x2="100%" y2="0%" data-oid="j2f_xzt">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" data-oid="h_fk432" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" data-oid="fs5voyy" />
           </linearGradient>
 
-          <linearGradient id="audio-video-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" />
+          <linearGradient id="audio-video-gradient" x1="0%" y1="0%" x2="100%" y2="0%" data-oid="6th1tjx">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" data-oid="q0liyqy" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" data-oid="2bmeueo" />
           </linearGradient>
 
-          <linearGradient id="multi-camera-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.8" />
+          <linearGradient id="multi-camera-gradient" x1="0%" y1="0%" x2="100%" y2="0%" data-oid="5nmctz1">
+            <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.8" data-oid="dvpd3yn" />
+            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.8" data-oid="a1eejdk" />
           </linearGradient>
 
           {/* Фильтры для свечения */}
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
+          <filter id="glow" data-oid="6qirlwq">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" data-oid=":cpq8ok" />
+            <feMerge data-oid="tj1gvvo">
+              <feMergeNode in="coloredBlur" data-oid="_a-jb24" />
+              <feMergeNode in="SourceGraphic" data-oid="555_itj" />
             </feMerge>
           </filter>
         </defs>
 
-        <AnimatePresence>
+        <AnimatePresence data-oid="o1n25jq">
           {linkedConnections.map((connection) => {
             const { clip1, clip2, type, isActive } = connection
 
@@ -204,6 +210,7 @@ export function LinkedClipsConnector({
                   duration: animateConnections ? 0.6 : 0,
                   ease: "easeOut",
                 }}
+                data-oid="czxvrg4"
               >
                 {/* Основная линия связи */}
                 <motion.path
@@ -219,6 +226,7 @@ export function LinkedClipsConnector({
                     duration: animateConnections ? 0.8 : 0,
                     ease: "easeInOut",
                   }}
+                  data-oid="tghzo2s"
                 />
 
                 {/* Точки соединения */}
@@ -235,6 +243,7 @@ export function LinkedClipsConnector({
                     duration: animateConnections ? 0.3 : 0,
                     delay: animateConnections ? 0.4 : 0,
                   }}
+                  data-oid="rqet.au"
                 />
 
                 <motion.circle
@@ -250,6 +259,7 @@ export function LinkedClipsConnector({
                     duration: animateConnections ? 0.3 : 0,
                     delay: animateConnections ? 0.4 : 0,
                   }}
+                  data-oid="nsjg_cx"
                 />
 
                 {/* Центральная иконка типа связи */}
@@ -261,8 +271,9 @@ export function LinkedClipsConnector({
                     duration: animateConnections ? 0.3 : 0,
                     delay: animateConnections ? 0.6 : 0,
                   }}
+                  data-oid=":gm_dt4"
                 >
-                  <circle r={12} fill="white" stroke={strokeColor} strokeWidth={2} />
+                  <circle r={12} fill="white" stroke={strokeColor} strokeWidth={2} data-oid=":1semqb" />
 
                   {/* Иконка в зависимости от типа */}
                   {type === "video-audio" && (
@@ -274,6 +285,7 @@ export function LinkedClipsConnector({
                       fontSize="10"
                       fontWeight="bold"
                       fill="#374151"
+                      data-oid="yebm7qw"
                     >
                       V→A
                     </text>
@@ -288,6 +300,7 @@ export function LinkedClipsConnector({
                       fontSize="10"
                       fontWeight="bold"
                       fill="#374151"
+                      data-oid="66eovc_"
                     >
                       A→V
                     </text>
@@ -302,6 +315,7 @@ export function LinkedClipsConnector({
                       fontSize="10"
                       fontWeight="bold"
                       fill="#374151"
+                      data-oid="pg7s60q"
                     >
                       MC
                     </text>
@@ -314,7 +328,7 @@ export function LinkedClipsConnector({
       </svg>
 
       {/* Подписи для активных соединений */}
-      <AnimatePresence>
+      <AnimatePresence data-oid="mdsdb70">
         {linkedConnections
           .filter((connection) => connection.isActive)
           .map((connection) => {
@@ -342,8 +356,12 @@ export function LinkedClipsConnector({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.2 }}
+                data-oid="_4yh8g_"
               >
-                <div className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-md border text-xs font-medium text-center shadow-lg">
+                <div
+                  className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-md border text-xs font-medium text-center shadow-lg"
+                  data-oid="8pzd4u7"
+                >
                   {label}
                 </div>
               </motion.div>

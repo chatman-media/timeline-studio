@@ -273,6 +273,7 @@ export function NodeCanvas({ graph, onGraphChange, onNodeSelect, onNodeDelete, c
         setIsPanning(false)
         setSelectionBox(null)
       }}
+      data-oid="0mkw29v"
     >
       {/* Grid background */}
       <div
@@ -287,6 +288,7 @@ export function NodeCanvas({ graph, onGraphChange, onNodeSelect, onNodeDelete, c
             backgroundPosition: `${viewport.x}px ${viewport.y}px`,
           } as React.CSSProperties
         }
+        data-oid="3cnc5zw"
       />
 
       {/* Canvas transform container */}
@@ -296,6 +298,7 @@ export function NodeCanvas({ graph, onGraphChange, onNodeSelect, onNodeDelete, c
           transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
           transformOrigin: "0 0",
         }}
+        data-oid="nxokhxs"
       >
         {/* Render connections */}
         {graph.connections.map((connection) => {
@@ -325,19 +328,21 @@ export function NodeCanvas({ graph, onGraphChange, onNodeSelect, onNodeDelete, c
                   connections: graph.connections.filter((c) => c.id !== connection.id),
                 })
               }}
+              data-oid="aiiphjp"
             />
           )
         })}
 
         {/* Render active connection line while connecting */}
         {isConnecting && connectionStart && (
-          <svg className="absolute inset-0 pointer-events-none" style={{ overflow: "visible" }}>
+          <svg className="absolute inset-0 pointer-events-none" style={{ overflow: "visible" }} data-oid="fvf0d-1">
             <path
               d={`M ${connectionStart.position.x} ${connectionStart.position.y} L ${screenToCanvas(mousePosition.x, mousePosition.y).x} ${screenToCanvas(mousePosition.x, mousePosition.y).y}`}
               stroke="#3b82f6"
               strokeWidth="2"
               fill="none"
               strokeDasharray="5,5"
+              data-oid="o.g1mzh"
             />
           </svg>
         )}
@@ -352,6 +357,7 @@ export function NodeCanvas({ graph, onGraphChange, onNodeSelect, onNodeDelete, c
             onPortClick={(portId, isOutput, position) => handlePortClick(nodeId, portId, isOutput, position)}
             onParameterChange={(parameterId, value) => handleNodeParameterChange(nodeId, parameterId, value)}
             onSelect={() => onNodeSelect?.([nodeId])}
+            data-oid="ti7nlnt"
           />
         ))}
       </div>
@@ -366,20 +372,30 @@ export function NodeCanvas({ graph, onGraphChange, onNodeSelect, onNodeDelete, c
             width: Math.abs(selectionBox.end.x - selectionBox.start.x),
             height: Math.abs(selectionBox.end.y - selectionBox.start.y),
           }}
+          data-oid=":-vkfkc"
         />
       )}
 
       {/* Controls */}
-      <div className="absolute top-4 right-4 flex flex-col gap-2">
-        <button onClick={() => zoomIn()} className="px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700">
+      <div className="absolute top-4 right-4 flex flex-col gap-2" data-oid="ug.6wii">
+        <button
+          onClick={() => zoomIn()}
+          className="px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
+          data-oid=":gtsdf_"
+        >
           +
         </button>
-        <button onClick={() => zoomOut()} className="px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700">
+        <button
+          onClick={() => zoomOut()}
+          className="px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
+          data-oid="0d5zbhz"
+        >
           -
         </button>
         <button
           onClick={() => fitToScreen(Object.values(graph.nodes))}
           className="px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-700"
+          data-oid="66rvmwp"
         >
           Fit
         </button>

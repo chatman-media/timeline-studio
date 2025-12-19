@@ -79,6 +79,7 @@ vi.mock("../../services/resource-loaders", () => ({
           labels: { en: "Test Effect 2", ru: "Тестовый эффект 2" },
         },
       ],
+
       source: "built-in",
       timestamp: Date.now(),
     },
@@ -95,6 +96,7 @@ vi.mock("../../services/resource-loaders", () => ({
           labels: { en: "Test Filter", ru: "Тестовый фильтр" },
         },
       ],
+
       source: "built-in",
       timestamp: Date.now(),
     },
@@ -112,6 +114,7 @@ vi.mock("../../services/resource-loaders", () => ({
           duration: { min: 0.1, max: 5, default: 1 },
         },
       ],
+
       source: "built-in",
       timestamp: Date.now(),
     },
@@ -143,11 +146,15 @@ describe("useEffects", () => {
   function TestComponent() {
     const { effects, loading } = useEffects()
     return (
-      <div>
-        <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="effects-count">{effects.length}</div>
+      <div data-oid="7y9293.">
+        <div data-testid="loading" data-oid=":::bymj">
+          {String(loading)}
+        </div>
+        <div data-testid="effects-count" data-oid="x9lbrt4">
+          {effects.length}
+        </div>
         {effects.map((effect) => (
-          <div key={effect.id} data-testid="effect-item">
+          <div key={effect.id} data-testid="effect-item" data-oid="8fxhx5a">
             {typeof effect.name === "string" ? effect.name : effect.name.en || ""}
           </div>
         ))}
@@ -157,8 +164,8 @@ describe("useEffects", () => {
 
   it("должен загружать и возвращать эффекты", async () => {
     render(
-      <EffectsProvider key="useEffects-test">
-        <TestComponent />
+      <EffectsProvider key="useEffects-test" data-oid="od-rwpl">
+        <TestComponent data-oid="2b4l_6t" />
       </EffectsProvider>,
     )
 
@@ -174,11 +181,15 @@ describe("useFilters", () => {
   function TestComponent() {
     const { filters, loading } = useFilters()
     return (
-      <div>
-        <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="filters-count">{filters.length}</div>
+      <div data-oid="1kh.n8o">
+        <div data-testid="loading" data-oid="vm:w3k_">
+          {String(loading)}
+        </div>
+        <div data-testid="filters-count" data-oid="x1n:d57">
+          {filters.length}
+        </div>
         {filters.map((filter) => (
-          <div key={filter.id} data-testid="filter-item">
+          <div key={filter.id} data-testid="filter-item" data-oid="_d0a9y6">
             {filter.name}
           </div>
         ))}
@@ -188,8 +199,8 @@ describe("useFilters", () => {
 
   it("должен загружать и возвращать фильтры", async () => {
     render(
-      <EffectsProvider key="useFilters-test">
-        <TestComponent />
+      <EffectsProvider key="useFilters-test" data-oid="d5n:_-h">
+        <TestComponent data-oid="4c6mv.." />
       </EffectsProvider>,
     )
 
@@ -204,11 +215,15 @@ describe("useTransitions", () => {
   function TestComponent() {
     const { transitions, loading } = useTransitions()
     return (
-      <div>
-        <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="transitions-count">{transitions.length}</div>
+      <div data-oid="gn39p50">
+        <div data-testid="loading" data-oid="m58_cw_">
+          {String(loading)}
+        </div>
+        <div data-testid="transitions-count" data-oid="k.0pf3q">
+          {transitions.length}
+        </div>
         {transitions.map((transition) => (
-          <div key={transition.id} data-testid="transition-item">
+          <div key={transition.id} data-testid="transition-item" data-oid="w4v9:mt">
             {transition.labels?.en}
           </div>
         ))}
@@ -218,8 +233,8 @@ describe("useTransitions", () => {
 
   it("должен загружать и возвращать переходы", async () => {
     render(
-      <EffectsProvider key="useTransitions-test">
-        <TestComponent />
+      <EffectsProvider key="useTransitions-test" data-oid="xzd5ko-">
+        <TestComponent data-oid="5m85p1:" />
       </EffectsProvider>,
     )
 
@@ -236,17 +251,21 @@ describe("useResourceById", () => {
     const resourceName = resource?.name
     const displayName = typeof resourceName === "string" ? resourceName : resourceName?.en || "Not found"
     return (
-      <div>
-        <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="resource-name">{displayName}</div>
+      <div data-oid="mpz3flc">
+        <div data-testid="loading" data-oid="4.7:5-x">
+          {String(loading)}
+        </div>
+        <div data-testid="resource-name" data-oid="k.hygh9">
+          {displayName}
+        </div>
       </div>
     )
   }
 
   it("должен находить ресурс по ID", async () => {
     render(
-      <EffectsProvider key="useResourceById-found-test">
-        <TestComponent id="test-effect-1" />
+      <EffectsProvider key="useResourceById-found-test" data-oid="agzuzkn">
+        <TestComponent id="test-effect-1" data-oid="ku-v-xl" />
       </EffectsProvider>,
     )
 
@@ -257,8 +276,8 @@ describe("useResourceById", () => {
 
   it("должен возвращать null для несуществующего ID", async () => {
     render(
-      <EffectsProvider key="useResourceById-notfound-test">
-        <TestComponent id="non-existent" />
+      <EffectsProvider key="useResourceById-notfound-test" data-oid="cvzzbay">
+        <TestComponent id="non-existent" data-oid="klf-uy3" />
       </EffectsProvider>,
     )
 
@@ -272,11 +291,15 @@ describe("useResourcesSearch", () => {
   function TestComponent({ options }: { options: any }) {
     const { results, loading } = useResourcesSearch("effect", options)
     return (
-      <div>
-        <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="results-count">{results.length}</div>
+      <div data-oid="q0umgxm">
+        <div data-testid="loading" data-oid=":m5c390">
+          {String(loading)}
+        </div>
+        <div data-testid="results-count" data-oid="hsnf3n_">
+          {results.length}
+        </div>
         {results.map((item) => (
-          <div key={item.id} data-testid="search-result">
+          <div key={item.id} data-testid="search-result" data-oid="p.ej1zz">
             {typeof item.name === "string" ? item.name : item.name?.en || ""}
           </div>
         ))}
@@ -286,8 +309,8 @@ describe("useResourcesSearch", () => {
 
   it("должен выполнять поиск по запросу", async () => {
     render(
-      <EffectsProvider key="search-query-test">
-        <TestComponent options={{ query: "Effect 1" }} />
+      <EffectsProvider key="search-query-test" data-oid=".8b56fl">
+        <TestComponent options={{ query: "Effect 1" }} data-oid="ptc2zx9" />
       </EffectsProvider>,
     )
 
@@ -299,8 +322,8 @@ describe("useResourcesSearch", () => {
 
   it("должен фильтровать по категории", async () => {
     render(
-      <EffectsProvider key="search-category-test">
-        <TestComponent options={{ category: "artistic" }} />
+      <EffectsProvider key="search-category-test" data-oid="agg.un4">
+        <TestComponent options={{ category: "artistic" }} data-oid="du3uz9e" />
       </EffectsProvider>,
     )
 
@@ -312,8 +335,8 @@ describe("useResourcesSearch", () => {
 
   it("должен фильтровать по тегам", async () => {
     render(
-      <EffectsProvider key="search-tags-test">
-        <TestComponent options={{ tags: ["popular"] }} />
+      <EffectsProvider key="search-tags-test" data-oid="43y62p6">
+        <TestComponent options={{ tags: ["popular"] }} data-oid="7v8o.8_" />
       </EffectsProvider>,
     )
 
@@ -325,8 +348,8 @@ describe("useResourcesSearch", () => {
 
   it("должен фильтровать по сложности", async () => {
     render(
-      <EffectsProvider key="search-complexity-test">
-        <TestComponent options={{ complexity: "intermediate" }} />
+      <EffectsProvider key="search-complexity-test" data-oid="291eu6w">
+        <TestComponent options={{ complexity: "intermediate" }} data-oid=":jz:fep" />
       </EffectsProvider>,
     )
 
@@ -341,16 +364,18 @@ describe("useResourcesByCategory", () => {
   function TestComponent({ category }: { category: string }) {
     const { results } = useResourcesByCategory("effect", category)
     return (
-      <div>
-        <div data-testid="results-count">{results.length}</div>
+      <div data-oid="cp64fd4">
+        <div data-testid="results-count" data-oid="6g8v8w.">
+          {results.length}
+        </div>
       </div>
     )
   }
 
   it("должен возвращать ресурсы по категории", async () => {
     render(
-      <EffectsProvider key="category-test">
-        <TestComponent category="artistic" />
+      <EffectsProvider key="category-test" data-oid="-stwp7i">
+        <TestComponent category="artistic" data-oid="21lveuv" />
       </EffectsProvider>,
     )
 
@@ -364,16 +389,18 @@ describe("useResourcesByTags", () => {
   function TestComponent({ tags }: { tags: string[] }) {
     const { results } = useResourcesByTags("effect", tags)
     return (
-      <div>
-        <div data-testid="results-count">{results.length}</div>
+      <div data-oid="u:y7sgs">
+        <div data-testid="results-count" data-oid="g7pe1w-">
+          {results.length}
+        </div>
       </div>
     )
   }
 
   it("должен возвращать ресурсы по тегам", async () => {
     render(
-      <EffectsProvider key="tags-test">
-        <TestComponent tags={["popular"]} />
+      <EffectsProvider key="tags-test" data-oid="pzmj4x.">
+        <TestComponent tags={["popular"]} data-oid=":5238zp" />
       </EffectsProvider>,
     )
 
@@ -387,16 +414,18 @@ describe("useResourcesByComplexity", () => {
   function TestComponent({ complexity }: { complexity: string }) {
     const { results } = useResourcesByComplexity("effect", complexity)
     return (
-      <div>
-        <div data-testid="results-count">{results.length}</div>
+      <div data-oid="3cj_1ra">
+        <div data-testid="results-count" data-oid="jrjogmr">
+          {results.length}
+        </div>
       </div>
     )
   }
 
   it("должен возвращать ресурсы по сложности", async () => {
     render(
-      <EffectsProvider key="complexity-test">
-        <TestComponent complexity="basic" />
+      <EffectsProvider key="complexity-test" data-oid="de9tp4l">
+        <TestComponent complexity="basic" data-oid="psjv2x7" />
       </EffectsProvider>,
     )
 
@@ -410,18 +439,24 @@ describe("useLoadingState", () => {
   function TestComponent() {
     const loadingState = useLoadingState()
     return (
-      <div>
-        <div data-testid="is-loading">{String(loadingState.isLoading)}</div>
-        <div data-testid="progress">{loadingState.progress}</div>
-        <div data-testid="loaded-sources">{loadingState.loadedSources.size}</div>
+      <div data-oid="y8r:bzo">
+        <div data-testid="is-loading" data-oid="qbmgjjk">
+          {String(loadingState.isLoading)}
+        </div>
+        <div data-testid="progress" data-oid="xixl:n7">
+          {loadingState.progress}
+        </div>
+        <div data-testid="loaded-sources" data-oid="t2b5tg_">
+          {loadingState.loadedSources.size}
+        </div>
       </div>
     )
   }
 
   it("должен возвращать состояние загрузки", async () => {
     render(
-      <EffectsProvider key="loading-state-test">
-        <TestComponent />
+      <EffectsProvider key="loading-state-test" data-oid="8g:tqgt">
+        <TestComponent data-oid="or3y-md" />
       </EffectsProvider>,
     )
 
@@ -437,19 +472,27 @@ describe("useResourcesStats", () => {
   function TestComponent() {
     const stats = useResourcesStats()
     return (
-      <div>
-        <div data-testid="total">{stats.total}</div>
-        <div data-testid="effects">{stats.byType.effect}</div>
-        <div data-testid="filters">{stats.byType.filter}</div>
-        <div data-testid="transitions">{stats.byType.transition}</div>
+      <div data-oid="s4:7gf0">
+        <div data-testid="total" data-oid="n.i8r1i">
+          {stats.total}
+        </div>
+        <div data-testid="effects" data-oid="9s1w5hv">
+          {stats.byType.effect}
+        </div>
+        <div data-testid="filters" data-oid="shudegl">
+          {stats.byType.filter}
+        </div>
+        <div data-testid="transitions" data-oid="nruzk7h">
+          {stats.byType.transition}
+        </div>
       </div>
     )
   }
 
   it("должен возвращать статистику ресурсов", async () => {
     render(
-      <EffectsProvider key="stats-test">
-        <TestComponent />
+      <EffectsProvider key="stats-test" data-oid="46t_as:">
+        <TestComponent data-oid="_uh85x7" />
       </EffectsProvider>,
     )
 
@@ -467,11 +510,15 @@ describe("useResources", () => {
   function TestComponent({ type }: { type: any }) {
     const { resources, loading } = useResources(type)
     return (
-      <div>
-        <div data-testid="loading">{String(loading)}</div>
-        <div data-testid="resources-count">{resources.length}</div>
+      <div data-oid="7xo95f3">
+        <div data-testid="loading" data-oid="77pqv0a">
+          {String(loading)}
+        </div>
+        <div data-testid="resources-count" data-oid="2rwsni7">
+          {resources.length}
+        </div>
         {resources.map((resource) => (
-          <div key={resource.id} data-testid="resource-item">
+          <div key={resource.id} data-testid="resource-item" data-oid="4sbn_1m">
             {typeof resource.name === "string" ? resource.name : resource.name?.en || ""}
           </div>
         ))}
@@ -481,8 +528,8 @@ describe("useResources", () => {
 
   it("должен загружать ресурсы по типу", async () => {
     render(
-      <EffectsProvider key="useResources-test">
-        <TestComponent type="effect" />
+      <EffectsProvider key="useResources-test" data-oid="3pe2_f.">
+        <TestComponent type="effect" data-oid="_wgbcon" />
       </EffectsProvider>,
     )
 
@@ -522,22 +569,36 @@ describe("useResourceSources", () => {
     }
 
     return (
-      <div>
-        <div data-testid="is-loaded">{String(loaded)}</div>
-        <div data-testid="config">{JSON.stringify(config)}</div>
-        <div data-testid="loading-state">{String(loadingState.isLoading)}</div>
-        <div data-testid="refreshed">{String(refreshed)}</div>
-        <button onClick={handleLoad}>Load Built-in</button>
-        <button onClick={handleRefresh}>Refresh</button>
-        <button onClick={handleUpdateConfig}>Update Config</button>
+      <div data-oid="djsbs-5">
+        <div data-testid="is-loaded" data-oid="anbazrr">
+          {String(loaded)}
+        </div>
+        <div data-testid="config" data-oid="mfa7j42">
+          {JSON.stringify(config)}
+        </div>
+        <div data-testid="loading-state" data-oid="paqmwrd">
+          {String(loadingState.isLoading)}
+        </div>
+        <div data-testid="refreshed" data-oid="bk.i3sy">
+          {String(refreshed)}
+        </div>
+        <button onClick={handleLoad} data-oid="3smpjf3">
+          Load Built-in
+        </button>
+        <button onClick={handleRefresh} data-oid="465fqkn">
+          Refresh
+        </button>
+        <button onClick={handleUpdateConfig} data-oid="ynwadxs">
+          Update Config
+        </button>
       </div>
     )
   }
 
   it("должен управлять источниками данных", async () => {
     render(
-      <EffectsProvider key="sources-test">
-        <TestComponent />
+      <EffectsProvider key="sources-test" data-oid="4afr5x1">
+        <TestComponent data-oid="i:titl2" />
       </EffectsProvider>,
     )
 
@@ -584,19 +645,27 @@ describe("useResourcesCache", () => {
     }
 
     return (
-      <div>
-        <div data-testid="cache-size">{cacheSize}</div>
-        <button onClick={handleClearCache}>Clear Effects Cache</button>
-        <button onClick={handleClearSourceCache}>Clear Source Cache</button>
-        <button onClick={handleInvalidateCache}>Invalidate Cache</button>
+      <div data-oid="dz137uv">
+        <div data-testid="cache-size" data-oid="3ylj7-g">
+          {cacheSize}
+        </div>
+        <button onClick={handleClearCache} data-oid="uz15v4h">
+          Clear Effects Cache
+        </button>
+        <button onClick={handleClearSourceCache} data-oid="azki1gf">
+          Clear Source Cache
+        </button>
+        <button onClick={handleInvalidateCache} data-oid="kki-2ut">
+          Invalidate Cache
+        </button>
       </div>
     )
   }
 
   it("должен управлять кэшем", async () => {
     render(
-      <EffectsProvider key="cache-test">
-        <TestComponent />
+      <EffectsProvider key="cache-test" data-oid=".6:nxza">
+        <TestComponent data-oid="m.0cbvv" />
       </EffectsProvider>,
     )
 
@@ -619,13 +688,21 @@ describe("useResourcesAdapter", () => {
   function TestComponent({ type, options }: { type: any; options?: any }) {
     const adapter = useResourcesAdapter({ type, searchOptions: options })
     return (
-      <div>
-        <div data-testid="items-count">{adapter.items.length}</div>
-        <div data-testid="loading">{String(adapter.loading)}</div>
-        <div data-testid="error">{adapter.error || "none"}</div>
-        <div data-testid="total-stats">{adapter.stats.total}</div>
+      <div data-oid="3p-v7kg">
+        <div data-testid="items-count" data-oid="kgtokk0">
+          {adapter.items.length}
+        </div>
+        <div data-testid="loading" data-oid="ttap7a4">
+          {String(adapter.loading)}
+        </div>
+        <div data-testid="error" data-oid="hncgdsm">
+          {adapter.error || "none"}
+        </div>
+        <div data-testid="total-stats" data-oid="zfjur4z">
+          {adapter.stats.total}
+        </div>
         {adapter.items.map((item) => (
-          <div key={item.id} data-testid="adapter-item">
+          <div key={item.id} data-testid="adapter-item" data-oid="sh177f9">
             {typeof item.name === "string" ? item.name : item.name?.en || ""}
           </div>
         ))}
@@ -635,8 +712,8 @@ describe("useResourcesAdapter", () => {
 
   it("должен предоставлять унифицированный интерфейс адаптера", async () => {
     render(
-      <EffectsProvider key="adapter-test">
-        <TestComponent type="effect" />
+      <EffectsProvider key="adapter-test" data-oid="yvfhr39">
+        <TestComponent type="effect" data-oid="g8c3c8t" />
       </EffectsProvider>,
     )
 
@@ -650,8 +727,8 @@ describe("useResourcesAdapter", () => {
 
   it("должен фильтровать через адаптер", async () => {
     render(
-      <EffectsProvider key="adapter-filter-test">
-        <TestComponent type="effect" options={{ category: "artistic" }} />
+      <EffectsProvider key="adapter-filter-test" data-oid="-wyz08i">
+        <TestComponent type="effect" options={{ category: "artistic" }} data-oid="d3i4ogg" />
       </EffectsProvider>,
     )
 
@@ -666,8 +743,10 @@ describe("Typed search hooks", () => {
   function TestEffectsSearch() {
     const { results } = useEffectsSearch({ category: "artistic" })
     return (
-      <div>
-        <div data-testid="effects-search-count">{results.length}</div>
+      <div data-oid="086qwdn">
+        <div data-testid="effects-search-count" data-oid=".ij.72o">
+          {results.length}
+        </div>
       </div>
     )
   }
@@ -675,8 +754,10 @@ describe("Typed search hooks", () => {
   function TestFiltersSearch() {
     const { results } = useFiltersSearch({ category: "technical" })
     return (
-      <div>
-        <div data-testid="filters-search-count">{results.length}</div>
+      <div data-oid="-vp3cau">
+        <div data-testid="filters-search-count" data-oid="irrrnc0">
+          {results.length}
+        </div>
       </div>
     )
   }
@@ -684,16 +765,18 @@ describe("Typed search hooks", () => {
   function TestTransitionsSearch() {
     const { results } = useTransitionsSearch({ category: "basic" })
     return (
-      <div>
-        <div data-testid="transitions-search-count">{results.length}</div>
+      <div data-oid="j.n:mym">
+        <div data-testid="transitions-search-count" data-oid="xkdlzfe">
+          {results.length}
+        </div>
       </div>
     )
   }
 
   it("должен выполнять типизированный поиск эффектов", async () => {
     render(
-      <EffectsProvider key="typed-effects-test">
-        <TestEffectsSearch />
+      <EffectsProvider key="typed-effects-test" data-oid="40q56n0">
+        <TestEffectsSearch data-oid=".8lm1jp" />
       </EffectsProvider>,
     )
 
@@ -704,8 +787,8 @@ describe("Typed search hooks", () => {
 
   it("должен выполнять типизированный поиск фильтров", async () => {
     render(
-      <EffectsProvider key="typed-filters-test">
-        <TestFiltersSearch />
+      <EffectsProvider key="typed-filters-test" data-oid="2szete9">
+        <TestFiltersSearch data-oid="ut4cp0q" />
       </EffectsProvider>,
     )
 
@@ -716,8 +799,8 @@ describe("Typed search hooks", () => {
 
   it("должен выполнять типизированный поиск переходов", async () => {
     render(
-      <EffectsProvider key="typed-transitions-test">
-        <TestTransitionsSearch />
+      <EffectsProvider key="typed-transitions-test" data-oid=":gw9xt4">
+        <TestTransitionsSearch data-oid="lrun.8u" />
       </EffectsProvider>,
     )
 

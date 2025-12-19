@@ -37,21 +37,26 @@ export function LanguageSelector({ value, onChange, includeAutoDetect = true }: 
   const availableLanguages = includeAutoDetect ? languages : languages.filter((lang) => lang.code !== "auto")
 
   return (
-    <div className="space-y-2">
-      <Label>{t("transcription.language", "Язык")}</Label>
+    <div className="space-y-2" data-oid="njnimz2">
+      <Label data-oid="x2_fbz:">{t("transcription.language", "Язык")}</Label>
       <Select
         value={value || (includeAutoDetect ? "auto" : undefined)}
         onValueChange={(val) => onChange(val === "auto" ? undefined : val)}
+        data-oid="wo5d26x"
       >
-        <SelectTrigger>
-          <SelectValue placeholder={t("transcription.selectLanguage", "Выберите язык")} />
+        <SelectTrigger data-oid="6r12._1">
+          <SelectValue placeholder={t("transcription.selectLanguage", "Выберите язык")} data-oid="vfmgzm1" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent data-oid="u1bbdsx">
           {availableLanguages.map((lang) => (
-            <SelectItem key={lang.code} value={lang.code}>
-              <div className="flex items-center justify-between w-full">
-                <span>{lang.nativeName}</span>
-                {lang.code !== "auto" && <span className="text-xs text-muted-foreground ml-2">{lang.name}</span>}
+            <SelectItem key={lang.code} value={lang.code} data-oid="gygfz8m">
+              <div className="flex items-center justify-between w-full" data-oid=".1fc51i">
+                <span data-oid="s7:tbz3">{lang.nativeName}</span>
+                {lang.code !== "auto" && (
+                  <span className="text-xs text-muted-foreground ml-2" data-oid="ew.yp4d">
+                    {lang.name}
+                  </span>
+                )}
               </div>
             </SelectItem>
           ))}

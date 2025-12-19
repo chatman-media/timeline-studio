@@ -43,7 +43,10 @@ export function EffectsRack({
 
   const AVAILABLE_EFFECTS: { type: EffectType; label: string }[] = [
     { type: "equalizer", label: t("fairlightAudio.effectsRack.effects.eq") },
-    { type: "compressor", label: t("fairlightAudio.effectsRack.effects.compressor") },
+    {
+      type: "compressor",
+      label: t("fairlightAudio.effectsRack.effects.compressor"),
+    },
     { type: "reverb", label: t("fairlightAudio.effectsRack.effects.reverb") },
   ]
 
@@ -90,12 +93,21 @@ export function EffectsRack({
               onBandChange={(index, band) => {
                 handleParameterChange(`band-${index}`, band.gain)
               }}
+              data-oid="xwf25o:"
             />
           )
+
         case "compressor":
-          return <Compressor onParameterChange={handleParameterChange} gainReduction={gainReductions[effect.id] || 0} />
+          return (
+            <Compressor
+              onParameterChange={handleParameterChange}
+              gainReduction={gainReductions[effect.id] || 0}
+              data-oid="gmgv38s"
+            />
+          )
+
         case "reverb":
-          return <Reverb onParameterChange={handleParameterChange} />
+          return <Reverb onParameterChange={handleParameterChange} data-oid="65gejjc" />
         default:
           return null
       }
@@ -105,18 +117,27 @@ export function EffectsRack({
       <div
         key={effect.id}
         className={cn("bg-zinc-800 rounded-lg overflow-hidden transition-opacity", !effect.enabled && "opacity-50")}
+        data-oid="1yg6omd"
       >
         {/* Effect Header */}
-        <div className="flex items-center gap-2 p-2 border-b border-zinc-700">
-          <button className="cursor-move text-zinc-500 hover:text-zinc-300">
-            <GripVertical className="w-4 h-4" />
+        <div className="flex items-center gap-2 p-2 border-b border-zinc-700" data-oid="asjazl3">
+          <button className="cursor-move text-zinc-500 hover:text-zinc-300" data-oid="qh-ooc9">
+            <GripVertical className="w-4 h-4" data-oid="c-.zv5a" />
           </button>
 
-          <button onClick={() => toggleExpanded(effect.id)} className="text-zinc-400 hover:text-zinc-200">
-            {effect.expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          <button
+            onClick={() => toggleExpanded(effect.id)}
+            className="text-zinc-400 hover:text-zinc-200"
+            data-oid="n2budxd"
+          >
+            {effect.expanded ? (
+              <ChevronDown className="w-4 h-4" data-oid="bygg__i" />
+            ) : (
+              <ChevronRight className="w-4 h-4" data-oid="c.ixagk" />
+            )}
           </button>
 
-          <span className="text-sm font-medium text-zinc-300 flex-1">
+          <span className="text-sm font-medium text-zinc-300 flex-1" data-oid="dubjpx6">
             {AVAILABLE_EFFECTS.find((e) => e.type === effect.type)?.label}
           </span>
 
@@ -126,21 +147,25 @@ export function EffectsRack({
               "p-1 rounded transition-colors",
               effect.enabled ? "text-blue-400 hover:text-blue-300" : "text-zinc-600 hover:text-zinc-400",
             )}
+            data-oid=":4xv_tf"
           >
-            <Power className="w-4 h-4" />
+            <Power className="w-4 h-4" data-oid="fxpdzy:" />
           </button>
 
           <button
             onClick={() => removeEffect(effect.id)}
             className="text-zinc-500 hover:text-red-400 transition-colors"
+            data-oid="mg6hxs9"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" data-oid="n9b1j57" />
           </button>
         </div>
 
         {/* Effect Content */}
         {effect.expanded && (
-          <div className={cn("transition-all", !effect.enabled && "pointer-events-none")}>{effectContent()}</div>
+          <div className={cn("transition-all", !effect.enabled && "pointer-events-none")} data-oid="wk._b4g">
+            {effectContent()}
+          </div>
         )}
       </div>
     )
@@ -173,27 +198,34 @@ export function EffectsRack({
   }, [effects, getCompressorGainReduction])
 
   return (
-    <div className={cn("space-y-2", className)}>
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium text-zinc-400">{t("fairlightAudio.effectsRack.title")}</h3>
-        <div className="relative">
+    <div className={cn("space-y-2", className)} data-oid="olq832-">
+      <div className="flex items-center justify-between mb-2" data-oid="y5dqemb">
+        <h3 className="text-sm font-medium text-zinc-400" data-oid="mt4ebrk">
+          {t("fairlightAudio.effectsRack.title")}
+        </h3>
+        <div className="relative" data-oid="_u.0my9">
           <button
             onClick={() => setShowAddMenu(!showAddMenu)}
             className="flex items-center gap-1 text-xs px-2 py-1 bg-zinc-800 hover:bg-zinc-700 rounded transition-colors"
+            data-oid=":4vv4sw"
           >
-            <Plus className="w-3 h-3" />
+            <Plus className="w-3 h-3" data-oid="llg1ie8" />
             {t("fairlightAudio.effectsRack.addEffect")}
           </button>
 
           {showAddMenu && (
             <>
-              <div className="fixed inset-0 z-10" onClick={() => setShowAddMenu(false)} />
-              <div className="absolute right-0 top-full mt-1 bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 py-1 z-20 min-w-[120px]">
+              <div className="fixed inset-0 z-10" onClick={() => setShowAddMenu(false)} data-oid=".61ta-s" />
+              <div
+                className="absolute right-0 top-full mt-1 bg-zinc-800 rounded-lg shadow-lg border border-zinc-700 py-1 z-20 min-w-[120px]"
+                data-oid="8.0k_ql"
+              >
                 {AVAILABLE_EFFECTS.map(({ type, label }) => (
                   <button
                     key={type}
                     onClick={() => addEffect(type)}
                     className="w-full text-left px-3 py-1.5 text-sm text-zinc-300 hover:bg-zinc-700 transition-colors"
+                    data-oid="_lzdyq6"
                   >
                     {label}
                   </button>
@@ -206,9 +238,13 @@ export function EffectsRack({
 
       {/* Effects List */}
       {effects.length === 0 ? (
-        <div className="text-center py-8 text-zinc-600 text-sm">{t("fairlightAudio.effectsRack.noEffectsAdded")}</div>
+        <div className="text-center py-8 text-zinc-600 text-sm" data-oid="ml-w.x_">
+          {t("fairlightAudio.effectsRack.noEffectsAdded")}
+        </div>
       ) : (
-        <div className="space-y-2">{effects.map(renderEffect)}</div>
+        <div className="space-y-2" data-oid=":tqh8wc">
+          {effects.map(renderEffect)}
+        </div>
       )}
     </div>
   )

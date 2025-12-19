@@ -145,7 +145,10 @@ describe("useTimelineSelection", () => {
         result.current.selectClip("clip-1")
         result.current.selectTrack("track-1")
         result.current.selectSection("section-1")
-        result.current.selectMultiple({ clipIds: ["clip-1"], trackIds: ["track-1"] })
+        result.current.selectMultiple({
+          clipIds: ["clip-1"],
+          trackIds: ["track-1"],
+        })
         result.current.selectAll()
         result.current.selectNone()
         result.current.invertSelection()

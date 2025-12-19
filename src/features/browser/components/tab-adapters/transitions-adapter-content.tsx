@@ -8,7 +8,7 @@ export const TransitionsAdapterContent = memo(() => {
   const adapter = useTransitionsAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="t5ntp2x" />
 })
 
 TransitionsAdapterContent.displayName = "TransitionsAdapterContent"

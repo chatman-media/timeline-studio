@@ -181,5 +181,5 @@ export function WaveformScope({ width, height, refreshRate }: WaveformScopeProps
     }
   }, [width, height])
 
-  return <canvas ref={canvasRef} className="w-full h-full" style={{ imageRendering: "pixelated" }} />
+  return <canvas ref={canvasRef} className="w-full h-full" style={{ imageRendering: "pixelated" }} data-oid="ci6qq:2" />
 }

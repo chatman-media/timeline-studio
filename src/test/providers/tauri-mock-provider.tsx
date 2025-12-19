@@ -197,7 +197,12 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
             case "set_hardware_acceleration":
               return null
             case "get_prerender_cache_info":
-              return { file_count: 0, total_size: 0, cache_path: "/tmp/cache", files: [] }
+              return {
+                file_count: 0,
+                total_size: 0,
+                cache_path: "/tmp/cache",
+                files: [],
+              }
             case "prerender_segment":
               // Mock prerender segment response
               return {

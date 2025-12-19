@@ -65,7 +65,7 @@ describe("UserSettingsModalTabs", () => {
   })
 
   it("should render main tabs correctly", () => {
-    render(<UserSettingsModalTabs />)
+    render(<UserSettingsModalTabs data-oid="6z:gg2d" />)
 
     // Проверяем, что основные вкладки отображаются
     expect(screen.getByText("dialogs.userSettings.tabs.general")).toBeInTheDocument()
@@ -75,7 +75,7 @@ describe("UserSettingsModalTabs", () => {
   })
 
   it("should show General tab content by default", () => {
-    render(<UserSettingsModalTabs />)
+    render(<UserSettingsModalTabs data-oid="6p:a5et" />)
 
     // Проверяем, что общие настройки отображаются по умолчанию
     expect(screen.getByText("dialogs.userSettings.interfaceLanguage")).toBeInTheDocument()
@@ -83,7 +83,7 @@ describe("UserSettingsModalTabs", () => {
   })
 
   it("should have clickable tabs", () => {
-    render(<UserSettingsModalTabs />)
+    render(<UserSettingsModalTabs data-oid="azsmg0y" />)
 
     // Проверяем, что табы кликабельны
     const aiServicesTab = screen.getByText("dialogs.userSettings.tabs.aiServices")

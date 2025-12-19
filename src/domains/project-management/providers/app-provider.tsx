@@ -120,7 +120,11 @@ export function AppProvider({ children }: AppProviderProps) {
     [isConnected, isConnecting, connectionError, projectState, connect, disconnect, retryConnection, executeCommand],
   )
 
-  return <AppContextInternal.Provider value={contextValue}>{children}</AppContextInternal.Provider>
+  return (
+    <AppContextInternal.Provider value={contextValue} data-oid="ypd0pv-">
+      {children}
+    </AppContextInternal.Provider>
+  )
 }
 
 // Hook for using app context

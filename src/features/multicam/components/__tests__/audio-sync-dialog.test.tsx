@@ -40,26 +40,34 @@ describe("AudioSyncDialog", () => {
 
   describe("Базовый рендеринг", () => {
     it("не рендерит контент, когда isOpen=false", () => {
-      render(<AudioSyncDialog isOpen={false} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} />)
+      render(
+        <AudioSyncDialog isOpen={false} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} data-oid="i_ztjh7" />,
+      )
 
       expect(screen.queryByText("Синхронизация по аудио")).not.toBeInTheDocument()
     })
 
     it("показывает заголовок и описание когда открыт", () => {
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={4} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={4} data-oid="4c7hwjp" />,
+      )
 
       expect(screen.getByText("Синхронизация по аудио")).toBeInTheDocument()
       expect(screen.getByText(/Автоматический анализ аудиодорожек/)).toBeInTheDocument()
     })
 
     it("показывает информацию о количестве камер", () => {
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={4} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={4} data-oid="th.zf:b" />,
+      )
 
       expect(screen.getByText(/Будет проанализировано 4 камер/)).toBeInTheDocument()
     })
 
     it("показывает кнопки Отмена и Начать синхронизацию", () => {
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} data-oid="o::6k7s" />,
+      )
 
       expect(screen.getByRole("button", { name: "Отмена" })).toBeInTheDocument()
       expect(screen.getByRole("button", { name: /Начать синхронизацию/ })).toBeInTheDocument()
@@ -69,7 +77,9 @@ describe("AudioSyncDialog", () => {
   describe("Взаимодействие", () => {
     it("вызывает onClose при нажатии кнопки Отмена", async () => {
       const user = userEvent.setup()
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} data-oid="kx2l1xg" />,
+      )
 
       await user.click(screen.getByRole("button", { name: "Отмена" }))
       expect(mockOnClose).toHaveBeenCalled()
@@ -79,7 +89,9 @@ describe("AudioSyncDialog", () => {
       const user = userEvent.setup()
       mockOnSync.mockResolvedValue([{ offset: 1.0, confidence: 0.8, method: "audio" as const }])
 
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} data-oid="-dze8zz" />,
+      )
 
       await user.click(screen.getByRole("button", { name: /Начать синхронизацию/ }))
 
@@ -100,9 +112,12 @@ describe("AudioSyncDialog", () => {
         { offset: 1.234, confidence: 0.85, method: "audio" as const },
         { offset: -0.567, confidence: 0.72, method: "audio" as const },
       ]
+
       mockOnSync.mockResolvedValue(syncResults)
 
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} data-oid="4ky39tc" />,
+      )
 
       await user.click(screen.getByRole("button", { name: /Начать синхронизацию/ }))
 
@@ -127,9 +142,12 @@ describe("AudioSyncDialog", () => {
         { offset: 1.0, confidence: 0.8, method: "audio" as const },
         { offset: 2.0, confidence: 0.6, method: "audio" as const },
       ]
+
       mockOnSync.mockResolvedValue(syncResults)
 
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} data-oid="o2pfdg3" />,
+      )
 
       await user.click(screen.getByRole("button", { name: /Начать синхронизацию/ }))
 
@@ -147,7 +165,9 @@ describe("AudioSyncDialog", () => {
       const user = userEvent.setup()
       mockOnSync.mockResolvedValue([{ offset: 1.0, confidence: 0.8, method: "audio" as const }])
 
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} data-oid="9n0xx1h" />,
+      )
 
       await user.click(screen.getByRole("button", { name: /Начать синхронизацию/ }))
 
@@ -165,7 +185,9 @@ describe("AudioSyncDialog", () => {
       const user = userEvent.setup()
       mockOnSync.mockResolvedValue([{ offset: 1.0, confidence: 0.8, method: "audio" as const }])
 
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} data-oid="et::22n" />,
+      )
 
       await user.click(screen.getByRole("button", { name: /Начать синхронизацию/ }))
 
@@ -183,7 +205,9 @@ describe("AudioSyncDialog", () => {
       const user = userEvent.setup()
       mockOnSync.mockRejectedValue(new Error("Sync failed"))
 
-      render(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} />)
+      render(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={3} data-oid="qcqhpo4" />,
+      )
 
       await user.click(screen.getByRole("button", { name: /Начать синхронизацию/ }))
 
@@ -202,7 +226,7 @@ describe("AudioSyncDialog", () => {
       mockOnSync.mockResolvedValue([{ offset: 1.0, confidence: 0.8, method: "audio" as const }])
 
       const { rerender } = render(
-        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} />,
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} data-oid=":.a7r52" />,
       )
 
       // Запускаем синхронизацию
@@ -216,10 +240,14 @@ describe("AudioSyncDialog", () => {
       )
 
       // Закрываем диалог
-      rerender(<AudioSyncDialog isOpen={false} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} />)
+      rerender(
+        <AudioSyncDialog isOpen={false} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} data-oid="0t4-s6f" />,
+      )
 
       // Открываем снова
-      rerender(<AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} />)
+      rerender(
+        <AudioSyncDialog isOpen={true} onClose={mockOnClose} onSync={mockOnSync} angleCount={2} data-oid="85volvn" />,
+      )
 
       // Проверяем, что состояние сброшено
       expect(screen.queryByText("Результаты синхронизации")).not.toBeInTheDocument()

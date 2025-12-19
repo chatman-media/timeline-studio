@@ -7,8 +7,14 @@ import { useColorGrading } from "../hooks/use-color-grading"
 
 // Define ProjectEvent type locally for color grading events
 type ProjectEvent =
-  | { type: "ColorGradingApplied"; payload: { clip_id: string; preset_id?: string | null; parameters: any } }
-  | { type: "ColorGradingPresetSaved"; payload: { preset_id: string; name: string; parameters: any } }
+  | {
+      type: "ColorGradingApplied"
+      payload: { clip_id: string; preset_id?: string | null; parameters: any }
+    }
+  | {
+      type: "ColorGradingPresetSaved"
+      payload: { preset_id: string; name: string; parameters: any }
+    }
   | { type: "ColorGradingPresetDeleted"; payload: { preset_id: string } }
   | { type: "ColorGradingReset"; payload: { clip_id: string } }
   | { type: string; payload?: any }
@@ -132,7 +138,9 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
           }))
         }
       } catch (err) {
-        void logger.error("Failed to load presets from backend", { error: String(err) })
+        void logger.error("Failed to load presets from backend", {
+          error: String(err),
+        })
       }
     }
 
@@ -165,7 +173,9 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
       // Локальное обновление обрабатывается через события backend
       // Не вызываем colorGrading.applyToClip() напрямую - wait for event
     } catch (err) {
-      void logger.error("Failed to apply color grading", { error: String(err) })
+      void logger.error("Failed to apply color grading", {
+        error: String(err),
+      })
       setError(err instanceof Error ? err.message : "Failed to apply color grading")
     }
   }
@@ -223,7 +233,11 @@ export function ColorGradingProvider({ children }: { children: ReactNode }) {
     error,
   }
 
-  return <ColorGradingContext.Provider value={value}>{children}</ColorGradingContext.Provider>
+  return (
+    <ColorGradingContext.Provider value={value} data-oid="-g7acu2">
+      {children}
+    </ColorGradingContext.Provider>
+  )
 }
 
 export function useColorGradingContext() {

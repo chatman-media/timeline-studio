@@ -9,10 +9,12 @@ vi.mock("../../lib/all-template-configs.tsx", () => ({
     { id: "landscape-2", split: "horizontal", screens: 2, render: () => null },
     { id: "landscape-3", split: "grid", screens: 4, render: () => null },
   ],
+
   portraitTemplates: [
     { id: "portrait-1", split: "vertical", screens: 2, render: () => null },
     { id: "portrait-2", split: "horizontal", screens: 2, render: () => null },
   ],
+
   squareTemplates: [
     { id: "square-1", split: "grid", screens: 4, render: () => null },
     { id: "square-2", split: "grid", screens: 9, render: () => null },

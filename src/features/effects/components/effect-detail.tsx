@@ -21,7 +21,7 @@ export function EffectDetail({ effect, onApplyEffect }: EffectDetailProps) {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleOpen}>
+    <Button variant="outline" size="sm" onClick={handleOpen} data-oid="id:52es">
       Детали эффекта
     </Button>
   )

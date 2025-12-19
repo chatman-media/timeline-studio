@@ -22,7 +22,15 @@ describe("CameraPreview", () => {
   })
 
   it("renders loading state when device is not ready", () => {
-    render(<CameraPreview videoRef={videoRef} isDeviceReady={false} showCountdown={false} countdown={0} />)
+    render(
+      <CameraPreview
+        videoRef={videoRef}
+        isDeviceReady={false}
+        showCountdown={false}
+        countdown={0}
+        data-oid="kwh_lqi"
+      />,
+    )
 
     // Проверяем, что отображается сообщение о загрузке
     expect(screen.getByText("dialogs.cameraCapture.initializingCamera")).toBeInTheDocument()
@@ -33,7 +41,7 @@ describe("CameraPreview", () => {
   })
 
   it("renders video element when device is ready", () => {
-    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown={false} countdown={0} />)
+    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown={false} countdown={0} data-oid="f910p5g" />)
 
     // Проверяем, что видео элемент имеет класс opacity-100
     const videoElement = screen.getByTestId("video-element")
@@ -44,28 +52,28 @@ describe("CameraPreview", () => {
   })
 
   it("shows countdown when showCountdown is true and countdown > 0", () => {
-    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown countdown={3} />)
+    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown countdown={3} data-oid="wv7icsu" />)
 
     // Проверяем, что отображается обратный отсчет
     expect(screen.getByText("3")).toBeInTheDocument()
   })
 
   it("does not show countdown when showCountdown is false", () => {
-    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown={false} countdown={3} />)
+    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown={false} countdown={3} data-oid="-if2xx:" />)
 
     // Проверяем, что обратный отсчет не отображается
     expect(screen.queryByText("3")).not.toBeInTheDocument()
   })
 
   it("does not show countdown when countdown is 0", () => {
-    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown countdown={0} />)
+    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown countdown={0} data-oid="0-e5u8r" />)
 
     // Проверяем, что обратный отсчет не отображается
     expect(screen.queryByText("0")).not.toBeInTheDocument()
   })
 
   it("sets correct video attributes", () => {
-    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown={false} countdown={0} />)
+    render(<CameraPreview videoRef={videoRef} isDeviceReady showCountdown={false} countdown={0} data-oid="7of9b_1" />)
 
     // Проверяем атрибуты видео элемента
     const videoElement = screen.getByTestId("video-element")

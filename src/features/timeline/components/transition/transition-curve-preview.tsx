@@ -86,10 +86,11 @@ export function TransitionCurvePreview({
       className={cn("transition-curve-preview", className)}
       role="img"
       aria-label={`Кривая перехода: ${curve.type}`}
+      data-oid="_b9j6tm"
     >
       {/* Оси (опционально) */}
       {showAxes && (
-        <g className="opacity-20">
+        <g className="opacity-20" data-oid=":l8cq.a">
           <line
             x1={padding}
             y1={viewBoxHeight - padding}
@@ -97,7 +98,9 @@ export function TransitionCurvePreview({
             y2={viewBoxHeight - padding}
             stroke={strokeColor}
             strokeWidth={1}
+            data-oid="h7t_i1t"
           />
+
           <line
             x1={padding}
             y1={padding}
@@ -105,6 +108,7 @@ export function TransitionCurvePreview({
             y2={viewBoxHeight - padding}
             stroke={strokeColor}
             strokeWidth={1}
+            data-oid="fx0mdze"
           />
         </g>
       )}
@@ -118,11 +122,27 @@ export function TransitionCurvePreview({
         strokeLinecap="round"
         strokeLinejoin="round"
         className={cn(animated && "transition-all duration-300")}
+        data-oid="t3o9k1g"
       />
 
       {/* Точки начала и конца */}
-      <circle cx={normToSvg(0, 0).x} cy={normToSvg(0, 0).y} r={strokeWidth} fill={strokeColor} className="opacity-50" />
-      <circle cx={normToSvg(1, 1).x} cy={normToSvg(1, 1).y} r={strokeWidth} fill={strokeColor} className="opacity-50" />
+      <circle
+        cx={normToSvg(0, 0).x}
+        cy={normToSvg(0, 0).y}
+        r={strokeWidth}
+        fill={strokeColor}
+        className="opacity-50"
+        data-oid="z:ahbeg"
+      />
+
+      <circle
+        cx={normToSvg(1, 1).x}
+        cy={normToSvg(1, 1).y}
+        r={strokeWidth}
+        fill={strokeColor}
+        className="opacity-50"
+        data-oid=":-8x-dj"
+      />
     </svg>
   )
 }

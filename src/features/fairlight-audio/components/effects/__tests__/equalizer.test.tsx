@@ -15,14 +15,14 @@ vi.mock("react-i18next", () => ({
 
 describe("Equalizer", () => {
   it("renders with default settings", () => {
-    render(<Equalizer />)
+    render(<Equalizer data-oid="e6gzxpu" />)
 
     expect(screen.getByText("fairlightAudio.effects.equalizer.title")).toBeInTheDocument()
     expect(screen.getByText("fairlightAudio.effects.equalizer.reset")).toBeInTheDocument()
   })
 
   it("displays all frequency bands", () => {
-    render(<Equalizer />)
+    render(<Equalizer data-oid="9qd4p0d" />)
 
     // Check for frequency bands (they might be displayed differently)
     expect(screen.getByText("60")).toBeInTheDocument()
@@ -35,7 +35,7 @@ describe("Equalizer", () => {
   })
 
   it("displays correct gain values", () => {
-    render(<Equalizer />)
+    render(<Equalizer data-oid="lj_5hdk" />)
 
     // All bands should start at 0.0
     const gainTexts = screen.getAllByText("0.0")
@@ -44,7 +44,7 @@ describe("Equalizer", () => {
 
   it("resets all bands to 0 dB", () => {
     const onBandChange = vi.fn()
-    render(<Equalizer onBandChange={onBandChange} />)
+    render(<Equalizer onBandChange={onBandChange} data-oid="0dd2_-m" />)
 
     // Click reset
     const resetButton = screen.getByText("fairlightAudio.effects.equalizer.reset")
@@ -56,7 +56,7 @@ describe("Equalizer", () => {
   })
 
   it("applies custom className", () => {
-    const { container } = render(<Equalizer className="custom-class" />)
+    const { container } = render(<Equalizer className="custom-class" data-oid="0bcvine" />)
 
     const equalizerDiv = container.firstChild
     expect(equalizerDiv).toHaveClass("custom-class")
@@ -64,7 +64,7 @@ describe("Equalizer", () => {
   })
 
   it("renders SVG visualization", () => {
-    const { container } = render(<Equalizer />)
+    const { container } = render(<Equalizer data-oid="0hffg2j" />)
 
     const svg = container.querySelector("svg")
     expect(svg).toBeInTheDocument()
@@ -77,7 +77,7 @@ describe("Equalizer", () => {
   })
 
   it("updates visualization when bands change", () => {
-    const { container, rerender } = render(<Equalizer />)
+    const { container, rerender } = render(<Equalizer data-oid="dtarsld" />)
 
     // Get initial path
     const initialPath = container.querySelector("path")?.getAttribute("d")
@@ -92,7 +92,7 @@ describe("Equalizer", () => {
       }))
 
     // Re-render with new bands (in real usage, this would be controlled by parent)
-    rerender(<Equalizer />)
+    rerender(<Equalizer data-oid="9ol57t7" />)
 
     // Path should exist (even if not changed in this test)
     const path = container.querySelector("path")
@@ -101,7 +101,7 @@ describe("Equalizer", () => {
 
   it("does not call onBandChange when not provided", () => {
     // This should not throw
-    render(<Equalizer />)
+    render(<Equalizer data-oid="pfzjwvd" />)
 
     const resetButton = screen.getByText("fairlightAudio.effects.equalizer.reset")
     expect(() => fireEvent.click(resetButton)).not.toThrow()
@@ -109,7 +109,7 @@ describe("Equalizer", () => {
 
   it("handles slider interactions correctly", () => {
     const onBandChange = vi.fn()
-    const { container } = render(<Equalizer onBandChange={onBandChange} />)
+    const { container } = render(<Equalizer onBandChange={onBandChange} data-oid="z9e6l4j" />)
 
     // Get all sliders - Radix UI sliders use data-slot="slider" attribute
     const sliders = container.querySelectorAll('[data-slot="slider"]')

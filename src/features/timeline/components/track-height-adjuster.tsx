@@ -71,6 +71,7 @@ export function TrackHeightAdjuster({ trackId, currentHeight, onHeightChange, cl
       )}
       onMouseDown={handleMouseDown}
       data-testid={`track-height-adjuster-${trackId}`}
+      data-oid="0r69g45"
     >
       {/* Визуальный индикатор */}
       <div
@@ -80,10 +81,15 @@ export function TrackHeightAdjuster({ trackId, currentHeight, onHeightChange, cl
           "group-hover:opacity-100 transition-opacity duration-150",
           isDragging && "opacity-100",
         )}
+        data-oid="bxtfkaf"
       />
 
       {/* Расширенная область для захвата */}
-      <div className="absolute -top-1 -bottom-1 left-0 right-0" title="Перетащите для изменения высоты трека" />
+      <div
+        className="absolute -top-1 -bottom-1 left-0 right-0"
+        title="Перетащите для изменения высоты трека"
+        data-oid="j0:6je:"
+      />
     </div>
   )
 }

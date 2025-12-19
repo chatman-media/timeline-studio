@@ -50,20 +50,28 @@ const mockStyles = [
 describe("SubtitleEditor Component", () => {
   describe("Component Initialization", () => {
     it("should render when open", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} data-oid="x_j98vy" />)
 
       expect(screen.getByRole("dialog")).toBeInTheDocument()
       expect(screen.getByText("Добавить субтитр")).toBeInTheDocument()
     })
 
     it("should not render when closed", () => {
-      render(<SubtitleEditor open={false} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={false} onOpenChange={() => {}} onSave={() => {}} data-oid="yc6kvga" />)
 
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
     })
 
     it("should show edit title when subtitle provided", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} subtitle={mockSubtitle} />)
+      render(
+        <SubtitleEditor
+          open={true}
+          onOpenChange={() => {}}
+          onSave={() => {}}
+          subtitle={mockSubtitle}
+          data-oid="juzouj6"
+        />,
+      )
 
       expect(screen.getByText("Редактировать субтитр")).toBeInTheDocument()
     })
@@ -78,6 +86,7 @@ describe("SubtitleEditor Component", () => {
           onSave={() => {}}
           subtitle={mockSubtitle}
           availableStyles={mockStyles}
+          data-oid="wjl1exi"
         />,
       )
 
@@ -95,7 +104,7 @@ describe("SubtitleEditor Component", () => {
     })
 
     it("should show empty fields for new subtitle", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} data-oid="vmael:k" />)
 
       const textArea = screen.getByPlaceholderText("Введите текст субтитра...")
       expect(textArea).toHaveValue("")
@@ -110,7 +119,7 @@ describe("SubtitleEditor Component", () => {
 
   describe("User Interactions", () => {
     it("should update text when typing", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} data-oid="g-re-vf" />)
 
       const textArea = screen.getByPlaceholderText("Введите текст субтитра...")
       fireEvent.change(textArea, { target: { value: "New subtitle text" } })
@@ -119,7 +128,7 @@ describe("SubtitleEditor Component", () => {
     })
 
     it("should update time values", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} data-oid="xgfb86b" />)
 
       const startTimeInput = screen.getByLabelText("Время начала (сек)")
       fireEvent.change(startTimeInput, { target: { value: "10.5" } })
@@ -131,7 +140,7 @@ describe("SubtitleEditor Component", () => {
     })
 
     it("should disable save button when text is empty", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} data-oid="v-vmgzj" />)
 
       const saveButton = screen.getByText("Добавить")
       expect(saveButton).toBeDisabled()
@@ -146,7 +155,7 @@ describe("SubtitleEditor Component", () => {
   describe("Save Functionality", () => {
     it("should call onSave with correct data", () => {
       const onSave = vi.fn()
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={onSave} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={onSave} data-oid="2k4t..e" />)
 
       // Заполняем поля
       const textArea = screen.getByPlaceholderText("Введите текст субтитра...")
@@ -173,7 +182,7 @@ describe("SubtitleEditor Component", () => {
 
     it("should close dialog after save", () => {
       const onOpenChange = vi.fn()
-      render(<SubtitleEditor open={true} onOpenChange={onOpenChange} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={onOpenChange} onSave={() => {}} data-oid="1apg7h." />)
 
       const textArea = screen.getByPlaceholderText("Введите текст субтитра...")
       fireEvent.change(textArea, { target: { value: "Test" } })
@@ -188,7 +197,7 @@ describe("SubtitleEditor Component", () => {
   describe("Cancel Functionality", () => {
     it("should close dialog on cancel", () => {
       const onOpenChange = vi.fn()
-      render(<SubtitleEditor open={true} onOpenChange={onOpenChange} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={onOpenChange} onSave={() => {}} data-oid="t9w0eq1" />)
 
       const cancelButton = screen.getByText("Отмена")
       fireEvent.click(cancelButton)
@@ -199,7 +208,7 @@ describe("SubtitleEditor Component", () => {
 
   describe("Animation Controls", () => {
     it("should show duration input when animation selected", async () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} />)
+      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} data-oid="9cg:h1v" />)
 
       // Изначально поля длительности анимации не видны
       expect(screen.queryByPlaceholderText("Длительность")).not.toBeInTheDocument()
@@ -222,13 +231,29 @@ describe("SubtitleEditor Component", () => {
 
   describe("Style Selection", () => {
     it("should show style selector when styles available", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} availableStyles={mockStyles} />)
+      render(
+        <SubtitleEditor
+          open={true}
+          onOpenChange={() => {}}
+          onSave={() => {}}
+          availableStyles={mockStyles}
+          data-oid="3l1buoo"
+        />,
+      )
 
       expect(screen.getByLabelText("Стиль субтитра")).toBeInTheDocument()
     })
 
     it("should not show style selector when no styles", () => {
-      render(<SubtitleEditor open={true} onOpenChange={() => {}} onSave={() => {}} availableStyles={[]} />)
+      render(
+        <SubtitleEditor
+          open={true}
+          onOpenChange={() => {}}
+          onSave={() => {}}
+          availableStyles={[]}
+          data-oid="ww-3t2r"
+        />,
+      )
 
       expect(screen.queryByLabelText("Стиль субтитра")).not.toBeInTheDocument()
     })

@@ -17,8 +17,8 @@ export function SubtitleAITools() {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleOpen}>
-      <Mic className="mr-2 h-4 w-4" />
+    <Button variant="outline" size="sm" onClick={handleOpen} data-oid="f4aq2dy">
+      <Mic className="mr-2 h-4 w-4" data-oid="r2068b2" />
       {t("subtitles.ai.title", "AI Транскрипция")}
     </Button>
   )

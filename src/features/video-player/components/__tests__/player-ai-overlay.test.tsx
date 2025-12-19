@@ -39,7 +39,7 @@ describe("PlayerAIOverlay", () => {
 
   describe("Видимость компонента", () => {
     it("не отображается когда анализ не активен", () => {
-      const { container } = render(<PlayerAIOverlay />)
+      const { container } = render(<PlayerAIOverlay data-oid="3hg.qsv" />)
       expect(container.firstChild).toBeNull()
     })
 
@@ -52,7 +52,7 @@ describe("PlayerAIOverlay", () => {
         },
       })
 
-      render(<PlayerAIOverlay />)
+      render(<PlayerAIOverlay data-oid="tn8yqsx" />)
       expect(screen.getByText("AI анализ активен")).toBeInTheDocument()
     })
   })
@@ -77,7 +77,7 @@ describe("PlayerAIOverlay", () => {
         getCurrentSceneInfo: vi.fn().mockReturnValue(currentScene),
       })
 
-      render(<PlayerAIOverlay showSceneInfo={true} />)
+      render(<PlayerAIOverlay showSceneInfo={true} data-oid="zme61br" />)
       expect(screen.getByText("Сцена: dialogue")).toBeInTheDocument()
     })
 
@@ -100,7 +100,7 @@ describe("PlayerAIOverlay", () => {
         getCurrentSceneInfo: vi.fn().mockReturnValue(currentScene),
       })
 
-      render(<PlayerAIOverlay showSceneInfo={false} />)
+      render(<PlayerAIOverlay showSceneInfo={false} data-oid="lkice9x" />)
       expect(screen.queryByText("Сцена: dialogue")).not.toBeInTheDocument()
     })
   })
@@ -133,7 +133,7 @@ describe("PlayerAIOverlay", () => {
         getObjectsInFrame: vi.fn().mockReturnValue(objects),
       })
 
-      render(<PlayerAIOverlay showObjects={true} />)
+      render(<PlayerAIOverlay showObjects={true} data-oid="9yfas94" />)
       expect(screen.getByText("Объекты:")).toBeInTheDocument()
       expect(screen.getByText("person (92%)")).toBeInTheDocument()
       expect(screen.getByText("car (87%)")).toBeInTheDocument()
@@ -157,7 +157,7 @@ describe("PlayerAIOverlay", () => {
         getObjectsInFrame: vi.fn().mockReturnValue(objects),
       })
 
-      render(<PlayerAIOverlay showObjects={true} />)
+      render(<PlayerAIOverlay showObjects={true} data-oid="0dt8iz-" />)
 
       // Проверяем первые 5 объектов
       for (let i = 0; i < 5; i++) {
@@ -193,7 +193,7 @@ describe("PlayerAIOverlay", () => {
         getObjectsInFrame: vi.fn().mockReturnValue(objects),
       })
 
-      render(<PlayerAIOverlay showObjects={false} />)
+      render(<PlayerAIOverlay showObjects={false} data-oid="i9d_1nz" />)
       expect(screen.queryByText("Объекты:")).not.toBeInTheDocument()
     })
 
@@ -217,7 +217,7 @@ describe("PlayerAIOverlay", () => {
         getObjectsInFrame: vi.fn().mockReturnValue(objects),
       })
 
-      const { container } = render(<PlayerAIOverlay showObjects={true} />)
+      const { container } = render(<PlayerAIOverlay showObjects={true} data-oid=".am961r" />)
 
       const boundingBox = container.querySelector('[style*="left: 20%"]')
       expect(boundingBox).toBeInTheDocument()
@@ -259,7 +259,7 @@ describe("PlayerAIOverlay", () => {
         getUpcomingMoments: vi.fn().mockReturnValue(moments),
       })
 
-      render(<PlayerAIOverlay showMoments={true} />)
+      render(<PlayerAIOverlay showMoments={true} data-oid="i7msqr2" />)
       expect(screen.getByText("Ключевые моменты:")).toBeInTheDocument()
       expect(screen.getByText("1:05: Эмоциональный момент")).toBeInTheDocument()
       expect(screen.getByText("2:00: Смена сцены")).toBeInTheDocument()
@@ -283,7 +283,7 @@ describe("PlayerAIOverlay", () => {
         getUpcomingMoments: vi.fn().mockReturnValue(moments),
       })
 
-      render(<PlayerAIOverlay showMoments={true} />)
+      render(<PlayerAIOverlay showMoments={true} data-oid="kaqv7wy" />)
 
       // Проверяем первые 3 момента
       expect(screen.getByText("1:00: Момент 0")).toBeInTheDocument()
@@ -315,7 +315,7 @@ describe("PlayerAIOverlay", () => {
         getUpcomingMoments: vi.fn().mockReturnValue(moments),
       })
 
-      render(<PlayerAIOverlay showMoments={false} />)
+      render(<PlayerAIOverlay showMoments={false} data-oid="5v70a7x" />)
       expect(screen.queryByText("Ключевые моменты:")).not.toBeInTheDocument()
     })
   })
@@ -323,10 +323,34 @@ describe("PlayerAIOverlay", () => {
   describe("Форматирование времени", () => {
     it("правильно форматирует время для моментов", () => {
       const moments = [
-        { id: "1", timestamp: 5, type: "highlight", confidence: 0.9, description: "Момент 1" },
-        { id: "2", timestamp: 65, type: "highlight", confidence: 0.9, description: "Момент 2" },
-        { id: "3", timestamp: 125, type: "highlight", confidence: 0.9, description: "Момент 3" },
-        { id: "4", timestamp: 3661, type: "highlight", confidence: 0.9, description: "Момент 4" },
+        {
+          id: "1",
+          timestamp: 5,
+          type: "highlight",
+          confidence: 0.9,
+          description: "Момент 1",
+        },
+        {
+          id: "2",
+          timestamp: 65,
+          type: "highlight",
+          confidence: 0.9,
+          description: "Момент 2",
+        },
+        {
+          id: "3",
+          timestamp: 125,
+          type: "highlight",
+          confidence: 0.9,
+          description: "Момент 3",
+        },
+        {
+          id: "4",
+          timestamp: 3661,
+          type: "highlight",
+          confidence: 0.9,
+          description: "Момент 4",
+        },
       ]
 
       vi.mocked(usePlayerAIAnalysis).mockReturnValue({
@@ -338,7 +362,7 @@ describe("PlayerAIOverlay", () => {
         getUpcomingMoments: vi.fn().mockReturnValue(moments.slice(0, 3)),
       })
 
-      render(<PlayerAIOverlay showMoments={true} />)
+      render(<PlayerAIOverlay showMoments={true} data-oid="uy8v.ym" />)
 
       expect(screen.getByText("0:05: Момент 1")).toBeInTheDocument()
       expect(screen.getByText("1:05: Момент 2")).toBeInTheDocument()
@@ -356,7 +380,7 @@ describe("PlayerAIOverlay", () => {
         },
       })
 
-      const { container } = render(<PlayerAIOverlay className="custom-class" />)
+      const { container } = render(<PlayerAIOverlay className="custom-class" data-oid="z2n3rri" />)
       expect(container.firstChild).toHaveClass("custom-class")
     })
 
@@ -369,7 +393,7 @@ describe("PlayerAIOverlay", () => {
         },
       })
 
-      const { container } = render(<PlayerAIOverlay />)
+      const { container } = render(<PlayerAIOverlay data-oid="-zf4_n." />)
       expect(container.firstChild).toHaveClass("absolute", "inset-0", "pointer-events-none")
     })
   })
@@ -384,7 +408,7 @@ describe("PlayerAIOverlay", () => {
         },
       })
 
-      const { container } = render(<PlayerAIOverlay />)
+      const { container } = render(<PlayerAIOverlay data-oid="b:nj_ml" />)
 
       const sparklesIcon = container.querySelector(".animate-pulse")
       expect(sparklesIcon).toBeInTheDocument()

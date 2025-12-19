@@ -97,7 +97,7 @@ export function TemplateRenderer({
       }),
     }
 
-    return <div key={key} style={dividerStyle} />
+    return <div key={key} style={dividerStyle} data-oid=".viqlkq" />
   }
 
   // Рендеринг заголовка ячейки
@@ -127,6 +127,7 @@ export function TemplateRenderer({
           margin: style.margin,
           padding: style.padding,
         }}
+        data-oid="sj_plyy"
       >
         {text}
       </div>
@@ -149,7 +150,7 @@ export function TemplateRenderer({
     }
 
     const cellContent = (
-      <div className="relative flex h-full w-full items-center justify-center">
+      <div className="relative flex h-full w-full items-center justify-center" data-oid="asl3yfc">
         {renderCell(index, cellConfig)}
         {renderCellTitle(cellConfig, index)}
       </div>
@@ -158,7 +159,12 @@ export function TemplateRenderer({
     // Если анимации отключены, рендерим без AnimatedCell
     if (!enableAnimations || !cellConfig.animation) {
       return (
-        <div key={`cell-${index}`} className="relative flex items-center justify-center" style={cellStyle}>
+        <div
+          key={`cell-${index}`}
+          className="relative flex items-center justify-center"
+          style={cellStyle}
+          data-oid="9rqmhai"
+        >
           {cellContent}
         </div>
       )
@@ -166,8 +172,13 @@ export function TemplateRenderer({
 
     // Рендерим с анимациями
     return (
-      <div key={`cell-${index}`} className="relative" style={cellStyle}>
-        <AnimatedCell animation={cellConfig.animation} isVisible={true} isTransitioning={transitioningCells.has(index)}>
+      <div key={`cell-${index}`} className="relative" style={cellStyle} data-oid="1z.a55t">
+        <AnimatedCell
+          animation={cellConfig.animation}
+          isVisible={true}
+          isTransitioning={transitioningCells.has(index)}
+          data-oid="v-fxujh"
+        >
           {cellContent}
         </AnimatedCell>
       </div>
@@ -178,7 +189,7 @@ export function TemplateRenderer({
   switch (split) {
     case "vertical":
       return (
-        <div className={cn("flex h-full w-full", className)} style={containerStyle}>
+        <div className={cn("flex h-full w-full", className)} style={containerStyle} data-oid="m46bu-r">
           {cellConfigs.map((cellConfig, index) => (
             <React.Fragment key={`vertical-${index}`}>
               {index > 0 && renderDivider("vertical", `divider-${index}`)}
@@ -190,7 +201,7 @@ export function TemplateRenderer({
 
     case "horizontal":
       return (
-        <div className={cn("flex h-full w-full flex-col", className)} style={containerStyle}>
+        <div className={cn("flex h-full w-full flex-col", className)} style={containerStyle} data-oid="lq:.y3j">
           {cellConfigs.map((cellConfig, index) => (
             <React.Fragment key={`horizontal-${index}`}>
               {index > 0 && renderDivider("horizontal", `divider-${index}`)}
@@ -216,7 +227,7 @@ export function TemplateRenderer({
       }
 
       return (
-        <div className={cn("h-full w-full", className)} style={gridStyle}>
+        <div className={cn("h-full w-full", className)} style={gridStyle} data-oid="b_5u1:4">
           {cellConfigs.map((cellConfig, index) => renderCellWithConfig(index, cellConfig))}
         </div>
       )
@@ -231,13 +242,14 @@ export function TemplateRenderer({
       const [startPoint, endPoint] = config.splitPoints
 
       return (
-        <div className={cn("relative h-full w-full", className)} style={containerStyle}>
+        <div className={cn("relative h-full w-full", className)} style={containerStyle} data-oid="vd7ehxp">
           {/* Первая ячейка */}
           <div
             className="absolute inset-0"
             style={{
               clipPath: `polygon(0 0, ${startPoint.x}% ${startPoint.y}%, ${endPoint.x}% ${endPoint.y}%, 0 100%)`,
             }}
+            data-oid="fwxqh.2"
           >
             {renderCellWithConfig(0, cellConfigs[0] || {})}
           </div>
@@ -249,6 +261,7 @@ export function TemplateRenderer({
               style={{
                 clipPath: `polygon(${startPoint.x}% ${startPoint.y}%, 100% 0, 100% 100%, ${endPoint.x}% ${endPoint.y}%)`,
               }}
+              data-oid="tq7z51i"
             >
               {renderCellWithConfig(1, cellConfigs[1] || {})}
             </div>
@@ -256,7 +269,11 @@ export function TemplateRenderer({
 
           {/* Диагональная линия */}
           {dividers?.show && (
-            <svg className="absolute inset-0 pointer-events-none" style={{ width: "100%", height: "100%" }}>
+            <svg
+              className="absolute inset-0 pointer-events-none"
+              style={{ width: "100%", height: "100%" }}
+              data-oid="0.t6p65"
+            >
               <line
                 x1={`${startPoint.x}%`}
                 y1={`${startPoint.y}%`}
@@ -266,6 +283,7 @@ export function TemplateRenderer({
                 strokeWidth={dividers.width || "1"}
                 strokeDasharray={dividers.style === "dashed" ? dividers.dashArray || "5,5" : undefined}
                 opacity={dividers.opacity}
+                data-oid="xsva5r."
               />
             </svg>
           )}
@@ -285,7 +303,7 @@ export function TemplateRenderer({
         }
 
         return (
-          <div className={cn("relative h-full w-full", className)} style={customContainerStyle}>
+          <div className={cn("relative h-full w-full", className)} style={customContainerStyle} data-oid="epkyw1s">
             {cellConfigs.map((cellConfig, index) => {
               const cellLayout = config.cellLayouts![index] || {}
               const cellStyle: React.CSSProperties = {
@@ -356,7 +374,7 @@ export function TemplateRenderer({
       }
 
       return (
-        <div className={cn("relative", className)} style={customStyle}>
+        <div className={cn("relative", className)} style={customStyle} data-oid="l90x_mt">
           {cellConfigs.map((cellConfig, index) => renderCellWithConfig(index, cellConfig, getCellStyle(index)))}
         </div>
       )

@@ -57,8 +57,8 @@ export function PreviewPanel({ className }: PreviewPanelProps) {
     } as const
 
     return (
-      <Badge variant={variants[gpuTier]}>
-        <Monitor className="w-3 h-3 mr-1" />
+      <Badge variant={variants[gpuTier]} data-oid="i:9ttcx">
+        <Monitor className="w-3 h-3 mr-1" data-oid="ep.paw5" />
         GPU: {gpuTier.toUpperCase()}
       </Badge>
     )
@@ -68,46 +68,71 @@ export function PreviewPanel({ className }: PreviewPanelProps) {
     if (!cacheStats) return null
 
     return (
-      <div className="text-xs text-muted-foreground">
+      <div className="text-xs text-muted-foreground" data-oid="quv2ym7">
         Cache: {cacheStats.entries} frames ({cacheStats.sizeMB.toFixed(1)}MB)
       </div>
     )
   }
 
   return (
-    <Card className={`h-full flex flex-col ${className}`}>
+    <Card className={`h-full flex flex-col ${className}`} data-oid="3k0g0ne">
       {/* Header */}
-      <div className="p-4 border-b">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-semibold">Real-time Preview</h3>
-          <div className="flex items-center gap-2">
+      <div className="p-4 border-b" data-oid="hhb2gpq">
+        <div className="flex items-center justify-between mb-2" data-oid="opxxd3:">
+          <h3 className="font-semibold" data-oid="f5cdvx2">
+            Real-time Preview
+          </h3>
+          <div className="flex items-center gap-2" data-oid="qz6xjxn">
             {getGPUTierBadge()}
-            <Button variant="ghost" size="sm" onClick={() => setPreviewEnabled(!previewEnabled)}>
-              {previewEnabled ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+            <Button variant="ghost" size="sm" onClick={() => setPreviewEnabled(!previewEnabled)} data-oid="nadv:4.">
+              {previewEnabled ? (
+                <Eye className="w-4 h-4" data-oid="_fd.y_i" />
+              ) : (
+                <EyeOff className="w-4 h-4" data-oid="j:0mrcv" />
+              )}
             </Button>
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <Button variant={showEffects ? "default" : "outline"} size="sm" onClick={() => setShowEffects(!showEffects)}>
-            <Layers className="w-4 h-4 mr-1" />
+        <div className="flex gap-2" data-oid="ku0udfc">
+          <Button
+            variant={showEffects ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowEffects(!showEffects)}
+            data-oid="2nzuhqs"
+          >
+            <Layers className="w-4 h-4 mr-1" data-oid="8dlqd_e" />
             Effects
           </Button>
 
-          <Button variant={showPresets ? "default" : "outline"} size="sm" onClick={() => setShowPresets(!showPresets)}>
-            <Zap className="w-4 h-4 mr-1" />
+          <Button
+            variant={showPresets ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowPresets(!showPresets)}
+            data-oid="t5lhpda"
+          >
+            <Zap className="w-4 h-4 mr-1" data-oid="bidp2z0" />
             Presets
           </Button>
 
-          <Button variant={showQuality ? "default" : "outline"} size="sm" onClick={() => setShowQuality(!showQuality)}>
-            <Settings className="w-4 h-4 mr-1" />
+          <Button
+            variant={showQuality ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowQuality(!showQuality)}
+            data-oid="pdpgi7d"
+          >
+            <Settings className="w-4 h-4 mr-1" data-oid="5p5xed5" />
             Quality
           </Button>
         </div>
       </div>
 
       {/* Canvas Container */}
-      <div ref={canvasContainerRef} className="flex-1 relative bg-black min-h-0 flex items-center justify-center">
+      <div
+        ref={canvasContainerRef}
+        className="flex-1 relative bg-black min-h-0 flex items-center justify-center"
+        data-oid="dh7cfkb"
+      >
         {previewEnabled ? (
           <>
             <canvas
@@ -116,63 +141,71 @@ export function PreviewPanel({ className }: PreviewPanelProps) {
               style={{
                 imageRendering: quality.antialiasing ? "auto" : "pixelated",
               }}
+              data-oid="gxwvgxw"
             />
 
             {/* Hidden video element for frame extraction */}
-            <video ref={videoRef} className="hidden" crossOrigin="anonymous" preload="metadata" />
+            <video ref={videoRef} className="hidden" crossOrigin="anonymous" preload="metadata" data-oid="_tgqn2m" />
 
             {/* Loading overlay */}
             {!isInitialized && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                <div className="text-white">Initializing preview renderer...</div>
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center" data-oid="-8-2bs_">
+                <div className="text-white" data-oid="1qhgb8i">
+                  Initializing preview renderer...
+                </div>
               </div>
             )}
 
             {/* Status overlay */}
             {isInitialized && (
-              <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+              <div
+                className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded"
+                data-oid=":nmhqh:"
+              >
                 {previewFrame ? "Live" : "Updating..."}
               </div>
             )}
           </>
         ) : (
-          <div className="text-muted-foreground">Preview disabled - Click the eye icon to enable</div>
+          <div className="text-muted-foreground" data-oid="ctk5oih">
+            Preview disabled - Click the eye icon to enable
+          </div>
         )}
       </div>
 
       {/* Controls Panel */}
       {previewEnabled && (
-        <div className="border-t">
+        <div className="border-t" data-oid="jzwq2p5">
           {/* Cache Stats */}
-          <div className="p-2 border-b bg-muted/30">
-            <div className="flex items-center justify-between text-xs">
-              <span>Performance</span>
-              <div className="flex gap-4">
+          <div className="p-2 border-b bg-muted/30" data-oid="n_2.e9-">
+            <div className="flex items-center justify-between text-xs" data-oid="8zt62kg">
+              <span data-oid="xi2qqif">Performance</span>
+              <div className="flex gap-4" data-oid="whys9ju">
                 {getCacheStats()}
-                <span>FPS: {quality.fps}</span>
-                <span>Resolution: {(quality.resolution * 100).toFixed(0)}%</span>
+                <span data-oid="-95moz_">FPS: {quality.fps}</span>
+                <span data-oid="gh7olmz">Resolution: {(quality.resolution * 100).toFixed(0)}%</span>
               </div>
             </div>
           </div>
 
           {/* Effect Chain List */}
           {showEffects && (
-            <div className="p-4">
-              <EffectChainList />
+            <div className="p-4" data-oid="7k7lqht">
+              <EffectChainList data-oid="f.8-49v" />
             </div>
           )}
 
           {/* Preset Gallery */}
           {showPresets && (
-            <div className="p-4">
-              <PresetGallery />
+            <div className="p-4" data-oid="idoxsqt">
+              <PresetGallery data-oid="g0bz6gi" />
             </div>
           )}
 
           {/* Quality Controls */}
           {showQuality && (
-            <div className="p-4">
-              <QualityControls quality={quality} gpuTier={gpuTier} onChange={setQuality} />
+            <div className="p-4" data-oid="nchs6mn">
+              <QualityControls quality={quality} gpuTier={gpuTier} onChange={setQuality} data-oid="zjixmz7" />
             </div>
           )}
         </div>

@@ -49,6 +49,7 @@ describe("EffectDetail", () => {
         step: 1,
       },
     ],
+
     version: "1.0.0",
   }
 
@@ -60,21 +61,21 @@ describe("EffectDetail", () => {
 
   describe("Rendering", () => {
     it("should render the button", () => {
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="9-hd3g9" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       expect(button).toBeInTheDocument()
     })
 
     it("should render with outline variant", () => {
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="4k89u33" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       expect(button).toHaveClass("border")
     })
 
     it("should render with small size", () => {
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="ld86yns" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       expect(button).toHaveClass("h-8")
@@ -84,7 +85,7 @@ describe("EffectDetail", () => {
   describe("Interaction", () => {
     it("should open modal when clicked", async () => {
       const user = userEvent.setup()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="_eerrzh" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       await user.click(button)
@@ -94,7 +95,7 @@ describe("EffectDetail", () => {
 
     it("should pass effect to modal", async () => {
       const user = userEvent.setup()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="65nd3ca" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       await user.click(button)
@@ -108,7 +109,7 @@ describe("EffectDetail", () => {
     it("should pass onApplyEffect callback to modal", async () => {
       const user = userEvent.setup()
       const customCallback = vi.fn()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={customCallback} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={customCallback} data-oid="orn5tpd" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       await user.click(button)
@@ -123,7 +124,7 @@ describe("EffectDetail", () => {
   describe("Multiple Clicks", () => {
     it("should handle multiple clicks", async () => {
       const user = userEvent.setup()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid=":av79_5" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
 
@@ -136,7 +137,7 @@ describe("EffectDetail", () => {
 
     it("should pass same data on multiple clicks", async () => {
       const user = userEvent.setup()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="wz-0vjq" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
 
@@ -162,7 +163,9 @@ describe("EffectDetail", () => {
         version: "1.0.0",
       }
 
-      const { rerender } = render(<EffectDetail effect={effect1} onApplyEffect={mockOnApplyEffect} />)
+      const { rerender } = render(
+        <EffectDetail effect={effect1} onApplyEffect={mockOnApplyEffect} data-oid="wr6y1i9" />,
+      )
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       await user.click(button)
@@ -182,7 +185,7 @@ describe("EffectDetail", () => {
       }
 
       mockOpenModal.mockClear()
-      rerender(<EffectDetail effect={effect2} onApplyEffect={mockOnApplyEffect} />)
+      rerender(<EffectDetail effect={effect2} onApplyEffect={mockOnApplyEffect} data-oid="5-3u714" />)
 
       await user.click(button)
 
@@ -196,7 +199,7 @@ describe("EffectDetail", () => {
   describe("Accessibility", () => {
     it("should be keyboard accessible", async () => {
       const user = userEvent.setup()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="mkrfyn9" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
 
@@ -211,7 +214,7 @@ describe("EffectDetail", () => {
 
     it("should work with Space key", async () => {
       const user = userEvent.setup()
-      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={mockEffect} onApplyEffect={mockOnApplyEffect} data-oid="2-r2x-4" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
 
@@ -234,7 +237,7 @@ describe("EffectDetail", () => {
         version: "1.0.0",
       }
 
-      render(<EffectDetail effect={minimalEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={minimalEffect} onApplyEffect={mockOnApplyEffect} data-oid="058e_h7" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       await user.click(button)
@@ -260,7 +263,7 @@ describe("EffectDetail", () => {
         })),
       }
 
-      render(<EffectDetail effect={complexEffect} onApplyEffect={mockOnApplyEffect} />)
+      render(<EffectDetail effect={complexEffect} onApplyEffect={mockOnApplyEffect} data-oid="so.j:82" />)
 
       const button = screen.getByRole("button", { name: /детали эффекта/i })
       await user.click(button)

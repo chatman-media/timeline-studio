@@ -112,82 +112,84 @@ export function GroupContextMenu({ children }: GroupContextMenuProps) {
   }
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-      <ContextMenuContent className="w-64">
+    <ContextMenu data-oid="b_0xhr7">
+      <ContextMenuTrigger asChild data-oid="flp7xks">
+        {children}
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-64" data-oid="ao1m:j5">
         {/* Group operations */}
         {selectedClipCount >= 2 && !group && (
-          <ContextMenuItem onClick={handleCreateGroup}>
-            <Users className="mr-2 h-4 w-4" />
+          <ContextMenuItem onClick={handleCreateGroup} data-oid="qs4rv_3">
+            <Users className="mr-2 h-4 w-4" data-oid="x7h5:oc" />
             Group Selected Clips
           </ContextMenuItem>
         )}
 
         {group && (
           <>
-            <ContextMenuItem onClick={handleUngroup}>
-              <Ungroup className="mr-2 h-4 w-4" />
+            <ContextMenuItem onClick={handleUngroup} data-oid="2d7q.6s">
+              <Ungroup className="mr-2 h-4 w-4" data-oid="rq4pwop" />
               Ungroup
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={handleToggleCollapse}>
+            <ContextMenuItem onClick={handleToggleCollapse} data-oid="y788ztl">
               {group.collapsed ? (
                 <>
-                  <FolderOpen className="mr-2 h-4 w-4" />
+                  <FolderOpen className="mr-2 h-4 w-4" data-oid="4b.g65s" />
                   Expand Group
                 </>
               ) : (
                 <>
-                  <FolderClosed className="mr-2 h-4 w-4" />
+                  <FolderClosed className="mr-2 h-4 w-4" data-oid="dftf1yt" />
                   Collapse Group
                 </>
               )}
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={handleToggleLock}>
+            <ContextMenuItem onClick={handleToggleLock} data-oid="yle.g7i">
               {group.locked ? (
                 <>
-                  <Unlock className="mr-2 h-4 w-4" />
+                  <Unlock className="mr-2 h-4 w-4" data-oid="6li5p.h" />
                   Unlock Group
                 </>
               ) : (
                 <>
-                  <Lock className="mr-2 h-4 w-4" />
+                  <Lock className="mr-2 h-4 w-4" data-oid="4.oumw7" />
                   Lock Group
                 </>
               )}
             </ContextMenuItem>
 
-            <ContextMenuSeparator />
+            <ContextMenuSeparator data-oid="f4rrzdt" />
 
-            <ContextMenuSub>
-              <ContextMenuSubTrigger>
-                <Palette className="mr-2 h-4 w-4" />
+            <ContextMenuSub data-oid="axx:jup">
+              <ContextMenuSubTrigger data-oid="i-g82s.">
+                <Palette className="mr-2 h-4 w-4" data-oid="nq:.592" />
                 Group Color
               </ContextMenuSubTrigger>
-              <ContextMenuSubContent>
+              <ContextMenuSubContent data-oid="sp9bx9m">
                 {Object.entries(GroupColors as Record<GroupColorKey, string>).map(([key, color]) => (
-                  <ContextMenuItem key={key} onClick={() => handleColorChange(color)}>
-                    <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: color }} />
+                  <ContextMenuItem key={key} onClick={() => handleColorChange(color)} data-oid="t2mljl-">
+                    <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: color }} data-oid="uvdwokx" />
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </ContextMenuItem>
                 ))}
               </ContextMenuSubContent>
             </ContextMenuSub>
 
-            <ContextMenuItem>
-              <Edit2 className="mr-2 h-4 w-4" />
+            <ContextMenuItem data-oid="y51vvd-">
+              <Edit2 className="mr-2 h-4 w-4" data-oid="366wnh1" />
               Rename Group
             </ContextMenuItem>
           </>
         )}
 
-        <ContextMenuSeparator />
+        <ContextMenuSeparator data-oid="9m6g.nu" />
 
         {/* Nested sequence */}
         {selectedClipCount >= 1 && (
-          <ContextMenuItem onClick={handleCreateNested}>
-            <Layers className="mr-2 h-4 w-4" />
+          <ContextMenuItem onClick={handleCreateNested} data-oid="c_bjv6g">
+            <Layers className="mr-2 h-4 w-4" data-oid="l6:rfqe" />
             Create Nested Sequence
           </ContextMenuItem>
         )}

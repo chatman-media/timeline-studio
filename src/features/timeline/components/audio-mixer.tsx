@@ -74,17 +74,17 @@ export function AudioMixer({ className }: AudioMixerProps) {
   const getTrackIcon = (type: TrackType) => {
     switch (type) {
       case "audio":
-        return <Volume2 className="h-4 w-4" />
+        return <Volume2 className="h-4 w-4" data-oid="v8o4--y" />
       case "music":
-        return <Music className="h-4 w-4" />
+        return <Music className="h-4 w-4" data-oid="_can8y-" />
       case "voiceover":
-        return <Mic className="h-4 w-4" />
+        return <Mic className="h-4 w-4" data-oid="4_aq7g4" />
       case "sfx":
-        return <AudioWaveform className="h-4 w-4" />
+        return <AudioWaveform className="h-4 w-4" data-oid="8zfez-y" />
       case "ambient":
-        return <Wind className="h-4 w-4" />
+        return <Wind className="h-4 w-4" data-oid="3xfp.98" />
       default:
-        return <Volume2 className="h-4 w-4" />
+        return <Volume2 className="h-4 w-4" data-oid="e.r.g8j" />
     }
   }
 
@@ -119,19 +119,25 @@ export function AudioMixer({ className }: AudioMixerProps) {
 
   if (audioTracks.length === 0) {
     return (
-      <div className={cn("p-4 text-center text-muted-foreground", className)}>
-        <p>Нет аудио треков</p>
-        <p className="text-sm mt-2">Добавьте аудио файлы на timeline</p>
+      <div className={cn("p-4 text-center text-muted-foreground", className)} data-oid="1jid7a5">
+        <p data-oid="u0qlcyz">Нет аудио треков</p>
+        <p className="text-sm mt-2" data-oid="5b4yg:d">
+          Добавьте аудио файлы на timeline
+        </p>
       </div>
     )
   }
 
   return (
-    <div className={cn("space-y-4 p-4", className)}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Аудио микшер</h3>
-        <div className="flex items-center gap-2">
-          <Label className="text-sm text-muted-foreground">Master</Label>
+    <div className={cn("space-y-4 p-4", className)} data-oid="fk4cmf5">
+      <div className="flex items-center justify-between mb-4" data-oid="e2im.t4">
+        <h3 className="text-lg font-semibold" data-oid="eq1ahal">
+          Аудио микшер
+        </h3>
+        <div className="flex items-center gap-2" data-oid="rta61tb">
+          <Label className="text-sm text-muted-foreground" data-oid="hsv1m56">
+            Master
+          </Label>
           <Slider
             className="w-24"
             min={0}
@@ -142,33 +148,39 @@ export function AudioMixer({ className }: AudioMixerProps) {
               // TODO: Implement master volume
               logger.info("Master volume:", { volume: value[0] })
             }}
+            data-oid="1aetngy"
           />
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3" data-oid="01pqw8i">
         {audioTracks.map((track) => (
-          <div key={track.id} className="bg-secondary/50 rounded-lg p-3 space-y-3">
+          <div key={track.id} className="bg-secondary/50 rounded-lg p-3 space-y-3" data-oid="6kgjefu">
             {/* Заголовок трека */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className={cn("w-2 h-8 rounded", getTrackColor(track.type))} />
+            <div className="flex items-center justify-between" data-oid=".5yjrz_">
+              <div className="flex items-center gap-2" data-oid="rxd4swf">
+                <div className={cn("w-2 h-8 rounded", getTrackColor(track.type))} data-oid="-j9me-v" />
                 {getTrackIcon(track.type)}
-                <div>
-                  <p className="font-medium text-sm">{track.name}</p>
-                  <p className="text-xs text-muted-foreground">{track.sectionName}</p>
+                <div data-oid="p39che1">
+                  <p className="font-medium text-sm" data-oid="mvcqxly">
+                    {track.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground" data-oid=":r2nqgv">
+                    {track.sectionName}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1" data-oid="g3239p6">
                 <Button
                   size="icon"
                   variant={track.isSolo ? "default" : "ghost"}
                   className="h-7 w-7"
                   onClick={() => handleSolo(track.id, track.isSolo)}
                   title="Solo"
+                  data-oid="u4f3.5_"
                 >
-                  <Headphones className="h-3 w-3" />
+                  <Headphones className="h-3 w-3" data-oid="peb1rtn" />
                 </Button>
                 <Button
                   size="icon"
@@ -176,17 +188,20 @@ export function AudioMixer({ className }: AudioMixerProps) {
                   className="h-7 w-7"
                   onClick={() => handleMute(track.id, track.isMuted)}
                   title={track.isMuted ? "Unmute" : "Mute"}
+                  data-oid="-22nkj1"
                 >
-                  <VolumeX className="h-3 w-3" />
+                  <VolumeX className="h-3 w-3" data-oid="8soj3uh" />
                 </Button>
               </div>
             </div>
 
             {/* Контролы громкости и панорамы */}
-            <div className="space-y-2">
+            <div className="space-y-2" data-oid="xo-a7ej">
               {/* Громкость */}
-              <div className="flex items-center gap-3">
-                <Label className="text-xs w-12">Vol</Label>
+              <div className="flex items-center gap-3" data-oid="_03ic1x">
+                <Label className="text-xs w-12" data-oid="pae15.3">
+                  Vol
+                </Label>
                 <Slider
                   className="flex-1"
                   min={0}
@@ -195,13 +210,19 @@ export function AudioMixer({ className }: AudioMixerProps) {
                   value={[track.volume]}
                   onValueChange={(value) => handleVolumeChange(track.id, value)}
                   disabled={track.isMuted}
+                  data-oid="l73cel2"
                 />
-                <span className="text-xs w-10 text-right">{Math.round(track.volume * 100)}%</span>
+
+                <span className="text-xs w-10 text-right" data-oid="6pxpejq">
+                  {Math.round(track.volume * 100)}%
+                </span>
               </div>
 
               {/* Панорама */}
-              <div className="flex items-center gap-3">
-                <Label className="text-xs w-12">Pan</Label>
+              <div className="flex items-center gap-3" data-oid="5dohxb2">
+                <Label className="text-xs w-12" data-oid="2emkfb2">
+                  Pan
+                </Label>
                 <Slider
                   className="flex-1"
                   min={-1}
@@ -210,8 +231,10 @@ export function AudioMixer({ className }: AudioMixerProps) {
                   value={[(track as any).pan || 0]}
                   onValueChange={(value) => updateTrack(track.id, { pan: value[0] } as any)}
                   disabled={track.isMuted}
+                  data-oid="p.yw0yb"
                 />
-                <span className="text-xs w-10 text-right">
+
+                <span className="text-xs w-10 text-right" data-oid="x-:rwby">
                   {(track as any).pan === 0
                     ? "C"
                     : (track as any).pan > 0
@@ -222,21 +245,26 @@ export function AudioMixer({ className }: AudioMixerProps) {
             </div>
 
             {/* VU метр (заглушка) */}
-            <div className="h-2 bg-background rounded-full overflow-hidden">
+            <div className="h-2 bg-background rounded-full overflow-hidden" data-oid="5iyb6sm">
               <div
                 className="h-full bg-linear-to-r from-green-500 via-yellow-500 to-red-500"
                 style={{
                   width: `${track.isMuted ? 0 : 60 + Math.random() * 20}%`,
                   transition: "width 100ms",
                 }}
+                data-oid="nzzwg8w"
               />
             </div>
 
             {/* Индикаторы эффектов */}
             {(track as any).trackEffects?.length > 0 && (
-              <div className="flex flex-wrap gap-1 pt-1">
+              <div className="flex flex-wrap gap-1 pt-1" data-oid="s8khpyw">
                 {(track as any).trackEffects.map((_: any, index: number) => (
-                  <div key={index} className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">
+                  <div
+                    key={index}
+                    className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded"
+                    data-oid="dm4va1x"
+                  >
                     FX
                   </div>
                 ))}

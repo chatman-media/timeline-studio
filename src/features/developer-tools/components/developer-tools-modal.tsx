@@ -20,28 +20,28 @@ export function DeveloperToolsModal({ open, onOpenChange }: DeveloperToolsModalP
   const [activeTab, setActiveTab] = useState("effect-previews")
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
-        <DialogHeader>
-          <DialogTitle>{t("developerTools.title", "Developer Tools")}</DialogTitle>
-          <DialogDescription>
+    <Dialog open={open} onOpenChange={onOpenChange} data-oid="fhh44g:">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto" data-oid="a0bha2l">
+        <DialogHeader data-oid="l01zki8">
+          <DialogTitle data-oid="ychsdty">{t("developerTools.title", "Developer Tools")}</DialogTitle>
+          <DialogDescription data-oid="8olrkfw">
             {t("developerTools.description", "Advanced tools for developers and content creators")}
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-1">
-            <TabsTrigger value="effect-previews">
+        <Tabs value={activeTab} onValueChange={setActiveTab} data-oid="s8h.iag">
+          <TabsList className="grid w-full grid-cols-1" data-oid="mfzte0c">
+            <TabsTrigger value="effect-previews" data-oid="t6.vr1l">
               {t("developerTools.tabs.effectPreviews", "Effect Previews")}
             </TabsTrigger>
             {/* Можно добавить больше табов в будущем:
-            <TabsTrigger value="cache-management">Cache Management</TabsTrigger>
-            <TabsTrigger value="diagnostics">Diagnostics</TabsTrigger>
-            */}
+                <TabsTrigger value="cache-management">Cache Management</TabsTrigger>
+                <TabsTrigger value="diagnostics">Diagnostics</TabsTrigger>
+                */}
           </TabsList>
 
-          <TabsContent value="effect-previews" className="mt-4">
-            <EffectPreviewGenerator effects={allMigratedEffects} />
+          <TabsContent value="effect-previews" className="mt-4" data-oid="piq-tu.">
+            <EffectPreviewGenerator effects={allMigratedEffects} data-oid=":viq:3d" />
           </TabsContent>
         </Tabs>
       </DialogContent>

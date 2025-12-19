@@ -48,19 +48,20 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
   }, [file.id, removeMedia])
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger asChild>
-        <div {...dragProps} className="cursor-pointer">
+    <ContextMenu data-oid="39ri465">
+      <ContextMenuTrigger asChild data-oid="kd:jd:m">
+        <div {...dragProps} className="cursor-pointer" data-oid="nhf_-vm">
           <MediaPreview
             file={file}
             size={typeof size === "number" ? size : size.width}
             showFileName={viewMode === "list"}
+            data-oid="1qqqjyk"
           />
         </div>
       </ContextMenuTrigger>
-      <ContextMenuContent>
-        <ContextMenuItem variant="destructive" onClick={handleDelete}>
-          <Trash2 className="size-4" />
+      <ContextMenuContent data-oid="8jb:dto">
+        <ContextMenuItem variant="destructive" onClick={handleDelete} data-oid="-1ebg5w">
+          <Trash2 className="size-4" data-oid="3_u1v-9" />
           {t("common.delete", "Удалить")}
         </ContextMenuItem>
       </ContextMenuContent>
@@ -85,7 +86,11 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
     if (mediaItems.length > 0) {
       console.log("[MediaAdapter] Media pool files:", {
         count: mediaItems.length,
-        files: mediaItems.map(([id, m]) => ({ id, name: m.name, path: m.path })),
+        files: mediaItems.map(([id, m]) => ({
+          id,
+          name: m.name,
+          path: m.path,
+        })),
       })
 
       // Проверка на дубли
@@ -143,7 +148,15 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
                 tags: {},
               },
               // ✅ FIX: Добавляем stream с codec_name для H.265 детекции
-              streams: videoCodec ? [{ codec_type: "video" as const, codec_name: videoCodec, index: 0 }] : [],
+              streams: videoCodec
+                ? [
+                    {
+                      codec_type: "video" as const,
+                      codec_name: videoCodec,
+                      index: 0,
+                    },
+                  ]
+                : [],
             }
           : undefined,
       }
@@ -194,6 +207,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         String(file.probeData?.format.tags?.artist || ""),
         String(file.probeData?.format.tags?.album || ""),
       ]
+
       return texts.filter(Boolean)
     },
 

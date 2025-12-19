@@ -31,17 +31,26 @@ export function ChatList({
   const hiddenCount = sessions.length - 3
 
   return (
-    <div className="flex flex-col space-y-2">
-      <h3 className="px-4 text-sm font-medium text-muted-foreground">Previous Threads</h3>
+    <div className="flex flex-col space-y-2" data-oid="qq8i3r9">
+      <h3 className="px-4 text-sm font-medium text-muted-foreground" data-oid="fes4owo">
+        Previous Threads
+      </h3>
 
-      <ScrollArea className="flex-1">
-        <div className="space-y-1 px-2">
+      <ScrollArea className="flex-1" data-oid="ch:w_xn">
+        <div className="space-y-1 px-2" data-oid="sm.1eu:">
           {/* Временный элемент при создании нового чата */}
           {isCreatingNew && (
-            <div className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span className="flex-1 truncate">составь план рефакторинга</span>
-              <span className="text-xs">1 Today</span>
+            <div
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground"
+              data-oid="mb2pk_."
+            >
+              <Loader2 className="h-4 w-4 animate-spin" data-oid="v74hcbv" />
+              <span className="flex-1 truncate" data-oid="uro_n6m">
+                составь план рефакторинга
+              </span>
+              <span className="text-xs" data-oid="z3_z0ga">
+                1 Today
+              </span>
             </div>
           )}
 
@@ -56,12 +65,15 @@ export function ChatList({
               onClick={() => onSelectSession(session.id)}
               onMouseEnter={() => setHoveredId(session.id)}
               onMouseLeave={() => setHoveredId(null)}
+              data-oid="xn7:jgw"
             >
-              <span className="flex-1 truncate">{session.title}</span>
+              <span className="flex-1 truncate" data-oid="23ejw5w">
+                {session.title}
+              </span>
 
               {/* Показываем кнопки действий при наведении */}
               {hoveredId === session.id ? (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1" data-oid="ddl4jdr">
                   <Button
                     size="icon"
                     variant="ghost"
@@ -71,8 +83,9 @@ export function ChatList({
                       e.stopPropagation()
                       onCopySession(session.id)
                     }}
+                    data-oid="j5-qkp7"
                   >
-                    <Copy className="h-3 w-3" />
+                    <Copy className="h-3 w-3" data-oid="mbovc:x" />
                   </Button>
                   <Button
                     size="icon"
@@ -83,14 +96,17 @@ export function ChatList({
                       e.stopPropagation()
                       onDeleteSession(session.id)
                     }}
+                    data-oid="j6ocu3e"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-3 w-3" data-oid="36gh6y." />
                   </Button>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span>{session.messageCount} messages</span>
-                  <span>{session.lastMessageAt ? formatDate(session.lastMessageAt) : "No date"}</span>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground" data-oid="5u03wvp">
+                  <span data-oid="2mgbliq">{session.messageCount} messages</span>
+                  <span data-oid="vuke76g">
+                    {session.lastMessageAt ? formatDate(session.lastMessageAt) : "No date"}
+                  </span>
                 </div>
               )}
             </div>
@@ -101,6 +117,7 @@ export function ChatList({
             <button
               className="w-full px-3 py-2 text-left text-sm text-muted-foreground hover:text-foreground"
               onClick={() => setShowAll(true)}
+              data-oid="2tn-ogu"
             >
               Show {hiddenCount} more...
             </button>

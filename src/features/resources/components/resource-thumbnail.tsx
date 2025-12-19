@@ -96,28 +96,28 @@ export const ResourceThumbnail = memo(
       switch (resource.type) {
         case "media":
         case "music":
-          return <MediaPreview file={resource.file} size={80} ignoreRatio />
+          return <MediaPreview file={resource.file} size={80} ignoreRatio data-oid="_dy2mrv" />
 
         case "effect":
-          return <Sparkles size={32} className="text-purple-400" strokeWidth={1.5} />
+          return <Sparkles size={32} className="text-purple-400" strokeWidth={1.5} data-oid="88kxo51" />
 
         case "filter":
-          return <Palette size={32} className="text-pink-400" strokeWidth={1.5} />
+          return <Palette size={32} className="text-pink-400" strokeWidth={1.5} data-oid="v9ip.bn" />
 
         case "transition":
-          return <FlipHorizontal2 size={32} className="text-blue-400" strokeWidth={1.5} />
+          return <FlipHorizontal2 size={32} className="text-blue-400" strokeWidth={1.5} data-oid="vpt1iwa" />
 
         case "template":
-          return <Clapperboard size={32} className="text-green-400" strokeWidth={1.5} />
+          return <Clapperboard size={32} className="text-green-400" strokeWidth={1.5} data-oid="786m_f:" />
 
         case "styleTemplate":
-          return <Type size={32} className="text-orange-400" strokeWidth={1.5} />
+          return <Type size={32} className="text-orange-400" strokeWidth={1.5} data-oid="4jh88tj" />
 
         case "subtitle":
-          return <Subtitles size={32} className="text-yellow-400" strokeWidth={1.5} />
+          return <Subtitles size={32} className="text-yellow-400" strokeWidth={1.5} data-oid="oahmnuj" />
 
         default:
-          return <Package size={32} className="text-gray-400" strokeWidth={1.5} />
+          return <Package size={32} className="text-gray-400" strokeWidth={1.5} data-oid="s3cwyl:" />
       }
     }, [resource.type, resource.resourceId])
 
@@ -132,13 +132,20 @@ export const ResourceThumbnail = memo(
       <div
         className="group relative flex w-24 flex-shrink-0 cursor-grab flex-col active:cursor-grabbing"
         {...dragProps}
+        data-oid="6_np:xk"
       >
         {/* Превью */}
-        <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary transition-transform group-hover:-translate-y-0.5">
+        <div
+          className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary transition-transform group-hover:-translate-y-0.5"
+          data-oid="cnhdch7"
+        >
           {previewContent}
 
           {/* Badge типа */}
-          <div className="absolute right-1 top-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-white">
+          <div
+            className="absolute right-1 top-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-white"
+            data-oid=".96yadx"
+          >
             {getTypeBadge(resource.type)}
           </div>
 
@@ -150,8 +157,9 @@ export const ResourceThumbnail = memo(
               onRemove(resource.id, resource.type)
             }}
             aria-label="Remove resource"
+            data-oid="v96-b8_"
           >
-            <X size={12} className="text-white" />
+            <X size={12} className="text-white" data-oid="4lavn_f" />
           </button>
         </div>
 
@@ -159,6 +167,7 @@ export const ResourceThumbnail = memo(
         <div
           className="mt-1 overflow-hidden text-ellipsis whitespace-nowrap px-1 text-center text-[11px] text-muted-foreground"
           title={resource.name}
+          data-oid="yw0tz1e"
         >
           {resource.name}
         </div>

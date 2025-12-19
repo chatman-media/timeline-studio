@@ -39,7 +39,12 @@ describe("usePersonIdentification", () => {
     const persons = [
       { id: "1", name: "John Doe", description: "Actor", tags: ["main"] },
       { id: "2", name: "Jane Smith", description: "Director", tags: ["crew"] },
-      { id: "3", name: "Bob Johnson", description: "Actor", tags: ["supporting"] },
+      {
+        id: "3",
+        name: "Bob Johnson",
+        description: "Actor",
+        tags: ["supporting"],
+      },
     ]
 
     expect(filterPersons(persons, "")).toHaveLength(3)
@@ -77,9 +82,21 @@ describe("usePersonIdentification", () => {
     }
 
     const persons = [
-      { name: "Charlie", statistics: { totalAppearances: 5 }, createdAt: "2025-01-03" },
-      { name: "Alice", statistics: { totalAppearances: 10 }, createdAt: "2025-01-01" },
-      { name: "Bob", statistics: { totalAppearances: 3 }, createdAt: "2025-01-02" },
+      {
+        name: "Charlie",
+        statistics: { totalAppearances: 5 },
+        createdAt: "2025-01-03",
+      },
+      {
+        name: "Alice",
+        statistics: { totalAppearances: 10 },
+        createdAt: "2025-01-01",
+      },
+      {
+        name: "Bob",
+        statistics: { totalAppearances: 3 },
+        createdAt: "2025-01-02",
+      },
     ]
 
     // Sort by name ascending

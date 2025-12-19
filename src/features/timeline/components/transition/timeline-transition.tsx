@@ -85,9 +85,9 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
 
         if (prev.handleOut && curr.handleIn) {
           // Bezier кривая
-          path += ` C ${prev.handleOut.x * width},${(1 - prev.handleOut.y) * trackHeight} ${
-            curr.handleIn.x * width
-          },${(1 - curr.handleIn.y) * trackHeight} ${curr.x * width},${(1 - curr.y) * trackHeight}`
+          path += ` C ${prev.handleOut.x * width},${(1 - prev.handleOut.y) * trackHeight} ${curr.handleIn.x * width},${
+            (1 - curr.handleIn.y) * trackHeight
+          } ${curr.x * width},${(1 - curr.y) * trackHeight}`
         } else {
           // Прямая линия
           path += ` L ${curr.x * width},${(1 - curr.y) * trackHeight}`
@@ -116,6 +116,7 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
         ...transitionStyles,
       }}
       onClick={handleClick}
+      data-oid="o9aj1qp"
     >
       {/* Форма перехода */}
       <svg
@@ -123,6 +124,7 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
         width={width}
         height={trackHeight}
         style={{ overflow: "visible" }}
+        data-oid="avo_4ha"
       >
         {/* Основная форма */}
         <path
@@ -133,6 +135,7 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
           fillOpacity={0.3}
           stroke={transitionStyles.backgroundColor}
           strokeWidth={2}
+          data-oid="km_6fz9"
         />
 
         {/* Кривая перехода */}
@@ -143,6 +146,7 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
           strokeWidth={2}
           strokeOpacity={0.8}
           strokeDasharray={transition.curve.type === "custom" ? "none" : "4 2"}
+          data-oid="qj0kmr3"
         />
 
         {/* Keyframes индикаторы */}
@@ -155,21 +159,22 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
             fill="white"
             strokeWidth={1}
             stroke={transitionStyles.backgroundColor}
+            data-oid="__k0cli"
           />
         ))}
       </svg>
 
       {/* Название перехода */}
-      <div className="absolute inset-x-0 top-1 text-center pointer-events-none">
-        <span className="text-xs text-white/90 font-medium drop-shadow-sm">
+      <div className="absolute inset-x-0 top-1 text-center pointer-events-none" data-oid="1mswee6">
+        <span className="text-xs text-white/90 font-medium drop-shadow-sm" data-oid="z60pb51">
           {transitionResource?.labels?.ru || transition.transitionId}
         </span>
       </div>
 
       {/* Параметры при наведении */}
       {transition.parameters.blur && (
-        <div className="absolute bottom-1 left-1 right-1 text-xs text-white/80 space-y-0.5">
-          <div>Blur: {transition.parameters.blur.amount}%</div>
+        <div className="absolute bottom-1 left-1 right-1 text-xs text-white/80 space-y-0.5" data-oid="upfifyk">
+          <div data-oid="p_xaork">Blur: {transition.parameters.blur.amount}%</div>
         </div>
       )}
 
@@ -186,6 +191,7 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
           onDurationChange={onDurationChange}
           onPositionChange={onPositionChange}
           isLocked={transition.isLocked}
+          data-oid="3jxx0jy"
         />
       )}
 
@@ -194,8 +200,11 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
         <button
           className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white rounded-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
           onClick={handleDelete}
+          data-oid="805nynz"
         >
-          <span className="text-xs">×</span>
+          <span className="text-xs" data-oid="n3c6.w6">
+            ×
+          </span>
         </button>
       )}
 
@@ -204,14 +213,17 @@ export const TimelineTransitionComponent = memo(function TimelineTransitionCompo
         <div
           className="absolute bottom-1 right-1 w-4 h-4 bg-green-500/50 rounded-sm flex items-center justify-center"
           title="GPU Accelerated"
+          data-oid="44.1om5"
         >
-          <span className="text-xs text-white">G</span>
+          <span className="text-xs text-white" data-oid="wugk50.">
+            G
+          </span>
         </div>
       )}
 
       {/* Статус кеша */}
       {transition.renderCache?.status === "ready" && (
-        <div className="absolute top-1 left-1 w-3 h-3 bg-blue-500 rounded-full" title="Cached" />
+        <div className="absolute top-1 left-1 w-3 h-3 bg-blue-500 rounded-full" title="Cached" data-oid="n6doivw" />
       )}
     </div>
   )

@@ -50,21 +50,22 @@ export function EditModeSelector({ className, size = "md", orientation = "horizo
   }[size]
 
   return (
-    <TooltipProvider>
+    <TooltipProvider data-oid="_tepz1f">
       <div
         className={cn(
           "flex gap-1 p-1 bg-background/95 backdrop-blur rounded-lg border",
           orientation === "vertical" ? "flex-col" : "flex-row",
           className,
         )}
+        data-oid="l0vd5hj"
       >
         {Object.values(EDIT_MODE_CONFIGS).map((config) => {
           const Icon = ICON_MAP[config.icon]
           const isActive = editMode === config.mode
 
           return (
-            <Tooltip key={config.mode} delayDuration={500}>
-              <TooltipTrigger asChild>
+            <Tooltip key={config.mode} delayDuration={500} data-oid="e1r:p2j">
+              <TooltipTrigger asChild data-oid="1o.e5xi">
                 <Button
                   variant={isActive ? "default" : "ghost"}
                   size="icon"
@@ -72,17 +73,24 @@ export function EditModeSelector({ className, size = "md", orientation = "horizo
                   onClick={() => setEditMode(config.mode)}
                   aria-label={config.name}
                   aria-pressed={isActive}
+                  data-oid="ac8j0a."
                 >
-                  <Icon size={iconSize} />
+                  <Icon size={iconSize} data-oid="yw8mt7n" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side={orientation === "vertical" ? "right" : "bottom"}>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold">{config.name}</span>
-                    <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded">{config.hotkey}</kbd>
+              <TooltipContent side={orientation === "vertical" ? "right" : "bottom"} data-oid="vd_2:u6">
+                <div className="flex flex-col gap-1" data-oid="8fdo_mz">
+                  <div className="flex items-center gap-2" data-oid="8kzvx0u">
+                    <span className="font-semibold" data-oid="vxg9fk0">
+                      {config.name}
+                    </span>
+                    <kbd className="px-1.5 py-0.5 text-xs bg-muted rounded" data-oid="x7x751a">
+                      {config.hotkey}
+                    </kbd>
                   </div>
-                  <span className="text-xs text-muted-foreground">{config.description}</span>
+                  <span className="text-xs text-muted-foreground" data-oid="4zhww0n">
+                    {config.description}
+                  </span>
                 </div>
               </TooltipContent>
             </Tooltip>
@@ -102,8 +110,8 @@ export function EditModeButtonGroup({ className }: EditModeButtonGroupProps) {
   const { editMode, setEditMode } = useEditModeContext()
 
   return (
-    <div className={cn("flex items-center", className)}>
-      <section className="flex rounded-md shadow-sm" aria-label="Edit mode selection">
+    <div className={cn("flex items-center", className)} data-oid=":8d:_5h">
+      <section className="flex rounded-md shadow-sm" aria-label="Edit mode selection" data-oid="mr9grwy">
         {Object.values(EDIT_MODE_CONFIGS)
           .slice(0, 4)
           .map((config, index) => {
@@ -123,9 +131,12 @@ export function EditModeButtonGroup({ className }: EditModeButtonGroupProps) {
                 )}
                 onClick={() => setEditMode(config.mode)}
                 title={`${config.name} (${config.hotkey})`}
+                data-oid="rt:w6rn"
               >
-                <Icon size={16} className="mr-1" />
-                <span className="hidden lg:inline">{config.name}</span>
+                <Icon size={16} className="mr-1" data-oid="h_w9--k" />
+                <span className="hidden lg:inline" data-oid="ow2_47g">
+                  {config.name}
+                </span>
               </Button>
             )
           })}

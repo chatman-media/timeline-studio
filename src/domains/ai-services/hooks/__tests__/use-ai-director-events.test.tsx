@@ -59,7 +59,9 @@ describe("useAIDirectorEvents", () => {
       )
 
       expect(mockSubscribe).toHaveBeenCalledWith(expect.any(Function), {
-        filter: { type: DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_PROGRESS },
+        filter: {
+          type: DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_PROGRESS,
+        },
       })
     })
 
@@ -73,7 +75,9 @@ describe("useAIDirectorEvents", () => {
       )
 
       expect(mockSubscribe).toHaveBeenCalledWith(expect.any(Function), {
-        filter: { type: DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_COMPLETED },
+        filter: {
+          type: DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_COMPLETED,
+        },
       })
     })
 
@@ -315,7 +319,9 @@ describe("useAIDirectorAnalysisCompleted", () => {
     renderHook(() => useAIDirectorAnalysisCompleted(analysisId, onCompleted))
 
     expect(mockSubscribe).toHaveBeenCalledWith(expect.any(Function), {
-      filter: { type: DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_COMPLETED },
+      filter: {
+        type: DOMAIN_EVENTS.AI_SERVICES.AI_DIRECTOR_ANALYSIS_COMPLETED,
+      },
       once: true, // Важно: подписка должна быть одноразовой
     })
   })

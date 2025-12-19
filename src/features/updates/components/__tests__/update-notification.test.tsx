@@ -47,12 +47,12 @@ describe("UpdateNotification", () => {
       isUpdateAvailable: false,
     })
 
-    const { container } = render(<UpdateNotification />)
+    const { container } = render(<UpdateNotification data-oid="63khatl" />)
     expect(container.firstChild).toBeNull()
   })
 
   it("показывает информацию о доступном обновлении", () => {
-    render(<UpdateNotification />)
+    render(<UpdateNotification data-oid="m2-3yd5" />)
 
     expect(screen.getByText("Доступно обновление")).toBeInTheDocument()
     expect(screen.getByText("Версия 1.2.0 готова к загрузке")).toBeInTheDocument()
@@ -60,7 +60,7 @@ describe("UpdateNotification", () => {
   })
 
   it("показывает кнопки действий для загрузки", () => {
-    render(<UpdateNotification />)
+    render(<UpdateNotification data-oid="9l4pm2:" />)
 
     expect(screen.getByRole("button", { name: "Скачать" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Пропустить" })).toBeInTheDocument()
@@ -74,7 +74,7 @@ describe("UpdateNotification", () => {
       downloadUpdate,
     })
 
-    render(<UpdateNotification />)
+    render(<UpdateNotification data-oid="8usjb43" />)
 
     await user.click(screen.getByRole("button", { name: "Скачать" }))
     expect(downloadUpdate).toHaveBeenCalled()
@@ -92,7 +92,7 @@ describe("UpdateNotification", () => {
       },
     })
 
-    render(<UpdateNotification showProgress />)
+    render(<UpdateNotification showProgress data-oid="gd_0ffp" />)
 
     expect(screen.getByText("Загрузка обновления...")).toBeInTheDocument()
     expect(screen.getByText("50%")).toBeInTheDocument()
@@ -106,7 +106,7 @@ describe("UpdateNotification", () => {
       isReadyToInstall: true,
     })
 
-    render(<UpdateNotification />)
+    render(<UpdateNotification data-oid="i-jpm6i" />)
 
     expect(screen.getByText("Готово к установке")).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Установить" })).toBeInTheDocument()
@@ -120,7 +120,7 @@ describe("UpdateNotification", () => {
       error: "Ошибка сети",
     })
 
-    render(<UpdateNotification />)
+    render(<UpdateNotification data-oid="7r28rt1" />)
 
     expect(screen.getByText("Ошибка обновления")).toBeInTheDocument()
     expect(screen.getByText("Ошибка сети")).toBeInTheDocument()
@@ -136,7 +136,7 @@ describe("UpdateNotification", () => {
       dismiss,
     })
 
-    render(<UpdateNotification onClose={onClose} />)
+    render(<UpdateNotification onClose={onClose} data-oid="b5o689k" />)
 
     const closeButton = screen.getByRole("button", { name: "X" }) // Кнопка с иконкой X
     await user.click(closeButton)
@@ -146,7 +146,7 @@ describe("UpdateNotification", () => {
   })
 
   it("применяет переданные классы", () => {
-    render(<UpdateNotification className="custom-class" />)
+    render(<UpdateNotification className="custom-class" data-oid="a2aess0" />)
 
     const card = screen.getByText("Доступно обновление").closest(".custom-class")
     expect(card).toBeInTheDocument()
@@ -164,7 +164,7 @@ describe("UpdateNotification", () => {
       },
     })
 
-    render(<UpdateNotification showProgress />)
+    render(<UpdateNotification showProgress data-oid="iazh9l2" />)
 
     expect(screen.getByText("1 KB / 1 MB")).toBeInTheDocument()
   })
@@ -181,7 +181,7 @@ describe("UpdateNotification", () => {
       },
     })
 
-    render(<UpdateNotification />)
+    render(<UpdateNotification data-oid="u6u:e93" />)
 
     expect(screen.getByText("Версия 2.0.0")).toBeInTheDocument()
     expect(screen.getByText("Большое обновление")).toBeInTheDocument()

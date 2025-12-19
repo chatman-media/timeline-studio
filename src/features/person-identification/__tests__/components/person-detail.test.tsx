@@ -71,7 +71,11 @@ describe("PersonDetail", () => {
         if (clip.startTime > lastEnd) {
           segments.push({ type: "gap", start: lastEnd, end: clip.startTime })
         }
-        segments.push({ type: "appearance", start: clip.startTime, end: clip.endTime })
+        segments.push({
+          type: "appearance",
+          start: clip.startTime,
+          end: clip.endTime,
+        })
         lastEnd = clip.endTime
       }
 

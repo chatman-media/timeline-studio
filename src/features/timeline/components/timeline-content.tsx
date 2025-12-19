@@ -43,8 +43,8 @@ const logger = createLogger("TimelineContent")
 
 export function TimelineContent() {
   return (
-    <TimelineUIProvider initialState={{ timeScale: 60 }}>
-      <TimelineContentInner />
+    <TimelineUIProvider initialState={{ timeScale: 60 }} data-oid="jyexofd">
+      <TimelineContentInner data-oid="cikp-ii" />
     </TimelineUIProvider>
   )
 }
@@ -141,14 +141,18 @@ function TimelineContentInner() {
 
   if (error) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Card className="w-96">
-          <CardHeader>
-            <CardTitle className="text-red-600">Ошибка Timeline</CardTitle>
+      <div className="flex h-full items-center justify-center" data-oid="y6teydi">
+        <Card className="w-96" data-oid="fam_92k">
+          <CardHeader data-oid="mkfw6c3">
+            <CardTitle className="text-red-600" data-oid="sfqmj.v">
+              Ошибка Timeline
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-600 mb-4">{error}</p>
-            <Button onClick={clearError} variant="outline">
+          <CardContent data-oid="3t5rw3v">
+            <p className="text-sm text-gray-600 mb-4" data-oid="_tk8kcl">
+              {error}
+            </p>
+            <Button onClick={clearError} variant="outline" data-oid="tovq1ke">
               Закрыть
             </Button>
           </CardContent>
@@ -161,24 +165,24 @@ function TimelineContentInner() {
   // Проект создается автоматически в useEffect выше при наличии currentProject
 
   return (
-    <EditModeProvider>
-      <TimelineHotkeys />
-      <UndoRedoHotkeys />
-      <TimelineSpeedRampingIntegration />
-      <SpeedRampingIndicator />
-      <div className="flex h-full flex-col">
+    <EditModeProvider data-oid="dymu2-f">
+      <TimelineHotkeys data-oid="f::0hlo" />
+      <UndoRedoHotkeys data-oid=":9p0164" />
+      <TimelineSpeedRampingIntegration data-oid="9p-f8yt" />
+      <SpeedRampingIndicator data-oid="gcmd11." />
+      <div className="flex h-full flex-col" data-oid="5h4:60p">
         {/* Edit mode overlay */}
-        <EditModeOverlay />
+        <EditModeOverlay data-oid="kwwlbma" />
 
         {/* Информация о проекте и режимы редактирования */}
-        <div className="p-4 border-b bg-background">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div>
-                <h3 className="font-semibold text-foreground">
+        <div className="p-4 border-b bg-background" data-oid="ki.5dav">
+          <div className="flex items-center justify-between" data-oid="wwqmmts">
+            <div className="flex items-center gap-6" data-oid="bwoolue">
+              <div data-oid="qxynlhw">
+                <h3 className="font-semibold text-foreground" data-oid="r7vzeh_">
                   {currentProject?.metadata?.name || project?.name || "Новый проект"}
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground" data-oid="m9_7ppe">
                   {projectSettings
                     ? `${projectSettings.aspectRatio.value.width}x${projectSettings.aspectRatio.value.height} @ ${projectSettings.frameRate}fps`
                     : project
@@ -187,64 +191,75 @@ function TimelineContentInner() {
                 </p>
               </div>
               {/* Edit mode selector */}
-              <EditModeSelector size="sm" />
+              <EditModeSelector size="sm" data-oid="41hb88v" />
               {/* AI Marker Controls */}
-              <AIMarkerControls className="ml-4" />
+              <AIMarkerControls className="ml-4" data-oid="blbgv.z" />
             </div>
-            <div className="flex gap-2">
-              <Badge variant="outline">{project?.sections?.length || 0} секций</Badge>
-              <Badge variant="outline">{tracks.length} треков</Badge>
-              <Badge variant="outline">{clips.length} клипов</Badge>
-              <TimelineSpeedRampingStatus />
+            <div className="flex gap-2" data-oid=".fpe0vx">
+              <Badge variant="outline" data-oid="ihegwql">
+                {project?.sections?.length || 0} секций
+              </Badge>
+              <Badge variant="outline" data-oid="s2id6ck">
+                {tracks.length} треков
+              </Badge>
+              <Badge variant="outline" data-oid="3q.nhg1">
+                {clips.length} клипов
+              </Badge>
+              <TimelineSpeedRampingStatus data-oid="m2vh-0d" />
             </div>
           </div>
         </div>
 
         {/* Основная область Timeline */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col" data-oid="p0ha8bt">
           {/* Временная шкала */}
-          <div className="flex border-b bg-muted/30">
+          <div className="flex border-b bg-muted/30" data-oid="ujpja12">
             {/* Пустое место для синхронизации с TrackControlsPanel */}
-            <div className="w-64 border-r border-border p-4">
-              <div className="text-sm font-medium text-muted-foreground">Временная шкала</div>
+            <div className="w-64 border-r border-border p-4" data-oid="lklz0kr">
+              <div className="text-sm font-medium text-muted-foreground" data-oid="8t0evp8">
+                Временная шкала
+              </div>
             </div>
             {/* Шкала времени */}
-            <div className="flex-1 p-4">
+            <div className="flex-1 p-4" data-oid="nyv88ct">
               <TimelineScale
                 startTime={0}
                 // endTime={sector.endTime}
                 // duration={sector.endTime - sector.startTime}
                 // sectorDate={sector.date}
                 // sectorZoomLevel={sectionZoomLevels[sector.date]}
+                data-oid="nd8tx_w"
               />
             </div>
           </div>
 
           {/* Треки с горизонтальным разделением */}
-          <ResizablePanelGroup direction="horizontal" className="flex-1">
+          <ResizablePanelGroup direction="horizontal" className="flex-1" data-oid="o.:px..">
             {/* Левая панель - Управление треками */}
-            <ResizablePanel defaultSize={25} minSize={20} maxSize={40}>
-              <div className="h-full flex flex-col">
-                <TrackControlsPanel />
-                <div className="p-2 border-t">
+            <ResizablePanel defaultSize={25} minSize={20} maxSize={40} data-oid="z8r0zb_">
+              <div className="h-full flex flex-col" data-oid="hlafi1j">
+                <TrackControlsPanel data-oid="q4zmi-r" />
+                <div className="p-2 border-t" data-oid="pconmwo">
                   {/* <IntegratedVersionPanel /> */} {/* Временно скрыто */}
                 </div>
               </div>
             </ResizablePanel>
 
-            <ResizableHandle />
+            <ResizableHandle data-oid="cu.uagy" />
 
             {/* Правая панель - Область треков */}
-            <ResizablePanel defaultSize={75} minSize={60}>
-              <DragDropProvider>
-                <div ref={scrollContainerRef} className="h-full overflow-auto relative">
+            <ResizablePanel defaultSize={75} minSize={60} data-oid="8hnw-vh">
+              <DragDropProvider data-oid="wp277ou">
+                <div ref={scrollContainerRef} className="h-full overflow-auto relative" data-oid="wmayi_b">
                   {tracks.length === 0 ? (
-                    <div className="flex h-full items-center justify-center">
-                      <Card className="w-96">
-                        <CardContent className="pt-6">
-                          <div className="text-center">
-                            <p className="text-muted-foreground">Треки не найдены</p>
-                            <Button className="mt-4" onClick={() => addTrack("Video", "Видео трек")}>
+                    <div className="flex h-full items-center justify-center" data-oid="2.o-c_u">
+                      <Card className="w-96" data-oid="2cg27_.">
+                        <CardContent className="pt-6" data-oid="2c5_b:.">
+                          <div className="text-center" data-oid="m5wg30_">
+                            <p className="text-muted-foreground" data-oid="kbb96.t">
+                              Треки не найдены
+                            </p>
+                            <Button className="mt-4" onClick={() => addTrack("Video", "Видео трек")} data-oid="3a9pjsb">
                               Добавить видео трек
                             </Button>
                           </div>
@@ -252,7 +267,7 @@ function TimelineContentInner() {
                       </Card>
                     </div>
                   ) : (
-                    <div className="relative">
+                    <div className="relative" data-oid="orpblox">
                       {/* Markers layer */}
                       <TimelineMarkersLayer
                         timeScale={timeScale}
@@ -261,6 +276,7 @@ function TimelineContentInner() {
                         currentTime={currentTime}
                         duration={project?.duration || 300} // Используем длительность проекта или 5 минут по умолчанию
                         className="sticky top-0 z-20"
+                        data-oid="-tehb9t"
                       />
 
                       {/* AI Analysis Overlay */}
@@ -269,6 +285,7 @@ function TimelineContentInner() {
                         timelineDuration={project?.duration || 300}
                         pixelsPerSecond={timeScale}
                         className="sticky top-8 z-15"
+                        data-oid="72lui84"
                       />
 
                       {/* Split indicator */}
@@ -292,19 +309,25 @@ function TimelineContentInner() {
                             }
                           }
                         }}
+                        data-oid="qdrsxi2"
                       />
 
                       {/* Track Insertion Zones - показываем только во время drag */}
-                      <TrackInsertionZones trackIds={tracks.map((t) => t.id)} isVisible={dragState.isDragging} />
+                      <TrackInsertionZones
+                        trackIds={tracks.map((t) => t.id)}
+                        isVisible={dragState.isDragging}
+                        data-oid=":44ex4p"
+                      />
 
                       {/* Треки */}
-                      <div className="space-y-0">
+                      <div className="space-y-0" data-oid="0h:mnvb">
                         <TracksWithTimeScale
                           tracks={tracks}
                           currentTime={currentTime}
                           selectedTrackIds={selectedTrackIds}
                           selectTracks={selectTracks}
                           updateTrack={updateTrack}
+                          data-oid="pvvzvh8"
                         />
                       </div>
                     </div>
@@ -346,6 +369,7 @@ function TracksWithTimeScale({
           isSelected={selectedTrackIds?.includes(track.id) ?? false}
           onSelect={(trackId: string) => selectTracks([trackId])}
           onUpdate={(updates: any) => updateTrack(track.id, updates)}
+          data-oid="hmc8gnk"
         />
       ))}
     </>

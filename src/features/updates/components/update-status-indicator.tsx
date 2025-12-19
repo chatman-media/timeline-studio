@@ -55,14 +55,14 @@ export function UpdateStatusIndicator({
   }
 
   const getIcon = () => {
-    if (isError) return <AlertCircle className="h-4 w-4 text-destructive" />
-    if (isInstalled) return <CheckCircle className="h-4 w-4 text-green-500" />
-    if (isInstalling) return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-    if (isReadyToInstall) return <Download className="h-4 w-4 text-green-500" />
-    if (isDownloading) return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-    if (isChecking) return <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" />
-    if (isUpdateAvailable) return <Download className="h-4 w-4 text-orange-500" />
-    return <RefreshCw className="h-4 w-4 text-muted-foreground" />
+    if (isError) return <AlertCircle className="h-4 w-4 text-destructive" data-oid="ez010ur" />
+    if (isInstalled) return <CheckCircle className="h-4 w-4 text-green-500" data-oid="o7zfjmx" />
+    if (isInstalling) return <Loader2 className="h-4 w-4 animate-spin text-blue-500" data-oid="t_gmnqg" />
+    if (isReadyToInstall) return <Download className="h-4 w-4 text-green-500" data-oid="hmr:agn" />
+    if (isDownloading) return <Loader2 className="h-4 w-4 animate-spin text-blue-500" data-oid="ikc853y" />
+    if (isChecking) return <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" data-oid="8wsjomh" />
+    if (isUpdateAvailable) return <Download className="h-4 w-4 text-orange-500" data-oid="nf-7nn3" />
+    return <RefreshCw className="h-4 w-4 text-muted-foreground" data-oid="78hnvf0" />
   }
 
   const getText = () => {
@@ -117,21 +117,24 @@ export function UpdateStatusIndicator({
   // Компактный режим - только иконка
   if (compact) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
+      <TooltipProvider data-oid="schicav">
+        <Tooltip data-oid="lkces:9">
+          <TooltipTrigger asChild data-oid="9.kmgc3">
             <Button
               variant={getVariant()}
               size="sm"
               className={`h-6 w-6 p-0 ${className}`}
               onClick={handleClick}
               disabled={isChecking || isDownloading || isInstalling}
+              data-oid="pa:7lz7"
             >
               {getIcon()}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
-            <p className="text-xs">{getTooltipContent()}</p>
+          <TooltipContent data-oid="i-g7b78">
+            <p className="text-xs" data-oid="oy2gywr">
+              {getTooltipContent()}
+            </p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -140,29 +143,36 @@ export function UpdateStatusIndicator({
 
   // Обычный режим с текстом
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
+    <TooltipProvider data-oid="_z36q89">
+      <Tooltip data-oid="vvaiqyz">
+        <TooltipTrigger asChild data-oid="plg_n-k">
           <Button
             variant={getVariant()}
             size="sm"
             className={`h-6 px-2 ${className}`}
             onClick={handleClick}
             disabled={isChecking || isDownloading || isInstalling}
+            data-oid="vyde09v"
           >
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5" data-oid="tq21h.w">
               {getIcon()}
-              {showText && <span className="text-xs font-medium">{getText()}</span>}
+              {showText && (
+                <span className="text-xs font-medium" data-oid="w70483w">
+                  {getText()}
+                </span>
+              )}
               {isUpdateAvailable && availableUpdate && (
-                <Badge variant="secondary" className="h-4 px-1 text-xs">
+                <Badge variant="secondary" className="h-4 px-1 text-xs" data-oid="-3rmh_1">
                   {availableUpdate.version}
                 </Badge>
               )}
             </div>
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          <p className="text-xs">{getTooltipContent()}</p>
+        <TooltipContent data-oid="1mimd:5">
+          <p className="text-xs" data-oid="h2ije22">
+            {getTooltipContent()}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -173,12 +183,12 @@ export function UpdateStatusIndicator({
  * Простой индикатор только с иконкой для встраивания в тесные места
  */
 export function UpdateIconIndicator({ className }: { className?: string }) {
-  return <UpdateStatusIndicator compact={true} className={className} />
+  return <UpdateStatusIndicator compact={true} className={className} data-oid="s6.xyte" />
 }
 
 /**
  * Индикатор с текстом для более широких панелей
  */
 export function UpdateTextIndicator({ className }: { className?: string }) {
-  return <UpdateStatusIndicator showText={true} className={className} />
+  return <UpdateStatusIndicator showText={true} className={className} data-oid="sxvcobj" />
 }

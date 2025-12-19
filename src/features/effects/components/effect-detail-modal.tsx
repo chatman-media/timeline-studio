@@ -147,80 +147,98 @@ export function EffectDetailModal() {
   const typedEffect = effect
 
   return (
-    <div className="max-w-4xl max-h-[90vh] overflow-y-auto">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span>{typedEffect?.name[currentLang] ?? typedEffect?.name?.en ?? "Unnamed effect"}</span>
-          <EffectIndicators effect={typedEffect} size="md" />
+    <div className="max-w-4xl max-h-[90vh] overflow-y-auto" data-oid="iehoj98">
+      <div className="flex items-center justify-between mb-4" data-oid=".vwcoq:">
+        <div className="flex items-center gap-3" data-oid="zfo8em9">
+          <span data-oid="9ybn2q9">{typedEffect?.name[currentLang] ?? typedEffect?.name?.en ?? "Unnamed effect"}</span>
+          <EffectIndicators effect={typedEffect} size="md" data-oid="-nt1x1i" />
         </div>
-        <Button variant="ghost" size="sm" onClick={closeModal}>
-          <X size={16} />
+        <Button variant="ghost" size="sm" onClick={closeModal} data-oid="xghbb5y">
+          <X size={16} data-oid="k4d5h2y" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" data-oid="e.0nnu1">
         {/* Левая колонка - Превью */}
-        <div className="space-y-4">
-          <Tabs defaultValue="preview" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="preview">{t("effects.preview", "Превью")}</TabsTrigger>
-              <TabsTrigger value="comparison">
-                <SplitSquareHorizontal size={16} className="mr-2" />
+        <div className="space-y-4" data-oid="5sk98qm">
+          <Tabs defaultValue="preview" className="w-full" data-oid="auov4vd">
+            <TabsList className="grid w-full grid-cols-2" data-oid="y6yey7p">
+              <TabsTrigger value="preview" data-oid="42pbrhm">
+                {t("effects.preview", "Превью")}
+              </TabsTrigger>
+              <TabsTrigger value="comparison" data-oid="a99tqcp">
+                <SplitSquareHorizontal size={16} className="mr-2" data-oid="db::p2v" />
                 {t("effects.comparison", "Сравнение")}
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="preview" className="mt-4">
-              <div className="aspect-video bg-black rounded-lg overflow-hidden relative">
+            <TabsContent value="preview" className="mt-4" data-oid="ibyim-y">
+              <div className="aspect-video bg-black rounded-lg overflow-hidden relative" data-oid="ic3l1jg">
                 <EffectPreview
                   key={previewKey} // Обновляем превью при изменении параметров
                   effect={typedEffect}
                   onClick={() => setIsPlaying(!isPlaying)}
                   size={400}
                   customParams={currentParameters} // Передаем текущие параметры
+                  data-oid="l:ecm17"
                 />
 
                 {/* Контролы воспроизведения */}
-                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                  <Button variant="secondary" size="sm" onClick={() => setIsPlaying(!isPlaying)}>
-                    {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between" data-oid="u0tio:v">
+                  <Button variant="secondary" size="sm" onClick={() => setIsPlaying(!isPlaying)} data-oid="w.:2u-x">
+                    {isPlaying ? <Pause size={16} data-oid="_s.pjy2" /> : <Play size={16} data-oid="4vqf.g4" />}
                   </Button>
                   <Button
                     variant="secondary"
                     size="sm"
                     onClick={handleReset}
                     title={t("effects.detail.resetToDefault", "Сбросить к значениям по умолчанию")}
+                    data-oid="._r1kri"
                   >
-                    <RotateCcw size={16} />
+                    <RotateCcw size={16} data-oid="n4zn_cb" />
                   </Button>
                 </div>
               </div>
             </TabsContent>
 
-            <TabsContent value="comparison" className="mt-4">
-              <EffectComparison effect={typedEffect} customParams={currentParameters} width={400} height={300} />
+            <TabsContent value="comparison" className="mt-4" data-oid="c_anpda">
+              <EffectComparison
+                effect={typedEffect}
+                customParams={currentParameters}
+                width={400}
+                height={300}
+                data-oid="35:f5ba"
+              />
             </TabsContent>
           </Tabs>
 
           {/* Информация об эффекте */}
-          <div className="space-y-2">
-            <h3 className="font-medium">{t("effects.detail.description", "Описание")}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="space-y-2" data-oid="qnggw4h">
+            <h3 className="font-medium" data-oid="evqjegd">
+              {t("effects.detail.description", "Описание")}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400" data-oid="s5bm-kj">
               {typedEffect?.description?.[currentLang] || typedEffect?.description?.en}
             </p>
           </div>
 
           {/* Категория и теги */}
-          <div className="space-y-2">
-            <h3 className="font-medium">{t("effects.detail.category", "Категория")}</h3>
-            <div className="flex flex-wrap gap-2">
-              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded">
+          <div className="space-y-2" data-oid="urboflh">
+            <h3 className="font-medium" data-oid="6zrb:2o">
+              {t("effects.detail.category", "Категория")}
+            </h3>
+            <div className="flex flex-wrap gap-2" data-oid="cpdc9a3">
+              <span
+                className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded"
+                data-oid="r.g-o-u"
+              >
                 {typedEffect?.category}
               </span>
               {typedEffect?.tags?.map((tag) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs rounded"
+                  data-oid="3geoqat"
                 >
                   {tag}
                 </span>
@@ -230,9 +248,14 @@ export function EffectDetailModal() {
         </div>
 
         {/* Правая колонка - Настройки */}
-        <div className="space-y-4">
+        <div className="space-y-4" data-oid="wuaso8d">
           {/* Пресеты */}
-          <EffectPresets effect={typedEffect} onApplyPreset={handleApplyPreset} selectedPreset={selectedPreset} />
+          <EffectPresets
+            effect={typedEffect}
+            onApplyPreset={handleApplyPreset}
+            selectedPreset={selectedPreset}
+            data-oid="vu428ew"
+          />
 
           {/* Интерактивные контролы параметров */}
           <EffectParameterControls
@@ -240,21 +263,27 @@ export function EffectDetailModal() {
             onParametersChange={handleParametersChange}
             selectedPreset={selectedPreset}
             onSavePreset={handleSavePreset}
+            data-oid="pq47-ir"
           />
 
           {/* FFmpeg команда */}
-          <div className="space-y-2">
-            <h3 className="font-medium">{t("effects.detail.ffmpegCommand", "FFmpeg команда")}</h3>
-            <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono overflow-x-auto">
+          <div className="space-y-2" data-oid="4:2s5.j">
+            <h3 className="font-medium" data-oid="4wzb4q9">
+              {t("effects.detail.ffmpegCommand", "FFmpeg команда")}
+            </h3>
+            <div
+              className="p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono overflow-x-auto"
+              data-oid="i0mghp."
+            >
               {typedEffect ? getEffectFFmpegCommand(typedEffect, currentParameters) : "No effect selected"}
             </div>
           </div>
 
-          <Separator />
+          <Separator data-oid="jkq4iel" />
 
           {/* Кнопки действий */}
-          <div className="flex gap-2">
-            <Button onClick={handleApplyEffect} className="flex-1">
+          <div className="flex gap-2" data-oid="4zd5.rq">
+            <Button onClick={handleApplyEffect} className="flex-1" data-oid="h9w_re_">
               {t("effects.detail.applyEffect", "Применить эффект")}
             </Button>
             <Button
@@ -262,10 +291,11 @@ export function EffectDetailModal() {
               size="icon"
               onClick={handleExportEffect}
               title={t("effects.detail.exportEffect", "Экспортировать эффект")}
+              data-oid="oonbhei"
             >
-              <Download size={16} />
+              <Download size={16} data-oid="kf29jf1" />
             </Button>
-            <Button variant="outline" onClick={closeModal}>
+            <Button variant="outline" onClick={closeModal} data-oid="::ctv91">
               {t("common.cancel", "Отмена")}
             </Button>
           </div>

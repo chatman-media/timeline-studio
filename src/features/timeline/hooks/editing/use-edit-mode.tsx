@@ -98,7 +98,11 @@ const EditModeContext = createContext<UseEditModeReturn | undefined>(undefined)
 export function EditModeProvider({ children }: { children: ReactNode }) {
   const editMode = useEditMode()
 
-  return <EditModeContext.Provider value={editMode}>{children}</EditModeContext.Provider>
+  return (
+    <EditModeContext.Provider value={editMode} data-oid="7fwc76f">
+      {children}
+    </EditModeContext.Provider>
+  )
 }
 
 export function useEditModeContext() {

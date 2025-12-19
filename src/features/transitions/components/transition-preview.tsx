@@ -481,9 +481,7 @@ export function TransitionPreview({
     // Функция обработки успешной загрузки
     const handleLoadedData = () => {
       // Видео успешно загружено
-    }
-
-    // Добавляем обработчики событий для обоих видео
+    } // Добавляем обработчики событий для обоих видео
     sourceVideoElement.addEventListener("error", handleError)
     targetVideoElement.addEventListener("error", handleError)
     sourceVideoElement.addEventListener("loadeddata", handleLoadedData)
@@ -547,8 +545,9 @@ export function TransitionPreview({
       }}
       {...(attributes && typeof attributes === "object" ? attributes : {})}
       {...(listeners && typeof listeners === "object" ? listeners : {})}
+      data-oid="xogxbr6"
     >
-      <div className="group relative">
+      <div className="group relative" data-oid="o8xq_mn">
         {/* Контейнер превью перехода */}
         <div
           className="flex cursor-pointer rounded-xs bg-gray-800 relative"
@@ -556,25 +555,27 @@ export function TransitionPreview({
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
           onClick={onClick}
+          data-oid="hyes5lv"
         >
           {/* Индикаторы сложности и категории */}
           {currentTransition && (
             <>
               {/* Индикатор сложности */}
               {/* <div className="absolute bottom-1 left-1 z-10">
-                <div
-                  className={`${complexityIndicator.color} rounded-full w-3 h-3 flex items-center justify-center`}
-                  title={t(`transitions.complexity.${currentTransition.complexity}`, currentTransition.complexity)}
-                >
-                  <span className="text-[8px] font-bold text-white">{complexityIndicator.label[0]}</span>
-                </div>
+              <div
+               className={`${complexityIndicator.color} rounded-full w-3 h-3 flex items-center justify-center`}
+               title={t(`transitions.complexity.${currentTransition.complexity}`, currentTransition.complexity)}
+              >
+               <span className="text-[8px] font-bold text-white">{complexityIndicator.label[0]}</span>
+              </div>
               </div> */}
 
               {/* Индикатор категории */}
-              <div className="absolute top-1 left-1 z-10">
+              <div className="absolute top-1 left-1 z-10" data-oid="d2ayk_l">
                 <div
                   className="bg-black/80 bg-opacity-60 text-white rounded-xs px-1 py-0.5 text-[8px]"
                   title={t(`transitions.categories.${currentTransition.category}`, currentTransition.category)}
+                  data-oid="vexfiij"
                 >
                   {categoryIndicator}
                 </div>
@@ -582,8 +583,11 @@ export function TransitionPreview({
 
               {/* Индикатор длительности */}
               {currentTransition.duration && (
-                <div className="absolute bottom-1 left-1 z-10">
-                  <div className="bg-black/80 bg-opacity-60 text-white rounded-xs px-1 py-0.5 text-[9px]">
+                <div className="absolute bottom-1 left-1 z-10" data-oid="s3k4ocd">
+                  <div
+                    className="bg-black/80 bg-opacity-60 text-white rounded-xs px-1 py-0.5 text-[9px]"
+                    data-oid="v4sgro1"
+                  >
                     {currentTransition.duration.default.toFixed(1)}s
                   </div>
                 </div>
@@ -592,12 +596,15 @@ export function TransitionPreview({
           )}
           {isError ? (
             // Отображаем сообщение об ошибке, если видео не загрузилось
-            <div className="flex h-full items-center justify-center text-white">
+            <div className="flex h-full items-center justify-center text-white" data-oid="pxj_f6y">
               {t("timeline.player.videoLoadError")}
             </div>
           ) : (
             // Контейнер для видео с переходом
-            <div className="relative flex h-full w-full cursor-pointer items-center justify-center rounded-md">
+            <div
+              className="relative flex h-full w-full cursor-pointer items-center justify-center rounded-md"
+              data-oid="0o7-z7y"
+            >
               {/* Исходное видео (видимое в начале) */}
               <video
                 ref={sourceVideoRef}
@@ -609,7 +616,9 @@ export function TransitionPreview({
                 preload={isVisible ? "metadata" : "none"}
                 onError={() => setIsError(true)}
                 data-testid="source-video"
+                data-oid="lf-ad4t"
               />
+
               {/* Целевое видео (появляется при переходе) */}
               <video
                 ref={targetVideoRef}
@@ -621,9 +630,11 @@ export function TransitionPreview({
                 preload={isVisible ? "metadata" : "none"}
                 onError={() => setIsError(true)}
                 data-testid="target-video"
+                data-oid="w9..zn2"
               />
+
               {/* Кнопка добавления в избранное */}
-              <FavoriteButton file={favoriteFile} size={size} type="transition" />
+              <FavoriteButton file={favoriteFile} size={size} type="transition" data-oid="1q61dbm" />
 
               {/* Кнопка для запуска перехода */}
               <ApplyButton
@@ -636,7 +647,9 @@ export function TransitionPreview({
                 }
                 size={size}
                 type="transition"
+                data-oid="y-j0yy6"
               />
+
               {/* Кнопка добавления перехода в проект */}
               {transition && (
                 <AddMediaButton
@@ -649,6 +662,7 @@ export function TransitionPreview({
                   }
                   size={size}
                   type="transition"
+                  data-oid="1g4_p0z"
                 />
               )}
             </div>
@@ -656,7 +670,7 @@ export function TransitionPreview({
         </div>
       </div>
       {/* Название перехода */}
-      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${actualWidth}px` }}>
+      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${actualWidth}px` }} data-oid="09-85je">
         {currentTransition?.labels?.ru || t(`transitions.types.${transitionType}`, transitionType)}
       </div>
     </div>

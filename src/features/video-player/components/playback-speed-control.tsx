@@ -41,32 +41,38 @@ export function PlaybackSpeedControl() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu data-oid="n361k8:">
+      <DropdownMenuTrigger asChild data-oid="jqf5cb7">
         <Button
           className="h-8 cursor-pointer gap-1 min-w-[60px]"
           variant="ghost"
           size="sm"
           title={t("timeline.controls.playbackSpeed", "Playback speed")}
+          data-oid="avf.ncd"
         >
-          <Gauge className="h-4 w-4" />
-          <span className="text-xs">{formatSpeed(currentPlaybackRate)}</span>
+          <Gauge className="h-4 w-4" data-oid="nq0a.cj" />
+          <span className="text-xs" data-oid="k:nq4ee">
+            {formatSpeed(currentPlaybackRate)}
+          </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="min-w-[120px]">
+      <DropdownMenuContent align="center" className="min-w-[120px]" data-oid="z0ost75">
         {PLAYBACK_SPEEDS.map((speed) => (
           <DropdownMenuItem
             key={speed.value}
             onClick={() => handleSpeedChange(speed.value)}
             className={currentPlaybackRate === speed.value ? "bg-accent" : ""}
+            data-oid="xfke8m5"
           >
-            <span className="text-sm">{speed.label}</span>
+            <span className="text-sm" data-oid="-xhm0g8">
+              {speed.label}
+            </span>
           </DropdownMenuItem>
         ))}
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator data-oid="v:myeg2" />
 
-        <DropdownMenuItem className="text-xs text-muted-foreground" disabled>
+        <DropdownMenuItem className="text-xs text-muted-foreground" disabled data-oid="mzsj2on">
           {t("timeline.speed.advancedOptions", "For advanced options use Options panel")}
         </DropdownMenuItem>
       </DropdownMenuContent>

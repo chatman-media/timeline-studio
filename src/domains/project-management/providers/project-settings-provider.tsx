@@ -291,7 +291,11 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
     resetSettings,
   }
 
-  return <ProjectSettingsContext.Provider value={contextValue}>{children}</ProjectSettingsContext.Provider>
+  return (
+    <ProjectSettingsContext.Provider value={contextValue} data-oid="7phx5r3">
+      {children}
+    </ProjectSettingsContext.Provider>
+  )
 }
 
 // Экспорт типов

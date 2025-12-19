@@ -8,8 +8,8 @@
  */
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" data-oid="2w:0iht">
+      <body data-oid="mbi77oj">
         <div
           style={{
             display: "flex",
@@ -20,14 +20,33 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             color: "#fff",
             padding: "1rem",
           }}
+          data-oid="psvgb5_"
         >
-          <div style={{ textAlign: "center", maxWidth: "600px" }}>
-            <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>Application Error</h1>
-            <p style={{ fontSize: "1.25rem", marginBottom: "2rem", opacity: 0.8 }}>
+          <div style={{ textAlign: "center", maxWidth: "600px" }} data-oid="q0hzssp">
+            <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }} data-oid="asu6r63">
+              Application Error
+            </h1>
+            <p
+              style={{
+                fontSize: "1.25rem",
+                marginBottom: "2rem",
+                opacity: 0.8,
+              }}
+              data-oid="b02oofo"
+            >
               An unexpected error occurred. Please try refreshing the page.
             </p>
             {error.digest && (
-              <p style={{ fontSize: "0.875rem", opacity: 0.6, marginBottom: "2rem" }}>Error ID: {error.digest}</p>
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  opacity: 0.6,
+                  marginBottom: "2rem",
+                }}
+                data-oid="_nk24v0"
+              >
+                Error ID: {error.digest}
+              </p>
             )}
             <button
               onClick={reset}
@@ -41,6 +60,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
                 fontSize: "1rem",
                 fontWeight: "600",
               }}
+              data-oid="2.t4kec"
             >
               Try Again
             </button>

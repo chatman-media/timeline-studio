@@ -9,7 +9,11 @@ import { vi } from "vitest"
 
 // Провайдер для тестирования с необходимыми контекстами
 const TestProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <div data-testid="test-provider">{children}</div>
+  return (
+    <div data-testid="test-provider" data-oid="xp210j4">
+      {children}
+    </div>
+  )
 }
 
 // Кастомная функция рендеринга
@@ -99,7 +103,10 @@ export const createMockSubtitleStyle = (overrides = {}) => ({
 export const createMockTemplate = (overrides = {}) => ({
   id: "test-template",
   name: { en: "Test Template", ru: "Тестовый шаблон" },
-  description: { en: "Test template description", ru: "Описание тестового шаблона" },
+  description: {
+    en: "Test template description",
+    ru: "Описание тестового шаблона",
+  },
   category: "grid",
   cellCount: 4,
   aspectRatio: "16:9",
@@ -110,7 +117,10 @@ export const createMockTemplate = (overrides = {}) => ({
 export const createMockStyleTemplate = (overrides = {}) => ({
   id: "test-style-template",
   name: { en: "Test Style Template", ru: "Тестовый стиль шаблон" },
-  description: { en: "Test style template description", ru: "Описание тестового стиль шаблона" },
+  description: {
+    en: "Test style template description",
+    ru: "Описание тестового стиль шаблона",
+  },
   category: "intro",
   duration: 2000,
   hasAnimation: true,
@@ -125,7 +135,7 @@ export const createMockAdapter = (overrides = {}) => ({
     error: null,
     items: [],
   })),
-  PreviewComponent: vi.fn(() => <div data-testid="mock-preview" />),
+  PreviewComponent: vi.fn(() => <div data-testid="mock-preview" data-oid="ovju8zo" />),
   getSortValue: vi.fn((item, _sortBy) => item.name || ""),
   getSearchableText: vi.fn((item) => [item.name || ""]),
   getGroupValue: vi.fn(() => "Test Group"),

@@ -104,13 +104,15 @@ export function TimelinePreviewIntegration({
 
   if (!enabled) {
     return (
-      <Card className={`${getPositionStyles()} ${className}`}>
-        <div className="p-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <EyeOff className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-medium">Preview Disabled</span>
+      <Card className={`${getPositionStyles()} ${className}`} data-oid="c301j9f">
+        <div className="p-4 text-center" data-oid="78bps:j">
+          <div className="flex items-center justify-center gap-2 mb-2" data-oid="hdzu7mn">
+            <EyeOff className="w-5 h-5 text-muted-foreground" data-oid="nfe5pj-" />
+            <span className="text-sm font-medium" data-oid="et:-5q7">
+              Preview Disabled
+            </span>
           </div>
-          <Button size="sm" variant="outline" onClick={handleTogglePreview}>
+          <Button size="sm" variant="outline" onClick={handleTogglePreview} data-oid="p78vugj">
             Enable Preview
           </Button>
         </div>
@@ -119,30 +121,38 @@ export function TimelinePreviewIntegration({
   }
 
   return (
-    <Card ref={containerRef} className={`overflow-hidden ${getPositionStyles()} ${className}`}>
+    <Card ref={containerRef} className={`overflow-hidden ${getPositionStyles()} ${className}`} data-oid="363l1cg">
       {/* Header */}
       {showControls && (
-        <div className="p-3 border-b bg-muted/30">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4" />
-              <span className="text-sm font-medium">Live Preview</span>
+        <div className="p-3 border-b bg-muted/30" data-oid=":rb19fe">
+          <div className="flex items-center justify-between" data-oid="1dd_qxw">
+            <div className="flex items-center gap-2" data-oid="782jy1x">
+              <Eye className="w-4 h-4" data-oid="-05nfer" />
+              <span className="text-sm font-medium" data-oid="q9:kjye">
+                Live Preview
+              </span>
               {isInitialized && (
-                <Badge variant="secondary" className="text-xs">
-                  <Zap className="w-3 h-3 mr-1" />
+                <Badge variant="secondary" className="text-xs" data-oid="meq5rps">
+                  <Zap className="w-3 h-3 mr-1" data-oid="yax2zv7" />
                   Live
                 </Badge>
               )}
             </div>
 
-            <div className="flex items-center gap-1">
-              <Badge variant={gpuTier === "high" ? "default" : "secondary"} className="text-xs">
-                <Monitor className="w-3 h-3 mr-1" />
+            <div className="flex items-center gap-1" data-oid="ksu1e.c">
+              <Badge variant={gpuTier === "high" ? "default" : "secondary"} className="text-xs" data-oid="1x9t7xn">
+                <Monitor className="w-3 h-3 mr-1" data-oid=":9zc7ei" />
                 {gpuTier.toUpperCase()}
               </Badge>
 
-              <Button variant="ghost" size="sm" onClick={handleTogglePreview} className="h-6 w-6 p-0">
-                <Settings className="w-3 h-3" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleTogglePreview}
+                className="h-6 w-6 p-0"
+                data-oid="suo8os8"
+              >
+                <Settings className="w-3 h-3" data-oid="nf0g.m4" />
               </Button>
             </div>
           </div>
@@ -157,6 +167,7 @@ export function TimelinePreviewIntegration({
           minHeight: 150,
           maxHeight: maxHeight,
         }}
+        data-oid="8tcz87p"
       >
         <canvas
           ref={canvasRef}
@@ -164,30 +175,36 @@ export function TimelinePreviewIntegration({
           style={{
             imageRendering: quality.antialiasing ? "auto" : "pixelated",
           }}
+          data-oid="39_e3df"
         />
 
         {/* Hidden video element */}
-        <video ref={videoRef} className="hidden" crossOrigin="anonymous" preload="metadata" />
+        <video ref={videoRef} className="hidden" crossOrigin="anonymous" preload="metadata" data-oid="pr7c2x7" />
 
         {/* Loading state */}
         {!isInitialized && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <div className="text-white text-xs text-center">
-              <div className="animate-pulse">Initializing preview...</div>
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center" data-oid="ka5qq6:">
+            <div className="text-white text-xs text-center" data-oid="7dh4amk">
+              <div className="animate-pulse" data-oid="ny5347j">
+                Initializing preview...
+              </div>
             </div>
           </div>
         )}
 
         {/* Status indicator */}
         {isInitialized && (
-          <div className="absolute top-2 left-2">
-            <div className={`w-2 h-2 rounded-full ${previewFrame ? "bg-green-400" : "bg-yellow-400"} animate-pulse`} />
+          <div className="absolute top-2 left-2" data-oid="uqxg.f:">
+            <div
+              className={`w-2 h-2 rounded-full ${previewFrame ? "bg-green-400" : "bg-yellow-400"} animate-pulse`}
+              data-oid=".av5d:7"
+            />
           </div>
         )}
 
         {/* Performance indicator */}
         {position === "overlay" && cacheStats && (
-          <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+          <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded" data-oid="u2u1t-0">
             {cacheStats.entries} cached • {Math.round(cacheStats.fillPercentage)}% full
           </div>
         )}
@@ -195,14 +212,25 @@ export function TimelinePreviewIntegration({
 
       {/* Quality Controls (collapsible) */}
       {showControls && position !== "overlay" && (
-        <div className="border-t">
-          <details className="group">
-            <summary className="p-2 cursor-pointer text-xs text-muted-foreground hover:text-foreground flex items-center gap-2">
-              <span>Quality Settings</span>
-              <span className="ml-auto group-open:rotate-90 transition-transform">▶</span>
+        <div className="border-t" data-oid="a8xmwm4">
+          <details className="group" data-oid="47wxvpu">
+            <summary
+              className="p-2 cursor-pointer text-xs text-muted-foreground hover:text-foreground flex items-center gap-2"
+              data-oid="h3ruvbj"
+            >
+              <span data-oid="7i17nla">Quality Settings</span>
+              <span className="ml-auto group-open:rotate-90 transition-transform" data-oid="b1u39y3">
+                ▶
+              </span>
             </summary>
-            <div className="p-3 border-t bg-muted/20">
-              <QualityControls quality={quality} gpuTier={gpuTier} onChange={setQuality} className="space-y-3" />
+            <div className="p-3 border-t bg-muted/20" data-oid="y1cyg6i">
+              <QualityControls
+                quality={quality}
+                gpuTier={gpuTier}
+                onChange={setQuality}
+                className="space-y-3"
+                data-oid="12j8mdn"
+              />
             </div>
           </details>
         </div>

@@ -24,7 +24,7 @@ vi.mock("@/features/drag-drop", () => ({
 
 vi.mock("@/features/filters/components/filter-preview", () => ({
   FilterPreview: ({ filter, onClick }: any) => (
-    <div data-testid="filter-preview" onClick={onClick}>
+    <div data-testid="filter-preview" onClick={onClick} data-oid="btolx7i">
       {filter.name}
     </div>
   ),

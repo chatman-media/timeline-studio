@@ -18,8 +18,8 @@ export function ClipAIIndicator({ clip, className }: ClipAIIndicatorProps) {
   }
 
   return (
-    <div className={cn("opacity-50", className)}>
-      <Sparkles className="h-3 w-3 text-blue-500" />
+    <div className={cn("opacity-50", className)} data-oid=".qr5wl7">
+      <Sparkles className="h-3 w-3 text-blue-500" data-oid=":o82tqa" />
     </div>
   )
 }

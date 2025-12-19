@@ -9,7 +9,11 @@ import { createCellConfig, createDividerConfig, type MediaTemplateConfig } from 
 
 describe("TemplateRenderer", () => {
   // Mock функция для рендеринга ячеек
-  const mockRenderCell = vi.fn((index: number) => <div data-testid={`cell-${index}`}>Cell {index + 1}</div>)
+  const mockRenderCell = vi.fn((index: number) => (
+    <div data-testid={`cell-${index}`} data-oid="0o7bq8e">
+      Cell {index + 1}
+    </div>
+  ))
 
   afterEach(() => {
     vi.clearAllMocks()
@@ -24,7 +28,7 @@ describe("TemplateRenderer", () => {
       dividers: createDividerConfig("default"),
     }
 
-    render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="v0qg9e5" />)
 
     expect(screen.getByTestId("cell-0")).toBeInTheDocument()
     expect(screen.getByTestId("cell-1")).toBeInTheDocument()
@@ -40,7 +44,7 @@ describe("TemplateRenderer", () => {
       dividers: createDividerConfig("default"),
     }
 
-    render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="sic58_5" />)
 
     expect(screen.getByTestId("cell-0")).toBeInTheDocument()
     expect(screen.getByTestId("cell-1")).toBeInTheDocument()
@@ -64,7 +68,7 @@ describe("TemplateRenderer", () => {
       },
     }
 
-    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="nyaksz_" />)
 
     expect(screen.getByTestId("cell-0")).toBeInTheDocument()
     expect(screen.getByTestId("cell-1")).toBeInTheDocument()
@@ -88,11 +92,12 @@ describe("TemplateRenderer", () => {
         { x: 60, y: 0 },
         { x: 40, y: 100 },
       ],
+
       cells: [createCellConfig(0), createCellConfig(1)],
       dividers: createDividerConfig("default"),
     }
 
-    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="mlbdbcq" />)
 
     expect(screen.getByTestId("cell-0")).toBeInTheDocument()
     expect(screen.getByTestId("cell-1")).toBeInTheDocument()
@@ -126,11 +131,12 @@ describe("TemplateRenderer", () => {
           margin: "5px",
         }),
       ],
+
       dividers: createDividerConfig("default"),
     }
 
     const { container } = render(
-      <TemplateRenderer config={config} renderCell={mockRenderCell} enableAnimations={false} />,
+      <TemplateRenderer config={config} renderCell={mockRenderCell} enableAnimations={false} data-oid="_:otvqf" />,
     )
 
     // Находим ячейки по их data-testid, а затем их родительские контейнеры со стилями
@@ -168,7 +174,7 @@ describe("TemplateRenderer", () => {
       },
     }
 
-    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="_fqxsdv" />)
 
     expect(screen.getByTestId("cell-0")).toBeInTheDocument()
     expect(screen.getByTestId("cell-1")).toBeInTheDocument()
@@ -191,7 +197,7 @@ describe("TemplateRenderer", () => {
       dividers: { show: false }, // Явно отключаем разделители
     }
 
-    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    const { container } = render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="b:7etdj" />)
 
     // Ищем элементы, которые могут быть разделителями
     // В вертикальном шаблоне разделители имеют height: 100%
@@ -228,7 +234,7 @@ describe("TemplateRenderer", () => {
       ],
     }
 
-    render(<TemplateRenderer config={config} renderCell={mockRenderCell} />)
+    render(<TemplateRenderer config={config} renderCell={mockRenderCell} data-oid="z0pzzhx" />)
 
     expect(screen.getByText("Camera 1")).toBeInTheDocument()
     expect(screen.getByText("Camera 2")).toBeInTheDocument()

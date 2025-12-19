@@ -14,8 +14,16 @@ vi.mock("@/features/user-settings")
 
 // Мокаем компоненты Lucide
 vi.mock("lucide-react", () => ({
-  PanelLeftClose: vi.fn(() => <div data-testid="panel-left-close">PanelLeftClose</div>),
-  PanelLeftOpen: vi.fn(() => <div data-testid="panel-left-open">PanelLeftOpen</div>),
+  PanelLeftClose: vi.fn(() => (
+    <div data-testid="panel-left-close" data-oid="s2afalz">
+      PanelLeftClose
+    </div>
+  )),
+  PanelLeftOpen: vi.fn(() => (
+    <div data-testid="panel-left-open" data-oid="k9:h6ph">
+      PanelLeftOpen
+    </div>
+  )),
 }))
 
 // Мокаем react-i18next
@@ -45,7 +53,7 @@ describe("BrowserToggle", () => {
     } as any)
 
     // Рендерим компонент
-    render(<BrowserToggle />)
+    render(<BrowserToggle data-oid=".k88jnh" />)
 
     // Проверяем, что отображается правильная иконка
     expect(screen.getByTestId("panel-left-close")).toBeInTheDocument()
@@ -67,7 +75,7 @@ describe("BrowserToggle", () => {
     } as any)
 
     // Рендерим компонент
-    render(<BrowserToggle />)
+    render(<BrowserToggle data-oid="nccrub6" />)
 
     // Проверяем, что отображается правильная иконка
     expect(screen.getByTestId("panel-left-open")).toBeInTheDocument()
@@ -92,7 +100,7 @@ describe("BrowserToggle", () => {
     } as any)
 
     // Рендерим компонент
-    render(<BrowserToggle />)
+    render(<BrowserToggle data-oid="836qn.u" />)
 
     // Кликаем на кнопку
     act(() => {

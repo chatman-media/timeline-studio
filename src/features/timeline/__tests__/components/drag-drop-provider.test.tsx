@@ -25,7 +25,11 @@ const mockHandleDragOver = vi.fn()
 const mockHandleDragEnd = vi.fn()
 
 describe("DragDropProvider", () => {
-  const TestChild = () => <div data-testid="test-child">Test Content</div>
+  const TestChild = () => (
+    <div data-testid="test-child" data-oid="f_o07tg">
+      Test Content
+    </div>
+  )
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -49,8 +53,8 @@ describe("DragDropProvider", () => {
 
   it("рендерит дочерние элементы", () => {
     render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="o79zq:8">
+        <TestChild data-oid="ee0boqv" />
       </DragDropProvider>,
     )
 
@@ -59,8 +63,8 @@ describe("DragDropProvider", () => {
 
   it("предоставляет DndContext для дочерних элементов", () => {
     const { container } = render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="abfz2n8">
+        <TestChild data-oid="i8ltn9." />
       </DragDropProvider>,
     )
 
@@ -79,8 +83,8 @@ describe("DragDropProvider", () => {
     document.body.appendChild(mockElement)
 
     render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="uj9:j-j">
+        <TestChild data-oid="v5i68m0" />
       </DragDropProvider>,
     )
 
@@ -104,8 +108,8 @@ describe("DragDropProvider", () => {
   it("передает правильные обработчики в DndContext", () => {
     // Тестируем что hook вызывается
     render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="mvo.f60">
+        <TestChild data-oid="beq9rhj" />
       </DragDropProvider>,
     )
 
@@ -114,8 +118,8 @@ describe("DragDropProvider", () => {
 
   it("обрабатывает изменение состояния drag", () => {
     const { rerender } = render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="3qjfp:0">
+        <TestChild data-oid="qtm43ip" />
       </DragDropProvider>,
     )
 
@@ -142,8 +146,8 @@ describe("DragDropProvider", () => {
     })
 
     rerender(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="zs3et3k">
+        <TestChild data-oid="s5qp8o3" />
       </DragDropProvider>,
     )
 
@@ -153,8 +157,8 @@ describe("DragDropProvider", () => {
 
   it("создает правильные модификаторы для снэппинга", () => {
     render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="_l986ze">
+        <TestChild data-oid="o4k002p" />
       </DragDropProvider>,
     )
 
@@ -164,14 +168,20 @@ describe("DragDropProvider", () => {
 
   it("поддерживает touch события", () => {
     const TestTouchable = () => (
-      <div onTouchStart={() => {}} onTouchMove={() => {}} onTouchEnd={() => {}} data-testid="touchable-item">
+      <div
+        onTouchStart={() => {}}
+        onTouchMove={() => {}}
+        onTouchEnd={() => {}}
+        data-testid="touchable-item"
+        data-oid="m-cwvex"
+      >
         Touchable Item
       </div>
     )
 
     render(
-      <DragDropProvider>
-        <TestTouchable />
+      <DragDropProvider data-oid="5up5tml">
+        <TestTouchable data-oid="puqvyv6" />
       </DragDropProvider>,
     )
 
@@ -194,8 +204,8 @@ describe("DragDropProvider", () => {
 
   it("правильно очищает состояние при размонтировании", () => {
     const { unmount } = render(
-      <DragDropProvider>
-        <TestChild />
+      <DragDropProvider data-oid="ip6hhg:">
+        <TestChild data-oid="8rik948" />
       </DragDropProvider>,
     )
 

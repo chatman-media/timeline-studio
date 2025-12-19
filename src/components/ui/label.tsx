@@ -14,6 +14,7 @@ function Label({ className, ...props }: React.ComponentProps<typeof LabelPrimiti
         className,
       )}
       {...props}
+      data-oid="he:b.np"
     />
   )
 }

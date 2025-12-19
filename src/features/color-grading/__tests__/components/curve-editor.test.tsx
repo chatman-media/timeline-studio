@@ -19,13 +19,17 @@ describe("CurveEditor", () => {
   })
 
   it("should render curve editor", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="qzv:piq" />,
+    )
 
     expect(container.querySelector("svg")).toBeInTheDocument()
   })
 
   it("should render grid pattern", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="n-gnb4t" />,
+    )
 
     const pattern = container.querySelector("pattern")
     expect(pattern).toBeInTheDocument()
@@ -34,7 +38,9 @@ describe("CurveEditor", () => {
   })
 
   it("should render diagonal reference line", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="t.sfpke" />,
+    )
 
     const line = container.querySelector("line")
     expect(line).toBeInTheDocument()
@@ -45,7 +51,9 @@ describe("CurveEditor", () => {
   })
 
   it("should render curve path when 2 or more points", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="g5:hjej" />,
+    )
 
     const path = container.querySelector("path[stroke='white']")
     expect(path).toBeInTheDocument()
@@ -54,7 +62,11 @@ describe("CurveEditor", () => {
 
   it("should not render curve with less than 2 points", () => {
     const { container } = render(
-      <CurveEditor points={[{ x: 128, y: 128, id: "single" }]} onPointsChange={mockOnPointsChange} />,
+      <CurveEditor
+        points={[{ x: 128, y: 128, id: "single" }]}
+        onPointsChange={mockOnPointsChange}
+        data-oid="1c1u_l_"
+      />,
     )
 
     const path = container.querySelector("path[stroke='white']")
@@ -62,7 +74,9 @@ describe("CurveEditor", () => {
   })
 
   it("should render all points", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="pgyd6hr" />,
+    )
 
     // Each point has 2 circles (hit area and visual)
     const circles = container.querySelectorAll("circle")
@@ -70,14 +84,18 @@ describe("CurveEditor", () => {
   })
 
   it("should apply custom color", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} color="red" />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} color="red" data-oid="0puyqhr" />,
+    )
 
     const path = container.querySelector("path[stroke='red']")
     expect(path).toBeInTheDocument()
   })
 
   it("should add new point on svg click", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="drujo-n" />,
+    )
 
     const svg = container.querySelector("svg")!
 
@@ -100,7 +118,9 @@ describe("CurveEditor", () => {
   })
 
   it("should not add point when clicking on existing point", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid=":mj6-27" />,
+    )
 
     const circle = container.querySelector("circle[r='12']")!
     fireEvent.click(circle)
@@ -109,7 +129,9 @@ describe("CurveEditor", () => {
   })
 
   it("should drag point", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="zvv8zn5" />,
+    )
 
     const svg = container.querySelector("svg")!
     const hitArea = container.querySelector("circle[r='12']")!
@@ -151,7 +173,9 @@ describe("CurveEditor", () => {
       { x: 256, y: 0, id: "end" },
     ]
 
-    const { container } = render(<CurveEditor points={threePoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={threePoints} onPointsChange={mockOnPointsChange} data-oid="gsauh6w" />,
+    )
 
     const middlePointHitArea = container.querySelectorAll("circle[r='12']")[1]
     fireEvent.doubleClick(middlePointHitArea)
@@ -160,7 +184,9 @@ describe("CurveEditor", () => {
   })
 
   it("should not delete point if only 2 points remain", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="we-q2ip" />,
+    )
 
     const hitArea = container.querySelector("circle[r='12']")!
     fireEvent.doubleClick(hitArea)
@@ -169,7 +195,9 @@ describe("CurveEditor", () => {
   })
 
   it("should show hover state on point", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="hiytng9" />,
+    )
 
     const hitArea = container.querySelector("circle[r='12']")!
     const visualPoint = container.querySelector("circle[fill='white']")!
@@ -184,7 +212,9 @@ describe("CurveEditor", () => {
   })
 
   it("should show drag state hint", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="eko:b-j" />,
+    )
 
     expect(screen.getByText("Click to add • Double-click to remove")).toBeInTheDocument()
 
@@ -195,7 +225,9 @@ describe("CurveEditor", () => {
   })
 
   it("should handle mouse leave during drag", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="x4awl0l" />,
+    )
 
     const svg = container.querySelector("svg")!
     const hitArea = container.querySelector("circle[r='12']")!
@@ -233,7 +265,9 @@ describe("CurveEditor", () => {
       { x: 128, y: 128, id: "middle" },
     ]
 
-    const { container } = render(<CurveEditor points={unsortedPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={unsortedPoints} onPointsChange={mockOnPointsChange} data-oid="w55q0v6" />,
+    )
 
     const path = container.querySelector("path[stroke='white']")!
     const d = path.getAttribute("d")!
@@ -243,7 +277,9 @@ describe("CurveEditor", () => {
   })
 
   it("should clamp coordinates within bounds", () => {
-    const { container } = render(<CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(
+      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} data-oid="tq_e1cz" />,
+    )
 
     const svg = container.querySelector("svg")!
     const hitArea = container.querySelector("circle[r='12']")!
@@ -274,7 +310,12 @@ describe("CurveEditor", () => {
 
   it("should apply custom className", () => {
     const { container } = render(
-      <CurveEditor points={defaultPoints} onPointsChange={mockOnPointsChange} className="custom-class" />,
+      <CurveEditor
+        points={defaultPoints}
+        onPointsChange={mockOnPointsChange}
+        className="custom-class"
+        data-oid="v1y08eq"
+      />,
     )
 
     const wrapper = container.firstChild as HTMLElement
@@ -282,7 +323,7 @@ describe("CurveEditor", () => {
   })
 
   it("should handle empty points array", () => {
-    const { container } = render(<CurveEditor points={[]} onPointsChange={mockOnPointsChange} />)
+    const { container } = render(<CurveEditor points={[]} onPointsChange={mockOnPointsChange} data-oid="c9pxe6s" />)
 
     expect(container.querySelector("svg")).toBeInTheDocument()
     // Should not have curve path (with strokeWidth="2")

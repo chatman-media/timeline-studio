@@ -199,7 +199,7 @@ export function YoloGraphOverlay({
   const tooltipData = hoverTime !== null ? getDataAtTime(hoverTime) : null
 
   return (
-    <div className="relative">
+    <div className="relative" data-oid="i-h0m2b">
       <canvas
         ref={canvasRef}
         width={width}
@@ -215,6 +215,7 @@ export function YoloGraphOverlay({
           setHoverTime(null)
         }}
         style={{ width, height }}
+        data-oid="5:un4nb"
       />
 
       {/* Tooltip */}
@@ -225,27 +226,30 @@ export function YoloGraphOverlay({
             left: Math.min(width - 120, Math.max(0, (hoverTime / maxTime) * width - 60)),
             top: -40,
           }}
+          data-oid="cpm2:59"
         >
-          <div>
+          <div data-oid=":mxg-8p">
             {t("Время")}: {hoverTime.toFixed(1)}s
           </div>
-          <div>
+          <div data-oid="_k4kqyj">
             {t("Обнаружений")}: {tooltipData.detectionCount}
           </div>
         </div>
       )}
 
       {/* Легенда */}
-      <div className="mt-2 flex items-center gap-4 text-xs text-gray-600">
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-0.5 bg-green-500" />
-          <span>{t("Количество обнаружений")}</span>
+      <div className="mt-2 flex items-center gap-4 text-xs text-gray-600" data-oid="ou9nmw9">
+        <div className="flex items-center gap-1" data-oid="vn:vpzs">
+          <div className="w-3 h-0.5 bg-green-500" data-oid="c88htuv" />
+          <span data-oid="is5u12h">{t("Количество обнаружений")}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-0.5 bg-red-500" />
-          <span>{t("Текущее время")}</span>
+        <div className="flex items-center gap-1" data-oid="rxb:yz:">
+          <div className="w-3 h-0.5 bg-red-500" data-oid="mi.-wsl" />
+          <span data-oid="8mlsasr">{t("Текущее время")}</span>
         </div>
-        <div className="text-gray-500">{t("Кликните для перехода к времени")}</div>
+        <div className="text-gray-500" data-oid="t_vcasa">
+          {t("Кликните для перехода к времени")}
+        </div>
       </div>
     </div>
   )

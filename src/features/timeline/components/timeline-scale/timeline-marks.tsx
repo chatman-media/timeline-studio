@@ -101,6 +101,7 @@ export function TimelineMarks({
           markType={markType}
           showValue={showValue}
           isFirstMark={timestamp === Math.ceil(startTime / level1Step) * level1Step}
+          data-oid="w93iltm"
         />,
       )
     }
@@ -109,13 +110,14 @@ export function TimelineMarks({
   }, [startTime, endTime, duration, timeStep, subStep, calculatePosition, componentId, sectionId]) // Пересчитываем только при изменении этих зависимостей
 
   return (
-    <div className="flex">
+    <div className="flex" data-oid="tkq51q2">
       {/* Удалена левая панель */}
       <div
         className={`relative h-8 ${isActive ? "" : "bg-muted/50"}`}
         style={{
           width: "100%",
         }}
+        data-oid="3-vktyx"
       >
         {marks}
       </div>

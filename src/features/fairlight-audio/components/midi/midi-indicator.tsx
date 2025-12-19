@@ -31,9 +31,15 @@ export function MidiIndicator() {
   }, [isActive, lastActivity])
 
   return (
-    <div className="flex items-center gap-2">
-      <Activity className={`w-4 h-4 transition-colors ${isActive ? "text-green-400" : "text-zinc-600"}`} />
-      <span className="text-xs text-zinc-500">MIDI</span>
+    <div className="flex items-center gap-2" data-oid="9nzf16j">
+      <Activity
+        className={`w-4 h-4 transition-colors ${isActive ? "text-green-400" : "text-zinc-600"}`}
+        data-oid="fi873:c"
+      />
+
+      <span className="text-xs text-zinc-500" data-oid="yn_k_ma">
+        MIDI
+      </span>
     </div>
   )
 }

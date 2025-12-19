@@ -31,10 +31,11 @@ describe("WidgetDock", () => {
           zIndex: 1,
         },
       ],
+
       maximizeWidget: mockMaximizeWidget,
     } as any)
 
-    const { container } = render(<WidgetDock />)
+    const { container } = render(<WidgetDock data-oid="gnfp2jn" />)
     expect(container.firstChild).toBeNull()
   })
 
@@ -58,10 +59,11 @@ describe("WidgetDock", () => {
           zIndex: 2,
         },
       ],
+
       maximizeWidget: mockMaximizeWidget,
     } as any)
 
-    render(<WidgetDock />)
+    render(<WidgetDock data-oid="fvrj2_0" />)
 
     expect(screen.getByText("Minimized:")).toBeInTheDocument()
     expect(screen.getByText("timeline")).toBeInTheDocument()
@@ -81,10 +83,11 @@ describe("WidgetDock", () => {
           zIndex: 1,
         },
       ],
+
       maximizeWidget: mockMaximizeWidget,
     } as any)
 
-    render(<WidgetDock />)
+    render(<WidgetDock data-oid="9c.nlor" />)
 
     const timelineButton = screen.getByTitle("Restore timeline")
     await user.click(timelineButton)
@@ -120,10 +123,11 @@ describe("WidgetDock", () => {
           zIndex: 3,
         },
       ],
+
       maximizeWidget: mockMaximizeWidget,
     } as any)
 
-    render(<WidgetDock />)
+    render(<WidgetDock data-oid="pdwj1me" />)
 
     expect(screen.getByText("timeline")).toBeInTheDocument()
     expect(screen.queryByText("player")).not.toBeInTheDocument()
@@ -142,10 +146,11 @@ describe("WidgetDock", () => {
           zIndex: 1,
         },
       ],
+
       maximizeWidget: mockMaximizeWidget,
     } as any)
 
-    render(<WidgetDock />)
+    render(<WidgetDock data-oid="h.7wy0d" />)
 
     const button = screen.getByTitle("Restore ai-chat")
     expect(button).toHaveAttribute("title", "Restore ai-chat")

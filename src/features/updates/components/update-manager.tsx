@@ -130,11 +130,16 @@ export function UpdateManager({
   }
 
   return (
-    <div className={getPositionClasses()}>
-      <AnimatePresence mode="wait">
+    <div className={getPositionClasses()} data-oid="iek1v2_">
+      <AnimatePresence mode="wait" data-oid="_1o0e9l">
         {isVisible && (
-          <motion.div {...getAnimationProps()}>
-            <UpdateNotification className={className} onClose={handleClose} showProgress={showProgress} />
+          <motion.div {...getAnimationProps()} data-oid="ko_kuwi">
+            <UpdateNotification
+              className={className}
+              onClose={handleClose}
+              showProgress={showProgress}
+              data-oid="6aiu:eo"
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -155,8 +160,8 @@ export function InlineUpdateManager({ className }: { className?: string }) {
   }
 
   return (
-    <div className={className}>
-      <UpdateNotification showProgress={true} />
+    <div className={className} data-oid="orpghs.">
+      <UpdateNotification showProgress={true} data-oid="1k4h949" />
     </div>
   )
 }

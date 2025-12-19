@@ -11,8 +11,8 @@ export const Tabs = ({ children, defaultValue, value, onValueChange, className }
   }
 
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab: handleValueChange }}>
-      <div className={className} data-default-value={defaultValue} data-value={activeTab}>
+    <TabsContext.Provider value={{ activeTab, setActiveTab: handleValueChange }} data-oid="m1bcrm-">
+      <div className={className} data-default-value={defaultValue} data-value={activeTab} data-oid="qbapk:5">
         {children}
       </div>
     </TabsContext.Provider>
@@ -30,6 +30,7 @@ export const TabsContent = ({ children, value, className }: any) => {
       role="tabpanel"
       aria-labelledby={`trigger-${value}`}
       data-state={isActive ? "active" : "inactive"}
+      data-oid="sus1pj0"
     >
       {children}
     </div>
@@ -37,7 +38,7 @@ export const TabsContent = ({ children, value, className }: any) => {
 }
 
 export const TabsList = ({ children, className }: any) => (
-  <div className={className} role="tablist">
+  <div className={className} role="tablist" data-oid=".5w2qau">
     {children}
   </div>
 )
@@ -55,6 +56,7 @@ export const TabsTrigger = ({ children, value }: any) => {
       onClick={() => context?.setActiveTab(value)}
       id={`trigger-${value}`}
       aria-controls={`content-${value}`}
+      data-oid="b_qmr41"
     >
       {children}
     </button>

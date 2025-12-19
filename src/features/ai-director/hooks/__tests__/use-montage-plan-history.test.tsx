@@ -39,6 +39,7 @@ describe("useMontagePlanHistory", () => {
         reason: "High quality",
       },
     ],
+
     transitions: [],
     metadata: {
       averageQuality: 0.8,

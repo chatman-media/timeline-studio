@@ -17,14 +17,14 @@ vi.mock("../../hooks/use-resources")
 // Мокаем UI компоненты
 vi.mock("@/components/ui/badge", () => ({
   Badge: ({ children, variant, className }: any) => (
-    <span data-testid="badge" data-variant={variant} className={className}>
+    <span data-testid="badge" data-variant={variant} className={className} data-oid="4p9yxiv">
       {children}
     </span>
   ),
 }))
 
 vi.mock("@/components/ui/skeleton", () => ({
-  Skeleton: ({ className }: any) => <div data-testid="skeleton" className={className} />,
+  Skeleton: ({ className }: any) => <div data-testid="skeleton" className={className} data-oid="-th9k6f" />,
 }))
 
 describe("BrowserLoadingIndicator", () => {
@@ -43,7 +43,7 @@ describe("BrowserLoadingIndicator", () => {
 
   describe("Видимость компонента", () => {
     it("не должен отображаться когда нет загрузки", () => {
-      const { container } = render(<BrowserLoadingIndicator />)
+      const { container } = render(<BrowserLoadingIndicator data-oid="swv7t00" />)
       expect(container.firstChild).toBeNull()
     })
 
@@ -53,7 +53,7 @@ describe("BrowserLoadingIndicator", () => {
         isLoading: true,
       })
 
-      render(<BrowserLoadingIndicator />)
+      render(<BrowserLoadingIndicator data-oid="i7algpm" />)
       expect(screen.getByText("Загрузка ресурсов...")).toBeInTheDocument()
     })
   })
@@ -65,7 +65,7 @@ describe("BrowserLoadingIndicator", () => {
         isLoading: true,
       })
 
-      render(<BrowserLoadingIndicator />)
+      render(<BrowserLoadingIndicator data-oid="ximcmxt" />)
 
       const spinner = screen.getByText("Загрузка ресурсов...").previousElementSibling
       expect(spinner).toHaveClass("animate-spin")
@@ -77,7 +77,7 @@ describe("BrowserLoadingIndicator", () => {
         isLoading: true,
       })
 
-      render(<BrowserLoadingIndicator />)
+      render(<BrowserLoadingIndicator data-oid="1c83qjf" />)
       expect(screen.getByText("Загрузка ресурсов...")).toBeInTheDocument()
     })
   })
@@ -85,7 +85,7 @@ describe("BrowserLoadingIndicator", () => {
 
 describe("BrowserResourcesSkeleton", () => {
   it("должен рендерить скелетон с правильной структурой", () => {
-    render(<BrowserResourcesSkeleton />)
+    render(<BrowserResourcesSkeleton data-oid="8ydf7t-" />)
 
     // Заголовок
     const skeletons = screen.getAllByTestId("skeleton")
@@ -100,7 +100,7 @@ describe("BrowserResourcesSkeleton", () => {
   })
 
   it("должен рендерить 12 карточек", () => {
-    render(<BrowserResourcesSkeleton />)
+    render(<BrowserResourcesSkeleton data-oid="whpuy9q" />)
 
     // Каждая карточка содержит 3 скелетона
     const skeletons = screen.getAllByTestId("skeleton")
@@ -146,7 +146,7 @@ describe("BrowserTabLoadingBadge", () => {
   })
 
   it("не должен отображаться когда нет ресурсов и загрузки", () => {
-    const { container } = render(<BrowserTabLoadingBadge resourceType="effect" />)
+    const { container } = render(<BrowserTabLoadingBadge resourceType="effect" data-oid="13lxldl" />)
     expect(container.firstChild).toBeNull()
   })
 
@@ -173,7 +173,7 @@ describe("BrowserTabLoadingBadge", () => {
       memoryUsage: 0,
     })
 
-    render(<BrowserTabLoadingBadge resourceType="effect" />)
+    render(<BrowserTabLoadingBadge resourceType="effect" data-oid="d45jiue" />)
     expect(screen.getByText("25")).toBeInTheDocument()
   })
 
@@ -183,7 +183,7 @@ describe("BrowserTabLoadingBadge", () => {
       isLoading: true,
     })
 
-    render(<BrowserTabLoadingBadge resourceType="effect" />)
+    render(<BrowserTabLoadingBadge resourceType="effect" data-oid="erqmk1f" />)
 
     const badge = screen.getByTestId("badge")
     expect(badge).toHaveAttribute("data-variant", "secondary")
@@ -216,7 +216,7 @@ describe("BrowserTabLoadingBadge", () => {
     })
 
     // Без загрузки
-    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" />)
+    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" data-oid="t_fvh8l" />)
     expect(screen.getByTestId("badge")).toHaveAttribute("data-variant", "outline")
 
     // С загрузкой
@@ -224,7 +224,7 @@ describe("BrowserTabLoadingBadge", () => {
       ...mockLoadingState,
       isLoading: true,
     })
-    rerender(<BrowserTabLoadingBadge resourceType="effect" />)
+    rerender(<BrowserTabLoadingBadge resourceType="effect" data-oid="9p_akrr" />)
     expect(screen.getByTestId("badge")).toHaveAttribute("data-variant", "secondary")
   })
 
@@ -251,13 +251,13 @@ describe("BrowserTabLoadingBadge", () => {
       memoryUsage: 0,
     })
 
-    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" />)
+    const { rerender } = render(<BrowserTabLoadingBadge resourceType="effect" data-oid="xos39t6" />)
     expect(screen.getByText("20")).toBeInTheDocument()
 
-    rerender(<BrowserTabLoadingBadge resourceType="filter" />)
+    rerender(<BrowserTabLoadingBadge resourceType="filter" data-oid="396b1sx" />)
     expect(screen.getByText("15")).toBeInTheDocument()
 
-    rerender(<BrowserTabLoadingBadge resourceType="transition" />)
+    rerender(<BrowserTabLoadingBadge resourceType="transition" data-oid="h25du-." />)
     expect(screen.getByText("25")).toBeInTheDocument()
   })
 })

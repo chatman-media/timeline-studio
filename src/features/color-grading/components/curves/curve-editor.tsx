@@ -124,7 +124,7 @@ export function CurveEditor({ points = [], onPointsChange, color = "white", clas
   const curvePath = generateBezierPath(points)
 
   return (
-    <div className={cn("relative bg-gray-900 rounded border border-gray-600", className)}>
+    <div className={cn("relative bg-gray-900 rounded border border-gray-600", className)} data-oid="gyxy_5n">
       <svg
         ref={svgRef}
         className="w-full h-full cursor-crosshair"
@@ -133,27 +133,38 @@ export function CurveEditor({ points = [], onPointsChange, color = "white", clas
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onClick={handleSvgClick}
+        data-oid="tf956li"
       >
         {/* Сетка */}
-        <defs>
-          <pattern id={gridPatternId} width="32" height="32" patternUnits="userSpaceOnUse">
-            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="gray" strokeWidth="0.5" opacity="0.3" />
+        <defs data-oid="vrd_eq5">
+          <pattern id={gridPatternId} width="32" height="32" patternUnits="userSpaceOnUse" data-oid="jrudn4f">
+            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="gray" strokeWidth="0.5" opacity="0.3" data-oid="h0ihj96" />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill={`url(#${gridPatternId})`} />
+        <rect width="100%" height="100%" fill={`url(#${gridPatternId})`} data-oid="4ild4f-" />
 
         {/* Диагональная референсная линия */}
-        <line x1="0" y1={height} x2={width} y2="0" stroke="gray" strokeWidth="1" opacity="0.2" strokeDasharray="4 2" />
+        <line
+          x1="0"
+          y1={height}
+          x2={width}
+          y2="0"
+          stroke="gray"
+          strokeWidth="1"
+          opacity="0.2"
+          strokeDasharray="4 2"
+          data-oid="os85exu"
+        />
 
         {/* Кривая */}
         {points && points.length >= 2 && (
-          <path d={curvePath} stroke={color} strokeWidth="2" fill="none" pointerEvents="none" />
+          <path d={curvePath} stroke={color} strokeWidth="2" fill="none" pointerEvents="none" data-oid="4h61i5x" />
         )}
 
         {/* Интерактивные точки */}
         {points &&
           points.map((point) => (
-            <g key={point.id}>
+            <g key={point.id} data-oid="io1e25d">
               {/* Увеличенная область клика */}
               <circle
                 cx={point.x}
@@ -165,6 +176,7 @@ export function CurveEditor({ points = [], onPointsChange, color = "white", clas
                 onDoubleClick={() => handlePointDoubleClick(point.id)}
                 onMouseEnter={() => setHoveredPoint(point.id)}
                 onMouseLeave={() => setHoveredPoint(null)}
+                data-oid="3baicob"
               />
 
               {/* Визуальная точка */}
@@ -176,13 +188,14 @@ export function CurveEditor({ points = [], onPointsChange, color = "white", clas
                 stroke={color}
                 strokeWidth="2"
                 className="pointer-events-none transition-all"
+                data-oid="2h8b_11"
               />
             </g>
           ))}
       </svg>
 
       {/* Подсказка */}
-      <div className="absolute bottom-2 right-2 text-xs text-gray-400 pointer-events-none">
+      <div className="absolute bottom-2 right-2 text-xs text-gray-400 pointer-events-none" data-oid="86ojl3z">
         {isDragging ? "Drag to move" : "Click to add • Double-click to remove"}
       </div>
     </div>

@@ -24,7 +24,7 @@ const mockFile = {
 
 // Wrapper для тестов
 function TestWrapper({ children }: { children: React.ReactNode }) {
-  return <BrowserProvider>{children}</BrowserProvider>
+  return <BrowserProvider data-oid="wit-hh4">{children}</BrowserProvider>
 }
 
 describe("useFileSelection", () => {

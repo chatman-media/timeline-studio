@@ -57,7 +57,7 @@ vi.mock("../../services/media-metadata-service", () => ({
 
 describe("useMediaMetadata", () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MediaManagementProvider>{children}</MediaManagementProvider>
+    <MediaManagementProvider data-oid=":f3ks-4">{children}</MediaManagementProvider>
   )
 
   beforeEach(() => {

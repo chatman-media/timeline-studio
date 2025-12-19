@@ -116,7 +116,12 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
 
     for (let time = startTime; time <= endTime; time += step) {
       lines.push(
-        <div key={time} className="absolute top-0 bottom-0 w-px bg-border/30" style={{ left: time * timeScale }} />,
+        <div
+          key={time}
+          className="absolute top-0 bottom-0 w-px bg-border/30"
+          style={{ left: time * timeScale }}
+          data-oid="x:x2132"
+        />,
       )
     }
     return lines
@@ -164,12 +169,18 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
         dragState.isDragging && isValidTarget && "border-dashed border-2",
         dragState.isDragging && !isValidTarget && "opacity-50",
       )}
+      data-oid="d6pxmdq"
     >
       {/* Drop zone visual feedback */}
       {showDropFeedback && (
-        <div className="absolute inset-0 bg-primary/5 border-2 border-primary border-dashed rounded-md pointer-events-none z-30">
-          <div className="flex items-center justify-center h-full">
-            <span className="text-primary font-medium">Drop here</span>
+        <div
+          className="absolute inset-0 bg-primary/5 border-2 border-primary border-dashed rounded-md pointer-events-none z-30"
+          data-oid="qkdiq7y"
+        >
+          <div className="flex items-center justify-center h-full" data-oid="._tmoy0">
+            <span className="text-primary font-medium" data-oid="cu.ypg.">
+              Drop here
+            </span>
           </div>
         </div>
       )}
@@ -179,23 +190,27 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
         <div
           className="absolute top-0 bottom-0 w-0.5 bg-primary z-25 pointer-events-none"
           style={{ left: dragState.dropPosition.startTime * timeScale }}
+          data-oid="xzgsk8u"
         />
       )}
 
       {/* Оптимизированная сетка - только видимые линии */}
-      <div className="absolute inset-0 pointer-events-none">{gridLines}</div>
+      <div className="absolute inset-0 pointer-events-none" data-oid="fi-tghb">
+        {gridLines}
+      </div>
 
       {/* Playhead */}
       <div
         className="absolute top-0 bottom-0 w-0.5 bg-primary z-20 pointer-events-none"
         style={{ left: currentTime * timeScale }}
+        data-oid="c4g-.a5"
       />
 
       {/* Виртуализированные клипы */}
-      <div className="relative h-full">
+      <div className="relative h-full" data-oid="ivnr10u">
         {/* Отображаем только видимые клипы */}
         {visibleClipsWithGroups.map(({ clip, left, width, isFullyVisible }) => (
-          <div key={clip.id} className="absolute" style={{ left: `${left}px`, width: `${width}px` }}>
+          <div key={clip.id} className="absolute" style={{ left: `${left}px`, width: `${width}px` }} data-oid="vg37o2z">
             <OptimizedClip
               clip={clip}
               track={track}
@@ -206,6 +221,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
               renderDetails={shouldRenderDetails(clip)}
               previewQuality={getPreviewQuality(clip)}
               isFullyVisible={isFullyVisible}
+              data-oid="2g2zb.z"
             />
           </div>
         ))}
@@ -224,7 +240,12 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
           }
 
           return (
-            <div key={group.id} className="absolute" style={{ left: `${left}px`, width: `${width}px` }}>
+            <div
+              key={group.id}
+              className="absolute"
+              style={{ left: `${left}px`, width: `${width}px` }}
+              data-oid="po5njte"
+            >
               <CollapsedGroup
                 group={group}
                 clips={clips}
@@ -232,6 +253,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
                 onToggleCollapse={() => toggleCollapse(group.id)}
                 onSelect={() => selectMultiple({ clipIds: clips.map((c) => c.id) })}
                 isSelected={clips.some((c) => c.isSelected)}
+                data-oid="4:zg6.9"
               />
             </div>
           )
@@ -271,12 +293,18 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
                     timeScale={timeScale}
                     trackHeight={track.height}
                     onUpdate={(updates) => {
-                      logger.info("Updating transition:", { transitionId: outTransition.id, updates })
+                      logger.info("Updating transition:", {
+                        transitionId: outTransition.id,
+                        updates,
+                      })
                     }}
                     onDelete={async () => {
-                      logger.info("Deleting transition:", { transitionId: outTransition.id })
+                      logger.info("Deleting transition:", {
+                        transitionId: outTransition.id,
+                      })
                       await saveProject()
                     }}
+                    data-oid="kr:xt4u"
                   />
                 )
               }
@@ -291,6 +319,7 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
                 trackId={track.id}
                 timeScale={timeScale}
                 onDrop={(transition) => handleTransitionDrop(leftClip.id, rightClip.id, transition)}
+                data-oid="s3awn6w"
               />
             )
           })}
@@ -303,30 +332,40 @@ export const VirtualizedTrackContent = memo(function VirtualizedTrackContent({
           }}
           timeScale={timeScale}
           onRollStart={(leftClipId, rightClipId, mouseX) => {
-            logger.info("Roll edit started:", { leftClipId, rightClipId, mouseX })
+            logger.info("Roll edit started:", {
+              leftClipId,
+              rightClipId,
+              mouseX,
+            })
           }}
+          data-oid="i.d0y9i"
         />
       </div>
 
       {/* Индикатор коллизий */}
       {collisions.length > 0 && (
-        <div className="absolute top-1 right-1 z-30">
+        <div className="absolute top-1 right-1 z-30" data-oid="yls01ql">
           <TransitionCollisionIndicator
             collisions={collisions}
             compact
             onResolve={(collision) => {
               logger.info("Resolve collision:", { collision })
             }}
+            data-oid="kv1oner"
           />
         </div>
       )}
 
       {/* Empty state */}
       {track.clips.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-          <div className="text-center">
-            <div className="text-sm">Перетащите медиафайлы сюда</div>
-            <div className="text-xs mt-1">или используйте Browser</div>
+        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground" data-oid="xvhzchm">
+          <div className="text-center" data-oid="thqq7vo">
+            <div className="text-sm" data-oid="jufxa6_">
+              Перетащите медиафайлы сюда
+            </div>
+            <div className="text-xs mt-1" data-oid="k1wv:.-">
+              или используйте Browser
+            </div>
           </div>
         </div>
       )}

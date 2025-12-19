@@ -129,6 +129,7 @@ export const TransitionDropZone = memo(function TransitionDropZone({
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      data-oid="m6vzmwb"
     >
       {/* Визуальный индикатор */}
       <div
@@ -142,6 +143,7 @@ export const TransitionDropZone = memo(function TransitionDropZone({
               : "border-transparent",
           hasExistingTransition && "opacity-50",
         )}
+        data-oid=":c64i-5"
       >
         {/* Центральная линия */}
         <div
@@ -150,17 +152,19 @@ export const TransitionDropZone = memo(function TransitionDropZone({
             "transition-all",
             isOver ? "bg-primary" : isHovered ? "bg-muted-foreground/50" : "bg-transparent",
           )}
+          data-oid="r5p3x-_"
         />
 
         {/* Иконка при наведении */}
         {(isOver || isHovered) && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center" data-oid="s_q_.x4">
             <div
               className={cn(
                 "w-6 h-6 rounded-full flex items-center justify-center",
                 "text-xs font-bold",
                 isOver ? "bg-primary text-primary-foreground" : "bg-muted-foreground/20 text-muted-foreground",
               )}
+              data-oid="qrri1vi"
             >
               +
             </div>
@@ -170,8 +174,8 @@ export const TransitionDropZone = memo(function TransitionDropZone({
 
       {/* Подсказка при наведении */}
       {isOver && (
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-          <div className="bg-popover text-popover-foreground text-xs px-2 py-1 rounded shadow-md">
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap" data-oid="fcgxc:y">
+          <div className="bg-popover text-popover-foreground text-xs px-2 py-1 rounded shadow-md" data-oid="g21vqlb">
             Отпустите для добавления перехода
           </div>
         </div>

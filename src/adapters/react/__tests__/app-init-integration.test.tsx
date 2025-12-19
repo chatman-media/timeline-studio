@@ -43,12 +43,16 @@ describe("AppInitProvider Integration", () => {
 
       function TestComponent() {
         initState = useAppInit()
-        return <div data-testid="ready">Ready</div>
+        return (
+          <div data-testid="ready" data-oid="ttutxnl">
+            Ready
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="l8cmdi8">
+          <TestComponent data-oid="2ihf9sq" />
         </AppInitProvider>,
       )
 
@@ -77,12 +81,16 @@ describe("AppInitProvider Integration", () => {
       function TestComponent() {
         const { platform } = useAppInit()
         platformService = platform
-        return <div data-testid="content">Content</div>
+        return (
+          <div data-testid="content" data-oid="xpx2wj8">
+            Content
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="8cp8h:_">
+          <TestComponent data-oid="zwm82j3" />
         </AppInitProvider>,
       )
 
@@ -104,12 +112,16 @@ describe("AppInitProvider Integration", () => {
       function TestComponent() {
         const { storage } = useAppInit()
         storageService = storage
-        return <div data-testid="content">Content</div>
+        return (
+          <div data-testid="content" data-oid=":-zp4mo">
+            Content
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="hc:52xk">
+          <TestComponent data-oid="v4m6:-r" />
         </AppInitProvider>,
       )
 
@@ -133,18 +145,26 @@ describe("AppInitProvider Integration", () => {
       let initState: any = null
 
       function NestedProvider({ children }: { children: React.ReactNode }) {
-        return <div data-testid="nested-provider">{children}</div>
+        return (
+          <div data-testid="nested-provider" data-oid="ngduljg">
+            {children}
+          </div>
+        )
       }
 
       function TestComponent() {
         initState = useAppInit()
-        return <div data-testid="test-component">Test</div>
+        return (
+          <div data-testid="test-component" data-oid="xf4j1dz">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <NestedProvider>
-            <TestComponent />
+        <AppInitProvider data-oid="i8cyb-j">
+          <NestedProvider data-oid="6zatwa5">
+            <TestComponent data-oid="zc6:qnz" />
           </NestedProvider>
         </AppInitProvider>,
       )
@@ -166,8 +186,8 @@ describe("AppInitProvider Integration", () => {
         const { initialized } = useAppInit()
         results[0] = initialized
         return (
-          <div data-testid="level1">
-            <Level2 />
+          <div data-testid="level1" data-oid="eq-.48k">
+            <Level2 data-oid="tho:gsc" />
           </div>
         )
       }
@@ -176,8 +196,8 @@ describe("AppInitProvider Integration", () => {
         const { initialized } = useAppInit()
         results[1] = initialized
         return (
-          <div data-testid="level2">
-            <Level3 />
+          <div data-testid="level2" data-oid="tgzrl-.">
+            <Level3 data-oid="sgccah." />
           </div>
         )
       }
@@ -185,12 +205,16 @@ describe("AppInitProvider Integration", () => {
       function Level3() {
         const { initialized } = useAppInit()
         results[2] = initialized
-        return <div data-testid="level3">Deep</div>
+        return (
+          <div data-testid="level3" data-oid="gxwyakl">
+            Deep
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <Level1 />
+        <AppInitProvider data-oid="zt_hql2">
+          <Level1 data-oid="3v-rmt5" />
         </AppInitProvider>,
       )
 
@@ -212,26 +236,38 @@ describe("AppInitProvider Integration", () => {
       function Component1() {
         const state = useAppInit()
         states[0] = state
-        return <div data-testid="comp1">Component 1</div>
+        return (
+          <div data-testid="comp1" data-oid="2i63dof">
+            Component 1
+          </div>
+        )
       }
 
       function Component2() {
         const state = useAppInit()
         states[1] = state
-        return <div data-testid="comp2">Component 2</div>
+        return (
+          <div data-testid="comp2" data-oid="2w59zvq">
+            Component 2
+          </div>
+        )
       }
 
       function Component3() {
         const state = useAppInit()
         states[2] = state
-        return <div data-testid="comp3">Component 3</div>
+        return (
+          <div data-testid="comp3" data-oid="08.:u4l">
+            Component 3
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <Component1 />
-          <Component2 />
-          <Component3 />
+        <AppInitProvider data-oid=".84zwi9">
+          <Component1 data-oid="aqq5oq5" />
+          <Component2 data-oid="1n_z0ei" />
+          <Component3 data-oid="z2xa.4w" />
         </AppInitProvider>,
       )
 
@@ -261,12 +297,16 @@ describe("AppInitProvider Integration", () => {
           convertedUrl = platform.convertFileSrc("/test/path.mp4")
         }
 
-        return <div data-testid="test">Test</div>
+        return (
+          <div data-testid="test" data-oid="4-w-.5x">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="kq5pf5u">
+          <TestComponent data-oid="qq2wzvs" />
         </AppInitProvider>,
       )
 
@@ -290,12 +330,16 @@ describe("AppInitProvider Integration", () => {
           convertedUrl = platform.convertFileSrc("http://example.com/video.mp4")
         }
 
-        return <div data-testid="test">Test</div>
+        return (
+          <div data-testid="test" data-oid="p31v--n">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="legm1:m">
+          <TestComponent data-oid="l05asry" />
         </AppInitProvider>,
       )
 
@@ -325,12 +369,16 @@ describe("AppInitProvider Integration", () => {
           })
         }
 
-        return <div data-testid="test">Test</div>
+        return (
+          <div data-testid="test" data-oid="lrpq6vm">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="ez8i.10">
+          <TestComponent data-oid="2oq53q0" />
         </AppInitProvider>,
       )
 
@@ -359,12 +407,16 @@ describe("AppInitProvider Integration", () => {
             })
         }
 
-        return <div data-testid="test">Test</div>
+        return (
+          <div data-testid="test" data-oid="aj-1se5">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="pkt93l-">
+          <TestComponent data-oid="r0mgeok" />
         </AppInitProvider>,
       )
 
@@ -384,8 +436,10 @@ describe("AppInitProvider Integration", () => {
       vi.mocked(isDesktop).mockReturnValue(false)
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="-h.u-k0">
+          <div data-testid="content" data-oid="imz5fb7">
+            Content
+          </div>
         </AppInitProvider>,
       )
 

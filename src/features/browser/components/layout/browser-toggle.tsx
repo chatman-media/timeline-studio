@@ -19,8 +19,13 @@ export function BrowserToggle() {
       className={"transition-all duration-300 hover:bg-secondary h-7 w-7 cursor-pointer p-0"}
       onClick={toggleBrowserVisibility}
       title={isBrowserVisible ? t("browser.hide") : t("browser.show")}
+      data-oid="a-dg5wn"
     >
-      {isBrowserVisible ? <PanelLeftClose size={16} /> : <PanelLeftOpen size={16} />}
+      {isBrowserVisible ? (
+        <PanelLeftClose size={16} data-oid="javakya" />
+      ) : (
+        <PanelLeftOpen size={16} data-oid="w8w88av" />
+      )}
     </Button>
   )
 }

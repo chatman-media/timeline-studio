@@ -49,20 +49,20 @@ describe("TrackHeightAdjuster", () => {
 
   describe("Component rendering", () => {
     it("should render with correct test id", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="xg1qu:y" />)
 
       expect(screen.getByTestId("track-height-adjuster-test-track")).toBeInTheDocument()
     })
 
     it("should render with custom className", () => {
-      render(<TrackHeightAdjuster {...defaultProps} className="custom-class" />)
+      render(<TrackHeightAdjuster {...defaultProps} className="custom-class" data-oid="zw.o46." />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       expect(adjuster).toHaveClass("custom-class")
     })
 
     it("should have correct base styling classes", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="q2ipbyi" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       expect(adjuster).toHaveClass("absolute")
@@ -75,7 +75,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should render visual indicator element", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="hch:_69" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       const indicator = adjuster.querySelector(".bg-primary.opacity-0")
@@ -83,7 +83,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should render expanded capture area with title", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="h8b61vd" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       const captureArea = adjuster.querySelector("[title='Перетащите для изменения высоты трека']")
@@ -98,7 +98,7 @@ describe("TrackHeightAdjuster", () => {
 
   describe("Mouse interaction basics", () => {
     it("should handle mouseDown event", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="qu8-0.p" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -119,7 +119,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should add dragging class when mouseDown", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="7ug7b.i" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -131,7 +131,7 @@ describe("TrackHeightAdjuster", () => {
     it("should set up document event listeners on mouseDown", () => {
       const addEventListenerSpy = vi.spyOn(document, "addEventListener")
 
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="10pkrbp" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       fireEvent.mouseDown(adjuster, { clientY: 100 })
@@ -143,7 +143,7 @@ describe("TrackHeightAdjuster", () => {
 
   describe("Height calculation and constraints", () => {
     it("should calculate new height correctly with positive delta", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="7.74lcy" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -163,7 +163,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should calculate new height correctly with negative delta", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="wk6i6u:" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -183,7 +183,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should enforce minimum height constraint (40px)", () => {
-      render(<TrackHeightAdjuster {...defaultProps} currentHeight={50} />)
+      render(<TrackHeightAdjuster {...defaultProps} currentHeight={50} data-oid="cq8f0ls" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -203,7 +203,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should enforce maximum height constraint (300px)", () => {
-      render(<TrackHeightAdjuster {...defaultProps} currentHeight={250} />)
+      render(<TrackHeightAdjuster {...defaultProps} currentHeight={250} data-oid="gmawlun" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -223,7 +223,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should allow height exactly at minimum boundary", () => {
-      render(<TrackHeightAdjuster {...defaultProps} currentHeight={40} />)
+      render(<TrackHeightAdjuster {...defaultProps} currentHeight={40} data-oid="6yhqt41" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -242,7 +242,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should allow height exactly at maximum boundary", () => {
-      render(<TrackHeightAdjuster {...defaultProps} currentHeight={300} />)
+      render(<TrackHeightAdjuster {...defaultProps} currentHeight={300} data-oid="ewt6qd9" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -297,7 +297,7 @@ describe("TrackHeightAdjuster", () => {
     it("should cleanup event listeners on mouseUp", async () => {
       const removeEventListenerSpy = vi.spyOn(document, "removeEventListener")
 
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="nkse9oh" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -314,7 +314,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should remove dragging class on mouseUp", async () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="f70qjz-" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -331,7 +331,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should not call onHeightChange during mousemove if not dragging", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="cy8.jfb" />)
 
       // Имитируем движение мыши без предварительного mouseDown
       fireEvent(
@@ -345,7 +345,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should handle multiple drag sessions correctly", async () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="jx96h4c" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 
@@ -373,7 +373,7 @@ describe("TrackHeightAdjuster", () => {
 
   describe("Visual states and styling", () => {
     it("should show visual indicator with correct opacity classes when dragging", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="lq50wiw" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       const indicator = adjuster.querySelector(".bg-primary")
@@ -387,7 +387,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should have group hover effects in CSS classes", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="_n2hc2t" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       const indicator = adjuster.querySelector(".bg-primary")
@@ -400,7 +400,7 @@ describe("TrackHeightAdjuster", () => {
 
   describe("Props and configuration", () => {
     it("should work with different trackId", () => {
-      render(<TrackHeightAdjuster {...defaultProps} trackId="different-track" />)
+      render(<TrackHeightAdjuster {...defaultProps} trackId="different-track" data-oid="z4l.hmi" />)
 
       expect(screen.getByTestId("track-height-adjuster-different-track")).toBeInTheDocument()
 
@@ -410,7 +410,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should accept different initial heights as props", () => {
-      render(<TrackHeightAdjuster {...defaultProps} currentHeight={200} />)
+      render(<TrackHeightAdjuster {...defaultProps} currentHeight={200} data-oid="l2azqa-" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       expect(adjuster).toBeInTheDocument()
@@ -422,7 +422,7 @@ describe("TrackHeightAdjuster", () => {
 
     it("should pass correct trackId in component structure", () => {
       const customTrackId = "custom-track-123"
-      render(<TrackHeightAdjuster {...defaultProps} trackId={customTrackId} currentHeight={80} />)
+      render(<TrackHeightAdjuster {...defaultProps} trackId={customTrackId} currentHeight={80} data-oid="0p-rs0s" />)
 
       const adjuster = screen.getByTestId(`track-height-adjuster-${customTrackId}`)
       expect(adjuster).toBeInTheDocument()
@@ -436,7 +436,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should handle rapid mouse movements correctly", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="r_pcz1o" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       fireEvent.mouseDown(adjuster, { clientY: 100 })
@@ -453,7 +453,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should handle extreme mouse position values", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="96s998e" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       fireEvent.mouseDown(adjuster, { clientY: 100 })
@@ -468,7 +468,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should handle zero clientY values", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="8ni70n2" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       fireEvent.mouseDown(adjuster, { clientY: 0 })
@@ -478,7 +478,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should handle component unmount during drag", async () => {
-      const { unmount } = render(<TrackHeightAdjuster {...defaultProps} />)
+      const { unmount } = render(<TrackHeightAdjuster {...defaultProps} data-oid="i7l3k5b" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       fireEvent.mouseDown(adjuster, { clientY: 100 })
@@ -512,14 +512,14 @@ describe("TrackHeightAdjuster", () => {
 
   describe("Accessibility and UX", () => {
     it("should have correct cursor style", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="dltgb1u" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       expect(adjuster).toHaveClass("cursor-row-resize")
     })
 
     it("should have descriptive title on capture area", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="-1cis65" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
       const captureArea = adjuster.querySelector("[title]")
@@ -527,7 +527,7 @@ describe("TrackHeightAdjuster", () => {
     })
 
     it("should provide visual feedback during interaction", () => {
-      render(<TrackHeightAdjuster {...defaultProps} />)
+      render(<TrackHeightAdjuster {...defaultProps} data-oid="0-_y::6" />)
 
       const adjuster = screen.getByTestId("track-height-adjuster-test-track")
 

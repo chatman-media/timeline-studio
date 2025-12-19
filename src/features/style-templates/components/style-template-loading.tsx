@@ -27,9 +27,11 @@ export function StyleTemplateLoading({
   }
 
   return (
-    <div className={`flex flex-col items-center justify-center ${containerClasses[size]}`}>
-      <Loader2 className={`${sizeClasses[size]} animate-spin text-blue-500`} />
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{message}</p>
+    <div className={`flex flex-col items-center justify-center ${containerClasses[size]}`} data-oid="8rwlo0a">
+      <Loader2 className={`${sizeClasses[size]} animate-spin text-blue-500`} data-oid="wclalph" />
+      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400" data-oid="nl5b:i9">
+        {message}
+      </p>
     </div>
   )
 }
@@ -44,16 +46,17 @@ export function StyleTemplatePreviewSkeleton({ size }: { size: number }): React.
     <div
       className="animate-pulse overflow-hidden rounded-lg border border-gray-700 bg-gray-800"
       style={{ width: size, height: height + 80 }}
+      data-oid="92.clcm"
     >
       {/* Превью */}
-      <div className="bg-gray-700" style={{ width: size, height }} />
+      <div className="bg-gray-700" style={{ width: size, height }} data-oid="2xqs7dv" />
 
       {/* Информация */}
-      <div className="p-3">
-        <div className="mb-2 h-4 w-3/4 rounded bg-gray-700" />
-        <div className="flex justify-between">
-          <div className="h-3 w-1/3 rounded bg-gray-600" />
-          <div className="h-3 w-1/4 rounded bg-gray-600" />
+      <div className="p-3" data-oid="1vntb78">
+        <div className="mb-2 h-4 w-3/4 rounded bg-gray-700" data-oid="flen5kn" />
+        <div className="flex justify-between" data-oid=":o-::t3">
+          <div className="h-3 w-1/3 rounded bg-gray-600" data-oid="b42-ie9" />
+          <div className="h-3 w-1/4 rounded bg-gray-600" data-oid="x-bqk6:" />
         </div>
       </div>
     </div>
@@ -71,9 +74,12 @@ export function StyleTemplateListSkeleton({
   size?: number
 }): React.ReactElement {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div
+      className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      data-oid="ez5pcd2"
+    >
       {Array.from({ length: count }, (_, index) => (
-        <StyleTemplatePreviewSkeleton key={index} size={size} />
+        <StyleTemplatePreviewSkeleton key={index} size={size} data-oid="lbe-lnb" />
       ))}
     </div>
   )

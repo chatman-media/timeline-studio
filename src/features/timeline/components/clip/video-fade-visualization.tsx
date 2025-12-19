@@ -126,18 +126,19 @@ export const VideoFadeVisualization = memo(function VideoFadeVisualization({
       height={height}
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="none"
+      data-oid="i_69ma5"
     >
-      {fadeInPath && <path d={fadeInPath} fill="url(#fadeInGradient)" opacity={0.6} />}
-      {fadeOutPath && <path d={fadeOutPath} fill="url(#fadeOutGradient)" opacity={0.6} />}
+      {fadeInPath && <path d={fadeInPath} fill="url(#fadeInGradient)" opacity={0.6} data-oid="_kijfjq" />}
+      {fadeOutPath && <path d={fadeOutPath} fill="url(#fadeOutGradient)" opacity={0.6} data-oid="x7892qx" />}
 
-      <defs>
-        <linearGradient id="fadeInGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="black" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="black" stopOpacity="0" />
+      <defs data-oid="s684hvt">
+        <linearGradient id="fadeInGradient" x1="0%" y1="0%" x2="100%" y2="0%" data-oid="_tk93lq">
+          <stop offset="0%" stopColor="black" stopOpacity="0.8" data-oid="4k3_2q2" />
+          <stop offset="100%" stopColor="black" stopOpacity="0" data-oid="vf5g9wy" />
         </linearGradient>
-        <linearGradient id="fadeOutGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="black" stopOpacity="0" />
-          <stop offset="100%" stopColor="black" stopOpacity="0.8" />
+        <linearGradient id="fadeOutGradient" x1="0%" y1="0%" x2="100%" y2="0%" data-oid="tmfg3x-">
+          <stop offset="0%" stopColor="black" stopOpacity="0" data-oid="cv_oj3h" />
+          <stop offset="100%" stopColor="black" stopOpacity="0.8" data-oid="-ky4:i5" />
         </linearGradient>
       </defs>
     </svg>

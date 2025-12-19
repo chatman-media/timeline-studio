@@ -1,12 +1,12 @@
-import type React from "react"
-import { AnimatedSection } from "../components/AnimatedSection"
-import { Footer } from "../components/Footer"
-import { Navigation } from "../components/Navigation"
-import { SEO } from "../components/SEO"
-import { useTranslation } from "../hooks/useTranslation"
+import type React from "react";
+import { AnimatedSection } from "../components/AnimatedSection";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { SEO } from "../components/SEO";
+import { useTranslation } from "../hooks/useTranslation";
 
 const FAQ: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const faqs = [
     {
@@ -41,56 +41,90 @@ const FAQ: React.FC = () => {
       question: t("faq.questions.contribute.question"),
       answer: t("faq.questions.contribute.answer"),
     },
-  ]
+  ];
 
   return (
-    <div className="min-h-screen bg-[#12192C] flex flex-col">
+    <div className="min-h-screen bg-[#12192C] flex flex-col" data-oid=".h:r10d">
       <SEO
         title="FAQ"
         description="Frequently asked questions about Timeline Studio. Learn about features, pricing, supported formats, and how to get started."
         url="/faq"
+        data-oid="sirisub"
       />
-      <Navigation />
 
-      <main className="flex-1">
-        <AnimatedSection animation="fadeIn">
-          <section className="py-20 bg-[#12192C]">
-            <div className="container mx-auto px-4">
-              <div className="max-w-4xl mx-auto">
-                <h1 className="page-title text-center mt-8 mb-16">
-                  <span className="text-gradient">{t("faq.title")}</span>
+      <Navigation data-oid="-g:fqn:" />
+
+      <main className="flex-1" data-oid="jnnz7gi">
+        <AnimatedSection animation="fadeIn" data-oid="jpbntu0">
+          <section className="py-20 bg-[#12192C]" data-oid="b29wd-7">
+            <div className="container mx-auto px-4" data-oid="wze6l:5">
+              <div className="max-w-4xl mx-auto" data-oid=":62_fm2">
+                <h1
+                  className="page-title text-center mt-8 mb-16"
+                  data-oid="sp1m69-"
+                >
+                  <span className="text-gradient" data-oid="lciz:i1">
+                    {t("faq.title")}
+                  </span>
                 </h1>
 
-                <div className="space-y-6">
+                <div className="space-y-6" data-oid="w73p0fr">
                   {faqs.map((faq, index) => (
-                    <AnimatedSection key={index} animation="fadeUp" delay={index * 0.1}>
-                      <div className="glass-card">
-                        <div className="glass-card-bg" />
-                        <div className="glass-card-overlay" />
-                        <div className="glass-card-border">
-                          <div className="glass-card-inner" />
+                    <AnimatedSection
+                      key={index}
+                      animation="fadeUp"
+                      delay={index * 0.1}
+                      data-oid="lihox7b"
+                    >
+                      <div className="glass-card" data-oid="lj1-bnk">
+                        <div className="glass-card-bg" data-oid="duw6br1" />
+                        <div
+                          className="glass-card-overlay"
+                          data-oid="wahkq._"
+                        />
+                        <div className="glass-card-border" data-oid="rzxh69:">
+                          <div
+                            className="glass-card-inner"
+                            data-oid="9vohmzn"
+                          />
                         </div>
-                        <div className="glass-card-content">
-                          <div className="card-title">{faq.question}</div>
-                          <p className="card-description">{faq.answer}</p>
+                        <div className="glass-card-content" data-oid="ymypk0p">
+                          <div className="card-title" data-oid="3vbrsu8">
+                            {faq.question}
+                          </div>
+                          <p className="card-description" data-oid="7cmwnpm">
+                            {faq.answer}
+                          </p>
                         </div>
                       </div>
                     </AnimatedSection>
                   ))}
                 </div>
 
-                <AnimatedSection animation="fadeUp" delay={0.5}>
-                  <div className="mt-16 text-center">
-                    <h2 className="section-title mb-4">
-                      <span className="text-gradient">{t("faq.stillQuestions.title")}</span>
+                <AnimatedSection
+                  animation="fadeUp"
+                  delay={0.5}
+                  data-oid="kttyrwa"
+                >
+                  <div className="mt-16 text-center" data-oid="_enngub">
+                    <h2 className="section-title mb-4" data-oid="purayc:">
+                      <span className="text-gradient" data-oid="xdkwenk">
+                        {t("faq.stillQuestions.title")}
+                      </span>
                     </h2>
-                    <p className="text-gray-300 mb-8">{t("faq.stillQuestions.description")}</p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <p className="text-gray-300 mb-8" data-oid="h06q5up">
+                      {t("faq.stillQuestions.description")}
+                    </p>
+                    <div
+                      className="flex flex-col sm:flex-row gap-4 justify-center"
+                      data-oid="mbknvz-"
+                    >
                       <a
                         href="https://discord.gg/uvSBCw6e"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-6 py-3 bg-[#5865F2] text-white font-medium rounded-xl hover:bg-[#4752C4] transition-colors"
+                        data-oid="ede.bub"
                       >
                         {t("faq.stillQuestions.joinDiscord")}
                       </a>
@@ -99,6 +133,7 @@ const FAQ: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-6 py-3 bg-gray-700 text-white font-medium rounded-xl hover:bg-gray-600 transition-colors"
+                        data-oid="6m5t45v"
                       >
                         {t("faq.stillQuestions.openIssue")}
                       </a>
@@ -111,9 +146,9 @@ const FAQ: React.FC = () => {
         </AnimatedSection>
       </main>
 
-      <Footer />
+      <Footer data-oid="m-hycy1" />
     </div>
-  )
-}
+  );
+};
 
-export default FAQ
+export default FAQ;

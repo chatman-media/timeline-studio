@@ -57,7 +57,13 @@ const mockProjectState: {
     id: "test-project",
     name: "Test Project",
     media_pool: { items: {} },
-    timeline: { duration: 0, fps: 30, sample_rate: 48000, tracks: [], markers: [] },
+    timeline: {
+      duration: 0,
+      fps: 30,
+      sample_rate: 48000,
+      tracks: [],
+      markers: [],
+    },
     effects_pool: {},
     filters_pool: {},
     transitions_pool: {},
@@ -106,6 +112,7 @@ function createTimelineWithClips(mediaIds: string[]) {
         pan: 0,
       },
     ],
+
     markers: [],
   }
 }
@@ -121,7 +128,13 @@ describe("ResourcesProvider", () => {
       id: "test-project",
       name: "Test Project",
       media_pool: { items: {} },
-      timeline: { duration: 0, fps: 30, sample_rate: 48000, tracks: [], markers: [] },
+      timeline: {
+        duration: 0,
+        fps: 30,
+        sample_rate: 48000,
+        tracks: [],
+        markers: [],
+      },
       effects_pool: {},
       filters_pool: {},
       transitions_pool: {},
@@ -131,7 +144,9 @@ describe("ResourcesProvider", () => {
     }
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => <ResourcesProvider>{children}</ResourcesProvider>
+  const wrapper = ({ children }: { children: ReactNode }) => (
+    <ResourcesProvider data-oid="uki1pl5">{children}</ResourcesProvider>
+  )
 
   describe("Initialization", () => {
     it("initializes with empty resources when no project", () => {
@@ -217,7 +232,10 @@ describe("ResourcesProvider", () => {
   describe("addMedia", () => {
     it("adds media file to backend and marks as resource", async () => {
       const mediaId = "test-media-id"
-      mockExecuteCommand.mockResolvedValueOnce({ success: true, data: { media_id: mediaId } })
+      mockExecuteCommand.mockResolvedValueOnce({
+        success: true,
+        data: { media_id: mediaId },
+      })
       mockExecuteCommand.mockResolvedValueOnce({ success: true, data: null })
 
       const file: MediaFile = {
@@ -913,7 +931,10 @@ describe("ResourcesProvider", () => {
 
       const { result } = renderHook(() => useResources(), { wrapper })
 
-      const addPromise = result.current.addEffect({ id: "effect-1", name: "Test" } as any)
+      const addPromise = result.current.addEffect({
+        id: "effect-1",
+        name: "Test",
+      } as any)
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(true)

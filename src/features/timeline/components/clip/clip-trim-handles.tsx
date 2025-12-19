@@ -86,8 +86,9 @@ export function ClipTrimHandles({
         onMouseDown={(e) => handleMouseDown("start", e)}
         data-trim-handle="start"
         data-testid="trim-handle-start"
+        data-oid="1gl7fsb"
       >
-        <div className="absolute inset-y-0 left-0 w-1 bg-primary" />
+        <div className="absolute inset-y-0 left-0 w-1 bg-primary" data-oid="lbsooxl" />
       </div>
 
       {/* End handle */}
@@ -103,14 +104,15 @@ export function ClipTrimHandles({
         onMouseDown={(e) => handleMouseDown("end", e)}
         data-trim-handle="end"
         data-testid="trim-handle-end"
+        data-oid="5aw5ng4"
       >
-        <div className="absolute inset-y-0 right-0 w-1 bg-primary" />
+        <div className="absolute inset-y-0 right-0 w-1 bg-primary" data-oid="t2hplfq" />
       </div>
 
       {/* Visual feedback during trim */}
       {isDragging && (
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-primary/10 animate-pulse" />
+        <div className="absolute inset-0 pointer-events-none" data-oid="4fztbdz">
+          <div className="absolute inset-0 bg-primary/10 animate-pulse" data-oid="6aq_z2z" />
         </div>
       )}
     </>
@@ -126,18 +128,18 @@ export function RippleHandles({ showRippleIndicator = true, ...props }: RippleHa
   const { isEditMode } = useEditModeContext()
 
   if (!isEditMode(EDIT_MODES.RIPPLE)) {
-    return <ClipTrimHandles {...props} />
+    return <ClipTrimHandles {...props} data-oid="1cx.1:t" />
   }
 
   return (
-    <div className="relative">
-      <ClipTrimHandles {...props} className="border-orange-500 bg-orange-500/20" />
+    <div className="relative" data-oid="h99h6wj">
+      <ClipTrimHandles {...props} className="border-orange-500 bg-orange-500/20" data-oid="9-a1ghi" />
 
       {/* Ripple indicator arrow */}
       {showRippleIndicator && props.isSelected && (
-        <div className="absolute -right-6 top-1/2 -translate-y-1/2 text-orange-500">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10 5 L15 10 L10 15 L10 11 L5 11 L5 9 L10 9 Z" />
+        <div className="absolute -right-6 top-1/2 -translate-y-1/2 text-orange-500" data-oid="mf8zs-w">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" data-oid="q9r-8b7">
+            <path d="M10 5 L15 10 L10 15 L10 11 L5 11 L5 9 L10 9 Z" data-oid="lcu_2m2" />
           </svg>
         </div>
       )}
@@ -215,12 +217,13 @@ export function RollHandles({
       )}
       style={{ left: `${position}px` }}
       onMouseDown={handleMouseDown}
+      data-oid="-essz2h"
     >
-      <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-purple-500" />
+      <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 bg-purple-500" data-oid="4tnvbgb" />
 
       {/* Roll indicator */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="w-3 h-3 rounded-full bg-purple-500" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" data-oid="1yx4glp">
+        <div className="w-3 h-3 rounded-full bg-purple-500" data-oid="j2-0g75" />
       </div>
     </div>
   )

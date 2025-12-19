@@ -78,7 +78,7 @@ export class PlayerErrorBoundary extends Component<Props, State> {
       }
 
       // Дефолтный fallback UI
-      return <DefaultErrorFallback error={error} onReset={this.handleReset} />
+      return <DefaultErrorFallback error={error} onReset={this.handleReset} data-oid="arqwek1" />
     }
 
     return children
@@ -95,26 +95,31 @@ interface DefaultErrorFallbackProps {
  */
 function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center bg-black p-8 text-white">
-      <div className="flex max-w-md flex-col items-center gap-6 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/20">
-          <AlertCircle className="h-8 w-8 text-red-500" />
+    <div className="flex h-full w-full flex-col items-center justify-center bg-black p-8 text-white" data-oid="8sx4zdw">
+      <div className="flex max-w-md flex-col items-center gap-6 text-center" data-oid="otje78g">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/20" data-oid="x87c6to">
+          <AlertCircle className="h-8 w-8 text-red-500" data-oid="po645ka" />
         </div>
 
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold">Ошибка видеоплеера</h2>
-          <p className="text-sm text-gray-400">
+        <div className="space-y-2" data-oid="kanhrfp">
+          <h2 className="text-2xl font-bold" data-oid="sdueeb0">
+            Ошибка видеоплеера
+          </h2>
+          <p className="text-sm text-gray-400" data-oid="3or-nl-">
             Произошла ошибка при воспроизведении видео. Попробуйте обновить плеер или перезагрузить приложение.
           </p>
         </div>
 
         {/* Детали ошибки (опционально, для debugging) */}
         {process.env.NODE_ENV === "development" && (
-          <details className="w-full max-w-md">
-            <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-400">
+          <details className="w-full max-w-md" data-oid="z66t980">
+            <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-400" data-oid="4cvbmr5">
               Показать детали ошибки
             </summary>
-            <pre className="mt-2 max-h-40 overflow-auto rounded bg-gray-900 p-3 text-left text-xs text-red-400">
+            <pre
+              className="mt-2 max-h-40 overflow-auto rounded bg-gray-900 p-3 text-left text-xs text-red-400"
+              data-oid="w2sg608"
+            >
               {error.message}
               {"\n\n"}
               {error.stack}
@@ -122,9 +127,9 @@ function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
           </details>
         )}
 
-        <div className="flex gap-3">
-          <Button onClick={onReset} variant="default" size="lg" className="gap-2">
-            <RefreshCw className="h-4 w-4" />
+        <div className="flex gap-3" data-oid="dd.l:1e">
+          <Button onClick={onReset} variant="default" size="lg" className="gap-2" data-oid="0gxa:0z">
+            <RefreshCw className="h-4 w-4" data-oid="j-hnh9q" />
             Обновить плеер
           </Button>
 
@@ -133,6 +138,7 @@ function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
             variant="outline"
             size="lg"
             className="border-gray-700 hover:bg-gray-800"
+            data-oid="5mh9bh-"
           >
             Перезагрузить приложение
           </Button>

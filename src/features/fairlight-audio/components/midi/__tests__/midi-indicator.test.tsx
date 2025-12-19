@@ -28,7 +28,7 @@ beforeEach(() => {
 // Mock Lucide React icons
 vi.mock("lucide-react", () => ({
   Activity: ({ className }: { className: string }) => (
-    <div data-testid="activity-icon" className={className}>
+    <div data-testid="activity-icon" className={className} data-oid="kphvx.3">
       Activity Icon
     </div>
   ),
@@ -36,14 +36,14 @@ vi.mock("lucide-react", () => ({
 
 describe("MidiIndicator", () => {
   it("should render MIDI indicator", () => {
-    render(<MidiIndicator />)
+    render(<MidiIndicator data-oid="8jvbo6i" />)
 
     expect(screen.getByTestId("activity-icon")).toBeInTheDocument()
     expect(screen.getByText("MIDI")).toBeInTheDocument()
   })
 
   it("should start with inactive state", () => {
-    render(<MidiIndicator />)
+    render(<MidiIndicator data-oid="s:wx4yu" />)
 
     const activityIcon = screen.getByTestId("activity-icon")
     expect(activityIcon).toHaveClass("text-zinc-600")
@@ -51,7 +51,7 @@ describe("MidiIndicator", () => {
   })
 
   it("should have correct CSS classes", () => {
-    const { container } = render(<MidiIndicator />)
+    const { container } = render(<MidiIndicator data-oid="pftxyn." />)
 
     const wrapperDiv = container.firstChild as HTMLElement
     expect(wrapperDiv).toHaveClass("flex")
@@ -69,11 +69,11 @@ describe("MidiIndicator", () => {
   })
 
   it("should render without errors", () => {
-    expect(() => render(<MidiIndicator />)).not.toThrow()
+    expect(() => render(<MidiIndicator data-oid="6odit0x" />)).not.toThrow()
   })
 
   it("should use Activity icon from lucide-react", () => {
-    render(<MidiIndicator />)
+    render(<MidiIndicator data-oid=":4s8qim" />)
 
     const activityIcon = screen.getByTestId("activity-icon")
     expect(activityIcon).toBeInTheDocument()
@@ -81,14 +81,14 @@ describe("MidiIndicator", () => {
   })
 
   it("should apply transition classes for smooth animations", () => {
-    render(<MidiIndicator />)
+    render(<MidiIndicator data-oid="cpzovl-" />)
 
     const activityIcon = screen.getByTestId("activity-icon")
     expect(activityIcon).toHaveClass("transition-colors")
   })
 
   it("should display MIDI label", () => {
-    render(<MidiIndicator />)
+    render(<MidiIndicator data-oid="vj2fij5" />)
 
     const midiLabel = screen.getByText("MIDI")
     expect(midiLabel).toBeInTheDocument()
@@ -96,7 +96,7 @@ describe("MidiIndicator", () => {
   })
 
   it("should have consistent component structure", () => {
-    const { container } = render(<MidiIndicator />)
+    const { container } = render(<MidiIndicator data-oid="z9y4qrk" />)
 
     // Should have wrapper div with flex layout
     const wrapper = container.firstChild as HTMLElement
@@ -117,12 +117,12 @@ describe("MidiIndicator", () => {
 
   it("should properly integrate with useMidi hook", () => {
     // Test that component can render and uses the hook without errors
-    const { container } = render(<MidiIndicator />)
+    const { container } = render(<MidiIndicator data-oid="p15q5y_" />)
     expect(container.firstChild).toBeInTheDocument()
   })
 
   it("should have proper timer cleanup on unmount", () => {
-    const { unmount } = render(<MidiIndicator />)
+    const { unmount } = render(<MidiIndicator data-oid="a2awn6z" />)
 
     // Component should unmount without errors
     expect(() => unmount()).not.toThrow()
@@ -132,7 +132,7 @@ describe("MidiIndicator", () => {
     // This test verifies the component can render in both states
     // Since we can't easily trigger real state changes with the current mock setup,
     // we'll just verify the component structure is correct
-    const { rerender } = render(<MidiIndicator />)
+    const { rerender } = render(<MidiIndicator data-oid="q2w2r7_" />)
 
     const activityIcon = screen.getByTestId("activity-icon")
 
@@ -146,7 +146,7 @@ describe("MidiIndicator", () => {
     expect(hasInactiveClass || hasActiveClass).toBe(true)
 
     // Rerender to ensure stability
-    rerender(<MidiIndicator />)
+    rerender(<MidiIndicator data-oid="lkxotj8" />)
     expect(activityIcon).toBeInTheDocument()
   })
 })

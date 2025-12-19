@@ -88,13 +88,16 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
         "bg-muted/30 border-r border-border",
         isSelected && "bg-accent/20",
       )}
+      data-oid="wo2wfgv"
     >
       {/* Верхняя часть - иконка типа и название */}
-      <div className="space-y-2">
+      <div className="space-y-2" data-oid="a.55vjk">
         {/* Иконка типа трека */}
-        <div className="flex items-center gap-2">
-          <IconComponent className={cn("w-4 h-4", iconColor)} />
-          <span className="text-xs text-muted-foreground uppercase">{track.type}</span>
+        <div className="flex items-center gap-2" data-oid="7yngm_4">
+          <IconComponent className={cn("w-4 h-4", iconColor)} data-oid="im57o:c" />
+          <span className="text-xs text-muted-foreground uppercase" data-oid="gjyb4dw">
+            {track.type}
+          </span>
         </div>
 
         {/* Название трека */}
@@ -106,12 +109,14 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
             onKeyDown={handleKeyPress}
             className="h-6 text-xs"
             autoFocus
+            data-oid="vvofr2u"
           />
         ) : (
           <div
             className="text-sm font-medium cursor-pointer hover:bg-accent/20 px-1 py-0.5 rounded"
             onClick={() => setIsEditing(true)}
             title="Нажмите для редактирования"
+            data-oid="xp8_31m"
           >
             {track.name}
           </div>
@@ -124,8 +129,10 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
         track.type === "voiceover" ||
         track.type === "sfx" ||
         track.type === "ambient") && (
-        <div className="py-2">
-          <div className="text-xs text-muted-foreground mb-1">Громкость: {Math.round(track.volume * 100)}%</div>
+        <div className="py-2" data-oid="msjfxro">
+          <div className="text-xs text-muted-foreground mb-1" data-oid=":y6mgt.">
+            Громкость: {Math.round(track.volume * 100)}%
+          </div>
           <Slider
             value={[track.volume]}
             onValueChange={handleVolumeChange}
@@ -133,12 +140,13 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
             min={0}
             step={0.01}
             className="w-full"
+            data-oid="hoek3mb"
           />
         </div>
       )}
 
       {/* Нижняя часть - кнопки управления */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1" data-oid=".guah4n">
         {/* Кнопка видимости */}
         <Button
           variant="ghost"
@@ -146,8 +154,13 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
           className="w-6 h-6 p-0"
           onClick={toggleVisibility}
           title={track.isHidden ? "Показать трек" : "Скрыть трек"}
+          data-oid="k6i287e"
         >
-          {track.isHidden ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+          {track.isHidden ? (
+            <EyeOff className="w-3 h-3" data-oid="_.27tar" />
+          ) : (
+            <Eye className="w-3 h-3" data-oid="fh0dd_b" />
+          )}
         </Button>
 
         {/* Кнопка блокировки */}
@@ -158,8 +171,13 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
           onClick={toggleLock}
           title={track.isLocked ? "Разблокировать трек" : "Заблокировать трек"}
           data-testid="track-lock-button"
+          data-oid="_t2w9e1"
         >
-          {track.isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+          {track.isLocked ? (
+            <Lock className="w-3 h-3" data-oid="1q9f19w" />
+          ) : (
+            <Unlock className="w-3 h-3" data-oid="a7i7s:-" />
+          )}
         </Button>
 
         {/* Кнопка отключения звука (для аудио треков) */}
@@ -175,8 +193,13 @@ export function TrackHeader({ track, isSelected, onUpdate }: TrackHeaderProps) {
             onClick={toggleMute}
             title={track.isMuted ? "Включить звук" : "Отключить звук"}
             data-testid="track-mute-button"
+            data-oid="bpqxjhr"
           >
-            {track.isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+            {track.isMuted ? (
+              <VolumeX className="w-3 h-3" data-oid="-c:i39r" />
+            ) : (
+              <Volume2 className="w-3 h-3" data-oid="y5-rpie" />
+            )}
           </Button>
         )}
       </div>

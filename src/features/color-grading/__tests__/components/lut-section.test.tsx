@@ -35,9 +35,9 @@ vi.mock("@/lib/tauri-logger", () => ({
 
 // Мокаем lucide-react иконки
 vi.mock("lucide-react", () => ({
-  RefreshCw: () => <span>RefreshCw</span>,
-  Upload: () => <span>Upload</span>,
-  X: () => <span>X</span>,
+  RefreshCw: () => <span data-oid="qcycycl">RefreshCw</span>,
+  Upload: () => <span data-oid=".no3qpd">Upload</span>,
+  X: () => <span data-oid="zzypejp">X</span>,
 }))
 
 // Мокаем хук useTranslation
@@ -50,7 +50,7 @@ vi.mock("react-i18next", () => ({
 // Мокаем UI компоненты
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled, ...props }: any) => (
-    <button onClick={onClick} disabled={disabled} {...props}>
+    <button onClick={onClick} disabled={disabled} {...props} data-oid="d9sdxug">
       {children}
     </button>
   ),
@@ -58,7 +58,7 @@ vi.mock("@/components/ui/button", () => ({
 
 vi.mock("@/components/ui/label", () => ({
   Label: ({ children, htmlFor, ...props }: any) => (
-    <label htmlFor={htmlFor} {...props}>
+    <label htmlFor={htmlFor} {...props} data-oid="m8x.g.b">
       {children}
     </label>
   ),
@@ -66,15 +66,26 @@ vi.mock("@/components/ui/label", () => ({
 
 vi.mock("@/components/ui/select", () => ({
   Select: ({ children, value, onValueChange }: any) => (
-    <div data-testid="select" data-value={value}>
+    <div data-testid="select" data-value={value} data-oid="9w-bi3u">
       {React.Children.map(children, (child) => React.cloneElement(child, { onValueChange }))}
     </div>
   ),
-  SelectTrigger: ({ children }: any) => <div data-testid="select-trigger">{children}</div>,
-  SelectValue: ({ placeholder }: any) => <span>{placeholder}</span>,
-  SelectContent: ({ children }: any) => <div data-testid="select-content">{children}</div>,
+
+  SelectTrigger: ({ children }: any) => (
+    <div data-testid="select-trigger" data-oid="hq2suai">
+      {children}
+    </div>
+  ),
+
+  SelectValue: ({ placeholder }: any) => <span data-oid="nrwjx0j">{placeholder}</span>,
+  SelectContent: ({ children }: any) => (
+    <div data-testid="select-content" data-oid="_jjcgg3">
+      {children}
+    </div>
+  ),
+
   SelectItem: ({ children, value, onClick }: any) => (
-    <div data-testid={`select-item-${value}`} onClick={onClick}>
+    <div data-testid={`select-item-${value}`} onClick={onClick} data-oid="fw2n4_9">
       {children}
     </div>
   ),
@@ -82,7 +93,7 @@ vi.mock("@/components/ui/select", () => ({
 
 vi.mock("@/components/ui/switch", () => ({
   Switch: ({ checked, onCheckedChange }: any) => (
-    <button role="switch" aria-checked={checked} onClick={() => onCheckedChange(!checked)}>
+    <button role="switch" aria-checked={checked} onClick={() => onCheckedChange(!checked)} data-oid="1n3scqv">
       Switch
     </button>
   ),
@@ -91,10 +102,10 @@ vi.mock("@/components/ui/switch", () => ({
 // Мокаем ParameterSlider
 vi.mock("../../components/controls/parameter-slider", () => ({
   ParameterSlider: ({ label, value, onChange, disabled, formatValue }: any) => (
-    <div data-testid="parameter-slider">
-      <span>{label}</span>
-      <span>{formatValue ? formatValue(value) : value}</span>
-      <button onClick={() => onChange(50)} disabled={disabled}>
+    <div data-testid="parameter-slider" data-oid=":3ag473">
+      <span data-oid="pg.77ng">{label}</span>
+      <span data-oid="2s9fxua">{formatValue ? formatValue(value) : value}</span>
+      <button onClick={() => onChange(50)} disabled={disabled} data-oid="e58kxen">
         Change Intensity
       </button>
     </div>
@@ -136,38 +147,38 @@ describe("LUTSection", () => {
   })
 
   it("should render LUT section", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="_k-dvnq" />)
 
     expect(screen.getByTestId("lut-section")).toBeInTheDocument()
   })
 
   it("should render description text", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="78bz:34" />)
 
     expect(screen.getByText("Apply professional color looks with LUT files")).toBeInTheDocument()
   })
 
   it("should render LUT file selector", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="uxd0y22" />)
 
     expect(screen.getByText("LUT File")).toBeInTheDocument()
     expect(screen.getByTestId("select")).toBeInTheDocument()
   })
 
   it("should render upload button", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="snoiobs" />)
 
     expect(screen.getByText("Upload")).toBeInTheDocument()
   })
 
   it("should render supported formats info", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="rps6:y1" />)
 
     expect(screen.getByText("Supported formats: .cube, .3dl, .dat, .look, .mga, .m3d")).toBeInTheDocument()
   })
 
   it("should render preset LUT categories", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="wybnr3f" />)
 
     expect(screen.getByText("Film Emulation")).toBeInTheDocument()
     expect(screen.getByText("Creative Looks")).toBeInTheDocument()
@@ -175,7 +186,7 @@ describe("LUTSection", () => {
   })
 
   it("should render preset LUTs", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="or--n.i" />)
 
     expect(screen.getByTestId("select-item-film-kodak-2383")).toBeInTheDocument()
     expect(screen.getByTestId("select-item-orange-teal")).toBeInTheDocument()
@@ -183,7 +194,7 @@ describe("LUTSection", () => {
   })
 
   it("should handle LUT selection", () => {
-    render(<LUTSection />)
+    render(<LUTSection data-oid="rqcd9:c" />)
 
     const selectItem = screen.getByTestId("select-item-film-kodak-2383")
     fireEvent.click(selectItem)
@@ -195,10 +206,10 @@ describe("LUTSection", () => {
 
   it("should show enable switch when LUT is selected", () => {
     mockState.lut.file = "film-kodak-2383"
-    const { rerender } = render(<LUTSection />)
+    const { rerender } = render(<LUTSection data-oid="0:qxq99" />)
 
     // Simulate LUT selection
-    rerender(<LUTSection />)
+    rerender(<LUTSection data-oid="ae4.xm9" />)
 
     expect(screen.getByText("Enable LUT")).toBeInTheDocument()
     expect(screen.getByRole("switch")).toBeInTheDocument()
@@ -206,7 +217,7 @@ describe("LUTSection", () => {
 
   it("should show intensity slider when LUT is selected", () => {
     mockState.lut.file = "film-kodak-2383"
-    render(<LUTSection />)
+    render(<LUTSection data-oid="ytizmse" />)
 
     expect(screen.getByTestId("parameter-slider")).toBeInTheDocument()
     expect(screen.getByText("Intensity")).toBeInTheDocument()
@@ -216,7 +227,7 @@ describe("LUTSection", () => {
   it("should toggle LUT enable state", async () => {
     mockState.lut.file = "film-kodak-2383"
     const user = userEvent.setup()
-    render(<LUTSection />)
+    render(<LUTSection data-oid="a4yxole" />)
 
     const switchButton = screen.getByRole("switch")
     await user.click(switchButton)
@@ -231,7 +242,7 @@ describe("LUTSection", () => {
     mockState.lut.file = "film-kodak-2383"
     mockState.lut.isEnabled = true
     const user = userEvent.setup()
-    render(<LUTSection />)
+    render(<LUTSection data-oid="y8ha1hk" />)
 
     const intensityButton = screen.getByText("Change Intensity")
     await user.click(intensityButton)
@@ -245,7 +256,7 @@ describe("LUTSection", () => {
   it("should show preview section when LUT is enabled", () => {
     mockState.lut.file = "film-kodak-2383"
     mockState.lut.isEnabled = true
-    render(<LUTSection />)
+    render(<LUTSection data-oid="vcq3brg" />)
 
     expect(screen.getByText("Preview")).toBeInTheDocument()
     expect(screen.getByText("Refresh")).toBeInTheDocument()
@@ -261,7 +272,7 @@ describe("LUTSection", () => {
     mockShowOpenDialog.mockResolvedValueOnce(["/path/to/custom.cube"])
 
     const user = userEvent.setup()
-    render(<LUTSection />)
+    render(<LUTSection data-oid="eykx0-1" />)
 
     const uploadButton = screen.getByText("Upload")
     await user.click(uploadButton)
@@ -284,7 +295,7 @@ describe("LUTSection", () => {
     mockState.lut.isEnabled = true
     const user = userEvent.setup()
 
-    render(<LUTSection />)
+    render(<LUTSection data-oid="ntr:25v" />)
 
     const refreshButton = screen.getByText("Refresh")
     await user.click(refreshButton)
@@ -295,7 +306,7 @@ describe("LUTSection", () => {
   it("should disable intensity slider when LUT is disabled", () => {
     mockState.lut.file = "film-kodak-2383"
     mockState.lut.isEnabled = false
-    render(<LUTSection />)
+    render(<LUTSection data-oid="tkna.dt" />)
 
     const intensityButton = screen.getByText("Change Intensity")
     expect(intensityButton).toBeDisabled()
@@ -303,7 +314,7 @@ describe("LUTSection", () => {
 
   it("should handle none selection", () => {
     mockState.lut.file = "film-kodak-2383"
-    render(<LUTSection />)
+    render(<LUTSection data-oid="rsrr8k0" />)
 
     // In real implementation, selecting "none" would trigger dispatch
     const noneItem = screen.getByTestId("select-item-none")
@@ -312,7 +323,7 @@ describe("LUTSection", () => {
 
   it("should not show controls when no LUT is selected", () => {
     mockState.lut.file = null
-    render(<LUTSection />)
+    render(<LUTSection data-oid="fgjy_w3" />)
 
     expect(screen.queryByText("Enable LUT")).not.toBeInTheDocument()
     expect(screen.queryByTestId("parameter-slider")).not.toBeInTheDocument()

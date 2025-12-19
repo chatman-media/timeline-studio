@@ -116,7 +116,9 @@ export const VideoPreview = memo(
       void checkFileAccess(filePath).then((hasAccess) => {
         logger.debugSync(`[VideoPreview] File access check result: ${hasAccess}`)
         if (!hasAccess) {
-          logger.errorSync(`[VideoPreview] No access to file: ${filePath}`, { filePath })
+          logger.errorSync(`[VideoPreview] No access to file: ${filePath}`, {
+            filePath,
+          })
         }
 
         void loadVideoFile(filePath).then((url) => {
@@ -177,7 +179,10 @@ export const VideoPreview = memo(
       streamsCount: videoData.videoStreams.length,
       hasProbeData: !!file.probeData,
       probeStreams: file.probeData?.streams?.length ?? 0,
-      videoStreams: videoData.videoStreams.map((s) => ({ codec: s.codec_name, index: s.index })),
+      videoStreams: videoData.videoStreams.map((s) => ({
+        codec: s.codec_name,
+        index: s.index,
+      })),
     })
 
     return (
@@ -191,6 +196,7 @@ export const VideoPreview = memo(
         }}
         {...(listeners && typeof listeners === "object" ? listeners : {})}
         {...(attributes && typeof attributes === "object" ? attributes : {})}
+        data-oid="1lf:4-1"
       >
         {showPlaceholder ? (
           <VideoPlaceholder
@@ -200,6 +206,7 @@ export const VideoPreview = memo(
             previewData={previewData}
             hoverTime={hoverTime}
             onHoverTimeChange={setHoverTime}
+            data-oid="0jpd6my"
           />
         ) : videoData.videoStreams.length === 0 ? (
           // Fallback если нет потоков но не показываем placeholder
@@ -209,10 +216,11 @@ export const VideoPreview = memo(
               width: `${size * (16 / 9)}px`,
               height: `${size}px`,
             }}
+            data-oid="93-ft__"
           >
-            <div className="text-xs text-red-400 text-center px-2">
+            <div className="text-xs text-red-400 text-center px-2" data-oid="7zeem7-">
               No video streams found
-              <br />
+              <br data-oid="4cp41qj" />
               {file.name}
             </div>
           </div>
@@ -231,6 +239,7 @@ export const VideoPreview = memo(
               hoverTime={hoverTime}
               onHoverTimeChange={setHoverTime}
               isLastStream={index === videoData.videoStreams.length - 1}
+              data-oid="2yil8l0"
             />
           ))
         )}

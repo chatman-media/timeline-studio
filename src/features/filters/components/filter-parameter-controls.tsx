@@ -125,10 +125,14 @@ export function FilterParameterControls({ filter, onParamsChange, showPreview = 
     const config = getParamConfig(paramName)
 
     return (
-      <div key={paramName} className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm">{getParamLabel(paramName)}</Label>
-          <span className="text-xs text-muted-foreground">{formatValue(value, paramName)}</span>
+      <div key={paramName} className="space-y-2" data-oid="2gzv-u:">
+        <div className="flex items-center justify-between" data-oid=".3wevx6">
+          <Label className="text-sm" data-oid="phew1c9">
+            {getParamLabel(paramName)}
+          </Label>
+          <span className="text-xs text-muted-foreground" data-oid="r6cza7q">
+            {formatValue(value, paramName)}
+          </span>
         </div>
         <Slider
           value={[value]}
@@ -137,6 +141,7 @@ export function FilterParameterControls({ filter, onParamsChange, showPreview = 
           step={config.step}
           onValueChange={(values) => handleParamChange(paramName, values[0])}
           className="w-full"
+          data-oid="3i:6_ke"
         />
       </div>
     )
@@ -151,25 +156,31 @@ export function FilterParameterControls({ filter, onParamsChange, showPreview = 
     if (availableParams.length === 0) return null
 
     return (
-      <div key={groupName} className="space-y-3">
-        <h4 className="text-sm font-medium text-muted-foreground">
+      <div key={groupName} className="space-y-3" data-oid="r0zaz53">
+        <h4 className="text-sm font-medium text-muted-foreground" data-oid="pc4w0ad">
           {t(`filters.paramGroups.${groupName}`, groupName)}
         </h4>
-        <div className="space-y-4">{availableParams.map(renderParameterSlider)}</div>
+        <div className="space-y-4" data-oid="j:uqu5t">
+          {availableParams.map(renderParameterSlider)}
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-oid="li3nb4_">
       {/* Filter Info */}
-      <div className="space-y-1">
-        <h3 className="text-lg font-semibold">{filter.labels?.ru || filter.name}</h3>
-        <p className="text-sm text-muted-foreground">{filter.description?.ru || filter.description?.en}</p>
+      <div className="space-y-1" data-oid="ie26tq7">
+        <h3 className="text-lg font-semibold" data-oid="af:tec1">
+          {filter.labels?.ru || filter.name}
+        </h3>
+        <p className="text-sm text-muted-foreground" data-oid="ie._j1q">
+          {filter.description?.ru || filter.description?.en}
+        </p>
       </div>
 
       {/* Parameter Groups */}
-      <div className="space-y-6">
+      <div className="space-y-6" data-oid="3cdntq:">
         {renderParameterGroup("basic", parameterGroups.basic)}
         {renderParameterGroup("color", parameterGroups.color)}
         {renderParameterGroup("tone", parameterGroups.tone)}
@@ -177,10 +188,11 @@ export function FilterParameterControls({ filter, onParamsChange, showPreview = 
       </div>
 
       {/* Reset Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end" data-oid="6-0.8r2">
         <button
           onClick={handleReset}
           className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          data-oid="_wh65g3"
         >
           {t("filters.resetParams", "Reset to Default")}
         </button>
@@ -188,7 +200,7 @@ export function FilterParameterControls({ filter, onParamsChange, showPreview = 
 
       {/* Preview Note */}
       {showPreview && (
-        <div className="text-xs text-muted-foreground border-t pt-4">
+        <div className="text-xs text-muted-foreground border-t pt-4" data-oid="cp..ko7">
           {t("filters.previewNote", "Changes are applied in real-time to the preview")}
         </div>
       )}

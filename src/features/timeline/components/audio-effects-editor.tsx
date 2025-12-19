@@ -80,7 +80,7 @@ export function AudioEffectsEditor({ clip, onApplyEffects }: AudioEffectsEditorP
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleOpen}>
+    <Button variant="outline" size="sm" onClick={handleOpen} data-oid="9r_xy.0">
       Аудио эффекты
     </Button>
   )

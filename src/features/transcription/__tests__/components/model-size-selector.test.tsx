@@ -9,7 +9,7 @@ import { ModelSizeSelector } from "../../components/model-size-selector"
 describe("ModelSizeSelector", () => {
   it("should render model size selector", () => {
     const onChange = vi.fn()
-    render(<ModelSizeSelector value="base" onChange={onChange} />)
+    render(<ModelSizeSelector value="base" onChange={onChange} data-oid="xo.h_8-" />)
 
     expect(screen.getByRole("combobox")).toBeInTheDocument()
   })
@@ -17,7 +17,7 @@ describe("ModelSizeSelector", () => {
   it("should display all model sizes", async () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
-    render(<ModelSizeSelector value="base" onChange={onChange} />)
+    render(<ModelSizeSelector value="base" onChange={onChange} data-oid="bbu4-yg" />)
 
     const trigger = screen.getByRole("combobox")
     await user.click(trigger)
@@ -28,7 +28,7 @@ describe("ModelSizeSelector", () => {
 
   it("should call onChange when model size is selected", async () => {
     const onChange = vi.fn()
-    render(<ModelSizeSelector value="base" onChange={onChange} />)
+    render(<ModelSizeSelector value="base" onChange={onChange} data-oid="thr8rgg" />)
 
     const trigger = screen.getByRole("combobox")
     expect(trigger).toBeInTheDocument()
@@ -39,7 +39,7 @@ describe("ModelSizeSelector", () => {
     const validSizes = ["tiny", "base", "small", "medium", "large-v1", "large-v2", "large-v3"] as const
 
     validSizes.forEach((size) => {
-      const { unmount } = render(<ModelSizeSelector value={size} onChange={onChange} />)
+      const { unmount } = render(<ModelSizeSelector value={size} onChange={onChange} data-oid="udu-qz-" />)
       expect(screen.getByRole("combobox")).toBeInTheDocument()
       unmount()
     })

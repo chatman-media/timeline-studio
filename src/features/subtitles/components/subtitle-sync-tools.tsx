@@ -89,7 +89,9 @@ export function SubtitleSyncTools() {
 
       showSuccess(
         t("subtitles.sync.success", "Синхронизация выполнена"),
-        t("subtitles.sync.successDesc", "Обновлено {{count}} субтитров", { count: updatedCount }),
+        t("subtitles.sync.successDesc", "Обновлено {{count}} субтитров", {
+          count: updatedCount,
+        }),
       )
 
       setIsOpen(false)
@@ -111,27 +113,36 @@ export function SubtitleSyncTools() {
   }
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Clock className="mr-2 h-4 w-4" />
+    <Popover open={isOpen} onOpenChange={setIsOpen} data-oid="05mmbfm">
+      <PopoverTrigger asChild data-oid="n80x6yu">
+        <Button variant="outline" size="sm" data-oid=".q7ts3f">
+          <Clock className="mr-2 h-4 w-4" data-oid="7db:.yq" />
           {t("subtitles.sync.title", "Синхронизация")}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <div className="space-y-4">
-          <div>
-            <h4 className="mb-2 font-medium">{t("subtitles.sync.adjustTiming", "Настройка времени")}</h4>
-            <p className="text-sm text-muted-foreground">
+      <PopoverContent className="w-80" data-oid="5kpe8o0">
+        <div className="space-y-4" data-oid="d59.s:v">
+          <div data-oid=".0yiiw0">
+            <h4 className="mb-2 font-medium" data-oid="ls:fsh6">
+              {t("subtitles.sync.adjustTiming", "Настройка времени")}
+            </h4>
+            <p className="text-sm text-muted-foreground" data-oid="r0q2g4m">
               {t("subtitles.sync.adjustDesc", "Сдвинуть все субтитры на указанное время")}
             </p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="time-offset">{t("subtitles.sync.timeOffset", "Временной сдвиг (секунды)")}</Label>
-            <div className="flex items-center gap-2">
-              <Button size="icon" variant="outline" onClick={() => setTimeOffset((prev) => prev - 0.1)}>
-                <Minus className="h-4 w-4" />
+          <div className="space-y-2" data-oid="qv_igo7">
+            <Label htmlFor="time-offset" data-oid="w2lv78e">
+              {t("subtitles.sync.timeOffset", "Временной сдвиг (секунды)")}
+            </Label>
+            <div className="flex items-center gap-2" data-oid="j_:5j:k">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => setTimeOffset((prev) => prev - 0.1)}
+                data-oid="ev-ytno"
+              >
+                <Minus className="h-4 w-4" data-oid="9iqec:k" />
               </Button>
               <Input
                 id="time-offset"
@@ -140,17 +151,24 @@ export function SubtitleSyncTools() {
                 onChange={(e) => setTimeOffset(Number.parseFloat(e.target.value) || 0)}
                 step={0.1}
                 className="text-center"
+                data-oid="f_z--79"
               />
-              <Button size="icon" variant="outline" onClick={() => setTimeOffset((prev) => prev + 0.1)}>
-                <Plus className="h-4 w-4" />
+
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => setTimeOffset((prev) => prev + 0.1)}
+                data-oid="hkjlan4"
+              >
+                <Plus className="h-4 w-4" data-oid="1xq060r" />
               </Button>
-              <Button size="icon" variant="ghost" onClick={resetOffset}>
-                <RotateCcw className="h-4 w-4" />
+              <Button size="icon" variant="ghost" onClick={resetOffset} data-oid="2jarp8n">
+                <RotateCcw className="h-4 w-4" data-oid="00h..:d" />
               </Button>
             </div>
           </div>
 
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-muted-foreground" data-oid="9m6fuxq">
             {timeOffset > 0 &&
               t("subtitles.sync.shiftForward", "Субтитры будут сдвинуты вперед на {{time}}с", {
                 time: timeOffset.toFixed(1),
@@ -162,7 +180,7 @@ export function SubtitleSyncTools() {
             {timeOffset === 0 && t("subtitles.sync.noShift", "Субтитры не будут сдвинуты")}
           </div>
 
-          <Button onClick={applyTimeOffset} disabled={timeOffset === 0} className="w-full">
+          <Button onClick={applyTimeOffset} disabled={timeOffset === 0} className="w-full" data-oid="hlewt_y">
             {t("subtitles.sync.apply", "Применить")}
           </Button>
         </div>

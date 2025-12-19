@@ -127,15 +127,17 @@ describe("PrerenderControls", () => {
 
   describe("Rendering", () => {
     it("should render prerender controls button", () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="44pwzie" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       expect(button).toBeInTheDocument()
       expect(button).toHaveClass("text-primary") // enabled state
     })
 
     it("should show cache count when enabled and cache exists", () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="lukr:wn" />)
 
       expect(screen.getByText("3")).toBeInTheDocument()
     })
@@ -150,7 +152,7 @@ describe("PrerenderControls", () => {
         error: undefined,
       })
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="6zx:cv4" />)
 
       const indicator = document.querySelector(".animate-pulse")
       expect(indicator).toBeInTheDocument()
@@ -165,18 +167,22 @@ describe("PrerenderControls", () => {
         },
       } as any)
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="gu767fc" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       expect(button).not.toHaveClass("text-primary")
     })
   })
 
   describe("Dropdown Menu - Enabled State", () => {
     beforeEach(async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="0g-ut_w" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -185,7 +191,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should show all settings when enabled", () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="rbju.:1" />)
 
       expect(screen.getByText("Включить пререндер")).toBeInTheDocument()
       expect(screen.getByText("Качество")).toBeInTheDocument()
@@ -197,7 +203,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should show action buttons", () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="f5czij-" />)
 
       expect(screen.getByText("Пререндер текущего сегмента")).toBeInTheDocument()
       expect(screen.getByText(/Очистить кеш.*3 файлов.*3.0 МБ/)).toBeInTheDocument()
@@ -216,9 +222,11 @@ describe("PrerenderControls", () => {
     })
 
     it("should hide advanced settings when disabled", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="2r5a3md" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -232,9 +240,11 @@ describe("PrerenderControls", () => {
 
   describe("Settings Updates", () => {
     beforeEach(async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="_49z98f" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -243,7 +253,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should update enabled setting", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="12b54.k" />)
 
       const enableSwitch = screen.getByLabelText("Включить пререндер")
       fireEvent.click(enableSwitch)
@@ -266,7 +276,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should update apply effects setting", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid=".iwu4nz" />)
 
       const effectsSwitch = screen.getByLabelText("Применять эффекты")
       fireEvent.click(effectsSwitch)
@@ -281,7 +291,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should update auto prerender setting", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="-rgs5od" />)
 
       const autoSwitch = screen.getByLabelText("Автоматический")
       fireEvent.click(autoSwitch)
@@ -298,9 +308,11 @@ describe("PrerenderControls", () => {
 
   describe("Prerender Actions", () => {
     beforeEach(async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="wx6krm_" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -309,7 +321,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should execute prerender for current segment", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="mzo1_8z" />)
 
       const prerenderButton = screen.getByText("Пререндер текущего сегмента")
       fireEvent.click(prerenderButton)
@@ -327,7 +339,7 @@ describe("PrerenderControls", () => {
     })
 
     it("should clear cache", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="vtqyd59" />)
 
       const clearButton = screen.getByText(/Очистить кеш/)
       fireEvent.click(clearButton)
@@ -348,9 +360,11 @@ describe("PrerenderControls", () => {
         error: undefined,
       })
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="pv3rsvi" />)
 
-      const buttons = screen.getAllByRole("button", { name: /настройки пререндера/i })
+      const buttons = screen.getAllByRole("button", {
+        name: /настройки пререндера/i,
+      })
       const button = buttons[0] // Take the first one
       fireEvent.click(button)
 
@@ -390,9 +404,11 @@ describe("PrerenderControls", () => {
         },
       } as any)
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="bn1usbq" />)
 
-      const buttons = screen.getAllByRole("button", { name: /настройки пререндера/i })
+      const buttons = screen.getAllByRole("button", {
+        name: /настройки пререндера/i,
+      })
       const button = buttons[0] // Take the first one
       fireEvent.click(button)
 
@@ -417,9 +433,11 @@ describe("PrerenderControls", () => {
         error: undefined,
       })
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="p:3uk55" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -430,9 +448,11 @@ describe("PrerenderControls", () => {
     })
 
     it("should not show result info when no result available", async () => {
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="rdatjsi" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -449,7 +469,7 @@ describe("PrerenderControls", () => {
         project: null,
       } as any)
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="ce4.jr4" />)
 
       expect(screen.getByRole("button", { name: /настройки пререндера/i })).toBeInTheDocument()
     })
@@ -466,7 +486,7 @@ describe("PrerenderControls", () => {
         cacheFiles: [],
       })
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="h59drci" />)
 
       expect(screen.queryByText("0")).not.toBeInTheDocument()
     })
@@ -481,9 +501,11 @@ describe("PrerenderControls", () => {
         duration: 100,
       }
 
-      render(<PrerenderControls {...edgeProps} />)
+      render(<PrerenderControls {...edgeProps} data-oid="ugh_xzy" />)
 
-      const buttons = screen.getAllByRole("button", { name: /настройки пререндера/i })
+      const buttons = screen.getAllByRole("button", {
+        name: /настройки пререндера/i,
+      })
       const button = buttons[0] // Take the first one
       fireEvent.click(button)
 
@@ -515,9 +537,11 @@ describe("PrerenderControls", () => {
         error: undefined,
       })
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="7hndcsg" />)
 
-      const button = screen.getByRole("button", { name: /настройки пререндера/i })
+      const button = screen.getByRole("button", {
+        name: /настройки пререндера/i,
+      })
       fireEvent.click(button)
 
       await waitFor(() => {
@@ -539,7 +563,7 @@ describe("PrerenderControls", () => {
     it("should provide correct default settings", () => {
       const onSettingsChange = vi.fn()
 
-      render(<PrerenderControls {...defaultProps} onSettingsChange={onSettingsChange} />)
+      render(<PrerenderControls {...defaultProps} onSettingsChange={onSettingsChange} data-oid="-6w1zh9" />)
 
       // No settings change should be called on initial render
       expect(onSettingsChange).not.toHaveBeenCalled()
@@ -549,9 +573,11 @@ describe("PrerenderControls", () => {
       // Setup fresh component
       cleanup()
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="fz5:q7r" />)
 
-      const buttons = screen.getAllByRole("button", { name: /настройки пререндера/i })
+      const buttons = screen.getAllByRole("button", {
+        name: /настройки пререндера/i,
+      })
       const button = buttons[0] // Take the first one
       fireEvent.click(button)
 
@@ -568,9 +594,11 @@ describe("PrerenderControls", () => {
       // Setup fresh component
       cleanup()
 
-      render(<PrerenderControls {...defaultProps} />)
+      render(<PrerenderControls {...defaultProps} data-oid="8prfsjl" />)
 
-      const buttons = screen.getAllByRole("button", { name: /настройки пререндера/i })
+      const buttons = screen.getAllByRole("button", {
+        name: /настройки пререндера/i,
+      })
       const button = buttons[0] // Take the first one
       fireEvent.click(button)
 
@@ -589,7 +617,7 @@ describe("PrerenderControls", () => {
     it("should accept valid PrerenderSettings interface", () => {
       const onSettingsChange = vi.fn()
 
-      render(<PrerenderControls {...defaultProps} onSettingsChange={onSettingsChange} />)
+      render(<PrerenderControls {...defaultProps} onSettingsChange={onSettingsChange} data-oid="q_6ndfa" />)
 
       // Component should render without TypeScript errors
       expect(screen.getByRole("button", { name: /настройки пререндера/i })).toBeInTheDocument()

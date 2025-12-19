@@ -277,34 +277,35 @@ export function SubtitleAutoSync() {
   })
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <AudioWaveform className="h-5 w-5" />
+    <Card data-oid="148r0sp">
+      <CardHeader data-oid=".9xg3hb">
+        <CardTitle className="flex items-center gap-2" data-oid="94e1m4k">
+          <AudioWaveform className="h-5 w-5" data-oid="80_r6w8" />
           {t("subtitles.autoSync.title", "Автоматическая синхронизация")}
         </CardTitle>
-        <CardDescription>
+        <CardDescription data-oid="aaj:w9u">
           {t("subtitles.autoSync.description", "Синхронизация субтитров с аудио на основе анализа речи")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4" data-oid="28-rsul">
         {/* Выбор аудио источника */}
-        <div className="space-y-2">
-          <Label>{t("subtitles.autoSync.audioSource", "Источник аудио")}</Label>
-          <Select value={selectedAudioTrack} onValueChange={setSelectedAudioTrack}>
-            <SelectTrigger>
+        <div className="space-y-2" data-oid="5xmz61.">
+          <Label data-oid="nh7t8hu">{t("subtitles.autoSync.audioSource", "Источник аудио")}</Label>
+          <Select value={selectedAudioTrack} onValueChange={setSelectedAudioTrack} data-oid="llf0r81">
+            <SelectTrigger data-oid="k1mi_3u">
               <SelectValue
                 placeholder={t("subtitles.autoSync.selectAudioPlaceholder", "Выберите аудио трек или файл")}
+                data-oid="gip8ccp"
               />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-oid="60e8u5y">
               {audioTracks.length > 0 && (
                 <>
-                  <SelectItem value="__separator__" disabled>
+                  <SelectItem value="__separator__" disabled data-oid="oq2fhc2">
                     {t("subtitles.autoSync.tracksSection", "Треки на таймлайне")}
                   </SelectItem>
                   {audioTracks.map((track) => (
-                    <SelectItem key={track.id} value={track.id}>
+                    <SelectItem key={track.id} value={track.id} data-oid="gqrioah">
                       {track.name}
                     </SelectItem>
                   ))}
@@ -312,11 +313,11 @@ export function SubtitleAutoSync() {
               )}
               {audioFiles.length > 0 && (
                 <>
-                  <SelectItem value="__separator2__" disabled>
+                  <SelectItem value="__separator2__" disabled data-oid="fc:r6m6">
                     {t("subtitles.autoSync.filesSection", "Медиафайлы")}
                   </SelectItem>
                   {audioFiles.map((file) => (
-                    <SelectItem key={file.id} value={file.path}>
+                    <SelectItem key={file.id} value={file.path} data-oid="oxof1-v">
                       {file.name}
                     </SelectItem>
                   ))}
@@ -327,24 +328,24 @@ export function SubtitleAutoSync() {
         </div>
 
         {/* Режим синхронизации */}
-        <div className="space-y-2">
-          <Label>{t("subtitles.autoSync.mode", "Режим синхронизации")}</Label>
-          <RadioGroup value={syncMode} onValueChange={(value: any) => setSyncMode(value)}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="voice-detection" id="voice" />
-              <Label htmlFor="voice" className="font-normal">
+        <div className="space-y-2" data-oid="15_nvya">
+          <Label data-oid="gj98vmg">{t("subtitles.autoSync.mode", "Режим синхронизации")}</Label>
+          <RadioGroup value={syncMode} onValueChange={(value: any) => setSyncMode(value)} data-oid="4xpgt8j">
+            <div className="flex items-center space-x-2" data-oid="0jxdy-d">
+              <RadioGroupItem value="voice-detection" id="voice" data-oid="8wtx_hg" />
+              <Label htmlFor="voice" className="font-normal" data-oid="f.w5ian">
                 {t("subtitles.autoSync.voiceDetection", "Определение голоса")}
               </Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="silence-detection" id="silence" />
-              <Label htmlFor="silence" className="font-normal">
+            <div className="flex items-center space-x-2" data-oid="zhaowtb">
+              <RadioGroupItem value="silence-detection" id="silence" data-oid="a3ite7d" />
+              <Label htmlFor="silence" className="font-normal" data-oid="ejn8f8w">
                 {t("subtitles.autoSync.silenceDetection", "Определение пауз")}
               </Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="beat-detection" id="beat" />
-              <Label htmlFor="beat" className="font-normal">
+            <div className="flex items-center space-x-2" data-oid="f_tc4:y">
+              <RadioGroupItem value="beat-detection" id="beat" data-oid="ok5h4:a" />
+              <Label htmlFor="beat" className="font-normal" data-oid="5efc:m_">
                 {t("subtitles.autoSync.beatDetection", "Синхронизация с ритмом")}
               </Label>
             </div>
@@ -352,10 +353,10 @@ export function SubtitleAutoSync() {
         </div>
 
         {/* Чувствительность */}
-        <div className="space-y-2">
-          <Label>{t("subtitles.autoSync.sensitivity", "Чувствительность")}</Label>
-          <div className="flex items-center gap-4">
-            <Activity className="h-4 w-4 text-muted-foreground" />
+        <div className="space-y-2" data-oid="8rmf-z7">
+          <Label data-oid="pfcm6p6">{t("subtitles.autoSync.sensitivity", "Чувствительность")}</Label>
+          <div className="flex items-center gap-4" data-oid="moc0skv">
+            <Activity className="h-4 w-4 text-muted-foreground" data-oid="px6_h44" />
             <Slider
               value={sensitivity}
               onValueChange={setSensitivity}
@@ -363,25 +364,34 @@ export function SubtitleAutoSync() {
               max={0.9}
               step={0.1}
               className="flex-1"
+              data-oid="4z6c11g"
             />
-            <span className="text-sm text-muted-foreground w-12">{Math.round(sensitivity[0] * 100)}%</span>
+
+            <span className="text-sm text-muted-foreground w-12" data-oid=".hrfeav">
+              {Math.round(sensitivity[0] * 100)}%
+            </span>
           </div>
         </div>
 
         {/* Прогресс */}
         {(isAnalyzing || isSyncing) && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span>{t("subtitles.autoSync.progress", "Прогресс")}</span>
-              <span>{Math.round(progress)}%</span>
+          <div className="space-y-2" data-oid="6pvy3.u">
+            <div className="flex items-center justify-between text-sm" data-oid=".l98gby">
+              <span data-oid="yoi1dgq">{t("subtitles.autoSync.progress", "Прогресс")}</span>
+              <span data-oid="jye4nrt">{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} />
+            <Progress value={progress} data-oid="hi:_-e3" />
           </div>
         )}
 
         {/* Кнопка запуска */}
-        <Button onClick={performAutoSync} disabled={!selectedAudioTrack || isAnalyzing || isSyncing} className="w-full">
-          {(isAnalyzing || isSyncing) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button
+          onClick={performAutoSync}
+          disabled={!selectedAudioTrack || isAnalyzing || isSyncing}
+          className="w-full"
+          data-oid="vs-h:sl"
+        >
+          {(isAnalyzing || isSyncing) && <Loader2 className="mr-2 h-4 w-4 animate-spin" data-oid=":nz709-" />}
           {isAnalyzing
             ? t("subtitles.autoSync.analyzing", "Анализ аудио...")
             : isSyncing
@@ -390,7 +400,7 @@ export function SubtitleAutoSync() {
         </Button>
 
         {/* Подсказка */}
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-muted-foreground" data-oid=".m.e2m_">
           {t(
             "subtitles.autoSync.hint",
             "Алгоритм анализирует аудио волну для определения моментов начала речи и автоматически выравнивает субтитры",

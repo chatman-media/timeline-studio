@@ -82,15 +82,22 @@ const VolumeSlider = memo(({ volume, volumeRef, onValueChange, onValueCommit }: 
   const thumbStyle = useMemo(() => ({ left: `calc(${normalizedVolume * 100}% - 6px)` }), [normalizedVolume])
 
   return (
-    <div className="relative h-1 w-20 rounded-full border border-black dark:border-white bg-white dark:bg-black cursor-pointer">
+    <div
+      className="relative h-1 w-20 rounded-full border border-black dark:border-white bg-white dark:bg-black cursor-pointer"
+      data-oid="v91:qdl"
+    >
       <div
         className="absolute top-0 left-0 h-full rounded-full bg-black dark:bg-white transition-all duration-200 ease-out"
         style={fillStyle}
+        data-oid="160-a0_"
       />
+
       <div
         className="absolute top-1/2 h-[12px] w-[12px] -translate-y-1/2 rounded-full border border-black dark:border-white bg-gray-100 dark:bg-background transition-all duration-200 ease-out cursor-pointer"
         style={thumbStyle}
+        data-oid="b98..f."
       />
+
       <Slider
         value={[localVolume]}
         min={0}
@@ -100,6 +107,7 @@ const VolumeSlider = memo(({ volume, volumeRef, onValueChange, onValueCommit }: 
         onValueCommit={handleValueCommit}
         className="absolute inset-0 h-full w-full opacity-0"
         data-testid="volume-slider"
+        data-oid="nbf5giy"
       />
     </div>
   )

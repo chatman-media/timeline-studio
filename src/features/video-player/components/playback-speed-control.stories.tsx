@@ -34,8 +34,8 @@ const meta = {
       // This is a workaround since we can't easily provide PlayerProvider context
       const OriginalComponent = Story as any
       return (
-        <div className="p-8">
-          <OriginalComponent />
+        <div className="p-8" data-oid="et0u80g">
+          <OriginalComponent data-oid="f43y_li" />
         </div>
       )
     },
@@ -62,8 +62,8 @@ export const DarkTheme: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="dark">
-        <Story />
+      <div className="dark" data-oid="rni07.v">
+        <Story data-oid="hzq7nvn" />
       </div>
     ),
   ],

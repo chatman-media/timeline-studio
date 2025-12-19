@@ -78,21 +78,29 @@ export function MediaScanner() {
   const progressPercentage = progress.total > 0 ? (progress.current / progress.total) * 100 : 0
 
   return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle>Сканирование медиафайлов</CardTitle>
-        <CardDescription>Выберите папку для асинхронного сканирования и обработки медиафайлов</CardDescription>
+    <Card className="w-full max-w-2xl" data-oid="24rmq2c">
+      <CardHeader data-oid="j5_3ndq">
+        <CardTitle data-oid="eix4zab">Сканирование медиафайлов</CardTitle>
+        <CardDescription data-oid="p6.-drv">
+          Выберите папку для асинхронного сканирования и обработки медиафайлов
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <Button onClick={handleSelectFolder} disabled={isProcessing} variant="outline" className="flex-1">
-            <FolderOpen className="mr-2 h-4 w-4" />
+      <CardContent className="space-y-4" data-oid="i:4n7b5">
+        <div className="flex gap-2" data-oid="uo70zpd">
+          <Button
+            onClick={handleSelectFolder}
+            disabled={isProcessing}
+            variant="outline"
+            className="flex-1"
+            data-oid=".gx7x.0"
+          >
+            <FolderOpen className="mr-2 h-4 w-4" data-oid="89mvahp" />
             {selectedFolder ? "Изменить папку" : "Выбрать папку"}
           </Button>
-          <Button onClick={handleScan} disabled={!selectedFolder || isProcessing}>
+          <Button onClick={handleScan} disabled={!selectedFolder || isProcessing} data-oid="_.pjtz2">
             {isProcessing ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" data-oid="7zjg7sw" />
                 Сканирование...
               </>
             ) : (
@@ -101,30 +109,37 @@ export function MediaScanner() {
           </Button>
         </div>
 
-        {selectedFolder && <div className="text-sm text-muted-foreground">Выбрана папка: {selectedFolder}</div>}
+        {selectedFolder && (
+          <div className="text-sm text-muted-foreground" data-oid="pao6t3s">
+            Выбрана папка: {selectedFolder}
+          </div>
+        )}
 
         {isProcessing && progress.total > 0 && (
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Обработка файлов</span>
-              <span>
+          <div className="space-y-2" data-oid="uyk661v">
+            <div className="flex justify-between text-sm" data-oid="3bae3zm">
+              <span data-oid="qi29mtj">Обработка файлов</span>
+              <span data-oid="cj3dgs3">
                 {progress.current} / {progress.total}
               </span>
             </div>
-            <Progress value={progressPercentage} className="h-2" />
+            <Progress value={progressPercentage} className="h-2" data-oid="1qr7av0" />
           </div>
         )}
 
         {errors.size > 0 && (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm font-medium text-destructive">
-              <AlertCircle className="h-4 w-4" />
+          <div className="space-y-2" data-oid="1b0ejla">
+            <div className="flex items-center gap-2 text-sm font-medium text-destructive" data-oid="mvg2dw5">
+              <AlertCircle className="h-4 w-4" data-oid="y:.sd33" />
               Ошибки при обработке ({errors.size})
             </div>
-            <div className="max-h-32 overflow-y-auto rounded-md bg-destructive/10 p-2 text-xs">
+            <div className="max-h-32 overflow-y-auto rounded-md bg-destructive/10 p-2 text-xs" data-oid="xhszg:8">
               {Array.from(errors.entries()).map(([fileId, error]) => (
-                <div key={fileId} className="py-1">
-                  <span className="font-mono">{fileId}:</span> {error}
+                <div key={fileId} className="py-1" data-oid="e4:tcwf">
+                  <span className="font-mono" data-oid="dogg0n7">
+                    {fileId}:
+                  </span>{" "}
+                  {error}
                 </div>
               ))}
             </div>
@@ -132,14 +147,18 @@ export function MediaScanner() {
         )}
 
         {scannedFiles.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium">Обработано файлов: {scannedFiles.length}</h3>
-            <div className="max-h-64 overflow-y-auto rounded-md border p-2">
-              <ul className="space-y-1 text-sm">
+          <div className="space-y-2" data-oid="4g:7:pz">
+            <h3 className="text-sm font-medium" data-oid="j5gjxv:">
+              Обработано файлов: {scannedFiles.length}
+            </h3>
+            <div className="max-h-64 overflow-y-auto rounded-md border p-2" data-oid="qo:xg63">
+              <ul className="space-y-1 text-sm" data-oid="ndn8txj">
                 {scannedFiles.map((file) => (
-                  <li key={file.id} className="flex items-center justify-between py-1">
-                    <span className="truncate">{file.name}</span>
-                    <span className="text-xs text-muted-foreground">
+                  <li key={file.id} className="flex items-center justify-between py-1" data-oid="lx5rbf1">
+                    <span className="truncate" data-oid="2suagun">
+                      {file.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground" data-oid="ncwppz0">
                       {file.isVideo && "Видео"}
                       {file.isImage && "Изображение"}
                       {file.isAudio && "Аудио"}

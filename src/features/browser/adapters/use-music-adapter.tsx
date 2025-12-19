@@ -77,26 +77,40 @@ const MusicPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({
         )}
         onClick={() => onClick?.(file)}
         {...dragProps}
+        data-oid="88ts2p6"
       >
         {/* Play/Pause Button */}
         <button
           className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
           onClick={handlePlayPause}
+          data-oid="hean2kk"
         >
-          {isPlaying ? <CirclePause className="w-4 h-4" /> : <CirclePlay className="w-4 h-4" />}
+          {isPlaying ? (
+            <CirclePause className="w-4 h-4" data-oid="7xj0x6p" />
+          ) : (
+            <CirclePlay className="w-4 h-4" data-oid="skuwrk2" />
+          )}
         </button>
 
         {/* File Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{title}</div>
-          {artist && <div className="text-xs text-muted-foreground truncate">{artist}</div>}
+        <div className="flex-1 min-w-0" data-oid="4ql6jqt">
+          <div className="font-medium text-sm truncate" data-oid="kupfzow">
+            {title}
+          </div>
+          {artist && (
+            <div className="text-xs text-muted-foreground truncate" data-oid="nbcaa3_">
+              {artist}
+            </div>
+          )}
         </div>
 
         {/* Duration */}
-        <div className="shrink-0 text-xs text-muted-foreground">{duration > 0 ? formatTime(duration) : ""}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="qgh5kyb">
+          {duration > 0 ? formatTime(duration) : ""}
+        </div>
 
         {/* Status indicator */}
-        {isAdded && <div className="shrink-0 w-2 h-2 bg-green-500 rounded-full" />}
+        {isAdded && <div className="shrink-0 w-2 h-2 bg-green-500 rounded-full" data-oid="9nq2do1" />}
       </div>
     )
   }
@@ -113,24 +127,38 @@ const MusicPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({
       style={{ width: typeof size === "number" ? size : size.width }}
       onClick={() => onClick?.(file)}
       {...dragProps}
+      data-oid="2_ax0-v"
     >
       {/* Play/Pause Button */}
       <button
         className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 transition-colors mb-2"
         onClick={handlePlayPause}
+        data-oid=":s5iih2"
       >
-        {isPlaying ? <CirclePause className="w-6 h-6" /> : <CirclePlay className="w-6 h-6" />}
+        {isPlaying ? (
+          <CirclePause className="w-6 h-6" data-oid=":6uumy_" />
+        ) : (
+          <CirclePlay className="w-6 h-6" data-oid="l4o91l8" />
+        )}
       </button>
 
       {/* File Info */}
-      <div className="text-center">
-        <div className="font-medium text-sm truncate max-w-full">{title}</div>
-        {artist && <div className="text-xs text-muted-foreground truncate">{artist}</div>}
-        <div className="text-xs text-muted-foreground mt-1">{duration > 0 ? formatTime(duration) : ""}</div>
+      <div className="text-center" data-oid="q20djk8">
+        <div className="font-medium text-sm truncate max-w-full" data-oid="so-ba9s">
+          {title}
+        </div>
+        {artist && (
+          <div className="text-xs text-muted-foreground truncate" data-oid=":g2.kon">
+            {artist}
+          </div>
+        )}
+        <div className="text-xs text-muted-foreground mt-1" data-oid="our9hlz">
+          {duration > 0 ? formatTime(duration) : ""}
+        </div>
       </div>
 
       {/* Status indicator */}
-      {isAdded && <div className="w-2 h-2 bg-green-500 rounded-full mt-1" />}
+      {isAdded && <div className="w-2 h-2 bg-green-500 rounded-full mt-1" data-oid="37_w915" />}
     </div>
   )
 }
@@ -188,6 +216,7 @@ export function useMusicAdapter(): ListAdapter<MusicListItem> {
         String(file.probeData?.format.tags?.album || ""),
         String(file.probeData?.format.tags?.genre || ""),
       ]
+
       return texts.filter(Boolean)
     },
 

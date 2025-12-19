@@ -158,12 +158,21 @@ describe("Adapter Pattern Consistency", () => {
       { component: FiltersAdapterContent, name: "FiltersAdapterContent" },
       { component: MediaAdapterContent, name: "MediaAdapterContent" },
       { component: MusicAdapterContent, name: "MusicAdapterContent" },
-      { component: ProjectTemplatesAdapterContent, name: "ProjectTemplatesAdapterContent" },
+      {
+        component: ProjectTemplatesAdapterContent,
+        name: "ProjectTemplatesAdapterContent",
+      },
       { component: ScenariosAdapterContent, name: "ScenariosAdapterContent" },
-      { component: StyleTemplatesAdapterContent, name: "StyleTemplatesAdapterContent" },
+      {
+        component: StyleTemplatesAdapterContent,
+        name: "StyleTemplatesAdapterContent",
+      },
       { component: SubtitlesAdapterContent, name: "SubtitlesAdapterContent" },
       { component: TemplatesAdapterContent, name: "TemplatesAdapterContent" },
-      { component: TransitionsAdapterContent, name: "TransitionsAdapterContent" },
+      {
+        component: TransitionsAdapterContent,
+        name: "TransitionsAdapterContent",
+      },
     ]
 
     adapters.forEach(({ component, name }) => {

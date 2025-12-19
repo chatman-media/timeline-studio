@@ -84,10 +84,14 @@ export function AudioWaveform({
 
   if (error) {
     return (
-      <div className={cn("flex items-center justify-center p-4 text-sm text-red-500", className)}>
-        <div className="text-center">
-          <p className="font-medium">Failed to load waveform</p>
-          <p className="mt-1 text-xs opacity-75">{error.message}</p>
+      <div className={cn("flex items-center justify-center p-4 text-sm text-red-500", className)} data-oid="cc2yyvd">
+        <div className="text-center" data-oid="wmziw2:">
+          <p className="font-medium" data-oid="pj-ks74">
+            Failed to load waveform
+          </p>
+          <p className="mt-1 text-xs opacity-75" data-oid="rcx-.tr">
+            {error.message}
+          </p>
         </div>
       </div>
     )
@@ -95,31 +99,41 @@ export function AudioWaveform({
 
   if (isLoading) {
     return (
-      <div className={cn("flex items-center justify-center p-4", className)}>
-        <div className="flex items-center space-x-2">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          <span className="text-sm text-muted-foreground">Loading waveform...</span>
+      <div className={cn("flex items-center justify-center p-4", className)} data-oid="q1-0t2y">
+        <div className="flex items-center space-x-2" data-oid="kkpnbcz">
+          <div
+            className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"
+            data-oid="qauna5:"
+          />
+
+          <span className="text-sm text-muted-foreground" data-oid="qny4f8w">
+            Loading waveform...
+          </span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative", className)} data-oid="sfx4b3u">
       {/* Hidden audio element */}
-      <audio ref={audioRef} style={{ display: "none" }} />
+      <audio ref={audioRef} style={{ display: "none" }} data-oid="7d0.3jo" />
 
       {/* Overview waveform */}
       {showOverview && (
-        <div className="relative mb-2">
+        <div className="relative mb-2" data-oid="21y2046">
           <div
             ref={overviewRef}
             style={{ height: `${overviewHeight}px` }}
             className="w-full rounded border bg-background"
+            data-oid="oyiszw3"
           />
+
           {!isReady && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-              <span className="text-xs text-muted-foreground">Initializing overview...</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-background/80" data-oid="sca:in-">
+              <span className="text-xs text-muted-foreground" data-oid="rt6g6_x">
+                Initializing overview...
+              </span>
             </div>
           )}
         </div>
@@ -127,15 +141,19 @@ export function AudioWaveform({
 
       {/* Zoomview waveform */}
       {showZoomview && (
-        <div className="relative">
+        <div className="relative" data-oid="6u1ia4c">
           <div
             ref={zoomviewRef}
             style={{ height: `${zoomviewHeight}px` }}
             className="w-full rounded border bg-background"
+            data-oid="1zhzx3d"
           />
+
           {!isReady && (
-            <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-              <span className="text-xs text-muted-foreground">Initializing waveform...</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-background/80" data-oid="f.5vq.v">
+              <span className="text-xs text-muted-foreground" data-oid="569kqzl">
+                Initializing waveform...
+              </span>
             </div>
           )}
         </div>
@@ -143,11 +161,12 @@ export function AudioWaveform({
 
       {/* Playback controls */}
       {showControls && isReady && (
-        <div className="mt-2 flex items-center space-x-2">
+        <div className="mt-2 flex items-center space-x-2" data-oid="vu:0mf-">
           <button
             onClick={play}
             className="rounded bg-primary px-3 py-1 text-sm text-primary-foreground hover:bg-primary/90"
             type="button"
+            data-oid="5-dd69v"
           >
             Play
           </button>
@@ -155,6 +174,7 @@ export function AudioWaveform({
             onClick={pause}
             className="rounded bg-secondary px-3 py-1 text-sm text-secondary-foreground hover:bg-secondary/90"
             type="button"
+            data-oid="fxiotjk"
           >
             Pause
           </button>
@@ -195,6 +215,7 @@ export function AudioWaveformCompact({
       showZoomview={false}
       showControls={false}
       onReady={onReady}
+      data-oid="orhptl."
     />
   )
 }

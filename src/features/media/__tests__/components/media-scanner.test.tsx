@@ -56,7 +56,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="xnkn-:4" />)
 
     // Проверяем основные элементы интерфейса
     expect(screen.getByText("Сканирование медиафайлов")).toBeInTheDocument()
@@ -80,7 +80,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="8xypai." />)
 
     // Кнопка сканирования должна быть отключена, если папка не выбрана
     expect(screen.getByRole("button", { name: /начать сканирование/i })).toBeDisabled()
@@ -102,7 +102,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="zu_03u." />)
 
     // Кликаем на кнопку выбора папки
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -141,7 +141,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="w1tykz2" />)
 
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
 
@@ -193,7 +193,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="afcgbmq" />)
 
     // Выбираем папку
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -234,7 +234,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="zdu4you" />)
 
     // Проверяем индикатор загрузки
     expect(screen.getByText("Сканирование...")).toBeInTheDocument()
@@ -266,7 +266,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="ubjh6_g" />)
 
     // Проверяем отображение ошибок
     expect(screen.getByText("Ошибки при обработке (2)")).toBeInTheDocument()
@@ -323,7 +323,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="nci:067" />)
 
     // Выбираем папку и запускаем сканирование
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -365,7 +365,7 @@ describe("MediaScanner", () => {
 
     mockShowOpenDialog.mockResolvedValue(["/new/path"])
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="n5h6r7f" />)
 
     // Кликаем на выбор папки
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -393,7 +393,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="1.jpl69" />)
 
     // Выбираем папку
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -430,10 +430,12 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner />)
+    renderWithProviders(<MediaScanner data-oid="k0rbhhj" />)
 
     // Попытка запустить сканирование без выбранной папки (кнопка отключена)
-    const scanButton = screen.getByRole("button", { name: /начать сканирование/i })
+    const scanButton = screen.getByRole("button", {
+      name: /начать сканирование/i,
+    })
     expect(scanButton).toBeDisabled()
 
     // scanFolderWithThumbnails не должен быть вызван

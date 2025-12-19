@@ -391,6 +391,7 @@ describe("useMontagePlanner", () => {
               size: 1000,
             },
           ],
+
           [
             "video-2",
             {

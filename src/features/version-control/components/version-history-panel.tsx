@@ -126,31 +126,31 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
   )
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <History className="h-4 w-4" />
+    <Card className={className} data-oid="s:ird-g">
+      <CardHeader data-oid="n6zu-tr">
+        <CardTitle className="flex items-center gap-2" data-oid="l5t58np">
+          <History className="h-4 w-4" data-oid=".g:p3o1" />
           {t("dialogs.userSettings.versionControl.history.title")}
         </CardTitle>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <GitBranch className="h-3 w-3" />
-          <span>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground" data-oid="el1-w2d">
+          <GitBranch className="h-3 w-3" data-oid="ps4w-q-" />
+          <span data-oid="kfx9j-:">
             {t("dialogs.userSettings.versionControl.history.branch", {
               name: branchName,
             })}
           </span>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-xs" data-oid="pv_wxry">
             {currentVersionId}
           </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4" data-oid="i316oc8">
         {/* Auto-save status */}
-        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-          <div className="flex items-center gap-2 text-sm">
-            <Clock className="h-3 w-3" />
-            <span>
+        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg" data-oid="zvoxo66">
+          <div className="flex items-center gap-2 text-sm" data-oid=".ak9d_5">
+            <Clock className="h-3 w-3" data-oid="2p_cvzy" />
+            <span data-oid="gt.fudk">
               {t("dialogs.userSettings.versionControl.autoSave", {
                 enabled: autoSaveEnabled
                   ? t("dialogs.userSettings.versionControl.autoSaveEnabled", {
@@ -160,21 +160,29 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
               })}
             </span>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setShowAutoSaveSettings(!showAutoSaveSettings)}>
-            <Settings className="h-3 w-3" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowAutoSaveSettings(!showAutoSaveSettings)}
+            data-oid="dk64pjt"
+          >
+            <Settings className="h-3 w-3" data-oid="s:98.8d" />
           </Button>
         </div>
 
         {/* Auto-save settings */}
         {showAutoSaveSettings && (
-          <div className="space-y-3 p-3 border rounded-lg">
-            <div className="flex items-center justify-between">
-              <label className="text-sm">{t("dialogs.userSettings.versionControl.settings.enableAutoSave")}</label>
+          <div className="space-y-3 p-3 border rounded-lg" data-oid="svbhlf4">
+            <div className="flex items-center justify-between" data-oid="0pmnfn3">
+              <label className="text-sm" data-oid="s0oa:yo">
+                {t("dialogs.userSettings.versionControl.settings.enableAutoSave")}
+              </label>
               <Button
                 variant={autoSaveEnabled ? "default" : "outline"}
                 size="sm"
                 onClick={handleToggleAutoSave}
                 disabled={isLoading}
+                data-oid="dolts4:"
               >
                 {autoSaveEnabled
                   ? t("dialogs.userSettings.versionControl.settings.enabled")
@@ -183,9 +191,11 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
             </div>
 
             {autoSaveEnabled && (
-              <div className="space-y-2">
-                <label className="text-sm">{t("dialogs.userSettings.versionControl.settings.intervalTitle")}</label>
-                <div className="flex gap-2">
+              <div className="space-y-2" data-oid="8q.z:p0">
+                <label className="text-sm" data-oid="g0u-9u9">
+                  {t("dialogs.userSettings.versionControl.settings.intervalTitle")}
+                </label>
+                <div className="flex gap-2" data-oid="o52k6v9">
                   {[30, 60, 120, 300].map((interval) => (
                     <Button
                       key={interval}
@@ -193,6 +203,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
                       size="sm"
                       onClick={() => handleIntervalChange(interval)}
                       disabled={isLoading}
+                      data-oid="6_3x82a"
                     >
                       {interval}
                     </Button>
@@ -204,8 +215,8 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
         )}
 
         {/* Create snapshot */}
-        <div className="space-y-2">
-          <div className="flex gap-2">
+        <div className="space-y-2" data-oid="jcpfixs">
+          <div className="flex gap-2" data-oid="-b91yvs">
             <input
               type="text"
               placeholder={t("dialogs.userSettings.versionControl.history.placeholder")}
@@ -213,47 +224,60 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
               onChange={(e) => setSnapshotMessage(e.target.value)}
               className="flex-1 px-3 py-2 text-sm border rounded-md"
               disabled={isLoading}
+              data-oid="r9-ffx-"
             />
-            <Button onClick={handleCreateSnapshot} disabled={isLoading} size="sm">
-              <Plus className="h-3 w-3 mr-1" />
+
+            <Button onClick={handleCreateSnapshot} disabled={isLoading} size="sm" data-oid="0_u1:no">
+              <Plus className="h-3 w-3 mr-1" data-oid="ng4c5q:" />
               {t("dialogs.userSettings.versionControl.history.create")}
             </Button>
           </div>
         </div>
 
-        <Separator />
+        <Separator data-oid="p9cq6-q" />
 
         {/* Version history */}
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium">{t("dialogs.userSettings.versionControl.history.title")}</h4>
+        <div className="space-y-2" data-oid="f5lz_do">
+          <h4 className="text-sm font-medium" data-oid="4o5lyzm">
+            {t("dialogs.userSettings.versionControl.history.title")}
+          </h4>
 
-          {error && <div className="p-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded">{error}</div>}
+          {error && (
+            <div className="p-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded" data-oid="vr.aknv">
+              {error}
+            </div>
+          )}
 
-          <ScrollArea className="h-64">
+          <ScrollArea className="h-64" data-oid="tmjy8vx">
             {loadingVersions ? (
-              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground" data-oid="aq6srnp">
                 {t("dialogs.userSettings.versionControl.history.loading")}
               </div>
             ) : versions.length === 0 ? (
-              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center p-4 text-sm text-muted-foreground" data-oid="srkea_0">
                 {t("dialogs.userSettings.versionControl.history.noVersions")}
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2" data-oid="qkbv4_i">
                 {versions.map((version) => (
                   <div
                     key={version.id}
                     className={`p-3 border rounded-lg space-y-2 ${
                       version.id === currentVersionId ? "bg-blue-50 border-blue-200" : "hover:bg-muted/50"
                     }`}
+                    data-oid="h8-dt1t"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Badge variant={version.id === currentVersionId ? "default" : "outline"} className="text-xs">
+                    <div className="flex items-center justify-between" data-oid="wb-f-o1">
+                      <div className="flex items-center gap-2" data-oid="py4t.u3">
+                        <Badge
+                          variant={version.id === currentVersionId ? "default" : "outline"}
+                          className="text-xs"
+                          data-oid="0o2dkag"
+                        >
                           {version.id.slice(0, 8)}
                         </Badge>
                         {version.id === currentVersionId && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs" data-oid="xs5ifor">
                             {t("dialogs.userSettings.versionControl.history.current")}
                           </Badge>
                         )}
@@ -265,24 +289,27 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
                           size="sm"
                           onClick={() => handleRestoreVersion(version.id)}
                           disabled={isLoading}
+                          data-oid="38_lzv."
                         >
-                          <RotateCcw className="h-3 w-3" />
+                          <RotateCcw className="h-3 w-3" data-oid="_:w5vnh" />
                         </Button>
                       )}
                     </div>
 
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <User className="h-3 w-3" />
-                        <span>{version.author}</span>
-                        <Clock className="h-3 w-3" />
-                        <span>{formatTimeAgo(new Date(version.timestamp), t)}</span>
+                    <div className="space-y-1" data-oid="roix2s1">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground" data-oid="58_j5pr">
+                        <User className="h-3 w-3" data-oid="w-goczh" />
+                        <span data-oid="zyxrvy8">{version.author}</span>
+                        <Clock className="h-3 w-3" data-oid="r31pw5j" />
+                        <span data-oid="eanxxev">{formatTimeAgo(new Date(version.timestamp), t)}</span>
                       </div>
 
                       {version.message && (
-                        <div className="flex items-start gap-2 text-xs">
-                          <MessageCircle className="h-3 w-3 mt-0.5 shrink-0" />
-                          <span className="text-foreground">{version.message}</span>
+                        <div className="flex items-start gap-2 text-xs" data-oid="5aa86jd">
+                          <MessageCircle className="h-3 w-3 mt-0.5 shrink-0" data-oid="yquz30n" />
+                          <span className="text-foreground" data-oid="do81us0">
+                            {version.message}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -295,7 +322,7 @@ export function VersionHistoryPanel({ className }: VersionHistoryPanelProps) {
 
         {/* Last snapshot info */}
         {lastSnapshotTime && (
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-muted-foreground" data-oid="_rqz80a">
             {t("dialogs.userSettings.versionControl.history.lastSnapshot", {
               time: formatTimeAgo(new Date(lastSnapshotTime), t),
             })}

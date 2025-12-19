@@ -271,7 +271,9 @@ describe("useUnifiedAnalysis", () => {
       let optimized: any
 
       await act(async () => {
-        optimized = await result.current.optimizeMontagePlan(mockMontagePlan, { style: "dynamic" })
+        optimized = await result.current.optimizeMontagePlan(mockMontagePlan, {
+          style: "dynamic",
+        })
       })
 
       expect(optimized).toEqual(mockMontagePlan)

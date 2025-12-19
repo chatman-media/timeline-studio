@@ -263,28 +263,30 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
   }
 
   return (
-    <div className="w-full h-full flex flex-col space-y-4">
+    <div className="w-full h-full flex flex-col space-y-4" data-oid="0y.b3h-">
       {/* Заголовок и переключатель режима */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold">{t("transcription.enhanced.title", "AI Генерация субтитров")}</h2>
-          <p className="text-sm text-muted-foreground">
+      <div className="flex items-center justify-between" data-oid="rcotwr6">
+        <div data-oid=".xxwqxd">
+          <h2 className="text-2xl font-semibold" data-oid="e1f09n1">
+            {t("transcription.enhanced.title", "AI Генерация субтитров")}
+          </h2>
+          <p className="text-sm text-muted-foreground" data-oid="h1hhcli">
             {t("transcription.enhanced.description", "Автоматическое создание субтитров с использованием AI")}
           </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <Badge variant={mode === "basic" ? "secondary" : "default"}>
+        <div className="flex items-center space-x-2" data-oid="uscxrrf">
+          <Badge variant={mode === "basic" ? "secondary" : "default"} data-oid="4vr24pu">
             {mode === "enhanced" ? "Enhanced AI" : "Standard"}
           </Badge>
-          <Tabs value={mode} onValueChange={(value) => setMode(value as any)}>
-            <TabsList>
-              <TabsTrigger value="basic" className="flex items-center space-x-2">
-                <Mic className="w-4 h-4" />
-                <span>{t("transcription.mode.basic", "Базовая")}</span>
+          <Tabs value={mode} onValueChange={(value) => setMode(value as any)} data-oid="cmvbf4n">
+            <TabsList data-oid="j4y7tm3">
+              <TabsTrigger value="basic" className="flex items-center space-x-2" data-oid="4y93alb">
+                <Mic className="w-4 h-4" data-oid="zp_2r5m" />
+                <span data-oid="twff58r">{t("transcription.mode.basic", "Базовая")}</span>
               </TabsTrigger>
-              <TabsTrigger value="enhanced" className="flex items-center space-x-2">
-                <Brain className="w-4 h-4" />
-                <span>{t("transcription.mode.enhanced", "Enhanced AI")}</span>
+              <TabsTrigger value="enhanced" className="flex items-center space-x-2" data-oid="g721fug">
+                <Brain className="w-4 h-4" data-oid="otzbhks" />
+                <span data-oid="o_1qy37">{t("transcription.mode.enhanced", "Enhanced AI")}</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -292,23 +294,25 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
       </div>
 
       {/* Выбор файла */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <FileText className="w-5 h-5" />
-            <span>{t("transcription.file.title", "Выбор файла")}</span>
+      <Card data-oid="kt.bltt">
+        <CardHeader data-oid="i7t09vl">
+          <CardTitle className="flex items-center space-x-2" data-oid="t_txjql">
+            <FileText className="w-5 h-5" data-oid="zny92d8" />
+            <span data-oid="1.v7hoe">{t("transcription.file.title", "Выбор файла")}</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <Button onClick={handleSelectFile} variant="outline">
-              <FileText className="w-4 h-4 mr-2" />
+        <CardContent className="space-y-4" data-oid="k9h7yk:">
+          <div className="flex items-center space-x-4" data-oid="2xcj2lh">
+            <Button onClick={handleSelectFile} variant="outline" data-oid="r6o1vhn">
+              <FileText className="w-4 h-4 mr-2" data-oid="2skjf2:" />
               {t("transcription.file.select", "Выбрать файл")}
             </Button>
             {selectedFile && (
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span className="text-sm font-medium">{selectedFile.split("/").pop() || "Файл выбран"}</span>
+              <div className="flex items-center space-x-2" data-oid="o_jv0-f">
+                <CheckCircle className="w-4 h-4 text-green-500" data-oid="3xj4i18" />
+                <span className="text-sm font-medium" data-oid=":cge6fx">
+                  {selectedFile.split("/").pop() || "Файл выбран"}
+                </span>
               </div>
             )}
           </div>
@@ -316,28 +320,32 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
       </Card>
 
       {/* Настройки */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Settings className="w-5 h-5" />
-            <span>{t("transcription.settings.title", "Настройки")}</span>
+      <Card data-oid="cqsyget">
+        <CardHeader data-oid="6bf:7cp">
+          <CardTitle className="flex items-center space-x-2" data-oid="rj.76pe">
+            <Settings className="w-5 h-5" data-oid="2:i5ano" />
+            <span data-oid="te5sks4">{t("transcription.settings.title", "Настройки")}</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="main" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="main">{t("transcription.settings.main", "Основные")}</TabsTrigger>
-              <TabsTrigger value="ai" disabled={mode === "basic"}>
+        <CardContent data-oid="mlp6i2b">
+          <Tabs defaultValue="main" className="w-full" data-oid="5v0jk-b">
+            <TabsList className="grid w-full grid-cols-3" data-oid="c:jtshb">
+              <TabsTrigger value="main" data-oid="t.0h_1w">
+                {t("transcription.settings.main", "Основные")}
+              </TabsTrigger>
+              <TabsTrigger value="ai" disabled={mode === "basic"} data-oid="dycwzc5">
                 {t("transcription.settings.ai", "AI функции")}
               </TabsTrigger>
-              <TabsTrigger value="advanced">{t("transcription.settings.advanced", "Дополнительно")}</TabsTrigger>
+              <TabsTrigger value="advanced" data-oid="2_1ivdd">
+                {t("transcription.settings.advanced", "Дополнительно")}
+              </TabsTrigger>
             </TabsList>
 
             {/* Основные настройки */}
-            <TabsContent value="main" className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>{t("transcription.language.label", "Язык")}</Label>
+            <TabsContent value="main" className="space-y-4 mt-4" data-oid="6:kr_jp">
+              <div className="grid grid-cols-2 gap-4" data-oid="jh5_8i9">
+                <div className="space-y-2" data-oid="p0n5c_2">
+                  <Label data-oid="qclfi7a">{t("transcription.language.label", "Язык")}</Label>
                   <LanguageSelector
                     value={mode === "basic" ? transcriptionOptions.language : enhancedOptions.language || "auto"}
                     onChange={(value) => {
@@ -353,11 +361,12 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                         }))
                       }
                     }}
+                    data-oid="8n7sa9s"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>{t("transcription.task.label", "Задача")}</Label>
+                <div className="space-y-2" data-oid="otux-qr">
+                  <Label data-oid="j:-mb8u">{t("transcription.task.label", "Задача")}</Label>
                   <Select
                     value={mode === "basic" ? transcriptionOptions.task : enhancedOptions.task}
                     onValueChange={(value: "transcribe" | "translate") => {
@@ -373,15 +382,18 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                         }))
                       }
                     }}
+                    data-oid="cmakahu"
                   >
-                    <SelectTrigger>
-                      <SelectValue />
+                    <SelectTrigger data-oid="6hw0lhj">
+                      <SelectValue data-oid="kxed.ho" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="transcribe">
+                    <SelectContent data-oid="o06w6do">
+                      <SelectItem value="transcribe" data-oid="x-tnldv">
                         {t("transcription.task.transcribe", "Транскрибировать")}
                       </SelectItem>
-                      <SelectItem value="translate">{t("transcription.task.translate", "Переводить")}</SelectItem>
+                      <SelectItem value="translate" data-oid="h3c5r2y">
+                        {t("transcription.task.translate", "Переводить")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -389,9 +401,9 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
 
               {mode === "basic" && (
                 <>
-                  <Separator />
-                  <div className="space-y-2">
-                    <Label>Размер модели</Label>
+                  <Separator data-oid="-2xelpy" />
+                  <div className="space-y-2" data-oid="4qkxxrh">
+                    <Label data-oid="3r0awfy">Размер модели</Label>
                     <ModelSizeSelector
                       value={transcriptionOptions.modelSize}
                       onChange={(value) =>
@@ -400,6 +412,7 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                           modelSize: value,
                         }))
                       }
+                      data-oid="9nabdj."
                     />
                   </div>
                 </>
@@ -407,19 +420,21 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
             </TabsContent>
 
             {/* AI функции (только для enhanced режима) */}
-            <TabsContent value="ai" className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <Label className="flex items-center space-x-2">
-                    <Brain className="w-4 h-4" />
-                    <span>{t("transcription.ai.sources", "Источники данных")}</span>
+            <TabsContent value="ai" className="space-y-4 mt-4" data-oid="ma2vkvj">
+              <div className="grid grid-cols-2 gap-4" data-oid="x-k3xkp">
+                <div className="space-y-4" data-oid="ws0_ua8">
+                  <Label className="flex items-center space-x-2" data-oid="ow:scpd">
+                    <Brain className="w-4 h-4" data-oid="v8cbr77" />
+                    <span data-oid="eezt6nu">{t("transcription.ai.sources", "Источники данных")}</span>
                   </Label>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Mic className="w-4 h-4" />
-                        <span className="text-sm">{t("transcription.ai.speech", "Распознавание речи")}</span>
+                  <div className="space-y-3" data-oid="ud1ky0c">
+                    <div className="flex items-center justify-between" data-oid="3-0.wf0">
+                      <div className="flex items-center space-x-2" data-oid="h2ifu.p">
+                        <Mic className="w-4 h-4" data-oid="-a5xoul" />
+                        <span className="text-sm" data-oid="sq6.9cg">
+                          {t("transcription.ai.speech", "Распознавание речи")}
+                        </span>
                       </div>
                       <Switch
                         checked={enhancedOptions.useSpeechRecognition}
@@ -429,13 +444,16 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             useSpeechRecognition: checked,
                           }))
                         }
+                        data-oid="z7m8e5n"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Eye className="w-4 h-4" />
-                        <span className="text-sm">{t("transcription.ai.ocr", "Текст на экране (OCR)")}</span>
+                    <div className="flex items-center justify-between" data-oid="nly7.lh">
+                      <div className="flex items-center space-x-2" data-oid="6mo:01g">
+                        <Eye className="w-4 h-4" data-oid="0lbnd.c" />
+                        <span className="text-sm" data-oid="r8xtzlq">
+                          {t("transcription.ai.ocr", "Текст на экране (OCR)")}
+                        </span>
                       </div>
                       <Switch
                         checked={enhancedOptions.useOCR}
@@ -445,13 +463,16 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             useOCR: checked,
                           }))
                         }
+                        data-oid="jp97_mp"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-sm">{t("transcription.ai.scenes", "Анализ сцен")}</span>
+                    <div className="flex items-center justify-between" data-oid="8ejztsx">
+                      <div className="flex items-center space-x-2" data-oid="5uwfvf3">
+                        <Sparkles className="w-4 h-4" data-oid="bhb:dei" />
+                        <span className="text-sm" data-oid="u4pii4y">
+                          {t("transcription.ai.scenes", "Анализ сцен")}
+                        </span>
                       </div>
                       <Switch
                         checked={enhancedOptions.useSceneAnalysis}
@@ -461,13 +482,16 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             useSceneAnalysis: checked,
                           }))
                         }
+                        data-oid="7hsr0f4"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Users className="w-4 h-4" />
-                        <span className="text-sm">{t("transcription.ai.speakers", "Идентификация говорящих")}</span>
+                    <div className="flex items-center justify-between" data-oid="dw:_ecr">
+                      <div className="flex items-center space-x-2" data-oid="hbo7d3g">
+                        <Users className="w-4 h-4" data-oid="h-ssu:v" />
+                        <span className="text-sm" data-oid="h.dy3v_">
+                          {t("transcription.ai.speakers", "Идентификация говорящих")}
+                        </span>
                       </div>
                       <Switch
                         checked={enhancedOptions.usePersonIdentification}
@@ -477,20 +501,23 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             usePersonIdentification: checked,
                           }))
                         }
+                        data-oid="kbhnzxm"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <Label className="flex items-center space-x-2">
-                    <Wand2 className="w-4 h-4" />
-                    <span>{t("transcription.ai.processing", "Обработка текста")}</span>
+                <div className="space-y-4" data-oid="witg9ao">
+                  <Label className="flex items-center space-x-2" data-oid="jvjeb-n">
+                    <Wand2 className="w-4 h-4" data-oid="39mnkzw" />
+                    <span data-oid="8.0m0ry">{t("transcription.ai.processing", "Обработка текста")}</span>
                   </Label>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">{t("transcription.ai.grammar", "Исправление грамматики")}</span>
+                  <div className="space-y-3" data-oid="ef6_1gz">
+                    <div className="flex items-center justify-between" data-oid="-jcom_x">
+                      <span className="text-sm" data-oid="xq:36p_">
+                        {t("transcription.ai.grammar", "Исправление грамматики")}
+                      </span>
                       <Switch
                         checked={enhancedOptions.autoCorrectGrammar}
                         onCheckedChange={(checked) =>
@@ -499,11 +526,14 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             autoCorrectGrammar: checked,
                           }))
                         }
+                        data-oid="0275pxf"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">{t("transcription.ai.capitalization", "Заглавные буквы")}</span>
+                    <div className="flex items-center justify-between" data-oid="_uhai1.">
+                      <span className="text-sm" data-oid="l4uj9ug">
+                        {t("transcription.ai.capitalization", "Заглавные буквы")}
+                      </span>
                       <Switch
                         checked={enhancedOptions.autoCapitalization}
                         onCheckedChange={(checked) =>
@@ -512,11 +542,14 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             autoCapitalization: checked,
                           }))
                         }
+                        data-oid="i.ke4un"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">{t("transcription.ai.filler", "Убрать слова-паразиты")}</span>
+                    <div className="flex items-center justify-between" data-oid=":p85o.9">
+                      <span className="text-sm" data-oid="zi0p5l1">
+                        {t("transcription.ai.filler", "Убрать слова-паразиты")}
+                      </span>
                       <Switch
                         checked={enhancedOptions.removeFiller}
                         onCheckedChange={(checked) =>
@@ -525,11 +558,14 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             removeFiller: checked,
                           }))
                         }
+                        data-oid="a8ug-wk"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">{t("transcription.ai.optimize", "Оптимизация для чтения")}</span>
+                    <div className="flex items-center justify-between" data-oid="xv.:vzl">
+                      <span className="text-sm" data-oid="sq1_4ro">
+                        {t("transcription.ai.optimize", "Оптимизация для чтения")}
+                      </span>
                       <Switch
                         checked={enhancedOptions.optimizeReading}
                         onCheckedChange={(checked) =>
@@ -538,6 +574,7 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                             optimizeReading: checked,
                           }))
                         }
+                        data-oid="9snj1c-"
                       />
                     </div>
                   </div>
@@ -546,11 +583,11 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
             </TabsContent>
 
             {/* Дополнительные настройки */}
-            <TabsContent value="advanced" className="space-y-4 mt-4">
+            <TabsContent value="advanced" className="space-y-4 mt-4" data-oid="0go424x">
               {mode === "enhanced" && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t("transcription.ai.style", "Стиль субтитров")}</Label>
+                <div className="grid grid-cols-2 gap-4" data-oid="brogojd">
+                  <div className="space-y-2" data-oid="kd4u:p3">
+                    <Label data-oid="er9a_if">{t("transcription.ai.style", "Стиль субтитров")}</Label>
                     <Select
                       value={enhancedOptions.styleTemplate}
                       onValueChange={(value: any) =>
@@ -559,23 +596,30 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                           styleTemplate: value,
                         }))
                       }
+                      data-oid="62gp_0m"
                     >
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger data-oid="mpp.7_e">
+                        <SelectValue data-oid="db.hqca" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="standard">{t("transcription.style.standard", "Стандартный")}</SelectItem>
-                        <SelectItem value="broadcast">{t("transcription.style.broadcast", "Телевизионный")}</SelectItem>
-                        <SelectItem value="social">{t("transcription.style.social", "Соцсети")}</SelectItem>
-                        <SelectItem value="accessibility">
+                      <SelectContent data-oid="yco87:o">
+                        <SelectItem value="standard" data-oid="v1jvavv">
+                          {t("transcription.style.standard", "Стандартный")}
+                        </SelectItem>
+                        <SelectItem value="broadcast" data-oid="130a-_5">
+                          {t("transcription.style.broadcast", "Телевизионный")}
+                        </SelectItem>
+                        <SelectItem value="social" data-oid="23e-.iu">
+                          {t("transcription.style.social", "Соцсети")}
+                        </SelectItem>
+                        <SelectItem value="accessibility" data-oid="6mk9l2i">
                           {t("transcription.style.accessibility", "Доступность")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>{t("transcription.ai.provider", "AI провайдер")}</Label>
+                  <div className="space-y-2" data-oid="gxh6cmg">
+                    <Label data-oid="f0_djfe">{t("transcription.ai.provider", "AI провайдер")}</Label>
                     <Select
                       value={enhancedOptions.aiProvider}
                       onValueChange={(value: any) =>
@@ -584,15 +628,24 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                           aiProvider: value,
                         }))
                       }
+                      data-oid="_5i7p:q"
                     >
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger data-oid=":iz3yy4">
+                        <SelectValue data-oid="h36p.4s" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="unified">{t("transcription.provider.unified", "Unified AI")}</SelectItem>
-                        <SelectItem value="whisper">{t("transcription.provider.whisper", "Whisper")}</SelectItem>
-                        <SelectItem value="azure">{t("transcription.provider.azure", "Azure")}</SelectItem>
-                        <SelectItem value="google">{t("transcription.provider.google", "Google")}</SelectItem>
+                      <SelectContent data-oid="a17i.fp">
+                        <SelectItem value="unified" data-oid="lw7kq9i">
+                          {t("transcription.provider.unified", "Unified AI")}
+                        </SelectItem>
+                        <SelectItem value="whisper" data-oid="38lkdfu">
+                          {t("transcription.provider.whisper", "Whisper")}
+                        </SelectItem>
+                        <SelectItem value="azure" data-oid="_m8-1w.">
+                          {t("transcription.provider.azure", "Azure")}
+                        </SelectItem>
+                        <SelectItem value="google" data-oid="1o_8423">
+                          {t("transcription.provider.google", "Google")}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -604,19 +657,20 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
       </Card>
 
       {/* Кнопки управления */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+      <Card data-oid="pi5cgua">
+        <CardContent className="pt-6" data-oid="6y:-a2x">
+          <div className="flex items-center justify-between" data-oid="04196d8">
+            <div className="flex items-center space-x-2" data-oid="c9lltra">
               {mode === "enhanced" ? (
                 <>
                   <Button
                     onClick={handleEnhancedGeneration}
                     disabled={!selectedFile || isActive}
                     className="flex items-center space-x-2"
+                    data-oid="3_54_dv"
                   >
-                    <Brain className="w-4 h-4" />
-                    <span>{t("transcription.enhanced.generate", "AI Генерация")}</span>
+                    <Brain className="w-4 h-4" data-oid="qgh6z2b" />
+                    <span data-oid="egk.cq3">{t("transcription.enhanced.generate", "AI Генерация")}</span>
                   </Button>
 
                   <Button
@@ -624,9 +678,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     disabled={!selectedFile || isActive}
                     variant="outline"
                     className="flex items-center space-x-2"
+                    data-oid="mkvy6hw"
                   >
-                    <Sparkles className="w-4 h-4" />
-                    <span>{t("transcription.enhanced.quick", "Быстрая")}</span>
+                    <Sparkles className="w-4 h-4" data-oid="q54io0d" />
+                    <span data-oid="zbephno">{t("transcription.enhanced.quick", "Быстрая")}</span>
                   </Button>
 
                   <Button
@@ -634,9 +689,10 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                     disabled={!selectedFile || isActive}
                     variant="outline"
                     className="flex items-center space-x-2"
+                    data-oid="dz0_vlh"
                   >
-                    <Eye className="w-4 h-4" />
-                    <span>{t("transcription.enhanced.ocr", "OCR")}</span>
+                    <Eye className="w-4 h-4" data-oid="8nf4rc_" />
+                    <span data-oid="9yxj-gc">{t("transcription.enhanced.ocr", "OCR")}</span>
                   </Button>
                 </>
               ) : (
@@ -644,23 +700,24 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
                   onClick={handleBasicTranscription}
                   disabled={!selectedFile || isActive}
                   className="flex items-center space-x-2"
+                  data-oid="phn:km6"
                 >
-                  <Play className="w-4 h-4" />
-                  <span>{t("transcription.basic.start", "Транскрибировать")}</span>
+                  <Play className="w-4 h-4" data-oid="kvctxov" />
+                  <span data-oid="c5hfr69">{t("transcription.basic.start", "Транскрибировать")}</span>
                 </Button>
               )}
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2" data-oid="gi.5jh3">
               {isActive && (
-                <Button onClick={handleCancel} variant="outline" size="sm">
-                  <X className="w-4 h-4 mr-2" />
+                <Button onClick={handleCancel} variant="outline" size="sm" data-oid="i.glxp9">
+                  <X className="w-4 h-4 mr-2" data-oid="zazz0sq" />
                   {t("transcription.cancel", "Отменить")}
                 </Button>
               )}
 
-              <Button onClick={handleReset} variant="outline" size="sm">
-                <RefreshCw className="w-4 h-4 mr-2" />
+              <Button onClick={handleReset} variant="outline" size="sm" data-oid="ysvu58l">
+                <RefreshCw className="w-4 h-4 mr-2" data-oid="c9:r3pi" />
                 {t("transcription.reset", "Сбросить")}
               </Button>
             </div>
@@ -670,19 +727,25 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
 
       {/* Прогресс */}
       {isActive && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
+        <Card data-oid="-5nuv9v">
+          <CardContent className="pt-6" data-oid="00_8:7h">
+            <div className="space-y-3" data-oid="ugm518d">
+              <div className="flex items-center justify-between" data-oid="b9-y2.j">
+                <span className="text-sm font-medium" data-oid="rrq64s1">
                   {mode === "enhanced"
                     ? t(`transcription.enhanced.stage.${enhancedProgress.stage}`, enhancedProgress.stage)
                     : t(`transcription.basic.stage.${transcriptionProgress.status}`, transcriptionProgress.status)}
                 </span>
-                <span className="text-sm text-muted-foreground">{Math.round(currentProgress.progress)}%</span>
+                <span className="text-sm text-muted-foreground" data-oid="of-s:n9">
+                  {Math.round(currentProgress.progress)}%
+                </span>
               </div>
-              <Progress value={currentProgress.progress} className="w-full" />
-              {currentProgress.message && <p className="text-xs text-muted-foreground">{currentProgress.message}</p>}
+              <Progress value={currentProgress.progress} className="w-full" data-oid="2g4e:uk" />
+              {currentProgress.message && (
+                <p className="text-xs text-muted-foreground" data-oid="wd_ywwr">
+                  {currentProgress.message}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -690,43 +753,43 @@ export function EnhancedTranscriptionPanel({ onAddToTimeline }: EnhancedTranscri
 
       {/* Ошибки */}
       {currentError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{currentError}</AlertDescription>
+        <Alert variant="destructive" data-oid="9:h6zgl">
+          <AlertCircle className="h-4 w-4" data-oid="iyz6iub" />
+          <AlertDescription data-oid="s3qhn0e">{currentError}</AlertDescription>
         </Alert>
       )}
 
       {/* Результаты */}
       {currentResult && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>{t("transcription.results.title", "Результаты")}</span>
+        <Card data-oid="jt50im_">
+          <CardHeader data-oid="llpuwpo">
+            <CardTitle className="flex items-center justify-between" data-oid="uy1_2b_">
+              <div className="flex items-center space-x-2" data-oid="99nxees">
+                <CheckCircle className="w-5 h-5 text-green-500" data-oid="yl2-p9l" />
+                <span data-oid="ct1k7_g">{t("transcription.results.title", "Результаты")}</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2" data-oid="eajv72c">
                 {mode === "enhanced" && enhancedResult && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs" data-oid="cfb2-wm">
                     {t("transcription.enhanced.confidence", "Уверенность")}:{" "}
                     {Math.round(enhancedResult.quality.overallConfidence * 100)}%
                   </Badge>
                 )}
-                <Button onClick={() => handleSaveSubtitles("srt")} size="sm" variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
+                <Button onClick={() => handleSaveSubtitles("srt")} size="sm" variant="outline" data-oid="wnpyidn">
+                  <Download className="w-4 h-4 mr-2" data-oid="7-d99t3" />
                   {t("transcription.save.srt", "SRT")}
                 </Button>
                 {onAddToTimeline && (
-                  <Button onClick={() => onAddToTimeline(currentResult.segments)} size="sm">
+                  <Button onClick={() => onAddToTimeline(currentResult.segments)} size="sm" data-oid="oqd4u2s">
                     {t("transcription.addToTimeline", "Добавить в таймлайн")}
                   </Button>
                 )}
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[300px] w-full">
-              <TranscriptionEditor result={currentResult} onAddToTimeline={onAddToTimeline} />
+          <CardContent data-oid="w9gudnq">
+            <ScrollArea className="h-[300px] w-full" data-oid="w8j_9k.">
+              <TranscriptionEditor result={currentResult} onAddToTimeline={onAddToTimeline} data-oid="g7gww:1" />
             </ScrollArea>
           </CardContent>
         </Card>

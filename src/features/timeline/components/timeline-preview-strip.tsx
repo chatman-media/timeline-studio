@@ -72,28 +72,46 @@ export function TimelinePreviewStrip({
 
   if (error) {
     return (
-      <div className={cn("flex items-center justify-center", className)} style={{ height }}>
-        <span className="text-sm text-destructive">Ошибка загрузки превью</span>
+      <div className={cn("flex items-center justify-center", className)} style={{ height }} data-oid="76jp-_n">
+        <span className="text-sm text-destructive" data-oid="aae7b9-">
+          Ошибка загрузки превью
+        </span>
       </div>
     )
   }
 
   if (isLoading && frames.length === 0) {
     return (
-      <div className={cn("flex items-center gap-1 p-1", className)} style={{ height }}>
-        {Array.from({ length: Math.min(10, Math.floor(containerWidth / frameWidth)) }).map((_, i) => (
-          <Skeleton key={i} className="rounded" style={{ width: frameWidth - 4, height: height - 8 }} />
+      <div className={cn("flex items-center gap-1 p-1", className)} style={{ height }} data-oid="62xoykb">
+        {Array.from({
+          length: Math.min(10, Math.floor(containerWidth / frameWidth)),
+        }).map((_, i) => (
+          <Skeleton
+            key={i}
+            className="rounded"
+            style={{ width: frameWidth - 4, height: height - 8 }}
+            data-oid="nu0x:fp"
+          />
         ))}
       </div>
     )
   }
 
   return (
-    <div ref={containerRef} className={cn("relative overflow-hidden bg-background/50", className)} style={{ height }}>
+    <div
+      ref={containerRef}
+      className={cn("relative overflow-hidden bg-background/50", className)}
+      style={{ height }}
+      data-oid="un1kcs1"
+    >
       {/* Прогресс загрузки */}
       {isLoading && progress < 100 && (
-        <div className="absolute inset-x-0 top-0 h-1 bg-muted">
-          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${progress}%` }} />
+        <div className="absolute inset-x-0 top-0 h-1 bg-muted" data-oid="1381s2o">
+          <div
+            className="h-full bg-primary transition-all duration-300"
+            style={{ width: `${progress}%` }}
+            data-oid="dbdkv.q"
+          />
         </div>
       )}
 
@@ -104,6 +122,7 @@ export function TimelinePreviewStrip({
           transform: `translateX(-${scrollOffset}px)`,
           width: `${duration * scale}px`,
         }}
+        data-oid="t2flgx4"
       >
         {frames.map((frame, index) => (
           <PreviewFrame
@@ -114,6 +133,7 @@ export function TimelinePreviewStrip({
             showTimestamp={showTimestamps}
             isKeyframe={frame.isKeyframe}
             onClick={() => handleFrameClick(frame.timestamp)}
+            data-oid="7khwhe4"
           />
         ))}
       </div>
@@ -173,30 +193,40 @@ function PreviewFrame({ frame, scale, height, showTimestamp, isKeyframe, onClick
       }}
       onClick={onClick}
       title={`${frame.timestamp.toFixed(2)}s${isKeyframe ? " (Ключевой кадр)" : ""}`}
+      data-oid="ncl3uz-"
     >
       {/* Изображение */}
-      <div className="relative h-full overflow-hidden rounded border border-border">
-        {!isLoaded && <Skeleton className="absolute inset-0" />}
+      <div className="relative h-full overflow-hidden rounded border border-border" data-oid="_ayanus">
+        {!isLoaded && <Skeleton className="absolute inset-0" data-oid="u3yr-lw" />}
         {}
         <img
           ref={imgRef}
           alt={`Frame at ${frame.timestamp}s`}
           className={cn("h-full w-auto object-cover transition-opacity", !isLoaded && "opacity-0")}
           loading="lazy"
+          data-oid="pwvul-k"
         />
       </div>
 
       {/* Временная метка */}
       {showTimestamp && (
-        <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-muted-foreground whitespace-nowrap">
+        <div
+          className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-muted-foreground whitespace-nowrap"
+          data-oid="c:.:7sd"
+        >
           {formatTimestamp(frame.timestamp)}
         </div>
       )}
 
       {/* Индикатор ключевого кадра */}
       {isKeyframe && (
-        <div className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
-          <span className="text-[8px] text-primary-foreground font-bold">K</span>
+        <div
+          className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-primary flex items-center justify-center"
+          data-oid="nu35rd8"
+        >
+          <span className="text-[8px] text-primary-foreground font-bold" data-oid="yfh-nee">
+            K
+          </span>
         </div>
       )}
     </div>

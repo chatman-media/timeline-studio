@@ -63,9 +63,17 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("lucide-react")>()
   return {
     ...actual,
-    Trash2: ({ className }: { className?: string }) => <div data-testid="trash2-icon" className={className} />,
-    Plus: ({ className }: { className?: string }) => <div data-testid="plus-icon" className={className} />,
-    Folder: ({ className }: { className?: string }) => <div data-testid="folder-icon" className={className} />,
+    Trash2: ({ className }: { className?: string }) => (
+      <div data-testid="trash2-icon" className={className} data-oid="hhqtvvs" />
+    ),
+
+    Plus: ({ className }: { className?: string }) => (
+      <div data-testid="plus-icon" className={className} data-oid="hyta_ay" />
+    ),
+
+    Folder: ({ className }: { className?: string }) => (
+      <div data-testid="folder-icon" className={className} data-oid="_k0ql_k" />
+    ),
   }
 })
 
@@ -91,7 +99,7 @@ describe("BatchExportTab", () => {
   })
 
   it("should render empty queue state", () => {
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="sw2da8m" />)
 
     expect(screen.getByText("dialogs.export.batchSettings")).toBeInTheDocument()
     expect(screen.getByText("dialogs.export.addProjects")).toBeInTheDocument()
@@ -101,7 +109,7 @@ describe("BatchExportTab", () => {
   it("should add projects to queue", async () => {
     mockRenderQueue.addProjectsToQueue.mockResolvedValue(["/path/to/project1.tls", "/path/to/project2.tls"])
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid=":r1ef6d" />)
 
     const addButtons = screen.getAllByText("dialogs.export.addProjects")
     const addButton = addButtons[0].closest("button")!
@@ -120,7 +128,7 @@ describe("BatchExportTab", () => {
   })
 
   it("should show export settings form", () => {
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="wi8wjpd" />)
 
     expect(screen.getByText("dialogs.export.batchSettings")).toBeInTheDocument()
     expect(screen.getByText("dialogs.export.outputFolder")).toBeInTheDocument()
@@ -131,7 +139,7 @@ describe("BatchExportTab", () => {
   it("should choose output folder", async () => {
     mockShowOpenDialog.mockResolvedValue(["/new/output/folder"])
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid=".w7_wt-" />)
 
     const chooseFolderButton = screen.getByTestId("folder-icon").closest("button")!
     await act(async () => {
@@ -152,7 +160,7 @@ describe("BatchExportTab", () => {
   it("should start export with correct settings", async () => {
     // Set output folder first
     mockShowOpenDialog.mockResolvedValue(["/output"])
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="6vv_mla" />)
 
     const chooseFolderButton = screen.getByTestId("folder-icon").closest("button")!
     await act(async () => {
@@ -166,7 +174,7 @@ describe("BatchExportTab", () => {
     // Add projects first
     mockRenderQueue.addProjectsToQueue.mockResolvedValue(["/path/to/project1.tls", "/path/to/project2.tls"])
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="yb7mdzd" />)
 
     // Add projects - use getAllByText since there are multiple buttons
     const addButtons = screen.getAllByText("dialogs.export.addProjects")
@@ -205,7 +213,7 @@ describe("BatchExportTab", () => {
   it("should remove project from queue", async () => {
     mockRenderQueue.addProjectsToQueue.mockResolvedValue(["/path/to/project1.tls"])
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="vi3hft9" />)
 
     // Add project
     const addButtons = screen.getAllByText("dialogs.export.addProjects")
@@ -248,10 +256,11 @@ describe("BatchExportTab", () => {
         },
       },
     ]
+
     mockRenderQueue.isProcessing = true
     mockRenderQueue.activeJobsCount = 1
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid=":u-rn53" />)
 
     expect(screen.getByText("Test Project")).toBeInTheDocument()
     // Progress is shown as either message or percentage
@@ -278,10 +287,11 @@ describe("BatchExportTab", () => {
         },
       },
     ]
+
     mockRenderQueue.activeJobsCount = 1
     mockRenderQueue.isProcessing = true
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="g3ajz6o" />)
 
     const cancelAllButton = screen.getByText("dialogs.export.cancelAll").closest("button")!
     fireEvent.click(cancelAllButton)
@@ -309,7 +319,7 @@ describe("BatchExportTab", () => {
       },
     ]
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="a-nhr_0" />)
 
     const clearButton = screen.getByText("dialogs.export.clearCompleted").closest("button")!
     fireEvent.click(clearButton)
@@ -318,7 +328,7 @@ describe("BatchExportTab", () => {
   })
 
   it("should disable start button when no projects in queue", () => {
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="srlc16r" />)
 
     const startButton = screen.getByText("dialogs.export.startBatchExport").closest("button")!
     expect(startButton).toBeDisabled()
@@ -327,7 +337,7 @@ describe("BatchExportTab", () => {
   it("should show processing state when processing", () => {
     mockRenderQueue.isProcessing = true
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="lu0b4:o" />)
 
     // When processing, we should see different buttons
     expect(screen.getByText("dialogs.export.cancelAll")).toBeInTheDocument()
@@ -335,7 +345,7 @@ describe("BatchExportTab", () => {
   })
 
   it("should update format setting", () => {
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="nnzh_5t" />)
 
     // ExportPresets should show H.264 Master preset
     expect(screen.getByText("H.264 Master")).toBeInTheDocument()
@@ -346,7 +356,7 @@ describe("BatchExportTab", () => {
   it("should show active jobs count", () => {
     mockRenderQueue.activeJobsCount = 3
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="8yjb4jc" />)
 
     // ActiveJobs is shown in CardDescription with count
     const activeJobsText = screen.getByText(/dialogs.export.activeJobs/)
@@ -356,7 +366,7 @@ describe("BatchExportTab", () => {
   it("should handle empty project addition", async () => {
     mockRenderQueue.addProjectsToQueue.mockResolvedValue([])
 
-    render(<BatchExportTab {...defaultProps} />)
+    render(<BatchExportTab {...defaultProps} data-oid="g_m6dz0" />)
 
     const addButtons = screen.getAllByText("dialogs.export.addProjects")
     const addButton = addButtons[0].closest("button")!

@@ -40,29 +40,32 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
   }, [cacheStats])
 
   return (
-    <div className={cn("relative w-full h-full bg-black", className)}>
+    <div className={cn("relative w-full h-full bg-black", className)} data-oid="56:5xj2">
       {/* Canvas для WebGL рендеринга */}
       <canvas
         ref={canvasRef}
         className="w-full h-full object-contain"
         style={{ imageRendering: "optimizeQuality" as any }}
+        data-oid="4dtc35y"
       />
 
       {/* Скрытый video элемент для извлечения кадров */}
-      <video ref={videoRef} className="hidden" muted playsInline />
+      <video ref={videoRef} className="hidden" muted playsInline data-oid="hz529lx" />
 
       {/* Оверлей с информацией о производительности */}
       {isInitialized && (
-        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs p-2 rounded">
-          <div>GPU: {gpuTier}</div>
-          <div>Resolution: {(quality.resolution * 100).toFixed(0)}%</div>
-          <div>Effects: {quality.effects}</div>
-          <div>FPS: {quality.fps}</div>
+        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs p-2 rounded" data-oid="zmbmujm">
+          <div data-oid="_wx6_0d">GPU: {gpuTier}</div>
+          <div data-oid="e50w8yn">Resolution: {(quality.resolution * 100).toFixed(0)}%</div>
+          <div data-oid="26zoayj">Effects: {quality.effects}</div>
+          <div data-oid="xh1vpgj">FPS: {quality.fps}</div>
           {cacheStats && (
             <>
-              <div className="mt-1 pt-1 border-t border-white/20">Cache: {cacheStats.entries} frames</div>
-              <div>Size: {cacheStats.sizeMB.toFixed(1)}MB</div>
-              <div>
+              <div className="mt-1 pt-1 border-t border-white/20" data-oid="r8pcphs">
+                Cache: {cacheStats.entries} frames
+              </div>
+              <div data-oid="t59foh_">Size: {cacheStats.sizeMB.toFixed(1)}MB</div>
+              <div data-oid=".tz.j3f">
                 Hit Rate:{" "}
                 {(cacheStats as any).hitRate > 0 ? (
                   <span
@@ -73,6 +76,7 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
                           ? "text-yellow-400"
                           : "text-red-400"
                     }
+                    data-oid="--y9n:n"
                   >
                     {((cacheStats as any).hitRate * 100 || 0).toFixed(0)}%
                   </span>
@@ -87,10 +91,12 @@ export const TimelinePreview = memo(function TimelinePreview({ className }: Time
 
       {/* Индикатор загрузки */}
       {!isInitialized && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-white">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
-            <div className="mt-2 text-sm">Initializing WebGL2...</div>
+        <div className="absolute inset-0 flex items-center justify-center" data-oid="sb97_zh">
+          <div className="text-white" data-oid="zt21:iy">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" data-oid="0hrjzur" />
+            <div className="mt-2 text-sm" data-oid="w71on:u">
+              Initializing WebGL2...
+            </div>
           </div>
         </div>
       )}

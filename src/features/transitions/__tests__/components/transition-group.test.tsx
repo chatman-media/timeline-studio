@@ -20,6 +20,7 @@ vi.mock("../../components/transition-preview", () => ({
       data-height={previewHeight}
       onClick={onClick}
       type="button"
+      data-oid="ri_e62-"
     >
       {transition.labels.ru}
     </button>
@@ -101,7 +102,7 @@ describe("TransitionGroup", () => {
 
   it("должен корректно рендериться с переходами", () => {
     act(() => {
-      renderWithBase(<TransitionGroup {...defaultProps} />)
+      renderWithBase(<TransitionGroup {...defaultProps} data-oid="ve2rih7" />)
     })
 
     // Проверяем заголовок группы
@@ -114,7 +115,7 @@ describe("TransitionGroup", () => {
 
   it("должен отображать правильное количество переходов", () => {
     act(() => {
-      renderWithBase(<TransitionGroup {...defaultProps} />)
+      renderWithBase(<TransitionGroup {...defaultProps} data-oid="17ds5qn" />)
     })
 
     const transitionPreviews = screen.getAllByRole("button")
@@ -123,7 +124,7 @@ describe("TransitionGroup", () => {
 
   it("должен передавать правильные пропсы в TransitionPreview", () => {
     act(() => {
-      renderWithBase(<TransitionGroup {...defaultProps} />)
+      renderWithBase(<TransitionGroup {...defaultProps} data-oid="tktxa_u" />)
     })
 
     const fadePreview = screen.getByTestId("transition-preview-fade-1")
@@ -139,7 +140,7 @@ describe("TransitionGroup", () => {
 
   it("должен вызывать onTransitionClick при клике на переход", () => {
     const mockOnTransitionClick = vi.fn()
-    renderWithBase(<TransitionGroup {...defaultProps} onTransitionClick={mockOnTransitionClick} />)
+    renderWithBase(<TransitionGroup {...defaultProps} onTransitionClick={mockOnTransitionClick} data-oid="i6rbbkt" />)
 
     const fadePreview = screen.getByTestId("transition-preview-fade-1")
     act(() => {
@@ -153,7 +154,7 @@ describe("TransitionGroup", () => {
 
   it("должен вызывать onTransitionClick для разных переходов", () => {
     const mockOnTransitionClick = vi.fn()
-    renderWithBase(<TransitionGroup {...defaultProps} onTransitionClick={mockOnTransitionClick} />)
+    renderWithBase(<TransitionGroup {...defaultProps} onTransitionClick={mockOnTransitionClick} data-oid="5s8owl0" />)
 
     // Кликаем на первый переход
     const fadePreview = screen.getByTestId("transition-preview-fade-1")
@@ -177,7 +178,7 @@ describe("TransitionGroup", () => {
   })
 
   it("не должен рендериться если нет переходов", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} transitions={[]} />)
+    renderWithBase(<TransitionGroup {...defaultProps} transitions={[]} data-oid=":u:1b-w" />)
 
     // Проверяем, что нет заголовка группы
     expect(screen.queryByText("Basic Transitions")).not.toBeInTheDocument()
@@ -187,7 +188,7 @@ describe("TransitionGroup", () => {
   })
 
   it("должен рендериться без заголовка если title пустой", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} title="" />)
+    renderWithBase(<TransitionGroup {...defaultProps} title="" data-oid="0hb1p6o" />)
 
     // Заголовка не должно быть
     expect(screen.queryByText("Basic Transitions")).not.toBeInTheDocument()
@@ -198,7 +199,7 @@ describe("TransitionGroup", () => {
   })
 
   it("должен применять правильные CSS классы для сетки", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} />)
+    renderWithBase(<TransitionGroup {...defaultProps} data-oid="afuglnc" />)
 
     const gridContainer = screen.getByTestId("transition-preview-fade-1").parentElement
     expect(gridContainer).toHaveClass("grid")
@@ -207,14 +208,14 @@ describe("TransitionGroup", () => {
   })
 
   it("должен устанавливать правильную CSS переменную для размера превью", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} previewWidth={150} />)
+    renderWithBase(<TransitionGroup {...defaultProps} previewWidth={150} data-oid="hq1fkun" />)
 
     const gridContainer = screen.getByTestId("transition-preview-fade-1").parentElement
     expect(gridContainer).toHaveStyle({ "--preview-size": "150px" })
   })
 
   it("должен обрабатывать изменение размеров превью", () => {
-    const { rerender } = renderWithBase(<TransitionGroup {...defaultProps} />)
+    const { rerender } = renderWithBase(<TransitionGroup {...defaultProps} data-oid="1f635:_" />)
 
     // Проверяем начальные размеры
     let fadePreview = screen.getByTestId("transition-preview-fade-1")
@@ -224,7 +225,15 @@ describe("TransitionGroup", () => {
     // Изменяем размеры
     act(() => {
       act(() => {
-        rerender(<TransitionGroup {...defaultProps} previewWidth={200} previewHeight={150} previewSize={3} />)
+        rerender(
+          <TransitionGroup
+            {...defaultProps}
+            previewWidth={200}
+            previewHeight={150}
+            previewSize={3}
+            data-oid="1r4cro7"
+          />,
+        )
       })
     })
 
@@ -235,7 +244,7 @@ describe("TransitionGroup", () => {
   })
 
   it("должен отображать правильные имена переходов", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} />)
+    renderWithBase(<TransitionGroup {...defaultProps} data-oid="pxo0dft" />)
 
     expect(screen.getByText("Затухание")).toBeInTheDocument()
     expect(screen.getByText("Увеличение")).toBeInTheDocument()
@@ -243,7 +252,7 @@ describe("TransitionGroup", () => {
 
   it("должен обрабатывать один переход", () => {
     const singleTransition = [mockTransitions[0]]
-    renderWithBase(<TransitionGroup {...defaultProps} transitions={singleTransition} />)
+    renderWithBase(<TransitionGroup {...defaultProps} transitions={singleTransition} data-oid="92g0h4x" />)
 
     expect(screen.getByTestId("transition-preview-fade-1")).toBeInTheDocument()
     expect(screen.queryByTestId("transition-preview-zoom-1")).not.toBeInTheDocument()
@@ -253,7 +262,7 @@ describe("TransitionGroup", () => {
   })
 
   it("должен применять правильные CSS классы к заголовку", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} />)
+    renderWithBase(<TransitionGroup {...defaultProps} data-oid="f.zkgf6" />)
 
     const title = screen.getByText("Basic Transitions")
     expect(title.tagName).toBe("H3")
@@ -261,14 +270,14 @@ describe("TransitionGroup", () => {
   })
 
   it("должен применять правильные CSS классы к контейнеру", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} />)
+    renderWithBase(<TransitionGroup {...defaultProps} data-oid="66h:cea" />)
 
     const container = screen.getByText("Basic Transitions").parentElement
     expect(container).toHaveClass("space-y-2")
   })
 
   it("должен передавать правильные demo видео в TransitionPreview", () => {
-    renderWithBase(<TransitionGroup {...defaultProps} />)
+    renderWithBase(<TransitionGroup {...defaultProps} data-oid="qpszcmj" />)
 
     // Проверяем, что TransitionPreview получает правильные demo видео
     // Это проверяется через моки - TransitionPreview должен получить sourceVideo и targetVideo
@@ -290,12 +299,12 @@ describe("TransitionGroup", () => {
       },
     }
 
-    const { rerender } = renderWithBase(<TransitionGroup {...defaultProps} />)
+    const { rerender } = renderWithBase(<TransitionGroup {...defaultProps} data-oid="qlmyl4-" />)
 
     // Изменяем demo видео
     act(() => {
       act(() => {
-        rerender(<TransitionGroup {...defaultProps} demoVideos={newDemoVideos} />)
+        rerender(<TransitionGroup {...defaultProps} demoVideos={newDemoVideos} data-oid="jbc4sb6" />)
       })
     })
 

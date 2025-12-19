@@ -24,7 +24,7 @@ vi.mock("@/features/drag-drop", () => ({
 
 vi.mock("@/features/effects/components/effect-preview", () => ({
   EffectPreview: ({ effect, onClick }: any) => (
-    <div data-testid="effect-preview" onClick={onClick}>
+    <div data-testid="effect-preview" onClick={onClick} data-oid="a_cpme5">
       {effect.name?.en || effect.name?.ru}
     </div>
   ),

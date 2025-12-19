@@ -106,39 +106,44 @@ export const VideoClip = memo(
           clip.isSelected && "ring-2 ring-white ring-offset-1",
           clip.isLocked && "opacity-60",
         )}
+        data-oid="h5zqn8j"
       >
         <div
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={handleSelect}
           className="h-full w-full"
+          data-oid="cqytsi4"
         >
           {/* Заголовок клипа */}
-          <div className="flex items-center justify-between p-1 bg-black/20">
-            <div className="flex items-center gap-1 min-w-0">
+          <div className="flex items-center justify-between p-1 bg-black/20" data-oid="asd.sxd">
+            <div className="flex items-center gap-1 min-w-0" data-oid="fzr3sat">
               {track.type === "video" ? (
-                <Video className="w-3 h-3 text-white shrink-0" />
+                <Video className="w-3 h-3 text-white shrink-0" data-oid="upqh:ao" />
               ) : (
-                <Image className="w-3 h-3 text-white shrink-0" />
+                <Image className="w-3 h-3 text-white shrink-0" data-oid="5:0c2z-" />
               )}
-              <span className="text-xs text-white truncate font-medium">{clip.name}</span>
+              <span className="text-xs text-white truncate font-medium" data-oid="-d50x.i">
+                {clip.name}
+              </span>
 
               {/* Индикаторы ресурсов */}
-              <ClipResourceIndicators clip={clip} className="ml-1" />
+              <ClipResourceIndicators clip={clip} className="ml-1" data-oid="yug649h" />
             </div>
 
             {/* Кнопки управления (показываются при наведении) */}
             {isHovered && !clip.isLocked && (
-              <div className="flex items-center gap-0.5">
-                <VideoFadeControls clip={clip} className="w-4 h-4" />
+              <div className="flex items-center gap-0.5" data-oid="9efrk73">
+                <VideoFadeControls clip={clip} className="w-4 h-4" data-oid="rba7..e" />
                 <Button
                   variant="ghost"
                   size="sm"
                   className="w-4 h-4 p-0 hover:bg-white/20"
                   onClick={handleCopy}
                   title="Копировать"
+                  data-oid="b9vm3sf"
                 >
-                  <Copy className="w-2.5 h-2.5 text-white" />
+                  <Copy className="w-2.5 h-2.5 text-white" data-oid="sd7aytr" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -146,8 +151,9 @@ export const VideoClip = memo(
                   className="w-4 h-4 p-0 hover:bg-white/20"
                   onClick={handleSplit}
                   title="Разделить"
+                  data-oid="reb1wce"
                 >
-                  <Scissors className="w-2.5 h-2.5 text-white" />
+                  <Scissors className="w-2.5 h-2.5 text-white" data-oid="wxa.6ik" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -155,20 +161,23 @@ export const VideoClip = memo(
                   className="w-4 h-4 p-0 hover:bg-red-500/50"
                   onClick={handleRemove}
                   title="Удалить"
+                  data-oid="aqnhz2h"
                 >
-                  <Trash2 className="w-2.5 h-2.5 text-white" />
+                  <Trash2 className="w-2.5 h-2.5 text-white" data-oid="awbv.ew" />
                 </Button>
               </div>
             )}
           </div>
 
           {/* Содержимое клипа */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative" data-oid="xnnp8z-">
             {/* Превью видео/изображения */}
-            <div className="absolute inset-0 bg-linear-to-r from-black/10 to-transparent">
+            <div className="absolute inset-0 bg-linear-to-r from-black/10 to-transparent" data-oid="lcn:qg.">
               {/* TODO: Здесь будет превью кадра из видео */}
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="text-xs text-white/70">{Math.round(clip.duration)}s</span>
+              <div className="w-full h-full flex items-center justify-center" data-oid="t9yxo1x">
+                <span className="text-xs text-white/70" data-oid=":.srr_h">
+                  {Math.round(clip.duration)}s
+                </span>
               </div>
             </div>
 
@@ -178,19 +187,20 @@ export const VideoClip = memo(
               width={clipWidth}
               height={clipHeight}
               pixelsPerSecond={pixelsPerSecond}
+              data-oid="liztslv"
             />
           </div>
 
           {/* Полоса прогресса (показывает обрезку) */}
-          <div className="h-1 bg-black/30 relative">
-            <div className="h-full bg-white/50" style={progressBarStyle} />
+          <div className="h-1 bg-black/30 relative" data-oid="z.wiuaj">
+            <div className="h-full bg-white/50" style={progressBarStyle} data-oid="cqtie5c" />
           </div>
 
           {/* Ручки для изменения размера */}
           {isHovered && !clip.isLocked && (
             <>
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-white/50 cursor-w-resize" />
-              <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 cursor-e-resize" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-white/50 cursor-w-resize" data-oid="_-nyy7u" />
+              <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 cursor-e-resize" data-oid="u7gfdzn" />
             </>
           )}
         </div>

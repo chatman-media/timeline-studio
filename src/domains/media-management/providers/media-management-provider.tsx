@@ -358,6 +358,7 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
       ...fileOperationsState.completedOperations,
       ...fileOperationsState.failedOperations,
     ]
+
     return {
       operations,
       hasActiveOperations: fileOperationsState.activeOperations.length > 0,
@@ -412,5 +413,9 @@ export function MediaManagementProvider({ children }: MediaManagementProviderPro
     ],
   )
 
-  return <MediaManagementContext.Provider value={value}>{children}</MediaManagementContext.Provider>
+  return (
+    <MediaManagementContext.Provider value={value} data-oid="h0m4cqr">
+      {children}
+    </MediaManagementContext.Provider>
+  )
 }

@@ -23,15 +23,42 @@ export function MidiLearnModal() {
   }
 
   const PARAMETER_OPTIONS = [
-    { value: "channel.1.volume", label: t("fairlightAudio.midi.learnDialog.parameters.channel1Volume") },
-    { value: "channel.1.pan", label: t("fairlightAudio.midi.learnDialog.parameters.channel1Pan") },
-    { value: "channel.2.volume", label: t("fairlightAudio.midi.learnDialog.parameters.channel2Volume") },
-    { value: "channel.2.pan", label: t("fairlightAudio.midi.learnDialog.parameters.channel2Pan") },
-    { value: "channel.3.volume", label: t("fairlightAudio.midi.learnDialog.parameters.channel3Volume") },
-    { value: "channel.3.pan", label: t("fairlightAudio.midi.learnDialog.parameters.channel3Pan") },
-    { value: "channel.4.volume", label: t("fairlightAudio.midi.learnDialog.parameters.channel4Volume") },
-    { value: "channel.4.pan", label: t("fairlightAudio.midi.learnDialog.parameters.channel4Pan") },
-    { value: "master.volume", label: t("fairlightAudio.midi.learnDialog.parameters.masterVolume") },
+    {
+      value: "channel.1.volume",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel1Volume"),
+    },
+    {
+      value: "channel.1.pan",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel1Pan"),
+    },
+    {
+      value: "channel.2.volume",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel2Volume"),
+    },
+    {
+      value: "channel.2.pan",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel2Pan"),
+    },
+    {
+      value: "channel.3.volume",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel3Volume"),
+    },
+    {
+      value: "channel.3.pan",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel3Pan"),
+    },
+    {
+      value: "channel.4.volume",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel4Volume"),
+    },
+    {
+      value: "channel.4.pan",
+      label: t("fairlightAudio.midi.learnDialog.parameters.channel4Pan"),
+    },
+    {
+      value: "master.volume",
+      label: t("fairlightAudio.midi.learnDialog.parameters.masterVolume"),
+    },
     {
       value: "master.limiter.threshold",
       label: t("fairlightAudio.midi.learnDialog.parameters.masterLimiterThreshold"),
@@ -80,20 +107,20 @@ export function MidiLearnModal() {
   }
 
   return (
-    <div className="sm:max-w-md">
-      <div className="space-y-4 py-4">
+    <div className="sm:max-w-md" data-oid=".b-0ri9">
+      <div className="space-y-4 py-4" data-oid="jka6zd9">
         {/* Device Selection */}
-        <div>
-          <Label htmlFor={midiDeviceId} className="text-xs text-zinc-400">
+        <div data-oid="brvlf9m">
+          <Label htmlFor={midiDeviceId} className="text-xs text-zinc-400" data-oid="wwv2evk">
             {t("fairlightAudio.midi.learnDialog.midiDevice")}
           </Label>
-          <Select value={selectedDevice} onValueChange={setSelectedDevice}>
-            <SelectTrigger id={midiDeviceId} className="mt-1">
-              <SelectValue placeholder={t("fairlightAudio.midi.learnDialog.selectMidiDevice")} />
+          <Select value={selectedDevice} onValueChange={setSelectedDevice} data-oid="3xlvjck">
+            <SelectTrigger id={midiDeviceId} className="mt-1" data-oid="372lp8n">
+              <SelectValue placeholder={t("fairlightAudio.midi.learnDialog.selectMidiDevice")} data-oid="-4ufb6_" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-oid="mmrqj62">
               {devices.map((device: MidiDevice) => (
-                <SelectItem key={device.id} value={device.id}>
+                <SelectItem key={device.id} value={device.id} data-oid="o2nqbjr">
                   {device.name}
                 </SelectItem>
               ))}
@@ -102,17 +129,17 @@ export function MidiLearnModal() {
         </div>
 
         {/* Parameter Selection */}
-        <div>
-          <Label htmlFor={targetParameterId} className="text-xs text-zinc-400">
+        <div data-oid="609dks5">
+          <Label htmlFor={targetParameterId} className="text-xs text-zinc-400" data-oid="jeo.tr5">
             {t("fairlightAudio.midi.learnDialog.targetParameter")}
           </Label>
-          <Select value={targetParameter} onValueChange={setTargetParameter}>
-            <SelectTrigger id={targetParameterId} className="mt-1">
-              <SelectValue placeholder={t("fairlightAudio.midi.learnDialog.selectParameter")} />
+          <Select value={targetParameter} onValueChange={setTargetParameter} data-oid="g6y3yjl">
+            <SelectTrigger id={targetParameterId} className="mt-1" data-oid="v6y84y5">
+              <SelectValue placeholder={t("fairlightAudio.midi.learnDialog.selectParameter")} data-oid="ghzq64i" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent data-oid="t2-tv7g">
               {PARAMETER_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={option.value} data-oid="025xpcc">
                   {option.label}
                 </SelectItem>
               ))}
@@ -121,58 +148,70 @@ export function MidiLearnModal() {
         </div>
 
         {/* MIDI Learn Status */}
-        <div className="p-8 border border-zinc-800 rounded-lg bg-zinc-900/50">
-          <div className="text-center space-y-2">
+        <div className="p-8 border border-zinc-800 rounded-lg bg-zinc-900/50" data-oid="y.jtrxd">
+          <div className="text-center space-y-2" data-oid="4cvn:--">
             {isListening ? (
               <>
-                <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-                <p className="text-sm font-medium">{t("fairlightAudio.midi.learnDialog.status.listening")}</p>
-                <p className="text-xs text-zinc-500">{t("fairlightAudio.midi.learnDialog.status.listeningHint")}</p>
+                <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" data-oid="67v.jue" />
+                <p className="text-sm font-medium" data-oid="3t2vv_a">
+                  {t("fairlightAudio.midi.learnDialog.status.listening")}
+                </p>
+                <p className="text-xs text-zinc-500" data-oid="6yj3nb7">
+                  {t("fairlightAudio.midi.learnDialog.status.listeningHint")}
+                </p>
               </>
             ) : receivedMessage ? (
               <>
-                <Music className="w-8 h-8 mx-auto text-green-500" />
-                <p className="text-sm font-medium text-green-400">
+                <Music className="w-8 h-8 mx-auto text-green-500" data-oid="f7z208r" />
+                <p className="text-sm font-medium text-green-400" data-oid="w187-zh">
                   {t("fairlightAudio.midi.learnDialog.status.received")}
                 </p>
-                <div className="text-xs text-zinc-400 space-y-1 mt-2">
-                  <p>
+                <div className="text-xs text-zinc-400 space-y-1 mt-2" data-oid="urrq5ef">
+                  <p data-oid="lj:9.vo">
                     {t("fairlightAudio.midi.learnDialog.info.type")} {receivedMessage.type.toUpperCase()}
                   </p>
                   {receivedMessage.data.controller !== undefined && (
-                    <p>
+                    <p data-oid="7nc5gdr">
                       {t("fairlightAudio.midi.learnDialog.info.controller")}
                       {receivedMessage.data.controller}
                     </p>
                   )}
-                  <p>
+                  <p data-oid="l6cusgs">
                     {t("fairlightAudio.midi.learnDialog.info.channel")} {receivedMessage.channel}
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <Music className="w-8 h-8 mx-auto text-zinc-600" />
-                <p className="text-sm text-zinc-400">{t("fairlightAudio.midi.learnDialog.status.ready")}</p>
-                <p className="text-xs text-zinc-500">{t("fairlightAudio.midi.learnDialog.status.readyHint")}</p>
+                <Music className="w-8 h-8 mx-auto text-zinc-600" data-oid="z0it_g2" />
+                <p className="text-sm text-zinc-400" data-oid="xxo42c5">
+                  {t("fairlightAudio.midi.learnDialog.status.ready")}
+                </p>
+                <p className="text-xs text-zinc-500" data-oid="5hp96nb">
+                  {t("fairlightAudio.midi.learnDialog.status.readyHint")}
+                </p>
               </>
             )}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 pt-4 border-t">
-        <Button variant="outline" onClick={closeModal}>
+      <div className="flex justify-end gap-2 pt-4 border-t" data-oid="ej71z:8">
+        <Button variant="outline" onClick={closeModal} data-oid="m.z4q-j">
           {t("fairlightAudio.midi.learnDialog.buttons.cancel")}
         </Button>
         {!receivedMessage ? (
-          <Button onClick={handleStartListening} disabled={!selectedDevice || !targetParameter || isListening}>
+          <Button
+            onClick={handleStartListening}
+            disabled={!selectedDevice || !targetParameter || isListening}
+            data-oid="8753-hp"
+          >
             {isListening
               ? t("fairlightAudio.midi.learnDialog.buttons.listening")
               : t("fairlightAudio.midi.learnDialog.buttons.startListening")}
           </Button>
         ) : (
-          <Button onClick={handleComplete} className="bg-green-600 hover:bg-green-700">
+          <Button onClick={handleComplete} className="bg-green-600 hover:bg-green-700" data-oid="q954soa">
             {t("fairlightAudio.midi.learnDialog.buttons.saveMapping")}
           </Button>
         )}

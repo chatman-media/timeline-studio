@@ -96,12 +96,12 @@ export function VideoPlayerWithTransitions({
     }
 
     return (
-      <div className={`media-player-container relative flex h-full flex-col ${className || ""}`}>
-        <div className="relative flex-1 bg-black" style={containerStyle}>
-          <div className="flex h-full w-full items-center justify-center">
-            <div className="h-full w-full">
-              <AspectRatio ratio={aspectRatioValue} className="bg-black">
-                <div className="relative h-full w-full">
+      <div className={`media-player-container relative flex h-full flex-col ${className || ""}`} data-oid=":-wj06t">
+        <div className="relative flex-1 bg-black" style={containerStyle} data-oid="fhtvskl">
+          <div className="flex h-full w-full items-center justify-center" data-oid="44epkfp">
+            <div className="h-full w-full" data-oid="3602m92">
+              <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="mpsoh69">
+                <div className="relative h-full w-full" data-oid="6d1ierc">
                   <video
                     key={file.id}
                     src="#"
@@ -123,24 +123,25 @@ export function VideoPlayerWithTransitions({
                       display: "block",
                       zIndex: 1,
                     }}
+                    data-oid="aw5:-pv"
                   />
                 </div>
               </AspectRatio>
             </div>
           </div>
         </div>
-        <PlayerControls currentTime={0} file={file} />
+        <PlayerControls currentTime={0} file={file} data-oid="3h355dv" />
       </div>
     )
   }
 
   return (
-    <div className={`media-player-container relative flex h-full flex-col ${className || ""}`}>
-      <div className="relative flex-1 bg-black" style={containerStyle}>
-        <div className="flex h-full w-full items-center justify-center">
-          <div className="h-full w-full">
-            <AspectRatio ratio={aspectRatioValue} className="bg-black">
-              <div className="relative h-full w-full">
+    <div className={`media-player-container relative flex h-full flex-col ${className || ""}`} data-oid="_ky-:xm">
+      <div className="relative flex-1 bg-black" style={containerStyle} data-oid="pws0_jh">
+        <div className="flex h-full w-full items-center justify-center" data-oid="07cd2d-">
+          <div className="h-full w-full" data-oid="ru1um86">
+            <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="kzvngr5">
+              <div className="relative h-full w-full" data-oid="ft-f.iu">
                 {/* Основное видео */}
                 <video
                   ref={videoRefA}
@@ -164,6 +165,7 @@ export function VideoPlayerWithTransitions({
                     display: isTransitionActive() ? "none" : "block",
                     zIndex: 1,
                   }}
+                  data-oid="s-5bfz7"
                 />
 
                 {/* Второе видео для переходов (скрыто) */}
@@ -187,6 +189,7 @@ export function VideoPlayerWithTransitions({
                     display: "none", // Всегда скрыто, используется только для переходов
                     zIndex: 0,
                   }}
+                  data-oid="a8mn4yx"
                 />
 
                 {/* Canvas для рендеринга переходов */}
@@ -204,10 +207,11 @@ export function VideoPlayerWithTransitions({
                   }}
                   width={aspectRatio.value.width}
                   height={aspectRatio.value.height}
+                  data-oid="eu3nsa7"
                 />
 
                 {/* AI оверлей */}
-                {aiReady && <PlayerAIOverlay />}
+                {aiReady && <PlayerAIOverlay data-oid="o4k1xhs" />}
 
                 {/* Transition overlay для дополнительной информации */}
                 {showTransitionOverlay && transitionState.activeTransition && (
@@ -217,6 +221,7 @@ export function VideoPlayerWithTransitions({
                     onClose={() => {
                       // Callback для закрытия оверлея
                     }}
+                    data-oid="m75wg4q"
                   />
                 )}
 
@@ -225,6 +230,7 @@ export function VideoPlayerWithTransitions({
                   <TransitionMiniIndicator
                     transition={transitionState.activeTransition}
                     progress={transitionState.progress}
+                    data-oid="f:f7afl"
                   />
                 )}
               </div>
@@ -242,6 +248,7 @@ export function VideoPlayerWithTransitions({
           type: video.type || MediaType.Video,
           size: video.size || 0,
         }}
+        data-oid="57bp4we"
       />
     </div>
   )

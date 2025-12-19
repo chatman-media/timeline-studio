@@ -53,7 +53,7 @@ vi.mock("../../services/media-api", () => ({
 
 describe("useMediaManagement", () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MediaManagementProvider>{children}</MediaManagementProvider>
+    <MediaManagementProvider data-oid="kfrpcu_">{children}</MediaManagementProvider>
   )
 
   beforeEach(() => {

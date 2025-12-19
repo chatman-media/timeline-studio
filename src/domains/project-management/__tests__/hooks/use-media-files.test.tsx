@@ -235,7 +235,9 @@ describe("useMediaFiles Hook", () => {
       const { result } = renderHook(() => useMediaFiles())
 
       await result.current.updateMediaFile("media-1", { name: "New Name" })
-      await result.current.updateMediaFile("media-2", { description: "New Description" })
+      await result.current.updateMediaFile("media-2", {
+        description: "New Description",
+      })
 
       expect(mockExecuteCommand).toHaveBeenCalledTimes(2)
     })
@@ -246,7 +248,9 @@ describe("useMediaFiles Hook", () => {
 
       const { result } = renderHook(() => useMediaFiles())
 
-      const commandResult = await result.current.updateMediaFile("media-1", { name: "New Name" })
+      const commandResult = await result.current.updateMediaFile("media-1", {
+        name: "New Name",
+      })
 
       expect(commandResult).toEqual(mockResult)
     })

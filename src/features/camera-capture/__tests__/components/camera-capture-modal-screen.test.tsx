@@ -163,7 +163,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
   })
 
   it("should render mode switch buttons", () => {
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid=":ixbcyc" />)
 
     expect(screen.getByText("Camera")).toBeInTheDocument()
     expect(screen.getByText("Screen")).toBeInTheDocument()
@@ -183,7 +183,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       getSourceInfo: vi.fn(() => null),
     })
 
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid="b.440h6" />)
 
     const screenButton = screen.getByText("Screen")
     fireEvent.click(screenButton)
@@ -197,7 +197,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
   })
 
   it("should show screen settings when in screen mode", async () => {
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid="al63ba0" />)
 
     const screenButton = screen.getByText("Screen")
     fireEvent.click(screenButton)
@@ -209,7 +209,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
   })
 
   it("should hide camera settings when in screen mode", async () => {
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid="1wntj2e" />)
 
     // Сначала проверяем что настройки камеры видны (ищем элемент по роли)
     expect(screen.getAllByRole("combobox").length).toBeGreaterThan(2) // Камера, микрофон, разрешение и т.д.
@@ -250,7 +250,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       })),
     })
 
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid="ug1z08t" />)
 
     // Переключаемся на экран
     const screenButton = screen.getByText("Screen")
@@ -276,7 +276,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       getSourceInfo: vi.fn(() => null),
     })
 
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid="q1s8rks" />)
 
     const screenButton = screen.getByText("Screen")
     fireEvent.click(screenButton)
@@ -299,7 +299,7 @@ describe("CameraCaptureModal - Screen Recording", () => {
       formatRecordingTime: vi.fn((time: number) => `00:${time.toString().padStart(2, "0")}`),
     })
 
-    render(<CameraCaptureModal />)
+    render(<CameraCaptureModal data-oid="efmdjl1" />)
 
     const cameraButton = screen.getByText("Camera")
     const screenButton = screen.getByText("Screen")

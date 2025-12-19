@@ -271,110 +271,122 @@ export function SpeedCurveEditor({
     if (selectedKeyframe) {
       const keyframe = keyframes.find((kf) => kf.id === selectedKeyframe)
       if (keyframe) {
-        updateKeyframe(clipId, selectedKeyframe, { isLocked: !keyframe.isLocked })
+        updateKeyframe(clipId, selectedKeyframe, {
+          isLocked: !keyframe.isLocked,
+        })
       }
     }
   }, [selectedKeyframe, keyframes, clipId, updateKeyframe])
 
   return (
-    <div ref={containerRef} className={cn("relative bg-background border rounded-lg overflow-hidden", className)}>
+    <div
+      ref={containerRef}
+      className={cn("relative bg-background border rounded-lg overflow-hidden", className)}
+      data-oid="blpme8g"
+    >
       {/* Toolbar */}
-      <div className="flex items-center justify-between p-2 border-b bg-muted/50">
-        <div className="flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Speed Ramping</span>
+      <div className="flex items-center justify-between p-2 border-b bg-muted/50" data-oid="39kgxbx">
+        <div className="flex items-center gap-2" data-oid="qfxpqx6">
+          <Gauge className="h-4 w-4 text-muted-foreground" data-oid="uiv.n2o" />
+          <span className="text-sm font-medium" data-oid="wy2ct4y">
+            Speed Ramping
+          </span>
 
           {/* Presets */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
+          <DropdownMenu data-oid="zw_gxfc">
+            <DropdownMenuTrigger asChild data-oid="z5o0pmp">
+              <Button variant="ghost" size="sm" data-oid=".0i7f42">
                 Presets
-                <ChevronDown className="h-3 w-3 ml-1" />
+                <ChevronDown className="h-3 w-3 ml-1" data-oid="9v-g19s" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent data-oid="8.hbue3">
               {["basic", "creative", "sport", "cinematic"].map((category) => (
                 <React.Fragment key={category}>
-                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground">
+                  <div className="px-2 py-1 text-xs font-medium text-muted-foreground" data-oid="ij91p0i">
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                   </div>
                   {SPEED_RAMPING_PRESETS.filter((preset) => preset.category === category).map((preset) => (
-                    <DropdownMenuItem key={preset.id} onClick={() => applyPreset(clipId, preset.id)}>
+                    <DropdownMenuItem key={preset.id} onClick={() => applyPreset(clipId, preset.id)} data-oid="src67cp">
                       {preset.name}
                     </DropdownMenuItem>
                   ))}
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator data-oid="tua.nrm" />
                 </React.Fragment>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1" data-oid="kyqqmp:">
           {/* Selected keyframe controls */}
           {selectedKeyframe && (
             <>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
+              <DropdownMenu data-oid="cy.h5d5">
+                <DropdownMenuTrigger asChild data-oid="rupa7zt">
+                  <Button variant="ghost" size="sm" data-oid="n_p.7yt">
                     {interpolationTypes.find(
                       (t) => t.value === keyframes.find((kf) => kf.id === selectedKeyframe)?.interpolation,
                     )?.label || "Linear"}
-                    <ChevronDown className="h-3 w-3 ml-1" />
+                    <ChevronDown className="h-3 w-3 ml-1" data-oid="2934id3" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent data-oid="6j0ouvc">
                   {interpolationTypes.map((type) => (
-                    <DropdownMenuItem key={type.value} onClick={() => handleInterpolationChange(type.value)}>
+                    <DropdownMenuItem
+                      key={type.value}
+                      onClick={() => handleInterpolationChange(type.value)}
+                      data-oid="x-ye.b4"
+                    >
                       {type.label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={handleToggleLock}>
+              <TooltipProvider data-oid="xlr4gyy">
+                <Tooltip data-oid=":xxixnc">
+                  <TooltipTrigger asChild data-oid="jw5iv67">
+                    <Button variant="ghost" size="sm" onClick={handleToggleLock} data-oid="d22subl">
                       {keyframes.find((kf) => kf.id === selectedKeyframe)?.isLocked ? (
-                        <Lock className="h-4 w-4" />
+                        <Lock className="h-4 w-4" data-oid="ym95eou" />
                       ) : (
-                        <Unlock className="h-4 w-4" />
+                        <Unlock className="h-4 w-4" data-oid="9rzpdgr" />
                       )}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent data-oid="2ew:22r">
                     {keyframes.find((kf) => kf.id === selectedKeyframe)?.isLocked ? "Unlock" : "Lock"} keyframe
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={handleDeleteKeyframe}>
-                      <Trash2 className="h-4 w-4" />
+              <TooltipProvider data-oid="i2ifuaq">
+                <Tooltip data-oid="x32mq05">
+                  <TooltipTrigger asChild data-oid="5b5k02v">
+                    <Button variant="ghost" size="sm" onClick={handleDeleteKeyframe} data-oid="kpsjd.r">
+                      <Trash2 className="h-4 w-4" data-oid="5h.jjtb" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>Delete keyframe</TooltipContent>
+                  <TooltipContent data-oid="drp4:d6">Delete keyframe</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </>
           )}
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={() => resetToConstantSpeed(clipId, 1.0)}>
-                  <RotateCcw className="h-4 w-4" />
+          <TooltipProvider data-oid="2:-:irs">
+            <Tooltip data-oid="0ku3n11">
+              <TooltipTrigger asChild data-oid="tdlguov">
+                <Button variant="ghost" size="sm" onClick={() => resetToConstantSpeed(clipId, 1.0)} data-oid="5zt892o">
+                  <RotateCcw className="h-4 w-4" data-oid="26xh3ja" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Reset to normal speed</TooltipContent>
+              <TooltipContent data-oid="yh77yw4">Reset to normal speed</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
           {onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="ghost" size="sm" onClick={onClose} data-oid="l2gcxj0">
               ✕
             </Button>
           )}
@@ -382,14 +394,17 @@ export function SpeedCurveEditor({
       </div>
 
       {/* Canvas for curve */}
-      <div className="relative p-4" style={{ height: `${height + 32}px` }}>
+      <div className="relative p-4" style={{ height: `${height + 32}px` }} data-oid="8kklk.j">
         {/* Y-axis labels */}
-        <div className="absolute left-0 top-4 bottom-4 w-8 flex flex-col justify-between text-xs text-muted-foreground">
-          <span>4x</span>
-          <span>3x</span>
-          <span>2x</span>
-          <span>1x</span>
-          <span>0x</span>
+        <div
+          className="absolute left-0 top-4 bottom-4 w-8 flex flex-col justify-between text-xs text-muted-foreground"
+          data-oid="bioh0wt"
+        >
+          <span data-oid="q.xxi_9">4x</span>
+          <span data-oid="t8l5fbf">3x</span>
+          <span data-oid="s.uuid6">2x</span>
+          <span data-oid="b-0kpx.">1x</span>
+          <span data-oid="og-ax07">0x</span>
         </div>
 
         {/* Canvas */}
@@ -402,14 +417,17 @@ export function SpeedCurveEditor({
           style={{ width: `${width}px`, height: `${height}px` }}
           onClick={handleCanvasClick}
           onMouseDown={handleMouseDown}
+          data-oid="z-1j__t"
         />
 
         {/* Instructions */}
         {keyframes.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-            <div className="text-center">
-              <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Click to add speed keyframes</p>
+          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground" data-oid="iv3zqr-">
+            <div className="text-center" data-oid="bhnxg16">
+              <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" data-oid="x36saxq" />
+              <p className="text-sm" data-oid="1qsfwwd">
+                Click to add speed keyframes
+              </p>
             </div>
           </div>
         )}

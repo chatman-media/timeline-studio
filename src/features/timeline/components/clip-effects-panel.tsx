@@ -156,7 +156,10 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
       if (!clip) return
 
       // TODO: Add reorderEffects to useTimelineEffects hook
-      logger.warn("Reordering effects not yet implemented", { fromIndex, toIndex })
+      logger.warn("Reordering effects not yet implemented", {
+        fromIndex,
+        toIndex,
+      })
     },
     [clip],
   )
@@ -183,12 +186,12 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
 
   if (!clip) {
     return (
-      <Card className="h-full">
-        <CardHeader>
-          <CardTitle>{t("timeline.effects.title", "Эффекты клипа")}</CardTitle>
+      <Card className="h-full" data-oid=".35jrss">
+        <CardHeader data-oid="f2yukjj">
+          <CardTitle data-oid="64c3r-t">{t("timeline.effects.title", "Эффекты клипа")}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground text-center py-8">
+        <CardContent data-oid="7a1x0q1">
+          <p className="text-muted-foreground text-center py-8" data-oid="a0zsxb5">
             {t("timeline.effects.noClipSelected", "Выберите клип для управления эффектами")}
           </p>
         </CardContent>
@@ -197,49 +200,51 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
   }
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="flex-none">
-        <div className="flex items-center justify-between">
-          <CardTitle>{t("timeline.effects.title", "Эффекты клипа")}</CardTitle>
-          <div className="flex items-center gap-2">
-            <Dialog open={showEffectSelector} onOpenChange={setShowEffectSelector}>
-              <DialogTrigger asChild>
-                <Button size="sm" variant="outline">
-                  <Plus className="w-4 h-4 mr-2" />
+    <Card className="h-full flex flex-col" data-oid="np0alw_">
+      <CardHeader className="flex-none" data-oid="up-zs82">
+        <div className="flex items-center justify-between" data-oid="qm6odbl">
+          <CardTitle data-oid="uobx.2d">{t("timeline.effects.title", "Эффекты клипа")}</CardTitle>
+          <div className="flex items-center gap-2" data-oid="q9d:wnp">
+            <Dialog open={showEffectSelector} onOpenChange={setShowEffectSelector} data-oid="094taxw">
+              <DialogTrigger asChild data-oid="dj9:1ev">
+                <Button size="sm" variant="outline" data-oid="ckwy4u-">
+                  <Plus className="w-4 h-4 mr-2" data-oid="p8nh-6e" />
                   {t("timeline.effects.add", "Добавить")}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl max-h-[80vh]">
-                <DialogHeader>
-                  <DialogTitle>{t("timeline.effects.selectEffect", "Выберите эффект")}</DialogTitle>
-                  <DialogDescription>
+              <DialogContent className="max-w-4xl max-h-[80vh]" data-oid="_s-6w3z">
+                <DialogHeader data-oid="hop2y:b">
+                  <DialogTitle data-oid="3110ta-">{t("timeline.effects.selectEffect", "Выберите эффект")}</DialogTitle>
+                  <DialogDescription data-oid="nbk5amd">
                     {t("timeline.effects.selectEffectDescription", "Выберите эффект для добавления к клипу")}
                   </DialogDescription>
                 </DialogHeader>
-                <div className="h-[500px]">
-                  <EffectManagerPanel onApplyEffect={handleAddEffect} previewSize={100} />
+                <div className="h-[500px]" data-oid="m:mzqou">
+                  <EffectManagerPanel onApplyEffect={handleAddEffect} previewSize={100} data-oid="lvi025t" />
                 </div>
               </DialogContent>
             </Dialog>
             {onClose && (
-              <Button size="sm" variant="ghost" onClick={onClose}>
+              <Button size="sm" variant="ghost" onClick={onClose} data-oid="nqpwng7">
                 ✕
               </Button>
             )}
           </div>
         </div>
-        <p className="text-sm text-muted-foreground mt-1">{clip.name}</p>
+        <p className="text-sm text-muted-foreground mt-1" data-oid="i01f6yf">
+          {clip.name}
+        </p>
       </CardHeader>
 
-      <Separator />
+      <Separator data-oid="mtykd-i" />
 
-      <CardContent className="flex-1 p-0 flex">
+      <CardContent className="flex-1 p-0 flex" data-oid="f8m06h1">
         {/* Список эффектов */}
-        <div className="w-1/3 border-r">
-          <ScrollArea className="h-full">
-            <div className="p-4 space-y-2">
+        <div className="w-1/3 border-r" data-oid="4akq02b">
+          <ScrollArea className="h-full" data-oid="4n_lkev">
+            <div className="p-4 space-y-2" data-oid="i5i3ash">
               {clipEffects.length === 0 ? (
-                <p className="text-muted-foreground text-sm text-center py-4">
+                <p className="text-muted-foreground text-sm text-center py-4" data-oid="kywpy9p">
                   {t("timeline.effects.noEffects", "Нет эффектов")}
                 </p>
               ) : (
@@ -252,20 +257,26 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
                       ${!effect.applied.enabled ? "opacity-50" : ""}
                     `}
                     onClick={() => setSelectedEffectId(effect.applied.id)}
+                    data-oid="lfxh14r"
                   >
-                    <GripVertical className="w-4 h-4 text-muted-foreground cursor-move" />
+                    <GripVertical className="w-4 h-4 text-muted-foreground cursor-move" data-oid="9k.etcr" />
 
                     <Switch
                       checked={effect.applied.enabled}
                       onCheckedChange={(checked) => handleToggleEffect(effect.applied.id, checked)}
                       onClick={(e) => e.stopPropagation()}
+                      data-oid="dpepcyo"
                     />
 
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
+                    <div className="flex-1 min-w-0" data-oid="wy5bd2p">
+                      <p className="text-sm font-medium truncate" data-oid="3ml.zhx">
                         {effect.base?.name[i18n.language] || effect.base?.name.en}
                       </p>
-                      {effect.base?.category && <p className="text-xs text-muted-foreground">{effect.base.category}</p>}
+                      {effect.base?.category && (
+                        <p className="text-xs text-muted-foreground" data-oid="iw3k_ya">
+                          {effect.base.category}
+                        </p>
+                      )}
                     </div>
 
                     <Button
@@ -276,8 +287,9 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
                         e.stopPropagation()
                         handleRemoveEffect(effect.applied.id)
                       }}
+                      data-oid="2pvooc3"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" data-oid="xq4my4v" />
                     </Button>
                   </div>
                 ))
@@ -287,17 +299,17 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
         </div>
 
         {/* Параметры выбранного эффекта */}
-        <div className="flex-1">
-          <ScrollArea className="h-full">
-            <div className="p-4">
+        <div className="flex-1" data-oid="ujw9z2-">
+          <ScrollArea className="h-full" data-oid="u6:6152">
+            <div className="p-4" data-oid="i8oal40">
               {selectedEffect ? (
                 <>
-                  <h3 className="font-medium mb-4">
+                  <h3 className="font-medium mb-4" data-oid="obq7-k.">
                     {selectedEffect.base?.name[i18n.language] || selectedEffect.base?.name.en}
                   </h3>
 
                   {selectedEffect.base?.description && (
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <p className="text-sm text-muted-foreground mb-4" data-oid="8akdtbw">
                       {selectedEffect.base.description[i18n.language] || selectedEffect.base.description.en}
                     </p>
                   )}
@@ -306,11 +318,12 @@ export function ClipEffectsPanel({ clip, onClose }: ClipEffectsPanelProps) {
                     <EffectParameterControls
                       effect={selectedEffect.base}
                       onParametersChange={(params) => handleParametersChange(selectedEffect.applied.id, params)}
+                      data-oid="pgq4uqr"
                     />
                   )}
                 </>
               ) : (
-                <p className="text-muted-foreground text-center py-8">
+                <p className="text-muted-foreground text-center py-8" data-oid="ebqse-y">
                   {t("timeline.effects.selectEffectToEdit", "Выберите эффект для редактирования")}
                 </p>
               )}

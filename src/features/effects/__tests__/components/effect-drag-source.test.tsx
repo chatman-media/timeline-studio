@@ -59,9 +59,9 @@ describe("EffectDragSource", () => {
   describe("Rendering", () => {
     it("should render children", () => {
       render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Test Content</div>
+        <DndContext data-oid="7n6g:v6">
+          <EffectDragSource effect={mockEffect} data-oid="bp1862-">
+            <div data-oid="_q6mj3w">Test Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -71,9 +71,9 @@ describe("EffectDragSource", () => {
 
     it("should apply custom className", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} className="custom-class">
-            <div>Content</div>
+        <DndContext data-oid=".jhqrv1">
+          <EffectDragSource effect={mockEffect} className="custom-class" data-oid="tkhaalu">
+            <div data-oid="mbyb6pq">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -84,9 +84,9 @@ describe("EffectDragSource", () => {
 
     it("should apply grab cursor when not disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="j81aahi">
+          <EffectDragSource effect={mockEffect} data-oid="jofiww9">
+            <div data-oid="a1g424t">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -97,9 +97,9 @@ describe("EffectDragSource", () => {
 
     it("should apply not-allowed cursor when disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} disabled>
-            <div>Content</div>
+        <DndContext data-oid="l-gwkgp">
+          <EffectDragSource effect={mockEffect} disabled data-oid="y4ipsy.">
+            <div data-oid="mg68:f5">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -114,9 +114,9 @@ describe("EffectDragSource", () => {
       mockIsDragging = true
 
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="p69mgnt">
+          <EffectDragSource effect={mockEffect} data-oid="fu7dl-2">
+            <div data-oid="j8nndpq">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -129,9 +129,9 @@ describe("EffectDragSource", () => {
       mockIsDragging = true
 
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="edydnag">
+          <EffectDragSource effect={mockEffect} data-oid=".y8hnij">
+            <div data-oid="8g3zybk">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -145,9 +145,9 @@ describe("EffectDragSource", () => {
       mockTransform = { x: 100, y: 50 }
 
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="3_hr_ui">
+          <EffectDragSource effect={mockEffect} data-oid="0.-or4i">
+            <div data-oid="2cj_7x5">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -161,9 +161,9 @@ describe("EffectDragSource", () => {
       mockTransform = null
 
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="3i0w2cl">
+          <EffectDragSource effect={mockEffect} data-oid="x_anyc5">
+            <div data-oid="vgelrl9">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -176,9 +176,9 @@ describe("EffectDragSource", () => {
   describe("Disabled State", () => {
     it("should reduce opacity when disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} disabled>
-            <div>Content</div>
+        <DndContext data-oid="g510p-e">
+          <EffectDragSource effect={mockEffect} disabled data-oid="u.76urg">
+            <div data-oid=":55dtx_">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -189,9 +189,9 @@ describe("EffectDragSource", () => {
 
     it("should not show hover opacity when disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} disabled>
-            <div>Content</div>
+        <DndContext data-oid="7k2291u">
+          <EffectDragSource effect={mockEffect} disabled data-oid="cuubx4s">
+            <div data-oid="_r0mg1t">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -202,9 +202,9 @@ describe("EffectDragSource", () => {
 
     it("should show hover opacity when not disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="cc:jc4g">
+          <EffectDragSource effect={mockEffect} data-oid="u_469tn">
+            <div data-oid="-6r3g_e">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -217,9 +217,9 @@ describe("EffectDragSource", () => {
   describe("Draggable Configuration", () => {
     it("should set up draggable with correct id", () => {
       render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="sqcg9.x">
+          <EffectDragSource effect={mockEffect} data-oid="16mnjog">
+            <div data-oid="7wy:jhe">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -231,9 +231,9 @@ describe("EffectDragSource", () => {
 
     it("should attach listeners to wrapper", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid=".ns555m">
+          <EffectDragSource effect={mockEffect} data-oid="xgpnrea">
+            <div data-oid="4est0xn">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -245,9 +245,9 @@ describe("EffectDragSource", () => {
 
     it("should call setNodeRef", () => {
       render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="vo0.7fj">
+          <EffectDragSource effect={mockEffect} data-oid="7pyozul">
+            <div data-oid="z63-0b2">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -268,9 +268,9 @@ describe("EffectDragSource", () => {
       }
 
       const { rerender } = render(
-        <DndContext>
-          <EffectDragSource effect={effect1}>
-            <div>Content 1</div>
+        <DndContext data-oid="5ptv75x">
+          <EffectDragSource effect={effect1} data-oid="kx.jea:">
+            <div data-oid="dmn53ls">Content 1</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -287,9 +287,9 @@ describe("EffectDragSource", () => {
       }
 
       rerender(
-        <DndContext>
-          <EffectDragSource effect={effect2}>
-            <div>Content 2</div>
+        <DndContext data-oid=":elhrke">
+          <EffectDragSource effect={effect2} data-oid="5ad-zz1">
+            <div data-oid="lzgaw1b">Content 2</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -301,9 +301,9 @@ describe("EffectDragSource", () => {
   describe("Styling", () => {
     it("should apply transition-opacity class", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Content</div>
+        <DndContext data-oid="i8m94:s">
+          <EffectDragSource effect={mockEffect} data-oid="oprgppo">
+            <div data-oid=".qk85i6">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -314,9 +314,9 @@ describe("EffectDragSource", () => {
 
     it("should combine all classes correctly when not dragging and not disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} className="custom">
-            <div>Content</div>
+        <DndContext data-oid="isi7rgl">
+          <EffectDragSource effect={mockEffect} className="custom" data-oid="k6gbe7_">
+            <div data-oid="fkdl9hx">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -332,9 +332,9 @@ describe("EffectDragSource", () => {
       mockIsDragging = true
 
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} className="custom">
-            <div>Content</div>
+        <DndContext data-oid="qsdttc2">
+          <EffectDragSource effect={mockEffect} className="custom" data-oid="p096n8k">
+            <div data-oid="xm_4_1:">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -348,9 +348,9 @@ describe("EffectDragSource", () => {
 
     it("should combine all classes correctly when disabled", () => {
       const { container } = render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect} disabled className="custom">
-            <div>Content</div>
+        <DndContext data-oid=".b8ndcm">
+          <EffectDragSource effect={mockEffect} disabled className="custom" data-oid="z1ob4x1">
+            <div data-oid="t8llpqx">Content</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -366,11 +366,11 @@ describe("EffectDragSource", () => {
   describe("Children Rendering", () => {
     it("should render multiple children", () => {
       render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>Child 1</div>
-            <div>Child 2</div>
-            <div>Child 3</div>
+        <DndContext data-oid="c0v_07j">
+          <EffectDragSource effect={mockEffect} data-oid="qnatp5t">
+            <div data-oid="gse0rcv">Child 1</div>
+            <div data-oid="s_5mzik">Child 2</div>
+            <div data-oid="3c7:9_5">Child 3</div>
           </EffectDragSource>
         </DndContext>,
       )
@@ -382,12 +382,12 @@ describe("EffectDragSource", () => {
 
     it("should render complex children structures", () => {
       render(
-        <DndContext>
-          <EffectDragSource effect={mockEffect}>
-            <div>
-              <span>Nested</span>
-              <div>
-                <button>Button</button>
+        <DndContext data-oid="qez0o15">
+          <EffectDragSource effect={mockEffect} data-oid="w43rpuk">
+            <div data-oid="0-:yn4.">
+              <span data-oid="7:f81s_">Nested</span>
+              <div data-oid="s15r3z0">
+                <button data-oid="1znra0b">Button</button>
               </div>
             </div>
           </EffectDragSource>

@@ -131,7 +131,9 @@ export function VoiceRecordModal() {
         await getDevices()
       }
     } catch (error) {
-      logger.error("Ошибка при получении устройств после разрешений", { error })
+      logger.error("Ошибка при получении устройств после разрешений", {
+        error,
+      })
     }
   }, [requestPermissions, getDevices])
 
@@ -170,17 +172,17 @@ export function VoiceRecordModal() {
   // Если MediaDevices не поддерживается, показываем сообщение
   if (!isMediaDevicesSupported) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
-        <h3 className="text-lg font-semibold mb-4">
+      <div className="flex flex-col items-center justify-center p-8 text-center" data-oid="vutc2xe">
+        <h3 className="text-lg font-semibold mb-4" data-oid="wa2864t">
           {t("dialogs.voiceRecord.notSupported", "Запись звука недоступна")}
         </h3>
-        <p className="text-muted-foreground mb-6">
+        <p className="text-muted-foreground mb-6" data-oid="ztp6x13">
           {t(
             "dialogs.voiceRecord.notSupportedDescription",
             "Запись звука не поддерживается в десктопном приложении. Эта функция доступна только при использовании Timeline Studio в веб-браузере.",
           )}
         </p>
-        <Button onClick={closeModal} variant="outline">
+        <Button onClick={closeModal} variant="outline" data-oid="v6lxaks">
           {t("common.close", "Закрыть")}
         </Button>
       </div>
@@ -188,29 +190,40 @@ export function VoiceRecordModal() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6" data-oid="80g9vba">
       {/* Отображаем компонент запроса разрешений */}
       <AudioPermissionRequest
         permissionStatus={permissionStatus}
         errorMessage={errorMessage}
         onRequestPermissions={requestPermissions}
+        data-oid="znxi::_"
       />
 
       {/* Основной контент */}
       {permissionStatus === "granted" && (
         <>
           {/* Аудио элемент для предпросмотра (скрытый) */}
-          <audio ref={audioRef} autoPlay muted={isMuted} />
+          <audio ref={audioRef} autoPlay muted={isMuted} data-oid="ohgoa4f" />
 
           {/* Настройки устройств */}
-          <div className="mb-8 grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-5">
-            <div className="text-sm text-gray-300">{t("dialogs.voiceRecord.device", { defaultValue: "Device" })}:</div>
-            <div className="flex items-center gap-2">
-              <Select value={selectedAudioDevice} onValueChange={setSelectedAudioDevice} disabled={isRecording}>
-                <SelectTrigger className="w-full border-[#444] bg-[#222] focus:ring-0 focus:ring-offset-0">
-                  <SelectValue />
+          <div className="mb-8 grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-5" data-oid="97igzfh">
+            <div className="text-sm text-gray-300" data-oid="542fja4">
+              {t("dialogs.voiceRecord.device", { defaultValue: "Device" })}:
+            </div>
+            <div className="flex items-center gap-2" data-oid="_14q82g">
+              <Select
+                value={selectedAudioDevice}
+                onValueChange={setSelectedAudioDevice}
+                disabled={isRecording}
+                data-oid="n2:xww_"
+              >
+                <SelectTrigger
+                  className="w-full border-[#444] bg-[#222] focus:ring-0 focus:ring-offset-0"
+                  data-oid="b3nqsbx"
+                >
+                  <SelectValue data-oid="kl6z3hf" />
                 </SelectTrigger>
-                <SelectContent className="w-full border-[#444] bg-[#222]">
+                <SelectContent className="w-full border-[#444] bg-[#222]" data-oid="r.1flif">
                   {audioDevices.map(
                     (device) =>
                       device.deviceId && (
@@ -218,6 +231,7 @@ export function VoiceRecordModal() {
                           key={device.deviceId}
                           value={device.deviceId}
                           className="text-white hover:bg-[#333] focus:bg-[#333]"
+                          data-oid="2-xhiyz"
                         >
                           {device.label}
                         </SelectItem>
@@ -233,12 +247,13 @@ export function VoiceRecordModal() {
                 title={t("dialogs.voiceRecord.refreshDevices", {
                   defaultValue: "Refresh devices",
                 })}
+                data-oid="8hiez2e"
               >
-                <RefreshCw size={16} />
+                <RefreshCw size={16} data-oid="oupdcot" />
               </Button>
             </div>
 
-            <div className="text-sm text-gray-300">
+            <div className="text-sm text-gray-300" data-oid="_eradcd">
               {t("dialogs.voiceRecord.savePath", { defaultValue: "Save to" })}:
             </div>
             <Input
@@ -247,10 +262,14 @@ export function VoiceRecordModal() {
               className="border-[#444] bg-[#222] text-white focus:border-[#666]"
               placeholder="/Users/username/Movies"
               disabled={isRecording}
+              data-oid="k:qpwzu"
             />
 
-            <div className="text-sm text-gray-300">
-              {t("dialogs.voiceRecord.countdown", { defaultValue: "Countdown" })}:
+            <div className="text-sm text-gray-300" data-oid="m352vsm">
+              {t("dialogs.voiceRecord.countdown", {
+                defaultValue: "Countdown",
+              })}
+              :
             </div>
             <Input
               type="number"
@@ -260,27 +279,37 @@ export function VoiceRecordModal() {
               onChange={(e) => setCountdown(Number.parseInt(e.target.value, 10) || 0)}
               className="w-20 border-[#444] bg-[#222] text-white focus:border-[#666]"
               disabled={isRecording}
+              data-oid="wfp-nls"
             />
 
-            <div className="text-sm text-gray-300">{t("dialogs.voiceRecord.format", { defaultValue: "Format" })}:</div>
+            <div className="text-sm text-gray-300" data-oid="kl9kiyz">
+              {t("dialogs.voiceRecord.format", { defaultValue: "Format" })}:
+            </div>
             <Select
               value={selectedFormat}
               onValueChange={(value) => setSelectedFormat(value as AudioFormat)}
               disabled={isRecording}
+              data-oid="1ytnyjj"
             >
-              <SelectTrigger className="w-full border-[#444] bg-[#222] focus:ring-0 focus:ring-offset-0">
-                <SelectValue />
+              <SelectTrigger
+                className="w-full border-[#444] bg-[#222] focus:ring-0 focus:ring-offset-0"
+                data-oid="j98hpx2"
+              >
+                <SelectValue data-oid="wqnl8b1" />
               </SelectTrigger>
-              <SelectContent className="w-full border-[#444] bg-[#222]">
+              <SelectContent className="w-full border-[#444] bg-[#222]" data-oid="_ol.uk1">
                 {audioFormats.map((format) => (
                   <SelectItem
                     key={format.format}
                     value={format.format}
                     className="text-white hover:bg-[#333] focus:bg-[#333]"
+                    data-oid="lc_.ioy"
                   >
-                    <div className="flex flex-col items-start">
-                      <span>{format.name}</span>
-                      <span className="text-xs text-gray-400">{format.description}</span>
+                    <div className="flex flex-col items-start" data-oid="9rjkfnw">
+                      <span data-oid="bj:7e.u">{format.name}</span>
+                      <span className="text-xs text-gray-400" data-oid="8l9okir">
+                        {format.description}
+                      </span>
                     </div>
                   </SelectItem>
                 ))}
@@ -289,28 +318,39 @@ export function VoiceRecordModal() {
           </div>
 
           {/* Запись */}
-          <div className="mt-auto flex flex-col items-center pt-4">
+          <div className="mt-auto flex flex-col items-center pt-4" data-oid="1d0r78s">
             {/* Отображаем обратный отсчет */}
             {showCountdown && (
-              <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-red-600 text-4xl font-bold">
+              <div
+                className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-red-600 text-4xl font-bold"
+                data-oid="hdr-18j"
+              >
                 {countdown}
               </div>
             )}
 
             {/* Отображаем время записи */}
             {isRecording && (
-              <div className="mb-4 text-center">
-                <div className="text-lg font-semibold">
-                  {t("dialogs.voiceRecord.recordingTime", { defaultValue: "Recording time" })}{" "}
+              <div className="mb-4 text-center" data-oid="xni1376">
+                <div className="text-lg font-semibold" data-oid="7y18lvv">
+                  {t("dialogs.voiceRecord.recordingTime", {
+                    defaultValue: "Recording time",
+                  })}{" "}
                   {formatTime(recordingTime)}
                 </div>
-                <div className="mt-2 h-2 w-full bg-gray-700">
-                  <div className="h-2 bg-red-600" style={{ width: `${Math.min(100, (recordingTime / 300) * 100)}%` }} />
+                <div className="mt-2 h-2 w-full bg-gray-700" data-oid="0wtnwi5">
+                  <div
+                    className="h-2 bg-red-600"
+                    style={{
+                      width: `${Math.min(100, (recordingTime / 300) * 100)}%`,
+                    }}
+                    data-oid="e1:4sp9"
+                  />
                 </div>
               </div>
             )}
 
-            <div className="mb-4 flex items-center justify-center gap-6">
+            <div className="mb-4 flex items-center justify-center gap-6" data-oid="pqc7xlp">
               {!isRecording ? (
                 <Button
                   className="mb-0 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-red-600 shadow-lg hover:bg-red-700"
@@ -322,8 +362,9 @@ export function VoiceRecordModal() {
                   aria-label={t("dialogs.voiceRecord.startRecording", {
                     defaultValue: "Start Recording",
                   })}
+                  data-oid="b4-mvll"
                 >
-                  <div className="h-5 w-5 animate-pulse rounded-full bg-white" />
+                  <div className="h-5 w-5 animate-pulse rounded-full bg-white" data-oid="lsc:gip" />
                 </Button>
               ) : (
                 <Button
@@ -335,13 +376,14 @@ export function VoiceRecordModal() {
                   aria-label={t("dialogs.voiceRecord.stopRecording", {
                     defaultValue: "Stop Recording",
                   })}
+                  data-oid="xpbs4a5"
                 >
-                  <div className="h-5 w-5 rounded bg-white" />
+                  <div className="h-5 w-5 rounded bg-white" data-oid="4w8cofp" />
                 </Button>
               )}
             </div>
 
-            <div className="mt-4 text-center text-xs text-gray-400">
+            <div className="mt-4 text-center text-xs text-gray-400" data-oid="mq6knt2">
               {t("dialogs.voiceRecord.hint", {
                 defaultValue:
                   "Click the record button to start. The recording will be automatically added to the media library.",

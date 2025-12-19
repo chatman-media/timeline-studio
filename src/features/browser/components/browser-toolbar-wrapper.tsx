@@ -133,6 +133,7 @@ export const BrowserToolbarWrapper = memo(
         canZoomOut={canZoomOut}
         // Дополнительные кнопки
         extraButtons={extraButtons}
+        data-oid="sq:alxo"
       />
     )
   },

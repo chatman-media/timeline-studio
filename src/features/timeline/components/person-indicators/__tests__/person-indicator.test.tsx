@@ -15,9 +15,13 @@ import { PersonIndicator } from "../person-indicator"
 
 // Mock для tooltip компонентов
 vi.mock("@/components/ui/tooltip", () => ({
-  Tooltip: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  TooltipTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  TooltipContent: ({ children }: { children: React.ReactNode }) => <div data-testid="tooltip-content">{children}</div>,
+  Tooltip: ({ children }: { children: React.ReactNode }) => <div data-oid="1cfjeb9">{children}</div>,
+  TooltipTrigger: ({ children }: { children: React.ReactNode }) => <div data-oid="kdn9cxx">{children}</div>,
+  TooltipContent: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="tooltip-content" data-oid="2yp7_-3">
+      {children}
+    </div>
+  ),
 }))
 
 // Mock для badge компонента
@@ -31,7 +35,7 @@ vi.mock("@/components/ui/badge", () => ({
     onClick?: () => void
     className?: string
   }) => (
-    <span onClick={onClick} className={className} data-testid="badge">
+    <span onClick={onClick} className={className} data-testid="badge" data-oid="g-atg84">
       {children}
     </span>
   ),
@@ -40,12 +44,13 @@ vi.mock("@/components/ui/badge", () => ({
 // Mock для Lucide иконок
 vi.mock("lucide-react", () => ({
   User: ({ className }: { className?: string }) => (
-    <span className={className} data-testid="user-icon">
+    <span className={className} data-testid="user-icon" data-oid="-6fx.vo">
       User
     </span>
   ),
+
   Users: ({ className }: { className?: string }) => (
-    <span className={className} data-testid="users-icon">
+    <span className={className} data-testid="users-icon" data-oid="bzck29j">
       Users
     </span>
   ),
@@ -76,6 +81,7 @@ describe("PersonIndicator", () => {
           isGenerated: false,
         },
       ],
+
       privacy: {
         blurFace: false,
         hideFromSearch: false,
@@ -173,7 +179,7 @@ describe("PersonIndicator", () => {
 
   describe("Базовое отображение", () => {
     it("отображает персон, связанных с клипом", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="g4a9m0z" />)
 
       // Должно отобразить аватары для двух персон (person-1 и person-2)
       expect(screen.getByAltText("Иван Петров")).toBeInTheDocument()
@@ -181,21 +187,21 @@ describe("PersonIndicator", () => {
     })
 
     it("не отображает ничего, если нет персон в клипе", () => {
-      render(<PersonIndicator {...defaultProps} clipId="clip-empty" />)
+      render(<PersonIndicator {...defaultProps} clipId="clip-empty" data-oid="e7ndjgr" />)
 
       expect(screen.queryByTestId("tooltip-content")).not.toBeInTheDocument()
       expect(screen.queryByTestId("badge")).not.toBeInTheDocument()
     })
 
     it("отображает правильные имена в tooltip", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="emptawn" />)
 
       expect(screen.getByText("Иван Петров")).toBeInTheDocument()
       expect(screen.getByText("Анна Сидорова")).toBeInTheDocument()
     })
 
     it('отображает "Безымянная персона" для персон без имени', () => {
-      render(<PersonIndicator {...defaultProps} clipId="clip-2" />)
+      render(<PersonIndicator {...defaultProps} clipId="clip-2" data-oid="vgg71uo" />)
 
       expect(screen.getByText("Безымянная персона")).toBeInTheDocument()
     })
@@ -203,21 +209,21 @@ describe("PersonIndicator", () => {
 
   describe("Компактный режим", () => {
     it("отображает одну иконку для одной персоны", () => {
-      render(<PersonIndicator {...defaultProps} clipId="clip-2" compact />)
+      render(<PersonIndicator {...defaultProps} clipId="clip-2" compact data-oid="k145:93" />)
 
       expect(screen.getByTestId("user-icon")).toBeInTheDocument()
       expect(screen.getByText("Безымянная персона")).toBeInTheDocument()
     })
 
     it("отображает иконку группы и счетчик для нескольких персон", () => {
-      render(<PersonIndicator {...defaultProps} compact />)
+      render(<PersonIndicator {...defaultProps} compact data-oid="b.07y:k" />)
 
       expect(screen.getByTestId("users-icon")).toBeInTheDocument()
       expect(screen.getByText("2")).toBeInTheDocument() // Количество персон
     })
 
     it("показывает все персоны в tooltip в компактном режиме", () => {
-      render(<PersonIndicator {...defaultProps} compact />)
+      render(<PersonIndicator {...defaultProps} compact data-oid="8oszuxw" />)
 
       expect(screen.getByText("Иван Петров")).toBeInTheDocument()
       expect(screen.getByText("Анна Сидорова")).toBeInTheDocument()
@@ -226,7 +232,7 @@ describe("PersonIndicator", () => {
 
   describe("Ограничение видимых персон", () => {
     it("ограничивает количество видимых персон", () => {
-      render(<PersonIndicator {...defaultProps} maxVisible={1} />)
+      render(<PersonIndicator {...defaultProps} maxVisible={1} data-oid="m-09dh0" />)
 
       // Должен отобразить только одну персону
       expect(screen.getByAltText("Иван Петров")).toBeInTheDocument()
@@ -234,13 +240,13 @@ describe("PersonIndicator", () => {
     })
 
     it("показывает счетчик скрытых персон", () => {
-      render(<PersonIndicator {...defaultProps} maxVisible={1} />)
+      render(<PersonIndicator {...defaultProps} maxVisible={1} data-oid="nd3mkw_" />)
 
       expect(screen.getByText("+1")).toBeInTheDocument()
     })
 
     it("показывает скрытые персоны в tooltip", () => {
-      render(<PersonIndicator {...defaultProps} maxVisible={1} />)
+      render(<PersonIndicator {...defaultProps} maxVisible={1} data-oid="_w013-_" />)
 
       expect(screen.getByText("Анна Сидорова")).toBeInTheDocument()
     })
@@ -248,7 +254,7 @@ describe("PersonIndicator", () => {
 
   describe("Индикаторы уверенности", () => {
     it("отображает зеленый индикатор для высокой уверенности", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="mn33205" />)
 
       // Проверяем, что есть зеленый индикатор (confidence 0.95 = 95% >= 80%)
       const greenIndicator = document.querySelector(".bg-green-500")
@@ -256,7 +262,7 @@ describe("PersonIndicator", () => {
     })
 
     it("отображает желтый индикатор для средней уверенности", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="v9t.zkf" />)
 
       // Проверяем, что есть желтый индикатор (confidence 0.75 = 75% >= 60% но < 80%)
       const yellowIndicator = document.querySelector(".bg-yellow-500")
@@ -264,14 +270,14 @@ describe("PersonIndicator", () => {
     })
 
     it("показывает процент уверенности в tooltip", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="_7940q_" />)
 
       expect(screen.getByText("Уверенность: 95%")).toBeInTheDocument()
       expect(screen.getByText("Уверенность: 75%")).toBeInTheDocument()
     })
 
     it("показывает временные метки в tooltip", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="8ngvsjc" />)
 
       expect(screen.getByText("10с - 20с")).toBeInTheDocument()
       expect(screen.getByText("15с - 25с")).toBeInTheDocument()
@@ -281,7 +287,7 @@ describe("PersonIndicator", () => {
   describe("Обработка кликов", () => {
     it("вызывает onClick при клике на персону", () => {
       const onClickMock = vi.fn()
-      render(<PersonIndicator {...defaultProps} onClick={onClickMock} />)
+      render(<PersonIndicator {...defaultProps} onClick={onClickMock} data-oid=":d3x9xa" />)
 
       // Клик на первую персону (аватар)
       fireEvent.click(screen.getByAltText("Иван Петров").closest("div")!)
@@ -290,7 +296,7 @@ describe("PersonIndicator", () => {
 
     it("вызывает onClick при клике на badge в компактном режиме с одной персоной", () => {
       const onClickMock = vi.fn()
-      render(<PersonIndicator {...defaultProps} clipId="clip-2" compact onClick={onClickMock} />)
+      render(<PersonIndicator {...defaultProps} clipId="clip-2" compact onClick={onClickMock} data-oid="j02nygc" />)
 
       fireEvent.click(screen.getByTestId("badge"))
       expect(onClickMock).toHaveBeenCalledWith("person-3")
@@ -298,7 +304,7 @@ describe("PersonIndicator", () => {
 
     it("не вызывает onClick при клике на badge в компактном режиме с несколькими персонами", () => {
       const onClickMock = vi.fn()
-      render(<PersonIndicator {...defaultProps} compact onClick={onClickMock} />)
+      render(<PersonIndicator {...defaultProps} compact onClick={onClickMock} data-oid="c2o5_gy" />)
 
       fireEvent.click(screen.getByTestId("badge"))
       expect(onClickMock).not.toHaveBeenCalled()
@@ -309,8 +315,8 @@ describe("PersonIndicator", () => {
       const containerClickMock = vi.fn()
 
       render(
-        <div onClick={containerClickMock}>
-          <PersonIndicator {...defaultProps} onClick={onClickMock} />
+        <div onClick={containerClickMock} data-oid="z0yuj0q">
+          <PersonIndicator {...defaultProps} onClick={onClickMock} data-oid="0i-ir_z" />
         </div>,
       )
 
@@ -322,14 +328,14 @@ describe("PersonIndicator", () => {
 
   describe("Обработка изображений", () => {
     it("отображает изображение персоны, если есть thumbnail", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="gz4vm0j" />)
 
       const image = screen.getByAltText("Иван Петров")
       expect(image).toHaveAttribute("src", "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAg")
     })
 
     it("отображает иконку пользователя, если нет thumbnail", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid=".x2uk.:" />)
 
       expect(screen.getByTestId("user-icon")).toBeInTheDocument()
     })
@@ -337,7 +343,7 @@ describe("PersonIndicator", () => {
 
   describe("Z-index для наложения", () => {
     it("устанавливает правильный z-index для наложения аватаров", () => {
-      render(<PersonIndicator {...defaultProps} />)
+      render(<PersonIndicator {...defaultProps} data-oid="-x8f:ot" />)
 
       // Получаем родительские div для аватаров
       const firstPersonDiv = screen.getByAltText("Иван Петров").closest("div")?.parentElement
@@ -351,19 +357,19 @@ describe("PersonIndicator", () => {
 
   describe("Краевые случаи", () => {
     it("обрабатывает пустой массив персон", () => {
-      render(<PersonIndicator {...defaultProps} persons={[]} />)
+      render(<PersonIndicator {...defaultProps} persons={[]} data-oid="w9qlzbw" />)
 
       expect(screen.queryByTestId("tooltip-content")).not.toBeInTheDocument()
     })
 
     it("обрабатывает пустой массив appearances", () => {
-      render(<PersonIndicator {...defaultProps} appearances={[]} />)
+      render(<PersonIndicator {...defaultProps} appearances={[]} data-oid="ovlinmm" />)
 
       expect(screen.queryByTestId("tooltip-content")).not.toBeInTheDocument()
     })
 
     it("обрабатывает отсутствие onClick обработчика", () => {
-      render(<PersonIndicator {...defaultProps} onClick={undefined} />)
+      render(<PersonIndicator {...defaultProps} onClick={undefined} data-oid="olddsto" />)
 
       expect(() => {
         fireEvent.click(screen.getByAltText("Иван Петров").closest("div")!)
@@ -378,7 +384,7 @@ describe("PersonIndicator", () => {
         },
       ]
 
-      render(<PersonIndicator {...defaultProps} appearances={appearancesWithZeroConfidence} />)
+      render(<PersonIndicator {...defaultProps} appearances={appearancesWithZeroConfidence} data-oid="lt8vy7k" />)
 
       // При нулевой confidence индикатор не должен отображаться
       expect(document.querySelector(".bg-green-500")).not.toBeInTheDocument()

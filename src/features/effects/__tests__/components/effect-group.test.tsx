@@ -25,6 +25,7 @@ vi.mock("../../components/effect-preview", () => ({
       data-testid={`effect-preview-${effect?.id || "undefined"}`}
       onClick={onClick}
       style={{ width: `${width}px`, height: `${height}px` }}
+      data-oid="2ci5rbt"
     >
       Effect Preview {effect?.id || "undefined"} ({size}x{width}x{height})
     </div>
@@ -35,14 +36,21 @@ vi.mock("../../components/effect-preview", () => ({
 vi.mock("@/features/browser/components/content-group", () => ({
   ContentGroup: vi.fn(
     ({ title, items, renderItem, onAddAll, addButtonText, itemsContainerClassName, itemsContainerStyle }) => (
-      <div data-testid="content-group">
-        <div data-testid="content-group-title">{title}</div>
+      <div data-testid="content-group" data-oid="3a1cisp">
+        <div data-testid="content-group-title" data-oid="uo9sqn:">
+          {title}
+        </div>
         {onAddAll && (
-          <button onClick={() => onAddAll(items)} data-testid="add-all-button">
+          <button onClick={() => onAddAll(items)} data-testid="add-all-button" data-oid="lx0sxjh">
             {addButtonText}
           </button>
         )}
-        <div className={itemsContainerClassName} style={itemsContainerStyle} data-testid="items-container">
+        <div
+          className={itemsContainerClassName}
+          style={itemsContainerStyle}
+          data-testid="items-container"
+          data-oid="prw5wcz"
+        >
           {items.map((item: any, index: number) => renderItem(item, index))}
         </div>
       </div>
@@ -114,8 +122,8 @@ describe("EffectGroup", () => {
 
   it("renders the effect group with title", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} />
+      <BrowserProviders data-oid="lm0lgz-">
+        <EffectGroup {...defaultProps} data-oid="lyvadr-" />
       </BrowserProviders>,
     )
 
@@ -125,8 +133,8 @@ describe("EffectGroup", () => {
 
   it("renders all effects in the group", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} />
+      <BrowserProviders data-oid="iib5sa2">
+        <EffectGroup {...defaultProps} data-oid="ekx6-h_" />
       </BrowserProviders>,
     )
 
@@ -137,8 +145,8 @@ describe("EffectGroup", () => {
 
   it("passes correct props to EffectPreview components", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} />
+      <BrowserProviders data-oid="e7z0ndj">
+        <EffectGroup {...defaultProps} data-oid="jiusgot" />
       </BrowserProviders>,
     )
 
@@ -153,8 +161,8 @@ describe("EffectGroup", () => {
     const onEffectClick = vi.fn()
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} onEffectClick={onEffectClick} />
+      <BrowserProviders data-oid="ci2oj5n">
+        <EffectGroup {...defaultProps} onEffectClick={onEffectClick} data-oid="z2o3grh" />
       </BrowserProviders>,
     )
 
@@ -169,8 +177,8 @@ describe("EffectGroup", () => {
     const startIndex = 10
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} onEffectClick={onEffectClick} startIndex={startIndex} />
+      <BrowserProviders data-oid="0igpxe_">
+        <EffectGroup {...defaultProps} onEffectClick={onEffectClick} startIndex={startIndex} data-oid="9ciqr96" />
       </BrowserProviders>,
     )
 
@@ -183,8 +191,8 @@ describe("EffectGroup", () => {
     const onAddAllEffects = vi.fn()
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} onAddAllEffects={onAddAllEffects} />
+      <BrowserProviders data-oid="ckxs_.j">
+        <EffectGroup {...defaultProps} onAddAllEffects={onAddAllEffects} data-oid="jyflzdy" />
       </BrowserProviders>,
     )
 
@@ -197,8 +205,8 @@ describe("EffectGroup", () => {
     const onAddAllEffects = vi.fn()
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} onAddAllEffects={onAddAllEffects} />
+      <BrowserProviders data-oid="6k5pkxv">
+        <EffectGroup {...defaultProps} onAddAllEffects={onAddAllEffects} data-oid="ou-nfxw" />
       </BrowserProviders>,
     )
 
@@ -209,8 +217,8 @@ describe("EffectGroup", () => {
 
   it("does not render add all button when onAddAllEffects is not provided", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} />
+      <BrowserProviders data-oid="gnst8ij">
+        <EffectGroup {...defaultProps} data-oid="in7lrqt" />
       </BrowserProviders>,
     )
 
@@ -221,8 +229,8 @@ describe("EffectGroup", () => {
     const effectRefs = { current: new Map<string, HTMLDivElement>() }
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} effectRefs={effectRefs} />
+      <BrowserProviders data-oid="h9f-c50">
+        <EffectGroup {...defaultProps} effectRefs={effectRefs} data-oid="fnglmld" />
       </BrowserProviders>,
     )
 
@@ -242,8 +250,8 @@ describe("EffectGroup", () => {
     }
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...customProps} />
+      <BrowserProviders data-oid="qeq_nrb">
+        <EffectGroup {...customProps} data-oid="4gn1l2m" />
       </BrowserProviders>,
     )
 
@@ -260,8 +268,8 @@ describe("EffectGroup", () => {
 
   it("applies correct accessibility attributes", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} />
+      <BrowserProviders data-oid="069uddz">
+        <EffectGroup {...defaultProps} data-oid="x39xnec" />
       </BrowserProviders>,
     )
 
@@ -280,8 +288,8 @@ describe("EffectGroup", () => {
 
   it("passes correct grid template columns style", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} previewWidth={200} />
+      <BrowserProviders data-oid="b.w.v7m">
+        <EffectGroup {...defaultProps} previewWidth={200} data-oid="wdmar9n" />
       </BrowserProviders>,
     )
 
@@ -293,8 +301,8 @@ describe("EffectGroup", () => {
 
   it("handles empty effects array", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} effects={[]} />
+      <BrowserProviders data-oid="6z_mfo4">
+        <EffectGroup {...defaultProps} effects={[]} data-oid="xw6fzl2" />
       </BrowserProviders>,
     )
 
@@ -307,8 +315,8 @@ describe("EffectGroup", () => {
     const onEffectClick = vi.fn()
 
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} onEffectClick={onEffectClick} />
+      <BrowserProviders data-oid="0hxwmph">
+        <EffectGroup {...defaultProps} onEffectClick={onEffectClick} data-oid="lm0dah3" />
       </BrowserProviders>,
     )
 
@@ -321,8 +329,8 @@ describe("EffectGroup", () => {
 
   it("renders with correct ContentGroup props", () => {
     render(
-      <BrowserProviders>
-        <EffectGroup {...defaultProps} />
+      <BrowserProviders data-oid="p.8_gbc">
+        <EffectGroup {...defaultProps} data-oid="jjxfn97" />
       </BrowserProviders>,
     )
 

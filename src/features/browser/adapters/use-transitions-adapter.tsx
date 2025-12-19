@@ -58,44 +58,56 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
         className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
         onClick={handleClick}
         {...dragProps}
+        data-oid="17hlcl_"
       >
         {/* Transition preview thumbnail */}
-        <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden relative">
+        <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden relative" data-oid="p4_sdph">
           <video
             src="/t1.mp4" // Статичный файл из public/, не нужен convertVideoSrc
             className="w-full h-full object-cover"
             muted
             playsInline
             preload="metadata"
+            data-oid="px7.xiz"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+
+          <div
+            className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent animate-pulse"
+            data-oid="s1s9c1-"
+          />
         </div>
 
         {/* Transition Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">
+        <div className="flex-1 min-w-0" data-oid="4:jurmv">
+          <div className="font-medium text-sm truncate" data-oid="6_d2tno">
             {transition.labels?.ru || transition.labels?.en || transition.name}
           </div>
-          <div className="text-xs text-muted-foreground truncate">
+          <div className="text-xs text-muted-foreground truncate" data-oid="g4_23sm">
             {transition.description?.ru || transition.description?.en || ""}
           </div>
         </div>
 
         {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground">{transition.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="a95cmfi">
+          {transition.category}
+        </div>
 
         {/* Complexity */}
-        <div className="shrink-0 text-xs text-muted-foreground">{transition.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="l8d-chx">
+          {transition.complexity}
+        </div>
 
         {/* Duration */}
-        <div className="shrink-0 text-xs text-muted-foreground">{transition.duration?.default || "1"}s</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="avak:9u">
+          {transition.duration?.default || "1"}s
+        </div>
       </div>
     )
   }
 
   // Thumbnails mode - use the original TransitionPreview component
   return (
-    <div {...dragProps}>
+    <div {...dragProps} data-oid="zt:oh-2">
       <TransitionPreview
         transition={transition}
         sourceVideo={demoVideos.source}
@@ -105,6 +117,7 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
         size={previewSize}
         previewWidth={previewWidth}
         previewHeight={previewHeight}
+        data-oid="0d1:9.1"
       />
     </div>
   )
@@ -155,6 +168,7 @@ export function useTransitionsAdapter(): ListAdapter<TransitionListItem> {
           transition.type,
           ...(transition.tags || []),
         ]
+
         return texts.filter(Boolean)
       },
       getGroupValue: (transition: Transition, groupBy: string) => {

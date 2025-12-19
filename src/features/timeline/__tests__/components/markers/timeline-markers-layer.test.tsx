@@ -14,8 +14,11 @@ vi.mock("../../../components/markers/timeline-marker", () => ({
       data-testid={`marker-${marker.id}`}
       onClick={() => onClick?.(marker.id)}
       style={{ display: "block", visibility: "visible" }}
+      data-oid=":09lt-i"
     >
-      <span data-testid={`marker-name-${marker.id}`}>{marker.name}</span>
+      <span data-testid={`marker-name-${marker.id}`} data-oid="b0zuslo">
+        {marker.name}
+      </span>
     </div>
   ),
 }))
@@ -76,7 +79,7 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("рендерит слой с правильными размерами и позицией", () => {
-    render(<TimelineMarkersLayer {...defaultProps} />)
+    render(<TimelineMarkersLayer {...defaultProps} data-oid="rxtq.-7" />)
 
     const layer = screen.getByTestId("timeline-markers-layer")
     expect(layer).toHaveStyle({
@@ -86,7 +89,7 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("применяет смещение прокрутки", () => {
-    render(<TimelineMarkersLayer {...defaultProps} scrollOffset={200} />)
+    render(<TimelineMarkersLayer {...defaultProps} scrollOffset={200} data-oid="aarpe8a" />)
 
     const layer = screen.getByTestId("timeline-markers-layer")
     expect(layer).toHaveStyle({
@@ -95,7 +98,7 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("отображает линию текущего времени в правильной позиции", () => {
-    render(<TimelineMarkersLayer {...defaultProps} />)
+    render(<TimelineMarkersLayer {...defaultProps} data-oid="bu70mbm" />)
 
     const playhead = screen.getByTestId("timeline-markers-layer").querySelector(".bg-red-500")
     expect(playhead).toHaveStyle({
@@ -106,7 +109,7 @@ describe("TimelineMarkersLayer", () => {
   it("рендерит все маркеры", () => {
     mockUseTimelineMarkersReturn.markers = [...mockMarkers]
 
-    render(<TimelineMarkersLayer {...defaultProps} />)
+    render(<TimelineMarkersLayer {...defaultProps} data-oid="o.w.q:m" />)
 
     // Check that marker elements are rendered
     const markerElements = screen.queryAllByTestId(/^marker-marker-/)
@@ -121,7 +124,7 @@ describe("TimelineMarkersLayer", () => {
   it("передает правильные пропсы в компоненты маркеров", () => {
     mockUseTimelineMarkersReturn.markers = [...mockMarkers.slice(0, 1)]
 
-    render(<TimelineMarkersLayer {...defaultProps} />)
+    render(<TimelineMarkersLayer {...defaultProps} data-oid="6v5.xqv" />)
 
     // Проверяем, что маркер рендерится с правильными пропсами
     const markerElements = screen.queryAllByTestId(/^marker-/)
@@ -132,7 +135,7 @@ describe("TimelineMarkersLayer", () => {
   it("обрабатывает перетаскивание маркера с ограничением по времени", () => {
     mockUseTimelineMarkersReturn.markers = [mockMarkers[0]]
 
-    const { rerender } = render(<TimelineMarkersLayer {...defaultProps} />)
+    const { rerender } = render(<TimelineMarkersLayer {...defaultProps} data-oid="hf4::ut" />)
 
     // Симулируем вызов handleMarkerDrag через callback
     // В реальном компоненте это происходит через пропс onDrag
@@ -145,7 +148,7 @@ describe("TimelineMarkersLayer", () => {
   it("ограничивает время маркера в пределах duration", () => {
     mockUseTimelineMarkersReturn.markers = [mockMarkers[0]]
 
-    render(<TimelineMarkersLayer {...defaultProps} duration={30} />)
+    render(<TimelineMarkersLayer {...defaultProps} duration={30} data-oid="5t0840d" />)
 
     // В реальном сценарии handleMarkerDrag должен ограничить время до 30 секунд
     // Здесь мы просто проверяем, что компонент рендерится с корректным duration
@@ -158,7 +161,7 @@ describe("TimelineMarkersLayer", () => {
   it("обрабатывает клик по маркеру", () => {
     mockUseTimelineMarkersReturn.markers = [...mockMarkers.slice(0, 1)]
 
-    render(<TimelineMarkersLayer {...defaultProps} />)
+    render(<TimelineMarkersLayer {...defaultProps} data-oid="j4c78fe" />)
 
     const marker = screen.getByText("Chapter 1").closest("div")!
     marker.click()
@@ -168,7 +171,7 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("применяет дополнительные CSS классы", () => {
-    render(<TimelineMarkersLayer {...defaultProps} className="custom-layer" />)
+    render(<TimelineMarkersLayer {...defaultProps} className="custom-layer" data-oid="6f2bte." />)
 
     const layer = screen.getByTestId("timeline-markers-layer")
     expect(layer).toHaveClass("custom-layer")
@@ -177,7 +180,7 @@ describe("TimelineMarkersLayer", () => {
   it("не рендерит маркеры если список пуст", () => {
     mockUseTimelineMarkersReturn.markers = []
 
-    render(<TimelineMarkersLayer {...defaultProps} />)
+    render(<TimelineMarkersLayer {...defaultProps} data-oid="orgw9p8" />)
 
     // Должна быть только линия текущего времени, без маркеров
     const markers = screen.queryAllByTestId(/marker-/)
@@ -185,10 +188,10 @@ describe("TimelineMarkersLayer", () => {
   })
 
   it("обновляет позицию при изменении timeScale", () => {
-    const { rerender } = render(<TimelineMarkersLayer {...defaultProps} />)
+    const { rerender } = render(<TimelineMarkersLayer {...defaultProps} data-oid="b27fg14" />)
 
     // Меняем масштаб времени
-    rerender(<TimelineMarkersLayer {...defaultProps} timeScale={200} />)
+    rerender(<TimelineMarkersLayer {...defaultProps} timeScale={200} data-oid="t8_an_a" />)
 
     const layer = screen.getByTestId("timeline-markers-layer")
     expect(layer).toHaveStyle({

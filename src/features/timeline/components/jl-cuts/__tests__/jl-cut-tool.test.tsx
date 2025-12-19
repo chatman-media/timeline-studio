@@ -100,7 +100,7 @@ describe("JLCutTool", () => {
   })
 
   it("should render trigger button", () => {
-    render(<JLCutTool clip={defaultClip} />)
+    render(<JLCutTool clip={defaultClip} data-oid="mg7s49o" />)
 
     const triggerButton = screen.getByRole("button")
     expect(triggerButton).toBeInTheDocument()
@@ -108,7 +108,7 @@ describe("JLCutTool", () => {
 
   it("should open popover on trigger click", async () => {
     const user = userEvent.setup()
-    render(<JLCutTool clip={defaultClip} />)
+    render(<JLCutTool clip={defaultClip} data-oid="wis5hzu" />)
 
     const triggerButton = screen.getByRole("button")
     await user.click(triggerButton)
@@ -123,7 +123,7 @@ describe("JLCutTool", () => {
       mockGetLinkedClip.mockReturnValue(null)
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="sf.z-fw" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -132,11 +132,14 @@ describe("JLCutTool", () => {
     })
 
     it("should show linked clip info when clip is linked", async () => {
-      const linkedClip = createMockClip({ id: "linked-clip", name: "Linked Audio" })
+      const linkedClip = createMockClip({
+        id: "linked-clip",
+        name: "Linked Audio",
+      })
       mockGetLinkedClip.mockReturnValue(linkedClip)
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="wd-_8fk" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -146,11 +149,14 @@ describe("JLCutTool", () => {
     })
 
     it("should call unlinkClips when unlink button clicked", async () => {
-      const linkedClip = createMockClip({ id: "linked-clip", name: "Linked Audio" })
+      const linkedClip = createMockClip({
+        id: "linked-clip",
+        name: "Linked Audio",
+      })
       mockGetLinkedClip.mockReturnValue(linkedClip)
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="eu5z2mu" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -172,7 +178,7 @@ describe("JLCutTool", () => {
 
     it("should show offset controls when can create J/L cuts", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="-t33epz" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -188,7 +194,7 @@ describe("JLCutTool", () => {
       mockIsAudioClip.mockReturnValue(false)
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="fxe51r7" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -199,7 +205,7 @@ describe("JLCutTool", () => {
 
     it("should update offset slider value", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="96rarp-" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -210,7 +216,7 @@ describe("JLCutTool", () => {
 
     it("should call createJCut when J-Cut button clicked", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="7-e7ex7" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -223,7 +229,7 @@ describe("JLCutTool", () => {
 
     it("should call createLCut when L-Cut button clicked", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="-whd:iz" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -236,7 +242,7 @@ describe("JLCutTool", () => {
 
     it("should call createJCut with default offset", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="0ygg89." />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -249,7 +255,7 @@ describe("JLCutTool", () => {
 
     it("should show J-Cut and L-Cut buttons", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="mq2yalp" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -270,7 +276,7 @@ describe("JLCutTool", () => {
 
     it("should show reset button when has J/L cut", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="1b-nneq" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -282,7 +288,7 @@ describe("JLCutTool", () => {
       mockHasJLCut.mockReturnValue(false)
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="6aoeiz6" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -292,7 +298,7 @@ describe("JLCutTool", () => {
 
     it("should call resetCut when reset button clicked", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="4-2nll5" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -314,7 +320,7 @@ describe("JLCutTool", () => {
 
     it("should show offset controls when can create J/L cuts", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="kuzu_lt" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -324,7 +330,7 @@ describe("JLCutTool", () => {
 
     it("should format offset to 1 decimal place", async () => {
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="v5h-1ja" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -336,7 +342,7 @@ describe("JLCutTool", () => {
 
   it("should apply custom className to trigger button", () => {
     const customClass = "custom-tool-button"
-    render(<JLCutTool clip={defaultClip} className={customClass} />)
+    render(<JLCutTool clip={defaultClip} className={customClass} data-oid="w2slvs6" />)
 
     const triggerButton = screen.getByRole("button")
     expect(triggerButton).toHaveClass(customClass)
@@ -344,7 +350,7 @@ describe("JLCutTool", () => {
 
   it("should have proper popover styling and positioning", async () => {
     const user = userEvent.setup()
-    render(<JLCutTool clip={defaultClip} />)
+    render(<JLCutTool clip={defaultClip} data-oid="2gfwz30" />)
 
     const triggerButton = screen.getByRole("button")
     await user.click(triggerButton)
@@ -359,7 +365,7 @@ describe("JLCutTool", () => {
       mockGetLinkedClip.mockReturnValue(null)
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={defaultClip} />)
+      render(<JLCutTool clip={defaultClip} data-oid="ud50ib5" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -377,7 +383,7 @@ describe("JLCutTool", () => {
       mockIsAudioClip.mockImplementation((clip) => clip.id === "audio-clip")
 
       const user = userEvent.setup()
-      render(<JLCutTool clip={audioClip} />)
+      render(<JLCutTool clip={audioClip} data-oid="3q2.dyo" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
@@ -388,13 +394,13 @@ describe("JLCutTool", () => {
 
     it("should maintain component state across re-renders", async () => {
       const user = userEvent.setup()
-      const { rerender } = render(<JLCutTool clip={defaultClip} />)
+      const { rerender } = render(<JLCutTool clip={defaultClip} data-oid="8lw0_70" />)
 
       const triggerButton = screen.getByRole("button")
       await user.click(triggerButton)
 
       // Перерендер компонента
-      rerender(<JLCutTool clip={defaultClip} />)
+      rerender(<JLCutTool clip={defaultClip} data-oid="kp6a6jr" />)
 
       // Должен остаться открытым
       expect(screen.getByText("J-Cut / L-Cut Tools")).toBeInTheDocument()

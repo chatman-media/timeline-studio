@@ -20,14 +20,21 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = await importOriginal<typeof import("lucide-react")>()
   return {
     ...actual,
-    Folder: ({ className }: { className?: string }) => <div data-testid="folder-icon" className={className} />,
+    Folder: ({ className }: { className?: string }) => (
+      <div data-testid="folder-icon" className={className} data-oid=":5doxq9" />
+    ),
+
     ChevronDown: ({ className }: { className?: string }) => (
-      <div data-testid="chevron-down-icon" className={className} />
+      <div data-testid="chevron-down-icon" className={className} data-oid="7ljntbm" />
     ),
+
     ChevronRight: ({ className }: { className?: string }) => (
-      <div data-testid="chevron-right-icon" className={className} />
+      <div data-testid="chevron-right-icon" className={className} data-oid="cte3rwq" />
     ),
-    Info: ({ className }: { className?: string }) => <div data-testid="info-icon" className={className} />,
+
+    Info: ({ className }: { className?: string }) => (
+      <div data-testid="info-icon" className={className} data-oid="vby5r66" />
+    ),
   }
 })
 
@@ -61,7 +68,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should render all three tabs", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="z-n3_9:" />)
 
     expect(screen.getByText("dialogs.export.video")).toBeInTheDocument()
     expect(screen.getByText("dialogs.export.audio")).toBeInTheDocument()
@@ -69,7 +76,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should render all tabs", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="4f4qgeo" />)
 
     // Check that all tab triggers are present
     expect(screen.getByText("dialogs.export.video")).toBeInTheDocument()
@@ -81,7 +88,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should display video settings in video tab", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="s02.jdq" />)
 
     expect(screen.getByText("dialogs.export.exportVideo")).toBeInTheDocument()
     expect(screen.getByText("dialogs.export.format")).toBeInTheDocument()
@@ -93,7 +100,7 @@ describe("DetailedExportInterface", () => {
 
   it("should show ProRes codec options for MOV format", () => {
     const movSettings = { ...mockSettings, format: OutputFormat.Mov }
-    render(<DetailedExportInterface {...mockProps} settings={movSettings} />)
+    render(<DetailedExportInterface {...mockProps} settings={movSettings} data-oid="cifzx41" />)
 
     // For MOV format, codec type selector should be shown
     expect(screen.getByText("dialogs.export.codecType")).toBeInTheDocument()
@@ -102,7 +109,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should hide ProRes options for non-MOV formats", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="kb0n_-x" />)
 
     // ProRes codec type selector should not be shown for MP4
     expect(screen.queryByText("dialogs.export.codecType")).not.toBeInTheDocument()
@@ -111,7 +118,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should call onSettingsChange when format changes", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid=".c6xe:c" />)
 
     // Format select trigger is harder to test directly, but we can verify it's rendered
     const formatSelect = screen.getByText("dialogs.export.format").parentElement
@@ -119,7 +126,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should show export button when not rendering", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="inii7-t" />)
 
     const exportButton = screen.getByText("dialogs.export.export").closest("button")
     expect(exportButton).toBeInTheDocument()
@@ -128,7 +135,7 @@ describe("DetailedExportInterface", () => {
 
   it("should show cancel button when rendering", () => {
     const renderingProps = { ...mockProps, isRendering: true }
-    render(<DetailedExportInterface {...renderingProps} />)
+    render(<DetailedExportInterface {...renderingProps} data-oid="5ghehyf" />)
 
     const cancelButton = screen.getByText("dialogs.export.cancel").closest("button")
     expect(cancelButton).toBeInTheDocument()
@@ -146,7 +153,7 @@ describe("DetailedExportInterface", () => {
         message: "Processing video...",
       },
     }
-    render(<DetailedExportInterface {...progressProps} />)
+    render(<DetailedExportInterface {...progressProps} data-oid="t7ak5fy" />)
 
     expect(screen.getByText("dialogs.export.progress")).toBeInTheDocument()
     expect(screen.getByText("50%")).toBeInTheDocument()
@@ -156,7 +163,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should handle choose folder button click", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="cfnto-4" />)
 
     const chooseFolderButton = screen.getByTestId("folder-icon").closest("button")!
     fireEvent.click(chooseFolderButton)
@@ -165,7 +172,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should call onExport when export button clicked", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="so-yl73" />)
 
     const exportButton = screen.getByText("dialogs.export.export").closest("button")!
     fireEvent.click(exportButton)
@@ -175,7 +182,7 @@ describe("DetailedExportInterface", () => {
 
   it("should call onCancelExport when cancel button clicked during render", () => {
     const renderingProps = { ...mockProps, isRendering: true }
-    render(<DetailedExportInterface {...renderingProps} />)
+    render(<DetailedExportInterface {...renderingProps} data-oid="l3w6f.2" />)
 
     const cancelButton = screen.getByText("dialogs.export.cancel").closest("button")!
     fireEvent.click(cancelButton)
@@ -184,7 +191,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should render all tab triggers", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="qehctte" />)
 
     // All tabs should be present
     expect(screen.getByText("dialogs.export.video")).toBeInTheDocument()
@@ -193,7 +200,7 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should render video settings in default state", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="55-1k96" />)
 
     // Video tab is active by default
     expect(screen.getByText("dialogs.export.exportVideo")).toBeInTheDocument()
@@ -203,20 +210,20 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should show constant bitrate option for non-MOV formats", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="rxolp4g" />)
 
     expect(screen.getByText("dialogs.export.constantBitrate")).toBeInTheDocument()
   })
 
   it("should hide constant bitrate option for MOV format", () => {
     const movSettings = { ...mockSettings, format: OutputFormat.Mov }
-    render(<DetailedExportInterface {...mockProps} settings={movSettings} />)
+    render(<DetailedExportInterface {...mockProps} settings={movSettings} data-oid="ktg1wwy" />)
 
     expect(screen.queryByText("dialogs.export.constantBitrate")).not.toBeInTheDocument()
   })
 
   it("should render export presets", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="cs99vem" />)
 
     // ExportPresets component should be rendered - check for a preset button instead
     expect(screen.getByText("Custom Export")).toBeInTheDocument()
@@ -224,7 +231,7 @@ describe("DetailedExportInterface", () => {
 
   it("should disable all inputs when rendering", () => {
     const renderingProps = { ...mockProps, isRendering: true }
-    render(<DetailedExportInterface {...renderingProps} />)
+    render(<DetailedExportInterface {...renderingProps} data-oid="97ooyre" />)
 
     // Check that inputs are disabled
     const fileNameInput = screen.getByPlaceholderText("dialogs.export.name")
@@ -240,11 +247,15 @@ describe("DetailedExportInterface", () => {
   })
 
   it("should update export video checkbox", () => {
-    render(<DetailedExportInterface {...mockProps} />)
+    render(<DetailedExportInterface {...mockProps} data-oid="8d8ujoh" />)
 
-    const exportVideoCheckbox = screen.getByRole("checkbox", { name: /dialogs.export.exportVideo/i })
+    const exportVideoCheckbox = screen.getByRole("checkbox", {
+      name: /dialogs.export.exportVideo/i,
+    })
     fireEvent.click(exportVideoCheckbox)
 
-    expect(mockProps.onSettingsChange).toHaveBeenCalledWith({ exportVideo: false })
+    expect(mockProps.onSettingsChange).toHaveBeenCalledWith({
+      exportVideo: false,
+    })
   })
 })

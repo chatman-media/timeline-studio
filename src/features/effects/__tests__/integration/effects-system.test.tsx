@@ -360,7 +360,10 @@ describe("Effects System Integration Tests", () => {
       effectManager.registerEffect(colorCorrectionEffect)
       const appliedEffect = effectManager.applyEffect("color_correction_basic", "clip_1", "clip")
 
-      const preset = effectManager.createPreset(appliedEffect.id, { en: "Test Preset", ru: "Тестовый пресет" })
+      const preset = effectManager.createPreset(appliedEffect.id, {
+        en: "Test Preset",
+        ru: "Тестовый пресет",
+      })
 
       // Меняем параметры
       effectManager.setEffectParameter(appliedEffect.id, "temperature", 100)
@@ -555,7 +558,9 @@ describe("Effects System Integration Tests", () => {
     it("should export and import effect stack", () => {
       effectManager.registerEffects([gaussianBlurEffect, colorCorrectionEffect])
 
-      effectManager.applyEffect("gaussian_blur", "clip_1", "clip", { parameters: { radius: 15 } })
+      effectManager.applyEffect("gaussian_blur", "clip_1", "clip", {
+        parameters: { radius: 15 },
+      })
       effectManager.applyEffect("color_correction_basic", "clip_1", "clip", {
         parameters: { temperature: 30 },
       })
@@ -693,7 +698,9 @@ describe("Effects System Integration Tests", () => {
     })
 
     it("should filter effects by category", () => {
-      const results = effectManager.searchEffects("", { category: "color_correction" })
+      const results = effectManager.searchEffects("", {
+        category: "color_correction",
+      })
 
       // Assertions (2)
       expect(results).toHaveLength(1)
@@ -701,7 +708,9 @@ describe("Effects System Integration Tests", () => {
     })
 
     it("should filter effects by complexity", () => {
-      const results = effectManager.searchEffects("", { complexity: ["medium"] })
+      const results = effectManager.searchEffects("", {
+        complexity: ["medium"],
+      })
 
       // Assertions (2)
       expect(results.length).toBeGreaterThan(0)

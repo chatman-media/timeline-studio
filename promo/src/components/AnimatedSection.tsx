@@ -1,14 +1,19 @@
-import { motion } from "framer-motion"
-import { type ReactNode } from "react"
+import { motion } from "framer-motion";
+import { type ReactNode } from "react";
 
 interface AnimatedSectionProps {
-  children: ReactNode
-  className?: string
-  animation?: "fadeUp" | "fadeIn" | "scaleIn" | "slideInLeft" | "slideInRight"
-  delay?: number
+  children: ReactNode;
+  className?: string;
+  animation?: "fadeUp" | "fadeIn" | "scaleIn" | "slideInLeft" | "slideInRight";
+  delay?: number;
 }
 
-export function AnimatedSection({ children, className = "", animation = "fadeUp", delay = 0 }: AnimatedSectionProps) {
+export function AnimatedSection({
+  children,
+  className = "",
+  animation = "fadeUp",
+  delay = 0,
+}: AnimatedSectionProps) {
   const variants = {
     fadeUp: {
       hidden: { y: 50, opacity: 0 },
@@ -30,7 +35,7 @@ export function AnimatedSection({ children, className = "", animation = "fadeUp"
       hidden: { x: 100, opacity: 0 },
       visible: { x: 0, opacity: 1 },
     },
-  }
+  };
 
   return (
     <motion.div
@@ -40,8 +45,9 @@ export function AnimatedSection({ children, className = "", animation = "fadeUp"
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6, delay, ease: "easeOut" }}
       variants={variants[animation]}
+      data-oid="j151:ux"
     >
       {children}
     </motion.div>
-  )
+  );
 }

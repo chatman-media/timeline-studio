@@ -16,14 +16,14 @@ vi.mock("react-i18next", () => ({
 describe("LanguageSelector", () => {
   it("should render language selector", () => {
     const onChange = vi.fn()
-    render(<LanguageSelector value="en" onChange={onChange} />)
+    render(<LanguageSelector value="en" onChange={onChange} data-oid="xxtmwxp" />)
 
     expect(screen.getByRole("combobox")).toBeInTheDocument()
   })
 
   it("should display selected language", () => {
     const onChange = vi.fn()
-    render(<LanguageSelector value="en" onChange={onChange} />)
+    render(<LanguageSelector value="en" onChange={onChange} data-oid="ynf2ego" />)
 
     // The Select component from shadcn displays the value in the trigger
     const trigger = screen.getByRole("combobox")
@@ -33,7 +33,7 @@ describe("LanguageSelector", () => {
   it("should call onChange when language is selected", async () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
-    render(<LanguageSelector value={undefined} onChange={onChange} includeAutoDetect={true} />)
+    render(<LanguageSelector value={undefined} onChange={onChange} includeAutoDetect={true} data-oid="jzms-_g" />)
 
     const trigger = screen.getByRole("combobox")
     await user.click(trigger)
@@ -45,21 +45,21 @@ describe("LanguageSelector", () => {
 
   it("should include auto-detect option when includeAutoDetect is true", () => {
     const onChange = vi.fn()
-    render(<LanguageSelector value={undefined} onChange={onChange} includeAutoDetect={true} />)
+    render(<LanguageSelector value={undefined} onChange={onChange} includeAutoDetect={true} data-oid="clkhdpm" />)
 
     expect(screen.getByRole("combobox")).toBeInTheDocument()
   })
 
   it("should not include auto-detect when includeAutoDetect is false", () => {
     const onChange = vi.fn()
-    render(<LanguageSelector value="en" onChange={onChange} includeAutoDetect={false} />)
+    render(<LanguageSelector value="en" onChange={onChange} includeAutoDetect={false} data-oid=":pf2060" />)
 
     expect(screen.getByRole("combobox")).toBeInTheDocument()
   })
 
   it("should display label", () => {
     const onChange = vi.fn()
-    render(<LanguageSelector value="en" onChange={onChange} />)
+    render(<LanguageSelector value="en" onChange={onChange} data-oid="slizl0v" />)
 
     // The translated label "Язык" should be in the document
     expect(screen.getByText("Язык")).toBeInTheDocument()

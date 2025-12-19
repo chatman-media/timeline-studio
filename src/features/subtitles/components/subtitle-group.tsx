@@ -30,14 +30,19 @@ export function SubtitleGroup({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-oid="d-zmxtn">
       {/* Заголовок группы (если есть) */}
-      {title && <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{title}</h3>}
+      {title && (
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300" data-oid="kq3i_4q">
+          {title}
+        </h3>
+      )}
 
       {/* Сетка субтитров */}
       <div
         className="grid grid-cols-[repeat(auto-fill,minmax(0,calc(var(--preview-size)+12px)))] gap-2"
         style={{ "--preview-size": `${previewWidth}px` } as React.CSSProperties}
+        data-oid=".ug_v7u"
       >
         {subtitles.map((subtitle) => (
           <SubtitlePreview
@@ -47,6 +52,7 @@ export function SubtitleGroup({
             size={previewSize}
             previewWidth={previewWidth}
             previewHeight={previewHeight}
+            data-oid="09rekzs"
           />
         ))}
       </div>

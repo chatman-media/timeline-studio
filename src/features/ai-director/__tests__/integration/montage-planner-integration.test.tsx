@@ -82,8 +82,18 @@ describe("AI Director ↔ Montage Planner Integration", () => {
         analysis_id: "test-123",
         moment_analysis: {
           key_moments: [
-            { timestamp: 5.0, duration: 3.0, quality_score: 0.9, moment_type: "HighAction" },
-            { timestamp: 15.0, duration: 4.0, quality_score: 0.85, moment_type: "Emotional" },
+            {
+              timestamp: 5.0,
+              duration: 3.0,
+              quality_score: 0.9,
+              moment_type: "HighAction",
+            },
+            {
+              timestamp: 15.0,
+              duration: 4.0,
+              quality_score: 0.85,
+              moment_type: "Emotional",
+            },
           ],
         },
       }
@@ -108,6 +118,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
             effects: [],
           },
         ],
+
         transitions: [
           {
             type: "cross_dissolve",
@@ -115,6 +126,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
             atTime: 3.0,
           },
         ],
+
         totalDuration: 7.5,
         createdAt: new Date().toISOString(),
       }
@@ -267,10 +279,30 @@ describe("AI Director ↔ Montage Planner Integration", () => {
 
       const mockMoments = {
         key_moments: [
-          { timestamp: 5.0, duration: 3.0, quality_score: 0.95, moment_type: "HighAction" },
-          { timestamp: 15.0, duration: 2.0, quality_score: 0.6, moment_type: "Static" },
-          { timestamp: 25.0, duration: 4.0, quality_score: 0.85, moment_type: "Emotional" },
-          { timestamp: 35.0, duration: 3.0, quality_score: 0.5, moment_type: "Static" },
+          {
+            timestamp: 5.0,
+            duration: 3.0,
+            quality_score: 0.95,
+            moment_type: "HighAction",
+          },
+          {
+            timestamp: 15.0,
+            duration: 2.0,
+            quality_score: 0.6,
+            moment_type: "Static",
+          },
+          {
+            timestamp: 25.0,
+            duration: 4.0,
+            quality_score: 0.85,
+            moment_type: "Emotional",
+          },
+          {
+            timestamp: 35.0,
+            duration: 3.0,
+            quality_score: 0.5,
+            moment_type: "Static",
+          },
         ],
       }
 
@@ -299,6 +331,7 @@ describe("AI Director ↔ Montage Planner Integration", () => {
           { timestamp: 15.5, confidence: 0.9, scene_type: "Outdoor" },
           { timestamp: 45.0, confidence: 0.88, scene_type: "Indoor" },
         ],
+
         composition_analysis: [{ timestamp: 5.0, rule_of_thirds_score: 0.85, balance_score: 0.8 }],
       }
 

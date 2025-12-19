@@ -143,44 +143,49 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({ open, onClose, o
   const canGoBack = currentStep !== "select" && !isApplying
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[1200px] p-0" style={{ height: "80vh" }}>
+    <Dialog open={open} onOpenChange={handleClose} data-oid="d_gmsn-">
+      <DialogContent className="max-w-[1200px] p-0" style={{ height: "80vh" }} data-oid=".y1yphd">
         {/* Header */}
-        <DialogHeader className="border-b p-6">
-          <DialogTitle>Создание проекта из шаблона</DialogTitle>
-          <DialogDescription>
+        <DialogHeader className="border-b p-6" data-oid="oqx8g2i">
+          <DialogTitle data-oid="2ftdkzc">Создание проекта из шаблона</DialogTitle>
+          <DialogDescription data-oid="c4qjplw">
             Следуйте инструкциям для создания нового проекта на основе готового шаблона
           </DialogDescription>
 
           {/* Progress bar */}
-          <div className="mt-4 space-y-2">
-            <div className="flex justify-between text-sm">
+          <div className="mt-4 space-y-2" data-oid="whkr_zn">
+            <div className="flex justify-between text-sm" data-oid="pkd35sv">
               {steps.map((step, index) => (
                 <div
                   key={step.id}
                   className={`flex items-center gap-2 ${index <= currentStepIndex ? "text-primary font-medium" : "text-muted-foreground"}`}
+                  data-oid="viiep6e"
                 >
                   {index < currentStepIndex ? (
-                    <div className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full">
-                      <Check className="h-4 w-4" />
+                    <div
+                      className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full"
+                      data-oid="lzuxdz-"
+                    >
+                      <Check className="h-4 w-4" data-oid="qehhefh" />
                     </div>
                   ) : (
                     <div
                       className={`flex h-6 w-6 items-center justify-center rounded-full ${index === currentStepIndex ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
+                      data-oid="79mb10x"
                     >
                       {index + 1}
                     </div>
                   )}
-                  <span>{step.label}</span>
+                  <span data-oid="w3f-who">{step.label}</span>
                 </div>
               ))}
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} className="h-2" data-oid="ucns29q" />
           </div>
         </DialogHeader>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden" data-oid="07l-l_p">
           {currentStep === "select" && (
             <TemplatePicker
               mode="single"
@@ -188,11 +193,12 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({ open, onClose, o
               onSelect={handleTemplateSelect}
               showHeader={false}
               height="100%"
+              data-oid="pde24_6"
             />
           )}
 
           {currentStep === "preview" && selectedTemplate && (
-            <TemplatePreview template={selectedTemplate} showDetails={true} height="100%" />
+            <TemplatePreview template={selectedTemplate} showDetails={true} height="100%" data-oid="otbo_m5" />
           )}
 
           {currentStep === "customize" && selectedTemplate && (
@@ -203,21 +209,27 @@ export const TemplateWizard: React.FC<TemplateWizardProps> = ({ open, onClose, o
               onApply={handleApply}
               onCancel={handleBack}
               height="100%"
+              data-oid="lmiup_-"
             />
           )}
         </div>
 
         {/* Footer - только для шагов select и preview */}
         {currentStep !== "customize" && (
-          <div className="border-t p-4">
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={canGoBack ? handleBack : handleClose} disabled={isApplying}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
+          <div className="border-t p-4" data-oid="7qaktk1">
+            <div className="flex justify-between" data-oid="ilh_9s1">
+              <Button
+                variant="outline"
+                onClick={canGoBack ? handleBack : handleClose}
+                disabled={isApplying}
+                data-oid="gdg32yx"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" data-oid="z-z4owg" />
                 {currentStep === "select" ? "Отмена" : "Назад"}
               </Button>
-              <Button onClick={handleNext} disabled={!canGoNext || isApplying}>
+              <Button onClick={handleNext} disabled={!canGoNext || isApplying} data-oid="4kter12">
                 {currentStep === "preview" ? "Настроить" : "Далее"}
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4" data-oid="j-l46yq" />
               </Button>
             </div>
           </div>

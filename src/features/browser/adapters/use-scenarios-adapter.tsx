@@ -43,36 +43,54 @@ const ScenarioPreviewWrapper: React.FC<PreviewComponentProps<Scenario>> = ({ ite
       <div
         className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
         onClick={handleClick}
+        data-oid="-xle34d"
       >
         {/* Icon */}
-        <div className="shrink-0 w-10 h-10 bg-linear-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold">
+        <div
+          className="shrink-0 w-10 h-10 bg-linear-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center text-white font-bold"
+          data-oid="we5w7sx"
+        >
           {scenario.icon || scenario.name.ru.substring(0, 2).toUpperCase()}
         </div>
 
         {/* Scenario Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{scenario.name.ru}</div>
-          <div className="text-xs text-muted-foreground truncate">{scenario.description.ru}</div>
+        <div className="flex-1 min-w-0" data-oid="vhb0tel">
+          <div className="font-medium text-sm truncate" data-oid="jkg0hlo">
+            {scenario.name.ru}
+          </div>
+          <div className="text-xs text-muted-foreground truncate" data-oid="7og19fy">
+            {scenario.description.ru}
+          </div>
         </div>
 
         {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground">{categoryLabel}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="fafnowp">
+          {categoryLabel}
+        </div>
 
         {/* Difficulty */}
-        <div className="shrink-0 flex items-center gap-1">
-          <div className={`w-2 h-2 rounded-full ${difficultyColor}`} />
-          <span className="text-xs text-muted-foreground">{difficultyLabel}</span>
+        <div className="shrink-0 flex items-center gap-1" data-oid="gni5os7">
+          <div className={`w-2 h-2 rounded-full ${difficultyColor}`} data-oid="_s3h4:o" />
+          <span className="text-xs text-muted-foreground" data-oid="snhu3rr">
+            {difficultyLabel}
+          </span>
         </div>
 
         {/* Time */}
-        <div className="shrink-0 text-xs text-muted-foreground">~{scenario.estimatedTime} мин</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="fh63mv:">
+          ~{scenario.estimatedTime} мин
+        </div>
 
         {/* Steps */}
-        <div className="shrink-0 text-xs text-muted-foreground">{scenario.steps.length} шагов</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="5uv1gx4">
+          {scenario.steps.length} шагов
+        </div>
 
         {/* AI badge */}
         {scenario.requirements.aiAssisted && (
-          <div className="shrink-0 text-xs bg-purple-500/20 text-purple-600 px-2 py-0.5 rounded">AI</div>
+          <div className="shrink-0 text-xs bg-purple-500/20 text-purple-600 px-2 py-0.5 rounded" data-oid="rtf96xu">
+            AI
+          </div>
         )}
       </div>
     )
@@ -83,45 +101,73 @@ const ScenarioPreviewWrapper: React.FC<PreviewComponentProps<Scenario>> = ({ ite
     <div
       className="group cursor-pointer rounded-lg border overflow-hidden transition-all hover:border-primary hover:shadow-md"
       onClick={handleClick}
+      data-oid="uiyn6wz"
     >
       {/* Header */}
-      <div className="relative aspect-video bg-linear-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+      <div
+        className="relative aspect-video bg-linear-to-br from-purple-500 to-pink-600 flex items-center justify-center"
+        data-oid="dlkzawp"
+      >
         {scenario.thumbnail ? (
-          <img src={scenario.thumbnail} alt={scenario.name.ru} className="w-full h-full object-cover" />
+          <img
+            src={scenario.thumbnail}
+            alt={scenario.name.ru}
+            className="w-full h-full object-cover"
+            data-oid="7eydgmt"
+          />
         ) : (
-          <div className="text-white text-4xl font-bold">{scenario.icon || scenario.name.ru.substring(0, 2)}</div>
+          <div className="text-white text-4xl font-bold" data-oid="fi.t_cr">
+            {scenario.icon || scenario.name.ru.substring(0, 2)}
+          </div>
         )}
 
         {/* Difficulty badge */}
-        <div className={`absolute top-2 right-2 ${difficultyColor} text-white text-xs px-2 py-1 rounded`}>
+        <div
+          className={`absolute top-2 right-2 ${difficultyColor} text-white text-xs px-2 py-1 rounded`}
+          data-oid="js6m:s6"
+        >
           {difficultyLabel}
         </div>
 
         {/* AI badge */}
         {scenario.requirements.aiAssisted && (
-          <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">AI</div>
+          <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded" data-oid="0cn9g.m">
+            AI
+          </div>
         )}
 
         {/* Time badge */}
-        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded" data-oid="_-8_0fl">
           ~{scenario.estimatedTime} мин
         </div>
       </div>
 
       {/* Info */}
-      <div className="p-3">
-        <div className="font-medium text-sm mb-1 truncate">{scenario.name.ru}</div>
-        <div className="text-xs text-muted-foreground mb-2 line-clamp-2">{scenario.description.ru}</div>
+      <div className="p-3" data-oid="0ibxiva">
+        <div className="font-medium text-sm mb-1 truncate" data-oid="3ulhews">
+          {scenario.name.ru}
+        </div>
+        <div className="text-xs text-muted-foreground mb-2 line-clamp-2" data-oid="xt3l8nq">
+          {scenario.description.ru}
+        </div>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-1">
-          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">{categoryLabel}</span>
-          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">{scenario.steps.length} шагов</span>
+        <div className="flex flex-wrap gap-1" data-oid="rtxffb3">
+          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid="24mc1xc">
+            {categoryLabel}
+          </span>
+          <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid="nclnrng">
+            {scenario.steps.length} шагов
+          </span>
           {scenario.requirements.requiresMusic && (
-            <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">Музыка</span>
+            <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid="y3ifrfc">
+              Музыка
+            </span>
           )}
           {scenario.requirements.requiresIntro && (
-            <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded">Intro</span>
+            <span className="text-[10px] bg-accent px-1.5 py-0.5 rounded" data-oid="t2dx8lk">
+              Intro
+            </span>
           )}
         </div>
       </div>
@@ -185,6 +231,7 @@ export function useScenariosAdapter(): ListAdapter<ScenarioListItem> {
           ...(scenario.tags?.en || []),
           ...scenario.steps.map((s) => s.name.ru),
         ]
+
         return texts.filter(Boolean)
       },
 

@@ -98,7 +98,7 @@ describe("SubtitleClip", () => {
     it("должен рендерить субтитровый клип с основными элементами", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="lgsctq:" />)
 
       // Проверяем что текст отображается
       expect(screen.getByText("Test subtitle text")).toBeInTheDocument()
@@ -113,7 +113,7 @@ describe("SubtitleClip", () => {
         duration: 4,
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="y48kj_2" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({
@@ -127,7 +127,7 @@ describe("SubtitleClip", () => {
     it("должен применять правильную высоту трека", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={100} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={100} data-oid="wbmlm.f" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({
@@ -140,7 +140,7 @@ describe("SubtitleClip", () => {
     it("должен показывать selected состояние", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isSelected={true} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isSelected={true} data-oid="ox3b-bw" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveClass("ring-2")
@@ -150,7 +150,7 @@ describe("SubtitleClip", () => {
     it("должен показывать dragging состояние", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isDragging={true} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isDragging={true} data-oid=".68ygy." />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveClass("opacity-50")
@@ -159,7 +159,7 @@ describe("SubtitleClip", () => {
     it("должен применять правильные цвета для обычных субтитров", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="wg2ce:z" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({
@@ -172,7 +172,7 @@ describe("SubtitleClip", () => {
         subtitleStyleId: "style-1",
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="z161j.." />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({
@@ -183,7 +183,7 @@ describe("SubtitleClip", () => {
     it("должен показывать border для выбранного клипа", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isSelected={true} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isSelected={true} data-oid="v:wa2o_" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       // Проверяем, что применяется класс для выбранного состояния
@@ -202,7 +202,7 @@ describe("SubtitleClip", () => {
         text: longText,
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="qqnldgg" />)
 
       // Проверяем что текст обрезается - ищем по частичному совпадению
       expect(screen.getByText(/This is a very long subtitle text that should b\.\.\./)).toBeInTheDocument()
@@ -213,7 +213,7 @@ describe("SubtitleClip", () => {
         text: "Short text",
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="7w947je" />)
 
       expect(screen.getByText("Short text")).toBeInTheDocument()
     })
@@ -228,7 +228,7 @@ describe("SubtitleClip", () => {
         },
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="fph1i99" />)
 
       expect(screen.getByText("fade")).toBeInTheDocument()
     })
@@ -241,7 +241,7 @@ describe("SubtitleClip", () => {
         },
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="v4isvhf" />)
 
       expect(screen.getByText("slide")).toBeInTheDocument()
     })
@@ -258,7 +258,7 @@ describe("SubtitleClip", () => {
         },
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="8xoxkeh" />)
 
       expect(screen.getByText("typewriter")).toBeInTheDocument()
       expect(screen.getByText("scale")).toBeInTheDocument()
@@ -272,7 +272,7 @@ describe("SubtitleClip", () => {
       })
 
       // С PIXELS_PER_SECOND = 50: 2.5 * 50 = 125px > 80px
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="2zc0m28" />)
 
       expect(screen.getByText("2.5s")).toBeInTheDocument()
     })
@@ -283,7 +283,7 @@ describe("SubtitleClip", () => {
       })
 
       // С PIXELS_PER_SECOND = 50: 1 * 50 = 50px < 80px
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="ul6q8lu" />)
 
       expect(screen.queryByText("1.0s")).not.toBeInTheDocument()
     })
@@ -293,7 +293,7 @@ describe("SubtitleClip", () => {
     it("должен вызывать selectClip при клике", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="s02dl_s" />)
 
       const clipElement = screen.getByText("Test subtitle text").closest("div")
       fireEvent.click(clipElement!)
@@ -306,8 +306,8 @@ describe("SubtitleClip", () => {
       const parentClickHandler = vi.fn()
 
       const { container } = renderWithTimeline(
-        <div onClick={parentClickHandler}>
-          <SubtitleClip clip={clip} trackHeight={60} />
+        <div onClick={parentClickHandler} data-oid="69s2m_w">
+          <SubtitleClip clip={clip} trackHeight={60} data-oid="sza_m.r" />
         </div>,
       )
 
@@ -321,7 +321,7 @@ describe("SubtitleClip", () => {
       const onMouseDown = vi.fn()
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} onMouseDown={onMouseDown} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} onMouseDown={onMouseDown} data-oid="3bil4la" />)
 
       const clipElement = screen.getByText("Test subtitle text").closest("div")
       fireEvent.mouseDown(clipElement!)
@@ -333,7 +333,7 @@ describe("SubtitleClip", () => {
       const onDoubleClick = vi.fn()
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} onDoubleClick={onDoubleClick} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} onDoubleClick={onDoubleClick} data-oid=":ez-bwx" />)
 
       const clipElement = screen.getByText("Test subtitle text").closest("div")
       fireEvent.doubleClick(clipElement!)
@@ -346,7 +346,9 @@ describe("SubtitleClip", () => {
     it("должен показывать ручки для выбранного клипа", () => {
       const clip = createMockSubtitleClip()
 
-      const { container } = renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isSelected={true} />)
+      const { container } = renderWithTimeline(
+        <SubtitleClip clip={clip} trackHeight={60} isSelected={true} data-oid="pl-4sj6" />,
+      )
 
       const handles = container.querySelectorAll(".cursor-ew-resize")
       expect(handles).toHaveLength(2) // Левая и правая ручки
@@ -355,7 +357,9 @@ describe("SubtitleClip", () => {
     it("должен не показывать ручки для не выбранного клипа", () => {
       const clip = createMockSubtitleClip()
 
-      const { container } = renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} isSelected={false} />)
+      const { container } = renderWithTimeline(
+        <SubtitleClip clip={clip} trackHeight={60} isSelected={false} data-oid="v-2vwqn" />,
+      )
 
       const handles = container.querySelectorAll(".cursor-ew-resize")
       expect(handles).toHaveLength(0)
@@ -366,7 +370,7 @@ describe("SubtitleClip", () => {
       const clip = createMockSubtitleClip()
 
       const { container } = renderWithTimeline(
-        <SubtitleClip clip={clip} trackHeight={60} isSelected={true} onMouseDown={onMouseDown} />,
+        <SubtitleClip clip={clip} trackHeight={60} isSelected={true} onMouseDown={onMouseDown} data-oid="vdt.wtt" />,
       )
 
       const leftHandle = container.querySelector(".cursor-ew-resize")
@@ -381,7 +385,7 @@ describe("SubtitleClip", () => {
     it("должен содержать градиентный overlay", () => {
       const clip = createMockSubtitleClip()
 
-      const { container } = renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      const { container } = renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="31wdc.e" />)
 
       const gradient = container.querySelector(".bg-linear-to-b")
       expect(gradient).toBeInTheDocument()
@@ -391,7 +395,7 @@ describe("SubtitleClip", () => {
     it("должен иметь hover эффект", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="99z6dva" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveClass("hover:brightness-110")
@@ -407,7 +411,7 @@ describe("SubtitleClip", () => {
         subtitleStyleId: undefined,
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="uas7_2i" />)
 
       expect(screen.getByText("Simple")).toBeInTheDocument()
       expect(screen.queryByText(/fade|slide|scale/)).not.toBeInTheDocument()
@@ -420,7 +424,7 @@ describe("SubtitleClip", () => {
 
       // С PIXELS_PER_SECOND = 50: 0.1 * 50 = 5px < 80px
       // Длительность не должна отображаться для узкого клипа
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="0lzdea:" />)
 
       expect(screen.queryByText("0.1s")).not.toBeInTheDocument()
     })
@@ -430,7 +434,7 @@ describe("SubtitleClip", () => {
         duration: 123.456,
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="-aloktp" />)
 
       expect(screen.getByText("123.5s")).toBeInTheDocument() // toFixed(1)
     })
@@ -442,7 +446,7 @@ describe("SubtitleClip", () => {
         text: "",
       })
 
-      const { container } = renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      const { container } = renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="3tvzuyc" />)
 
       // Клип должен рендериться даже с пустым текстом
       expect(container.firstChild).toBeInTheDocument()
@@ -453,7 +457,7 @@ describe("SubtitleClip", () => {
         duration: 0,
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="d5-6tkj" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({
@@ -466,7 +470,7 @@ describe("SubtitleClip", () => {
         startTime: -10,
       })
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={60} data-oid="ndezr5h" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({
@@ -477,7 +481,7 @@ describe("SubtitleClip", () => {
     it("должен обрабатывать очень маленькую высоту трека", () => {
       const clip = createMockSubtitleClip()
 
-      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={10} />)
+      renderWithTimeline(<SubtitleClip clip={clip} trackHeight={10} data-oid="r4b:r57" />)
 
       const clipElement = screen.getByTestId("subtitle-clip")
       expect(clipElement).toHaveStyle({

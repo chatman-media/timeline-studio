@@ -38,6 +38,7 @@ const mockMediaFile: MediaFile = {
         duration: "60.0",
       },
     ],
+
     format: {
       format_name: "mp4",
       duration: 60.0,
@@ -169,6 +170,7 @@ const mockProject: TimelineProject = {
       ],
     },
   ],
+
   globalTracks: [
     {
       id: "global-track-1",
@@ -192,6 +194,7 @@ const mockProject: TimelineProject = {
       clips: [],
     },
   ],
+
   markers: [],
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -416,17 +419,23 @@ describe("useClips - Comprehensive Tests", () => {
       act(() => {
         result.current.setClipVolume("clip-1", 0.5)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { volume: 0.5 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        volume: 0.5,
+      })
 
       act(() => {
         result.current.setClipVolume("clip-1", -1)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { volume: 0 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        volume: 0,
+      })
 
       act(() => {
         result.current.setClipVolume("clip-1", 2)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { volume: 1 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        volume: 1,
+      })
     })
 
     it("should set clip speed with bounds", () => {
@@ -437,17 +446,23 @@ describe("useClips - Comprehensive Tests", () => {
       act(() => {
         result.current.setClipSpeed("clip-1", 2)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: 2 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        playbackRate: 2,
+      })
 
       act(() => {
         result.current.setClipSpeed("clip-1", 0)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: 0.1 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        playbackRate: 0.1,
+      })
 
       act(() => {
         result.current.setClipSpeed("clip-1", 20)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: 10 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        playbackRate: 10,
+      })
     })
 
     it("should set clip opacity with bounds", () => {
@@ -458,7 +473,9 @@ describe("useClips - Comprehensive Tests", () => {
       act(() => {
         result.current.setClipOpacity("clip-1", 0.7)
       })
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { opacity: 0.7 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        opacity: 0.7,
+      })
     })
 
     it("should toggle clip reverse", () => {
@@ -470,7 +487,9 @@ describe("useClips - Comprehensive Tests", () => {
         result.current.toggleClipReverse("clip-1")
       })
 
-      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", { playbackRate: -1 })
+      expect(mockUseTimeline.updateClip).toHaveBeenCalledWith("clip-1", {
+        playbackRate: -1,
+      })
     })
 
     it("should not toggle reverse for non-existent clip", () => {

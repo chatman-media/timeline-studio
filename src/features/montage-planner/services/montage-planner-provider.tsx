@@ -78,28 +78,28 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
         })
 
         // Video analysis results
-        unsubscribeVideoAnalyzed = await eventService.listen<{ videoId: string; analysis: any }>(
-          "montage-video-analyzed",
-          (event) => {
-            send({
-              type: "VIDEO_ANALYZED",
-              videoId: event.payload.videoId,
-              analysis: event.payload.analysis,
-            })
-          },
-        )
+        unsubscribeVideoAnalyzed = await eventService.listen<{
+          videoId: string
+          analysis: any
+        }>("montage-video-analyzed", (event) => {
+          send({
+            type: "VIDEO_ANALYZED",
+            videoId: event.payload.videoId,
+            analysis: event.payload.analysis,
+          })
+        })
 
         // Audio analysis results
-        unsubscribeAudioAnalyzed = await eventService.listen<{ videoId: string; analysis: any }>(
-          "montage-audio-analyzed",
-          (event) => {
-            send({
-              type: "AUDIO_ANALYZED",
-              videoId: event.payload.videoId,
-              analysis: event.payload.analysis,
-            })
-          },
-        )
+        unsubscribeAudioAnalyzed = await eventService.listen<{
+          videoId: string
+          analysis: any
+        }>("montage-audio-analyzed", (event) => {
+          send({
+            type: "AUDIO_ANALYZED",
+            videoId: event.payload.videoId,
+            analysis: event.payload.analysis,
+          })
+        })
 
         // Fragment detection results
         unsubscribeFragments = await eventService.listen<{ fragments: any[] }>(
@@ -120,7 +120,9 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
           })
         })
       } catch (err) {
-        void logger.error("Failed to setup event listeners", { error: String(err) })
+        void logger.error("Failed to setup event listeners", {
+          error: String(err),
+        })
         setError(err instanceof Error ? err.message : "Failed to setup event listeners")
       }
     }
@@ -176,7 +178,11 @@ export function MontagePlannerProvider({ children }: MontagePlannerProviderProps
     error: error || connectionError,
   }
 
-  return <MontagePlannerContext.Provider value={value}>{children}</MontagePlannerContext.Provider>
+  return (
+    <MontagePlannerContext.Provider value={value} data-oid="xypwyvv">
+      {children}
+    </MontagePlannerContext.Provider>
+  )
 }
 
 // Hook to use the context

@@ -47,6 +47,7 @@ export function TrackInsertionZone({ position, trackId, insertIndex, className }
         className,
       )}
       data-testid={dropId}
+      data-oid="bg0_2nn"
     >
       {/* Индикатор вставки - показывается только при hover или drag over */}
       <div
@@ -57,6 +58,7 @@ export function TrackInsertionZone({ position, trackId, insertIndex, className }
           "group-hover:opacity-60",
           isOver && "opacity-100",
         )}
+        data-oid="pgq08gc"
       >
         <div
           className={cn(
@@ -66,9 +68,10 @@ export function TrackInsertionZone({ position, trackId, insertIndex, className }
             "transform scale-95 group-hover:scale-100 transition-transform duration-200",
             isOver && "scale-100 bg-primary/20 border-primary",
           )}
+          data-oid="kdk9ksh"
         >
-          <Plus className="w-3 h-3" />
-          <span>
+          <Plus className="w-3 h-3" data-oid="ou5_os." />
+          <span data-oid="5a6dz6z">
             {position === "above" && "Создать трек выше"}
             {position === "between" && "Создать трек между"}
             {position === "below" && "Создать трек ниже"}
@@ -83,6 +86,7 @@ export function TrackInsertionZone({ position, trackId, insertIndex, className }
           "bg-primary/20 opacity-0 transition-opacity duration-200",
           isOver && "opacity-80",
         )}
+        data-oid="ie:dunb"
       />
     </div>
   )
@@ -106,10 +110,10 @@ export function TrackInsertionZones({ trackIds, className, isVisible = true }: T
   }
 
   return (
-    <div className={cn("absolute inset-0 pointer-events-none", className)}>
+    <div className={cn("absolute inset-0 pointer-events-none", className)} data-oid="-dlgfm0">
       {/* Зона выше первого трека */}
-      <div className="absolute top-0 left-0 right-0 pointer-events-auto">
-        <TrackInsertionZone position="above" insertIndex={0} />
+      <div className="absolute top-0 left-0 right-0 pointer-events-auto" data-oid="az:1c66">
+        <TrackInsertionZone position="above" insertIndex={0} data-oid="_:.sdlw" />
       </div>
 
       {/* Зоны между треками */}
@@ -122,8 +126,9 @@ export function TrackInsertionZones({ trackIds, className, isVisible = true }: T
             top: `${(index + 1) * 90}px`,
             transform: "translateY(-50%)",
           }}
+          data-oid="a:1hkw0"
         >
-          <TrackInsertionZone position="between" trackId={trackId} insertIndex={index + 1} />
+          <TrackInsertionZone position="between" trackId={trackId} insertIndex={index + 1} data-oid="d7_f64s" />
         </div>
       ))}
 
@@ -133,8 +138,9 @@ export function TrackInsertionZones({ trackIds, className, isVisible = true }: T
         style={{
           top: `${trackIds.length * 90 + 20}px`,
         }}
+        data-oid="ljya7st"
       >
-        <TrackInsertionZone position="below" insertIndex={trackIds.length} />
+        <TrackInsertionZone position="below" insertIndex={trackIds.length} data-oid=":92e-1j" />
       </div>
     </div>
   )

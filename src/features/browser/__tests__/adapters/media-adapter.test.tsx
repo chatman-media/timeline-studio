@@ -64,6 +64,7 @@ vi.mock("@/domains/media-management", () => ({
           thumbnailPath: null,
         },
       ],
+
       [
         "test-2",
         {
@@ -127,7 +128,7 @@ vi.mock("@/features/browser/utils/grouping", () => ({
 
 vi.mock("@/features/browser/components/preview/media-preview", () => ({
   MediaPreview: ({ file, size, showFileName }: any) => (
-    <div data-testid="media-preview">
+    <div data-testid="media-preview" data-oid="ypndyq:">
       {file.name} - {size} - {showFileName ? "with-filename" : "no-filename"}
     </div>
   ),

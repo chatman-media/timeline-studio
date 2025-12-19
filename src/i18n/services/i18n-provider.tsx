@@ -18,5 +18,9 @@ interface I18nProviderProps {
 export function I18nProvider({ children }: I18nProviderProps) {
   // Рендерим сразу - английские переводы уже встроены как fallback
   // Другие языки загрузятся асинхронно и UI обновится автоматически
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>
+  return (
+    <I18nextProvider i18n={i18n} data-oid="v8iynd8">
+      {children}
+    </I18nextProvider>
+  )
 }

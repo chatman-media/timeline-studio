@@ -24,9 +24,9 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
   const timeToPixel = (time: number) => time * pixelsPerSecond
 
   return (
-    <div className={cn("absolute inset-0 pointer-events-none", className)}>
+    <div className={cn("absolute inset-0 pointer-events-none", className)} data-oid="2kf7uhs">
       {/* Активные split edits */}
-      <AnimatePresence>
+      <AnimatePresence data-oid="28w5737">
         {activeSplitEdits.map((splitEdit) => {
           const x = timeToPixel(splitEdit.position)
 
@@ -44,6 +44,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
                 width: 2,
                 height: timelineHeight,
               }}
+              data-oid="zj:z6eu"
             >
               {/* Основная линия */}
               <div
@@ -56,6 +57,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
                 style={{
                   opacity: visualSettings.indicatorOpacity,
                 }}
+                data-oid="kx3dhwe"
               />
 
               {/* Индикатор типа */}
@@ -66,6 +68,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
                   splitEdit.type === "J-cut" && "bg-green-500",
                   splitEdit.type === "split-at-playhead" && "bg-yellow-500",
                 )}
+                data-oid="r5v5mqu"
               >
                 {splitEdit.type === "L-cut" && "L"}
                 {splitEdit.type === "J-cut" && "J"}
@@ -73,7 +76,10 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
               </div>
 
               {/* Подпись */}
-              <div className="absolute -top-12 -left-8 text-xs font-medium text-foreground bg-background px-2 py-1 rounded border shadow-sm">
+              <div
+                className="absolute -top-12 -left-8 text-xs font-medium text-foreground bg-background px-2 py-1 rounded border shadow-sm"
+                data-oid="k_k87h6"
+              >
                 {splitEdit.type === "L-cut" && "L-Cut"}
                 {splitEdit.type === "J-cut" && "J-Cut"}
                 {splitEdit.type === "split-at-playhead" && "Split"}
@@ -84,7 +90,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
       </AnimatePresence>
 
       {/* Предварительный просмотр */}
-      <AnimatePresence>
+      <AnimatePresence data-oid="6y-e5em">
         {visualSettings.showPreview && config.previewPosition !== undefined && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -98,6 +104,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
               width: 2,
               height: timelineHeight,
             }}
+            data-oid="6ke.uem"
           >
             {/* Предварительная линия */}
             <div
@@ -110,6 +117,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
               style={{
                 opacity: visualSettings.indicatorOpacity * 0.7,
               }}
+              data-oid="9vy9kr0"
             />
 
             {/* Предварительный индикатор */}
@@ -120,6 +128,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
                 visualSettings.operationType === "J-cut" && "bg-green-400",
                 visualSettings.operationType === "split-at-playhead" && "bg-yellow-400",
               )}
+              data-oid="24b.kex"
             >
               {visualSettings.operationType === "L-cut" && "L"}
               {visualSettings.operationType === "J-cut" && "J"}
@@ -131,20 +140,23 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
 
       {/* Направляющие линии */}
       {toolSettings.showGuides && (
-        <div className="absolute inset-0">
+        <div className="absolute inset-0" data-oid="q:4x52k">
           {/* Линии привязки */}
           {toolSettings.magneticSnap && (
-            <div className="absolute inset-0">{/* Здесь могут быть дополнительные направляющие */}</div>
+            <div className="absolute inset-0" data-oid="d:aas9j">
+              {/* Здесь могут быть дополнительные направляющие */}
+            </div>
           )}
 
           {/* Сетка для выравнивания */}
           {toolSettings.autoAlign && (
-            <div className="absolute inset-0">
+            <div className="absolute inset-0" data-oid="d1dm1nq">
               <div
                 className="absolute inset-0 bg-grid-pattern opacity-10"
                 style={{
                   backgroundSize: `${pixelsPerSecond}px ${timelineHeight / 4}px`,
                 }}
+                data-oid="5-q-uzx"
               />
             </div>
           )}
@@ -152,7 +164,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
       )}
 
       {/* Инструмент курсора */}
-      <AnimatePresence>
+      <AnimatePresence data-oid="udf-smf">
         {config.tool === "razor" && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -162,6 +174,7 @@ export function SplitEditIndicators({ className, timelineHeight, pixelsPerSecond
             style={{
               background: "linear-gradient(90deg, transparent 49%, rgba(234, 179, 8, 0.3) 50%, transparent 51%)",
             }}
+            data-oid="2x7tp83"
           />
         )}
       </AnimatePresence>

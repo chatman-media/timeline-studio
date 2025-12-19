@@ -59,6 +59,7 @@ export function TimelineMarkersLayer({
         transform: `translateX(-${scrollOffset}px)`,
         width: `${duration * timeScale}px`,
       }}
+      data-oid="gdkn.-x"
     >
       {/* Линия текущего времени */}
       <div
@@ -66,6 +67,7 @@ export function TimelineMarkersLayer({
         style={{
           left: `${currentTime * timeScale}px`,
         }}
+        data-oid="jeppyh5"
       />
 
       {/* Маркеры */}
@@ -78,6 +80,7 @@ export function TimelineMarkersLayer({
           onDrag={handleMarkerDrag}
           onClick={handleMarkerClick}
           onDelete={handleMarkerDelete}
+          data-oid="9aum0ey"
         />
       ))}
     </div>

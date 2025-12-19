@@ -149,9 +149,9 @@ export function PersonManager({ className }: PersonManagerProps) {
   }
 
   return (
-    <div className={`flex h-full ${className}`}>
+    <div className={`flex h-full ${className}`} data-oid="rfu-22.">
       {/* Список персон */}
-      <div className="w-80 border-r bg-background">
+      <div className="w-80 border-r bg-background" data-oid="ckf2esu">
         <PersonList
           persons={persons}
           selectedPersonId={selectedPersonId || undefined}
@@ -160,14 +160,15 @@ export function PersonManager({ className }: PersonManagerProps) {
           onDeletePerson={handleDeletePerson}
           onCreatePerson={handleCreatePerson}
           isLoading={isLoading}
+          data-oid="zkm2qzk"
         />
       </div>
 
       {/* Детальный просмотр */}
-      <div className="flex-1">
+      <div className="flex-1" data-oid="c8wn1j2">
         {error && (
-          <Alert className="m-4">
-            <AlertDescription>{error}</AlertDescription>
+          <Alert className="m-4" data-oid="j_jftsw">
+            <AlertDescription data-oid="pafy2dx">{error}</AlertDescription>
           </Alert>
         )}
 
@@ -177,12 +178,15 @@ export function PersonManager({ className }: PersonManagerProps) {
             appearances={appearances}
             onEdit={handleEditFromDetail}
             onClose={handleCloseDetail}
+            data-oid="7.hku_9"
           />
         ) : (
-          <div className="flex h-full items-center justify-center">
-            <div className="text-center">
-              <h3 className="text-lg font-medium text-muted-foreground mb-2">Выберите персону</h3>
-              <p className="text-sm text-muted-foreground">
+          <div className="flex h-full items-center justify-center" data-oid="aqf8wml">
+            <div className="text-center" data-oid="3xlj52f">
+              <h3 className="text-lg font-medium text-muted-foreground mb-2" data-oid="tbybs:8">
+                Выберите персону
+              </h3>
+              <p className="text-sm text-muted-foreground" data-oid="jwbyj6z">
                 Выберите персону из списка слева для просмотра подробной информации
               </p>
             </div>

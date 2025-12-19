@@ -10,7 +10,7 @@ export const EffectsAdapterContent = memo(() => {
   const adapter = useEffectsAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="d_g42u7" />
 })
 
 EffectsAdapterContent.displayName = "EffectsAdapterContent"

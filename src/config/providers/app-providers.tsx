@@ -28,7 +28,7 @@ interface ProvidersProps {
 // Создаем композитный провайдер для уменьшения вложенности
 const composeProviders = (...providers: React.ComponentType<{ children: ReactNode }>[]) => {
   return ({ children }: { children: ReactNode }) => {
-    return providers.reduceRight((child, Provider) => <Provider>{child}</Provider>, children)
+    return providers.reduceRight((child, Provider) => <Provider data-oid="m4b5f48">{child}</Provider>, children)
   }
 }
 
@@ -89,5 +89,5 @@ const AppProviderComposite = composeProviders(
 )
 
 export function Providers({ children }: ProvidersProps) {
-  return <AppProviderComposite>{children}</AppProviderComposite>
+  return <AppProviderComposite data-oid="u1xqel_">{children}</AppProviderComposite>
 }

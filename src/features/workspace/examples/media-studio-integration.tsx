@@ -56,38 +56,38 @@ export function MediaStudioWidgetExample() {
     () =>
       ({
         timeline: (_widget: Widget) => (
-          <div className="h-full w-full">
-            <Timeline />
+          <div className="h-full w-full" data-oid="jv:zg_y">
+            <Timeline data-oid="wh:fuji" />
           </div>
         ),
 
         player: (_widget: Widget) => (
-          <div className="h-full w-full">
-            <VideoPlayer />
+          <div className="h-full w-full" data-oid="5q0k0ga">
+            <VideoPlayer data-oid="pcasgqk" />
           </div>
         ),
 
         browser: (_widget: Widget) => (
-          <div className="h-full w-full">
-            <Browser />
+          <div className="h-full w-full" data-oid="4juugxm">
+            <Browser data-oid="pzyx6ju" />
           </div>
         ),
 
         options: (_widget: Widget) => (
-          <div className="h-full w-full">
-            <Options />
+          <div className="h-full w-full" data-oid="fbn1fzn">
+            <Options data-oid="d0hwdpq" />
           </div>
         ),
 
         "ai-chat": (_widget: Widget) => (
-          <div className="h-full w-full">
-            <AiChat />
+          <div className="h-full w-full" data-oid="4k3z:-4">
+            <AiChat data-oid="3gkid-v" />
           </div>
         ),
 
         "ai-suggestions": (_widget: Widget) => (
-          <div className="h-full w-full">
-            <AISuggestionsPanel />
+          <div className="h-full w-full" data-oid="wpgw2sw">
+            <AISuggestionsPanel data-oid="5bcq95h" />
           </div>
         ),
       }) as Record<WidgetType, (widget: Widget) => ReactNode>,
@@ -95,23 +95,25 @@ export function MediaStudioWidgetExample() {
   )
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-screen flex-col" data-oid="f650dee">
       {/* Header with layout selector */}
-      <header className="flex h-12 items-center justify-between border-b px-4">
-        <h1 className="text-lg font-semibold">Timeline Studio</h1>
+      <header className="flex h-12 items-center justify-between border-b px-4" data-oid="zuqe_mz">
+        <h1 className="text-lg font-semibold" data-oid="mexrdv5">
+          Timeline Studio
+        </h1>
 
-        <div className="flex items-center gap-4">
-          <LayoutPresetSelector currentPresetId={currentPresetId} onPresetChange={switchPreset} />
+        <div className="flex items-center gap-4" data-oid="8ui9cv0">
+          <LayoutPresetSelector currentPresetId={currentPresetId} onPresetChange={switchPreset} data-oid="up8o7vs" />
         </div>
       </header>
 
       {/* Widget Workspace */}
-      <main className="flex-1">
+      <main className="flex-1" data-oid="uahb6vq">
         {/*
-          WidgetWorkspace gets the machine state through useWorkspaceLayout hook.
-          No need to pass machine as prop - it's provided by WorkspaceLayoutProvider context.
-        */}
-        <WidgetWorkspace widgetRenderers={widgetRenderers} />
+             WidgetWorkspace gets the machine state through useWorkspaceLayout hook.
+             No need to pass machine as prop - it's provided by WorkspaceLayoutProvider context.
+            */}
+        <WidgetWorkspace widgetRenderers={widgetRenderers} data-oid="aworuy:" />
       </main>
     </div>
   )

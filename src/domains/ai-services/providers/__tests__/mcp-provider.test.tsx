@@ -56,8 +56,8 @@ describe("MCPProvider", () => {
     mockGetApiKeyInfo.mockReturnValue({ has_value: false })
 
     const { getByText } = render(
-      <MCPProvider>
-        <div>Test Content</div>
+      <MCPProvider data-oid=":bqas02">
+        <div data-oid="vo:h:wb">Test Content</div>
       </MCPProvider>,
     )
 
@@ -69,8 +69,8 @@ describe("MCPProvider", () => {
     mockMcpInitialize.mockResolvedValue(true)
 
     render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="o:u0edx">
+        <div data-oid="7ntyb4t">Test</div>
       </MCPProvider>,
     )
 
@@ -95,8 +95,8 @@ describe("MCPProvider", () => {
     mockMcpCheckApi.mockResolvedValue(true)
 
     render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="kw45j9p">
+        <div data-oid="o-n6vi8">Test</div>
       </MCPProvider>,
     )
 
@@ -123,8 +123,8 @@ describe("MCPProvider", () => {
     mockMcpCheckApi.mockResolvedValue(true)
 
     render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="2_tdo0y">
+        <div data-oid="264x21j">Test</div>
       </MCPProvider>,
     )
 
@@ -138,8 +138,8 @@ describe("MCPProvider", () => {
     mockMcpInitialize.mockResolvedValue(false)
 
     const { getByText } = render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="83d12vt">
+        <div data-oid="bkv.0ar">Test</div>
       </MCPProvider>,
     )
 
@@ -163,8 +163,8 @@ describe("MCPProvider", () => {
     mockMcpCheckApi.mockResolvedValue(false)
 
     const { getByText } = render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="od9wb28">
+        <div data-oid="rap2u0c">Test</div>
       </MCPProvider>,
     )
 
@@ -180,8 +180,8 @@ describe("MCPProvider", () => {
     mockMcpInitialize.mockRejectedValue(new Error("Initialization failed"))
 
     const { getByText } = render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="s56-q3g">
+        <div data-oid="pg_8bld">Test</div>
       </MCPProvider>,
     )
 
@@ -204,8 +204,8 @@ describe("MCPProvider", () => {
     mockMcpCheckApi.mockRejectedValue(new Error("API check failed"))
 
     const { getByText } = render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="bqy_mxm">
+        <div data-oid="vxn21zj">Test</div>
       </MCPProvider>,
     )
 
@@ -222,8 +222,8 @@ describe("MCPProvider", () => {
     mockMcpCheckApi.mockResolvedValue(true)
 
     const { rerender } = render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid=":1l2krb">
+        <div data-oid="v0jj17f">Test</div>
       </MCPProvider>,
     )
 
@@ -233,8 +233,8 @@ describe("MCPProvider", () => {
 
     // Перерендерим компонент
     rerender(
-      <MCPProvider>
-        <div>Test Updated</div>
+      <MCPProvider data-oid="nbsdtfi">
+        <div data-oid="qxk_ide">Test Updated</div>
       </MCPProvider>,
     )
 
@@ -249,8 +249,8 @@ describe("MCPProvider", () => {
     mockMcpInitialize.mockResolvedValue(true)
 
     render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="b9w731h">
+        <div data-oid="m2xo.:x">Test</div>
       </MCPProvider>,
     )
 
@@ -268,8 +268,8 @@ describe("MCPProvider", () => {
     mockMcpInitialize.mockResolvedValue(true)
 
     render(
-      <MCPProvider>
-        <div>Test</div>
+      <MCPProvider data-oid="z157gjf">
+        <div data-oid="zbwji80">Test</div>
       </MCPProvider>,
     )
 

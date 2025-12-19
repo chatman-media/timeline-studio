@@ -32,6 +32,7 @@ vi.mock("../../../components/preview/preview-timeline", () => ({
       data-time={time}
       data-duration={duration}
       data-video-ref={videoRef ? "exists" : "null"}
+      data-oid="wxsu7d4"
     >
       Timeline
     </div>
@@ -46,6 +47,7 @@ vi.mock("../../../components/layout/add-media-button", () => ({
       data-is-added={isAdded}
       data-size={size}
       onClick={(e) => onAddMedia(e, file)}
+      data-oid="ydpbjxe"
     >
       Add Media
     </button>
@@ -54,7 +56,7 @@ vi.mock("../../../components/layout/add-media-button", () => ({
 
 vi.mock("../../../components/layout/favorite-button", () => ({
   FavoriteButton: ({ file, size, type }: any) => (
-    <button data-testid="favorite-button" data-file={file.name} data-size={size} data-type={type}>
+    <button data-testid="favorite-button" data-file={file.name} data-size={size} data-type={type} data-oid="vmb:0bp">
       Favorite
     </button>
   ),
@@ -70,6 +72,7 @@ vi.mock("react-audio-visualize", () => ({
       data-gap={gap}
       data-bar-color={barColor}
       data-background-color={backgroundColor}
+      data-oid="34ds-4m"
     >
       Audio Visualizer
     </div>
@@ -136,7 +139,7 @@ describe("AudioPreview", () => {
 
   it("should render correctly with default props", async () => {
     await act(async () => {
-      render(<AudioPreview file={audioFile} />)
+      render(<AudioPreview file={audioFile} data-oid="d:hztco" />)
       // Ждем инициализации компонента
       await new Promise((resolve) => setTimeout(resolve, 100))
     })
@@ -163,14 +166,14 @@ describe("AudioPreview", () => {
   })
 
   it("should show filename when showFileName is true", () => {
-    render(<AudioPreview file={audioFile} showFileName />)
+    render(<AudioPreview file={audioFile} showFileName data-oid="y3v_unv" />)
 
     // Проверяем, что имя файла отображается
     expect(screen.getByText("audio.mp3")).toBeInTheDocument()
   })
 
   it("should render with custom size and dimensions", async () => {
-    render(<AudioPreview file={audioFile} size={120} dimensions={[4, 3]} />)
+    render(<AudioPreview file={audioFile} size={120} dimensions={[4, 3]} data-oid="erlajlx" />)
 
     // Ждем инициализации компонента
     await act(async () => {
@@ -187,7 +190,7 @@ describe("AudioPreview", () => {
   })
 
   it("should handle audio loading", async () => {
-    render(<AudioPreview file={audioFile} />)
+    render(<AudioPreview file={audioFile} data-oid="9s1f6cm" />)
 
     // Ждем загрузки компонента
     await new Promise((resolve) => setTimeout(resolve, 100))
@@ -198,7 +201,7 @@ describe("AudioPreview", () => {
   })
 
   it("should handle audio play/pause on click", async () => {
-    const renderResult = render(<AudioPreview file={audioFile} />)
+    const renderResult = render(<AudioPreview file={audioFile} data-oid="7ercy9t" />)
 
     // Ждем инициализации компонента
     await act(async () => {
@@ -227,7 +230,7 @@ describe("AudioPreview", () => {
   })
 
   it("should handle mouse move for time seeking", () => {
-    const renderResult = render(<AudioPreview file={audioFile} />)
+    const renderResult = render(<AudioPreview file={audioFile} data-oid="vhaal8_" />)
 
     const audioElement = renderResult.container.querySelector("audio")!
     const container_div = renderResult.container.firstChild as HTMLElement
@@ -253,7 +256,7 @@ describe("AudioPreview", () => {
   })
 
   it("should handle mouse leave and pause audio", () => {
-    const renderResult = render(<AudioPreview file={audioFile} />)
+    const renderResult = render(<AudioPreview file={audioFile} data-oid="qvv9-v2" />)
 
     const audioElement = renderResult.container.querySelector("audio")!
     const pauseMock = vi.fn()
@@ -273,7 +276,7 @@ describe("AudioPreview", () => {
   })
 
   it("should handle keyboard space key for play/pause", async () => {
-    const renderResult = render(<AudioPreview file={audioFile} />)
+    const renderResult = render(<AudioPreview file={audioFile} data-oid="ic8ayx4" />)
 
     // Ждем инициализации компонента
     await act(async () => {
@@ -295,7 +298,7 @@ describe("AudioPreview", () => {
   })
 
   it("should cleanup resources on unmount", async () => {
-    const renderResult = render(<AudioPreview file={audioFile} />)
+    const renderResult = render(<AudioPreview file={audioFile} data-oid="y14lw6i" />)
 
     // Ждем создания blob URL и инициализации компонента
     await act(async () => {

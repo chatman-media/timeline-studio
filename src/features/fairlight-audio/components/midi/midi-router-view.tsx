@@ -32,12 +32,12 @@ function RouteItem({ route, onUpdate, onDelete, devices }: RouteItemProps) {
   const { t } = useTranslation()
   const getRouteIcon = () => {
     if (route.processors.some((p) => p.type === "split"))
-      return <GitBranch className="w-4 h-4" data-testid="git-branch-icon" />
+      return <GitBranch className="w-4 h-4" data-testid="git-branch-icon" data-oid="tx:msgq" />
     if (route.processors.some((p) => p.type === "filter"))
-      return <Filter className="w-4 h-4" data-testid="filter-icon" />
+      return <Filter className="w-4 h-4" data-testid="filter-icon" data-oid="tvt.0sq" />
     if (route.processors.some((p) => p.type === "transform"))
-      return <Shuffle className="w-4 h-4" data-testid="shuffle-icon" />
-    return <ArrowRight className="w-4 h-4" data-testid="arrow-right-icon" />
+      return <Shuffle className="w-4 h-4" data-testid="shuffle-icon" data-oid="hgk60t2" />
+    return <ArrowRight className="w-4 h-4" data-testid="arrow-right-icon" data-oid="x9.n7dv" />
   }
 
   const getSourceLabel = () => {
@@ -78,35 +78,39 @@ function RouteItem({ route, onUpdate, onDelete, devices }: RouteItemProps) {
   }
 
   return (
-    <div className="border rounded-lg p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+    <div className="border rounded-lg p-4 space-y-3" data-oid="gdsm_u6">
+      <div className="flex items-center justify-between" data-oid="yelqjc6">
+        <div className="flex items-center gap-3" data-oid="32kqm_7">
           <Switch
             checked={route.enabled}
             onCheckedChange={(enabled) => onUpdate({ enabled })}
             aria-label={t("fairlightAudio.midi.router.route.enableRoute")}
+            data-oid="3l6lqck"
           />
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-2" data-oid="bimpn-.">
             {getRouteIcon()}
-            <span className="font-medium">{route.name}</span>
+            <span className="font-medium" data-oid=".adp60c">
+              {route.name}
+            </span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={route.enabled ? "default" : "secondary"}>
+        <div className="flex items-center gap-2" data-oid="gnw5yci">
+          <Badge variant={route.enabled ? "default" : "secondary"} data-oid="32:.i1k">
             {route.enabled
               ? t("fairlightAudio.midi.router.route.active")
               : t("fairlightAudio.midi.router.route.inactive")}
           </Badge>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Settings className="w-4 h-4" data-testid="settings-icon" />
+          <DropdownMenu data-oid="yp42pmv">
+            <DropdownMenuTrigger asChild data-oid="m.und4k">
+              <Button variant="ghost" size="icon" data-oid="7.pn_8a">
+                <Settings className="w-4 h-4" data-testid="settings-icon" data-oid="2g46ay7" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>{t("fairlightAudio.midi.router.route.editRoute")}</DropdownMenuItem>
-              <DropdownMenuItem>{t("fairlightAudio.midi.router.route.duplicate")}</DropdownMenuItem>
-              <DropdownMenuItem onClick={onDelete} className="text-red-600">
+            <DropdownMenuContent data-oid="mjo9xbp">
+              <DropdownMenuItem data-oid="ai92w6.">{t("fairlightAudio.midi.router.route.editRoute")}</DropdownMenuItem>
+              <DropdownMenuItem data-oid="..xn_h-">{t("fairlightAudio.midi.router.route.duplicate")}</DropdownMenuItem>
+              <DropdownMenuItem onClick={onDelete} className="text-red-600" data-oid="8teolpb">
                 {t("fairlightAudio.midi.router.route.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -114,27 +118,33 @@ function RouteItem({ route, onUpdate, onDelete, devices }: RouteItemProps) {
         </div>
       </div>
 
-      <div className="text-sm text-muted-foreground space-y-1">
-        <div className="flex items-center gap-2">
-          <span className="font-medium">{t("fairlightAudio.midi.router.source.from")}</span>
-          <span>{getSourceLabel()}</span>
+      <div className="text-sm text-muted-foreground space-y-1" data-oid="lmdszkj">
+        <div className="flex items-center gap-2" data-oid="m9.se.f">
+          <span className="font-medium" data-oid="ddwhmtl">
+            {t("fairlightAudio.midi.router.source.from")}
+          </span>
+          <span data-oid="s-0ryrh">{getSourceLabel()}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="font-medium">{t("fairlightAudio.midi.router.destination.to")}</span>
-          <div className="flex flex-wrap gap-2">
+        <div className="flex items-center gap-2" data-oid="w-316s3">
+          <span className="font-medium" data-oid="mw.vi8i">
+            {t("fairlightAudio.midi.router.destination.to")}
+          </span>
+          <div className="flex flex-wrap gap-2" data-oid="-7q_4z2">
             {route.destinations.map((dest, idx) => (
-              <Badge key={idx} variant="outline">
+              <Badge key={idx} variant="outline" data-oid="8_g38:n">
                 {getDestinationLabel(dest)}
               </Badge>
             ))}
           </div>
         </div>
         {route.processors.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{t("fairlightAudio.midi.router.processors")}</span>
-            <div className="flex gap-1">
+          <div className="flex items-center gap-2" data-oid="s-tuy-s">
+            <span className="font-medium" data-oid="ffn:mqa">
+              {t("fairlightAudio.midi.router.processors")}
+            </span>
+            <div className="flex gap-1" data-oid="tur5t:a">
               {route.processors.map((proc, idx) => (
-                <Badge key={idx} variant="secondary" className="text-xs">
+                <Badge key={idx} variant="secondary" className="text-xs" data-oid="7wzue58">
                   {proc.type}
                 </Badge>
               ))}
@@ -227,74 +237,84 @@ export function MidiRouterView() {
 
   if (!engine) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("fairlightAudio.midi.router.title")}</CardTitle>
+      <Card data-oid="lyy42ww">
+        <CardHeader data-oid="_663azn">
+          <CardTitle data-oid="0a8shch">{t("fairlightAudio.midi.router.title")}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">{t("fairlightAudio.midi.router.engineNotInitialized")}</p>
+        <CardContent data-oid="gxczop6">
+          <p className="text-muted-foreground" data-oid="i8emq7w">
+            {t("fairlightAudio.midi.router.engineNotInitialized")}
+          </p>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card className="h-full">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2">
-          <Zap className="w-5 h-5" data-testid="zap-icon" />
+    <Card className="h-full" data-oid="vr_2gj2">
+      <CardHeader className="flex flex-row items-center justify-between" data-oid="4wehqbd">
+        <CardTitle className="flex items-center gap-2" data-oid="41q76q2">
+          <Zap className="w-5 h-5" data-testid="zap-icon" data-oid="248nu-u" />
           {t("fairlightAudio.midi.router.title")}
         </CardTitle>
-        <div className="flex items-center gap-2">
-          <Select value={selectedPreset} onValueChange={setSelectedPreset}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder={t("fairlightAudio.midi.router.createFromPreset")} />
+        <div className="flex items-center gap-2" data-oid="4ww4xcn">
+          <Select value={selectedPreset} onValueChange={setSelectedPreset} data-oid="ff41kmn">
+            <SelectTrigger className="w-48" data-oid="-3a9s5c">
+              <SelectValue placeholder={t("fairlightAudio.midi.router.createFromPreset")} data-oid="f75yp-d" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="keyboard-split">
-                <div className="flex items-center gap-2">
-                  <Keyboard className="w-4 h-4" data-testid="keyboard-icon" />
-                  <span>{t("fairlightAudio.midi.router.presets.keyboardSplit")}</span>
+            <SelectContent data-oid="0_xxx-_">
+              <SelectItem value="keyboard-split" data-oid="aekvha:">
+                <div className="flex items-center gap-2" data-oid="sq:q0u8">
+                  <Keyboard className="w-4 h-4" data-testid="keyboard-icon" data-oid="iskgrc5" />
+                  <span data-oid="uvcxijr">{t("fairlightAudio.midi.router.presets.keyboardSplit")}</span>
                 </div>
               </SelectItem>
-              <SelectItem value="channel-filter">
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4" data-testid="filter-icon" />
-                  <span>{t("fairlightAudio.midi.router.presets.channelFilter")}</span>
+              <SelectItem value="channel-filter" data-oid="gkb5.i_">
+                <div className="flex items-center gap-2" data-oid="cf2.uoo">
+                  <Filter className="w-4 h-4" data-testid="filter-icon" data-oid="bh0vas_" />
+                  <span data-oid="7un1jwa">{t("fairlightAudio.midi.router.presets.channelFilter")}</span>
                 </div>
               </SelectItem>
-              <SelectItem value="cc-remap">
-                <div className="flex items-center gap-2">
-                  <Shuffle className="w-4 h-4" data-testid="shuffle-icon" />
-                  <span>{t("fairlightAudio.midi.router.presets.ccRemap")}</span>
+              <SelectItem value="cc-remap" data-oid="g0nydyo">
+                <div className="flex items-center gap-2" data-oid="p6:t:j:">
+                  <Shuffle className="w-4 h-4" data-testid="shuffle-icon" data-oid="ltj46k." />
+                  <span data-oid="3rii9je">{t("fairlightAudio.midi.router.presets.ccRemap")}</span>
                 </div>
               </SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={handleCreatePreset} disabled={!selectedPreset} size="sm">
-            <Plus className="w-4 h-4 mr-1" data-testid="plus-icon" />
+          <Button onClick={handleCreatePreset} disabled={!selectedPreset} size="sm" data-oid="qpdlt1t">
+            <Plus className="w-4 h-4 mr-1" data-testid="plus-icon" data-oid="pjavcp." />
             {t("fairlightAudio.midi.router.create")}
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <Tabs defaultValue="routes" className="h-full">
-          <TabsList className="w-full justify-start rounded-none border-b">
-            <TabsTrigger value="routes">{t("fairlightAudio.midi.router.tabs.routes")}</TabsTrigger>
-            <TabsTrigger value="matrix">{t("fairlightAudio.midi.router.tabs.matrixView")}</TabsTrigger>
-            <TabsTrigger value="monitor">{t("fairlightAudio.midi.router.tabs.monitor")}</TabsTrigger>
+      <CardContent className="p-0" data-oid="f.vbaxx">
+        <Tabs defaultValue="routes" className="h-full" data-oid="s7x09nn">
+          <TabsList className="w-full justify-start rounded-none border-b" data-oid="_q-6oj1">
+            <TabsTrigger value="routes" data-oid="qga30qb">
+              {t("fairlightAudio.midi.router.tabs.routes")}
+            </TabsTrigger>
+            <TabsTrigger value="matrix" data-oid="gnc5q:8">
+              {t("fairlightAudio.midi.router.tabs.matrixView")}
+            </TabsTrigger>
+            <TabsTrigger value="monitor" data-oid="r6zn1_1">
+              {t("fairlightAudio.midi.router.tabs.monitor")}
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="routes" className="p-4">
-            <ScrollArea className="h-[400px]">
+          <TabsContent value="routes" className="p-4" data-oid="81qty.n">
+            <ScrollArea className="h-[400px]" data-oid="vvps8_n">
               {routes.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Music className="w-12 h-12 mx-auto mb-3 opacity-30" data-testid="music-icon" />
-                  <p>{t("fairlightAudio.midi.router.noRoutes")}</p>
-                  <p className="text-sm mt-1">{t("fairlightAudio.midi.router.createFirstRoute")}</p>
+                <div className="text-center py-8 text-muted-foreground" data-oid="we_8s-q">
+                  <Music className="w-12 h-12 mx-auto mb-3 opacity-30" data-testid="music-icon" data-oid="j9vz4cd" />
+                  <p data-oid="l5uq3c1">{t("fairlightAudio.midi.router.noRoutes")}</p>
+                  <p className="text-sm mt-1" data-oid="vi0esep">
+                    {t("fairlightAudio.midi.router.createFirstRoute")}
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3" data-oid="3:3kvev">
                   {routes.map((route) => (
                     <RouteItem
                       key={route.id}
@@ -302,6 +322,7 @@ export function MidiRouterView() {
                       onUpdate={(updates) => handleUpdateRoute(route.id, updates)}
                       onDelete={() => handleDeleteRoute(route.id)}
                       devices={[...devices.input, ...devices.output]}
+                      data-oid="fwfgg-4"
                     />
                   ))}
                 </div>
@@ -309,19 +330,28 @@ export function MidiRouterView() {
             </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="matrix" className="p-4">
-            <div className="text-center py-8 text-muted-foreground">
-              <GitBranch className="w-12 h-12 mx-auto mb-3 opacity-30" data-testid="git-branch-icon" />
-              <p>{t("fairlightAudio.midi.router.matrixViewComingSoon")}</p>
-              <p className="text-sm mt-1">{t("fairlightAudio.midi.router.matrixDescription")}</p>
+          <TabsContent value="matrix" className="p-4" data-oid="zvwz2ch">
+            <div className="text-center py-8 text-muted-foreground" data-oid="timj.dk">
+              <GitBranch
+                className="w-12 h-12 mx-auto mb-3 opacity-30"
+                data-testid="git-branch-icon"
+                data-oid="eblove-"
+              />
+
+              <p data-oid="f-v368y">{t("fairlightAudio.midi.router.matrixViewComingSoon")}</p>
+              <p className="text-sm mt-1" data-oid="-haaxna">
+                {t("fairlightAudio.midi.router.matrixDescription")}
+              </p>
             </div>
           </TabsContent>
 
-          <TabsContent value="monitor" className="p-4">
-            <div className="text-center py-8 text-muted-foreground">
-              <Zap className="w-12 h-12 mx-auto mb-3 opacity-30" data-testid="zap-icon" />
-              <p>{t("fairlightAudio.midi.router.monitorComingSoon")}</p>
-              <p className="text-sm mt-1">{t("fairlightAudio.midi.router.monitorDescription")}</p>
+          <TabsContent value="monitor" className="p-4" data-oid="2-oh.jt">
+            <div className="text-center py-8 text-muted-foreground" data-oid="5boujev">
+              <Zap className="w-12 h-12 mx-auto mb-3 opacity-30" data-testid="zap-icon" data-oid="m9_u0.8" />
+              <p data-oid="yvsa2s2">{t("fairlightAudio.midi.router.monitorComingSoon")}</p>
+              <p className="text-sm mt-1" data-oid="c5ibzv.">
+                {t("fairlightAudio.midi.router.monitorDescription")}
+              </p>
             </div>
           </TabsContent>
         </Tabs>

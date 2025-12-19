@@ -12,11 +12,11 @@ vi.mock("lucide-react", async (importOriginal) => {
   const actual = (await importOriginal()) as any
   return {
     ...actual,
-    Clock: ({ ...props }: any) => <svg data-testid="clock-icon" {...props} />,
-    Edit2: ({ ...props }: any) => <svg data-testid="edit2-icon" {...props} />,
-    Plus: ({ ...props }: any) => <svg data-testid="plus-icon" {...props} />,
-    Save: ({ ...props }: any) => <svg data-testid="save-icon" {...props} />,
-    X: ({ ...props }: any) => <svg data-testid="x-icon" {...props} />,
+    Clock: ({ ...props }: any) => <svg data-testid="clock-icon" {...props} data-oid="vdkcwm8" />,
+    Edit2: ({ ...props }: any) => <svg data-testid="edit2-icon" {...props} data-oid="wvz_fkf" />,
+    Plus: ({ ...props }: any) => <svg data-testid="plus-icon" {...props} data-oid="kvunmq1" />,
+    Save: ({ ...props }: any) => <svg data-testid="save-icon" {...props} data-oid="q_:oxy." />,
+    X: ({ ...props }: any) => <svg data-testid="x-icon" {...props} data-oid="eqn9d.f" />,
   }
 })
 
@@ -32,7 +32,7 @@ describe("TranscriptionEditor", () => {
     const result = createMockTranscriptionResult()
     const onAddToTimeline = vi.fn()
 
-    render(<TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} />)
+    render(<TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} data-oid=".cx7ur9" />)
 
     expect(screen.getByText("Результаты транскрипции")).toBeInTheDocument()
     expect(screen.getByText("Добавить на таймлайн")).toBeInTheDocument()
@@ -40,7 +40,7 @@ describe("TranscriptionEditor", () => {
 
   it("should display all segments", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="fj6a022" />)
 
     expect(screen.getByText("Hello world")).toBeInTheDocument()
     expect(screen.getByText("This is a test")).toBeInTheDocument()
@@ -48,7 +48,7 @@ describe("TranscriptionEditor", () => {
 
   it("should render without onAddToTimeline callback", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="qs0y_fn" />)
 
     expect(screen.queryByText("Добавить на таймлайн")).not.toBeInTheDocument()
   })
@@ -58,7 +58,7 @@ describe("TranscriptionEditor", () => {
     const result = createMockTranscriptionResult()
     const onAddToTimeline = vi.fn()
 
-    render(<TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} />)
+    render(<TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} data-oid="i6_h7ba" />)
 
     const addButton = screen.getByText("Добавить на таймлайн")
     await user.click(addButton)
@@ -68,7 +68,7 @@ describe("TranscriptionEditor", () => {
 
   it("should allow editing a segment", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="9c2uxir" />)
 
     // Verify segments are rendered with edit capability
     expect(screen.getByText("Hello world")).toBeInTheDocument()
@@ -77,7 +77,7 @@ describe("TranscriptionEditor", () => {
 
   it("should save edited segment", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="1vcykv4" />)
 
     // Segment text should be present
     expect(screen.getByText("Hello world")).toBeInTheDocument()
@@ -85,7 +85,7 @@ describe("TranscriptionEditor", () => {
 
   it("should cancel editing", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="b:.9:8y" />)
 
     // Original text should be displayed
     expect(screen.getByText("Hello world")).toBeInTheDocument()
@@ -94,7 +94,7 @@ describe("TranscriptionEditor", () => {
 
   it("should display formatted timestamps", () => {
     const result = createMockTranscriptionResult()
-    const { container } = render(<TranscriptionEditor result={result} />)
+    const { container } = render(<TranscriptionEditor result={result} data-oid="lhi:_2l" />)
 
     // Timestamps should be present in the document
     expect(container).toBeInTheDocument()
@@ -102,14 +102,14 @@ describe("TranscriptionEditor", () => {
 
   it("should display full text in details section", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="b0zxx16" />)
 
     expect(screen.getByText("Полный текст")).toBeInTheDocument()
   })
 
   it("should save edit on Ctrl+Enter", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="y4us8gf" />)
 
     // Editor should handle keyboard shortcuts
     expect(screen.getByText("Результаты транскрипции")).toBeInTheDocument()
@@ -120,7 +120,7 @@ describe("TranscriptionEditor", () => {
 describe("TranscriptionEditor - Edge Cases", () => {
   it("should handle empty segments array", () => {
     const result = createMockTranscriptionResult({ segments: [] })
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="mks8q93" />)
 
     expect(screen.getByText("Результаты транскрипции")).toBeInTheDocument()
   })
@@ -139,7 +139,7 @@ describe("TranscriptionEditor - Edge Cases", () => {
       ],
     })
 
-    const { container } = render(<TranscriptionEditor result={result} />)
+    const { container } = render(<TranscriptionEditor result={result} data-oid="8thx10s" />)
     // Should render without errors
     expect(container).toBeInTheDocument()
   })
@@ -157,7 +157,7 @@ describe("TranscriptionEditor - Edge Cases", () => {
       ],
     })
 
-    const { container } = render(<TranscriptionEditor result={result} />)
+    const { container } = render(<TranscriptionEditor result={result} data-oid="b364di8" />)
     expect(container.textContent).toContain("Special chars")
   })
 
@@ -173,18 +173,19 @@ describe("TranscriptionEditor - Edge Cases", () => {
             { word: "Hello", start: 0, end: 1, confidence: 0.95 },
             { word: "world", start: 1, end: 2, confidence: 0.9 },
           ],
+
           confidence: 0.92,
         },
       ],
     })
 
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="dhh9fb3" />)
     expect(screen.getByText("Временные метки слов")).toBeInTheDocument()
   })
 
   it("should handle multiple consecutive edits", () => {
     const result = createMockTranscriptionResult()
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="fc2cmza" />)
 
     // Should support editing workflow
     expect(screen.getByText("Hello world")).toBeInTheDocument()
@@ -194,7 +195,7 @@ describe("TranscriptionEditor - Edge Cases", () => {
     const result = createMockTranscriptionResult()
     const onAddToTimeline = vi.fn()
 
-    render(<TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} />)
+    render(<TranscriptionEditor result={result} onAddToTimeline={onAddToTimeline} data-oid="s0v1.8k" />)
 
     // Should have add to timeline button
     expect(screen.getByText("Добавить на таймлайн")).toBeInTheDocument()
@@ -213,7 +214,7 @@ describe("TranscriptionEditor - Edge Cases", () => {
       ],
     })
 
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="777ex73" />)
     expect(screen.getByText("Instant")).toBeInTheDocument()
   })
 
@@ -230,7 +231,7 @@ describe("TranscriptionEditor - Edge Cases", () => {
       ],
     })
 
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="48agin5" />)
     expect(screen.getByText("Precise timing")).toBeInTheDocument()
   })
 
@@ -247,13 +248,13 @@ describe("TranscriptionEditor - Edge Cases", () => {
       ],
     })
 
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="ldzxmo1" />)
     expect(screen.getByText("Привет мир! Hello world! 你好世界!")).toBeInTheDocument()
   })
 
   it("should display edited indicator for modified segments", () => {
     const result = createMockTranscriptionResult()
-    const { container } = render(<TranscriptionEditor result={result} />)
+    const { container } = render(<TranscriptionEditor result={result} data-oid="9up.upo" />)
 
     // Segments should be rendered
     expect(container).toBeInTheDocument()
@@ -261,14 +262,14 @@ describe("TranscriptionEditor - Edge Cases", () => {
 
   it("should handle empty full text gracefully", () => {
     const result = createMockTranscriptionResult({ text: "", segments: [] })
-    render(<TranscriptionEditor result={result} />)
+    render(<TranscriptionEditor result={result} data-oid="podc:1r" />)
 
     expect(screen.getByText("Полный текст")).toBeInTheDocument()
   })
 
   it("should auto-focus textarea when editing", () => {
     const result = createMockTranscriptionResult()
-    const { container } = render(<TranscriptionEditor result={result} />)
+    const { container } = render(<TranscriptionEditor result={result} data-oid="wypeyq1" />)
 
     // Editor should be functional
     expect(container).toBeInTheDocument()

@@ -14,15 +14,15 @@ export function ChannelWithAudio({ trackId, className, ...props }: ChannelWithAu
   const displayName = isLoading ? `${props.name} (Loading...)` : error ? `${props.name} (!)` : props.name
 
   return (
-    <div className={cn("flex flex-col", className)}>
+    <div className={cn("flex flex-col", className)} data-oid="_jwnr5m">
       {/* Waveform display above the channel strip */}
       {trackId && (
-        <div className="mb-2 px-2">
-          <SimpleWaveform audioElement={audioElement} height={40} className="w-full" />
+        <div className="mb-2 px-2" data-oid="n871rfi">
+          <SimpleWaveform audioElement={audioElement} height={40} className="w-full" data-oid="vsullfb" />
         </div>
       )}
 
-      <ChannelStrip {...props} name={displayName} />
+      <ChannelStrip {...props} name={displayName} data-oid="l:k32tj" />
     </div>
   )
 }

@@ -58,10 +58,13 @@ export function SpeedRampingIndicator() {
   }
 
   return (
-    <div className="fixed top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-md text-sm font-mono z-50">
-      <div className="flex items-center gap-2">
-        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-        <span>Speed: {currentRate.toFixed(2)}x</span>
+    <div
+      className="fixed top-4 right-4 bg-black/80 text-white px-3 py-1 rounded-md text-sm font-mono z-50"
+      data-oid="_det_22"
+    >
+      <div className="flex items-center gap-2" data-oid="vpszwv-">
+        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" data-oid="a4a11ng" />
+        <span data-oid="v56m5.3">Speed: {currentRate.toFixed(2)}x</span>
       </div>
     </div>
   )
@@ -93,9 +96,9 @@ export function TimelineSpeedRampingStatus() {
   }
 
   return (
-    <div className="flex items-center gap-2 px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs">
-      <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
-      <span>
+    <div className="flex items-center gap-2 px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs" data-oid="6t:xrle">
+      <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" data-oid="m-asfpj" />
+      <span data-oid="_zpku9c">
         Speed Ramping: {activeSpeedRampingClips.length} clip
         {activeSpeedRampingClips.length > 1 ? "s" : ""}
       </span>

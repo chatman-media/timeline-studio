@@ -6,7 +6,14 @@ import type * as React from "react"
 import { cn } from "@/lib/utils"
 
 function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {
-  return <TabsPrimitive.Root data-slot="tabs" className={cn("flex flex-col gap-2", className)} {...props} />
+  return (
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      className={cn("flex flex-col gap-2", className)}
+      {...props}
+      data-oid="ukme7.4"
+    />
+  )
 }
 
 function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) {
@@ -18,6 +25,7 @@ function TabsList({ className, ...props }: React.ComponentProps<typeof TabsPrimi
         className,
       )}
       {...props}
+      data-oid="fanzt.e"
     />
   )
 }
@@ -32,12 +40,20 @@ function TabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsPr
         className,
       )}
       {...props}
+      data-oid="h78lp::"
     />
   )
 }
 
 function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) {
-  return <TabsPrimitive.Content data-slot="tabs-content" className={cn("flex-1 outline-none", className)} {...props} />
+  return (
+    <TabsPrimitive.Content
+      data-slot="tabs-content"
+      className={cn("flex-1 outline-none", className)}
+      {...props}
+      data-oid="fmk3y2q"
+    />
+  )
 }
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }

@@ -25,7 +25,12 @@ describe("CameraSelector", () => {
 
   it("не рендерится, если меньше двух углов", () => {
     const { container } = render(
-      <CameraSelector angles={[createAngle(0)]} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />,
+      <CameraSelector
+        angles={[createAngle(0)]}
+        activeAngleIndex={0}
+        onSelectAngle={mockOnSelectAngle}
+        data-oid="e9c96u_"
+      />,
     )
 
     expect(container.firstChild).toBeNull()
@@ -37,6 +42,7 @@ describe("CameraSelector", () => {
         angles={[createAngle(0), createAngle(1)]}
         activeAngleIndex={0}
         onSelectAngle={mockOnSelectAngle}
+        data-oid="_pjh3-c"
       />,
     )
 
@@ -45,7 +51,7 @@ describe("CameraSelector", () => {
 
   it("показывает активный угол в кнопке", () => {
     const angles = [createAngle(0), createAngle(1), createAngle(2)]
-    render(<CameraSelector angles={angles} activeAngleIndex={1} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={1} onSelectAngle={mockOnSelectAngle} data-oid="8p79xta" />)
 
     // Проверяем отображение индекса
     expect(screen.getByText("2/3")).toBeInTheDocument()
@@ -57,7 +63,7 @@ describe("CameraSelector", () => {
     const user = userEvent.setup()
     const angles = [createAngle(0), createAngle(1)]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="-f8dg15" />)
 
     await user.click(screen.getByRole("button"))
 
@@ -69,7 +75,7 @@ describe("CameraSelector", () => {
     const user = userEvent.setup()
     const angles = [createAngle(0), createAngle(1), createAngle(2)]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="ho6d-_g" />)
 
     await user.click(screen.getByRole("button"))
 
@@ -91,7 +97,7 @@ describe("CameraSelector", () => {
     const user = userEvent.setup()
     const angles = [createAngle(0), createAngle(1), createAngle(2)]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={1} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={1} onSelectAngle={mockOnSelectAngle} data-oid="xb3o.4d" />)
 
     await user.click(screen.getByRole("button"))
 
@@ -106,7 +112,7 @@ describe("CameraSelector", () => {
     const user = userEvent.setup()
     const angles = [createAngle(0), createAngle(1), createAngle(2)]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="fx2nbum" />)
 
     await user.click(screen.getByRole("button"))
     const menuItems = screen.getAllByTestId("dropdown-menu-item")
@@ -119,7 +125,7 @@ describe("CameraSelector", () => {
     const user = userEvent.setup()
     const angles = [createAngle(0), { ...createAngle(1), syncOffset: 1.5 }, { ...createAngle(2), syncOffset: -0.5 }]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="rq:_:x-" />)
 
     await user.click(screen.getByRole("button"))
 
@@ -134,7 +140,7 @@ describe("CameraSelector", () => {
       { ...createAngle(1), syncOffset: 0.001 }, // Очень маленькое значение
     ]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="s52--2w" />)
 
     await user.click(screen.getByRole("button"))
 
@@ -145,7 +151,15 @@ describe("CameraSelector", () => {
 
   it("отключается, когда disabled=true", () => {
     const angles = [createAngle(0), createAngle(1)]
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} disabled={true} />)
+    render(
+      <CameraSelector
+        angles={angles}
+        activeAngleIndex={0}
+        onSelectAngle={mockOnSelectAngle}
+        disabled={true}
+        data-oid="cp.azf8"
+      />,
+    )
 
     expect(screen.getByRole("button")).toBeDisabled()
   })
@@ -158,6 +172,7 @@ describe("CameraSelector", () => {
         activeAngleIndex={0}
         onSelectAngle={mockOnSelectAngle}
         className="custom-class"
+        data-oid="wav8un4"
       />,
     )
 
@@ -171,12 +186,11 @@ describe("CameraSelector", () => {
   it.skip("закрывает меню после выбора", async () => {
     // Пропускаем - Radix UI dropdown не закрывается в тестах
   })
-
   it("показывает индексы камер в бейджах", async () => {
     const user = userEvent.setup()
     const angles = [createAngle(0), createAngle(1), createAngle(2)]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="a-k5nzn" />)
 
     await user.click(screen.getByRole("button"))
 
@@ -191,7 +205,7 @@ describe("CameraSelector", () => {
       { ...createAngle(1), name: "" },
     ]
 
-    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} />)
+    render(<CameraSelector angles={angles} activeAngleIndex={0} onSelectAngle={mockOnSelectAngle} data-oid="-j18tuq" />)
 
     // Не должно показывать пустое имя
     const button = screen.getByRole("button")

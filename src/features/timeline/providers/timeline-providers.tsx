@@ -163,7 +163,11 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     },
   }
 
-  return <TimelineProjectContext.Provider value={contextValue}>{children}</TimelineProjectContext.Provider>
+  return (
+    <TimelineProjectContext.Provider value={contextValue} data-oid="wdrjcw7">
+      {children}
+    </TimelineProjectContext.Provider>
+  )
 }
 
 export function useTimelineProject() {
@@ -275,7 +279,11 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
     },
   }
 
-  return <TimelinePlaybackContext.Provider value={contextValue}>{children}</TimelinePlaybackContext.Provider>
+  return (
+    <TimelinePlaybackContext.Provider value={contextValue} data-oid="bplnmln">
+      {children}
+    </TimelinePlaybackContext.Provider>
+  )
 }
 
 export function useTimelinePlayback() {
@@ -379,7 +387,11 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
     },
   }
 
-  return <TimelineTracksContext.Provider value={contextValue}>{children}</TimelineTracksContext.Provider>
+  return (
+    <TimelineTracksContext.Provider value={contextValue} data-oid="y26fnra">
+      {children}
+    </TimelineTracksContext.Provider>
+  )
 }
 
 export function useTimelineTracks() {
@@ -532,7 +544,11 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
     },
   }
 
-  return <TimelineClipsContext.Provider value={contextValue}>{children}</TimelineClipsContext.Provider>
+  return (
+    <TimelineClipsContext.Provider value={contextValue} data-oid="ixpwpe6">
+      {children}
+    </TimelineClipsContext.Provider>
+  )
 }
 
 export function useTimelineClips() {
@@ -580,7 +596,10 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         // Синхронизируем выбор клипов с backend
         await backendSync.executeCommand({
           type: "SelectClips",
-          params: { clip_ids: clipIds, add_to_selection: addToSelection ?? false },
+          params: {
+            clip_ids: clipIds,
+            add_to_selection: addToSelection ?? false,
+          },
         })
         timelineActor.send({ type: "SELECT_CLIPS", clipIds, addToSelection })
       } catch (error) {
@@ -594,7 +613,10 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         // Синхронизируем выбор треков с backend
         await backendSync.executeCommand({
           type: "SelectTracks",
-          params: { track_ids: trackIds, add_to_selection: addToSelection ?? false },
+          params: {
+            track_ids: trackIds,
+            add_to_selection: addToSelection ?? false,
+          },
         })
         timelineActor.send({ type: "SELECT_TRACKS", trackIds, addToSelection })
       } catch (error) {
@@ -608,13 +630,24 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
         // Синхронизируем выбор секций с backend
         await backendSync.executeCommand({
           type: "SelectSections",
-          params: { section_ids: sectionIds, add_to_selection: addToSelection ?? false },
+          params: {
+            section_ids: sectionIds,
+            add_to_selection: addToSelection ?? false,
+          },
         })
-        timelineActor.send({ type: "SELECT_SECTIONS", sectionIds, addToSelection })
+        timelineActor.send({
+          type: "SELECT_SECTIONS",
+          sectionIds,
+          addToSelection,
+        })
       } catch (error) {
         logger.error("Failed to select sections:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
-        timelineActor.send({ type: "SELECT_SECTIONS", sectionIds, addToSelection })
+        timelineActor.send({
+          type: "SELECT_SECTIONS",
+          sectionIds,
+          addToSelection,
+        })
       }
     },
     clearSelection: async () => {
@@ -699,7 +732,11 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
     },
   }
 
-  return <TimelineSelectionContext.Provider value={contextValue}>{children}</TimelineSelectionContext.Provider>
+  return (
+    <TimelineSelectionContext.Provider value={contextValue} data-oid="njbycyg">
+      {children}
+    </TimelineSelectionContext.Provider>
+  )
 }
 
 export function useTimelineSelection() {
@@ -793,11 +830,21 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
           type: "ApplyTransition",
           params: { clip_id: clipId, transition_id: transitionId, params },
         })
-        timelineActor.send({ type: "APPLY_TRANSITION", clipId, transitionId, params })
+        timelineActor.send({
+          type: "APPLY_TRANSITION",
+          clipId,
+          transitionId,
+          params,
+        })
       } catch (error) {
         logger.error("Failed to apply transition:", { error: error })
         // В случае ошибки все равно обновляем локальное состояние
-        timelineActor.send({ type: "APPLY_TRANSITION", clipId, transitionId, params })
+        timelineActor.send({
+          type: "APPLY_TRANSITION",
+          clipId,
+          transitionId,
+          params,
+        })
       }
     },
     removeTransition: async (clipId: string, transitionId: string) => {
@@ -816,7 +863,11 @@ export function TimelineEffectsProvider({ children }: { children: ReactNode }) {
     },
   }
 
-  return <TimelineEffectsContext.Provider value={contextValue}>{children}</TimelineEffectsContext.Provider>
+  return (
+    <TimelineEffectsContext.Provider value={contextValue} data-oid="an1-tqi">
+      {children}
+    </TimelineEffectsContext.Provider>
+  )
 }
 
 export function useTimelineEffects() {
@@ -911,7 +962,11 @@ export function TimelineMarkersProvider({ children }: { children: ReactNode }) {
     },
   }
 
-  return <TimelineMarkersContext.Provider value={contextValue}>{children}</TimelineMarkersContext.Provider>
+  return (
+    <TimelineMarkersContext.Provider value={contextValue} data-oid="u86cu4-">
+      {children}
+    </TimelineMarkersContext.Provider>
+  )
 }
 
 export function useTimelineMarkers() {
@@ -1061,7 +1116,11 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
     },
   }
 
-  return <TimelineKeyframesContext.Provider value={contextValue}>{children}</TimelineKeyframesContext.Provider>
+  return (
+    <TimelineKeyframesContext.Provider value={contextValue} data-oid="01h59go">
+      {children}
+    </TimelineKeyframesContext.Provider>
+  )
 }
 
 export function useTimelineKeyframes() {
@@ -1077,14 +1136,14 @@ export function useTimelineKeyframes() {
 // ===========================
 export function TimelineProvider({ children }: { children: ReactNode }) {
   return (
-    <TimelineProjectProvider>
-      <TimelinePlaybackProvider>
-        <TimelineTracksProvider>
-          <TimelineClipsProvider>
-            <TimelineSelectionProvider>
-              <TimelineEffectsProvider>
-                <TimelineMarkersProvider>
-                  <TimelineKeyframesProvider>{children}</TimelineKeyframesProvider>
+    <TimelineProjectProvider data-oid=":7vax56">
+      <TimelinePlaybackProvider data-oid="k8vsa1.">
+        <TimelineTracksProvider data-oid="22w.d9e">
+          <TimelineClipsProvider data-oid="78mpg8b">
+            <TimelineSelectionProvider data-oid="2a2n6li">
+              <TimelineEffectsProvider data-oid="zp_w4hn">
+                <TimelineMarkersProvider data-oid="l71oc2d">
+                  <TimelineKeyframesProvider data-oid="t7j7qx2">{children}</TimelineKeyframesProvider>
                 </TimelineMarkersProvider>
               </TimelineEffectsProvider>
             </TimelineSelectionProvider>

@@ -7,31 +7,44 @@ import { SpeedCurveEditor } from "../../../components/speed-ramping/speed-curve-
 // Mock компонентов
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
-    <button onClick={onClick} {...props}>
+    <button onClick={onClick} {...props} data-oid="u4tdy_o">
       {children}
     </button>
   ),
 }))
 
 vi.mock("@/components/ui/dropdown-menu", () => ({
-  DropdownMenu: ({ children }: any) => <div data-testid="dropdown-menu">{children}</div>,
-  DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
+  DropdownMenu: ({ children }: any) => (
+    <div data-testid="dropdown-menu" data-oid="mj0n77.">
+      {children}
+    </div>
+  ),
+
+  DropdownMenuContent: ({ children }: any) => (
+    <div data-testid="dropdown-content" data-oid="o:141kl">
+      {children}
+    </div>
+  ),
+
   DropdownMenuItem: ({ children, onClick }: any) => (
-    <button onClick={onClick} data-testid="dropdown-item">
+    <button onClick={onClick} data-testid="dropdown-item" data-oid=":599tqx">
       {children}
     </button>
   ),
-  DropdownMenuSeparator: () => <hr />,
+
+  DropdownMenuSeparator: () => <hr data-oid="setg-e7" />,
   DropdownMenuTrigger: ({ children, asChild }: any) => (
-    <div data-testid="dropdown-trigger">{asChild ? children : <div>{children}</div>}</div>
+    <div data-testid="dropdown-trigger" data-oid=".52oggd">
+      {asChild ? children : <div data-oid=":tzz6gz">{children}</div>}
+    </div>
   ),
 }))
 
 vi.mock("@/components/ui/tooltip", () => ({
-  TooltipProvider: ({ children }: any) => <div>{children}</div>,
-  Tooltip: ({ children }: any) => <div>{children}</div>,
-  TooltipContent: ({ children }: any) => <div>{children}</div>,
-  TooltipTrigger: ({ children }: any) => <div>{children}</div>,
+  TooltipProvider: ({ children }: any) => <div data-oid="fc79y93">{children}</div>,
+  Tooltip: ({ children }: any) => <div data-oid="d8e90vt">{children}</div>,
+  TooltipContent: ({ children }: any) => <div data-oid="a.du44q">{children}</div>,
+  TooltipTrigger: ({ children }: any) => <div data-oid="ihv:n-z">{children}</div>,
 }))
 
 // Mock хука speed ramping
@@ -69,6 +82,7 @@ describe("SpeedCurveEditor", () => {
         { id: "kf2", time: 5, value: 2.0, interpolation: "ease" },
         { id: "kf3", time: 8, value: 1.0, interpolation: "ease-out" },
       ],
+
       maintainPitch: true,
       minSpeed: 0.1,
       maxSpeed: 4.0,
@@ -87,7 +101,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("рендерит компонент с базовыми элементами", () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="qbbme6c" />)
 
     expect(screen.getByText("Speed Ramping")).toBeInTheDocument()
     expect(screen.getByText("Presets")).toBeInTheDocument()
@@ -95,7 +109,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("отображает canvas с правильными размерами", () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="smusizy" />)
 
     const canvas = screen.getByTestId("speed-curve-canvas")
     expect(canvas).toHaveAttribute("width", "1000") // 10 сек * 100 пикс/сек
@@ -103,7 +117,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("добавляет keyframe при клике на canvas", async () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="4x3bmsa" />)
 
     const canvas = screen.getByTestId("speed-curve-canvas")
 
@@ -137,7 +151,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("применяет пресет при выборе из меню", async () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="q0idc2c" />)
 
     // Находим кнопку пресетов и кликаем
     const presetsButton = screen.getByText("Presets")
@@ -152,7 +166,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("сбрасывает скорость к нормальной при клике на reset", async () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="va47wcr" />)
 
     // Ищем кнопку с иконкой RotateCcw
     const resetButton = screen.getByTestId("rotateccw-icon").closest("button")
@@ -165,7 +179,7 @@ describe("SpeedCurveEditor", () => {
 
   it("вызывает onClose при клике на кнопку закрытия", () => {
     const onClose = vi.fn()
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} onClose={onClose} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} onClose={onClose} data-oid="4nxvwz5" />)
 
     const closeButton = screen.getByText("✕")
     fireEvent.click(closeButton)
@@ -185,13 +199,13 @@ describe("SpeedCurveEditor", () => {
       graphOpacity: 0.8,
     })
 
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="hvh6f0c" />)
 
     expect(screen.getByText("Click to add speed keyframes")).toBeInTheDocument()
   })
 
   it("обрабатывает клики по canvas для взаимодействия с keyframes", async () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="5esimn0" />)
 
     // Симулируем клик по canvas
     const canvas = screen.getByTestId("speed-curve-canvas")
@@ -206,7 +220,7 @@ describe("SpeedCurveEditor", () => {
   })
 
   it("показывает Y-axis labels с правильными значениями скорости", () => {
-    renderWithTimeline(<SpeedCurveEditor {...defaultProps} />)
+    renderWithTimeline(<SpeedCurveEditor {...defaultProps} data-oid="ucvxe0x" />)
 
     expect(screen.getByText("4x")).toBeInTheDocument()
     expect(screen.getByText("3x")).toBeInTheDocument()

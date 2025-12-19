@@ -115,9 +115,21 @@ export function HistogramScope({ width, height, refreshRate }: HistogramScopePro
 
       // Рисуем RGB каналы
       const channels = [
-        { data: histogramR, color: "rgba(255, 0, 0, 0.6)", strokeColor: "#ff0000" },
-        { data: histogramG, color: "rgba(0, 255, 0, 0.6)", strokeColor: "#00ff00" },
-        { data: histogramB, color: "rgba(0, 0, 255, 0.6)", strokeColor: "#0000ff" },
+        {
+          data: histogramR,
+          color: "rgba(255, 0, 0, 0.6)",
+          strokeColor: "#ff0000",
+        },
+        {
+          data: histogramG,
+          color: "rgba(0, 255, 0, 0.6)",
+          strokeColor: "#00ff00",
+        },
+        {
+          data: histogramB,
+          color: "rgba(0, 0, 255, 0.6)",
+          strokeColor: "#0000ff",
+        },
       ]
 
       channels.forEach((channel) => {
@@ -245,5 +257,5 @@ export function HistogramScope({ width, height, refreshRate }: HistogramScopePro
     }
   }, [width, height])
 
-  return <canvas ref={canvasRef} className="w-full h-full" style={{ imageRendering: "auto" }} />
+  return <canvas ref={canvasRef} className="w-full h-full" style={{ imageRendering: "auto" }} data-oid=":yv.jj3" />
 }

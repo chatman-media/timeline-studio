@@ -193,31 +193,44 @@ export function SpeedSettings() {
   }
 
   return (
-    <div className="flex flex-col h-full" data-testid="speed-settings">
+    <div className="flex flex-col h-full" data-testid="speed-settings" data-oid="_ba9_.6">
       {/* Основной контент с прокруткой */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground/50 hover:scrollbar-thumb-muted-foreground">
-        <div className="p-4 space-y-4">
+      <div
+        className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground/50 hover:scrollbar-thumb-muted-foreground"
+        data-oid="1fker-m"
+      >
+        <div className="p-4 space-y-4" data-oid="h-s:es-">
           {/* Базовые настройки скорости */}
-          <Collapsible open={openSections.basicSpeed} onOpenChange={() => toggleSection("basicSpeed")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-blue-400" />
-                <Play className="h-4 w-4 text-blue-400" />
-                <h3 className="font-medium text-foreground">{t("options.speed.basicSpeed", "Basic Speed")}</h3>
+          <Collapsible
+            open={openSections.basicSpeed}
+            onOpenChange={() => toggleSection("basicSpeed")}
+            data-oid="hnrn3qd"
+          >
+            <CollapsibleTrigger
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
+              data-oid="z6j_5kh"
+            >
+              <div className="flex items-center gap-2" data-oid="dx.t2u5">
+                <div className="w-2 h-2 rounded-full bg-blue-400" data-oid="1nvhpj8" />
+                <Play className="h-4 w-4 text-blue-400" data-oid="914o4.v" />
+                <h3 className="font-medium text-foreground" data-oid="gi2a385">
+                  {t("options.speed.basicSpeed", "Basic Speed")}
+                </h3>
               </div>
               <ChevronDown
                 className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.basicSpeed ? "rotate-180" : ""}`}
+                data-oid="pj:ia4q"
               />
             </CollapsibleTrigger>
 
-            <CollapsibleContent className="mt-3">
-              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
+            <CollapsibleContent className="mt-3" data-oid="b4mytb5">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4" data-oid="-u.5iiq">
                 {/* Быстрые пресеты */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-3" data-oid="u7d8wzk">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="35d2ad.">
                     {t("options.speed.quickPresets", "Quick Presets")}
                   </Label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-4 gap-2" data-oid="xv5j33k">
                     {SPEED_PRESETS.map((preset) => (
                       <Button
                         key={preset.value}
@@ -225,6 +238,7 @@ export function SpeedSettings() {
                         size="sm"
                         className="h-8 text-xs"
                         onClick={() => handleSpeedPresetSelect(preset.value)}
+                        data-oid="ygv-cku"
                       >
                         {preset.label}
                       </Button>
@@ -233,11 +247,11 @@ export function SpeedSettings() {
                 </div>
 
                 {/* Пользовательская скорость */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-2" data-oid="aoivnk7">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="p3_0vja">
                     {t("options.speed.customSpeed", "Custom Speed")}
                   </Label>
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3" data-oid="__nev.v">
                     <Input
                       type="number"
                       value={settings.customSpeed}
@@ -251,8 +265,12 @@ export function SpeedSettings() {
                       max="10"
                       step="0.1"
                       className="w-20 h-8"
+                      data-oid="oe-p-0d"
                     />
-                    <span className="text-sm text-muted-foreground">x</span>
+
+                    <span className="text-sm text-muted-foreground" data-oid="_exfnh_">
+                      x
+                    </span>
                     <Slider
                       value={[settings.customSpeed]}
                       onValueChange={([value]) => setSettings((prev) => ({ ...prev, customSpeed: value }))}
@@ -260,12 +278,13 @@ export function SpeedSettings() {
                       min={0.1}
                       step={0.1}
                       className="flex-1"
+                      data-oid="4:s6.k0"
                     />
                   </div>
                 </div>
 
                 {/* Сохранять тональность */}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2" data-oid="9fd28lq">
                   <Checkbox
                     id="preserve-pitch-basic"
                     checked={settings.preservePitch}
@@ -275,8 +294,10 @@ export function SpeedSettings() {
                         preservePitch: !!checked,
                       }))
                     }
+                    data-oid="08-6m_z"
                   />
-                  <Label htmlFor="preserve-pitch-basic" className="text-sm text-foreground/90">
+
+                  <Label htmlFor="preserve-pitch-basic" className="text-sm text-foreground/90" data-oid="iw.n8s3">
                     {t("options.speed.preservePitch", "Preserve pitch when changing speed")}
                   </Label>
                 </div>
@@ -285,26 +306,36 @@ export function SpeedSettings() {
           </Collapsible>
 
           {/* Speed Ramping */}
-          <Collapsible open={openSections.speedRamping} onOpenChange={() => toggleSection("speedRamping")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-400" />
-                <Zap className="h-4 w-4 text-green-400" />
-                <h3 className="font-medium text-foreground">{t("options.speed.speedRamping", "Speed Ramping")}</h3>
+          <Collapsible
+            open={openSections.speedRamping}
+            onOpenChange={() => toggleSection("speedRamping")}
+            data-oid="w:zaouq"
+          >
+            <CollapsibleTrigger
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
+              data-oid="hfv4mk6"
+            >
+              <div className="flex items-center gap-2" data-oid="lxivojv">
+                <div className="w-2 h-2 rounded-full bg-green-400" data-oid="pv7qxui" />
+                <Zap className="h-4 w-4 text-green-400" data-oid="n2ldo_0" />
+                <h3 className="font-medium text-foreground" data-oid="7998j1i">
+                  {t("options.speed.speedRamping", "Speed Ramping")}
+                </h3>
               </div>
               <ChevronDown
                 className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.speedRamping ? "rotate-180" : ""}`}
+                data-oid="tp03iq9"
               />
             </CollapsibleTrigger>
 
-            <CollapsibleContent className="mt-3">
-              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
+            <CollapsibleContent className="mt-3" data-oid="uc0lax7">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4" data-oid="-t7871b">
                 {/* Speed Ramping пресеты */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-3" data-oid="ooj-uc9">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="r185h3j">
                     {t("options.speed.rampingPresets", "Ramping Presets")}
                   </Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2" data-oid="q4okfzh">
                     {SPEED_RAMPING_PRESETS.map((preset) => (
                       <Button
                         key={preset.id}
@@ -312,6 +343,7 @@ export function SpeedSettings() {
                         size="sm"
                         className="h-8 text-xs justify-start"
                         onClick={() => handleApplySpeedRampingPreset(preset.id)}
+                        data-oid="zc-5ags"
                       >
                         {preset.name}
                       </Button>
@@ -320,26 +352,35 @@ export function SpeedSettings() {
                 </div>
 
                 {/* Визуальный редактор кривой скорости */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-2" data-oid="h11o40e">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="rm:popl">
                     {t("options.speed.speedCurve", "Speed Curve")}
                   </Label>
-                  <div className="bg-background rounded border border-border p-2 h-32 flex items-center justify-center">
+                  <div
+                    className="bg-background rounded border border-border p-2 h-32 flex items-center justify-center"
+                    data-oid="urro-as"
+                  >
                     {currentClip ? (
-                      <div className="text-center text-muted-foreground">
-                        <div className="text-sm">Speed Curve Editor</div>
-                        <div className="text-xs mt-1">Clip: {currentClip.name}</div>
+                      <div className="text-center text-muted-foreground" data-oid="okym_ec">
+                        <div className="text-sm" data-oid="-nc4exl">
+                          Speed Curve Editor
+                        </div>
+                        <div className="text-xs mt-1" data-oid="jzljxgu">
+                          Clip: {currentClip.name}
+                        </div>
                       </div>
                     ) : (
-                      <div className="text-center text-muted-foreground/70">
-                        <div className="text-sm">Select a clip to edit speed curve</div>
+                      <div className="text-center text-muted-foreground/70" data-oid="qpzqh5_">
+                        <div className="text-sm" data-oid="4ld.c5w">
+                          Select a clip to edit speed curve
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Настройки Speed Ramping */}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2" data-oid="d9x5ihe">
                   <Checkbox
                     id="maintain-duration"
                     checked={settings.autoKeyframes}
@@ -349,8 +390,10 @@ export function SpeedSettings() {
                         autoKeyframes: !!checked,
                       }))
                     }
+                    data-oid="x_nh5w1"
                   />
-                  <Label htmlFor="maintain-duration" className="text-sm text-foreground/90">
+
+                  <Label htmlFor="maintain-duration" className="text-sm text-foreground/90" data-oid="-tj5yef">
                     {t("options.speed.maintainDuration", "Maintain clip duration")}
                   </Label>
                 </div>
@@ -359,25 +402,33 @@ export function SpeedSettings() {
           </Collapsible>
 
           {/* Интерполяция кадров */}
-          <Collapsible open={openSections.interpolation} onOpenChange={() => toggleSection("interpolation")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-yellow-400" />
-                <Gauge className="h-4 w-4 text-yellow-400" />
-                <h3 className="font-medium text-foreground">
+          <Collapsible
+            open={openSections.interpolation}
+            onOpenChange={() => toggleSection("interpolation")}
+            data-oid="9edzy4e"
+          >
+            <CollapsibleTrigger
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
+              data-oid="4x0eit0"
+            >
+              <div className="flex items-center gap-2" data-oid="5oqrwb4">
+                <div className="w-2 h-2 rounded-full bg-yellow-400" data-oid="ku9eoxh" />
+                <Gauge className="h-4 w-4 text-yellow-400" data-oid="5qnuf98" />
+                <h3 className="font-medium text-foreground" data-oid="j_:g3_w">
                   {t("options.speed.frameInterpolation", "Frame Interpolation")}
                 </h3>
               </div>
               <ChevronDown
                 className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.interpolation ? "rotate-180" : ""}`}
+                data-oid="wqv0fil"
               />
             </CollapsibleTrigger>
 
-            <CollapsibleContent className="mt-3">
-              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
+            <CollapsibleContent className="mt-3" data-oid="y7z8_o.">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4" data-oid="8q_drxe">
                 {/* Метод интерполяции */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-2" data-oid="5tm23o:">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="-1ev8xb">
                     {t("options.speed.interpolationMethod", "Interpolation Method")}
                   </Label>
                   <Select
@@ -388,13 +439,14 @@ export function SpeedSettings() {
                         interpolationType: value,
                       }))
                     }
+                    data-oid="5gb_17y"
                   >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
+                    <SelectTrigger className="h-8" data-oid="adj8psl">
+                      <SelectValue data-oid="q5x-ma7" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent data-oid="x19h4oj">
                       {INTERPOLATION_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                        <SelectItem key={option.value} value={option.value} data-oid="y7vs7n-">
                           {option.label}
                         </SelectItem>
                       ))}
@@ -403,20 +455,21 @@ export function SpeedSettings() {
                 </div>
 
                 {/* Motion Blur */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-2" data-oid="-98zhdg">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="889utb2">
                     {t("options.speed.motionBlurTitle", "Motion Blur")}
                   </Label>
                   <Select
                     value={settings.motionBlur}
                     onValueChange={(value) => setSettings((prev) => ({ ...prev, motionBlur: value }))}
+                    data-oid="vxuwgq4"
                   >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
+                    <SelectTrigger className="h-8" data-oid="kyc7ztf">
+                      <SelectValue data-oid="93knakp" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent data-oid="zghgncr">
                       {MOTION_BLUR_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                        <SelectItem key={option.value} value={option.value} data-oid="zejdpsc">
                           {option.label}
                         </SelectItem>
                       ))}
@@ -425,8 +478,8 @@ export function SpeedSettings() {
                 </div>
 
                 {/* Плавное воспроизведение */}
-                <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
+                <div className="space-y-3" data-oid="3gbsq8a">
+                  <div className="flex items-center space-x-2" data-oid="cvxe_mz">
                     <Checkbox
                       id="smooth-playback"
                       checked={settings.smoothPlayback}
@@ -436,18 +489,20 @@ export function SpeedSettings() {
                           smoothPlayback: !!checked,
                         }))
                       }
+                      data-oid="jaf4r58"
                     />
-                    <Label htmlFor="smooth-playback" className="text-sm text-foreground/90">
+
+                    <Label htmlFor="smooth-playback" className="text-sm text-foreground/90" data-oid="tp7bg7t">
                       {t("options.speed.smoothPlayback", "Smooth Playback")}
                     </Label>
                   </div>
 
                   {settings.smoothPlayback && (
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-foreground/90">
+                    <div className="space-y-2" data-oid="gcice-i">
+                      <Label className="text-sm font-medium text-foreground/90" data-oid="09of06_">
                         {t("options.speed.smoothnessLevel", "Smoothness Level")}
                       </Label>
-                      <div className="space-y-2">
+                      <div className="space-y-2" data-oid="av2j1ex">
                         <Slider
                           value={[settings.smoothnessLevel]}
                           onValueChange={([value]) =>
@@ -459,11 +514,13 @@ export function SpeedSettings() {
                           max={100}
                           step={1}
                           className="w-full"
+                          data-oid="ybhfvca"
                         />
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>{t("options.speed.performance", "Performance")}</span>
-                          <span>{settings.smoothnessLevel}%</span>
-                          <span>{t("options.speed.quality", "Quality")}</span>
+
+                        <div className="flex justify-between text-xs text-muted-foreground" data-oid="kpycot9">
+                          <span data-oid="uv4dr0x">{t("options.speed.performance", "Performance")}</span>
+                          <span data-oid="x83ux5:">{settings.smoothnessLevel}%</span>
+                          <span data-oid="do_:b_p">{t("options.speed.quality", "Quality")}</span>
                         </div>
                       </div>
                     </div>
@@ -474,22 +531,28 @@ export function SpeedSettings() {
           </Collapsible>
 
           {/* Дополнительные настройки */}
-          <Collapsible open={openSections.advanced} onOpenChange={() => toggleSection("advanced")}>
-            <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-purple-400" />
-                <Settings className="h-4 w-4 text-purple-400" />
-                <h3 className="font-medium text-foreground">{t("options.speed.advanced", "Advanced Settings")}</h3>
+          <Collapsible open={openSections.advanced} onOpenChange={() => toggleSection("advanced")} data-oid="7spwpgw">
+            <CollapsibleTrigger
+              className="flex items-center justify-between w-full p-3 bg-muted hover:bg-accent rounded-lg border border-border transition-colors"
+              data-oid="nuk.gsp"
+            >
+              <div className="flex items-center gap-2" data-oid="f-:31oa">
+                <div className="w-2 h-2 rounded-full bg-purple-400" data-oid="clauqu2" />
+                <Settings className="h-4 w-4 text-purple-400" data-oid=".k3:t5v" />
+                <h3 className="font-medium text-foreground" data-oid="sj:g.h4">
+                  {t("options.speed.advanced", "Advanced Settings")}
+                </h3>
               </div>
               <ChevronDown
                 className={`h-4 w-4 text-muted-foreground transition-transform ${openSections.advanced ? "rotate-180" : ""}`}
+                data-oid=":0ikday"
               />
             </CollapsibleTrigger>
 
-            <CollapsibleContent className="mt-3">
-              <div className="bg-card rounded-lg border border-border p-4 space-y-4">
+            <CollapsibleContent className="mt-3" data-oid="cmyh.oj">
+              <div className="bg-card rounded-lg border border-border p-4 space-y-4" data-oid="_z_i27p">
                 {/* Автоматические ключевые кадры */}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2" data-oid="j89uws5">
                   <Checkbox
                     id="auto-keyframes"
                     checked={settings.autoKeyframes}
@@ -499,18 +562,20 @@ export function SpeedSettings() {
                         autoKeyframes: !!checked,
                       }))
                     }
+                    data-oid="c8h_7-u"
                   />
-                  <Label htmlFor="auto-keyframes" className="text-sm text-foreground/90">
+
+                  <Label htmlFor="auto-keyframes" className="text-sm text-foreground/90" data-oid="x9xobpl">
                     {t("options.speed.autoKeyframes", "Auto keyframes")}
                   </Label>
                 </div>
 
                 {/* Максимальная скорость */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground/90">
+                <div className="space-y-2" data-oid="4ctuucs">
+                  <Label className="text-sm font-medium text-foreground/90" data-oid="zuzma1v">
                     {t("options.speed.maxSpeed", "Maximum Speed")}
                   </Label>
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3" data-oid="02z1t4t">
                     <Input
                       type="number"
                       value={settings.maxSpeed}
@@ -524,8 +589,12 @@ export function SpeedSettings() {
                       max="100"
                       step="1"
                       className="w-20 h-8"
+                      data-oid="isnu2ju"
                     />
-                    <span className="text-sm text-muted-foreground">x</span>
+
+                    <span className="text-sm text-muted-foreground" data-oid="fi8tx-h">
+                      x
+                    </span>
                   </div>
                 </div>
               </div>
@@ -535,19 +604,19 @@ export function SpeedSettings() {
       </div>
 
       {/* Нижняя панель с кнопками */}
-      <div className="shrink-0 bg-card border-t border-border p-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="shrink-0 bg-card border-t border-border p-3" data-oid="g8fd9uq">
+        <div className="flex items-center justify-between" data-oid="t_zov65">
+          <div className="flex items-center gap-2" data-oid="t6.nqwh">
             {/* Пресеты */}
-            <Button variant="ghost" size="sm" className="h-8 px-3 text-xs">
+            <Button variant="ghost" size="sm" className="h-8 px-3 text-xs" data-oid="3qa7f_8">
               {t("options.speed.presetsButton", "Presets")}
             </Button>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 px-3 text-xs" onClick={handleReset}>
+          <div className="flex items-center gap-2" data-oid="4.db3uz">
+            <Button variant="outline" size="sm" className="h-8 px-3 text-xs" onClick={handleReset} data-oid="4avuo1h">
               {t("common.reset", "Reset")}
             </Button>
-            <Button size="sm" className="h-8 px-3 text-xs" onClick={handleApply}>
+            <Button size="sm" className="h-8 px-3 text-xs" onClick={handleApply} data-oid="dwstsf3">
               {t("common.apply", "Apply")}
             </Button>
           </div>

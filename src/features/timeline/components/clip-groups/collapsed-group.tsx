@@ -60,18 +60,23 @@ export function CollapsedGroup({
       }}
       onClick={onSelect}
       onDoubleClick={onToggleCollapse}
+      data-oid="v6a0tzd"
     >
       {/* Group icon */}
-      <FolderClosed className="w-4 h-4 shrink-0" />
+      <FolderClosed className="w-4 h-4 shrink-0" data-oid="uys-n7g" />
 
       {/* Group name */}
-      <span className="text-sm font-medium truncate">{group.name}</span>
+      <span className="text-sm font-medium truncate" data-oid="knb8r57">
+        {group.name}
+      </span>
 
       {/* Clip count */}
-      <span className="text-xs opacity-70">({clips.length})</span>
+      <span className="text-xs opacity-70" data-oid="tj1ieqt">
+        ({clips.length})
+      </span>
 
       {/* Lock indicator */}
-      {group.locked && <Lock className="w-3 h-3 ml-auto shrink-0" />}
+      {group.locked && <Lock className="w-3 h-3 ml-auto shrink-0" data-oid="-.c_o24" />}
     </div>
   )
 }

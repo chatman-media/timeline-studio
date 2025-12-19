@@ -15,7 +15,7 @@ vi.mock("react-i18next", () => ({
 
 describe("Compressor", () => {
   it("renders with default settings", () => {
-    render(<Compressor />)
+    render(<Compressor data-oid="wsp2xfy" />)
 
     expect(screen.getByText("fairlightAudio.effects.compressor.title")).toBeInTheDocument()
     expect(screen.getByText("fairlightAudio.effects.compressor.reset")).toBeInTheDocument()
@@ -30,7 +30,7 @@ describe("Compressor", () => {
   })
 
   it("displays default values", () => {
-    render(<Compressor />)
+    render(<Compressor data-oid="wlwwlk1" />)
 
     expect(screen.getByText("-24.0 dB")).toBeInTheDocument() // threshold
     expect(screen.getByText("4:1")).toBeInTheDocument() // ratio
@@ -41,7 +41,7 @@ describe("Compressor", () => {
   })
 
   it("renders preset buttons", () => {
-    render(<Compressor />)
+    render(<Compressor data-oid="jy4jno-" />)
 
     expect(screen.getByText("fairlightAudio.effects.compressor.presets.gentle")).toBeInTheDocument()
     expect(screen.getByText("fairlightAudio.effects.compressor.presets.vocal")).toBeInTheDocument()
@@ -51,7 +51,7 @@ describe("Compressor", () => {
 
   it("calls onParameterChange when parameters are adjusted", () => {
     const onParameterChange = vi.fn()
-    render(<Compressor onParameterChange={onParameterChange} />)
+    render(<Compressor onParameterChange={onParameterChange} data-oid="0lq0n_2" />)
 
     // Sliders are not easily testable with testing-library
     // We'll test the preset buttons instead
@@ -68,7 +68,7 @@ describe("Compressor", () => {
 
   it("applies vocal preset correctly", () => {
     const onParameterChange = vi.fn()
-    render(<Compressor onParameterChange={onParameterChange} />)
+    render(<Compressor onParameterChange={onParameterChange} data-oid="ucpt:f9" />)
 
     const vocalButton = screen.getByText("fairlightAudio.effects.compressor.presets.vocal")
     fireEvent.click(vocalButton)
@@ -83,7 +83,7 @@ describe("Compressor", () => {
 
   it("applies drums preset correctly", () => {
     const onParameterChange = vi.fn()
-    render(<Compressor onParameterChange={onParameterChange} />)
+    render(<Compressor onParameterChange={onParameterChange} data-oid="vcfjjjo" />)
 
     const drumsButton = screen.getByText("fairlightAudio.effects.compressor.presets.drums")
     fireEvent.click(drumsButton)
@@ -98,7 +98,7 @@ describe("Compressor", () => {
 
   it("applies master preset correctly", () => {
     const onParameterChange = vi.fn()
-    render(<Compressor onParameterChange={onParameterChange} />)
+    render(<Compressor onParameterChange={onParameterChange} data-oid="h2wxp.e" />)
 
     const masterButton = screen.getByText("fairlightAudio.effects.compressor.presets.master")
     fireEvent.click(masterButton)
@@ -113,7 +113,7 @@ describe("Compressor", () => {
 
   it("resets to default settings", () => {
     const onParameterChange = vi.fn()
-    render(<Compressor onParameterChange={onParameterChange} />)
+    render(<Compressor onParameterChange={onParameterChange} data-oid="h554rpo" />)
 
     // Apply a preset first
     const drumsButton = screen.getByText("fairlightAudio.effects.compressor.presets.drums")
@@ -135,7 +135,7 @@ describe("Compressor", () => {
   })
 
   it("displays gain reduction meter", () => {
-    render(<Compressor gainReduction={-6} />)
+    render(<Compressor gainReduction={-6} data-oid="s8q1jog" />)
 
     // Check that gain reduction label is rendered
     expect(screen.getByText("fairlightAudio.effects.compressor.gainReduction")).toBeInTheDocument()
@@ -149,7 +149,7 @@ describe("Compressor", () => {
   })
 
   it("handles zero gain reduction", () => {
-    render(<Compressor gainReduction={0} />)
+    render(<Compressor gainReduction={0} data-oid="f1cvm6q" />)
 
     const meter = screen
       .getByText("fairlightAudio.effects.compressor.gainReduction")
@@ -159,7 +159,7 @@ describe("Compressor", () => {
   })
 
   it("handles maximum gain reduction", () => {
-    render(<Compressor gainReduction={-30} />)
+    render(<Compressor gainReduction={-30} data-oid="wzi.wvs" />)
 
     const meter = screen
       .getByText("fairlightAudio.effects.compressor.gainReduction")
@@ -169,7 +169,7 @@ describe("Compressor", () => {
   })
 
   it("formats high ratio as infinity", () => {
-    render(<Compressor />)
+    render(<Compressor data-oid="ylq-ztc" />)
 
     // Can't easily test slider changes, but we can verify the formatRatio function
     // by checking the initial state
@@ -177,7 +177,7 @@ describe("Compressor", () => {
   })
 
   it("applies custom className", () => {
-    const { container } = render(<Compressor className="custom-class" />)
+    const { container } = render(<Compressor className="custom-class" data-oid="9oej1tb" />)
 
     const compressorDiv = container.firstChild
     expect(compressorDiv).toHaveClass("custom-class")
@@ -185,7 +185,7 @@ describe("Compressor", () => {
   })
 
   it("renders SVG visualization", () => {
-    const { container } = render(<Compressor />)
+    const { container } = render(<Compressor data-oid="xo5g9z7" />)
 
     const svg = container.querySelector("svg")
     expect(svg).toBeInTheDocument()
@@ -203,7 +203,7 @@ describe("Compressor", () => {
 
   it("does not call onParameterChange when not provided", () => {
     // This should not throw
-    render(<Compressor />)
+    render(<Compressor data-oid="yic8qle" />)
 
     const gentleButton = screen.getByText("fairlightAudio.effects.compressor.presets.gentle")
     expect(() => fireEvent.click(gentleButton)).not.toThrow()

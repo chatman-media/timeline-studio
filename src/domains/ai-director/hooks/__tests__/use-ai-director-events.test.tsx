@@ -401,7 +401,9 @@ describe("useAIDirectorEvents", () => {
       callback?.({ payload: { file: "/video.mp4" } })
 
       await waitFor(() => {
-        expect(onFileAnalysisStarted).toHaveBeenCalledWith({ file: "/video.mp4" })
+        expect(onFileAnalysisStarted).toHaveBeenCalledWith({
+          file: "/video.mp4",
+        })
       })
     })
 
@@ -450,14 +452,26 @@ describe("useAIDirectorEvents", () => {
         expect(mockListen).toHaveBeenCalled()
       })
 
-      eventCallbacks[AI_DIRECTOR_EVENTS.ANALYZER_STARTED]?.({ payload: { analyzer: "audio" } })
-      eventCallbacks[AI_DIRECTOR_EVENTS.ANALYZER_PROGRESS]?.({ payload: { progress: 0.5 } })
-      eventCallbacks[AI_DIRECTOR_EVENTS.ANALYZER_COMPLETED]?.({ payload: { analyzer: "audio" } })
+      eventCallbacks[AI_DIRECTOR_EVENTS.ANALYZER_STARTED]?.({
+        payload: { analyzer: "audio" },
+      })
+      eventCallbacks[AI_DIRECTOR_EVENTS.ANALYZER_PROGRESS]?.({
+        payload: { progress: 0.5 },
+      })
+      eventCallbacks[AI_DIRECTOR_EVENTS.ANALYZER_COMPLETED]?.({
+        payload: { analyzer: "audio" },
+      })
 
       await waitFor(() => {
-        expect(callbacks.onAnalyzerStarted).toHaveBeenCalledWith({ analyzer: "audio" })
-        expect(callbacks.onAnalyzerProgress).toHaveBeenCalledWith({ progress: 0.5 })
-        expect(callbacks.onAnalyzerCompleted).toHaveBeenCalledWith({ analyzer: "audio" })
+        expect(callbacks.onAnalyzerStarted).toHaveBeenCalledWith({
+          analyzer: "audio",
+        })
+        expect(callbacks.onAnalyzerProgress).toHaveBeenCalledWith({
+          progress: 0.5,
+        })
+        expect(callbacks.onAnalyzerCompleted).toHaveBeenCalledWith({
+          analyzer: "audio",
+        })
       })
     })
   })
@@ -539,13 +553,24 @@ describe("useAIDirectorEvents", () => {
         payload: { analysisId: "test", stage: "audio", progress: 0.5 },
       })
       eventCallbacks[AI_DIRECTOR_EVENTS.ANALYSIS_COMPLETED]?.({
-        payload: { analysisId: "test", success: true, total_duration_ms: 5000, stages_completed: [], errors: [] },
+        payload: {
+          analysisId: "test",
+          success: true,
+          total_duration_ms: 5000,
+          stages_completed: [],
+          errors: [],
+        },
       })
       eventCallbacks[AI_DIRECTOR_EVENTS.ANALYSIS_ERROR]?.({
         payload: { analysisId: "test", stage: "audio", error: "test" },
       })
       eventCallbacks[AI_DIRECTOR_EVENTS.ANALYSIS_STAGE_COMPLETED]?.({
-        payload: { analysisId: "test", stage: "audio", duration_ms: 1000, success: true },
+        payload: {
+          analysisId: "test",
+          stage: "audio",
+          duration_ms: 1000,
+          success: true,
+        },
       })
 
       await waitFor(() => {

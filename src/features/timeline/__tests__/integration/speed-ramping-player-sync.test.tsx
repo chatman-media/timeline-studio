@@ -63,7 +63,6 @@ describe("Speed Ramping Player Sync Integration", () => {
     const clipWithSpeedRamping = createMockClip({
       // Speed ramping stored in project config, not in clip
     })
-
     vi.mocked(useTimelineSelection).mockReturnValue({
       selectedClips: [clipWithSpeedRamping],
     } as any)
@@ -102,7 +101,6 @@ describe("Speed Ramping Player Sync Integration", () => {
     const clipWithoutSpeedRamping = createMockClip({
       // No speed ramping
     })
-
     vi.mocked(useTimelineSelection).mockReturnValue({
       selectedClips: [clipWithoutSpeedRamping],
     } as any)

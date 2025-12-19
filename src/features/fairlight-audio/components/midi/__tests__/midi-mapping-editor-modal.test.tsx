@@ -9,9 +9,7 @@ import { MidiMappingEditorModal } from "../midi-mapping-editor-modal"
 // Mock icons
 vi.mock("lucide-react", () => ({
   // Add any icons used by the component here
-}))
-
-// Mock i18n
+})) // Mock i18n
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -21,7 +19,7 @@ vi.mock("react-i18next", () => ({
 // Mock UI components
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled, variant, className }: any) => (
-    <button onClick={onClick} disabled={disabled} data-variant={variant} className={className}>
+    <button onClick={onClick} disabled={disabled} data-variant={variant} className={className} data-oid="cmijcag">
       {children}
     </button>
   ),
@@ -29,7 +27,7 @@ vi.mock("@/components/ui/button", () => ({
 
 vi.mock("@/components/ui/label", () => ({
   Label: ({ children, htmlFor, className }: any) => (
-    <label htmlFor={htmlFor} className={className}>
+    <label htmlFor={htmlFor} className={className} data-oid="fdaf8ho">
       {children}
     </label>
   ),
@@ -37,12 +35,20 @@ vi.mock("@/components/ui/label", () => ({
 
 vi.mock("@/components/ui/select", () => ({
   Select: ({ value, onValueChange, children }: any) => (
-    <div data-value={value} data-testid="select">
+    <div data-value={value} data-testid="select" data-oid="ztxt2ok">
       {children}
-      <input type="hidden" value={value} onChange={(e) => onValueChange?.(e.target.value)} data-testid="select-input" />
+      <input
+        type="hidden"
+        value={value}
+        onChange={(e) => onValueChange?.(e.target.value)}
+        data-testid="select-input"
+        data-oid="agrve7z"
+      />
     </div>
   ),
-  SelectContent: ({ children }: any) => <div>{children}</div>,
+
+  SelectContent: ({ children }: any) => <div data-oid="if8nys0">{children}</div>,
+
   SelectItem: ({ value, children }: any) => (
     <div
       data-value={value}
@@ -54,16 +60,19 @@ vi.mock("@/components/ui/select", () => ({
           input.dispatchEvent(new Event("change", { bubbles: true }))
         }
       }}
+      data-oid="7iydn1b"
     >
       {children}
     </div>
   ),
+
   SelectTrigger: ({ children, id, className }: any) => (
-    <div id={id} className={className}>
+    <div id={id} className={className} data-oid="6wfkz7l">
       {children}
     </div>
   ),
-  SelectValue: () => <span data-testid="select-value" />,
+
+  SelectValue: () => <span data-testid="select-value" data-oid="1aqe_z5" />,
 }))
 
 vi.mock("@/components/ui/slider", () => ({
@@ -77,6 +86,7 @@ vi.mock("@/components/ui/slider", () => ({
       step={step}
       className={className}
       data-testid="slider"
+      data-oid="3rzuplt"
     />
   ),
 }))
@@ -130,14 +140,14 @@ describe("MidiMappingEditorModal", () => {
 
   describe("Rendering", () => {
     it("should render with mapping data", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="7a:ky4q" />)
 
       expect(screen.getByText("channel.1.volume")).toBeInTheDocument()
       expect(screen.getByText("CC CC7 CH1")).toBeInTheDocument()
     })
 
     it("should render all controls", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="uve90n8" />)
 
       expect(screen.getByText("fairlightAudio.midi.mappingEditor.minimumValue")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.mappingEditor.maximumValue")).toBeInTheDocument()
@@ -145,7 +155,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should render curve preview", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="g77nfph" />)
 
       const svg = container.querySelector("svg")
       expect(svg).toBeInTheDocument()
@@ -157,7 +167,7 @@ describe("MidiMappingEditorModal", () => {
     it("should return null if no mapping provided", () => {
       mockModalData.mapping = null
 
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="4phlsjk" />)
       expect(container.firstChild).toBeNull()
     })
 
@@ -171,7 +181,7 @@ describe("MidiMappingEditorModal", () => {
         curve: "exponential",
       }
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="je-z3c1" />)
 
       expect(screen.getByText("master.volume")).toBeInTheDocument()
       expect(screen.getByText("NOTEON CH2")).toBeInTheDocument()
@@ -184,7 +194,7 @@ describe("MidiMappingEditorModal", () => {
         max: 0.75,
       }
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="wb-xpbr" />)
 
       expect(screen.getByText("0.25")).toBeInTheDocument()
       expect(screen.getByText("0.75")).toBeInTheDocument()
@@ -193,7 +203,7 @@ describe("MidiMappingEditorModal", () => {
 
   describe("Value Controls", () => {
     it("should update minimum value", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="h2fmv.z" />)
 
       const sliders = screen.getAllByTestId("slider")
       const minSlider = sliders[0]
@@ -204,7 +214,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should update maximum value", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="zojssph" />)
 
       const sliders = screen.getAllByTestId("slider")
       const maxSlider = sliders[1]
@@ -215,7 +225,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should handle slider edge cases", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="k1ma4st" />)
 
       const sliders = screen.getAllByTestId("slider")
 
@@ -231,7 +241,7 @@ describe("MidiMappingEditorModal", () => {
 
   describe("Curve Selection", () => {
     it("should render all curve options", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="4ks07md" />)
 
       expect(screen.getByText("fairlightAudio.midi.mappingEditor.curves.linear")).toBeInTheDocument()
       expect(screen.getByText("fairlightAudio.midi.mappingEditor.curves.exponential")).toBeInTheDocument()
@@ -239,7 +249,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should update curve type", async () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid=":g_51o3" />)
 
       // Verify initial state
       const select = screen.getByTestId("select")
@@ -260,7 +270,7 @@ describe("MidiMappingEditorModal", () => {
         curve: "logarithmic",
       }
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="9wewhor" />)
 
       const select = screen.getByTestId("select")
       expect(select).toHaveAttribute("data-value", "logarithmic")
@@ -269,7 +279,7 @@ describe("MidiMappingEditorModal", () => {
 
   describe("Curve Preview", () => {
     it("should render SVG curve path", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="q2v1ywm" />)
 
       const path = container.querySelector('path[stroke="rgb(59, 130, 246)"]')
       expect(path).toBeInTheDocument()
@@ -279,7 +289,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should render min/max indicators", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="q:8cyc_" />)
 
       const circles = container.querySelectorAll('circle[fill="rgb(59, 130, 246)"]')
       expect(circles).toHaveLength(2)
@@ -294,7 +304,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should update curve preview when values change", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="kyn2ru7" />)
 
       // Change min value to see path update
       const sliders = screen.getAllByTestId("slider")
@@ -309,7 +319,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should render grid lines", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="ynbbj4o" />)
 
       const gridLines = container.querySelectorAll("g.stroke-zinc-800 line")
       expect(gridLines).toHaveLength(2)
@@ -330,7 +340,7 @@ describe("MidiMappingEditorModal", () => {
 
   describe("Modal Actions", () => {
     it("should close modal on cancel", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="99q650z" />)
 
       const cancelButton = screen.getByText("fairlightAudio.midi.mappingEditor.cancel")
       fireEvent.click(cancelButton)
@@ -339,7 +349,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should save changes and close modal", () => {
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid=":-xp0a_" />)
 
       // Change values
       const sliders = screen.getAllByTestId("slider")
@@ -361,7 +371,7 @@ describe("MidiMappingEditorModal", () => {
     it("should handle save without onSave callback", () => {
       mockModalData.onSave = undefined as any
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="4e4mbfk" />)
 
       const saveButton = screen.getByText("fairlightAudio.midi.mappingEditor.saveChanges")
       fireEvent.click(saveButton)
@@ -377,7 +387,7 @@ describe("MidiMappingEditorModal", () => {
         // Missing min, max, curve
       }
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="lasil5x" />)
 
       // Check defaults are applied
       expect(screen.getByText("0.00")).toBeInTheDocument()
@@ -390,7 +400,7 @@ describe("MidiMappingEditorModal", () => {
 
   describe("Curve Path Generation", () => {
     it("should generate valid SVG path for linear curve", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="o2afp8h" />)
 
       const path = container.querySelector("path")
       const d = path?.getAttribute("d") || ""
@@ -405,7 +415,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should update path when curve type changes", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="-dhqd92" />)
 
       // Get initial path with default values (0 to 1)
       const path = container.querySelector("path")
@@ -421,7 +431,7 @@ describe("MidiMappingEditorModal", () => {
     })
 
     it("should update indicator positions based on min/max", () => {
-      const { container } = render(<MidiMappingEditorModal />)
+      const { container } = render(<MidiMappingEditorModal data-oid="1:0r3mm" />)
 
       // Change min value
       const sliders = screen.getAllByTestId("slider")
@@ -449,7 +459,7 @@ describe("MidiMappingEditorModal", () => {
         // No controller field
       }
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="kbr48dg" />)
 
       expect(screen.getByText("NOTEON CH1")).toBeInTheDocument()
     })
@@ -461,20 +471,20 @@ describe("MidiMappingEditorModal", () => {
         // No channel field
       }
 
-      render(<MidiMappingEditorModal />)
+      render(<MidiMappingEditorModal data-oid="eyi6nk2" />)
 
       expect(screen.getByText("PITCHBEND")).toBeInTheDocument()
     })
 
     it("should maintain state between re-renders", () => {
-      const { rerender } = render(<MidiMappingEditorModal />)
+      const { rerender } = render(<MidiMappingEditorModal data-oid="79c211u" />)
 
       // Change values
       const sliders = screen.getAllByTestId("slider")
       fireEvent.change(sliders[0], { target: { value: "0.33" } })
 
       // Re-render
-      rerender(<MidiMappingEditorModal />)
+      rerender(<MidiMappingEditorModal data-oid="uxe7rs_" />)
 
       // Value should persist
       expect(screen.getByText("0.33")).toBeInTheDocument()

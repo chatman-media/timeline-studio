@@ -38,7 +38,11 @@ export function VideoEditingProvider({ children }: VideoEditingProviderProps) {
     orchestrator,
   }
 
-  return <VideoEditingContext.Provider value={value}>{children}</VideoEditingContext.Provider>
+  return (
+    <VideoEditingContext.Provider value={value} data-oid="qszqsvu">
+      {children}
+    </VideoEditingContext.Provider>
+  )
 }
 
 /**

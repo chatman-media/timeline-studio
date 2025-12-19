@@ -75,23 +75,25 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
     // Здесь можно добавить дополнительную логику для D3.js, если потребуется
     // Пока используем простую SVG визуализацию
   }, [yoloData])
-
   return (
-    <div className="w-full">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">{t("Анализ обнаружений YOLO")}</h3>
-        <p className="text-sm text-gray-600">
+    <div className="w-full" data-oid="pkdwev_">
+      <div className="mb-4" data-oid="u5w-zm8">
+        <h3 className="text-lg font-semibold" data-oid="s7-zn77">
+          {t("Анализ обнаружений YOLO")}
+        </h3>
+        <p className="text-sm text-gray-600" data-oid="15ec-op">
           {t("Общее количество кадров")}: {yoloData.frames.length}
         </p>
       </div>
 
       {/* Легенда */}
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap gap-2" data-oid=":7_7bt1">
         <button
           className={`rounded px-3 py-1 text-sm ${
             selectedClass === null ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
           }`}
           onClick={() => setSelectedClass(null)}
+          data-oid="mf.wm.1"
         >
           {t("Все классы")}
         </button>
@@ -105,6 +107,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
               backgroundColor: selectedClass === className ? getColorForClass(className) : undefined,
             }}
             onClick={() => setSelectedClass(className)}
+            data-oid="abp1zwk"
           >
             {className}
           </button>
@@ -112,15 +115,15 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
       </div>
 
       {/* График */}
-      <svg ref={svgRef} width={width} height={height} className="border">
+      <svg ref={svgRef} width={width} height={height} className="border" data-oid="fn24erl">
         {/* Фон */}
-        <rect width={width} height={height} fill="#f8f9fa" />
+        <rect width={width} height={height} fill="#f8f9fa" data-oid="taiqu0:" />
 
         {/* Область графика */}
-        <g transform={`translate(${margin.left}, ${margin.top})`}>
+        <g transform={`translate(${margin.left}, ${margin.top})`} data-oid="811k8ck">
           {/* Сетка */}
           {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
-            <g key={ratio}>
+            <g key={ratio} data-oid="sy53192">
               <line
                 x1={0}
                 y1={chartHeight * ratio}
@@ -128,8 +131,17 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
                 y2={chartHeight * ratio}
                 stroke="#e9ecef"
                 strokeWidth={1}
+                data-oid="d__h3iv"
               />
-              <text x={-10} y={chartHeight * ratio + 5} textAnchor="end" fontSize="12" fill="#6c757d">
+
+              <text
+                x={-10}
+                y={chartHeight * ratio + 5}
+                textAnchor="end"
+                fontSize="12"
+                fill="#6c757d"
+                data-oid="3udt_bt"
+              >
                 {Math.round(maxDetections * (1 - ratio))}
               </text>
             </g>
@@ -148,6 +160,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
               fill="none"
               stroke={selectedClass ? getColorForClass(selectedClass) : "#007bff"}
               strokeWidth={2}
+              data-oid=":wt-43m"
             />
           )}
 
@@ -169,16 +182,33 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
                 //     ? data.classCounts[selectedClass] || 0
                 //     : data.totalDetections
                 // }`}
+                data-oid="l1bo20w"
               />
             )
           })}
 
           {/* Оси */}
-          <line x1={0} y1={chartHeight} x2={chartWidth} y2={chartHeight} stroke="#6c757d" strokeWidth={1} />
-          <line x1={0} y1={0} x2={0} y2={chartHeight} stroke="#6c757d" strokeWidth={1} />
+          <line
+            x1={0}
+            y1={chartHeight}
+            x2={chartWidth}
+            y2={chartHeight}
+            stroke="#6c757d"
+            strokeWidth={1}
+            data-oid="afyz9dq"
+          />
+
+          <line x1={0} y1={0} x2={0} y2={chartHeight} stroke="#6c757d" strokeWidth={1} data-oid="dkvalz7" />
 
           {/* Подписи осей */}
-          <text x={chartWidth / 2} y={chartHeight + 35} textAnchor="middle" fontSize="14" fill="#6c757d">
+          <text
+            x={chartWidth / 2}
+            y={chartHeight + 35}
+            textAnchor="middle"
+            fontSize="14"
+            fill="#6c757d"
+            data-oid=":740sf0"
+          >
             {t("Время (секунды)")}
           </text>
           <text
@@ -188,6 +218,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
             fontSize="14"
             fill="#6c757d"
             transform={`rotate(-90, -40, ${chartHeight / 2})`}
+            data-oid="gcatd88"
           >
             {t("Количество обнаружений")}
           </text>
@@ -195,22 +226,36 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
       </svg>
 
       {/* Статистика */}
-      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <div className="rounded bg-gray-100 p-3">
-          <div className="text-sm text-gray-600">{t("Всего кадров")}</div>
-          <div className="text-xl font-semibold">{yoloData.frames.length}</div>
+      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4" data-oid="6qea3yl">
+        <div className="rounded bg-gray-100 p-3" data-oid="n8uql:2">
+          <div className="text-sm text-gray-600" data-oid="9k_u:a-">
+            {t("Всего кадров")}
+          </div>
+          <div className="text-xl font-semibold" data-oid="5yzs4xi">
+            {yoloData.frames.length}
+          </div>
         </div>
-        <div className="rounded bg-gray-100 p-3">
-          <div className="text-sm text-gray-600">{t("Уникальных классов")}</div>
-          <div className="text-xl font-semibold">{uniqueClasses.length}</div>
+        <div className="rounded bg-gray-100 p-3" data-oid="uc5a5ln">
+          <div className="text-sm text-gray-600" data-oid="zyowo7p">
+            {t("Уникальных классов")}
+          </div>
+          <div className="text-xl font-semibold" data-oid="khe9qfu">
+            {uniqueClasses.length}
+          </div>
         </div>
-        <div className="rounded bg-gray-100 p-3">
-          <div className="text-sm text-gray-600">{t("Всего обнаружений")}</div>
-          <div className="text-xl font-semibold">{chartData.reduce((sum, data) => sum + data.totalDetections, 0)}</div>
+        <div className="rounded bg-gray-100 p-3" data-oid="o7-b9q7">
+          <div className="text-sm text-gray-600" data-oid="c_w0tmy">
+            {t("Всего обнаружений")}
+          </div>
+          <div className="text-xl font-semibold" data-oid="2hgg2gi">
+            {chartData.reduce((sum, data) => sum + data.totalDetections, 0)}
+          </div>
         </div>
-        <div className="rounded bg-gray-100 p-3">
-          <div className="text-sm text-gray-600">{t("Среднее за кадр")}</div>
-          <div className="text-xl font-semibold">
+        <div className="rounded bg-gray-100 p-3" data-oid="lfj_-nv">
+          <div className="text-sm text-gray-600" data-oid="eizb9fm">
+            {t("Среднее за кадр")}
+          </div>
+          <div className="text-xl font-semibold" data-oid="1.r-1cd">
             {(chartData.reduce((sum, data) => sum + data.totalDetections, 0) / chartData.length).toFixed(1)}
           </div>
         </div>

@@ -83,18 +83,52 @@ vi.mock("react-i18next", () => ({
 
 // Mock Lucide icons
 vi.mock("lucide-react", () => ({
-  AlertCircle: ({ className }: { className?: string }) => <div className={className}>AlertCircle</div>,
-  Clock: ({ className }: { className?: string }) => <div className={className}>Clock</div>,
-  GitBranch: ({ className }: { className?: string }) => <div className={className}>GitBranch</div>,
-  GitCommit: ({ className }: { className?: string }) => <div className={className}>GitCommit</div>,
-  GitMerge: ({ className }: { className?: string }) => <div className={className}>GitMerge</div>,
-  History: ({ className }: { className?: string }) => <div className={className}>History</div>,
-  Settings: ({ className }: { className?: string }) => <div className={className}>Settings</div>,
+  AlertCircle: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="vkwmk2l">
+      AlertCircle
+    </div>
+  ),
+
+  Clock: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="dguq91k">
+      Clock
+    </div>
+  ),
+
+  GitBranch: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="y2qh-pq">
+      GitBranch
+    </div>
+  ),
+
+  GitCommit: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="mak7ipe">
+      GitCommit
+    </div>
+  ),
+
+  GitMerge: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="1_8tuhs">
+      GitMerge
+    </div>
+  ),
+
+  History: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="wk9.jkz">
+      History
+    </div>
+  ),
+
+  Settings: ({ className }: { className?: string }) => (
+    <div className={className} data-oid="a22vil9">
+      Settings
+    </div>
+  ),
 }))
 
 // Mock VersionHistoryPanel
 vi.mock("../../components/version-history-panel", () => ({
-  VersionHistoryPanel: () => <div>Version History Panel</div>,
+  VersionHistoryPanel: () => <div data-oid="imcgv5-">Version History Panel</div>,
 }))
 
 describe("VersionControlManager", () => {
@@ -128,7 +162,7 @@ describe("VersionControlManager", () => {
   })
 
   it("renders the component with default state", () => {
-    render(<VersionControlManager />)
+    render(<VersionControlManager data-oid="wi_rv:l" />)
 
     expect(screen.getByText("Контроль версий")).toBeInTheDocument()
     expect(screen.getByText("abc123de")).toBeInTheDocument() // Shortened version ID
@@ -142,7 +176,7 @@ describe("VersionControlManager", () => {
       hasUncommittedChanges: true,
     })
 
-    render(<VersionControlManager />)
+    render(<VersionControlManager data-oid="p6kwxwn" />)
 
     expect(screen.getByText("Есть изменения")).toBeInTheDocument()
   })
@@ -153,13 +187,13 @@ describe("VersionControlManager", () => {
       autoSaveEnabled: false,
     })
 
-    render(<VersionControlManager />)
+    render(<VersionControlManager data-oid="2s7xw4e" />)
 
     expect(screen.getByText("Автосохранение: выкл")).toBeInTheDocument()
   })
 
   it("renders all tabs", () => {
-    render(<VersionControlManager />)
+    render(<VersionControlManager data-oid="ga6yscx" />)
 
     expect(screen.getByText("История")).toBeInTheDocument()
     expect(screen.getByText("Ветки")).toBeInTheDocument()
@@ -167,7 +201,7 @@ describe("VersionControlManager", () => {
   })
 
   it("switches between tabs", async () => {
-    render(<VersionControlManager />)
+    render(<VersionControlManager data-oid="742u4:f" />)
 
     // Initially history tab is active
     expect(screen.getByText("Version History Panel")).toBeInTheDocument()
@@ -194,7 +228,7 @@ describe("VersionControlManager", () => {
   // These would need to be tested with integration/e2e tests
 
   it("applies custom className", () => {
-    const { container } = render(<VersionControlManager className="custom-class" />)
+    const { container } = render(<VersionControlManager className="custom-class" data-oid="o0wifxj" />)
     const wrapper = container.firstChild as HTMLElement
     expect(wrapper).toHaveClass("custom-class")
   })
@@ -205,7 +239,7 @@ describe("VersionControlManager", () => {
       isLoading: true,
     })
 
-    render(<VersionControlManager />)
+    render(<VersionControlManager data-oid="e117:sj" />)
 
     // Just check that the component renders in loading state
     expect(screen.getByText("Контроль версий")).toBeInTheDocument()
@@ -243,7 +277,7 @@ describe("BranchManager", () => {
   })
 
   it("renders branch manager directly", () => {
-    render(<BranchManager />)
+    render(<BranchManager data-oid="bfltqlx" />)
 
     expect(screen.getByText("Текущая ветка")).toBeInTheDocument()
     expect(screen.getByText("main")).toBeInTheDocument()
@@ -257,7 +291,7 @@ describe("BranchManager", () => {
       createBranch,
     })
 
-    render(<BranchManager />)
+    render(<BranchManager data-oid="83ee99l" />)
 
     const input = screen.getByPlaceholderText("Название ветки")
     const createButton = screen.getByRole("button", { name: /Создать/i })
@@ -284,7 +318,7 @@ describe("BranchManager", () => {
       createBranch,
     })
 
-    render(<BranchManager />)
+    render(<BranchManager data-oid="slw5qpc" />)
 
     const input = screen.getByPlaceholderText("Название ветки") as HTMLInputElement
     const createButton = screen.getByRole("button", { name: /Создать/i })
@@ -304,7 +338,7 @@ describe("BranchManager", () => {
       createBranch,
     })
 
-    render(<BranchManager />)
+    render(<BranchManager data-oid="mb4idwa" />)
 
     const input = screen.getByPlaceholderText("Название ветки")
     const createButton = screen.getByRole("button", { name: /Создать/i })
@@ -321,7 +355,7 @@ describe("BranchManager", () => {
   })
 
   it("displays merge branches placeholder", () => {
-    render(<BranchManager />)
+    render(<BranchManager data-oid="83_y2m3" />)
 
     expect(screen.getByText("Слияние веток")).toBeInTheDocument()
     expect(screen.getByText("Функция слияния веток пока не реализована")).toBeInTheDocument()
@@ -359,7 +393,7 @@ describe("VersionControlSettings", () => {
   })
 
   it("renders settings directly", () => {
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="10i:9pl" />)
 
     expect(screen.getByText("Автоматическое сохранение")).toBeInTheDocument()
     expect(screen.getByText("Включить автосохранение")).toBeInTheDocument()
@@ -373,7 +407,7 @@ describe("VersionControlSettings", () => {
       enableAutoSave,
     })
 
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="76h4bht" />)
 
     const toggleButton = screen.getByRole("button", { name: /Включено/i })
     fireEvent.click(toggleButton)
@@ -390,7 +424,7 @@ describe("VersionControlSettings", () => {
       setAutoSaveInterval,
     })
 
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="v1y2ai7" />)
 
     expect(screen.getByText("Интервал автосохранения")).toBeInTheDocument()
 
@@ -407,7 +441,7 @@ describe("VersionControlSettings", () => {
       autoSaveEnabled: false,
     })
 
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="_o4i-en" />)
 
     // Interval options should not be visible
     expect(screen.queryByText("Интервал автосохранения")).not.toBeInTheDocument()
@@ -420,7 +454,7 @@ describe("VersionControlSettings", () => {
       autoSaveIntervalSeconds: 300, // 5 minutes
     })
 
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="7.nw33z" />)
 
     expect(screen.getByText("Интервал автосохранения")).toBeInTheDocument()
 
@@ -434,7 +468,7 @@ describe("VersionControlSettings", () => {
   })
 
   it("displays version storage info", () => {
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="a.yd2e." />)
 
     expect(screen.getByText("Хранение версий")).toBeInTheDocument()
     expect(screen.getByText("Максимальное количество версий:")).toBeInTheDocument()
@@ -446,12 +480,16 @@ describe("VersionControlSettings", () => {
   })
 
   it("displays disabled export/import buttons", () => {
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid="imqu1g5" />)
 
     expect(screen.getByText("Экспорт / Импорт")).toBeInTheDocument()
 
-    const exportButton = screen.getByRole("button", { name: /Экспортировать историю версий/i })
-    const importButton = screen.getByRole("button", { name: /Импортировать версии/i })
+    const exportButton = screen.getByRole("button", {
+      name: /Экспортировать историю версий/i,
+    })
+    const importButton = screen.getByRole("button", {
+      name: /Импортировать версии/i,
+    })
 
     expect(exportButton).toBeDisabled()
     expect(importButton).toBeDisabled()
@@ -465,14 +503,16 @@ describe("VersionControlSettings", () => {
       isLoading: true,
     })
 
-    render(<VersionControlSettings />)
+    render(<VersionControlSettings data-oid=".h_ymi8" />)
 
     // All interactive buttons should be disabled
     const toggleButton = screen.getByRole("button", { name: /Включено/i })
     expect(toggleButton).toBeDisabled()
 
     // Interval buttons should also be disabled
-    const intervalButtons = screen.getAllByRole("button", { name: /минут|секунд/i })
+    const intervalButtons = screen.getAllByRole("button", {
+      name: /минут|секунд/i,
+    })
     intervalButtons.forEach((button) => {
       expect(button).toBeDisabled()
     })

@@ -1,47 +1,54 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { useState } from "react"
-import { useLanguage } from "../contexts/LanguageContext"
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface LanguageToggleProps {
-  className?: string
-  isMobile?: boolean
+  className?: string;
+  isMobile?: boolean;
 }
 
-type Language = "en" | "ru" | "zh"
+type Language = "en" | "ru" | "zh";
 
 interface LanguageOption {
-  code: Language
-  name: string
-  flag: string
+  code: Language;
+  name: string;
+  flag: string;
 }
 
 const languages: LanguageOption[] = [
   { code: "en", name: "English", flag: "🇺🇸" },
   { code: "ru", name: "Русский", flag: "🇷🇺" },
   { code: "zh", name: "中文", flag: "🇨🇳" },
-]
+];
 
-export function LanguageToggle({ className = "", isMobile = false }: LanguageToggleProps) {
-  const { language, setLanguage } = useLanguage()
-  const [isOpen, setIsOpen] = useState(false)
+export function LanguageToggle({
+  className = "",
+  isMobile = false,
+}: LanguageToggleProps) {
+  const { language, setLanguage } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const currentLanguage = languages.find((lang) => lang.code === language) || languages[0]
+  const currentLanguage =
+    languages.find((lang) => lang.code === language) || languages[0];
 
   const handleLanguageSelect = (langCode: Language) => {
-    setLanguage(langCode)
-    setIsOpen(false)
-  }
+    setLanguage(langCode);
+    setIsOpen(false);
+  };
 
   if (isMobile) {
     return (
-      <div className={`relative ${className}`}>
+      <div className={`relative ${className}`} data-oid="56cj42z">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors duration-200 cursor-pointer"
+          data-oid="-eq68_c"
         >
-          <div className="flex items-center">
-            <span className="mr-2">{currentLanguage.flag}</span>
-            <span>{currentLanguage.name}</span>
+          <div className="flex items-center" data-oid="7aelvo1">
+            <span className="mr-2" data-oid="clr605a">
+              {currentLanguage.flag}
+            </span>
+            <span data-oid="vs.7ih:">{currentLanguage.name}</span>
           </div>
           <motion.svg
             className="w-4 h-4 ml-2"
@@ -50,12 +57,19 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
             viewBox="0 0 24 24"
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.2 }}
+            data-oid="fm998v4"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+              data-oid="2ui8-e6"
+            />
           </motion.svg>
         </button>
 
-        <AnimatePresence>
+        <AnimatePresence data-oid="3p51p.7">
           {isOpen && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -63,6 +77,7 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
               className="mt-2 bg-gray-800/90 backdrop-blur-sm rounded-lg border border-gray-700 overflow-hidden"
+              data-oid="67o7b-2"
             >
               {languages.map((lang) => (
                 <button
@@ -73,32 +88,45 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
                       ? "bg-white/10 text-white"
                       : "text-gray-300 hover:text-white hover:bg-white/5"
                   }`}
+                  data-oid="wvhe3ax"
                 >
-                  <span className="mr-2">{lang.flag}</span>
-                  <span>{lang.name}</span>
+                  <span className="mr-2" data-oid="ou2qq02">
+                    {lang.flag}
+                  </span>
+                  <span data-oid="_yekp:u">{lang.name}</span>
                 </button>
               ))}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-    )
+    );
   }
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${className}`} data-oid="h610p7k">
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className="group relative flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
+        data-oid="i-8i-v3"
       >
         <motion.div
           className="absolute inset-0 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
           layoutId="language-bg"
+          data-oid="-adt0or"
         />
-        <span className="relative z-10 mr-2">{currentLanguage.flag}</span>
-        <span className="relative z-10 text-xs tracking-wider">{currentLanguage.code.toUpperCase()}</span>
+
+        <span className="relative z-10 mr-2" data-oid="9hexxtd">
+          {currentLanguage.flag}
+        </span>
+        <span
+          className="relative z-10 text-xs tracking-wider"
+          data-oid="xh:boxr"
+        >
+          {currentLanguage.code.toUpperCase()}
+        </span>
         <motion.svg
           className="relative z-10 w-3 h-3 ml-1"
           fill="none"
@@ -106,12 +134,19 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
           viewBox="0 0 24 24"
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
+          data-oid=".i:dt37"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+            data-oid="7x.dtcg"
+          />
         </motion.svg>
       </motion.button>
 
-      <AnimatePresence>
+      <AnimatePresence data-oid="tipprpb">
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -119,18 +154,26 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
             className="absolute top-full right-0 mt-2 bg-gray-800/90 backdrop-blur-sm rounded-lg border border-gray-700 overflow-hidden shadow-xl z-50 min-w-[120px]"
+            data-oid="swkip18"
           >
             {languages.map((lang) => (
               <motion.button
                 key={lang.code}
                 onClick={() => handleLanguageSelect(lang.code)}
                 className={`flex items-center w-full px-3 py-2 text-sm transition-colors duration-200 cursor-pointer ${
-                  lang.code === language ? "bg-white/10 text-white" : "text-gray-300 hover:text-white hover:bg-white/5"
+                  lang.code === language
+                    ? "bg-white/10 text-white"
+                    : "text-gray-300 hover:text-white hover:bg-white/5"
                 }`}
                 whileHover={{ x: 2 }}
+                data-oid="yqs-n_l"
               >
-                <span className="mr-2">{lang.flag}</span>
-                <span className="text-xs">{lang.name}</span>
+                <span className="mr-2" data-oid="z3zz1iz">
+                  {lang.flag}
+                </span>
+                <span className="text-xs" data-oid="_ljbm9v">
+                  {lang.name}
+                </span>
               </motion.button>
             ))}
           </motion.div>
@@ -138,7 +181,13 @@ export function LanguageToggle({ className = "", isMobile = false }: LanguageTog
       </AnimatePresence>
 
       {/* Backdrop to close dropdown */}
-      {isOpen && <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setIsOpen(false)}
+          data-oid="matkdbs"
+        />
+      )}
     </div>
-  )
+  );
 }

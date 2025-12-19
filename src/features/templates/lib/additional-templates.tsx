@@ -94,10 +94,29 @@ const threeWayTemplates: MediaTemplateConfig[] = [
       }),
     ),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -116,10 +135,29 @@ const threeWayTemplates: MediaTemplateConfig[] = [
       }),
     ),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -140,10 +178,29 @@ const threeWayTemplates: MediaTemplateConfig[] = [
       }),
     ),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -162,10 +219,29 @@ const threeWayTemplates: MediaTemplateConfig[] = [
       }),
     ),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -186,10 +262,29 @@ const threeWayTemplates: MediaTemplateConfig[] = [
       }),
     ),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "66.67%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "33.33%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "66.67%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "33.33%",
+        height: "100%",
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -224,10 +319,26 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
         },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", top: "3%", left: "3%", width: "20%", height: "20%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        top: "3%",
+        left: "3%",
+        width: "20%",
+        height: "20%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -244,13 +355,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", top: "3%", right: "3%", width: "20%", height: "20%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        top: "3%",
+        right: "3%",
+        width: "20%",
+        height: "20%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -267,13 +399,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", bottom: "3%", left: "3%", width: "20%", height: "20%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        bottom: "3%",
+        left: "3%",
+        width: "20%",
+        height: "20%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -290,13 +443,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", bottom: "3%", right: "3%", width: "20%", height: "20%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        bottom: "3%",
+        right: "3%",
+        width: "20%",
+        height: "20%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -315,13 +489,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", top: "3%", left: "3%", width: "30%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        top: "3%",
+        left: "3%",
+        width: "30%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -338,13 +533,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", top: "3%", right: "3%", width: "30%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        top: "3%",
+        right: "3%",
+        width: "30%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -361,13 +577,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", bottom: "3%", left: "3%", width: "30%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        bottom: "3%",
+        left: "3%",
+        width: "30%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -384,13 +621,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", bottom: "3%", right: "3%", width: "30%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        bottom: "3%",
+        right: "3%",
+        width: "30%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -409,13 +667,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", top: "3%", left: "3%", width: "40%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        top: "3%",
+        left: "3%",
+        width: "40%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -432,13 +711,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", top: "3%", right: "3%", width: "40%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        top: "3%",
+        right: "3%",
+        width: "40%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -455,13 +755,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", bottom: "3%", left: "3%", width: "40%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        bottom: "3%",
+        left: "3%",
+        width: "40%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -478,13 +799,34 @@ const cornerOverlayTemplates: MediaTemplateConfig[] = [
       createCellConfig(1, {
         title: { show: false },
         fitMode: "cover",
-        border: { width: "2px", color: "rgba(255, 255, 255, 0.3)", style: "solid", radius: "8px" },
+        border: {
+          width: "2px",
+          color: "rgba(255, 255, 255, 0.3)",
+          style: "solid",
+          radius: "8px",
+        },
       }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "100%", zIndex: 1 },
-      { position: "absolute", bottom: "3%", right: "3%", width: "40%", height: "30%", zIndex: 10 },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        zIndex: 1,
+      },
+      {
+        position: "absolute",
+        bottom: "3%",
+        right: "3%",
+        width: "40%",
+        height: "30%",
+        zIndex: 10,
+      },
     ],
+
     dividers: createDividerConfig("default"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -508,6 +850,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -524,6 +867,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -542,6 +886,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -558,6 +903,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -576,6 +922,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -592,6 +939,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -610,6 +958,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -628,6 +977,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,
@@ -644,6 +994,7 @@ const sideBySideTemplates: MediaTemplateConfig[] = [
       createCellConfig(0, { title: { show: false }, fitMode: "cover" }),
       createCellConfig(1, { title: { show: false }, fitMode: "cover" }),
     ],
+
     dividers: createDividerConfig("thick"),
     layout: {
       ...PRESET_STYLES.layout.default,

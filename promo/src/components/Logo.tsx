@@ -18,7 +18,10 @@ export const Logo: React.FC<LogoProps> = ({
   const currentSize = sizes[size];
 
   return (
-    <div className="flex items-center shrink-0 w-auto max-w-full pr-2 md:pr-4">
+    <div
+      className="flex items-center shrink-0 w-auto max-w-full pr-2 md:pr-4"
+      data-oid="ft4lv:3"
+    >
       {/* Static circle with T */}
       <div
         className={`${currentSize.circle} shrink-0 mb-1 rounded-full flex items-center justify-center overflow-hidden`}
@@ -27,6 +30,7 @@ export const Logo: React.FC<LogoProps> = ({
           boxShadow: "0 8px 32px 0 rgba(139, 92, 246, 0.4)",
           cursor: "pointer",
         }}
+        data-oid="5omizpw"
       >
         <span
           className={"text-white"}
@@ -38,6 +42,7 @@ export const Logo: React.FC<LogoProps> = ({
             transform: "translateX(-3px) translateY(2px)",
             cursor: "pointer",
           }}
+          data-oid="lo2jk6e"
         >
           T
         </span>
@@ -45,7 +50,10 @@ export const Logo: React.FC<LogoProps> = ({
       {/* <img src="/favicon.svg" alt="Timeline Studio" className="w-12 h-12 mb-3" /> */}
       {/* Text */}
       {showText && (
-        <div className="flex items-center space-x-2 -ml-3 mt-0.5 max-w-full overflow-hidden">
+        <div
+          className="flex items-center space-x-2 -ml-3 mt-0.5 max-w-full overflow-hidden"
+          data-oid="7ora01p"
+        >
           <span
             className={`text-white ${currentSize.text} truncate whitespace-nowrap`}
             style={{
@@ -53,10 +61,14 @@ export const Logo: React.FC<LogoProps> = ({
               fontWeight: "400",
               fontSize: size === "small" ? 22 : 38,
             }}
+            data-oid="p-iud-y"
           >
             imeline Studio
           </span>
-          <span className="text-[10px] text-gray-500 font-medium px-1.5 ml-0.5 py-0.5 border border-gray-700 rounded-md shrink-0">
+          <span
+            className="text-[10px] text-gray-500 font-medium px-1.5 ml-0.5 py-0.5 border border-gray-700 rounded-md shrink-0"
+            data-oid="vfp3s_n"
+          >
             BETA
           </span>
         </div>

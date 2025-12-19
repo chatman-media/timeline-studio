@@ -14,17 +14,17 @@ vi.mock("../../components/browser-tabs", () => ({
   BrowserTabs: ({ activeTab, onTabChange }: any) => {
     mockOnTabChange = onTabChange
     return (
-      <div data-testid="browser-tabs" data-active-tab={activeTab}>
-        <button onClick={() => onTabChange("media")} data-testid="tab-media">
+      <div data-testid="browser-tabs" data-active-tab={activeTab} data-oid="rm8wpuk">
+        <button onClick={() => onTabChange("media")} data-testid="tab-media" data-oid=":8e512_">
           Media
         </button>
-        <button onClick={() => onTabChange("music")} data-testid="tab-music">
+        <button onClick={() => onTabChange("music")} data-testid="tab-music" data-oid="csridjq">
           Music
         </button>
-        <button onClick={() => onTabChange("effects")} data-testid="tab-effects">
+        <button onClick={() => onTabChange("effects")} data-testid="tab-effects" data-oid="_s23gl1">
           Effects
         </button>
-        <button onClick={() => onTabChange("test")} data-testid="trigger-tab-change" />
+        <button onClick={() => onTabChange("test")} data-testid="trigger-tab-change" data-oid="73bxzfm" />
         Browser Tabs Mock - Active: {activeTab}
       </div>
     )
@@ -32,7 +32,11 @@ vi.mock("../../components/browser-tabs", () => ({
 }))
 
 vi.mock("../../components/browser-content", () => ({
-  BrowserContent: () => <div data-testid="browser-content">Browser Content</div>,
+  BrowserContent: () => (
+    <div data-testid="browser-content" data-oid="kg9ooi2">
+      Browser Content
+    </div>
+  ),
 }))
 
 vi.mock("@/domains/project-management/hooks", () => ({
@@ -113,7 +117,7 @@ vi.mock("@/domains/project-management/services/backend-sync", () => {
 
 // Wrapper с BrowserProvider
 const TestWrapper = ({ children }: { children: ReactNode }) => {
-  return <BrowserProvider>{children}</BrowserProvider>
+  return <BrowserProvider data-oid="gebwj8v">{children}</BrowserProvider>
 }
 
 describe("Browser", () => {
@@ -122,21 +126,21 @@ describe("Browser", () => {
   })
 
   it("должен рендериться с компонентами табов и контента", () => {
-    render(<Browser />, { wrapper: TestWrapper })
+    render(<Browser data-oid="cd_0x.x" />, { wrapper: TestWrapper })
 
     expect(screen.getByTestId("browser-tabs")).toBeInTheDocument()
     expect(screen.getByTestId("browser-content")).toBeInTheDocument()
   })
 
   it("должен иметь начальную вкладку media", () => {
-    render(<Browser />, { wrapper: TestWrapper })
+    render(<Browser data-oid=".u_r1zv" />, { wrapper: TestWrapper })
 
     const browserTabs = screen.getByTestId("browser-tabs")
     expect(browserTabs).toHaveAttribute("data-active-tab", "media")
   })
 
   it("должен переключать вкладки при клике", async () => {
-    render(<Browser />, { wrapper: TestWrapper })
+    render(<Browser data-oid="cxvlj00" />, { wrapper: TestWrapper })
 
     const musicTab = screen.getByTestId("tab-music")
     fireEvent.click(musicTab)
@@ -146,7 +150,9 @@ describe("Browser", () => {
   })
 
   it("должен иметь правильные CSS классы", () => {
-    const { container } = render(<Browser />, { wrapper: TestWrapper })
+    const { container } = render(<Browser data-oid="tak9i9w" />, {
+      wrapper: TestWrapper,
+    })
 
     const wrapper = container.querySelector(".relative.h-full.w-full.flex.flex-col")
     expect(wrapper).toBeInTheDocument()
@@ -154,7 +160,7 @@ describe("Browser", () => {
   })
 
   it("должен обрабатывать изменение вкладки через компонент Tabs", async () => {
-    render(<Browser />, { wrapper: TestWrapper })
+    render(<Browser data-oid="ekfy_1a" />, { wrapper: TestWrapper })
 
     const tabChangeButton = screen.getByTestId("trigger-tab-change")
     fireEvent.click(tabChangeButton)
@@ -164,7 +170,9 @@ describe("Browser", () => {
   })
 
   it("должен рендериться внутри контейнера с правильными классами", () => {
-    const { container } = render(<Browser />, { wrapper: TestWrapper })
+    const { container } = render(<Browser data-oid=":f.:0u5" />, {
+      wrapper: TestWrapper,
+    })
 
     const wrapper = container.firstChild as HTMLElement
     expect(wrapper).toHaveClass("relative h-full w-full flex flex-col")
@@ -173,18 +181,20 @@ describe("Browser", () => {
   it("должен предоставлять контекст состояния браузера дочерним компонентам", () => {
     // Факт того, что компонент рендерится без ошибок, подтверждает,
     // что контекст доступен
-    expect(() => render(<Browser />, { wrapper: TestWrapper })).not.toThrow()
+    expect(() => render(<Browser data-oid="w:a:tnt" />, { wrapper: TestWrapper })).not.toThrow()
   })
 
   it("должен сохранять состояние вкладки при повторном рендере", () => {
-    const { rerender } = render(<Browser />, { wrapper: TestWrapper })
+    const { rerender } = render(<Browser data-oid="kdfg_1a" />, {
+      wrapper: TestWrapper,
+    })
 
     // Переключаем вкладку
     const effectsTab = screen.getByTestId("tab-effects")
     fireEvent.click(effectsTab)
 
     // Перерендер компонента
-    rerender(<Browser />)
+    rerender(<Browser data-oid="i9mr938" />)
 
     // Проверяем, что компонент продолжает работать после перерендера
     expect(screen.getByTestId("browser-tabs")).toBeInTheDocument()

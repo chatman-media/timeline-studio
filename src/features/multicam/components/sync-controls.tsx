@@ -103,13 +103,13 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
   const getStatusIcon = () => {
     switch (syncStatus) {
       case "syncing":
-        return <Loader2 className="w-4 h-4 animate-spin" />
+        return <Loader2 className="w-4 h-4 animate-spin" data-oid="u7xg0hc" />
       case "success":
-        return <Check className="w-4 h-4 text-green-500" />
+        return <Check className="w-4 h-4 text-green-500" data-oid="rh_zsmo" />
       case "error":
-        return <AlertCircle className="w-4 h-4 text-red-500" />
+        return <AlertCircle className="w-4 h-4 text-red-500" data-oid="9ors1ao" />
       default:
-        return <Wand2 className="w-4 h-4" />
+        return <Wand2 className="w-4 h-4" data-oid="s1kj8s-" />
     }
   }
 
@@ -158,31 +158,40 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className={cn("gap-2", className)} disabled={isSyncing}>
+      <DropdownMenu data-oid="5mhfart">
+        <DropdownMenuTrigger asChild data-oid="x:qhtj3">
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn("gap-2", className)}
+            disabled={isSyncing}
+            data-oid="9s5ljpz"
+          >
             {getStatusIcon()}
             {getStatusText()}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuItem onClick={handleTimecodeSync} disabled={isSyncing}>
-            <Clock className="w-4 h-4 mr-2" />
+        <DropdownMenuContent align="end" className="w-56" data-oid="mamqb29">
+          <DropdownMenuItem onClick={handleTimecodeSync} disabled={isSyncing} data-oid="pexrm5r">
+            <Clock className="w-4 h-4 mr-2" data-oid="t6o31g8" />
             Синхронизация по таймкоду
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleAudioSync} disabled={isSyncing}>
-            <Music className="w-4 h-4 mr-2" />
+          <DropdownMenuItem onClick={handleAudioSync} disabled={isSyncing} data-oid="cr9g.y_">
+            <Music className="w-4 h-4 mr-2" data-oid="_ys:czg" />
             Синхронизация по аудио
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <div className="px-2 py-1.5 text-sm font-medium">Ручная синхронизация</div>
+          <DropdownMenuSeparator data-oid="a01jzzr" />
+          <div className="px-2 py-1.5 text-sm font-medium" data-oid="-uex8fv">
+            Ручная синхронизация
+          </div>
           {multicam.angles.map((angle, index) => (
             <DropdownMenuItem
               key={angle.id}
               onClick={() => handleManualSync(index)}
               disabled={isSyncing || index === multicam.activeAngleIndex}
+              data-oid="lv44160"
             >
-              <Hash className="w-4 h-4 mr-2" />
+              <Hash className="w-4 h-4 mr-2" data-oid="1rkak:h" />
               {angle.name}{" "}
               {Math.abs(multicam.syncOffsets[index] || 0) > 0.01 &&
                 `(${multicam.syncOffsets[index] > 0 ? "+" : ""}${multicam.syncOffsets[index]?.toFixed(2)}s)`}
@@ -196,25 +205,33 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
         open={manualSync.isOpen}
         onOpenChange={(open) => {
           if (!open) {
-            setManualSync({ isOpen: false, angleIndex: null, currentOffset: 0 })
+            setManualSync({
+              isOpen: false,
+              angleIndex: null,
+              currentOffset: 0,
+            })
           }
         }}
+        data-oid="i:roqpu"
       >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Ручная синхронизация</DialogTitle>
-            <DialogDescription>
+        <DialogContent data-oid="kacs3i6">
+          <DialogHeader data-oid="7uidcd3">
+            <DialogTitle data-oid="4lg06z0">Ручная синхронизация</DialogTitle>
+            <DialogDescription data-oid="iy8exv_">
               {manualSync.angleIndex !== null && (
-                <>Настройте смещение для камеры &quot;{multicam.angles[manualSync.angleIndex]?.name}&quot;</>
+                <>
+                  Настройте смещение для камеры &quot;
+                  {multicam.angles[manualSync.angleIndex]?.name}&quot;
+                </>
               )}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Смещение</span>
-                <span className="font-mono">
+          <div className="space-y-4 py-4" data-oid="6uldzgp">
+            <div className="space-y-2" data-oid="kzhinm-">
+              <div className="flex items-center justify-between text-sm" data-oid="n.-4rs0">
+                <span data-oid="321rzj7">Смещение</span>
+                <span className="font-mono" data-oid="cg:wam8">
                   {manualSync.currentOffset > 0 ? "+" : ""}
                   {manualSync.currentOffset.toFixed(3)}s
                 </span>
@@ -229,30 +246,40 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
                 max={5}
                 step={0.001}
                 className="w-full"
+                data-oid="pay7yrv"
               />
 
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>-5s</span>
-                <span>0s</span>
-                <span>+5s</span>
+              <div className="flex justify-between text-xs text-muted-foreground" data-oid="1x6qb:i">
+                <span data-oid="548f2_t">-5s</span>
+                <span data-oid="4m4s4fg">0s</span>
+                <span data-oid="1e.u.kn">+5s</span>
               </div>
             </div>
 
-            <Alert>
-              <AlertDescription>
+            <Alert data-oid="921mxqr">
+              <AlertDescription data-oid="b5w5yhg">
                 Используйте положительные значения, чтобы сдвинуть клип вперед, и отрицательные — чтобы сдвинуть назад
                 относительно базового угла.
               </AlertDescription>
             </Alert>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2" data-oid="ygr-_9d">
               <Button
                 variant="outline"
-                onClick={() => setManualSync({ isOpen: false, angleIndex: null, currentOffset: 0 })}
+                onClick={() =>
+                  setManualSync({
+                    isOpen: false,
+                    angleIndex: null,
+                    currentOffset: 0,
+                  })
+                }
+                data-oid="kj_k24m"
               >
                 Отмена
               </Button>
-              <Button onClick={applyManualSync}>Применить</Button>
+              <Button onClick={applyManualSync} data-oid="qp-c6mi">
+                Применить
+              </Button>
             </div>
           </div>
         </DialogContent>
@@ -268,6 +295,7 @@ export function SyncControls({ baseClipId, className, onSyncComplete }: SyncCont
           return []
         }}
         angleCount={multicam.angles.length}
+        data-oid="pndr3yy"
       />
     </>
   )

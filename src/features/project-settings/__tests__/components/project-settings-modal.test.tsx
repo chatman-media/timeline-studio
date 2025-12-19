@@ -67,35 +67,83 @@ vi.mock("lucide-react", async () => {
   const actual = await vi.importActual("lucide-react")
   return {
     ...(typeof actual === "object" ? actual : {}),
-    Lock: () => <div data-testid="lock-icon">Lock</div>,
-    Unlock: () => <div data-testid="unlock-icon">Unlock</div>,
-    ChevronDownIcon: () => <div data-testid="chevron-down-icon">ChevronDown</div>,
+    Lock: () => (
+      <div data-testid="lock-icon" data-oid="x8u-dsd">
+        Lock
+      </div>
+    ),
+
+    Unlock: () => (
+      <div data-testid="unlock-icon" data-oid="ljomur:">
+        Unlock
+      </div>
+    ),
+
+    ChevronDownIcon: () => (
+      <div data-testid="chevron-down-icon" data-oid="f3nubg0">
+        ChevronDown
+      </div>
+    ),
   }
 })
 
 // Мокируем типы и константы проекта
 vi.mock("../../types/project", () => ({
   ASPECT_RATIOS: [
-    { label: "16:9", textLabel: "Widescreen", value: { width: 1920, height: 1080, name: "16:9" } },
-    { label: "4:3", textLabel: "Standard", value: { width: 1440, height: 1080, name: "4:3" } },
-    { label: "1:1", textLabel: "Square", value: { width: 1080, height: 1080, name: "1:1" } },
-    { label: "custom", textLabel: "Custom", value: { width: 1920, height: 1080, name: "custom" } },
+    {
+      label: "16:9",
+      textLabel: "Widescreen",
+      value: { width: 1920, height: 1080, name: "16:9" },
+    },
+    {
+      label: "4:3",
+      textLabel: "Standard",
+      value: { width: 1440, height: 1080, name: "4:3" },
+    },
+    {
+      label: "1:1",
+      textLabel: "Square",
+      value: { width: 1080, height: 1080, name: "1:1" },
+    },
+    {
+      label: "custom",
+      textLabel: "Custom",
+      value: { width: 1920, height: 1080, name: "custom" },
+    },
   ],
+
   FRAME_RATES: [
     { label: "24 fps", value: "24" },
     { label: "30 fps", value: "30" },
     { label: "60 fps", value: "60" },
   ],
+
   COLOR_SPACES: [
     { label: "SDR - Rec.709", value: "sdr" },
     { label: "DCI-P3", value: "dci-p3" },
     { label: "P3-D65", value: "p3-d65" },
   ],
+
   getDefaultResolutionForAspectRatio: vi.fn((aspectRatio) => {
     const resolutions: Record<string, any> = {
-      "16:9": { value: "1920x1080", width: 1920, height: 1080, label: "1920x1080" },
-      "4:3": { value: "1440x1080", width: 1440, height: 1080, label: "1440x1080" },
-      "1:1": { value: "1080x1080", width: 1080, height: 1080, label: "1080x1080" },
+      "16:9": {
+        value: "1920x1080",
+        width: 1920,
+        height: 1080,
+        label: "1920x1080",
+      },
+      "4:3": {
+        value: "1440x1080",
+        width: 1440,
+        height: 1080,
+        label: "1440x1080",
+      },
+      "1:1": {
+        value: "1080x1080",
+        width: 1080,
+        height: 1080,
+        label: "1080x1080",
+      },
       custom: { value: "custom", width: 1920, height: 1080, label: "Custom" },
     }
     return resolutions[aspectRatio] || resolutions["16:9"]
@@ -141,12 +189,12 @@ describe("ProjectSettingsModal", () => {
   describe("Базовый рендеринг", () => {
     it("должен рендериться без ошибок", () => {
       expect(() => {
-        render(<ProjectSettingsModal />)
+        render(<ProjectSettingsModal data-oid=":dp-3g1" />)
       }).not.toThrow()
     })
 
     it("должен рендерить все основные элементы", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="sl050mn" />)
 
       expect(screen.getByText("dialogs.projectSettings.aspectRatio")).toBeInTheDocument()
       expect(screen.getByText("dialogs.projectSettings.resolution")).toBeInTheDocument()
@@ -158,27 +206,27 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен показывать текущие настройки", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="w6a-57m" />)
 
       expect(screen.getByDisplayValue("1920")).toBeInTheDocument()
       expect(screen.getByDisplayValue("1080")).toBeInTheDocument()
     })
 
     it("должен показывать иконку блокировки по умолчанию", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="v-xozbb" />)
 
       expect(screen.getAllByTestId("lock-icon")).toHaveLength(2) // Кнопка + информация
     })
 
     it("должен отображать правильное количество combobox элементов", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="pkxb6km" />)
 
       const comboboxes = screen.getAllByRole("combobox")
       expect(comboboxes).toHaveLength(4) // аспект, разрешение, fps, цвет
     })
 
     it("должен отображать правильное количество input элементов", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="cz31kh-" />)
 
       const numberInputs = screen.getAllByRole("spinbutton")
       expect(numberInputs).toHaveLength(2) // ширина и высота
@@ -187,7 +235,7 @@ describe("ProjectSettingsModal", () => {
 
   describe("Изменение соотношения сторон", () => {
     it("должен рендерить select для соотношения сторон", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="klxv055" />)
 
       const comboboxes = screen.getAllByRole("combobox")
       expect(comboboxes).toHaveLength(4) // аспект, разрешение, fps, цвет
@@ -195,7 +243,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен показывать текущее соотношение сторон", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="7byob5c" />)
 
       const aspectRatioCombobox = screen.getAllByRole("combobox")[0]
       expect(aspectRatioCombobox).toHaveTextContent("16:9")
@@ -204,7 +252,7 @@ describe("ProjectSettingsModal", () => {
     // TODO: Тест пропущен - требуется проверка
     it("должен обрабатывать смену соотношения сторон на custom", () => {
       mockSettings.aspectRatio.label = "custom"
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="7-ny9rv" />)
 
       // Используем getAllByText т.к. "custom" встречается в двух местах (aspect ratio и resolution selects)
       const customElements = screen.getAllByText("dialogs.projectSettings.aspectRatioLabels.custom")
@@ -217,14 +265,14 @@ describe("ProjectSettingsModal", () => {
 
   describe("Изменение разрешения", () => {
     it("должен рендерить select для разрешения", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="mf6nze:" />)
 
       const resolutionSelect = screen.getAllByRole("combobox")[1]
       expect(resolutionSelect).toBeInTheDocument()
     })
 
     it("должен показывать текущее разрешение", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="u1i-2ko" />)
 
       const resolutionSelect = screen.getAllByRole("combobox")[1]
       expect(resolutionSelect).toHaveTextContent("1920x1080")
@@ -235,7 +283,7 @@ describe("ProjectSettingsModal", () => {
       mockSettings.aspectRatio.label = "custom"
       mockSettings.resolution = "custom"
 
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="u180uz0" />)
 
       const resolutionSelect = screen.getAllByRole("combobox")[1]
       expect(resolutionSelect).toHaveTextContent("dialogs.projectSettings.aspectRatioLabels.custom")
@@ -248,7 +296,7 @@ describe("ProjectSettingsModal", () => {
 
   describe("Пользовательские размеры", () => {
     it("должен изменять ширину", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="_l43zn9" />)
 
       const widthInput = screen.getByDisplayValue("1920")
       fireEvent.change(widthInput, { target: { value: "1280" } })
@@ -257,7 +305,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен изменять высоту", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="hzgsovd" />)
 
       const heightInput = screen.getByDisplayValue("1080")
       fireEvent.change(heightInput, { target: { value: "720" } })
@@ -266,7 +314,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен игнорировать неверные значения ширины", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="sa5i7vd" />)
 
       const widthInput = screen.getByDisplayValue("1920")
       fireEvent.change(widthInput, { target: { value: "abc" } })
@@ -276,7 +324,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен игнорировать отрицательные значения высоты", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="bzku6zl" />)
 
       const heightInput = screen.getByDisplayValue("1080")
       fireEvent.change(heightInput, { target: { value: "-100" } })
@@ -285,7 +333,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен игнорировать нулевые значения", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="er_z2r2" />)
 
       const widthInput = screen.getByDisplayValue("1920")
       fireEvent.change(widthInput, { target: { value: "0" } })
@@ -294,7 +342,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен пропорционально изменять высоту при заблокированном соотношении", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="75.k0l." />)
 
       const widthInput = screen.getByDisplayValue("1920")
       fireEvent.change(widthInput, { target: { value: "1280" } })
@@ -312,7 +360,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен пропорционально изменять ширину при заблокированном соотношении", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="_vafhys" />)
 
       const heightInput = screen.getByDisplayValue("1080")
       fireEvent.change(heightInput, { target: { value: "720" } })
@@ -330,7 +378,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен устанавливать правильные атрибуты min/max", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="qljteph" />)
 
       const widthInput = screen.getByDisplayValue("1920")
       const heightInput = screen.getByDisplayValue("1080")
@@ -342,7 +390,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен обрабатывать экстремальные значения", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="-p58_rq" />)
 
       const widthInput = screen.getByDisplayValue("1920")
 
@@ -360,7 +408,7 @@ describe("ProjectSettingsModal", () => {
 
   describe("Блокировка соотношения сторон", () => {
     it("должен переключать блокировку соотношения сторон", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="cpous-u" />)
 
       // Поскольку кнопка не имеет accessible name, ищем по title
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
@@ -370,14 +418,14 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен показывать тултип для блокировки", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="ulmwvtz" />)
 
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
       expect(lockButton).toHaveAttribute("title", "dialogs.projectSettings.unlockAspectRatio")
     })
 
     it("должен изменять стили кнопки при переключении", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="6q.6hf5" />)
 
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
 
@@ -391,7 +439,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен изменять только ширину при разблокированном соотношении", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="xl-jzda" />)
 
       // Разблокируем соотношение
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
@@ -416,21 +464,21 @@ describe("ProjectSettingsModal", () => {
 
   describe("Изменение частоты кадров", () => {
     it("должен рендерить select для частоты кадров", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="kp908ie" />)
 
       const frameRateSelect = screen.getAllByRole("combobox")[2]
       expect(frameRateSelect).toBeInTheDocument()
     })
 
     it("должен показывать текущую частоту кадров", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="kt:ec1f" />)
 
       const frameRateSelect = screen.getAllByRole("combobox")[2]
       expect(frameRateSelect).toHaveTextContent("30")
     })
 
     it("должен обрабатывать смену частоты кадров через mock", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="k5tru34" />)
 
       // Поскольку мы не можем легко тестировать dropdown, проверим что select существует
       const frameRateSelect = screen.getAllByRole("combobox")[2]
@@ -440,21 +488,21 @@ describe("ProjectSettingsModal", () => {
 
   describe("Изменение цветового пространства", () => {
     it("должен рендерить select для цветового пространства", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="k_1vnln" />)
 
       const colorSpaceSelect = screen.getAllByRole("combobox")[3]
       expect(colorSpaceSelect).toBeInTheDocument()
     })
 
     it("должен показывать текущее цветовое пространство", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="3axhg0_" />)
 
       const colorSpaceSelect = screen.getAllByRole("combobox")[3]
       expect(colorSpaceSelect).toHaveTextContent("SDR - Rec.709")
     })
 
     it("должен обрабатывать смену цветового пространства через mock", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="aqlc259" />)
 
       const colorSpaceSelect = screen.getAllByRole("combobox")[3]
       expect(colorSpaceSelect).toHaveAttribute("role", "combobox")
@@ -464,7 +512,7 @@ describe("ProjectSettingsModal", () => {
   describe("Кнопки действий", () => {
     it("должен закрывать модальное окно при нажатии Отмена", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="k6xn67_" />)
 
       const cancelButton = screen.getByText("dialogs.projectSettings.cancel")
       await user.click(cancelButton)
@@ -475,7 +523,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен сохранять настройки и закрывать модальное окно при нажатии Сохранить", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="17ah9_1" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
       await user.click(saveButton)
@@ -492,7 +540,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен вызывать window.dispatchEvent при сохранении", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="xljp2wv" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
       await user.click(saveButton)
@@ -516,7 +564,7 @@ describe("ProjectSettingsModal", () => {
       // Устанавливаем custom разрешение
       mockSettings.resolution = "custom"
 
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="0w7kxnt" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
       await user.click(saveButton)
@@ -540,7 +588,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен обрабатывать сохранение со стандартным разрешением", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="38_5jjw" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
       await user.click(saveButton)
@@ -559,7 +607,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен применять таймаут при сохранении", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="d4jizg5" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
 
@@ -579,7 +627,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен обрабатывать множественные нажатия кнопки сохранения", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="az.o.iy" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
 
@@ -595,13 +643,13 @@ describe("ProjectSettingsModal", () => {
 
   describe("Информация о соотношении сторон", () => {
     it("должен показывать информацию о заблокированном соотношении", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="vw5y4ef" />)
 
       expect(screen.getByText(/dialogs.projectSettings.aspectRatioLocked/)).toBeInTheDocument()
     })
 
     it("должен показывать информацию о разблокированном соотношении", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="hellcvc" />)
 
       // Разблокируем соотношение
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
@@ -614,7 +662,7 @@ describe("ProjectSettingsModal", () => {
       // Устанавливаем custom соотношение
       mockSettings.aspectRatio.label = "custom"
 
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="77ez-sh" />)
 
       expect(screen.getByText(/dialogs.projectSettings.aspectRatioLocked/)).toBeInTheDocument()
 
@@ -623,7 +671,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен отображать правильные иконки для состояния блокировки", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="0.18k5n" />)
 
       // В заблокированном состоянии должны быть иконки Lock
       expect(screen.getAllByTestId("lock-icon")).toHaveLength(2)
@@ -637,7 +685,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен показывать правильный цвет для заблокированного состояния", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="9xcxfpg" />)
 
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
       expect(lockButton).toHaveClass("text-[#00CCC0]")
@@ -646,7 +694,7 @@ describe("ProjectSettingsModal", () => {
 
   describe("Сложные сценарии", () => {
     it("должен обрабатывать последовательные изменения размеров", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="zbi3pvj" />)
 
       const widthInput = screen.getByDisplayValue("1920")
       const heightInput = screen.getByDisplayValue("1080")
@@ -661,7 +709,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен обрабатывать переключение между заблокированным и разблокированным режимом", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="p:dzc0l" />)
 
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
 
@@ -676,7 +724,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен сохранять состояние блокировки при изменении размеров", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="-k-sas5" />)
 
       // Разблокируем соотношение
       const lockButton = screen.getByTitle("dialogs.projectSettings.unlockAspectRatio")
@@ -700,7 +748,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен правильно обрабатывать пограничные случаи в расчетах", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="bmo439h" />)
 
       const widthInput = screen.getByDisplayValue("1920")
 
@@ -723,7 +771,7 @@ describe("ProjectSettingsModal", () => {
         value: { width: 1440, height: 1080, name: "4:3" },
       }
 
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="a_ztgvl" />)
 
       expect(screen.getByDisplayValue("1440")).toBeInTheDocument()
       expect(screen.getByDisplayValue("1080")).toBeInTheDocument()
@@ -746,7 +794,7 @@ describe("ProjectSettingsModal", () => {
       mockUpdateSettings.mockClear()
       mockCloseModal.mockClear()
 
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="xhg0m-g" />)
 
       // 1. Изменяем ширину (при locked aspect ratio высота автоматически пересчитается)
       const widthInput = screen.getByDisplayValue("1920")
@@ -786,7 +834,7 @@ describe("ProjectSettingsModal", () => {
       // Устанавливаем разное разрешение
       mockSettings.resolution = "3840x2160"
 
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="dr0xn.-" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
       await user.click(saveButton)
@@ -807,7 +855,7 @@ describe("ProjectSettingsModal", () => {
 
   describe("Обработка ошибок", () => {
     it("должен обрабатывать некорректные данные gracefully", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="xhnf.c:" />)
 
       const widthInput = screen.getByDisplayValue("1920")
 
@@ -821,7 +869,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен игнорировать очень большие значения", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="24ectpw" />)
 
       const widthInput = screen.getByDisplayValue("1920")
 
@@ -834,7 +882,7 @@ describe("ProjectSettingsModal", () => {
     })
 
     it("должен обрабатывать пустые значения", () => {
-      render(<ProjectSettingsModal />)
+      render(<ProjectSettingsModal data-oid="p06nbas" />)
 
       const widthInput = screen.getByDisplayValue("1920")
 

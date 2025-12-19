@@ -59,14 +59,14 @@ vi.mock("../../hooks/use-subtitles-export", () => ({
 
 describe("SubtitleTools", () => {
   it("should render import and export buttons", () => {
-    render(<SubtitleTools />)
+    render(<SubtitleTools data-oid="u4146ar" />)
 
     expect(screen.getByText("Импорт")).toBeInTheDocument()
     expect(screen.getByText("Экспорт")).toBeInTheDocument()
   })
 
   it("should show import dropdown menu when clicked", () => {
-    render(<SubtitleTools />)
+    render(<SubtitleTools data-oid="x5zcl:y" />)
 
     const importButton = screen.getByText("Импорт")
     fireEvent.click(importButton)
@@ -77,7 +77,7 @@ describe("SubtitleTools", () => {
   })
 
   it("should show export dropdown menu when clicked", () => {
-    render(<SubtitleTools />)
+    render(<SubtitleTools data-oid="e6vrl2c" />)
 
     const exportButton = screen.getByText("Экспорт")
     fireEvent.click(exportButton)
@@ -90,13 +90,13 @@ describe("SubtitleTools", () => {
 
   it("should disable import button when importing", () => {
     // Тест просто проверяет, что кнопки рендерятся (детальная логика проверяется в хуках)
-    render(<SubtitleTools />)
+    render(<SubtitleTools data-oid="gsfh10k" />)
     expect(screen.getByRole("button", { name: "Импорт" })).toBeInTheDocument()
   })
 
   it("should disable export button when exporting", () => {
     // Тест просто проверяет, что кнопки рендерятся (детальная логика проверяется в хуках)
-    render(<SubtitleTools />)
+    render(<SubtitleTools data-oid="kpu.csr" />)
     expect(screen.getByRole("button", { name: "Экспорт" })).toBeInTheDocument()
   })
 })

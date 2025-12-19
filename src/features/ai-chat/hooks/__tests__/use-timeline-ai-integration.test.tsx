@@ -91,6 +91,7 @@ describe("useTimelineAIIntegration", () => {
             clips,
           },
         ],
+
         sections: [],
       }
 
@@ -135,6 +136,7 @@ describe("useTimelineAIIntegration", () => {
             clips: [createTimelineClip("media-1", "track-1", 0, 10)],
           },
         ],
+
         sections: [
           {
             id: "section-1",
@@ -168,6 +170,7 @@ describe("useTimelineAIIntegration", () => {
           { id: "track-1", type: "video", clips: [] },
           { id: "track-2", type: "audio", clips: [] },
         ],
+
         sections: [],
       }
 
@@ -246,6 +249,7 @@ describe("useTimelineAIIntegration", () => {
             ],
           },
         ],
+
         sections: [],
       }
 
@@ -263,6 +267,7 @@ describe("useTimelineAIIntegration", () => {
             clips: [createTimelineClip("media-1", "track-1", 0, 10)],
           },
         ],
+
         sections: [
           {
             id: "section-1",
@@ -296,6 +301,7 @@ describe("useTimelineAIIntegration", () => {
             clips: [],
           },
         ],
+
         sections: [],
       }
 
@@ -312,6 +318,7 @@ describe("useTimelineAIIntegration", () => {
             clips: [createTimelineClip("media-1", "track-1", 0, 10)],
           },
         ],
+
         sections: [],
       }
 
@@ -363,6 +370,7 @@ describe("useTimelineAIIntegration", () => {
             type: "video",
           },
         ],
+
         sections: [],
       }
 
@@ -382,6 +390,7 @@ describe("useTimelineAIIntegration", () => {
             clips: [createTimelineClip("media-1", "track-1", 0, 0)],
           },
         ],
+
         sections: [],
       }
 
@@ -400,6 +409,7 @@ describe("useTimelineAIIntegration", () => {
             clips: [createTimelineClip("media-1", "track-1", -10, 20)],
           },
         ],
+
         sections: [],
       }
 

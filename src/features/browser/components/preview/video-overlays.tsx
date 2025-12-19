@@ -51,6 +51,7 @@ export const VideoOverlays = memo(
               color: "#ffffff",
               zIndex: 20,
             }}
+            data-oid="3pt_bku"
           >
             {formatDuration(file.duration, 0, true)}
           </div>
@@ -67,13 +68,14 @@ export const VideoOverlays = memo(
               color: "#ffffff",
               zIndex: 10,
             }}
+            data-oid="o:p5.9k"
           >
-            <Film size={size > 100 ? 16 : 12} />
+            <Film size={size > 100 ? 16 : 12} data-oid="foe07ij" />
           </div>
         )}
 
         {/* Кнопка избранного */}
-        {!isNotFirstStream && <FavoriteButton file={file} size={size} type="media" />}
+        {!isNotFirstStream && <FavoriteButton file={file} size={size} type="media" data-oid="y37zvvb" />}
 
         {/* Разрешение видео */}
         {isLoaded && !isNotFirstStream && streamWidth && streamHeight && (
@@ -84,6 +86,7 @@ export const VideoOverlays = memo(
               color: "#ffffff",
               zIndex: 20,
             }}
+            data-oid="oesgjvl"
           >
             {formatResolution(streamWidth, streamHeight)}
           </div>
@@ -98,6 +101,7 @@ export const VideoOverlays = memo(
               color: "#ffffff",
               zIndex: 10,
             }}
+            data-oid="14q-y.c"
           >
             {file.name}
           </div>
@@ -116,6 +120,7 @@ export const VideoOverlays = memo(
             }
             size={size}
             type="media"
+            data-oid="0b7:ag0"
           />
         )}
       </>

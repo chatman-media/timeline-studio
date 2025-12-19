@@ -23,7 +23,9 @@ export function MediaStudio() {
 
   // Логирование для отладки
   if (userDataError) {
-    logger.error("Ошибка автозагрузки пользовательских данных", { error: userDataError })
+    logger.error("Ошибка автозагрузки пользовательских данных", {
+      error: userDataError,
+    })
   }
   if (isLoadingUserData) {
     logger.info("Загружаем пользовательские данные...")
@@ -33,20 +35,20 @@ export function MediaStudio() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen m-0 p-0">
-      <TopBar />
-      <div className="flex-1">
-        {layoutMode === "default" && <DefaultLayout />}
-        {layoutMode === "options" && <OptionsLayout />}
-        {layoutMode === "vertical" && <VerticalLayout />}
-        {layoutMode === "chat" && <ChatLayout />}
+    <div className="flex flex-col h-screen w-screen m-0 p-0" data-oid="uxjltd1">
+      <TopBar data-oid="1h9sg4d" />
+      <div className="flex-1" data-oid="r0gyfo8">
+        {layoutMode === "default" && <DefaultLayout data-oid="oee:qge" />}
+        {layoutMode === "options" && <OptionsLayout data-oid="klwhg5e" />}
+        {layoutMode === "vertical" && <VerticalLayout data-oid="s2mta-q" />}
+        {layoutMode === "chat" && <ChatLayout data-oid=".z2s1qy" />}
       </div>
 
       {/* Контейнер для модальных окон */}
-      <ModalContainer />
+      <ModalContainer data-oid="yeoe5rl" />
 
       {/* Оверлей загрузки проекта */}
-      <ProjectLoadingOverlay />
+      <ProjectLoadingOverlay data-oid="dg_urdy" />
 
       {/* Глобальный индикатор прогресса AI анализа */}
       <AnalysisProgressIndicator
@@ -54,6 +56,7 @@ export function MediaStudio() {
         stage={lastProgress?.stage}
         progress={lastProgress?.progress}
         isVisible={!!lastProgress}
+        data-oid="crl6c.q"
       />
     </div>
   )

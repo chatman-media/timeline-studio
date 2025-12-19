@@ -255,7 +255,9 @@ const mockImageFile1 = createMockMediaFile("image-1", MediaType.StillImage, 5)
 // WRAPPER COMPONENT
 // ============================================================================
 
-const wrapper = ({ children }: { children: React.ReactNode }) => <TimelineProviders>{children}</TimelineProviders>
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <TimelineProviders data-oid="7iny::3">{children}</TimelineProviders>
+)
 
 // ============================================================================
 // INTEGRATION TESTS
@@ -264,7 +266,11 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <TimelineProvid
 describe("Timeline Integration Tests", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockExecuteCommand.mockResolvedValue({ success: true, data: null, error: null })
+    mockExecuteCommand.mockResolvedValue({
+      success: true,
+      data: null,
+      error: null,
+    })
     mockOnStateChange.mockReturnValue(() => {})
     mockOnEvent.mockReturnValue(() => {})
     mockGetProjectState.mockResolvedValue(null)
@@ -385,7 +391,9 @@ describe("Timeline Integration Tests", () => {
         clipIds: ["clip-1", "clip-2"],
         addToSelection: false,
       })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "DELETE_SELECTED" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "DELETE_SELECTED",
+      })
       expect(result.current).toBeDefined()
     })
   })
@@ -677,7 +685,9 @@ describe("Timeline Integration Tests", () => {
       })
 
       // Assertions (77-79)
-      expect(mockOrchestrator.updateClip).toHaveBeenCalledWith("clip-1", { duration: 45 })
+      expect(mockOrchestrator.updateClip).toHaveBeenCalledWith("clip-1", {
+        duration: 45,
+      })
       expect(mockOrchestrator.updateClip).toHaveBeenCalledTimes(1)
       expect(typeof result.current.updateClip).toBe("function")
     })
@@ -689,8 +699,12 @@ describe("Timeline Integration Tests", () => {
 
   describe("6. Timeline and Video Player Synchronization", () => {
     it("should sync player time with timeline", async () => {
-      const { result: timelineResult } = renderHook(() => useTimeline(), { wrapper })
-      const { result: playerResult } = renderHook(() => usePlayer(), { wrapper })
+      const { result: timelineResult } = renderHook(() => useTimeline(), {
+        wrapper,
+      })
+      const { result: playerResult } = renderHook(() => usePlayer(), {
+        wrapper,
+      })
 
       await act(async () => {
         playerResult.current.seek(30)
@@ -703,8 +717,12 @@ describe("Timeline Integration Tests", () => {
     })
 
     it("should control playback from timeline", async () => {
-      const { result: timelineResult } = renderHook(() => useTimeline(), { wrapper })
-      const { result: playerResult } = renderHook(() => usePlayer(), { wrapper })
+      const { result: timelineResult } = renderHook(() => useTimeline(), {
+        wrapper,
+      })
+      const { result: playerResult } = renderHook(() => usePlayer(), {
+        wrapper,
+      })
 
       await act(async () => {
         playerResult.current.play()
@@ -717,7 +735,9 @@ describe("Timeline Integration Tests", () => {
     })
 
     it("should pause playback from timeline", async () => {
-      const { result: playerResult } = renderHook(() => usePlayer(), { wrapper })
+      const { result: playerResult } = renderHook(() => usePlayer(), {
+        wrapper,
+      })
 
       await act(async () => {
         playerResult.current.pause()
@@ -730,7 +750,9 @@ describe("Timeline Integration Tests", () => {
     })
 
     it("should adjust playback rate", async () => {
-      const { result: playerResult } = renderHook(() => usePlayer(), { wrapper })
+      const { result: playerResult } = renderHook(() => usePlayer(), {
+        wrapper,
+      })
 
       await act(async () => {
         playerResult.current.setPlaybackRate(1.5)
@@ -744,7 +766,9 @@ describe("Timeline Integration Tests", () => {
     })
 
     it("should sync volume changes", async () => {
-      const { result: playerResult } = renderHook(() => usePlayer(), { wrapper })
+      const { result: playerResult } = renderHook(() => usePlayer(), {
+        wrapper,
+      })
 
       await act(async () => {
         playerResult.current.setVolume(0.7)
@@ -905,7 +929,9 @@ describe("Timeline Integration Tests", () => {
         clipIds: ["clip-1", "clip-2"],
         addToSelection: false,
       })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "COPY_CLIPS" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "COPY_CLIPS",
+      })
       expect(typeof result.current.copyClips).toBe("function")
       expect(result.current.hasClipboard).toBeDefined()
     })
@@ -936,7 +962,9 @@ describe("Timeline Integration Tests", () => {
       })
 
       // Assertions (129-131)
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "CUT_CLIPS" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "CUT_CLIPS",
+      })
       expect(typeof result.current.cutClips).toBe("function")
       expect(result.current).toBeDefined()
     })
@@ -949,7 +977,9 @@ describe("Timeline Integration Tests", () => {
       })
 
       // Assertions (132-134)
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "CLEAR_SELECTION" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "CLEAR_SELECTION",
+      })
       expect(typeof result.current.clearSelection).toBe("function")
       expect(result.current.hasSelection).toBeDefined()
     })
@@ -964,9 +994,15 @@ describe("Timeline Integration Tests", () => {
       })
 
       // Assertions (135-139)
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "TOGGLE_WAVEFORMS" })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "TOGGLE_THUMBNAILS" })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "TOGGLE_MARKERS" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "TOGGLE_WAVEFORMS",
+      })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "TOGGLE_THUMBNAILS",
+      })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "TOGGLE_MARKERS",
+      })
       expect(typeof result.current.toggleWaveforms).toBe("function")
       expect(result.current).toBeDefined()
     })
@@ -982,17 +1018,32 @@ describe("Timeline Integration Tests", () => {
       })
 
       // Assertions (140-145)
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "SET_TIME_SCALE", scale: 2 })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "SET_SCROLL_POSITION", x: 100, y: 50 })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "SET_EDIT_MODE", mode: "trim" })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "SET_SNAP_MODE", mode: "clips" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "SET_TIME_SCALE",
+        scale: 2,
+      })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "SET_SCROLL_POSITION",
+        x: 100,
+        y: 50,
+      })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "SET_EDIT_MODE",
+        mode: "trim",
+      })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "SET_SNAP_MODE",
+        mode: "clips",
+      })
       expect(typeof result.current.setTimeScale).toBe("function")
       expect(result.current).toBeDefined()
     })
 
     it("should support complex editing workflow", async () => {
       const { result } = renderHook(() => useTimeline(), { wrapper })
-      const { result: undoResult } = renderHook(() => useUndoRedo(), { wrapper })
+      const { result: undoResult } = renderHook(() => useUndoRedo(), {
+        wrapper,
+      })
 
       // Complex workflow: add, move, trim, undo
       await act(async () => {
@@ -1037,7 +1088,9 @@ describe("Timeline Integration Tests", () => {
         clipIds: ["clip-1"],
         addToSelection: false,
       })
-      expect(mockTimelineActor.send).toHaveBeenCalledWith({ type: "COPY_CLIPS" })
+      expect(mockTimelineActor.send).toHaveBeenCalledWith({
+        type: "COPY_CLIPS",
+      })
       expect(mockTimelineActor.send).toHaveBeenCalledWith({
         type: "PASTE_CLIPS",
         trackId: "track-2",

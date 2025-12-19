@@ -276,24 +276,31 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
   }, [activeCameraIndex, parallelVideos, multicam])
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col" data-oid="5:hp0qd">
       {/* Прогресс-бар и время */}
-      <div className="px-2 pl-4 py-1">
-        <div className="flex items-center gap-1">
-          <div className="flex-1">
-            <div className="relative h-1 w-full rounded-full border border-teal dark:border-teal bg-white dark:bg-black">
+      <div className="px-2 pl-4 py-1" data-oid="7o9a:8j">
+        <div className="flex items-center gap-1" data-oid="xh-e60.">
+          <div className="flex-1" data-oid="-bb797-">
+            <div
+              className="relative h-1 w-full rounded-full border border-teal dark:border-teal bg-white dark:bg-black"
+              data-oid="y5sv_bg"
+            >
               <div
                 className="absolute top-0 left-0 h-full rounded-full bg-teal dark:bg-white transition-all duration-200 ease-out"
                 style={{
                   width: `${typeof calculatedDisplayTime === "number" && !Number.isNaN(calculatedDisplayTime) && typeof effectiveDuration === "number" && !Number.isNaN(effectiveDuration) && effectiveDuration > 0 ? (Math.max(0, calculatedDisplayTime) / effectiveDuration) * 100 : 0}%`,
                 }}
+                data-oid="tqdyx4l"
               />
+
               <div
                 className="absolute top-1/2 h-[14px] w-[14px] -translate-y-1/2 rounded-full border border-teal dark:border-teal bg-teal transition-all duration-200 ease-out"
                 style={{
                   left: `calc(${typeof calculatedDisplayTime === "number" && !Number.isNaN(calculatedDisplayTime) && typeof effectiveDuration === "number" && !Number.isNaN(effectiveDuration) && effectiveDuration > 0 ? (Math.max(0, calculatedDisplayTime) / effectiveDuration) * 100 : 0}% - 7px)`,
                 }}
+                data-oid="7xdhzvv"
               />
+
               <Slider
                 value={[Math.max(0, calculatedDisplayTime)]}
                 min={0}
@@ -303,30 +310,39 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
                 className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
                 disabled={isChangingCamera} // Отключаем слайдер во время переключения камеры
                 data-testid="slider"
+                data-oid="0l0572g"
               />
             </div>
           </div>
-          <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-black dark:text-white ml-1 font-mono min-w-[85px] text-center inline-block">
+          <span
+            className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-black dark:text-white ml-1 font-mono min-w-[85px] text-center inline-block"
+            data-oid=":9junms"
+          >
             {formatTimeToTimecode(calculatedDisplayTime)}
           </span>
-          <span className="mb-[3px]">/</span>
-          <span className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-background dark:text-white font-mono min-w-[85px] text-center inline-block">
+          <span className="mb-[3px]" data-oid="2u44q7v">
+            /
+          </span>
+          <span
+            className="rounded-xs bg-white font-light px-1.5 py-0.5 text-[11px] text-black transition-opacity duration-200 ease-out dark:bg-background dark:text-white font-mono min-w-[85px] text-center inline-block"
+            data-oid=".lezfga"
+          >
             {formatTimeToTimecode(effectiveDuration)}
           </span>
 
           {/* Скрытый элемент для обновления компонента при воспроизведении */}
           {currentTime > 365 * 24 * 60 * 60 && (
-            <span className="hidden">
+            <span className="hidden" data-oid="4plshgr">
               {localDisplayTime.toFixed(3)} - {calculatedDisplayTime.toFixed(3)}
             </span>
           )}
         </div>
       </div>
 
-      <div className="h-full w-full p-1">
-        <div className="flex items-center justify-between px-1 py-0">
+      <div className="h-full w-full p-1" data-oid="3hsv.0t">
+        <div className="flex items-center justify-between px-1 py-0" data-oid="dl4x05:">
           {/* Левая часть: индикатор источника, кнопки для камер и шаблонов */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" data-oid="ue-:ryg">
             {/* Индикатор источника видео - всегда отображается и работает как переключатель */}
             <Button
               className="h-8 w-8 cursor-pointer"
@@ -338,8 +354,13 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
                   : t("timeline.source.browser", "Браузер")
               }
               onClick={handleToggleSource}
+              data-oid="f8yx:4g"
             >
-              {videoSource === "timeline" ? <TvMinimalPlay className="h-8 w-8" /> : <ImagePlay className="h-8 w-8" />}
+              {videoSource === "timeline" ? (
+                <TvMinimalPlay className="h-8 w-8" data-oid="es538vh" />
+              ) : (
+                <ImagePlay className="h-8 w-8" data-oid="0dwh53e" />
+              )}
             </Button>
 
             {/* Кнопка переключения режима resizable - показываем только если применен шаблон */}
@@ -352,13 +373,14 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               }
               onClick={() => setIsResizableMode(!isResizableMode)}
               disabled={!file.probeData}
+              data-oid="i.56lw1"
             >
-              {<UnfoldHorizontal className="h-8 w-8" />}
+              {<UnfoldHorizontal className="h-8 w-8" data-oid="_9ympss" />}
             </Button>
-            <PrerenderControls currentTime={currentTime} duration={effectiveDuration ?? 0} />
+            <PrerenderControls currentTime={currentTime} duration={effectiveDuration ?? 0} data-oid="n8szp9e" />
 
             {/* Управление скоростью воспроизведения */}
-            {file.probeData && <PlaybackSpeedControl />}
+            {file.probeData && <PlaybackSpeedControl data-oid=".05.uii" />}
             {/* Кнопка снимка экрана */}
             <Button
               className="h-8 w-8 cursor-pointer"
@@ -367,8 +389,9 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               title={typeof window !== "undefined" ? t("timeline.controls.takeSnapshot") : "Take snapshot"}
               // onClick={takeSnapshot}
               disabled={isChangingCamera || isPlaying || !file.probeData} // Отключаем кнопку во время переключения камеры
+              data-oid="umlv25q"
             >
-              <Camera className="h-8 w-8" />
+              <Camera className="h-8 w-8" data-oid="0fy2g09" />
             </Button>
           </div>
 
@@ -376,6 +399,7 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
           <div
             className="flex items-center justify-center gap-2"
             style={{ flex: "1", marginLeft: "auto", marginRight: "auto" }}
+            data-oid="hz:1un:"
           >
             <Button
               className="h-8 w-8 cursor-pointer"
@@ -384,8 +408,9 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               title={typeof window !== "undefined" ? t("timeline.controls.firstFrame") : "First frame"}
               onClick={handleChevronFirst}
               disabled={isFirstFrame || isPlaying || isChangingCamera}
+              data-oid="xsczou7"
             >
-              <ChevronFirst className="h-8 w-8" />
+              <ChevronFirst className="h-8 w-8" data-oid="v_zljan" />
             </Button>
 
             <Button
@@ -395,8 +420,9 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               title={typeof window !== "undefined" ? t("timeline.controls.previousFrame") : "Previous frame"}
               onClick={handleSkipBackward}
               disabled={isFirstFrame || isPlaying || isChangingCamera}
+              data-oid="pt3ytti"
             >
-              <StepBack className="h-8 w-8" />
+              <StepBack className="h-8 w-8" data-oid="3ea3nbk" />
             </Button>
 
             <Button
@@ -406,8 +432,13 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               title={isPlaying ? t("timeline.controls.pause") : t("timeline.controls.play")}
               onClick={handlePlayPause}
               disabled={isChangingCamera}
+              data-oid="f1.2614"
             >
-              {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
+              {isPlaying ? (
+                <Pause className="h-8 w-8" data-oid="58jhrq:" />
+              ) : (
+                <Play className="h-8 w-8" data-oid="x2kpzq-" />
+              )}
             </Button>
 
             <Button
@@ -423,12 +454,14 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               }
               onClick={handleRecordToggle}
               disabled={isChangingCamera || !file.probeData} // Отключаем кнопку во время переключения камеры
+              data-oid="dnvuhq7"
             >
               <CircleDot
                 className={cn(
                   "h-8 w-8",
                   isRecording ? "animate-pulse text-red-500 hover:text-red-600" : "text-gray-300 hover:text-gray-400",
                 )}
+                data-oid=".d24fud"
               />
             </Button>
 
@@ -445,6 +478,7 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
                 }
                 onClick={handleSwitchCamera}
                 disabled={isChangingCamera || (!multicam.hasMulticamSupport && parallelVideos.length <= 1)}
+                data-oid="4dx82y:"
               >
                 {multicam.hasMulticamSupport ? multicam.activeAngleIndex + 1 : activeCameraIndex + 1}
               </Button>
@@ -457,8 +491,9 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               title={typeof window !== "undefined" ? t("timeline.controls.nextFrame") : "Next frame"}
               onClick={handleSkipForward}
               disabled={isLastFrame || isPlaying || isChangingCamera}
+              data-oid=":o5_kie"
             >
-              <StepForward className="h-8 w-8" />
+              <StepForward className="h-8 w-8" data-oid="wf:4_hs" />
             </Button>
 
             <Button
@@ -468,17 +503,18 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               title={typeof window !== "undefined" ? t("timeline.controls.lastFrame") : "Last frame"}
               onClick={handleChevronLast}
               disabled={isLastFrame || isPlaying || isChangingCamera}
+              data-oid="8gtwsy9"
             >
-              <ChevronLast className="h-8 w-8" />
+              <ChevronLast className="h-8 w-8" data-oid="x458kdb" />
             </Button>
           </div>
 
           {/* Правая часть: AI controls, кнопки управления звуком и полноэкранным режимом */}
-          <div className="flex items-center gap-2" style={{ justifyContent: "flex-end" }}>
+          <div className="flex items-center gap-2" style={{ justifyContent: "flex-end" }} data-oid="h3dgbcf">
             {/* AI Controls */}
-            <PlayerAIControls className="mr-2" />
+            <PlayerAIControls className="mr-2" data-oid="c0wr1jc" />
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" data-oid="bpytcq_">
               <Button
                 className="h-8 w-8 cursor-pointer"
                 variant="ghost"
@@ -491,14 +527,20 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
                     : "Mute audio"
                 }
                 onClick={handleToggleMute}
+                data-oid="plj-igw"
               >
-                {volume === 0 ? <VolumeX className="h-8 w-8" /> : <Volume2 className="h-8 w-8" />}
+                {volume === 0 ? (
+                  <VolumeX className="h-8 w-8" data-oid="fbta0dn" />
+                ) : (
+                  <Volume2 className="h-8 w-8" data-oid="2i7..az" />
+                )}
               </Button>
               <VolumeSlider
                 volume={volume}
                 volumeRef={volumeRef}
                 onValueChange={handleVolumeChange}
                 onValueCommit={handleVolumeChangeEnd}
+                data-oid="geo8g8u"
               />
             </div>
             <Button
@@ -514,8 +556,13 @@ export function PlayerControls({ currentTime, file, duration: providerDuration }
               }
               onClick={handleFullscreen}
               disabled={!file}
+              data-oid="a542kvw"
             >
-              {isFullscreen ? <Minimize2 className="h-8 w-8" /> : <Maximize2 className="h-8 w-8" />}
+              {isFullscreen ? (
+                <Minimize2 className="h-8 w-8" data-oid="t4296mg" />
+              ) : (
+                <Maximize2 className="h-8 w-8" data-oid="z_.hvez" />
+              )}
             </Button>
           </div>
         </div>

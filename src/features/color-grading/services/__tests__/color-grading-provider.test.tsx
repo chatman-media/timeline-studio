@@ -44,18 +44,22 @@ const mockColorGrading = {
         { x: 0, y: 256, id: "start" },
         { x: 256, y: 0, id: "end" },
       ],
+
       red: [
         { x: 0, y: 256, id: "start" },
         { x: 256, y: 0, id: "end" },
       ],
+
       green: [
         { x: 0, y: 256, id: "start" },
         { x: 256, y: 0, id: "end" },
       ],
+
       blue: [
         { x: 0, y: 256, id: "start" },
         { x: 256, y: 0, id: "end" },
       ],
+
       hueVsHue: [],
       hueVsSaturation: [],
       hueVsLuminance: [],
@@ -106,12 +110,22 @@ function TestComponent() {
   const context = useColorGradingContext()
 
   return (
-    <div>
-      <div data-testid="temperature">{context.state.basicParameters.temperature}</div>
-      <div data-testid="has-changes">{context.hasChanges.toString()}</div>
-      <div data-testid="is-active">{context.isActive.toString()}</div>
-      <button onClick={() => context.updateBasicParameter("temperature", 1)}>Update Temperature</button>
-      <button onClick={() => context.resetAll()}>Reset All</button>
+    <div data-oid="tp5t3:h">
+      <div data-testid="temperature" data-oid="m-eibi2">
+        {context.state.basicParameters.temperature}
+      </div>
+      <div data-testid="has-changes" data-oid="7iu3xjl">
+        {context.hasChanges.toString()}
+      </div>
+      <div data-testid="is-active" data-oid="prjvkeh">
+        {context.isActive.toString()}
+      </div>
+      <button onClick={() => context.updateBasicParameter("temperature", 1)} data-oid="9kqv5j4">
+        Update Temperature
+      </button>
+      <button onClick={() => context.resetAll()} data-oid="zrt6m8g">
+        Reset All
+      </button>
     </div>
   )
 }
@@ -130,8 +144,8 @@ describe("ColorGradingProvider", () => {
 
   it("should provide color grading context to children", () => {
     render(
-      <ColorGradingProvider>
-        <TestComponent />
+      <ColorGradingProvider data-oid="7p.dbs3">
+        <TestComponent data-oid="tb_d-pm" />
       </ColorGradingProvider>,
     )
 
@@ -142,8 +156,8 @@ describe("ColorGradingProvider", () => {
 
   it("should provide all required context methods", () => {
     render(
-      <ColorGradingProvider>
-        <TestComponent />
+      <ColorGradingProvider data-oid="sz.k20k">
+        <TestComponent data-oid="k47s4o0" />
       </ColorGradingProvider>,
     )
 
@@ -156,8 +170,8 @@ describe("ColorGradingProvider", () => {
 
   it("should call context methods when triggered", () => {
     render(
-      <ColorGradingProvider>
-        <TestComponent />
+      <ColorGradingProvider data-oid="ij7z3ls">
+        <TestComponent data-oid="-i51yql" />
       </ColorGradingProvider>,
     )
 
@@ -177,7 +191,7 @@ describe("useColorGradingContext", () => {
     console.error = vi.fn()
 
     expect(() => {
-      render(<TestComponent />)
+      render(<TestComponent data-oid="zwr:ve4" />)
     }).toThrow("useColorGradingContext must be used within ColorGradingProvider")
 
     console.error = originalError
@@ -192,8 +206,8 @@ describe("useColorGradingContext", () => {
     }
 
     render(
-      <ColorGradingProvider>
-        <ContextCapture />
+      <ColorGradingProvider data-oid="oxry1-i">
+        <ContextCapture data-oid="-e4un3_" />
       </ColorGradingProvider>,
     )
 
@@ -212,8 +226,8 @@ describe("useColorGradingContext", () => {
     }
 
     render(
-      <ColorGradingProvider>
-        <ContextCapture />
+      <ColorGradingProvider data-oid="ot0uy_a">
+        <ContextCapture data-oid="-jd_yg2" />
       </ColorGradingProvider>,
     )
 
@@ -247,8 +261,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="3yfdl9m">
+          <ContextCapture data-oid="b_kbjy6" />
         </ColorGradingProvider>,
       )
 
@@ -265,8 +279,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="mrv2n_d">
+          <ContextCapture data-oid="__a2oam" />
         </ColorGradingProvider>,
       )
 
@@ -283,8 +297,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="sme::4p">
+          <ContextCapture data-oid="50u3zjt" />
         </ColorGradingProvider>,
       )
 
@@ -301,8 +315,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="dsh53pu">
+          <ContextCapture data-oid="e57shdd" />
         </ColorGradingProvider>,
       )
 
@@ -319,8 +333,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid=":o-fygy">
+          <ContextCapture data-oid="gdz_fp7" />
         </ColorGradingProvider>,
       )
 
@@ -337,8 +351,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="tpo8105">
+          <ContextCapture data-oid="c_q:e.u" />
         </ColorGradingProvider>,
       )
 
@@ -354,8 +368,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="0a4e-7a">
+          <ContextCapture data-oid="dym0y.9" />
         </ColorGradingProvider>,
       )
 
@@ -371,8 +385,8 @@ describe("useColorGradingContext", () => {
       }
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="u9:o_x6">
+          <ContextCapture data-oid=":6f9kag" />
         </ColorGradingProvider>,
       )
 
@@ -403,8 +417,8 @@ describe("useColorGradingContext", () => {
       })
 
       render(
-        <ColorGradingProvider>
-          <ContextCapture />
+        <ColorGradingProvider data-oid="s5j-5vt">
+          <ContextCapture data-oid="8-o2:d:" />
         </ColorGradingProvider>,
       )
 
@@ -425,16 +439,16 @@ describe("useColorGradingContext", () => {
   describe("edge cases", () => {
     it("should handle multiple renders without issues", () => {
       const { rerender } = render(
-        <ColorGradingProvider>
-          <TestComponent />
+        <ColorGradingProvider data-oid=":75f_bp">
+          <TestComponent data-oid="hh.84az" />
         </ColorGradingProvider>,
       )
 
       expect(screen.getByTestId("temperature")).toHaveTextContent("0")
 
       rerender(
-        <ColorGradingProvider>
-          <TestComponent />
+        <ColorGradingProvider data-oid="xgyq76z">
+          <TestComponent data-oid="dlkw00p" />
         </ColorGradingProvider>,
       )
 
@@ -448,13 +462,17 @@ describe("useColorGradingContext", () => {
 
       function NestedComponent() {
         const context = useColorGradingContext()
-        return <div data-testid="nested">{context.state.basicParameters.temperature}</div>
+        return (
+          <div data-testid="nested" data-oid="0q4nwf2">
+            {context.state.basicParameters.temperature}
+          </div>
+        )
       }
 
       render(
-        <ColorGradingProvider>
-          <ColorGradingProvider>
-            <NestedComponent />
+        <ColorGradingProvider data-oid="94dsvuh">
+          <ColorGradingProvider data-oid="rcjy75z">
+            <NestedComponent data-oid="-rgkxs." />
           </ColorGradingProvider>
         </ColorGradingProvider>,
       )
@@ -470,20 +488,24 @@ describe("useColorGradingContext", () => {
 
         if (!showContent) return null
 
-        return <div data-testid="dynamic">{context.state.basicParameters.temperature}</div>
+        return (
+          <div data-testid="dynamic" data-oid="bbj_-.e">
+            {context.state.basicParameters.temperature}
+          </div>
+        )
       }
 
       const { rerender } = render(
-        <ColorGradingProvider>
-          <DynamicComponent showContent={false} />
+        <ColorGradingProvider data-oid="sw3o3.n">
+          <DynamicComponent showContent={false} data-oid="b5noa1g" />
         </ColorGradingProvider>,
       )
 
       expect(screen.queryByTestId("dynamic")).not.toBeInTheDocument()
 
       rerender(
-        <ColorGradingProvider>
-          <DynamicComponent showContent={true} />
+        <ColorGradingProvider data-oid=":zqx3s5">
+          <DynamicComponent showContent={true} data-oid="waw-ei1" />
         </ColorGradingProvider>,
       )
 
@@ -492,8 +514,8 @@ describe("useColorGradingContext", () => {
 
     it("should handle unmounting gracefully", () => {
       const { unmount } = render(
-        <ColorGradingProvider>
-          <TestComponent />
+        <ColorGradingProvider data-oid="902tk1j">
+          <TestComponent data-oid="ng7clk-" />
         </ColorGradingProvider>,
       )
 

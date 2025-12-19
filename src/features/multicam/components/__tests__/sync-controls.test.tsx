@@ -48,13 +48,16 @@ vi.mock("../audio-sync-dialog", () => ({
     onSync: () => Promise<any>
   }) =>
     isOpen ? (
-      <div data-testid="audio-sync-dialog">
-        <button onClick={onClose}>Close Audio Sync</button>
+      <div data-testid="audio-sync-dialog" data-oid="ufyy12r">
+        <button onClick={onClose} data-oid="ajl8g53">
+          Close Audio Sync
+        </button>
         <button
           onClick={async () => {
             await onSync()
             onClose()
           }}
+          data-oid=":l3:coz"
         >
           Run Audio Sync
         </button>
@@ -82,7 +85,7 @@ describe("SyncControls", () => {
   it("не рендерится, если нет поддержки мультикамеры", () => {
     mockMulticamReturn.hasMulticamSupport = false
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="bdxg937" />)
 
     // Компонент не должен рендерить кнопку синхронизации
     expect(screen.queryByText("Синхронизация")).not.toBeInTheDocument()
@@ -91,7 +94,7 @@ describe("SyncControls", () => {
   it("показывает кнопку синхронизации", () => {
     mockMulticamReturn.hasMulticamSupport = true
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="h:q6blh" />)
 
     expect(screen.getByRole("button", { name: /Синхронизация/i })).toBeInTheDocument()
   })
@@ -118,7 +121,7 @@ describe("SyncControls", () => {
       },
     ]
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="n5pt_eb" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
 
@@ -131,7 +134,7 @@ describe("SyncControls", () => {
     const user = userEvent.setup()
     mockMulticamReturn.hasMulticamSupport = true
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="qmjj:5o" />)
 
     // Открываем меню
     const syncButton = screen.getByRole("button", { name: /Синхронизация/i })
@@ -158,7 +161,7 @@ describe("SyncControls", () => {
     const user = userEvent.setup()
     mockMulticamReturn.hasMulticamSupport = true
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="y7-8ni7" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
     await user.click(screen.getByText("Синхронизация по аудио"))
@@ -180,7 +183,7 @@ describe("SyncControls", () => {
       },
     ]
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="e5cw4n6" />)
 
     // Открываем меню и выбираем аудио синхронизацию
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
@@ -216,10 +219,11 @@ describe("SyncControls", () => {
         isActive: false,
       },
     ]
+
     mockMulticamReturn.syncOffsets = [0, 1.5]
     mockMulticamReturn.activeAngleIndex = 0
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="206_eo4" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
 
@@ -250,7 +254,7 @@ describe("SyncControls", () => {
       },
     ]
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="r5svdrc" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
     await user.click(screen.getByText("Camera 2"))
@@ -282,9 +286,10 @@ describe("SyncControls", () => {
         isActive: false,
       },
     ]
+
     mockMulticamReturn.syncOffsets = [0, 0]
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="u6wbrkg" />)
 
     // Открываем меню и выбираем Camera 2
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
@@ -319,9 +324,10 @@ describe("SyncControls", () => {
         isActive: false,
       },
     ]
+
     mockMulticamReturn.activeAngleIndex = 0
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="9qaazjn" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
 
@@ -348,7 +354,7 @@ describe("SyncControls", () => {
     // Мок должен вернуть rejected promise
     mockMulticamReturn.autoSyncByTimecode.mockRejectedValue(new Error("Sync failed"))
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="c2e8rnd" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
     await user.click(screen.getByText("Синхронизация по таймкоду"))
@@ -378,7 +384,7 @@ describe("SyncControls", () => {
       return new Promise((resolve) => setTimeout(resolve, 100))
     })
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid=":_.yz68" />)
 
     const syncButton = screen.getByRole("button", { name: /Синхронизация/i })
     await user.click(syncButton)
@@ -394,7 +400,14 @@ describe("SyncControls", () => {
   it("применяет кастомный className", () => {
     mockMulticamReturn.hasMulticamSupport = true
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" className="custom-class" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(
+      <SyncControls
+        baseClipId="clip1"
+        className="custom-class"
+        onSyncComplete={mockOnSyncComplete}
+        data-oid="mt-6fic"
+      />,
+    )
 
     expect(screen.getByRole("button", { name: /Синхронизация/i })).toHaveClass("custom-class")
   })
@@ -421,7 +434,7 @@ describe("SyncControls", () => {
       },
     ]
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="lc_hc6m" />)
 
     // Открываем диалог
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
@@ -459,7 +472,7 @@ describe("SyncControls", () => {
       },
     ]
 
-    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} />)
+    renderWithTimeline(<SyncControls baseClipId="clip1" onSyncComplete={mockOnSyncComplete} data-oid="g9b8:wf" />)
 
     await user.click(screen.getByRole("button", { name: /Синхронизация/i }))
     await user.click(screen.getByText("Camera 2"))

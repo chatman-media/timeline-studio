@@ -40,16 +40,16 @@ vi.mock("react-i18next", () => ({
 
 // Мокаем иконки lucide
 vi.mock("lucide-react", () => ({
-  Clapperboard: () => <span data-testid="icon-clapperboard" />,
-  Music: () => <span data-testid="icon-music" />,
-  Type: () => <span data-testid="icon-type" />,
-  Sparkles: () => <span data-testid="icon-sparkles" />,
-  Blend: () => <span data-testid="icon-blend" />,
-  FlipHorizontal2: () => <span data-testid="icon-flip" />,
-  Video: () => <span data-testid="icon-video" />,
-  Sticker: () => <span data-testid="icon-sticker" />,
-  LayoutTemplate: () => <span data-testid="icon-layouttemplate" />,
-  Wand2: () => <span data-testid="icon-wand2" />,
+  Clapperboard: () => <span data-testid="icon-clapperboard" data-oid="394fhs6" />,
+  Music: () => <span data-testid="icon-music" data-oid=":plo-q4" />,
+  Type: () => <span data-testid="icon-type" data-oid="hgltsh3" />,
+  Sparkles: () => <span data-testid="icon-sparkles" data-oid="9d4jrji" />,
+  Blend: () => <span data-testid="icon-blend" data-oid="4slp4rx" />,
+  FlipHorizontal2: () => <span data-testid="icon-flip" data-oid="16emp6e" />,
+  Video: () => <span data-testid="icon-video" data-oid="zo6afub" />,
+  Sticker: () => <span data-testid="icon-sticker" data-oid="0ffkkr." />,
+  LayoutTemplate: () => <span data-testid="icon-layouttemplate" data-oid="c9y1u9a" />,
+  Wand2: () => <span data-testid="icon-wand2" data-oid="1niv1s8" />,
 }))
 
 describe("BrowserTabs", () => {
@@ -59,7 +59,7 @@ describe("BrowserTabs", () => {
   }
 
   const renderWithProvider = (component: React.ReactElement) => {
-    return render(<EffectsProvider>{component}</EffectsProvider>)
+    return render(<EffectsProvider data-oid="le3izk_">{component}</EffectsProvider>)
   }
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe("BrowserTabs", () => {
   })
 
   it("должен рендерить все активные вкладки", () => {
-    renderWithProvider(<BrowserTabs {...defaultProps} />)
+    renderWithProvider(<BrowserTabs {...defaultProps} data-oid="r31mb68" />)
 
     expect(screen.getByTestId("media-tab")).toBeInTheDocument()
     expect(screen.getByTestId("music-tab")).toBeInTheDocument()
@@ -83,7 +83,7 @@ describe("BrowserTabs", () => {
   })
 
   it("должен отображать правильные иконки для каждой активной вкладки", () => {
-    renderWithProvider(<BrowserTabs {...defaultProps} />)
+    renderWithProvider(<BrowserTabs {...defaultProps} data-oid="q3p:30x" />)
 
     expect(screen.getByTestId("media-tab")).toContainElement(screen.getByTestId("icon-clapperboard"))
     expect(screen.getByTestId("music-tab")).toContainElement(screen.getByTestId("icon-music"))
@@ -96,7 +96,7 @@ describe("BrowserTabs", () => {
   })
 
   it("должен отображать правильные метки для каждой активной вкладки", () => {
-    renderWithProvider(<BrowserTabs {...defaultProps} />)
+    renderWithProvider(<BrowserTabs {...defaultProps} data-oid="k0i6r70" />)
 
     expect(screen.getByTestId("media-tab")).toHaveTextContent("browser.tabs.media")
     expect(screen.getByTestId("music-tab")).toHaveTextContent("browser.tabs.music")
@@ -109,7 +109,7 @@ describe("BrowserTabs", () => {
   })
 
   it("должен устанавливать правильные классы для активной вкладки", () => {
-    renderWithProvider(<BrowserTabs {...defaultProps} activeTab="music" />)
+    renderWithProvider(<BrowserTabs {...defaultProps} activeTab="music" data-oid="cwk.hu5" />)
 
     // Активная вкладка имеет специальные классы
     const musicTab = screen.getByTestId("music-tab")
@@ -123,7 +123,7 @@ describe("BrowserTabs", () => {
 
   it("должен вызывать onTabChange при клике на неактивную вкладку", () => {
     const onTabChange = vi.fn()
-    renderWithProvider(<BrowserTabs activeTab="media" onTabChange={onTabChange} />)
+    renderWithProvider(<BrowserTabs activeTab="media" onTabChange={onTabChange} data-oid="o5vh0c-" />)
 
     // Клик по неактивной вкладке
     fireEvent.click(screen.getByTestId("music-tab"))
@@ -138,7 +138,7 @@ describe("BrowserTabs", () => {
 
   it("должен не вызывать onTabChange при клике на активную вкладку", () => {
     const onTabChange = vi.fn()
-    renderWithProvider(<BrowserTabs activeTab="media" onTabChange={onTabChange} />)
+    renderWithProvider(<BrowserTabs activeTab="media" onTabChange={onTabChange} data-oid="s7xe5gg" />)
 
     // Клик по активной вкладке
     fireEvent.click(screen.getByTestId("media-tab"))
@@ -146,7 +146,7 @@ describe("BrowserTabs", () => {
   })
 
   it("должен применять правильные CSS классы к контейнеру вкладок", () => {
-    const { container } = renderWithProvider(<BrowserTabs {...defaultProps} />)
+    const { container } = renderWithProvider(<BrowserTabs {...defaultProps} data-oid="dh0x0tc" />)
 
     const tabsContainer = container.querySelector("div")
     const expectedClasses = [
@@ -160,20 +160,21 @@ describe("BrowserTabs", () => {
       "m-0",
       "p-0",
     ]
+
     expectedClasses.forEach((className) => {
       expect(tabsContainer).toHaveClass(className)
     })
   })
 
   it("должен обновляться при изменении activeTab", () => {
-    const { rerender } = renderWithProvider(<BrowserTabs {...defaultProps} />)
+    const { rerender } = renderWithProvider(<BrowserTabs {...defaultProps} data-oid="kv5r1-1" />)
 
     expect(screen.getByTestId("media-tab")).toHaveClass("bg-background")
 
     // Перерендерим с новым activeTab
     rerender(
-      <EffectsProvider>
-        <BrowserTabs {...defaultProps} activeTab="filters" />
+      <EffectsProvider data-oid="tc0kygk">
+        <BrowserTabs {...defaultProps} activeTab="filters" data-oid="w:hb_o3" />
       </EffectsProvider>,
     )
 
@@ -186,7 +187,7 @@ describe("BrowserTabs", () => {
 
     tabs.forEach((tab) => {
       // Очищаем DOM перед каждым рендером
-      const { unmount } = renderWithProvider(<BrowserTabs {...defaultProps} activeTab={tab} />)
+      const { unmount } = renderWithProvider(<BrowserTabs {...defaultProps} activeTab={tab} data-oid="vbg2yem" />)
       expect(screen.getByTestId(`${tab}-tab`)).toHaveClass("bg-background")
       unmount()
     })

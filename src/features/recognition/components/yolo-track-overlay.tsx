@@ -273,17 +273,21 @@ export function YoloTrackOverlay({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">{t("Треки объектов")}</h3>
-        <div className="flex items-center gap-2">
-          <label className="flex items-center gap-2 text-sm">
+    <div className="space-y-4" data-oid="z-.pyx7">
+      <div className="flex items-center justify-between" data-oid="atzd86.">
+        <h3 className="text-lg font-semibold" data-oid="-jtzrbv">
+          {t("Треки объектов")}
+        </h3>
+        <div className="flex items-center gap-2" data-oid="03bs1ll">
+          <label className="flex items-center gap-2 text-sm" data-oid="p:42kke">
             <input
               type="checkbox"
               checked={showTrajectories}
               onChange={(e) => setShowTrajectories(e.target.checked)}
               className="rounded"
+              data-oid="c_d.g9b"
             />
+
             {t("Показать траектории")}
           </label>
         </div>
@@ -298,24 +302,31 @@ export function YoloTrackOverlay({
         className="cursor-pointer border border-gray-300 rounded bg-white"
         onClick={handleCanvasClick}
         style={{ width, height }}
+        data-oid="g9rt6j9"
       />
 
       {/* Информация о треках */}
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div>
-          <div className="font-medium">{t("Всего треков")}</div>
-          <div className="text-gray-600">{trackHistory.size}</div>
+      <div className="grid grid-cols-2 gap-4 text-sm" data-oid="4p9zojb">
+        <div data-oid="3ebsgt_">
+          <div className="font-medium" data-oid="m7by5o0">
+            {t("Всего треков")}
+          </div>
+          <div className="text-gray-600" data-oid="gpi_mwf">
+            {trackHistory.size}
+          </div>
         </div>
-        <div>
-          <div className="font-medium">{t("Выбранный трек")}</div>
-          <div className="text-gray-600">
+        <div data-oid="x7bx9bm">
+          <div className="font-medium" data-oid="o56msms">
+            {t("Выбранный трек")}
+          </div>
+          <div className="text-gray-600" data-oid="hc5g-qj">
             {selectedTrack ? trackHistory.get(selectedTrack)?.[0]?.class || t("Неизвестно") : t("Не выбран")}
           </div>
         </div>
       </div>
 
       {/* Легенда */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" data-oid=".-qk88s">
         {Array.from(
           new Set(
             Array.from(trackHistory.values())
@@ -323,9 +334,14 @@ export function YoloTrackOverlay({
               .map((point) => point.class),
           ),
         ).map((className) => (
-          <div key={className} className="flex items-center gap-1 text-xs">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getColorForClass(className) }} />
-            <span>{className}</span>
+          <div key={className} className="flex items-center gap-1 text-xs" data-oid="ix6d2pt">
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: getColorForClass(className) }}
+              data-oid="rp:fn:x"
+            />
+
+            <span data-oid="l3zf6sq">{className}</span>
           </div>
         ))}
       </div>

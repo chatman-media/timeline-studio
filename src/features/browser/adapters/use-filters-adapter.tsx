@@ -43,9 +43,10 @@ const FilterPreviewWrapper: React.FC<PreviewComponentProps<VideoFilter>> = ({
         className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
         onClick={handleClick}
         {...dragProps}
+        data-oid="b.v3fei"
       >
         {/* Filter preview thumbnail */}
-        <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden">
+        <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden" data-oid="4yfkgth">
           <video
             src="/t1.mp4"
             className="w-full h-full object-cover"
@@ -53,33 +54,43 @@ const FilterPreviewWrapper: React.FC<PreviewComponentProps<VideoFilter>> = ({
             muted
             playsInline
             preload="metadata"
+            data-oid="-u:t5e."
           />
         </div>
 
         {/* Filter Info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{filter.labels?.ru || filter.name}</div>
-          <div className="text-xs text-muted-foreground truncate">{filter.description?.en || ""}</div>
+        <div className="flex-1 min-w-0" data-oid="7_c5a8k">
+          <div className="font-medium text-sm truncate" data-oid="csm9-6q">
+            {filter.labels?.ru || filter.name}
+          </div>
+          <div className="text-xs text-muted-foreground truncate" data-oid="37z_3h.">
+            {filter.description?.en || ""}
+          </div>
         </div>
 
         {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground">{filter.category}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="92jk03e">
+          {filter.category}
+        </div>
 
         {/* Complexity */}
-        <div className="shrink-0 text-xs text-muted-foreground">{filter.complexity}</div>
+        <div className="shrink-0 text-xs text-muted-foreground" data-oid="19kvkno">
+          {filter.complexity}
+        </div>
       </div>
     )
   }
 
   // Thumbnails mode - use the original FilterPreview component
   return (
-    <div {...dragProps}>
+    <div {...dragProps} data-oid="unybggm">
       <FilterPreview
         filter={filter}
         onClick={handleClick}
         size={previewSize}
         previewWidth={previewWidth}
         previewHeight={previewHeight}
+        data-oid="lkwjb1l"
       />
     </div>
   )
@@ -154,6 +165,7 @@ export function useFiltersAdapter(): ListAdapter<VideoFilter> {
           filter.category,
           ...(filter.tags || []),
         ]
+
         return texts.filter(Boolean)
       },
       getGroupValue: (filter: VideoFilter, groupBy: string) => {

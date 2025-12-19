@@ -8,7 +8,7 @@ export const MusicAdapterContent = memo(() => {
   const adapter = useMusicAdapter()
   const handleItemSelect = useMemo(() => () => {}, [])
 
-  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} />
+  return <UniversalList adapter={adapter} onItemSelect={handleItemSelect} data-oid="vbbd0wq" />
 })
 
 MusicAdapterContent.displayName = "MusicAdapterContent"

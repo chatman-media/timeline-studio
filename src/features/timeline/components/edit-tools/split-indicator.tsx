@@ -84,11 +84,12 @@ export function SplitIndicator({ containerRef, timeScale, scrollX, onSplit, disa
           "transition-opacity duration-100",
         )}
         style={{ left: `${mouseX}px` }}
+        data-oid="1xhpo.:"
       >
         {/* Split cursor indicator */}
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2">
-          <div className="relative">
-            <SplitIcon className="w-6 h-6 text-red-500" />
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2" data-oid="488jctl">
+          <div className="relative" data-oid="ys9277u">
+            <SplitIcon className="w-6 h-6 text-red-500" data-oid="72uu5-3" />
           </div>
         </div>
 
@@ -99,6 +100,7 @@ export function SplitIndicator({ containerRef, timeScale, scrollX, onSplit, disa
             style={{
               clipPath: "polygon(0 45%, 100% 40%, 100% 60%, 0 55%)",
             }}
+            data-oid="ri3t12g"
           />
         )}
       </div>
@@ -107,6 +109,7 @@ export function SplitIndicator({ containerRef, timeScale, scrollX, onSplit, disa
       <div
         className="absolute -bottom-6 text-xs text-red-500 font-mono pointer-events-none z-30"
         style={{ left: `${mouseX}px`, transform: "translateX(-50%)" }}
+        data-oid="a4y22gf"
       >
         {formatTime((mouseX + scrollX) / timeScale)}
       </div>
@@ -117,10 +120,10 @@ export function SplitIndicator({ containerRef, timeScale, scrollX, onSplit, disa
 // Split icon component
 function SplitIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 2 L12 22" />
-      <path d="M7 6 L2 12 L7 18" />
-      <path d="M17 6 L22 12 L17 18" />
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" data-oid="fm7m.ve">
+      <path d="M12 2 L12 22" data-oid="tksqop." />
+      <path d="M7 6 L2 12 L7 18" data-oid="0luap:n" />
+      <path d="M17 6 L22 12 L17 18" data-oid="461-atq" />
     </svg>
   )
 }
@@ -154,7 +157,7 @@ export function SplitPreview({ clips, splitTime, timeScale, className }: SplitPr
   if (affectedClips.length === 0) return null
 
   return (
-    <div className={cn("absolute inset-0 pointer-events-none", className)}>
+    <div className={cn("absolute inset-0 pointer-events-none", className)} data-oid="dso_h0f">
       {affectedClips.map((clip) => {
         const splitPoint = splitTime - clip.startTime
         const splitPosition = splitPoint * timeScale
@@ -168,14 +171,20 @@ export function SplitPreview({ clips, splitTime, timeScale, className }: SplitPr
               left: `${clipLeft}px`,
               width: `${clip.duration * timeScale}px`,
             }}
+            data-oid="d_21uq1"
           >
             {/* Split line within clip */}
-            <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${splitPosition}px` }} />
+            <div
+              className="absolute top-0 bottom-0 w-0.5 bg-red-500"
+              style={{ left: `${splitPosition}px` }}
+              data-oid="lml1r-x"
+            />
 
             {/* Split point indicator */}
             <div
               className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"
               style={{ left: `${splitPosition - 4}px` }}
+              data-oid="o1019lq"
             />
           </div>
         )

@@ -58,6 +58,7 @@ function Waveform({ audioUrl, className }: WaveformProps) {
           "audio/mp4",
           "audio/aac",
         ]
+
         if (!supportedFormats.some((format) => blob.type.includes(format.split("/")[1]))) {
           logger.warn(`Potentially unsupported audio format: ${blob.type}`)
         }
@@ -135,7 +136,7 @@ function Waveform({ audioUrl, className }: WaveformProps) {
     }
   }, [audioBlob])
 
-  return <div ref={containerRef} className={className || "w-full h-full"} />
+  return <div ref={containerRef} className={className || "w-full h-full"} data-oid="7gvu1_n" />
 }
 
 Waveform.displayName = "Waveform"

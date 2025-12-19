@@ -46,26 +46,48 @@ export function ScopeViewer({ type, refreshRate, isFullscreen = false, onClose }
     <div
       ref={containerRef}
       className={`relative bg-black rounded-lg overflow-hidden ${isFullscreen ? "w-full h-full" : "w-full"}`}
+      data-oid="3rc09hy"
     >
       {/* Кнопка закрытия для полноэкранного режима */}
       {isFullscreen && onClose && (
-        <div className="absolute top-4 right-4 z-10">
-          <Button variant="ghost" size="sm" onClick={onClose} className="bg-black/50 hover:bg-black/70">
-            <X className="h-4 w-4" />
+        <div className="absolute top-4 right-4 z-10" data-oid="oac_b94">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="bg-black/50 hover:bg-black/70"
+            data-oid="a51xuhm"
+          >
+            <X className="h-4 w-4" data-oid="58uj8po" />
           </Button>
         </div>
       )}
 
       {/* Рендер соответствующего скопа */}
-      <div className={isFullscreen ? "p-8" : ""}>
+      <div className={isFullscreen ? "p-8" : ""} data-oid="8x65_ty">
         {type === "waveform" && (
-          <WaveformScope width={dimensions.width} height={dimensions.height} refreshRate={refreshRate} />
+          <WaveformScope
+            width={dimensions.width}
+            height={dimensions.height}
+            refreshRate={refreshRate}
+            data-oid="3enr0ma"
+          />
         )}
         {type === "vectorscope" && (
-          <VectorscopeScope width={dimensions.width} height={dimensions.height} refreshRate={refreshRate} />
+          <VectorscopeScope
+            width={dimensions.width}
+            height={dimensions.height}
+            refreshRate={refreshRate}
+            data-oid="sfvagec"
+          />
         )}
         {type === "histogram" && (
-          <HistogramScope width={dimensions.width} height={dimensions.height} refreshRate={refreshRate} />
+          <HistogramScope
+            width={dimensions.width}
+            height={dimensions.height}
+            refreshRate={refreshRate}
+            data-oid="b.z.o5f"
+          />
         )}
       </div>
     </div>

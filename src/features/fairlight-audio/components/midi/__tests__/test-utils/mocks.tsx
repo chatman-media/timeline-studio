@@ -17,30 +17,61 @@ export const mockUIComponents = () => {
   // Mock UI components
   vi.mock("@/components/ui/alert", () => ({
     Alert: ({ children, className }: any) => (
-      <div className={className} role="alert">
+      <div className={className} role="alert" data-oid="h621whe">
         {children}
       </div>
     ),
-    AlertDescription: ({ children }: any) => <div>{children}</div>,
+
+    AlertDescription: ({ children }: any) => <div data-oid="o9lmuqn">{children}</div>,
   }))
 
   vi.mock("@/components/ui/badge", () => ({
-    Badge: ({ children, variant }: any) => <span data-variant={variant}>{children}</span>,
+    Badge: ({ children, variant }: any) => (
+      <span data-variant={variant} data-oid="l9wogh0">
+        {children}
+      </span>
+    ),
   }))
 
   vi.mock("@/components/ui/button", () => ({
     Button: ({ children, onClick, disabled, variant, size, className }: any) => (
-      <button onClick={onClick} disabled={disabled} data-variant={variant} data-size={size} className={className}>
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        data-variant={variant}
+        data-size={size}
+        className={className}
+        data-oid="tw939pn"
+      >
         {children}
       </button>
     ),
   }))
 
   vi.mock("@/components/ui/card", () => ({
-    Card: ({ children, className }: any) => <div className={className}>{children}</div>,
-    CardContent: ({ children, className }: any) => <div className={className}>{children}</div>,
-    CardHeader: ({ children, className }: any) => <div className={className}>{children}</div>,
-    CardTitle: ({ children, className }: any) => <h3 className={className}>{children}</h3>,
+    Card: ({ children, className }: any) => (
+      <div className={className} data-oid="ggo2bgi">
+        {children}
+      </div>
+    ),
+
+    CardContent: ({ children, className }: any) => (
+      <div className={className} data-oid="_4l8zw6">
+        {children}
+      </div>
+    ),
+
+    CardHeader: ({ children, className }: any) => (
+      <div className={className} data-oid="-1ynps_">
+        {children}
+      </div>
+    ),
+
+    CardTitle: ({ children, className }: any) => (
+      <h3 className={className} data-oid="e75yrai">
+        {children}
+      </h3>
+    ),
   }))
 
   vi.mock("@/components/ui/dialog", () => ({
@@ -48,43 +79,68 @@ export const mockUIComponents = () => {
       // If open is undefined, default to true for components that always show
       const isOpen = open !== undefined ? open : true
       return isOpen ? (
-        <div data-testid="dialog" onClick={() => onOpenChange?.(false)}>
+        <div data-testid="dialog" onClick={() => onOpenChange?.(false)} data-oid="cxt_xn2">
           {children}
         </div>
       ) : null
     },
-    DialogContent: ({ children, className }: any) => <div className={className}>{children}</div>,
-    DialogDescription: ({ children }: any) => <div>{children}</div>,
-    DialogFooter: ({ children }: any) => <div>{children}</div>,
-    DialogHeader: ({ children }: any) => <div>{children}</div>,
-    DialogTitle: ({ children }: any) => <h2>{children}</h2>,
-  }))
-
-  vi.mock("@/components/ui/dropdown-menu", () => ({
-    DropdownMenu: ({ children }: any) => <div>{children}</div>,
-    DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
-    DropdownMenuItem: ({ children, onClick, className }: any) => (
-      <div onClick={onClick} className={className}>
+    DialogContent: ({ children, className }: any) => (
+      <div className={className} data-oid="mdv3oxf">
         {children}
       </div>
     ),
-    DropdownMenuTrigger: ({ children, _asChild }: any) => <div data-testid="dropdown-trigger">{children}</div>,
+
+    DialogDescription: ({ children }: any) => <div data-oid="afesls_">{children}</div>,
+
+    DialogFooter: ({ children }: any) => <div data-oid="b7infd1">{children}</div>,
+
+    DialogHeader: ({ children }: any) => <div data-oid="_z-zq2q">{children}</div>,
+
+    DialogTitle: ({ children }: any) => <h2 data-oid="n.3fj8a">{children}</h2>,
+  }))
+
+  vi.mock("@/components/ui/dropdown-menu", () => ({
+    DropdownMenu: ({ children }: any) => <div data-oid=":_9mvq.">{children}</div>,
+
+    DropdownMenuContent: ({ children }: any) => (
+      <div data-testid="dropdown-content" data-oid="s_ig7w2">
+        {children}
+      </div>
+    ),
+
+    DropdownMenuItem: ({ children, onClick, className }: any) => (
+      <div onClick={onClick} className={className} data-oid="gt-tgr9">
+        {children}
+      </div>
+    ),
+
+    DropdownMenuTrigger: ({ children, _asChild }: any) => (
+      <div data-testid="dropdown-trigger" data-oid="tpvgu8w">
+        {children}
+      </div>
+    ),
   }))
 
   vi.mock("@/components/ui/label", () => ({
     Label: ({ children, htmlFor, className }: any) => (
-      <label htmlFor={htmlFor} className={className}>
+      <label htmlFor={htmlFor} className={className} data-oid="z7bquhv">
         {children}
       </label>
     ),
   }))
 
   vi.mock("@/components/ui/progress", () => ({
-    Progress: ({ value, className }: any) => <div className={className} data-value={value} data-testid="progress" />,
+    Progress: ({ value, className }: any) => (
+      <div className={className} data-value={value} data-testid="progress" data-oid="u5p_8.7" />
+    ),
   }))
 
   vi.mock("@/components/ui/scroll-area", () => ({
-    ScrollArea: ({ children, className }: any) => <div className={className}>{children}</div>,
+    ScrollArea: ({ children, className }: any) => (
+      <div className={className} data-oid="-cev07.">
+        {children}
+      </div>
+    ),
   }))
 
   // Unified select mock implementation
@@ -109,8 +165,8 @@ export const mockUIComponents = () => {
         }
 
         return (
-          <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange }}>
-            <div data-value={internalValue} data-testid="select">
+          <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange }} data-oid="h0o.hjm">
+            <div data-value={internalValue} data-testid="select" data-oid="9:q_xk5">
               {children}
             </div>
           </SelectContext.Provider>
@@ -119,7 +175,7 @@ export const mockUIComponents = () => {
       SelectContent: ({ children }: any) => {
         const context = React.useContext(SelectContext)
         return (
-          <div data-testid="select-content">
+          <div data-testid="select-content" data-oid="szr1-1d">
             {React.Children.map(children, (child) =>
               React.isValidElement(child) ? React.cloneElement(child as any, { ...context }) : child,
             )}
@@ -127,18 +183,24 @@ export const mockUIComponents = () => {
         )
       },
       SelectItem: ({ value, children, onValueChange }: any) => (
-        <div data-value={value} data-testid="select-item" onClick={() => onValueChange?.(value)}>
+        <div data-value={value} data-testid="select-item" onClick={() => onValueChange?.(value)} data-oid=":ll9q06">
           {children}
         </div>
       ),
+
       SelectTrigger: ({ children, id, className }: any) => (
-        <div id={id} className={className} data-testid="select-trigger">
+        <div id={id} className={className} data-testid="select-trigger" data-oid="co9lcam">
           {children}
         </div>
       ),
+
       SelectValue: ({ placeholder }: any) => {
         const context = React.useContext(SelectContext)
-        return <span data-testid="select-value">{context?.value || placeholder}</span>
+        return (
+          <span data-testid="select-value" data-oid="laya_i3">
+            {context?.value || placeholder}
+          </span>
+        )
       },
     }
   })
@@ -154,6 +216,7 @@ export const mockUIComponents = () => {
         step={step}
         className={className}
         data-testid="slider"
+        data-oid="ny0jwx:"
       />
     ),
   }))
@@ -166,6 +229,7 @@ export const mockUIComponents = () => {
         onChange={(e) => onCheckedChange?.(e.target.checked)}
         aria-label={ariaLabel}
         data-testid="switch"
+        data-oid="dt-w6z5"
       />
     ),
   }))
@@ -183,8 +247,8 @@ export const mockUIComponents = () => {
         }
 
         return (
-          <TabsContext.Provider value={{ activeTab, setActiveTab: handleValueChange }}>
-            <div className={className} data-default-value={defaultValue} data-value={activeTab}>
+          <TabsContext.Provider value={{ activeTab, setActiveTab: handleValueChange }} data-oid="q71lazh">
+            <div className={className} data-default-value={defaultValue} data-value={activeTab} data-oid="53kfhfy">
               {children}
             </div>
           </TabsContext.Provider>
@@ -201,16 +265,18 @@ export const mockUIComponents = () => {
             role="tabpanel"
             aria-labelledby={`trigger-${value}`}
             data-state={isActive ? "active" : "inactive"}
+            data-oid="h1vcx.w"
           >
             {children}
           </div>
         ) : null
       },
       TabsList: ({ children, className }: any) => (
-        <div className={className} role="tablist">
+        <div className={className} role="tablist" data-oid="dox-k39">
           {children}
         </div>
       ),
+
       TabsTrigger: ({ children, value }: any) => {
         const context = React.useContext(TabsContext)
         const isActive = context?.activeTab === value
@@ -224,6 +290,7 @@ export const mockUIComponents = () => {
             onClick={() => context?.setActiveTab(value)}
             id={`trigger-${value}`}
             aria-controls={`content-${value}`}
+            data-oid="d6a1yn1"
           >
             {children}
           </button>
@@ -241,6 +308,7 @@ export const mockUIComponents = () => {
         className={className}
         rows={rows}
         data-testid="textarea"
+        data-oid="4c_c2lm"
       />
     ),
   }))

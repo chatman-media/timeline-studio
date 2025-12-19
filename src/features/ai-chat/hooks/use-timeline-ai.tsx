@@ -49,9 +49,8 @@ export function useTimelineAI() {
     resourcesProvider,
     {}, // browserState - заглушка
     {}, // playerState - заглушка
-    {}, // timelineState - заглушка
-  )
-
+    {},
+  ) // timelineState - заглушка
   /**
    * Создает timeline проект из текстового промпта
    */
@@ -68,7 +67,10 @@ export function useTimelineAI() {
         if (result.success) {
           sendTimelineEvent({ type: "TIMELINE_OPERATION_SUCCESS", result })
         } else {
-          sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: result.message })
+          sendTimelineEvent({
+            type: "TIMELINE_OPERATION_ERROR",
+            error: result.message,
+          })
         }
 
         return {
@@ -83,7 +85,10 @@ export function useTimelineAI() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
 
-        sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: errorMessage })
+        sendTimelineEvent({
+          type: "TIMELINE_OPERATION_ERROR",
+          error: errorMessage,
+        })
 
         return {
           operation: "create-timeline",
@@ -110,7 +115,10 @@ export function useTimelineAI() {
         if (result.success) {
           sendTimelineEvent({ type: "TIMELINE_OPERATION_SUCCESS", result })
         } else {
-          sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: result.message })
+          sendTimelineEvent({
+            type: "TIMELINE_OPERATION_ERROR",
+            error: result.message,
+          })
         }
 
         return {
@@ -125,7 +133,10 @@ export function useTimelineAI() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
 
-        sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: errorMessage })
+        sendTimelineEvent({
+          type: "TIMELINE_OPERATION_ERROR",
+          error: errorMessage,
+        })
 
         return {
           operation: "analyze-resources",
@@ -152,7 +163,10 @@ export function useTimelineAI() {
         if (result.success) {
           sendTimelineEvent({ type: "TIMELINE_OPERATION_SUCCESS", result })
         } else {
-          sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: result.message })
+          sendTimelineEvent({
+            type: "TIMELINE_OPERATION_ERROR",
+            error: result.message,
+          })
         }
 
         return {
@@ -167,7 +181,10 @@ export function useTimelineAI() {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
 
-        sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: errorMessage })
+        sendTimelineEvent({
+          type: "TIMELINE_OPERATION_ERROR",
+          error: errorMessage,
+        })
 
         return {
           operation: "execute-command",

@@ -76,13 +76,13 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should render sync button", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="ii9n54_" />)
 
     expect(screen.getByText("Синхронизация")).toBeInTheDocument()
   })
 
   it("should open popover when clicked", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="7abg9ht" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -92,7 +92,7 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should update time offset with input", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="ysk3:si" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -104,7 +104,7 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should increase time offset with plus button", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="x:lu09b" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -117,7 +117,7 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should decrease time offset with minus button", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="xj1uqk5" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -130,7 +130,7 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should reset time offset", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="n9xd0:a" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -149,7 +149,7 @@ describe("SubtitleSyncTools", () => {
   it("should apply time offset to subtitles", async () => {
     mockUpdateClip.mockResolvedValue(undefined)
 
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="_sdt97:" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -176,7 +176,7 @@ describe("SubtitleSyncTools", () => {
   it("should not allow negative start times", async () => {
     mockUpdateClip.mockResolvedValue(undefined)
 
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="rxha77x" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -195,7 +195,7 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should disable apply button when offset is 0", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="wkue9ap" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)
@@ -205,7 +205,7 @@ describe("SubtitleSyncTools", () => {
   })
 
   it("should show appropriate message based on offset", () => {
-    render(<SubtitleSyncTools />)
+    render(<SubtitleSyncTools data-oid="1r6wh92" />)
 
     const syncButton = screen.getByText("Синхронизация")
     fireEvent.click(syncButton)

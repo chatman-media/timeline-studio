@@ -37,55 +37,72 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
 
   if (viewMode === "list") {
     return (
-      <StyleTemplateDragSource template={template}>
+      <StyleTemplateDragSource template={template} data-oid="glt4p1u">
         <div
           className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
           onClick={handleClick}
+          data-oid="gdo-k.q"
         >
           {/* Template preview thumbnail */}
-          <div className="shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden relative">
+          <div className="shrink-0 w-16 h-9 bg-gray-100 rounded overflow-hidden relative" data-oid="h1030eq">
             {template.thumbnail ? (
               <img
                 src={template.thumbnail}
                 alt={typeof template.name === "string" ? template.name : template.name.ru}
                 className="w-full h-full object-cover"
+                data-oid="nyc4-3t"
               />
             ) : (
-              <div className="w-full h-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">
+              <div
+                className="w-full h-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center"
+                data-oid="5k9wl7g"
+              >
+                <span className="text-white text-xs font-bold" data-oid="706qlxw">
                   {(typeof template.name === "string" ? template.name : template.name.ru).substring(0, 2).toUpperCase()}
                 </span>
               </div>
             )}
 
             {/* Animation indicator */}
-            {template.hasAnimation && <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full" />}
+            {template.hasAnimation && (
+              <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full" data-oid="gtolt9j" />
+            )}
           </div>
 
           {/* Template Info */}
-          <div className="flex-1 min-w-0">
-            <div className="font-medium text-sm truncate">
+          <div className="flex-1 min-w-0" data-oid="72bm9dp">
+            <div className="font-medium text-sm truncate" data-oid=".epqpx1">
               {typeof template.name === "string" ? template.name : template.name.ru}
             </div>
-            <div className="text-xs text-muted-foreground truncate">
+            <div className="text-xs text-muted-foreground truncate" data-oid="8zccyms">
               {(typeof template.description === "string" ? template.description : template.description?.ru) ||
                 `${template.category} • ${template.style}`}
             </div>
           </div>
 
           {/* Category */}
-          <div className="shrink-0 text-xs text-muted-foreground">{template.category}</div>
+          <div className="shrink-0 text-xs text-muted-foreground" data-oid="nz2x1lw">
+            {template.category}
+          </div>
 
           {/* Style */}
-          <div className="shrink-0 text-xs text-muted-foreground">{template.style}</div>
+          <div className="shrink-0 text-xs text-muted-foreground" data-oid="gk:z_4_">
+            {template.style}
+          </div>
 
           {/* Duration */}
-          <div className="shrink-0 text-xs text-muted-foreground">{template.duration}s</div>
+          <div className="shrink-0 text-xs text-muted-foreground" data-oid="nloeh.w">
+            {template.duration}s
+          </div>
 
           {/* Features */}
-          <div className="shrink-0 flex gap-1">
-            {template.hasText && <div className="w-2 h-2 bg-blue-500 rounded-full" title="Содержит текст" />}
-            {template.hasAnimation && <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" />}
+          <div className="shrink-0 flex gap-1" data-oid="f02vi8e">
+            {template.hasText && (
+              <div className="w-2 h-2 bg-blue-500 rounded-full" title="Содержит текст" data-oid="22t68s3" />
+            )}
+            {template.hasAnimation && (
+              <div className="w-2 h-2 bg-green-500 rounded-full" title="Содержит анимацию" data-oid="g9a0r9o" />
+            )}
           </div>
         </div>
       </StyleTemplateDragSource>
@@ -94,13 +111,14 @@ const StyleTemplatePreviewWrapper: React.FC<PreviewComponentProps<StyleTemplate>
 
   // Thumbnails mode - use the original StyleTemplatePreview component
   return (
-    <StyleTemplateDragSource template={template}>
+    <StyleTemplateDragSource template={template} data-oid="uvddt0y">
       <StyleTemplatePreview
         template={template}
         size={previewSize}
         onSelect={handleSelect}
         previewWidth={previewWidth}
         previewHeight={previewHeight}
+        data-oid="5bsvh4v"
       />
     </StyleTemplateDragSource>
   )
@@ -145,6 +163,7 @@ export function useStyleTemplatesAdapter(): ListAdapter<StyleTemplateListItem> {
           ...(Array.isArray(template.tags) ? template.tags : template.tags?.ru || []),
           ...(Array.isArray(template.tags) ? [] : template.tags?.en || []),
         ]
+
         return texts.filter(Boolean)
       },
       getGroupValue: (template: StyleTemplate, groupBy: string) => {
@@ -211,6 +230,7 @@ export function useStyleTemplatesAdapter(): ListAdapter<StyleTemplateListItem> {
     PreviewComponent: StyleTemplatePreviewWrapper as unknown as React.ComponentType<
       PreviewComponentProps<StyleTemplateListItem>
     >,
+
     getSortValue: restAdapter.getSortValue,
     getSearchableText: restAdapter.getSearchableText,
     getGroupValue: restAdapter.getGroupValue,

@@ -87,6 +87,7 @@ const diagonalTemplates: MediaTemplateConfig[] = [
       { x: 66.67, y: 0 },
       { x: 33.33, y: 100 },
     ],
+
     cells: [
       createCellConfig(0, {
         title: {
@@ -111,6 +112,7 @@ const diagonalTemplates: MediaTemplateConfig[] = [
         },
       }),
     ],
+
     dividers: createDividerConfig("default"),
   },
   {
@@ -122,6 +124,7 @@ const diagonalTemplates: MediaTemplateConfig[] = [
       { x: 66.67, y: 0 },
       { x: 33.33, y: 100 },
     ],
+
     cells: [
       createCellConfig(0, {
         title: {
@@ -146,6 +149,7 @@ const diagonalTemplates: MediaTemplateConfig[] = [
         },
       }),
     ],
+
     dividers: createDividerConfig("default"),
   },
   {
@@ -157,6 +161,7 @@ const diagonalTemplates: MediaTemplateConfig[] = [
       { x: 66.67, y: 0 },
       { x: 33.33, y: 100 },
     ],
+
     cells: [createCellConfig(0), createCellConfig(1)],
     dividers: createDividerConfig("default"),
   },
@@ -169,6 +174,7 @@ const diagonalTemplates: MediaTemplateConfig[] = [
       { x: 0, y: 33.33 },
       { x: 100, y: 66.67 },
     ],
+
     cells: [createCellConfig(0), createCellConfig(1)],
     dividers: createDividerConfig("default"),
   },
@@ -239,6 +245,7 @@ const quadScreenTemplates: MediaTemplateConfig[] = [
     resizable: true,
     screens: 4,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2), createCellConfig(3)],
+
     dividers: createDividerConfig("default"),
   },
   {
@@ -247,6 +254,7 @@ const quadScreenTemplates: MediaTemplateConfig[] = [
     resizable: true,
     screens: 4,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2), createCellConfig(3)],
+
     dividers: createDividerConfig("default"),
   },
   {
@@ -255,6 +263,7 @@ const quadScreenTemplates: MediaTemplateConfig[] = [
     resizable: true,
     screens: 4,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2), createCellConfig(3)],
+
     dividers: createDividerConfig("default"),
   },
   // Горизонтальные
@@ -264,6 +273,7 @@ const quadScreenTemplates: MediaTemplateConfig[] = [
     resizable: true,
     screens: 4,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2), createCellConfig(3)],
+
     dividers: createDividerConfig("default"),
   },
   {
@@ -272,6 +282,7 @@ const quadScreenTemplates: MediaTemplateConfig[] = [
     resizable: true,
     screens: 4,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2), createCellConfig(3)],
+
     dividers: createDividerConfig("default"),
   },
   {
@@ -280,6 +291,7 @@ const quadScreenTemplates: MediaTemplateConfig[] = [
     resizable: true,
     screens: 4,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2), createCellConfig(3)],
+
     dividers: createDividerConfig("default"),
   },
 ]
@@ -551,12 +563,38 @@ const oneThreeTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", right: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "33.33%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        right: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "33.33%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -569,12 +607,38 @@ const oneThreeTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "33.33%", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "33.33%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "33.33%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -587,12 +651,38 @@ const oneThreeTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", right: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "33.33%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        right: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "33.33%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   // Bottom variants
@@ -606,12 +696,38 @@ const oneThreeTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "33.33%", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "33.33%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "33.33%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -624,12 +740,38 @@ const oneThreeTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "70%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "30%" },
-      { position: "absolute", bottom: "0", left: "33.33%", width: "33.33%", height: "30%" },
-      { position: "absolute", bottom: "0", right: "0", width: "33.33%", height: "30%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "70%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "30%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "30%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "33.33%",
+        height: "30%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -642,12 +784,38 @@ const oneThreeTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "33.33%", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "33.33%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "33.33%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
 ]
@@ -664,12 +832,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -682,12 +876,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", top: "0", left: "33.33%", width: "33.33%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "100%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -700,12 +920,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   // Bottom variants
@@ -719,12 +965,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", top: "0", left: "33.33%", width: "33.33%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "100%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   // Right variants
@@ -738,12 +1010,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "50%" },
-      { position: "absolute", top: "0", left: "33.33%", width: "33.33%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "33.33%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "33.33%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -756,12 +1054,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -774,12 +1098,38 @@ const threeOneTemplates: MediaTemplateConfig[] = [
       createCellConfig(2),
       createCellConfig(3, { background: { color: "#23262b" } }),
     ],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "33.33%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
 ]
@@ -791,11 +1141,31 @@ const mixedTemplates: MediaTemplateConfig[] = [
     split: "custom",
     screens: 3,
     cells: [createCellConfig(0, { background: { color: "#23262b" } }), createCellConfig(1), createCellConfig(2)],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -803,11 +1173,31 @@ const mixedTemplates: MediaTemplateConfig[] = [
     split: "custom",
     screens: 3,
     cells: [createCellConfig(0, { background: { color: "#23262b" } }), createCellConfig(1), createCellConfig(2)],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -815,11 +1205,31 @@ const mixedTemplates: MediaTemplateConfig[] = [
     split: "custom",
     screens: 3,
     cells: [createCellConfig(0, { background: { color: "#23262b" } }), createCellConfig(1), createCellConfig(2)],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -827,11 +1237,31 @@ const mixedTemplates: MediaTemplateConfig[] = [
     split: "custom",
     screens: 3,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2, { background: { color: "#23262b" } })],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -839,11 +1269,31 @@ const mixedTemplates: MediaTemplateConfig[] = [
     split: "custom",
     screens: 3,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2, { background: { color: "#23262b" } })],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "100%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -851,11 +1301,31 @@ const mixedTemplates: MediaTemplateConfig[] = [
     split: "custom",
     screens: 3,
     cells: [createCellConfig(0), createCellConfig(1), createCellConfig(2, { background: { color: "#23262b" } })],
+
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "100%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "100%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
 ]
@@ -868,12 +1338,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "60%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "60%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "40%" },
-      { position: "absolute", bottom: "0", left: "33.33%", width: "33.33%", height: "40%" },
-      { position: "absolute", bottom: "0", right: "0", width: "33.33%", height: "40%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "60%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "60%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "40%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "40%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "33.33%",
+        height: "40%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -882,12 +1383,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "40%" },
-      { position: "absolute", top: "40%", left: "0", width: "50%", height: "30%" },
-      { position: "absolute", top: "40%", right: "0", width: "50%", height: "30%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "30%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "30%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "40%",
+      },
+      {
+        position: "absolute",
+        top: "40%",
+        left: "0",
+        width: "50%",
+        height: "30%",
+      },
+      {
+        position: "absolute",
+        top: "40%",
+        right: "0",
+        width: "50%",
+        height: "30%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "30%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "30%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -896,12 +1428,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "25%" },
-      { position: "absolute", top: "25%", right: "0", width: "50%", height: "25%" },
-      { position: "absolute", top: "50%", right: "0", width: "50%", height: "25%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "25%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        top: "25%",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        top: "50%",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -910,12 +1473,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "25%", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "50%", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "25%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "25%",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "50%",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "25%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -924,12 +1518,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "25%", height: "50%" },
-      { position: "absolute", top: "0", left: "25%", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "25%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "25%",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "25%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -938,12 +1563,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "25%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "25%" },
-      { position: "absolute", top: "25%", left: "0", width: "100%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "50%", height: "25%" },
-      { position: "absolute", bottom: "0", right: "0", width: "50%", height: "25%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        top: "25%",
+        left: "0",
+        width: "100%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -952,12 +1608,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "0", width: "25%", height: "50%" },
-      { position: "absolute", top: "0", left: "25%", width: "50%", height: "100%" },
-      { position: "absolute", top: "0", right: "0", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "25%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "25%",
+        width: "50%",
+        height: "100%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "25%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -966,12 +1653,43 @@ const customFiveTemplates: MediaTemplateConfig[] = [
     screens: 5,
     cells: Array.from({ length: 5 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "0", left: "33.33%", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "0", right: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "16.67%", width: "66.66%", height: "66.66%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "33.33%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "16.67%",
+        width: "66.66%",
+        height: "66.66%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
 ]
@@ -984,14 +1702,57 @@ const customSevenTemplates: MediaTemplateConfig[] = [
     screens: 7,
     cells: Array.from({ length: 7 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "0", left: "33.33%", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "0", right: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "33.33%", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", right: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "16.67%", width: "66.66%", height: "33.33%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "33.33%",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        right: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "16.67%",
+        width: "66.66%",
+        height: "33.33%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -1000,14 +1761,57 @@ const customSevenTemplates: MediaTemplateConfig[] = [
     screens: 7,
     cells: Array.from({ length: 7 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "50%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "50%", height: "25%" },
-      { position: "absolute", top: "25%", right: "0", width: "50%", height: "25%" },
-      { position: "absolute", bottom: "0", left: "0", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "25%", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "50%", width: "25%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "0", width: "25%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "50%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        top: "25%",
+        right: "0",
+        width: "50%",
+        height: "25%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "25%",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "50%",
+        width: "25%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "25%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -1016,14 +1820,57 @@ const customSevenTemplates: MediaTemplateConfig[] = [
     screens: 7,
     cells: Array.from({ length: 7 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "20%", height: "50%" },
-      { position: "absolute", top: "0", left: "20%", width: "20%", height: "50%" },
-      { position: "absolute", top: "0", left: "40%", width: "20%", height: "50%" },
-      { position: "absolute", top: "0", left: "60%", width: "20%", height: "50%" },
-      { position: "absolute", top: "0", right: "0", width: "20%", height: "50%" },
-      { position: "absolute", bottom: "0", left: "10%", width: "40%", height: "50%" },
-      { position: "absolute", bottom: "0", right: "10%", width: "40%", height: "50%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "20%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "20%",
+        width: "20%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "40%",
+        width: "20%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        left: "60%",
+        width: "20%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        top: "0",
+        right: "0",
+        width: "20%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "10%",
+        width: "40%",
+        height: "50%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "10%",
+        width: "40%",
+        height: "50%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
   {
@@ -1032,14 +1879,57 @@ const customSevenTemplates: MediaTemplateConfig[] = [
     screens: 7,
     cells: Array.from({ length: 7 }, (_, i) => createCellConfig(i)),
     cellLayouts: [
-      { position: "absolute", top: "0", left: "0", width: "100%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", left: "33.33%", width: "33.33%", height: "33.33%" },
-      { position: "absolute", top: "33.33%", right: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "0", width: "33.33%", height: "33.33%" },
-      { position: "absolute", bottom: "0", left: "33.33%", width: "33.33%", height: "33.33%" },
-      { position: "absolute", bottom: "0", right: "0", width: "33.33%", height: "33.33%" },
+      {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        left: "33.33%",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        top: "33.33%",
+        right: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        left: "33.33%",
+        width: "33.33%",
+        height: "33.33%",
+      },
+      {
+        position: "absolute",
+        bottom: "0",
+        right: "0",
+        width: "33.33%",
+        height: "33.33%",
+      },
     ],
+
     layout: PRESET_STYLES.layout.default,
   },
 ]
@@ -1093,9 +1983,9 @@ export function convertConfigToTemplate(config: MediaTemplateConfig): MediaTempl
       // Этот метод используется только для preview в старом коде
       // В реальном использовании TemplateRenderer принимает видео через renderCell prop
       return (
-        <div className="flex h-full w-full items-center justify-center text-lg text-gray-400">
+        <div className="flex h-full w-full items-center justify-center text-lg text-gray-400" data-oid="jy55e2n">
           {Array.from({ length: config.screens }, (_, i) => (
-            <div key={i} className="flex flex-1 items-center justify-center">
+            <div key={i} className="flex flex-1 items-center justify-center" data-oid=".q.g.6l">
               {i + 1}
             </div>
           ))}

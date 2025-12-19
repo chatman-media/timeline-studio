@@ -78,7 +78,10 @@ export function TimelineUIProvider({ children, initialState }: TimelineUIProvide
   const setTimeScale = useCallback((scale: number) => {
     setUIState((prev) => {
       const newScale = Math.max(prev.minTimeScale, Math.min(prev.maxTimeScale, scale))
-      logger.debug("Setting time scale:", { old: prev.timeScale, new: newScale })
+      logger.debug("Setting time scale:", {
+        old: prev.timeScale,
+        new: newScale,
+      })
       return { ...prev, timeScale: newScale }
     })
   }, [])
@@ -105,7 +108,10 @@ export function TimelineUIProvider({ children, initialState }: TimelineUIProvide
 
   const resetZoom = useCallback(() => {
     setUIState((prev) => {
-      logger.debug("Reset zoom to default:", { old: prev.timeScale, new: DEFAULT_UI_STATE.timeScale })
+      logger.debug("Reset zoom to default:", {
+        old: prev.timeScale,
+        new: DEFAULT_UI_STATE.timeScale,
+      })
       return { ...prev, timeScale: DEFAULT_UI_STATE.timeScale }
     })
   }, [])
@@ -119,7 +125,11 @@ export function TimelineUIProvider({ children, initialState }: TimelineUIProvide
     resetZoom,
   }
 
-  return <TimelineUIContext.Provider value={value}>{children}</TimelineUIContext.Provider>
+  return (
+    <TimelineUIContext.Provider value={value} data-oid="b8-rr58">
+      {children}
+    </TimelineUIContext.Provider>
+  )
 }
 
 /**

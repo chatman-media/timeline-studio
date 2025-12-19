@@ -71,6 +71,7 @@ const mockProject: TimelineProject = {
               isLinked: true,
             },
           ],
+
           isLocked: false,
           isMuted: false,
           isHidden: false,
@@ -125,6 +126,7 @@ const mockProject: TimelineProject = {
               audioOffset: 0,
             },
           ],
+
           isLocked: false,
           isMuted: false,
           isHidden: false,
@@ -137,9 +139,11 @@ const mockProject: TimelineProject = {
           transitions: [],
         },
       ],
+
       isCollapsed: false,
     },
   ],
+
   globalTracks: [],
   resources: {
     effects: [],

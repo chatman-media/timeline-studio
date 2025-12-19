@@ -392,8 +392,8 @@ const {
 } = backendSyncMocks
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <TimelineProviders>
-    <SelectionStateProvider>{children}</SelectionStateProvider>
+  <TimelineProviders data-oid="041.mok">
+    <SelectionStateProvider data-oid="yxqz_80">{children}</SelectionStateProvider>
   </TimelineProviders>
 )
 
@@ -401,7 +401,11 @@ describe("useTimeline", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockExecuteCommand.mockClear()
-    mockExecuteCommand.mockResolvedValue({ success: true, data: null, error: null })
+    mockExecuteCommand.mockResolvedValue({
+      success: true,
+      data: null,
+      error: null,
+    })
     mockOnStateChange.mockClear()
     mockOnStateChange.mockReturnValue(() => {})
     mockOnEvent.mockClear()
@@ -435,7 +439,9 @@ describe("useTimeline", () => {
       }
     })
 
-    expect(result.current).toEqual({ error: "useTimelineProject must be used within TimelineProjectProvider" })
+    expect(result.current).toEqual({
+      error: "useTimelineProject must be used within TimelineProjectProvider",
+    })
   })
 
   it("должен возвращать контекст при использовании внутри провайдера", () => {

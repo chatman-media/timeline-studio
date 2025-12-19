@@ -48,8 +48,8 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-[600px] h-[500px]">
-        <Story />
+      <div className="w-[600px] h-[500px]" data-oid="4txe1k_">
+        <Story data-oid="lwx:s4u" />
       </div>
     ),
   ],

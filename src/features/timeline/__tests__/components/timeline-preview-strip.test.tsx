@@ -20,7 +20,9 @@ vi.mock("@/domains/video-editing/services/compiler/frame-extraction-service", ()
 
 // Mock Skeleton component
 vi.mock("@/components/ui/skeleton", () => ({
-  Skeleton: ({ className, style }: any) => <div className={className} style={style} data-testid="skeleton" />,
+  Skeleton: ({ className, style }: any) => (
+    <div className={className} style={style} data-testid="skeleton" data-oid="5k_i1qu" />
+  ),
 }))
 
 // Mock cn utility
@@ -70,7 +72,7 @@ describe("TimelinePreviewStrip", () => {
 
   describe("initial rendering", () => {
     it("should render without error", () => {
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid=":y0nv_d" />)
 
       expect(mockUseSmartTimelinePreviews).toHaveBeenCalledWith("/test/video.mp4", 10, 800, {
         cacheResults: true,
@@ -79,7 +81,9 @@ describe("TimelinePreviewStrip", () => {
     })
 
     it("should apply custom height and className", () => {
-      const { container } = render(<TimelinePreviewStrip {...defaultProps} height={120} className="custom-class" />)
+      const { container } = render(
+        <TimelinePreviewStrip {...defaultProps} height={120} className="custom-class" data-oid="satcvkt" />,
+      )
 
       const element = container.firstChild as HTMLElement
       expect(element).toHaveStyle({ height: "120px" })
@@ -87,7 +91,7 @@ describe("TimelinePreviewStrip", () => {
     })
 
     it("should handle null video path", () => {
-      render(<TimelinePreviewStrip {...defaultProps} videoPath={null} />)
+      render(<TimelinePreviewStrip {...defaultProps} videoPath={null} data-oid=":642x97" />)
 
       expect(mockUseSmartTimelinePreviews).toHaveBeenCalledWith(null, 10, 800, {
         cacheResults: true,
@@ -106,7 +110,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid="usj5lpa" />)
 
       const skeletons = screen.getAllByTestId("skeleton")
       expect(skeletons).toHaveLength(10) // Math.min(10, Math.floor(800 / 80))
@@ -125,7 +129,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      const { container } = render(<TimelinePreviewStrip {...defaultProps} />)
+      const { container } = render(<TimelinePreviewStrip {...defaultProps} data-oid="ii0d:bi" />)
 
       const progressBar = container.querySelector('[style*="width: 75%"]')
       expect(progressBar).toBeInTheDocument()
@@ -140,7 +144,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      const { container } = render(<TimelinePreviewStrip {...defaultProps} />)
+      const { container } = render(<TimelinePreviewStrip {...defaultProps} data-oid="pwlg1-5" />)
 
       const progressBar = container.querySelector('[style*="width: 100%"]')
       expect(progressBar).not.toBeInTheDocument()
@@ -157,7 +161,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid="v8x3zmn" />)
 
       expect(screen.getByText("Ошибка загрузки превью")).toBeInTheDocument()
     })
@@ -171,7 +175,9 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      const { container } = render(<TimelinePreviewStrip {...defaultProps} className="error-class" />)
+      const { container } = render(
+        <TimelinePreviewStrip {...defaultProps} className="error-class" data-oid="d8bz__u" />,
+      )
 
       const errorElement = container.firstChild as HTMLElement
       expect(errorElement).toHaveClass("error-class")
@@ -196,7 +202,7 @@ describe("TimelinePreviewStrip", () => {
     })
 
     it("should render all frames", () => {
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid="8mwit2s" />)
 
       mockFrames.forEach((frame) => {
         expect(screen.getByAltText(`Frame at ${frame.timestamp}s`)).toBeInTheDocument()
@@ -204,7 +210,7 @@ describe("TimelinePreviewStrip", () => {
     })
 
     it("should position frames correctly", () => {
-      const { container } = render(<TimelinePreviewStrip {...defaultProps} />)
+      const { container } = render(<TimelinePreviewStrip {...defaultProps} data-oid="_.1:psp" />)
 
       const frameContainer = container.querySelector('[style*="width: 800px"]') // duration * scale
       expect(frameContainer).toBeInTheDocument()
@@ -212,7 +218,7 @@ describe("TimelinePreviewStrip", () => {
 
     it("should handle frame clicks", () => {
       const onFrameClick = vi.fn()
-      render(<TimelinePreviewStrip {...defaultProps} onFrameClick={onFrameClick} />)
+      render(<TimelinePreviewStrip {...defaultProps} onFrameClick={onFrameClick} data-oid="q920fpj" />)
 
       const firstFrame = screen.getByAltText("Frame at 1s")
       fireEvent.click(firstFrame.closest('[title*="1.00s"]')!)
@@ -221,14 +227,14 @@ describe("TimelinePreviewStrip", () => {
     })
 
     it("should show keyframe indicators", () => {
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid=".upfns:" />)
 
       const keyframeIndicator = screen.getByText("K")
       expect(keyframeIndicator).toBeInTheDocument()
     })
 
     it("should show timestamps when enabled", () => {
-      render(<TimelinePreviewStrip {...defaultProps} showTimestamps={true} />)
+      render(<TimelinePreviewStrip {...defaultProps} showTimestamps={true} data-oid="::f506v" />)
 
       expect(screen.getByText("0:01.00")).toBeInTheDocument()
       expect(screen.getByText("0:02.00")).toBeInTheDocument()
@@ -236,7 +242,7 @@ describe("TimelinePreviewStrip", () => {
     })
 
     it("should not show timestamps when disabled", () => {
-      render(<TimelinePreviewStrip {...defaultProps} showTimestamps={false} />)
+      render(<TimelinePreviewStrip {...defaultProps} showTimestamps={false} data-oid="yd9.0rl" />)
 
       expect(screen.queryByText("0:01.00")).not.toBeInTheDocument()
     })
@@ -244,12 +250,12 @@ describe("TimelinePreviewStrip", () => {
 
   describe("scroll handling", () => {
     it("should update visible range based on scroll offset", () => {
-      const { rerender } = render(<TimelinePreviewStrip {...defaultProps} scrollOffset={0} />)
+      const { rerender } = render(<TimelinePreviewStrip {...defaultProps} scrollOffset={0} data-oid="q_b7_hq" />)
 
       // Change scroll offset
-      rerender(<TimelinePreviewStrip {...defaultProps} scrollOffset={160} />)
+      rerender(<TimelinePreviewStrip {...defaultProps} scrollOffset={160} data-oid="2i5xntv" />)
 
-      const { container } = render(<TimelinePreviewStrip {...defaultProps} scrollOffset={160} />)
+      const { container } = render(<TimelinePreviewStrip {...defaultProps} scrollOffset={160} data-oid="ejga_0c" />)
 
       const frameContainer = container.querySelector('[style*="translateX(-160px)"]')
       expect(frameContainer).toBeInTheDocument()
@@ -270,7 +276,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} duration={10} />)
+      render(<TimelinePreviewStrip {...defaultProps} duration={10} data-oid="aadj4l9" />)
 
       // Currently renders all frames (TODO: should be optimized to only render visible ones)
       expect(screen.getByAltText("Frame at 0.5s")).toBeInTheDocument()
@@ -293,7 +299,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid="x2doizw" />)
 
       expect(frameExtractionService.createPreviewElement).toHaveBeenCalledWith("test-data", 1)
     })
@@ -307,7 +313,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid="ycqx85z" />)
 
       const skeleton = screen.getByTestId("skeleton")
       expect(skeleton).toBeInTheDocument()
@@ -322,7 +328,7 @@ describe("TimelinePreviewStrip", () => {
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} />)
+      render(<TimelinePreviewStrip {...defaultProps} data-oid="13ojz64" />)
 
       const frame = screen.getByAltText("Frame at 1s").closest('[title*="(Ключевой кадр)"]')
       expect(frame).toBeInTheDocument()
@@ -337,13 +343,14 @@ describe("TimelinePreviewStrip", () => {
           { timestamp: 65.5, frameData: "test", isKeyframe: false },
           { timestamp: 3661.25, frameData: "test", isKeyframe: false },
         ],
+
         isLoading: false,
         error: null,
         progress: 100,
         frameWidth: 80,
       })
 
-      render(<TimelinePreviewStrip {...defaultProps} showTimestamps={true} duration={4000} />)
+      render(<TimelinePreviewStrip {...defaultProps} showTimestamps={true} duration={4000} data-oid="bcezsmt" />)
 
       expect(screen.getByText("0:00.00")).toBeInTheDocument()
       expect(screen.getByText("1:05.50")).toBeInTheDocument()
@@ -383,16 +390,18 @@ describe("useTimelinePreviewStrip hook", () => {
       const { containerRef, containerWidth } = useTimelinePreviewStrip("/test.mp4", 10)
 
       return (
-        <div>
-          <div ref={containerRef} data-testid="container">
+        <div data-oid="0nopya0">
+          <div ref={containerRef} data-testid="container" data-oid="-lkeu73">
             Container
           </div>
-          <span data-testid="width">{containerWidth}</span>
+          <span data-testid="width" data-oid="fjvom9m">
+            {containerWidth}
+          </span>
         </div>
       )
     }
 
-    render(<TestComponent />)
+    render(<TestComponent data-oid="h_p7tvu" />)
 
     const container = screen.getByTestId("container")
     expect(container).toBeInTheDocument()
@@ -406,16 +415,18 @@ describe("useTimelinePreviewStrip hook", () => {
       const { containerRef, containerWidth } = useTimelinePreviewStrip("/test.mp4", 10)
 
       return (
-        <div>
-          <div ref={containerRef} data-testid="container">
+        <div data-oid="8m5c1yj">
+          <div ref={containerRef} data-testid="container" data-oid="6yx7pw1">
             Container
           </div>
-          <span data-testid="width">{containerWidth}</span>
+          <span data-testid="width" data-oid="_lhj-9i">
+            {containerWidth}
+          </span>
         </div>
       )
     }
 
-    render(<TestComponent />)
+    render(<TestComponent data-oid="ez0yr-u" />)
 
     await waitFor(() => {
       const width = screen.getByTestId("width")
@@ -434,13 +445,13 @@ describe("useTimelinePreviewStrip hook", () => {
     const TestComponent = () => {
       const { containerRef } = useTimelinePreviewStrip("/test.mp4", 10)
       return (
-        <div ref={containerRef} data-testid="container">
+        <div ref={containerRef} data-testid="container" data-oid="t7-ysen">
           Container
         </div>
       )
     }
 
-    const { unmount } = render(<TestComponent />)
+    const { unmount } = render(<TestComponent data-oid="th9a6z." />)
 
     unmount()
 
@@ -450,10 +461,14 @@ describe("useTimelinePreviewStrip hook", () => {
   it("should handle missing container ref", () => {
     const TestComponent = () => {
       const { containerWidth } = useTimelinePreviewStrip("/test.mp4", 10)
-      return <span data-testid="width">{containerWidth}</span>
+      return (
+        <span data-testid="width" data-oid="oorj1mu">
+          {containerWidth}
+        </span>
+      )
     }
 
-    render(<TestComponent />)
+    render(<TestComponent data-oid="0.x_ne8" />)
 
     const width = screen.getByTestId("width")
     expect(width).toHaveTextContent("0")

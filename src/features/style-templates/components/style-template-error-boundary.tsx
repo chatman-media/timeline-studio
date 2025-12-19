@@ -33,7 +33,10 @@ export class StyleTemplateErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Логируем ошибку для отладки (используем sync версию для Error Boundary)
-    logger.errorSync("StyleTemplateErrorBoundary caught an error", { error, errorInfo })
+    logger.errorSync("StyleTemplateErrorBoundary caught an error", {
+      error,
+      errorInfo,
+    })
   }
 
   handleRetry = () => {
@@ -49,17 +52,23 @@ export class StyleTemplateErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="flex h-64 w-full flex-col items-center justify-center rounded-lg border border-red-500 bg-red-50 p-6 text-center dark:bg-red-900/20">
-          <AlertTriangle className="mb-4 h-12 w-12 text-red-500" />
-          <h3 className="mb-2 text-lg font-semibold text-red-700 dark:text-red-400">Ошибка загрузки шаблонов</h3>
-          <p className="mb-4 text-sm text-red-600 dark:text-red-300">
+        <div
+          className="flex h-64 w-full flex-col items-center justify-center rounded-lg border border-red-500 bg-red-50 p-6 text-center dark:bg-red-900/20"
+          data-oid="oojl9:q"
+        >
+          <AlertTriangle className="mb-4 h-12 w-12 text-red-500" data-oid="6evwipa" />
+          <h3 className="mb-2 text-lg font-semibold text-red-700 dark:text-red-400" data-oid="2hswai5">
+            Ошибка загрузки шаблонов
+          </h3>
+          <p className="mb-4 text-sm text-red-600 dark:text-red-300" data-oid="z15gjvw">
             {this.state.error?.message || "Произошла неизвестная ошибка"}
           </p>
           <button
             onClick={this.handleRetry}
             className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            data-oid="8ldzk13"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-4 w-4" data-oid="suy:067" />
             Попробовать снова
           </button>
         </div>
@@ -79,8 +88,8 @@ export function withStyleTemplateErrorBoundary<P extends object>(
 ) {
   return function WrappedComponent(props: P) {
     return (
-      <StyleTemplateErrorBoundary fallback={fallback}>
-        <Component {...props} />
+      <StyleTemplateErrorBoundary fallback={fallback} data-oid="7-vnigi">
+        <Component {...props} data-oid="s6hyx3t" />
       </StyleTemplateErrorBoundary>
     )
   }

@@ -450,7 +450,6 @@ describe("useAnalysisTasks", () => {
     it("должен обновлять задачи каждые 30 секунд", () => {
       // TODO: Implement polling tests with proper fake timers setup
     })
-
     it("должен остановить polling при размонтировании", () => {
       // TODO: Implement polling tests with proper fake timers setup
     })

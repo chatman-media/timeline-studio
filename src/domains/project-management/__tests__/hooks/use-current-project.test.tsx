@@ -149,7 +149,10 @@ describe("useCurrentProject Hook", () => {
       await result.current.createTempProject()
 
       const call = mockExecuteCommand.mock.calls[0][0]
-      expect(call.params.settings.resolution).toEqual({ width: 1920, height: 1080 })
+      expect(call.params.settings.resolution).toEqual({
+        width: 1920,
+        height: 1080,
+      })
       expect(call.params.settings.frame_rate).toBe(30)
     })
   })
@@ -188,7 +191,10 @@ describe("useCurrentProject Hook", () => {
     })
 
     it("should return command result", async () => {
-      const mockResult = { success: true, data: { project: mockProjectState.project } }
+      const mockResult = {
+        success: true,
+        data: { project: mockProjectState.project },
+      }
       mockExecuteCommand.mockResolvedValueOnce(mockResult)
 
       const { result } = renderHook(() => useCurrentProject())

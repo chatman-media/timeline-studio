@@ -32,7 +32,11 @@ const originalWindow = global.window
  */
 describe("useDraggable", () => {
   const mockGetData = vi.fn(() => ({ id: "test-item", name: "Test Item" }))
-  const mockGetPreview = vi.fn(() => ({ url: "test-preview.jpg", width: 100, height: 100 }))
+  const mockGetPreview = vi.fn(() => ({
+    url: "test-preview.jpg",
+    width: 100,
+    height: 100,
+  }))
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -66,7 +70,6 @@ describe("useDraggable", () => {
   it.skip("should return false for draggable in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
-
   it("should call manager.startDrag when onDragStart is triggered", () => {
     const { result } = renderHook(() => useDraggable("media", mockGetData, mockGetPreview))
 
@@ -135,7 +138,6 @@ describe("useDraggable", () => {
   it.skip("should skip drag start in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
-
   it("should handle different draggable types", () => {
     const types: Array<DraggableItem["type"]> = [
       "media",
@@ -155,7 +157,11 @@ describe("useDraggable", () => {
         nativeEvent: {
           clientX: 100,
           clientY: 200,
-          dataTransfer: { setData: vi.fn(), effectAllowed: "", setDragImage: vi.fn() },
+          dataTransfer: {
+            setData: vi.fn(),
+            effectAllowed: "",
+            setDragImage: vi.fn(),
+          },
         } as unknown as DragEvent,
       } as React.DragEvent
 
@@ -219,10 +225,10 @@ describe("useDropZone", () => {
     // Create a test component that uses the drop zone
     function TestDropZone() {
       const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
-      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" data-oid=":a-p-fh" />
     }
 
-    render(<TestDropZone />)
+    render(<TestDropZone data-oid="zzv_-qn" />)
 
     // The manager should have registered the drop target
     expect(mockManager.registerDropTarget).toHaveBeenCalled()
@@ -239,10 +245,10 @@ describe("useDropZone", () => {
   it("should call onDragEnter and add CSS classes when drag enters", () => {
     function TestDropZone() {
       const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
-      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" data-oid="n2zsqn8" />
     }
 
-    const { getByTestId } = render(<TestDropZone />)
+    const { getByTestId } = render(<TestDropZone data-oid=":_l5r7e" />)
     const element = getByTestId("drop-zone")
 
     // Get the registered drop target config
@@ -266,10 +272,10 @@ describe("useDropZone", () => {
   it("should call onDragLeave and remove CSS classes when drag leaves", () => {
     function TestDropZone() {
       const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
-      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" data-oid="g:fi2:n" />
     }
 
-    const { getByTestId } = render(<TestDropZone />)
+    const { getByTestId } = render(<TestDropZone data-oid="95z6rie" />)
     const element = getByTestId("drop-zone")
 
     // Get the registered drop target config
@@ -300,10 +306,10 @@ describe("useDropZone", () => {
   it("should call onDragOver and prevent default", () => {
     function TestDropZone() {
       const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
-      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" data-oid="c-xgobl" />
     }
 
-    render(<TestDropZone />)
+    render(<TestDropZone data-oid="5e6tkdz" />)
 
     // Get the registered drop target config
     const registerCall = mockManager.registerDropTarget.mock.calls[0]
@@ -323,10 +329,10 @@ describe("useDropZone", () => {
   it("should unregister and cleanup on unmount", () => {
     function TestDropZone() {
       const { ref, onDragOver, onDrop } = useDropZone("test-zone", ["media"], mockOnDrop)
-      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" />
+      return <div ref={ref as any} onDragOver={onDragOver} onDrop={onDrop} data-testid="drop-zone" data-oid="03ro4o0" />
     }
 
-    const { unmount, getByTestId } = render(<TestDropZone />)
+    const { unmount, getByTestId } = render(<TestDropZone data-oid="4kv09pv" />)
     const element = getByTestId("drop-zone")
 
     // Add classes first
@@ -351,7 +357,6 @@ describe("useDropZone", () => {
   it.skip("should skip registration in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
-
   it("should prevent default on drag over", () => {
     const { result } = renderHook(() => useDropZone("test-zone", ["media"], mockOnDrop))
 
@@ -425,7 +430,6 @@ describe("useDragDropState", () => {
   it.skip("should skip setup in SSR environment", () => {
     // Skip SSR tests due to React DOM dependencies
   })
-
   it("should register event listeners", () => {
     renderHook(() => useDragDropState())
 

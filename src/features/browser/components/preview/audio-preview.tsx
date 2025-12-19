@@ -281,6 +281,7 @@ export const AudioPreview = memo(function AudioPreview({
       onMouseMove={handleMouseMove}
       onClick={handlePlayPause}
       onMouseLeave={handleMouseLeave}
+      data-oid="k6lrzv0"
     >
       <audio
         ref={audioRef}
@@ -320,6 +321,7 @@ export const AudioPreview = memo(function AudioPreview({
             void handlePlayPause(e as unknown as React.MouseEvent)
           }
         }}
+        data-oid="xde3.6:"
       />
 
       {/* Иконка музыки */}
@@ -328,8 +330,9 @@ export const AudioPreview = memo(function AudioPreview({
         style={{
           color: "#ffffff", // Явно задаем чисто белый цвет для Tauri
         }}
+        data-oid="thcn:xd"
       >
-        <Music size={size > 100 ? 16 : 12} />
+        <Music size={size > 100 ? 16 : 12} data-oid="bzpm79s" />
       </div>
 
       {/* Имя файла */}
@@ -342,13 +345,14 @@ export const AudioPreview = memo(function AudioPreview({
             fontSize: size > 100 ? "13px" : "11px",
             color: "#ffffff", // Явно задаем чисто белый цвет для Tauri
           }}
+          data-oid="6:mtqaa"
         >
           {file.name}
         </div>
       )}
 
       {/* Кнопка избранного */}
-      <FavoriteButton file={file} size={size} type="media" />
+      <FavoriteButton file={file} size={size} type="media" data-oid="hdcvap5" />
 
       {/* кнопка добавления */}
       {isLoaded && (
@@ -362,6 +366,7 @@ export const AudioPreview = memo(function AudioPreview({
           }
           size={size}
           type="media"
+          data-oid="equb..1"
         />
       )}
 
@@ -372,6 +377,7 @@ export const AudioPreview = memo(function AudioPreview({
           height: `${size}px`,
           width: `${(size * dimensions[0]) / dimensions[1]}px`,
         }}
+        data-oid="_nseu0q"
       >
         {mediaRecorder && (
           <LiveAudioVisualizer
@@ -382,6 +388,7 @@ export const AudioPreview = memo(function AudioPreview({
             gap={0}
             barColor="#35d1c1"
             backgroundColor="transparent"
+            data-oid="mq4p.c6"
           />
         )}
       </div>

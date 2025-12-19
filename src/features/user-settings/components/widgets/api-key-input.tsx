@@ -70,18 +70,20 @@ export function ApiKeyInput({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" data-oid="ev9v6sr">
       {/* Label и статус */}
       {label && (
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">{label}</Label>
-          <KeyStatusIndicator status={status} />
+        <div className="flex items-center justify-between" data-oid="s1ep02a">
+          <Label className="text-sm font-medium" data-oid="rc2:8za">
+            {label}
+          </Label>
+          <KeyStatusIndicator status={status} data-oid="tbk8a4s" />
         </div>
       )}
 
       {/* Поле ввода */}
-      <div className="flex gap-2">
-        <div className="relative flex-1">
+      <div className="flex gap-2" data-oid=".0fqqdv">
+        <div className="relative flex-1" data-oid="l1ic:46">
           <Input
             type={showKey ? "text" : "password"}
             value={value}
@@ -90,10 +92,11 @@ export function ApiKeyInput({
             className="h-9 pr-16 font-mono text-sm"
             autoComplete="off"
             spellCheck="false"
+            data-oid="ky5jidd"
           />
 
           {/* Кнопки в поле ввода */}
-          <div className="absolute top-1/2 right-2 -translate-y-1/2 flex items-center gap-1">
+          <div className="absolute top-1/2 right-2 -translate-y-1/2 flex items-center gap-1" data-oid="7:9j_-i">
             {/* Показать/скрыть ключ */}
             {value && (
               <button
@@ -110,8 +113,13 @@ export function ApiKeyInput({
                     ? t("dialogs.userSettings.hideKey", "Скрыть ключ")
                     : t("dialogs.userSettings.showKey", "Показать ключ")
                 }
+                data-oid=".vktug7"
               >
-                {showKey ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                {showKey ? (
+                  <EyeOff className="h-3 w-3" data-oid="gpvf2tt" />
+                ) : (
+                  <Eye className="h-3 w-3" data-oid="0:b62z6" />
+                )}
               </button>
             )}
 
@@ -123,8 +131,9 @@ export function ApiKeyInput({
                 className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
                 title={t("dialogs.userSettings.clearApiKey", "Очистить API ключ")}
                 aria-label={t("dialogs.userSettings.clearApiKey", "Очистить API ключ")}
+                data-oid="g:149oe"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" data-oid="j.d7vwj" />
               </button>
             )}
           </div>
@@ -138,9 +147,10 @@ export function ApiKeyInput({
             onClick={handleTest}
             disabled={!value || isTesting || status === "testing"}
             className="h-9 px-3"
+            data-oid="8:suwka"
           >
             {isTesting || status === "testing" ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
+              <Loader2 className="h-3 w-3 animate-spin" data-oid="5w4i_pq" />
             ) : (
               t("dialogs.userSettings.test", "Тест")
             )}
@@ -150,7 +160,7 @@ export function ApiKeyInput({
 
       {/* Ссылки */}
       {links.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2" data-oid="ba87f.f">
           {links.map((link, index) => (
             <Button
               key={index}
@@ -158,8 +168,9 @@ export function ApiKeyInput({
               size="sm"
               className="h-7 px-2 text-xs"
               onClick={() => window.open(link.url, "_blank")}
+              data-oid="rzpoxnb"
             >
-              <ExternalLink className="h-3 w-3 mr-1" />
+              <ExternalLink className="h-3 w-3 mr-1" data-oid="2cb-sdg" />
               {link.text}
             </Button>
           ))}
@@ -168,21 +179,22 @@ export function ApiKeyInput({
 
       {/* Статусное сообщение */}
       {status === "invalid" && (
-        <div className="text-xs text-red-600 dark:text-red-400 space-y-1">
-          <p>
+        <div className="text-xs text-red-600 dark:text-red-400 space-y-1" data-oid="mq18940">
+          <p data-oid="cpkhhi:">
             {validationError || t("dialogs.userSettings.invalidKey", "Неверный API ключ или проблемы с подключением")}
           </p>
           {/* Ссылки для пополнения кредитов - показываем только если в сообщении есть информация о кредитах */}
           {(validationError?.includes("кредит") ||
             validationError?.includes("credit") ||
             validationError?.includes("Insufficient Balance")) && (
-            <div className="flex flex-wrap gap-2 mt-1">
+            <div className="flex flex-wrap gap-2 mt-1" data-oid="-xp4w5q">
               {service === "grok" && (
                 <a
                   href="https://console.x.ai/team/e111ca1e-660a-42c1-9b09-16fcb0d64cbf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                  data-oid="bbz4qap"
                 >
                   Пополнить кредиты Grok
                 </a>
@@ -193,6 +205,7 @@ export function ApiKeyInput({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                  data-oid="u6mgrzk"
                 >
                   Проверить баланс DeepSeek
                 </a>
@@ -203,6 +216,7 @@ export function ApiKeyInput({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                  data-oid="j:ygz33"
                 >
                   Проверить баланс Claude
                 </a>
@@ -213,6 +227,7 @@ export function ApiKeyInput({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                  data-oid="gkyiac0"
                 >
                   Проверить баланс OpenAI
                 </a>
@@ -222,7 +237,7 @@ export function ApiKeyInput({
         </div>
       )}
       {status === "valid" && (
-        <p className="text-xs text-green-600 dark:text-green-400">
+        <p className="text-xs text-green-600 dark:text-green-400" data-oid="pvpy:j9">
           {t("dialogs.userSettings.validKey", "API ключ работает корректно")}
         </p>
       )}

@@ -119,7 +119,7 @@ describe("AnalysisTasksDropdown", () => {
 
   describe("Rendering", () => {
     it("должен отрендерить триггер кнопку с иконкой Brain", () => {
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="x19.vsh" />)
 
       const trigger = screen.getByRole("button")
       expect(trigger).toBeInTheDocument()
@@ -133,7 +133,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="f-ob5bv" />)
 
       expect(screen.getByText("1")).toBeInTheDocument()
     })
@@ -144,7 +144,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockCompletedTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="tow3mbd" />)
 
       expect(screen.queryByText("1")).not.toBeInTheDocument()
     })
@@ -155,7 +155,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="ei7yt59" />)
 
       const pulseIndicator = container.querySelector(".animate-pulse")
       expect(pulseIndicator).toBeInTheDocument()
@@ -167,7 +167,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockCompletedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="016w2sx" />)
 
       const pulseIndicator = container.querySelector(".animate-pulse")
       expect(pulseIndicator).not.toBeInTheDocument()
@@ -177,7 +177,7 @@ describe("AnalysisTasksDropdown", () => {
   describe("Dropdown Menu Content", () => {
     it("должен открывать dropdown при клике на триггер", async () => {
       const user = userEvent.setup()
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="c8561dl" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -194,7 +194,7 @@ describe("AnalysisTasksDropdown", () => {
         isLoading: true,
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="mrl4wgg" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -212,7 +212,7 @@ describe("AnalysisTasksDropdown", () => {
         error: "Failed to load tasks",
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="prwkgt5" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -225,7 +225,7 @@ describe("AnalysisTasksDropdown", () => {
 
     it("должен отображать пустое состояние когда нет задач", async () => {
       const user = userEvent.setup()
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="u07w7y6" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -244,7 +244,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="n4r5vho" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -263,7 +263,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="qdl11gb" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -281,7 +281,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="3n2ijt." />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -298,7 +298,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="3e:uy86" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -318,7 +318,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="nxmjw_o" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -339,7 +339,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockCompletedTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="e:9nw_3" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -366,7 +366,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockFailedTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid=":rcne0d" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -383,7 +383,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockCompletedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="x5.5vob" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -407,7 +407,7 @@ describe("AnalysisTasksDropdown", () => {
         cancelTask: mockCancelTask,
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="k_zyc71" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -439,7 +439,7 @@ describe("AnalysisTasksDropdown", () => {
         cancelTask: mockCancelTask,
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="521doss" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -469,7 +469,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask, mockCompletedTask, mockFailedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="hfxds_8" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -489,7 +489,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask, mockCompletedTask, mockFailedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid=".-:c.pj" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -508,7 +508,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask, mockCompletedTask, mockFailedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="rwk7ki:" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -527,7 +527,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask, mockCompletedTask, mockFailedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="eboi1vh" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -541,7 +541,7 @@ describe("AnalysisTasksDropdown", () => {
 
     it("не должен отображать статистику когда нет задач", async () => {
       const user = userEvent.setup()
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="75m704g" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -560,7 +560,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask, mockCompletedTask, mockFailedTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="pnghryq" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -590,7 +590,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask, pendingTask, initializingTask, mockCompletedTask],
       })
 
-      render(<AnalysisTasksDropdown />)
+      render(<AnalysisTasksDropdown data-oid="zycdzpr" />)
 
       expect(screen.getByText("3")).toBeInTheDocument()
     })
@@ -609,7 +609,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [pendingTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="ctf7m8a" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -628,7 +628,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="nqgjx.g" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -647,7 +647,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockCompletedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="-6_tla9" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -665,7 +665,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [mockFailedTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="-y2vweg" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)
@@ -688,7 +688,7 @@ describe("AnalysisTasksDropdown", () => {
         tasks: [cancelledTask],
       })
 
-      const { container } = render(<AnalysisTasksDropdown />)
+      const { container } = render(<AnalysisTasksDropdown data-oid="7.krvnv" />)
 
       const trigger = screen.getByRole("button")
       await user.click(trigger)

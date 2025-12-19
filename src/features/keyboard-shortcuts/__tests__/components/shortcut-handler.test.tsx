@@ -29,7 +29,7 @@ describe("ShortcutHandler", () => {
         keys: ["cmd+t"],
       }
 
-      const { container } = render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      const { container } = render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="y175vhd" />)
 
       expect(container.firstChild).toBeNull()
     })
@@ -47,7 +47,7 @@ describe("ShortcutHandler", () => {
         enabled: true,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="h9b6b7c" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         "cmd+t",
@@ -71,7 +71,7 @@ describe("ShortcutHandler", () => {
         action: mockAction,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid=":dh28:w" />)
 
       // Should be called once with comma-separated keys
       expect(mockUseHotkeys).toHaveBeenCalledTimes(1)
@@ -96,7 +96,7 @@ describe("ShortcutHandler", () => {
         // No action provided
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="6q3-mbp" />)
 
       const registeredAction = mockUseHotkeys.mock.calls[0][1]
       expect(typeof registeredAction).toBe("function")
@@ -116,7 +116,7 @@ describe("ShortcutHandler", () => {
         enabled: true,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="6hl9a:p" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         expect.any(String),
@@ -138,7 +138,7 @@ describe("ShortcutHandler", () => {
         enabled: true,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={false} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={false} data-oid="4s87799" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         expect.any(String),
@@ -160,7 +160,7 @@ describe("ShortcutHandler", () => {
         enabled: false,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="zpfy_r8" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         expect.any(String),
@@ -182,7 +182,7 @@ describe("ShortcutHandler", () => {
         // enabled is undefined
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="gkpltk8" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         expect.any(String),
@@ -210,7 +210,7 @@ describe("ShortcutHandler", () => {
         },
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="83yfg_j" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         expect.any(String),
@@ -234,7 +234,7 @@ describe("ShortcutHandler", () => {
         keys: ["cmd+t"],
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="duy3.51" />)
 
       expect(mockUseHotkeys).toHaveBeenCalledWith(
         expect.any(String),
@@ -261,7 +261,7 @@ describe("ShortcutHandler", () => {
         enabled: true,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="pub4wzy" />)
 
       const dependencies = mockUseHotkeys.mock.calls[0][3]
 
@@ -279,12 +279,12 @@ describe("ShortcutHandler", () => {
         enabled: true,
       }
 
-      const { rerender } = render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      const { rerender } = render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="qf9p:z5" />)
 
       mockUseHotkeys.mockClear()
 
       // Change enabled prop
-      rerender(<ShortcutHandler shortcut={shortcut} enabled={false} />)
+      rerender(<ShortcutHandler shortcut={shortcut} enabled={false} data-oid="pzi14w4" />)
 
       const dependencies = mockUseHotkeys.mock.calls[0][3]
       expect(dependencies).toEqual([false, mockAction, true, "cmd+t"])
@@ -300,7 +300,7 @@ describe("ShortcutHandler", () => {
         keys: [],
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="q52ncyx" />)
 
       // Should call useHotkeys with empty string
       expect(mockUseHotkeys).toHaveBeenCalledWith("", expect.any(Function), expect.any(Object), expect.any(Array))
@@ -315,7 +315,7 @@ describe("ShortcutHandler", () => {
         keys,
       }
 
-      render(<ShortcutHandler shortcut={shortcut} enabled={true} />)
+      render(<ShortcutHandler shortcut={shortcut} enabled={true} data-oid="l:x0l-6" />)
 
       // Should be called once with comma-separated keys
       expect(mockUseHotkeys).toHaveBeenCalledTimes(1)

@@ -40,10 +40,10 @@ describe("AppInitProvider Edge Cases", () => {
 
       function TestComponent() {
         hookResult = useAppInit()
-        return <div>Test</div>
+        return <div data-oid="ecny5y2">Test</div>
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="3kzfwg." />)
 
       expect(hookResult).toEqual({
         initialized: false,
@@ -59,10 +59,10 @@ describe("AppInitProvider Edge Cases", () => {
 
       function TestComponent() {
         isReady = useAppReady()
-        return <div>Test</div>
+        return <div data-oid="rnu_ua6">Test</div>
       }
 
-      render(<TestComponent />)
+      render(<TestComponent data-oid="ps0b1nn" />)
 
       expect(isReady).toBe(false)
     })
@@ -73,7 +73,7 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(isDesktop).mockReturnValue(false)
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
-      const { container } = render(<AppInitProvider>{null}</AppInitProvider>)
+      const { container } = render(<AppInitProvider data-oid="fapaz_n">{null}</AppInitProvider>)
 
       await waitFor(() => {
         expect(vi.mocked(initMockApp)).toHaveBeenCalled()
@@ -86,7 +86,7 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(isDesktop).mockReturnValue(false)
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
-      const { container } = render(<AppInitProvider>{undefined}</AppInitProvider>)
+      const { container } = render(<AppInitProvider data-oid="0_2nonu">{undefined}</AppInitProvider>)
 
       await waitFor(() => {
         expect(vi.mocked(initMockApp)).toHaveBeenCalled()
@@ -100,12 +100,12 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
       render(
-        <AppInitProvider>
+        <AppInitProvider data-oid="xchu01.">
           {[
-            <div key="1" data-testid="child1">
+            <div key="1" data-testid="child1" data-oid="e6l:6wd">
               Child 1
             </div>,
-            <div key="2" data-testid="child2">
+            <div key="2" data-testid="child2" data-oid="t2u24e.">
               Child 2
             </div>,
           ]}
@@ -126,8 +126,17 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(initMockApp).mockResolvedValue(undefined as any)
 
       render(
-        <AppInitProvider fallback={<div data-testid="loading">Loading</div>}>
-          <div data-testid="content">Content</div>
+        <AppInitProvider
+          fallback={
+            <div data-testid="loading" data-oid="0p9tphk">
+              Loading
+            </div>
+          }
+          data-oid="m8h2019"
+        >
+          <div data-testid="content" data-oid="p-e430f">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -148,8 +157,17 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(initMockApp).mockImplementation(() => initPromise as any)
 
       const { queryByTestId } = render(
-        <AppInitProvider fallback={<div data-testid="loading">Loading</div>}>
-          <div data-testid="content">Content</div>
+        <AppInitProvider
+          fallback={
+            <div data-testid="loading" data-oid=":nrobzn">
+              Loading
+            </div>
+          }
+          data-oid="jiiy2a3"
+        >
+          <div data-testid="content" data-oid="6j9rn12">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -179,8 +197,10 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(initMockApp).mockImplementation(() => initPromise as any)
 
       const { unmount } = render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="tz7.016">
+          <div data-testid="content" data-oid="95jaq97">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -202,7 +222,9 @@ describe("AppInitProvider Edge Cases", () => {
 
       // Только platform зарегистрирован
       vi.mocked(container.hasPlatform).mockReturnValue(true)
-      vi.mocked(container.getPlatform).mockReturnValue({ type: "platform" } as any)
+      vi.mocked(container.getPlatform).mockReturnValue({
+        type: "platform",
+      } as any)
       vi.mocked(container.hasBackend).mockReturnValue(false)
       vi.mocked(container.hasStorage).mockReturnValue(false)
 
@@ -210,12 +232,16 @@ describe("AppInitProvider Edge Cases", () => {
 
       function TestComponent() {
         state = useAppInit()
-        return <div data-testid="test">Test</div>
+        return (
+          <div data-testid="test" data-oid="r6todd5">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="umfeikq">
+          <TestComponent data-oid="nj3:p-9" />
         </AppInitProvider>,
       )
 
@@ -240,8 +266,10 @@ describe("AppInitProvider Edge Cases", () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="ujbj_0-">
+          <div data-testid="content" data-oid="0mw2_9h">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -262,8 +290,10 @@ describe("AppInitProvider Edge Cases", () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="_hdqk1i">
+          <div data-testid="content" data-oid="2:r0iy_">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -290,12 +320,16 @@ describe("AppInitProvider Edge Cases", () => {
 
       function TestComponent() {
         state = useAppInit()
-        return <div data-testid="test">Test</div>
+        return (
+          <div data-testid="test" data-oid="8d90bmj">
+            Test
+          </div>
+        )
       }
 
       render(
-        <AppInitProvider>
-          <TestComponent />
+        <AppInitProvider data-oid="13ng0_0">
+          <TestComponent data-oid=".ly9:zj" />
         </AppInitProvider>,
       )
 
@@ -319,8 +353,10 @@ describe("AppInitProvider Edge Cases", () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="k1v90ys">
+          <div data-testid="content" data-oid="wqges8k">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -342,8 +378,10 @@ describe("AppInitProvider Edge Cases", () => {
       const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       render(
-        <AppInitProvider>
-          <div data-testid="content">Content</div>
+        <AppInitProvider data-oid="pa0fp:1">
+          <div data-testid="content" data-oid="_nx4hkw">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -373,8 +411,8 @@ describe("AppInitProvider Edge Cases", () => {
 
       expect(() => {
         render(
-          <AppInitProvider fallback={<FallbackWithError />}>
-            <div>Content</div>
+          <AppInitProvider fallback={<FallbackWithError data-oid="dky9e94" />} data-oid="inako30">
+            <div data-oid="ct4zcop">Content</div>
           </AppInitProvider>,
         )
       }).toThrow()
@@ -393,16 +431,18 @@ describe("AppInitProvider Edge Cases", () => {
 
       function ComplexFallback() {
         return (
-          <div data-testid="complex-fallback">
-            <div>Loading...</div>
-            <div>Please wait</div>
+          <div data-testid="complex-fallback" data-oid="-06udty">
+            <div data-oid="-m3hetf">Loading...</div>
+            <div data-oid="9465.yo">Please wait</div>
           </div>
         )
       }
 
       render(
-        <AppInitProvider fallback={<ComplexFallback />}>
-          <div data-testid="content">Content</div>
+        <AppInitProvider fallback={<ComplexFallback data-oid="ym-bvqq" />} data-oid="m.:twp4">
+          <div data-testid="content" data-oid=".7z5lfu">
+            Content
+          </div>
         </AppInitProvider>,
       )
 
@@ -424,8 +464,8 @@ describe("AppInitProvider Edge Cases", () => {
       vi.mocked(initMockApp).mockImplementation(() => initPromise as any)
 
       const { unmount } = render(
-        <AppInitProvider>
-          <div>Content</div>
+        <AppInitProvider data-oid="-3z_62-">
+          <div data-oid="rk9-6m9">Content</div>
         </AppInitProvider>,
       )
 

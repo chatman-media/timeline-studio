@@ -229,5 +229,5 @@ export function VectorscopeScope({ width, height, refreshRate }: VectorscopeScop
     }
   }, [width, height])
 
-  return <canvas ref={canvasRef} className="w-full h-full" style={{ imageRendering: "auto" }} />
+  return <canvas ref={canvasRef} className="w-full h-full" style={{ imageRendering: "auto" }} data-oid="99q9zpk" />
 }

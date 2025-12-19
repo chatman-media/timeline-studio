@@ -36,7 +36,7 @@ describe("UpdateSettings", () => {
   })
 
   it("рендерится без ошибок", () => {
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid=":r2k9in" />)
 
     expect(screen.getByText("Настройки обновлений")).toBeInTheDocument()
     expect(screen.getByText("Информация о версии")).toBeInTheDocument()
@@ -44,7 +44,7 @@ describe("UpdateSettings", () => {
   })
 
   it("показывает текущую версию", () => {
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid="nirb.oh" />)
 
     expect(screen.getByText("1.0.0")).toBeInTheDocument()
   })
@@ -57,7 +57,7 @@ describe("UpdateSettings", () => {
       checkForUpdates,
     })
 
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid="06go5se" />)
 
     await user.click(screen.getByText("Проверить обновления"))
     expect(checkForUpdates).toHaveBeenCalled()
@@ -69,7 +69,7 @@ describe("UpdateSettings", () => {
       isChecking: true,
     })
 
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid="h7z2op_" />)
 
     const button = screen.getByText("Проверить обновления")
     expect(button).toBeDisabled()
@@ -86,7 +86,7 @@ describe("UpdateSettings", () => {
       },
     })
 
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid="yfxcnt8" />)
 
     expect(screen.getByText("Доступна 1.1.0")).toBeInTheDocument()
     expect(screen.getByText("Версия 1.1.0")).toBeInTheDocument()
@@ -105,7 +105,7 @@ describe("UpdateSettings", () => {
       disableAutoCheck,
     })
 
-    const { rerender } = render(<UpdateSettings />)
+    const { rerender } = render(<UpdateSettings data-oid="8rmqbh:" />)
 
     // Находим первый switch на странице (для автоматической проверки)
     const switches = screen.getAllByRole("switch")
@@ -124,7 +124,7 @@ describe("UpdateSettings", () => {
     })
 
     // Ререндерим с новым состоянием
-    rerender(<UpdateSettings />)
+    rerender(<UpdateSettings data-oid="78g4q2u" />)
 
     // Находим switch снова
     const switchesUpdated = screen.getAllByRole("switch")
@@ -144,7 +144,7 @@ describe("UpdateSettings", () => {
       enableAutoCheck,
     })
 
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid="_qwbhcs" />)
 
     const select = screen.getByRole("combobox")
     await user.click(select)
@@ -154,14 +154,14 @@ describe("UpdateSettings", () => {
   })
 
   it("применяет переданные классы", () => {
-    const { container } = render(<UpdateSettings className="custom-class" />)
+    const { container } = render(<UpdateSettings className="custom-class" data-oid="74994:g" />)
 
     const settings = container.querySelector(".custom-class")
     expect(settings).toBeInTheDocument()
   })
 
   it("показывает дополнительные настройки", () => {
-    render(<UpdateSettings />)
+    render(<UpdateSettings data-oid=":6f4ixv" />)
 
     expect(screen.getByText("Дополнительные настройки")).toBeInTheDocument()
     expect(screen.getByText("Уведомления")).toBeInTheDocument()
@@ -185,7 +185,7 @@ describe("CompactUpdateSettings", () => {
   })
 
   it("рендерится в компактном виде", () => {
-    render(<CompactUpdateSettings />)
+    render(<CompactUpdateSettings data-oid="t8htfkz" />)
 
     expect(screen.getByText("Автоматическая проверка обновлений")).toBeInTheDocument()
     expect(screen.getByText("Проверять обновления в фоновом режиме")).toBeInTheDocument()
@@ -197,14 +197,14 @@ describe("CompactUpdateSettings", () => {
       autoCheckSettings: { enabled: true, intervalMinutes: 60 },
     })
 
-    render(<CompactUpdateSettings />)
+    render(<CompactUpdateSettings data-oid="846d::_" />)
 
     expect(screen.getByText("Интервал проверки")).toBeInTheDocument()
     expect(screen.getByRole("combobox")).toBeInTheDocument()
   })
 
   it("скрывает селектор интервала при выключенной автопроверке", () => {
-    render(<CompactUpdateSettings />)
+    render(<CompactUpdateSettings data-oid="teq8-7." />)
 
     expect(screen.queryByText("Интервал проверки")).not.toBeInTheDocument()
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument()
@@ -220,7 +220,7 @@ describe("CompactUpdateSettings", () => {
       disableAutoCheck,
     })
 
-    render(<CompactUpdateSettings />)
+    render(<CompactUpdateSettings data-oid="4w1d-3b" />)
 
     const switchElement = screen.getByRole("switch")
     await user.click(switchElement)

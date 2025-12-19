@@ -34,7 +34,12 @@ export function createMockTauriEvent<T = any>(eventName: string, payload: T) {
  */
 export function simulateAnalysisProgress(
   onProgress: (stage: string, progress: number, message: string) => void,
-  stages: Array<{ stage: string; progress: number; message: string; delay: number }>,
+  stages: Array<{
+    stage: string
+    progress: number
+    message: string
+    delay: number
+  }>,
 ) {
   let currentStage = 0
 

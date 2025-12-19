@@ -18,7 +18,10 @@ import { BrowserProvider, useBrowser, useBrowserState } from "../../providers/br
 
 // Test wrapper component - creates a fresh wrapper for each test
 const createWrapper = () => {
-  const Wrapper = ({ children }: { children: ReactNode }) => <BrowserProvider>{children}</BrowserProvider>
+  const Wrapper = ({ children }: { children: ReactNode }) => (
+    <BrowserProvider data-oid="j6fgz1u">{children}</BrowserProvider>
+  )
+
   Wrapper.displayName = `BrowserProviderWrapper-${Date.now()}-${Math.random()}`
   return Wrapper
 }

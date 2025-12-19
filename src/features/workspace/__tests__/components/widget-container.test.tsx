@@ -24,7 +24,12 @@ vi.mock("@dnd-kit/core", () => ({
 }))
 
 describe("WidgetContainer", () => {
-  const mockWidget = createMockWidget("test-1", "timeline", { x: 10, y: 20, width: 50, height: 30 })
+  const mockWidget = createMockWidget("test-1", "timeline", {
+    x: 10,
+    y: 20,
+    width: 50,
+    height: 30,
+  })
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -32,8 +37,10 @@ describe("WidgetContainer", () => {
 
   it("должен рендерить дочерние элементы", () => {
     render(
-      <WidgetContainer widget={mockWidget}>
-        <div data-testid="child-content">Child Content</div>
+      <WidgetContainer widget={mockWidget} data-oid="56lf-3f">
+        <div data-testid="child-content" data-oid="4sqm6pb">
+          Child Content
+        </div>
       </WidgetContainer>,
     )
 
@@ -43,8 +50,8 @@ describe("WidgetContainer", () => {
 
   it("должен отображать тип виджета в заголовке", () => {
     render(
-      <WidgetContainer widget={mockWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} data-oid="ghat-ma">
+        <div data-oid="ohicm2d">Content</div>
       </WidgetContainer>,
     )
 
@@ -53,8 +60,8 @@ describe("WidgetContainer", () => {
 
   it("должен применить правильные inline стили для позиционирования", () => {
     render(
-      <WidgetContainer widget={mockWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} data-oid="bmtkf2w">
+        <div data-oid="dnytxif">Content</div>
       </WidgetContainer>,
     )
 
@@ -71,8 +78,8 @@ describe("WidgetContainer", () => {
 
   it("должен показывать selected состояние", () => {
     const { rerender } = render(
-      <WidgetContainer widget={mockWidget} isSelected={false}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} isSelected={false} data-oid="t8waysh">
+        <div data-oid="48:1_z1">Content</div>
       </WidgetContainer>,
     )
 
@@ -80,8 +87,8 @@ describe("WidgetContainer", () => {
     expect(widgetElement).not.toHaveClass("ring-2")
 
     rerender(
-      <WidgetContainer widget={mockWidget} isSelected={true}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} isSelected={true} data-oid=".lja1.z">
+        <div data-oid="u-69uqf">Content</div>
       </WidgetContainer>,
     )
 
@@ -93,8 +100,8 @@ describe("WidgetContainer", () => {
     const onSelect = vi.fn()
 
     render(
-      <WidgetContainer widget={mockWidget} onSelect={onSelect}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} onSelect={onSelect} data-oid="-_rkcpr">
+        <div data-oid="6itf3d3">Content</div>
       </WidgetContainer>,
     )
 
@@ -109,8 +116,8 @@ describe("WidgetContainer", () => {
     const onMinimize = vi.fn()
 
     render(
-      <WidgetContainer widget={mockWidget} onMinimize={onMinimize}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} onMinimize={onMinimize} data-oid="yi3p.4f">
+        <div data-oid="0uxnzv-">Content</div>
       </WidgetContainer>,
     )
 
@@ -125,8 +132,8 @@ describe("WidgetContainer", () => {
     const onMaximize = vi.fn()
 
     render(
-      <WidgetContainer widget={mockWidget} onMaximize={onMaximize}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} onMaximize={onMaximize} data-oid="elbiq.i">
+        <div data-oid="ddxm0ve">Content</div>
       </WidgetContainer>,
     )
 
@@ -141,8 +148,8 @@ describe("WidgetContainer", () => {
     const onRemove = vi.fn()
 
     render(
-      <WidgetContainer widget={mockWidget} onRemove={onRemove}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} onRemove={onRemove} data-oid="6mvxlsv">
+        <div data-oid="adf.cpx">Content</div>
       </WidgetContainer>,
     )
 
@@ -158,8 +165,8 @@ describe("WidgetContainer", () => {
     const onMinimize = vi.fn()
 
     render(
-      <WidgetContainer widget={mockWidget} onSelect={onSelect} onMinimize={onMinimize}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} onSelect={onSelect} onMinimize={onMinimize} data-oid="bm44fz3">
+        <div data-oid="db022sf">Content</div>
       </WidgetContainer>,
     )
 
@@ -172,11 +179,13 @@ describe("WidgetContainer", () => {
   })
 
   it("не должен рендериться если виджет минимизирован", () => {
-    const minimizedWidget = createMockWidget("test-2", "player", undefined, { isMinimized: true })
+    const minimizedWidget = createMockWidget("test-2", "player", undefined, {
+      isMinimized: true,
+    })
 
     render(
-      <WidgetContainer widget={minimizedWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={minimizedWidget} data-oid="fi-wj2k">
+        <div data-oid="kyhrjsb">Content</div>
       </WidgetContainer>,
     )
 
@@ -186,11 +195,13 @@ describe("WidgetContainer", () => {
   })
 
   it("должен применить полупрозрачность для невидимых виджетов", () => {
-    const invisibleWidget = createMockWidget("test-3", "browser", undefined, { isVisible: false })
+    const invisibleWidget = createMockWidget("test-3", "browser", undefined, {
+      isVisible: false,
+    })
 
     render(
-      <WidgetContainer widget={invisibleWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={invisibleWidget} data-oid="oz29knn">
+        <div data-oid="e2ou60m">Content</div>
       </WidgetContainer>,
     )
 
@@ -199,11 +210,13 @@ describe("WidgetContainer", () => {
   })
 
   it("должен блокировать pointer-events для невидимых виджетов", () => {
-    const invisibleWidget = createMockWidget("test-4", "options", undefined, { isVisible: false })
+    const invisibleWidget = createMockWidget("test-4", "options", undefined, {
+      isVisible: false,
+    })
 
     render(
-      <WidgetContainer widget={invisibleWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={invisibleWidget} data-oid="vydyb68">
+        <div data-oid="w5ybk3_">Content</div>
       </WidgetContainer>,
     )
 
@@ -212,11 +225,13 @@ describe("WidgetContainer", () => {
   })
 
   it("должен применить правильный z-index", () => {
-    const widgetWithZIndex = createMockWidget("test-5", "timeline", undefined, { zIndex: 5 })
+    const widgetWithZIndex = createMockWidget("test-5", "timeline", undefined, {
+      zIndex: 5,
+    })
 
     render(
-      <WidgetContainer widget={widgetWithZIndex}>
-        <div>Content</div>
+      <WidgetContainer widget={widgetWithZIndex} data-oid="hdkql1c">
+        <div data-oid="v776wdy">Content</div>
       </WidgetContainer>,
     )
 
@@ -226,8 +241,8 @@ describe("WidgetContainer", () => {
 
   it("не должен отображать кнопки если обработчики не переданы", () => {
     render(
-      <WidgetContainer widget={mockWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} data-oid="dek2vrd">
+        <div data-oid="8mb6ykg">Content</div>
       </WidgetContainer>,
     )
 
@@ -238,8 +253,8 @@ describe("WidgetContainer", () => {
 
   it("должен отображать drag handle", () => {
     render(
-      <WidgetContainer widget={mockWidget}>
-        <div>Content</div>
+      <WidgetContainer widget={mockWidget} data-oid="h5464pu">
+        <div data-oid="vcge-my">Content</div>
       </WidgetContainer>,
     )
 
@@ -250,8 +265,8 @@ describe("WidgetContainer", () => {
   describe("Resize Handles", () => {
     it("должен отображать resize handles когда enableResize=true", () => {
       const { container } = render(
-        <WidgetContainer widget={mockWidget} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} enableResize={true} data-oid="a99szsi">
+          <div data-oid="rfzl6qr">Content</div>
         </WidgetContainer>,
       )
 
@@ -273,8 +288,8 @@ describe("WidgetContainer", () => {
 
     it("не должен отображать resize handles когда enableResize=false", () => {
       const { container } = render(
-        <WidgetContainer widget={mockWidget} enableResize={false}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} enableResize={false} data-oid="1uorf_a">
+          <div data-oid="6ma10cm">Content</div>
         </WidgetContainer>,
       )
 
@@ -290,8 +305,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на east handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="cdhbjg5">
+          <div data-oid="67c.932">Content</div>
         </WidgetContainer>,
       )
 
@@ -309,8 +324,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на south handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="fc:ppa2">
+          <div data-oid="roweqre">Content</div>
         </WidgetContainer>,
       )
 
@@ -326,8 +341,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на west handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="8yd.bpp">
+          <div data-oid="z6u__ih">Content</div>
         </WidgetContainer>,
       )
 
@@ -343,8 +358,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на north handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="d-.8:5l">
+          <div data-oid=":4uf93v">Content</div>
         </WidgetContainer>,
       )
 
@@ -360,8 +375,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на SE corner handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="d_m.8p2">
+          <div data-oid="6n6sfvj">Content</div>
         </WidgetContainer>,
       )
 
@@ -377,8 +392,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на NE corner handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="obgege8">
+          <div data-oid="ug1:ilm">Content</div>
         </WidgetContainer>,
       )
 
@@ -394,8 +409,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на SW corner handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="ge616et">
+          <div data-oid="6xikmh8">Content</div>
         </WidgetContainer>,
       )
 
@@ -411,8 +426,8 @@ describe("WidgetContainer", () => {
     it("должен вызывать handleResizeStart при mousedown на NW corner handle", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="5jqnpnw">
+          <div data-oid="xv4h724">Content</div>
         </WidgetContainer>,
       )
 
@@ -429,8 +444,14 @@ describe("WidgetContainer", () => {
       const onSelect = vi.fn()
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onSelect={onSelect} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer
+          widget={mockWidget}
+          onSelect={onSelect}
+          onResize={onResize}
+          enableResize={true}
+          data-oid="afoivlf"
+        >
+          <div data-oid="13m311.">Content</div>
         </WidgetContainer>,
       )
 
@@ -444,8 +465,8 @@ describe("WidgetContainer", () => {
     it("не должен вызывать onResize если нет movement после mousedown", () => {
       const onResize = vi.fn()
       const { container } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="m:t56rb">
+          <div data-oid="gpc7u_m">Content</div>
         </WidgetContainer>,
       )
 
@@ -462,8 +483,8 @@ describe("WidgetContainer", () => {
       const removeEventListenerSpy = vi.spyOn(window, "removeEventListener")
 
       const { container, unmount } = render(
-        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} onResize={onResize} enableResize={true} data-oid="0gh7-1c">
+          <div data-oid="0okznd1">Content</div>
         </WidgetContainer>,
       )
 
@@ -485,8 +506,8 @@ describe("WidgetContainer", () => {
 
     it("не должен иметь opacity-50 класс когда isDragging=false", () => {
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="trclv1-">
+          <div data-oid="nbtc:36">Content</div>
         </WidgetContainer>,
       )
 
@@ -498,8 +519,8 @@ describe("WidgetContainer", () => {
       const widgetWithZIndex = createMockWidget("test-no-drag", "timeline", undefined, { zIndex: 5 })
 
       const { container } = render(
-        <WidgetContainer widget={widgetWithZIndex}>
-          <div>Content</div>
+        <WidgetContainer widget={widgetWithZIndex} data-oid="glycm-b">
+          <div data-oid="5xs.xht">Content</div>
         </WidgetContainer>,
       )
 
@@ -509,8 +530,8 @@ describe("WidgetContainer", () => {
 
     it("должен иметь transform: undefined когда нет transform от useDraggable", () => {
       const { container } = render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="kg6_4de">
+          <div data-oid="ez4nagy">Content</div>
         </WidgetContainer>,
       )
 
@@ -526,8 +547,8 @@ describe("WidgetContainer", () => {
       const widgetWithoutConfig = createMockWidget("no-config", "player")
 
       render(
-        <WidgetContainer widget={widgetWithoutConfig}>
-          <div>Content</div>
+        <WidgetContainer widget={widgetWithoutConfig} data-oid="xsm1dhm">
+          <div data-oid="r3ji56t">Content</div>
         </WidgetContainer>,
       )
 
@@ -548,8 +569,8 @@ describe("WidgetContainer", () => {
         const widget = createMockWidget(`widget-${type}`, type)
 
         const { container, unmount } = render(
-          <WidgetContainer widget={widget}>
-            <div>{type} content</div>
+          <WidgetContainer widget={widget} data-oid="6rwwb:y">
+            <div data-oid="9o-zxp5">{type} content</div>
           </WidgetContainer>,
         )
 
@@ -569,8 +590,8 @@ describe("WidgetContainer", () => {
       })
 
       render(
-        <WidgetContainer widget={edgeBoundsWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={edgeBoundsWidget} data-oid="v23x.fb">
+          <div data-oid="2d.3pcw">Content</div>
         </WidgetContainer>,
       )
 
@@ -585,8 +606,8 @@ describe("WidgetContainer", () => {
 
     it("должен работать без onSelect callback", () => {
       render(
-        <WidgetContainer widget={mockWidget}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} data-oid="9pj:o9a">
+          <div data-oid="dvwi9nw">Content</div>
         </WidgetContainer>,
       )
 
@@ -600,8 +621,8 @@ describe("WidgetContainer", () => {
 
     it("должен работать без onResize callback", () => {
       const { container } = render(
-        <WidgetContainer widget={mockWidget} enableResize={true}>
-          <div>Content</div>
+        <WidgetContainer widget={mockWidget} enableResize={true} data-oid="v48vz60">
+          <div data-oid="s1-3fp3">Content</div>
         </WidgetContainer>,
       )
 

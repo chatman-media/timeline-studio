@@ -168,17 +168,26 @@ export function UserSettingsProvider({
   )
 
   const toggleBrowserVisibility = useCallback(
-    () => orchestrator.updateUserSettings({ isBrowserVisible: !settings.isBrowserVisible }),
+    () =>
+      orchestrator.updateUserSettings({
+        isBrowserVisible: !settings.isBrowserVisible,
+      }),
     [orchestrator, settings.isBrowserVisible],
   )
 
   const toggleTimelineVisibility = useCallback(
-    () => orchestrator.updateUserSettings({ isTimelineVisible: !settings.isTimelineVisible }),
+    () =>
+      orchestrator.updateUserSettings({
+        isTimelineVisible: !settings.isTimelineVisible,
+      }),
     [orchestrator, settings.isTimelineVisible],
   )
 
   const toggleOptionsVisibility = useCallback(
-    () => orchestrator.updateUserSettings({ isOptionsVisible: !settings.isOptionsVisible }),
+    () =>
+      orchestrator.updateUserSettings({
+        isOptionsVisible: !settings.isOptionsVisible,
+      }),
     [orchestrator, settings.isOptionsVisible],
   )
 
@@ -262,7 +271,10 @@ export function UserSettingsProvider({
   )
 
   const handleTimelineVirtualizationOverscanChange = useCallback(
-    (value: number) => orchestrator.updateUserSettings({ timelineVirtualizationOverscan: value }),
+    (value: number) =>
+      orchestrator.updateUserSettings({
+        timelineVirtualizationOverscan: value,
+      }),
     [orchestrator],
   )
 
@@ -372,5 +384,9 @@ export function UserSettingsProvider({
     ],
   )
 
-  return <UserSettingsContext.Provider value={value}>{children}</UserSettingsContext.Provider>
+  return (
+    <UserSettingsContext.Provider value={value} data-oid="j_7xub3">
+      {children}
+    </UserSettingsContext.Provider>
+  )
 }

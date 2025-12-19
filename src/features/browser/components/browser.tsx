@@ -16,10 +16,10 @@ function BrowserWithState() {
   }
 
   return (
-    <div className="relative h-full w-full flex flex-col gap-0 dark:bg-[#2D2D2D]">
+    <div className="relative h-full w-full flex flex-col gap-0 dark:bg-[#2D2D2D]" data-oid="_41dqo7">
       {/* Табы вне Tabs компонента для избежания ререндера */}
-      <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} />
-      <BrowserContent />
+      <BrowserTabs activeTab={activeTab} onTabChange={handleTabChange} data-oid="fv88s.9" />
+      <BrowserContent data-oid="n1b932_" />
     </div>
   )
 }
@@ -38,8 +38,9 @@ export function Browser() {
       onError={(_error) => {
         // Handle effects provider error
       }}
+      data-oid="njmdhzy"
     >
-      <BrowserWithState />
+      <BrowserWithState data-oid="zr62jin" />
     </EffectsProvider>
   )
 }

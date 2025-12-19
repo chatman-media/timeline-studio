@@ -51,8 +51,8 @@ describe("PersonFormModal", () => {
 
   it("should render empty form for new person", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="hulkn5g">
+        <PersonFormModal data-oid="19gn3ir" />
       </BaseProviders>,
     )
 
@@ -86,8 +86,8 @@ describe("PersonFormModal", () => {
     mockModalData.mockReturnValue({ person: mockPerson })
 
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="v1njmph">
+        <PersonFormModal data-oid="au71_36" />
       </BaseProviders>,
     )
 
@@ -100,8 +100,8 @@ describe("PersonFormModal", () => {
 
   it("should update form fields", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="1ou:6fc">
+        <PersonFormModal data-oid="dm7ir1x" />
       </BaseProviders>,
     )
 
@@ -117,8 +117,8 @@ describe("PersonFormModal", () => {
 
   it("should add and remove tags", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="ji2hdbf">
+        <PersonFormModal data-oid="ilcimaj" />
       </BaseProviders>,
     )
 
@@ -145,8 +145,8 @@ describe("PersonFormModal", () => {
 
   it("should add tag on Enter key", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="ji7iq1v">
+        <PersonFormModal data-oid="9ofd0no" />
       </BaseProviders>,
     )
 
@@ -160,8 +160,8 @@ describe("PersonFormModal", () => {
 
   it("should not add duplicate tags", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="smjg0q7">
+        <PersonFormModal data-oid="c53vl5:" />
       </BaseProviders>,
     )
 
@@ -182,8 +182,8 @@ describe("PersonFormModal", () => {
 
   it("should not add empty tags", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="o3bgwd:">
+        <PersonFormModal data-oid="ke2i7bj" />
       </BaseProviders>,
     )
 
@@ -201,8 +201,8 @@ describe("PersonFormModal", () => {
 
   it.todo("should handle file upload", async () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="xr3x8uh">
+        <PersonFormModal data-oid="3npcrw7" />
       </BaseProviders>,
     )
 
@@ -244,8 +244,8 @@ describe("PersonFormModal", () => {
     mockModalData.mockReturnValue({ onSave })
 
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="8veity6">
+        <PersonFormModal data-oid="e_n8rh." />
       </BaseProviders>,
     )
 
@@ -276,8 +276,8 @@ describe("PersonFormModal", () => {
     mockModalData.mockReturnValue({ onSave })
 
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="gkyw59x">
+        <PersonFormModal data-oid=".08mobc" />
       </BaseProviders>,
     )
 
@@ -301,8 +301,8 @@ describe("PersonFormModal", () => {
     mockModalData.mockReturnValue({ person: mockPerson, onSave })
 
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="ozpd:aq">
+        <PersonFormModal data-oid="g2o3gu_" />
       </BaseProviders>,
     )
 
@@ -326,8 +326,8 @@ describe("PersonFormModal", () => {
 
   it("should close modal on cancel", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="fgu83o3">
+        <PersonFormModal data-oid="ri4szi7" />
       </BaseProviders>,
     )
 
@@ -341,8 +341,8 @@ describe("PersonFormModal", () => {
     mockModalData.mockReturnValue({ isLoading: true })
 
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="j136pr0">
+        <PersonFormModal data-oid="bpl9.tv" />
       </BaseProviders>,
     )
 
@@ -358,8 +358,8 @@ describe("PersonFormModal", () => {
     mockModalData.mockReturnValue({ onSave })
 
     const { container } = render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="l_g7rgf">
+        <PersonFormModal data-oid="5b-thr1" />
       </BaseProviders>,
     )
 
@@ -431,8 +431,8 @@ describe("PersonFormModal", () => {
 
   it("should handle upload button click", () => {
     render(
-      <BaseProviders>
-        <PersonFormModal />
+      <BaseProviders data-oid="9ke6dlq">
+        <PersonFormModal data-oid="-2n8:ta" />
       </BaseProviders>,
     )
 

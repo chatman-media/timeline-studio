@@ -16,7 +16,14 @@ vi.mock("react-i18next", () => ({
 // Мокируем компонент Button из @/components/ui/button
 vi.mock("@/components/ui/button", () => ({
   Button: ({ children, onClick, disabled, className, ...props }: any) => (
-    <button onClick={onClick} disabled={disabled} className={className} data-testid="button" {...props}>
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={className}
+      data-testid="button"
+      {...props}
+      data-oid="70u4d48"
+    >
       {children}
     </button>
   ),
@@ -43,7 +50,7 @@ describe("RecordingControls", () => {
   })
 
   it("renders start recording button when not recording", () => {
-    render(<RecordingControls {...defaultProps} />)
+    render(<RecordingControls {...defaultProps} data-oid="dw9lnph" />)
 
     // Проверяем, что отображается кнопка начала записи
     const button = screen.getByTestId("button")
@@ -56,7 +63,7 @@ describe("RecordingControls", () => {
   })
 
   it("renders stop recording button when recording", () => {
-    render(<RecordingControls {...defaultProps} isRecording />)
+    render(<RecordingControls {...defaultProps} isRecording data-oid="_actevv" />)
 
     // Проверяем, что отображается кнопка остановки записи
     const button = screen.getByTestId("button")
@@ -66,7 +73,7 @@ describe("RecordingControls", () => {
   })
 
   it("disables start button when device is not ready", () => {
-    render(<RecordingControls {...defaultProps} isDeviceReady={false} />)
+    render(<RecordingControls {...defaultProps} isDeviceReady={false} data-oid="bpdov83" />)
 
     // Проверяем, что кнопка начала записи отключена
     const button = screen.getByTestId("button")
@@ -74,7 +81,7 @@ describe("RecordingControls", () => {
   })
 
   it("calls onStartRecording when start button is clicked", () => {
-    render(<RecordingControls {...defaultProps} />)
+    render(<RecordingControls {...defaultProps} data-oid="tes2.9m" />)
 
     // Находим кнопку начала записи и кликаем по ней
     const button = screen.getByTestId("button")
@@ -89,7 +96,7 @@ describe("RecordingControls", () => {
   })
 
   it("calls onStopRecording when stop button is clicked", () => {
-    render(<RecordingControls {...defaultProps} isRecording />)
+    render(<RecordingControls {...defaultProps} isRecording data-oid="-ccf9em" />)
 
     // Находим кнопку остановки записи и кликаем по ней
     const button = screen.getByTestId("button")
@@ -104,7 +111,7 @@ describe("RecordingControls", () => {
   })
 
   it("formats recording time correctly", () => {
-    render(<RecordingControls {...defaultProps} />)
+    render(<RecordingControls {...defaultProps} data-oid="1::ml1n" />)
 
     // Проверяем, что функция форматирования времени была вызвана с правильным аргументом
     expect(mockFormatRecordingTime).toHaveBeenCalledWith(10000)
