@@ -128,6 +128,10 @@ interface PlayerContextType {
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined)
 
+// Отдельный контекст для времени воспроизведения (обновляется 60fps)
+// Это позволяет компонентам, которым нужно только время, подписаться только на этот контекст
+const PlaybackTimeContext = createContext<number>(0)
+
 interface PlayerProviderProps {
   children: React.ReactNode
 }
@@ -566,8 +570,9 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
       // Сначала spread локального состояния
       ...localState,
 
-      // Backend состояние с локальным временем для плавного обновления
-      currentTime: currentDisplayTime, // L1: Локальное время, обновляемое 60fps
+      // currentTime доступно через отдельный хук usePlaybackTime для оптимизации
+      // Здесь используем 0, т.к. компоненты должны использовать usePlaybackTime()
+      currentTime: 0, // Используйте usePlaybackTime() для получения актуального времени
       // Используем локальное isPlaying если backend отключен
       isPlaying: isVideoPlayerServiceEnabled
         ? playbackState
@@ -635,7 +640,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     }),
     [
       localState,
-      currentDisplayTime,
+      // currentDisplayTime удалён из зависимостей - используйте usePlaybackTime()
       isVideoPlayerServiceEnabled,
       playbackState,
       setCurrentVideo,
@@ -678,9 +683,11 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
   )
 
   return (
-    <PlayerContext.Provider value={contextValue} data-oid="-x1hxvz">
-      {children}
-    </PlayerContext.Provider>
+    <PlaybackTimeContext.Provider value={currentDisplayTime}>
+      <PlayerContext.Provider value={contextValue} data-oid="-x1hxvz">
+        {children}
+      </PlayerContext.Provider>
+    </PlaybackTimeContext.Provider>
   )
 }
 
@@ -691,7 +698,19 @@ export function usePlayer(): PlayerContextType {
     throw new Error("usePlayer must be used within PlayerProvider")
   }
 
+  // ВНИМАНИЕ: currentTime в этом контексте всегда 0 для оптимизации производительности
+  // Для получения актуального времени воспроизведения используйте usePlaybackTime()
   return context
+}
+
+/**
+ * Хук для получения только времени воспроизведения (обновляется 60fps)
+ * Используйте этот хук вместо usePlayer, если вам нужно только время
+ * Это оптимизирует производительность, т.к. компонент не будет ре-рендериться
+ * при изменениях других свойств плеера
+ */
+export function usePlaybackTime(): number {
+  return useContext(PlaybackTimeContext)
 }
 
 export type { PlayerContextType }

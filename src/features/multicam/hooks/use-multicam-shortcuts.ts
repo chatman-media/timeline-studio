@@ -11,8 +11,6 @@ import { multicamManager } from "../services/multicam-manager"
 const logger = createLogger({ module: "UseMulticamShortcuts" })
 
 export function useMulticamShortcuts() {
-  logger.info("Инициализация хука")
-
   useEffect(() => {
     // Регистрируем обработчики для переключения камер 1-9
     const shortcuts = Array.from({ length: 9 }, (_, i) => ({

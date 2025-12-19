@@ -42,13 +42,6 @@ export const AudioPreview = memo(function AudioPreview({
   showFileName = false,
   dimensions = [16, 9],
 }: AudioPreviewProps) {
-  // DEBUG: Логируем каждый рендер
-  console.log("[AudioPreview] RENDER", {
-    fileId: file.id,
-    fileName: file.name,
-    filePath: file.path,
-  })
-
   const [isPlaying, setIsPlaying] = useState(false)
   const [hoverTime, setHoverTime] = useState<number | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)

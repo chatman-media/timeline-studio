@@ -9,8 +9,6 @@ const logger = createLogger("video-player:use-fullscreen")
  * @returns Объект с состоянием полноэкранного режима и функциями для управления им
  */
 export function useFullscreen() {
-  logger.debug("hook initialized")
-
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
