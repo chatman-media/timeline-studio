@@ -1,3 +1,15 @@
+# [3.40.0](https://github.com/chatman-media/timeline-studio/compare/v3.39.0...v3.40.0) (2025-12-19)
+
+
+### Bug Fixes
+
+* **ai-director:** исправлено отображение анализаторов в истории ([a0d1c18](https://github.com/chatman-media/timeline-studio/commit/a0d1c1813e596bd2cdc173d7e33f92a1141a1421))
+
+
+### Features
+
+* **ai-director:** добавлен глобальный индикатор прогресса AI-анализа ([751b984](https://github.com/chatman-media/timeline-studio/commit/751b9844727f0e6ac6effca1b3b6e9d0d11a1c3f))
+
 # [3.39.0](https://github.com/chatman-media/timeline-studio/compare/v3.38.2...v3.39.0) (2025-12-16)
 
 
