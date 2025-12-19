@@ -174,6 +174,21 @@ export function TransitionPreview({
   }, [])
 
   /**
+   * Безопасно воспроизводит видео, игнорируя AbortError
+   * AbortError возникает когда play() прерывается pause() или сменой src
+   */
+  const safePlay = useCallback((video: HTMLVideoElement) => {
+    video.play().catch((error) => {
+      // Игнорируем AbortError - это нормальное поведение при быстром hover/unhover
+      if (error.name === "AbortError") {
+        return
+      }
+      // Логируем другие ошибки
+      logger.warn("Video play error", { error: String(error) })
+    })
+  }, [])
+
+  /**
    * Запускает анимацию перехода между видео
    * Сначала показывает исходное видео, затем применяет эффект перехода и показывает целевое видео
    */
@@ -186,7 +201,7 @@ export function TransitionPreview({
     // Сбрасываем состояние видео перед началом перехода
     resetVideos()
     // Запускаем воспроизведение исходного видео
-    void sourceVideo.play()
+    safePlay(sourceVideo)
 
     // Устанавливаем таймер для начала перехода через 1 секунду
     transitionTimeoutRef.current = setTimeout(() => {
@@ -400,7 +415,7 @@ export function TransitionPreview({
       }
 
       // Запускаем воспроизведение целевого видео
-      void targetVideo.play()
+      safePlay(targetVideo)
 
       // Устанавливаем таймер для повторения перехода через 2 секунды
       loopTimeoutRef.current = setTimeout(() => {
@@ -409,7 +424,7 @@ export function TransitionPreview({
         }
       }, 2000)
     }, 1000)
-  }, [isHovering, transitionType, isError]) // Убираем resetVideos из зависимостей
+  }, [isHovering, transitionType, isError, safePlay]) // safePlay стабильный, не вызывает лишних ре-рендеров
 
   /**
    * Intersection Observer для ленивой загрузки видео

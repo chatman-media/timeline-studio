@@ -23,13 +23,48 @@ import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
 import { LazyTabContent } from "./lazy-tab-content"
 
-// Контейнер для контента вкладки
+/**
+ * Список всех возможных вкладок браузера
+ */
+const ALL_BROWSER_TABS = [
+  "media",
+  "music",
+  "effects",
+  "filters",
+  "transitions",
+  "subtitles",
+  "templates",
+  "style_templates",
+] as const
+
+/**
+ * Контейнер для контента вкладок с кэшированием
+ * Сохраняет посещённые вкладки смонтированными, скрывая их через CSS
+ */
 const TabContentContainer = memo(({ activeTab }: { activeTab: string }) => {
+  // Отслеживаем какие вкладки уже были посещены
+  const [visitedTabs, setVisitedTabs] = useState<Set<string>>(() => new Set([activeTab]))
+
+  // Добавляем новую вкладку в посещённые при её активации
+  useEffect(() => {
+    setVisitedTabs((prev) => {
+      if (prev.has(activeTab)) return prev
+      const next = new Set(prev)
+      next.add(activeTab)
+      return next
+    })
+  }, [activeTab])
+
   const contentClassName = "bg-background m-0 px-0.5 flex-1 overflow-auto"
 
   return (
     <div className={contentClassName} data-oid="8qkh7.t">
-      <LazyTabContent tabValue={activeTab} activeTab={activeTab} data-oid="jocd.dx" />
+      {ALL_BROWSER_TABS.map((tabValue) => {
+        // Рендерим только посещённые вкладки
+        if (!visitedTabs.has(tabValue)) return null
+
+        return <LazyTabContent key={tabValue} tabValue={tabValue} activeTab={activeTab} data-oid="jocd.dx" />
+      })}
     </div>
   )
 })

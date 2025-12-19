@@ -105,10 +105,14 @@ describe("LazyTabContent", () => {
   })
 
   describe("rendering", () => {
-    it("should not render anything for inactive tab", () => {
+    it("should render hidden container for inactive tab", () => {
       const { container } = render(<LazyTabContent tabValue="media" activeTab="music" data-oid="ode90xw" />)
 
-      expect(container.firstChild).toBeNull()
+      // С кэшированием: неактивная вкладка рендерит скрытый div
+      const tabContainer = container.firstChild as HTMLElement
+      expect(tabContainer).not.toBeNull()
+      expect(tabContainer.style.display).toBe("none")
+      expect(tabContainer.getAttribute("data-active")).toBe("false")
     })
 
     it("should render loading fallback initially", async () => {
@@ -204,8 +208,8 @@ describe("LazyTabContent", () => {
     })
   })
 
-  describe("tab switching", () => {
-    it("should unload content when tab becomes inactive", async () => {
+  describe("tab switching with caching", () => {
+    it("should keep content mounted but hidden when tab becomes inactive", async () => {
       const { rerender, container } = render(<LazyTabContent tabValue="media" activeTab="media" data-oid="0b8:zd3" />)
 
       // Wait for content to load
@@ -216,23 +220,33 @@ describe("LazyTabContent", () => {
       // Switch to another tab
       rerender(<LazyTabContent tabValue="media" activeTab="music" data-oid="ey-:cqn" />)
 
-      // Content should be unloaded
-      expect(container.firstChild).toBeNull()
+      // С кэшированием: контент остаётся смонтированным, но скрытым
+      const tabContainer = container.firstChild as HTMLElement
+      expect(tabContainer).not.toBeNull()
+      expect(tabContainer.style.display).toBe("none")
+      // Контент всё ещё в DOM
+      expect(screen.queryByTestId("media-content")).toBeInTheDocument()
     })
 
-    it("should reload content when tab becomes active again", async () => {
-      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="music" data-oid="g7n1vu0" />)
+    it("should show cached content immediately when tab becomes active again", async () => {
+      const { rerender, container } = render(<LazyTabContent tabValue="media" activeTab="media" data-oid="g7n1vu0" />)
 
-      // Initially not rendered
-      expect(screen.queryByTestId("media-content")).not.toBeInTheDocument()
-
-      // Switch to media tab
-      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="bhvf1m6" />)
-
-      // Content should load
+      // Wait for initial load
       await waitFor(() => {
         expect(screen.getByTestId("media-content")).toBeInTheDocument()
       })
+
+      // Switch away from media tab
+      rerender(<LazyTabContent tabValue="media" activeTab="music" data-oid="bhvf1m6" />)
+      expect((container.firstChild as HTMLElement).style.display).toBe("none")
+
+      // Switch back to media tab
+      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="bhvf1m7" />)
+
+      // Content should be visible immediately (no need to wait - it's cached)
+      const tabContainer = container.firstChild as HTMLElement
+      expect(tabContainer.style.display).toBe("block")
+      expect(screen.getByTestId("media-content")).toBeInTheDocument()
     })
   })
 
@@ -240,15 +254,18 @@ describe("LazyTabContent", () => {
     it("should handle unknown tab value", () => {
       const { container } = render(<LazyTabContent tabValue="unknown" activeTab="unknown" data-oid="n2jc8kj" />)
 
-      // Should not render anything for unknown tab (returns null)
+      // Should not render anything for unknown tab (returns null - no adapter found)
       expect(container.firstChild).toBeNull()
     })
 
-    it("should handle null activeTab", () => {
+    it("should render hidden container when activeTab is empty", () => {
       const { container } = render(<LazyTabContent tabValue="media" activeTab="" data-oid="9w3g8_l" />)
 
-      // Should not render anything
-      expect(container.firstChild).toBeNull()
+      // С кэшированием: известная вкладка рендерится, но скрыта
+      const tabContainer = container.firstChild as HTMLElement
+      expect(tabContainer).not.toBeNull()
+      expect(tabContainer.style.display).toBe("none")
+      expect(tabContainer.getAttribute("data-active")).toBe("false")
     })
   })
 
@@ -269,16 +286,29 @@ describe("LazyTabContent", () => {
       expect(screen.getByTestId("media-content")).toBeInTheDocument()
     })
 
-    it("should re-render when activeTab changes", async () => {
-      const { rerender } = render(<LazyTabContent tabValue="media" activeTab="music" data-oid="65q::kz" />)
+    it("should toggle visibility when activeTab changes", async () => {
+      const { rerender, container } = render(<LazyTabContent tabValue="media" activeTab="media" data-oid="65q::kz" />)
 
-      expect(screen.queryByTestId("media-content")).not.toBeInTheDocument()
-
-      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="ifz1-6l" />)
-
+      // Дождаться загрузки
       await waitFor(() => {
         expect(screen.getByTestId("media-content")).toBeInTheDocument()
       })
+
+      // Изначально видим
+      expect((container.firstChild as HTMLElement).style.display).toBe("block")
+
+      // Переключаем на другую вкладку
+      rerender(<LazyTabContent tabValue="media" activeTab="music" data-oid="ifz1-6l" />)
+
+      // Теперь скрыт, но контент остаётся
+      expect((container.firstChild as HTMLElement).style.display).toBe("none")
+      expect(screen.getByTestId("media-content")).toBeInTheDocument()
+
+      // Возвращаемся обратно
+      rerender(<LazyTabContent tabValue="media" activeTab="media" data-oid="ifz1-6m" />)
+
+      // Снова видим
+      expect((container.firstChild as HTMLElement).style.display).toBe("block")
     })
   })
 })
