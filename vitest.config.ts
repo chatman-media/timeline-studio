@@ -30,16 +30,11 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**/*", "node_modules/**/*"],
     testTimeout: 10000,
-    // Быстрая параллельная конфигурация с threads pool
+    // Быстрая параллельная конфигурация (Vitest 4.x)
     pool: "threads",
-    // @ts-expect-error - poolOptions is valid in Vitest 4.x but types are not yet updated
-    poolOptions: {
-      threads: {
-        // Ограничиваем количество воркеров для предотвращения утечки памяти
-        maxThreads: 4,
-        minThreads: 1,
-      },
-    },
+    // Ограничиваем количество воркеров для предотвращения утечки памяти
+    maxWorkers: 4,
+    minWorkers: 1,
     // Включаем параллельное выполнение для скорости
     fileParallelism: true,
     isolate: true,
