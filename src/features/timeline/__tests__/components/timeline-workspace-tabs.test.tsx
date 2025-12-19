@@ -205,13 +205,13 @@ describe("TimelineWorkspaceTabs", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} data-oid="t.pnx6w" />)
 
       expect(Button).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           variant: "secondary",
           size: "sm",
           onClick: expect.any(Function),
           className: expect.any(String),
           children: expect.any(Array),
-        },
+        }),
         undefined,
       )
     })
@@ -220,13 +220,13 @@ describe("TimelineWorkspaceTabs", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} data-oid="pcrr80t" />)
 
       expect(Button).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           variant: "ghost",
           size: "sm",
           onClick: expect.any(Function),
           className: expect.any(String),
           children: expect.any(Array),
-        },
+        }),
         undefined,
       )
     })

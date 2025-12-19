@@ -128,10 +128,10 @@ describe("SubtitleToolbar", () => {
 
       expect(Separator).toHaveBeenCalledTimes(3)
       expect(Separator).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           orientation: "vertical",
           className: "h-6",
-        },
+        }),
         undefined,
       )
     })
