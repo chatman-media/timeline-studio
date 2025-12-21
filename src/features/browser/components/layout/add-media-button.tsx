@@ -108,10 +108,12 @@ export const AddMediaButton = memo(function AddMediaButton({
       e.stopPropagation()
       e.preventDefault()
 
+      logger.debug("AddMediaButton clicked", { resourceId: resource.id, type, isAdded: isAdded(resource.id, type) })
+
       if (isAdded(resource.id, type) && canShowRemoveButton) {
         // Удаляем из добавленных
         void removeResource(resource.id, type)
-      } else if (!isAdded(resource.id, type) && isHovering) {
+      } else if (!isAdded(resource.id, type)) {
         // Добавляем в добавленные в зависимости от типа
         switch (resource.type) {
           case "media":
