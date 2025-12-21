@@ -1,12 +1,16 @@
+import { useDraggable } from "@dnd-kit/core"
 import { Image } from "lucide-react"
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
 import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
+import { getTrackTypeForMediaFile } from "@/features/timeline"
+import type { DragData } from "@/features/timeline/types/drag-drop"
 import { usePlayer } from "@/features/video-player"
 import { createImageUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { checkFileAccess } from "@/lib/tauri-utils"
+import { cn } from "@/lib/utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
@@ -148,27 +152,43 @@ export const ImagePreview = memo(function ImagePreview({
     }
   }, [file, playerSetSource, playerSetMedia, setCurrentVideo])
 
+  const containerWidth = calculateWidth()
+
+  // Setup draggable functionality
+  const dragData: DragData = useMemo(
+    () => ({
+      type: "image",
+      mediaFile: file,
+    }),
+    [file],
+  )
+
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: `image-${file.id}`,
+    data: dragData,
+  })
+
+  // Transform style for drag feedback
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: isDragging ? 0.5 : 1,
+      }
+    : undefined
+
   return (
     <div
-      className="group relative h-full shrink-0 cursor-pointer"
-      style={{ height: `${size}px`, width: `${calculateWidth().toFixed(0)}px` }}
+      ref={setNodeRef}
+      className={cn("flex flex-col shrink-0 cursor-pointer", isDragging && "cursor-grabbing")}
+      style={{ width: `${containerWidth.toFixed(0)}px`, ...style }}
       onClick={handleImageClick}
+      {...(listeners && typeof listeners === "object" ? listeners : {})}
+      {...(attributes && typeof attributes === "object" ? attributes : {})}
       data-oid="6njq.3e"
     >
-      {showFileName && (
-        <div
-          className={`absolute font-medium ${size > 100 ? "top-1 left-1" : "top-0.5 left-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"} line-clamp-1 max-w-[calc(60%)] rounded-xs bg-black/50 text-xs leading-4`}
-          style={{
-            fontSize: size > 100 ? "13px" : "11px",
-            color: "#fff", // Явно задаем чисто белый цвет для Tauri
-          }}
-          data-oid="ffns_jp"
-        >
-          {file.name}
-        </div>
-      )}
       <div
-        className="relative flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700"
+        className="group relative flex items-center justify-center bg-gray-200 dark:bg-gray-700"
+        style={{ height: `${size}px` }}
         data-oid="nqg28ek"
       >
         <img
@@ -232,23 +252,34 @@ export const ImagePreview = memo(function ImagePreview({
           }}
           data-oid="lre6gfy"
         />
+        {/* Иконка изображения */}
+        <div
+          className={`absolute ${size > 100 ? "bottom-1 left-1" : "bottom-0.5 left-0.5"} cursor-pointer rounded-xs bg-black/50 p-0.5`}
+          style={{
+            color: "#fff",
+          }}
+          data-oid="xi:p2e0"
+        >
+          <Image size={size > 100 ? 16 : 12} data-oid="v.u8-79" />
+        </div>
+        <FavoriteButton file={file} size={size} type="media" data-oid="-z00:f6" />
+        <AddMediaButton
+          resource={{ id: file.id, type: "media", file } as TimelineResource}
+          size={size}
+          type="media"
+          data-oid="6nz4v6y"
+        />
       </div>
-      <div
-        className={`absolute ${size > 100 ? "bottom-1 left-1" : "bottom-0.5 left-0.5"} cursor-pointer rounded-xs bg-black/50 p-0.5`}
-        style={{
-          color: "#fff", // Явно задаем чисто белый цвет для Tauri
-        }}
-        data-oid="xi:p2e0"
-      >
-        <Image size={size > 100 ? 16 : 12} data-oid="v.u8-79" />
-      </div>
-      <FavoriteButton file={file} size={size} type="media" data-oid="-z00:f6" />
-      <AddMediaButton
-        resource={{ id: file.id, type: "media", file } as TimelineResource}
-        size={size}
-        type="media"
-        data-oid="6nz4v6y"
-      />
+      {/* Имя файла ниже превью */}
+      {showFileName && (
+        <div
+          className="mt-1 text-xs text-center truncate text-foreground/80"
+          style={{ maxWidth: containerWidth }}
+          data-oid="image-filename"
+        >
+          {file.name}
+        </div>
+      )}
     </div>
   )
 })

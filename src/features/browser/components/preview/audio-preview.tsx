@@ -1,12 +1,16 @@
+import { useDraggable } from "@dnd-kit/core"
 import { Music } from "lucide-react"
-import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { LiveAudioVisualizer } from "react-audio-visualize"
 
 import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
+import { getTrackTypeForMediaFile } from "@/features/timeline"
+import type { DragData } from "@/features/timeline/types/drag-drop"
 import { usePlayer } from "@/features/video-player"
 import { createAudioUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
+import { cn } from "@/lib/utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
@@ -264,127 +268,154 @@ export const AudioPreview = memo(function AudioPreview({
     }
   }, [file.name])
 
+  const containerWidth = (size * dimensions[0]) / dimensions[1]
+
+  // Setup draggable functionality
+  const dragData: DragData = useMemo(
+    () => ({
+      type: "audio",
+      mediaFile: file,
+    }),
+    [file],
+  )
+
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: `audio-${file.id}`,
+    data: dragData,
+  })
+
+  // Transform style for drag feedback
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: isDragging ? 0.5 : 1,
+      }
+    : undefined
+
   return (
     <div
-      className={"group relative h-full shrink-0"}
+      ref={setNodeRef}
+      className={cn("flex flex-col shrink-0", isDragging && "cursor-grabbing")}
       style={{
-        height: `${size}px`,
-        width: `${(size * dimensions[0]) / dimensions[1]}px`,
+        width: `${containerWidth}px`,
+        ...style,
       }}
-      onMouseMove={handleMouseMove}
-      onClick={handlePlayPause}
-      onMouseLeave={handleMouseLeave}
+      {...(listeners && typeof listeners === "object" ? listeners : {})}
+      {...(attributes && typeof attributes === "object" ? attributes : {})}
       data-oid="k6lrzv0"
     >
-      <audio
-        ref={audioRef}
-        src={audioUrl || undefined}
-        preload="metadata"
-        tabIndex={0}
-        className="pointer-events-none absolute inset-0 h-full w-full focus:outline-none"
-        onEnded={() => {
-          setIsPlaying(false)
-          logger.debugSync("Воспроизведение аудио завершено", {
-            fileName: file.name,
-          })
-        }}
-        onLoadedMetadata={() => {
-          setIsLoaded(true)
-          logger.infoSync("Метаданные аудио загружены", {
-            fileName: file.name,
-          })
-        }}
-        onError={(e) => {
-          const audio = e.currentTarget as HTMLAudioElement
-          const errorInfo = {
-            fileName: file.name,
-            src: audio.src,
-            error: audio.error
-              ? {
-                  code: audio.error.code,
-                  message: audio.error.message,
-                }
-              : null,
-          }
-          logger.errorSync("Ошибка загрузки аудио", errorInfo)
-        }}
-        onKeyDown={(e) => {
-          if (e.code === "Space") {
-            e.preventDefault()
-            void handlePlayPause(e as unknown as React.MouseEvent)
-          }
-        }}
-        data-oid="xde3.6:"
-      />
-
-      {/* Иконка музыки */}
       <div
-        className={`absolute ${size > 100 ? "bottom-1 left-1" : "bottom-0.5 left-0.5"} cursor-pointer rounded-xs bg-black/50 p-0.5`}
-        style={{
-          color: "#ffffff", // Явно задаем чисто белый цвет для Tauri
-        }}
-        data-oid="thcn:xd"
+        className="group relative"
+        style={{ height: `${size}px` }}
+        onMouseMove={handleMouseMove}
+        onClick={handlePlayPause}
+        onMouseLeave={handleMouseLeave}
+        data-oid="audio-container"
       >
-        <Music size={size > 100 ? 16 : 12} data-oid="bzpm79s" />
-      </div>
+        <audio
+          ref={audioRef}
+          src={audioUrl || undefined}
+          preload="metadata"
+          tabIndex={0}
+          className="pointer-events-none absolute inset-0 h-full w-full focus:outline-none"
+          onEnded={() => {
+            setIsPlaying(false)
+            logger.debugSync("Воспроизведение аудио завершено", {
+              fileName: file.name,
+            })
+          }}
+          onLoadedMetadata={() => {
+            setIsLoaded(true)
+            logger.infoSync("Метаданные аудио загружены", {
+              fileName: file.name,
+            })
+          }}
+          onError={(e) => {
+            const audio = e.currentTarget as HTMLAudioElement
+            const errorInfo = {
+              fileName: file.name,
+              src: audio.src,
+              error: audio.error
+                ? {
+                    code: audio.error.code,
+                    message: audio.error.message,
+                  }
+                : null,
+            }
+            logger.errorSync("Ошибка загрузки аудио", errorInfo)
+          }}
+          onKeyDown={(e) => {
+            if (e.code === "Space") {
+              e.preventDefault()
+              void handlePlayPause(e as unknown as React.MouseEvent)
+            }
+          }}
+          data-oid="xde3.6:"
+        />
 
-      {/* Имя файла */}
-      {showFileName && (
+        {/* Иконка музыки */}
         <div
-          className={`absolute font-medium ${size > 100 ? "top-1" : "top-0.5"} ${size > 100 ? "left-1" : "left-0.5"} ${
-            size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"
-          } line-clamp-1 max-w-[calc(60%)] rounded-xs bg-black/50 text-xs leading-4`}
+          className={`absolute ${size > 100 ? "bottom-1 left-1" : "bottom-0.5 left-0.5"} cursor-pointer rounded-xs bg-black/50 p-0.5`}
           style={{
-            fontSize: size > 100 ? "13px" : "11px",
             color: "#ffffff", // Явно задаем чисто белый цвет для Tauri
           }}
-          data-oid="6:mtqaa"
+          data-oid="thcn:xd"
+        >
+          <Music size={size > 100 ? 16 : 12} data-oid="bzpm79s" />
+        </div>
+
+        {/* Кнопка избранного */}
+        <FavoriteButton file={file} size={size} type="media" data-oid="hdcvap5" />
+
+        {/* кнопка добавления */}
+        {isLoaded && (
+          <AddMediaButton
+            resource={
+              {
+                id: file.id,
+                type: "media",
+                file,
+              } as TimelineResource
+            }
+            size={size}
+            type="media"
+            data-oid="equb..1"
+          />
+        )}
+
+        {/* Аудио визуализация */}
+        <div
+          className="pointer-events-none absolute top-0 right-0 left-0 select-none"
+          style={{
+            height: `${size}px`,
+            width: `${containerWidth}px`,
+          }}
+          data-oid="_nseu0q"
+        >
+          {mediaRecorder && (
+            <LiveAudioVisualizer
+              mediaRecorder={mediaRecorder}
+              width={containerWidth}
+              height={size}
+              barWidth={1}
+              gap={0}
+              barColor="#35d1c1"
+              backgroundColor="transparent"
+              data-oid="mq4p.c6"
+            />
+          )}
+        </div>
+      </div>
+      {/* Имя файла ниже превью */}
+      {showFileName && (
+        <div
+          className="mt-1 text-xs text-center truncate text-foreground/80"
+          style={{ maxWidth: containerWidth }}
+          data-oid="audio-filename"
         >
           {file.name}
         </div>
       )}
-
-      {/* Кнопка избранного */}
-      <FavoriteButton file={file} size={size} type="media" data-oid="hdcvap5" />
-
-      {/* кнопка добавления */}
-      {isLoaded && (
-        <AddMediaButton
-          resource={
-            {
-              id: file.id,
-              type: "media",
-              file,
-            } as TimelineResource
-          }
-          size={size}
-          type="media"
-          data-oid="equb..1"
-        />
-      )}
-
-      {/* Аудио визуализация */}
-      <div
-        className="pointer-events-none absolute top-0 right-0 left-0 select-none"
-        style={{
-          height: `${size}px`,
-          width: `${(size * dimensions[0]) / dimensions[1]}px`,
-        }}
-        data-oid="_nseu0q"
-      >
-        {mediaRecorder && (
-          <LiveAudioVisualizer
-            mediaRecorder={mediaRecorder}
-            width={(size * dimensions[0]) / dimensions[1]}
-            height={size}
-            barWidth={1}
-            gap={0}
-            barColor="#35d1c1"
-            backgroundColor="transparent"
-            data-oid="mq4p.c6"
-          />
-        )}
-      </div>
     </div>
   )
 })
