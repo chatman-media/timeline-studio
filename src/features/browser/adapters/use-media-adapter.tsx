@@ -11,6 +11,7 @@ import { parseFileSize } from "@/domains/shared/utils/file"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
 import { FileMetadata, getFileType } from "@/features/media"
 import i18n from "@/i18n"
+import { cn } from "@/lib/utils"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 import { getDateGroup, getDurationGroup } from "../utils/grouping"
 
@@ -133,8 +134,8 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
     <ContextMenu data-oid="39ri465">
       <ContextMenuTrigger asChild data-oid="kd:jd:m">
         <div
-          className="cursor-pointer flex flex-col overflow-hidden"
-          style={{ width: dimensions.width }}
+          className={cn("cursor-pointer flex flex-col overflow-hidden", isGridMode && "w-full")}
+          style={isGridMode ? undefined : { width: dimensions.width }}
           data-oid="nhf_-vm"
         >
           {/* Превью с учетом пропорций */}

@@ -70,7 +70,7 @@ export function ContentGroup<T>({
 
     switch (viewMode) {
       case "grid":
-        return "items-left flex flex-wrap gap-3"
+        return "grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3"
       case "thumbnails":
         return "flex flex-wrap justify-between gap-3"
       case "list":

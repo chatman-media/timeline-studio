@@ -139,10 +139,9 @@ describe("ContentGroup", () => {
       )
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      const expectedClasses = ["items-left", "flex", "flex-wrap", "gap-3"]
-      expectedClasses.forEach((className) => {
-        expect(itemsContainer).toHaveClass(className)
-      })
+      // Grid теперь использует CSS Grid вместо flex
+      expect(itemsContainer).toHaveClass("grid")
+      expect(itemsContainer).toHaveClass("gap-3")
     })
 
     it("должен применять правильные классы для режима list", () => {
