@@ -1,11 +1,15 @@
+import { Sparkles } from "lucide-react"
 import type React from "react"
+import { useTranslation } from "react-i18next"
 
 import { useFavorites } from "@/core/hooks"
 import { useEffectsAdapter as useUnifiedEffectsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { EffectPreview } from "@/features/effects/components/effect-preview"
 import type { BaseEffect } from "@/features/effects/types"
-
+import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
+import { cn } from "@/lib/utils"
+import type { PreviewConfig } from "../components/preview/types"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 
 // Адаптер типа для BaseEffect чтобы соответствовать ListItem
@@ -13,6 +17,7 @@ type EffectListItem = BaseEffect & ListItem
 
 /**
  * Компонент превью для эффектов
+ * Использует пропорции проекта для корректного отображения
  */
 const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
   item: effect,
@@ -20,6 +25,15 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
   viewMode,
   onClick,
 }) => {
+  const { i18n } = useTranslation()
+  const { settings } = useProjectSettings()
+
+  // Получаем пропорции из настроек проекта
+  const projectAspectRatio = settings?.aspectRatio?.value
+  const aspectWidth = projectAspectRatio?.width ?? 16
+  const aspectHeight = projectAspectRatio?.height ?? 9
+  const ratio = aspectWidth / aspectHeight
+
   const handleClick = () => {
     onClick?.(effect)
   }
@@ -29,79 +43,96 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
     "effect",
     () => effect,
     () => ({
-      url: `/effects/${effect.id}.png`, // Preview URL if available
+      url: `/effects/${effect.id}.png`,
       width: 120,
       height: 80,
     }),
   )
 
-  // Для эффектов EffectPreview ожидает другие пропсы
+  // Рассчитываем размеры с учётом пропорций проекта
   const previewSize = typeof size === "number" ? size : size.width
-  const previewWidth = typeof size === "number" ? size : size.width
-  const previewHeight = typeof size === "number" ? size : size.height
+  // Высота фиксирована, ширина рассчитывается по пропорциям
+  const previewHeight = previewSize
+  const previewWidth = Math.round(previewHeight * ratio)
+
+  // Получаем локализованное имя
+  const effectName = effect.name?.ru || effect.name?.[i18n.language] || effect.name?.en || effect.id
 
   if (viewMode === "list") {
     return (
       <div
-        className="flex items-center gap-3 p-2 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
+        className="flex items-center gap-3 p-2 rounded-md hover:bg-accent/50 cursor-pointer w-full"
         onClick={handleClick}
         {...dragProps}
         data-oid="gwtgevm"
       >
-        {/* Effect Preview */}
-        <div className="shrink-0" data-oid="kgc_4td">
-          <EffectPreview effect={effect} onClick={handleClick} size={48} width={48} height={36} data-oid="qz.jont" />
+        {/* Effect Preview - с учётом пропорций проекта */}
+        <div className="shrink-0 rounded overflow-hidden bg-muted" data-oid="kgc_4td">
+          <EffectPreview
+            effect={effect}
+            onClick={handleClick}
+            size={36}
+            width={Math.round(36 * ratio)}
+            height={36}
+            data-oid="qz.jont"
+          />
         </div>
 
         {/* Effect Info */}
         <div className="flex-1 min-w-0" data-oid="3g-nf4y">
           <div className="font-medium text-sm truncate" data-oid="-s84lsw">
-            {effect.name?.ru || effect.name?.en || ""}
+            {effectName}
           </div>
           <div className="text-xs text-muted-foreground truncate" data-oid="z-.7crr">
-            {effect.description?.ru || effect.description?.en || ""}
+            {effect.description?.ru || effect.description?.[i18n.language] || effect.description?.en || ""}
           </div>
         </div>
 
-        {/* Category */}
-        <div className="shrink-0 text-xs text-muted-foreground" data-oid="h3p2p6h">
-          {effect.category}
-        </div>
-
-        {/* Complexity */}
-        <div className="shrink-0 text-xs text-muted-foreground" data-oid="s1i370j">
-          {effect.complexity}
+        {/* Category & Complexity badges */}
+        <div className="shrink-0 flex gap-1.5" data-oid="h3p2p6h">
+          <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{effect.category}</span>
+          <span
+            className={cn(
+              "text-xs px-1.5 py-0.5 rounded",
+              effect.complexity === "low" && "bg-green-500/20 text-green-600",
+              effect.complexity === "medium" && "bg-yellow-500/20 text-yellow-600",
+              effect.complexity === "high" && "bg-red-500/20 text-red-600",
+              effect.complexity === "extreme" && "bg-purple-500/20 text-purple-600",
+            )}
+          >
+            {effect.complexity}
+          </span>
         </div>
       </div>
     )
   }
 
-  // Thumbnails mode
+  // Grid/Thumbnails mode - с учётом пропорций проекта
   return (
     <div
-      className="flex flex-col items-center p-3 rounded-lg border cursor-pointer transition-colors hover:bg-accent/50"
+      className={cn(
+        "flex flex-col overflow-hidden cursor-pointer border border-border",
+        "hover:border-accent transition-colors",
+      )}
       style={{ width: previewWidth }}
       onClick={handleClick}
       {...dragProps}
       data-oid="6wk50rm"
     >
-      {/* Effect Preview */}
+      {/* Effect Preview с пропорциями проекта */}
       <EffectPreview
         effect={effect}
         onClick={handleClick}
-        size={previewSize}
+        size={previewHeight}
         width={previewWidth}
         height={previewHeight}
         data-oid=":5cmqbj"
       />
 
       {/* Effect Info */}
-      <div className="text-center mt-2 w-full" data-oid="e1s.zti">
-        <div className="font-medium text-sm truncate" data-oid="lo5diki">
-          {effect.name?.ru || effect.name?.en || ""}
-        </div>
-        <div className="text-xs text-muted-foreground truncate" data-oid=".rrtvyt">
-          {effect.category}
+      <div className="px-1.5 py-1 bg-muted text-center" data-oid="e1s.zti">
+        <div className="font-medium text-xs truncate" title={effectName} data-oid="lo5diki">
+          {effectName}
         </div>
       </div>
     </div>
@@ -214,6 +245,46 @@ export function useEffectsAdapter(): ListAdapter<EffectListItem> {
     favoriteType: adapter.favoriteType,
     // Проверка избранного (переопределяем)
     isFavorite: (effect: EffectListItem) => isItemFavorite(effect, "effect"),
+
+    // Конфигурация для UniversalPreview
+    previewConfig: {
+      // Эффекты используют EffectPreview для thumbnail
+      thumbnailUrl: (effect) => `/effects/${effect.id}.png`,
+
+      // Aspect ratio от проекта (по умолчанию 16:9)
+      aspectRatio: [16, 9],
+
+      // Тип
+      showType: true,
+      getType: (effect) => effect.category,
+      getTypeIcon: () => <Sparkles className="size-3" />,
+
+      // Информация
+      getTitle: (effect) => effect.name?.ru || effect.name?.en || effect.id,
+      getSubtitle: (effect) => effect.description?.ru || effect.description?.en || "",
+      getTags: (effect) => {
+        const tags: string[] = []
+        if (effect.category) tags.push(effect.category)
+        if (effect.complexity) tags.push(effect.complexity)
+        if (effect.processingType) tags.push(effect.processingType)
+        if (effect.tags) tags.push(...effect.tags)
+        return tags
+      },
+      getMetadata: (effect) => {
+        const metadata: Array<{ icon?: React.ReactNode; label: string }> = []
+        if (effect.category) {
+          metadata.push({ label: effect.category })
+        }
+        if (effect.complexity) {
+          metadata.push({ label: effect.complexity })
+        }
+        return metadata
+      },
+
+      // Кнопки
+      showFavoriteButton: true,
+      showAddButton: true,
+    } as PreviewConfig<EffectListItem>,
   }
 
   return listAdapter

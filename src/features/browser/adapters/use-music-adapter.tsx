@@ -1,4 +1,4 @@
-import { CirclePause, CirclePlay } from "lucide-react"
+import { CirclePause, CirclePlay, Clock, HardDrive, Music } from "lucide-react"
 import type React from "react"
 import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -12,6 +12,7 @@ import { parseDuration, parseFileSize } from "@/features/browser/utils"
 import { useDraggable } from "@/features/drag-drop"
 import { formatTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
+import type { PreviewConfig } from "../components/preview/types"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 import { getDateGroup, getDurationGroup } from "../utils/grouping"
 
@@ -275,5 +276,48 @@ export function useMusicAdapter(): ListAdapter<MusicListItem> {
 
     // Тип для системы избранного
     favoriteType: "music",
+
+    // Конфигурация для UniversalPreview
+    previewConfig: {
+      // Аудио не имеет thumbnail - используем иконку
+      thumbnailUrl: undefined,
+
+      // Показываем длительность
+      showDuration: true,
+      getDuration: (file) => file.probeData?.format.duration || 0,
+
+      // Тип - аудио
+      showType: true,
+      getType: () => "audio",
+      getTypeIcon: () => <Music className="size-3" />,
+
+      // Информация
+      getTitle: (file) => String(file.probeData?.format.tags?.title || file.name),
+      getSubtitle: (file) => String(file.probeData?.format.tags?.artist || ""),
+      getTags: (file) => {
+        const tags: string[] = []
+        const genre = file.probeData?.format.tags?.genre
+        if (genre) tags.push(String(genre))
+        const album = file.probeData?.format.tags?.album
+        if (album) tags.push(String(album))
+        return tags
+      },
+      getMetadata: (file) => {
+        const metadata: Array<{ icon?: React.ReactNode; label: string }> = []
+        const duration = file.probeData?.format.duration
+        if (duration && duration > 0) {
+          metadata.push({ icon: <Clock className="size-3" />, label: formatTime(duration) })
+        }
+        if (file.size) {
+          const sizeStr = typeof file.size === "string" ? file.size : `${Math.round(file.size / 1024 / 1024)}MB`
+          metadata.push({ icon: <HardDrive className="size-3" />, label: sizeStr })
+        }
+        return metadata
+      },
+
+      // Кнопки
+      showFavoriteButton: true,
+      showAddButton: true,
+    } as PreviewConfig<MusicListItem>,
   }
 }

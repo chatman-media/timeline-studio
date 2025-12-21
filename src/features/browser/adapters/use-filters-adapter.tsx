@@ -1,3 +1,4 @@
+import { Palette } from "lucide-react"
 import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
@@ -5,7 +6,7 @@ import { useFiltersAdapter as useUnifiedFiltersAdapter } from "@/features/browse
 import { useDraggable } from "@/features/drag-drop"
 import { FilterPreview } from "@/features/filters/components/filter-preview"
 import type { VideoFilter } from "@/features/filters/types/filters"
-
+import type { PreviewConfig } from "../components/preview/types"
 import type { ListAdapter, PreviewComponentProps } from "../types/list"
 
 /**
@@ -211,5 +212,44 @@ export function useFiltersAdapter(): ListAdapter<VideoFilter> {
     PreviewComponent: FilterPreviewWrapper,
     // Проверка избранного (переопределяем)
     isFavorite: (filter: VideoFilter) => isItemFavorite(filter, "filter"),
+
+    // Конфигурация для UniversalPreview
+    previewConfig: {
+      // Фильтры используют FilterPreview для thumbnail
+      thumbnailUrl: (filter) => `/filters/${filter.name}.png`,
+
+      // Aspect ratio
+      aspectRatio: [16, 9],
+
+      // Тип
+      showType: true,
+      getType: (filter) => filter.category,
+      getTypeIcon: () => <Palette className="size-3" />,
+
+      // Информация
+      getTitle: (filter) => filter.labels?.ru || filter.name,
+      getSubtitle: (filter) => filter.description?.en || "",
+      getTags: (filter) => {
+        const tags: string[] = []
+        if (filter.category) tags.push(filter.category)
+        if (filter.complexity) tags.push(filter.complexity)
+        if (filter.tags) tags.push(...filter.tags)
+        return tags
+      },
+      getMetadata: (filter) => {
+        const metadata: Array<{ icon?: React.ReactNode; label: string }> = []
+        if (filter.category) {
+          metadata.push({ label: filter.category })
+        }
+        if (filter.complexity) {
+          metadata.push({ label: filter.complexity })
+        }
+        return metadata
+      },
+
+      // Кнопки
+      showFavoriteButton: true,
+      showAddButton: true,
+    } as PreviewConfig<VideoFilter>,
   }
 }

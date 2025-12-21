@@ -1,3 +1,4 @@
+import { ArrowRightLeft, Clock } from "lucide-react"
 import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
@@ -6,7 +7,7 @@ import { useTransitionsAdapter as useUnifiedTransitionsAdapter } from "@/feature
 import { useDraggable } from "@/features/drag-drop"
 import { TransitionPreview } from "@/features/transitions/components/transition-preview"
 import type { Transition } from "@/features/transitions/types/transitions"
-
+import type { PreviewConfig } from "../components/preview/types"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 
 // Адаптер типа для Transition чтобы соответствовать ListItem
@@ -226,6 +227,54 @@ export function useTransitionsAdapter(): ListAdapter<TransitionListItem> {
     favoriteType: restAdapter.favoriteType,
     // Проверка избранного (переопределяем)
     isFavorite: (transition: TransitionListItem) => isItemFavorite(transition, "transition"),
+
+    // Конфигурация для UniversalPreview
+    previewConfig: {
+      // Переходы используют TransitionPreview для thumbnail
+      thumbnailUrl: (transition) => `/transitions/${transition.type}.png`,
+
+      // Aspect ratio
+      aspectRatio: [16, 9],
+
+      // Длительность
+      showDuration: true,
+      getDuration: (transition) => transition.duration?.default || 1,
+
+      // Тип
+      showType: true,
+      getType: (transition) => transition.category,
+      getTypeIcon: () => <ArrowRightLeft className="size-3" />,
+
+      // Информация
+      getTitle: (transition) => transition.labels?.ru || transition.labels?.en || transition.name,
+      getSubtitle: (transition) => transition.description?.ru || transition.description?.en || "",
+      getTags: (transition) => {
+        const tags: string[] = []
+        if (transition.category) tags.push(transition.category)
+        if (transition.complexity) tags.push(transition.complexity)
+        if (transition.type) tags.push(transition.type)
+        if (transition.tags) tags.push(...transition.tags)
+        return tags
+      },
+      getMetadata: (transition) => {
+        const metadata: Array<{ icon?: React.ReactNode; label: string }> = []
+        if (transition.category) {
+          metadata.push({ label: transition.category })
+        }
+        if (transition.complexity) {
+          metadata.push({ label: transition.complexity })
+        }
+        const duration = transition.duration?.default
+        if (duration) {
+          metadata.push({ icon: <Clock className="size-3" />, label: `${duration}s` })
+        }
+        return metadata
+      },
+
+      // Кнопки
+      showFavoriteButton: true,
+      showAddButton: true,
+    } as PreviewConfig<TransitionListItem>,
   }
 
   return listAdapter

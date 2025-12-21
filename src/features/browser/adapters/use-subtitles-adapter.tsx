@@ -1,10 +1,11 @@
+import { Type } from "lucide-react"
 import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
 import { SubtitlePreview } from "@/features/subtitles/components/subtitle-preview"
 import { useSubtitles } from "@/features/subtitles/hooks/use-subtitle-styles"
 import type { SubtitleStyleTemplate } from "@/features/subtitles/types/subtitles"
-
+import type { PreviewConfig } from "../components/preview/types"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 
 // Адаптер типа для SubtitleStyleTemplate чтобы соответствовать ListItem
@@ -208,5 +209,41 @@ export function useSubtitlesAdapter(): ListAdapter<SubtitleListItem> {
 
     // Тип для системы избранного
     favoriteType: "subtitle",
+
+    // Конфигурация для UniversalPreview
+    previewConfig: {
+      // Субтитры не имеют thumbnail
+      thumbnailUrl: undefined,
+
+      // Тип
+      showType: true,
+      getType: () => "subtitle",
+      getTypeIcon: () => <Type className="size-3" />,
+
+      // Информация
+      getTitle: (style) => style.labels?.ru || style.labels?.en || style.name,
+      getSubtitle: (style) => style.description?.ru || style.description?.en || "",
+      getTags: (style) => {
+        const tags: string[] = []
+        if (style.category) tags.push(style.category)
+        if (style.complexity) tags.push(style.complexity)
+        if (style.style.fontFamily) tags.push(style.style.fontFamily)
+        return tags
+      },
+      getMetadata: (style) => {
+        const metadata: Array<{ icon?: React.ReactNode; label: string }> = []
+        if (style.category) {
+          metadata.push({ label: style.category })
+        }
+        if (style.complexity) {
+          metadata.push({ label: style.complexity })
+        }
+        return metadata
+      },
+
+      // Кнопки
+      showFavoriteButton: true,
+      showAddButton: false, // Субтитры применяются, а не добавляются
+    } as PreviewConfig<SubtitleListItem>,
   }
 }
