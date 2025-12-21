@@ -1,3 +1,16 @@
+# [3.42.0](https://github.com/chatman-media/timeline-studio/compare/v3.41.0...v3.42.0) (2025-12-21)
+
+
+### Bug Fixes
+
+* **browser:** добавлена поддержка аудио файлов в StatusBar ([d00f77c](https://github.com/chatman-media/timeline-studio/commit/d00f77c40bd3e71a3c4c1029b147155ad774f182))
+* **browser:** исправлено позиционирование duration на превью ([1fb98d7](https://github.com/chatman-media/timeline-studio/commit/1fb98d709de1aafe0de0a76a937338564b587c99))
+
+
+### Features
+
+* **browser:** восстановлен StatusBar с bulk операциями ([593938a](https://github.com/chatman-media/timeline-studio/commit/593938a24b61634c816383a5d0d5c97a7334420f))
+
 # [3.41.0](https://github.com/chatman-media/timeline-studio/compare/v3.40.0...v3.41.0) (2025-12-21)
 
 
