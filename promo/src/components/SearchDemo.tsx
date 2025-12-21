@@ -31,11 +31,11 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
         {/* Screenshot - скрыт на мобильных */}
         <div className="relative" data-oid="m:-5g_2">
           <picture className="hidden md:block" data-oid="z:s3jk2">
-            <source
+            {/*<source
               srcSet="/screen5.webp"
               type="image/webp"
               data-oid="2_awclg"
-            />
+            />*/}
             <img
               src="/screen.png"
               alt="Timeline Studio AI Interface"

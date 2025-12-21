@@ -7,8 +7,8 @@ import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
-import { LazyTabContent } from "./lazy-tab-content"
 import { MediaStatusBarWrapper } from "./layout/media-status-bar-wrapper"
+import { LazyTabContent } from "./lazy-tab-content"
 
 /**
  * Список всех возможных вкладок браузера
