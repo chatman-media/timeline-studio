@@ -152,7 +152,7 @@ export function UniversalList<T extends ListItem>({
   // Рендерим группы
   return (
     <div className={cn("flex h-full flex-col", className)} data-oid="0forak-">
-      <div className="flex-1 overflow-auto" data-oid="1b8rdhl">
+      <div className="flex-1" data-oid="1b8rdhl">
         {groupedItems.map((group, index) => (
           <ContentGroup<T>
             key={`${group.title}-${index}`}
