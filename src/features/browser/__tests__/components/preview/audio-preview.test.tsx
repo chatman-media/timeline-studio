@@ -233,7 +233,8 @@ describe("AudioPreview", () => {
     const renderResult = render(<AudioPreview file={audioFile} data-oid="vhaal8_" />)
 
     const audioElement = renderResult.container.querySelector("audio")!
-    const container_div = renderResult.container.firstChild as HTMLElement
+    // Внутренний контейнер с обработчиками мыши
+    const container_div = renderResult.container.querySelector('[data-oid="audio-container"]') as HTMLElement
 
     // Мокаем getBoundingClientRect
     container_div.getBoundingClientRect = vi.fn().mockReturnValue({
@@ -262,7 +263,8 @@ describe("AudioPreview", () => {
     const pauseMock = vi.fn()
     audioElement.pause = pauseMock
 
-    const container_div = renderResult.container.firstChild as HTMLElement
+    // Внутренний контейнер с обработчиками мыши
+    const container_div = renderResult.container.querySelector('[data-oid="audio-container"]') as HTMLElement
 
     // Симулируем уход мыши
     act(() => {
