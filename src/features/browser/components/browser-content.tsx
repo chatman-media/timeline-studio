@@ -111,7 +111,21 @@ export const BrowserContent = memo(() => {
     setViewMode,
     setPreviewSize,
     selectAllFiles,
+    resetTabSettings,
   } = useBrowserState()
+
+  // TEMPORARY: Reset media tab settings to fix view_mode
+  useEffect(() => {
+    const resetOnce = async () => {
+      const hasReset = localStorage.getItem("browser_media_reset_20250122")
+      if (!hasReset) {
+        await resetTabSettings("media")
+        localStorage.setItem("browser_media_reset_20250122", "true")
+        console.log("✅ Media tab settings reset to defaults")
+      }
+    }
+    void resetOnce()
+  }, [resetTabSettings])
 
   // Получаем mediaPool для Cmd+A
   const { mediaPool } = useMediaManagement()

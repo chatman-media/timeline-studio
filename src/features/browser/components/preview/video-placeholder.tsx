@@ -32,6 +32,15 @@ export const VideoPlaceholder = memo(
     const { isAdded: isResourceAdded } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
 
+    // Логируем состояние превью для отладки
+    logger.debugSync(`[VideoPlaceholder] Rendering for ${file.name}`, {
+      hasPreviewData: !!previewData,
+      hasThumbnailPath: !!file.thumbnailPath,
+      thumbnailPath: file.thumbnailPath,
+      videoCodec: file.videoCodec,
+      isLoadingMetadata: file.isLoadingMetadata,
+    })
+
     const handleClick = useCallback(
       async (e: React.MouseEvent) => {
         e.preventDefault()

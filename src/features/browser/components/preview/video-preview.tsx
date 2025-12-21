@@ -62,12 +62,30 @@ export const VideoPreview = memo(
 
     // Загружаем preview data при монтировании
     useEffect(() => {
+      logger.infoSync(`[VideoPreview] Requesting preview data for ${file.name}`, { fileId: file.id })
+
       void getPreviewData(file.id).then((data) => {
+        logger.infoSync(`[VideoPreview] Preview data response for ${file.name}`, {
+          fileId: file.id,
+          hasData: !!data,
+          hasBrowserThumbnail: !!data?.browser_thumbnail,
+          hasBase64: !!data?.browser_thumbnail?.base64_data,
+          base64Length: data?.browser_thumbnail?.base64_data?.length,
+          thumbnailPath: data?.browser_thumbnail?.path,
+        })
+
         if (data?.browser_thumbnail?.base64_data) {
           setPreviewData(data.browser_thumbnail.base64_data)
+          logger.infoSync(`[VideoPreview] ✅ Preview data loaded for ${file.name}`)
+        } else {
+          logger.warnSync(`[VideoPreview] ⚠️ No browser thumbnail for ${file.name}`, {
+            fileId: file.id,
+            codec: file.videoCodec,
+            hasProxy: !!file.proxy,
+          })
         }
       })
-    }, [file.id, getPreviewData])
+    }, [file.id, file.name, file.videoCodec, file.proxy, getPreviewData])
 
     // Функция для получения URL видео
     const loadVideoFile = useCallback(async (path: string) => {

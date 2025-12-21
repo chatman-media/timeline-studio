@@ -6,21 +6,8 @@ import type { ViewModeConfig } from "./media-toolbar"
  * Конфигурации режимов просмотра для разных типов контента
  */
 
-// Конфигурация для медиа файлов (2 режима)
-export const mediaViewModes: ViewModeConfig[] = [
-  {
-    value: "thumbnails",
-    icon: LayoutGrid,
-    label: "browser.toolbar.thumbnails",
-    testId: "thumbnails-view-button",
-  },
-  {
-    value: "list",
-    icon: List,
-    label: "browser.toolbar.list",
-    testId: "list-view-button",
-  },
-]
+// Конфигурация для медиа файлов (нет переключателя - только thumbnails)
+export const mediaViewModes: ViewModeConfig[] = []
 
 // Опции сортировки для медиа
 export const mediaSortOptions = [

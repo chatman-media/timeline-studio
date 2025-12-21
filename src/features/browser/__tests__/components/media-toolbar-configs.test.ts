@@ -22,15 +22,8 @@ import {
 describe("media-toolbar-configs", () => {
   describe("View Mode Configurations", () => {
     it("should have correct media view modes", () => {
-      expect(mediaViewModes).toHaveLength(2)
-      expect(mediaViewModes.map((mode) => mode.value)).toEqual(["thumbnails", "list"])
-
-      mediaViewModes.forEach((mode) => {
-        expect(mode).toHaveProperty("value")
-        expect(mode).toHaveProperty("icon")
-        expect(mode).toHaveProperty("label")
-        expect(mode).toHaveProperty("testId")
-      })
+      // Media tab has no view mode switcher - only thumbnails mode
+      expect(mediaViewModes).toHaveLength(0)
     })
 
     it("should have correct music view modes", () => {
@@ -150,7 +143,8 @@ describe("media-toolbar-configs", () => {
     it("should return correct view modes for media", () => {
       const result = getViewModesForContent("media")
       expect(result).toBe(mediaViewModes)
-      expect(result).toHaveLength(2)
+      // Media tab has no view mode switcher
+      expect(result).toHaveLength(0)
     })
 
     it("should return correct view modes for music", () => {
