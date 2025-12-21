@@ -173,12 +173,9 @@ export function UniversalList<T extends ListItem>({
                 data-oid="-bvhq3-"
               />
             )}
-            data-oid="r:r:33w"
           />
         ))}
       </div>
-
-      {/* StatusBar is only needed for media tab, skip it for other tabs */}
     </div>
   )
 }

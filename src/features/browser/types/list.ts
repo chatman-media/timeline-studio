@@ -1,5 +1,8 @@
 import type { ReactNode } from "react"
 
+import type { ViewMode } from "@/domains/browser"
+import type { PreviewConfig } from "@/features/browser/components/preview/types"
+
 /**
  * Размер превью для элементов списка
  */
@@ -58,7 +61,7 @@ export interface DataResult<T> {
 export interface PreviewComponentProps<T> {
   item: T
   size: PreviewSize
-  viewMode: "list" | "grid" | "thumbnails"
+  viewMode: ViewMode
   onClick?: (item: T) => void
   onDragStart?: (item: T, event: React.DragEvent) => void
   onAddToTimeline?: (item: T) => void
@@ -120,6 +123,12 @@ export interface ListAdapter<T extends ListItem> {
    * Тип элемента для системы избранного
    */
   favoriteType: string
+
+  /**
+   * Конфигурация для UniversalPreview (опционально)
+   * Если указана, можно использовать UniversalPreview вместо кастомного PreviewComponent
+   */
+  previewConfig?: PreviewConfig<T>
 }
 
 /**

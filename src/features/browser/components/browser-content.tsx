@@ -1,19 +1,5 @@
-import { Trash2 } from "lucide-react"
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useBrowserState } from "@/domains/browser"
 import { useMediaImport, useMediaManagement } from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
@@ -55,10 +41,41 @@ const TabContentContainer = memo(({ activeTab }: { activeTab: string }) => {
     })
   }, [activeTab])
 
-  const contentClassName = "bg-background m-0 px-0.5 flex-1 overflow-auto"
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Блокируем скролл во время drag чтобы не скроллился браузер при перетаскивании
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const handleDragStart = () => {
+      // Блокируем скролл на контейнере во время drag
+      container.style.overflow = "hidden"
+      container.style.overscrollBehavior = "contain"
+    }
+
+    const handleDragEnd = () => {
+      // Восстанавливаем скролл после окончания drag
+      container.style.overflow = "auto"
+      container.style.overscrollBehavior = ""
+    }
+
+    // Слушаем события на document чтобы ловить drag из любого места
+    document.addEventListener("dragstart", handleDragStart)
+    document.addEventListener("dragend", handleDragEnd)
+    document.addEventListener("drop", handleDragEnd)
+
+    return () => {
+      document.removeEventListener("dragstart", handleDragStart)
+      document.removeEventListener("dragend", handleDragEnd)
+      document.removeEventListener("drop", handleDragEnd)
+    }
+  }, [])
+
+  const contentClassName = "bg-background m-0 px-0.5 flex-1 overflow-auto overscroll-contain"
 
   return (
-    <div className={contentClassName} data-oid="8qkh7.t">
+    <div ref={containerRef} className={contentClassName} data-oid="8qkh7.t">
       {ALL_BROWSER_TABS.map((tabValue) => {
         // Рендерим только посещённые вкладки
         if (!visitedTabs.has(tabValue)) return null
@@ -93,12 +110,10 @@ export const BrowserContent = memo(() => {
     setViewMode,
     setPreviewSize,
     selectAllFiles,
-    deselectAllFiles,
-    selectedFiles,
   } = useBrowserState()
 
-  // Получаем mediaPool для Cmd+A и removeMultipleMedia для Delete
-  const { mediaPool, removeMultipleMedia } = useMediaManagement()
+  // Получаем mediaPool для Cmd+A
+  const { mediaPool } = useMediaManagement()
 
   // Извлекаем настройки для текущей вкладки
   const {
@@ -113,11 +128,11 @@ export const BrowserContent = memo(() => {
   } = currentTabSettings
 
   // Импорт медиа
-  const { selectMediaFiles, isImporting: isImportingMedia } = useMediaImport()
+  const { selectMediaFiles, selectMediaDirectory, isImporting: isImportingMedia } = useMediaImport()
 
   // Wrapper функции для импорта медиа
   const importMediaFile = useCallback(() => selectMediaFiles(), [selectMediaFiles])
-  const importMediaFolder = useCallback(() => selectMediaFiles(), [selectMediaFiles])
+  const importMediaFolder = useCallback(() => selectMediaDirectory(), [selectMediaDirectory])
 
   // Импорт музыки
   const {
@@ -125,15 +140,6 @@ export const BrowserContent = memo(() => {
     importDirectory: importMusicFolder,
     isImporting: isImportingMusic,
   } = useMusicImport()
-
-  // Обработчик очистки выбранных медиафайлов
-  const handleClearSelectedMedia = useCallback(async () => {
-    if (selectedFiles.size === 0) return
-
-    const selectedIds = Array.from(selectedFiles)
-    await removeMultipleMedia(selectedIds)
-    await deselectAllFiles()
-  }, [selectedFiles, removeMultipleMedia, deselectAllFiles])
 
   // Keyboard shortcuts для Browser
   useEffect(() => {
@@ -156,24 +162,11 @@ export const BrowserContent = memo(() => {
           void selectAllFiles(allFileIds)
         }
       }
-
-      // Delete или Backspace - удалить выбранные файлы
-      if (event.key === "Delete" || event.key === "Backspace") {
-        // Только для вкладки media и если есть выбранные файлы
-        if (activeTab === "media" && selectedFiles.size > 0) {
-          event.preventDefault()
-          const selectedIds = Array.from(selectedFiles)
-          void removeMultipleMedia(selectedIds).then(() => {
-            // Очищаем выбор после удаления
-            void deselectAllFiles()
-          })
-        }
-      }
     }
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [activeTab, mediaPool, selectAllFiles, selectedFiles, removeMultipleMedia, deselectAllFiles])
+  }, [activeTab, mediaPool, selectAllFiles])
 
   // Используем useCallback для стабильных ссылок на функции
   const handleSearch = useCallback((query: string) => setSearchQuery(query), [setSearchQuery])
@@ -200,37 +193,10 @@ export const BrowserContent = memo(() => {
   }, [previewSizeIndex, setPreviewSize])
 
   // Дополнительные кнопки для разных вкладок
+  // Удаление медиа доступно только через контекстное меню
   const extraButtons =
     activeTab === "effects" ? (
       <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} data-oid=":hl:yjm" />
-    ) : activeTab === "media" && selectedFiles.size > 0 ? (
-      <AlertDialog data-oid="4ewytq3">
-        <Tooltip data-oid="ledfi0a">
-          <TooltipTrigger asChild data-oid="01a9u4e">
-            <AlertDialogTrigger asChild data-oid="2rq:qhd">
-              <Button variant="ghost" size="icon" className="ml-2 h-6 w-6 cursor-pointer" data-oid="m_9f.n2">
-                <Trash2 className="h-4 w-4" data-oid="w36j1g6" />
-              </Button>
-            </AlertDialogTrigger>
-          </TooltipTrigger>
-          <TooltipContent data-oid="q:xmres">{t("browser.clearSelected")}</TooltipContent>
-        </Tooltip>
-        <AlertDialogContent data-oid=":6.44mj">
-          <AlertDialogHeader data-oid="i9i:5vw">
-            <AlertDialogTitle data-oid="ewft_c9">{t("browser.clearSelectedConfirm.title")}</AlertDialogTitle>
-            <AlertDialogDescription data-oid="4t3cl-w">
-              {t("browser.clearSelectedConfirm.description")} ({selectedFiles.size}{" "}
-              {t("common.files", { count: selectedFiles.size })})
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter data-oid="e6pz-3p">
-            <AlertDialogCancel data-oid="-28qwvq">{t("browser.clearSelectedConfirm.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleClearSelectedMedia} data-oid="w.5goab">
-              {t("browser.clearSelectedConfirm.confirm")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     ) : undefined
 
   return (
