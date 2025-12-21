@@ -7,7 +7,8 @@
 import { useMediaManagement } from "./use-media-management"
 
 export function useMediaImport() {
-  const { mediaImportState, importFiles, selectMediaFiles, selectAudioFiles } = useMediaManagement()
+  const { mediaImportState, importFiles, selectMediaFiles, selectMediaDirectory, selectAudioFiles } =
+    useMediaManagement()
 
   return {
     // Status
@@ -18,6 +19,7 @@ export function useMediaImport() {
     // Actions
     importFiles,
     selectMediaFiles,
+    selectMediaDirectory,
     selectAudioFiles,
 
     // Import state

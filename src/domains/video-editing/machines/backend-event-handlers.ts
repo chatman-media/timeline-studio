@@ -489,10 +489,40 @@ function handleTrackAdded(
     return {}
   }
 
-  logger.info("Adding track:", { trackId: track.id, name: track.name })
+  logger.info("Adding track:", { trackId: track.id, name: track.name, type: track.track_type })
 
-  // Backend добавил трек - будет полная синхронизация через PROJECT_UPDATED
+  // Создаем новый трек для добавления в проект
+  const newTrack: Track = {
+    id: track.id,
+    name: track.name,
+    type: (track.track_type || "video").toLowerCase() as Track["type"],
+    clips: [],
+    transitions: [],
+    height: 80,
+    locked: false,
+    muted: false,
+    solo: false,
+    isLocked: false,
+    isMuted: false,
+    isSolo: false,
+    isHidden: false,
+    volume: 1,
+    pan: 0,
+    order: context.project.globalTracks?.length || 0,
+    trackEffects: [],
+    trackFilters: [],
+  }
+
+  const updatedProject = { ...context.project }
+
+  // Добавляем трек в globalTracks
+  if (!updatedProject.globalTracks) {
+    updatedProject.globalTracks = []
+  }
+  updatedProject.globalTracks = [...updatedProject.globalTracks, newTrack]
+
   return {
+    project: updatedProject,
     hasUnsavedChanges: true,
   }
 }
