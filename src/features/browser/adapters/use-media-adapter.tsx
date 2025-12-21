@@ -230,7 +230,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
           : undefined,
       }
     })
-  }, [mediaPool])
+  }, [mediaPool, mediaPool.size])
 
   // ✅ Используем состояние из MediaManagement Provider
   const mediaLoading = isLoading
