@@ -257,7 +257,7 @@ export const VideoStream = memo(
         data-oid="cg92joi"
       >
         <div
-          className={cn("group relative bg-muted", isAdded && "opacity-50 grayscale cursor-not-allowed")}
+          className={cn("group relative bg-muted w-full", isAdded && "opacity-50 grayscale cursor-not-allowed")}
           style={{ height: `${size}px` }}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
