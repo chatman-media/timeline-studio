@@ -201,6 +201,11 @@ export type TimelineEvent =
   | { type: "TOGGLE_THUMBNAILS" }
   | { type: "TOGGLE_MARKERS" }
 
+  // Loading state events (для прямых вызовов backend без invoke)
+  | { type: "SET_LOADING" }
+  | { type: "CLEAR_LOADING" }
+  | { type: "MARK_SAVED" }
+
   // Error events
   | { type: "SET_ERROR"; error: string }
   | { type: "CLEAR_ERROR" }
@@ -497,6 +502,22 @@ export const timelineMachine = setup({
   initial: "idle",
   context: initialContext,
 
+  // Глобальные события, доступные во всех состояниях
+  on: {
+    SET_LOADING: {
+      actions: "setLoading",
+    },
+    CLEAR_LOADING: {
+      actions: "clearLoading",
+    },
+    MARK_SAVED: {
+      actions: "markSaved",
+    },
+    SET_ERROR: {
+      actions: "setError",
+    },
+  },
+
   states: {
     idle: {
       on: {
@@ -507,6 +528,7 @@ export const timelineMachine = setup({
           target: "loadingProject",
         },
         PROJECT_UPDATED: {
+          target: "active",
           actions: ["setProject"],
         },
       },

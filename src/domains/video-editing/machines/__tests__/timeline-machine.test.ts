@@ -139,14 +139,19 @@ describe("TimelineMachine", () => {
       updatedAt: new Date(),
     }
 
-    it("should update project on PROJECT_UPDATED event in idle", () => {
+    it("should update project and transition to active on PROJECT_UPDATED event in idle", () => {
       actor.send({ type: "PROJECT_UPDATED", project: mockProject })
 
       const { context } = actor.getSnapshot()
       expect(context.project).toEqual(mockProject)
       expect(context.duration).toBe(120)
-      // Should remain in idle state
-      expect(actor.getSnapshot().value).toBe("idle")
+      // Should transition to active state when project is loaded
+      expect(actor.getSnapshot().value).toEqual({
+        active: {
+          playback: "stopped",
+          editing: "normal",
+        },
+      })
     })
 
     it("should transition to creatingProject state", () => {

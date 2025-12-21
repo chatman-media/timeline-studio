@@ -256,24 +256,97 @@ export class VideoEditingOrchestrator {
    * API для управления проектом
    */
   async createProject(name: string, settings?: any) {
-    this.timelineActor.send({
-      type: "CREATE_PROJECT",
-      name,
-      settings,
-    })
+    logger.info("[VideoEditingOrchestrator] Creating new project:", { name })
+
+    // Устанавливаем loading состояние
+    this.timelineActor.send({ type: "SET_LOADING" })
+
+    try {
+      // Формируем настройки проекта для backend
+      const projectSettings = {
+        resolution: settings?.resolution || { width: 1920, height: 1080 },
+        frame_rate: settings?.fps || 30,
+        audio_sample_rate: settings?.sampleRate || 48000,
+        audio_channels: settings?.channels || 2,
+      }
+
+      // Вызываем backend API для создания проекта
+      const command: ProjectCommand = {
+        type: "CreateProject",
+        params: {
+          name,
+          settings: projectSettings,
+        },
+      }
+
+      await this.executeCommand(command)
+
+      // Очищаем loading состояние
+      this.timelineActor.send({ type: "CLEAR_LOADING" })
+
+      logger.info("[VideoEditingOrchestrator] Project created successfully")
+    } catch (error) {
+      logger.error("[VideoEditingOrchestrator] Failed to create project:", { error })
+      this.timelineActor.send({ type: "CLEAR_LOADING" })
+      this.timelineActor.send({
+        type: "SET_ERROR",
+        error: error instanceof Error ? error.message : "Failed to create project",
+      })
+      throw error
+    }
   }
 
   async loadProject(path: string) {
-    this.timelineActor.send({
-      type: "LOAD_PROJECT",
-      path,
-    })
+    logger.info("[VideoEditingOrchestrator] Loading project:", { path })
+
+    this.timelineActor.send({ type: "SET_LOADING" })
+
+    try {
+      const command: ProjectCommand = {
+        type: "OpenProject",
+        params: { path },
+      }
+
+      await this.executeCommand(command)
+
+      this.timelineActor.send({ type: "CLEAR_LOADING" })
+      logger.info("[VideoEditingOrchestrator] Project loaded successfully")
+    } catch (error) {
+      logger.error("[VideoEditingOrchestrator] Failed to load project:", { error })
+      this.timelineActor.send({ type: "CLEAR_LOADING" })
+      this.timelineActor.send({
+        type: "SET_ERROR",
+        error: error instanceof Error ? error.message : "Failed to load project",
+      })
+      throw error
+    }
   }
 
-  async saveProject() {
-    this.timelineActor.send({
-      type: "SAVE_PROJECT",
-    })
+  async saveProject(path?: string) {
+    logger.info("[VideoEditingOrchestrator] Saving project:", { path })
+
+    this.timelineActor.send({ type: "SET_LOADING" })
+
+    try {
+      const command: ProjectCommand = {
+        type: "SaveProject",
+        params: { path: path || null },
+      }
+
+      await this.executeCommand(command)
+
+      this.timelineActor.send({ type: "CLEAR_LOADING" })
+      this.timelineActor.send({ type: "MARK_SAVED" })
+      logger.info("[VideoEditingOrchestrator] Project saved successfully")
+    } catch (error) {
+      logger.error("[VideoEditingOrchestrator] Failed to save project:", { error })
+      this.timelineActor.send({ type: "CLEAR_LOADING" })
+      this.timelineActor.send({
+        type: "SET_ERROR",
+        error: error instanceof Error ? error.message : "Failed to save project",
+      })
+      throw error
+    }
   }
 
   /**
@@ -303,11 +376,25 @@ export class VideoEditingOrchestrator {
    * API для управления треками
    */
   async addTrack(type: any, name?: string, sectionId?: string) {
+    // Преобразуем lowercase тип в PascalCase для backend
+    const trackTypeMap: Record<string, string> = {
+      video: "Video",
+      audio: "Audio",
+      image: "Image",
+      title: "Title",
+      subtitle: "Subtitle",
+      music: "Music",
+      voiceover: "Voiceover",
+      sfx: "Sfx",
+      ambient: "Ambient",
+    }
+    const backendTrackType = trackTypeMap[type.toLowerCase()] || type
+
     const command: ProjectCommand = {
       type: "AddTrack",
       params: {
-        name: name || `${type} Track`,
-        track_type: type as any, // TrackType уже в PascalCase формате
+        name: name || `${backendTrackType} Track`,
+        track_type: backendTrackType,
         index: null,
       },
     }

@@ -71,7 +71,7 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
     }
 
     // ✅ НОВАЯ АРХИТЕКТУРА: Подписываемся на backend СОБЫТИЯ (не на state changes)
-    const unsubscribeEvents = backendSync.onEvent((event) => {
+    const unsubscribeEvents = backendSync.onEvent(async (event) => {
       logger.info("[TimelineProjectProvider] Received backend event, forwarding to machine", {
         eventType: event.type,
       })
@@ -81,6 +81,33 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
         type: "BACKEND_EVENT",
         event: event as any,
       })
+
+      // При создании или открытии проекта - запрашиваем полное состояние
+      if (event.type === "ProjectCreated" || event.type === "ProjectOpened") {
+        logger.info("[TimelineProjectProvider] Project created/opened, fetching full state")
+        try {
+          const state = await backendSync.getProjectState()
+          if (state && state.project) {
+            const newVersion = state.version || 0
+            lastProcessedVersionRef.current = newVersion
+            setBackendProject(state)
+
+            // Преобразуем и обновляем проект
+            const transformedProject = transformProjectStateToTimeline(state)
+            if (transformedProject) {
+              logger.info("[TimelineProjectProvider] Updating project from backend state", {
+                projectName: transformedProject.name,
+              })
+              timelineActor.send({
+                type: "PROJECT_UPDATED",
+                project: transformedProject,
+              })
+            }
+          }
+        } catch (error) {
+          logger.error("[TimelineProjectProvider] Failed to fetch project state", { error })
+        }
+      }
     })
 
     // ✅ Подписываемся на state changes ТОЛЬКО для инициализации проекта
