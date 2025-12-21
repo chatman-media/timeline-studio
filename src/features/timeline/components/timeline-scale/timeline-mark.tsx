@@ -1,4 +1,4 @@
-import { formatTimeWithMilliseconds } from "@/lib/date"
+import { formatTime } from "@/lib/date"
 
 interface TimelineMarkProps {
   timestamp: number
@@ -32,7 +32,7 @@ export function TimelineMark({ timestamp, position, markType, showValue }: Timel
           className="absolute top-2.5 translate-x-1/2 transform px-1 text-[11px] whitespace-nowrap opacity-60"
           data-oid="4p1li6z"
         >
-          {formatTimeWithMilliseconds(timestamp, false, true, false)}
+          {formatTime(timestamp)}
         </span>
       )}
     </div>

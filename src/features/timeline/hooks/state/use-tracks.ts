@@ -13,8 +13,13 @@ const logger = createLogger("UseTracks")
 
 // Адаптер для преобразования domain трека в feature трек
 const adaptDomainTrackToFeatureTrack = (domainTrack: DomainTrack): TimelineTrack => {
+  // Нормализуем тип трека из PascalCase (backend) в lowercase (frontend)
+  const normalizedType =
+    typeof domainTrack.type === "string" ? (domainTrack.type.toLowerCase() as TrackType) : domainTrack.type
+
   return {
     ...domainTrack,
+    type: normalizedType,
     // Преобразуем domain свойства в feature с default значениями
     isLocked: domainTrack.locked ?? false,
     isMuted: domainTrack.muted ?? false,

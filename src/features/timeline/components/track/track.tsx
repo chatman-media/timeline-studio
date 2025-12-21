@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils"
 import type { TimelineTrack } from "../../types"
 import { TrackHeightAdjuster } from "../track-height-adjuster"
 import { TrackContent } from "./track-content"
-import { TrackHeader } from "./track-header"
 
 interface TrackProps {
   track: TimelineTrack | null
@@ -86,12 +85,7 @@ export function TrackComponent({
       }}
       data-oid="24jz58."
     >
-      {/* Заголовок трека (фиксированная ширина) */}
-      <div className="shrink-0 w-48 border-r border-border" data-oid="yd7yl83">
-        <TrackHeader track={track} isSelected={isSelected} onUpdate={handleUpdate} data-oid="u4m:.4p" />
-      </div>
-
-      {/* Содержимое трека (клипы) */}
+      {/* Содержимое трека (клипы) - заголовок убран, управление через TrackControlsPanel */}
       <div className="flex-1 relative overflow-hidden" data-oid="864hk0d">
         <TrackContent
           track={track}
