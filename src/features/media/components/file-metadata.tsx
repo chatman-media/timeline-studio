@@ -20,6 +20,39 @@ export const FileMetadata = function FileMetadata({ file, size = 100 }: FileMeta
   const { i18n } = useTranslation()
   const videoStream = file.probeData?.streams.find((s) => s.codec_type === "video")
 
+  // Для маленьких размеров (< 50px) показываем компактную версию в одну строку
+  const isCompact = size < 50
+
+  if (isCompact) {
+    return (
+      <div
+        className="flex w-full items-center justify-between gap-2 overflow-hidden"
+        style={{ height: `${size}px` }}
+        data-oid="compact-metadata"
+      >
+        <p className="truncate text-xs font-medium text-gray-900 dark:text-gray-100" data-oid="compact-name">
+          {file.name}
+        </p>
+        <div
+          className="flex shrink-0 items-center gap-2 text-xs text-gray-700 dark:text-gray-200"
+          data-oid="compact-info"
+        >
+          {!file.isImage && file.duration != null && file.duration > 0 && (
+            <span data-oid="compact-duration">{formatDuration(file.duration, 3, true)}</span>
+          )}
+          {videoStream && (
+            <span data-oid="compact-resolution">
+              {videoStream.width}x{videoStream.height}
+            </span>
+          )}
+          {file.probeData?.format.size && (
+            <span data-oid="compact-size">{formatFileSize(file.probeData.format.size)}</span>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="grid w-full grid-rows-2 overflow-hidden" style={{ height: `${size}px` }} data-oid="k74eh-_">
       <div className="flex w-full justify-between p-2" data-oid="wcoshkw">
