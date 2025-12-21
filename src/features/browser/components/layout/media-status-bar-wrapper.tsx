@@ -11,7 +11,7 @@ import { StatusBar } from "./status-bar"
 
 export function MediaStatusBarWrapper() {
   const { mediaPool } = useMediaManagement()
-  const { mediaResources } = useResources()
+  const { mediaResources, musicResources } = useResources()
   const { addAllVideoFiles, addAllAudioFiles, addDateFiles, addAllFiles } = useBulkMediaActions()
 
   // Преобразуем mediaPool в массив MediaFile
@@ -65,9 +65,14 @@ export function MediaStatusBarWrapper() {
   }, [mediaPool])
 
   // Создаем Set путей добавленных файлов (только те что is_resource=true)
+  // Включаем и mediaResources (видео/изображения) и musicResources (аудио)
   const addedFilesPaths = useMemo(() => {
-    return new Set(mediaResources.map((r) => r.path))
-  }, [mediaResources])
+    const allResourcePaths = [
+      ...mediaResources.map((r) => r.path),
+      ...musicResources.map((r) => r.path),
+    ]
+    return new Set(allResourcePaths)
+  }, [mediaResources, musicResources])
 
   // Группируем файлы по датам для StatusBar
   const sortedDates = useMemo(() => {
