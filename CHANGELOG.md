@@ -1,3 +1,36 @@
+# [3.41.0](https://github.com/chatman-media/timeline-studio/compare/v3.40.0...v3.41.0) (2025-12-21)
+
+
+### Bug Fixes
+
+* **browser:** исправлена кнопка добавления медиа в ресурсы ([e1737f6](https://github.com/chatman-media/timeline-studio/commit/e1737f666a59579e3f53a0b7dbd48bba81028052))
+* **browser:** исправлено обновление списка медиа после импорта ([94133e2](https://github.com/chatman-media/timeline-studio/commit/94133e26790b4c437afa830d30b09a1c370f5177))
+* **browser:** кэширование вкладок и исправление AbortError ([dd046b5](https://github.com/chatman-media/timeline-studio/commit/dd046b535ef78960da21347029b7bd7b2f7be2a8))
+* **browser:** убран двойной overflow-auto контейнер ([007b234](https://github.com/chatman-media/timeline-studio/commit/007b2340cc4d96bd9a3dd56e26cafa65a31b0216))
+* **browser:** удалена дублирующая система drag & drop из MediaPreviewWrapper ([d7b56b7](https://github.com/chatman-media/timeline-studio/commit/d7b56b762569dc68b2e503fa4b3163aa1b9361f1))
+* **config:** миграция Vitest 4 poolOptions на верхний уровень ([8ccb51b](https://github.com/chatman-media/timeline-studio/commit/8ccb51b3942c5ab7551b40312b399f7b006020ac))
+* **deps:** откат react-resizable-panels к 3.0.6 ([3db52b8](https://github.com/chatman-media/timeline-studio/commit/3db52b8b7e5b33dc724d8febf47286206c094168))
+* **favorites:** исправлена структура favorites (массив ID вместо объектов) ([e7bb6bb](https://github.com/chatman-media/timeline-studio/commit/e7bb6bb1fe22b2b31ffe1171adc525426425f67c))
+* **project:** исправлено создание нового проекта ([1f23639](https://github.com/chatman-media/timeline-studio/commit/1f236399bd54d7f026f4dd45a932629a741e1feb))
+* **tests:** исправлены 36 ошибок типов в тестах ([4018672](https://github.com/chatman-media/timeline-studio/commit/4018672f30b638677907cca76b542f078e127edf))
+* **tests:** исправлены тесты с проверкой props после добавления data-oid ([9697716](https://github.com/chatman-media/timeline-studio/commit/9697716c4fb30ca96357f310a447a8797eb933a8))
+* **timeline:** отключен автоскролл при drag & drop медиафайлов ([2392c4f](https://github.com/chatman-media/timeline-studio/commit/2392c4f3c78809a1556448bd0e6a494d4c02f6cf))
+
+
+### Features
+
+* **browser:** grid layout теперь растягивает элементы на всю ширину ([49a5b00](https://github.com/chatman-media/timeline-studio/commit/49a5b00f2b3862c1a2eabacc927cc5ef36c72014))
+* **browser:** добавлен compact mode для FileMetadata в list view ([0378774](https://github.com/chatman-media/timeline-studio/commit/0378774887d3b7d4d5e0039adf854d81e0e359aa))
+* **browser:** добавлен drag & drop для audio и image preview ([e5cd389](https://github.com/chatman-media/timeline-studio/commit/e5cd389e3babef30852cac22282a70739a2c6544))
+* **browser:** добавлены domain hooks и обновлен provider ([9dfbae1](https://github.com/chatman-media/timeline-studio/commit/9dfbae17c6c6b74b35e5c294ab65ac9cfcd0388e))
+* **browser:** добавлены универсальные компоненты preview ([a01e017](https://github.com/chatman-media/timeline-studio/commit/a01e01706c329595ada389b9f48bf38dad2bc7ce))
+* **browser:** масштабирование list view для всех адаптеров ресурсов ([9baca4e](https://github.com/chatman-media/timeline-studio/commit/9baca4e274f052e7ff2d6e4849e4fb76faef9142))
+
+
+### Performance Improvements
+
+* **player:** исправлен бесконечный ре-рендер при воспроизведении видео ([a4165fb](https://github.com/chatman-media/timeline-studio/commit/a4165fb0075cdcf30f022a85af49476f6ff49c09))
+
 # [3.40.0](https://github.com/chatman-media/timeline-studio/compare/v3.39.0...v3.40.0) (2025-12-19)
 
 
