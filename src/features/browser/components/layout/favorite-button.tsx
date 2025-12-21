@@ -29,7 +29,8 @@ interface FavoriteButtonProps {
 export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, type = "media" }: FavoriteButtonProps) {
   const { t } = useTranslation()
   const { addToFavorites, removeFromFavorites, favorites } = useFavorites()
-  const isFavorite = favorites[type]?.some((f) => f.id === file.id)
+  // favorites[type] содержит массив ID (string[])
+  const isFavorite = favorites[type]?.includes(file.id) || false
   const [isHovering, setIsHovering] = useState(false)
   const [isRecentlyAdded, setIsRecentlyAdded] = useState(false)
   const [isPending, setIsPending] = useState(false) // Локальное состояние для мгновенной обратной связи
@@ -150,7 +151,7 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
     <button
       type="button"
       className={cn(
-        "absolute z-1 top-1 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
+        "absolute z-1 top-7 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
         visuallyFavorite
           ? isRecentlyAdded || isPending
             ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных или pending

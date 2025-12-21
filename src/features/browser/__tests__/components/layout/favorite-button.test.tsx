@@ -38,15 +38,16 @@ vi.mock("lucide-react", () => ({
 
 const mockAddToFavorites = vi.fn()
 const mockRemoveFromFavorites = vi.fn()
-const mockFavorites = {
-  media: [] as MediaFile[],
-  music: [] as MediaFile[],
-  transition: [] as MediaFile[],
-  effect: [] as MediaFile[],
-  template: [] as MediaFile[],
-  filter: [] as MediaFile[],
-  subtitle: [] as MediaFile[],
-  "style-template": [] as MediaFile[],
+// Favorites теперь хранит массивы ID (string[]), а не объекты
+const mockFavorites: Record<string, string[]> = {
+  media: [],
+  music: [],
+  transition: [],
+  effect: [],
+  template: [],
+  filter: [],
+  subtitle: [],
+  styleTemplate: [],
 }
 
 vi.mock("@/domains/project-management/hooks", () => ({
@@ -105,7 +106,7 @@ describe("FavoriteButton", () => {
 
     it("должен применять правильный title для избранного файла", () => {
       const file = createMockMediaFile()
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       render(<FavoriteButton file={file} data-oid="-x2pnq3" />)
 
@@ -123,7 +124,7 @@ describe("FavoriteButton", () => {
 
     it("должен применять правильные классы для избранного файла", () => {
       const file = createMockMediaFile()
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       render(<FavoriteButton file={file} data-oid="_.r1h4y" />)
 
@@ -167,7 +168,7 @@ describe("FavoriteButton", () => {
 
     it("должен удалять файл из избранного при клике с наведением", async () => {
       const file = createMockMediaFile()
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       // Используем фейковые таймеры для контроля времени
       vi.useFakeTimers()
@@ -212,7 +213,7 @@ describe("FavoriteButton", () => {
   describe("состояние наведения", () => {
     it("должен показывать иконку StarOff при наведении на избранный файл", async () => {
       const file = createMockMediaFile()
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       render(<FavoriteButton file={file} data-oid=":5wbq6l" />)
 
@@ -232,7 +233,7 @@ describe("FavoriteButton", () => {
 
     it("должен обновлять title при наведении на избранный файл", async () => {
       const file = createMockMediaFile()
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       render(<FavoriteButton file={file} data-oid="abrcr:o" />)
 
@@ -259,7 +260,7 @@ describe("FavoriteButton", () => {
 
     it("должен возвращать обычную иконку при уходе курсора", async () => {
       const file = createMockMediaFile()
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       render(<FavoriteButton file={file} data-oid="5.jx.qr" />)
 
@@ -292,7 +293,7 @@ describe("FavoriteButton", () => {
 
     it("должен проверять избранное в правильной категории", () => {
       const file = createMockMediaFile()
-      mockFavorites.music = [file]
+      mockFavorites.music = [file.id]
       mockFavorites.media = [] // Пусто в media
 
       render(<FavoriteButton file={file} type="music" data-oid="e8jrgey" />)
@@ -306,9 +307,9 @@ describe("FavoriteButton", () => {
     it("должен применять анимацию при добавлении в избранное", async () => {
       const file = createMockMediaFile()
 
-      // Настраиваем мок, чтобы он обновлял favorites после вызова
+      // Настраиваем мок, чтобы он обновлял favorites после вызова (теперь используем ID)
       mockAddToFavorites.mockImplementation((fileToAdd: MediaFile, type: keyof typeof mockFavorites) => {
-        mockFavorites[type] = [...(mockFavorites[type] || []), fileToAdd]
+        mockFavorites[type] = [...(mockFavorites[type] || []), fileToAdd.id]
       })
 
       render(<FavoriteButton file={file} data-oid="40yc0oy" />)
@@ -342,7 +343,7 @@ describe("FavoriteButton", () => {
 
       // Добавляем в избранное
       fireEvent.click(button)
-      mockFavorites.media = [file]
+      mockFavorites.media = [file.id]
 
       // Пытаемся сразу удалить
       fireEvent.mouseEnter(button)

@@ -36,8 +36,8 @@ export const MediaItem = memo<MediaItemProps>(
     // Стабильный ключ файла
     const fileId = useMemo(() => file.id || file.path || file.name, [file.id, file.path, file.name])
 
-    // Мемоизируем проверку избранного
-    const isAdded = useMemo(() => favorites.media.some((item) => item.id === file.id), [favorites.media, file.id])
+    // Мемоизируем проверку избранного (favorites.media содержит массив ID)
+    const isAdded = useMemo(() => favorites.media?.includes(file.id) || false, [favorites.media, file.id])
 
     // Получаем соотношение сторон из настроек проекта
     const projectAspectRatio = useMemo(() => {
