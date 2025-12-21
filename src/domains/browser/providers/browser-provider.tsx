@@ -299,3 +299,92 @@ export function useBrowser(): BrowserContextType {
 
 // Export alias for easier migration
 export const useBrowserState = useBrowser
+
+// ===== Granular Selector Hooks for Performance Optimization =====
+
+/**
+ * Hook to get only the active tab
+ * Use this instead of useBrowserState() when you only need activeTab
+ */
+export function useBrowserActiveTab(): BrowserTab {
+  const orchestrator = getBrowserOrchestrator()
+  const browserActor = orchestrator.getBrowserActor()
+  return useSelector(browserActor, (state) => state.context.activeTab)
+}
+
+/**
+ * Hook to get only the current tab settings
+ * Use this instead of useBrowserState() when you only need settings
+ */
+export function useBrowserTabSettings(): TabSettings {
+  const orchestrator = getBrowserOrchestrator()
+  const browserActor = orchestrator.getBrowserActor()
+  const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
+  const tabSettings = useSelector(browserActor, (state) => state.context.tabSettings)
+
+  return useMemo(() => {
+    return tabSettings[activeTab] || DEFAULT_TAB_SETTINGS
+  }, [tabSettings, activeTab])
+}
+
+/**
+ * Hook to get only the view mode
+ * Use this instead of useBrowserState() when you only need viewMode
+ */
+export function useBrowserViewMode(): ViewMode {
+  const orchestrator = getBrowserOrchestrator()
+  const browserActor = orchestrator.getBrowserActor()
+  const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
+  const tabSettings = useSelector(browserActor, (state) => state.context.tabSettings)
+
+  return useMemo(() => {
+    return tabSettings[activeTab]?.view_mode || "thumbnails"
+  }, [tabSettings, activeTab])
+}
+
+/**
+ * Hook to get only the preview size
+ * Use this instead of useBrowserState() when you only need previewSize
+ */
+export function useBrowserPreviewSize(): number {
+  const orchestrator = getBrowserOrchestrator()
+  const browserActor = orchestrator.getBrowserActor()
+  const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
+  const tabSettings = useSelector(browserActor, (state) => state.context.tabSettings)
+
+  return useMemo(() => {
+    const sizeIndex = tabSettings[activeTab]?.preview_size_index || DEFAULT_PREVIEW_SIZE_INDEX
+    return PREVIEW_SIZES[sizeIndex] || PREVIEW_SIZES[DEFAULT_PREVIEW_SIZE_INDEX]
+  }, [tabSettings, activeTab])
+}
+
+/**
+ * Hook to get only the search query
+ * Use this instead of useBrowserState() when you only need searchQuery
+ */
+export function useBrowserSearchQuery(): string {
+  const orchestrator = getBrowserOrchestrator()
+  const browserActor = orchestrator.getBrowserActor()
+  const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
+  const tabSettings = useSelector(browserActor, (state) => state.context.tabSettings)
+
+  return useMemo(() => {
+    return tabSettings[activeTab]?.search_query || ""
+  }, [tabSettings, activeTab])
+}
+
+/**
+ * Hook to get only the selected files for current tab
+ * Use this instead of useBrowserState() when you only need selectedFiles
+ */
+export function useBrowserSelectedFiles(): Set<string> {
+  const orchestrator = getBrowserOrchestrator()
+  const browserActor = orchestrator.getBrowserActor()
+  const activeTab = useSelector(browserActor, (state) => state.context.activeTab)
+  const selectedFiles = useSelector(browserActor, (state) => state.context.selectedFiles)
+
+  return useMemo(() => {
+    const files = selectedFiles[activeTab] || []
+    return new Set(files)
+  }, [selectedFiles, activeTab])
+}
