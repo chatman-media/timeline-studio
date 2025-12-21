@@ -143,7 +143,7 @@ describe("BrowserProvider", () => {
         sort_order: expect.stringMatching(/^(asc|desc)$/),
         group_by: expect.any(String),
         filter_type: expect.any(String),
-        view_mode: expect.stringMatching(/^(thumbnails|list|grid)$/),
+        view_mode: expect.stringMatching(/^(thumbnails|list)$/),
         preview_size_index: expect.any(Number),
       })
     })

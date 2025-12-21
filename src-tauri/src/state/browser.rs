@@ -25,9 +25,8 @@ pub enum BrowserTab {
 #[serde(rename_all = "snake_case")]
 #[derive(Default)]
 pub enum ViewMode {
-  #[default]
   List,
-  Grid,
+  #[default]
   Thumbnails,
 }
 
