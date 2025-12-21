@@ -4,6 +4,7 @@ import { useAIDirectorEvents } from "@/domains/ai-director/hooks/use-ai-director
 import { AnalysisProgressIndicator } from "@/features/ai-director/components/analysis-progress-indicator"
 import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
+import { DragDropProvider } from "@/features/timeline/components/drag-drop-provider"
 import { useUserSettings } from "@/features/user-settings"
 import { createLogger } from "@/lib/tauri-logger"
 import { ChatLayout, DefaultLayout, OptionsLayout, VerticalLayout } from "./layout"
@@ -35,29 +36,31 @@ export function MediaStudio() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen m-0 p-0" data-oid="uxjltd1">
-      <TopBar data-oid="1h9sg4d" />
-      <div className="flex-1" data-oid="r0gyfo8">
-        {layoutMode === "default" && <DefaultLayout data-oid="oee:qge" />}
-        {layoutMode === "options" && <OptionsLayout data-oid="klwhg5e" />}
-        {layoutMode === "vertical" && <VerticalLayout data-oid="s2mta-q" />}
-        {layoutMode === "chat" && <ChatLayout data-oid=".z2s1qy" />}
+    <DragDropProvider data-oid="global-dnd-provider">
+      <div className="flex flex-col h-screen w-screen m-0 p-0" data-oid="uxjltd1">
+        <TopBar data-oid="1h9sg4d" />
+        <div className="flex-1" data-oid="r0gyfo8">
+          {layoutMode === "default" && <DefaultLayout data-oid="oee:qge" />}
+          {layoutMode === "options" && <OptionsLayout data-oid="klwhg5e" />}
+          {layoutMode === "vertical" && <VerticalLayout data-oid="s2mta-q" />}
+          {layoutMode === "chat" && <ChatLayout data-oid=".z2s1qy" />}
+        </div>
+
+        {/* Контейнер для модальных окон */}
+        <ModalContainer data-oid="yeoe5rl" />
+
+        {/* Оверлей загрузки проекта */}
+        <ProjectLoadingOverlay data-oid="dg_urdy" />
+
+        {/* Глобальный индикатор прогресса AI анализа */}
+        <AnalysisProgressIndicator
+          fileName={lastProgress?.fileName}
+          stage={lastProgress?.stage}
+          progress={lastProgress?.progress}
+          isVisible={!!lastProgress}
+          data-oid="crl6c.q"
+        />
       </div>
-
-      {/* Контейнер для модальных окон */}
-      <ModalContainer data-oid="yeoe5rl" />
-
-      {/* Оверлей загрузки проекта */}
-      <ProjectLoadingOverlay data-oid="dg_urdy" />
-
-      {/* Глобальный индикатор прогресса AI анализа */}
-      <AnalysisProgressIndicator
-        fileName={lastProgress?.fileName}
-        stage={lastProgress?.stage}
-        progress={lastProgress?.progress}
-        isVisible={!!lastProgress}
-        data-oid="crl6c.q"
-      />
-    </div>
+    </DragDropProvider>
   )
 }

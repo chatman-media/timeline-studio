@@ -1,9 +1,25 @@
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { useResources } from "@/domains/video-editing"
+import type { DraggableItem, DraggableType } from "@/features/drag-drop"
+import { useDropZone } from "@/features/drag-drop"
 import type { ResourceType, TimelineResource } from "@/features/resources/types"
 import { ResourceThumbnail } from "./resource-thumbnail"
+
+/**
+ * Типы ресурсов которые можно бросить на панель
+ */
+const ACCEPTED_TYPES: DraggableType[] = [
+  "media",
+  "music",
+  "effect",
+  "filter",
+  "transition",
+  "template",
+  "style-template",
+  "subtitle-style",
+]
 
 /**
  * Горизонтальная панель ресурсов с простым скроллом
@@ -22,7 +38,57 @@ export function ResourcesPanel() {
     musicResources,
     subtitleResources,
     removeResource,
+    addMedia,
+    addMusic,
+    addEffect,
+    addFilter,
+    addTransition,
+    addTemplate,
+    addStyleTemplate,
+    addSubtitle,
   } = useResources()
+
+  /**
+   * Обработчик drop - добавляет ресурс в панель
+   */
+  const handleDrop = useCallback(
+    async (item: DraggableItem, _event: DragEvent) => {
+      try {
+        switch (item.type) {
+          case "media":
+            await addMedia(item.data)
+            break
+          case "music":
+            await addMusic(item.data)
+            break
+          case "effect":
+            await addEffect(item.data)
+            break
+          case "filter":
+            await addFilter(item.data)
+            break
+          case "transition":
+            await addTransition(item.data)
+            break
+          case "template":
+            await addTemplate(item.data)
+            break
+          case "style-template":
+            await addStyleTemplate(item.data)
+            break
+          case "subtitle-style":
+            await addSubtitle(item.data)
+            break
+        }
+      } catch (error) {
+        console.error("Failed to add resource:", error)
+      }
+    },
+    [addMedia, addMusic, addEffect, addFilter, addTransition, addTemplate, addStyleTemplate, addSubtitle],
+  )
+
+  // Регистрируем drop zone
+  const { ref: dropRef, onDragOver, onDrop } = useDropZone("resources-panel", ACCEPTED_TYPES, handleDrop)
 
   // Объединяем все ресурсы в один плоский список
   const allResources = useMemo(() => {
@@ -59,7 +125,13 @@ export function ResourcesPanel() {
   const totalCount = allResources.length
 
   return (
-    <div className="flex h-full flex-col bg-background" data-oid="a31x4p1">
+    <div
+      ref={dropRef as React.RefObject<HTMLDivElement>}
+      className="flex h-full flex-col bg-background transition-colors"
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      data-oid="a31x4p1"
+    >
       {/* Header */}
       <div className="flex h-10 items-center justify-between border-b border-border px-3" data-oid="ce8_b__">
         <h2 className="text-sm font-medium text-foreground" data-oid="_s45o_6">
@@ -75,7 +147,7 @@ export function ResourcesPanel() {
       {/* Горизонтальный скролл контейнер */}
       <div className="flex-1 overflow-hidden" data-oid="ba--jxw">
         {totalCount === 0 ? (
-          // Empty state
+          // Empty state - drop zone hint
           <div className="flex h-full items-center justify-center px-4" data-oid="t1n_i2o">
             <p className="text-center text-sm text-muted-foreground" data-oid="1thpvvs">
               {t("timeline.resources.empty", "Перетащите сюда эффекты, фильтры, переходы или медиафайлы")}
