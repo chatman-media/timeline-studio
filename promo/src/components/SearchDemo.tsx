@@ -37,7 +37,7 @@ export const SearchDemo: React.FC<SearchDemoProps> = ({ className = "" }) => {
               data-oid="2_awclg"
             />
             <img
-              src="/screen5.png"
+              src="/screen.png"
               alt="Timeline Studio AI Interface"
               width="4112"
               height="2572"

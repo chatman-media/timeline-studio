@@ -74,7 +74,7 @@
 - **Modular Architecture** - easily add new features through plugins
 - **Open Source** - transparency and ability to participate in development
 
-![Timeline Interface #1](/public/screen5.png)
+![Timeline Interface #1](/public/screen.png)
 
 ## 🏗️ Architecture
 
