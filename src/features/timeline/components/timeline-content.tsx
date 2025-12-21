@@ -4,7 +4,8 @@
  * Отображает треки, клипы и временную шкалу
  */
 
-import { useEffect, useRef, useState } from "react"
+import { useDroppable } from "@dnd-kit/core"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 // Убираем ненужные иконки
 
@@ -14,15 +15,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { useCurrentProject } from "@/domains/project-management/hooks"
 import { useTimelineAIIntegration } from "@/features/ai-chat"
+import { getDragDropManager } from "@/features/drag-drop"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { EditModeProvider } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { createLogger } from "@/lib/tauri-logger"
 import { TimelineUIProvider, useTimelineUI } from "../context/timeline-ui-context"
 import { useClips, useTimeline, useTimelinePlayerSync, useTracks } from "../hooks"
 import { useDragDropTimeline } from "../hooks/drag-drop/use-drag-drop-timeline"
+import { useTimelineActions } from "../hooks/state/use-timeline-actions"
 import { TimelineAIOverlay } from "./ai-analysis/timeline-ai-overlay"
 import { AIMarkerControls } from "./ai-markers/ai-marker-controls"
-import { DragDropProvider } from "./drag-drop-provider"
 import { EditModeSelector } from "./edit-mode-selector"
 import { EditModeOverlay } from "./edit-tools/edit-mode-overlay"
 import { SplitIndicator } from "./edit-tools/split-indicator"
@@ -212,27 +214,6 @@ function TimelineContentInner() {
 
         {/* Основная область Timeline */}
         <div className="flex-1 flex flex-col" data-oid="p0ha8bt">
-          {/* Временная шкала */}
-          <div className="flex border-b bg-muted/30" data-oid="ujpja12">
-            {/* Пустое место для синхронизации с TrackControlsPanel */}
-            <div className="w-64 border-r border-border p-4" data-oid="lklz0kr">
-              <div className="text-sm font-medium text-muted-foreground" data-oid="8t0evp8">
-                Временная шкала
-              </div>
-            </div>
-            {/* Шкала времени */}
-            <div className="flex-1 p-4" data-oid="nyv88ct">
-              <TimelineScale
-                startTime={0}
-                // endTime={sector.endTime}
-                // duration={sector.endTime - sector.startTime}
-                // sectorDate={sector.date}
-                // sectorZoomLevel={sectionZoomLevels[sector.date]}
-                data-oid="nd8tx_w"
-              />
-            </div>
-          </div>
-
           {/* Треки с горизонтальным разделением */}
           <ResizablePanelGroup direction="horizontal" className="flex-1" data-oid="o.:px..">
             {/* Левая панель - Управление треками */}
@@ -249,23 +230,21 @@ function TimelineContentInner() {
 
             {/* Правая панель - Область треков */}
             <ResizablePanel defaultSize={75} minSize={60} data-oid="8hnw-vh">
-              <DragDropProvider data-oid="wp277ou">
-                <div ref={scrollContainerRef} className="h-full overflow-auto relative" data-oid="wmayi_b">
+              <div className="h-full flex flex-col" data-oid="track-panel-container">
+                {/* Временная шкала - фиксированная над треками */}
+                <div className="border-b bg-muted/30 p-2 shrink-0" data-oid="timeline-scale-row">
+                  <TimelineScale
+                    startTime={0}
+                    endTime={project?.duration || 300}
+                    duration={project?.duration || 300}
+                    data-oid="nd8tx_w"
+                  />
+                </div>
+
+                {/* Скроллящаяся область треков */}
+                <div ref={scrollContainerRef} className="flex-1 overflow-auto relative" data-oid="wmayi_b">
                   {tracks.length === 0 ? (
-                    <div className="flex h-full items-center justify-center" data-oid="2.o-c_u">
-                      <Card className="w-96" data-oid="2cg27_.">
-                        <CardContent className="pt-6" data-oid="2c5_b:.">
-                          <div className="text-center" data-oid="m5wg30_">
-                            <p className="text-muted-foreground" data-oid="kbb96.t">
-                              Треки не найдены
-                            </p>
-                            <Button className="mt-4" onClick={() => addTrack("Video", "Видео трек")} data-oid="3a9pjsb">
-                              Добавить видео трек
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
+                    <EmptyTimelineDropZone onAddTrack={() => addTrack("Video", "Видео трек")} />
                   ) : (
                     <div className="relative" data-oid="orpblox">
                       {/* Markers layer */}
@@ -327,13 +306,14 @@ function TimelineContentInner() {
                           selectedTrackIds={selectedTrackIds}
                           selectTracks={selectTracks}
                           updateTrack={updateTrack}
+                          setTrackHeight={setTrackHeight}
                           data-oid="pvvzvh8"
                         />
                       </div>
                     </div>
                   )}
                 </div>
-              </DragDropProvider>
+              </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
@@ -349,12 +329,14 @@ function TracksWithTimeScale({
   selectedTrackIds,
   selectTracks,
   updateTrack,
+  setTrackHeight,
 }: {
   tracks: ReturnType<typeof useTracks>["tracks"]
   currentTime: number
   selectedTrackIds: string[] | undefined
   selectTracks: (trackIds: string[]) => void
   updateTrack: (trackId: string, updates: any) => void
+  setTrackHeight: (trackId: string, height: number) => void
 }) {
   const { uiState } = useTimelineUI()
 
@@ -369,9 +351,84 @@ function TracksWithTimeScale({
           isSelected={selectedTrackIds?.includes(track.id) ?? false}
           onSelect={(trackId: string) => selectTracks([trackId])}
           onUpdate={(updates: any) => updateTrack(track.id, updates)}
+          onHeightChange={(_trackId: string, height: number) => setTrackHeight(track.id, height)}
           data-oid="hmc8gnk"
         />
       ))}
     </>
+  )
+}
+
+// Drop zone для пустого таймлайна
+function EmptyTimelineDropZone({ onAddTrack }: { onAddTrack: () => void }) {
+  const [isNativeDragOver, setIsNativeDragOver] = useState(false)
+  const { addSingleMediaToTimeline } = useTimelineActions()
+
+  const { isOver, setNodeRef } = useDroppable({
+    id: "empty-timeline-drop",
+    data: {
+      type: "track-insertion",
+      position: "below",
+      insertIndex: 0,
+    },
+  })
+
+  // Нативный drag-drop для совместимости с Browser (который использует @/features/drag-drop)
+  const handleNativeDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+    setIsNativeDragOver(true)
+  }, [])
+
+  const handleNativeDragLeave = useCallback(() => {
+    setIsNativeDragOver(false)
+  }, [])
+
+  const handleNativeDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsNativeDragOver(false)
+
+      const manager = getDragDropManager()
+      const currentDrag = manager.getCurrentDrag()
+
+      if (currentDrag && currentDrag.type === "media" && currentDrag.data) {
+        logger.info("[EmptyTimelineDropZone] Native drop:", {
+          mediaName: currentDrag.data.name,
+        })
+
+        // Добавляем медиа на таймлайн с позицией 0
+        void addSingleMediaToTimeline(currentDrag.data, undefined, 0)
+      }
+    },
+    [addSingleMediaToTimeline],
+  )
+
+  const showDropFeedback = isOver || isNativeDragOver
+
+  return (
+    <div
+      ref={setNodeRef}
+      onDragOver={handleNativeDragOver}
+      onDragLeave={handleNativeDragLeave}
+      onDrop={handleNativeDrop}
+      className={`flex h-full items-center justify-center transition-all ${
+        showDropFeedback ? "bg-primary/10 border-2 border-dashed border-primary" : ""
+      }`}
+      data-oid="empty-timeline-drop"
+    >
+      <Card className="w-96" data-oid="2cg27_.">
+        <CardContent className="pt-6" data-oid="2c5_b:.">
+          <div className="text-center" data-oid="m5wg30_">
+            <p className="text-muted-foreground" data-oid="kbb96.t">
+              {showDropFeedback ? "Отпустите для добавления на таймлайн" : "Перетащите файл сюда или"}
+            </p>
+            <Button className="mt-4" onClick={onAddTrack} data-oid="3a9pjsb">
+              Добавить видео трек
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

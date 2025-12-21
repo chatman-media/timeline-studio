@@ -3,24 +3,27 @@
  * Рендерит только видимые треки для улучшения производительности
  */
 
-import { useEffect, useRef, useState } from "react"
+import { useDroppable } from "@dnd-kit/core"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { useCurrentProject } from "@/domains/project-management/hooks"
 import { useTimelineAIIntegration } from "@/features/ai-chat"
+import { getDragDropManager } from "@/features/drag-drop"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { EditModeProvider } from "@/features/timeline/hooks/editing/use-edit-mode"
+import { createLogger } from "@/lib/tauri-logger"
 import { useClips } from "../hooks/clips/use-clips"
 import { useDragDropTimeline } from "../hooks/drag-drop/use-drag-drop-timeline"
 import { useTimelinePlayerSync } from "../hooks/integration/use-timeline-player-sync"
 import { useTimeline } from "../hooks/state/use-timeline"
+import { useTimelineActions } from "../hooks/state/use-timeline-actions"
 import { useTracks } from "../hooks/state/use-tracks"
 import { useVirtualizedTracks } from "../hooks/use-virtualized-tracks"
 import { TimelineAIOverlay } from "./ai-analysis/timeline-ai-overlay"
 import { AIMarkerControls } from "./ai-markers/ai-marker-controls"
-import { DragDropProvider } from "./drag-drop-provider"
 import { EditModeSelector } from "./edit-mode-selector"
 import { EditModeOverlay } from "./edit-tools/edit-mode-overlay"
 import { SplitIndicator } from "./edit-tools/split-indicator"
@@ -36,7 +39,10 @@ import { VirtualizedTrack } from "./track/virtualized-track"
 import { TrackControlsPanel } from "./track-controls-panel"
 import { TrackInsertionZones } from "./track-insertion-zone"
 import { UndoRedoHotkeys } from "./undo-redo"
+
 // import { IntegratedVersionPanel } from "./version-control-integration/integrated-version-panel" // Временно скрыто
+
+const logger = createLogger("VirtualizedTimelineContent")
 
 export function VirtualizedTimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -222,7 +228,12 @@ export function VirtualizedTimelineContent() {
             </div>
             {/* Шкала времени */}
             <div className="flex-1 p-4" data-oid="08ooss_">
-              <TimelineScale startTime={0} data-oid="4g8419o" />
+              <TimelineScale
+                startTime={0}
+                endTime={project?.duration || 300}
+                duration={project?.duration || 300}
+                data-oid="4g8419o"
+              />
             </div>
           </div>
 
@@ -242,120 +253,179 @@ export function VirtualizedTimelineContent() {
 
             {/* Правая панель - Область треков с виртуализацией */}
             <ResizablePanel defaultSize={75} minSize={60} data-oid="t9u3jxx">
-              <DragDropProvider data-oid="66o615k">
-                <div
-                  ref={(node) => {
-                    scrollContainerRef.current = node
-                    parentRef.current = node
-                  }}
-                  className="h-full overflow-auto relative"
-                  data-oid="olhqvm."
-                >
-                  {tracks.length === 0 ? (
-                    <div className="flex h-full items-center justify-center" data-oid="c5fdb_d">
-                      <Card className="w-96" data-oid="drbk8km">
-                        <CardContent className="pt-6" data-oid="2exsp6j">
-                          <div className="text-center" data-oid="64upq3d">
-                            <p className="text-muted-foreground" data-oid="1pzajzv">
-                              Треки не найдены
-                            </p>
-                            <Button className="mt-4" onClick={() => addTrack("Video", "Видео трек")} data-oid="e.z30zc">
-                              Добавить видео трек
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ) : (
-                    <div className="relative" data-oid="mi3nbci">
-                      {/* Sticky layers */}
-                      <div className="sticky top-0 z-30" data-oid="kq8hcw7">
-                        {/* Markers layer */}
-                        <TimelineMarkersLayer
-                          timeScale={timeScale}
-                          scrollOffset={scrollOffset}
-                          containerWidth={containerWidth}
-                          currentTime={currentTime}
-                          duration={project?.duration || 300}
-                          className="z-20"
-                          data-oid="8kkxglu"
-                        />
-
-                        {/* AI Analysis Overlay */}
-                        <TimelineAIOverlay
-                          timelineWidth={containerWidth}
-                          timelineDuration={project?.duration || 300}
-                          pixelsPerSecond={timeScale}
-                          className="mt-8 z-15"
-                          data-oid="vwzdhye"
-                        />
-                      </div>
-
-                      {/* Split indicator */}
-                      <SplitIndicator
-                        containerRef={scrollContainerRef as React.RefObject<HTMLElement>}
+              <div
+                ref={(node) => {
+                  scrollContainerRef.current = node
+                  parentRef.current = node
+                }}
+                className="h-full overflow-auto relative"
+                data-oid="olhqvm."
+              >
+                {tracks.length === 0 ? (
+                  <EmptyTimelineDropZone onAddTrack={() => addTrack("Video", "Видео трек")} />
+                ) : (
+                  <div className="relative" data-oid="mi3nbci">
+                    {/* Sticky layers */}
+                    <div className="sticky top-0 z-30" data-oid="kq8hcw7">
+                      {/* Markers layer */}
+                      <TimelineMarkersLayer
                         timeScale={timeScale}
-                        scrollX={scrollOffset}
-                        onSplit={(time, trackId) => {
-                          const track = tracks.find((t) => t.id === trackId)
-                          if (track) {
-                            const clip = track.clips.find((c) => time > c.startTime && time < c.startTime + c.duration)
-                            if (clip) {
-                              send({
-                                type: "SPLIT_CLIP",
-                                clipId: clip.id,
-                                splitTime: time,
-                              })
-                            }
-                          }
-                        }}
-                        data-oid="41b_h6m"
+                        scrollOffset={scrollOffset}
+                        containerWidth={containerWidth}
+                        currentTime={currentTime}
+                        duration={project?.duration || 300}
+                        className="z-20"
+                        data-oid="8kkxglu"
                       />
 
-                      {/* Track Insertion Zones */}
-                      <TrackInsertionZones
-                        trackIds={tracks.map((t) => t.id)}
-                        isVisible={dragState.isDragging}
-                        data-oid="jud4o4q"
+                      {/* AI Analysis Overlay */}
+                      <TimelineAIOverlay
+                        timelineWidth={containerWidth}
+                        timelineDuration={project?.duration || 300}
+                        pixelsPerSecond={timeScale}
+                        className="mt-8 z-15"
+                        data-oid="vwzdhye"
                       />
-
-                      {/* Виртуализированные треки */}
-                      <div style={containerStyle} data-oid="d_:x12:">
-                        {virtualItems.map((virtualItem) => {
-                          const track = tracks[virtualItem.index]
-                          if (!track) return null
-
-                          return (
-                            <div
-                              key={track.id}
-                              data-index={virtualItem.index}
-                              style={getItemStyle(virtualItem)}
-                              data-oid="4dz-z0f"
-                            >
-                              <VirtualizedTrack
-                                track={track}
-                                timeScale={timeScale}
-                                currentTime={currentTime}
-                                containerWidth={containerWidth}
-                                scrollOffset={scrollOffset}
-                                isSelected={selectedTrackIds?.includes(track.id) ?? false}
-                                onSelect={(trackId) => selectTracks([trackId])}
-                                onUpdate={(updates) => updateTrack(track.id, updates)}
-                                onHeightChange={setTrackHeight}
-                                data-oid="2xd_-rb"
-                              />
-                            </div>
-                          )
-                        })}
-                      </div>
                     </div>
-                  )}
-                </div>
-              </DragDropProvider>
+
+                    {/* Split indicator */}
+                    <SplitIndicator
+                      containerRef={scrollContainerRef as React.RefObject<HTMLElement>}
+                      timeScale={timeScale}
+                      scrollX={scrollOffset}
+                      onSplit={(time, trackId) => {
+                        const track = tracks.find((t) => t.id === trackId)
+                        if (track) {
+                          const clip = track.clips.find((c) => time > c.startTime && time < c.startTime + c.duration)
+                          if (clip) {
+                            send({
+                              type: "SPLIT_CLIP",
+                              clipId: clip.id,
+                              splitTime: time,
+                            })
+                          }
+                        }
+                      }}
+                      data-oid="41b_h6m"
+                    />
+
+                    {/* Track Insertion Zones */}
+                    <TrackInsertionZones
+                      trackIds={tracks.map((t) => t.id)}
+                      isVisible={dragState.isDragging}
+                      data-oid="jud4o4q"
+                    />
+
+                    {/* Виртуализированные треки */}
+                    <div style={containerStyle} data-oid="d_:x12:">
+                      {virtualItems.map((virtualItem) => {
+                        const track = tracks[virtualItem.index]
+                        if (!track) return null
+
+                        return (
+                          <div
+                            key={track.id}
+                            data-index={virtualItem.index}
+                            style={getItemStyle(virtualItem)}
+                            data-oid="4dz-z0f"
+                          >
+                            <VirtualizedTrack
+                              track={track}
+                              timeScale={timeScale}
+                              currentTime={currentTime}
+                              containerWidth={containerWidth}
+                              scrollOffset={scrollOffset}
+                              isSelected={selectedTrackIds?.includes(track.id) ?? false}
+                              onSelect={(trackId) => selectTracks([trackId])}
+                              onUpdate={(updates) => updateTrack(track.id, updates)}
+                              onHeightChange={setTrackHeight}
+                              data-oid="2xd_-rb"
+                            />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
       </div>
     </EditModeProvider>
+  )
+}
+
+// Drop zone для пустого таймлайна
+function EmptyTimelineDropZone({ onAddTrack }: { onAddTrack: () => void }) {
+  const [isNativeDragOver, setIsNativeDragOver] = useState(false)
+  const { addSingleMediaToTimeline } = useTimelineActions()
+
+  const { isOver, setNodeRef } = useDroppable({
+    id: "empty-timeline-drop-virtualized",
+    data: {
+      type: "track-insertion",
+      position: "below",
+      insertIndex: 0,
+    },
+  })
+
+  // Нативный drag-drop для совместимости с Browser (который использует @/features/drag-drop)
+  const handleNativeDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+    setIsNativeDragOver(true)
+  }, [])
+
+  const handleNativeDragLeave = useCallback(() => {
+    setIsNativeDragOver(false)
+  }, [])
+
+  const handleNativeDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsNativeDragOver(false)
+
+      const manager = getDragDropManager()
+      const currentDrag = manager.getCurrentDrag()
+
+      if (currentDrag && currentDrag.type === "media" && currentDrag.data) {
+        logger.info("[EmptyTimelineDropZone] Native drop:", {
+          mediaName: currentDrag.data.name,
+        })
+
+        // Добавляем медиа на таймлайн с позицией 0
+        void addSingleMediaToTimeline(currentDrag.data, undefined, 0)
+      }
+    },
+    [addSingleMediaToTimeline],
+  )
+
+  const showDropFeedback = isOver || isNativeDragOver
+
+  return (
+    <div
+      ref={setNodeRef}
+      onDragOver={handleNativeDragOver}
+      onDragLeave={handleNativeDragLeave}
+      onDrop={handleNativeDrop}
+      className={`flex h-full items-center justify-center transition-all ${
+        showDropFeedback ? "bg-primary/10 border-2 border-dashed border-primary" : ""
+      }`}
+      data-oid="empty-timeline-drop-virtualized"
+    >
+      <Card className="w-96" data-oid="drbk8km">
+        <CardContent className="pt-6" data-oid="2exsp6j">
+          <div className="text-center" data-oid="64upq3d">
+            <p className="text-muted-foreground" data-oid="1pzajzv">
+              {showDropFeedback ? "Отпустите для добавления на таймлайн" : "Перетащите файл сюда или"}
+            </p>
+            <Button className="mt-4" onClick={onAddTrack} data-oid="e.z30zc">
+              Добавить видео трек
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

@@ -216,13 +216,25 @@ export class DragDropManager extends EventEmitter {
       this.updateDrag(e)
     })
 
-    document.addEventListener("drop", (e) => {
-      e.preventDefault()
-      this.endDrag(e)
-    })
+    // ВАЖНО: Используем capture: false чтобы дать компонентам обработать drop раньше
+    // Компоненты вызывают getCurrentDrag() до того как мы очистим состояние
+    document.addEventListener(
+      "drop",
+      (_e) => {
+        // Не вызываем preventDefault - пусть компоненты его обработают
+        // Задержка очистки чтобы компоненты успели получить данные
+        setTimeout(() => {
+          this.cleanup()
+        }, 0)
+      },
+      { capture: false },
+    )
 
     document.addEventListener("dragend", () => {
-      this.cleanup()
+      // Также задержка для синхронизации
+      setTimeout(() => {
+        this.cleanup()
+      }, 0)
     })
 
     // Отмена по Escape

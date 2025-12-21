@@ -225,6 +225,15 @@ export function useDragDropTimeline(): UseDragDropTimelineReturn {
     (event: DragEndEvent) => {
       const { active, over } = event
 
+      logger.info("[DragDrop] Drag ended", {
+        hasOver: !!over,
+        overId: over?.id,
+        overData: over?.data?.current,
+        hasDraggedItem: !!dragState.draggedItem,
+        hasDropPosition: !!dragState.dropPosition,
+        dropPosition: dragState.dropPosition,
+      })
+
       // Сначала проверяем межмодульный drag & drop через bridge
       if (isInterModuleDrag(event)) {
         const bridgeHandled = handleInterModuleDrag(
