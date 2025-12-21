@@ -90,7 +90,7 @@ export const PreviewOverlay = memo(function PreviewOverlay({
 
       {/* Resolution badge - bottom left, next to type */}
       {resolution && (
-        <div className={cn(badgeBase, isSmall ? "bottom-0.5 left-[22px]" : "bottom-1 left-7")} style={{ zIndex: 20 }}>
+        <div className={cn(badgeBase, isSmall ? "bottom-0.5 left-5.5" : "bottom-1 left-7")} style={{ zIndex: 20 }}>
           {formatResolution(resolution.width, resolution.height)}
         </div>
       )}

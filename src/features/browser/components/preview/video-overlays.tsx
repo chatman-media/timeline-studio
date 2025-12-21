@@ -80,7 +80,7 @@ export const VideoOverlays = memo(
         {/* Разрешение видео */}
         {isLoaded && !isNotFirstStream && streamWidth && streamHeight && (
           <div
-            className={`pointer-events-none absolute ${size > 100 ? "left-7" : "left-[22px]"} rounded-xs bg-black/60 text-xs leading-4 ${size > 100 ? "bottom-1" : "bottom-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"}`}
+            className={`pointer-events-none absolute ${size > 100 ? "left-7" : "left-5.5"} rounded-xs bg-black/60 text-xs leading-4 ${size > 100 ? "bottom-1" : "bottom-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"}`}
             style={{
               fontSize: size > 100 ? "13px" : "11px",
               color: "#ffffff",

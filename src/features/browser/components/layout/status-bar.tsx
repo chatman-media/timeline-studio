@@ -6,12 +6,12 @@ import { getRemainingMediaCounts, getTopDateWithRemainingFiles, type MediaFile }
 
 interface StatusBarProps {
   media: MediaFile[]
-  onAddAllVideoFiles: () => void
-  onAddAllAudioFiles: () => void
-  onAddDateFiles: (files: MediaFile[]) => void
-  onAddAllFiles: () => void
+  onAddAllVideoFiles: () => Promise<void>
+  onAddAllAudioFiles: () => Promise<void>
+  onAddDateFiles: (files: MediaFile[]) => Promise<void>
+  onAddAllFiles: () => Promise<void>
   sortedDates: { date: string; files: MediaFile[] }[]
-  addedFiles: MediaFile[]
+  addedFilesPaths: Set<string>
 }
 
 /**
@@ -32,12 +32,11 @@ export function StatusBar({
   onAddDateFiles,
   onAddAllFiles,
   sortedDates,
-  addedFiles,
+  addedFilesPaths,
 }: StatusBarProps) {
   const { t } = useTranslation()
-  const addedFilesSet = new Set(addedFiles?.map((file) => file.path) || [])
-  const { remainingVideoCount, remainingAudioCount, allFilesAdded } = getRemainingMediaCounts(media, addedFilesSet)
-  const topDateWithRemainingFiles = getTopDateWithRemainingFiles(sortedDates, addedFilesSet)
+  const { remainingVideoCount, remainingAudioCount, allFilesAdded } = getRemainingMediaCounts(media, addedFilesPaths)
+  const topDateWithRemainingFiles = getTopDateWithRemainingFiles(sortedDates, addedFilesPaths)
 
   return (
     <div className="flex w-full items-center justify-between gap-2 p-1 text-sm" data-oid="ojgzpl5">

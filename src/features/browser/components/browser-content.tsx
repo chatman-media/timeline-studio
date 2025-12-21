@@ -8,6 +8,7 @@ import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"
 import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
 import { LazyTabContent } from "./lazy-tab-content"
+import { MediaStatusBarWrapper } from "./layout/media-status-bar-wrapper"
 
 /**
  * Список всех возможных вкладок браузера
@@ -238,6 +239,9 @@ export const BrowserContent = memo(() => {
 
       {/* Контент только для активной вкладки */}
       <TabContentContainer activeTab={activeTab} data-oid="35equkz" />
+
+      {/* Статус бар для media вкладки с bulk операциями */}
+      {activeTab === "media" && <MediaStatusBarWrapper data-oid="media-status-bar-wrapper" />}
 
       {/* Developer Tools модалка */}
       <DeveloperToolsModal open={showDeveloperTools} onOpenChange={setShowDeveloperTools} data-oid="aicu1h4" />
