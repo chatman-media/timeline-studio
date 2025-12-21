@@ -4,7 +4,6 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
 import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
-import { getTrackTypeForMediaFile } from "@/features/timeline"
 import type { DragData } from "@/features/timeline/types/drag-drop"
 import { usePlayer } from "@/features/video-player"
 import { createImageUrl } from "@/lib/media-url-utils"

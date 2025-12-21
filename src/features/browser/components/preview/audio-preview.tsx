@@ -5,7 +5,6 @@ import { LiveAudioVisualizer } from "react-audio-visualize"
 
 import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
-import { getTrackTypeForMediaFile } from "@/features/timeline"
 import type { DragData } from "@/features/timeline/types/drag-drop"
 import { usePlayer } from "@/features/video-player"
 import { createAudioUrl } from "@/lib/media-url-utils"
