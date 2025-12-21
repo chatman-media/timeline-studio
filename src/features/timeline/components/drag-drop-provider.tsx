@@ -107,6 +107,7 @@ export function DragDropProvider({ children }: DragDropProviderProps) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       modifiers={[snapToGridModifier]}
+      autoScroll={false}
       data-oid="o-:_05l"
     >
       {children}
