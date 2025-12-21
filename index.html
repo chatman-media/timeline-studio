@@ -1,201 +1,241 @@
 <!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <!-- Favicon pack -->
+        <link rel="icon" type="image/x-icon" href="./favicon/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg" />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="96x96"
+            href="./favicon/favicon-96x96.png"
+        />
 
-<head>
-  <meta charset="UTF-8" />
-  <!-- Favicon pack -->
-  <link rel="icon" type="image/x-icon" href="./favicon/favicon.ico" />
-  <link rel="icon" type="image/svg+xml" href="./favicon/favicon.svg" />
-  <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png" />
+        <!-- Apple Touch Icon -->
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="./favicon/apple-touch-icon.png"
+        />
 
-  <!-- Apple Touch Icon -->
-  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png" />
+        <!-- Web App Manifest -->
+        <link rel="manifest" href="./favicon/site.webmanifest" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Web App Manifest -->
-  <link rel="manifest" href="./favicon/site.webmanifest" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- Preconnect to external domains -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="dns-prefetch" href="https://github.com" />
+        <link rel="dns-prefetch" href="https://api.github.com" />
+        <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
 
-  <!-- Preconnect to external domains -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="dns-prefetch" href="https://github.com">
-  <link rel="dns-prefetch" href="https://api.github.com">
-  <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+        <!-- Preload critical assets -->
+        <link rel="preload" href="./og-image.png" as="image" />
+        <link rel="preload" href="./fav.png" as="image" />
 
-  <!-- Preload critical assets -->
-  <link rel="preload" href="./og-image.png" as="image">
-  <link rel="preload" href="./fav.png" as="image">
+        <title>Timeline Studio - AI-Powered Video Editor</title>
+        <meta
+            name="description"
+            content="Timeline Studio - Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever."
+        />
 
-  <title>Timeline Studio - AI-Powered Video Editor</title>
-  <meta name="description"
-    content="Timeline Studio - Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever." />
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://timelinestudio.pro/" />
+        <!-- Load fonts with better performance -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
+            rel="stylesheet"
+            media="print"
+            onload="this.media='all'"
+        />
+        <noscript>
+            <link
+                href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
+                rel="stylesheet"
+            />
+        </noscript>
 
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://timelinestudio.pro/" />
-  <!-- Load fonts with better performance -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
-    rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap"
-      rel="stylesheet">
-  </noscript>
+        <!-- Critical CSS inline -->
+        <style>
+            /* Critical above-the-fold styles */
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #12192c;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+                    sans-serif;
+                color: #ffffff;
+                min-height: 100vh;
+            }
 
-  <!-- Critical CSS inline -->
-  <style>
-    /* Critical above-the-fold styles */
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #12192C;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-      color: #ffffff;
-      min-height: 100vh;
-    }
+            #root {
+                min-height: 100vh;
+            }
 
-    #root {
-      min-height: 100vh;
-    }
+            /* Prevent layout shift from fonts */
+            @font-face {
+                font-family: "Inter";
+                font-style: normal;
+                font-weight: 400;
+                font-display: swap;
+                src: local("Inter"), local("Inter-Regular");
+            }
 
-    /* Prevent layout shift from fonts */
-    @font-face {
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: local('Inter'), local('Inter-Regular');
-    }
+            @font-face {
+                font-family: "Bebas Neue";
+                font-style: normal;
+                font-weight: 400;
+                font-display: swap;
+                src: local("Bebas Neue"), local("BebasNeue-Regular");
+            }
+        </style>
+        <!-- SEO and Performance meta tags -->
+        <meta name="theme-color" content="#12192C" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
 
-    @font-face {
-      font-family: 'Bebas Neue';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: local('Bebas Neue'), local('BebasNeue-Regular');
-    }
-  </style>
-  <!-- SEO and Performance meta tags -->
-  <meta name="theme-color" content="#12192C">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <!-- Open Graph tags -->
+        <meta
+            property="og:title"
+            content="Timeline Studio - AI-Powered Video Editor"
+        />
+        <meta
+            property="og:description"
+            content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://timelinestudio.pro" />
+        <meta
+            property="og:image"
+            content="https://timelinestudio.pro/og-image.png"
+        />
 
-  <!-- Open Graph tags -->
-  <meta property="og:title" content="Timeline Studio - AI-Powered Video Editor">
-  <meta property="og:description"
-    content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://timelinestudio.pro">
-  <meta property="og:image" content="https://timelinestudio.pro/og-image.png">
+        <!-- Twitter Card tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="Timeline Studio - AI-Powered Video Editor"
+        />
+        <meta
+            name="twitter:description"
+            content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever."
+        />
+        <meta
+            name="twitter:image"
+            content="https://timelinestudio.pro/og-image.png"
+        />
 
-  <!-- Twitter Card tags -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Timeline Studio - AI-Powered Video Editor">
-  <meta name="twitter:description"
-    content="Professional AI-powered video editing application with cutting-edge technology. Create stunning content faster than ever.">
-  <meta name="twitter:image" content="https://timelinestudio.pro/og-image.png">
+        <!-- Structured Data -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Timeline Studio",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Windows, macOS, Linux",
+                "description": "Professional AI-powered video editing application with cutting-edge technology",
+                "url": "https://timelinestudio.pro",
+                "downloadUrl": "https://github.com/chatman-media/timeline-studio/releases",
+                "screenshot": "https://timelinestudio.pro/screen.png",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.8",
+                    "ratingCount": "1250"
+                },
+                "author": {
+                    "@type": "Organization",
+                    "name": "Chatman Media",
+                    "url": "https://timelinestudio.pro"
+                }
+            }
+        </script>
 
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "Timeline Studio",
-    "applicationCategory": "MultimediaApplication",
-    "operatingSystem": "Windows, macOS, Linux",
-    "description": "Professional AI-powered video editing application with cutting-edge technology",
-    "url": "https://timelinestudio.pro",
-    "downloadUrl": "https://github.com/chatman-media/timeline-studio/releases",
-    "screenshot": "https://timelinestudio.pro/screen5.png",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1250"
-    },
-    "author": {
-      "@type": "Organization",
-      "name": "Chatman Media",
-      "url": "https://timelinestudio.pro"
-    }
-  }
-  </script>
+        <!-- Prefetch hints for likely navigation - dynamic chunks will be loaded on demand -->
+      <script type="module" crossorigin src="./assets/index-Bv00w29N.js"></script>
+      <link rel="modulepreload" crossorigin href="./assets/vendor-CDGZd2Kl.js">
+      <link rel="modulepreload" crossorigin href="./assets/markdown-CsgWyqVf.js">
+      <link rel="modulepreload" crossorigin href="./assets/react-Dw3uuye5.js">
+      <link rel="modulepreload" crossorigin href="./assets/framer-CGiehnBR.js">
+      <link rel="stylesheet" crossorigin href="./assets/style-wgurmsaQ.css">
+    </head>
 
-  <!-- Prefetch hints for likely navigation - dynamic chunks will be loaded on demand -->
-  <script type="module" crossorigin src="./assets/index-Bb45_tko.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/vendor-CDGZd2Kl.js">
-  <link rel="modulepreload" crossorigin href="./assets/markdown-CsgWyqVf.js">
-  <link rel="modulepreload" crossorigin href="./assets/react-Dw3uuye5.js">
-  <link rel="modulepreload" crossorigin href="./assets/framer-CGiehnBR.js">
-  <link rel="stylesheet" crossorigin href="./assets/style-wgurmsaQ.css">
-</head>
+    <body>
+        <div id="root">
+            <!-- Loading placeholder to prevent blank screen -->
+            <style>
+                .loading-placeholder {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #12192c;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 9999;
+                }
 
-<body>
-  <div id="root">
-    <!-- Loading placeholder to prevent blank screen -->
-    <style>
-      .loading-placeholder {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #12192C;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-      }
+                .loading-spinner {
+                    width: 50px;
+                    height: 50px;
+                    border: 3px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 50%;
+                    border-top-color: #8b5cf6;
+                    animation: spin 1s ease-in-out infinite;
+                }
 
-      .loading-spinner {
-        width: 50px;
-        height: 50px;
-        border: 3px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        border-top-color: #8b5cf6;
-        animation: spin 1s ease-in-out infinite;
-      }
+                @keyframes spin {
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+            </style>
+            <div class="loading-placeholder">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
 
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-    </style>
-    <div class="loading-placeholder">
-      <div class="loading-spinner"></div>
-    </div>
-  </div>
+        <!-- Оптимизация загрузки шрифтов -->
+        <script>
+            // Загружаем шрифты асинхронно после основного контента
+            if ("requestIdleCallback" in window) {
+                requestIdleCallback(() => {
+                    const link = document.querySelector(
+                        'link[href*="fonts.googleapis.com"]',
+                    );
+                    if (link) link.media = "all";
+                });
+            }
+        </script>
 
-  <!-- Оптимизация загрузки шрифтов -->
-  <script>
-    // Загружаем шрифты асинхронно после основного контента
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        const link = document.querySelector('link[href*="fonts.googleapis.com"]');
-        if (link) link.media = 'all';
-      });
-    }
-  </script>
-
-  <!-- Remove loading placeholder when app loads -->
-  <script>
-    window.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
-        const placeholder = document.querySelector('.loading-placeholder');
-        if (placeholder) {
-          placeholder.style.opacity = '0';
-          placeholder.style.transition = 'opacity 0.3s ease-out';
-          setTimeout(function () {
-            placeholder.remove();
-          }, 300);
-        }
-      }, 100);
-    });
-  </script>
-</body>
-
+        <!-- Remove loading placeholder when app loads -->
+        <script>
+            window.addEventListener("DOMContentLoaded", function () {
+                setTimeout(function () {
+                    const placeholder = document.querySelector(
+                        ".loading-placeholder",
+                    );
+                    if (placeholder) {
+                        placeholder.style.opacity = "0";
+                        placeholder.style.transition = "opacity 0.3s ease-out";
+                        setTimeout(function () {
+                            placeholder.remove();
+                        }, 300);
+                    }
+                }, 100);
+            });
+        </script>
+    </body>
 </html>
