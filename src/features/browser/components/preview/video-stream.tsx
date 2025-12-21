@@ -243,25 +243,22 @@ export const VideoStream = memo(
       [handleClick],
     )
 
+    // Вычисляем ширину для контейнера
+    const containerWidth =
+      ratio > 1 ? (ignoreRatio ? width : adaptiveWidth) : isMultipleStreams && ignoreRatio ? width : adaptiveWidth
+
     return (
       <div
         key={key}
-        className={cn("relative shrink-0", isAdded && "pointer-events-none")}
+        className={cn("flex flex-col shrink-0", isAdded && "pointer-events-none")}
         style={{
-          height: `${size}px`,
-          width:
-            ratio > 1
-              ? ignoreRatio
-                ? width
-                : adaptiveWidth
-              : isMultipleStreams && ignoreRatio
-                ? width
-                : adaptiveWidth,
+          width: containerWidth,
         }}
         data-oid="cg92joi"
       >
         <div
-          className={cn("group relative h-full w-full bg-muted", isAdded && "opacity-50 grayscale cursor-not-allowed")}
+          className={cn("group relative bg-muted", isAdded && "opacity-50 grayscale cursor-not-allowed")}
+          style={{ height: `${size}px` }}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleClick}
@@ -330,11 +327,21 @@ export const VideoStream = memo(
             streamIndex={stream.index}
             streamWidth={stream.width}
             streamHeight={stream.height}
-            showFileName={showFileName}
+            showFileName={false}
             isLastStream={isLastStream}
             data-oid="8720tev"
           />
         </div>
+        {/* Имя файла ниже превью */}
+        {showFileName && (
+          <div
+            className="mt-1 text-xs text-center truncate text-foreground/80"
+            style={{ maxWidth: containerWidth }}
+            data-oid="video-filename"
+          >
+            {file.name}
+          </div>
+        )}
       </div>
     )
   },

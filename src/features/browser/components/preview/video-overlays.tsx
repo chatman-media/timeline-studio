@@ -39,7 +39,7 @@ export const VideoOverlays = memo(
 
     return (
       <>
-        {/* Продолжительность видео */}
+        {/* Продолжительность видео - справа вверху */}
         {file.duration && file.duration > 0 && !isNotFirstStream && (
           <div
             className={cn(
@@ -95,10 +95,11 @@ export const VideoOverlays = memo(
         {/* Имя файла */}
         {showFileName && !isNotFirstStream && (
           <div
-            className={`absolute font-medium ${size > 100 ? "top-1" : "top-0.5"} ${size > 100 ? "left-1" : "left-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"} line-clamp-1 rounded-xs bg-black/60 text-xs leading-4 ${isMultipleStreams ? "max-w-full" : "max-w-[60%]"}`}
+            className={`absolute font-medium ${size > 100 ? "top-1" : "top-0.5"} ${size > 100 ? "left-1" : "left-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"} line-clamp-1 text-xs leading-4 ${isMultipleStreams ? "max-w-full" : "max-w-[60%]"}`}
             style={{
               fontSize: size > 100 ? "12px" : "11px",
               color: "#ffffff",
+              textShadow: "0 1px 2px rgba(0,0,0,0.8)",
               zIndex: 10,
             }}
             data-oid="14q-y.c"

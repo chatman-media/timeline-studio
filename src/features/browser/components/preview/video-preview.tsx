@@ -63,17 +63,11 @@ export const VideoPreview = memo(
     // Загружаем preview data при монтировании
     useEffect(() => {
       void getPreviewData(file.id).then((data) => {
-        console.log(`[VideoPreview] Preview data received for ${file.name}:`, {
-          hasData: !!data,
-          hasThumbnail: !!data?.browser_thumbnail,
-          hasBase64: !!data?.browser_thumbnail?.base64_data,
-          base64Length: data?.browser_thumbnail?.base64_data?.length || 0,
-        })
         if (data?.browser_thumbnail?.base64_data) {
           setPreviewData(data.browser_thumbnail.base64_data)
         }
       })
-    }, [file.id, getPreviewData, file.name])
+    }, [file.id, getPreviewData])
 
     // Функция для получения URL видео
     const loadVideoFile = useCallback(async (path: string) => {
@@ -171,19 +165,6 @@ export const VideoPreview = memo(
 
     // Показываем плейсхолдер если метаданные ещё загружаются или потоки не найдены
     const showPlaceholder = file.isLoadingMetadata || videoData.videoStreams.length === 0
-
-    // Логируем для отладки - используем console.log чтобы точно увидеть
-    console.log(`[VideoPreview] Rendering ${file.name}`, {
-      showPlaceholder,
-      isLoadingMetadata: file.isLoadingMetadata,
-      streamsCount: videoData.videoStreams.length,
-      hasProbeData: !!file.probeData,
-      probeStreams: file.probeData?.streams?.length ?? 0,
-      videoStreams: videoData.videoStreams.map((s) => ({
-        codec: s.codec_name,
-        index: s.index,
-      })),
-    })
 
     return (
       <div
