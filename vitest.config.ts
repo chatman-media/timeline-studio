@@ -34,7 +34,6 @@ export default defineConfig({
     pool: "threads",
     // Ограничиваем количество воркеров для предотвращения утечки памяти
     maxWorkers: 4,
-    minWorkers: 1,
     // Включаем параллельное выполнение для скорости
     fileParallelism: true,
     isolate: true,

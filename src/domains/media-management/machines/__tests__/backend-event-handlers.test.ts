@@ -131,7 +131,7 @@ describe("handleMediaBackendEvent", () => {
 
       const updates = handleMediaBackendEvent(context, event)
 
-      expect(updates.mediaPool.get("media-1")!.metadata).toEqual({
+      expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
       })
     })
@@ -226,7 +226,7 @@ describe("handleMediaBackendEvent", () => {
 
       expect(updates.mediaPool).toBeDefined()
       expect(updates.mediaPool!.size).toBe(1)
-      expect(updates.mediaPool.get("media-1")!.metadata).toEqual({
+      expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
       })
     })
@@ -272,7 +272,7 @@ describe("handleMediaBackendEvent", () => {
       const updates = handleMediaBackendEvent(context, event)
 
       expect(updates.mediaPool).toBeDefined()
-      expect(updates.mediaPool.get("media-1")!.metadata).toEqual({
+      expect(updates.mediaPool!.get("media-1")!.metadata).toEqual({
         type: "Video",
         codec: "hevc",
       })
