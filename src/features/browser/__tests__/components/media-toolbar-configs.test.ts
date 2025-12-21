@@ -22,8 +22,8 @@ import {
 describe("media-toolbar-configs", () => {
   describe("View Mode Configurations", () => {
     it("should have correct media view modes", () => {
-      expect(mediaViewModes).toHaveLength(3)
-      expect(mediaViewModes.map((mode) => mode.value)).toEqual(["grid", "thumbnails", "list"])
+      expect(mediaViewModes).toHaveLength(2)
+      expect(mediaViewModes.map((mode) => mode.value)).toEqual(["thumbnails", "list"])
 
       mediaViewModes.forEach((mode) => {
         expect(mode).toHaveProperty("value")
@@ -150,7 +150,7 @@ describe("media-toolbar-configs", () => {
     it("should return correct view modes for media", () => {
       const result = getViewModesForContent("media")
       expect(result).toBe(mediaViewModes)
-      expect(result).toHaveLength(3)
+      expect(result).toHaveLength(2)
     })
 
     it("should return correct view modes for music", () => {

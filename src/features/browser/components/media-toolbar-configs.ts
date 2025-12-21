@@ -1,4 +1,4 @@
-import { Grid, Grid2x2, LayoutDashboard, List } from "lucide-react"
+import { Grid2x2, LayoutGrid, List } from "lucide-react"
 
 import type { ViewModeConfig } from "./media-toolbar"
 
@@ -6,17 +6,11 @@ import type { ViewModeConfig } from "./media-toolbar"
  * Конфигурации режимов просмотра для разных типов контента
  */
 
-// Конфигурация для медиа файлов (3 режима)
+// Конфигурация для медиа файлов (2 режима)
 export const mediaViewModes: ViewModeConfig[] = [
   {
-    value: "grid",
-    icon: Grid,
-    label: "browser.toolbar.grid", // Будет переведено через t()
-    testId: "grid-view-button",
-  },
-  {
     value: "thumbnails",
-    icon: LayoutDashboard,
+    icon: LayoutGrid,
     label: "browser.toolbar.thumbnails",
     testId: "thumbnails-view-button",
   },

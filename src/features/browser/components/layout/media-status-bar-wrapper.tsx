@@ -67,7 +67,10 @@ export function MediaStatusBarWrapper() {
   // Создаем Set путей добавленных файлов (только те что is_resource=true)
   // Включаем и mediaResources (видео/изображения) и musicResources (аудио)
   const addedFilesPaths = useMemo(() => {
-    const allResourcePaths = [...mediaResources.map((r) => r.path), ...musicResources.map((r) => r.path)]
+    const allResourcePaths = [
+      ...(mediaResources || []).map((r) => r.path),
+      ...(musicResources || []).map((r) => r.path),
+    ]
     return new Set(allResourcePaths)
   }, [mediaResources, musicResources])
 
