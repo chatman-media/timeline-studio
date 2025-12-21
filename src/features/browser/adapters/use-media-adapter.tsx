@@ -7,17 +7,60 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import { useFavorites } from "@/core/hooks"
 import type { MediaFile } from "@/domains/media-management"
 import { useMediaManagement } from "@/domains/media-management"
+import { parseFileSize } from "@/domains/shared/utils/file"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
-import { parseFileSize } from "@/features/browser/utils"
-import { useDraggable } from "@/features/drag-drop"
-import { getFileType } from "@/features/media"
+import { FileMetadata, getFileType } from "@/features/media"
 import i18n from "@/i18n"
-import { formatDurationSeconds, parseDurationString } from "@/lib/duration-formatter"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"
 import { getDateGroup, getDurationGroup } from "../utils/grouping"
 
 // Адаптер типа для MediaFile чтобы соответствовать ListItem
 type MediaListItem = MediaFile & ListItem
+
+/**
+ * Получает aspect ratio видео из probeData
+ * @returns [width, height] или [16, 9] по умолчанию
+ */
+function getAspectRatio(file: MediaFile): [number, number] {
+  const videoStream = file.probeData?.streams?.find((s) => s.codec_type === "video")
+  if (videoStream && "width" in videoStream && "height" in videoStream) {
+    const width = (videoStream as { width?: number }).width
+    const height = (videoStream as { height?: number }).height
+    if (width && height) {
+      return [width, height]
+    }
+  }
+  // Для изображений пробуем получить из метаданных
+  if (file.isImage && file.probeData?.streams?.[0]) {
+    const stream = file.probeData.streams[0] as {
+      width?: number
+      height?: number
+    }
+    if (stream.width && stream.height) {
+      return [stream.width, stream.height]
+    }
+  }
+  return [16, 9] // default aspect ratio
+}
+
+/**
+ * Рассчитывает размеры превью на основе фиксированной высоты и aspect ratio
+ */
+function calculatePreviewDimensions(file: MediaFile, baseHeight: number): { width: number; height: number } {
+  const [w, h] = getAspectRatio(file)
+  const aspectRatio = w / h
+
+  // Для grid режима: фиксированная высота, ширина по пропорциям
+  // Ограничиваем ширину разумными пределами (от 0.5x до 2x высоты)
+  const minWidth = baseHeight * 0.5
+  const maxWidth = baseHeight * 2
+  const calculatedWidth = baseHeight * aspectRatio
+
+  return {
+    width: Math.min(maxWidth, Math.max(minWidth, calculatedWidth)),
+    height: baseHeight,
+  }
+}
 
 /**
  * Компонент превью для медиафайлов - адаптер для MediaPreview
@@ -30,16 +73,7 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
   const { t } = useTranslation()
   const { removeMedia } = useMediaManagement()
 
-  // Используем DragDropManager для перетаскивания на таймлайн
-  const dragProps = useDraggable(
-    "media",
-    () => file,
-    () => ({
-      url: file.thumbnailPath || file.path,
-      width: 120,
-      height: 80,
-    }),
-  )
+  // Drag & Drop обрабатывается внутри MediaPreview (VideoPreview использует @dnd-kit/core)
 
   const handleDelete = useCallback(async () => {
     if (file.id) {
@@ -47,16 +81,74 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
     }
   }, [file.id, removeMedia])
 
+  const previewSize = typeof size === "number" ? size : size.width
+
+  // Режим list - горизонтальная строка с превью и метаданными
+  // Высота строки масштабируется от previewSize (делим на коэффициент для более компактного вида)
+  if (viewMode === "list") {
+    // Масштабируем высоту строки: previewSize 125-500 -> listRowHeight 32-80
+    const listRowHeight = Math.max(32, Math.min(80, Math.round(previewSize * 0.32)))
+    // Ширина миниатюры пропорционально высоте (16:10 ratio)
+    const thumbWidth = Math.round(listRowHeight * 1.6)
+
+    return (
+      <ContextMenu data-oid="39ri465">
+        <ContextMenuTrigger asChild data-oid="kd:jd:m">
+          <div
+            className="flex items-center gap-3 p-1 rounded-md hover:bg-accent/50 cursor-pointer w-full"
+            data-oid="list-row"
+          >
+            {/* Миниатюра - размер зависит от previewSize */}
+            <div
+              className="shrink-0 rounded overflow-hidden bg-muted"
+              style={{ width: thumbWidth, height: listRowHeight }}
+            >
+              <MediaPreview file={file} size={listRowHeight} showFileName={false} ignoreRatio data-oid="list-thumb" />
+            </div>
+            {/* Метаданные файла */}
+            <div className="flex-1 min-w-0">
+              <FileMetadata file={file} size={listRowHeight} />
+            </div>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent data-oid="8jb:dto">
+          <ContextMenuItem variant="destructive" onClick={handleDelete} data-oid="-1ebg5w">
+            <Trash2 className="size-4" data-oid="3_u1v-9" />
+            {t("common.delete", "Удалить")}
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    )
+  }
+
+  // Режим grid - карточка с превью по пропорциям видео
+  // Режим thumbnails - фиксированный размер 16:9
+  const isGridMode = viewMode === "grid"
+  const dimensions = isGridMode
+    ? calculatePreviewDimensions(file, previewSize)
+    : { width: previewSize * (16 / 9), height: previewSize }
+  const aspectRatio = isGridMode ? getAspectRatio(file) : ([16, 9] as [number, number])
+
   return (
     <ContextMenu data-oid="39ri465">
       <ContextMenuTrigger asChild data-oid="kd:jd:m">
-        <div {...dragProps} className="cursor-pointer" data-oid="nhf_-vm">
+        <div
+          className="cursor-pointer flex flex-col overflow-hidden"
+          style={{ width: dimensions.width }}
+          data-oid="nhf_-vm"
+        >
+          {/* Превью с учетом пропорций */}
           <MediaPreview
             file={file}
-            size={typeof size === "number" ? size : size.width}
-            showFileName={viewMode === "list"}
+            size={dimensions.height}
+            dimensions={aspectRatio}
+            showFileName={false}
             data-oid="1qqqjyk"
           />
+          {/* Название файла */}
+          <div className="px-1.5 py-1 text-xs truncate text-center" title={file.name} data-oid="filename">
+            {file.name}
+          </div>
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent data-oid="8jb:dto">
@@ -82,34 +174,9 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
     // ✅ FIX: Используем entries() для получения и UUID (id), и MediaInfo
     const mediaItems = Array.from(mediaPool.entries())
 
-    // Отладочный лог
-    if (mediaItems.length > 0) {
-      console.log("[MediaAdapter] Media pool files:", {
-        count: mediaItems.length,
-        files: mediaItems.map(([id, m]) => ({
-          id,
-          name: m.name,
-          path: m.path,
-        })),
-      })
-
-      // Проверка на дубли
-      const nameCount = new Map<string, number>()
-      mediaItems.forEach(([_, m]) => {
-        nameCount.set(m.name, (nameCount.get(m.name) || 0) + 1)
-      })
-      const duplicates = Array.from(nameCount.entries()).filter(([_, count]) => count > 1)
-      if (duplicates.length > 0) {
-        console.error("[MediaAdapter] ДУБЛИ ОБНАРУЖЕНЫ:", duplicates)
-      }
-    }
-
     // Преобразуем MediaInfo в MediaFile
     // ✅ FIX: Деструктурируем [mediaId, mediaInfo] из entries
     return mediaItems.map(([mediaId, mediaInfo]) => {
-      // ✅ Используем стандартный форматер для duration
-      const durationStr = formatDurationSeconds(mediaInfo.duration ?? 0)
-
       // Получаем bitrate из метаданных если это видео
       const bitrate =
         mediaInfo.metadata?.type === "Video" || mediaInfo.metadata?.type === "Audio"
@@ -131,7 +198,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         startTime: Date.now() / 1000, // Используем текущее время для сортировки
         size:
           bitrate && mediaInfo.duration ? `${Math.round((bitrate * mediaInfo.duration) / 8 / 1024 / 1024)}MB` : "0MB",
-        duration: durationStr,
+        // ✅ FIX: duration должен быть числом для VideoOverlays (file.duration > 0)
+        duration: mediaInfo.duration ?? 0,
         thumbnailPath: mediaInfo.thumbnailPath,
         type: mediaInfo.type.toLowerCase(),
         isVideo: mediaInfo.type === "Video",
@@ -188,12 +256,19 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
           if (file.probeData?.format.size !== undefined) {
             return file.probeData.format.size
           }
-          // Иначе парсим размер
-          return parseFileSize(file.size)
+          // Если size это число - возвращаем как есть
+          if (typeof file.size === "number") {
+            return file.size
+          }
+          // Если size это строка - парсим (возвращаем 0 если не удалось)
+          if (typeof file.size === "string") {
+            return parseFileSize(file.size) ?? 0
+          }
+          return 0
 
         case "duration":
-          // duration хранится как строка "MM:SS" или "HH:MM:SS", парсим в секунды
-          return parseDurationString(file.duration) ?? 0
+          // duration теперь хранится как число (секунды)
+          return typeof file.duration === "number" ? file.duration : 0
         default:
           return file.startTime || 0
       }
@@ -234,8 +309,8 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
         }
 
         case "duration": {
-          // duration хранится как строка "MM:SS" или "HH:MM:SS", парсим в секунды
-          const duration = parseDurationString(file.duration) ?? 0
+          // duration теперь хранится как число (секунды)
+          const duration = typeof file.duration === "number" ? file.duration : 0
           return getDurationGroup(duration)
         }
 
