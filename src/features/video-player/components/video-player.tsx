@@ -192,7 +192,7 @@ export function VideoPlayer() {
       <div className="media-player-container relative flex h-full flex-col" data-oid="9688-f.">
         <div className="relative flex-1 bg-black" style={containerStyle} data-oid="sza.w.9">
           <div className="flex h-full w-full items-center justify-center" data-oid="hsdsy0t">
-            <div className="h-full w-full" data-oid="-l2-:ll">
+            <div className="max-h-full max-w-full" data-oid="-l2-:ll">
               <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="a48d7di">
                 <div className="relative h-full w-full" data-oid="qcyhsoi">
                   <video
@@ -232,7 +232,7 @@ export function VideoPlayer() {
     <div className="media-player-container relative flex h-full flex-col" data-oid="1djfz84">
       <div className="relative flex-1 bg-black" style={containerStyle} data-oid="0iyhzrb">
         <div className="flex h-full w-full items-center justify-center" data-oid="hpgq3a2">
-          <div className="h-full w-full" data-oid="mhdt8l1">
+          <div className="max-h-full max-w-full" data-oid="mhdt8l1">
             <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="wf_5-98">
               <div className="relative h-full w-full" data-oid="jaqsiv0">
                 <video
