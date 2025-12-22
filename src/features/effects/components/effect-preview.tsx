@@ -421,25 +421,6 @@ export function EffectPreview({
         {/* Индикаторы эффекта */}
         {processedEffect && (
           <>
-            {/* Цветовой индикатор сложности слева */}
-            <div className="absolute bottom-1 left-1" data-oid="5hva8vu">
-              <div
-                className={`h-2 w-2 rounded-full ${
-                  processedEffect.complexity === "low"
-                    ? "bg-green-500"
-                    : processedEffect.complexity === "medium"
-                      ? "bg-yellow-500"
-                      : processedEffect.complexity === "high"
-                        ? "bg-red-500"
-                        : processedEffect.complexity === "extreme"
-                          ? "bg-purple-500"
-                          : "bg-gray-500"
-                }`}
-                title={`effects.complexity.${processedEffect.complexity || "low"}`}
-                data-oid="g4m8p9d"
-              />
-            </div>
-
             {/* Индикаторы категории и тегов справа */}
             <div className="absolute top-1 left-1" data-oid="3r24312">
               <EffectIndicators effect={processedEffect} size={size > 150 ? "md" : "sm"} data-oid="e4kodtk" />
