@@ -60,6 +60,7 @@ Timeline Studio включает систему генерации превью-
 3. Вызывается Rust команда `prerender_segment` для рендеринга
 4. Результат сохраняется в указанную директорию
 5. Путь к превью сохраняется в метаданных эффекта
+6. Пути ко всем превью сохраняются в localStorage для персистентности
 
 ### Интеграция с бэкендом
 
@@ -74,6 +75,35 @@ Timeline Studio включает систему генерации превью-
 - **Именование**: `effect_<effectId>.mp4`
 - **Местоположение**: `preview-videos/effects/` (настраивается)
 - **Длительность**: 3-5 секунд (настраивается)
+
+### Хранение превью
+
+После генерации превью, пути к файлам сохраняются для последующего использования:
+
+- **Хранилище**: localStorage (ключ `effect-previews`)
+- **Формат данных**: JSON объект `{ effectId: previewPath }`
+- **Утилиты**:
+  - `savePreviewPaths()` - сохранение всех путей
+  - `loadPreviewPaths()` - загрузка всех путей
+  - `savePreviewPath()` - сохранение одного пути
+  - `getPreviewPath()` - получение пути для эффекта
+  - `clearPreviewPaths()` - очистка всех сохраненных путей
+
+**Автоматическая загрузка превью:**
+
+Используйте хук `useEffectsWithPreviews` для автоматического применения сохраненных превью к эффектам:
+
+```typescript
+import { useEffectsWithPreviews } from "@/features/effects"
+
+function MyComponent() {
+  const effects = [...] // Ваш список эффектов
+  const effectsWithPreviews = useEffectsWithPreviews(effects)
+
+  // effectsWithPreviews теперь содержит поле preview для каждого эффекта
+  return <EffectsList effects={effectsWithPreviews} />
+}
+```
 
 ## Расширение
 

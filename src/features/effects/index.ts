@@ -75,6 +75,7 @@ export {
 
 export type { PreviewGenerationState } from "./hooks/use-effect-preview-generator"
 export { useEffectPreviewGenerator } from "./hooks/use-effect-preview-generator"
+export { useEffectsWithPreviews } from "./hooks/use-effects-with-previews"
 export { useUnifiedEffects } from "./hooks/use-unified-effects"
 export type { UseUserPresetsOptions, UseUserPresetsReturn } from "./hooks/use-user-presets"
 export { useUserPresets } from "./hooks/use-user-presets"
@@ -130,6 +131,15 @@ export {
   generateEffectPreview,
   updateEffectsWithPreviews,
 } from "./utils/generate-effect-previews"
+export type { PreviewPathMap } from "./utils/preview-storage"
+// Хранение путей к превью
+export {
+  clearPreviewPaths,
+  getPreviewPath,
+  loadPreviewPaths,
+  savePreviewPath,
+  savePreviewPaths,
+} from "./utils/preview-storage"
 
 /**
  * Создает новый менеджер эффектов с предустановленными эффектами

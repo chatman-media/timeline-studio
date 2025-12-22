@@ -6,7 +6,12 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNotifications } from "@/domains/system-integration"
 import type { BaseEffect } from "../types"
-import { type EffectPreviewConfig, generateAllEffectPreviews } from "../utils/generate-effect-previews"
+import {
+  type EffectPreviewConfig,
+  generateAllEffectPreviews,
+  updateEffectsWithPreviews,
+} from "../utils/generate-effect-previews"
+import { savePreviewPaths } from "../utils/preview-storage"
 
 export interface PreviewGenerationState {
   isGenerating: boolean
@@ -16,6 +21,7 @@ export interface PreviewGenerationState {
   completed: number
   failed: number
   error?: string
+  updatedEffects?: BaseEffect[]
 }
 
 export function useEffectPreviewGenerator() {
@@ -63,12 +69,19 @@ export function useEffectPreviewGenerator() {
         const completed = results.size
         const failed = effects.length - completed
 
+        // Обновляем эффекты с путями к превью
+        const updatedEffects = updateEffectsWithPreviews(effects, results)
+
+        // Сохраняем пути к превью в localStorage
+        savePreviewPaths(results)
+
         setState({
           isGenerating: false,
           progress: 100,
           total: effects.length,
           completed,
           failed,
+          updatedEffects,
         })
 
         if (failed > 0) {

@@ -42,6 +42,9 @@ use video_compiler::VideoCompilerState;
 // Модуль генерации прокси
 mod proxy_generator;
 
+// Модуль нативного меню приложения
+mod menu;
+
 // Модуль распознавания (YOLO)
 pub mod recognition;
 use recognition::commands::yolo_commands::YoloProcessorState;
@@ -602,6 +605,27 @@ pub fn run() {
           }
         });
       }
+
+      // Создаем нативное меню приложения
+      match menu::create_app_menu(app) {
+        Ok(menu) => {
+          if let Some(window) = app.get_webview_window("main") {
+            if let Err(e) = window.set_menu(menu) {
+              log::error!("Failed to set menu: {e}");
+            } else {
+              log::info!("Application menu created successfully");
+            }
+          }
+        }
+        Err(e) => {
+          log::error!("Failed to create menu: {e}");
+        }
+      }
+
+      // Регистрируем обработчик событий меню
+      app.on_menu_event(move |app, event| {
+        menu::handle_menu_event(app, event.id().as_ref());
+      });
 
       log::info!("Application setup completed");
       Ok(())
