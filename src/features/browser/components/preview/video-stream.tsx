@@ -332,14 +332,17 @@ export const VideoStream = memo(
             data-oid="8720tev"
           />
         </div>
-        {/* Имя файла ниже превью */}
+        {/* Имя файла и разрешение ниже превью */}
         {showFileName && (
-          <div
-            className="mt-1 text-xs text-center truncate text-foreground/80"
-            style={{ maxWidth: containerWidth }}
-            data-oid="video-filename"
-          >
-            {file.name}
+          <div className="mt-1 text-center" style={{ maxWidth: containerWidth }} data-oid="video-info">
+            <div className="text-xs truncate text-foreground/80" data-oid="video-filename">
+              {file.name}
+            </div>
+            {stream.width && stream.height && (
+              <div className="text-xs text-foreground/60 mt-0.5" data-oid="video-resolution">
+                {stream.width}×{stream.height}
+              </div>
+            )}
           </div>
         )}
       </div>
