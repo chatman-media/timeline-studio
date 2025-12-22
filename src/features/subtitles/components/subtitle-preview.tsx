@@ -150,6 +150,7 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
           }}
           size={size}
           type="subtitle"
+          noTime={true}
           data-oid="hcvv2dm"
         />
 

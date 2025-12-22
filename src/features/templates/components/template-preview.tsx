@@ -166,6 +166,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
         }}
         size={size}
         type="template"
+        noTime={true}
         data-oid=".9.3m_c"
       />
 

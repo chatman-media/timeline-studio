@@ -649,7 +649,7 @@ export function TransitionPreview({
               />
 
               {/* Кнопка добавления в избранное */}
-              <FavoriteButton file={favoriteFile} size={size} type="transition" data-oid="1q61dbm" />
+              <FavoriteButton file={favoriteFile} size={size} type="transition" noTime={true} data-oid="1q61dbm" />
 
               {/* Кнопка для запуска перехода */}
               <ApplyButton

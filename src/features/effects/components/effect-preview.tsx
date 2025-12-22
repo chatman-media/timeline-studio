@@ -442,6 +442,7 @@ export function EffectPreview({
             }}
             size={size}
             type="effect"
+            noTime={true}
             data-oid="ktak2-m"
           />
         )}

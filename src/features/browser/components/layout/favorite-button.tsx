@@ -11,6 +11,7 @@ interface FavoriteButtonProps {
   file: MediaFile
   size?: number
   type?: "media" | "music" | "transition" | "effect" | "template" | "filter" | "subtitle" | "styleTemplate"
+  noTime?: boolean // Для вкладок без времени (эффекты, фильтры, переходы) - иконка сверху без отступа
 }
 
 /**
@@ -26,7 +27,12 @@ interface FavoriteButtonProps {
  * @param size - Размер кнопки (по умолчанию 150px)
  * @param type - Тип элемента (по умолчанию "media")
  */
-export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, type = "media" }: FavoriteButtonProps) {
+export const FavoriteButton = memo(function FavoriteButton({
+  file,
+  size = 150,
+  type = "media",
+  noTime = false,
+}: FavoriteButtonProps) {
   const { t } = useTranslation()
   const { addToFavorites, removeFromFavorites, favorites } = useFavorites()
   // favorites[type] содержит массив ID (string[])
@@ -151,7 +157,8 @@ export const FavoriteButton = memo(function FavoriteButton({ file, size = 150, t
     <button
       type="button"
       className={cn(
-        "absolute z-1 top-7 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
+        "absolute z-1 right-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
+        noTime ? "top-1" : "top-7",
         visuallyFavorite
           ? isRecentlyAdded || isPending
             ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных или pending

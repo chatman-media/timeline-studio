@@ -269,6 +269,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
           }}
           size={size}
           type="filter"
+          noTime={true}
           data-oid="w6c4y42"
         />
 
