@@ -1267,7 +1267,8 @@
       "cinematic": "Кинематографические",
       "creative": "Креативные",
       "technical": "Технические",
-      "distortion": "Искажения"
+      "distortion": "Искажения",
+      "stylize": "Стилизация"
     },
     "complexity": {
       "basic": "Базовый",

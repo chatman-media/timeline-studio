@@ -1849,7 +1849,8 @@
       "cinematic": "Cinematic",
       "creative": "Creative",
       "technical": "Technical",
-      "distortion": "Distortion"
+      "distortion": "Distortion",
+      "stylize": "Stylize"
     },
     "complexity": {
       "basic": "Basic",
