@@ -109,16 +109,7 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
 
   // Grid/Thumbnails mode - с учётом пропорций проекта
   return (
-    <div
-      className={cn(
-        "flex flex-col overflow-hidden cursor-pointer border border-border",
-        "hover:border-accent transition-colors",
-      )}
-      style={{ width: previewWidth }}
-      onClick={handleClick}
-      {...dragProps}
-      data-oid="6wk50rm"
-    >
+    <div {...dragProps} data-oid="6wk50rm">
       {/* Effect Preview с пропорциями проекта */}
       <EffectPreview
         effect={effect}
@@ -128,13 +119,6 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
         height={previewHeight}
         data-oid=":5cmqbj"
       />
-
-      {/* Effect Info */}
-      <div className="px-1.5 py-1 bg-muted text-center" data-oid="e1s.zti">
-        <div className="font-medium text-xs truncate" title={effectName} data-oid="lo5diki">
-          {effectName}
-        </div>
-      </div>
     </div>
   )
 }
