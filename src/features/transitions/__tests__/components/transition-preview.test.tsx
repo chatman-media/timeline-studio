@@ -1,7 +1,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, screen } from "@testing-library/react"
+import { renderWithBrowser as render } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { type MediaFile, MediaType } from "@/domains/media-management"
@@ -14,6 +15,7 @@ vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, fallback?: string) => fallback || key,
   }),
+  I18nextProvider: ({ children }: any) => children,
 }))
 
 vi.mock("@/features/browser", () => ({

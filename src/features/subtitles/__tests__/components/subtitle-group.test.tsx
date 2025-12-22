@@ -3,7 +3,7 @@
  */
 import { describe, expect, it, vi } from "vitest"
 
-import { fireEvent, renderWithMedia as render, screen } from "@/test/test-utils"
+import { fireEvent, renderWithBrowser as render, screen } from "@/test/test-utils"
 
 import { SubtitleGroup } from "../../components/subtitle-group"
 

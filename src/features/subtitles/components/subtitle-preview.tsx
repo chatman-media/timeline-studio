@@ -5,6 +5,7 @@ import { MediaType } from "@/domains/media-management"
 import type { SubtitleResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
 import { ApplyButton } from "@/features/browser"
+import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 
 import { AddMediaButton } from "../../browser/components/layout/add-media-button"
 import { FavoriteButton } from "../../browser/components/layout/favorite-button"
@@ -32,6 +33,21 @@ interface SubtitlePreviewProps {
 export function SubtitlePreview({ style, onClick, size, previewWidth, previewHeight }: SubtitlePreviewProps) {
   const { t } = useTranslation() // Хук для интернационализации
   const { addSubtitle, isSubtitleAdded, removeResource, subtitleResources } = useResources() // Получаем методы для работы с ресурсами
+  const { settings } = useProjectSettings() // Получаем настройки проекта
+
+  // Получаем пропорции из настроек проекта
+  const projectAspectRatio = settings?.aspectRatio?.value
+  const aspectWidth = projectAspectRatio?.width ?? 16
+  const aspectHeight = projectAspectRatio?.height ?? 9
+  const ratio = aspectWidth / aspectHeight
+
+  // Рассчитываем размеры с учетом пропорций проекта
+  const calculatedHeight = size
+  const calculatedWidth = Math.round(calculatedHeight * ratio)
+
+  // Используем рассчитанные размеры если не переданы явно
+  const finalWidth = previewWidth ?? calculatedWidth
+  const finalHeight = previewHeight ?? calculatedHeight
 
   // Проверяем, добавлен ли стиль уже в хранилище ресурсов
   // Мемоизируем результат для оптимизации
@@ -87,10 +103,10 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
       ...cssStyle,
       // Адаптируем размер шрифта под размер превью
       fontSize: cssStyle.fontSize
-        ? `${Math.min(Number.parseInt(cssStyle.fontSize.toString(), 10) * ((previewWidth ?? size) / 200), Number.parseInt(cssStyle.fontSize.toString(), 10))}px`
-        : `${Math.max(12, (previewWidth ?? size) / 10)}px`,
+        ? `${Math.min(Number.parseInt(cssStyle.fontSize.toString(), 10) * (finalWidth / 200), Number.parseInt(cssStyle.fontSize.toString(), 10))}px`
+        : `${Math.max(12, finalWidth / 10)}px`,
     }
-  }, [cssStyle, previewWidth])
+  }, [cssStyle, finalWidth])
 
   // Мемоизируем объекты для кнопок
   const fileObject = useMemo(
@@ -107,7 +123,7 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
       {/* Контейнер превью стиля субтитров */}
       <div
         className="group relative cursor-pointer rounded-xs bg-gray-800 flex items-center justify-center"
-        style={{ width: `${previewWidth}px`, height: `${previewHeight}px` }}
+        style={{ width: `${finalWidth}px`, height: `${finalHeight}px` }}
         onClick={onClick}
         data-oid="rodv3ar"
       >
@@ -176,7 +192,7 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
       </div>
 
       {/* Название стиля */}
-      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${previewWidth}px` }} data-oid="b::_9av">
+      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${finalWidth}px` }} data-oid="b::_9av">
         {style.labels?.ru || style.name}
       </div>
     </div>

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useResources } from "@/domains/video-editing"
 import type { FilterCategory, VideoFilter } from "@/features/filters/types/filters"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
-import { renderWithBase } from "@/test/test-utils"
+import { renderWithBrowser } from "@/test/test-utils"
 
 import { FilterPreview } from "../../components/filter-preview"
 
@@ -129,7 +129,7 @@ describe("FilterPreview", () => {
   })
 
   it("should render correctly with default props", () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="fdilugc" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="fdilugc" />)
 
     expect(screen.getByTestId("filter-video")).toBeInTheDocument()
     expect(screen.getByTestId("favorite-button")).toBeInTheDocument()
@@ -139,7 +139,7 @@ describe("FilterPreview", () => {
   })
 
   it("should display filter name in Russian if available", () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="3.6pye:" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="3.6pye:" />)
 
     expect(screen.getByText("Яркость")).toBeInTheDocument()
   })
@@ -153,7 +153,7 @@ describe("FilterPreview", () => {
       },
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={filterWithoutRussian} data-oid="l83x06z" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={filterWithoutRussian} data-oid="l83x06z" />)
 
     // Component shows filter.name when ru is not available
     expect(screen.getByText("Brightness Filter")).toBeInTheDocument()
@@ -165,13 +165,13 @@ describe("FilterPreview", () => {
       labels: undefined as any, // Use undefined to test the fallback
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={filterWithoutLabels} data-oid="j:ah5.i" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={filterWithoutLabels} data-oid="j:ah5.i" />)
 
     expect(screen.getByText("Brightness Filter")).toBeInTheDocument()
   })
 
   it("should have correct dimensions", () => {
-    const { container } = renderWithBase(<FilterPreview {...defaultProps} data-oid="1clc-my" />)
+    const { container } = renderWithBrowser(<FilterPreview {...defaultProps} data-oid="1clc-my" />)
 
     const previewContainer = container.querySelector(".group")
     expect(previewContainer).toHaveStyle({
@@ -182,7 +182,7 @@ describe("FilterPreview", () => {
 
   it("should call onClick when clicked", () => {
     const mockOnClick = vi.fn()
-    renderWithBase(<FilterPreview {...defaultProps} onClick={mockOnClick} data-oid="iigeinc" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} onClick={mockOnClick} data-oid="iigeinc" />)
 
     const previewContainer = screen.getByTestId("filter-video").parentElement
     fireEvent.click(previewContainer!)
@@ -191,7 +191,7 @@ describe("FilterPreview", () => {
   })
 
   it("should start video playback on mouse enter", async () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="-ana6uo" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="-ana6uo" />)
 
     const video = screen.getByTestId("filter-video") as HTMLVideoElement
     const mockPlay = vi.fn().mockResolvedValue(undefined)
@@ -206,7 +206,7 @@ describe("FilterPreview", () => {
   })
 
   it("should pause video on mouse leave", async () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="tvjq4m_" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="tvjq4m_" />)
 
     const video = screen.getByTestId("filter-video") as HTMLVideoElement
     const mockPause = vi.fn()
@@ -226,7 +226,7 @@ describe("FilterPreview", () => {
   })
 
   it("should apply CSS filters on hover", async () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="ri6.0bn" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="ri6.0bn" />)
 
     const video = screen.getByTestId("filter-video")
     const previewContainer = video.parentElement
@@ -242,7 +242,7 @@ describe("FilterPreview", () => {
   })
 
   it("should clear CSS filters on mouse leave", async () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="to8a1zj" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="to8a1zj" />)
 
     const video = screen.getByTestId("filter-video")
     const previewContainer = video.parentElement
@@ -256,7 +256,7 @@ describe("FilterPreview", () => {
   })
 
   it("should show correct complexity indicator", () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="3kreqs2" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="3kreqs2" />)
 
     const complexityIndicator = document.querySelector(".bg-green-500")
     expect(complexityIndicator).toBeInTheDocument()
@@ -268,7 +268,7 @@ describe("FilterPreview", () => {
       complexity: "intermediate" as const,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={intermediateFilter} data-oid="zcogmsq" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={intermediateFilter} data-oid="zcogmsq" />)
 
     const complexityIndicator = document.querySelector(".bg-yellow-500")
     expect(complexityIndicator).toBeInTheDocument()
@@ -280,14 +280,14 @@ describe("FilterPreview", () => {
       complexity: "advanced" as const,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={advancedFilter} data-oid="6ho6i.3" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={advancedFilter} data-oid="6ho6i.3" />)
 
     const complexityIndicator = document.querySelector(".bg-red-500")
     expect(complexityIndicator).toBeInTheDocument()
   })
 
   it("should show correct category abbreviation", () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="86qyhm8" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="86qyhm8" />)
 
     expect(screen.getByText("CC")).toBeInTheDocument() // color-correction
   })
@@ -298,7 +298,7 @@ describe("FilterPreview", () => {
       category: "creative" as FilterCategory,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={creativeFilter} data-oid="j:if1b2" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={creativeFilter} data-oid="j:if1b2" />)
 
     expect(screen.getByText("CRE")).toBeInTheDocument()
   })
@@ -309,7 +309,7 @@ describe("FilterPreview", () => {
       category: "cinematic" as FilterCategory,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={cinematicFilter} data-oid="5_-ck6m" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={cinematicFilter} data-oid="5_-ck6m" />)
 
     expect(screen.getByText("CIN")).toBeInTheDocument()
   })
@@ -320,7 +320,7 @@ describe("FilterPreview", () => {
       category: "vintage" as FilterCategory,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={vintageFilter} data-oid="muf4mpl" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={vintageFilter} data-oid="muf4mpl" />)
 
     expect(screen.getByText("VIN")).toBeInTheDocument()
   })
@@ -331,7 +331,7 @@ describe("FilterPreview", () => {
       category: "technical" as FilterCategory,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={technicalFilter} data-oid="qpmbq68" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={technicalFilter} data-oid="qpmbq68" />)
 
     expect(screen.getByText("TEC")).toBeInTheDocument()
   })
@@ -342,7 +342,7 @@ describe("FilterPreview", () => {
       category: "artistic" as FilterCategory,
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={artisticFilter} data-oid="bs3w_i." />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={artisticFilter} data-oid="bs3w_i." />)
 
     expect(screen.getByText("ART")).toBeInTheDocument()
   })
@@ -353,7 +353,7 @@ describe("FilterPreview", () => {
       category: "unknown" as any, // Force unknown category
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={unknownFilter} data-oid="9aww35o" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={unknownFilter} data-oid="9aww35o" />)
 
     expect(screen.getByText("FIL")).toBeInTheDocument()
   })
@@ -375,7 +375,7 @@ describe("FilterPreview", () => {
       },
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={filterWithAllParams} data-oid="a5n05ec" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={filterWithAllParams} data-oid="a5n05ec" />)
 
     const video = screen.getByTestId("filter-video")
     const previewContainer = video.parentElement
@@ -396,7 +396,7 @@ describe("FilterPreview", () => {
       applyFilter: mockApplyFilter,
     } as any)
 
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="hv.:msz" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="hv.:msz" />)
 
     const applyButton = screen.getByTestId("apply-button")
     fireEvent.click(applyButton)
@@ -409,7 +409,7 @@ describe("FilterPreview", () => {
   })
 
   it("should show add media button", () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="yk4_kw-" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="yk4_kw-" />)
 
     const addButton = screen.getByTestId("add-media-button")
     expect(addButton).toBeInTheDocument()
@@ -418,7 +418,7 @@ describe("FilterPreview", () => {
   })
 
   it("should show favorite button", () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="oe44rx7" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="oe44rx7" />)
 
     const favoriteButton = screen.getByTestId("favorite-button")
     expect(favoriteButton).toBeInTheDocument()
@@ -434,7 +434,7 @@ describe("FilterPreview", () => {
       filterResources: [],
     } as any)
 
-    const { container } = renderWithBase(<FilterPreview {...defaultProps} data-oid="f21k4vy" />)
+    const { container } = renderWithBrowser(<FilterPreview {...defaultProps} data-oid="f21k4vy" />)
 
     const addButtonContainer = container.querySelector('[class*="opacity-100"]')
     expect(addButtonContainer).toBeInTheDocument()
@@ -448,7 +448,7 @@ describe("FilterPreview", () => {
       filterResources: [],
     } as any)
 
-    const { container } = renderWithBase(<FilterPreview {...defaultProps} data-oid="dd5ohjx" />)
+    const { container } = renderWithBrowser(<FilterPreview {...defaultProps} data-oid="dd5ohjx" />)
 
     const addButtonContainer = container.querySelector('[class*="opacity-0"]')
     expect(addButtonContainer).toBeInTheDocument()
@@ -460,7 +460,7 @@ describe("FilterPreview", () => {
       params: {},
     }
 
-    renderWithBase(<FilterPreview {...defaultProps} filter={filterWithoutParams} data-oid="s20k3y-" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} filter={filterWithoutParams} data-oid="s20k3y-" />)
 
     const video = screen.getByTestId("filter-video")
     const previewContainer = video.parentElement
@@ -472,7 +472,7 @@ describe("FilterPreview", () => {
   })
 
   it("should reset video time to 0 on hover", async () => {
-    renderWithBase(<FilterPreview {...defaultProps} data-oid="yv_3lky" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="yv_3lky" />)
 
     const video = screen.getByTestId("filter-video")
 
