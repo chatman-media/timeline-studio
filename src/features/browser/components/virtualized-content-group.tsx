@@ -190,7 +190,7 @@ export function VirtualizedContentGroup<T>({
       ? "space-y-1"
       : viewMode === "grid"
         ? "items-left flex flex-wrap gap-3"
-        : "flex flex-wrap justify-between gap-3"
+        : "flex flex-wrap justify-start gap-3"
 
     return (
       <div className={containerClasses}>

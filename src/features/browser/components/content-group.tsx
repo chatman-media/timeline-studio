@@ -72,7 +72,7 @@ export function ContentGroup<T>({
       case "grid":
         return "grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3"
       case "thumbnails":
-        return "flex flex-wrap justify-between gap-3"
+        return "flex flex-wrap justify-start gap-3"
       case "list":
         return "space-y-1"
       default:
