@@ -2,6 +2,7 @@ import { useMemo } from "react"
 
 import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
+import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
 import type { SubtitleResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
 import { ApplyButton } from "@/features/browser"
@@ -39,11 +40,14 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
   const projectAspectRatio = settings?.aspectRatio?.value
   const aspectWidth = projectAspectRatio?.width ?? 16
   const aspectHeight = projectAspectRatio?.height ?? 9
-  const ratio = aspectWidth / aspectHeight
 
   // Рассчитываем размеры с учетом пропорций проекта
-  const calculatedHeight = size
-  const calculatedWidth = Math.round(calculatedHeight * ratio)
+  // Для вертикальных видео (9:16) size применяется как высота, для горизонтальных (16:9) - как ширина
+  const { width: calculatedWidth, height: calculatedHeight } = calculateDimensionsWithAspectRatio(
+    size,
+    { width: aspectWidth, height: aspectHeight },
+    false,
+  )
 
   // Используем рассчитанные размеры если не переданы явно
   const finalWidth = previewWidth ?? calculatedWidth

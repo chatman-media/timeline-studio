@@ -18,7 +18,10 @@ describe("aspect-ratio-utils", () => {
       expect(getAspectRatioString(768, 1024)).toBe("3:4")
       expect(getAspectRatioString(1280, 1024)).toBe("5:4")
       expect(getAspectRatioString(1024, 1280)).toBe("4:5")
-      expect(getAspectRatioString(2560, 1080)).toBe("2:37") // 2560/1080 = 2.37, toFixed(2) = "2.37", replace(".", ":") = "2:37"
+      // 21:9 (UltraWide) - фактически реализуется как 64:27 = 2.370
+      expect(getAspectRatioString(2560, 1080)).toBe("21:9")
+      expect(getAspectRatioString(3440, 1440)).toBe("21:9")
+      expect(getAspectRatioString(5120, 2160)).toBe("21:9")
     })
 
     it("должен обрабатывать небольшие погрешности в соотношениях", () => {
@@ -36,8 +39,9 @@ describe("aspect-ratio-utils", () => {
     })
 
     it("должен обрабатывать большие числа", () => {
-      // Для 3840x1600: НОД=320, x=12, y=5 (оба < 30), поэтому возвращается упрощенное соотношение
-      expect(getAspectRatioString(3840, 1600)).toBe("12:5")
+      // Для 3840x1600: ratio = 2.4, близко к 64/27 = 2.37, попадает в погрешность 0.05
+      // Поэтому распознается как 21:9 (UltraWide)
+      expect(getAspectRatioString(3840, 1600)).toBe("21:9")
 
       // Для действительно больших чисел (где упрощенное соотношение > 30)
       // Например, 3200x100: НОД=100, x=32, y=1 (x > 30), поэтому десятичная дробь
@@ -130,7 +134,9 @@ describe("aspect-ratio-utils", () => {
       expect(isStandardAspectRatio(1600, 900)).toBe(true) // 16:9
       expect(isStandardAspectRatio(1440, 900)).toBe(false) // 8:5, не в списке стандартных
       expect(isStandardAspectRatio(800, 600)).toBe(true) // 4:3
-      expect(isStandardAspectRatio(2560, 1080)).toBe(false) // Не точное 21:9
+      // 2560x1080 = 2.370, что равно 64/27 (21:9 UltraWide)
+      expect(isStandardAspectRatio(2560, 1080)).toBe(true) // 21:9 (UltraWide)
+      expect(isStandardAspectRatio(3440, 1440)).toBe(true) // 21:9 (UltraWide)
     })
 
     it("должен обрабатывать крайние случаи", () => {

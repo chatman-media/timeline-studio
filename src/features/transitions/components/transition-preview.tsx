@@ -2,6 +2,7 @@ import { useDraggable } from "@dnd-kit/core"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { type MediaFile, MediaType } from "@/domains/media-management"
+import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
 import type { TransitionResource } from "@/domains/shared/types/resources"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
@@ -89,11 +90,14 @@ export function TransitionPreview({
     const projectAspectRatio = settings?.aspectRatio?.value
     const aspectWidth = projectAspectRatio?.width ?? 16
     const aspectHeight = projectAspectRatio?.height ?? 9
-    const ratio = aspectWidth / aspectHeight
 
     // Рассчитываем размеры с учетом пропорций проекта
-    const calculatedHeight = size
-    const calculatedWidth = Math.round(calculatedHeight * ratio)
+    // Для вертикальных видео (9:16) size применяется как высота, для горизонтальных (16:9) - как ширина
+    const { width: calculatedWidth, height: calculatedHeight } = calculateDimensionsWithAspectRatio(
+      size,
+      { width: aspectWidth, height: aspectHeight },
+      false,
+    )
 
     return { actualWidth: calculatedWidth, actualHeight: calculatedHeight }
   }, [previewWidth, previewHeight, size, settings])

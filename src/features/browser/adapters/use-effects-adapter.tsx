@@ -3,6 +3,7 @@ import type React from "react"
 import { useTranslation } from "react-i18next"
 
 import { useFavorites } from "@/core/hooks"
+import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
 import { useEffectsAdapter as useUnifiedEffectsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { EffectPreview } from "@/features/effects/components/effect-preview"
@@ -32,7 +33,6 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
   const projectAspectRatio = settings?.aspectRatio?.value
   const aspectWidth = projectAspectRatio?.width ?? 16
   const aspectHeight = projectAspectRatio?.height ?? 9
-  const ratio = aspectWidth / aspectHeight
 
   const handleClick = () => {
     onClick?.(effect)
@@ -51,9 +51,12 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
 
   // Рассчитываем размеры с учётом пропорций проекта
   const previewSize = typeof size === "number" ? size : size.width
-  // Высота фиксирована, ширина рассчитывается по пропорциям
-  const previewHeight = previewSize
-  const previewWidth = Math.round(previewHeight * ratio)
+  // Для вертикальных видео (9:16) размер применяется как высота, для горизонтальных (16:9) - как ширина
+  const { width: previewWidth, height: previewHeight } = calculateDimensionsWithAspectRatio(
+    previewSize,
+    { width: aspectWidth, height: aspectHeight },
+    false,
+  )
 
   // Получаем локализованное имя
   const effectName = effect.name?.ru || effect.name?.[i18n.language] || effect.name?.en || effect.id
