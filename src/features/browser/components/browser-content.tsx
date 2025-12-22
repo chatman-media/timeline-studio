@@ -1,14 +1,17 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useBrowserState } from "@/domains/browser"
-import { useMediaImport, useMediaManagement } from "@/domains/media-management"
-import { useMusicImport } from "@/features/browser/hooks/use-music-import"
-import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-tools"
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useBrowserState } from "@/domains/browser";
+import { useMediaImport, useMediaManagement } from "@/domains/media-management";
+import { useMusicImport } from "@/features/browser/hooks/use-music-import";
+import {
+  DeveloperToolsButton,
+  DeveloperToolsModal,
+} from "@/features/developer-tools";
 
-import { BrowserLoadingIndicator } from "./browser-loading-indicator"
-import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper"
-import { MediaStatusBarWrapper } from "./layout/media-status-bar-wrapper"
-import { LazyTabContent } from "./lazy-tab-content"
+import { BrowserLoadingIndicator } from "./browser-loading-indicator";
+import { BrowserToolbarWrapper } from "./browser-toolbar-wrapper";
+import { MediaStatusBarWrapper } from "./layout/media-status-bar-wrapper";
+import { LazyTabContent } from "./lazy-tab-content";
 
 /**
  * Список всех возможных вкладок браузера
@@ -22,7 +25,7 @@ const ALL_BROWSER_TABS = [
   "subtitles",
   "templates",
   "style_templates",
-] as const
+] as const;
 
 /**
  * Контейнер для контента вкладок с кэшированием
@@ -30,74 +33,84 @@ const ALL_BROWSER_TABS = [
  */
 const TabContentContainer = memo(({ activeTab }: { activeTab: string }) => {
   // Отслеживаем какие вкладки уже были посещены
-  const [visitedTabs, setVisitedTabs] = useState<Set<string>>(() => new Set([activeTab]))
+  const [visitedTabs, setVisitedTabs] = useState<Set<string>>(
+    () => new Set([activeTab]),
+  );
 
   // Добавляем новую вкладку в посещённые при её активации
   useEffect(() => {
     setVisitedTabs((prev) => {
-      if (prev.has(activeTab)) return prev
-      const next = new Set(prev)
-      next.add(activeTab)
-      return next
-    })
-  }, [activeTab])
+      if (prev.has(activeTab)) return prev;
+      const next = new Set(prev);
+      next.add(activeTab);
+      return next;
+    });
+  }, [activeTab]);
 
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Блокируем скролл во время drag чтобы не скроллился браузер при перетаскивании
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
+    const container = containerRef.current;
+    if (!container) return;
 
     const handleDragStart = () => {
       // Блокируем скролл на контейнере во время drag
-      container.style.overflow = "hidden"
-      container.style.overscrollBehavior = "contain"
-    }
+      container.style.overflow = "hidden";
+      container.style.overscrollBehavior = "contain";
+    };
 
     const handleDragEnd = () => {
       // Восстанавливаем скролл после окончания drag
-      container.style.overflow = "auto"
-      container.style.overscrollBehavior = ""
-    }
+      container.style.overflow = "auto";
+      container.style.overscrollBehavior = "";
+    };
 
     // Слушаем события на document чтобы ловить drag из любого места
-    document.addEventListener("dragstart", handleDragStart)
-    document.addEventListener("dragend", handleDragEnd)
-    document.addEventListener("drop", handleDragEnd)
+    document.addEventListener("dragstart", handleDragStart);
+    document.addEventListener("dragend", handleDragEnd);
+    document.addEventListener("drop", handleDragEnd);
 
     return () => {
-      document.removeEventListener("dragstart", handleDragStart)
-      document.removeEventListener("dragend", handleDragEnd)
-      document.removeEventListener("drop", handleDragEnd)
-    }
-  }, [])
+      document.removeEventListener("dragstart", handleDragStart);
+      document.removeEventListener("dragend", handleDragEnd);
+      document.removeEventListener("drop", handleDragEnd);
+    };
+  }, []);
 
-  const contentClassName = "bg-background m-0 px-0.5 flex-1 overflow-auto overscroll-contain"
+  const contentClassName =
+    "bg-background m-0 px-1.5 flex-1 overflow-auto overscroll-contain";
 
   return (
     <div ref={containerRef} className={contentClassName} data-oid="8qkh7.t">
       {ALL_BROWSER_TABS.map((tabValue) => {
         // Рендерим только посещённые вкладки
-        if (!visitedTabs.has(tabValue)) return null
+        if (!visitedTabs.has(tabValue)) return null;
 
-        return <LazyTabContent key={tabValue} tabValue={tabValue} activeTab={activeTab} data-oid="jocd.dx" />
+        return (
+          <LazyTabContent
+            key={tabValue}
+            tabValue={tabValue}
+            activeTab={activeTab}
+            data-oid="jocd.dx"
+          />
+        );
       })}
     </div>
-  )
-})
+  );
+});
 
-TabContentContainer.displayName = "TabContentContainer"
+TabContentContainer.displayName = "TabContentContainer";
 
 /**
  * Новая версия BrowserContent с использованием UniversalList и адаптеров
  * Поддерживает все типы контента через единую архитектуру
  */
 export const BrowserContent = memo(() => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   // Developer Tools модалка
-  const [showDeveloperTools, setShowDeveloperTools] = useState(false)
+  const [showDeveloperTools, setShowDeveloperTools] = useState(false);
 
   // Получаем состояние браузера
   const {
@@ -112,23 +125,23 @@ export const BrowserContent = memo(() => {
     setPreviewSize,
     selectAllFiles,
     resetTabSettings,
-  } = useBrowserState()
+  } = useBrowserState();
 
   // TEMPORARY: Reset media tab settings to fix view_mode
   useEffect(() => {
     const resetOnce = async () => {
-      const hasReset = localStorage.getItem("browser_media_reset_20250122")
+      const hasReset = localStorage.getItem("browser_media_reset_20250122");
       if (!hasReset) {
-        await resetTabSettings("media")
-        localStorage.setItem("browser_media_reset_20250122", "true")
-        console.log("✅ Media tab settings reset to defaults")
+        await resetTabSettings("media");
+        localStorage.setItem("browser_media_reset_20250122", "true");
+        console.log("✅ Media tab settings reset to defaults");
       }
-    }
-    void resetOnce()
-  }, [resetTabSettings])
+    };
+    void resetOnce();
+  }, [resetTabSettings]);
 
   // Получаем mediaPool для Cmd+A
-  const { mediaPool } = useMediaManagement()
+  const { mediaPool } = useMediaManagement();
 
   // Извлекаем настройки для текущей вкладки
   const {
@@ -140,79 +153,107 @@ export const BrowserContent = memo(() => {
     group_by: groupBy,
     sort_order: sortOrder,
     preview_size_index: previewSizeIndex,
-  } = currentTabSettings
+  } = currentTabSettings;
 
   // Импорт медиа
-  const { selectMediaFiles, selectMediaDirectory, isImporting: isImportingMedia } = useMediaImport()
+  const {
+    selectMediaFiles,
+    selectMediaDirectory,
+    isImporting: isImportingMedia,
+  } = useMediaImport();
 
   // Wrapper функции для импорта медиа
-  const importMediaFile = useCallback(() => selectMediaFiles(), [selectMediaFiles])
-  const importMediaFolder = useCallback(() => selectMediaDirectory(), [selectMediaDirectory])
+  const importMediaFile = useCallback(
+    () => selectMediaFiles(),
+    [selectMediaFiles],
+  );
+  const importMediaFolder = useCallback(
+    () => selectMediaDirectory(),
+    [selectMediaDirectory],
+  );
 
   // Импорт музыки
   const {
     importFile: importMusicFile,
     importDirectory: importMusicFolder,
     isImporting: isImportingMusic,
-  } = useMusicImport()
+  } = useMusicImport();
 
   // Keyboard shortcuts для Browser
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Проверяем, что фокус не в поле ввода
-      const activeElement = document.activeElement
+      const activeElement = document.activeElement;
       const isInInput =
         activeElement instanceof HTMLInputElement ||
         activeElement instanceof HTMLTextAreaElement ||
-        activeElement?.getAttribute("contenteditable") === "true"
+        activeElement?.getAttribute("contenteditable") === "true";
 
-      if (isInInput) return
+      if (isInInput) return;
 
       // Cmd+A (macOS) или Ctrl+A (Windows/Linux) - выбрать все
       if ((event.metaKey || event.ctrlKey) && event.key === "a") {
         // Только для вкладки media
         if (activeTab === "media" && mediaPool.size > 0) {
-          event.preventDefault()
-          const allFileIds = Array.from(mediaPool.keys())
-          void selectAllFiles(allFileIds)
+          event.preventDefault();
+          const allFileIds = Array.from(mediaPool.keys());
+          void selectAllFiles(allFileIds);
         }
       }
-    }
+    };
 
-    document.addEventListener("keydown", handleKeyDown)
-    return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [activeTab, mediaPool, selectAllFiles])
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [activeTab, mediaPool, selectAllFiles]);
 
   // Используем useCallback для стабильных ссылок на функции
-  const handleSearch = useCallback((query: string) => setSearchQuery(query), [setSearchQuery])
+  const handleSearch = useCallback(
+    (query: string) => setSearchQuery(query),
+    [setSearchQuery],
+  );
 
-  const handleSort = useCallback((sortBy: string, sortOrder: "asc" | "desc") => setSort(sortBy, sortOrder), [setSort])
+  const handleSort = useCallback(
+    (sortBy: string, sortOrder: "asc" | "desc") => setSort(sortBy, sortOrder),
+    [setSort],
+  );
 
-  const handleFilter = useCallback((filterType: string) => setFilter(filterType), [setFilter])
+  const handleFilter = useCallback(
+    (filterType: string) => setFilter(filterType),
+    [setFilter],
+  );
 
   const handleViewModeChange = useCallback(
     (mode: "list" | "grid" | "thumbnails") => setViewMode(mode as any),
     [setViewMode],
-  )
+  );
 
-  const handleGroupBy = useCallback((groupBy: string) => setGroupBy(groupBy), [setGroupBy])
+  const handleGroupBy = useCallback(
+    (groupBy: string) => setGroupBy(groupBy),
+    [setGroupBy],
+  );
 
-  const handleToggleFavorites = useCallback(() => toggleFavorites(), [toggleFavorites])
+  const handleToggleFavorites = useCallback(
+    () => toggleFavorites(),
+    [toggleFavorites],
+  );
 
   const handleZoomIn = useCallback(() => {
-    setPreviewSize(previewSizeIndex + 1)
-  }, [previewSizeIndex, setPreviewSize])
+    setPreviewSize(previewSizeIndex + 1);
+  }, [previewSizeIndex, setPreviewSize]);
 
   const handleZoomOut = useCallback(() => {
-    setPreviewSize(previewSizeIndex - 1)
-  }, [previewSizeIndex, setPreviewSize])
+    setPreviewSize(previewSizeIndex - 1);
+  }, [previewSizeIndex, setPreviewSize]);
 
   // Дополнительные кнопки для разных вкладок
   // Удаление медиа доступно только через контекстное меню
   const extraButtons =
     activeTab === "effects" ? (
-      <DeveloperToolsButton onClick={() => setShowDeveloperTools(true)} data-oid=":hl:yjm" />
-    ) : undefined
+      <DeveloperToolsButton
+        onClick={() => setShowDeveloperTools(true)}
+        data-oid=":hl:yjm"
+      />
+    ) : undefined;
 
   return (
     <>
@@ -255,12 +296,18 @@ export const BrowserContent = memo(() => {
       <TabContentContainer activeTab={activeTab} data-oid="35equkz" />
 
       {/* Статус бар для media вкладки с bulk операциями */}
-      {activeTab === "media" && <MediaStatusBarWrapper data-oid="media-status-bar-wrapper" />}
+      {activeTab === "media" && (
+        <MediaStatusBarWrapper data-oid="media-status-bar-wrapper" />
+      )}
 
       {/* Developer Tools модалка */}
-      <DeveloperToolsModal open={showDeveloperTools} onOpenChange={setShowDeveloperTools} data-oid="aicu1h4" />
+      <DeveloperToolsModal
+        open={showDeveloperTools}
+        onOpenChange={setShowDeveloperTools}
+        data-oid="aicu1h4"
+      />
     </>
-  )
-})
+  );
+});
 
-BrowserContent.displayName = "BrowserContent"
+BrowserContent.displayName = "BrowserContent";
