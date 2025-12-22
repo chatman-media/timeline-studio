@@ -6,6 +6,7 @@ import type { TransitionResource } from "@/domains/shared/types/resources"
 import { ApplyButton } from "@/features/browser"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
+import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -42,6 +43,7 @@ export function TransitionPreview({
   previewHeight,
 }: TransitionPreviewProps) {
   const { t } = useTranslation() // Хук для интернационализации
+  const { settings } = useProjectSettings() // Получаем настройки проекта
 
   const [isHovering, setIsHovering] = useState(false) // Состояние наведения мыши
   const [isError, setIsError] = useState(false) // Состояние ошибки загрузки видео
@@ -77,16 +79,25 @@ export function TransitionPreview({
     },
   })
 
-  // Вычисляем размеры превью с учетом aspect ratio
+  // Вычисляем размеры превью с учетом aspect ratio проекта
   const { actualWidth, actualHeight } = useMemo(() => {
     // Если переданы конкретные размеры, используем их
     if (previewWidth && previewHeight) {
       return { actualWidth: previewWidth, actualHeight: previewHeight }
     }
 
-    // Иначе используем квадратный размер как fallback
-    return { actualWidth: size, actualHeight: size }
-  }, [previewWidth, previewHeight, size])
+    // Получаем пропорции из настроек проекта
+    const projectAspectRatio = settings?.aspectRatio?.value
+    const aspectWidth = projectAspectRatio?.width ?? 16
+    const aspectHeight = projectAspectRatio?.height ?? 9
+    const ratio = aspectWidth / aspectHeight
+
+    // Рассчитываем размеры с учетом пропорций проекта
+    const calculatedHeight = size
+    const calculatedWidth = Math.round(calculatedHeight * ratio)
+
+    return { actualWidth: calculatedWidth, actualHeight: calculatedHeight }
+  }, [previewWidth, previewHeight, size, settings])
 
   // Мемоизируем объекты для кнопок
   const favoriteFile = useMemo(
