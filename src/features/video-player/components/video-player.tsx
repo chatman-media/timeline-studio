@@ -5,6 +5,8 @@ import { MediaType } from "@/domains/media-management"
 import { usePlayer } from "@/domains/video-editing"
 import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings"
+import { ResizableTemplate } from "@/features/templates"
+import { useTemplates } from "@/features/templates/hooks/use-templates"
 import { TimelinePreview } from "@/features/timeline/components/preview/timeline-preview"
 import { useTimelineEffects } from "@/features/timeline/hooks/effects/use-timeline-effects"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
@@ -23,8 +25,19 @@ export function VideoPlayer() {
   const {
     settings: { aspectRatio },
   } = useProjectSettings()
-  const { currentVideo: video, setDuration, pause, isPlaying, currentTime, duration, volume, isSeeking } = usePlayer()
+  const {
+    currentVideo: video,
+    setDuration,
+    pause,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    isSeeking,
+    appliedTemplate,
+  } = usePlayer()
   const videoRef = useRef<HTMLVideoElement>(null)
+  const { getTemplateById } = useTemplates()
 
   const { project } = useTimeline()
   const { applyEffect, removeEffect, applyFilter, removeFilter, getClipEffects, getClipFilters, getClipTransitions } =
@@ -33,6 +46,22 @@ export function VideoPlayer() {
 
   // Подключаем AI интеграцию
   const { isReady: aiReady } = usePlayerAIIntegration()
+
+  // Создаем AppliedTemplate объект для ResizableTemplate
+  const preparedAppliedTemplate = useMemo(() => {
+    if (!appliedTemplate) return null
+
+    const template = getTemplateById(appliedTemplate.id)
+    if (!template) {
+      logger.warn(`Template ${appliedTemplate.id} not found`)
+      return null
+    }
+
+    return {
+      template,
+      videos: appliedTemplate.files,
+    }
+  }, [appliedTemplate, getTemplateById])
 
   // Мемоизируем handlers чтобы избежать бесконечного цикла в useVideoEvents
   const videoEventHandlers = useMemo(
@@ -167,6 +196,25 @@ export function VideoPlayer() {
     }
 
     return false
+  }
+
+  // Если применен шаблон, рендерим ResizableTemplate
+  if (preparedAppliedTemplate) {
+    // Для шаблонов используем первое видео из списка для контролов
+    const templateVideo = preparedAppliedTemplate.videos[0] || video
+    return (
+      <div className="media-player-container relative flex h-full flex-col" data-oid="template-player-wrapper">
+        <div className="relative flex-1 bg-black" data-oid="template-container">
+          <ResizableTemplate
+            appliedTemplate={preparedAppliedTemplate}
+            videos={preparedAppliedTemplate.videos}
+            activeVideoId={video?.id || null}
+            data-oid="template-view"
+          />
+        </div>
+        <PlayerControls currentTime={currentTime} file={templateVideo} data-oid="template-controls" />
+      </div>
+    )
   }
 
   // Вычисляем стили для контейнера видео
