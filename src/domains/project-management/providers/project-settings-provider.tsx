@@ -214,44 +214,48 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
     const ratio = width / height
 
     // Проверяем стандартные соотношения сторон
+    // Используем погрешность 0.05 для учета округлений и вариаций разрешений
+    // Например, 21:9 (UltraWide) на практике реализуется как 64:27 = 2.370
     let aspectRatio = DEFAULT_PROJECT_SETTINGS.aspectRatio
 
-    if (Math.abs(ratio - 16 / 9) < 0.01) {
+    if (Math.abs(ratio - 16 / 9) < 0.05) {
       aspectRatio = {
         label: "16:9",
         textLabel: "widescreen",
         description: "YouTube",
         value: { width, height, name: "16:9" },
       }
-    } else if (Math.abs(ratio - 9 / 16) < 0.01) {
+    } else if (Math.abs(ratio - 9 / 16) < 0.05) {
       aspectRatio = {
         label: "9:16",
         textLabel: "portrait",
         description: "TikTok, YouTube Shorts",
         value: { width, height, name: "9:16" },
       }
-    } else if (Math.abs(ratio - 1) < 0.01) {
+    } else if (Math.abs(ratio - 1) < 0.05) {
       aspectRatio = {
         label: "1:1",
         textLabel: "square",
         description: "Instagram",
         value: { width, height, name: "1:1" },
       }
-    } else if (Math.abs(ratio - 4 / 3) < 0.01) {
+    } else if (Math.abs(ratio - 4 / 3) < 0.05) {
       aspectRatio = {
         label: "4:3",
         textLabel: "standard",
         description: "TV",
         value: { width, height, name: "4:3" },
       }
-    } else if (Math.abs(ratio - 4 / 5) < 0.01) {
+    } else if (Math.abs(ratio - 4 / 5) < 0.05) {
       aspectRatio = {
         label: "4:5",
         textLabel: "vertical",
         description: "Instagram Story",
         value: { width, height, name: "4:5" },
       }
-    } else if (Math.abs(ratio - 21 / 9) < 0.01) {
+    } else if (Math.abs(ratio - 64 / 27) < 0.05) {
+      // 21:9 (UltraWide) фактически реализуется как 64:27 = 2.370
+      // Проверяем именно это соотношение для корректного определения
       aspectRatio = {
         label: "21:9",
         textLabel: "cinematic",

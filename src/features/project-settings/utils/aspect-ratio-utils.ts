@@ -14,15 +14,19 @@ import { AspectRatio } from "@/domains/video-editing/types"
  */
 export function getAspectRatioString(width: number, height: number): string {
   // Проверяем на соответствие стандартным соотношениям сторон
-  // Используем небольшую погрешность для учета округлений
-  if (Math.abs(width / height - 16 / 9) < 0.01) return "16:9"
-  if (Math.abs(width / height - 9 / 16) < 0.01) return "9:16"
-  if (Math.abs(width / height - 1) < 0.01) return "1:1"
-  if (Math.abs(width / height - 4 / 3) < 0.01) return "4:3"
-  if (Math.abs(width / height - 3 / 4) < 0.01) return "3:4"
-  if (Math.abs(width / height - 4 / 5) < 0.01) return "4:5"
-  if (Math.abs(width / height - 5 / 4) < 0.01) return "5:4"
-  if (Math.abs(width / height - 21 / 9) < 0.01) return "21:9"
+  // Используем погрешность 0.05 для учета округлений и вариаций разрешений
+  // Например, 21:9 (UltraWide) на практике реализуется как 64:27 = 2.370
+  const ratio = width / height
+
+  if (Math.abs(ratio - 16 / 9) < 0.05) return "16:9"
+  if (Math.abs(ratio - 9 / 16) < 0.05) return "9:16"
+  if (Math.abs(ratio - 1) < 0.05) return "1:1"
+  if (Math.abs(ratio - 4 / 3) < 0.05) return "4:3"
+  if (Math.abs(ratio - 3 / 4) < 0.05) return "3:4"
+  if (Math.abs(ratio - 4 / 5) < 0.05) return "4:5"
+  if (Math.abs(ratio - 5 / 4) < 0.05) return "5:4"
+  // 21:9 (UltraWide) фактически реализуется как 64:27 = 2.370
+  if (Math.abs(ratio - 64 / 27) < 0.05) return "21:9"
 
   // Вычисляем наибольший общий делитель и сокращаем дробь
   const divisor = gcd(width, height)
@@ -82,9 +86,10 @@ export function calculateWidthFromHeight(height: number, aspectRatio: number): n
  */
 export function isStandardAspectRatio(width: number, height: number): boolean {
   const ratio = width / height
-  const standardRatios = [16 / 9, 9 / 16, 1, 4 / 3, 3 / 4, 4 / 5, 5 / 4, 21 / 9]
+  // 21:9 (UltraWide) фактически реализуется как 64:27 = 2.370
+  const standardRatios = [16 / 9, 9 / 16, 1, 4 / 3, 3 / 4, 4 / 5, 5 / 4, 64 / 27]
 
-  return standardRatios.some((standardRatio) => Math.abs(ratio - standardRatio) < 0.01)
+  return standardRatios.some((standardRatio) => Math.abs(ratio - standardRatio) < 0.05)
 }
 
 /**

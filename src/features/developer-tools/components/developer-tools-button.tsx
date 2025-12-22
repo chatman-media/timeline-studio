@@ -21,9 +21,9 @@ export function DeveloperToolsButton({ onClick }: DeveloperToolsButtonProps) {
         <TooltipTrigger asChild data-oid="4qbglng">
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={onClick}
-            className="h-8"
+            className="h-6 w-6 cursor-pointer"
             data-testid="developer-tools-button"
             data-oid="2:40dpn"
           >
