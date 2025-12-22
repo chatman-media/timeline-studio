@@ -146,7 +146,6 @@ describe("TransitionPreview", () => {
 
       // Check that control buttons are rendered
       expect(screen.getByTestId("favorite-button")).toBeInTheDocument()
-      expect(screen.getByTestId("apply-button")).toBeInTheDocument()
     })
 
     it("should render with transition prop", () => {

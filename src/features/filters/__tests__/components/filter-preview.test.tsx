@@ -133,7 +133,6 @@ describe("FilterPreview", () => {
 
     expect(screen.getByTestId("filter-video")).toBeInTheDocument()
     expect(screen.getByTestId("favorite-button")).toBeInTheDocument()
-    expect(screen.getByTestId("apply-button")).toBeInTheDocument()
     expect(screen.getByTestId("add-media-button")).toBeInTheDocument()
     expect(screen.getByText("Яркость")).toBeInTheDocument()
   })
@@ -389,23 +388,29 @@ describe("FilterPreview", () => {
     expect(video.style.filter).toContain("hue-rotate(10deg)")
   })
 
-  it("should handle apply button click", () => {
+  it("should apply filter and call onClick when preview is clicked", () => {
     const mockApplyFilter = vi.fn()
+    const mockOnClick = vi.fn()
 
     vi.mocked(usePlayer).mockReturnValue({
       applyFilter: mockApplyFilter,
     } as any)
 
-    renderWithBrowser(<FilterPreview {...defaultProps} data-oid="hv.:msz" />)
+    renderWithBrowser(<FilterPreview {...defaultProps} onClick={mockOnClick} data-oid="hv.:msz" />)
 
-    const applyButton = screen.getByTestId("apply-button")
-    fireEvent.click(applyButton)
+    // Кликаем на контейнер превью
+    const previewContainer = screen.getByTestId("filter-video").parentElement
+    fireEvent.click(previewContainer!)
 
+    // Проверяем что фильтр применился
     expect(mockApplyFilter).toHaveBeenCalledWith({
       id: mockFilter.id,
       name: mockFilter.name,
       params: mockFilter.params,
     })
+
+    // Проверяем что вызвался onClick (открытие в плеере)
+    expect(mockOnClick).toHaveBeenCalled()
   })
 
   it("should show add media button", () => {

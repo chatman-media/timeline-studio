@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { type MediaFile, MediaType } from "@/domains/media-management"
 import type { TransitionResource } from "@/domains/shared/types/resources"
-import { ApplyButton } from "@/features/browser"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
@@ -661,20 +660,6 @@ export function TransitionPreview({
 
               {/* Кнопка добавления в избранное */}
               <FavoriteButton file={favoriteFile} size={size} type="transition" noTime={true} data-oid="1q61dbm" />
-
-              {/* Кнопка для запуска перехода */}
-              <ApplyButton
-                resource={
-                  {
-                    id: currentTransition?.id || transitionType,
-                    type: "transition",
-                    name: currentTransition?.name,
-                  } as TransitionResource
-                }
-                size={size}
-                type="transition"
-                data-oid="y-j0yy6"
-              />
 
               {/* Кнопка добавления перехода в проект */}
               {transition && (

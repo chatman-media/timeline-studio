@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { type MediaFile, MediaType } from "@/domains/media-management"
-import type { TemplateResource, TimelineResource } from "@/domains/shared/types/resources"
+import type { TemplateResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
 import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/preview-sizes"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
-import { AddMediaButton, ApplyButton, FavoriteButton } from "../../browser/components/layout"
+import { AddMediaButton, FavoriteButton } from "../../browser/components/layout"
 import type { MediaTemplate } from "../lib/templates"
 
 const logger = createLogger({ module: "TemplatePreview" })
@@ -74,23 +74,23 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
   // Это позволяет мгновенно обновлять UI при добавлении/удалении шаблона
   const isAdded = isAddedFromStore || localIsAdded
 
-  // Обработчик применения шаблона
-  const handleApplyTemplate = useCallback(
-    (_resource: TimelineResource, _type: string) => {
-      logger.info("[TemplatePreview] Applying template:", {
-        templateId: template.id,
-      })
-      const videos = getVideosForPreview()
-      applyTemplate(
-        {
-          id: template.id,
-          name: template.id,
-        },
-        videos,
-      )
-    },
-    [template, applyTemplate, getVideosForPreview],
-  )
+  // Обработчик клика - применяет шаблон и открывает в плеере
+  const handleClick = useCallback(() => {
+    logger.info("[TemplatePreview] Applying template:", {
+      templateId: template.id,
+    })
+    // Применяем шаблон к видео в плеере
+    const videos = getVideosForPreview()
+    applyTemplate(
+      {
+        id: template.id,
+        name: template.id,
+      },
+      videos,
+    )
+    // Открываем модальное окно с деталями
+    onClick()
+  }, [template, applyTemplate, getVideosForPreview, onClick])
 
   /**
    * Обработчик добавления шаблона в проект
@@ -148,7 +148,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
         height: `${previewHeight}px`,
         width: `${previewWidth}px`,
       }}
-      onClick={onClick}
+      onClick={handleClick}
       data-oid="x.o:ogp"
     >
       {/* Рендерим шаблон с добавлением ключа для React */}
@@ -168,21 +168,6 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
         type="template"
         noTime={true}
         data-oid=".9.3m_c"
-      />
-
-      {/* Кнопка применения шаблона */}
-      <ApplyButton
-        resource={
-          {
-            id: template.id,
-            type: "template",
-            name: template.id,
-          } as TemplateResource
-        }
-        size={size}
-        type="template"
-        onApply={handleApplyTemplate}
-        data-oid="vgwoa0h"
       />
 
       {/* Контейнер для кнопки добавления/удаления шаблона */}

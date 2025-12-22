@@ -3,10 +3,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/media-management"
-import type { EffectResource, TimelineResource } from "@/domains/shared/types/resources"
+import type { EffectResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
-import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import type { BaseEffect, VideoEffect } from "@/features/effects/types"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
@@ -109,38 +108,39 @@ export function EffectPreview({
     return processedEffect ? isEffectAdded(processedEffect) : false
   }, [processedEffect, isEffectAdded])
 
-  // Обработчик применения эффекта
-  const handleApplyEffect = useCallback(
-    (_resource: TimelineResource, _type: string) => {
-      if (!processedEffect) return
+  // Обработчик клика - применяет эффект и открывает в плеере
+  const handleClick = useCallback(() => {
+    if (!processedEffect) return
 
-      // Получаем имя эффекта для текущего языка
-      const effectName =
-        typeof processedEffect.name === "object"
-          ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
-          : processedEffect.name || processedEffect.id
+    // Получаем имя эффекта для текущего языка
+    const effectName =
+      typeof processedEffect.name === "object"
+        ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
+        : processedEffect.name || processedEffect.id
 
-      void logger.info(`[EffectPreview] Applying effect: ${effectName}`)
+    void logger.info(`[EffectPreview] Applying effect: ${effectName}`)
 
-      // Собираем параметры из новой структуры
-      const params: Record<string, any> = {}
-      if (processedEffect.parameters) {
-        processedEffect.parameters.forEach((param) => {
-          params[param.id] = param.currentValue ?? param.defaultValue
-        })
-      }
-
-      applyEffect({
-        id: processedEffect.id,
-        name: effectName,
-        params: {
-          ...params,
-          ...((processedEffect as any).params || {}), // Fallback для старой структуры
-        },
+    // Собираем параметры из новой структуры
+    const params: Record<string, any> = {}
+    if (processedEffect.parameters) {
+      processedEffect.parameters.forEach((param) => {
+        params[param.id] = param.currentValue ?? param.defaultValue
       })
-    },
-    [processedEffect, applyEffect, i18n.language],
-  )
+    }
+
+    // Применяем эффект к видео в плеере
+    applyEffect({
+      id: processedEffect.id,
+      name: effectName,
+      params: {
+        ...params,
+        ...((processedEffect as any).params || {}), // Fallback для старой структуры
+      },
+    })
+
+    // Открываем модальное окно с деталями
+    onClick()
+  }, [processedEffect, applyEffect, i18n.language, onClick])
 
   // Получаем текущее видео для использования в превью
   const currentVideo = getCurrentVideo()
@@ -353,7 +353,7 @@ export function EffectPreview({
         style={{ width: `${width}px`, height: `${height}px` }}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        onClick={onClick}
+        onClick={handleClick}
         data-oid="..x:kez"
       >
         {/* Видео для демонстрации эффекта */}
@@ -446,28 +446,7 @@ export function EffectPreview({
             data-oid="ktak2-m"
           />
         )}
-        {processedEffect && (
-          <ApplyButton
-            resource={
-              {
-                id: processedEffect.id,
-                type: "effect",
-                name:
-                  typeof processedEffect.name === "object"
-                    ? processedEffect.name[i18n.language] || processedEffect.name.en || processedEffect.id
-                    : processedEffect.name || processedEffect.id,
-                resourceId: processedEffect.id,
-                addedAt: Date.now(),
-                effect: processedEffect as VideoEffect,
-                params: (processedEffect as any).params || {},
-              } as EffectResource
-            }
-            size={size}
-            type="effect"
-            onApply={handleApplyEffect}
-            data-oid="xzerv:o"
-          />
-        )}
+
         {/* Кнопка добавления эффекта в проект */}
         <div className={isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"} data-oid="60brkwd">
           {processedEffect && (

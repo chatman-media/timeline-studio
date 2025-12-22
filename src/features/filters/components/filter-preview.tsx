@@ -2,9 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
-import type { FilterResource, TimelineResource } from "@/domains/shared/types/resources"
+import type { FilterResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
-import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
@@ -63,21 +62,21 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
     return isFilterAdded(filter)
   }, [isFilterAdded, filter])
 
-  // Обработчик применения фильтра
-  const handleApplyFilter = useCallback(
-    (_resource: TimelineResource, _type: string) => {
-      logger.info("Applying filter", {
-        filterName: filter.name,
-        filterId: filter.id,
-      })
-      applyFilter({
-        id: filter.id,
-        name: filter.name,
-        params: filter.params,
-      })
-    },
-    [filter, applyFilter],
-  )
+  // Обработчик клика - применяет фильтр и открывает в плеере
+  const handleClick = useCallback(() => {
+    logger.info("Applying filter", {
+      filterName: filter.name,
+      filterId: filter.id,
+    })
+    // Применяем фильтр к видео в плеере
+    applyFilter({
+      id: filter.id,
+      name: filter.name,
+      params: filter.params,
+    })
+    // Открываем модальное окно с деталями
+    onClick()
+  }, [filter, applyFilter, onClick])
 
   /**
    * Формирует CSS-строку для применения фильтров к видео
@@ -240,7 +239,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
         style={{ width: `${finalWidth}px`, height: `${finalHeight}px` }}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        onClick={onClick}
+        onClick={handleClick}
         data-oid="wb36mo."
       >
         {/* Видео для демонстрации фильтра */}
@@ -288,23 +287,6 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
           noTime={true}
           data-oid="w6c4y42"
         />
-
-        {/* Кнопка применения фильтра */}
-        {filter && (
-          <ApplyButton
-            resource={
-              {
-                id: filter.id,
-                type: "filter",
-                name: filter.name,
-              } as FilterResource
-            }
-            size={size}
-            type="filter"
-            onApply={handleApplyFilter}
-            data-oid="5baah9l"
-          />
-        )}
 
         {/* Кнопка добавления фильтра в проект */}
         <div
