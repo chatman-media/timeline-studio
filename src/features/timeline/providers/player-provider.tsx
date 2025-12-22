@@ -66,7 +66,7 @@ interface PlayerContextType {
   // Эффекты и фильтры (локальные для preview)
   appliedEffects: Array<{ id: string; name: string; params: any }>
   appliedFilters: Array<{ id: string; name: string; params: any }>
-  appliedTemplate: { id: string; name: string } | null
+  appliedTemplate: { id: string; name: string; files: MediaFile[] } | null
 
   // Prerender настройки
   prerenderSettings: {
@@ -176,7 +176,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     videoSource: (userSettings.playerVideoSource || "browser") as "browser" | "timeline",
     appliedEffects: [] as Array<{ id: string; name: string; params: any }>,
     appliedFilters: [] as Array<{ id: string; name: string; params: any }>,
-    appliedTemplate: null as { id: string; name: string } | null,
+    appliedTemplate: null as { id: string; name: string; files: MediaFile[] } | null,
     prerenderSettings: {
       prerenderEnabled: false,
       prerenderQuality: 80,
@@ -525,10 +525,13 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     }))
   }, [])
 
-  const applyTemplate = useCallback((template: { id: string; name: string }, _files: MediaFile[]) => {
+  const applyTemplate = useCallback((template: { id: string; name: string }, files: MediaFile[]) => {
     setLocalState((prev) => ({
       ...prev,
-      appliedTemplate: template,
+      appliedTemplate: {
+        ...template,
+        files,
+      },
     }))
   }, [])
 
