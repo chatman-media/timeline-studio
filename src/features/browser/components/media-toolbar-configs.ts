@@ -1,4 +1,4 @@
-import { Grid2x2, LayoutGrid, List } from "lucide-react"
+import { Grid2x2, List } from "lucide-react"
 
 import type { ViewModeConfig } from "./media-toolbar"
 
