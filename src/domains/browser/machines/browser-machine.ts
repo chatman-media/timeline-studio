@@ -57,7 +57,7 @@ const initialContext: BrowserMachineContext = {
     effects: { ...DEFAULT_TAB_SETTINGS },
     filters: { ...DEFAULT_TAB_SETTINGS },
     transitions: { ...DEFAULT_TAB_SETTINGS },
-    templates: { ...DEFAULT_TAB_SETTINGS },
+    templates: { ...DEFAULT_TAB_SETTINGS, sort_by: "screens", sort_order: "desc" },
     style_templates: { ...DEFAULT_TAB_SETTINGS },
     music: { ...DEFAULT_TAB_SETTINGS },
     subtitles: { ...DEFAULT_TAB_SETTINGS },
