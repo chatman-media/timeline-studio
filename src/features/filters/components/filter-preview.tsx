@@ -6,6 +6,7 @@ import type { FilterResource, TimelineResource } from "@/domains/shared/types/re
 import { useResources } from "@/domains/video-editing"
 import { ApplyButton } from "@/features/browser"
 import type { VideoFilter } from "@/features/filters/types/filters"
+import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -40,6 +41,21 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
   const timeoutRef = useRef<NodeJS.Timeout>(null) // Ссылка на таймер для воспроизведения видео
   const { applyFilter } = usePlayer() // Получаем метод для применения фильтра
   const { getCurrentVideo } = useVideoSelection() // Получаем текущее видео для применения фильтра
+  const { settings } = useProjectSettings() // Получаем настройки проекта
+
+  // Получаем пропорции из настроек проекта
+  const projectAspectRatio = settings?.aspectRatio?.value
+  const aspectWidth = projectAspectRatio?.width ?? 16
+  const aspectHeight = projectAspectRatio?.height ?? 9
+  const ratio = aspectWidth / aspectHeight
+
+  // Рассчитываем размеры с учетом пропорций проекта
+  const calculatedHeight = size
+  const calculatedWidth = Math.round(calculatedHeight * ratio)
+
+  // Используем рассчитанные размеры если не переданы явно
+  const finalWidth = previewWidth ?? calculatedWidth
+  const finalHeight = previewHeight ?? calculatedHeight
 
   // Проверяем, добавлен ли фильтр уже в хранилище ресурсов
   // Мемоизируем результат для оптимизации
@@ -221,7 +237,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
       {/* Контейнер превью фильтра */}
       <div
         className="group relative cursor-pointer rounded-xs bg-gray-800"
-        style={{ width: `${previewWidth}px`, height: `${previewHeight}px` }}
+        style={{ width: `${finalWidth}px`, height: `${finalHeight}px` }}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onClick={onClick}
@@ -314,7 +330,7 @@ export function FilterPreview({ filter, onClick, size, previewWidth, previewHeig
       </div>
 
       {/* Название фильтра */}
-      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${previewWidth}px` }} data-oid="y7z7we.">
+      <div className="mt-1 text-xs text-center truncate" style={{ maxWidth: `${finalWidth}px` }} data-oid="y7z7we.">
         {filter.labels?.ru || filter.name}
       </div>
     </div>
