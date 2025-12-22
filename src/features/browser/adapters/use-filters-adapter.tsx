@@ -35,8 +35,6 @@ const FilterPreviewWrapper: React.FC<PreviewComponentProps<VideoFilter>> = ({
 
   // Для фильтров FilterPreview ожидает другие пропсы
   const previewSize = typeof size === "number" ? size : size.width
-  const previewWidth = typeof size === "number" ? size : size.width
-  const previewHeight = typeof size === "number" ? size : size.height
 
   if (viewMode === "list") {
     return (
@@ -83,16 +81,10 @@ const FilterPreviewWrapper: React.FC<PreviewComponentProps<VideoFilter>> = ({
   }
 
   // Thumbnails mode - use the original FilterPreview component
+  // НЕ передаем previewWidth и previewHeight - компонент сам рассчитает их с учетом aspect ratio проекта
   return (
     <div {...dragProps} data-oid="unybggm">
-      <FilterPreview
-        filter={filter}
-        onClick={handleClick}
-        size={previewSize}
-        previewWidth={previewWidth}
-        previewHeight={previewHeight}
-        data-oid="lkwjb1l"
-      />
+      <FilterPreview filter={filter} onClick={handleClick} size={previewSize} data-oid="lkwjb1l" />
     </div>
   )
 }

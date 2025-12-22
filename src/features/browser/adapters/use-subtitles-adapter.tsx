@@ -31,8 +31,6 @@ const SubtitlePreviewWrapper: React.FC<PreviewComponentProps<SubtitleStyleTempla
 
   // Для стилей субтитров SubtitlePreview ожидает другие пропсы
   const previewSize = typeof size === "number" ? size : size.width
-  const previewWidth = typeof size === "number" ? size : size.width
-  const previewHeight = typeof size === "number" ? size : size.height
 
   if (viewMode === "list") {
     return (
@@ -92,16 +90,10 @@ const SubtitlePreviewWrapper: React.FC<PreviewComponentProps<SubtitleStyleTempla
   }
 
   // Thumbnails mode - use the original SubtitlePreview component
+  // НЕ передаем previewWidth и previewHeight - компонент сам рассчитает их с учетом aspect ratio проекта
   return (
     <div onDragStart={handleDragStart} draggable data-oid="atr61_w">
-      <SubtitlePreview
-        style={style}
-        onClick={handleClick}
-        size={previewSize}
-        previewWidth={previewWidth}
-        previewHeight={previewHeight}
-        data-oid="odvei_6"
-      />
+      <SubtitlePreview style={style} onClick={handleClick} size={previewSize} data-oid="odvei_6" />
     </div>
   )
 }
