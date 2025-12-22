@@ -24,7 +24,6 @@ const ALL_BROWSER_TABS = [
   "transitions",
   "subtitles",
   "templates",
-  "style_templates",
 ] as const;
 
 /**

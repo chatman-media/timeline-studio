@@ -104,16 +104,17 @@ export const BrowserTabs = memo(({ activeTab, onTabChange }: BrowserTabsProps) =
         <Video className="h-4 w-4" data-oid="3:ezsji" />
         <span data-oid="20c8bw_">{t("browser.tabs.templates")}</span>
       </TabButton>
-      <TabButton
-        value="style_templates"
-        activeTab={activeTab}
-        onClick={onTabChange}
-        testId="style_templates-tab"
-        data-oid="3hu13e."
-      >
-        <Sticker className="h-4 w-4" data-oid="rdb99ur" />
-        <span data-oid="q5mcqar">{t("browser.tabs.styleTemplates")}</span>
-      </TabButton>
+      {/* Temporarily disabled - style templates need completion
+          <TabButton
+           value="style_templates"
+           activeTab={activeTab}
+           onClick={onTabChange}
+           testId="style_templates-tab"
+          >
+           <Sticker className="h-4 w-4" />
+           <span>{t("browser.tabs.styleTemplates")}</span>
+          </TabButton>
+      */}
       {/* Temporarily disabled - projects and scenarios features need completion
           <TabButton value="projects" activeTab={activeTab} onClick={onTabChange} testId="projects-tab">
            <LayoutTemplate className="h-4 w-4" />
