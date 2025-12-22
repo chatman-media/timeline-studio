@@ -52,11 +52,15 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
   // Рассчитываем размеры с учётом пропорций проекта
   const previewSize = typeof size === "number" ? size : size.width
   // Для вертикальных видео (9:16) размер применяется как высота, для горизонтальных (16:9) - как ширина
+  // Минимум 150px по длинному краю для превью эффектов
   const { width: previewWidth, height: previewHeight } = calculateDimensionsWithAspectRatio(
     previewSize,
     { width: aspectWidth, height: aspectHeight },
-    false,
+    true, // минимум 150px
   )
+
+  // Вычисляем соотношение сторон для list режима
+  const aspectRatio = aspectWidth / aspectHeight
 
   // Получаем локализованное имя
   const effectName = effect.name?.ru || effect.name?.[i18n.language] || effect.name?.en || effect.id
@@ -75,7 +79,7 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
             effect={effect}
             onClick={handleClick}
             size={36}
-            width={Math.round(36 * ratio)}
+            width={Math.round(36 * aspectRatio)}
             height={36}
             data-oid="qz.jont"
           />

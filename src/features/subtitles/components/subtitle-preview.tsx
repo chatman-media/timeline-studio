@@ -43,10 +43,11 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
 
   // Рассчитываем размеры с учетом пропорций проекта
   // Для вертикальных видео (9:16) size применяется как высота, для горизонтальных (16:9) - как ширина
+  // Минимум 150px по длинному краю для превью субтитров
   const { width: calculatedWidth, height: calculatedHeight } = calculateDimensionsWithAspectRatio(
     size,
     { width: aspectWidth, height: aspectHeight },
-    false,
+    true, // минимум 150px
   )
 
   // Используем рассчитанные размеры если не переданы явно
