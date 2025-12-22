@@ -49,7 +49,8 @@ export function getRemainingMediaCounts(
 
   // allFilesAdded = true только если есть хотя бы один файл И все файлы добавлены
   // ВАЖНО: .every() на пустом массиве возвращает true, поэтому нужна проверка filesWithAudio.length > 0
-  const allFilesAdded = filesWithAudio.length > 0 && filesWithAudio.every((file) => file.path && addedFiles.has(file.path))
+  const allFilesAdded =
+    filesWithAudio.length > 0 && filesWithAudio.every((file) => file.path && addedFiles.has(file.path))
 
   return {
     remainingVideoCount,

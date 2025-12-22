@@ -2,10 +2,9 @@
  * @vitest-environment jsdom
  */
 import { fireEvent, screen } from "@testing-library/react"
-import { renderWithBrowser as render } from "@/test/test-utils"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import { type MediaFile, MediaType } from "@/domains/media-management"
+import { renderWithBrowser as render } from "@/test/test-utils"
 
 import { TransitionPreview } from "../../components/transition-preview"
 import type { Transition } from "../../types/transitions"
