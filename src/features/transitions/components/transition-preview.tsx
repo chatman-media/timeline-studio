@@ -92,12 +92,12 @@ export function TransitionPreview({
     const aspectHeight = projectAspectRatio?.height ?? 9
 
     // Рассчитываем размеры с учетом пропорций проекта
-    // Для вертикальных видео (9:16) size применяется как высота, для горизонтальных (16:9) - как ширина
-    // Минимум 150px по длинному краю для превью переходов
+    // size применяется к длинному краю (ширина для 16:9, высота для 9:16)
+    // Минимум 100px применяется к длинному краю
     const { width: calculatedWidth, height: calculatedHeight } = calculateDimensionsWithAspectRatio(
       size,
       { width: aspectWidth, height: aspectHeight },
-      true, // минимум 150px
+      true, // минимум 100px
     )
 
     return { actualWidth: calculatedWidth, actualHeight: calculatedHeight }

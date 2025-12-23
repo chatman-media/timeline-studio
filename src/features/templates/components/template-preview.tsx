@@ -43,11 +43,13 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
   const { applyTemplate } = usePlayer() // Получаем метод для применения шаблона
   const { getVideosForPreview } = useVideoSelection() // Получаем видео для применения шаблона
 
-  // Получаем вычисленные размеры превью с минимумом 150px для шаблонов
+  // Получаем вычисленные размеры превью с учетом пропорций проекта
+  // Для горизонтального видео (16:9): size = высота, вычисляем ширину
+  // Для вертикального видео (9:16): size = ширина, вычисляем высоту
   const { height: previewHeight, width: previewWidth } = calculateDimensionsWithAspectRatio(
     size,
     { width, height },
-    true, // isTemplate = true для применения минимума 150px
+    true, // isTemplate = true для применения минимума 100px
   )
 
   // Получаем методы для работы с ресурсами шаблонов
