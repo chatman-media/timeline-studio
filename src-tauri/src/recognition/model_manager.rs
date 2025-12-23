@@ -213,14 +213,16 @@ impl ModelManager {
   /// Получить сессию
   pub fn get_session(&self) -> Result<&Session> {
     self
-      .session.as_deref() // Deref ManuallyDrop to get &Session
+      .session
+      .as_deref() // Deref ManuallyDrop to get &Session
       .ok_or_else(|| anyhow!("Model not loaded. Call load_model() first."))
   }
 
   /// Получить изменяемую сессию
   pub fn get_session_mut(&mut self) -> Result<&mut Session> {
     self
-      .session.as_deref_mut() // Deref ManuallyDrop to get &mut Session
+      .session
+      .as_deref_mut() // Deref ManuallyDrop to get &mut Session
       .ok_or_else(|| anyhow!("Model not loaded. Call load_model() first."))
   }
 
