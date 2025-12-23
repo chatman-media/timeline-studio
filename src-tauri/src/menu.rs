@@ -4,6 +4,18 @@ use tauri::{App, Emitter, Manager, Runtime};
 /// Создает нативное меню приложения
 pub fn create_app_menu<R: Runtime>(app: &App<R>) -> tauri::Result<tauri::menu::Menu<R>> {
   // Меню File
+  #[cfg(target_os = "macos")]
+  let file_menu = SubmenuBuilder::new(app, "File")
+    .text("new-project", "New Project")
+    .text("open-project", "Open Project...")
+    .text("save-project", "Save Project")
+    .text("save-project-as", "Save Project As...")
+    .separator()
+    .text("import-media", "Import Media...")
+    .text("export-project", "Export Project...")
+    .build()?;
+
+  #[cfg(not(target_os = "macos"))]
   let file_menu = SubmenuBuilder::new(app, "File")
     .text("new-project", "New Project")
     .text("open-project", "Open Project...")
@@ -41,6 +53,13 @@ pub fn create_app_menu<R: Runtime>(app: &App<R>) -> tauri::Result<tauri::menu::M
     .build()?;
 
   // Меню Help
+  #[cfg(target_os = "macos")]
+  let help_menu = SubmenuBuilder::new(app, "Help")
+    .text("documentation", "Documentation")
+    .text("shortcuts", "Keyboard Shortcuts")
+    .build()?;
+
+  #[cfg(not(target_os = "macos"))]
   let help_menu = SubmenuBuilder::new(app, "Help")
     .text("documentation", "Documentation")
     .text("shortcuts", "Keyboard Shortcuts")
@@ -48,7 +67,27 @@ pub fn create_app_menu<R: Runtime>(app: &App<R>) -> tauri::Result<tauri::menu::M
     .text("about", "About Timeline Studio")
     .build()?;
 
+  // Меню приложения (для macOS)
+  #[cfg(target_os = "macos")]
+  let app_menu = SubmenuBuilder::new(app, "Timeline Studio")
+    .text("about", "About Timeline Studio")
+    .separator()
+    .text("preferences", "Preferences...")
+    .separator()
+    .text("quit", "Quit Timeline Studio")
+    .build()?;
+
   // Собираем главное меню
+  #[cfg(target_os = "macos")]
+  let menu = MenuBuilder::new(app)
+    .item(&app_menu)
+    .item(&file_menu)
+    .item(&edit_menu)
+    .item(&view_menu)
+    .item(&help_menu)
+    .build()?;
+
+  #[cfg(not(target_os = "macos"))]
   let menu = MenuBuilder::new(app)
     .item(&file_menu)
     .item(&edit_menu)
