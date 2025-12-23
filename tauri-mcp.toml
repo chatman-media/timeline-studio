@@ -1,0 +1,61 @@
+# Tauri MCP Server Configuration for Timeline Studio
+# https://github.com/dirvine/tauri-mcp
+
+# Автоматическое обнаружение Tauri приложений
+auto_discover = true
+
+# Управление сеансами
+session_management = true
+
+# Потоковая передача событий (экспериментально)
+event_streaming = false
+
+# Профилирование производительности (для отладки)
+performance_profiling = false
+
+# Перехват сетевых запросов (экспериментально)
+network_interception = false
+
+# Путь к приложению (опционально, если auto_discover не работает)
+# app_path = "./src-tauri"
+
+# Уровень логирования (trace, debug, info, warn, error)
+log_level = "info"
+
+# Настройки сервера
+[server]
+host = "127.0.0.1"
+port = 3000
+
+# Настройки DevTools
+[devtools]
+# Автоматически открывать DevTools при запуске
+auto_open = false
+
+# Порт для DevTools (если отличается от основного)
+# port = 9222
+
+# Настройки скриншотов
+[screenshots]
+# Формат скриншотов (png, jpeg, webp)
+format = "png"
+
+# Качество JPEG (1-100)
+jpeg_quality = 90
+
+# Директория для сохранения скриншотов
+# output_dir = "./screenshots"
+
+# Настройки логов
+[logging]
+# Сохранять логи в файл
+file_logging = false
+
+# Путь к файлу логов
+# log_file = "./tauri-mcp.log"
+
+# Максимальный размер файла логов в МБ
+max_file_size = 10
+
+# Количество архивных файлов логов
+max_backups = 3
