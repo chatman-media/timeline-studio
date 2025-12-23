@@ -69,13 +69,13 @@ export async function generateEffectPreview(effect: BaseEffect, config: EffectPr
               effects: [
                 {
                   id: `${effect.id}-preview`,
-                  effect_type: effect.type || "Custom",
+                  effect_type: effect.processingType || "Custom",
                   name: effect.name,
                   category: effect.category || null,
                   complexity: effect.complexity || null,
                   tags: effect.tags || [],
                   description: effect.description || null,
-                  labels: effect.labels || null,
+                  labels: null,
                   enabled: true,
                   parameters:
                     effect.parameters?.reduce(
@@ -87,8 +87,30 @@ export async function generateEffectPreview(effect: BaseEffect, config: EffectPr
                     ) || {},
                   start_time: null,
                   end_time: null,
-                  ffmpeg_command: effect.ffmpegCommand || null,
-                  css_filter: effect.cssFilter || null,
+                  ffmpeg_command:
+                    effect.processors?.ffmpeg?.filter
+                      ? effect.processors.ffmpeg.filter(
+                          effect.parameters?.reduce(
+                            (acc, param) => {
+                              acc[param.id] = param.defaultValue
+                              return acc
+                            },
+                            {} as Record<string, any>,
+                          ) || {},
+                        )
+                      : null,
+                  css_filter:
+                    effect.processors?.css?.filter
+                      ? effect.processors.css.filter(
+                          effect.parameters?.reduce(
+                            (acc, param) => {
+                              acc[param.id] = param.defaultValue
+                              return acc
+                            },
+                            {} as Record<string, any>,
+                          ) || {},
+                        )
+                      : null,
                   preview_path: null,
                   presets: null,
                 },

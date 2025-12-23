@@ -18,7 +18,7 @@ export function useBulkMediaActions() {
    */
   const addAllVideoFiles = useCallback(
     async (allMedia: MediaFile[]) => {
-      const addedPaths = new Set(mediaResources.map((r) => r.path))
+      const addedPaths = new Set(mediaResources.map((r) => r.file.path))
       const videoFiles = allMedia.filter((file) => file.isVideo && !addedPaths.has(file.path))
 
       logger.info(`Adding ${videoFiles.length} video files to resources`)
@@ -39,7 +39,7 @@ export function useBulkMediaActions() {
    */
   const addAllAudioFiles = useCallback(
     async (allMedia: MediaFile[]) => {
-      const addedPaths = new Set(mediaResources.map((r) => r.path))
+      const addedPaths = new Set(mediaResources.map((r) => r.file.path))
       const audioFiles = allMedia.filter((file) => file.isAudio && !addedPaths.has(file.path))
 
       logger.info(`Adding ${audioFiles.length} audio files to resources`)
@@ -60,7 +60,7 @@ export function useBulkMediaActions() {
    */
   const addDateFiles = useCallback(
     async (files: MediaFile[]) => {
-      const addedPaths = new Set(mediaResources.map((r) => r.path))
+      const addedPaths = new Set(mediaResources.map((r) => r.file.path))
       const filesToAdd = files.filter((file) => !addedPaths.has(file.path))
 
       logger.info(`Adding ${filesToAdd.length} files for date to resources`)
@@ -81,7 +81,7 @@ export function useBulkMediaActions() {
    */
   const addAllFiles = useCallback(
     async (allMedia: MediaFile[]) => {
-      const addedPaths = new Set(mediaResources.map((r) => r.path))
+      const addedPaths = new Set(mediaResources.map((r) => r.file.path))
       const filesToAdd = allMedia.filter((file) => !addedPaths.has(file.path))
 
       logger.info(`Adding ${filesToAdd.length} files to resources`)

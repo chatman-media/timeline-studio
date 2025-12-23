@@ -33,8 +33,7 @@ export function MediaStatusBarWrapper() {
         name: mediaInfo.name,
         videoCodec,
         startTime: Date.now() / 1000,
-        size:
-          bitrate && mediaInfo.duration ? `${Math.round((bitrate * mediaInfo.duration) / 8 / 1024 / 1024)}MB` : "0MB",
+        size: bitrate && mediaInfo.duration ? Math.round((bitrate * mediaInfo.duration) / 8) : 0,
         duration: mediaInfo.duration ?? 0,
         thumbnailPath: mediaInfo.thumbnailPath,
         type: mediaInfo.type.toLowerCase(),
@@ -68,8 +67,8 @@ export function MediaStatusBarWrapper() {
   // Включаем и mediaResources (видео/изображения) и musicResources (аудио)
   const addedFilesPaths = useMemo(() => {
     const allResourcePaths = [
-      ...(mediaResources || []).map((r) => r.path),
-      ...(musicResources || []).map((r) => r.path),
+      ...(mediaResources || []).map((r) => r.file.path),
+      ...(musicResources || []).map((r) => r.file.path),
     ]
     return new Set(allResourcePaths)
   }, [mediaResources, musicResources])
