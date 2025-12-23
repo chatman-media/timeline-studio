@@ -1,3 +1,10 @@
+## [3.43.1](https://github.com/chatman-media/timeline-studio/compare/v3.43.0...v3.43.1) (2025-12-23)
+
+
+### Bug Fixes
+
+* **tests:** исправлено 43 падающих теста во всем проекте ([1485946](https://github.com/chatman-media/timeline-studio/commit/1485946add6758a73db473cd8db47961fbd6112c))
+
 # [3.43.0](https://github.com/chatman-media/timeline-studio/compare/v3.42.0...v3.43.0) (2025-12-23)
 
 
