@@ -582,14 +582,10 @@ pub fn run() {
               });
             }
 
-            // Очищаем RecognitionState с его ONNX sessions
-            if let Some(recognition_state) = app_handle.try_state::<RecognitionState>() {
-              log::info!("Shutdown: RecognitionState");
-              tauri::async_runtime::block_on(async {
-                // RecognitionService содержит ONNX sessions для различных моделей
-                // Явно drop'аем их перед завершением приложения
-                std::mem::drop(recognition_state);
-              });
+            // RecognitionState будет автоматически очищен при завершении Tauri
+            // State - это обертка над Arc, drop на ней не освобождает внутренние ресурсы
+            if let Some(_recognition_state) = app_handle.try_state::<RecognitionState>() {
+              log::info!("Shutdown: RecognitionState (will be cleaned by Tauri)");
             }
 
             // Очищаем глобальный YoloProcessor (Mutex<Option<YoloProcessor>>)
