@@ -82,7 +82,6 @@ export function VideoPlayerWithTransitions({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
   }
 
   // Если нет видео
@@ -97,7 +96,7 @@ export function VideoPlayerWithTransitions({
 
     return (
       <div className={`media-player-container relative flex h-full flex-col ${className || ""}`} data-oid=":-wj06t">
-        <div className="relative flex-1 bg-black" style={containerStyle} data-oid="fhtvskl">
+        <div className="relative flex-1 bg-black overflow-hidden" style={containerStyle} data-oid="fhtvskl">
           <div className="flex h-full w-full items-center justify-center" data-oid="44epkfp">
             <div className="h-full w-full" data-oid="3602m92">
               <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="mpsoh69">
@@ -137,7 +136,7 @@ export function VideoPlayerWithTransitions({
 
   return (
     <div className={`media-player-container relative flex h-full flex-col ${className || ""}`} data-oid="_ky-:xm">
-      <div className="relative flex-1 bg-black" style={containerStyle} data-oid="pws0_jh">
+      <div className="relative flex-1 bg-black overflow-hidden" style={containerStyle} data-oid="pws0_jh">
         <div className="flex h-full w-full items-center justify-center" data-oid="07cd2d-">
           <div className="h-full w-full" data-oid="ru1um86">
             <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="kzvngr5">

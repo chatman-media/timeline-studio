@@ -29,7 +29,8 @@ export function EnhancedVideoPlayer() {
   const {
     settings: { aspectRatio },
   } = useProjectSettings()
-  const { currentVideo: video, currentTime, duration } = usePlayer()
+  const { currentVideo, currentTime, duration } = usePlayer()
+  const video = currentVideo
   const { project } = useTimeline()
   const { prerender, isRendering, currentResult } = usePrerender()
   const { hasInCache, getFromCache, addToCache } = usePrerenderCache()
@@ -222,7 +223,7 @@ export function EnhancedVideoPlayer() {
   if (!video?.path) {
     return (
       <div className="media-player-container relative flex h-full flex-col" data-oid="60r9utq">
-        <div className="relative flex-1 bg-black" data-oid="urbree3">
+        <div className="relative flex-1 bg-black overflow-hidden" data-oid="urbree3">
           <div className="flex h-full w-full items-center justify-center" data-oid="6jx0p:6">
             <div className="text-muted-foreground" data-oid="vcvfqii">
               Нет видео
@@ -249,7 +250,7 @@ export function EnhancedVideoPlayer() {
 
   return (
     <div className="media-player-container relative flex h-full flex-col" data-oid="x2bf6zz">
-      <div className="relative flex-1 bg-black" data-oid="fnxrp7p">
+      <div className="relative flex-1 bg-black overflow-hidden" data-oid="fnxrp7p">
         <div className="flex h-full w-full items-center justify-center" data-oid="enb03db">
           <div className="max-h-[calc(100%-85px)] w-full max-w-full" data-oid="vz9u01c">
             <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="0i-aj:j">

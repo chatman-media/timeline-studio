@@ -8,6 +8,7 @@ import { useTimelineEffects } from "@/features/timeline/hooks/effects/use-timeli
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { usePlayer } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
+import { convertVideoSrc } from "@/lib/tauri-utils"
 import { PreviewCache } from "../services/preview-cache"
 import { WebGL2PreviewRenderer } from "../services/webgl2-preview-renderer"
 import type { Effect, GPUTier, PreviewQuality } from "../types"
@@ -367,7 +368,7 @@ export function useWebGL2Preview(options: UseWebGL2PreviewOptions = {}) {
     (video: HTMLVideoElement | null) => {
       if (video && mediaFile) {
         videoRef.current = video
-        video.src = mediaFile.path
+        video.src = convertVideoSrc(mediaFile.path)
         video.muted = true
       }
     },

@@ -648,6 +648,101 @@ describe("usePlayer", () => {
         media: null,
       })
     })
+
+    it("should return previewMedia as currentVideo when source is browser", async () => {
+      const { result } = renderHook(() => usePlayer())
+
+      const mockPreviewVideo: MediaFile = {
+        id: "preview-video-1",
+        name: "preview.mp4",
+        path: "/test/preview.mp4",
+        type: MediaType.Video,
+        duration: 60,
+        size: 512 * 1024,
+        width: 1280,
+        height: 720,
+        fps: 30,
+      }
+
+      // Set browser source with preview media
+      mockPlayerActor.getSnapshot.mockReturnValue({
+        context: {
+          ...mockPlayerActor.getSnapshot().context,
+          videoSource: "browser",
+          previewMedia: mockPreviewVideo,
+          video: mockVideo, // Different main video
+        },
+      })
+
+      const subscribeCallback = mockOrchestrator.subscribeToPlayer.mock.calls[0][0]
+      act(() => {
+        subscribeCallback(mockPlayerActor.getSnapshot())
+      })
+
+      await waitFor(() => {
+        expect(result.current.currentVideo).toEqual(mockPreviewVideo)
+        expect(result.current.currentVideo).not.toEqual(mockVideo)
+      })
+    })
+
+    it("should return video as currentVideo when source is timeline", async () => {
+      const { result } = renderHook(() => usePlayer())
+
+      const mockPreviewVideo: MediaFile = {
+        id: "preview-video-1",
+        name: "preview.mp4",
+        path: "/test/preview.mp4",
+        type: MediaType.Video,
+        duration: 60,
+        size: 512 * 1024,
+        width: 1280,
+        height: 720,
+        fps: 30,
+      }
+
+      // Set timeline source with both video and preview media
+      mockPlayerActor.getSnapshot.mockReturnValue({
+        context: {
+          ...mockPlayerActor.getSnapshot().context,
+          videoSource: "timeline",
+          previewMedia: mockPreviewVideo,
+          video: mockVideo,
+        },
+      })
+
+      const subscribeCallback = mockOrchestrator.subscribeToPlayer.mock.calls[0][0]
+      act(() => {
+        subscribeCallback(mockPlayerActor.getSnapshot())
+      })
+
+      await waitFor(() => {
+        expect(result.current.currentVideo).toEqual(mockVideo)
+        expect(result.current.currentVideo).not.toEqual(mockPreviewVideo)
+      })
+    })
+
+    it("should return video as currentVideo when source is browser but no preview media", async () => {
+      const { result } = renderHook(() => usePlayer())
+
+      // Set browser source but no preview media
+      mockPlayerActor.getSnapshot.mockReturnValue({
+        context: {
+          ...mockPlayerActor.getSnapshot().context,
+          videoSource: "browser",
+          previewMedia: null,
+          video: mockVideo,
+        },
+      })
+
+      const subscribeCallback = mockOrchestrator.subscribeToPlayer.mock.calls[0][0]
+      act(() => {
+        subscribeCallback(mockPlayerActor.getSnapshot())
+      })
+
+      await waitFor(() => {
+        expect(result.current.currentVideo).toEqual(mockVideo)
+      })
+    })
   })
 
   describe("Resizable Mode", () => {

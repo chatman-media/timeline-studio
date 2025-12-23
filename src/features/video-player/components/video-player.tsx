@@ -47,6 +47,21 @@ export function VideoPlayer() {
   // Подключаем AI интеграцию
   const { isReady: aiReady } = usePlayerAIIntegration()
 
+  // DEBUG: Log video changes
+  useEffect(() => {
+    console.log("[VideoPlayer] video changed:", { name: video?.name, path: video?.path, hasVideo: !!video })
+  }, [video])
+
+  // DEBUG: Log effects and preview state
+  useEffect(() => {
+    const effectsExist = hasEffects()
+    logger.debug("[VideoPlayer] Effects state:", {
+      hasEffects: effectsExist,
+      showEffectsPreview,
+      videoDisplayed: !(showEffectsPreview && effectsExist),
+    })
+  }, [showEffectsPreview])
+
   // Создаем AppliedTemplate объект для ResizableTemplate
   const preparedAppliedTemplate = useMemo(() => {
     if (!appliedTemplate) return null
@@ -204,7 +219,7 @@ export function VideoPlayer() {
     const templateVideo = preparedAppliedTemplate.videos[0] || video
     return (
       <div className="media-player-container relative flex h-full flex-col" data-oid="template-player-wrapper">
-        <div className="relative flex-1 bg-black" data-oid="template-container">
+        <div className="relative flex-1 bg-black overflow-hidden" data-oid="template-container">
           <ResizableTemplate
             appliedTemplate={preparedAppliedTemplate}
             videos={preparedAppliedTemplate.videos}
@@ -225,7 +240,6 @@ export function VideoPlayer() {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    overflow: "hidden",
   }
 
   if (!video?.path) {
@@ -238,11 +252,11 @@ export function VideoPlayer() {
     }
     return (
       <div className="media-player-container relative flex h-full flex-col" data-oid="9688-f.">
-        <div className="relative flex-1 bg-black" style={containerStyle} data-oid="sza.w.9">
+        <div className="relative flex-1 bg-black overflow-hidden" style={containerStyle} data-oid="sza.w.9">
           <div className="flex h-full w-full items-center justify-center" data-oid="hsdsy0t">
             <div className="max-h-full max-w-full" data-oid="-l2-:ll">
               <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="a48d7di">
-                <div className="relative h-full w-full" data-oid="qcyhsoi">
+                <div className="absolute inset-0" data-oid="qcyhsoi">
                   <video
                     key={file.id || "no-file"}
                     src={"#"}
@@ -278,11 +292,11 @@ export function VideoPlayer() {
 
   return (
     <div className="media-player-container relative flex h-full flex-col" data-oid="1djfz84">
-      <div className="relative flex-1 bg-black" style={containerStyle} data-oid="0iyhzrb">
+      <div className="relative flex-1 bg-black overflow-hidden" style={containerStyle} data-oid="0iyhzrb">
         <div className="flex h-full w-full items-center justify-center" data-oid="hpgq3a2">
           <div className="max-h-full max-w-full" data-oid="mhdt8l1">
             <AspectRatio ratio={aspectRatioValue} className="bg-black" data-oid="wf_5-98">
-              <div className="relative h-full w-full" data-oid="jaqsiv0">
+              <div className="absolute inset-0" data-oid="jaqsiv0">
                 <video
                   ref={videoRef}
                   data-player-video // Атрибут для поиска через querySelector в usePlaybackTimeSync
@@ -303,7 +317,7 @@ export function VideoPlayer() {
                     left: "0",
                     width: "100%",
                     height: "100%",
-                    display: showEffectsPreview && hasEffects() ? "none" : "block",
+                    display: "block", // Временно всегда показываем видео для дебага
                     zIndex: 1,
                   }}
                   data-oid="cw1:lzr"

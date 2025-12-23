@@ -22,6 +22,20 @@ export function usePlayer() {
     }
   }, [orchestrator])
 
+  // DEBUG: Log state changes
+  useEffect(() => {
+    const currentVideo = state.videoSource === "browser" && state.previewMedia ? state.previewMedia : state.video
+    console.log("[usePlayer] State changed:", {
+      videoSource: state.videoSource,
+      hasVideo: !!state.video,
+      videoName: state.video?.name,
+      hasPreviewMedia: !!state.previewMedia,
+      previewMediaName: state.previewMedia?.name,
+      currentVideoName: currentVideo?.name,
+      currentVideoPath: currentVideo?.path,
+    })
+  }, [state])
+
   // Управление воспроизведением
   const loadVideo = useCallback(
     (video: MediaFile) => {
@@ -296,6 +310,7 @@ export function usePlayer() {
     setPrerenderAuto,
 
     // Вспомогательные функции
+    currentVideo: state.videoSource === "browser" && state.previewMedia ? state.previewMedia : state.video,
     hasVideo: state.video !== null,
     canPlay: state.isVideoReady && !state.isPlaying,
     canPause: state.isPlaying,
