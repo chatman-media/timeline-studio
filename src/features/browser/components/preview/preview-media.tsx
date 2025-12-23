@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -45,6 +45,7 @@ export const PreviewMedia = memo(function PreviewMedia({
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
   const [videoError, setVideoError] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const handleMouseEnter = useCallback(() => {
     if (showVideoOnHover && videoUrl) {
@@ -63,6 +64,47 @@ export const PreviewMedia = memo(function PreviewMedia({
   const handleVideoError = useCallback(() => {
     setVideoError(true)
     setIsHovered(false)
+  }, [])
+
+  // Управляем воспроизведением видео при hover
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) {
+      console.log("[PreviewMedia] No video ref")
+      return
+    }
+
+    console.log("[PreviewMedia] showVideo changed:", {
+      showVideo,
+      paused: video.paused,
+      currentTime: video.currentTime,
+      videoSrc: video.src,
+      muted: video.muted,
+    })
+
+    if (showVideo) {
+      // Запускаем воспроизведение при hover
+      video.currentTime = 0
+      console.log("[PreviewMedia] Starting video playback")
+      video.play().catch((error) => {
+        console.warn("[PreviewMedia] Failed to play preview video:", error)
+      })
+    } else {
+      // Останавливаем при уходе мыши
+      console.log("[PreviewMedia] Stopping video playback")
+      video.pause()
+      video.currentTime = 0
+    }
+  }, [showVideo])
+
+  // Очищаем видео при размонтировании
+  useEffect(() => {
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.pause()
+        videoRef.current.src = ""
+      }
+    }
   }, [])
 
   const showVideo = isHovered && videoUrl && !videoError
@@ -97,12 +139,15 @@ export const PreviewMedia = memo(function PreviewMedia({
         loading="lazy"
       />
 
-      {/* Video on hover */}
-      {showVideo && (
+      {/* Video on hover - всегда в DOM для контроля через ref */}
+      {videoUrl && (
         <video
+          ref={videoRef}
           src={videoUrl}
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-200",
+            showVideo ? "opacity-100" : "opacity-0 pointer-events-none",
+          )}
           muted
           loop
           playsInline
