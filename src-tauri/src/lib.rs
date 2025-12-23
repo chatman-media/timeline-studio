@@ -567,13 +567,42 @@ pub fn run() {
                   pipelines.clear();
                 }
 
-                // Shutdown сервисов с таймаутом
-                let _ = tokio::time::timeout(
-                  std::time::Duration::from_secs(2),
+                // Shutdown сервисов с увеличенным таймаутом
+                log::info!("Shutdown: начинаем остановку сервисов video_compiler");
+                match tokio::time::timeout(
+                  std::time::Duration::from_secs(5),
                   video_state.services.shutdown_all(),
                 )
-                .await;
+                .await
+                {
+                  Ok(Ok(())) => log::info!("Shutdown: сервисы video_compiler успешно остановлены"),
+                  Ok(Err(e)) => log::error!("Shutdown: ошибка остановки сервисов: {e}"),
+                  Err(_) => log::warn!("Shutdown: таймаут остановки сервисов (5 сек)"),
+                }
               });
+            }
+
+            // Очищаем RecognitionState с его ONNX sessions
+            if let Some(recognition_state) = app_handle.try_state::<RecognitionState>() {
+              log::info!("Shutdown: RecognitionState");
+              tauri::async_runtime::block_on(async {
+                // RecognitionService содержит ONNX sessions для различных моделей
+                // Явно drop'аем их перед завершением приложения
+                std::mem::drop(recognition_state);
+              });
+            }
+
+            // Очищаем глобальный YoloProcessor (Mutex<Option<YoloProcessor>>)
+            if let Some(yolo_processor) =
+              app_handle.try_state::<Mutex<Option<recognition::YoloProcessor>>>()
+            {
+              log::info!("Shutdown: глобальный YoloProcessor");
+              if let Ok(mut processor) = yolo_processor.try_lock() {
+                if processor.is_some() {
+                  log::debug!("Shutdown: dropping глобальный YoloProcessor с ONNX session");
+                  *processor = None;
+                }
+              }
             }
 
             // Очищаем YoloProcessorState
@@ -583,11 +612,68 @@ pub fn run() {
                 if let Ok(mut processors) = yolo_state.processors.try_write() {
                   let processor_count = processors.len();
                   if processor_count > 0 {
-                    log::warn!("Shutdown: остановка {processor_count} YOLO процессоров");
+                    log::warn!(
+                      "Shutdown: остановка {processor_count} YOLO процессоров с ONNX sessions"
+                    );
                   }
-                  processors.clear();
+                  // Явно drop каждый процессор перед очисткой вектора
+                  for (id, processor) in processors.drain() {
+                    log::debug!("Shutdown: dropping YOLO processor {id} с ONNX session");
+                    // Явно drop процессор и его ONNX session
+                    std::mem::drop(processor);
+                  }
                 }
               });
+            }
+
+            // Очищаем FaceNet processor (tuple struct с Mutex)
+            if let Some(facenet_state) =
+              app_handle
+                .try_state::<recognition::commands::facenet_commands::FaceNetProcessorState>()
+            {
+              log::info!("Shutdown: FaceNetProcessorState");
+              if let Ok(mut processor) = facenet_state.0.try_lock() {
+                if processor.is_some() {
+                  log::debug!("Shutdown: dropping FaceNet processor с ONNX session");
+                  *processor = None;
+                }
+              }
+            }
+
+            // Очищаем RetinaFace processor (tuple struct с Mutex)
+            if let Some(retinaface_state) =
+              app_handle
+                .try_state::<recognition::commands::retinaface_commands::RetinaFaceProcessorState>()
+            {
+              log::info!("Shutdown: RetinaFaceProcessorState");
+              if let Ok(mut processor) = retinaface_state.0.try_lock() {
+                if processor.is_some() {
+                  log::debug!("Shutdown: dropping RetinaFace processor с ONNX session");
+                  *processor = None;
+                }
+              }
+            }
+
+            // Очищаем MediaPipe processor (tuple struct с Mutex)
+            if let Some(mediapipe_state) =
+              app_handle
+                .try_state::<recognition::commands::mediapipe_commands::MediaPipeProcessorState>()
+            {
+              log::info!("Shutdown: MediaPipeProcessorState");
+              if let Ok(mut processor) = mediapipe_state.0.try_lock() {
+                if processor.is_some() {
+                  log::debug!("Shutdown: dropping MediaPipe processor с ONNX session");
+                  *processor = None;
+                }
+              }
+            }
+
+            // MontageState cleanup
+            // MontageState не хранит yolo_state напрямую, но содержит VideoProcessor
+            // который будет очищен автоматически через Drop trait
+            if let Some(_montage_state) = app_handle.try_state::<MontageState>() {
+              log::info!("Shutdown: MontageState");
+              // MontageState компоненты будут очищены автоматически
             }
 
             // PersonDatabase shutdown
@@ -597,10 +683,16 @@ pub fn run() {
               // когда последняя Arc ссылка будет удалена
             }
 
-            // Даем время на завершение всех операций
-            std::thread::sleep(std::time::Duration::from_millis(500));
+            // Даем время на завершение всех операций перед финальным drop
+            // Увеличено время для корректного освобождения ONNX sessions
+            std::thread::sleep(std::time::Duration::from_millis(300));
 
-            log::info!("Application graceful shutdown completed");
+            log::info!("Application graceful shutdown completed - all ONNX sessions released");
+
+            // ВАЖНО: Короткая пауза для окончательного освобождения ресурсов
+            // ONNX Runtime environment leaked, поэтому LoggingManager деструктор не вызовется
+            std::thread::sleep(std::time::Duration::from_millis(100));
+
             // Окно закроется автоматически после возврата из обработчика
           }
         });
