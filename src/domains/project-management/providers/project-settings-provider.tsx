@@ -223,35 +223,35 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
         label: "16:9",
         textLabel: "widescreen",
         description: "YouTube",
-        value: { width, height, name: "16:9" },
+        value: { width: 16, height: 9, name: "16:9" },
       }
     } else if (Math.abs(ratio - 9 / 16) < 0.05) {
       aspectRatio = {
         label: "9:16",
         textLabel: "portrait",
         description: "TikTok, YouTube Shorts",
-        value: { width, height, name: "9:16" },
+        value: { width: 9, height: 16, name: "9:16" },
       }
     } else if (Math.abs(ratio - 1) < 0.05) {
       aspectRatio = {
         label: "1:1",
         textLabel: "square",
         description: "Instagram",
-        value: { width, height, name: "1:1" },
+        value: { width: 1, height: 1, name: "1:1" },
       }
     } else if (Math.abs(ratio - 4 / 3) < 0.05) {
       aspectRatio = {
         label: "4:3",
         textLabel: "standard",
         description: "TV",
-        value: { width, height, name: "4:3" },
+        value: { width: 4, height: 3, name: "4:3" },
       }
     } else if (Math.abs(ratio - 4 / 5) < 0.05) {
       aspectRatio = {
         label: "4:5",
         textLabel: "vertical",
         description: "Instagram Story",
-        value: { width, height, name: "4:5" },
+        value: { width: 4, height: 5, name: "4:5" },
       }
     } else if (Math.abs(ratio - 64 / 27) < 0.05) {
       // 21:9 (UltraWide) фактически реализуется как 64:27 = 2.370
@@ -260,10 +260,10 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
         label: "21:9",
         textLabel: "cinematic",
         description: "Cinema",
-        value: { width, height, name: "21:9" },
+        value: { width: 64, height: 27, name: "21:9" },
       }
     } else {
-      // Кастомное соотношение
+      // Кастомное соотношение - используем реальные значения
       aspectRatio = {
         label: "custom",
         textLabel: "",
