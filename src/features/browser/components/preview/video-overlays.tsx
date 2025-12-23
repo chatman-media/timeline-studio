@@ -1,11 +1,14 @@
 import { Film } from "lucide-react"
-import { memo } from "react"
+import { memo, useEffect } from "react"
 import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
 import { formatDuration } from "@/lib/date"
+import { createLogger } from "@/lib/tauri-logger"
 import { cn, formatResolution } from "@/lib/utils"
 import { AddMediaButton } from "../layout/add-media-button"
 import { FavoriteButton } from "../layout/favorite-button"
+
+const logger = createLogger("VideoOverlays")
 
 interface VideoOverlaysProps {
   file: MediaFile
@@ -36,6 +39,19 @@ export const VideoOverlays = memo(
     isLastStream,
   }: VideoOverlaysProps) => {
     const isNotFirstStream = isMultipleStreams && typeof streamIndex !== "undefined" && streamIndex !== 0
+
+    // Логирование для отладки отображения разрешения
+    useEffect(() => {
+      logger.debugSync("[VideoOverlays] Resolution display check", {
+        fileName: file.name,
+        isLoaded,
+        isNotFirstStream,
+        streamWidth,
+        streamHeight,
+        willDisplay: isLoaded && !isNotFirstStream && streamWidth && streamHeight,
+        formattedResolution: streamWidth && streamHeight ? formatResolution(streamWidth, streamHeight) : "N/A",
+      })
+    }, [isLoaded, isNotFirstStream, streamWidth, streamHeight, file.name])
 
     return (
       <>
@@ -80,8 +96,12 @@ export const VideoOverlays = memo(
         {/* Разрешение видео */}
         {isLoaded && !isNotFirstStream && streamWidth && streamHeight && (
           <div
-            className={`pointer-events-none absolute ${size > 100 ? "left-7" : "left-5.5"} rounded-xs bg-black/60 text-xs leading-4 ${size > 100 ? "bottom-1" : "bottom-0.5"} ${size > 100 ? "px-1 py-0.5" : "px-0.5 py-0"}`}
+            className={cn(
+              "pointer-events-none absolute rounded-xs bg-black/60 text-xs leading-4",
+              size > 100 ? "bottom-1 px-1 py-0.5" : "bottom-0.5 px-0.5 py-0",
+            )}
             style={{
+              left: size > 100 ? "28px" : "22px",
               fontSize: size > 100 ? "13px" : "11px",
               color: "#ffffff",
               zIndex: 20,
