@@ -50,6 +50,20 @@ export function VideoPlayer() {
   // DEBUG: Log video changes
   useEffect(() => {
     console.log("[VideoPlayer] video changed:", { name: video?.name, path: video?.path, hasVideo: !!video })
+
+    // Проверяем количество video элементов на странице
+    const allVideos = document.querySelectorAll("video")
+    console.log("[VideoPlayer] Total video elements on page:", {
+      count: allVideos.length,
+      videos: Array.from(allVideos).map((v, i) => ({
+        index: i,
+        src: v.src,
+        paused: v.paused,
+        muted: v.muted,
+        volume: v.volume,
+        className: v.className,
+      })),
+    })
   }, [video])
 
   // DEBUG: Log effects and preview state
@@ -107,12 +121,15 @@ export function VideoPlayer() {
   // Синхронизация состояния isPlaying с video элементом
   useEffect(() => {
     const videoElement = videoRef.current
-    logger.debug("isPlaying sync effect", {
+
+    console.log("[VideoPlayer] isPlaying sync effect", {
       isPlaying,
       hasVideoElement: !!videoElement,
       videoId: video?.id,
       readyState: videoElement?.readyState,
       paused: videoElement?.paused,
+      muted: videoElement?.muted,
+      volume: videoElement?.volume,
     })
 
     if (!videoElement) return
@@ -120,41 +137,38 @@ export function VideoPlayer() {
     if (isPlaying) {
       // Уже играет - не вызываем play() повторно (защита от двойного аудио)
       if (!videoElement.paused) {
-        logger.debug("Video already playing, skipping play()")
+        console.log("[VideoPlayer] Video already playing, skipping play()")
         return
       }
 
-      // Проверяем, что видео достаточно загружено для воспроизведения
-      // readyState >= 2 означает HAVE_CURRENT_DATA (есть данные для текущего кадра)
-      if (videoElement.readyState >= 2) {
-        logger.debug("Calling videoElement.play() - readyState OK")
-        videoElement.play().catch((error) => {
-          logger.error("Failed to play video", { error })
-        })
-      } else {
-        logger.debug("Waiting for canplay event", {
-          readyState: videoElement.readyState,
-        })
-        // Если видео не готово, ждём события canplay
-        const handleCanPlay = () => {
-          // Повторная проверка - может видео уже играет из-за другого события
-          if (!videoElement.paused) {
-            logger.debug("canplay: Video already playing, skipping")
-            videoElement.removeEventListener("canplay", handleCanPlay)
-            return
-          }
-          logger.debug("canplay event fired, calling play()")
-          videoElement.play().catch((error) => {
-            logger.error("Failed to play video after canplay", { error })
+      // Сразу пытаемся запустить воспроизведение без ожидания
+      // Браузер сам обработает буферизацию если нужно
+      console.log("[VideoPlayer] Calling videoElement.play() immediately")
+      const playPromise = videoElement.play()
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("[VideoPlayer] Play started successfully")
           })
-          videoElement.removeEventListener("canplay", handleCanPlay)
-        }
-        videoElement.addEventListener("canplay", handleCanPlay)
-        return () => {
-          videoElement.removeEventListener("canplay", handleCanPlay)
-        }
+          .catch((error) => {
+            // Если ошибка из-за недостаточной загрузки, ждём canplay
+            if (error.name === "NotSupportedError" || error.name === "NotAllowedError") {
+              console.warn("[VideoPlayer] Play failed, waiting for canplay", error)
+              const handleCanPlay = () => {
+                videoElement.play().catch((err) => {
+                  console.error("[VideoPlayer] Failed to play after canplay", err)
+                })
+                videoElement.removeEventListener("canplay", handleCanPlay)
+              }
+              videoElement.addEventListener("canplay", handleCanPlay, { once: true })
+            } else {
+              console.error("[VideoPlayer] Failed to play video", error)
+            }
+          })
       }
     } else {
+      console.log("[VideoPlayer] Pausing video")
       videoElement.pause()
     }
   }, [isPlaying, video?.id])
@@ -171,21 +185,76 @@ export function VideoPlayer() {
     // Синхронизируем только когда видео на паузе или при явном seek
     if (isPlaying && !isSeeking) return
 
+    const timeDifference = Math.abs(videoElement.currentTime - currentTime)
+
     // Синхронизируем только если разница больше 0.1 секунды
-    if (Math.abs(videoElement.currentTime - currentTime) > 0.1) {
-      videoElement.currentTime = currentTime
-      logger.debug("Synced video currentTime", { currentTime, isSeeking })
+    if (timeDifference > 0.1) {
+      // Для больших прыжков (>0.5 сек) делаем обычный seek
+      if (timeDifference > 0.5) {
+        videoElement.currentTime = currentTime
+        logger.debug("Synced video currentTime (large jump)", { currentTime, timeDifference, isSeeking })
+      } else {
+        // Для малых корректировок используем плавную синхронизацию
+        // чтобы избежать аудио артефактов
+        const targetTime = currentTime
+        const step = (targetTime - videoElement.currentTime) * 0.3 // 30% от разницы
+        videoElement.currentTime += step
+        logger.debug("Synced video currentTime (smooth)", { currentTime, step, isSeeking })
+      }
     }
   }, [currentTime, isPlaying, isSeeking])
 
-  // Синхронизация громкости с video элементом
+  // Инициализация громкости при монтировании
   useEffect(() => {
     const videoElement = videoRef.current
     if (!videoElement) return
 
-    // volume в контексте уже в диапазоне 0-1
-    videoElement.volume = Math.max(0, Math.min(1, volume))
-    logger.debug("Synced video volume", { volume })
+    // ВАЖНО: volume в контексте в диапазоне 0-100, нужно делить на 100
+    const normalizedVolume = Math.max(0, Math.min(1, volume / 100))
+
+    console.log("[VideoPlayer] Initial volume setup", {
+      contextVolume: volume,
+      normalizedVolume,
+      videoVolume: videoElement.volume,
+      muted: videoElement.muted,
+    })
+
+    // Устанавливаем начальную громкость
+    videoElement.volume = normalizedVolume
+    videoElement.muted = false
+
+    console.log("[VideoPlayer] Volume initialized to", {
+      volume: videoElement.volume,
+      muted: videoElement.muted,
+    })
+  }, [video?.id]) // Пере-инициализируем при смене видео
+
+  // Синхронизация громкости с video элементом
+  useEffect(() => {
+    const videoElement = videoRef.current
+    if (!videoElement) {
+      console.log("[VideoPlayer] Volume sync: no video element")
+      return
+    }
+
+    // ВАЖНО: volume в контексте в диапазоне 0-100, нужно делить на 100
+    const normalizedVolume = Math.max(0, Math.min(1, volume / 100))
+
+    console.log("[VideoPlayer] BEFORE volume sync", {
+      contextVolume: volume,
+      normalizedVolume,
+      currentVideoVolume: videoElement.volume,
+      muted: videoElement.muted,
+    })
+
+    videoElement.volume = normalizedVolume
+    videoElement.muted = false // Всегда выключаем mute
+
+    console.log("[VideoPlayer] AFTER volume sync", {
+      normalizedVolume,
+      muted: videoElement.muted,
+      actualVolume: videoElement.volume,
+    })
   }, [volume])
 
   // Вычисляем соотношение сторон для AspectRatio
@@ -306,10 +375,29 @@ export function VideoPlayer() {
                   autoPlay={false}
                   loop={false}
                   disablePictureInPicture
-                  preload="auto"
+                  preload="metadata"
                   tabIndex={0}
                   playsInline
                   muted={false}
+                  onLoadedMetadata={(e) => {
+                    const vid = e.currentTarget
+                    console.log("[VideoPlayer] Video metadata loaded", {
+                      muted: vid.muted,
+                      volume: vid.volume,
+                      duration: vid.duration,
+                      readyState: vid.readyState,
+                    })
+                    // Убеждаемся что muted=false и громкость правильная
+                    vid.muted = false
+                    vid.volume = Math.max(0, Math.min(1, volume / 100)) // ВАЖНО: делим на 100
+                  }}
+                  onVolumeChange={(e) => {
+                    const vid = e.currentTarget
+                    console.log("[VideoPlayer] Volume changed by browser", {
+                      volume: vid.volume,
+                      muted: vid.muted,
+                    })
+                  }}
                   className="absolute inset-0 h-full w-full object-cover focus:outline-none"
                   style={{
                     position: "absolute" as const,

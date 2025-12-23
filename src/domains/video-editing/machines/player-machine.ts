@@ -63,7 +63,7 @@ const initialContext: PlayerContext = {
   isVideoReady: false,
   isResizableMode: false,
   duration: 0,
-  volume: 0.5, // Будет заменено значением из настроек
+  volume: 50, // Диапазон 0-100, значение по умолчанию 50 (будет заменено из настроек)
   speedRampingEnabled: false,
   currentPlaybackRate: 1,
   basePlaybackRate: 1,
