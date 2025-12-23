@@ -120,7 +120,7 @@ describe("ContentGroup", () => {
       )
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      const expectedClasses = ["flex", "flex-wrap", "justify-between", "gap-3"]
+      const expectedClasses = ["flex", "flex-wrap", "justify-start", "gap-3"]
       expectedClasses.forEach((className) => {
         expect(itemsContainer).toHaveClass(className)
       })
@@ -165,7 +165,7 @@ describe("ContentGroup", () => {
       render(<ContentGroup title="Test Group" items={items} renderItem={defaultRenderItem} data-oid="fpi-4vb" />)
 
       const itemsContainer = screen.getByTestId("item-item-1").parentElement
-      const expectedClasses = ["flex", "flex-wrap", "justify-between", "gap-3"]
+      const expectedClasses = ["flex", "flex-wrap", "justify-start", "gap-3"]
       expectedClasses.forEach((className) => {
         expect(itemsContainer).toHaveClass(className)
       })

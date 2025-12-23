@@ -608,7 +608,7 @@ describe("PlayerProvider", () => {
         result.current.applyTemplate(template, files)
       })
 
-      expect(result.current.appliedTemplate).toEqual(template)
+      expect(result.current.appliedTemplate).toEqual({ ...template, files })
     })
 
     it("clearEffects removes all effects", () => {

@@ -30,6 +30,7 @@ const mockSetViewMode = vi.fn()
 const mockSetPreviewSize = vi.fn()
 const mockSelectAllFiles = vi.fn()
 const mockDeselectAllFiles = vi.fn()
+const mockResetTabSettings = vi.fn().mockResolvedValue(undefined)
 
 // Мокаем все зависимости
 const mockBrowserState = {
@@ -53,6 +54,7 @@ const mockBrowserState = {
   setPreviewSize: mockSetPreviewSize,
   selectAllFiles: mockSelectAllFiles,
   deselectAllFiles: mockDeselectAllFiles,
+  resetTabSettings: mockResetTabSettings,
   selectedFiles: new Set<string>(),
 }
 

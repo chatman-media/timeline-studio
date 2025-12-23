@@ -152,7 +152,7 @@ describe("MediaItem", () => {
     // Настраиваем мок так, чтобы файл был в избранном
     vi.mocked(useFavorites).mockReturnValue({
       favorites: {
-        media: [{ id: "added-file" }],
+        media: ["added-file"], // Массив строк ID, а не объектов
         audio: [],
         transition: [],
         effect: [],
