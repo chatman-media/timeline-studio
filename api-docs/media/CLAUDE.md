@@ -51,6 +51,14 @@ Before working with this codebase, ensure you have the following dependencies in
   # For fish (~/.config/fish/config.fish):
   set -gx ORT_DYLIB_PATH /opt/homebrew/lib/libonnxruntime.dylib
   ```
+- **Tauri MCP** (optional) - AI-assisted testing and development
+  ```bash
+  # Install via Cargo
+  cargo install tauri-mcp
+
+  # Configuration file: tauri-mcp.toml (already created)
+  # See TAURI_MCP.md for usage guide
+  ```
 
 ### macOS Development Setup
 
