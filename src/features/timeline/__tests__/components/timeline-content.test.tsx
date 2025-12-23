@@ -443,7 +443,7 @@ describe("TimelineContent", () => {
 
       renderWithTimeline(<TimelineContent data-oid="zcu-c3e" />)
 
-      expect(screen.getByText("Треки не найдены")).toBeInTheDocument()
+      expect(screen.getByText("Перетащите файл сюда или")).toBeInTheDocument()
       expect(screen.getByText("Добавить видео трек")).toBeInTheDocument()
     })
 
@@ -658,10 +658,10 @@ describe("TimelineContent", () => {
       mockTracks.tracks = [{ id: "track-1", name: "Track 1", type: "video", clips: [] }]
     })
 
-    it("should render timeline header with label", () => {
+    it("should render timeline header with project name", () => {
       renderWithTimeline(<TimelineContent data-oid="8qkv99e" />)
 
-      expect(screen.getByText("Временная шкала")).toBeInTheDocument()
+      expect(screen.getByText("Test Project")).toBeInTheDocument()
     })
 
     it("should render resizable panels", () => {

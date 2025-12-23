@@ -213,7 +213,7 @@ describe("backend-event-handlers", () => {
           label: "21:9",
           textLabel: "Кинотеатр",
           description: "Movie",
-          value: { width: 2560, height: 1080, name: "21:9" }, // Backend hardcodes 2560 for 21:9
+          value: { width: 2520, height: 1080, name: "21:9" }, // Сохраняем фактическое разрешение
         },
       })
     })

@@ -40,6 +40,23 @@ vi.mock("@/features/timeline", () => ({
   }),
 }))
 
+// Мокаем DragDropProvider
+vi.mock("@/features/timeline/components/drag-drop-provider", () => ({
+  DragDropProvider: ({ children }: { children: React.ReactNode }) => <div data-oid="dragdrop">{children}</div>,
+}))
+
+// Мокаем AI Director hooks
+vi.mock("@/domains/ai-director/hooks/use-ai-director-events", () => ({
+  useAIDirectorEvents: () => ({
+    lastProgress: null,
+  }),
+}))
+
+// Мокаем AnalysisProgressIndicator
+vi.mock("@/features/ai-director/components/analysis-progress-indicator", () => ({
+  AnalysisProgressIndicator: () => null,
+}))
+
 // Мокаем useAutoLoadUserData
 const mockUseAutoLoadUserData = vi.hoisted(() => vi.fn())
 vi.mock("@/features/media-studio/hooks", () => ({

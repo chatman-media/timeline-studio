@@ -610,12 +610,12 @@ describe("DragDropManager", () => {
   describe("Event Handling", () => {
     it("should setup global event listeners", () => {
       expect(mockDocument.addEventListener).toHaveBeenCalledWith("dragover", expect.any(Function))
-      expect(mockDocument.addEventListener).toHaveBeenCalledWith("drop", expect.any(Function))
+      expect(mockDocument.addEventListener).toHaveBeenCalledWith("drop", expect.any(Function), { capture: false })
       expect(mockDocument.addEventListener).toHaveBeenCalledWith("dragend", expect.any(Function))
       expect(mockDocument.addEventListener).toHaveBeenCalledWith("keydown", expect.any(Function))
     })
 
-    it("should trigger cleanup on dragend event", () => {
+    it("should trigger cleanup on dragend event", async () => {
       const testItem: DraggableItem = { type: "media", data: {} }
       const mockDragEvent = {
         clientX: 100,
@@ -631,6 +631,9 @@ describe("DragDropManager", () => {
 
       // Trigger dragend
       dragendHandler?.()
+
+      // Wait for setTimeout to complete
+      await new Promise((resolve) => setTimeout(resolve, 0))
 
       expect(manager.getCurrentDrag()).toBeNull()
     })
@@ -665,7 +668,7 @@ describe("DragDropManager", () => {
       expect(currentDrag.currentY).toBe(250)
     })
 
-    it("should trigger endDrag on drop event", () => {
+    it("should trigger endDrag on drop event", async () => {
       const testItem: DraggableItem = { type: "media", data: {} }
       const mockDragEvent = {
         clientX: 100,
@@ -688,7 +691,11 @@ describe("DragDropManager", () => {
       // Trigger drop
       dropHandler?.(mockDropEvent)
 
-      expect(mockDropEvent.preventDefault).toHaveBeenCalled()
+      // Wait for setTimeout to complete (cleanup is delayed to allow components to access data)
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      // Drop handler does NOT call preventDefault - it's handled by components
+      expect(mockDropEvent.preventDefault).not.toHaveBeenCalled()
       expect(manager.getCurrentDrag()).toBeNull()
     })
 

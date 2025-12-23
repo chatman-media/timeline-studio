@@ -117,13 +117,13 @@ describe("media-toolbar-configs", () => {
     it("should have correct transitions filter options", () => {
       expect(transitionsFilterOptions.length).toBeGreaterThan(0)
       expect(transitionsFilterOptions.some((option) => option.value === "basic")).toBe(true)
-      expect(transitionsFilterOptions.some((option) => option.value === "3d")).toBe(true)
+      expect(transitionsFilterOptions.some((option) => option.value === "category-3d")).toBe(true)
     })
 
     it("should have correct subtitles filter options", () => {
       expect(subtitlesFilterOptions.length).toBeGreaterThan(0)
       expect(subtitlesFilterOptions.some((option) => option.value === "basic")).toBe(true)
-      expect(subtitlesFilterOptions.some((option) => option.value === "animated")).toBe(true)
+      expect(subtitlesFilterOptions.some((option) => option.value === "category-animated")).toBe(true)
     })
 
     it("should have correct templates filter options", () => {

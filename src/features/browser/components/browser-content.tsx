@@ -13,7 +13,16 @@ import { LazyTabContent } from "./lazy-tab-content"
 /**
  * Список всех возможных вкладок браузера
  */
-const ALL_BROWSER_TABS = ["media", "music", "effects", "filters", "transitions", "subtitles", "templates"] as const
+const ALL_BROWSER_TABS = [
+  "media",
+  "music",
+  "effects",
+  "filters",
+  "transitions",
+  "subtitles",
+  "templates",
+  "style_templates",
+] as const
 
 /**
  * Контейнер для контента вкладок с кэшированием

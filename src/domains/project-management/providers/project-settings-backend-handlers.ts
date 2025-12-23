@@ -71,18 +71,20 @@ function convertBackendSettingsToFrontend(
 
 /**
  * Определяет aspect ratio из разрешения
+ * Возвращает aspect ratio с фактическим разрешением в value
  */
 function getAspectRatioFromResolution(width: number, height: number) {
   const ratio = width / height
   const ratioStr = `${width}:${height}`
 
   // Проверяем стандартные соотношения сторон
+  // Для стандартных соотношений используем фактическое разрешение
   if (Math.abs(ratio - 16 / 9) < 0.01) {
     return {
       label: "16:9",
       textLabel: "Широкоэкранный",
       description: "YouTube",
-      value: { width: 16, height: 9, name: "16:9" },
+      value: { width, height, name: "16:9" },
     }
   }
   if (Math.abs(ratio - 9 / 16) < 0.01) {
@@ -90,7 +92,7 @@ function getAspectRatioFromResolution(width: number, height: number) {
       label: "9:16",
       textLabel: "Портрет",
       description: "TikTok, YouTube Shorts",
-      value: { width: 9, height: 16, name: "9:16" },
+      value: { width, height, name: "9:16" },
     }
   }
   if (Math.abs(ratio - 1) < 0.01) {
@@ -98,7 +100,7 @@ function getAspectRatioFromResolution(width: number, height: number) {
       label: "1:1",
       textLabel: "Социальные сети",
       description: "Instagram, Social media posts",
-      value: { width: 1, height: 1, name: "1:1" },
+      value: { width, height, name: "1:1" },
     }
   }
   if (Math.abs(ratio - 4 / 3) < 0.01) {
@@ -106,7 +108,7 @@ function getAspectRatioFromResolution(width: number, height: number) {
       label: "4:3",
       textLabel: "Стандарт",
       description: "TV",
-      value: { width: 4, height: 3, name: "4:3" },
+      value: { width, height, name: "4:3" },
     }
   }
   if (Math.abs(ratio - 4 / 5) < 0.01) {
@@ -114,7 +116,7 @@ function getAspectRatioFromResolution(width: number, height: number) {
       label: "4:5",
       textLabel: "Вертикальный",
       description: "Vertical post",
-      value: { width: 4, height: 5, name: "4:5" },
+      value: { width, height, name: "4:5" },
     }
   }
   if (Math.abs(ratio - 21 / 9) < 0.01) {
@@ -122,7 +124,7 @@ function getAspectRatioFromResolution(width: number, height: number) {
       label: "21:9",
       textLabel: "Кинотеатр",
       description: "Movie",
-      value: { width: 64, height: 27, name: "21:9" },
+      value: { width, height, name: "21:9" },
     }
   }
 

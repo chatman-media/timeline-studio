@@ -136,8 +136,8 @@ export function calculateDimensionsWithAspectRatio(
   let width: number
   let height: number
 
-  // Для шаблонов устанавливаем минимум 100px по длинному краю
-  const minTemplateSize = isTemplate ? 100 : 0
+  // Для шаблонов устанавливаем минимум 150px по длинному краю
+  const minTemplateSize = isTemplate ? 150 : 0
   const effectiveSize = isTemplate ? Math.max(baseSize, minTemplateSize) : baseSize
 
   if (ratio >= 1) {
