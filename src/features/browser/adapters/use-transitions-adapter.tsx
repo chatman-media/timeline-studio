@@ -3,8 +3,10 @@ import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
 import type { MediaFile } from "@/domains/media-management"
+import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
 import { useTransitionsAdapter as useUnifiedTransitionsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
+import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { TransitionPreview } from "@/features/transitions/components/transition-preview"
 import type { Transition } from "@/features/transitions/types/transitions"
 import type { PreviewConfig } from "../components/preview/types"
@@ -22,6 +24,8 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
   viewMode,
   onClick,
 }) => {
+  const { settings } = useProjectSettings()
+
   const handleClick = () => {
     onClick?.(transition)
   }
@@ -48,10 +52,22 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
     } as MediaFile,
   }
 
+  // Получаем пропорции из настроек проекта
+  const projectAspectRatio = settings?.aspectRatio?.value
+  const aspectWidth = projectAspectRatio?.width ?? 16
+  const aspectHeight = projectAspectRatio?.height ?? 9
+
   // Для переходов TransitionPreview ожидает другие пропсы
   const previewSize = typeof size === "number" ? size : size.width
   const previewWidth = typeof size === "number" ? size : size.width
   const previewHeight = typeof size === "number" ? size : size.height
+
+  // Вычисляем размеры для list view thumbnail с учетом пропорций проекта
+  const { width: listThumbWidth, height: listThumbHeight } = calculateDimensionsWithAspectRatio(
+    64, // базовый размер для list view (длинный край)
+    { width: aspectWidth, height: aspectHeight },
+    false, // без минимума для маленьких thumbnails
+  )
 
   if (viewMode === "list") {
     return (
@@ -62,7 +78,11 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
         data-oid="17hlcl_"
       >
         {/* Transition preview thumbnail */}
-        <div className="shrink-0 w-12 h-9 bg-gray-200 rounded overflow-hidden relative" data-oid="p4_sdph">
+        <div
+          className="shrink-0 bg-gray-200 rounded overflow-hidden relative"
+          style={{ width: `${listThumbWidth}px`, height: `${listThumbHeight}px` }}
+          data-oid="p4_sdph"
+        >
           <video
             src="/t1.mp4" // Статичный файл из public/, не нужен convertVideoSrc
             className="w-full h-full object-cover"
@@ -201,9 +221,10 @@ export function useTransitionsAdapter(): ListAdapter<TransitionListItem> {
           return (transition.complexity || "basic") === filterType
         }
 
-        // Фильтрация по категории
-        if (["basic", "advanced", "creative", "3d", "artistic", "cinematic"].includes(filterType)) {
-          return transition.category === filterType
+        // Фильтрация по категории (с префиксом "category-")
+        if (filterType.startsWith("category-")) {
+          const category = filterType.replace("category-", "")
+          return transition.category === category
         }
 
         return true

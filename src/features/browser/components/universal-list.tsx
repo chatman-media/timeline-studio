@@ -16,6 +16,7 @@ import { NoFiles } from "./no-files"
  */
 export function UniversalList<T extends ListItem>({
   adapter,
+  onItemClick,
   onItemSelect,
   onItemDragStart,
   className,
@@ -165,8 +166,9 @@ export function UniversalList<T extends ListItem>({
                 item={item}
                 size={{ width: currentPreviewSize, height: currentPreviewSize }}
                 viewMode={viewMode}
-                onClick={onItemSelect}
+                onClick={onItemClick || onItemSelect}
                 onDragStart={onItemDragStart}
+                onAddToTimeline={onItemSelect}
                 isSelected={false}
                 isFavorite={adapter.isFavorite?.(item) || false}
                 onToggleFavorite={() => {}}

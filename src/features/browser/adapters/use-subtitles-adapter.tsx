@@ -185,9 +185,10 @@ export function useSubtitlesAdapter(): ListAdapter<SubtitleListItem> {
         return (style.complexity || "basic") === filterType
       }
 
-      // Фильтрация по категории
-      if (["basic", "cinematic", "stylized", "minimal", "animated", "modern"].includes(filterType)) {
-        return style.category === filterType
+      // Фильтрация по категории (с префиксом "category-")
+      if (filterType.startsWith("category-")) {
+        const category = filterType.replace("category-", "")
+        return style.category === category
       }
 
       return true

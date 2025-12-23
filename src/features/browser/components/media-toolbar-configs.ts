@@ -108,12 +108,12 @@ export const transitionsFilterOptions = [
   { value: "basic", label: "transitions.complexity.basic" },
   { value: "intermediate", label: "transitions.complexity.intermediate" },
   { value: "advanced", label: "transitions.complexity.advanced" },
-  { value: "basic", label: "transitions.categories.basic" },
-  { value: "advanced", label: "transitions.categories.advanced" },
-  { value: "creative", label: "transitions.categories.creative" },
-  { value: "3d", label: "transitions.categories.3d" },
-  { value: "artistic", label: "transitions.categories.artistic" },
-  { value: "cinematic", label: "transitions.categories.cinematic" },
+  { value: "category-basic", label: "transitions.categories.basic" },
+  { value: "category-advanced", label: "transitions.categories.advanced" },
+  { value: "category-creative", label: "transitions.categories.creative" },
+  { value: "category-3d", label: "transitions.categories.3d" },
+  { value: "category-artistic", label: "transitions.categories.artistic" },
+  { value: "category-cinematic", label: "transitions.categories.cinematic" },
 ]
 
 // Опции фильтрации для субтитров
@@ -123,12 +123,12 @@ export const subtitlesFilterOptions = [
   { value: "intermediate", label: "subtitles.complexity.intermediate" },
   { value: "advanced", label: "subtitles.complexity.advanced" },
   // По категориям
-  { value: "basic", label: "subtitles.categories.basic" },
-  { value: "cinematic", label: "subtitles.categories.cinematic" },
-  { value: "stylized", label: "subtitles.categories.stylized" },
-  { value: "minimal", label: "subtitles.categories.minimal" },
-  { value: "animated", label: "subtitles.categories.animated" },
-  { value: "modern", label: "subtitles.categories.modern" },
+  { value: "category-basic", label: "subtitles.categories.basic" },
+  { value: "category-cinematic", label: "subtitles.categories.cinematic" },
+  { value: "category-stylized", label: "subtitles.categories.stylized" },
+  { value: "category-minimal", label: "subtitles.categories.minimal" },
+  { value: "category-animated", label: "subtitles.categories.animated" },
+  { value: "category-modern", label: "subtitles.categories.modern" },
 ]
 
 // Опции фильтрации для шаблонов

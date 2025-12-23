@@ -51,16 +51,20 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
 
   // Рассчитываем размеры с учётом пропорций проекта
   const previewSize = typeof size === "number" ? size : size.width
-  // Для вертикальных видео (9:16) размер применяется как высота, для горизонтальных (16:9) - как ширина
-  // Минимум 150px по длинному краю для превью эффектов
+  // size применяется к длинному краю (ширина для 16:9, высота для 9:16)
+  // Минимум 100px применяется к длинному краю
   const { width: previewWidth, height: previewHeight } = calculateDimensionsWithAspectRatio(
     previewSize,
     { width: aspectWidth, height: aspectHeight },
-    true, // минимум 150px
+    true, // минимум 100px
   )
 
-  // Вычисляем соотношение сторон для list режима
-  const aspectRatio = aspectWidth / aspectHeight
+  // Вычисляем размеры для list view thumbnail с учетом пропорций проекта
+  const { width: listThumbWidth, height: listThumbHeight } = calculateDimensionsWithAspectRatio(
+    64, // базовый размер для list view (длинный край)
+    { width: aspectWidth, height: aspectHeight },
+    false, // без минимума для маленьких thumbnails
+  )
 
   // Получаем локализованное имя
   const effectName = effect.name?.ru || effect.name?.[i18n.language] || effect.name?.en || effect.id
@@ -78,9 +82,9 @@ const EffectPreviewWrapper: React.FC<PreviewComponentProps<BaseEffect>> = ({
           <EffectPreview
             effect={effect}
             onClick={handleClick}
-            size={36}
-            width={Math.round(36 * aspectRatio)}
-            height={36}
+            size={listThumbHeight}
+            width={listThumbWidth}
+            height={listThumbHeight}
             data-oid="qz.jont"
           />
         </div>

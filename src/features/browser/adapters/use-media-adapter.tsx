@@ -70,11 +70,15 @@ function calculatePreviewDimensions(file: MediaFile, baseHeight: number): { widt
  * Drag & Drop используется для переноса на таймлайн
  * Контекстное меню используется для удаления файла
  */
-const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item: file, size, viewMode }) => {
+const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item: file, size, viewMode, onClick }) => {
   const { t } = useTranslation()
   const { removeMedia } = useMediaManagement()
 
   // Drag & Drop обрабатывается внутри MediaPreview (VideoPreview использует @dnd-kit/core)
+
+  const handleClick = useCallback(() => {
+    onClick?.(file)
+  }, [file, onClick])
 
   const handleDelete = useCallback(async () => {
     if (file.id) {
@@ -97,6 +101,7 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
         <ContextMenuTrigger asChild data-oid="kd:jd:m">
           <div
             className="flex items-center gap-3 p-1 rounded-md hover:bg-accent/50 cursor-pointer w-full"
+            onClick={handleClick}
             data-oid="list-row"
           >
             {/* Миниатюра - размер зависит от previewSize */}
@@ -136,6 +141,7 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
         <div
           className={cn("cursor-pointer flex flex-col overflow-hidden", isGridMode && "w-full")}
           style={isGridMode ? undefined : { width: dimensions.width }}
+          onClick={handleClick}
           data-oid="nhf_-vm"
         >
           {/* Превью с учетом пропорций */}

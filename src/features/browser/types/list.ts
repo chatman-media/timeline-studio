@@ -136,7 +136,8 @@ export interface ListAdapter<T extends ListItem> {
  */
 export interface UniversalListProps<T extends ListItem> {
   adapter: ListAdapter<T>
-  onItemSelect?: (item: T) => void
+  onItemClick?: (item: T) => void // Клик по элементу (например, открыть в плеере)
+  onItemSelect?: (item: T) => void // Выбор элемента (например, добавить на таймлайн)
   onItemDragStart?: (item: T, event: React.DragEvent) => void
   className?: string
 }
