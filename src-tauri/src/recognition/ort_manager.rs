@@ -19,7 +19,15 @@ impl OrtManager {
 
     INIT.call_once(|| {
       // Используем catch_unwind для предотвращения паники при двойной инициализации
-      let init_result = std::panic::catch_unwind(|| ort::init().commit());
+      let init_result = std::panic::catch_unwind(|| {
+        // Инициализируем ONNX Runtime
+        // ВАЖНО: Environment создается как глобальный синглтон внутри библиотеки ort.
+        // При завершении приложения (std::process::exit) деструктор OrtEnv может
+        // вызвать SIGABRT из-за попытки очистки уже очищенных mutex'ов.
+        // Решение: не используем std::process::exit - полагаемся на graceful shutdown
+        // через обработчик window close event в lib.rs
+        ort::init().commit()
+      });
 
       match init_result {
         Ok(Ok(_)) => {

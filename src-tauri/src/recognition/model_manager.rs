@@ -3,6 +3,7 @@
 use anyhow::{anyhow, Result};
 use ort::session::{builder::GraphOptimizationLevel, Session};
 use serde::{Deserialize, Serialize};
+use std::mem::ManuallyDrop;
 use std::path::PathBuf;
 
 use super::ort_manager::OrtManager;
@@ -153,9 +154,27 @@ impl YoloModel {
 }
 
 /// Менеджер моделей
+///
+/// ВАЖНО: Session обернута в ManuallyDrop чтобы предотвратить вызов деструктора
+/// при завершении приложения. Это необходимо для избежания ошибок mutex
+/// в ONNX Runtime при глобальной деструкции C++ объектов.
 pub struct ModelManager {
-  session: Option<Session>,
+  session: Option<ManuallyDrop<Session>>,
   model_type: YoloModel,
+}
+
+impl Drop for ModelManager {
+  fn drop(&mut self) {
+    // Явно leak сессию, чтобы её деструктор НИКОГДА не вызывался.
+    // Это критически важно для избежания SIGABRT при завершении приложения,
+    // когда ONNX Runtime пытается очистить уже очищенные ресурсы.
+    // ManuallyDrop::drop не вызывается автоматически, но мы должны убедиться,
+    // что даже при явном drop'е сессия не будет уничтожена.
+    if let Some(_session) = self.session.take() {
+      // Ничего не делаем - ManuallyDrop предотвращает вызов деструктора автоматически
+      // Сессия leak'нется вместе с ONNX Environment
+    }
+  }
 }
 
 impl ModelManager {
@@ -185,23 +204,23 @@ impl ModelManager {
       .with_intra_threads(4)?
       .commit_from_file(&model_path)?;
 
-    self.session = Some(session);
+    // Оборачиваем в ManuallyDrop чтобы предотвратить вызов деструктора
+    // при завершении приложения и избежать ошибок mutex в ONNX Runtime
+    self.session = Some(ManuallyDrop::new(session));
     Ok(())
   }
 
   /// Получить сессию
   pub fn get_session(&self) -> Result<&Session> {
     self
-      .session
-      .as_ref()
+      .session.as_deref() // Deref ManuallyDrop to get &Session
       .ok_or_else(|| anyhow!("Model not loaded. Call load_model() first."))
   }
 
   /// Получить изменяемую сессию
   pub fn get_session_mut(&mut self) -> Result<&mut Session> {
     self
-      .session
-      .as_mut()
+      .session.as_deref_mut() // Deref ManuallyDrop to get &mut Session
       .ok_or_else(|| anyhow!("Model not loaded. Call load_model() first."))
   }
 

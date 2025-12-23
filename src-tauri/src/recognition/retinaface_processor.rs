@@ -99,6 +99,19 @@ pub struct RetinaFaceProcessor {
   nms_threshold: f32,
 }
 
+impl Drop for RetinaFaceProcessor {
+  fn drop(&mut self) {
+    // Leak ONNX Session чтобы избежать SIGABRT при завершении приложения.
+    // Когда приложение вызывает std::process::exit, деструктор Session
+    // может привести к крашу из-за попытки очистить уже очищенные мьютексы в ONNX Runtime.
+    if let Ok(mut session) = self.session.write() {
+      if let Some(sess) = session.take() {
+        std::mem::forget(sess);
+      }
+    }
+  }
+}
+
 impl RetinaFaceProcessor {
   /// Создать новый процессор RetinaFace
   pub fn new(model_type: RetinaFaceModel) -> Result<Self> {

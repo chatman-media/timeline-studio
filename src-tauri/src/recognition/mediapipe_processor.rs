@@ -192,6 +192,19 @@ pub struct MediaPipeProcessor {
   num_faces: usize,
 }
 
+impl Drop for MediaPipeProcessor {
+  fn drop(&mut self) {
+    // Leak ONNX Session чтобы избежать SIGABRT при завершении приложения.
+    // Когда приложение вызывает std::process::exit, деструктор Session
+    // может привести к крашу из-за попытки очистить уже очищенные мьютексы в ONNX Runtime.
+    if let Ok(mut session) = self.session.write() {
+      if let Some(sess) = session.take() {
+        std::mem::forget(sess);
+      }
+    }
+  }
+}
+
 impl MediaPipeProcessor {
   /// Создать новый процессор MediaPipe
   pub fn new(model_type: MediaPipeModel) -> Result<Self> {
