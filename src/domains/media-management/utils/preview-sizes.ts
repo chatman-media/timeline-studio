@@ -127,8 +127,9 @@ export function getClosestPreviewSize(targetSize: number): PreviewSize {
 export type ContentSize = { width: number; height: number }
 
 /**
- * Вычислить размеры с учетом соотношения сторон
- * Для шаблонов минимум 150px по длинному краю
+ * Вычислить размеры с учетом соотношения сторон для grid layout
+ * baseSize применяется к длинному краю (ширина для горизонтального, высота для вертикального)
+ * Для шаблонов минимум 100px применяется к длинному краю
  */
 export function calculateDimensionsWithAspectRatio(
   baseSize: number,
@@ -140,8 +141,8 @@ export function calculateDimensionsWithAspectRatio(
   let width: number
   let height: number
 
-  // Для шаблонов устанавливаем минимум 150px по длинному краю
-  const minTemplateSize = isTemplate ? 150 : 0
+  // Для шаблонов устанавливаем минимум 100px по длинному краю
+  const minTemplateSize = isTemplate ? 100 : 0
   const effectiveSize = isTemplate ? Math.max(baseSize, minTemplateSize) : baseSize
 
   if (ratio >= 1) {
