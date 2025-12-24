@@ -1,3 +1,12 @@
+## [3.43.2](https://github.com/chatman-media/timeline-studio/compare/v3.43.1...v3.43.2) (2025-12-24)
+
+
+### Bug Fixes
+
+* **browser:** остановка hover-видео при уходе мыши ([3e80ae3](https://github.com/chatman-media/timeline-studio/commit/3e80ae3195e0c77a99425b1f3f34fd3c24012be8))
+* **menu:** исправлено название приложения в menu bar на macOS ([e4eee6e](https://github.com/chatman-media/timeline-studio/commit/e4eee6e8a48f8d826e415646fb735cc3821b6192))
+* **player:** исправлена синхронизация аудио/видео и громкость ([5e470d5](https://github.com/chatman-media/timeline-studio/commit/5e470d5705d72d4a7dc8b3496cfc324b17adf7fe))
+
 ## [3.43.1](https://github.com/chatman-media/timeline-studio/compare/v3.43.0...v3.43.1) (2025-12-23)
 
 
