@@ -32,7 +32,7 @@ describe("PlayerMachine", () => {
       expect(context.video).toBeNull()
       expect(context.currentTime).toBe(0)
       expect(context.duration).toBe(0)
-      expect(context.volume).toBe(0.5)
+      expect(context.volume).toBe(50) // Диапазон 0-100
       expect(context.isPlaying).toBe(false)
       expect(context.isSeeking).toBe(false)
       expect(context.isVideoLoading).toBe(false)

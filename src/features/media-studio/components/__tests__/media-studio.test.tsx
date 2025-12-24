@@ -74,6 +74,13 @@ vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   }),
 }))
 
+// Мокаем useAppMenu
+vi.mock("@/hooks/use-app-menu", () => ({
+  useAppMenu: () => {
+    // Просто пустой хук, ничего не делает в тестах
+  },
+}))
+
 // Мокаем useApp для ProjectLoadingOverlay
 vi.mock("@/domains/project-management/providers/app-provider", () => ({
   useApp: () => ({
