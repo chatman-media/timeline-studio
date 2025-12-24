@@ -38,11 +38,11 @@ export type {
   MediaPreviewData,
   ScanFolderOptions,
   ScannedMediaFile,
-} from "@/core/ports/media.port"
+} from "../../../src/core/ports/media.port"
 
 // FFprobe types
 export type {
   FfprobeData,
   FfprobeFormat,
   FfprobeStream,
-} from "@/domains/media-management/types/ffprobe"
+} from "../../../src/domains/media-management/types/ffprobe"

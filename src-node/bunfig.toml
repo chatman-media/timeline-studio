@@ -1,0 +1,19 @@
+[install]
+# Bun package manager settings
+optional = true
+dev = true
+peer = true
+
+[run]
+# Preload tsconfig paths
+preload = []
+
+# Path aliases matching tsconfig.json
+[module]
+paths = {
+  "@/*" = ["../src/*"],
+  "@domains/*" = ["../src/domains/*"],
+  "@core/*" = ["../src/core/*"],
+  "@adapters/*" = ["../src/adapters/*"],
+  "@node/*" = ["./src/*"]
+}

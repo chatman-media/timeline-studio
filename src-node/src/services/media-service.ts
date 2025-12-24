@@ -1,5 +1,5 @@
-import { NodeMediaService } from "@/adapters/node/media"
-import type { IMediaService } from "@core/ports/media.port"
+import { NodeMediaService } from "../../../src/adapters/node/media"
+import type { IMediaService } from "../../../src/core/ports/media.port"
 import type { CacheService } from "./cache-service"
 import type { QueueService } from "./queue-service"
 import { createLogger } from "../utils/logger"
@@ -153,5 +153,45 @@ export class EnhancedMediaService implements IMediaService {
 
   async cancelProcessing(filePath: string) {
     return this.nodeService.cancelProcessing(filePath)
+  }
+
+  async getMediaFiles(directory: string) {
+    return this.nodeService.getMediaFiles(directory)
+  }
+
+  async loadPreviewData(path: string) {
+    return this.nodeService.loadPreviewData(path)
+  }
+
+  async clearPreviewData(fileId?: string) {
+    return this.nodeService.clearPreviewData(fileId)
+  }
+
+  async saveTimelineFrames(fileId: string, frames: string[]) {
+    return this.nodeService.saveTimelineFrames(fileId, frames)
+  }
+
+  async getTimelineFrames(fileId: string) {
+    return this.nodeService.getTimelineFrames(fileId)
+  }
+
+  async getFilesWithPreviews() {
+    return this.nodeService.getFilesWithPreviews()
+  }
+
+  async restorePreviewCache() {
+    return this.nodeService.restorePreviewCache()
+  }
+
+  async ejectDevice(deviceId: string) {
+    return this.nodeService.ejectDevice(deviceId)
+  }
+
+  async generateWaveformPreview(audioPath: string, outputPath: string, options?: Parameters<IMediaService["generateWaveformPreview"]>[2]) {
+    return this.nodeService.generateWaveformPreview(audioPath, outputPath, options)
+  }
+
+  async generateProxy(sourcePath: string, options: Parameters<IMediaService["generateProxy"]>[1]) {
+    return this.nodeService.generateProxy(sourcePath, options)
   }
 }
