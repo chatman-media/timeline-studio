@@ -109,7 +109,7 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} data-oid="nt6haqq">
-      <div className="relative h-full w-full overflow-hidden bg-background" data-oid="3f4d5j8">
+      <div className="relative h-full w-full bg-background" data-oid="3f4d5j8">
         {activeWidgets.map((widget: Widget) => {
           const renderWidget = widgetRenderers[widget.type]
           if (!renderWidget) {
