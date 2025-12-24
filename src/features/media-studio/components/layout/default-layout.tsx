@@ -28,7 +28,7 @@ function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVis
       <ResizablePanelGroup
         direction="horizontal"
         className="min-h-0 flex-grow"
-        autoSaveId="default-layout-1"
+        id="default-layout-1"
         data-oid="2s1lg2l"
       >
         <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="sm-vxtv">
@@ -52,7 +52,7 @@ function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVis
       <ResizablePanelGroup
         direction="horizontal"
         className="min-h-0 flex-grow"
-        autoSaveId="default-layout-2"
+        id="default-layout-2"
         data-oid="6rxp1jv"
       >
         <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="o0ub_ne">
@@ -76,7 +76,7 @@ function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVis
       <ResizablePanelGroup
         direction="horizontal"
         className="min-h-0 flex-grow"
-        autoSaveId="default-layout-3"
+        id="default-layout-3"
         data-oid="46yr-vo"
       >
         <ResizablePanel defaultSize={50} minSize={20} maxSize={70} data-oid="-4e5ff-">
@@ -115,7 +115,7 @@ export function DefaultLayout() {
     <ResizablePanelGroup
       direction="vertical"
       className="min-h-0 flex-grow"
-      autoSaveId="default-layout-main"
+      id="default-layout-main"
       data-oid="l_v7cm:"
     >
       <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="_nlylxq">
@@ -142,7 +142,7 @@ export function DefaultLayout() {
             <ResizablePanelGroup
               direction="horizontal"
               className="min-h-0 h-full"
-              autoSaveId="timeline-with-ai"
+              id="timeline-with-ai"
               data-oid="ynds320"
             >
               <ResizablePanel defaultSize={70} minSize={30} maxSize={80} data-oid="787y4hx">

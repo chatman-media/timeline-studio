@@ -45,7 +45,7 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
       <ResizablePanelGroup
         direction="vertical"
         className="min-h-0 flex-grow"
-        autoSaveId="vertical-layout-1"
+        id="vertical-layout-1"
         data-oid="jzdr3n-"
       >
         <ResizablePanel defaultSize={35} minSize={20} maxSize={80} data-oid="ok-e6g4">
@@ -69,7 +69,7 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
       <ResizablePanelGroup
         direction="vertical"
         className="min-h-0 flex-grow"
-        autoSaveId="vertical-layout-2"
+        id="vertical-layout-2"
         data-oid="lr5--53"
       >
         <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="1_srr18">
@@ -93,7 +93,7 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
       <ResizablePanelGroup
         direction="vertical"
         className="min-h-0 flex-grow"
-        autoSaveId="vertical-layout-3"
+        id="vertical-layout-3"
         data-oid="52r_tof"
       >
         <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid="3-4s.er">
@@ -116,11 +116,11 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
     <ResizablePanelGroup
       direction="vertical"
       className="min-h-0 flex-grow"
-      autoSaveId="vertical-layout-4"
+      id="vertical-layout-4"
       data-oid="zfjph3d"
     >
       <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="q5097sa">
-        <ResizablePanelGroup direction="horizontal" autoSaveId="vertical-layout-4" data-oid="_qxiglq">
+        <ResizablePanelGroup direction="horizontal" id="vertical-layout-4" data-oid="_qxiglq">
           <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid="y_kyfcg">
             <div className="h-full flex-1" data-oid="ao618q-">
               <Browser data-oid="19lg:wd" />
@@ -160,7 +160,7 @@ export function VerticalLayout() {
     <ResizablePanelGroup
       direction="horizontal"
       className="min-h-0 flex-grow"
-      autoSaveId="vertical-main-layout"
+      id="vertical-main-layout"
       data-oid="o28gc67"
     >
       <ResizablePanel defaultSize={67} minSize={50} data-oid="cnc4jx:">

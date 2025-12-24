@@ -23,7 +23,7 @@ function LeftLayout() {
       <ResizablePanelGroup
         direction="horizontal"
         className="min-h-0 flex-grow"
-        autoSaveId="opts-layout-1"
+        id="opts-layout-1"
         data-oid="r_oszsc"
       >
         <ResizablePanel defaultSize={35} minSize={20} maxSize={80} data-oid="9-hvyp7">
@@ -47,7 +47,7 @@ function LeftLayout() {
       <ResizablePanelGroup
         direction="horizontal"
         className="min-h-0 flex-grow"
-        autoSaveId="opts-layout-2"
+        id="opts-layout-2"
         data-oid="b1vbxl8"
       >
         <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="zcmazig">
@@ -70,11 +70,11 @@ function LeftLayout() {
     <ResizablePanelGroup
       direction="vertical"
       className="min-h-0 flex-grow"
-      autoSaveId="opts-layout-3"
+      id="opts-layout-3"
       data-oid="cqxsfi8"
     >
       <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="-qn6s1z">
-        <ResizablePanelGroup direction="horizontal" autoSaveId="opts-layout-4" data-oid="9wet:-d">
+        <ResizablePanelGroup direction="horizontal" id="opts-layout-4" data-oid="9wet:-d">
           <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid="tn-v4ey">
             <div className="h-full flex-1" data-oid="3krfsr:">
               <Browser data-oid="3yxw8:w" />
@@ -106,7 +106,7 @@ export function OptionsLayout() {
     <ResizablePanelGroup
       direction="horizontal"
       className="min-h-0 flex-grow"
-      autoSaveId="opts-layout-main"
+      id="opts-layout-main"
       data-oid="374v5bl"
     >
       <ResizablePanel defaultSize={70} data-oid="uk418-f">

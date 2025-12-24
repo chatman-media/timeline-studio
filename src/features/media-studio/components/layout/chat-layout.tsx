@@ -35,7 +35,7 @@ function LeftChatLayout() {
         <ResizablePanelGroup
           direction="horizontal"
           className="min-h-0 flex-grow"
-          autoSaveId="chat-layout-1"
+          id="chat-layout-1"
           data-oid="wpr..__"
         >
           <ResizablePanel defaultSize={35} minSize={20} maxSize={80} data-oid="weona5z">
@@ -59,7 +59,7 @@ function LeftChatLayout() {
         <ResizablePanelGroup
           direction="horizontal"
           className="min-h-0 flex-grow"
-          autoSaveId="chat-layout-2"
+          id="chat-layout-2"
           data-oid="uyypaki"
         >
           <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="ry9bqzz">
@@ -82,7 +82,7 @@ function LeftChatLayout() {
       <ResizablePanelGroup
         direction="horizontal"
         className="min-h-0 flex-grow"
-        autoSaveId="chat-layout-3"
+        id="chat-layout-3"
         data-oid="co0:y:-"
       >
         <ResizablePanel defaultSize={25} minSize={20} maxSize={60} data-oid="vc3gyah">
@@ -113,7 +113,7 @@ function LeftChatLayout() {
       <ResizablePanelGroup
         direction="vertical"
         className="min-h-0 flex-grow"
-        autoSaveId="chat-layout-4"
+        id="chat-layout-4"
         data-oid="_cxy91w"
       >
         <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="2ya019-">
@@ -137,11 +137,11 @@ function LeftChatLayout() {
       <ResizablePanelGroup
         direction="vertical"
         className="min-h-0 flex-grow"
-        autoSaveId="chat-layout-5"
+        id="chat-layout-5"
         data-oid="7kjdfm7"
       >
         <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="qeosueq">
-          <ResizablePanelGroup direction="horizontal" autoSaveId="chat-layout-6" data-oid="4npy069">
+          <ResizablePanelGroup direction="horizontal" id="chat-layout-6" data-oid="4npy069">
             <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid=".m9eu9n">
               <div className="h-full flex-1" data-oid="6px-obe">
                 <Browser data-oid="k2s_:us" />
@@ -171,11 +171,11 @@ function LeftChatLayout() {
       <ResizablePanelGroup
         direction="vertical"
         className="min-h-0 flex-grow"
-        autoSaveId="chat-layout-7"
+        id="chat-layout-7"
         data-oid="6cceq5m"
       >
         <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="k:aqb6t">
-          <ResizablePanelGroup direction="horizontal" autoSaveId="chat-layout-8" data-oid="v18hmba">
+          <ResizablePanelGroup direction="horizontal" id="chat-layout-8" data-oid="v18hmba">
             <ResizablePanel defaultSize={70} minSize={20} maxSize={100} data-oid="5:o:o:u">
               <div className="relative h-full flex-1" data-oid="ez9afh2">
                 <VideoPlayer data-oid="e8p.m0d" />
@@ -204,11 +204,11 @@ function LeftChatLayout() {
     <ResizablePanelGroup
       direction="vertical"
       className="min-h-0 flex-grow"
-      autoSaveId="chat-layout-9"
+      id="chat-layout-9"
       data-oid="prad_::"
     >
       <ResizablePanel defaultSize={50} minSize={20} maxSize={80} data-oid="mwb49ht">
-        <ResizablePanelGroup direction="horizontal" autoSaveId="chat-layout-10" data-oid="0g8pwt4">
+        <ResizablePanelGroup direction="horizontal" id="chat-layout-10" data-oid="0g8pwt4">
           <ResizablePanel defaultSize={25} minSize={20} maxSize={60} data-oid="je1wooo">
             <div className="h-full flex-1" data-oid="wdfxid5">
               <Browser data-oid="gchyei_" />
@@ -243,7 +243,7 @@ export function ChatLayout() {
     <ResizablePanelGroup
       direction="horizontal"
       className="min-h-0 flex-grow"
-      autoSaveId="chat-layout-main"
+      id="chat-layout-main"
       data-oid="616cg7f"
     >
       <ResizablePanel defaultSize={70} data-oid="nm7_fff">
