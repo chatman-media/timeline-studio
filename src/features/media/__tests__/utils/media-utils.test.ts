@@ -127,7 +127,7 @@ describe("media-utils", () => {
   })
 
   describe("getRemainingMediaCounts", () => {
-    it("should count remaining video files with audio", () => {
+    it("should count remaining video files (including videos without audio)", () => {
       const media: MediaFile[] = [
         createMockMediaFile({
           id: "1",
@@ -161,7 +161,7 @@ describe("media-utils", () => {
       const addedFiles = new Set(["/video1.mp4"])
       const result = getRemainingMediaCounts(media, addedFiles)
 
-      expect(result.remainingVideoCount).toBe(1) // Only video2.mp4 (video3 has no audio)
+      expect(result.remainingVideoCount).toBe(2) // video2.mp4 and video3.mp4 (videos without audio are also counted)
       expect(result.remainingAudioCount).toBe(0)
       expect(result.allFilesAdded).toBe(false)
     })
@@ -194,7 +194,7 @@ describe("media-utils", () => {
       expect(result.allFilesAdded).toBe(false)
     })
 
-    it("should report allFilesAdded when all files with audio are added", () => {
+    it("should report allFilesAdded when all media files are added (including videos without audio)", () => {
       const media: MediaFile[] = [
         createMockMediaFile({
           id: "1",
@@ -215,10 +215,10 @@ describe("media-utils", () => {
         }),
       ]
 
-      const addedFiles = new Set(["/video1.mp4"])
+      const addedFiles = new Set(["/video1.mp4", "/video2.mp4"]) // Both videos added (including video without audio)
       const result = getRemainingMediaCounts(media, addedFiles)
 
-      expect(result.allFilesAdded).toBe(true) // All files with audio are added
+      expect(result.allFilesAdded).toBe(true) // All media files are added
     })
 
     it("should handle empty media array", () => {

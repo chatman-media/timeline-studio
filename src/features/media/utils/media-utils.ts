@@ -36,21 +36,26 @@ export function getRemainingMediaCounts(
   remainingAudioCount: number
   allFilesAdded: boolean
 } {
+  // Для видео НЕ требуем наличие аудио потока (видео без звука это нормально)
   const remainingVideoCount = media.filter(
-    (f) => getFileType(f) === "video" && f.path && !addedFiles.has(f.path) && hasAudioStream(f),
+    (f) => getFileType(f) === "video" && f.path && !addedFiles.has(f.path),
   ).length
 
+  // Для аудио файлов требуем наличие аудио потока (иначе это не аудио)
   const remainingAudioCount = media.filter(
     (f) => getFileType(f) === "audio" && f.path && !addedFiles.has(f.path) && hasAudioStream(f),
   ).length
 
-  // Файлы с аудио (видео и аудио файлы, исключаем изображения)
-  const filesWithAudio = media.filter(hasAudioStream)
+  // Для общего подсчёта учитываем все медиа файлы (видео и аудио)
+  const allMediaFiles = media.filter((f) => {
+    const type = getFileType(f)
+    return (type === "video" || type === "audio") && f.path
+  })
 
   // allFilesAdded = true только если есть хотя бы один файл И все файлы добавлены
-  // ВАЖНО: .every() на пустом массиве возвращает true, поэтому нужна проверка filesWithAudio.length > 0
+  // ВАЖНО: .every() на пустом массиве возвращает true, поэтому нужна проверка allMediaFiles.length > 0
   const allFilesAdded =
-    filesWithAudio.length > 0 && filesWithAudio.every((file) => file.path && addedFiles.has(file.path))
+    allMediaFiles.length > 0 && allMediaFiles.every((file) => file.path && addedFiles.has(file.path))
 
   return {
     remainingVideoCount,

@@ -38,6 +38,17 @@ export function StatusBar({
   const { remainingVideoCount, remainingAudioCount, allFilesAdded } = getRemainingMediaCounts(media, addedFilesPaths)
   const topDateWithRemainingFiles = getTopDateWithRemainingFiles(sortedDates, addedFilesPaths)
 
+  // DEBUG: логируем почему не показываются кнопки
+  console.log("[StatusBar] Counts:", {
+    totalMedia: media.length,
+    addedFiles: addedFilesPaths.size,
+    remainingVideoCount,
+    remainingAudioCount,
+    allFilesAdded,
+    hasVideos: media.filter((f) => f.isVideo).length,
+    hasAudio: media.filter((f) => f.isAudio).length,
+  })
+
   return (
     <div className="flex w-full items-center justify-between gap-2 p-1 text-sm" data-oid="ojgzpl5">
       <div className="flex flex-col items-end justify-center gap-0 text-xs" data-oid="hg2xcgy">
