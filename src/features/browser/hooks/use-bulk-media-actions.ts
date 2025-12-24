@@ -84,15 +84,32 @@ export function useBulkMediaActions() {
       const addedPaths = new Set(mediaResources.map((r) => r.file.path))
       const filesToAdd = allMedia.filter((file) => !addedPaths.has(file.path))
 
+      console.log("[useBulkMediaActions] addAllFiles called:", {
+        totalMedia: allMedia.length,
+        alreadyAdded: addedPaths.size,
+        toAdd: filesToAdd.length,
+        firstFile: filesToAdd[0],
+        mediaTypes: allMedia.reduce((acc, f) => {
+          const type = f.isVideo ? "video" : f.isAudio ? "audio" : f.isImage ? "image" : "unknown"
+          acc[type] = (acc[type] || 0) + 1
+          return acc
+        }, {} as Record<string, number>),
+      })
+
       logger.info(`Adding ${filesToAdd.length} files to resources`)
 
       for (const file of filesToAdd) {
         try {
+          console.log("[useBulkMediaActions] Adding file:", file.name, file.path)
           await addMedia(file)
+          console.log("[useBulkMediaActions] Successfully added:", file.name)
         } catch (error) {
+          console.error("[useBulkMediaActions] Failed to add file:", file.name, error)
           logger.error("Failed to add file:", { path: file.path, error })
         }
       }
+
+      console.log("[useBulkMediaActions] Finished adding all files")
     },
     [addMedia, mediaResources],
   )
