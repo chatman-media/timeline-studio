@@ -183,7 +183,19 @@ export function WidgetContainer({
     zIndex: widget.zIndex + (isDragging ? 1000 : 0),
     opacity: widget.isVisible ? 1 : 0.3,
     pointerEvents: widget.isVisible ? ("auto" as const) : ("none" as const),
+    // DEBUG: яркие границы для видимости
+    border: "3px solid red",
+    backgroundColor: "rgba(255, 0, 0, 0.1)",
   }
+
+  // DEBUG: Log positioning
+  console.log(`[WidgetContainer] Rendering ${widget.type}:`, {
+    id: widget.id,
+    bounds: widget.bounds,
+    isVisible: widget.isVisible,
+    isMinimized: widget.isMinimized,
+    style,
+  })
 
   if (widget.isMinimized) {
     return null

@@ -9,7 +9,6 @@ import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"
-import { DragDropProvider } from "@/features/timeline/components/drag-drop-provider"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
 import { WidgetWorkspace } from "@/features/workspace/components/widget-workspace"
 import type { Widget, WidgetType } from "@/features/workspace/types/widget"
@@ -81,28 +80,26 @@ export function MediaStudio() {
   )
 
   return (
-    <DragDropProvider data-oid="global-dnd-provider">
-      <div className="flex flex-col h-screen w-screen m-0 p-0" data-oid="uxjltd1">
-        <TopBar data-oid="1h9sg4d" />
-        <div className="flex-1 min-h-0" data-oid="r0gyfo8">
-          <WidgetWorkspace widgetRenderers={widgetRenderers} data-oid="workspace" />
-        </div>
-
-        {/* Контейнер для модальных окон */}
-        <ModalContainer data-oid="yeoe5rl" />
-
-        {/* Оверлей загрузки проекта */}
-        <ProjectLoadingOverlay data-oid="dg_urdy" />
-
-        {/* Глобальный индикатор прогресса AI анализа */}
-        <AnalysisProgressIndicator
-          fileName={lastProgress?.fileName}
-          stage={lastProgress?.stage}
-          progress={lastProgress?.progress}
-          isVisible={!!lastProgress}
-          data-oid="crl6c.q"
-        />
+    <div className="flex flex-col h-screen w-screen m-0 p-0 bg-[#f7f8f9] dark:bg-[#252526]" data-oid="uxjltd1">
+      <TopBar data-oid="1h9sg4d" />
+      <div className="flex-1 min-h-0" data-oid="r0gyfo8">
+        <WidgetWorkspace widgetRenderers={widgetRenderers} data-oid="workspace" />
       </div>
-    </DragDropProvider>
+
+      {/* Контейнер для модальных окон */}
+      <ModalContainer data-oid="yeoe5rl" />
+
+      {/* Оверлей загрузки проекта */}
+      <ProjectLoadingOverlay data-oid="dg_urdy" />
+
+      {/* Глобальный индикатор прогресса AI анализа */}
+      <AnalysisProgressIndicator
+        fileName={lastProgress?.fileName}
+        stage={lastProgress?.stage}
+        progress={lastProgress?.progress}
+        isVisible={!!lastProgress}
+        data-oid="crl6c.q"
+      />
+    </div>
   )
 }
