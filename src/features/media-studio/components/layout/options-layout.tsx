@@ -3,6 +3,7 @@ import { Browser } from "@/features/browser/components/browser"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
+import { PANEL_GROUP_IDS, PANEL_IDS } from "@/features/media-studio/config/panel-ids"
 import { VideoPlayer } from "@/features/video-player/components/video-player"
 
 function LeftLayout() {

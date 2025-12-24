@@ -313,3 +313,156 @@ bun run dev | grep "Worker"
 ## Лицензия
 
 MIT
+
+## Интеграция с фронтендом
+
+### Установка зависимостей
+
+В основном проекте уже установлен `@trpc/client`:
+
+```bash
+# В корне проекта
+bun add @trpc/client@10.45.0
+```
+
+### tRPC Клиент
+
+Клиент находится в `src/adapters/node/node-backend-client.ts`:
+
+```typescript
+import { nodeBackendClient } from "@/adapters/node/node-backend-client"
+
+// Проверка здоровья
+const health = await nodeBackendClient.health.check.query()
+
+// Получение метаданных
+const metadata = await nodeBackendClient.media.getMetadata.query({
+  filePath: "/path/to/video.mp4"
+})
+
+// Сканирование папки
+const files = await nodeBackendClient.media.scanWithThumbnails.mutate({
+  folderPath: "/path/to/folder",
+  width: 320,
+  height: 180
+})
+```
+
+### React Hook
+
+Используйте хук `useNodeBackend` для удобной работы:
+
+```typescript
+import { useNodeBackend } from "@/features/browser/hooks"
+
+function MediaBrowser() {
+  const {
+    scanFolder,
+    isScanning,
+    error,
+    checkHealth,
+    getCacheStats
+  } = useNodeBackend({
+    onError: (err) => console.error("Backend error:", err)
+  })
+
+  const handleScan = async () => {
+    const files = await scanFolder("/path/to/folder", {
+      width: 320,
+      height: 180
+    })
+    console.log(`Scanned ${files.length} files`)
+  }
+
+  return (
+    <button onClick={handleScan} disabled={isScanning}>
+      {isScanning ? "Scanning..." : "Scan Folder"}
+    </button>
+  )
+}
+```
+
+### Пример использования
+
+Полный пример в `src/features/browser/examples/node-backend-example.tsx`:
+
+```typescript
+import { NodeBackendExample } from "@/features/browser/examples/node-backend-example"
+
+export default function Page() {
+  return <NodeBackendExample />
+}
+```
+
+### Конфигурация
+
+Добавьте в `.env.local`:
+
+```bash
+# Node.js Backend URL (опционально - по умолчанию http://localhost:3001)
+NEXT_PUBLIC_NODE_BACKEND_URL=http://localhost:3001
+```
+
+### Запуск полного стека
+
+1. Запустите Node.js бэкенд:
+```bash
+cd src-node
+bun run dev
+```
+
+2. В отдельном терминале запустите фронтенд:
+```bash
+bun run dev
+```
+
+3. Откройте http://localhost:3000
+
+## Доступные методы
+
+### useNodeBackend Hook
+
+```typescript
+const {
+  // State
+  isScanning,
+  isProcessing,
+  error,
+
+  // Health
+  checkHealth(),
+
+  // Scanning
+  scanFolder(path, options),
+  scanFolderSimple(path, options),
+
+  // Processing
+  getMetadata(filePath),
+  processFiles(filePaths),
+  generateThumbnail(fileId, filePath, options),
+  generateWaveform(filePath),
+
+  // Cache
+  getCacheStats(),
+  clearCache(),
+
+  // Direct client access
+  client
+} = useNodeBackend()
+```
+
+### Прямой доступ к клиенту
+
+Для продвинутого использования:
+
+```typescript
+import { nodeBackendClient } from "@/adapters/node/node-backend-client"
+
+// Все роутеры доступны
+await nodeBackendClient.media.*
+await nodeBackendClient.thumbnail.*
+await nodeBackendClient.waveform.*
+await nodeBackendClient.cache.*
+await nodeBackendClient.health.*
+```
+
