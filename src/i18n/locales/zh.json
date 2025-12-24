@@ -2013,6 +2013,7 @@
       "errorUpdatingSettings": "更新设置出错",
       "cpuNoAcceleration": "CPU（无加速）",
       "loadingInfo": "加载GPU信息中...",
+      "recommendationsTitle": "建议",
       "recommendations": {
         "noAcceleration": "GPU加速不可用，建议使用CPU编码",
         "installDrivers": "安装GPU驱动程序以获得更好性能",

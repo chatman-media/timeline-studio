@@ -1325,6 +1325,7 @@
       "remove": "Remove",
       "addToFavorites": "Add to favorites",
       "removeFromFavorites": "Remove from favorites",
+      "applyToPlayer": "Send to player",
       "favorites": "Favorites",
       "sortBy": "Sort by",
       "groupBy": "Group by",
@@ -2384,6 +2385,7 @@
       "errorUpdatingSettings": "Error updating settings",
       "cpuNoAcceleration": "CPU (no acceleration)",
       "loadingInfo": "Loading GPU information...",
+      "recommendationsTitle": "Recommendations",
       "recommendations": {
         "noAcceleration": "GPU acceleration unavailable, CPU encoding is recommended",
         "installDrivers": "Install GPU drivers for better performance",

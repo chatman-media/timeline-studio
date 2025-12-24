@@ -2244,6 +2244,7 @@
       "errorUpdatingSettings": "सेटिंग्स अपडेट करने में त्रुटि",
       "cpuNoAcceleration": "CPU (कोई एक्सेलेरेशन नहीं)",
       "loadingInfo": "GPU जानकारी लोड हो रही है...",
+      "recommendationsTitle": "सिफारिशें",
       "recommendations": {
         "noAcceleration": "GPU एक्सेलेरेशन अनुपलब्ध, CPU एन्कोडिंग की सिफारिश",
         "installDrivers": "बेहतर प्रदर्शन के लिए GPU ड्राइवर इंस्टॉल करें",

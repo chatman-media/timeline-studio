@@ -2017,6 +2017,7 @@
       "errorUpdatingSettings": "Ayarlar güncellenirken hata",
       "cpuNoAcceleration": "CPU (hızlandırma yok)",
       "loadingInfo": "GPU bilgileri yükleniyor...",
+      "recommendationsTitle": "Öneriler",
       "recommendations": {
         "noAcceleration": "GPU hızlandırma kullanılamıyor, CPU kodlaması önerilir",
         "installDrivers": "Daha iyi performans için GPU sürücülerini kurun",

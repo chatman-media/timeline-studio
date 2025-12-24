@@ -695,14 +695,13 @@ pub fn run() {
       }
 
       // Создаем нативное меню приложения
+      // На macOS меню является app-wide, поэтому используем app.set_menu()
       match menu::create_app_menu(app) {
         Ok(menu) => {
-          if let Some(window) = app.get_webview_window("main") {
-            if let Err(e) = window.set_menu(menu) {
-              log::error!("Failed to set menu: {e}");
-            } else {
-              log::info!("Application menu created successfully");
-            }
+          if let Err(e) = app.set_menu(menu) {
+            log::error!("Failed to set menu: {e}");
+          } else {
+            log::info!("Application menu created successfully");
           }
         }
         Err(e) => {

@@ -1985,6 +1985,7 @@
       "errorUpdatingSettings": "Error al actualizar la configuración",
       "cpuNoAcceleration": "CPU (sin aceleración)",
       "loadingInfo": "Cargando información de GPU...",
+      "recommendationsTitle": "Recomendaciones",
       "recommendations": {
         "noAcceleration": "Aceleración GPU no disponible, se recomienda codificación CPU",
         "installDrivers": "Instale los controladores de GPU para mejor rendimiento",

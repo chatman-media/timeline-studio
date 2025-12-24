@@ -144,6 +144,15 @@ export function useTimelineUI(): TimelineUIContextType {
 }
 
 /**
+ * Безопасный хук для доступа к Timeline UI context
+ * Возвращает null если провайдер недоступен
+ */
+export function useTimelineUIOptional(): TimelineUIContextType | null {
+  const context = useContext(TimelineUIContext)
+  return context
+}
+
+/**
  * Хук для получения только timeScale (удобнее для часто используемого параметра)
  */
 export function useTimeScale(): number {

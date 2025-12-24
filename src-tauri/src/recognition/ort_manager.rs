@@ -1,18 +1,19 @@
 use anyhow::Result;
-use std::sync::{Mutex, Once};
+use std::sync::{
+  atomic::{AtomicBool, Ordering},
+  Once,
+};
 
 static INIT: Once = Once::new();
-static ORT_INITIALIZED: Mutex<bool> = Mutex::new(false);
+static ORT_INITIALIZED: AtomicBool = AtomicBool::new(false);
 
 pub struct OrtManager;
 
 impl OrtManager {
   pub fn ensure_initialized() -> Result<()> {
     // Проверяем, не была ли уже инициализирована
-    if let Ok(initialized) = ORT_INITIALIZED.lock() {
-      if *initialized {
-        return Ok(());
-      }
+    if ORT_INITIALIZED.load(Ordering::Acquire) {
+      return Ok(());
     }
 
     let mut result = Ok(());
@@ -32,9 +33,7 @@ impl OrtManager {
       match init_result {
         Ok(Ok(_)) => {
           log::info!("ONNX Runtime initialized successfully");
-          if let Ok(mut initialized) = ORT_INITIALIZED.lock() {
-            *initialized = true;
-          }
+          ORT_INITIALIZED.store(true, Ordering::Release);
         }
         Ok(Err(e)) => {
           log::error!("Failed to initialize ONNX Runtime: {}", e);
@@ -44,26 +43,20 @@ impl OrtManager {
           // Panic occurred - возможно, ORT уже был инициализирован
           log::warn!("ONNX Runtime initialization panicked - it may already be initialized");
           // Считаем, что уже инициализирован
-          if let Ok(mut initialized) = ORT_INITIALIZED.lock() {
-            *initialized = true;
-          }
+          ORT_INITIALIZED.store(true, Ordering::Release);
         }
       }
     });
 
-    if let Ok(initialized) = ORT_INITIALIZED.lock() {
-      if *initialized {
-        Ok(())
-      } else {
-        result
-      }
+    if ORT_INITIALIZED.load(Ordering::Acquire) {
+      Ok(())
     } else {
-      Err(anyhow::anyhow!("Failed to check ORT initialization status"))
+      result
     }
   }
 
   pub fn is_initialized() -> bool {
-    ORT_INITIALIZED.lock().map(|g| *g).unwrap_or(false)
+    ORT_INITIALIZED.load(Ordering::Acquire)
   }
 }
 

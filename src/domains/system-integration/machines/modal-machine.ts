@@ -22,6 +22,7 @@ export type ModalType =
   | "export"
   | "project-settings"
   | "user-settings"
+  | "about"
   | "keyboard-shortcuts"
   | "cache-settings"
   | "cache-statistics"

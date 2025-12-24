@@ -2069,6 +2069,7 @@
       "errorUpdatingSettings": "ข้อผิดพลาดในการอัปเดตการตั้งค่า",
       "cpuNoAcceleration": "CPU (ไม่มีการเร่ง)",
       "loadingInfo": "กำลังโหลดข้อมูล GPU...",
+      "recommendationsTitle": "คำแนะนำ",
       "recommendations": {
         "noAcceleration": "การเร่งด้วย GPU ไม่พร้อมใช้งาน แนะนำให้ใช้การเอ็นโค้ดด้วย CPU",
         "installDrivers": "ติดตั้งไดรเวอร์ GPU เพื่อประสิทธิภาพที่ดีขึ้น",

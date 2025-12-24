@@ -3,8 +3,9 @@ use base64::prelude::*;
  * Tauri Commands for RetinaFace Processing
  */
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tauri::State;
+use tokio::sync::Mutex;
 
 use crate::recognition::retinaface_processor::{
   FacialLandmarks, Point2D, RetinaFaceDetection, RetinaFaceModel, RetinaFaceProcessor,
@@ -37,7 +38,7 @@ pub async fn init_retinaface_processor(
       // Пытаемся загрузить модель
       match processor.load_model().await {
         Ok(_) => {
-          let mut state = retinaface_state.0.lock().unwrap();
+          let mut state = retinaface_state.0.lock().await;
           *state = Some(Arc::new(processor));
           Ok(format!(
             "RetinaFace processor initialized with {}",
@@ -46,7 +47,7 @@ pub async fn init_retinaface_processor(
         }
         Err(e) => {
           // В случае ошибки все равно сохраняем процессор (для тестов)
-          let mut state = retinaface_state.0.lock().unwrap();
+          let mut state = retinaface_state.0.lock().await;
           *state = Some(Arc::new(processor));
           log::warn!("RetinaFace model loading failed: {}", e);
           Ok(format!(
@@ -76,7 +77,7 @@ pub async fn detect_faces_with_landmarks(
 
   // Получаем Arc к процессору
   let processor_arc = {
-    let state = retinaface_state.0.lock().unwrap();
+    let state = retinaface_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "RetinaFace processor not initialized".to_string())?
@@ -129,7 +130,7 @@ pub async fn detect_faces_with_landmarks_from_base64(
 
   // Получаем Arc к процессору
   let processor_arc = {
-    let state = retinaface_state.0.lock().unwrap();
+    let state = retinaface_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "RetinaFace processor not initialized".to_string())?
@@ -227,7 +228,7 @@ pub async fn configure_retinaface_thresholds(
 ) -> Result<String, String> {
   // Извлекаем текущий процессор
   let model_type = {
-    let state = retinaface_state.0.lock().unwrap();
+    let state = retinaface_state.0.lock().await;
     match state.as_ref() {
       Some(processor_arc) => processor_arc.get_model_type().clone(),
       None => return Err("RetinaFace processor not initialized".to_string()),
@@ -242,7 +243,7 @@ pub async fn configure_retinaface_thresholds(
 
       // Проверяем была ли загружена модель в старом процессоре
       let was_loaded = {
-        let state = retinaface_state.0.lock().unwrap();
+        let state = retinaface_state.0.lock().await;
         state.as_ref().map(|p| p.is_model_loaded()).unwrap_or(false)
       };
 
@@ -255,7 +256,7 @@ pub async fn configure_retinaface_thresholds(
 
       // Обновляем состояние
       {
-        let mut state = retinaface_state.0.lock().unwrap();
+        let mut state = retinaface_state.0.lock().await;
         *state = Some(Arc::new(new_processor));
       }
 
@@ -273,7 +274,7 @@ pub async fn configure_retinaface_thresholds(
 pub async fn get_retinaface_processor_info(
   retinaface_state: State<'_, RetinaFaceProcessorState>,
 ) -> Result<RetinaFaceProcessorInfo, String> {
-  let state = retinaface_state.0.lock().unwrap();
+  let state = retinaface_state.0.lock().await;
   match state.as_ref() {
     Some(processor) => Ok(RetinaFaceProcessorInfo {
       is_initialized: true,

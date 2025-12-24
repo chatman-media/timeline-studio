@@ -5,7 +5,6 @@ import { MediaType } from "@/domains/media-management"
 import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
 import type { SubtitleResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
-import { ApplyButton } from "@/features/browser"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 
 import { AddMediaButton } from "../../browser/components/layout/add-media-button"
@@ -175,9 +174,6 @@ export function SubtitlePreview({ style, onClick, size, previewWidth, previewHei
           noTime={true}
           data-oid="hcvv2dm"
         />
-
-        {/* Кнопка удаления стиля из проекта */}
-        <ApplyButton resource={fileObject as SubtitleResource} size={size} type="subtitle" data-oid="abshvc8" />
 
         {/* Кнопка добавления стиля в проект */}
         <div

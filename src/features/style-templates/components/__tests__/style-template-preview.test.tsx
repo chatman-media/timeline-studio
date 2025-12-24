@@ -174,15 +174,6 @@ describe("StyleTemplatePreview", () => {
     expect(favoriteButton).toHaveAttribute("data-type", "styleTemplate")
   })
 
-  it("should render apply button", () => {
-    renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="u771dy_" />)
-
-    const applyButton = screen.getByTestId("apply-button")
-    expect(applyButton).toBeInTheDocument()
-    expect(applyButton).toHaveAttribute("data-resource-id", "test-template-1")
-    expect(applyButton).toHaveAttribute("data-type", "styleTemplate")
-  })
-
   it("should render add media button", () => {
     renderWithBrowser(<StyleTemplatePreview {...defaultProps} data-oid="mh0m-1a" />)
 

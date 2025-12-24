@@ -2278,6 +2278,7 @@
       "errorUpdatingSettings": "خطا در به‌روزرسانی تنظیمات",
       "cpuNoAcceleration": "CPU (بدون شتاب)",
       "loadingInfo": "در حال بارگیری اطلاعات GPU...",
+      "recommendationsTitle": "توصیه‌ها",
       "recommendations": {
         "noAcceleration": "شتاب GPU موجود نیست، انکودینگ CPU توصیه می‌شود",
         "installDrivers": "درایورهای GPU را برای عملکرد بهتر نصب کنید",

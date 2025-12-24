@@ -249,7 +249,14 @@ export const VideoPlaceholder = memo(
             </div>
           )}
 
-          <VideoOverlays file={file} size={size} isLoaded={isLoaded} isMultipleStreams={false} data-oid="zc:oh8." />
+          <VideoOverlays
+            file={file}
+            size={size}
+            isLoaded={isLoaded}
+            isMultipleStreams={false}
+            hoverTime={hoverTime}
+            data-oid="zc:oh8."
+          />
         </div>
       </div>
     )

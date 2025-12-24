@@ -50,42 +50,35 @@ export const VideoPreview = memo(
     // Auto proxy для H.265 видео (генерация временно отключена)
     const { getProxyPath } = useAutoProxy()
 
-    // Логируем codec информацию для отладки H.265 детекции
+    // Логируем codec информацию для отладки H.265 детекции только один раз при первой загрузке
     useEffect(() => {
-      logger.infoSync(`[VideoPreview] File loaded: ${file.name}`, {
+      logger.debugSync(`[VideoPreview] File loaded: ${file.name}`, {
         videoCodec: file.videoCodec,
         streamCodec: file.probeData?.streams?.find((s) => s.codec_type === "video")?.codec_name,
         hasProxy: !!file.proxy?.path,
         isVideo: file.isVideo,
       })
-    }, [file.id, file.videoCodec, file.probeData?.streams, file.proxy?.path, file.isVideo, file.name])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [file.id]) // Логируем только при изменении file.id
 
     // Загружаем preview data при монтировании
     useEffect(() => {
-      logger.infoSync(`[VideoPreview] Requesting preview data for ${file.name}`, { fileId: file.id })
+      logger.debugSync(`[VideoPreview] Requesting preview data for ${file.name}`, { fileId: file.id })
 
       void getPreviewData(file.id).then((data) => {
-        logger.infoSync(`[VideoPreview] Preview data response for ${file.name}`, {
-          fileId: file.id,
-          hasData: !!data,
-          hasBrowserThumbnail: !!data?.browser_thumbnail,
-          hasBase64: !!data?.browser_thumbnail?.base64_data,
-          base64Length: data?.browser_thumbnail?.base64_data?.length,
-          thumbnailPath: data?.browser_thumbnail?.path,
-        })
-
         if (data?.browser_thumbnail?.base64_data) {
           setPreviewData(data.browser_thumbnail.base64_data)
-          logger.infoSync(`[VideoPreview] ✅ Preview data loaded for ${file.name}`)
+          logger.debugSync(`[VideoPreview] ✅ Preview data loaded for ${file.name}`)
         } else {
-          logger.warnSync(`[VideoPreview] ⚠️ No browser thumbnail for ${file.name}`, {
+          logger.debugSync(`[VideoPreview] ⚠️ No browser thumbnail for ${file.name}`, {
             fileId: file.id,
             codec: file.videoCodec,
             hasProxy: !!file.proxy,
           })
         }
       })
-    }, [file.id, file.name, file.videoCodec, file.proxy, getPreviewData])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [file.id]) // Загружаем только при изменении file.id
 
     // Функция для получения URL видео
     const loadVideoFile = useCallback(async (path: string) => {

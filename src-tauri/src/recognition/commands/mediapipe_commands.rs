@@ -3,8 +3,9 @@
  */
 use base64::prelude::*;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tauri::State;
+use tokio::sync::Mutex;
 
 use crate::recognition::mediapipe_processor::{
   BlazeFaceDetection, FaceMeshLandmarks, FacialExpressions, MediaPipeModel, MediaPipeProcessor,
@@ -42,7 +43,7 @@ pub async fn init_mediapipe_processor(
       // Пытаемся загрузить модель
       match processor.load_model().await {
         Ok(_) => {
-          let mut state = mediapipe_state.0.lock().unwrap();
+          let mut state = mediapipe_state.0.lock().await;
           *state = Some(Arc::new(processor));
           Ok(format!(
             "MediaPipe processor initialized with {}",
@@ -51,7 +52,7 @@ pub async fn init_mediapipe_processor(
         }
         Err(e) => {
           // В случае ошибки все равно сохраняем процессор (для тестов)
-          let mut state = mediapipe_state.0.lock().unwrap();
+          let mut state = mediapipe_state.0.lock().await;
           *state = Some(Arc::new(processor));
           log::warn!("MediaPipe model loading failed: {}", e);
           Ok(format!(
@@ -81,7 +82,7 @@ pub async fn detect_faces_blazeface(
 
   // Получаем Arc к процессору
   let processor_arc = {
-    let state = mediapipe_state.0.lock().unwrap();
+    let state = mediapipe_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "MediaPipe processor not initialized".to_string())?
@@ -134,7 +135,7 @@ pub async fn extract_face_mesh_landmarks(
 
   // Получаем Arc к процессору
   let processor_arc = {
-    let state = mediapipe_state.0.lock().unwrap();
+    let state = mediapipe_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "MediaPipe processor not initialized".to_string())?
@@ -180,7 +181,7 @@ pub async fn analyze_facial_expressions(
 
   // Получаем процессор
   let processor_arc = {
-    let state = mediapipe_state.0.lock().unwrap();
+    let state = mediapipe_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "MediaPipe processor not initialized".to_string())?
@@ -208,7 +209,7 @@ pub async fn configure_mediapipe_settings(
 ) -> Result<String, String> {
   // Извлекаем текущий процессор
   let model_type = {
-    let state = mediapipe_state.0.lock().unwrap();
+    let state = mediapipe_state.0.lock().await;
     match state.as_ref() {
       Some(processor_arc) => processor_arc.get_model_type().clone(),
       None => return Err("MediaPipe processor not initialized".to_string()),
@@ -223,7 +224,7 @@ pub async fn configure_mediapipe_settings(
 
       // Проверяем была ли загружена модель в старом процессоре
       let was_loaded = {
-        let state = mediapipe_state.0.lock().unwrap();
+        let state = mediapipe_state.0.lock().await;
         state.as_ref().map(|p| p.is_model_loaded()).unwrap_or(false)
       };
 
@@ -236,7 +237,7 @@ pub async fn configure_mediapipe_settings(
 
       // Обновляем состояние
       {
-        let mut state = mediapipe_state.0.lock().unwrap();
+        let mut state = mediapipe_state.0.lock().await;
         *state = Some(Arc::new(new_processor));
       }
 
@@ -254,7 +255,7 @@ pub async fn configure_mediapipe_settings(
 pub async fn get_mediapipe_processor_info(
   mediapipe_state: State<'_, MediaPipeProcessorState>,
 ) -> Result<MediaPipeProcessorInfo, String> {
-  let state = mediapipe_state.0.lock().unwrap();
+  let state = mediapipe_state.0.lock().await;
   match state.as_ref() {
     Some(processor) => Ok(MediaPipeProcessorInfo {
       is_initialized: true,

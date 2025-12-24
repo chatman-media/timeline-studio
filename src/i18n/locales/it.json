@@ -2183,6 +2183,7 @@
       "errorUpdatingSettings": "Errore nell'aggiornamento delle impostazioni",
       "cpuNoAcceleration": "CPU (nessuna accelerazione)",
       "loadingInfo": "Caricamento informazioni GPU...",
+      "recommendationsTitle": "Raccomandazioni",
       "recommendations": {
         "noAcceleration": "Accelerazione GPU non disponibile, è consigliata la codifica CPU",
         "installDrivers": "Installa i driver GPU per prestazioni migliori",

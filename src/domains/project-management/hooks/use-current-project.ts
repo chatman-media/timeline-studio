@@ -70,6 +70,35 @@ export function useCurrentProject() {
     })
   }
 
+  // Сохранение проекта как (с диалогом выбора пути)
+  const saveProjectAs = async () => {
+    try {
+      // Открываем диалог сохранения файла
+      const { save } = await import("@tauri-apps/plugin-dialog")
+      const selected = await save({
+        filters: [
+          {
+            name: "Timeline Studio Project",
+            extensions: ["tls"],
+          },
+        ],
+        defaultPath: currentProject?.name ? `${currentProject.name}.tls` : "project.tls",
+      })
+
+      if (selected) {
+        // Убедимся что путь имеет правильное расширение
+        const filePath = selected.endsWith(".tls") ? selected : `${selected}.tls`
+        await saveProject(filePath)
+        logger.info("Project saved as", { path: filePath })
+        return filePath
+      }
+      return null
+    } catch (error) {
+      logger.error("Error in saveProjectAs", { error, context: "saveProjectAs" })
+      throw error
+    }
+  }
+
   // Пометка проекта как измененного
   const setProjectDirty = (dirty: boolean) => {
     // Эта функция больше не нужна, так как Tauri backend
@@ -87,6 +116,7 @@ export function useCurrentProject() {
     loadOrCreateTempProject,
     openProject,
     saveProject,
+    saveProjectAs,
     setProjectDirty,
     isTempProject,
   }

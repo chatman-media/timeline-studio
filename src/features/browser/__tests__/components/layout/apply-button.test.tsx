@@ -2,230 +2,130 @@
  * @vitest-environment jsdom
  */
 import { fireEvent, render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-import type { ResourceType, TimelineResource } from "@/domains/shared/types/resources"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import type { MediaFile } from "@/domains/media-management"
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 
-// Mock the logger with a spy - use vi.hoisted to ensure these are created before the mock
-const { mockInfo, mockWarn, mockError, mockDebug, mockTrace } = vi.hoisted(() => ({
-  mockInfo: vi.fn(),
-  mockWarn: vi.fn(),
-  mockError: vi.fn(),
-  mockDebug: vi.fn(),
-  mockTrace: vi.fn(),
+// Mock the logger
+const { mockInfoSync, mockErrorSync, mockDebugSync } = vi.hoisted(() => ({
+  mockInfoSync: vi.fn(),
+  mockErrorSync: vi.fn(),
+  mockDebugSync: vi.fn(),
 }))
 
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => ({
-    info: mockInfo,
-    warn: mockWarn,
-    error: mockError,
-    debug: mockDebug,
-    trace: mockTrace,
+    infoSync: mockInfoSync,
+    errorSync: mockErrorSync,
+    debugSync: mockDebugSync,
+  }),
+}))
+
+// Mock usePlayer hook
+const { mockPlayerSetSource, mockPlayerSetMedia, mockSetCurrentVideo, mockPlay } = vi.hoisted(() => ({
+  mockPlayerSetSource: vi.fn(),
+  mockPlayerSetMedia: vi.fn(),
+  mockSetCurrentVideo: vi.fn(),
+  mockPlay: vi.fn(),
+}))
+
+vi.mock("@/features/video-player", () => ({
+  usePlayer: () => ({
+    playerSetSource: mockPlayerSetSource,
+    playerSetMedia: mockPlayerSetMedia,
+    setCurrentVideo: mockSetCurrentVideo,
+    play: mockPlay,
+  }),
+}))
+
+// Mock i18n
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
   }),
 }))
 
 describe("ApplyButton", () => {
-  const mockResource = {
-    id: "test-resource",
-    type: "media" as const,
-    name: "Test Resource",
-    resourceId: "media-1",
-    addedAt: Date.now(),
-    file: {
-      id: "file-1",
-      file_path: "/path/to/file.mp4",
-      file_name: "file.mp4",
-      media_type: "Video" as const,
-      duration: 10,
-      file_size: 1024,
-    },
-  }
+  const mockFile: MediaFile = {
+    id: "file-1",
+    name: "test-video.mp4",
+    path: "/path/to/test-video.mp4",
+    isVideo: true,
+    isAudio: false,
+    isImage: false,
+    duration: 10,
+    size: 1024,
+  } as MediaFile
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockPlayerSetSource.mockResolvedValue(undefined)
+    mockPlayerSetMedia.mockResolvedValue(undefined)
+    mockPlay.mockResolvedValue(undefined)
+  })
 
   it("should render apply button", () => {
-    render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="19xg1xc" />,
-    )
+    render(<ApplyButton file={mockFile} size={150} hoverTime={null} data-oid="apply-test" />)
 
     const button = screen.getByRole("button")
     expect(button).toBeInTheDocument()
   })
 
-  it("should call onApply callback when clicked", () => {
-    const onApply = vi.fn()
+  it("should send file to player when clicked", async () => {
+    const hoverTime = 5.5
 
-    render(
-      <ApplyButton
-        resource={mockResource as unknown as TimelineResource}
-        size={150}
-        type="media"
-        onApply={onApply}
-        data-oid="drmhv39"
-      />,
-    )
+    render(<ApplyButton file={mockFile} size={150} hoverTime={hoverTime} data-oid="apply-test" />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
 
-    expect(onApply).toHaveBeenCalledTimes(1)
-    expect(onApply).toHaveBeenCalledWith(mockResource as unknown as TimelineResource, "media")
+    // Wait for async operations
+    await vi.waitFor(() => {
+      expect(mockSetCurrentVideo).toHaveBeenCalledWith(mockFile)
+      expect(mockPlayerSetSource).toHaveBeenCalledWith("browser")
+      expect(mockPlayerSetMedia).toHaveBeenCalledWith("file-1", hoverTime)
+      expect(mockPlay).toHaveBeenCalled()
+    })
   })
 
-  it("should log to logger when onApply is not provided", () => {
-    mockInfo.mockClear()
-
-    render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="ru4-rar" />,
-    )
+  it("should use 0 as time when hoverTime is null", async () => {
+    render(<ApplyButton file={mockFile} size={150} hoverTime={null} data-oid="apply-test" />)
 
     const button = screen.getByRole("button")
     fireEvent.click(button)
 
-    expect(mockInfo).toHaveBeenCalledWith(
-      "ApplyButton clicked",
-      expect.objectContaining({ resourceId: "test-resource", type: "media" }),
-    )
+    await vi.waitFor(() => {
+      expect(mockPlayerSetMedia).toHaveBeenCalledWith("file-1", 0)
+    })
   })
 
-  it("should stop event propagation", () => {
-    const onApply = vi.fn()
+  it("should stop event propagation", async () => {
     const containerClick = vi.fn()
 
     render(
-      <div onClick={containerClick} data-oid="isomvv6">
-        <ApplyButton
-          resource={mockResource as unknown as TimelineResource}
-          size={150}
-          type="media"
-          onApply={onApply}
-          data-oid="w4j7ujt"
-        />
+      <div onClick={containerClick} data-oid="container">
+        <ApplyButton file={mockFile} size={150} hoverTime={null} data-oid="apply-test" />
       </div>,
     )
 
     const button = screen.getByRole("button")
-    fireEvent.click(button)
+    await fireEvent.click(button)
 
-    expect(onApply).toHaveBeenCalled()
     expect(containerClick).not.toHaveBeenCalled()
   })
 
-  it("should handle different resource types", () => {
-    const onApply = vi.fn()
-    const types: ResourceType[] = [
-      "media",
-      "effect",
-      "filter",
-      "template",
-      "transition",
-      "music",
-      "subtitle",
-      "styleTemplate",
-    ]
-
-    types.forEach((type) => {
-      const { unmount } = render(
-        <ApplyButton
-          resource={{ ...mockResource, type } as unknown as TimelineResource}
-          size={150}
-          type={type}
-          onApply={onApply}
-          data-oid="e3c:bv."
-        />,
-      )
-
-      const button = screen.getByRole("button")
-      fireEvent.click(button)
-
-      expect(onApply).toHaveBeenLastCalledWith({ ...(mockResource as unknown as TimelineResource), type }, type)
-
-      unmount()
-    })
-
-    expect(onApply).toHaveBeenCalledTimes(types.length)
-  })
-
-  it("should apply correct styles based on size", () => {
-    const sizes = [50, 100, 150, 200]
-
-    sizes.forEach((size) => {
-      const { container, unmount } = render(
-        <ApplyButton
-          resource={mockResource as unknown as TimelineResource}
-          size={size}
-          type="media"
-          data-oid="58ldn--"
-        />,
-      )
-
-      const button = container.querySelector("button")
-      expect(button).toHaveStyle({
-        bottom: `${20 + size / 25}px`,
-      })
-
-      const icon = container.querySelector("svg")
-      expect(icon).toHaveStyle({
-        height: `${6 + size / 30}px`,
-        width: `${6 + size / 30}px`,
-      })
-
-      unmount()
-    })
-  })
-
-  it("should have correct accessibility attributes", () => {
-    render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="2gm:it5" />,
-    )
-
-    const button = screen.getByRole("button")
-    expect(button).toHaveAttribute("type", "button")
-  })
-
-  it("should have correct hover and focus classes", () => {
-    render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="xcb1kf1" />,
-    )
-
-    const button = screen.getByRole("button")
-    expect(button.className).toContain("group-hover:visible")
-    expect(button.className).toContain("focus:ring-2")
-    expect(button.className).toContain("focus:ring-teal")
-  })
-
-  it("should prevent default on onApply call", () => {
-    const onApply = vi.fn()
-
-    render(
-      <ApplyButton
-        resource={mockResource as unknown as TimelineResource}
-        size={150}
-        type="media"
-        onApply={onApply}
-        data-oid="-fd7uqx"
-      />,
-    )
-
-    const button = screen.getByRole("button")
-    const event = new MouseEvent("click", { bubbles: true })
-    vi.spyOn(event, "stopPropagation")
-
-    button.dispatchEvent(event)
-
-    expect(event.stopPropagation).toHaveBeenCalled()
-  })
-
-  it("should render ArrowRight icon", () => {
-    const { container } = render(
-      <ApplyButton resource={mockResource as unknown as TimelineResource} size={150} type="media" data-oid="_3hae4g" />,
-    )
+  it("should render Play icon", () => {
+    const { container } = render(<ApplyButton file={mockFile} size={150} hoverTime={null} data-oid="apply-test" />)
 
     const icon = container.querySelector("svg")
     expect(icon).toBeInTheDocument()
+  })
 
-    // Проверяем класс через getAttribute для SVG элементов
-    const iconClass = icon?.getAttribute("class") || ""
-    expect(iconClass).toContain("transition-transform")
-    expect(iconClass).toContain("hover:scale-110")
+  it("should have correct accessibility attributes", () => {
+    render(<ApplyButton file={mockFile} size={150} hoverTime={null} data-oid="apply-test" />)
+
+    const button = screen.getByRole("button")
+    expect(button).toHaveAttribute("type", "button")
+    expect(button).toHaveAttribute("title", "browser.media.applyToPlayer")
   })
 })

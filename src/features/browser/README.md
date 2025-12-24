@@ -10,7 +10,7 @@ The Browser module provides a tabbed interface for browsing and managing differe
 
 **🎉 100% Complete** - All core functionality is fully implemented and tested.
 
-- ✅ **Components**: Full tab system with Media, Music, Transitions, Effects, Subtitles, Filters, Templates, Style Templates (8 tabs active)
+- ✅ **Components**: Full tab system with Media, Music, Transitions, Effects, Subtitles, Filters, Templates (7 tabs active)
 - ✅ **Hooks**: Music import, resources management, search, filtering, favorites
 - ✅ **Services**: Browser state machine (XState), resource loaders with lazy loading
 - ✅ **Tests**: 535 tests passing (534 + 1 skipped), 71.73% coverage
@@ -44,7 +44,7 @@ browser/
 
 ### ✅ Implemented
 
-- [x] **Tab System**: Media, Music, Transitions, Effects, Subtitles, Filters, Templates, Style Templates
+- [x] **Tab System**: Media, Music, Transitions, Effects, Subtitles, Filters, Templates (7 tabs)
 - [x] **Media Import**: File and directory import via button or drag & drop
 - [x] **Preview**: Thumbnails with playback capability for video/audio
 - [x] **Metadata**: Resolution, duration, format information

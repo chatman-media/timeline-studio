@@ -6,6 +6,7 @@ import { formatDuration } from "@/lib/date"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn, formatResolution } from "@/lib/utils"
 import { AddMediaButton } from "../layout/add-media-button"
+import { ApplyButton } from "../layout/apply-button"
 import { FavoriteButton } from "../layout/favorite-button"
 
 const logger = createLogger("VideoOverlays")
@@ -20,6 +21,7 @@ interface VideoOverlaysProps {
   streamHeight?: number
   showFileName?: boolean
   isLastStream?: boolean
+  hoverTime: number | null
 }
 
 /**
@@ -37,6 +39,7 @@ export const VideoOverlays = memo(
     streamHeight,
     showFileName,
     isLastStream,
+    hoverTime,
   }: VideoOverlaysProps) => {
     const isNotFirstStream = isMultipleStreams && typeof streamIndex !== "undefined" && streamIndex !== 0
 
@@ -126,6 +129,11 @@ export const VideoOverlays = memo(
           >
             {file.name}
           </div>
+        )}
+
+        {/* Кнопка отправки в плеер */}
+        {isLoaded && !isNotFirstStream && (
+          <ApplyButton file={file} size={size} hoverTime={hoverTime} data-oid="apply-overlay" />
         )}
 
         {/* Кнопка добавления */}

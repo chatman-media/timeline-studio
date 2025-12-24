@@ -5,6 +5,7 @@
  */
 
 import { useDroppable } from "@dnd-kit/core"
+import { listen } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 // Убираем ненужные иконки
@@ -77,11 +78,43 @@ function TimelineContentInner() {
     clearError = () => {},
   } = useTimeline()
 
-  const { uiState } = useTimelineUI()
+  const { uiState, zoomIn, zoomOut, resetZoom } = useTimelineUI()
   const timeScale = uiState.timeScale
 
   const { tracks, setTrackHeight } = useTracks()
   const { clips } = useClips()
+
+  // Слушаем события zoom от меню приложения
+  useEffect(() => {
+    const unlistenPromises: Promise<() => void>[] = []
+
+    unlistenPromises.push(
+      listen("timeline:zoom-in", () => {
+        logger.info("[TimelineContent] Zoom In event received")
+        zoomIn()
+      }),
+    )
+
+    unlistenPromises.push(
+      listen("timeline:zoom-out", () => {
+        logger.info("[TimelineContent] Zoom Out event received")
+        zoomOut()
+      }),
+    )
+
+    unlistenPromises.push(
+      listen("timeline:zoom-reset", () => {
+        logger.info("[TimelineContent] Zoom Reset event received")
+        resetZoom()
+      }),
+    )
+
+    return () => {
+      void Promise.all(unlistenPromises).then((unlisteners) => {
+        unlisteners.forEach((unlisten) => unlisten())
+      })
+    }
+  }, [zoomIn, zoomOut, resetZoom])
 
   // Получаем данные реального проекта
   const { currentProject } = useCurrentProject()

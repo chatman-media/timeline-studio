@@ -6,12 +6,12 @@ import { LiveAudioVisualizer } from "react-audio-visualize"
 import type { MediaFile } from "@/domains/media-management"
 import type { TimelineResource } from "@/domains/shared/types/resources"
 import type { DragData } from "@/features/timeline/types/drag-drop"
-import { usePlayer } from "@/features/video-player"
 import { createAudioUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
 import { AddMediaButton } from "../layout/add-media-button"
+import { ApplyButton } from "../layout/apply-button"
 import { FavoriteButton } from "../layout/favorite-button"
 
 const logger = createLogger("AudioPreview")
@@ -53,7 +53,6 @@ export const AudioPreview = memo(function AudioPreview({
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
-  const { playerSetSource, playerSetMedia, setCurrentVideo, play } = usePlayer()
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -71,7 +70,7 @@ export const AudioPreview = memo(function AudioPreview({
   )
 
   const handlePlayPause = useCallback(
-    async (e: React.MouseEvent) => {
+    (e: React.MouseEvent) => {
       e.preventDefault()
       logger.debugSync("Клик по аудио для воспроизведения/паузы", {
         fileName: file.name,
@@ -79,81 +78,25 @@ export const AudioPreview = memo(function AudioPreview({
         hoverTime,
       })
 
-      try {
-        // Проверяем, что у файла есть id
-        if (!file.id) {
-          logger.errorSync("У аудио файла нет ID", {
-            fileName: file.name,
-            file,
-          })
-          // Fallback к локальному воспроизведению
-          if (audioRef.current) {
-            if (isPlaying) {
-              audioRef.current.pause()
-              logger.debugSync("Fallback: Аудио на паузе (нет ID)", {
-                fileName: file.name,
-              })
-            } else {
-              if (hoverTime !== null) {
-                audioRef.current.currentTime = hoverTime
-              }
-              void audioRef.current.play()
-              logger.debugSync("Fallback: Аудио воспроизводится (нет ID)", {
-                fileName: file.name,
-                time: hoverTime,
-              })
-            }
-            setIsPlaying(!isPlaying)
-          }
-          return
+      // Локальное воспроизведение превью (не отправляем в плеер)
+      if (!audioRef.current) return
+
+      if (isPlaying) {
+        audioRef.current.pause()
+        logger.debugSync("Аудио на паузе", { fileName: file.name })
+      } else {
+        if (hoverTime !== null) {
+          audioRef.current.currentTime = hoverTime
         }
-
-        // Устанавливаем аудио в локальное состояние плеера
-        setCurrentVideo(file)
-
-        logger.debugSync("Отправляем аудио в главный плеер", {
-          fileId: file.id,
+        void audioRef.current.play()
+        logger.debugSync("Аудио воспроизводится", {
           fileName: file.name,
-          time: hoverTime || 0,
+          time: hoverTime,
         })
-
-        // Отправляем аудио в главный плеер через backend
-        await playerSetSource("browser")
-        await playerSetMedia(file.id, hoverTime || 0)
-        await play()
-
-        logger.infoSync("Аудио успешно отправлено в плеер", {
-          fileName: file.name,
-          fileId: file.id,
-          time: hoverTime || 0,
-        })
-      } catch (error) {
-        logger.errorSync("Ошибка отправки аудио в плеер", {
-          error: String(error),
-          fileName: file.name,
-          fileId: file.id,
-        })
-
-        // Fallback: локальное воспроизведение в превью
-        if (!audioRef.current) return
-
-        if (isPlaying) {
-          audioRef.current.pause()
-          logger.debugSync("Fallback: Аудио на паузе", { fileName: file.name })
-        } else {
-          if (hoverTime !== null) {
-            audioRef.current.currentTime = hoverTime
-          }
-          void audioRef.current.play()
-          logger.debugSync("Fallback: Аудио воспроизводится", {
-            fileName: file.name,
-            time: hoverTime,
-          })
-        }
-        setIsPlaying(!isPlaying)
       }
+      setIsPlaying(!isPlaying)
     },
-    [hoverTime, file, playerSetSource, playerSetMedia, play, isPlaying, setCurrentVideo],
+    [hoverTime, file.name, isPlaying],
   )
 
   const handleMouseLeave = useCallback(() => {
@@ -365,6 +308,9 @@ export const AudioPreview = memo(function AudioPreview({
 
         {/* Кнопка избранного */}
         <FavoriteButton file={file} size={size} type="media" data-oid="hdcvap5" />
+
+        {/* Кнопка отправки в плеер */}
+        {isLoaded && <ApplyButton file={file} size={size} hoverTime={hoverTime} data-oid="apply-audio" />}
 
         {/* кнопка добавления */}
         {isLoaded && (

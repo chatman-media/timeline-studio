@@ -5,7 +5,6 @@ import { MediaType } from "@/domains/media-management"
 import type { StyleTemplateResource } from "@/domains/shared/types/resources"
 import { useResources } from "@/domains/video-editing"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
-import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import type { StyleTemplate } from "../types"
 
@@ -171,22 +170,6 @@ export function StyleTemplatePreview({
           type="styleTemplate"
           data-oid="igl6i04"
         />
-
-        {/* Кнопка применения шаблона */}
-        {template && (
-          <ApplyButton
-            resource={
-              {
-                id: template.id,
-                type: "styleTemplate",
-                name: template.name[currentLanguage],
-              } as StyleTemplateResource
-            }
-            size={size}
-            type="styleTemplate"
-            data-oid="dtv.qb9"
-          />
-        )}
 
         {/* Кнопка добавления в ресурсы */}
         <div

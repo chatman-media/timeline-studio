@@ -87,30 +87,28 @@ export async function generateEffectPreview(effect: BaseEffect, config: EffectPr
                     ) || {},
                   start_time: null,
                   end_time: null,
-                  ffmpeg_command:
-                    effect.processors?.ffmpeg?.filter
-                      ? effect.processors.ffmpeg.filter(
-                          effect.parameters?.reduce(
-                            (acc, param) => {
-                              acc[param.id] = param.defaultValue
-                              return acc
-                            },
-                            {} as Record<string, any>,
-                          ) || {},
-                        )
-                      : null,
-                  css_filter:
-                    effect.processors?.css?.filter
-                      ? effect.processors.css.filter(
-                          effect.parameters?.reduce(
-                            (acc, param) => {
-                              acc[param.id] = param.defaultValue
-                              return acc
-                            },
-                            {} as Record<string, any>,
-                          ) || {},
-                        )
-                      : null,
+                  ffmpeg_command: effect.processors?.ffmpeg?.filter
+                    ? effect.processors.ffmpeg.filter(
+                        effect.parameters?.reduce(
+                          (acc, param) => {
+                            acc[param.id] = param.defaultValue
+                            return acc
+                          },
+                          {} as Record<string, any>,
+                        ) || {},
+                      )
+                    : null,
+                  css_filter: effect.processors?.css?.filter
+                    ? effect.processors.css.filter(
+                        effect.parameters?.reduce(
+                          (acc, param) => {
+                            acc[param.id] = param.defaultValue
+                            return acc
+                          },
+                          {} as Record<string, any>,
+                        ) || {},
+                      )
+                    : null,
                   preview_path: null,
                   presets: null,
                 },

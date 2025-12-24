@@ -2013,6 +2013,7 @@
       "errorUpdatingSettings": "Erro ao atualizar as configurações",
       "cpuNoAcceleration": "CPU (sem aceleração)",
       "loadingInfo": "Carregando informações da GPU...",
+      "recommendationsTitle": "Recomendações",
       "recommendations": {
         "noAcceleration": "Aceleração GPU indisponível, codificação CPU é recomendada",
         "installDrivers": "Instale os drivers da GPU para melhor desempenho",

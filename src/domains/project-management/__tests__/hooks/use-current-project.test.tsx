@@ -22,6 +22,12 @@ vi.mock("@/lib/tauri-logger", () => ({
   })),
 }))
 
+// Mock Tauri dialog plugin
+const mockSave = vi.fn()
+vi.mock("@tauri-apps/plugin-dialog", () => ({
+  save: mockSave,
+}))
+
 // Mock useApp hook
 const mockExecuteCommand = vi.fn()
 const mockProjectState = {
@@ -258,6 +264,86 @@ describe("useCurrentProject Hook", () => {
     })
   })
 
+  describe("saveProjectAs", () => {
+    beforeEach(() => {
+      mockSave.mockResolvedValue("/path/to/new-project.tls")
+    })
+
+    it("should open save dialog and save project with selected path", async () => {
+      const { result } = renderHook(() => useCurrentProject())
+
+      const savedPath = await result.current.saveProjectAs()
+
+      expect(mockSave).toHaveBeenCalledWith({
+        filters: [
+          {
+            name: "Timeline Studio Project",
+            extensions: ["tls"],
+          },
+        ],
+        defaultPath: "Test Project.tls",
+      })
+      expect(mockExecuteCommand).toHaveBeenCalledWith({
+        type: "SaveProject",
+        params: { path: "/path/to/new-project.tls" },
+      })
+      expect(savedPath).toBe("/path/to/new-project.tls")
+    })
+
+    it("should append .tls extension if not present", async () => {
+      mockSave.mockResolvedValueOnce("/path/to/project")
+      const { result } = renderHook(() => useCurrentProject())
+
+      const savedPath = await result.current.saveProjectAs()
+
+      expect(mockExecuteCommand).toHaveBeenCalledWith({
+        type: "SaveProject",
+        params: { path: "/path/to/project.tls" },
+      })
+      expect(savedPath).toBe("/path/to/project.tls")
+    })
+
+    it("should return null if user cancels dialog", async () => {
+      mockSave.mockResolvedValueOnce(null)
+      const { result } = renderHook(() => useCurrentProject())
+
+      const savedPath = await result.current.saveProjectAs()
+
+      expect(mockExecuteCommand).not.toHaveBeenCalled()
+      expect(savedPath).toBeNull()
+    })
+
+    it("should use default filename when no project name", async () => {
+      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+        projectState: { project: null },
+        executeCommand: mockExecuteCommand,
+      } as any)
+
+      const { result } = renderHook(() => useCurrentProject())
+
+      await result.current.saveProjectAs()
+
+      expect(mockSave).toHaveBeenCalledWith({
+        filters: [
+          {
+            name: "Timeline Studio Project",
+            extensions: ["tls"],
+          },
+        ],
+        defaultPath: "project.tls",
+      })
+    })
+
+    it("should handle errors", async () => {
+      const error = new Error("Dialog failed")
+      mockSave.mockRejectedValueOnce(error)
+
+      const { result } = renderHook(() => useCurrentProject())
+
+      await expect(result.current.saveProjectAs()).rejects.toThrow("Dialog failed")
+    })
+  })
+
   describe("setProjectDirty", () => {
     it("should log dirty state", () => {
       const { result } = renderHook(() => useCurrentProject())
@@ -336,6 +422,7 @@ describe("useCurrentProject Hook", () => {
       const initialCreateTemp = result.current.createTempProject
       const initialOpen = result.current.openProject
       const initialSave = result.current.saveProject
+      const initialSaveAs = result.current.saveProjectAs
 
       rerender()
 
@@ -344,6 +431,7 @@ describe("useCurrentProject Hook", () => {
       expect(typeof result.current.createTempProject).toBe("function")
       expect(typeof result.current.openProject).toBe("function")
       expect(typeof result.current.saveProject).toBe("function")
+      expect(typeof result.current.saveProjectAs).toBe("function")
     })
   })
 })

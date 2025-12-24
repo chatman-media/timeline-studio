@@ -2,9 +2,9 @@
  * Tauri Commands for Privacy Processing
  */
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tauri::State;
-use tokio::sync::RwLock;
+use tokio::sync::{Mutex, RwLock};
 
 use crate::recognition::privacy_processor::{
   BlurType, BoundingBox, PrivacyProcessor, PrivacySettings,
@@ -45,7 +45,7 @@ pub async fn init_privacy_processor(
 
   let processor = PrivacyProcessor::new(settings);
 
-  let mut state = privacy_state.0.lock().unwrap();
+  let mut state = privacy_state.0.lock().await;
   *state = Some(Arc::new(processor));
 
   Ok(format!(
@@ -73,7 +73,7 @@ pub async fn blur_faces_in_image(
 
   // Получаем процессор
   let processor_arc = {
-    let state = privacy_state.0.lock().unwrap();
+    let state = privacy_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "Privacy processor not initialized".to_string())?
@@ -160,7 +160,7 @@ pub async fn update_privacy_settings(
 ) -> Result<String, String> {
   // Получаем текущие настройки
   let current_settings = {
-    let state = privacy_state.0.lock().unwrap();
+    let state = privacy_state.0.lock().await;
     match state.as_ref() {
       Some(processor) => processor.get_settings().clone(),
       None => return Err("Privacy processor not initialized".to_string()),
@@ -207,7 +207,7 @@ pub async fn update_privacy_settings(
   // Создаем новый процессор с обновленными настройками
   let new_processor = PrivacyProcessor::new(new_settings);
 
-  let mut state = privacy_state.0.lock().unwrap();
+  let mut state = privacy_state.0.lock().await;
   *state = Some(Arc::new(new_processor));
 
   Ok("Privacy settings updated successfully".to_string())
@@ -231,7 +231,7 @@ pub async fn blur_faces_in_video_frames(
 
   // Получаем процессоры
   let privacy_arc = {
-    let state = privacy_state.0.lock().unwrap();
+    let state = privacy_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "Privacy processor not initialized".to_string())?
@@ -315,7 +315,7 @@ pub async fn blur_faces_in_video_frames(
 pub async fn get_privacy_processor_info(
   privacy_state: State<'_, PrivacyProcessorState>,
 ) -> Result<PrivacyProcessorInfo, String> {
-  let state = privacy_state.0.lock().unwrap();
+  let state = privacy_state.0.lock().await;
   match state.as_ref() {
     Some(processor) => {
       let settings = processor.get_settings();
@@ -433,7 +433,7 @@ mod tests {
   #[tokio::test]
   async fn test_privacy_processor_state() {
     let state = PrivacyProcessorState::default();
-    assert!(state.0.lock().unwrap().is_none());
+    assert!(state.0.lock().await.is_none());
   }
 
   #[test]

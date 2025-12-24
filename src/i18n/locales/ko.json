@@ -2017,6 +2017,7 @@
       "errorUpdatingSettings": "설정 업데이트 오류",
       "cpuNoAcceleration": "CPU (가속 없음)",
       "loadingInfo": "GPU 정보 로드 중...",
+      "recommendationsTitle": "권장 사항",
       "recommendations": {
         "noAcceleration": "GPU 가속 사용 불가, CPU 인코딩을 권장합니다",
         "installDrivers": "더 나은 성능을 위해 GPU 드라이버를 설치하세요",

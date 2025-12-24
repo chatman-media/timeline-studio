@@ -212,7 +212,7 @@ describe("GpuStatus", () => {
   it("should show recommendations", () => {
     render(<GpuStatus data-oid="4w7vx7u" />)
 
-    expect(screen.getByText("videoCompiler.gpu.recommendations")).toBeInTheDocument()
+    expect(screen.getByText("videoCompiler.gpu.recommendationsTitle")).toBeInTheDocument()
   })
 
   it("should call settings callback when button clicked", () => {

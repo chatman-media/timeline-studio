@@ -228,7 +228,7 @@ export function GpuStatus({ className, showDetails = true, onSettingsClick }: Gp
                 <Separator data-oid="gqqjf7e" />
                 <div className="space-y-2" data-oid="i6sm:wx">
                   <p className="text-sm font-medium" data-oid="fu3wvv7">
-                    {t("videoCompiler.gpu.recommendations")}
+                    {t("videoCompiler.gpu.recommendationsTitle")}
                   </p>
                   <ul className="ml-2 space-y-1" data-oid="s8f1tzm">
                     {recommendations.map((rec, index) => (

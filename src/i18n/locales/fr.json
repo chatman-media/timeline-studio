@@ -2235,6 +2235,7 @@
       "errorUpdatingSettings": "Erreur lors de la mise à jour des paramètres",
       "cpuNoAcceleration": "CPU (sans accélération)",
       "loadingInfo": "Chargement des informations GPU...",
+      "recommendationsTitle": "Recommandations",
       "recommendations": {
         "noAcceleration": "Accélération GPU indisponible, l'encodage CPU est recommandé",
         "installDrivers": "Installez les pilotes GPU pour de meilleures performances",

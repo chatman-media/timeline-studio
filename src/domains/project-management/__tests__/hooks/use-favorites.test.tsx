@@ -7,7 +7,7 @@
  * Тесты для хука useFavorites
  */
 
-import { renderHook, waitFor } from "@testing-library/react"
+import { renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useFavorites } from "../../hooks/use-favorites"
 

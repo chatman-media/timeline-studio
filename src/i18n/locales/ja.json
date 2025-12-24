@@ -2017,6 +2017,7 @@
       "errorUpdatingSettings": "設定の更新エラー",
       "cpuNoAcceleration": "CPU（アクセラレーションなし）",
       "loadingInfo": "GPU情報を読み込み中...",
+      "recommendationsTitle": "推奨事項",
       "recommendations": {
         "noAcceleration": "GPUアクセラレーションが利用不可、CPUエンコーディングを推奨",
         "installDrivers": "パフォーマンス向上のためGPUドライバーをインストールしてください",

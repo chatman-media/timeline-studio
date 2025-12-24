@@ -3,8 +3,9 @@ use base64::prelude::*;
  * Tauri Commands for FaceNet Processing
  */
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tauri::State;
+use tokio::sync::Mutex;
 
 use crate::recognition::facenet_processor::{FaceNetModel, FaceNetProcessor};
 
@@ -35,13 +36,13 @@ pub async fn init_facenet_processor(
       // Пытаемся загрузить модель
       match processor.load_model().await {
         Ok(_) => {
-          let mut state = facenet_state.0.lock().unwrap();
+          let mut state = facenet_state.0.lock().await;
           *state = Some(Arc::new(processor));
           Ok(format!("FaceNet processor initialized with {}", model_type))
         }
         Err(e) => {
           // В случае ошибки все равно сохраняем процессор (для тестов)
-          let mut state = facenet_state.0.lock().unwrap();
+          let mut state = facenet_state.0.lock().await;
           *state = Some(Arc::new(processor));
           log::warn!("FaceNet model loading failed: {}", e);
           Ok(format!(
@@ -71,7 +72,7 @@ pub async fn generate_face_embedding(
 
   // Получаем Arc к процессору
   let processor_arc = {
-    let state = facenet_state.0.lock().unwrap();
+    let state = facenet_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "FaceNet processor not initialized".to_string())?
@@ -123,7 +124,7 @@ pub async fn generate_face_embedding_from_base64(
 
   // Получаем Arc к процессору
   let processor_arc = {
-    let state = facenet_state.0.lock().unwrap();
+    let state = facenet_state.0.lock().await;
     state
       .as_ref()
       .ok_or_else(|| "FaceNet processor not initialized".to_string())?
@@ -172,7 +173,7 @@ pub async fn calculate_cosine_similarity(
 pub async fn get_facenet_processor_info(
   facenet_state: State<'_, FaceNetProcessorState>,
 ) -> Result<FaceNetProcessorInfo, String> {
-  let state = facenet_state.0.lock().unwrap();
+  let state = facenet_state.0.lock().await;
   match state.as_ref() {
     Some(processor) => Ok(FaceNetProcessorInfo {
       is_initialized: true,

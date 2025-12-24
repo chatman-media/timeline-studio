@@ -742,6 +742,7 @@
       "remove": "Удалить",
       "addToFavorites": "Добавить в избранное",
       "removeFromFavorites": "Удалить из избранного",
+      "applyToPlayer": "Отправить в плеер",
       "favorites": "Избранное",
       "inFavorites": "В избранном",
       "sortBy": "Сортировать по",
@@ -1911,6 +1912,7 @@
       "errorUpdatingSettings": "Ошибка обновления настроек",
       "cpuNoAcceleration": "CPU (без ускорения)",
       "loadingInfo": "Загрузка информации о GPU...",
+      "recommendationsTitle": "Рекомендации",
       "recommendations": {
         "noAcceleration": "GPU ускорение недоступно, рекомендуется использовать CPU кодирование",
         "installDrivers": "Для лучшей производительности установите драйверы GPU",

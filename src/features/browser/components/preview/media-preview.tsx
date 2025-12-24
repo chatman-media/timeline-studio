@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react"
+import { useEffect, useRef } from "react"
 
 import type { MediaFile } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
@@ -40,10 +41,25 @@ export function MediaPreview({
   dimensions = [16, 9],
   ignoreRatio = false,
 }: MediaPreviewProps) {
-  // Логируем состояние файла для отладки
-  logger.info(
-    `[MediaPreview] File ${file.name}: isLoadingMetadata=${file.isLoadingMetadata}, hasProbeData=${!!file.probeData}`,
-  )
+  // Используем ref для отслеживания предыдущего состояния и избежания лишних логов
+  const prevStateRef = useRef({ isLoadingMetadata: file.isLoadingMetadata, hasProbeData: !!file.probeData })
+
+  // Логируем только при изменении состояния загрузки метаданных
+  useEffect(() => {
+    const currentState = { isLoadingMetadata: file.isLoadingMetadata, hasProbeData: !!file.probeData }
+    const prevState = prevStateRef.current
+
+    // Логируем только если состояние изменилось
+    if (
+      prevState.isLoadingMetadata !== currentState.isLoadingMetadata ||
+      prevState.hasProbeData !== currentState.hasProbeData
+    ) {
+      logger.debug(
+        `[MediaPreview] File ${file.name}: isLoadingMetadata=${file.isLoadingMetadata}, hasProbeData=${!!file.probeData}`,
+      )
+      prevStateRef.current = currentState
+    }
+  }, [file.name, file.isLoadingMetadata, file.probeData])
 
   // Если метаданные еще загружаются, показываем индикатор загрузки
   if (file.isLoadingMetadata) {

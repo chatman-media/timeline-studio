@@ -18,6 +18,7 @@ import { AIMarkerSettingsModal, AudioEffectsEditorModal, SubtitleEditorModal } f
 import { UserSettingsModal } from "@/features/user-settings"
 import { CacheStatisticsModal } from "@/features/video-compiler/components/cache-statistics-modal"
 import { VoiceRecordModal } from "@/features/voice-recording"
+import { AboutModal } from "./about-modal"
 
 /**
  * Контейнер для модальных окон
@@ -36,6 +37,8 @@ export function ModalContainer() {
       //   return <KeyboardShortcutsModal />
       case "user-settings":
         return <UserSettingsModal data-oid="rv00w9b" />
+      case "about":
+        return <AboutModal />
       case "camera-capture":
         return <CameraCaptureModal data-oid="f2i6s-a" />
       case "voice-recording":
@@ -85,6 +88,8 @@ export function ModalContainer() {
         return "h-[450px] w-[500px]"
       case "user-settings":
         return "h-[800px] w-[600px]"
+      case "about":
+        return "h-[max(400px,min(50vh,500px))] w-[max(400px,min(50vw,500px))]"
       case "keyboard-shortcuts":
         return "h-[max(600px,min(70vh,1000px))] w-[1200px]"
       case "cache-settings":
@@ -127,6 +132,8 @@ export function ModalContainer() {
         return t("modals.keyboardShortcuts.title", "Горячие клавиши")
       case "user-settings":
         return t("modals.userSettings.title", "Настройки пользователя")
+      case "about":
+        return t("modals.about.title", "О программе")
       case "camera-capture":
         return t("modals.cameraCapture.title", "Запись с камеры")
       case "voice-recording":

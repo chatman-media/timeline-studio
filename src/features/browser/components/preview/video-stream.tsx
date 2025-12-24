@@ -2,7 +2,6 @@ import { memo, useCallback, useRef, useState } from "react"
 import type { FfprobeStream, MediaFile } from "@/domains/media-management"
 import { useResources } from "@/domains/video-editing"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
-import { usePlayer } from "@/features/video-player"
 import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -46,7 +45,6 @@ export const VideoStream = memo(
     const [isLoaded, setIsLoaded] = useState(false)
     const videoRef = useRef<HTMLVideoElement | null>(null)
     const lastUpdateTimeRef = useRef(0)
-    const { playerSetSource, playerSetMedia, setCurrentVideo, play } = usePlayer()
     const { isAdded: isResourceAdded, removeResource } = useResources()
     const isAdded = isResourceAdded(file.id, "media")
 
@@ -91,51 +89,33 @@ export const VideoStream = memo(
     }, [isPlaying, onHoverTimeChange])
 
     const handleClick = useCallback(
-      async (e: React.MouseEvent) => {
+      (e: React.MouseEvent) => {
         e.preventDefault()
 
-        // Не воспроизводим видео если оно уже добавлено
-        if (isAdded) {
-          logger.debugSync(`[VideoStream] Skipping playback - file already added: ${file.name}`)
-          return
-        }
+        // Локальное воспроизведение превью (не отправляем в плеер)
+        if (!videoRef.current) return
 
-        try {
-          // Устанавливаем видео в локальное состояние плеера
-          setCurrentVideo(file)
+        const newPlayingState = !isPlaying
 
-          await playerSetSource("browser")
-          await playerSetMedia(file.id, hoverTime || 0)
-          await play()
-          logger.debugSync(`[VideoStream] Video sent to main player: ${file.name} at time ${hoverTime || 0}`)
-        } catch (error) {
-          logger.errorSync("[VideoStream] Failed to send video to main player:", { error })
-
-          // Fallback: локальное воспроизведение
-          if (!videoRef.current) return
-
-          const newPlayingState = !isPlaying
-
-          if (newPlayingState) {
-            if (hoverTime !== null) {
-              videoRef.current.currentTime = hoverTime
-            }
-            videoRef.current.play().catch((err: unknown) =>
-              logger.errorSync("[VideoStream] Ошибка воспроизведения:", {
-                err,
-              }),
-            )
-          } else {
-            videoRef.current.pause()
+        if (newPlayingState) {
+          if (hoverTime !== null) {
+            videoRef.current.currentTime = hoverTime
           }
-
-          setIsPlaying(newPlayingState)
-          logger.debugSync(`[VideoStream] Fallback: Видео ${newPlayingState ? "запущено" : "остановлено"}`, {
-            fileName: file.name,
-          })
+          videoRef.current.play().catch((err: unknown) =>
+            logger.errorSync("[VideoStream] Ошибка воспроизведения:", {
+              err,
+            }),
+          )
+        } else {
+          videoRef.current.pause()
         }
+
+        setIsPlaying(newPlayingState)
+        logger.debugSync(`[VideoStream] Видео ${newPlayingState ? "запущено" : "остановлено"}`, {
+          fileName: file.name,
+        })
       },
-      [hoverTime, file, playerSetSource, playerSetMedia, play, isPlaying, isAdded, setCurrentVideo],
+      [hoverTime, file.name, isPlaying],
     )
 
     const handleLoadedData = useCallback(
@@ -329,6 +309,7 @@ export const VideoStream = memo(
             streamHeight={videoHeight}
             showFileName={false}
             isLastStream={isLastStream}
+            hoverTime={hoverTime}
             data-oid="8720tev"
           />
         </div>

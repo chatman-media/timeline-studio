@@ -6,6 +6,7 @@ import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
 import { DragDropProvider } from "@/features/timeline/components/drag-drop-provider"
 import { useUserSettings } from "@/features/user-settings"
+import { useAppMenu } from "@/hooks/use-app-menu"
 import { createLogger } from "@/lib/tauri-logger"
 import { ChatLayout, DefaultLayout, OptionsLayout, VerticalLayout } from "./layout"
 import { ProjectLoadingOverlay } from "./project-loading-overlay"
@@ -21,6 +22,9 @@ export function MediaStudio() {
 
   // Подписка на события AI анализа для глобального индикатора
   const { lastProgress } = useAIDirectorEvents()
+
+  // Обработка событий нативного меню приложения
+  useAppMenu()
 
   // Логирование для отладки
   if (userDataError) {

@@ -2020,6 +2020,7 @@
       "errorUpdatingSettings": "Fehler beim Aktualisieren der Einstellungen",
       "cpuNoAcceleration": "CPU (keine Beschleunigung)",
       "loadingInfo": "GPU-Informationen werden geladen...",
+      "recommendationsTitle": "Empfehlungen",
       "recommendations": {
         "noAcceleration": "GPU-Beschleunigung nicht verfügbar, CPU-Kodierung wird empfohlen",
         "installDrivers": "Installieren Sie GPU-Treiber für bessere Leistung",
