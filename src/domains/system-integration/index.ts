@@ -30,18 +30,6 @@ export {
 } from "./services/system-integration-orchestrator"
 // Экспорт Update Services
 export { UpdateService, updateService } from "./services/updates"
-// Экспорт Workspace Persistence
-export type { WorkspaceState } from "./services/workspace"
-export {
-  clearWorkspaceStateLocal,
-  debouncedSave,
-  isValidWorkspaceState,
-  loadWorkspaceState,
-  loadWorkspaceStateBackend,
-  loadWorkspaceStateLocal,
-  saveWorkspaceStateBackend,
-  saveWorkspaceStateLocal,
-} from "./services/workspace"
 export {
   getAppLanguage as getAppLanguageTauri,
   type LanguageResponse as LanguageResponseTauri,
@@ -57,9 +45,5 @@ export {
   checkForUpdate as checkForUpdateTauri,
   downloadAndInstallUpdate as downloadAndInstallUpdateTauri,
 } from "./tauri/update-commands"
-export {
-  loadWorkspaceState as loadWorkspaceStateTauri,
-  saveWorkspaceState as saveWorkspaceStateTauri,
-} from "./tauri/workspace-commands"
 // Экспорт типов
 export * from "./types"
