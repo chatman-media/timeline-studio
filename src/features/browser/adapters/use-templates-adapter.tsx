@@ -196,7 +196,13 @@ export function useTemplatesAdapter(): ListAdapter<TemplateListItem> {
         return template.split === filterType
       }
 
-      // Фильтрация по количеству экранов
+      // Фильтрация по количеству экранов (формат: "2", "3", "4" и т.д.)
+      const screenCountNumber = Number.parseInt(filterType, 10)
+      if (!Number.isNaN(screenCountNumber)) {
+        return template.screens === screenCountNumber
+      }
+
+      // Фильтрация по количеству экранов (старый формат: "screens-2")
       if (filterType.startsWith("screens-")) {
         const screenCount = Number.parseInt(filterType.split("-")[1], 10)
         return template.screens === screenCount

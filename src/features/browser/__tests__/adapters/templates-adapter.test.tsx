@@ -415,7 +415,7 @@ describe("useTemplatesAdapter", () => {
       expect(screen.getByTestId("matches-horizontal")).toHaveTextContent("false")
     })
 
-    it("should filter by screens count", () => {
+    it("should filter by screens count (old format)", () => {
       const mockTemplate = createMockTemplate({
         id: "template-1",
         screens: 2,
@@ -441,6 +441,37 @@ describe("useTemplatesAdapter", () => {
       }
 
       render(<TestComponent data-oid="_-08ogd" />)
+
+      expect(screen.getByTestId("matches-2")).toHaveTextContent("true")
+      expect(screen.getByTestId("matches-3")).toHaveTextContent("false")
+    })
+
+    it("should filter by screens count (simple number format)", () => {
+      const mockTemplate = createMockTemplate({
+        id: "template-1",
+        screens: 2,
+        split: "vertical",
+        resizable: false,
+      })
+
+      function TestComponent() {
+        const adapter = useTemplatesAdapter()
+        const matches2 = adapter.matchesFilter?.(mockTemplate, "2")
+        const matches3 = adapter.matchesFilter?.(mockTemplate, "3")
+
+        return (
+          <div data-oid="simpnum">
+            <div data-testid="matches-2" data-oid="num2chk">
+              {matches2?.toString()}
+            </div>
+            <div data-testid="matches-3" data-oid="num3chk">
+              {matches3?.toString()}
+            </div>
+          </div>
+        )
+      }
+
+      render(<TestComponent data-oid="testsim" />)
 
       expect(screen.getByTestId("matches-2")).toHaveTextContent("true")
       expect(screen.getByTestId("matches-3")).toHaveTextContent("false")
