@@ -134,12 +134,35 @@ export function VideoPlayer() {
 
     if (!videoElement) return
 
+    // ЗАЩИТА: останавливаем все preview video когда запускаем основной плеер
+    if (isPlaying) {
+      const previewVideos = document.querySelectorAll("video:not([data-player-video])")
+      console.log("[VideoPlayer] Stopping preview videos:", previewVideos.length)
+      previewVideos.forEach((previewVideo) => {
+        const vid = previewVideo as HTMLVideoElement
+        if (!vid.paused) {
+          console.log("[VideoPlayer] Pausing preview video:", vid.src)
+          vid.pause()
+          vid.currentTime = 0
+        }
+      })
+    }
+
     if (isPlaying) {
       // Уже играет - не вызываем play() повторно (защита от двойного аудио)
       if (!videoElement.paused) {
         console.log("[VideoPlayer] Video already playing, skipping play()")
         return
       }
+
+      // ВАЖНО: убеждаемся что volume и muted правильные ПЕРЕД play()
+      const normalizedVolume = Math.max(0, Math.min(1, volume / 100))
+      videoElement.volume = normalizedVolume
+      videoElement.muted = false
+      console.log("[VideoPlayer] Volume before play:", {
+        volume: videoElement.volume,
+        muted: videoElement.muted,
+      })
 
       // Сразу пытаемся запустить воспроизведение без ожидания
       // Браузер сам обработает буферизацию если нужно
@@ -149,7 +172,7 @@ export function VideoPlayer() {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log("[VideoPlayer] Play started successfully")
+            console.log("[VideoPlayer] Play started successfully, volume:", videoElement.volume, "muted:", videoElement.muted)
           })
           .catch((error) => {
             // Если ошибка из-за недостаточной загрузки, ждём canplay

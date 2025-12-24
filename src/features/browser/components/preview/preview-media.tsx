@@ -74,18 +74,23 @@ export const PreviewMedia = memo(function PreviewMedia({
       return
     }
 
+    // КРИТИЧЕСКИ ВАЖНО: убеждаемся что preview ВСЕГДА без звука
+    video.muted = true
+    video.volume = 0
+
     console.log("[PreviewMedia] showVideo changed:", {
       showVideo,
       paused: video.paused,
       currentTime: video.currentTime,
       videoSrc: video.src,
       muted: video.muted,
+      volume: video.volume,
     })
 
     if (showVideo) {
       // Запускаем воспроизведение при hover
       video.currentTime = 0
-      console.log("[PreviewMedia] Starting video playback")
+      console.log("[PreviewMedia] Starting video playback (MUTED)")
       video.play().catch((error) => {
         console.warn("[PreviewMedia] Failed to play preview video:", error)
       })
@@ -151,7 +156,16 @@ export const PreviewMedia = memo(function PreviewMedia({
           muted
           loop
           playsInline
+          preload="none"
+          disablePictureInPicture
           onError={handleVideoError}
+          onLoadedMetadata={(e) => {
+            // Убеждаемся что preview video ВСЕГДА без звука
+            const vid = e.currentTarget
+            vid.muted = true
+            vid.volume = 0
+            console.log("[PreviewMedia] Video metadata loaded, muted:", vid.muted, "volume:", vid.volume)
+          }}
         />
       )}
     </div>
