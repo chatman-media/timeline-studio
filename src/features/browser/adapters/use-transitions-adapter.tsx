@@ -59,14 +59,19 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
 
   // Для переходов TransitionPreview ожидает другие пропсы
   const previewSize = typeof size === "number" ? size : size.width
-  const previewWidth = typeof size === "number" ? size : size.width
-  const previewHeight = typeof size === "number" ? size : size.height
 
   // Вычисляем размеры для list view thumbnail с учетом пропорций проекта
   const { width: listThumbWidth, height: listThumbHeight } = calculateDimensionsWithAspectRatio(
     64, // базовый размер для list view (длинный край)
     { width: aspectWidth, height: aspectHeight },
     false, // без минимума для маленьких thumbnails
+  )
+
+  // Вычисляем размеры для grid/thumbnails view с учетом пропорций проекта
+  const { width: previewWidth, height: previewHeight } = calculateDimensionsWithAspectRatio(
+    previewSize,
+    { width: aspectWidth, height: aspectHeight },
+    viewMode === "grid", // в grid режиме используем минимум
   )
 
   if (viewMode === "list") {

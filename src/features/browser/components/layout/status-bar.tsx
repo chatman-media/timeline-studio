@@ -108,25 +108,35 @@ export function StatusBar({
         </div>
       )}
       <div className="flex flex-col items-end justify-center gap-0 text-xs" data-oid="dlgwb5.">
-        {allFilesAdded ? (
-          <div className="flex items-center gap-1 px-2 font-medium text-[#49a293]" data-oid="pl8oigx">
-            <span data-oid="hjc.dxl">{t("common.allFilesAdded")}</span>
-          </div>
-        ) : (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="bg-secondary flex h-6 cursor-pointer items-center gap-1 rounded-sm px-2 text-xs hover:bg-teal dark:hover:bg-teal"
-            title={t("browser.media.addAll")}
-            onClick={onAddAllFiles}
-            data-oid="outpczt"
-          >
-            <span className="px-1 text-xs" data-oid=".6nf98u">
-              {t("browser.media.addAll")}
-            </span>
-            <CopyPlus size={10} className="" data-oid="rq-fkj0" />
-          </Button>
-        )}
+        {(() => {
+          console.log("[StatusBar] allFilesAdded check:", {
+            allFilesAdded,
+            showMessage: allFilesAdded,
+            showButton: !allFilesAdded,
+          })
+          return allFilesAdded ? (
+            <div className="flex items-center gap-1 px-2 font-medium text-[#49a293]" data-oid="pl8oigx">
+              <span data-oid="hjc.dxl">{t("common.allFilesAdded")}</span>
+            </div>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="bg-secondary flex h-6 cursor-pointer items-center gap-1 rounded-sm px-2 text-xs hover:bg-teal dark:hover:bg-teal"
+              title={t("browser.media.addAll")}
+              onClick={() => {
+                console.log("[StatusBar] Add All button clicked!")
+                onAddAllFiles()
+              }}
+              data-oid="outpczt"
+            >
+              <span className="px-1 text-xs" data-oid=".6nf98u">
+                {t("browser.media.addAll")}
+              </span>
+              <CopyPlus size={10} className="" data-oid="rq-fkj0" />
+            </Button>
+          )
+        })()}
       </div>
     </div>
   )

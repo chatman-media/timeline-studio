@@ -1,0 +1,21 @@
+{
+  "name": "@timeline-studio/node-backend",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Bun-native media processing backend for Timeline Studio",
+  "scripts": {
+    "dev": "bun run src/main.ts",
+    "start": "bun run src/main.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@trpc/server": "^10.45.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}

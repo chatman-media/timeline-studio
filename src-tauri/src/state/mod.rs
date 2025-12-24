@@ -205,7 +205,7 @@ impl StateManager {
     event_bus: Arc<EventBus>,
     persistence: Arc<PersistenceService>,
   ) {
-    let mut checkpoint_interval = interval(Duration::from_secs(30)); // Default 30 seconds
+    let mut checkpoint_interval = interval(Duration::from_secs(5)); // Default 5 seconds
     let mut snapshot_interval = interval(Duration::from_secs(300)); // Default 5 minutes
 
     loop {

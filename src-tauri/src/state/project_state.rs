@@ -454,7 +454,7 @@ impl Default for VersionInfo {
       has_uncommitted_changes: false,
       last_snapshot_time: Utc::now(),
       auto_save_enabled: true,
-      auto_save_interval_seconds: 30,
+      auto_save_interval_seconds: 5,
     }
   }
 }

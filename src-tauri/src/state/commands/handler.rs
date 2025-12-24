@@ -2334,6 +2334,7 @@ impl CommandHandler {
       sort_order.clone(),
       Some(target_tab.clone()),
     );
+    state.mark_dirty(); // Mark state as dirty to trigger autosave
     let version = state.version;
 
     self
@@ -2362,6 +2363,7 @@ impl CommandHandler {
     state
       .browser_state
       .set_group_by(group_by.clone(), Some(target_tab.clone()));
+    state.mark_dirty(); // Mark state as dirty to trigger autosave
     let version = state.version;
 
     self
@@ -2418,6 +2420,7 @@ impl CommandHandler {
     state
       .browser_state
       .set_view_mode(view_mode.clone(), Some(target_tab.clone()));
+    state.mark_dirty(); // Mark state as dirty to trigger autosave
     let version = state.version;
 
     self
@@ -2446,6 +2449,7 @@ impl CommandHandler {
     state
       .browser_state
       .set_preview_size(size_index, Some(target_tab.clone()));
+    state.mark_dirty(); // Mark state as dirty to trigger autosave
     let version = state.version;
 
     self

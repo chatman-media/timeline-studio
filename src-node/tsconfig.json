@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "ES2021",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["bun-types"],
+    "lib": ["ES2021", "WebWorker"],
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["../src/*"],
+      "@domains/*": ["../src/domains/*"],
+      "@core/*": ["../src/core/*"],
+      "@adapters/*": ["../src/adapters/*"],
+      "@node/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "../src/**/*"],
+  "exclude": ["node_modules", "dist", "__tests__"]
+}
