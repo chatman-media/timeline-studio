@@ -39,6 +39,13 @@ export function WidgetWorkspace({ widgetRenderers }: WidgetWorkspaceProps) {
   // Get workspace state and actions from context
   const { activeWidgets, selectedWidgetId, isDragging, send, updateWidgetBounds } = useWorkspaceLayout()
 
+  // DEBUG: Log active widgets
+  console.log("[WidgetWorkspace] Rendering with:", {
+    activeWidgetsCount: activeWidgets.length,
+    activeWidgets: activeWidgets.map((w) => ({ id: w.id, type: w.type, isVisible: w.isVisible })),
+    widgetRenderers: Object.keys(widgetRenderers),
+  })
+
   // Configure drag sensors
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {

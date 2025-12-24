@@ -55,18 +55,29 @@ interface WorkspaceLayoutProviderProps {
 export function WorkspaceLayoutProvider({ children }: WorkspaceLayoutProviderProps) {
   const [state, send] = useActor(workspaceLayoutMachine)
 
+  // DEBUG: Log initial state
+  console.log("[WorkspaceLayoutProvider] Initial state:", {
+    currentPresetId: state.context.currentPresetId,
+    activeWidgetsCount: state.context.activeWidgets.length,
+    activeWidgets: state.context.activeWidgets,
+  })
+
   // Load persisted state on mount
   useEffect(() => {
     const loadState = async () => {
       try {
         const savedState = await loadWorkspaceState()
+        console.log("[WorkspaceLayoutProvider] Loaded state from storage:", savedState)
         if (savedState && isValidWorkspaceState(savedState)) {
+          console.log("[WorkspaceLayoutProvider] Restoring workspace state")
           logger.debugSync("Restoring workspace state from storage")
           send({ type: "RESTORE_STATE", state: savedState })
         } else {
+          console.log("[WorkspaceLayoutProvider] No valid saved state, using default")
           logger.debugSync("No valid saved state found, using default preset")
         }
       } catch (error) {
+        console.error("[WorkspaceLayoutProvider] Failed to load:", error)
         logger.errorSync("Failed to load workspace state", { error })
       }
     }
