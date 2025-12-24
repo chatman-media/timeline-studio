@@ -27,7 +27,7 @@ function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVis
   if (isBrowserVisible && !isOptionsVisible) {
     return (
       <ResizablePanelGroup
-        direction="horizontal"
+        orientation="horizontal"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.BROWSER_PLAYER}
         data-oid="2s1lg2l"
@@ -51,7 +51,7 @@ function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVis
   if (!isBrowserVisible && isOptionsVisible) {
     return (
       <ResizablePanelGroup
-        direction="horizontal"
+        orientation="horizontal"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.PLAYER_OPTIONS}
         data-oid="6rxp1jv"
@@ -75,7 +75,7 @@ function TopDefaultLayout({ isOptionsVisible, isTimelineVisible: _, isBrowserVis
   if (isBrowserVisible && isOptionsVisible) {
     return (
       <ResizablePanelGroup
-        direction="horizontal"
+        orientation="horizontal"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.BROWSER_PLAYER_OPTIONS}
         data-oid="46yr-vo"
@@ -114,12 +114,12 @@ export function DefaultLayout() {
 
   return (
     <ResizablePanelGroup
-      direction="vertical"
+      orientation="vertical"
       className="min-h-0 flex-grow"
       id={PANEL_GROUP_IDS.MAIN_VERTICAL}
       data-oid="l_v7cm:"
     >
-      <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="_nlylxq">
+      <ResizablePanel id="panel-top" defaultSize={60} minSize={20} maxSize={80} data-oid="_nlylxq">
         <TopDefaultLayout
           isTimelineVisible={isTimelineVisible}
           isOptionsVisible={isOptionsVisible}
@@ -131,6 +131,7 @@ export function DefaultLayout() {
         <>
           <ResizableHandle data-oid="zlz7gps" />
           <ResizablePanel
+            id="panel-bottom"
             defaultSize={40}
             minSize={20}
             maxSize={80}
@@ -141,7 +142,7 @@ export function DefaultLayout() {
           >
             {/* Timeline и AI Chat рядом горизонтально */}
             <ResizablePanelGroup
-              direction="horizontal"
+              orientation="horizontal"
               className="min-h-0 h-full"
               id={PANEL_GROUP_IDS.TIMELINE_AI}
               data-oid="ynds320"

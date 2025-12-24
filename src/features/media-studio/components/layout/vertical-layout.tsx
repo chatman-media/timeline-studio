@@ -44,7 +44,7 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
   if (!isTimelineVisible) {
     return (
       <ResizablePanelGroup
-        direction="vertical"
+        orientation="vertical"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.VERTICAL_LAYOUT_LEFT}
         data-oid="jzdr3n-"
@@ -68,7 +68,7 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
   if (!isBrowserVisible) {
     return (
       <ResizablePanelGroup
-        direction="vertical"
+        orientation="vertical"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.LEFT_VERTICAL}
         data-oid="lr5--53"
@@ -92,7 +92,7 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
   if (!isOptionsVisible) {
     return (
       <ResizablePanelGroup
-        direction="vertical"
+        orientation="vertical"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.LEFT_VERTICAL}
         data-oid="52r_tof"
@@ -115,13 +115,13 @@ function LeftLayout({ isTimelineVisible, isBrowserVisible, isOptionsVisible }: L
   // Случай: Browser + Options + Timeline (все видимы)
   return (
     <ResizablePanelGroup
-      direction="vertical"
+      orientation="vertical"
       className="min-h-0 flex-grow"
       id={PANEL_GROUP_IDS.LEFT_VERTICAL}
       data-oid="zfjph3d"
     >
-      <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="q5097sa">
-        <ResizablePanelGroup direction="horizontal" id="group-browser-options" data-oid="_qxiglq">
+      <ResizablePanel id="panel-top" defaultSize={60} minSize={20} maxSize={80} data-oid="q5097sa">
+        <ResizablePanelGroup orientation="horizontal" id="group-browser-options" data-oid="_qxiglq">
           <ResizablePanel id={PANEL_IDS.BROWSER} defaultSize={30} minSize={20} maxSize={80} data-oid="y_kyfcg">
             <div className="h-full flex-1" data-oid="ao618q-">
               <Browser data-oid="19lg:wd" />
@@ -159,12 +159,12 @@ export function VerticalLayout() {
 
   return (
     <ResizablePanelGroup
-      direction="horizontal"
+      orientation="horizontal"
       className="min-h-0 flex-grow"
       id="group-vertical-main"
       data-oid="o28gc67"
     >
-      <ResizablePanel defaultSize={67} minSize={50} data-oid="cnc4jx:">
+      <ResizablePanel id="panel-left" defaultSize={67} minSize={50} data-oid="cnc4jx:">
         <LeftLayout
           isTimelineVisible={isTimelineVisible}
           isBrowserVisible={isBrowserVisible}

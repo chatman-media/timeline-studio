@@ -111,4 +111,25 @@ export class FFmpegUtils {
     const duration = parseFloat(data.format.duration || "0")
     return duration
   }
+
+  /**
+   * Generate a test video file (for testing purposes)
+   * Creates a simple colored video with optional audio
+   */
+  static async generateTestVideo(
+    output: string,
+    duration: number = 2,
+    options: { width?: number; height?: number; fps?: number; withAudio?: boolean } = {}
+  ): Promise<void> {
+    const { width = 640, height = 360, fps = 30, withAudio = true } = options
+    const ffmpegPath = config.FFMPEG_PATH
+
+    if (withAudio) {
+      // Generate test video with color and audio tone
+      await $`${ffmpegPath} -f lavfi -i testsrc=duration=${duration}:size=${width}x${height}:rate=${fps} -f lavfi -i sine=frequency=1000:duration=${duration} -pix_fmt yuv420p ${output} -y`.quiet()
+    } else {
+      // Generate test video with color only (no audio)
+      await $`${ffmpegPath} -f lavfi -i testsrc=duration=${duration}:size=${width}x${height}:rate=${fps} -pix_fmt yuv420p ${output} -y`.quiet()
+    }
+  }
 }

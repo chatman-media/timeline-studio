@@ -40,7 +40,7 @@
         "@tauri-apps/plugin-store": "^2.4.1",
         "@tauri-apps/plugin-websocket": "~2.4.1",
         "@tauri-apps/plugin-window": "^2.0.0-alpha.1",
-        "@trpc/client": "10.45.0",
+        "@trpc/client": "11.8.1",
         "@xstate/react": "6.0.0",
         "awilix": "^12.0.5",
         "class-variance-authority": "^0.7.1",
@@ -63,7 +63,7 @@
         "react-dom": "^19.2.3",
         "react-hotkeys-hook": "^5.2.1",
         "react-i18next": "^16.5.0",
-        "react-resizable-panels": "^4.0.15",
+        "react-resizable-panels": "4.0.15",
         "ruv-swarm": "^1.0.20",
         "sonner": "^2.0.7",
         "tailwind-merge": "^3.4.0",
@@ -110,7 +110,7 @@
         "happy-dom": "20.0.11",
         "js-yaml": "^4.1.1",
         "jsdom": "27.3.0",
-        "knip": "^5.77.0",
+        "knip": "^5.77.1",
         "lightningcss": "^1.30.2",
         "puppeteer": "^24.34.0",
         "semantic-release": "^24.2.9",
@@ -1035,7 +1035,7 @@
 
     "@tootallnate/quickjs-emscripten": ["@tootallnate/quickjs-emscripten@0.23.0", "", {}, "sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA=="],
 
-    "@trpc/client": ["@trpc/client@10.45.0", "", { "peerDependencies": { "@trpc/server": "10.45.0" } }, "sha512-m091R1qte9rvkvL8N1e/mzrbb8S4gb+Q4ZNJnEGDgd7kic/6a8DFgSciBTiCoSp0YwOTVhyQzSrrA/sZI6PhBg=="],
+    "@trpc/client": ["@trpc/client@11.8.1", "", { "peerDependencies": { "@trpc/server": "11.8.1", "typescript": ">=5.7.2" } }, "sha512-L/SJFGanr9xGABmuDoeXR4xAdHJmsXsiF9OuH+apecJ+8sUITzVT1EPeqp0ebqA6lBhEl5pPfg3rngVhi/h60Q=="],
 
     "@trpc/server": ["@trpc/server@10.45.0", "", {}, "sha512-2Fwzv6nqpE0Ie/G7PeS0EVR89zLm+c1Mw7T+RAGtU807j4oaUx0zGkBXTu5u9AI+j+BYNN2GZxJcuDTAecbr1A=="],
 
@@ -1929,7 +1929,7 @@
 
     "kind-of": ["kind-of@6.0.3", "", {}, "sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw=="],
 
-    "knip": ["knip@5.77.0", "", { "dependencies": { "@nodelib/fs.walk": "^1.2.3", "fast-glob": "^3.3.3", "formatly": "^0.3.0", "jiti": "^2.6.0", "js-yaml": "^4.1.1", "minimist": "^1.2.8", "oxc-resolver": "^11.15.0", "picocolors": "^1.1.1", "picomatch": "^4.0.1", "smol-toml": "^1.5.2", "strip-json-comments": "5.0.3", "zod": "^4.1.11" }, "peerDependencies": { "@types/node": ">=18", "typescript": ">=5.0.4 <7" }, "bin": { "knip": "bin/knip.js", "knip-bun": "bin/knip-bun.js" } }, "sha512-+J+YupbivNvdeNNeMhxJKX+i5Npaq8ZPMeTbmlor/Kdab+gcWwFXTi+0OvRJHBY+Y+UCzvUfR+OSVp+bAEfNXg=="],
+    "knip": ["knip@5.77.1", "", { "dependencies": { "@nodelib/fs.walk": "^1.2.3", "fast-glob": "^3.3.3", "formatly": "^0.3.0", "jiti": "^2.6.0", "js-yaml": "^4.1.1", "minimist": "^1.2.8", "oxc-resolver": "^11.15.0", "picocolors": "^1.1.1", "picomatch": "^4.0.1", "smol-toml": "^1.5.2", "strip-json-comments": "5.0.3", "zod": "^4.1.11" }, "peerDependencies": { "@types/node": ">=18", "typescript": ">=5.0.4 <7" }, "bin": { "knip": "bin/knip.js", "knip-bun": "bin/knip-bun.js" } }, "sha512-+yA/vfQUDEFUOcR0XRn/dOZmNEsS10pIMztS5JbKUhk9zvQiAFvr3Mcc3zC7Dn9gBG8LeImhaXA6/D3uhzwZvg=="],
 
     "known-css-properties": ["known-css-properties@0.37.0", "", {}, "sha512-JCDrsP4Z1Sb9JwG0aJ8Eo2r7k4Ou5MwmThS/6lcIe1ICyb7UBJKGRIUUdqc2ASdE/42lgz6zFUnzAIhtXnBVrQ=="],
 

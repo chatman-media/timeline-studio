@@ -17,3 +17,16 @@ paths = {
   "@adapters/*" = ["../src/adapters/*"],
   "@node/*" = ["./src/*"]
 }
+
+[test]
+# Test configuration
+preload = ["__tests__/setup.ts"]
+coverage = true
+coverageDir = "coverage"
+coverageReporter = ["text", "lcov", "html"]
+
+# Only run files matching these patterns
+testMatch = ["**/__tests__/**/*.test.ts"]
+
+# Timeout for tests (in milliseconds)
+timeout = 10000

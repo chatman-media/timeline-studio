@@ -22,7 +22,7 @@ function LeftLayout() {
   if (!isTimelineVisible) {
     return (
       <ResizablePanelGroup
-        direction="horizontal"
+        orientation="horizontal"
         className="min-h-0 flex-grow"
         id={PANEL_GROUP_IDS.BROWSER_PLAYER}
         data-oid="r_oszsc"
@@ -46,7 +46,7 @@ function LeftLayout() {
   if (!isBrowserVisible) {
     return (
       <ResizablePanelGroup
-        direction="horizontal"
+        orientation="horizontal"
         className="min-h-0 flex-grow"
         id="group-player-timeline"
         data-oid="b1vbxl8"
@@ -69,14 +69,14 @@ function LeftLayout() {
   // Случай: Browser + VideoPlayer + Timeline (все видимы)
   return (
     <ResizablePanelGroup
-      direction="vertical"
+      orientation="vertical"
       className="min-h-0 flex-grow"
       id={PANEL_GROUP_IDS.OPTIONS_LAYOUT_LEFT_TOP}
       data-oid="cqxsfi8"
     >
-      <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="-qn6s1z">
+      <ResizablePanel id="panel-top" defaultSize={60} minSize={20} maxSize={80} data-oid="-qn6s1z">
         <ResizablePanelGroup
-          direction="horizontal"
+          orientation="horizontal"
           id={PANEL_GROUP_IDS.BROWSER_PLAYER}
           data-oid="9wet:-d"
         >
@@ -109,12 +109,12 @@ export function OptionsLayout() {
 
   return (
     <ResizablePanelGroup
-      direction="horizontal"
+      orientation="horizontal"
       className="min-h-0 flex-grow"
       id="group-options-main"
       data-oid="374v5bl"
     >
-      <ResizablePanel defaultSize={70} data-oid="uk418-f">
+      <ResizablePanel id="panel-left" defaultSize={70} data-oid="uk418-f">
         <LeftLayout data-oid="f4263d1" />
       </ResizablePanel>
       <ResizableHandle data-oid="0uc9re1" />

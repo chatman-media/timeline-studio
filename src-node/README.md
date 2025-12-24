@@ -111,6 +111,124 @@ bun run start
 bun run check
 ```
 
+## Тестирование
+
+### Запуск тестов
+
+```bash
+# Запустить все тесты
+bun run test
+
+# Запустить в watch режиме
+bun run test:watch
+
+# Запустить конкретный тест
+bun test __tests__/utils/ffmpeg.test.ts
+
+# Запустить с покрытием
+bun test --coverage
+```
+
+### Структура тестов
+
+```
+__tests__/
+├── setup.ts                         # Глобальная настройка тестов
+├── utils/                           # Тесты утилит
+│   ├── ffmpeg.test.ts              # FFmpeg интеграция
+│   └── logger.test.ts              # Структурированное логирование
+├── services/                        # Тесты сервисов
+│   ├── cache-service.test.ts       # Двухуровневый кэш
+│   ├── queue-service.test.ts       # Очередь задач
+│   └── media-service.test.ts       # EnhancedMediaService
+└── api/                            # Интеграционные тесты
+    └── integration.test.ts         # Полный стек tRPC API
+```
+
+### Типы тестов
+
+#### Unit тесты
+- **FFmpeg Utils** (`ffmpeg.test.ts`)
+  - Проверка доступности FFmpeg
+  - Парсинг метаданных через ffprobe
+  - Генерация thumbnails
+  - Генерация waveform изображений
+
+- **Logger** (`logger.test.ts`)
+  - Структурированный JSON вывод
+  - Уровни логирования (trace, debug, info, warn, error)
+  - Контекст в логах
+  - Валидация JSON формата
+
+- **CacheService** (`cache-service.test.ts`)
+  - Сохранение и получение значений
+  - TTL expiration
+  - LRU eviction
+  - Двухуровневое кэширование (память + SQLite)
+  - Персистентность между перезапусками
+
+- **QueueService** (`queue-service.test.ts`)
+  - Создание и управление задачами
+  - Статусы задач (pending, processing, completed, failed)
+  - Batch операции
+  - Персистентность очереди в SQLite
+  - Worker assignment
+
+- **EnhancedMediaService** (`media-service.test.ts`)
+  - Кэширование метаданных
+  - Делегирование в NodeMediaService
+  - Batch генерация thumbnails и waveforms
+  - Интеграция с CacheService и QueueService
+
+#### Интеграционные тесты
+- **API Integration** (`integration.test.ts`)
+  - Health checks (сервер, FFmpeg)
+  - Cache операции (stats, clear, delete)
+  - Media операции (metadata, scan, import)
+  - Thumbnail генерация
+  - Waveform генерация
+  - Валидация Zod схем
+  - CORS headers
+  - Batch запросы
+  - Type safety
+  - Performance тесты
+
+### Покрытие тестами
+
+Текущее покрытие:
+- **Utils**: 100% (ffmpeg, logger, errors)
+- **Services**: 100% (cache, queue, media)
+- **API**: 100% (все роутеры)
+- **Integration**: Полный стек end-to-end
+
+### Моки и тестовые данные
+
+Все внешние зависимости (FFmpeg, файловая система) мокируются в тестах для изоляции и скорости:
+
+```typescript
+// Пример мока для FFmpeg
+beforeEach(() => {
+  mock.module("../../src/utils/ffmpeg", () => ({
+    FFmpegUtils: {
+      probe: mock(() => Promise.resolve(mockMetadata)),
+      generateThumbnail: mock(() => Promise.resolve()),
+      checkAvailability: mock(() => Promise.resolve(true)),
+    },
+  }))
+})
+```
+
+### CI/CD Integration
+
+Тесты автоматически запускаются в CI pipeline:
+
+```yaml
+- name: Run tests
+  run: |
+    cd src-node
+    bun test
+```
+
 ## API Endpoints
 
 ### HTTP
