@@ -43,6 +43,8 @@ export const VideoStream = memo(
   }: VideoStreamProps) => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
+    const [actualVideoWidth, setActualVideoWidth] = useState<number | null>(null)
+    const [actualVideoHeight, setActualVideoHeight] = useState<number | null>(null)
     const videoRef = useRef<HTMLVideoElement | null>(null)
     const lastUpdateTimeRef = useRef(0)
     const { isAdded: isResourceAdded, removeResource } = useResources()
@@ -50,9 +52,9 @@ export const VideoStream = memo(
 
     const key = stream.streamKey ?? `stream-${stream.index}`
 
-    // Вычисляем размеры
-    const videoWidth = stream.width || 1920
-    const videoHeight = stream.height || 1080
+    // Вычисляем размеры - приоритет у реальных размеров из video элемента
+    const videoWidth = actualVideoWidth || stream.width || 1920
+    const videoHeight = actualVideoHeight || stream.height || 1080
     const width = calculateWidth(videoWidth, videoHeight, size, parseRotation(stream.rotation))
     const adaptiveWidth = calculateAdaptiveWidth(width, isMultipleStreams, stream.display_aspect_ratio || "16:9")
     const aspectRatio = stream.display_aspect_ratio?.split(":").map(Number) ?? [16, 9]
@@ -129,7 +131,12 @@ export const VideoStream = memo(
         video.currentTime = 0
         video.pause()
 
-        logger.debugSync(`[VideoStream] Video dimensions: ${video.videoWidth}x${video.videoHeight}`)
+        // Сохраняем реальные размеры видео из video элемента
+        if (video.videoWidth && video.videoHeight) {
+          setActualVideoWidth(video.videoWidth)
+          setActualVideoHeight(video.videoHeight)
+          logger.debugSync(`[VideoStream] Video dimensions: ${video.videoWidth}x${video.videoHeight}`)
+        }
         logger.debugSync(`[VideoStream] Video src: ${video.src}`)
 
         if (!file.probeData?.streams || file.probeData.streams.length === 0) {
