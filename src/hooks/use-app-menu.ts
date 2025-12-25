@@ -20,10 +20,16 @@ export function useAppMenu() {
   // Open Project with dialog
   const handleOpenProject = async () => {
     try {
+      // Получаем путь к домашней директории и папке проектов
+      const { homeDir } = await import("@tauri-apps/api/path")
+      const homePath = await homeDir()
+      const projectsPath = `${homePath}TimelineStudioProjects`
+
       // Открываем диалог выбора проекта
       const { open } = await import("@tauri-apps/plugin-dialog")
       const selected = await open({
         multiple: false,
+        defaultPath: projectsPath,
         filters: [
           {
             name: "Timeline Studio Project",

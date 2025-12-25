@@ -145,24 +145,23 @@ export function useTimelineActions(): UseTimelineActionsReturn {
         logger.info(`Creating new ${trackType} track for file: ${file.name}`)
 
         try {
-          // Ожидаем создание трека
-          await addTrack(trackType, trackName, undefined)
+          // Создаём трек и получаем его ID напрямую из backend
+          const createdTrackId = await addTrack(trackType, trackName, undefined)
 
-          // Ожидаем небольшую задержку для обновления состояния
-          await new Promise((resolve) => setTimeout(resolve, 150))
-
-          // Пытаемся найти созданный трек
-          const newTargetTrackId = findBestTrackForMedia(file)
-
-          if (!newTargetTrackId) {
+          if (!createdTrackId) {
             logger.error(
-              `Track was created but not found in state for media file: ${file.name}. Please try again or create track manually.`,
+              `Failed to create track for media file: ${file.name}. Backend did not return track_id.`,
             )
             return
           }
 
-          logger.info(`Track created successfully for file: ${file.name}`)
-          return addSingleMediaToTimeline(file, newTargetTrackId, customStartTime)
+          logger.info(`Track created successfully for file: ${file.name}, trackId: ${createdTrackId}`)
+
+          // Небольшая задержка чтобы React state успел обновиться
+          // Теперь это не критично, так как у нас есть точный ID
+          await new Promise((resolve) => setTimeout(resolve, 100))
+
+          return addSingleMediaToTimeline(file, createdTrackId, customStartTime)
         } catch (error) {
           logger.error(`Failed to create ${trackType} track for media file: ${file.name}`, { error })
           return

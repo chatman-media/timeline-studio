@@ -3,6 +3,14 @@ import { open } from "@tauri-apps/plugin-dialog"
 import { getMedia } from "@/core/container"
 import { formatDurationSeconds as formatDurationSecondsUtil } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
+import { isBrowser } from "@/lib/environment"
+import {
+  openBrowserFilePicker,
+  openBrowserDirectoryPicker,
+  getFilesFromHandles,
+  getFilesFromDirectory,
+  MEDIA_MIME_TYPES,
+} from "./browser-file-picker"
 
 const logger = createLogger("MediaApi")
 
@@ -97,6 +105,24 @@ export async function getMediaFiles(directory: string): Promise<string[]> {
  */
 export async function selectMediaFile(): Promise<string[] | null> {
   try {
+    // В браузере используем File System Access API
+    if (isBrowser()) {
+      const handles = await openBrowserFilePicker({
+        multiple: true,
+        accept: MEDIA_MIME_TYPES.all,
+      })
+
+      if (!handles) {
+        return null
+      }
+
+      const files = await getFilesFromHandles(handles)
+      // В браузере возвращаем имена файлов (webkitRelativePath или name)
+      // TODO: Для полной интеграции с Node.js backend нужен upload endpoint
+      return files.map((file) => file.webkitRelativePath || file.name)
+    }
+
+    // Desktop mode - используем Tauri dialog
     const selected = await open({
       multiple: true,
       filters: [
@@ -140,6 +166,22 @@ export async function selectMediaFile(): Promise<string[] | null> {
  */
 export async function selectAudioFile(): Promise<string[] | null> {
   try {
+    // В браузере используем File System Access API
+    if (isBrowser()) {
+      const handles = await openBrowserFilePicker({
+        multiple: true,
+        accept: MEDIA_MIME_TYPES.audio,
+      })
+
+      if (!handles) {
+        return null
+      }
+
+      const files = await getFilesFromHandles(handles)
+      return files.map((file) => file.webkitRelativePath || file.name)
+    }
+
+    // Desktop mode - используем Tauri dialog
     const selected = await open({
       multiple: true,
       filters: [
@@ -168,6 +210,20 @@ export async function selectAudioFile(): Promise<string[] | null> {
  */
 export async function selectMediaDirectory(): Promise<string | null> {
   try {
+    // В браузере используем File System Access API
+    if (isBrowser()) {
+      const dirHandle = await openBrowserDirectoryPicker()
+
+      if (!dirHandle) {
+        return null
+      }
+
+      // В браузере возвращаем имя директории
+      // TODO: Для полной интеграции с Node.js backend нужна загрузка файлов
+      return dirHandle.name
+    }
+
+    // Desktop mode - используем Tauri dialog
     const selected = await open({
       directory: true,
       multiple: false,

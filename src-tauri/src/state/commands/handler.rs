@@ -2629,6 +2629,7 @@ impl CommandHandler {
     state
       .browser_state
       .add_to_favorites(file_id.clone(), Some(target_tab.clone()));
+    state.mark_dirty();
     let version = state.version;
 
     self
@@ -2657,6 +2658,7 @@ impl CommandHandler {
     state
       .browser_state
       .remove_from_favorites(&file_id, Some(target_tab.clone()));
+    state.mark_dirty();
     let version = state.version;
 
     self

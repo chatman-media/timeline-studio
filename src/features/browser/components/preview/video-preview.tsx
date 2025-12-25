@@ -166,6 +166,17 @@ export const VideoPreview = memo(
       data: dragData,
     })
 
+    // Log draggable setup for debugging
+    useEffect(() => {
+      if (isDragging) {
+        logger.info(`[VideoPreview] Dragging started:`, {
+          id: `video-${file.id}`,
+          fileName: file.name,
+          dragData,
+        })
+      }
+    }, [isDragging, file.id, file.name, dragData])
+
     // Transform style for drag feedback
     const style = transform
       ? {
@@ -186,8 +197,8 @@ export const VideoPreview = memo(
           minHeight: `${size}px`,
           minWidth: `${size * (16 / 9)}px`,
         }}
-        {...(listeners && typeof listeners === "object" ? listeners : {})}
-        {...(attributes && typeof attributes === "object" ? attributes : {})}
+        {...listeners}
+        {...attributes}
         data-oid="1lf:4-1"
       >
         {showPlaceholder ? (

@@ -3,7 +3,7 @@
  */
 
 import { useDroppable } from "@dnd-kit/core"
-import { memo, useCallback, useMemo } from "react"
+import { memo, useCallback, useEffect, useMemo } from "react"
 import { getDragDropManager } from "@/features/drag-drop"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -48,6 +48,16 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
       trackType: track.type,
     },
   })
+
+  // Log drop zone state for debugging
+  useEffect(() => {
+    if (isOver) {
+      logger.info(`[TrackContent] Drop zone active:`, {
+        trackId: track.id,
+        trackType: track.type,
+      })
+    }
+  }, [isOver, track.id, track.type])
 
   // Нативные drag-and-drop обработчики для совместимости с DragDropManager (браузер)
   const handleNativeDragOver = useCallback((e: React.DragEvent) => {

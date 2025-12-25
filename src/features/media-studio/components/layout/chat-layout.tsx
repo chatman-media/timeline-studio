@@ -34,18 +34,18 @@ function LeftChatLayout() {
     if (!isOptionsVisible) {
       return (
         <ResizablePanelGroup
-          orientation="horizontal"
+          direction="horizontal"
           className="min-h-0 flex-grow"
-          id={PANEL_GROUP_IDS.BROWSER_PLAYER}
+          autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER}
           data-oid="wpr..__"
         >
-          <ResizablePanel id={PANEL_IDS.BROWSER} defaultSize={35} minSize={20} maxSize={80} data-oid="weona5z">
+          <ResizablePanel defaultSize={35} minSize={20} maxSize={80} data-oid="weona5z">
             <div className="h-full flex-1" data-oid="li4ss.5">
               <Browser data-oid="fooxdyt" />
             </div>
           </ResizablePanel>
           <ResizableHandle data-oid="b7wth:e" />
-          <ResizablePanel id={PANEL_IDS.PLAYER} defaultSize={65} minSize={20} maxSize={80} data-oid="adg3uva">
+          <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="adg3uva">
             <div className="relative h-full flex-1" data-oid="rl4hypu">
               <VideoPlayer data-oid="nnk3uf9" />
             </div>
@@ -58,18 +58,18 @@ function LeftChatLayout() {
     if (!isBrowserVisible) {
       return (
         <ResizablePanelGroup
-          orientation="horizontal"
+          direction="horizontal"
           className="min-h-0 flex-grow"
-          id={PANEL_GROUP_IDS.PLAYER_OPTIONS}
+          autoSaveId={PANEL_GROUP_IDS.PLAYER_OPTIONS}
           data-oid="uyypaki"
         >
-          <ResizablePanel id={PANEL_IDS.PLAYER} defaultSize={65} minSize={20} maxSize={80} data-oid="ry9bqzz">
+          <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="ry9bqzz">
             <div className="relative h-full flex-1" data-oid="m9z3jh9">
               <VideoPlayer data-oid="-7451vz" />
             </div>
           </ResizablePanel>
           <ResizableHandle data-oid="mm83-.t" />
-          <ResizablePanel id={PANEL_IDS.OPTIONS} defaultSize={35} minSize={20} maxSize={80} data-oid="bda8b_s">
+          <ResizablePanel defaultSize={35} minSize={20} maxSize={80} data-oid="bda8b_s">
             <div className="h-full flex-1" data-oid="a-_3dl3">
               <Options data-oid="ns:j2a5" />
             </div>
@@ -81,24 +81,24 @@ function LeftChatLayout() {
     // Browser + VideoPlayer + Options (Timeline скрыт)
     return (
       <ResizablePanelGroup
-        orientation="horizontal"
+        direction="horizontal"
         className="min-h-0 flex-grow"
-        id={PANEL_GROUP_IDS.BROWSER_PLAYER_OPTIONS}
+        autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER_OPTIONS}
         data-oid="co0:y:-"
       >
-        <ResizablePanel id={PANEL_IDS.BROWSER} defaultSize={30} minSize={20} maxSize={60} data-oid="vc3gyah">
+        <ResizablePanel defaultSize={30} minSize={20} maxSize={60} data-oid="vc3gyah">
           <div className="h-full flex-1" data-oid="b_.-2ic">
             <Browser data-oid="inromni" />
           </div>
         </ResizablePanel>
         <ResizableHandle data-oid="6en_cz1" />
-        <ResizablePanel id={PANEL_IDS.PLAYER} defaultSize={45} minSize={30} maxSize={70} data-oid="juxda2u">
+        <ResizablePanel defaultSize={45} minSize={30} maxSize={70} data-oid="juxda2u">
           <div className="relative h-full flex-1" data-oid="q4d91my">
             <VideoPlayer data-oid="i-y_a.:" />
           </div>
         </ResizablePanel>
         <ResizableHandle data-oid="ge3nz2-" />
-        <ResizablePanel id={PANEL_IDS.OPTIONS} defaultSize={25} minSize={20} maxSize={60} data-oid="smq2t:v">
+        <ResizablePanel defaultSize={25} minSize={20} maxSize={60} data-oid="smq2t:v">
           <div className="h-full flex-1" data-oid="-psdedk">
             <Options data-oid="mn1t9gq" />
           </div>
@@ -112,18 +112,18 @@ function LeftChatLayout() {
   if (!isBrowserVisible && !isOptionsVisible) {
     return (
       <ResizablePanelGroup
-        orientation="vertical"
+        direction="vertical"
         className="min-h-0 flex-grow"
-        id="group-player-timeline"
+        autoSaveId="group-player-timeline"
         data-oid="_cxy91w"
       >
-        <ResizablePanel id={PANEL_IDS.PLAYER} defaultSize={65} minSize={20} maxSize={80} data-oid="2ya019-">
+        <ResizablePanel defaultSize={65} minSize={20} maxSize={80} data-oid="2ya019-">
           <div className="relative h-full flex-1" data-oid="hngwq9l">
             <VideoPlayer data-oid="9i4ck6j" />
           </div>
         </ResizablePanel>
         <ResizableHandle data-oid="x31bl8-" />
-        <ResizablePanel id={PANEL_IDS.TIMELINE} defaultSize={35} minSize={20} maxSize={80} data-oid="rg2f_tm">
+        <ResizablePanel defaultSize={35} minSize={20} maxSize={80} data-oid="rg2f_tm">
           <div className="h-full flex-1" data-oid="ylb0n-3">
             <Timeline data-oid="elob1_b" />
           </div>
@@ -136,24 +136,24 @@ function LeftChatLayout() {
   if (!isOptionsVisible) {
     return (
       <ResizablePanelGroup
-        orientation="vertical"
+        direction="vertical"
         className="min-h-0 flex-grow"
-        id={PANEL_GROUP_IDS.CHAT_LAYOUT_LEFT_TOP}
+        autoSaveId={PANEL_GROUP_IDS.CHAT_LAYOUT_LEFT_TOP}
         data-oid="7kjdfm7"
       >
-        <ResizablePanel id="panel-top" defaultSize={60} minSize={20} maxSize={80} data-oid="qeosueq">
+        <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="qeosueq">
           <ResizablePanelGroup
-            orientation="horizontal"
-            id={PANEL_GROUP_IDS.BROWSER_PLAYER}
+            direction="horizontal"
+            autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER}
             data-oid="4npy069"
           >
-            <ResizablePanel id={PANEL_IDS.BROWSER} defaultSize={30} minSize={20} maxSize={80} data-oid=".m9eu9n">
+            <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid=".m9eu9n">
               <div className="h-full flex-1" data-oid="6px-obe">
                 <Browser data-oid="k2s_:us" />
               </div>
             </ResizablePanel>
             <ResizableHandle data-oid="tcczz4r" />
-            <ResizablePanel id={PANEL_IDS.PLAYER} defaultSize={70} minSize={20} maxSize={100} data-oid="ho9sjhf">
+            <ResizablePanel defaultSize={70} minSize={20} maxSize={100} data-oid="ho9sjhf">
               <div className="relative h-full flex-1" data-oid="kfn_fhn">
                 <VideoPlayer data-oid="ygtnxs7" />
               </div>
@@ -161,7 +161,7 @@ function LeftChatLayout() {
           </ResizablePanelGroup>
         </ResizablePanel>
         <ResizableHandle data-oid="venlh4b" />
-        <ResizablePanel id={PANEL_IDS.TIMELINE} defaultSize={40} minSize={20} maxSize={80} data-oid="d9cakoj">
+        <ResizablePanel defaultSize={40} minSize={20} maxSize={80} data-oid="d9cakoj">
           <div className="h-full flex-1" data-oid="woufm37">
             <Timeline data-oid="j3mtvk6" />
           </div>
@@ -174,24 +174,24 @@ function LeftChatLayout() {
   if (!isBrowserVisible) {
     return (
       <ResizablePanelGroup
-        orientation="vertical"
+        direction="vertical"
         className="min-h-0 flex-grow"
-        id={PANEL_GROUP_IDS.CHAT_LAYOUT_LEFT_TOP}
+        autoSaveId={PANEL_GROUP_IDS.CHAT_LAYOUT_LEFT_TOP}
         data-oid="6cceq5m"
       >
-        <ResizablePanel id="panel-top" defaultSize={60} minSize={20} maxSize={80} data-oid="k:aqb6t">
+        <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="k:aqb6t">
           <ResizablePanelGroup
-            orientation="horizontal"
-            id={PANEL_GROUP_IDS.PLAYER_OPTIONS}
+            direction="horizontal"
+            autoSaveId={PANEL_GROUP_IDS.PLAYER_OPTIONS}
             data-oid="v18hmba"
           >
-            <ResizablePanel id={PANEL_IDS.PLAYER} defaultSize={70} minSize={20} maxSize={100} data-oid="5:o:o:u">
+            <ResizablePanel defaultSize={70} minSize={20} maxSize={100} data-oid="5:o:o:u">
               <div className="relative h-full flex-1" data-oid="ez9afh2">
                 <VideoPlayer data-oid="e8p.m0d" />
               </div>
             </ResizablePanel>
             <ResizableHandle data-oid="3r6ftkg" />
-            <ResizablePanel id={PANEL_IDS.OPTIONS} defaultSize={30} minSize={20} maxSize={80} data-oid="_vc0-.8">
+            <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid="_vc0-.8">
               <div className="h-full flex-1" data-oid="ixmw62l">
                 <Options data-oid="v4xz4ja" />
               </div>
@@ -199,7 +199,7 @@ function LeftChatLayout() {
           </ResizablePanelGroup>
         </ResizablePanel>
         <ResizableHandle data-oid="9-24s9q" />
-        <ResizablePanel id={PANEL_IDS.TIMELINE} defaultSize={40} minSize={20} maxSize={80} data-oid="74sbixz">
+        <ResizablePanel defaultSize={40} minSize={20} maxSize={80} data-oid="74sbixz">
           <div className="h-full flex-1" data-oid="m4r:d2z">
             <Timeline data-oid="wut6_3y" />
           </div>
@@ -211,15 +211,15 @@ function LeftChatLayout() {
   // Все панели видимы: Browser + VideoPlayer + Options + Timeline
   return (
     <ResizablePanelGroup
-      orientation="vertical"
+      direction="vertical"
       className="min-h-0 flex-grow"
-      id={PANEL_GROUP_IDS.CHAT_LAYOUT_LEFT_TOP}
+      autoSaveId={PANEL_GROUP_IDS.CHAT_LAYOUT_LEFT_TOP}
       data-oid="prad_::"
     >
-      <ResizablePanel id="panel-top" defaultSize={60} minSize={20} maxSize={80} data-oid="mwb49ht">
+      <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="mwb49ht">
         <ResizablePanelGroup
-          orientation="horizontal"
-          id={PANEL_GROUP_IDS.BROWSER_PLAYER_OPTIONS}
+          direction="horizontal"
+          autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER_OPTIONS}
           data-oid="0g8pwt4"
         >
           <ResizablePanel defaultSize={25} minSize={20} maxSize={60} data-oid="je1wooo">
@@ -242,7 +242,7 @@ function LeftChatLayout() {
         </ResizablePanelGroup>
       </ResizablePanel>
       <ResizableHandle data-oid="i45.dz4" />
-      <ResizablePanel id={PANEL_IDS.TIMELINE} defaultSize={40} minSize={20} maxSize={80} data-oid="e2.apjv">
+      <ResizablePanel defaultSize={40} minSize={20} maxSize={80} data-oid="e2.apjv">
         <div className="h-full flex-1" data-oid="pf5ye.a">
           <Timeline data-oid="fgtf9t3" />
         </div>
@@ -254,16 +254,16 @@ function LeftChatLayout() {
 export function ChatLayout() {
   return (
     <ResizablePanelGroup
-      orientation="horizontal"
+      direction="horizontal"
       className="min-h-0 flex-grow"
-      id="group-chat-main"
+      autoSaveId="group-chat-main"
       data-oid="616cg7f"
     >
-      <ResizablePanel id="panel-left" defaultSize={70} data-oid="nm7_fff">
+      <ResizablePanel defaultSize={70} data-oid="nm7_fff">
         <LeftChatLayout data-oid="7_-zkt6" />
       </ResizablePanel>
       <ResizableHandle data-oid="cki01.a" />
-      <ResizablePanel id={PANEL_IDS.AI_CHAT} defaultSize={30} data-oid="uz0i3o:">
+      <ResizablePanel defaultSize={30} data-oid="uz0i3o:">
         <div className="h-full flex-1 flex flex-col" data-oid="chhr1t-">
           <div className="flex-1 min-h-0" data-oid="sstjqta">
             <AiChat data-oid="1-1-8ip" />

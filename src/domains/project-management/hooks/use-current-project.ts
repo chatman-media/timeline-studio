@@ -73,6 +73,15 @@ export function useCurrentProject() {
   // Сохранение проекта как (с диалогом выбора пути)
   const saveProjectAs = async () => {
     try {
+      // Получаем путь к домашней директории и папке проектов
+      const { homeDir } = await import("@tauri-apps/api/path")
+      const homePath = await homeDir()
+      const projectsPath = `${homePath}TimelineStudioProjects`
+
+      // Формируем имя файла
+      const fileName = currentProject?.name ? `${currentProject.name}.tls` : "project.tls"
+      const fullPath = `${projectsPath}/${fileName}`
+
       // Открываем диалог сохранения файла
       const { save } = await import("@tauri-apps/plugin-dialog")
       const selected = await save({
@@ -82,7 +91,7 @@ export function useCurrentProject() {
             extensions: ["tls"],
           },
         ],
-        defaultPath: currentProject?.name ? `${currentProject.name}.tls` : "project.tls",
+        defaultPath: fullPath,
       })
 
       if (selected) {

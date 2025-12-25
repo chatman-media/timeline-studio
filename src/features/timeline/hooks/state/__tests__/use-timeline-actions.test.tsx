@@ -545,10 +545,13 @@ describe("useTimelineActions", () => {
       vi.useRealTimers()
     })
 
-    it("должен обработать retry логику при создании трека", async () => {
-      mockTracks.getTracksByType
-        .mockReturnValueOnce([]) // Первый вызов - нет треков
-        .mockReturnValueOnce([{ id: "new-track" }]) // Второй вызов после создания - трек появился
+    it("должен использовать track_id возвращенный из backend при создании трека", async () => {
+      // Mock: нет треков, поэтому будет создан новый
+      mockTracks.getTracksByType.mockReturnValue([])
+
+      // Mock: addTrack возвращает track_id из backend
+      const createdTrackId = "new-track-from-backend"
+      mockTimeline.addTrack.mockResolvedValue(createdTrackId)
 
       const { result } = renderHook(() => useTimelineActions(), {
         wrapper: TimelineProviders,
@@ -560,8 +563,12 @@ describe("useTimelineActions", () => {
 
       // Трек создается
       expect(mockTimeline.addTrack).toHaveBeenCalled()
-      // Клип добавляется
-      expect(mockTimeline.addClip).toHaveBeenCalled()
+      // Клип добавляется с правильным track_id
+      expect(mockTimeline.addClip).toHaveBeenCalledWith(
+        createdTrackId,
+        expect.anything(),
+        expect.any(Number)
+      )
     })
   })
 

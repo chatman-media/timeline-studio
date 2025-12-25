@@ -1037,6 +1037,13 @@
       }
     }
   },
+  "developerTools": {
+    "title": "Developer Tools",
+    "description": "Advanced tools for developers and content creators",
+    "tabs": {
+      "effectPreviews": "Effect Previews"
+    }
+  },
   "templates": {
     "verticalSplit": "Vertical Split",
     "horizontalSplit": "Horizontal Split",
@@ -1600,7 +1607,8 @@
       "templates": "Cameras",
       "styleTemplates": "Templates",
       "subtitles": "Subtitles",
-      "music": "Music"
+      "music": "Music",
+      "empty": "Drag here effects, filters, transitions or media files"
     },
     "chat": {
       "noMessages": "No messages. Start a conversation.",
@@ -1617,7 +1625,9 @@
       "import_media": "Import Media",
       "ask_ai_import": "Ask AI",
       "copy": "Copy",
-      "loading_models": "Loading models..."
+      "loading_models": "Loading models...",
+      "no_models": "No available models",
+      "no_tool_models": "No models with tool support"
     },
     "title": "Timeline",
     "noTracks": "No tracks",
@@ -1977,7 +1987,8 @@
     "templates": "Templates",
     "music": "Music",
     "subtitles": "Subtitles",
-    "noResources": "No resources added"
+    "noResources": "No resources added",
+    "empty": "Drag here effects, filters, transitions or media files"
   },
   "chat": {
     "title": "Chat",
@@ -1994,7 +2005,9 @@
     "import_media": "Import Media",
     "ask_ai_import": "Ask AI",
     "copy": "Copy",
-    "loading_models": "Loading models..."
+    "loading_models": "Loading models...",
+    "no_models": "No available models",
+    "no_tool_models": "No models with tool support"
   },
   "ai": {
     "suggestions": {

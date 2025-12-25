@@ -241,11 +241,30 @@ export class VideoEditingOrchestrator {
   /**
    * Выполнить команду backend
    */
-  async executeCommand(command: ProjectCommand): Promise<void> {
+  async executeCommand(command: ProjectCommand): Promise<any> {
     logger.info("[Video Editing Orchestrator] Executing command:", { data: command.type })
 
     try {
-      await this.backend?.executeCommand(command as any)
+      // Получаем результат напрямую из backend чтобы иметь доступ к данным
+      const { container } = await import("@/core/container")
+      const backend = container.getBackend()
+      const result = await backend.executeCommand(command as any)
+
+      if (!result.success) {
+        throw new Error(result.error || "Command failed")
+      }
+
+      logger.info("[Video Editing Orchestrator] Command result:", {
+        type: command.type,
+        hasData: !!result?.data,
+      })
+
+      // Также отправляем команду через orchestrator для обновления state
+      void this.backend?.executeCommand(command as any).catch((error) => {
+        logger.warn("[Video Editing Orchestrator] State update failed:", { error })
+      })
+
+      return result?.data
     } catch (error) {
       logger.error("[Video Editing Orchestrator] Command failed:", { error })
       throw error
@@ -374,8 +393,9 @@ export class VideoEditingOrchestrator {
 
   /**
    * API для управления треками
+   * @returns track_id созданного трека
    */
-  async addTrack(type: any, name?: string, sectionId?: string) {
+  async addTrack(type: any, name?: string, sectionId?: string): Promise<string | null> {
     // Преобразуем lowercase тип в PascalCase для backend
     const trackTypeMap: Record<string, string> = {
       video: "Video",
@@ -399,7 +419,8 @@ export class VideoEditingOrchestrator {
       },
     }
 
-    await this.executeCommand(command)
+    // executeCommand теперь возвращает result.data из backend
+    const data = await this.executeCommand(command)
 
     this.timelineActor.send({
       type: "ADD_TRACK",
@@ -407,6 +428,14 @@ export class VideoEditingOrchestrator {
       name,
       sectionId,
     })
+
+    // Backend возвращает { track_id: "..." } в data
+    logger.info("[Video Editing Orchestrator] Track created:", {
+      type,
+      trackId: data?.track_id
+    })
+
+    return data?.track_id || null
   }
 
   /**

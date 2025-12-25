@@ -329,8 +329,10 @@ describe("VideoEditingOrchestrator", () => {
         },
       }
 
-      // Command execution should not throw
-      await expect(orchestrator.executeCommand(command)).resolves.toBeUndefined()
+      // Command execution should not throw and should return data
+      const result = await orchestrator.executeCommand(command)
+      // result is now the data from backend, not the full response
+      expect(result).toBeNull() // mock backend returns { success: true, data: null }
     })
   })
 
