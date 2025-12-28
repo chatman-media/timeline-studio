@@ -1,3 +1,31 @@
+# [3.44.0](https://github.com/chatman-media/timeline-studio/compare/v3.43.2...v3.44.0) (2025-12-28)
+
+
+### Bug Fixes
+
+* **audio:** исправлена блокировка аудио при воспроизведении preview ([45a9ea1](https://github.com/chatman-media/timeline-studio/commit/45a9ea1d50882f614318dce15e015a715b0806ff))
+* **browser:** исправлен статусбар - теперь учитываются видео без звука ([00ca373](https://github.com/chatman-media/timeline-studio/commit/00ca373374202e67b7ad308040b36597f9737cf3))
+* **browser:** исправлена фильтрация шаблонов по количеству экранов ([412fc53](https://github.com/chatman-media/timeline-studio/commit/412fc53f1e346350475a2994b56f4c0e4c8f04a3))
+* **browser:** исправлено отображение разрешения видео на превью ([87f5a18](https://github.com/chatman-media/timeline-studio/commit/87f5a1812cd0ca7e7d90cdc5517786421d52974f))
+* **git:** добавлен src-node/node_modules в .gitignore ([03e5320](https://github.com/chatman-media/timeline-studio/commit/03e53209aa11cba31a9701adbe7fee70307e6295))
+* **media-studio:** исправлен импорт useUserSettings ([2ec875a](https://github.com/chatman-media/timeline-studio/commit/2ec875ad7949b46b0131cc733c2ea27e4f35d261))
+* **timeline:** исправлен drag-and-drop медиафайлов из браузера на таймлайн ([4bea2ef](https://github.com/chatman-media/timeline-studio/commit/4bea2ef272cf41b47683fece2cbb84fc4ed057e4))
+* **ui:** исправлено направление flex для ResizablePanelGroup v4 ([7fb8866](https://github.com/chatman-media/timeline-studio/commit/7fb8866caecdfa2617ff7d8f068eb9c40806643d))
+* **ui:** исправлены импорты react-resizable-panels v4 ([2703842](https://github.com/chatman-media/timeline-studio/commit/2703842b7c3360bbe1680723818f979ce0b01839))
+* **workspace:** убран overflow-hidden, который скрывал виджеты ([10544b7](https://github.com/chatman-media/timeline-studio/commit/10544b7a447d12256272cea301eea3d6fd2dce21))
+
+
+### Features
+
+* **layouts:** добавлены стабильные ID панелей для сохранения размеров между layout'ами ([beb92d2](https://github.com/chatman-media/timeline-studio/commit/beb92d2ab4887e22ee09fbae03f553c435c82db7))
+* **layouts:** завершена интеграция стабильных ID панелей ([9f76ea0](https://github.com/chatman-media/timeline-studio/commit/9f76ea0447037ace82d68ccaf20f1f4d4d3331ba))
+* **layouts:** обновлены размеры панелей и добавлены стабильные ID ([8fece0e](https://github.com/chatman-media/timeline-studio/commit/8fece0efbee4373484707fee0c8b0b1b58a4a207))
+
+
+### Reverts
+
+* откат с workspace на старые layout компоненты ([fec8003](https://github.com/chatman-media/timeline-studio/commit/fec80034cb31770dba8c8f8b9ba9c4b6740312e6))
+
 ## [3.43.2](https://github.com/chatman-media/timeline-studio/compare/v3.43.1...v3.43.2) (2025-12-24)
 
 
