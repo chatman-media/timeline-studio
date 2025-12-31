@@ -44,21 +44,21 @@ ffmpeg-sys-next = "8.0.1"
 
 [dev-dependencies]
 # For test cleanup and initialization
-ctor = "0.6.1"
+ctor = "0.6.3"
 env_logger = "0.11"
 libc = "0.2"
 # Test utilities
 tempfile = "3.23"
 tower = { version = "0.5.2", features = ["util"] }
 urlencoding = "2.1"
-reqwest = { version = "0.12.24", features = ["json"] }
+reqwest = { version = "0.12", features = ["json", "stream"] }
 mockito = "1.7"
 # Benchmarking
-criterion = { version = "0.7.0", features = ["html_reports"] }
+criterion = { version = "0.8.1", features = ["html_reports"] }
 # HTTP mocking for OAuth tests
 httpmock = "0.8.2"
 # Mocking framework for tests
-mockall = "0.13.1"
+mockall = "0.14.0"
 # Async utilities for testing
 futures = "0.3"
 rand_chacha = "0.9.0"
@@ -113,12 +113,12 @@ argon2 = "0.5"
 rand = "0.9"
 keyring = "3.6"
 # HTTP client for API validation
-reqwest = { version = "0.12.23", features = ["json", "rustls-tls", "multipart"] }
+reqwest = { version = "0.12", features = ["json", "multipart", "stream"] }
 which = "8.0.0"
 # Retry logic with exponential backoff
 tokio-retry = "0.3"
 # Rate limiting
-governor = "0.7"
+governor = "0.10.4"
 nonzero_ext = "0.3"
 # URL handling for OAuth
 url = "2.5"
@@ -133,7 +133,7 @@ opentelemetry = { version = "0.31.0", features = ["trace", "metrics"] }
 opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio", "trace", "metrics"] }
 opentelemetry-otlp = { version = "0.31.0", features = ["tonic", "metrics", "trace"] }
 opentelemetry-semantic-conventions = "0.31.0"
-opentelemetry-prometheus = "0.29.1"
+opentelemetry-prometheus = "0.31.0"
 tracing = "0.1"
 tracing-opentelemetry = "0.32.0"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
@@ -144,7 +144,7 @@ filetime = "0.2"
 wasmtime-wasi = "38.0"
 wasm-bindgen = "0.2"
 # Additional security dependencies
-cap-std = "3.4"
+cap-std = "4.0.0"
 sha2 = "0.10"
 prometheus = "0.14"
 # Type generation
