@@ -1,537 +1,352 @@
-# CLAUDE.md
+# Claude Code Configuration - SPARC Development Environment
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
 
-## Communication Language
+**ABSOLUTE RULES**:
+1. ALL operations MUST be concurrent/parallel in a single message
+2. **NEVER save working files, text/mds and tests to the root folder**
+3. ALWAYS organize files in appropriate subdirectories
+4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just MCP
 
-**По умолчанию общаемся на русском языке** - Default communication language is Russian. Claude should respond in Russian unless specifically asked to use another language.
+### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
 
-## System Requirements
+**MANDATORY PATTERNS:**
+- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
+- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
+- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
+- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
 
-Before working with this codebase, ensure you have the following dependencies installed:
+### 🎯 CRITICAL: Claude Code Task Tool for Agent Execution
 
-### Required Dependencies
-- **Node.js 18+** and **Bun** - JavaScript runtime and package manager
-- **Rust 1.81.0+** - Backend runtime for Tauri
-- **FFmpeg** - Video processing library (required for compilation)
-  ```bash
-  # macOS
-  brew install ffmpeg
+**Claude Code's Task tool is the PRIMARY way to spawn agents:**
+```javascript
+// ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
+[Single Message]:
+  Task("Research agent", "Analyze requirements and patterns...", "researcher")
+  Task("Coder agent", "Implement core features...", "coder")
+  Task("Tester agent", "Create comprehensive tests...", "tester")
+  Task("Reviewer agent", "Review code quality...", "reviewer")
+  Task("Architect agent", "Design system architecture...", "system-architect")
+```
 
-  # Ubuntu/Debian
-  sudo apt-get install ffmpeg libavcodec-dev libavformat-dev libavutil-dev libavfilter-dev libavdevice-dev libswscale-dev libswresample-dev pkg-config
+**MCP tools are ONLY for coordination setup:**
+- `mcp__claude-flow__swarm_init` - Initialize coordination topology
+- `mcp__claude-flow__agent_spawn` - Define agent types for coordination
+- `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
 
-  # Windows (требуется более сложная настройка)
-  # Вариант 1: Использовать vcpkg
-  git clone https://github.com/Microsoft/vcpkg.git
-  cd vcpkg
-  ./bootstrap-vcpkg.bat
-  ./vcpkg integrate install
-  ./vcpkg install ffmpeg:x64-windows
+### 📁 File Organization Rules
 
-  # Вариант 2: Скачать предсобранные библиотеки
-  # 1. Скачайте FFmpeg shared библиотеки с https://www.gyan.dev/ffmpeg/builds/
-  # 2. Распакуйте в C:\ffmpeg
-  # 3. Добавьте в системные переменные:
-  set FFMPEG_DIR=C:\ffmpeg
-  set PKG_CONFIG_PATH=C:\ffmpeg\lib\pkgconfig
+**NEVER save to root folder. Use these directories:**
+- `/src` - Source code files
+- `/tests` - Test files
+- `/docs` - Documentation and markdown files
+- `/config` - Configuration files
+- `/scripts` - Utility scripts
+- `/examples` - Example code
 
-  # Также установите pkg-config для Windows:
-  choco install pkgconfiglite
-  ```
-- **ONNX Runtime** - Machine learning inference (for recognition features)
-  ```bash
-  # macOS
-  brew install onnxruntime
+## Project Overview
 
-  # Add to your shell profile:
-  # For bash/zsh (~/.zshrc or ~/.bashrc):
-  export ORT_DYLIB_PATH=/opt/homebrew/lib/libonnxruntime.dylib
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
 
-  # For fish (~/.config/fish/config.fish):
-  set -gx ORT_DYLIB_PATH /opt/homebrew/lib/libonnxruntime.dylib
-  ```
-- **Tauri MCP** (optional) - AI-assisted testing and development
-  ```bash
-  # Install via Cargo
-  cargo install tauri-mcp
+## SPARC Commands
 
-  # Configuration file: tauri-mcp.toml (already created)
-  # See TAURI_MCP.md for usage guide
-  ```
+### Core Commands
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
 
-### macOS Development Setup
+### Batchtools Commands
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
 
-For local development on macOS, environment variables are automatically loaded:
+### Build Commands
+- `npm run build` - Build project
+- `npm run test` - Run tests
+- `npm run lint` - Linting
+- `npm run typecheck` - Type checking
+
+## SPARC Workflow Phases
+
+1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
+2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
+3. **Architecture** - System design (`sparc run architect`)
+4. **Refinement** - TDD implementation (`sparc tdd`)
+5. **Completion** - Integration (`sparc run integration`)
+
+## Code Style & Best Practices
+
+- **Modular Design**: Files under 500 lines
+- **Environment Safety**: Never hardcode secrets
+- **Test-First**: Write tests before implementation
+- **Clean Architecture**: Separate concerns
+- **Documentation**: Keep updated
+
+## 🚀 Available Agents (54 Total)
+
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
+
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
+
+### Consensus & Distributed
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
+
+### Performance & Optimization
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
+
+### GitHub & Repository
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
+
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
+
+### Specialized Development
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
+
+### Testing & Validation
+`tdd-london-swarm`, `production-validator`
+
+### Migration & Planning
+`migration-planner`, `swarm-init`
+
+## 🎯 Claude Code vs MCP Tools
+
+### Claude Code Handles ALL EXECUTION:
+- **Task tool**: Spawn and run agents concurrently for actual work
+- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
+- Code generation and programming
+- Bash commands and system operations
+- Implementation work
+- Project navigation and analysis
+- TodoWrite and task management
+- Git operations
+- Package management
+- Testing and debugging
+
+### MCP Tools ONLY COORDINATE:
+- Swarm initialization (topology setup)
+- Agent type definitions (coordination patterns)
+- Task orchestration (high-level planning)
+- Memory management
+- Neural features
+- Performance tracking
+- GitHub integration
+
+**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with real agents.
+
+## 🚀 Quick Setup
 
 ```bash
-# Variables are automatically loaded from .env.local
-bun run tauri dev
-
-# Alternative: Use the bash export file if needed
-source .env.macos
-bun run tauri dev
-
-# Alternative: Run the setup script
-source scripts/setup-ffmpeg-macos.sh
-bun run tauri dev
+# Add MCP servers (Claude Flow required, others optional)
+claude mcp add claude-flow npx claude-flow@alpha mcp start
+claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordination
+claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
 ```
 
-**Environment variables are now automatically configured:**
-- `.env.local` contains all FFmpeg and ONNX Runtime paths for macOS
-- No need to manually source files - variables load automatically
-- `.env.macos` file remains available as bash export alternative
+## MCP Tool Categories
 
-### Camera and Microphone Permissions
+### Coordination
+`swarm_init`, `agent_spawn`, `task_orchestrate`
 
-The application requires camera and microphone access for recording features:
+### Monitoring
+`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
 
-**macOS Configuration:**
-- Permissions are configured in `src-tauri/Info.plist`
-- Contains `NSCameraUsageDescription` and `NSMicrophoneUsageDescription` keys
-- On first use, macOS will show a system dialog requesting permission
-- If permissions are denied, users can grant them manually in **System Settings** → **Privacy & Security** → **Camera** / **Microphone**
+### Memory & Neural
+`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
 
-**Web Configuration:**
-- CSP policy in `tauri.conf.json` includes `mediastream:` for `navigator.mediaDevices` access
-- Browser-based permissions are handled automatically via standard Web APIs
+### GitHub Integration
+`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
 
-### Important FFmpeg Configuration Notes
+### System
+`benchmark_run`, `features_detect`, `swarm_monitor`
 
-**⚠️ CRITICAL**: FFmpeg paths must NOT be set globally in `.cargo/config.toml` as this breaks cross-platform builds.
+### Flow-Nexus MCP Tools (Optional Advanced Features)
+Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
 
-**Platform-specific setup:**
-- **Windows**: Use `scripts/setup-rust-env-windows.ps1` before building
-- **macOS**: Use `.env.local` or export environment variables
-- **Linux**: FFmpeg is detected automatically via pkg-config
-- **CI/CD**: Each platform sets its own FFmpeg paths in GitHub Actions
+**Key MCP Tool Categories:**
+- **Swarm & Agents**: `swarm_init`, `swarm_scale`, `agent_spawn`, `task_orchestrate`
+- **Sandboxes**: `sandbox_create`, `sandbox_execute`, `sandbox_upload` (cloud execution)
+- **Templates**: `template_list`, `template_deploy` (pre-built project templates)
+- **Neural AI**: `neural_train`, `neural_patterns`, `seraphina_chat` (AI assistant)
+- **GitHub**: `github_repo_analyze`, `github_pr_manage` (repository management)
+- **Real-time**: `execution_stream_subscribe`, `realtime_subscribe` (live monitoring)
+- **Storage**: `storage_upload`, `storage_list` (cloud file management)
 
-**Common issues:**
-- If you see Windows paths (`C:\ffmpeg`) in Linux builds, check `.cargo/config.toml`
-- Environment variables should be set per-platform, not globally
-- In CI, the build script clears incorrect FFmpeg variables automatically
+**Authentication Required:**
+- Register: `mcp__flow-nexus__user_register` or `npx flow-nexus@latest register`
+- Login: `mcp__flow-nexus__user_login` or `npx flow-nexus@latest login`
+- Access 70+ specialized MCP tools for advanced orchestration
 
-### Platform-specific Tools
-- **macOS**: Xcode Command Line Tools
-- **Windows**:
-  - Visual Studio 2022 with C++ tools
-  - Windows SDK
-  - pkg-config (через `choco install pkgconfiglite`)
-  - vcpkg или предсобранные FFmpeg библиотеки
+## 🚀 Agent Execution Flow with Claude Code
 
-## CI/CD Configuration
+### The Correct Pattern:
 
-### GitHub Actions Workflows
+1. **Optional**: Use MCP tools to set up coordination topology
+2. **REQUIRED**: Use Claude Code's Task tool to spawn agents that do actual work
+3. **REQUIRED**: Each agent runs hooks for coordination
+4. **REQUIRED**: Batch all operations in single messages
 
-Проект включает оптимизированные workflow для CI/CD:
+### Example Full-Stack Development:
 
-1. **`.github/workflows/ci.yml`** - Основной CI pipeline
-   - Тестирование фронтенда и бэкенда на всех платформах
-   - Оптимизированная установка FFmpeg на Windows (предсобранные библиотеки)
-   - Кэширование зависимостей для ускорения сборки
-
-2. **`.github/workflows/quick-check.yml`** - Быстрая валидация
-   - Lint и format проверки
-   - Критически важные тесты
-   - Запускается на каждый push/PR
-
-3. **`.github/workflows/windows-build.yml`** - Специализированная сборка для Windows
-   - Оптимизированная установка FFmpeg (избегает зависания vcpkg)
-   - Таймауты для предотвращения зависания
-   - Кэширование FFmpeg библиотек
-
-### Windows-specific FFmpeg Setup
-
-Для сборки на Windows требуется один из следующих вариантов:
-
-#### Вариант 1: Использование vcpkg (рекомендуется для CI/CD)
-```powershell
-# Установка vcpkg
-git clone https://github.com/Microsoft/vcpkg.git C:\vcpkg
-cd C:\vcpkg
-.\bootstrap-vcpkg.bat
-.\vcpkg integrate install
-
-# Установка FFmpeg
-.\vcpkg install ffmpeg:x64-windows
-
-# Установка переменных окружения
-[System.Environment]::SetEnvironmentVariable('VCPKG_ROOT', 'C:\vcpkg', 'User')
-[System.Environment]::SetEnvironmentVariable('PKG_CONFIG_PATH', 'C:\vcpkg\installed\x64-windows\lib\pkgconfig', 'User')
+```javascript
+// Single message with all agent spawning via Claude Code's Task tool
+[Parallel Agent Execution]:
+  Task("Backend Developer", "Build REST API with Express. Use hooks for coordination.", "backend-dev")
+  Task("Frontend Developer", "Create React UI. Coordinate with backend via memory.", "coder")
+  Task("Database Architect", "Design PostgreSQL schema. Store schema in memory.", "code-analyzer")
+  Task("Test Engineer", "Write Jest tests. Check memory for API contracts.", "tester")
+  Task("DevOps Engineer", "Setup Docker and CI/CD. Document in memory.", "cicd-engineer")
+  Task("Security Auditor", "Review authentication. Report findings via hooks.", "reviewer")
+  
+  // All todos batched together
+  TodoWrite { todos: [...8-10 todos...] }
+  
+  // All file operations together
+  Write "backend/server.js"
+  Write "frontend/App.jsx"
+  Write "database/schema.sql"
 ```
 
-#### Вариант 2: Предсобранные библиотеки
-```powershell
-# Скачать FFmpeg shared libraries
-# с https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full-shared.7z
+## 📋 Agent Coordination Protocol
 
-# Распаковать в C:\ffmpeg
+### Every Agent Spawned via Task Tool MUST:
 
-# Установить переменные окружения
-[System.Environment]::SetEnvironmentVariable('FFMPEG_DIR', 'C:\ffmpeg', 'User')
-[System.Environment]::SetEnvironmentVariable('PKG_CONFIG_PATH', 'C:\ffmpeg\lib\pkgconfig', 'User')
-[System.Environment]::SetEnvironmentVariable('PATH', $env:PATH + ';C:\ffmpeg\bin', 'User')
-```
-
-#### Вариант 3: Использование MSYS2
+**1️⃣ BEFORE Work:**
 ```bash
-# Установить MSYS2 с https://www.msys2.org/
-# В терминале MSYS2:
-pacman -S mingw-w64-x86_64-ffmpeg mingw-w64-x86_64-pkg-config
-```
-- **Linux**: `build-essential`, `libgtk-3-dev`, `libwebkit2gtk-4.1-dev`
-
-## Common Development Commands
-
-### Development
-- `bun run dev` - Start Next.js development server with hot reload
-- `bun run tauri dev` - Run the full Tauri desktop application in development mode
-
-### Building
-- `bun run build` - Build the Next.js frontend
-- `bun run tauri build` - Build the production Tauri desktop application
-
-### Testing
-- `bun run test` - Run all unit tests (9181 tests)
-- `bun run test:watch` - Run tests in watch mode
-- `bun run test src/features/timeline/__tests__/use-timeline.test.ts` - Run a single test file
-- `bun run test:coverage` - Generate test coverage report
-- `bun run test:rust` - Run Rust backend tests (150+ tests)
-- `bun run test:e2e` - Run Playwright end-to-end tests (54 web tests)
-- `bun run test:e2e:tauri:dev` - Run Tauri-specific E2E tests (25 tests)
-- `bun run test:e2e:tauri:ui` - Run Tauri tests with Playwright UI
-
-**Tauri E2E Tests:**
-Timeline Studio включает специализированные тесты для Tauri API:
-- File System API (6 tests) - работа с файлами через Tauri
-- Project Management (5 tests) - сохранение и загрузка проектов
-- Notifications (5 tests) - системные нотификации
-- Window & Clipboard (9 tests) - управление окнами и буфером обмена
-
-См. подробную документацию в `e2e/tauri/README.md` и `docs/05_development/ru/testing-strategy.md`
-
-#### Smart Montage Planner Testing
-The Smart Montage Planner module includes comprehensive tests organized by feature:
-
-**Service Tests** (`__tests__/services/`):
-- `montage-planner-machine.test.ts` - XState machine state transitions and logic
-- `content-analyzer.test.ts` - Video/audio content analysis functionality
-- `moment-detector.test.ts` - Key moment detection and scoring algorithms
-
-**Hook Tests** (`__tests__/hooks/`):
-- `use-montage-planner.test.tsx` - Main montage planner hook functionality
-- `use-content-analysis.test.tsx` - Content analysis hooks and state management
-
-**Component Tests** (`__tests__/components/`):
-- `analysis/quality-meter.test.tsx` - Quality visualization component
-- Additional UI component tests for dashboard, editor, and analysis components
-
-**Test Environment Setup:**
-- Uses Vitest with Testing Library for React components
-- XState machines tested with actor model and snapshot testing
-- Tauri API calls mocked for isolated testing
-- Complete mock data in `__tests__/test-utils.ts`
-
-**Mock Data Available:**
-- `mockMediaFile` - Sample video file with metadata
-- `mockVideoAnalysis` - Complete video analysis results
-- `mockAudioAnalysis` - Audio analysis with quality metrics
-- `mockMomentScore` - Moment scoring data
-- `mockFragment` - Video fragment with analysis
-- `mockMontagePlan` - Complete montage plan structure
-- `createMockFragments(n)` - Generate multiple test fragments
-
-### Code Quality
-- `bun run lint` - Lint TypeScript/JavaScript files
-- `bun run lint:fix` - Auto-fix linting issues
-- `bun run check:all` - Run all linting and tests
-- `bun run fix:all` - Fix all auto-fixable issues
-
-## High-Level Architecture
-
-Timeline Studio is a desktop video editing application with a feature-based architecture. Key architectural decisions:
-
-### Technology Stack
-- **Frontend**: Next.js 15 (React 19) with TypeScript, using static export for Tauri integration
-- **Desktop Runtime**: Tauri v2 (Rust) for native desktop capabilities
-- **State Management**: XState v5 for complex state machines
-- **UI Components**: shadcn/ui built on Radix UI primitives
-- **Styling**: Tailwind CSS v4 with CSS variables for theming
-
-### Feature-Based Organization
-Each feature in `/src/features/` is self-contained with:
-- `components/` - React components
-- `hooks/` - Custom React hooks
-- `services/` - Business logic and state machines
-- `types/` - TypeScript type definitions
-- `utils/` - Helper functions
-- `__tests__/` - Test files for the feature
-- `__mocks__/` - Mock implementations for testing
-
-### State Management Architecture
-The application uses XState state machines for complex state management:
-- **app-settings-machine** - Application preferences and configuration
-- **browser-state-machine** - Media browser state and file selection
-- **timeline-machine** - Timeline editing state
-- **player-machine** - Video playback control
-- **chat-machine** - AI assistant integration
-- **modal-machine** - Modal dialog state management
-- **project-settings-machine** - Project-specific settings
-- **resources-machine** - Resource management (effects, filters, etc.)
-- **user-settings-machine** - User preferences and settings
-
-State machines are created using XState's `setup` method for better type safety and should be provided through React context providers.
-
-### Key Features Overview
-- **timeline** - Core video editing timeline with tracks, clips, and sections
-- **media-studio** - Main editing interface with multiple layout options
-- **video-player** - Custom video playback with frame-accurate control
-- **browser** - Media file browser with tabbed interface
-- **effects/filters/transitions** - Video effect system with CSS-based processing
-- **templates** - Multi-camera layout templates for split-screen editing
-- **style-templates** - Animated intro/outro and title templates
-- **ai-chat** - Integrated AI assistant (Claude/OpenAI)
-- **recognition** - Scene/object recognition using YOLO models
-
-### Media Processing
-- Video processing is handled through FFmpeg integration
-- Media files are referenced by path, not embedded
-- Project files use a custom schema for timeline data persistence
-- Missing file restoration is handled through the MediaRestorationService
-
-### Internationalization (i18n)
-Timeline Studio supports 15 languages with complete localization (Phase 2 completed):
-- **Supported Languages**: English, Russian, Spanish, French, German, Portuguese, Chinese, Japanese, Korean, Turkish, Italian, Thai, Hindi, Arabic, Persian
-- **RTL Support**: Arabic and Persian languages automatically switch to right-to-left text direction
-- **Frontend Configuration**: Located in `/src/i18n/` with language constants, translation files, and React provider
-- **Backend Support**: Rust backend in `/src-tauri/src/language.rs` supports all 15 languages
-- **Translation Files**: Each language has a complete JSON file in `/src/i18n/locales/[lang].json`
-- **Language Selection**: Users can switch languages via User Settings modal
-- **Native Names**: Languages are displayed using their native names (e.g., "中文" for Chinese, "العربية" for Arabic)
-
-When adding new languages:
-1. Add language code to `LanguageCode` type and `SUPPORTED_LANGUAGES` array in `/src/i18n/constants.ts`
-2. Add locale mapping to `LANGUAGE_LOCALES` in same file
-3. Create complete translation file `/src/i18n/locales/[lang].json`
-4. Import and add to resources object in `/src/i18n/index.ts`
-5. Update backend language support in `/src-tauri/src/language.rs`
-6. Add native language name to all translation files under `language.native.[lang]`
-
-### Testing Strategy
-- Unit tests use Vitest with Testing Library
-- Tests are organized in `__tests__/` directories within each feature
-- Mocks are organized in `__mocks__/` directories within each feature
-- Use custom render function from `@/test/test-utils.tsx` for component tests
-- XState machines are tested using actor model and snapshot testing
-- All external dependencies (Tauri API, localStorage) are mocked in tests
-
-### Test Environment Setup
-The project includes a comprehensive test environment setup:
-
-#### Test Configuration (`src/test/`)
-- **`setup.ts`** - Global test setup and essential mocks
-  - Configures Jest DOM matchers
-  - Sets up cleanup between tests
-  - Mocks common providers (UserSettings, Modals, AppState)
-  - Configures console methods for test environment
-  - Provides TypeScript declarations for custom matchers
-
-- **`mocks/index.ts`** - Centralized mock management
-  - Exports commonly used mocks (Tauri, Browser, Libraries)
-  - Provides `resetAllMocks()` function for cleanup
-  - Offers `setupEssentialMocks()` for initial configuration
-
-- **`utils/README.md`** - Specialized audio testing utilities
-  - Complete documentation for Tauri audio component testing
-  - Audio mocking utilities (AudioContext, MediaRecorder, HTMLAudioElement)
-  - Test data generators for audio files and streams
-  - Event simulation helpers for audio lifecycle
-  - Integration patterns with Context7 MCP
-  - Best practices and troubleshooting guide
-
-#### Testing Utilities Available
-- **Audio Testing**: Mock AudioContext, MediaRecorder, audio file operations
-- **Tauri API Mocking**: File system, commands, dialogs, notifications
-- **Browser API Mocking**: URL, Blob, fetch, localStorage
-- **Library Mocking**: External dependencies and services
-- **Test Data Creation**: Realistic mock data generators
-- **Event Simulation**: User interactions and system events
-
-## Documentation Structure
-
-Timeline Studio uses a custom numbered directory structure for documentation following the Claude Simone methodology:
-
-### Documentation Organization (`/docs/`)
-The documentation is organized with numbered directories for logical grouping:
-- `00_project_manifest/` - Project overview and manifests
-- `01_project_docs/` - General project documentation
-- `02_user_guides/` - End-user documentation
-- `03_architecture/` - System architecture and design
-- `04_api_reference/` - API documentation
-- `05_development/` - Development guides and setup
-- `06_configuration/` - Configuration and settings
-- `07_api/` - Extended API documentation
-- `08_tasks/` - Task planning and tracking
-- `09_examples/` - Code examples and tutorials
-- `10_glossary/` - Technical terms and definitions
-- `11_troubleshooting/` - Problem solving guides
-- `12_testing/` - Testing documentation and strategies
-- `13_ci_cd/` - Continuous Integration/Deployment
-- `14_quality_assurance/` - QA processes and standards
-- `15_security/` - Security guidelines and practices
-- `16_user_documentation/` - User-facing documentation
-- `17_releases/` - Release notes and versioning
-- `18_marketing/` - Marketing and promotion strategies
-- `99_archive/` - Archived documentation
-
-Example structure:
-```
-docs/
-├── 03_architecture/
-│   ├── overview.md
-│   └── state-management.md
-├── 08_tasks/
-│   ├── README.md          # Лог изменений задач
-│   ├── active/            # Задачи в работе
-│   ├── planned/           # Запланированные задачи
-│   └── completed/         # Завершённые задачи
+npx claude-flow@alpha hooks pre-task --description "[task]"
+npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
 ```
 
-## Task Management Workflow (Claude)
-
-При работе с проектом Claude должен следовать этому процессу управления задачами:
-
-### Когда пользователь спрашивает "что дальше делаем":
-1. Проверить `docs/08_tasks/active/` на наличие активных задач
-2. Если active пусто - взять задачу из `docs/08_tasks/planned/`
-3. Предложить пользователю задачи на выбор с кратким описанием
-
-### При работе над задачей:
-1. Открыть документ задачи в `docs/08_tasks/active/`
-2. Отмечать прогресс как чеклист в документе (`- [x]` для выполненных пунктов)
-3. Обновлять статус и дату последнего изменения
-
-### При завершении задачи:
-1. Убедиться что все пункты отмечены как выполненные
-2. Переместить файл задачи в `docs/08_tasks/completed/`
-3. Добавить запись в `docs/08_tasks/README.md` в секцию "Changelog"
-4. Обновить README файлы в active/ и completed/ при необходимости
-
-### Формат записи в Changelog:
-```markdown
-### [YYYY-MM-DD] Название задачи
-- **Статус:** Завершено / В работе / Перенесено
-- **Файл:** task-name.md
-- **Действие:** completed → moved to completed/ | planned → active | etc.
+**2️⃣ DURING Work:**
+```bash
+npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx claude-flow@alpha hooks notify --message "[what was done]"
 ```
 
-## Code Style Guidelines
-
-### TypeScript/JavaScript
-- Use TypeScript strict mode, avoid `any` types
-- Import order: builtin → external → internal → sibling/parent → CSS
-- Semicolons as needed, double quotes for strings
-- Prefer named exports over default exports
-
-### Component Patterns
-- Follow existing patterns in the codebase
-- Use shadcn/ui components from `/src/components/ui/`
-- Create feature-specific components in `/src/features/[feature]/components/`
-- Use CSS variables for theming (defined in globals.css)
-- Component names use PascalCase but files use kebab-case
-
-### State Management
-- Simple state: useState/useReducer
-- Complex state: XState machines with proper typing
-- Global state: Context providers with custom hooks
-- Async operations: Use XState services or React Query patterns
-
-### File Naming
-- Components: kebab-case (e.g., `video-player.tsx`)
-- Hooks: kebab-case with `use` prefix (e.g., `use-timeline.ts`)
-- Utilities: kebab-case (e.g., `media-utils.ts`)
-- Services: kebab-case (e.g., `timeline-machine.ts`)
-- Types: kebab-case (e.g., `timeline.ts`)
-- Test files: Located in `__tests__/` with `.test.ts` or `.test.tsx` suffix
-- Mock files: Located in `__mocks__/` with same name as mocked module
-
-### Организация типов
-
-Timeline Studio использует строгую иерархию типов согласно FEOD и DDD принципам:
-
-```
-src/domains/shared/types/    # Общие типы (используются всеми доменами)
-  ├── primitives.ts           # ID, Timestamp, FilePath, Duration
-  ├── common.ts               # Size, Position, TimeRange, Rectangle
-  ├── result.ts               # Result<T>, Option<T>
-  ├── project/                # ProjectSettings, AspectRatio, Resolution
-  ├── media/                  # MediaType, ResolutionOption, FrameRate
-  └── resources/              # Resource, TimelineResource
-
-src/domains/*/types/          # Бизнес-логика доменов
-  ├── media-management/       # MediaFile, ImportOptions (CANONICAL)
-  ├── video-editing/          # TimelineClip, Track, Section
-  └── ai-services/            # AIAnalysis, ContentAnalysis
-
-src/features/*/types/         # UI-специфичные типы
-  ├── timeline/types/         # Реэкспорт из domains + UI props
-  └── effects/types/          # VideoEffect (TODO: migrate to domain)
-
-src/core/ports/               # Интерфейсы для Dependency Injection
-  ├── media.port.ts           # IMediaService
-  └── ai.port.ts              # IAIService
+**3️⃣ AFTER Work:**
+```bash
+npx claude-flow@alpha hooks post-task --task-id "[task]"
+npx claude-flow@alpha hooks session-end --export-metrics true
 ```
 
-#### Правила импорта типов
+## 🎯 Concurrent Execution Examples
 
-**✅ Правильно:**
-```typescript
-// Features импортируют из domains/shared
-import type { ProjectSettings } from '@/domains/shared/types/project'
-import type { Resource } from '@/domains/shared/types/resources'
+### ✅ CORRECT WORKFLOW: MCP Coordinates, Claude Code Executes
 
-// Features импортируют из domains
-import type { MediaFile } from '@/domains/media-management/types'
+```javascript
+// Step 1: MCP tools set up coordination (optional, for complex tasks)
+[Single Message - Coordination Setup]:
+  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow__agent_spawn { type: "researcher" }
+  mcp__claude-flow__agent_spawn { type: "coder" }
+  mcp__claude-flow__agent_spawn { type: "tester" }
 
-// Domains импортируют из shared
-import type { Size, Position } from '@/domains/shared/types/common'
+// Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
+[Single Message - Parallel Agent Execution]:
+  // Claude Code's Task tool spawns real agents concurrently
+  Task("Research agent", "Analyze API requirements and best practices. Check memory for prior decisions.", "researcher")
+  Task("Coder agent", "Implement REST endpoints with authentication. Coordinate via hooks.", "coder")
+  Task("Database agent", "Design and implement database schema. Store decisions in memory.", "code-analyzer")
+  Task("Tester agent", "Create comprehensive test suite with 90% coverage.", "tester")
+  Task("Reviewer agent", "Review code quality and security. Document findings.", "reviewer")
+  
+  // Batch ALL todos in ONE call
+  TodoWrite { todos: [
+    {id: "1", content: "Research API patterns", status: "in_progress", priority: "high"},
+    {id: "2", content: "Design database schema", status: "in_progress", priority: "high"},
+    {id: "3", content: "Implement authentication", status: "pending", priority: "high"},
+    {id: "4", content: "Build REST endpoints", status: "pending", priority: "high"},
+    {id: "5", content: "Write unit tests", status: "pending", priority: "medium"},
+    {id: "6", content: "Integration tests", status: "pending", priority: "medium"},
+    {id: "7", content: "API documentation", status: "pending", priority: "low"},
+    {id: "8", content: "Performance optimization", status: "pending", priority: "low"}
+  ]}
+  
+  // Parallel file operations
+  Bash "mkdir -p app/{src,tests,docs,config}"
+  Write "app/package.json"
+  Write "app/src/server.js"
+  Write "app/tests/server.test.js"
+  Write "app/docs/API.md"
 ```
 
-**❌ Неправильно:**
-```typescript
-// Кросс-фича импорты ЗАПРЕЩЕНЫ
-import type { SomeType } from '@/features/other-feature/types'
-
-// Features НЕ должны импортировать сервисы domains
-import { SomeService } from '@/domains/some-domain/services'
+### ❌ WRONG (Multiple Messages):
+```javascript
+Message 1: mcp__claude-flow__swarm_init
+Message 2: Task("agent 1")
+Message 3: TodoWrite { todos: [single todo] }
+Message 4: Write "file.js"
+// This breaks parallel coordination!
 ```
 
-#### Где разместить новый тип?
+## Performance Benefits
 
-1. **Используется в 3+ доменах/features?** → `src/domains/shared/types/`
-2. **Интерфейс для внешнего сервиса (DI)?** → `src/core/ports/`
-3. **Бизнес-логика домена?** → `src/domains/*/types/`
-4. **UI props или локальное состояние?** → `src/features/*/types/`
+- **84.8% SWE-Bench solve rate**
+- **32.3% token reduction**
+- **2.8-4.4x speed improvement**
+- **27+ neural models**
 
-#### Примеры
+## Hooks Integration
 
-**Тип для нового медиа формата:**
-```typescript
-// ✅ Правильно: src/domains/shared/types/media/formats.ts
-export type VideoCodec = 'h264' | 'h265' | 'vp9' | 'av1'
-```
+### Pre-Operation
+- Auto-assign agents by file type
+- Validate commands for safety
+- Prepare resources automatically
+- Optimize topology by complexity
+- Cache searches
 
-**Props для UI компонента:**
-```typescript
-// ✅ Правильно: src/features/timeline/types/components.ts
-export interface TimelineClipProps {
-  clip: TimelineClip  // импорт из domain
-  isSelected: boolean
-  onSelect: (id: string) => void
-}
-```
+### Post-Operation
+- Auto-format code
+- Train neural patterns
+- Update memory
+- Analyze performance
+- Track token usage
 
-**Canonical источники (не дублировать):**
-- `MediaFile` → `@/domains/media-management/types` (CANONICAL)
-- `ProjectSettings` → `@/domains/shared/types/project` (CANONICAL)
-- `Resource` → `@/domains/shared/types/resources` (CANONICAL)
+### Session Management
+- Generate summaries
+- Persist state
+- Track metrics
+- Restore context
+- Export workflows
+
+## Advanced Features (v2.0.0)
+
+- 🚀 Automatic Topology Selection
+- ⚡ Parallel Execution (2.8-4.4x speed)
+- 🧠 Neural Training
+- 📊 Bottleneck Analysis
+- 🤖 Smart Auto-Spawning
+- 🛡️ Self-Healing Workflows
+- 💾 Cross-Session Memory
+- 🔗 GitHub Integration
+
+## Integration Tips
+
+1. Start with basic swarm init
+2. Scale agents gradually
+3. Use memory for context
+4. Monitor progress regularly
+5. Train patterns from success
+6. Enable hooks automation
+7. Use GitHub tools first
+
+## Support
+
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues
+- Flow-Nexus Platform: https://flow-nexus.ruv.io (registration required for cloud features)
+
+---
+
+Remember: **Claude Flow coordinates, Claude Code creates!**
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+Never save working files, text/mds and tests to the root folder.
