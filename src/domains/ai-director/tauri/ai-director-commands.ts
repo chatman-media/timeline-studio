@@ -47,13 +47,27 @@ export async function aiDirectorAnalyzeQuick(videoPath: string): Promise<Compreh
 
 /**
  * Run batch analysis on multiple video files
+ *
+ * Использует параллельную обработку для ускорения анализа.
+ * Количество параллельных задач определяется автоматически или через config.max_parallel_files.
  */
 export async function aiDirectorAnalyzeBatch(
   filePaths: string[],
   config?: Partial<AIDirectorConfig>,
 ): Promise<ComprehensiveAnalysisResult[]> {
-  logger.info("Running batch analysis", { fileCount: filePaths.length })
-  return invoke("ai_director_v2_analyze_batch", {
+  // Определяем включена ли параллельная обработка (по умолчанию true)
+  const useParallel = config?.enable_parallel_processing !== false
+
+  logger.info("Running batch analysis", {
+    fileCount: filePaths.length,
+    mode: useParallel ? 'parallel' : 'sequential',
+    maxParallel: config?.max_parallel_files
+  })
+
+  // Используем параллельную команду если включено, иначе последовательную
+  const command = useParallel ? "ai_director_v2_analyze_batch_parallel" : "ai_director_v2_analyze_batch"
+
+  return invoke(command, {
     filePaths,
     config,
   })

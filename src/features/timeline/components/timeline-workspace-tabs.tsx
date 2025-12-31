@@ -1,10 +1,10 @@
-import { BarChart3, Layers, Sliders } from "lucide-react"
+import { BarChart3, Clapperboard, Layers, Sliders } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-export type WorkspaceView = "timeline" | "audio-mixer" | "analysis"
+export type WorkspaceView = "timeline" | "audio-mixer" | "analysis" | "script"
 
 interface TimelineWorkspaceTabsProps {
   activeView: WorkspaceView
@@ -29,7 +29,19 @@ export function TimelineWorkspaceTabs({ activeView, onViewChange }: TimelineWork
           <span data-oid="mas.rl.">{t("timeline.workspace.analysis")}</span>
         </Button>
 
-        {/* Timeline - вторая вкладка */}
+        {/* Script - вторая вкладка */}
+        <Button
+          variant={activeView === "script" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => onViewChange("script")}
+          className={cn("h-7 cursor-pointer gap-3", activeView === "script" && "bg-secondary")}
+          data-oid="script-tab"
+        >
+          <Clapperboard className="h-4 w-4" data-oid="script-icon" />
+          <span data-oid="script-label">{t("timeline.workspace.script", "Script")}</span>
+        </Button>
+
+        {/* Timeline - третья вкладка */}
         <Button
           variant={activeView === "timeline" ? "secondary" : "ghost"}
           size="sm"
@@ -41,7 +53,7 @@ export function TimelineWorkspaceTabs({ activeView, onViewChange }: TimelineWork
           <span data-oid="yz3dti_">{t("timeline.workspace.timeline")}</span>
         </Button>
 
-        {/* Audio Mixer - третья вкладка */}
+        {/* Audio Mixer - четвёртая вкладка */}
         <Button
           variant={activeView === "audio-mixer" ? "secondary" : "ghost"}
           size="sm"

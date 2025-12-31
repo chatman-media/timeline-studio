@@ -667,6 +667,19 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
               // Cast to storage type - types are compatible at runtime
               await analysisStorageService.saveComprehensiveAnalysis(videoPath, result as any, { overwrite: true })
               logger.infoSync("[useAIDirectorAnalysisV2] Saved analysis to storage", { videoPath })
+
+              // Обновляем filesProgress с результатами анализа
+              setFilesProgress((prev) => {
+                return prev.map((file, index) => {
+                  if (index === i) {
+                    return {
+                      ...file,
+                      result: result as any, // Добавляем результаты анализа
+                    }
+                  }
+                  return file
+                })
+              })
             } catch (saveError) {
               logger.errorSync("[useAIDirectorAnalysisV2] Failed to save analysis", {
                 videoPath,

@@ -196,6 +196,8 @@ export interface FileAnalysisProgress {
     failedAnalyzers: number
     skippedAnalyzers: number
   }
+  /** Результаты анализа (для completed анализов из storage) */
+  result?: any // ComprehensiveAnalysisResult
 }
 
 // ============================================================================
@@ -715,5 +717,7 @@ export function createFileProgressFromResult(
     startTime: result.started_at,
     endTime: result.completed_at,
     duration: result.total_duration_ms,
+    // Сохраняем результаты анализа для использования в UI
+    result,
   }
 }

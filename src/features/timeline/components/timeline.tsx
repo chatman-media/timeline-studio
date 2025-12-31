@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 
 import { AnalysisView } from "./analysis-view"
 import { AudioMixerView } from "./audio-mixer-view"
+import { ScriptView } from "./script-view"
 import { TimelineContent } from "./timeline-content"
 import { TimelineWorkspaceTabs, type WorkspaceView } from "./timeline-workspace-tabs"
 import { VirtualizedTimelineContent } from "./virtualized-timeline-content"
@@ -39,6 +40,8 @@ export function Timeline({ className, style }: TimelineProps = {}) {
         return <AudioMixerView data-oid="dlq_xd2" />
       case "analysis":
         return <AnalysisView data-oid="a:eczro" />
+      case "script":
+        return <ScriptView data-oid="script-view" />
       default:
         return <TimelineComponent data-oid="_.n3vjo" />
     }

@@ -89,7 +89,7 @@ export const ApplyButton = memo(function ApplyButton({ file, size = 150, hoverTi
       type="button"
       className={cn(
         "absolute z-2 left-1 bottom-1 cursor-pointer rounded-full p-1 transition-all duration-150 border-0 outline-none focus:ring-2 focus:ring-blue-500",
-        "invisible bg-blue-600 dark:bg-blue-600 group-hover:visible hover:bg-blue-700 dark:hover:bg-blue-700",
+        "hidden", // Always hidden - кнопка не нужна
       )}
       style={{ color: "#ffffff" }}
       onClick={handleApply}

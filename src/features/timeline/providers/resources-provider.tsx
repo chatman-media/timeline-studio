@@ -98,7 +98,7 @@ interface ResourcesContextType {
   isFilterAdded: (filter: VideoFilter) => boolean
   isTransitionAdded: (transition: Transition) => boolean
   isStyleTemplateAdded: (template: StyleTemplate) => boolean
-  isAdded: (resourceId: string, type: string) => boolean
+  isAdded: (resourceId: string, type: string, filePath?: string) => boolean
 }
 
 const ResourcesContext = createContext<ResourcesContextType | undefined>(undefined)
@@ -250,10 +250,34 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           const mediaItem = item as MediaItem
           return "path" in mediaItem && mediaItem.path === file.path
         })
+
         if (alreadyExists) {
-          logInfo("ResourcesProvider: Media already exists, skipping", {
+          // Файл уже существует в media_pool - просто помечаем его как ресурс
+          logInfo("ResourcesProvider: Media already exists, marking as resource", {
             path: file.path,
           })
+
+          // Находим существующий медиафайл и получаем его ID
+          const existingMedia = Object.values(mediaPool.items).find((item) => {
+            if (!item || typeof item !== "object") return false
+            const media = item as MediaItem
+            return "path" in media && media.path === file.path
+          }) as MediaItem | undefined
+
+          if (existingMedia?.id) {
+            await executeCommand({
+              type: "SetMediaAsResource",
+              params: {
+                media_id: existingMedia.id,
+                is_resource: true,
+              },
+            })
+            logInfo("ResourcesProvider: Existing media marked as resource", {
+              path: file.path,
+              mediaId: existingMedia.id,
+              frontendId: file.id,
+            })
+          }
           return
         }
       }
@@ -292,6 +316,7 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
           logInfo("ResourcesProvider: Media marked as resource", {
             path: file.path,
             mediaId,
+            frontendId: file.id, // Для сравнения frontend ID vs backend ID
           })
         }
 
@@ -1006,21 +1031,28 @@ export function ResourcesProvider({ children }: ResourcesProviderProps) {
     isStyleTemplateAdded: (template: StyleTemplate) => {
       return resourcesState.styleTemplateResources.some((resource) => resource.template.id === template.id)
     },
-    isAdded: (resourceId: string, type: string) => {
+    isAdded: (resourceId: string, type: string, filePath?: string) => {
       // Для медиа и музыки проверяем флаг is_resource в backend state
       // is_resource = true означает что файл явно добавлен в ресурсы пользователем (через "+")
       if (type === "media" || type === "music") {
         const mediaPool = backendState?.project?.media_pool
         if (!mediaPool?.items) return false
 
-        // Ищем медиа по resourceId и проверяем флаг is_resource
+        // Ищем медиа по filePath (приоритет) или по ID (fallback)
         const mediaItem = Object.values(mediaPool.items).find((item) => {
           if (!item || typeof item !== "object") return false
           const media = item as MediaItem
-          return media.id === resourceId
+
+          // Приоритет: проверка по filePath (если передан)
+          if (filePath && media.path === filePath) {
+            return media.is_resource === true
+          }
+
+          // Fallback: проверка по ID (для обратной совместимости)
+          return media.id === resourceId && media.is_resource === true
         }) as MediaItem | undefined
 
-        return mediaItem?.is_resource === true
+        return !!mediaItem
       }
 
       // Для других типов ресурсов (эффекты, фильтры и т.д.) проверяем по старой логике

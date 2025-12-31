@@ -181,7 +181,8 @@ describe("AI Director Tauri Commands", () => {
 
       const results = await aiDirectorAnalyzeBatch(filePaths, config)
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch", {
+      // Теперь по умолчанию используется параллельная команда
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch_parallel", {
         filePaths,
         config,
       })
@@ -196,9 +197,27 @@ describe("AI Director Tauri Commands", () => {
 
       await aiDirectorAnalyzeBatch(filePaths)
 
-      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch", {
+      // Без config по умолчанию используется параллельная обработка
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch_parallel", {
         filePaths,
         config: undefined,
+      })
+    })
+
+    it("should use sequential processing when parallel is disabled", async () => {
+      const filePaths = ["/video1.mp4"]
+      const config: Partial<AIDirectorConfig> = {
+        enable_parallel_processing: false,
+      }
+
+      mockInvoke.mockResolvedValueOnce([])
+
+      await aiDirectorAnalyzeBatch(filePaths, config)
+
+      // С явно отключенной параллельной обработкой используется последовательная команда
+      expect(mockInvoke).toHaveBeenCalledWith("ai_director_v2_analyze_batch", {
+        filePaths,
+        config,
       })
     })
 

@@ -12,7 +12,7 @@ interface ResourceThumbnailProps {
 
 /**
  * Компактная превьюшка ресурса с drag & drop
- * Размер: 96x120px (80x80 превью + имя + отступы)
+ * Размер: 72x90px (60x60 превью + имя + отступы)
  */
 export const ResourceThumbnail = memo(
   ({ resource, onRemove }: ResourceThumbnailProps) => {
@@ -96,47 +96,47 @@ export const ResourceThumbnail = memo(
       switch (resource.type) {
         case "media":
         case "music":
-          return <MediaPreview file={resource.file} size={80} ignoreRatio data-oid="_dy2mrv" />
+          return <MediaPreview file={resource.file} size={60} ignoreRatio data-oid="_dy2mrv" />
 
         case "effect":
-          return <Sparkles size={32} className="text-purple-400" strokeWidth={1.5} data-oid="88kxo51" />
+          return <Sparkles size={24} className="text-purple-400" strokeWidth={1.5} data-oid="88kxo51" />
 
         case "filter":
-          return <Palette size={32} className="text-pink-400" strokeWidth={1.5} data-oid="v9ip.bn" />
+          return <Palette size={24} className="text-pink-400" strokeWidth={1.5} data-oid="v9ip.bn" />
 
         case "transition":
-          return <FlipHorizontal2 size={32} className="text-blue-400" strokeWidth={1.5} data-oid="vpt1iwa" />
+          return <FlipHorizontal2 size={24} className="text-blue-400" strokeWidth={1.5} data-oid="vpt1iwa" />
 
         case "template":
-          return <Clapperboard size={32} className="text-green-400" strokeWidth={1.5} data-oid="786m_f:" />
+          return <Clapperboard size={24} className="text-green-400" strokeWidth={1.5} data-oid="786m_f:" />
 
         case "styleTemplate":
-          return <Type size={32} className="text-orange-400" strokeWidth={1.5} data-oid="4jh88tj" />
+          return <Type size={24} className="text-orange-400" strokeWidth={1.5} data-oid="4jh88tj" />
 
         case "subtitle":
-          return <Subtitles size={32} className="text-yellow-400" strokeWidth={1.5} data-oid="oahmnuj" />
+          return <Subtitles size={24} className="text-yellow-400" strokeWidth={1.5} data-oid="oahmnuj" />
 
         default:
-          return <Package size={32} className="text-gray-400" strokeWidth={1.5} data-oid="s3cwyl:" />
+          return <Package size={24} className="text-gray-400" strokeWidth={1.5} data-oid="s3cwyl:" />
       }
     }, [resource.type, resource.resourceId])
 
     // Drag & Drop
     const dragProps = useDraggable(getDraggableType(resource.type), getDragData, () => ({
       url: getPreviewUrl(),
-      width: 80,
-      height: 80,
+      width: 60,
+      height: 60,
     }))
 
     return (
       <div
-        className="group relative flex w-24 flex-shrink-0 cursor-grab flex-col active:cursor-grabbing"
+        className="group relative flex w-18 flex-shrink-0 cursor-grab flex-col active:cursor-grabbing"
         {...dragProps}
         data-oid="6_np:xk"
       >
         {/* Превью */}
         <div
-          className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary transition-transform group-hover:-translate-y-0.5"
+          className="relative flex h-15 w-15 items-center justify-center overflow-hidden rounded-lg border border-border bg-secondary transition-transform group-hover:-translate-y-0.5"
           data-oid="cnhdch7"
         >
           {previewContent}

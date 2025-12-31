@@ -194,7 +194,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
       const videoCodec =
         mediaInfo.metadata?.type === "Video" ? (mediaInfo.metadata as { codec?: string }).codec : undefined
 
-      return {
+      const file = {
         // ✅ FIX: Добавляем id из ключа mediaPool (UUID от backend)
         id: mediaId,
         path: mediaInfo.path,
@@ -235,6 +235,19 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
             }
           : undefined,
       }
+
+      // Debug log для видео файлов
+      if (file.isVideo) {
+        console.log('[MediaAdapter] Video file:', {
+          name: file.name,
+          isVideo: file.isVideo,
+          type: mediaInfo.type,
+          hasMetadata: !!mediaInfo.metadata,
+          hasThumbnail: !!mediaInfo.thumbnailPath,
+        })
+      }
+
+      return file
     })
   }, [mediaPool, mediaPool.size])
 

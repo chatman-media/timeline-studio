@@ -58,7 +58,7 @@ export const AddMediaButton = memo(function AddMediaButton({
 
   // Обновляем состояние при изменении isAdded
   useEffect(() => {
-    const currentIsAdded = isAdded(resource.id, type)
+    const currentIsAdded = isAdded(resource.id, type, resource.file?.path)
 
     if (currentIsAdded !== prevIsAddedRef.current) {
       // Если файл добавлен, устанавливаем флаг isRecentlyAdded
@@ -97,7 +97,7 @@ export const AddMediaButton = memo(function AddMediaButton({
         timerRef.current = null
       }
     }
-  }, [isAdded, resource.id, type])
+  }, [isAdded, resource.id, type, resource.file?.path])
 
   // Определяем, можно ли показывать кнопку удаления
   // Не показываем кнопку удаления в течение 3 секунд после добавления
@@ -108,16 +108,22 @@ export const AddMediaButton = memo(function AddMediaButton({
       e.stopPropagation()
       e.preventDefault()
 
-      logger.debug("AddMediaButton clicked", { resourceId: resource.id, type, isAdded: isAdded(resource.id, type) })
+      logger.debug("AddMediaButton clicked", { resourceId: resource.id, type, isAdded: isAdded(resource.id, type, resource.file?.path) })
 
-      if (isAdded(resource.id, type) && canShowRemoveButton) {
+      if (isAdded(resource.id, type, resource.file?.path) && canShowRemoveButton) {
         // Удаляем из добавленных
         void removeResource(resource.id, type)
-      } else if (!isAdded(resource.id, type)) {
+      } else if (!isAdded(resource.id, type, resource.file?.path)) {
         // Добавляем в добавленные в зависимости от типа
         switch (resource.type) {
           case "media":
             // Media saves directly to media_pool (unified architecture 2025-11)
+            logger.debug("Adding media to resources", {
+              fileId: resource.file.id,
+              fileName: resource.file.name,
+              filePath: resource.file.path,
+              resourceId: resource.id,
+            })
             void addMedia(resource.file)
             break
           case "music":
@@ -150,10 +156,9 @@ export const AddMediaButton = memo(function AddMediaButton({
     },
     [
       isAdded,
-      isHovering,
       canShowRemoveButton,
       removeResource,
-      backendSync,
+      addMedia,
       addMusic,
       addEffect,
       addFilter,
@@ -171,7 +176,7 @@ export const AddMediaButton = memo(function AddMediaButton({
       type="button"
       className={cn(
         "absolute z-2 right-1 bottom-1 cursor-pointer rounded-full p-1 transition-all duration-150 dark:hover:text-black/50 border-0 outline-none focus:ring-2 focus:ring-teal",
-        isAdded(resource.id, type)
+        isAdded(resource.id, type, resource.file?.path)
           ? isRecentlyAdded
             ? "visible scale-110 bg-teal dark:bg-teal" // Яркий цвет и увеличенный размер для недавно добавленных
             : "visible bg-teal dark:bg-teal" // Добавлен класс visible
@@ -182,7 +187,7 @@ export const AddMediaButton = memo(function AddMediaButton({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       title={
-        isAdded(resource.id, type)
+        isAdded(resource.id, type, resource.file?.path)
           ? isHovering && canShowRemoveButton
             ? t("browser.media.remove")
             : t("browser.media.added")
@@ -190,7 +195,7 @@ export const AddMediaButton = memo(function AddMediaButton({
       }
       data-oid=".u3psz3"
     >
-      {isAdded(resource.id, type) ? (
+      {isAdded(resource.id, type, resource.file?.path) ? (
         isHovering && canShowRemoveButton ? (
           <X
             className={"transition-transform duration-150 hover:scale-110"}
