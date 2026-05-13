@@ -1,3 +1,10 @@
+## [3.45.4](https://github.com/chatman-media/timeline-studio/compare/v3.45.3...v3.45.4) (2026-05-13)
+
+
+### Bug Fixes
+
+* **ui:** forward data-auto-save-id and data-direction in resizable wrapper ([55e800c](https://github.com/chatman-media/timeline-studio/commit/55e800c3c077fe62421e243f78afe5026e5bc3dc))
+
 ## [3.45.3](https://github.com/chatman-media/timeline-studio/compare/v3.45.2...v3.45.3) (2026-05-13)
 
 
