@@ -534,19 +534,18 @@ beforeAll(() => {
 
   // Mock IntersectionObserver
   global.IntersectionObserver = class IntersectionObserver {
+    readonly root: Element | Document | null = null
+    readonly rootMargin: string = ""
+    readonly thresholds: ReadonlyArray<number> = []
     constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
-      // Store callback and options for potential use
       void callback
       void options
     }
     observe = vi.fn()
     unobserve = vi.fn()
     disconnect = vi.fn()
-    root = null
-    rootMargin = ""
-    thresholds = []
-    takeRecords = vi.fn(() => [])
-  }
+    takeRecords = vi.fn((): IntersectionObserverEntry[] => [])
+  } as unknown as typeof globalThis.IntersectionObserver
 
   // Mock setInterval and clearInterval to ensure they work properly in tests
   if (typeof global.setInterval === "undefined") {
