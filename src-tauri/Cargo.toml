@@ -29,9 +29,9 @@ path = "src/main.rs"
 # name = "test_specta"
 # path = "src/bin/test_specta.rs"
 
-# [[bin]]
-# name = "generate_types"
-# path = "src/bin/generate_types.rs"
+[[bin]]
+name = "generate_types"
+path = "src/bin/generate_types.rs"
 
 # Commented out for release builds - development tool only
 # [[bin]]
