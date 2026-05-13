@@ -1,5 +1,11 @@
 import { defineConfig, devices } from "@playwright/test"
 
+// Порты сервисов
+const FRONTEND_PORT = 3001
+const NODE_BACKEND_PORT = parseInt(process.env.NODE_BACKEND_PORT ?? "3100", 10)
+
+export const BACKEND_URL = process.env.NODE_BACKEND_URL ?? `http://localhost:${NODE_BACKEND_PORT}`
+
 export default defineConfig({
   testDir: "./e2e",
   // Запускаем тесты последовательно для стабильности
@@ -13,7 +19,7 @@ export default defineConfig({
   timeout: 60000,
 
   use: {
-    baseURL: "http://localhost:3001",
+    baseURL: `http://localhost:${FRONTEND_PORT}`,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -60,16 +66,39 @@ export default defineConfig({
       // Не запускаем dev сервер для Tauri тестов
       testMatch: "**/e2e/tauri/**/*.spec.ts",
     },
+
+    // Интеграционные тесты: фронт + Node.js бэкенд вместе
+    {
+      name: "node-backend-integration",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: `http://localhost:${FRONTEND_PORT}`,
+        permissions: ["clipboard-read", "clipboard-write"],
+      },
+      testMatch: "**/e2e/integration/**/*.spec.ts",
+    },
   ],
 
-  webServer: {
-    command: "bun run dev -- --port 3001",
-    url: "http://localhost:3001",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-    stdout: "pipe",
-    stderr: "pipe",
-  },
+  webServer: [
+    // Фронтенд (Next.js)
+    {
+      command: `bun run dev -- --port ${FRONTEND_PORT}`,
+      url: `http://localhost:${FRONTEND_PORT}`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+      stdout: "pipe",
+      stderr: "pipe",
+    },
+    // Node.js медиа-бэкенд
+    {
+      command: `PORT=${NODE_BACKEND_PORT} bun run ./src-node/src/main.ts`,
+      url: `http://localhost:${NODE_BACKEND_PORT}/health`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 30000,
+      stdout: "pipe",
+      stderr: "pipe",
+    },
+  ],
 
   // Глобальный setup/teardown
   globalSetup: "./e2e/global-setup",

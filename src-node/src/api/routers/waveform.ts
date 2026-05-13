@@ -9,7 +9,7 @@ export const waveformRouter = router({
    * Generate waveform data (array of amplitudes)
    */
   generateData: publicProcedure
-    .input(z.object({ filePath: z.string() }))
+    .input(z.object({ filePath: z.string().min(1) }))
     .query(async ({ input, ctx }) => {
       const waveform = await ctx.mediaService.generateAudioWaveform(
         input.filePath
@@ -28,9 +28,9 @@ export const waveformRouter = router({
   batchGenerate: publicProcedure
     .input(
       z.object({
-        files: z.array(z.string()),
-        width: z.number().default(800),
-        height: z.number().default(100),
+        files: z.array(z.string().min(1)).min(1),
+        width: z.number().positive().default(800),
+        height: z.number().positive().default(100),
       })
     )
     .mutation(async ({ input, ctx }) => {

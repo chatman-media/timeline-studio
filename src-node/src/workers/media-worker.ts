@@ -5,6 +5,8 @@
 
 import { FFmpegUtils } from "../utils/ffmpeg"
 import type { JobType } from "../services/queue-service"
+import { readdir } from "node:fs/promises"
+import { extname, join } from "node:path"
 
 // Worker message types
 interface ProcessMessage {
@@ -14,6 +16,37 @@ interface ProcessMessage {
     type: JobType
     data: unknown
   }
+}
+
+const MEDIA_EXTENSIONS = new Set([
+  ".mp4",
+  ".mov",
+  ".avi",
+  ".mkv",
+  ".webm",
+  ".m4v",
+  ".mp3",
+  ".wav",
+  ".aac",
+  ".flac",
+  ".ogg",
+  ".m4a",
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".webp",
+  ".tiff",
+])
+
+function getThumbnailDir(): string {
+  const cacheDir = process.env.CACHE_DIR ?? `${process.env.HOME}/.cache/timeline-studio`
+  return `${cacheDir}/thumbnails`
+}
+
+function getWaveformDir(): string {
+  const cacheDir = process.env.CACHE_DIR ?? `${process.env.HOME}/.cache/timeline-studio`
+  return `${cacheDir}/waveforms`
 }
 
 // Listen for messages from main thread
@@ -68,6 +101,7 @@ async function processBatchThumbnails(job: {
     height: number
   }
 
+  const thumbnailDir = getThumbnailDir()
   const results = []
 
   for (let i = 0; i < files.length; i++) {
@@ -75,7 +109,7 @@ async function processBatchThumbnails(job: {
 
     try {
       const fileId = crypto.randomUUID()
-      const outputPath = `/tmp/thumbnails/${fileId}.jpg`
+      const outputPath = `${thumbnailDir}/${fileId}.jpg`
 
       await FFmpegUtils.generateThumbnail(filePath, outputPath, {
         width,
@@ -120,6 +154,7 @@ async function processBatchWaveforms(job: {
     height: number
   }
 
+  const waveformDir = getWaveformDir()
   const results = []
 
   for (let i = 0; i < files.length; i++) {
@@ -127,7 +162,7 @@ async function processBatchWaveforms(job: {
 
     try {
       const fileId = crypto.randomUUID()
-      const outputPath = `/tmp/waveforms/${fileId}.png`
+      const outputPath = `${waveformDir}/${fileId}.png`
 
       await FFmpegUtils.generateWaveform(filePath, outputPath, {
         width,
@@ -160,20 +195,45 @@ async function processBatchWaveforms(job: {
 }
 
 /**
- * Process folder scanning
+ * Process folder scanning — recursively finds media files
  */
 async function processScanFolder(job: {
   id: string
   data: unknown
 }): Promise<unknown> {
-  const { folderPath } = job.data as {
+  const { folderPath, recursive = false } = job.data as {
     folderPath: string
+    recursive?: boolean
   }
 
-  // Placeholder - implement folder scanning logic
-  // This would recursively scan directory and process files
+  const files: string[] = []
+
+  async function scanDir(dir: string): Promise<void> {
+    let entries
+    try {
+      entries = await readdir(dir, { withFileTypes: true })
+    } catch {
+      return
+    }
+
+    for (const entry of entries) {
+      const fullPath = join(dir, entry.name)
+
+      if (entry.isDirectory()) {
+        if (recursive) await scanDir(fullPath)
+      } else if (entry.isFile()) {
+        if (MEDIA_EXTENSIONS.has(extname(entry.name).toLowerCase())) {
+          files.push(fullPath)
+        }
+      }
+    }
+  }
+
+  await scanDir(folderPath)
+
   return {
     folderPath,
-    filesProcessed: 0,
+    filesProcessed: files.length,
+    files,
   }
 }

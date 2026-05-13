@@ -9,9 +9,9 @@ const logger = createLogger("Server")
 /**
  * Create HTTP server using Bun.serve
  */
-export function createServer() {
+export function createServer(port?: number) {
   return Bun.serve({
-    port: config.PORT,
+    port: port ?? config.PORT,
     hostname: config.HOST,
 
     async fetch(request: Request) {

@@ -20,10 +20,10 @@ paths = {
 
 [test]
 # Test configuration
-preload = ["__tests__/setup.ts"]
+preload = ["./__tests__/setup.ts"]
 coverage = true
 coverageDir = "coverage"
-coverageReporter = ["text", "lcov", "html"]
+coverageReporter = ["text", "lcov"]
 
 # Only run files matching these patterns
 testMatch = ["**/__tests__/**/*.test.ts"]
