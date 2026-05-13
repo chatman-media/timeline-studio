@@ -17,13 +17,16 @@ function ResizablePanelGroup({
   className,
   direction,
   orientation,
-  autoSaveId: _autoSaveId,
+  autoSaveId,
   ...props
 }: ResizablePanelGroupProps) {
+  const resolvedOrientation = orientation ?? direction
   return (
     <ResizablePrimitive.Group
       data-slot="resizable-panel-group"
-      orientation={orientation ?? direction}
+      orientation={resolvedOrientation}
+      data-direction={resolvedOrientation}
+      data-auto-save-id={autoSaveId}
       className={cn(
         "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
         className
