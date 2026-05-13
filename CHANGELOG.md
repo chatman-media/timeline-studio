@@ -1,3 +1,35 @@
+# [3.45.0](https://github.com/chatman-media/timeline-studio/compare/v3.44.0...v3.45.0) (2026-05-13)
+
+
+### Bug Fixes
+
+* **browser:** fix API mismatches in use-node-backend hook ([acc8876](https://github.com/chatman-media/timeline-studio/commit/acc8876b5ac0c4dd0354d8e2550c280ef9266e55))
+* **browser:** update cache stats access path in node-backend example ([35a5409](https://github.com/chatman-media/timeline-studio/commit/35a54093fce5eec1543504b703f811280bb2a208))
+* **browser:** исправлена кнопка добавления медиа в ресурсы ([5fbd5db](https://github.com/chatman-media/timeline-studio/commit/5fbd5dbfb249b87d48f93c07f90cd1791c8f51e8))
+* **deps:** regenerate package-lock.json after dependency upgrades ([2a61721](https://github.com/chatman-media/timeline-studio/commit/2a61721d08dd3156c28e1541537521bf42d91faf))
+* **deps:** исправлена версия reqwest и обновлены зависимости Rust ([7468f1e](https://github.com/chatman-media/timeline-studio/commit/7468f1efa2555494943f9ce578ee003e44f7953b))
+* **media:** resolve TypeScript 6 compatibility in browser-file-picker ([59969df](https://github.com/chatman-media/timeline-studio/commit/59969df0bb36b201412e4b50bda46d8bd2b5a3ce))
+* **node-backend:** исправлен bunfig.toml — убран неподдерживаемый html reporter и путь preload ([8dc97a9](https://github.com/chatman-media/timeline-studio/commit/8dc97a9f7d7d1d9fbb27d0ce4ca5cf0977cd2530))
+* **node:** remove unused [@ts-expect-error](https://github.com/ts-expect-error) in node-backend-client ([87ffd69](https://github.com/chatman-media/timeline-studio/commit/87ffd696134802716932964a29700bd306618d32))
+* package.json to reduce vulnerabilities ([ab76e31](https://github.com/chatman-media/timeline-studio/commit/ab76e31d3e48d392c43cc8766de823c25fc2b700))
+* promo/package.json & promo/package-lock.json to reduce vulnerabilities ([c72e69c](https://github.com/chatman-media/timeline-studio/commit/c72e69c080777d7d388212eeb581498206c96c10))
+* **test:** update IntersectionObserver mock for TypeScript 6 strict mode ([bcda33c](https://github.com/chatman-media/timeline-studio/commit/bcda33cddbb98603c4d4f17b683a5541363843b7))
+* **ui:** migrate resizable component to react-resizable-panels v4 API ([0f8f8a3](https://github.com/chatman-media/timeline-studio/commit/0f8f8a3660c05da66fd7933e2ca6c023a0b5a558))
+
+
+### Features
+
+* **claude-flow:** добавлена инфраструктура Claude Flow агентов и команд ([288718b](https://github.com/chatman-media/timeline-studio/commit/288718b24de3e2085bf555178a91c2fb96cda43e))
+* **e2e:** playwright.config.ts — добавлены два webServer и проект node-backend-integration ([2231def](https://github.com/chatman-media/timeline-studio/commit/2231def33d811081318afd2d9b305f02c7a91144))
+* **node-backend:** createServer принимает опциональный port для тестов ([a403a3e](https://github.com/chatman-media/timeline-studio/commit/a403a3e9e7680ca1cf8e5b0fe2077dce42e10976))
+* **node-backend:** валидация входных данных в media роутере (min(1), positive) ([219fbd3](https://github.com/chatman-media/timeline-studio/commit/219fbd3f273278302ff356e83e72025bce714fde))
+* **node-backend:** валидация входных данных в thumbnail роутере ([4b47a67](https://github.com/chatman-media/timeline-studio/commit/4b47a67199888c0b6786e15822470c391bab7be8))
+* **node-backend:** валидация входных данных в waveform роутере ([8f6fc2b](https://github.com/chatman-media/timeline-studio/commit/8f6fc2b089faef0ff1071445d8580e39c2e0582f))
+* **node-backend:** зарегистрирован queueRouter в AppRouter ([3d7f8d5](https://github.com/chatman-media/timeline-studio/commit/3d7f8d553f2260052e6aeb573692165030eff9a6))
+* **node-backend:** новый queue роутер — getJobStatus и getStats endpoints ([708b4f8](https://github.com/chatman-media/timeline-studio/commit/708b4f8e55b5d49d34c8dfdc880aa63e5d04aedb))
+* **node-backend:** реализован processScanFolder в воркере, пути вынесены из /tmp ([7a9217c](https://github.com/chatman-media/timeline-studio/commit/7a9217cad4a8a62afc7d8b9cd60ac1d4af089ee8))
+* **timeline:** добавлена новая вкладка Script View с планировщиком монтажа ([81cc943](https://github.com/chatman-media/timeline-studio/commit/81cc943b22e08b6883f61befee13326c0f15f65d))
+
 # [3.44.0](https://github.com/chatman-media/timeline-studio/compare/v3.43.2...v3.44.0) (2025-12-28)
 
 
