@@ -9,7 +9,7 @@ export const mediaRouter = router({
    * Get metadata for a single file
    */
   getMetadata: publicProcedure
-    .input(z.object({ filePath: z.string() }))
+    .input(z.object({ filePath: z.string().min(1) }))
     .query(async ({ input, ctx }) => {
       const metadata = await ctx.mediaService.getMetadata(input.filePath)
 
@@ -24,7 +24,7 @@ export const mediaRouter = router({
   scanFolder: publicProcedure
     .input(
       z.object({
-        folderPath: z.string(),
+        folderPath: z.string().min(1),
         recursive: z.boolean().default(false),
         includeHidden: z.boolean().default(false),
       })
@@ -49,9 +49,9 @@ export const mediaRouter = router({
   scanWithThumbnails: publicProcedure
     .input(
       z.object({
-        folderPath: z.string(),
-        width: z.number().default(320),
-        height: z.number().default(180),
+        folderPath: z.string().min(1),
+        width: z.number().positive().default(320),
+        height: z.number().positive().default(180),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -74,10 +74,10 @@ export const mediaRouter = router({
   processFiles: publicProcedure
     .input(
       z.object({
-        filePaths: z.array(z.string()),
+        filePaths: z.array(z.string().min(1)).min(1),
         generateThumbnails: z.boolean().default(true),
-        width: z.number().default(320),
-        height: z.number().default(180),
+        width: z.number().positive().default(320),
+        height: z.number().positive().default(180),
       })
     )
     .mutation(async ({ input, ctx }) => {
