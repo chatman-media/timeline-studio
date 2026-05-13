@@ -5,7 +5,6 @@
  */
 
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client"
-// @ts-expect-error - AppRouter is compiled separately in src-node
 import type { AppRouter } from "../../../src-node/src/api/root"
 
 const getBackendUrl = (): string => {
