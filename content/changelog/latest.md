@@ -1,3 +1,102 @@
+# [3.44.0](https://github.com/chatman-media/timeline-studio/compare/v3.43.2...v3.44.0) (2025-12-28)
+
+
+### Bug Fixes
+
+* **audio:** исправлена блокировка аудио при воспроизведении preview ([45a9ea1](https://github.com/chatman-media/timeline-studio/commit/45a9ea1d50882f614318dce15e015a715b0806ff))
+* **browser:** исправлен статусбар - теперь учитываются видео без звука ([00ca373](https://github.com/chatman-media/timeline-studio/commit/00ca373374202e67b7ad308040b36597f9737cf3))
+* **browser:** исправлена фильтрация шаблонов по количеству экранов ([412fc53](https://github.com/chatman-media/timeline-studio/commit/412fc53f1e346350475a2994b56f4c0e4c8f04a3))
+* **browser:** исправлено отображение разрешения видео на превью ([87f5a18](https://github.com/chatman-media/timeline-studio/commit/87f5a1812cd0ca7e7d90cdc5517786421d52974f))
+* **git:** добавлен src-node/node_modules в .gitignore ([03e5320](https://github.com/chatman-media/timeline-studio/commit/03e53209aa11cba31a9701adbe7fee70307e6295))
+* **media-studio:** исправлен импорт useUserSettings ([2ec875a](https://github.com/chatman-media/timeline-studio/commit/2ec875ad7949b46b0131cc733c2ea27e4f35d261))
+* **timeline:** исправлен drag-and-drop медиафайлов из браузера на таймлайн ([4bea2ef](https://github.com/chatman-media/timeline-studio/commit/4bea2ef272cf41b47683fece2cbb84fc4ed057e4))
+* **ui:** исправлено направление flex для ResizablePanelGroup v4 ([7fb8866](https://github.com/chatman-media/timeline-studio/commit/7fb8866caecdfa2617ff7d8f068eb9c40806643d))
+* **ui:** исправлены импорты react-resizable-panels v4 ([2703842](https://github.com/chatman-media/timeline-studio/commit/2703842b7c3360bbe1680723818f979ce0b01839))
+* **workspace:** убран overflow-hidden, который скрывал виджеты ([10544b7](https://github.com/chatman-media/timeline-studio/commit/10544b7a447d12256272cea301eea3d6fd2dce21))
+
+
+### Features
+
+* **layouts:** добавлены стабильные ID панелей для сохранения размеров между layout'ами ([beb92d2](https://github.com/chatman-media/timeline-studio/commit/beb92d2ab4887e22ee09fbae03f553c435c82db7))
+* **layouts:** завершена интеграция стабильных ID панелей ([9f76ea0](https://github.com/chatman-media/timeline-studio/commit/9f76ea0447037ace82d68ccaf20f1f4d4d3331ba))
+* **layouts:** обновлены размеры панелей и добавлены стабильные ID ([8fece0e](https://github.com/chatman-media/timeline-studio/commit/8fece0efbee4373484707fee0c8b0b1b58a4a207))
+
+
+### Reverts
+
+* откат с workspace на старые layout компоненты ([fec8003](https://github.com/chatman-media/timeline-studio/commit/fec80034cb31770dba8c8f8b9ba9c4b6740312e6))
+
+## [3.43.2](https://github.com/chatman-media/timeline-studio/compare/v3.43.1...v3.43.2) (2025-12-24)
+
+
+### Bug Fixes
+
+* **browser:** остановка hover-видео при уходе мыши ([3e80ae3](https://github.com/chatman-media/timeline-studio/commit/3e80ae3195e0c77a99425b1f3f34fd3c24012be8))
+* **menu:** исправлено название приложения в menu bar на macOS ([e4eee6e](https://github.com/chatman-media/timeline-studio/commit/e4eee6e8a48f8d826e415646fb735cc3821b6192))
+* **player:** исправлена синхронизация аудио/видео и громкость ([5e470d5](https://github.com/chatman-media/timeline-studio/commit/5e470d5705d72d4a7dc8b3496cfc324b17adf7fe))
+
+## [3.43.1](https://github.com/chatman-media/timeline-studio/compare/v3.43.0...v3.43.1) (2025-12-23)
+
+
+### Bug Fixes
+
+* **tests:** исправлено 43 падающих теста во всем проекте ([1485946](https://github.com/chatman-media/timeline-studio/commit/1485946add6758a73db473cd8db47961fbd6112c))
+
+# [3.43.0](https://github.com/chatman-media/timeline-studio/compare/v3.42.0...v3.43.0) (2025-12-23)
+
+
+### Bug Fixes
+
+* **app:** убран неправильный drop для tauri::State ([5bf0396](https://github.com/chatman-media/timeline-studio/commit/5bf039670874119260170b60654c743f8afad95f))
+* **browser:** выравнивание нижнего ряда по левому краю ([299fb37](https://github.com/chatman-media/timeline-studio/commit/299fb379df4694982a54bcf9772cf1c9543cd9b6))
+* **browser:** исправлен z-index кнопки AddMedia ([f0bfc6e](https://github.com/chatman-media/timeline-studio/commit/f0bfc6e389709ccad448de8a01a1721f038c6e3c))
+* **browser:** исправлен баг 'All files added' в статус баре ([aab257f](https://github.com/chatman-media/timeline-studio/commit/aab257ff6078322588cfb5608b7bd2d76555a6a8))
+* **browser:** исправлено отображение разрешения видео в превью ([9488025](https://github.com/chatman-media/timeline-studio/commit/948802546c16dd73d136dba6e214bd0b251ac9cd))
+* **browser:** исправлены UI и структура данных для генерации превью эффектов ([c44f6cb](https://github.com/chatman-media/timeline-studio/commit/c44f6cb9c02ad547b92ddd8d92eced5c6505b477))
+* **browser:** передача размеров с fallback в VideoOverlays ([1bfd287](https://github.com/chatman-media/timeline-studio/commit/1bfd28756546061055e023d9a05aa7363edc7356))
+* **browser:** правильный расчет размеров превью для вертикальных видео ([2a8013c](https://github.com/chatman-media/timeline-studio/commit/2a8013cd90b923054da0440b899fc1026e68053b))
+* **browser:** предотвращение растягивания элементов в grid mode ([a1ad778](https://github.com/chatman-media/timeline-studio/commit/a1ad7787cdd60bba9feb026072b71f9bb006c8ce))
+* **browser:** применение aspect ratio проекта к превью фильтров и субтитров ([1fee131](https://github.com/chatman-media/timeline-studio/commit/1fee131e0d8e7653a20e1c736ad22916554b98dc))
+* **browser:** установлен минимум 150px для превью фильтров, эффектов и субтитров ([f6efc6e](https://github.com/chatman-media/timeline-studio/commit/f6efc6e6d2324d6ba388a17a259bb3c0242d0ef9))
+* **effects:** убран индикатор сложности (цветная точка) ([19febaf](https://github.com/chatman-media/timeline-studio/commit/19febafa9e73a8baf4c20c16239dba2810fd808e))
+* **effects:** убрано двойное название эффекта в превью ([4816637](https://github.com/chatman-media/timeline-studio/commit/4816637b14b1667ac967147100dcfaec890c8fb7))
+* **project:** исправлено хранение AspectRatio как соотношения ([afaa152](https://github.com/chatman-media/timeline-studio/commit/afaa1527708c9cdae4ff565e211c404f24e665da))
+* **recognition:** добавлен Drop для FaceNetProcessor ([c0b58b2](https://github.com/chatman-media/timeline-studio/commit/c0b58b259383bb27adbe906cdcb362d9f25a08aa))
+* **recognition:** добавлен Drop для всех ONNX процессоров ([0fb6192](https://github.com/chatman-media/timeline-studio/commit/0fb6192f66ebf80a08cd514f8e50df281011eb3d))
+* **typescript:** исправлены TypeScript ошибки в браузере и эффектах ([166893c](https://github.com/chatman-media/timeline-studio/commit/166893c5055dea5861eba1a0f4d5230dc73b0501))
+* **video-player:** исправлено отображение при узком/широком блоке ([a75ef19](https://github.com/chatman-media/timeline-studio/commit/a75ef198e814756585e5a960c622af753bfdb886))
+
+
+### Features
+
+* **app:** улучшен graceful shutdown для ONNX процессоров ([7dc8c60](https://github.com/chatman-media/timeline-studio/commit/7dc8c60033a0827ebc13c627a43d3b5dfdf1cf0a))
+* **browser:** дефолтная сортировка templates по количеству экранов ([c693484](https://github.com/chatman-media/timeline-studio/commit/c6934846e05ac78c471871e481c6be31bf8ecb8d))
+* **browser:** добавлено отображение разрешения видео ([f1a21ce](https://github.com/chatman-media/timeline-studio/commit/f1a21ce479672a6351e94a8fef6a1742ea1f8346))
+* **browser:** иконка избранного сверху без отступа на вкладках без времени ([f805efc](https://github.com/chatman-media/timeline-studio/commit/f805efc121817f6fe913166108437922556feccb))
+* **browser:** плашки в соотношении проекта на субтитрах/фильтрах/переходах ([a315298](https://github.com/chatman-media/timeline-studio/commit/a315298629d38c6bacdb54d610bd68b8e13b8bef))
+* **browser:** разделена семантика onClick и onItemSelect ([5c9afd1](https://github.com/chatman-media/timeline-studio/commit/5c9afd17d6ddb292931564f8685fc1ca67f8f024))
+* **browser:** скрыта вкладка стилистических шаблонов (style_templates) ([fbc59c1](https://github.com/chatman-media/timeline-studio/commit/fbc59c15bbe841bcec63c2b976819319dc9d683b))
+* **filters:** превью в соотношении проекта ([74f627f](https://github.com/chatman-media/timeline-studio/commit/74f627f4e6700298d5828e3a5f98c20eb66771fb))
+* **i18n:** добавлен перевод effects.categories.stylize ([7957d37](https://github.com/chatman-media/timeline-studio/commit/7957d3732a2c63a3cc18e0f02b79c1a1616afcb6))
+* **player:** добавлено логирование и улучшены стили layout ([4062807](https://github.com/chatman-media/timeline-studio/commit/40628074a773eacca307d32841c29294814a2e54))
+* **templates:** интеграция ResizableTemplate в VideoPlayer ([ef4804b](https://github.com/chatman-media/timeline-studio/commit/ef4804baf536a172a219cdbd5b1e48a692a3dca1))
+* **templates:** сохранение файлов в appliedTemplate ([e0ec69d](https://github.com/chatman-media/timeline-studio/commit/e0ec69d7b906625d43301b47af92546462ca6709))
+* **transitions:** превью в соотношении проекта ([cc71285](https://github.com/chatman-media/timeline-studio/commit/cc71285116dad10a44b9418074fcfa1bf4baaea9))
+* добавлено нативное меню и персистентность превью эффектов ([671a0bc](https://github.com/chatman-media/timeline-studio/commit/671a0bc54457bfd5510b2a28d5bbebb8e2eaafb2))
+
+# [3.42.0](https://github.com/chatman-media/timeline-studio/compare/v3.41.0...v3.42.0) (2025-12-21)
+
+
+### Bug Fixes
+
+* **browser:** добавлена поддержка аудио файлов в StatusBar ([d00f77c](https://github.com/chatman-media/timeline-studio/commit/d00f77c40bd3e71a3c4c1029b147155ad774f182))
+* **browser:** исправлено позиционирование duration на превью ([1fb98d7](https://github.com/chatman-media/timeline-studio/commit/1fb98d709de1aafe0de0a76a937338564b587c99))
+
+
+### Features
+
+* **browser:** восстановлен StatusBar с bulk операциями ([593938a](https://github.com/chatman-media/timeline-studio/commit/593938a24b61634c816383a5d0d5c97a7334420f))
+
 # [3.41.0](https://github.com/chatman-media/timeline-studio/compare/v3.40.0...v3.41.0) (2025-12-21)
 
 
