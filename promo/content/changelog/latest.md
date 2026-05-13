@@ -1,3 +1,10 @@
+## [3.45.3](https://github.com/chatman-media/timeline-studio/compare/v3.45.2...v3.45.3) (2026-05-13)
+
+
+### Bug Fixes
+
+* **deps:** downgrade @vitejs/plugin-react from v6 to v5 ([1783eb3](https://github.com/chatman-media/timeline-studio/commit/1783eb3c11cde3b81ff988b17cff15627bf3b004))
+
 ## [3.45.2](https://github.com/chatman-media/timeline-studio/compare/v3.45.1...v3.45.2) (2026-05-13)
 
 
