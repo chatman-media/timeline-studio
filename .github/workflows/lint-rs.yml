@@ -196,11 +196,11 @@ jobs:
       - name: Run rustfmt check
         run: npm run format:rust:check
         env:
-          PKG_CONFIG_PATH: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib\pkgconfig' || '') }}
+          PKG_CONFIG_PATH: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib\pkgconfig' || '') }}
           VCPKG_ROOT: ${{ matrix.os == 'windows-latest' && 'C:\vcpkg' || '' }}
-          FFMPEG_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows' || '') }}
-          FFMPEG_INCLUDE_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/include' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\include' || '') }}
-          FFMPEG_LIB_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/lib' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib' || '') }}
+          FFMPEG_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows' || '') }}
+          FFMPEG_INCLUDE_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6/include' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\include' || '') }}
+          FFMPEG_LIB_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6/lib' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib' || '') }}
           FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
           CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
           FFMPEG_SYS_DISABLE_LINK: ${{ matrix.os == 'windows-latest' && '1' || '' }}
@@ -209,11 +209,11 @@ jobs:
       - name: Run clippy check and deny warnings
         run: npm run lint:rust
         env:
-          PKG_CONFIG_PATH: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib\pkgconfig' || '') }}
+          PKG_CONFIG_PATH: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib\pkgconfig' || '') }}
           VCPKG_ROOT: ${{ matrix.os == 'windows-latest' && 'C:\vcpkg' || '' }}
-          FFMPEG_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows' || '') }}
-          FFMPEG_INCLUDE_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/include' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\include' || '') }}
-          FFMPEG_LIB_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg/lib' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib' || '') }}
+          FFMPEG_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows' || '') }}
+          FFMPEG_INCLUDE_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6/include' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\include' || '') }}
+          FFMPEG_LIB_DIR: ${{ matrix.os == 'macos-latest' && '/opt/homebrew/opt/ffmpeg@6/lib' || (matrix.os == 'windows-latest' && 'C:\vcpkg\installed\x64-windows\lib' || '') }}
           FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
           CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: ${{ matrix.os == 'windows-latest' && '1' || '' }}
           FFMPEG_SYS_DISABLE_LINK: ${{ matrix.os == 'windows-latest' && '1' || '' }}
