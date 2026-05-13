@@ -54,7 +54,7 @@ export function NodeBackendExample() {
     try {
       const stats = await getCacheStats()
       console.log("Cache stats:", stats)
-      alert(`Memory: ${stats.memorySize}\nDatabase: ${stats.dbSize}`)
+      alert(`Memory: ${stats.cache.memorySize}\nDatabase: ${stats.cache.dbSize}`)
     } catch (err) {
       console.error("Failed to get cache stats:", err)
     }
