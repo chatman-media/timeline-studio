@@ -1,3 +1,10 @@
+## [3.45.1](https://github.com/chatman-media/timeline-studio/compare/v3.45.0...v3.45.1) (2026-05-13)
+
+
+### Bug Fixes
+
+* **ci:** pin FFmpeg to [@6](https://github.com/6) on macOS to fix Rust lint failures ([fb11e85](https://github.com/chatman-media/timeline-studio/commit/fb11e85d62a51a93aa5cbadeb8f28980a3e907a6))
+
 # [3.45.0](https://github.com/chatman-media/timeline-studio/compare/v3.44.0...v3.45.0) (2026-05-13)
 
 
