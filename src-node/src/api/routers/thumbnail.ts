@@ -11,11 +11,11 @@ export const thumbnailRouter = router({
   generate: publicProcedure
     .input(
       z.object({
-        fileId: z.string(),
-        filePath: z.string(),
-        width: z.number().optional(),
-        height: z.number().optional(),
-        timestamp: z.number().optional(),
+        fileId: z.string().min(1),
+        filePath: z.string().min(1),
+        width: z.number().positive().optional(),
+        height: z.number().positive().optional(),
+        timestamp: z.number().nonnegative().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -43,9 +43,9 @@ export const thumbnailRouter = router({
   hasCached: publicProcedure
     .input(
       z.object({
-        fileId: z.string(),
-        width: z.number(),
-        height: z.number(),
+        fileId: z.string().min(1),
+        width: z.number().positive(),
+        height: z.number().positive(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -64,9 +64,9 @@ export const thumbnailRouter = router({
   getCachedPath: publicProcedure
     .input(
       z.object({
-        fileId: z.string(),
-        width: z.number(),
-        height: z.number(),
+        fileId: z.string().min(1),
+        width: z.number().positive(),
+        height: z.number().positive(),
       })
     )
     .query(async ({ input, ctx }) => {
@@ -87,12 +87,12 @@ export const thumbnailRouter = router({
       z.object({
         files: z.array(
           z.object({
-            fileId: z.string(),
-            filePath: z.string(),
+            fileId: z.string().min(1),
+            filePath: z.string().min(1),
           })
-        ),
-        width: z.number().default(320),
-        height: z.number().default(180),
+        ).min(1),
+        width: z.number().positive().default(320),
+        height: z.number().positive().default(180),
       })
     )
     .mutation(async ({ input, ctx }) => {
