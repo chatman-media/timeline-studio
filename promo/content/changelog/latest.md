@@ -1,3 +1,11 @@
+## [3.45.2](https://github.com/chatman-media/timeline-studio/compare/v3.45.1...v3.45.2) (2026-05-13)
+
+
+### Bug Fixes
+
+* **ci:** fix all ffmpeg@6 paths in lint-rs env blocks ([61a3c73](https://github.com/chatman-media/timeline-studio/commit/61a3c732c80603cd838a3722adac926ba1f98706))
+* **ci:** re-enable generate_types binary in Cargo.toml ([ababe3a](https://github.com/chatman-media/timeline-studio/commit/ababe3a2458ece9f3d2f5450be5a8801db97801c))
+
 ## [3.45.1](https://github.com/chatman-media/timeline-studio/compare/v3.45.0...v3.45.1) (2026-05-13)
 
 
