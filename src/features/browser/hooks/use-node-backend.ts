@@ -128,7 +128,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       try {
         const result = await nodeBackendClient.media.scanFolder.mutate({
           folderPath,
-          options,
+          recursive: options?.recursive,
         })
 
         return result
@@ -216,7 +216,9 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         const result = await nodeBackendClient.thumbnail.generate.mutate({
           fileId,
           filePath,
-          options,
+          width: options?.width,
+          height: options?.height,
+          timestamp: options?.timestamp,
         })
 
         return result
@@ -240,7 +242,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       }
 
       try {
-        const result = await nodeBackendClient.waveform.generateData.mutate({
+        const result = await nodeBackendClient.waveform.generateData.query({
           filePath,
         })
 
