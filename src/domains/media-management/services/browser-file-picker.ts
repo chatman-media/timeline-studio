@@ -12,7 +12,7 @@
  */
 export interface BrowserFilePickerOptions {
   multiple?: boolean
-  accept?: Record<string, string[]>
+  accept?: Record<string, string[] | readonly string[]>
   excludeAcceptAllOption?: boolean
 }
 
@@ -60,7 +60,7 @@ export async function openBrowserFilePicker(
   }
 
   try {
-    const handles = await window.showOpenFilePicker({
+    const handles = await (window as typeof window & { showOpenFilePicker: (options?: object) => Promise<FileSystemFileHandle[]> }).showOpenFilePicker({
       multiple: options.multiple ?? false,
       excludeAcceptAllOption: options.excludeAcceptAllOption ?? false,
       types: options.accept
@@ -104,7 +104,7 @@ export async function openBrowserDirectoryPicker(): Promise<FileSystemDirectoryH
   }
 
   try {
-    const dirHandle = await window.showDirectoryPicker()
+    const dirHandle = await (window as typeof window & { showDirectoryPicker: () => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker()
     return dirHandle
   } catch (error) {
     // Пользователь отменил выбор
