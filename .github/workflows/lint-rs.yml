@@ -116,20 +116,20 @@ jobs:
       - name: Install macOS dependencies
         if: matrix.os == 'macos-latest'
         run: |
-          brew install ffmpeg pkg-config
-          echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
-          echo "FFMPEG_DIR=/opt/homebrew/opt/ffmpeg" >> $GITHUB_ENV
-          echo "FFMPEG_INCLUDE_DIR=/opt/homebrew/opt/ffmpeg/include" >> $GITHUB_ENV
-          echo "FFMPEG_LIB_DIR=/opt/homebrew/opt/ffmpeg/lib" >> $GITHUB_ENV
-          
+          # Use ffmpeg@6 to avoid non-exhaustive pattern errors in ffmpeg-next 8.x
+          # caused by new enum variants added in FFmpeg 7.1 (AVCOL_PRI_EXT_BASE etc.)
+          brew install ffmpeg@6 pkg-config
+          echo "PKG_CONFIG_PATH=/opt/homebrew/opt/ffmpeg@6/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+          echo "FFMPEG_DIR=/opt/homebrew/opt/ffmpeg@6" >> $GITHUB_ENV
+          echo "FFMPEG_INCLUDE_DIR=/opt/homebrew/opt/ffmpeg@6/include" >> $GITHUB_ENV
+          echo "FFMPEG_LIB_DIR=/opt/homebrew/opt/ffmpeg@6/lib" >> $GITHUB_ENV
+
           # Debug FFmpeg installation
           echo "=== FFmpeg Installation Debug ==="
-          which ffmpeg || echo "ffmpeg not in PATH"
           pkg-config --exists libavcodec && echo "✅ libavcodec found" || echo "❌ libavcodec not found"
-          pkg-config --cflags libavcodec || echo "No cflags"
-          pkg-config --libs libavcodec || echo "No libs"
-          ls -la /opt/homebrew/opt/ffmpeg/include/ | head -10
-          ls -la /opt/homebrew/opt/ffmpeg/lib/ | head -10
+          pkg-config --modversion libavcodec || echo "No version"
+          ls -la /opt/homebrew/opt/ffmpeg@6/include/ | head -10
+          ls -la /opt/homebrew/opt/ffmpeg@6/lib/ | head -10
 
       - name: Install Windows dependencies
         if: matrix.os == 'windows-latest'
