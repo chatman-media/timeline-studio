@@ -49,9 +49,8 @@ env_logger = "0.11"
 libc = "0.2"
 # Test utilities
 tempfile = "3.23"
-tower = { version = "0.5.2", features = ["util"] }
+tower = { version = "0.5.3", features = ["util"] }
 urlencoding = "2.1"
-reqwest = { version = "0.12", features = ["json", "stream"] }
 mockito = "1.7"
 # Benchmarking
 criterion = { version = "0.8.1", features = ["html_reports"] }
@@ -73,7 +72,7 @@ tauri-plugin-websocket = "2.4"
 tauri-plugin-dialog = "2.4"
 tauri-plugin-fs = "2.4"
 tauri-plugin-notification = "2.3"
-tauri-plugin-log = "2.7"
+tauri-plugin-log = "2.8"
 tauri-plugin-store = "2.4"
 tauri-plugin-global-shortcut = "2.3"
 tauri-plugin-updater = "2.9"
@@ -83,12 +82,12 @@ rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] 
 # Video Compiler dependencies
 ffmpeg-next = "8"
 uuid = { version = "1.18", features = ["serde", "v4"] }
-tokio = { version = "1.48", features = ["full"] }
+tokio = { version = "1.49", features = ["full"] }
 tokio-metrics = "0.4.5"
 futures = "0.3"
 dashmap = "6.1"
 image = "0.25"
-imageproc = "0.25"
+imageproc = "0.26"
 chrono = { version = "0.4", features = ["serde"] }
 log = "0.4"
 regex = "1.12"
@@ -139,9 +138,9 @@ tracing-opentelemetry = "0.32.0"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 tonic = "0.14.2"
 # WebAssembly runtime dependencies
-wasmtime = { version = "38.0", default-features = false }
+wasmtime = { version = "40.0", default-features = false }
 filetime = "0.2"
-wasmtime-wasi = "38.0"
+wasmtime-wasi = "40.0"
 wasm-bindgen = "0.2"
 # Additional security dependencies
 cap-std = "4.0.0"
