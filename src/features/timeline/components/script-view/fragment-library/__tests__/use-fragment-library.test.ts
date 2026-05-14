@@ -10,7 +10,7 @@ import { useFragmentLibrary } from "../use-fragment-library"
 // Mock useTimelineAnalysis
 vi.mock("../../../../hooks/state/use-timeline-analysis", () => ({
   useTimelineAnalysis: () => ({
-    files: [
+    filesProgress: [
       {
         id: "file-1",
         status: "completed",
