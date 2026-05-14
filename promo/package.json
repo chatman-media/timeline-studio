@@ -13,6 +13,7 @@
     "@studio-freight/lenis": "^1.0.42",
     "buffer": "^6.0.3",
     "caniuse-lite": "^1.0.30001757",
+    "esbuild": "^0.28.0",
     "framer-motion": "^12.23.25",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.555.0",
