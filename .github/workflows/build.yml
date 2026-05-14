@@ -114,8 +114,8 @@ jobs:
           npm cache clean --force
           # Try to install with retries
           npm ci --prefer-offline --no-audit --no-fund || \
-          npm ci --no-audit --no-fund --omit=optional || \
-          npm install --no-audit --no-fund --omit=optional
+          npm ci --no-audit --no-fund || \
+          npm install --no-audit --no-fund
 
       - name: Set PKG_CONFIG_PATH for GLib
         run: |

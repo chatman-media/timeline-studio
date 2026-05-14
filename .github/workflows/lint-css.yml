@@ -37,7 +37,7 @@ jobs:
           cache: "npm"
 
       - name: Clean install dependencies
-        run: npm ci --cache clean --force --omit=optional
+        run: npm ci --cache clean --force
 
       - name: Run CSS lint
         run: npm run lint:css
