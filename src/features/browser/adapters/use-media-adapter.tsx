@@ -129,7 +129,7 @@ const MediaPreviewWrapper: React.FC<PreviewComponentProps<MediaFile>> = ({ item:
 
   // Режим grid - карточка с превью по пропорциям видео
   // Режим thumbnails - фиксированный размер 16:9
-  const isGridMode = viewMode === "grid"
+  const isGridMode = viewMode === "thumbnails"
   const dimensions = isGridMode
     ? calculatePreviewDimensions(file, previewSize)
     : { width: previewSize * (16 / 9), height: previewSize }

@@ -79,7 +79,7 @@ export function useCurrentProject() {
       const projectsPath = `${homePath}TimelineStudioProjects`
 
       // Формируем имя файла
-      const fileName = currentProject?.name ? `${currentProject.name}.tls` : "project.tls"
+      const fileName = currentProject?.metadata?.name ? `${currentProject.metadata.name}.tls` : "project.tls"
       const fullPath = `${projectsPath}/${fileName}`
 
       // Открываем диалог сохранения файла

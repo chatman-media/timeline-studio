@@ -195,13 +195,13 @@ describe("BrowserMachine", () => {
     it("should handle ViewModeChanged event", () => {
       const event: BrowserEvent = {
         event_type: "ViewModeChanged",
-        data: { tab: "media", view_mode: "grid" },
+        data: { tab: "media", view_mode: "thumbnails" },
       }
 
       actor.send({ type: "BACKEND_EVENT", event })
 
       const snapshot = actor.getSnapshot()
-      expect(snapshot.context.tabSettings.media!.view_mode).toBe("grid")
+      expect(snapshot.context.tabSettings.media!.view_mode).toBe("thumbnails")
     })
 
     it("should handle PreviewSizeChanged event", () => {
@@ -454,7 +454,7 @@ describe("BrowserMachine", () => {
     it("should handle multiple backend events in sequence", () => {
       const events: BrowserEvent[] = [
         { event_type: "SearchQueryChanged", data: { tab: "media", query: "test" } },
-        { event_type: "ViewModeChanged", data: { tab: "media", view_mode: "grid" } },
+        { event_type: "ViewModeChanged", data: { tab: "media", view_mode: "thumbnails" } },
         { event_type: "FileSelected", data: { tab: "media", file_id: "file-1" } },
       ]
 
@@ -464,7 +464,7 @@ describe("BrowserMachine", () => {
 
       const snapshot = actor.getSnapshot()
       expect(snapshot.context.tabSettings.media!.search_query).toBe("test")
-      expect(snapshot.context.tabSettings.media!.view_mode).toBe("grid")
+      expect(snapshot.context.tabSettings.media!.view_mode).toBe("thumbnails")
       expect(snapshot.context.selectedFiles.media).toContain("file-1")
     })
 

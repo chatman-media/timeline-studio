@@ -330,10 +330,10 @@ describe("BrowserProvider", () => {
       })
 
       await act(async () => {
-        await result.current.setViewMode("grid")
+        await result.current.setViewMode("thumbnails")
       })
 
-      expect(commands.browserSetViewMode).toHaveBeenCalledWith("grid", null)
+      expect(commands.browserSetViewMode).toHaveBeenCalledWith("thumbnails", null)
     })
 
     it("should set preview size", async () => {

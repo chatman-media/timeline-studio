@@ -236,9 +236,9 @@ describe("BrowserOrchestrator", () => {
 
   describe("View Mode Settings", () => {
     it("should set view mode", async () => {
-      await orchestrator.setViewMode("grid")
+      await orchestrator.setViewMode("thumbnails")
 
-      expect(mockCommands.browserSetViewMode).toHaveBeenCalledWith("grid", null)
+      expect(mockCommands.browserSetViewMode).toHaveBeenCalledWith("thumbnails", null)
     })
 
     it("should set view mode for specific tab", async () => {
@@ -248,7 +248,7 @@ describe("BrowserOrchestrator", () => {
     })
 
     it("should handle all view modes", async () => {
-      const viewModes: Array<"thumbnails" | "list" | "grid"> = ["thumbnails", "list", "grid"]
+      const viewModes: Array<"thumbnails" | "list" | "thumbnails"> = ["thumbnails", "list", "thumbnails"]
 
       for (const viewMode of viewModes) {
         await orchestrator.setViewMode(viewMode)

@@ -33,7 +33,15 @@ const mockExecuteCommand = vi.fn()
 const mockProjectState = {
   project: {
     id: "project-1",
-    name: "Test Project",
+    metadata: {
+      name: "Test Project",
+      description: null,
+      created_at: "",
+      modified_at: "",
+      file_path: null,
+      is_dirty: false,
+      version: "1.0.0",
+    },
     settings: {
       resolution: { width: 1920, height: 1080 },
       frame_rate: 30,

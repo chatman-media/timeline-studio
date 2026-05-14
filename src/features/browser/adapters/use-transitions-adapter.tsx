@@ -71,7 +71,7 @@ const TransitionPreviewWrapper: React.FC<PreviewComponentProps<Transition>> = ({
   const { width: previewWidth, height: previewHeight } = calculateDimensionsWithAspectRatio(
     previewSize,
     { width: aspectWidth, height: aspectHeight },
-    viewMode === "grid", // в grid режиме используем минимум
+    viewMode === "thumbnails", // в thumbnails режиме используем минимум
   )
 
   if (viewMode === "list") {

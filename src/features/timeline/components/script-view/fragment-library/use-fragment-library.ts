@@ -19,15 +19,14 @@ export function useFragmentLibrary() {
     return filesProgress
       .filter((f) => f.status === "completed" && f.result)
       .flatMap((file) => {
-        const analysis = file.result
+        const analysis = file.result as any
         if (!analysis?.scene_analysis?.scenes) return []
 
         // Конвертируем сцены из анализа в фрагменты
-        return analysis.scene_analysis.scenes.map((scene, index) => {
+        return (analysis.scene_analysis.scenes as any[]).map((scene: any, index: number) => {
           const fragment: ScriptFragment = {
-            id: `${file.id}-scene-${index}`,
-            fileId: file.id,
-            file: file.file,
+            id: `${file.fileId}-scene-${index}`,
+            fileId: file.fileId,
             startTime: scene.start_time || 0,
             endTime: scene.end_time || 0,
             duration: (scene.end_time || 0) - (scene.start_time || 0),
