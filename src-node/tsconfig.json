@@ -2,6 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "..",
     "target": "ES2021",
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -16,6 +17,6 @@
       "@node/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "__tests__", "../src/**/*"]
+  "include": ["src/**/*", "../src/adapters/node/**/*", "../src/core/ports/**/*", "../src/types/generated/**/*"],
+  "exclude": ["node_modules", "dist", "__tests__"]
 }

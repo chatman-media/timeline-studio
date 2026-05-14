@@ -1,19 +1,19 @@
 import { describe, expect, it, vi } from "vitest"
 
+// Mock the lib modules to avoid dependency issues
+vi.mock("../../lib/template-labels", () => ({
+  getTemplateLabels: vi.fn(),
+  getTemplateDescription: vi.fn(),
+}))
+
+vi.mock("../../lib/templates", () => ({
+  TEMPLATE_MAP: { landscape: [], portrait: [], square: [] },
+  createCellConfig: vi.fn(),
+  createDividerConfig: vi.fn(),
+  PRESET_STYLES: { cell: {}, divider: {}, layout: {} },
+}))
+
 describe("Lib Index Exports", () => {
-  // Mock the lib modules to avoid dependency issues
-  vi.mock("../../lib/template-labels", () => ({
-    getTemplateLabels: vi.fn(),
-    getTemplateDescription: vi.fn(),
-  }))
-
-  vi.mock("../../lib/templates", () => ({
-    TEMPLATE_MAP: { landscape: [], portrait: [], square: [] },
-    createCellConfig: vi.fn(),
-    createDividerConfig: vi.fn(),
-    PRESET_STYLES: { cell: {}, divider: {}, layout: {} },
-  }))
-
   it("should export template labels utilities", async () => {
     const module = await import("../../lib/index")
     expect(module.getTemplateLabels).toBeDefined()

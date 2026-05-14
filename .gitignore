@@ -108,6 +108,11 @@ logs
 # Claude Code settings (contains API keys)
 .claude/settings.json
 
+# Claude Code worktrees (git worktrees created by EnterWorktree — contain full
+# project copies including biome.json; excluding prevents biome from complaining
+# about nested root configurations during local linting)
+.claude/worktrees/
+
 # Claude Flow generated files
 .claude/settings.local.json
 .mcp.json
