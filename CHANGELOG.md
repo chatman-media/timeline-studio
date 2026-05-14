@@ -1,3 +1,15 @@
+# [3.46.0](https://github.com/chatman-media/timeline-studio/compare/v3.45.13...v3.46.0) (2026-05-14)
+
+
+### Bug Fixes
+
+* **tests:** fix biome formatting in page.test.tsx ([3a29f62](https://github.com/chatman-media/timeline-studio/commit/3a29f62be446dfe16832bae14f012ecb85f2233b))
+
+
+### Features
+
+* **adapters:** add HTTP adapter for src-node backend in browser mode ([803b990](https://github.com/chatman-media/timeline-studio/commit/803b99069e8ee0cf9487a24d1bef95b12a74306d))
+
 ## [3.45.13](https://github.com/chatman-media/timeline-studio/compare/v3.45.12...v3.45.13) (2026-05-14)
 
 
