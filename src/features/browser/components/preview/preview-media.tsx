@@ -66,6 +66,8 @@ export const PreviewMedia = memo(function PreviewMedia({
     setIsHovered(false)
   }, [])
 
+  const showVideo = isHovered && videoUrl && !videoError
+
   // Управляем воспроизведением видео при hover
   useEffect(() => {
     const video = videoRef.current
@@ -111,8 +113,6 @@ export const PreviewMedia = memo(function PreviewMedia({
       }
     }
   }, [])
-
-  const showVideo = isHovered && videoUrl && !videoError
 
   // Если нет изображения или ошибка - показываем плейсхолдер
   if (!thumbnailUrl || imageError) {

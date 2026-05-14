@@ -8,7 +8,7 @@ interface BrowserToolbarWrapperProps {
   activeTab: BrowserTab
   searchQuery: string
   showFavoritesOnly: boolean
-  viewMode: "list" | "grid" | "thumbnails"
+  viewMode: "list" | "thumbnails"
   sortBy: string
   filterType: string
   groupBy: string
@@ -17,7 +17,7 @@ interface BrowserToolbarWrapperProps {
   onSearch: (query: string) => void
   onSort: (sortBy: string, sortOrder: "asc" | "desc") => void
   onFilter: (filterType: string) => void
-  onViewModeChange: (mode: "list" | "grid" | "thumbnails") => void
+  onViewModeChange: (mode: "list" | "thumbnails") => void
   onGroupBy: (groupBy: string) => void
   onToggleFavorites: () => void
   onZoomIn: () => void
