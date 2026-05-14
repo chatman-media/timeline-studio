@@ -3,13 +3,12 @@
  */
 
 import { useCallback, useState } from "react"
-
-import { createLogger } from "@/lib/tauri-logger"
 import { useMediaFiles } from "@/domains/project-management/hooks/use-media-files"
 import { mediaItemToMediaFile } from "@/features/multicam/utils/media-mapper"
 import { useClips } from "@/features/timeline/hooks/clips/use-clips"
 import { useTracks } from "@/features/timeline/hooks/state/use-tracks"
 import type { ScriptFragment, ScriptPlan } from "@/features/timeline/types/script"
+import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseApplyPlanToTimeline")
 
