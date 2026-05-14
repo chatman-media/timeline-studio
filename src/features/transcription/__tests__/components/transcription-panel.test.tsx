@@ -6,6 +6,15 @@ import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TranscriptionPanel } from "../../components/transcription-panel"
 
+// Hoist mock variables so they are available inside vi.mock() factory
+const { mockTranscribe, mockGenerateSubtitles, mockReset, mockUseTranscription } = vi.hoisted(() => {
+  const mockTranscribe = vi.fn()
+  const mockGenerateSubtitles = vi.fn()
+  const mockReset = vi.fn()
+  const mockUseTranscription = vi.fn()
+  return { mockTranscribe, mockGenerateSubtitles, mockReset, mockUseTranscription }
+})
+
 // Mock lucide-react icons
 vi.mock("lucide-react", async (importOriginal) => {
   const actual = (await importOriginal()) as any
@@ -24,24 +33,8 @@ vi.mock("lucide-react", async (importOriginal) => {
   }
 })
 
-// Mock the useTranscription hook
-const mockTranscribe = vi.fn()
-const mockGenerateSubtitles = vi.fn()
-const mockReset = vi.fn()
-
-const mockUseTranscription = vi.fn(() => ({
-  isTranscribing: false,
-  progress: { status: "idle", progress: 0 },
-  result: null,
-  error: null,
-  transcribe: mockTranscribe,
-  generateSubtitles: mockGenerateSubtitles,
-  reset: mockReset,
-  service: {},
-}))
-
 vi.mock("../../hooks/use-transcription", () => ({
-  useTranscription: (...args: unknown[]) => mockUseTranscription(...args),
+  useTranscription: mockUseTranscription,
 }))
 
 // Mock Tauri dialog
