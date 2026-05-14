@@ -1,3 +1,20 @@
+## [3.45.9](https://github.com/chatman-media/timeline-studio/compare/v3.45.8...v3.45.9) (2026-05-14)
+
+
+### Bug Fixes
+
+* **rust:** apply cargo fmt formatting to app_dirs.rs ([afa5c9f](https://github.com/chatman-media/timeline-studio/commit/afa5c9f999e5abcbb86ea605f2af28e53346fc7a))
+* **tests:** platform — skip openPath в headless CI (xdg-open недоступен) ([d409bba](https://github.com/chatman-media/timeline-studio/commit/d409bbae0f2db1f3d70a812bbba1c83ed4975a74))
+* **tests:** resources-provider — форматирование toHaveBeenCalledWith (biome) ([5ca9d9c](https://github.com/chatman-media/timeline-studio/commit/5ca9d9c8c2109cbc5c87c8e1ee2273c4414b53b9))
+* **tests:** script-view — исправлено форматирование мока resizable (biome) ([05c6274](https://github.com/chatman-media/timeline-studio/commit/05c62746e6652ad1a9253e02b4d9c0d2e9c44fe5))
+* **tests:** update mocks for fileId and metadata.name changes ([e22b320](https://github.com/chatman-media/timeline-studio/commit/e22b320141071e2298954c2f6ca22d72f4c75eb5))
+* **ts:** browser компоненты — ViewMode без grid, resource.file, showVideo порядок ([7f43bd5](https://github.com/chatman-media/timeline-studio/commit/7f43bd5f8a06a2f8e5ff7c8b683795e68f87a71f))
+* **ts:** browser тесты — заменить "grid" на "thumbnails" (ViewMode тип) ([7a28a2c](https://github.com/chatman-media/timeline-studio/commit/7a28a2c9a086f5928b064e43576749be41baf22c))
+* **ts:** node-backend-client — убрать прямой импорт из src-node (Bun-типы) ([3dfd0ff](https://github.com/chatman-media/timeline-studio/commit/3dfd0ff753b5ea471e200af70817b176fd33c9e6))
+* **ts:** script-view и timeline — типы any-cast, Promise<string|null>, ScriptFragment ([e9e9209](https://github.com/chatman-media/timeline-studio/commit/e9e9209fa2b3db9661eddb5429ff01db6d6afd9c))
+* **ts:** use-current-project — Project.name → Project.metadata.name ([ca74efa](https://github.com/chatman-media/timeline-studio/commit/ca74efab4e7554ee650ea9e537dd7a30c55ccdc4))
+* **ts:** исключить src-node и promo из корневого tsconfig ([4421b9c](https://github.com/chatman-media/timeline-studio/commit/4421b9c829057e69611f7f5bd2b0a16bf5f3fce5))
+
 ## [3.45.8](https://github.com/chatman-media/timeline-studio/compare/v3.45.7...v3.45.8) (2026-05-14)
 
 
