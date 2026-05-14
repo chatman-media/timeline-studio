@@ -8464,7 +8464,7 @@ dependencies = [
 
 [[package]]
 name = "timeline-studio"
-version = "3.45.7"
+version = "3.45.8"
 dependencies = [
  "aes-gcm",
  "anyhow",

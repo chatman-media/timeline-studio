@@ -1,3 +1,18 @@
+## [3.45.8](https://github.com/chatman-media/timeline-studio/compare/v3.45.7...v3.45.8) (2026-05-14)
+
+
+### Bug Fixes
+
+* **media-studio:** useUserSettings импортируется из barrel export ([b1538a9](https://github.com/chatman-media/timeline-studio/commit/b1538a9ff29e158438d9b6c4553380d549010ec0))
+* **tests:** filter-preview — прямое сравнение video.style.filter вместо toHaveStyle ([6f919bf](https://github.com/chatman-media/timeline-studio/commit/6f919bf46ef1a74a9994e41beb1d266534ecd0e1))
+* **tests:** fragment-library — исправлено ожидаемое отображение качества ([f14c291](https://github.com/chatman-media/timeline-studio/commit/f14c291a9c2bab87a6adcfcb9baf0cd5bafcd51b))
+* **tests:** lazy-tab-content — убрана проверка переходного состояния Suspense ([4425ec1](https://github.com/chatman-media/timeline-studio/commit/4425ec107771d491e5c37365ae874435cc4cdf52))
+* **tests:** resources-provider — AddMedia для существующего файла вызывает SetMediaAsResource ([8f24481](https://github.com/chatman-media/timeline-studio/commit/8f24481826b433da57c15355a36865b67cefe3be))
+* **tests:** script-view — добавлен мок @/components/ui/resizable для jsdom ([7c7d2e6](https://github.com/chatman-media/timeline-studio/commit/7c7d2e64d4e6b553b983a3f5d4d50272e421d6b3))
+* **tests:** storyboard-editor — исправлены тексты сцен и переходов ([7a20820](https://github.com/chatman-media/timeline-studio/commit/7a20820a45c0a60449de88054e4334ff8f1ce1f3))
+* **tests:** use-current-project — defaultPath содержит полный путь с homeDir ([0c061de](https://github.com/chatman-media/timeline-studio/commit/0c061de5b01fdba97c06031db1e3d5ce83bf61e8))
+* **tests:** use-fragment-library — исправлен ключ мока files→filesProgress ([9f907d3](https://github.com/chatman-media/timeline-studio/commit/9f907d30358e3b2dcfbbb6306170654f2620c86d))
+
 ## [3.45.7](https://github.com/chatman-media/timeline-studio/compare/v3.45.6...v3.45.7) (2026-05-14)
 
 
