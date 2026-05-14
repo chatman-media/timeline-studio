@@ -6,11 +6,12 @@ import { useCallback, useState } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 import { useMediaFiles } from "@/domains/project-management/hooks/use-media-files"
-
-const logger = createLogger("UseApplyPlanToTimeline")
+import { mediaItemToMediaFile } from "@/features/multicam/utils/media-mapper"
 import { useClips } from "@/features/timeline/hooks/clips/use-clips"
 import { useTracks } from "@/features/timeline/hooks/state/use-tracks"
 import type { ScriptFragment, ScriptPlan } from "@/features/timeline/types/script"
+
+const logger = createLogger("UseApplyPlanToTimeline")
 
 export interface UseApplyPlanToTimelineReturn {
   applyPlanToTimeline: (plan: ScriptPlan, fragments: ScriptFragment[]) => Promise<void>
@@ -51,7 +52,7 @@ export function useApplyPlanToTimeline(): UseApplyPlanToTimelineReturn {
           if (!mediaFile) continue
 
           // Добавляем клип на Timeline
-          await addClip(videoTrack.id, mediaFile as any, currentTime, scene.duration)
+          await addClip(videoTrack.id, mediaItemToMediaFile(mediaFile), currentTime, scene.duration)
 
           // Переходим к следующей позиции
           currentTime += scene.duration

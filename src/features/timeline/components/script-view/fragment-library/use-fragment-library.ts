@@ -8,6 +8,25 @@ import type { FragmentFilters, ScriptFragment } from "@/features/timeline/types/
 
 import { useTimelineAnalysis } from "../../../hooks/state/use-timeline-analysis"
 
+/** Shape of one scene entry produced by the AI Director analysis pipeline */
+interface AIScene {
+  start_time?: number
+  end_time?: number
+  thumbnail?: string
+  quality_score?: number
+  tags?: string[]
+  emotions?: string[]
+  objects?: string[]
+  faces_count?: number
+}
+
+/** Shape of the analysis result stored in FileAnalysisProgress.result */
+interface AIAnalysisResult {
+  scene_analysis?: {
+    scenes?: AIScene[]
+  }
+}
+
 export function useFragmentLibrary() {
   const { filesProgress } = useTimelineAnalysis()
   const [filters, setFilters] = useState<FragmentFilters>({})
@@ -19,11 +38,11 @@ export function useFragmentLibrary() {
     return filesProgress
       .filter((f) => f.status === "completed" && f.result)
       .flatMap((file) => {
-        const analysis = file.result as any
+        const analysis = file.result as AIAnalysisResult
         if (!analysis?.scene_analysis?.scenes) return []
 
         // Конвертируем сцены из анализа в фрагменты
-        return (analysis.scene_analysis.scenes as any[]).map((scene: any, index: number) => {
+        return analysis.scene_analysis.scenes.map((scene, index) => {
           const fragment: ScriptFragment = {
             id: `${file.fileId}-scene-${index}`,
             fileId: file.fileId,
