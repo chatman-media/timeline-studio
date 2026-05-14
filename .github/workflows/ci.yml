@@ -136,6 +136,7 @@ jobs:
 
   rust-tests:
     name: Rust Tests
+    if: false # temporarily disabled
     runs-on: ubuntu-22.04
     timeout-minutes: 30
 

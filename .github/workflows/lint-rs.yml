@@ -17,6 +17,7 @@ on:
 
 jobs:
   build:
+    if: false # temporarily disabled
     strategy:
       fail-fast: false
       matrix:

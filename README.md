@@ -26,7 +26,7 @@
 [![npm version](https://img.shields.io/npm/v/timeline-studio.svg?style=flat-square)](https://www.npmjs.com/package/timeline-studio)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/build.yml?style=flat-square&label=build)](https://github.com/chatman-media/timeline-studio/actions/workflows/build.yml)
 [![Node.js](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-js.yml?style=flat-square&label=node.js&logo=node.js&logoColor=white)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-js.yml)
-[![Rust](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/lint-rs.yml?style=flat-square&label=rust&logo=rust&logoColor=white)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
+[![Rust](https://img.shields.io/badge/rust-on%20hold-orange?style=flat-square&logo=rust&logoColor=white)](https://github.com/chatman-media/timeline-studio/actions/workflows/lint-rs.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/chatman-media/timeline-studio/test-coverage.yml?style=flat-square&label=tests)](https://github.com/chatman-media/timeline-studio/actions/workflows/test-coverage.yml)
 [![Coverage](https://img.shields.io/codecov/c/github/chatman-media/timeline-studio?style=flat-square&label=coverage)](https://codecov.io/gh/chatman-media/timeline-studio)
 [![Last Commit](https://img.shields.io/github/last-commit/chatman-media/timeline-studio?style=flat-square&label=last%20commit)](https://github.com/chatman-media/timeline-studio/commits/main)
