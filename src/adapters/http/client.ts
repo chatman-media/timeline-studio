@@ -99,8 +99,8 @@ export class HttpClient {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await this.get<{ status: string }>("/api/health")
-      return response.success && response.data?.status === "healthy"
+      const response = await this.get<{ status: string }>("/health")
+      return response.success && response.data?.status === "ok"
     } catch {
       return false
     }
