@@ -1,3 +1,10 @@
+## [3.45.5](https://github.com/chatman-media/timeline-studio/compare/v3.45.4...v3.45.5) (2026-05-14)
+
+
+### Bug Fixes
+
+* **tests:** update layout and workspace-tabs tests to match current component implementation ([c421f20](https://github.com/chatman-media/timeline-studio/commit/c421f206a4e2a3cc158ca2918ce1f8873cd352f3))
+
 ## [3.45.4](https://github.com/chatman-media/timeline-studio/compare/v3.45.3...v3.45.4) (2026-05-13)
 
 
