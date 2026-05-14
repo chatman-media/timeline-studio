@@ -1,3 +1,10 @@
+## [3.45.13](https://github.com/chatman-media/timeline-studio/compare/v3.45.12...v3.45.13) (2026-05-14)
+
+
+### Bug Fixes
+
+* **tests:** fix TS errors and timeout in transcription/page tests ([e5484cf](https://github.com/chatman-media/timeline-studio/commit/e5484cf5d4de1a5cba6e7740158c2752c4bde649))
+
 ## [3.45.12](https://github.com/chatman-media/timeline-studio/compare/v3.45.11...v3.45.12) (2026-05-14)
 
 
