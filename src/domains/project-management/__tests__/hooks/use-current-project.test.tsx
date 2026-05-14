@@ -353,22 +353,15 @@ describe("useCurrentProject Hook", () => {
   })
 
   describe("setProjectDirty", () => {
-    it("should log dirty state", () => {
+    it("should call without throwing for true", () => {
       const { result } = renderHook(() => useCurrentProject())
-      const consoleSpy = vi.spyOn(console, "log")
-
-      result.current.setProjectDirty(true)
-
-      expect(consoleSpy).toHaveBeenCalledWith("Project dirty state:", true)
+      // Backend tracks dirty state automatically; function is a no-op stub
+      expect(() => result.current.setProjectDirty(true)).not.toThrow()
     })
 
-    it("should handle false value", () => {
+    it("should call without throwing for false", () => {
       const { result } = renderHook(() => useCurrentProject())
-      const consoleSpy = vi.spyOn(console, "log")
-
-      result.current.setProjectDirty(false)
-
-      expect(consoleSpy).toHaveBeenCalledWith("Project dirty state:", false)
+      expect(() => result.current.setProjectDirty(false)).not.toThrow()
     })
   })
 

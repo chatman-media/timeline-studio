@@ -61,8 +61,12 @@ function ScriptViewInner() {
           <div className="h-full border-r bg-background" data-testid="fragment-library-panel">
             <FragmentLibrary
               fragments={fragments}
-              onSelectFragment={(fragment) => console.log("Selected:", fragment)}
-              onDragStart={(fragment) => console.log("Drag start:", fragment)}
+              onSelectFragment={(_fragment) => {
+                /* selection handled by drag-drop into storyboard */
+              }}
+              onDragStart={(_fragment) => {
+                /* drag start tracked by storyboard drop zone */
+              }}
             />
           </div>
         </ResizablePanel>

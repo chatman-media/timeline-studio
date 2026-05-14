@@ -4,7 +4,10 @@
 
 import { useCallback, useState } from "react"
 
+import { createLogger } from "@/lib/tauri-logger"
 import { useMediaFiles } from "@/domains/project-management/hooks/use-media-files"
+
+const logger = createLogger("UseApplyPlanToTimeline")
 import { useClips } from "@/features/timeline/hooks/clips/use-clips"
 import { useTracks } from "@/features/timeline/hooks/state/use-tracks"
 import type { ScriptFragment, ScriptPlan } from "@/features/timeline/types/script"
@@ -54,11 +57,11 @@ export function useApplyPlanToTimeline(): UseApplyPlanToTimelineReturn {
           currentTime += scene.duration
         }
 
-        console.log(`Применен план: ${plan.scenes.length} сцен добавлено на Timeline`)
+        logger.info("Plan applied to timeline", { sceneCount: plan.scenes.length })
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : "Ошибка применения плана"
         setError(errorMessage)
-        console.error("Failed to apply plan to timeline:", err)
+        logger.error("Failed to apply plan to timeline", { error: err })
       } finally {
         setIsApplying(false)
       }
