@@ -397,7 +397,7 @@ mod tests {
     let app_dirs = AppDirectories::from_base_dir(&base_path);
 
     assert_eq!(app_dirs.base_dir, base_path);
-    assert_eq!(app_dirs.media_dir, base_path.join("Media"));
+    assert_eq!(app_dirs.media_dir, base_path.join("Resources").join("Media"));
     assert_eq!(app_dirs.projects_dir, base_path.join("Projects"));
     assert_eq!(app_dirs.cloud_project_dir, base_path.join("Cloud Project"));
   }
