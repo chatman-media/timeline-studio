@@ -90,10 +90,10 @@ describe("StoryboardEditor", () => {
   it("should display scene details", () => {
     render(<StoryboardEditor plan={mockPlan} />)
 
-    expect(screen.getByText("1. Сцена (10.0s)")).toBeInTheDocument()
-    expect(screen.getByText("Переход: CUT")).toBeInTheDocument()
-    expect(screen.getByText("2. Сцена (15.0s)")).toBeInTheDocument()
-    expect(screen.getByText("Переход: FADE")).toBeInTheDocument()
+    expect(screen.getByText("Сцена 1 • 10.0s")).toBeInTheDocument()
+    expect(screen.getByText("CUT")).toBeInTheDocument()
+    expect(screen.getByText("Сцена 2 • 15.0s")).toBeInTheDocument()
+    expect(screen.getByText("FADE")).toBeInTheDocument()
   })
 
   it("should call onRemoveScene when remove button clicked", async () => {
