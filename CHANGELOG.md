@@ -1,3 +1,10 @@
+## [3.45.11](https://github.com/chatman-media/timeline-studio/compare/v3.45.10...v3.45.11) (2026-05-14)
+
+
+### Bug Fixes
+
+* **quality:** resolve biome formatting, vi.mock warnings, and src-node TS errors ([01d0e63](https://github.com/chatman-media/timeline-studio/commit/01d0e636f1bee7e33757c5f7292fc3dcb8f44c5e))
+
 ## [3.45.10](https://github.com/chatman-media/timeline-studio/compare/v3.45.9...v3.45.10) (2026-05-14)
 
 
