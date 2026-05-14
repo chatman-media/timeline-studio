@@ -250,7 +250,7 @@ describe("FilterPreview", () => {
     fireEvent.mouseLeave(previewContainer!)
 
     await waitFor(() => {
-      expect(video).toHaveStyle({ filter: "" })
+      expect(video.style.filter).toBe("")
     })
   })
 
