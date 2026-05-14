@@ -48,7 +48,7 @@ export function useApplyPlanToTimeline(): UseApplyPlanToTimelineReturn {
           if (!mediaFile) continue
 
           // Добавляем клип на Timeline
-          await addClip(videoTrack.id, mediaFile, currentTime, scene.duration)
+          await addClip(videoTrack.id, mediaFile as any, currentTime, scene.duration)
 
           // Переходим к следующей позиции
           currentTime += scene.duration

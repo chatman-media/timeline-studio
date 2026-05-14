@@ -75,7 +75,7 @@ function ScriptViewInner() {
             <StoryboardEditor
               plan={plan}
               fragments={fragments}
-              onAddScene={addScene}
+              onAddScene={(scene) => addScene(scene as unknown as ScriptFragment)}
               onRemoveScene={removeScene}
               onReorderScenes={reorderScenes}
               onDropFragment={handleDropFragment}

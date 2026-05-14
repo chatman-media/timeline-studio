@@ -327,7 +327,7 @@ export function useTimelinePlayback() {
 interface TimelineTracksContext {
   tracks: TimelineTrack[]
   activeTrackId: string | null
-  addTrack: (type: any, name?: string, sectionId?: string) => Promise<void>
+  addTrack: (type: any, name?: string, sectionId?: string) => Promise<string | null>
   removeTrack: (trackId: string) => Promise<void>
   updateTrack: (trackId: string, updates: Partial<TimelineTrack>) => Promise<void>
   reorderTracks: (sectionId: string, trackIds: string[]) => Promise<void>
