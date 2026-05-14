@@ -5,7 +5,11 @@
  */
 
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client"
-import type { AppRouter } from "../../../src-node/src/api/root"
+
+// AppRouter type imported at runtime from src-node; using any here avoids
+// pulling Bun-specific types into the frontend TypeScript compilation.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AppRouter = any
 
 const getBackendUrl = (): string => {
   // Check environment variable first
@@ -38,19 +42,16 @@ const getBackendUrl = (): string => {
  * })
  * ```
  */
-export const nodeBackendClient = createTRPCProxyClient<AppRouter>({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const nodeBackendClient: any = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
       url: `${getBackendUrl()}/trpc`,
-      // Optional: add headers
       headers() {
-        return {
-          // Add auth headers if needed
-        }
+        return {}
       },
     }),
   ],
 })
 
-// Export type for use in React hooks
 export type NodeBackendClient = typeof nodeBackendClient
