@@ -61,4 +61,4 @@ export function getProjectTemplatesByAspectRatio(aspectRatio: string): ProjectTe
 }
 
 // Экспорты
-export { youtubeTemplates, socialTemplates, podcastTemplates }
+export { podcastTemplates, socialTemplates, youtubeTemplates }

@@ -76,9 +76,7 @@ describe("useFragmentLibrary", () => {
     const { result: updatedResult } = renderHook(() => useFragmentLibrary())
     updatedResult.current.setFilters({ minQuality: 90 })
 
-    expect(updatedResult.current.filteredCount).toBeLessThanOrEqual(
-      updatedResult.current.totalCount,
-    )
+    expect(updatedResult.current.filteredCount).toBeLessThanOrEqual(updatedResult.current.totalCount)
   })
 
   it("should filter by emotions", () => {
@@ -88,7 +86,7 @@ describe("useFragmentLibrary", () => {
     rerender()
 
     // Fragments with "exciting" emotion should be included
-    const excitingFragments = result.current.fragments.filter(f => f.emotions.includes("exciting"))
+    const excitingFragments = result.current.fragments.filter((f) => f.emotions.includes("exciting"))
     expect(excitingFragments.length).toBeGreaterThan(0)
   })
 
@@ -99,7 +97,7 @@ describe("useFragmentLibrary", () => {
     rerender()
 
     // Fragments with "action" tag should be included
-    const actionFragments = result.current.fragments.filter(f => f.tags.includes("action"))
+    const actionFragments = result.current.fragments.filter((f) => f.tags.includes("action"))
     expect(actionFragments.length).toBeGreaterThan(0)
   })
 
@@ -110,7 +108,7 @@ describe("useFragmentLibrary", () => {
     rerender()
 
     // Only fragments >= 15s should be included
-    const longFragments = result.current.fragments.filter(f => f.duration >= 15)
+    const longFragments = result.current.fragments.filter((f) => f.duration >= 15)
     expect(result.current.fragments).toEqual(longFragments)
   })
 
@@ -121,7 +119,7 @@ describe("useFragmentLibrary", () => {
     rerender()
 
     // All fragments should have faces
-    const withFaces = result.current.fragments.every(f => f.facesCount && f.facesCount > 0)
+    const withFaces = result.current.fragments.every((f) => f.facesCount && f.facesCount > 0)
     expect(withFaces).toBe(true)
   })
 })

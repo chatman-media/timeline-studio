@@ -2,14 +2,13 @@ import { open } from "@tauri-apps/plugin-dialog"
 
 import { getMedia } from "@/core/container"
 import { formatDurationSeconds as formatDurationSecondsUtil } from "@/lib/duration-formatter"
-import { createLogger } from "@/lib/tauri-logger"
 import { isBrowser } from "@/lib/environment"
+import { createLogger } from "@/lib/tauri-logger"
 import {
-  openBrowserFilePicker,
-  openBrowserDirectoryPicker,
   getFilesFromHandles,
-  getFilesFromDirectory,
   MEDIA_MIME_TYPES,
+  openBrowserDirectoryPicker,
+  openBrowserFilePicker,
 } from "./browser-file-picker"
 
 const logger = createLogger("MediaApi")

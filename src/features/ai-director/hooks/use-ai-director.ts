@@ -287,7 +287,7 @@ export function useAIDirector(): AIDirectorHook {
 export type {
   AIDirectorConfig,
   ComprehensiveAnalysisResult,
-  SystemCapabilities,
   ConfigValidationResult,
   HealthCheckResult,
+  SystemCapabilities,
 }

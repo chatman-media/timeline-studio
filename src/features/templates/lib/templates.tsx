@@ -14,22 +14,21 @@ import type {
   TemplateAspectRatio,
 } from "./template-config"
 
-export type {
-  SplitPoint,
-  CellConfiguration as CellConfig,
-  MediaTemplate,
-  MediaTemplateConfig,
-  DividerConfig,
-  LayoutConfig,
-  TemplateAspectRatio,
-}
-
 // Импортируем утилиты для работы с конфигурациями
 export {
   createCellConfig,
   createDividerConfig,
   PRESET_STYLES,
 } from "./template-config"
+export type {
+  CellConfiguration as CellConfig,
+  DividerConfig,
+  LayoutConfig,
+  MediaTemplate,
+  MediaTemplateConfig,
+  SplitPoint,
+  TemplateAspectRatio,
+}
 
 // Экспортируем только базовые многокамерные шаблоны
 export const TEMPLATE_MAP: Record<"landscape" | "portrait" | "square", MediaTemplate[]> = {

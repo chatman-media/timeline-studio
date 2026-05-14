@@ -89,11 +89,14 @@ export function useBulkMediaActions() {
         alreadyAdded: addedPaths.size,
         toAdd: filesToAdd.length,
         firstFile: filesToAdd[0],
-        mediaTypes: allMedia.reduce((acc, f) => {
-          const type = f.isVideo ? "video" : f.isAudio ? "audio" : f.isImage ? "image" : "unknown"
-          acc[type] = (acc[type] || 0) + 1
-          return acc
-        }, {} as Record<string, number>),
+        mediaTypes: allMedia.reduce(
+          (acc, f) => {
+            const type = f.isVideo ? "video" : f.isAudio ? "audio" : f.isImage ? "image" : "unknown"
+            acc[type] = (acc[type] || 0) + 1
+            return acc
+          },
+          {} as Record<string, number>,
+        ),
       })
 
       logger.info(`Adding ${filesToAdd.length} files to resources`)

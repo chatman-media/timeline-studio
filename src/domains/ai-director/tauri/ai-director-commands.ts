@@ -60,8 +60,8 @@ export async function aiDirectorAnalyzeBatch(
 
   logger.info("Running batch analysis", {
     fileCount: filePaths.length,
-    mode: useParallel ? 'parallel' : 'sequential',
-    maxParallel: config?.max_parallel_files
+    mode: useParallel ? "parallel" : "sequential",
+    maxParallel: config?.max_parallel_files,
   })
 
   // Используем параллельную команду если включено, иначе последовательную

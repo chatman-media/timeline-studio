@@ -4,7 +4,7 @@
  * Provides type-safe access to Node.js backend media processing
  */
 
-import { useState, useCallback } from "react"
+import { useCallback, useState } from "react"
 import { nodeBackendClient } from "@/adapters/node/node-backend-client"
 import type { ScannedMediaFile } from "@/core/ports/media.port"
 
@@ -79,10 +79,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
    * Scan folder for media files with thumbnail generation
    */
   const scanFolder = useCallback(
-    async (
-      folderPath: string,
-      options: { width: number; height: number }
-    ): Promise<ScannedMediaFile[]> => {
+    async (folderPath: string, options: { width: number; height: number }): Promise<ScannedMediaFile[]> => {
       if (!enabled) {
         throw new Error("Node backend is disabled")
       }
@@ -107,17 +104,14 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         setIsScanning(false)
       }
     },
-    [enabled, onError]
+    [enabled, onError],
   )
 
   /**
    * Scan folder without thumbnails
    */
   const scanFolderSimple = useCallback(
-    async (
-      folderPath: string,
-      options?: { recursive?: boolean }
-    ): Promise<ScannedMediaFile[]> => {
+    async (folderPath: string, options?: { recursive?: boolean }): Promise<ScannedMediaFile[]> => {
       if (!enabled) {
         throw new Error("Node backend is disabled")
       }
@@ -141,7 +135,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         setIsScanning(false)
       }
     },
-    [enabled, onError]
+    [enabled, onError],
   )
 
   /**
@@ -166,7 +160,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         throw error
       }
     },
-    [enabled, onError]
+    [enabled, onError],
   )
 
   /**
@@ -196,7 +190,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         setIsProcessing(false)
       }
     },
-    [enabled, onError]
+    [enabled, onError],
   )
 
   /**
@@ -206,7 +200,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
     async (
       fileId: string,
       filePath: string,
-      options?: { width?: number; height?: number; timestamp?: number }
+      options?: { width?: number; height?: number; timestamp?: number },
     ): Promise<string> => {
       if (!enabled) {
         throw new Error("Node backend is disabled")
@@ -229,7 +223,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         throw error
       }
     },
-    [enabled, onError]
+    [enabled, onError],
   )
 
   /**
@@ -254,7 +248,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         throw error
       }
     },
-    [enabled, onError]
+    [enabled, onError],
   )
 
   /**

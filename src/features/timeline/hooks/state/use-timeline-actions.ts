@@ -149,9 +149,7 @@ export function useTimelineActions(): UseTimelineActionsReturn {
           const createdTrackId = await addTrack(trackType, trackName, undefined)
 
           if (!createdTrackId) {
-            logger.error(
-              `Failed to create track for media file: ${file.name}. Backend did not return track_id.`,
-            )
+            logger.error(`Failed to create track for media file: ${file.name}. Backend did not return track_id.`)
             return
           }
 

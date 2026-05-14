@@ -348,7 +348,8 @@ describe("OptionsLayout", () => {
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const verticalGroup = panelGroups.find(
         (pg) =>
-          pg.getAttribute("data-direction") === "vertical" && pg.getAttribute("data-auto-save-id") === "group-options-left-top",
+          pg.getAttribute("data-direction") === "vertical" &&
+          pg.getAttribute("data-auto-save-id") === "group-options-left-top",
       )
 
       expect(verticalGroup).toBeInTheDocument()

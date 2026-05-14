@@ -303,8 +303,7 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
 }
 
 // Экспорт типов
-export type { ProjectSettingsContextType }
-export type { ProjectSettingsContextType as ProjectSettingsProviderType }
+export type { ProjectSettingsContextType, ProjectSettingsContextType as ProjectSettingsProviderType }
 
 // Экспорт контекста для использования в хуках
 export { ProjectSettingsContext }

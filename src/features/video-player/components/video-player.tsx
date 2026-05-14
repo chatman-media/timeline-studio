@@ -172,7 +172,12 @@ export function VideoPlayer() {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log("[VideoPlayer] Play started successfully, volume:", videoElement.volume, "muted:", videoElement.muted)
+            console.log(
+              "[VideoPlayer] Play started successfully, volume:",
+              videoElement.volume,
+              "muted:",
+              videoElement.muted,
+            )
           })
           .catch((error) => {
             // Если ошибка из-за недостаточной загрузки, ждём canplay

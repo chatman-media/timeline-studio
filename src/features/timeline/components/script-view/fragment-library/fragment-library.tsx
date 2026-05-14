@@ -37,14 +37,14 @@ export function FragmentLibrary({ fragments, onSelectFragment, onDragStart }: Fr
           </div>
         ) : (
           <div className="space-y-2">
-            {fragments.map(fragment => (
+            {fragments.map((fragment) => (
               <div
                 key={fragment.id}
                 className="group cursor-grab rounded-lg border bg-card hover:bg-accent active:cursor-grabbing transition-colors"
                 data-testid={`fragment-${fragment.id}`}
                 onClick={() => onSelectFragment?.(fragment)}
                 draggable
-                onDragStart={e => handleDragStart(e, fragment)}
+                onDragStart={(e) => handleDragStart(e, fragment)}
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-muted">
@@ -86,27 +86,18 @@ export function FragmentLibrary({ fragments, onSelectFragment, onDragStart }: Fr
                         style={{ width: `${fragment.qualityScore}%` }}
                       />
                     </div>
-                    <span className="text-[10px] text-muted-foreground font-medium">
-                      {fragment.qualityScore}%
-                    </span>
+                    <span className="text-[10px] text-muted-foreground font-medium">{fragment.qualityScore}%</span>
                   </div>
 
                   {/* Tags: Emotions & Objects */}
                   <div className="flex flex-wrap gap-1">
-                    {fragment.emotions?.slice(0, 2).map(emotion => (
-                      <Badge
-                        key={emotion}
-                        variant="secondary"
-                        className="text-[10px] px-1.5 py-0 h-4"
-                      >
+                    {fragment.emotions?.slice(0, 2).map((emotion) => (
+                      <Badge key={emotion} variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
                         {emotion}
                       </Badge>
                     ))}
                     {fragment.facesCount && fragment.facesCount > 0 && (
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] px-1.5 py-0 h-4 flex items-center gap-0.5"
-                      >
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 flex items-center gap-0.5">
                         <Users className="h-2.5 w-2.5" />
                         {fragment.facesCount}
                       </Badge>

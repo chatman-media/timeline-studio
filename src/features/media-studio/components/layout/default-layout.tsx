@@ -1,7 +1,7 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { AiChat } from "@/features/ai-chat"
 import { Browser } from "@/features/browser/components"
-import { PANEL_GROUP_IDS, PANEL_IDS } from "@/features/media-studio/config/panel-ids"
+import { PANEL_GROUP_IDS } from "@/features/media-studio/config/panel-ids"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
@@ -131,7 +131,6 @@ export function DefaultLayout() {
         <>
           <ResizableHandle data-oid="zlz7gps" />
           <ResizablePanel
-           
             defaultSize={40}
             minSize={20}
             maxSize={80}

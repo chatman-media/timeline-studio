@@ -31,11 +31,11 @@ export interface PlanSettingsProps {
 }
 
 export function PlanSettings({
-  settings,
+  settings: _settings,
   planName,
   targetDuration,
   style,
-  onSettingsChange,
+  onSettingsChange: _onSettingsChange,
   onNameChange,
   onDurationChange,
   onStyleChange,
@@ -59,7 +59,7 @@ export function PlanSettings({
           <Input
             id="plan-name"
             value={planName}
-            onChange={e => onNameChange?.(e.target.value)}
+            onChange={(e) => onNameChange?.(e.target.value)}
             placeholder="Мой план монтажа"
             className="h-8 text-xs"
             data-testid="plan-name-input"
@@ -75,7 +75,7 @@ export function PlanSettings({
             id="target-duration"
             type="number"
             value={targetDuration}
-            onChange={e => onDurationChange?.(Number(e.target.value))}
+            onChange={(e) => onDurationChange?.(Number(e.target.value))}
             min={0}
             className="h-8 text-xs"
             data-testid="target-duration-input"
@@ -95,7 +95,7 @@ export function PlanSettings({
                 "social-media",
                 "corporate",
               ] as MontageStyle[]
-            ).map(s => (
+            ).map((s) => (
               <label key={s} className="flex items-center gap-2 text-xs cursor-pointer">
                 <input
                   type="radio"

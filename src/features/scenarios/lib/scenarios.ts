@@ -55,4 +55,4 @@ export function getAiScenarios(): Scenario[] {
 }
 
 // Экспорты
-export { structureScenarios, automationScenarios }
+export { automationScenarios, structureScenarios }

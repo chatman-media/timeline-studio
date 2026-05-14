@@ -384,7 +384,9 @@ describe("DefaultLayout", () => {
       render(<DefaultLayout data-oid="3p3_uyl" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player-options")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player-options")).toBe(
+        true,
+      )
     })
 
     it("должен устанавливать правильные размеры для трех панелей", () => {

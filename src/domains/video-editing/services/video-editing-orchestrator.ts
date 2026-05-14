@@ -432,7 +432,7 @@ export class VideoEditingOrchestrator {
     // Backend возвращает { track_id: "..." } в data
     logger.info("[Video Editing Orchestrator] Track created:", {
       type,
-      trackId: data?.track_id
+      trackId: data?.track_id,
     })
 
     return data?.track_id || null

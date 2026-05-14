@@ -529,7 +529,7 @@ export interface ContentInsights {
 // Re-export key types for easier access
 export type {
   ContentInsights as InsightsData,
-  UnifiedContentAnalysis as UnifiedAnalysis,
-  SceneAnalysis as SceneData,
   KeyFrame as FrameData,
+  SceneAnalysis as SceneData,
+  UnifiedContentAnalysis as UnifiedAnalysis,
 }

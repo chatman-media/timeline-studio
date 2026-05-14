@@ -564,11 +564,7 @@ describe("useTimelineActions", () => {
       // Трек создается
       expect(mockTimeline.addTrack).toHaveBeenCalled()
       // Клип добавляется с правильным track_id
-      expect(mockTimeline.addClip).toHaveBeenCalledWith(
-        createdTrackId,
-        expect.anything(),
-        expect.any(Number)
-      )
+      expect(mockTimeline.addClip).toHaveBeenCalledWith(createdTrackId, expect.anything(), expect.any(Number))
     })
   })
 

@@ -267,7 +267,9 @@ describe("ChatLayout", () => {
       const { rerender } = render(<ChatLayout data-oid="01v-f.m" />)
 
       let panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player-options")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player-options")).toBe(
+        true,
+      )
 
       mockUserSettings.isOptionsVisible = false
       rerender(<ChatLayout data-oid="uxps924" />)
@@ -331,7 +333,8 @@ describe("ChatLayout", () => {
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const verticalGroup = panelGroups.find(
         (pg) =>
-          pg.getAttribute("data-direction") === "vertical" && pg.getAttribute("data-auto-save-id") === "group-player-timeline",
+          pg.getAttribute("data-direction") === "vertical" &&
+          pg.getAttribute("data-auto-save-id") === "group-player-timeline",
       )
       expect(verticalGroup).toBeInTheDocument()
     })

@@ -17,8 +17,8 @@ export function useFragmentLibrary() {
     if (!filesProgress || filesProgress.length === 0) return []
 
     return filesProgress
-      .filter(f => f.status === "completed" && f.result)
-      .flatMap(file => {
+      .filter((f) => f.status === "completed" && f.result)
+      .flatMap((file) => {
         const analysis = file.result
         if (!analysis?.scene_analysis?.scenes) return []
 
@@ -45,7 +45,7 @@ export function useFragmentLibrary() {
 
   // Применяем фильтры
   const filteredFragments = useMemo(() => {
-    return allFragments.filter(fragment => {
+    return allFragments.filter((fragment) => {
       // Минимальное качество
       if (filters.minQuality && fragment.qualityScore < filters.minQuality) {
         return false
@@ -53,15 +53,13 @@ export function useFragmentLibrary() {
 
       // Эмоции
       if (filters.emotions && filters.emotions.length > 0) {
-        const hasEmotion = filters.emotions.some(emotion =>
-          fragment.emotions.includes(emotion),
-        )
+        const hasEmotion = filters.emotions.some((emotion) => fragment.emotions.includes(emotion))
         if (!hasEmotion) return false
       }
 
       // Теги
       if (filters.tags && filters.tags.length > 0) {
-        const hasTag = filters.tags.some(tag => fragment.tags.includes(tag))
+        const hasTag = filters.tags.some((tag) => fragment.tags.includes(tag))
         if (!hasTag) return false
       }
 

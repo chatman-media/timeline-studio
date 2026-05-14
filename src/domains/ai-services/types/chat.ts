@@ -142,6 +142,4 @@ export interface AIService {
 }
 
 // Compatibility export для обратной совместимости
-export type { ChatSession as LegacyChatSession }
-export type { ChatMessage as LegacyChatMessage }
-export type { ChatListItem as LegacyChatListItem }
+export type { ChatListItem as LegacyChatListItem, ChatMessage as LegacyChatMessage, ChatSession as LegacyChatSession }

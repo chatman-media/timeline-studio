@@ -157,12 +157,7 @@ const customRender = (ui: ReactElement, options?: Omit<RenderOptions, "wrapper">
 
 // Реэкспортируем только то, что нам нужно
 export { fireEvent, screen, waitFor, within } from "@testing-library/react"
-
 // Переопределение функции render (теперь с базовыми провайдерами)
-export { customRender as render }
-
 // Алиас для совместимости с существующими тестами
-export { renderWithTemplates as renderWithProviders }
-
 // Экспорт wrapper для использования в renderHook
-export { BaseProviders as wrapper }
+export { BaseProviders as wrapper, customRender as render, renderWithTemplates as renderWithProviders }

@@ -66,7 +66,7 @@ vi.mock("@/components/ui/resizable", () => ({
 }))
 
 export {
+  MockResizableHandle as ResizableHandle,
   MockResizablePanel as ResizablePanel,
   MockResizablePanelGroup as ResizablePanelGroup,
-  MockResizableHandle as ResizableHandle,
 }

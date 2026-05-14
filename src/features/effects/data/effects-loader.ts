@@ -120,9 +120,9 @@ export {
   allEffects as allMigratedEffects,
   allEffects as migratedEffectsLibrary,
   effectsByCategory as migratedEffects,
-  loadEffects as loadMigratedEffects,
+  effectsStats as migrationStats,
   findEffect as findMigratedEffect,
   getEffectsByCategory as getMigratedEffectsByCategory,
   getEffectsByTags as getMigratedEffectsByTags,
-  effectsStats as migrationStats,
+  loadEffects as loadMigratedEffects,
 }

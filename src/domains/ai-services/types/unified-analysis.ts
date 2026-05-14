@@ -32,26 +32,26 @@ import { ProcessingStatus } from "./processing"
 
 // Re-export основные типы из interfaces.ts
 export type {
+  AudioAnalysisResult,
+  BoundingBox,
+  CompositionAnalysis,
+  ContentAnalysisResult,
+  DetectedObject,
+  ExtractedText,
+  FrameAnalysis,
+  FrameAnalysisResult,
+  Line2D,
   MediaFile,
-  VideoMetadata,
-  Scene,
-  QualityAnalysisResult,
-  SilenceDetectionResult,
-  SilentSegment,
   MotionAnalysisResult,
   MotionVector,
-  FrameAnalysis,
-  DetectedObject,
-  BoundingBox,
-  ExtractedText,
-  CompositionAnalysis,
   Point2D,
-  Line2D,
-  VideoAnalysisResult,
-  AudioAnalysisResult,
-  FrameAnalysisResult,
+  QualityAnalysisResult,
+  Scene,
   SceneDetectionResult,
-  ContentAnalysisResult,
+  SilenceDetectionResult,
+  SilentSegment,
+  VideoAnalysisResult,
+  VideoMetadata,
 }
 
 // Import типы из shared/types/ai-tools/content-analysis.ts для re-export
@@ -70,11 +70,8 @@ import { NarrativeType, PaceType } from "../../shared/types/ai-tools/script-gene
 
 // Re-export типы из shared/types/ai-tools/content-analysis.ts
 export type { ContentInsights, KeyFrame, KeyMoment, QualityMetrics, SceneAnalysis, SceneInfo }
-
-export { KeyMomentType, SceneType }
-
 // Re-export типы из shared/types/ai-tools/script-generation.ts
-export { NarrativeType, PaceType }
+export { KeyMomentType, NarrativeType, PaceType, SceneType }
 
 // Alias to avoid naming conflict
 export type UnifiedContentAnalysis = UnifiedContentAnalysisShared

@@ -10,7 +10,7 @@ import type { MediaFile } from "./interfaces"
 
 // Re-export for convenience
 export type Transition = TransitionParameters
-export type { VideoEffect, MediaFile }
+export type { MediaFile, VideoEffect }
 
 // Person identification
 export interface Person {

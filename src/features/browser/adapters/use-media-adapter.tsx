@@ -238,7 +238,7 @@ export function useMediaAdapter(): ListAdapter<MediaListItem> {
 
       // Debug log для видео файлов
       if (file.isVideo) {
-        console.log('[MediaAdapter] Video file:', {
+        console.log("[MediaAdapter] Video file:", {
           name: file.name,
           isVideo: file.isVideo,
           type: mediaInfo.type,

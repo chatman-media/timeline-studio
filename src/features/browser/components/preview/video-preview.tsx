@@ -169,7 +169,7 @@ export const VideoPreview = memo(
     // Log draggable setup for debugging
     useEffect(() => {
       if (isDragging) {
-        logger.info(`[VideoPreview] Dragging started:`, {
+        logger.info("[VideoPreview] Dragging started:", {
           id: `video-${file.id}`,
           fileName: file.name,
           dragData,

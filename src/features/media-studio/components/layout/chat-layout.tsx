@@ -1,7 +1,7 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { AiChat } from "@/features/ai-chat"
 import { Browser } from "@/features/browser/components/browser"
-import { PANEL_GROUP_IDS, PANEL_IDS } from "@/features/media-studio/config/panel-ids"
+import { PANEL_GROUP_IDS } from "@/features/media-studio/config/panel-ids"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
@@ -142,11 +142,7 @@ function LeftChatLayout() {
         data-oid="7kjdfm7"
       >
         <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="qeosueq">
-          <ResizablePanelGroup
-            direction="horizontal"
-            autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER}
-            data-oid="4npy069"
-          >
+          <ResizablePanelGroup direction="horizontal" autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER} data-oid="4npy069">
             <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid=".m9eu9n">
               <div className="h-full flex-1" data-oid="6px-obe">
                 <Browser data-oid="k2s_:us" />
@@ -180,11 +176,7 @@ function LeftChatLayout() {
         data-oid="6cceq5m"
       >
         <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="k:aqb6t">
-          <ResizablePanelGroup
-            direction="horizontal"
-            autoSaveId={PANEL_GROUP_IDS.PLAYER_OPTIONS}
-            data-oid="v18hmba"
-          >
+          <ResizablePanelGroup direction="horizontal" autoSaveId={PANEL_GROUP_IDS.PLAYER_OPTIONS} data-oid="v18hmba">
             <ResizablePanel defaultSize={70} minSize={20} maxSize={100} data-oid="5:o:o:u">
               <div className="relative h-full flex-1" data-oid="ez9afh2">
                 <VideoPlayer data-oid="e8p.m0d" />

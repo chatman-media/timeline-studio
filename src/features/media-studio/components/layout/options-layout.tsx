@@ -1,6 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Browser } from "@/features/browser/components/browser"
-import { PANEL_GROUP_IDS, PANEL_IDS } from "@/features/media-studio/config/panel-ids"
+import { PANEL_GROUP_IDS } from "@/features/media-studio/config/panel-ids"
 import { Options } from "@/features/options"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"
@@ -75,11 +75,7 @@ function LeftLayout() {
       data-oid="cqxsfi8"
     >
       <ResizablePanel defaultSize={60} minSize={20} maxSize={80} data-oid="-qn6s1z">
-        <ResizablePanelGroup
-          direction="horizontal"
-          autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER}
-          data-oid="9wet:-d"
-        >
+        <ResizablePanelGroup direction="horizontal" autoSaveId={PANEL_GROUP_IDS.BROWSER_PLAYER} data-oid="9wet:-d">
           <ResizablePanel defaultSize={30} minSize={20} maxSize={80} data-oid="tn-v4ey">
             <div className="h-full flex-1" data-oid="3krfsr:">
               <Browser data-oid="3yxw8:w" />

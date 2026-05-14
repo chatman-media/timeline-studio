@@ -1,6 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Browser } from "@/features/browser/components/browser"
-import { PANEL_GROUP_IDS, PANEL_IDS } from "@/features/media-studio/config/panel-ids"
+import { PANEL_GROUP_IDS } from "@/features/media-studio/config/panel-ids"
 import { Options } from "@/features/options/components/options"
 import { Timeline } from "@/features/timeline/components/timeline"
 import { useUserSettings } from "@/features/user-settings"

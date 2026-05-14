@@ -30,7 +30,7 @@ export function useApplyPlanToTimeline(): UseApplyPlanToTimelineReturn {
         setError(null)
 
         // Находим первый видео трек
-        const videoTrack = tracks.find(t => t.type === "video")
+        const videoTrack = tracks.find((t) => t.type === "video")
         if (!videoTrack) {
           throw new Error("Не найден видео трек")
         }
@@ -40,11 +40,11 @@ export function useApplyPlanToTimeline(): UseApplyPlanToTimelineReturn {
 
         for (const scene of plan.scenes) {
           // Находим фрагмент для этой сцены
-          const fragment = fragments.find(f => f.id === scene.fragmentId)
+          const fragment = fragments.find((f) => f.id === scene.fragmentId)
           if (!fragment) continue
 
           // Находим медиа файл для этого фрагмента
-          const mediaFile = mediaFiles.find(f => f.id === fragment.fileId)
+          const mediaFile = mediaFiles.find((f) => f.id === fragment.fileId)
           if (!mediaFile) continue
 
           // Добавляем клип на Timeline

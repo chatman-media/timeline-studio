@@ -108,10 +108,7 @@ describe("FragmentLibrary", () => {
     fragment.dispatchEvent(dragEvent)
 
     expect(onDragStart).toHaveBeenCalledWith(mockFragments[0])
-    expect(mockDataTransfer.setData).toHaveBeenCalledWith(
-      "application/json",
-      JSON.stringify(mockFragments[0]),
-    )
+    expect(mockDataTransfer.setData).toHaveBeenCalledWith("application/json", JSON.stringify(mockFragments[0]))
     expect(mockDataTransfer.effectAllowed).toBe("copy")
   })
 })

@@ -50,7 +50,7 @@ export function useScriptPlan() {
 
   // Обновить план
   const updatePlan = useCallback((updates: Partial<ScriptPlan>) => {
-    setPlan(prev => {
+    setPlan((prev) => {
       if (!prev) return null
       return {
         ...prev,
@@ -62,7 +62,7 @@ export function useScriptPlan() {
 
   // Добавить сцену в план
   const addScene = useCallback((fragment: ScriptFragment, transition: TransitionType = "CUT") => {
-    setPlan(prev => {
+    setPlan((prev) => {
       if (!prev) return null
 
       const newScene: ScriptScene = {
@@ -94,12 +94,10 @@ export function useScriptPlan() {
 
   // Удалить сцену
   const removeScene = useCallback((sceneId: string) => {
-    setPlan(prev => {
+    setPlan((prev) => {
       if (!prev) return null
 
-      const newScenes = prev.scenes
-        .filter(s => s.id !== sceneId)
-        .map((s, index) => ({ ...s, order: index }))
+      const newScenes = prev.scenes.filter((s) => s.id !== sceneId).map((s, index) => ({ ...s, order: index }))
 
       const totalDuration = newScenes.reduce((sum, s) => sum + s.duration, 0)
 
@@ -119,12 +117,12 @@ export function useScriptPlan() {
 
   // Переместить сцену
   const reorderScenes = useCallback((sceneIds: string[]) => {
-    setPlan(prev => {
+    setPlan((prev) => {
       if (!prev) return null
 
-      const sceneMap = new Map(prev.scenes.map(s => [s.id, s]))
+      const sceneMap = new Map(prev.scenes.map((s) => [s.id, s]))
       const newScenes = sceneIds
-        .map(id => sceneMap.get(id))
+        .map((id) => sceneMap.get(id))
         .filter((s): s is ScriptScene => s !== undefined)
         .map((s, index) => ({ ...s, order: index }))
 
@@ -138,7 +136,7 @@ export function useScriptPlan() {
 
   // Обновить настройки плана
   const updateSettings = useCallback((settings: Partial<PlanSettings>) => {
-    setPlan(prev => {
+    setPlan((prev) => {
       if (!prev) return null
       return {
         ...prev,

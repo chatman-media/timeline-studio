@@ -26,9 +26,7 @@ export function usePlanGenerator() {
 
     try {
       // Сортируем фрагменты по качеству
-      const sortedFragments = [...options.fragments].sort(
-        (a, b) => b.qualityScore - a.qualityScore,
-      )
+      const sortedFragments = [...options.fragments].sort((a, b) => b.qualityScore - a.qualityScore)
 
       // Выбираем фрагменты до достижения целевой длительности
       const selectedFragments: ScriptFragment[] = []

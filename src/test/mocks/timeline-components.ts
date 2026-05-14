@@ -106,11 +106,11 @@ vi.mock("@/features/ai-chat/components/ai-chat", () => ({
 }))
 
 export {
-  MockTimelineContent as TimelineContent,
-  MockVirtualizedTimelineContent as VirtualizedTimelineContent,
+  MockAiChat as AiChat,
   MockAudioMixerView as AudioMixerView,
-  MockTimelineWorkspaceTabs as TimelineWorkspaceTabs,
   MockResourcesPanel as ResourcesPanel,
   MockResourcesProvider as ResourcesProvider,
-  MockAiChat as AiChat,
+  MockTimelineContent as TimelineContent,
+  MockTimelineWorkspaceTabs as TimelineWorkspaceTabs,
+  MockVirtualizedTimelineContent as VirtualizedTimelineContent,
 }

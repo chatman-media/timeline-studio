@@ -6,20 +6,14 @@
  */
 
 import { useState } from "react"
-import { useNodeBackend } from "../hooks/use-node-backend"
 import type { ScannedMediaFile } from "@/core/ports/media.port"
+import { useNodeBackend } from "../hooks/use-node-backend"
 
 export function NodeBackendExample() {
   const [files, setFiles] = useState<ScannedMediaFile[]>([])
   const [folderPath, setFolderPath] = useState("/path/to/media")
 
-  const {
-    scanFolder,
-    isScanning,
-    error,
-    checkHealth,
-    getCacheStats,
-  } = useNodeBackend({
+  const { scanFolder, isScanning, error, checkHealth, getCacheStats } = useNodeBackend({
     onError: (err) => {
       console.error("Backend error:", err.message)
     },
@@ -42,9 +36,7 @@ export function NodeBackendExample() {
     try {
       const health = await checkHealth()
       console.log("Backend health:", health)
-      alert(
-        `Backend: ${health.available ? "✅" : "❌"}\nFFmpeg: ${health.ffmpegAvailable ? "✅" : "❌"}`
-      )
+      alert(`Backend: ${health.available ? "✅" : "❌"}\nFFmpeg: ${health.ffmpegAvailable ? "✅" : "❌"}`)
     } catch (err) {
       console.error("Health check failed:", err)
     }
@@ -64,11 +56,7 @@ export function NodeBackendExample() {
     <div className="p-4 space-y-4">
       <h2 className="text-2xl font-bold">Node.js Backend Example</h2>
 
-      {error && (
-        <div className="p-4 bg-red-100 text-red-700 rounded">
-          Error: {error.message}
-        </div>
-      )}
+      {error && <div className="p-4 bg-red-100 text-red-700 rounded">Error: {error.message}</div>}
 
       <div className="space-y-2">
         <label className="block">
@@ -91,17 +79,11 @@ export function NodeBackendExample() {
             {isScanning ? "Scanning..." : "Scan Folder"}
           </button>
 
-          <button
-            onClick={handleCheckHealth}
-            className="px-4 py-2 bg-green-500 text-white rounded"
-          >
+          <button onClick={handleCheckHealth} className="px-4 py-2 bg-green-500 text-white rounded">
             Check Health
           </button>
 
-          <button
-            onClick={handleCacheStats}
-            className="px-4 py-2 bg-purple-500 text-white rounded"
-          >
+          <button onClick={handleCacheStats} className="px-4 py-2 bg-purple-500 text-white rounded">
             Cache Stats
           </button>
         </div>
@@ -109,35 +91,23 @@ export function NodeBackendExample() {
 
       {files.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-xl font-semibold">
-            Scanned Files ({files.length})
-          </h3>
+          <h3 className="text-xl font-semibold">Scanned Files ({files.length})</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {files.map((file, index) => (
-              <div
-                key={index}
-                className="p-3 border rounded hover:shadow-lg transition"
-              >
+              <div key={index} className="p-3 border rounded hover:shadow-lg transition">
                 {file.thumbnailBase64 && (
-                  <img
-                    src={file.thumbnailBase64}
-                    alt={file.name}
-                    className="w-full h-32 object-cover rounded mb-2"
-                  />
+                  <img src={file.thumbnailBase64} alt={file.name} className="w-full h-32 object-cover rounded mb-2" />
                 )}
                 <div className="text-sm">
                   <p className="font-medium truncate" title={file.name}>
                     {file.name}
                   </p>
-                  <p className="text-gray-500">
-                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
+                  <p className="text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                   <p className="text-gray-500">{file.type}</p>
                   {file.metadata?.type === "Video" && (
                     <p className="text-gray-500">
                       {file.metadata.width}x{file.metadata.height}
-                      {file.metadata.duration &&
-                        ` • ${Math.round(file.metadata.duration)}s`}
+                      {file.metadata.duration && ` • ${Math.round(file.metadata.duration)}s`}
                     </p>
                   )}
                 </div>

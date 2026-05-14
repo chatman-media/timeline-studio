@@ -277,4 +277,4 @@ export function ShaderEditor({ initialProject, onSave, onExport, className }: Sh
 }
 
 // Export default shader templates
-export { DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER }
+export { DEFAULT_FRAGMENT_SHADER, DEFAULT_VERTEX_SHADER }

@@ -52,7 +52,7 @@ export const TrackContent = memo(function TrackContent({ track, timeScale, curre
   // Log drop zone state for debugging
   useEffect(() => {
     if (isOver) {
-      logger.info(`[TrackContent] Drop zone active:`, {
+      logger.info("[TrackContent] Drop zone active:", {
         trackId: track.id,
         trackType: track.type,
       })

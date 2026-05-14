@@ -22,54 +22,26 @@ const mockSettings: PlanSettingsType = {
 
 describe("PlanSettings", () => {
   it("should render plan settings", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="dynamic-action"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="dynamic-action" />)
     expect(screen.getByTestId("plan-settings")).toBeInTheDocument()
   })
 
   it("should display plan name input", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="dynamic-action"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="dynamic-action" />)
 
     const input = screen.getByTestId("plan-name-input") as HTMLInputElement
     expect(input.value).toBe("Test Plan")
   })
 
   it("should display target duration input", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="dynamic-action"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="dynamic-action" />)
 
     const input = screen.getByTestId("target-duration-input") as HTMLInputElement
     expect(input.value).toBe("120")
   })
 
   it("should render all style options", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="dynamic-action"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="dynamic-action" />)
 
     expect(screen.getByTestId("style-dynamic-action")).toBeInTheDocument()
     expect(screen.getByTestId("style-cinematic-drama")).toBeInTheDocument()
@@ -80,14 +52,7 @@ describe("PlanSettings", () => {
   })
 
   it("should check selected style", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="cinematic-drama"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="cinematic-drama" />)
 
     const input = screen.getByTestId("style-cinematic-drama") as HTMLInputElement
     expect(input.checked).toBe(true)
@@ -155,28 +120,14 @@ describe("PlanSettings", () => {
   })
 
   it("should render generate plan button", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="dynamic-action"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="dynamic-action" />)
 
     expect(screen.getByTestId("generate-plan-button")).toBeInTheDocument()
     expect(screen.getByText(/Создать план \(AI\)/i)).toBeInTheDocument()
   })
 
   it("should render apply plan button", () => {
-    render(
-      <PlanSettings
-        settings={mockSettings}
-        planName="Test Plan"
-        targetDuration={120}
-        style="dynamic-action"
-      />,
-    )
+    render(<PlanSettings settings={mockSettings} planName="Test Plan" targetDuration={120} style="dynamic-action" />)
 
     expect(screen.getByTestId("apply-plan-button")).toBeInTheDocument()
     expect(screen.getByText(/Применить к Timeline/i)).toBeInTheDocument()

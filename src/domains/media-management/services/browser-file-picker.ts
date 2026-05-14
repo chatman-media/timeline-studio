@@ -28,11 +28,7 @@ export interface BrowserFilePickerResult {
  * Проверка поддержки File System Access API
  */
 export function isFileSystemAccessSupported(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    "showOpenFilePicker" in window &&
-    "showDirectoryPicker" in window
-  )
+  return typeof window !== "undefined" && "showOpenFilePicker" in window && "showDirectoryPicker" in window
 }
 
 /**
@@ -60,7 +56,9 @@ export async function openBrowserFilePicker(
   }
 
   try {
-    const handles = await (window as typeof window & { showOpenFilePicker: (options?: object) => Promise<FileSystemFileHandle[]> }).showOpenFilePicker({
+    const handles = await (
+      window as typeof window & { showOpenFilePicker: (options?: object) => Promise<FileSystemFileHandle[]> }
+    ).showOpenFilePicker({
       multiple: options.multiple ?? false,
       excludeAcceptAllOption: options.excludeAcceptAllOption ?? false,
       types: options.accept
@@ -104,7 +102,9 @@ export async function openBrowserDirectoryPicker(): Promise<FileSystemDirectoryH
   }
 
   try {
-    const dirHandle = await (window as typeof window & { showDirectoryPicker: () => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker()
+    const dirHandle = await (
+      window as typeof window & { showDirectoryPicker: () => Promise<FileSystemDirectoryHandle> }
+    ).showDirectoryPicker()
     return dirHandle
   } catch (error) {
     // Пользователь отменил выбор

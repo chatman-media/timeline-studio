@@ -238,6 +238,8 @@ export function sortSubtitleStyleTemplates(
 }
 
 // Экспорты функций с исправленными именами для обратной совместимости
-export { validateSubtitleStyleTemplatesData as validateSubtitleStylesData }
-export { processSubtitleStyleTemplates as processSubtitleStyles }
-export { createFallbackSubtitleStyleTemplate as createFallbackSubtitleStyle }
+export {
+  createFallbackSubtitleStyleTemplate as createFallbackSubtitleStyle,
+  processSubtitleStyleTemplates as processSubtitleStyles,
+  validateSubtitleStyleTemplatesData as validateSubtitleStylesData,
+}

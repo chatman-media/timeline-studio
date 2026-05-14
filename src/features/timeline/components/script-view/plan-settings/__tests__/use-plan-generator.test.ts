@@ -5,7 +5,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import type { ScriptFragment } from "@/features/timeline/types/script"
+import type { ScriptFragment, ScriptPlan } from "@/features/timeline/types/script"
 
 import { usePlanGenerator } from "../use-plan-generator"
 
@@ -56,7 +56,7 @@ describe("usePlanGenerator", () => {
   it("should generate a plan from fragments", async () => {
     const { result } = renderHook(() => usePlanGenerator())
 
-    let plan
+    let plan: ScriptPlan | undefined
     await act(async () => {
       plan = await result.current.generatePlan({
         style: "dynamic-action",
@@ -74,7 +74,7 @@ describe("usePlanGenerator", () => {
   it("should prioritize high quality fragments", async () => {
     const { result } = renderHook(() => usePlanGenerator())
 
-    let plan
+    let plan: ScriptPlan | undefined
     await act(async () => {
       plan = await result.current.generatePlan({
         style: "cinematic-drama",
@@ -86,14 +86,14 @@ describe("usePlanGenerator", () => {
 
     // Should include fragment with quality 92 first
     const firstScene = plan?.scenes[0]
-    const firstFragment = mockFragments.find(f => f.id === firstScene?.fragmentId)
+    const firstFragment = mockFragments.find((f) => f.id === firstScene?.fragmentId)
     expect(firstFragment?.qualityScore).toBe(92)
   })
 
   it("should set appropriate transitions for style", async () => {
     const { result } = renderHook(() => usePlanGenerator())
 
-    let plan
+    let plan: ScriptPlan | undefined
     await act(async () => {
       plan = await result.current.generatePlan({
         style: "dynamic-action",
@@ -103,14 +103,14 @@ describe("usePlanGenerator", () => {
     })
 
     // Dynamic action should use CUT transitions
-    const transitions = plan?.scenes.slice(1).map(s => s.transition) || []
-    expect(transitions.every(t => t === "CUT")).toBe(true)
+    const transitions = plan?.scenes.slice(1).map((s) => s.transition) || []
+    expect(transitions.every((t) => t === "CUT")).toBe(true)
   })
 
   it("should calculate plan stats correctly", async () => {
     const { result } = renderHook(() => usePlanGenerator())
 
-    let plan
+    let plan: ScriptPlan | undefined
     await act(async () => {
       plan = await result.current.generatePlan({
         style: "music-video",
@@ -127,7 +127,7 @@ describe("usePlanGenerator", () => {
   it("should respect target duration", async () => {
     const { result } = renderHook(() => usePlanGenerator())
 
-    let plan
+    let plan: ScriptPlan | undefined
     await act(async () => {
       plan = await result.current.generatePlan({
         style: "social-media",
@@ -143,7 +143,7 @@ describe("usePlanGenerator", () => {
   it("should set pace level based on style", async () => {
     const { result } = renderHook(() => usePlanGenerator())
 
-    let fastPlan
+    let fastPlan: ScriptPlan | undefined
     await act(async () => {
       fastPlan = await result.current.generatePlan({
         style: "dynamic-action",
@@ -152,7 +152,7 @@ describe("usePlanGenerator", () => {
       })
     })
 
-    let slowPlan
+    let slowPlan: ScriptPlan | undefined
     await act(async () => {
       slowPlan = await result.current.generatePlan({
         style: "cinematic-drama",

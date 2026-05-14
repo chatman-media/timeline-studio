@@ -2,8 +2,8 @@
  * Storyboard Editor - редактор раскадровки
  */
 
-import { useState } from "react"
 import { ArrowRight, Film, X } from "lucide-react"
+import { useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -29,10 +29,10 @@ export interface StoryboardEditorProps {
 export function StoryboardEditor({
   plan,
   fragments = [],
-  onPlanChange,
-  onAddScene,
+  onPlanChange: _onPlanChange,
+  onAddScene: _onAddScene,
   onRemoveScene,
-  onReorderScenes,
+  onReorderScenes: _onReorderScenes,
   onDropFragment,
 }: StoryboardEditorProps) {
   const [isDraggingOver, setIsDraggingOver] = useState(false)
@@ -95,12 +95,10 @@ export function StoryboardEditor({
             {isDraggingOver ? "Отпустите для добавления" : "План пуст. Перетащите фрагменты из библиотеки."}
           </div>
         ) : (
-          <div
-            className={`space-y-2 rounded-lg transition-colors ${isDraggingOver ? "bg-primary/5" : ""}`}
-          >
+          <div className={`space-y-2 rounded-lg transition-colors ${isDraggingOver ? "bg-primary/5" : ""}`}>
             {plan.scenes.map((scene, index) => {
               // Находим фрагмент для этой сцены
-              const fragment = fragments.find(f => f.id === scene.fragmentId)
+              const fragment = fragments.find((f) => f.id === scene.fragmentId)
 
               return (
                 <div key={scene.id}>
@@ -172,19 +170,12 @@ export function StoryboardEditor({
 
                         {/* Tags & Transition */}
                         <div className="flex flex-wrap gap-1 items-center">
-                          {fragment?.emotions?.slice(0, 2).map(emotion => (
-                            <Badge
-                              key={emotion}
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4"
-                            >
+                          {fragment?.emotions?.slice(0, 2).map((emotion) => (
+                            <Badge key={emotion} variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
                               {emotion}
                             </Badge>
                           ))}
-                          <Badge
-                            variant="outline"
-                            className="text-[10px] px-1.5 py-0 h-4"
-                          >
+                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">
                             {scene.transition}
                           </Badge>
                         </div>
