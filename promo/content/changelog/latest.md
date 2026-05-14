@@ -1,3 +1,12 @@
+## [3.45.12](https://github.com/chatman-media/timeline-studio/compare/v3.45.11...v3.45.12) (2026-05-14)
+
+
+### Bug Fixes
+
+* **ci:** fix YAML comment bug in build.yml and npm ci in release.yml ([06c3464](https://github.com/chatman-media/timeline-studio/commit/06c346466517c8f3871a91ddb94a1e1a494fba9d))
+* **deps:** downgrade @vitejs/plugin-react to 5.2.0 and fix lock file ([3ccb527](https://github.com/chatman-media/timeline-studio/commit/3ccb527cc8664fff1a52c4fe0ccb1e4833a40180))
+* fix biome import organization in use-apply-plan-to-timeline ([8aef927](https://github.com/chatman-media/timeline-studio/commit/8aef9273c2861249f34469480f8b3d25e178ba1d))
+
 ## [3.45.11](https://github.com/chatman-media/timeline-studio/compare/v3.45.10...v3.45.11) (2026-05-14)
 
 
