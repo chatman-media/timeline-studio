@@ -281,7 +281,7 @@ describe("useCurrentProject Hook", () => {
             extensions: ["tls"],
           },
         ],
-        defaultPath: "Test Project.tls",
+        defaultPath: "/Users/testTimelineStudioProjects/Test Project.tls",
       })
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "SaveProject",
@@ -330,7 +330,7 @@ describe("useCurrentProject Hook", () => {
             extensions: ["tls"],
           },
         ],
-        defaultPath: "project.tls",
+        defaultPath: "/Users/testTimelineStudioProjects/project.tls",
       })
     })
 

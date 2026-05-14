@@ -5,7 +5,7 @@ import { AnalysisProgressIndicator } from "@/features/ai-director/components/ana
 import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"
 import { DragDropProvider } from "@/features/timeline/components/drag-drop-provider"
-import { useUserSettings } from "@/features/user-settings/hooks/use-user-settings"
+import { useUserSettings } from "@/features/user-settings"
 import { useAppMenu } from "@/hooks/use-app-menu"
 import { createLogger } from "@/lib/tauri-logger"
 import { ChatLayout, DefaultLayout, OptionsLayout, VerticalLayout } from "./layout"

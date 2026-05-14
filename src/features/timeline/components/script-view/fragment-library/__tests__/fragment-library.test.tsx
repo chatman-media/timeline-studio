@@ -63,9 +63,9 @@ describe("FragmentLibrary", () => {
     render(<FragmentLibrary fragments={mockFragments} />)
 
     expect(screen.getByText("0.0s - 10.0s")).toBeInTheDocument()
-    expect(screen.getByText("Quality: 85%")).toBeInTheDocument()
+    expect(screen.getByText("85%")).toBeInTheDocument()
     expect(screen.getByText("10.0s - 25.0s")).toBeInTheDocument()
-    expect(screen.getByText("Quality: 92%")).toBeInTheDocument()
+    expect(screen.getByText("92%")).toBeInTheDocument()
   })
 
   it("should call onSelectFragment when fragment clicked", async () => {

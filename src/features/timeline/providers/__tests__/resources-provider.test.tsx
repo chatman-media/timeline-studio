@@ -365,7 +365,10 @@ describe("ResourcesProvider", () => {
 
       await result.current.addMedia(file)
 
-      expect(mockExecuteCommand).not.toHaveBeenCalled()
+      expect(mockExecuteCommand).not.toHaveBeenCalledWith(expect.objectContaining({ type: "AddMedia" }))
+      expect(mockExecuteCommand).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "SetMediaAsResource" }),
+      )
     })
 
     it("handles command execution errors", async () => {
