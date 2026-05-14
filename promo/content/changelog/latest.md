@@ -1,3 +1,10 @@
+## [3.46.1](https://github.com/chatman-media/timeline-studio/compare/v3.46.0...v3.46.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* **ci:** commit tauri-bindings.ts so TypeScript check needs no Rust build ([efef042](https://github.com/chatman-media/timeline-studio/commit/efef04277c9d818824ac31c851b450202314aec1))
+
 # [3.46.0](https://github.com/chatman-media/timeline-studio/compare/v3.45.13...v3.46.0) (2026-05-14)
 
 
