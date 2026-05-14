@@ -1,3 +1,11 @@
+## [3.45.7](https://github.com/chatman-media/timeline-studio/compare/v3.45.6...v3.45.7) (2026-05-14)
+
+
+### Bug Fixes
+
+* **promo:** add esbuild direct dependency to ensure consistent version in CI ([c3046f1](https://github.com/chatman-media/timeline-studio/commit/c3046f1a3656ad20c3a6b74a7f5d098bec1a2729))
+* **tests:** update Rust test to match Resources/Media path, update promo esbuild lockfile ([c6111bb](https://github.com/chatman-media/timeline-studio/commit/c6111bb6853eccfd4a425a81ae2c7435d0601080))
+
 ## [3.45.6](https://github.com/chatman-media/timeline-studio/compare/v3.45.5...v3.45.6) (2026-05-14)
 
 
