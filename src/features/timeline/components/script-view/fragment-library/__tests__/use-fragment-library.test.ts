@@ -13,6 +13,7 @@ vi.mock("../../../../hooks/state/use-timeline-analysis", () => ({
     filesProgress: [
       {
         id: "file-1",
+        fileId: "file-1",
         status: "completed",
         file: { path: "/test/video.mp4" },
         result: {
