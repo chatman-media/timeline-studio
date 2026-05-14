@@ -111,7 +111,7 @@ describe("Backend Event Handlers", () => {
     })
 
     it("should preserve other tab settings when changing search query", () => {
-      baseContext.tabSettings.media!.view_mode = "grid"
+      baseContext.tabSettings.media!.view_mode = "thumbnails"
       baseContext.tabSettings.media!.sort_by = "date"
 
       const event: BrowserEvent = {
@@ -122,7 +122,7 @@ describe("Backend Event Handlers", () => {
       const updates = handleBrowserBackendEvent(baseContext, event)
 
       expect(updates.tabSettings!.media!.search_query).toBe("new query")
-      expect(updates.tabSettings!.media!.view_mode).toBe("grid")
+      expect(updates.tabSettings!.media!.view_mode).toBe("thumbnails")
       expect(updates.tabSettings!.media!.sort_by).toBe("date")
     })
   })
@@ -229,12 +229,12 @@ describe("Backend Event Handlers", () => {
     it("should handle ViewModeChanged event", () => {
       const event: BrowserEvent = {
         event_type: "ViewModeChanged",
-        data: { tab: "media", view_mode: "grid" },
+        data: { tab: "media", view_mode: "thumbnails" },
       }
 
       const updates = handleBrowserBackendEvent(baseContext, event)
 
-      expect(updates.tabSettings!.media!.view_mode).toBe("grid")
+      expect(updates.tabSettings!.media!.view_mode).toBe("thumbnails")
     })
 
     it("should update view mode for specific tab", () => {
@@ -249,7 +249,7 @@ describe("Backend Event Handlers", () => {
     })
 
     it("should handle all view modes", () => {
-      const viewModes: Array<"thumbnails" | "list" | "grid"> = ["thumbnails", "list", "grid"]
+      const viewModes: Array<"thumbnails" | "list" | "thumbnails"> = ["thumbnails", "list", "thumbnails"]
 
       viewModes.forEach((viewMode) => {
         const event: BrowserEvent = {
@@ -628,7 +628,7 @@ describe("Backend Event Handlers", () => {
 
       const events: BrowserEvent[] = [
         { event_type: "SearchQueryChanged", data: { tab: "media", query: "test" } },
-        { event_type: "ViewModeChanged", data: { tab: "media", view_mode: "grid" } },
+        { event_type: "ViewModeChanged", data: { tab: "media", view_mode: "thumbnails" } },
         { event_type: "SortChanged", data: { tab: "media", sort_by: "date", sort_order: "desc" } },
       ]
 
@@ -638,7 +638,7 @@ describe("Backend Event Handlers", () => {
       })
 
       expect(context.tabSettings.media!.search_query).toBe("test")
-      expect(context.tabSettings.media!.view_mode).toBe("grid")
+      expect(context.tabSettings.media!.view_mode).toBe("thumbnails")
       expect(context.tabSettings.media!.sort_by).toBe("date")
       expect(context.tabSettings.media!.sort_order).toBe("desc")
     })

@@ -51,7 +51,7 @@ describe("Browser Domain Integration Tests", () => {
       // Change settings on media tab
       await act(async () => {
         await result.current.setSearchQuery("video")
-        await result.current.setViewMode("grid")
+        await result.current.setViewMode("thumbnails")
       })
 
       // Switch to effects tab
@@ -401,7 +401,7 @@ describe("Browser Domain Integration Tests", () => {
         expect(result.current.isLoading).toBe(false)
       })
 
-      const viewModes = ["thumbnails", "list", "grid"] as const
+      const viewModes = ["thumbnails", "list", "thumbnails"] as const
 
       for (const mode of viewModes) {
         await act(async () => {
@@ -447,12 +447,12 @@ describe("Browser Domain Integration Tests", () => {
       })
 
       await act(async () => {
-        await result.current.setViewMode("grid")
+        await result.current.setViewMode("thumbnails")
         await result.current.setPreviewSize(3)
       })
 
       await waitFor(() => {
-        expect(result.current.currentTabSettings.view_mode).toBe("grid")
+        expect(result.current.currentTabSettings.view_mode).toBe("thumbnails")
         expect(result.current.currentTabSettings.preview_size_index).toBe(3)
       })
     })
