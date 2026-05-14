@@ -10,15 +10,11 @@
 import { describe, expect, it } from "vitest"
 
 describe("Home Page", () => {
-  it(
-    "should export default function",
-    async () => {
-      const module = await import("../page")
-      expect(module.default).toBeDefined()
-      expect(typeof module.default).toBe("function")
-    },
-    20000,
-  )
+  it("should export default function", async () => {
+    const module = await import("../page")
+    expect(module.default).toBeDefined()
+    expect(typeof module.default).toBe("function")
+  }, 20000)
 
   it("should be a valid React component", async () => {
     const module = await import("../page")
