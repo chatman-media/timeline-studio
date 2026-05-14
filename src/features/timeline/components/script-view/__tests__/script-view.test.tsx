@@ -3,11 +3,23 @@
  */
 
 import { render, screen } from "@testing-library/react"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { TimelineProviders } from "@/test/test-utils"
 
 import { ScriptView } from "../script-view"
+
+vi.mock("@/components/ui/resizable", () => {
+  const React = require("react")
+  return {
+    ResizablePanelGroup: ({ children, ...props }: any) =>
+      React.createElement("div", { "data-testid": "resizable-group", ...props }, children),
+    ResizablePanel: ({ children, ...props }: any) =>
+      React.createElement("div", { "data-testid": "resizable-panel", ...props }, children),
+    ResizableHandle: (props: any) =>
+      React.createElement("div", { "data-testid": "resizable-handle", ...props }),
+  }
+})
 
 describe("ScriptView", () => {
   it("should render script view", () => {
