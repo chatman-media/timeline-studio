@@ -68,7 +68,8 @@ claude_desktop_config.json
 
 # Generated TypeScript types from Rust
 /src/types/generated/
-# But keep these manually maintained files
+# Keep these files committed so CI TypeScript check doesn't need Rust build
+!/src/types/generated/tauri-bindings.ts
 !/src/types/generated/state-types.ts
 !/src/types/generated/state-types-extensions.ts
 /videos/*
