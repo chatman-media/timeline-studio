@@ -1,3 +1,10 @@
+## [3.45.6](https://github.com/chatman-media/timeline-studio/compare/v3.45.5...v3.45.6) (2026-05-14)
+
+
+### Bug Fixes
+
+* **lint:** fix all Biome lint errors across src/ — organize imports, remove unused imports, type annotations ([f68eb3e](https://github.com/chatman-media/timeline-studio/commit/f68eb3e2e1c6a185ceba5b87ba4f9f8e2dbc4c8a))
+
 ## [3.45.5](https://github.com/chatman-media/timeline-studio/compare/v3.45.4...v3.45.5) (2026-05-14)
 
 
