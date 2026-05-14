@@ -210,7 +210,7 @@ describe("VerticalLayout", () => {
 
       const mainPanelGroup = screen.getAllByTestId("resizable-panel-group")[0]
       expect(mainPanelGroup).toHaveAttribute("data-direction", "horizontal")
-      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "vertical-main-layout")
+      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "group-vertical-main")
     })
 
     it("должен правильно разделять левую и правую части", () => {
@@ -294,7 +294,7 @@ describe("VerticalLayout", () => {
 
       // Проверяем autoSaveId
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "vertical-layout-1")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-vertical-left")).toBe(true)
     })
 
     it("должен показывать Options + Timeline когда Browser скрыт", () => {
@@ -309,7 +309,7 @@ describe("VerticalLayout", () => {
 
       // Проверяем autoSaveId
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "vertical-layout-2")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-left-vertical")).toBe(true)
     })
 
     it("должен показывать Browser + Timeline когда Options скрыт", () => {
@@ -324,7 +324,7 @@ describe("VerticalLayout", () => {
 
       // Проверяем autoSaveId
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "vertical-layout-3")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-left-vertical")).toBe(true)
     })
   })
 
@@ -395,12 +395,12 @@ describe("VerticalLayout", () => {
       expect(panels.some((p) => p.getAttribute("data-default-size") === "67")).toBe(true)
       expect(panels.some((p) => p.getAttribute("data-default-size") === "33")).toBe(true)
 
-      // В верхней части слева: Browser 30%, Options 50%
+      // В верхней части слева: Browser 30%, Options 70%
       expect(panels.some((p) => p.getAttribute("data-default-size") === "30")).toBe(true)
-      expect(panels.some((p) => p.getAttribute("data-default-size") === "50")).toBe(true)
+      expect(panels.some((p) => p.getAttribute("data-default-size") === "70")).toBe(true)
 
-      // Timeline внизу: 20%
-      expect(panels.some((p) => p.getAttribute("data-default-size") === "20")).toBe(true)
+      // Timeline внизу: 40%
+      expect(panels.some((p) => p.getAttribute("data-default-size") === "40")).toBe(true)
     })
   })
 
@@ -414,7 +414,7 @@ describe("VerticalLayout", () => {
       const verticalGroup = panelGroups.find(
         (pg) =>
           pg.getAttribute("data-direction") === "vertical" &&
-          pg.getAttribute("data-auto-save-id") === "vertical-layout-1",
+          pg.getAttribute("data-auto-save-id") === "group-vertical-left",
       )
 
       expect(verticalGroup).toBeInTheDocument()
@@ -429,7 +429,7 @@ describe("VerticalLayout", () => {
       const mainHorizontal = panelGroups.find(
         (pg) =>
           pg.getAttribute("data-direction") === "horizontal" &&
-          pg.getAttribute("data-auto-save-id") === "vertical-main-layout",
+          pg.getAttribute("data-auto-save-id") === "group-vertical-main",
       )
       expect(mainHorizontal).toBeInTheDocument()
 
@@ -437,7 +437,7 @@ describe("VerticalLayout", () => {
       const innerVertical = panelGroups.find(
         (pg) =>
           pg.getAttribute("data-direction") === "vertical" &&
-          pg.getAttribute("data-auto-save-id") === "vertical-layout-4",
+          pg.getAttribute("data-auto-save-id") === "group-left-vertical",
       )
       expect(innerVertical).toBeInTheDocument()
 
@@ -445,7 +445,7 @@ describe("VerticalLayout", () => {
       const innerHorizontal = panelGroups.find(
         (pg) =>
           pg.getAttribute("data-direction") === "horizontal" &&
-          pg.getAttribute("data-auto-save-id") === "vertical-layout-4",
+          pg.getAttribute("data-auto-save-id") === "group-browser-options",
       )
       expect(innerHorizontal).toBeInTheDocument()
     })
@@ -554,20 +554,27 @@ describe("VerticalLayout", () => {
     })
   })
 
-  describe("Дублирование autoSaveId", () => {
-    it("должен использовать одинаковый autoSaveId для вложенной горизонтальной группы", () => {
+  describe("Структура вложенных групп", () => {
+    it("должен использовать разные autoSaveId для вертикальной и горизонтальной групп", () => {
       render(<VerticalLayout data-oid="pzfmq:x" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      const groupsWithSameId = panelGroups.filter((pg) => pg.getAttribute("data-auto-save-id") === "vertical-layout-4")
 
-      // Должно быть 2 группы с одинаковым ID: вертикальная и горизонтальная внутри
-      expect(groupsWithSameId).toHaveLength(2)
+      // Внешняя вертикальная группа
+      const verticalGroup = panelGroups.find(
+        (pg) =>
+          pg.getAttribute("data-auto-save-id") === "group-left-vertical" &&
+          pg.getAttribute("data-direction") === "vertical",
+      )
+      expect(verticalGroup).toBeInTheDocument()
 
-      // Одна должна быть вертикальной, другая горизонтальной
-      const directions = groupsWithSameId.map((g) => g.getAttribute("data-direction"))
-      expect(directions).toContain("vertical")
-      expect(directions).toContain("horizontal")
+      // Вложенная горизонтальная группа для Browser + Options
+      const horizontalGroup = panelGroups.find(
+        (pg) =>
+          pg.getAttribute("data-auto-save-id") === "group-browser-options" &&
+          pg.getAttribute("data-direction") === "horizontal",
+      )
+      expect(horizontalGroup).toBeInTheDocument()
     })
   })
 })

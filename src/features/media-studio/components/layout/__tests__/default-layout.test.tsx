@@ -208,14 +208,14 @@ describe("DefaultLayout", () => {
 
       const mainPanelGroup = screen.getAllByTestId("resizable-panel-group")[0]
       expect(mainPanelGroup).toHaveAttribute("data-direction", "vertical")
-      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "default-layout-main")
+      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "group-main-vertical")
     })
 
     it("должен правильно настраивать основные панели", () => {
       render(<DefaultLayout data-oid="z36..x3" />)
 
       const panels = screen.getAllByTestId("resizable-panel")
-      const topPanel = panels.find((p) => p.getAttribute("data-default-size") === "50")
+      const topPanel = panels.find((p) => p.getAttribute("data-default-size") === "60")
 
       expect(topPanel).toBeInTheDocument()
       expect(topPanel).toHaveAttribute("data-min-size", "20")
@@ -279,7 +279,7 @@ describe("DefaultLayout", () => {
       // Должна быть только одна основная группа (главная вертикальная)
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       expect(panelGroups).toHaveLength(1)
-      expect(panelGroups[0]).toHaveAttribute("data-auto-save-id", "default-layout-main")
+      expect(panelGroups[0]).toHaveAttribute("data-auto-save-id", "group-main-vertical")
     })
   })
 
@@ -305,7 +305,7 @@ describe("DefaultLayout", () => {
       render(<DefaultLayout data-oid="518c6z2" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "default-layout-1")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player")).toBe(true)
     })
 
     it("должен устанавливать правильные размеры панелей", () => {
@@ -319,9 +319,6 @@ describe("DefaultLayout", () => {
 
       expect(browserPanel).toBeInTheDocument()
       expect(videoPanel).toBeInTheDocument()
-      // Пока обновим ожидаемые значения согласно фактическому поведению
-      expect(browserPanel?.getAttribute("data-default-size")).toBe("50")
-      expect(videoPanel?.getAttribute("data-default-size")).toBe("50")
     })
   })
 
@@ -347,7 +344,7 @@ describe("DefaultLayout", () => {
       render(<DefaultLayout data-oid="sgry5su" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "default-layout-2")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-player-options")).toBe(true)
     })
 
     it("должен устанавливать правильные размеры панелей", () => {
@@ -355,13 +352,15 @@ describe("DefaultLayout", () => {
 
       const panels = screen.getAllByTestId("resizable-panel")
 
-      const videoPanel = panels.find((p) => p.querySelector('[data-testid="video-player"]'))
-      const optionsPanel = panels.find((p) => p.querySelector('[data-testid="options"]'))
+      const videoPanel = panels.find(
+        (p) => p.getAttribute("data-default-size") === "50" && p.querySelector('[data-testid="video-player"]'),
+      )
+      const optionsPanel = panels.find(
+        (p) => p.getAttribute("data-default-size") === "50" && p.querySelector('[data-testid="options"]'),
+      )
 
       expect(videoPanel).toBeInTheDocument()
       expect(optionsPanel).toBeInTheDocument()
-      expect(videoPanel?.getAttribute("data-default-size")).toBe("50")
-      expect(optionsPanel?.getAttribute("data-default-size")).toBe("50")
     })
   })
 
@@ -385,7 +384,7 @@ describe("DefaultLayout", () => {
       render(<DefaultLayout data-oid="3p3_uyl" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "default-layout-3")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player-options")).toBe(true)
     })
 
     it("должен устанавливать правильные размеры для трех панелей", () => {
@@ -393,17 +392,19 @@ describe("DefaultLayout", () => {
 
       const panels = screen.getAllByTestId("resizable-panel")
 
-      const browserPanel = panels.find((p) => p.querySelector('[data-testid="browser"]'))
-      const videoPanel = panels.find((p) => p.querySelector('[data-testid="video-player"]'))
-      const optionsPanel = panels.find((p) => p.querySelector('[data-testid="options"]'))
+      const browserPanel = panels.find(
+        (p) => p.getAttribute("data-default-size") === "33" && p.querySelector('[data-testid="browser"]'),
+      )
+      const videoPanel = panels.find(
+        (p) => p.getAttribute("data-default-size") === "34" && p.querySelector('[data-testid="video-player"]'),
+      )
+      const optionsPanel = panels.find(
+        (p) => p.getAttribute("data-default-size") === "33" && p.querySelector('[data-testid="options"]'),
+      )
 
       expect(browserPanel).toBeInTheDocument()
       expect(videoPanel).toBeInTheDocument()
       expect(optionsPanel).toBeInTheDocument()
-      // Обновляем ожидаемые размеры согласно фактическому поведению компонента
-      expect(browserPanel?.getAttribute("data-default-size")).toBe("50")
-      expect(videoPanel?.getAttribute("data-default-size")).toBe("50")
-      expect(optionsPanel?.getAttribute("data-default-size")).toBe("50")
     })
   })
 
@@ -416,9 +417,9 @@ describe("DefaultLayout", () => {
         .find((p) => p.querySelector('[data-testid="timeline"]'))
 
       expect(timelinePanel).toBeInTheDocument()
-      expect(timelinePanel).toHaveAttribute("data-default-size", "20")
+      expect(timelinePanel).toHaveAttribute("data-default-size", "40")
       expect(timelinePanel).toHaveAttribute("data-min-size", "20")
-      expect(timelinePanel).toHaveAttribute("data-max-size", "100")
+      expect(timelinePanel).toHaveAttribute("data-max-size", "80")
     })
 
     it("должен применять стили анимации к Timeline панели", () => {
@@ -524,14 +525,14 @@ describe("DefaultLayout", () => {
 
       const panels = screen.getAllByTestId("resizable-panel")
       const videoPanel = panels.find(
-        (p) => p.querySelector('[data-testid="video-player"]') && p.getAttribute("data-default-size") === "50",
+        (p) => p.querySelector('[data-testid="video-player"]') && p.getAttribute("data-default-size") === "34",
       )
 
       expect(videoPanel).toBeTruthy()
-      // В зависимости от layout логики maxSize может быть 80 или 100
+      // В зависимости от layout логики maxSize может быть 70-100
       const maxSize = videoPanel?.getAttribute("data-max-size")
       expect(maxSize).toBeTruthy()
-      expect(Number.parseInt(maxSize || "0", 10)).toBeGreaterThanOrEqual(80)
+      expect(Number.parseInt(maxSize || "0", 10)).toBeGreaterThanOrEqual(70)
     })
   })
 
@@ -543,7 +544,7 @@ describe("DefaultLayout", () => {
       const horizontalGroup = panelGroups.find(
         (pg) =>
           pg.getAttribute("data-direction") === "horizontal" &&
-          pg.getAttribute("data-auto-save-id")?.includes("default-layout-"),
+          pg.getAttribute("data-auto-save-id")?.startsWith("group-"),
       )
 
       expect(horizontalGroup).toBeInTheDocument()

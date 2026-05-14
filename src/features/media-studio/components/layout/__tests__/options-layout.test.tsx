@@ -191,7 +191,7 @@ describe("OptionsLayout", () => {
 
       const mainPanelGroup = screen.getAllByTestId("resizable-panel-group")[0]
       expect(mainPanelGroup).toHaveAttribute("data-direction", "horizontal")
-      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "opts-layout-main")
+      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "group-options-main")
     })
 
     it("должен правильно разделять левую и правую части", () => {
@@ -253,7 +253,7 @@ describe("OptionsLayout", () => {
       // Должна быть только основная группа
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       expect(panelGroups).toHaveLength(1)
-      expect(panelGroups[0]).toHaveAttribute("data-auto-save-id", "opts-layout-main")
+      expect(panelGroups[0]).toHaveAttribute("data-auto-save-id", "group-options-main")
     })
   })
 
@@ -275,14 +275,14 @@ describe("OptionsLayout", () => {
       render(<OptionsLayout data-oid="z0_2xw_" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "opts-layout-1")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player")).toBe(true)
     })
 
     it("должен использовать горизонтальное направление", () => {
       render(<OptionsLayout data-oid="a0c.ttx" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      const horizontalGroup = panelGroups.find((pg) => pg.getAttribute("data-auto-save-id") === "opts-layout-1")
+      const horizontalGroup = panelGroups.find((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player")
       expect(horizontalGroup).toHaveAttribute("data-direction", "horizontal")
     })
 
@@ -321,7 +321,7 @@ describe("OptionsLayout", () => {
       render(<OptionsLayout data-oid="sh:c.mq" />)
 
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "opts-layout-2")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-player-timeline")).toBe(true)
     })
 
     it("должен устанавливать правильные размеры панелей", () => {
@@ -348,7 +348,7 @@ describe("OptionsLayout", () => {
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const verticalGroup = panelGroups.find(
         (pg) =>
-          pg.getAttribute("data-direction") === "vertical" && pg.getAttribute("data-auto-save-id") === "opts-layout-3",
+          pg.getAttribute("data-direction") === "vertical" && pg.getAttribute("data-auto-save-id") === "group-options-left-top",
       )
 
       expect(verticalGroup).toBeInTheDocument()
@@ -361,7 +361,7 @@ describe("OptionsLayout", () => {
       const horizontalGroup = panelGroups.find(
         (pg) =>
           pg.getAttribute("data-direction") === "horizontal" &&
-          pg.getAttribute("data-auto-save-id") === "opts-layout-4",
+          pg.getAttribute("data-auto-save-id") === "group-browser-player",
       )
 
       expect(horizontalGroup).toBeInTheDocument()
@@ -372,9 +372,9 @@ describe("OptionsLayout", () => {
 
       const panels = screen.getAllByTestId("resizable-panel")
 
-      // Верхняя часть: 50%
+      // Верхняя часть: 60%
       const topPanel = panels.find(
-        (p) => p.getAttribute("data-default-size") === "50" && p.querySelector('[data-testid="resizable-panel-group"]'),
+        (p) => p.getAttribute("data-default-size") === "60" && p.querySelector('[data-testid="resizable-panel-group"]'),
       )
       expect(topPanel).toBeInTheDocument()
 
@@ -384,15 +384,15 @@ describe("OptionsLayout", () => {
       )
       expect(browserPanel).toBeInTheDocument()
 
-      // VideoPlayer: 50% (во вложенной группе)
+      // VideoPlayer: 70% (во вложенной группе)
       const videoPanel = panels.find(
-        (p) => p.getAttribute("data-default-size") === "50" && p.querySelector('[data-testid="video-player"]'),
+        (p) => p.getAttribute("data-default-size") === "70" && p.querySelector('[data-testid="video-player"]'),
       )
       expect(videoPanel).toBeInTheDocument()
 
-      // Timeline: 20% (внизу)
+      // Timeline: 40% (внизу)
       const timelinePanel = panels.find(
-        (p) => p.getAttribute("data-default-size") === "20" && p.querySelector('[data-testid="timeline"]'),
+        (p) => p.getAttribute("data-default-size") === "40" && p.querySelector('[data-testid="timeline"]'),
       )
       expect(timelinePanel).toBeInTheDocument()
     })
@@ -540,21 +540,21 @@ describe("OptionsLayout", () => {
       // Проверяем что есть основная группа
       const mainGroup = screen
         .getAllByTestId("resizable-panel-group")
-        .find((pg) => pg.getAttribute("data-auto-save-id") === "opts-layout-main")
+        .find((pg) => pg.getAttribute("data-auto-save-id") === "group-options-main")
       expect(mainGroup).toBeInTheDocument()
       expect(mainGroup).toHaveAttribute("data-direction", "horizontal")
 
       // Проверяем что есть вертикальная группа для левой части
       const verticalGroup = screen
         .getAllByTestId("resizable-panel-group")
-        .find((pg) => pg.getAttribute("data-auto-save-id") === "opts-layout-3")
+        .find((pg) => pg.getAttribute("data-auto-save-id") === "group-options-left-top")
       expect(verticalGroup).toBeInTheDocument()
       expect(verticalGroup).toHaveAttribute("data-direction", "vertical")
 
       // Проверяем что есть вложенная горизонтальная группа
       const nestedHorizontalGroup = screen
         .getAllByTestId("resizable-panel-group")
-        .find((pg) => pg.getAttribute("data-auto-save-id") === "opts-layout-4")
+        .find((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player")
       expect(nestedHorizontalGroup).toBeInTheDocument()
       expect(nestedHorizontalGroup).toHaveAttribute("data-direction", "horizontal")
     })

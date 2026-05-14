@@ -46,6 +46,7 @@ vi.mock("@/lib/utils", () => ({
 
 vi.mock("lucide-react", () => ({
   BarChart3: vi.fn(() => <div data-testid="barchart3-icon" data-oid="m7ve0wc" />),
+  Clapperboard: vi.fn(() => <div data-testid="clapperboard-icon" data-oid="clapperboard" />),
   Layers: vi.fn(() => <div data-testid="layers-icon" data-oid="et8._wh" />),
   Sliders: vi.fn(() => <div data-testid="sliders-icon" data-oid="h.:4c5z" />),
 }))
@@ -246,7 +247,7 @@ describe("TimelineWorkspaceTabs", () => {
       render(<TimelineWorkspaceTabs {...defaultProps} data-oid="jk-6489" />)
 
       const buttons = screen.getAllByRole("button")
-      expect(buttons).toHaveLength(3)
+      expect(buttons).toHaveLength(4)
 
       buttons.forEach((button) => {
         expect(button).toBeInTheDocument()
@@ -282,7 +283,7 @@ describe("TimelineWorkspaceTabs", () => {
 
       expect(wrapper).toBeInTheDocument()
       expect(innerContainer).toBeInTheDocument()
-      expect(buttons).toHaveLength(3)
+      expect(buttons).toHaveLength(4)
     })
 
     it("должен правильно организовать иконки и текст", () => {
@@ -309,7 +310,7 @@ describe("TimelineWorkspaceTabs", () => {
 
       const afterRerenderCallCount = vi.mocked(Button).mock.calls.length
 
-      expect(afterRerenderCallCount).toBe(initialCallCount + 3) // 3 кнопки
+      expect(afterRerenderCallCount).toBe(initialCallCount + 4) // 4 кнопки
     })
 
     it("должен мемоизировать переводы", () => {
@@ -323,7 +324,7 @@ describe("TimelineWorkspaceTabs", () => {
 
       rerender(<TimelineWorkspaceTabs {...defaultProps} data-oid="l1qehif" />)
 
-      expect(mockT.mock.calls.length).toBe(initialTCallCount + 3) // Переводы вызываются заново
+      expect(mockT.mock.calls.length).toBe(initialTCallCount + 4) // Переводы вызываются заново
     })
   })
 

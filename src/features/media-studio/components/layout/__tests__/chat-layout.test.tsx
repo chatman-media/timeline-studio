@@ -203,7 +203,7 @@ describe("ChatLayout", () => {
 
       const mainPanelGroup = screen.getAllByTestId("resizable-panel-group")[0]
       expect(mainPanelGroup).toHaveAttribute("data-direction", "horizontal")
-      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "chat-layout-main")
+      expect(mainPanelGroup).toHaveAttribute("data-auto-save-id", "group-chat-main")
     })
   })
 
@@ -267,20 +267,20 @@ describe("ChatLayout", () => {
       const { rerender } = render(<ChatLayout data-oid="01v-f.m" />)
 
       let panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "chat-layout-3")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player-options")).toBe(true)
 
       mockUserSettings.isOptionsVisible = false
       rerender(<ChatLayout data-oid="uxps924" />)
 
       panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "chat-layout-1")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-browser-player")).toBe(true)
 
       mockUserSettings.isOptionsVisible = true
       mockUserSettings.isBrowserVisible = false
       rerender(<ChatLayout data-oid="rmdrm_0" />)
 
       panelGroups = screen.getAllByTestId("resizable-panel-group")
-      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "chat-layout-2")).toBe(true)
+      expect(panelGroups.some((pg) => pg.getAttribute("data-auto-save-id") === "group-player-options")).toBe(true)
     })
   })
 
@@ -331,7 +331,7 @@ describe("ChatLayout", () => {
       const panelGroups = screen.getAllByTestId("resizable-panel-group")
       const verticalGroup = panelGroups.find(
         (pg) =>
-          pg.getAttribute("data-direction") === "vertical" && pg.getAttribute("data-auto-save-id") === "chat-layout-4",
+          pg.getAttribute("data-direction") === "vertical" && pg.getAttribute("data-auto-save-id") === "group-player-timeline",
       )
       expect(verticalGroup).toBeInTheDocument()
     })
@@ -370,10 +370,10 @@ describe("ChatLayout", () => {
 
       const panels = screen.getAllByTestId("resizable-panel")
       const panel25 = panels.filter((p) => p.getAttribute("data-default-size") === "25")
-      const panel50 = panels.filter((p) => p.getAttribute("data-default-size") === "50")
+      const panel45 = panels.filter((p) => p.getAttribute("data-default-size") === "45")
 
       expect(panel25.length).toBeGreaterThan(0)
-      expect(panel50.length).toBeGreaterThan(0)
+      expect(panel45.length).toBeGreaterThan(0)
     })
   })
 
