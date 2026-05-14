@@ -29,17 +29,19 @@ const mockTranscribe = vi.fn()
 const mockGenerateSubtitles = vi.fn()
 const mockReset = vi.fn()
 
+const mockUseTranscription = vi.fn(() => ({
+  isTranscribing: false,
+  progress: { status: "idle", progress: 0 },
+  result: null,
+  error: null,
+  transcribe: mockTranscribe,
+  generateSubtitles: mockGenerateSubtitles,
+  reset: mockReset,
+  service: {},
+}))
+
 vi.mock("../../hooks/use-transcription", () => ({
-  useTranscription: () => ({
-    isTranscribing: false,
-    progress: { status: "idle", progress: 0 },
-    result: null,
-    error: null,
-    transcribe: mockTranscribe,
-    generateSubtitles: mockGenerateSubtitles,
-    reset: mockReset,
-    service: {},
-  }),
+  useTranscription: (...args: unknown[]) => mockUseTranscription(...args),
 }))
 
 // Mock Tauri dialog
@@ -63,6 +65,16 @@ vi.mock("react-i18next", () => ({
 describe("TranscriptionPanel", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUseTranscription.mockImplementation(() => ({
+      isTranscribing: false,
+      progress: { status: "idle", progress: 0 },
+      result: null,
+      error: null,
+      transcribe: mockTranscribe,
+      generateSubtitles: mockGenerateSubtitles,
+      reset: mockReset,
+      service: {},
+    }))
   })
 
   it("should render transcription panel", () => {
@@ -123,54 +135,55 @@ describe("TranscriptionPanel", () => {
 describe("TranscriptionPanel - Edge Cases", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockUseTranscription.mockImplementation(() => ({
+      isTranscribing: false,
+      progress: { status: "idle", progress: 0 },
+      result: null,
+      error: null,
+      transcribe: mockTranscribe,
+      generateSubtitles: mockGenerateSubtitles,
+      reset: mockReset,
+      service: {},
+    }))
   })
 
   it("should display progress during transcription", () => {
-    vi.mock("../../hooks/use-transcription", () => ({
-      useTranscription: () => ({
-        isTranscribing: true,
-        progress: {
-          status: "processing",
-          progress: 50,
-          message: "Processing...",
-        },
-        result: null,
-        error: null,
-        transcribe: mockTranscribe,
-        generateSubtitles: mockGenerateSubtitles,
-        reset: mockReset,
-        service: {},
-      }),
-    }))
+    mockUseTranscription.mockReturnValueOnce({
+      isTranscribing: true,
+      progress: {
+        status: "processing",
+        progress: 50,
+        message: "Processing...",
+      },
+      result: null,
+      error: null,
+      transcribe: mockTranscribe,
+      generateSubtitles: mockGenerateSubtitles,
+      reset: mockReset,
+      service: {},
+    })
 
-    const { rerender } = render(<TranscriptionPanel data-oid="waovsaq" />)
-
-    // Force re-render to pick up mocked hook
-    rerender(<TranscriptionPanel data-oid="8.r0me4" />)
+    render(<TranscriptionPanel data-oid="waovsaq" />)
 
     // Progress should be visible
-    // Note: This test would need the mock to be properly set up before render
+    // Note: The component needs to render with the updated hook state
   })
 
   it("should display error message when transcription fails", () => {
-    vi.mock("../../hooks/use-transcription", () => ({
-      useTranscription: () => ({
-        isTranscribing: false,
-        progress: { status: "error", progress: 0 },
-        result: null,
-        error: "Transcription failed",
-        transcribe: mockTranscribe,
-        generateSubtitles: mockGenerateSubtitles,
-        reset: mockReset,
-        service: {},
-      }),
-    }))
+    mockUseTranscription.mockReturnValueOnce({
+      isTranscribing: false,
+      progress: { status: "error", progress: 0 },
+      result: null,
+      error: "Transcription failed",
+      transcribe: mockTranscribe,
+      generateSubtitles: mockGenerateSubtitles,
+      reset: mockReset,
+      service: {},
+    })
 
-    const { rerender } = render(<TranscriptionPanel data-oid="5gzn7au" />)
-    rerender(<TranscriptionPanel data-oid="u8j437p" />)
+    render(<TranscriptionPanel data-oid="5gzn7au" />)
 
     // Error message should be visible
-    // Note: This would require proper mock setup
   })
 
   it("should handle provider selection", async () => {
