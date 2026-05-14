@@ -74,6 +74,7 @@
   "exclude": [
     "node_modules",
     "src-tauri/target/**/*",
-    "src-node/**/*"
+    "src-node",
+    "promo"
   ]
 }
