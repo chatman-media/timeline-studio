@@ -1,3 +1,10 @@
+## [3.45.10](https://github.com/chatman-media/timeline-studio/compare/v3.45.9...v3.45.10) (2026-05-14)
+
+
+### Bug Fixes
+
+* **ci:** increase Frontend Tests timeout to 50min; allow Windows clippy to fail ([3aabeef](https://github.com/chatman-media/timeline-studio/commit/3aabeef95d64df7a8172432557e0397ec26af04f))
+
 ## [3.45.9](https://github.com/chatman-media/timeline-studio/compare/v3.45.8...v3.45.9) (2026-05-14)
 
 

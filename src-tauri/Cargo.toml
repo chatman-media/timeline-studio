@@ -1,6 +1,6 @@
 [package]
 name = "timeline-studio"
-version = "3.45.9"
+version = "3.45.10"
 description = "A Timeline Studio"
 authors = ["Alexander Kireyev <ak.chatman.media@gmail.com>"]
 license = "MIT WITH Commons-Clause"
