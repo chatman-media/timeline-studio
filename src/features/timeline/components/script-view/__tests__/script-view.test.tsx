@@ -16,8 +16,7 @@ vi.mock("@/components/ui/resizable", () => {
       React.createElement("div", { "data-testid": "resizable-group", ...props }, children),
     ResizablePanel: ({ children, ...props }: any) =>
       React.createElement("div", { "data-testid": "resizable-panel", ...props }, children),
-    ResizableHandle: (props: any) =>
-      React.createElement("div", { "data-testid": "resizable-handle", ...props }),
+    ResizableHandle: (props: any) => React.createElement("div", { "data-testid": "resizable-handle", ...props }),
   }
 })
 
