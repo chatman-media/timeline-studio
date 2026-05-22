@@ -1,3 +1,10 @@
+## [3.47.1](https://github.com/chatman-media/timeline-studio/compare/v3.47.0...v3.47.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* **settings:** apply settings keys without a dedicated event ([c757856](https://github.com/chatman-media/timeline-studio/commit/c757856c65df37f21c5223c473daa25b7b86ece8))
+
 # [3.47.0](https://github.com/chatman-media/timeline-studio/compare/v3.46.1...v3.47.0) (2026-05-22)
 
 
