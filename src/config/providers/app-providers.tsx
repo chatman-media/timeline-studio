@@ -17,6 +17,7 @@ import { BrowserProvider } from "@/domains/browser"
 import { MediaManagementProvider } from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
 import { PlayerProvider, ResourcesProvider, TimelineProvider } from "@/domains/video-editing"
+import { ColorSchemeProvider } from "@/features/color-scheme"
 import { I18nProvider } from "@/i18n/services/i18n-provider"
 import { TauriMockProvider } from "@/test/providers/tauri-mock-provider"
 import { ThemeProvider } from "./theme-provider"
@@ -72,7 +73,8 @@ const AppProviderComposite = composeProviders(
 
   // [2] ЛЕГКИЕ КОНФИГУРАЦИОННЫЕ
   I18nProvider, // Локализация
-  ThemeProvider, // Тема
+  ThemeProvider, // Тема (light/dark/system через next-themes)
+  ColorSchemeProvider, // Применение цветовых схем + синхронизация режима темы со стором
 
   // [3] ДОМЕННЫЕ С ORCHESTRATORS
   AppProvider, // ProjectManagementOrchestrator - управление проектами/настройками

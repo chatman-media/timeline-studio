@@ -8,6 +8,8 @@
 import { assign, createMachine } from "xstate"
 import { BrowserContext, BrowserTab, DEFAULT_TAB } from "@/domains/browser"
 import { DEFAULT_CONTENT_SIZES, type PreviewSize, type PreviewSizeKey } from "@/domains/media-management"
+import { DEFAULT_COLOR_SCHEME_ID, DEFAULT_QUICK_ACCESS_IDS } from "@/features/color-scheme/constants"
+import type { ColorScheme, ThemeMode } from "@/features/color-scheme/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -111,6 +113,12 @@ export interface UserSettingsContextType {
   dateFormat: string // Формат даты
   timeFormat: string // 12h или 24h
 
+  // Внешний вид (тема и цветовые схемы)
+  themeMode: ThemeMode // Режим темы: light | dark | system
+  colorScheme: string // ID активной цветовой схемы (встроенной или пользовательской)
+  customColorSchemes: ColorScheme[] // Пользовательские цветовые схемы
+  quickAccessSchemeIds: string[] // ID схем для быстрого доступа в выпадающем списке
+
   isBrowserVisible: boolean // Флаг видимости браузера
   isTimelineVisible: boolean // Флаг видимости временной шкалы
   isOptionsVisible: boolean // Флаг видимости опций
@@ -212,6 +220,12 @@ const initialContext: UserSettingsContextType = {
   preferredLanguage: "ru", // Русский язык по умолчанию (согласно CLAUDE.md)
   dateFormat: "DD.MM.YYYY", // Формат даты
   timeFormat: "24h", // 24-часовой формат времени
+
+  // Внешний вид по умолчанию
+  themeMode: "system", // Следуем системной теме по умолчанию
+  colorScheme: DEFAULT_COLOR_SCHEME_ID, // Бирюзовая схема по умолчанию (как в globals.css)
+  customColorSchemes: [], // Пользовательских схем нет по умолчанию
+  quickAccessSchemeIds: DEFAULT_QUICK_ACCESS_IDS, // Набор быстрого доступа по умолчанию
 
   isBrowserVisible: true, // Браузер виден по умолчанию
   isTimelineVisible: true, // Временная шкала видна по умолчанию

@@ -2043,6 +2043,7 @@
       "noApiKeys": "API ключи не настроены",
       "tabs": {
         "general": "Общие",
+        "appearance": "Внешний вид",
         "aiServices": "ИИ сервисы",
         "socialNetworks": "Социальные сети",
         "development": "Разработка",
@@ -3089,6 +3090,43 @@
     },
     "duration": {
       "seconds": "{{count}} сек"
+    }
+  },
+  "colorScheme": {
+    "title": "Цветовая схема",
+    "manage": "Управление схемами…",
+    "noQuickAccess": "Нет схем в быстром доступе",
+    "themeMode": "Режим темы",
+    "modes": {
+      "light": "Светлая",
+      "dark": "Тёмная",
+      "system": "Системная"
+    },
+    "schemes": "Цветовые схемы",
+    "quickAccessHint": "Отметьте звёздочкой схемы для быстрого доступа в верхней панели",
+    "toggleQuickAccess": "Быстрый доступ",
+    "export": "Экспорт",
+    "import": "Импорт",
+    "delete": "Удалить схему",
+    "createCustom": "Своя цветовая схема",
+    "name": "Название",
+    "namePlaceholder": "Моя схема",
+    "accentColor": "Акцент",
+    "add": "Добавить",
+    "noCustom": "Пользовательских схем пока нет",
+    "builtin": {
+      "teal": "Бирюзовая",
+      "blue": "Синяя",
+      "purple": "Фиолетовая",
+      "green": "Зелёная",
+      "orange": "Оранжевая",
+      "rose": "Розовая"
+    },
+    "errors": {
+      "nameRequired": "Введите имя схемы",
+      "invalidColor": "Некорректный цвет",
+      "invalidFile": "Файл не является цветовой схемой",
+      "importFailed": "Не удалось импортировать схему"
     }
   }
 }

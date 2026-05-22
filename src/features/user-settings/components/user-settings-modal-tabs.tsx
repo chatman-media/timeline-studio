@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { AiServicesTab } from "./tabs/ai-services-tab"
+import { AppearanceTab } from "./tabs/appearance-tab"
 import { DevelopmentTab } from "./tabs/development-tab"
 import { GeneralSettingsTab } from "./tabs/general-settings-tab"
 import { PerformanceSettingsTab } from "./tabs/performance-settings-tab"
@@ -26,9 +27,12 @@ export function UserSettingsModalTabs() {
     <div className="flex flex-col h-full" data-oid="77q8soy">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full" data-oid="3cco27a">
         {/* Список вкладок */}
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6" data-oid="xt:xm6c">
+        <TabsList className="grid w-full grid-cols-6 lg:grid-cols-7" data-oid="xt:xm6c">
           <TabsTrigger value="general" className="text-xs" data-oid="5qgvacg">
             {t("dialogs.userSettings.tabs.general", "Основные")}
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="text-xs">
+            {t("dialogs.userSettings.tabs.appearance", "Внешний вид")}
           </TabsTrigger>
           <TabsTrigger value="performance" className="text-xs" data-oid="47xj-dl">
             {t("dialogs.userSettings.tabs.performance", "Производительность")}
@@ -53,6 +57,10 @@ export function UserSettingsModalTabs() {
         <div className="flex-1 mt-4 overflow-auto" data-oid="vhbz:ee">
           <TabsContent value="general" className="h-full mt-0" data-oid="ac0:a26">
             <GeneralSettingsTab data-oid="z-k0kw." />
+          </TabsContent>
+
+          <TabsContent value="appearance" className="h-full mt-0">
+            <AppearanceTab />
           </TabsContent>
 
           <TabsContent value="performance" className="h-full mt-0" data-oid="tw5pfrn">

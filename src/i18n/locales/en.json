@@ -381,6 +381,7 @@
       "noApiKeys": "No API keys configured",
       "tabs": {
         "general": "General",
+        "appearance": "Appearance",
         "aiServices": "AI Services",
         "socialNetworks": "Social Networks",
         "development": "Development",
@@ -3397,6 +3398,43 @@
     },
     "duration": {
       "seconds": "{{count}} sec"
+    }
+  },
+  "colorScheme": {
+    "title": "Color scheme",
+    "manage": "Manage schemes…",
+    "noQuickAccess": "No schemes in quick access",
+    "themeMode": "Theme mode",
+    "modes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "schemes": "Color schemes",
+    "quickAccessHint": "Star the schemes you want in the top-bar quick access",
+    "toggleQuickAccess": "Quick access",
+    "export": "Export",
+    "import": "Import",
+    "delete": "Delete scheme",
+    "createCustom": "Custom color scheme",
+    "name": "Name",
+    "namePlaceholder": "My scheme",
+    "accentColor": "Accent",
+    "add": "Add",
+    "noCustom": "No custom schemes yet",
+    "builtin": {
+      "teal": "Teal",
+      "blue": "Blue",
+      "purple": "Purple",
+      "green": "Green",
+      "orange": "Orange",
+      "rose": "Rose"
+    },
+    "errors": {
+      "nameRequired": "Enter a scheme name",
+      "invalidColor": "Invalid color",
+      "invalidFile": "File is not a color scheme",
+      "importFailed": "Failed to import scheme"
     }
   }
 }
