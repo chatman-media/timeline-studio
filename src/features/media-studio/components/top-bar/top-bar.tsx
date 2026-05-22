@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useCurrentProject } from "@/domains/project-management/hooks"
 import { useModals, useNotifications } from "@/domains/system-integration"
+import { ColorSchemeDropdown } from "@/features/color-scheme"
 import { RenderQueueDropdown } from "@/features/export"
 import { LayoutPreviews } from "@/features/media-studio"
 import type { ModalType } from "@/features/modals"
@@ -259,6 +260,9 @@ const TopBarComponent = function TopBar() {
         <div className="flex items-center justify-start ml-[20%]" data-oid="21noqd9">
           <div data-testid="theme-toggle" data-oid="ty_:wjf">
             <ThemeToggle data-oid="1lu90n:" />
+          </div>
+          <div data-testid="color-scheme-toggle">
+            <ColorSchemeDropdown />
           </div>
           <Button
             className={TOP_BAR_BUTTON_CLASS}
