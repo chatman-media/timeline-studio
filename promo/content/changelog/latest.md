@@ -1,3 +1,10 @@
+# [3.47.0](https://github.com/chatman-media/timeline-studio/compare/v3.46.1...v3.47.0) (2026-05-22)
+
+
+### Features
+
+* **theme:** add color schemes with light/dark sync ([#69](https://github.com/chatman-media/timeline-studio/issues/69)) ([e78a282](https://github.com/chatman-media/timeline-studio/commit/e78a28287a40164e1fb3974ca4cc7cdfe2b29a3b))
+
 ## [3.46.1](https://github.com/chatman-media/timeline-studio/compare/v3.46.0...v3.46.1) (2026-05-14)
 
 
