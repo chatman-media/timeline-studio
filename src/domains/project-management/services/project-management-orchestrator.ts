@@ -285,9 +285,17 @@ export class ProjectManagementOrchestrator {
   updateUserSettings(settings: Partial<UserSettingsContextType>) {
     logger.info("[Project Management Orchestrator] Updating user settings")
 
+    // Ключи без специального события собираем и применяем одним UPDATE_ALL,
+    // чтобы они не терялись (например, themeMode/colorScheme и др.)
+    const bulkSettings: Record<string, unknown> = {}
+
     // Отправляем события для каждой настройки
     Object.entries(settings).forEach(([key, value]) => {
       const eventType = this.getSettingsEventType(key)
+      if (!eventType) {
+        bulkSettings[key] = value
+        return
+      }
       if (eventType) {
         // TOGGLE события не принимают параметров - они просто инвертируют значение
         if (eventType.startsWith("TOGGLE_")) {
@@ -345,6 +353,14 @@ export class ProjectManagementOrchestrator {
         }
       }
     })
+
+    // Применяем настройки без выделенного события одним массовым обновлением
+    if (Object.keys(bulkSettings).length > 0) {
+      this.userSettingsActor.send({
+        type: "UPDATE_ALL",
+        settings: bulkSettings,
+      } as any)
+    }
   }
 
   /**
