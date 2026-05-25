@@ -28,8 +28,29 @@ export class MockBackendService implements IBackendService {
     this._connected = false
   }
 
-  async executeCommand(_command: ProjectCommand): Promise<CommandResult> {
-    // Simulate command execution - command parameter available for override in tests
+  async executeCommand(command: ProjectCommand): Promise<CommandResult> {
+    if (command.type === "OpenProject") {
+      const path = command.params.path
+      const mockFiles = typeof window !== "undefined"
+        ? ((window as any).__TAURI_MOCK_FILES__ as Record<string, File> | undefined)
+        : undefined
+      const fileName = path.split("/").pop() ?? path
+      const file = mockFiles?.[path] ?? mockFiles?.[fileName]
+      if (file) {
+        try {
+          const text = await file.text()
+          const data = JSON.parse(text) as ProjectState
+          this.setState(data)
+          this.emitEvent({
+            type: "ProjectOpened",
+            payload: { project_id: data.project?.id ?? crypto.randomUUID(), path },
+          })
+          return { success: true, data, error: null }
+        } catch {
+          // Файл не является валидным ProjectState — игнорируем
+        }
+      }
+    }
     return {
       success: true,
       data: null,

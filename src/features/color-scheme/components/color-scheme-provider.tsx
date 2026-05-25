@@ -25,14 +25,15 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
     applyColorScheme(activeScheme)
   }, [activeScheme])
 
-  // После загрузки настроек из стора — приводим next-themes к settings.themeMode.
-  // Проверка равенства внутри гарантирует отсутствие цикла при изменении theme.
+  // После загрузки/изменения themeMode из стора — приводим next-themes к нему.
+  // Намеренно не включаем `theme` в deps — нас интересует только изменение
+  // themeMode в сторе (начальная загрузка, изменение из настроек).
+  // Включение `theme` создаёт петлю: toggle → setTheme → effect → setTheme.
   useEffect(() => {
-    if (!isLoaded) return
-    if (themeMode && theme !== themeMode) {
-      setTheme(themeMode)
-    }
-  }, [isLoaded, themeMode, theme, setTheme])
+    if (!isLoaded || !themeMode) return
+    setTheme(themeMode)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, themeMode])
 
   return <>{children}</>
 }

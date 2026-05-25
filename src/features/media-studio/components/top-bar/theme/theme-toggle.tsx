@@ -1,26 +1,37 @@
 "use client"
 
 import { Moon, Sun } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/config/providers"
+import { useUserSettings } from "@/domains/project-management/hooks"
 import { TOP_BAR_BUTTON_CLASS } from "../top-bar"
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
+  const { updateSettings } = useUserSettings()
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  const handleToggle = useCallback(() => {
+    if (!mounted) return
+    const newTheme = resolvedTheme === "dark" ? "light" : "dark"
+    setTheme(newTheme)
+    updateSettings({ themeMode: newTheme })
+  }, [mounted, resolvedTheme, setTheme, updateSettings])
+
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => mounted && setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={handleToggle}
       className={TOP_BAR_BUTTON_CLASS}
+      title={mounted ? (resolvedTheme === "dark" ? "Светлая тема" : "Тёмная тема") : "Переключить тему"}
+      data-testid="theme-toggle-button"
       data-oid="6zco41g"
     >
       <Sun className="h-5 w-5 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" data-oid="jqf.czz" />

@@ -271,6 +271,11 @@ interface UpdateLayoutModeEvent {
   layoutMode: LayoutMode // Новый макет интерфейса
 }
 
+interface UpdateThemeModeEvent {
+  type: "UPDATE_THEME_MODE"
+  themeMode: string
+}
+
 /**
  * Интерфейс события обновления пути для скриншотов
  * @interface UpdateScreenshotsPathEvent
@@ -614,6 +619,8 @@ export type UserSettingsEvent =
   | UpdatePreferredLanguageEvent
   | UpdateDateFormatEvent
   | UpdateTimeFormatEvent
+  // Тема
+  | UpdateThemeModeEvent
 
 /**
  * Машина состояний для управления пользовательскими настройками
@@ -672,6 +679,10 @@ export const userSettingsMachine = createMachine(
           // Обновление макета интерфейса (альтернативное имя события, используется orchestrator)
           UPDATE_LAYOUT_MODE: {
             actions: ["updateLayout"],
+          },
+
+          UPDATE_THEME_MODE: {
+            actions: ["updateThemeMode"],
           },
 
           // Обновление пути для скриншотов
@@ -921,6 +932,14 @@ export const userSettingsMachine = createMachine(
         return {
           ...context,
           layoutMode: typedEvent.layoutMode, // Новый макет интерфейса
+        }
+      }),
+
+      updateThemeMode: assign(({ context, event }) => {
+        const typedEvent = event as UpdateThemeModeEvent
+        return {
+          ...context,
+          themeMode: typedEvent.themeMode as any,
         }
       }),
 

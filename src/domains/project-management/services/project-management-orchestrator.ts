@@ -352,6 +352,7 @@ export class ProjectManagementOrchestrator {
    */
   private getSettingsEventType(key: string): string | null {
     const eventMap: Record<string, string> = {
+      themeMode: "UPDATE_THEME_MODE",
       layoutMode: "UPDATE_LAYOUT_MODE",
       activeTab: "UPDATE_ACTIVE_TAB",
       openAiApiKey: "UPDATE_OPENAI_API_KEY",

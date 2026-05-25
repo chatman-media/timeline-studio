@@ -48,6 +48,9 @@ export class UpdateService {
    * Настроить слушатели событий обновления
    */
   private async setupEventListeners(): Promise<void> {
+    if (typeof window === "undefined" || !(window as any).__TAURI_INTERNALS__?.transformCallback) {
+      return
+    }
     try {
       // Слушаем события прогресса загрузки (если они будут добавлены в backend)
       await listen("update-progress", (event: any) => {
