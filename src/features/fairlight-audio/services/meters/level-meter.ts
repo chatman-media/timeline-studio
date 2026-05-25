@@ -380,7 +380,11 @@ export class LevelMeter extends EventEmitter {
     this.stop()
 
     if (this.processor) {
-      this.processor.disconnect()
+      try {
+        this.processor.disconnect()
+      } catch {
+        // Node may not be connected
+      }
       this.processor = null
     }
 

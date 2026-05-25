@@ -11,11 +11,32 @@ const isTauri = () => {
   return (window as any).__TAURI_INTERNALS__ !== undefined && (window as any).__TAURI_INTERNALS__ !== null
 }
 
+// Синхронная инициализация stub-а до того как любой сервис (UpdateService, etc.)
+// попытается вызвать listen() из @tauri-apps/api/event — она требует transformCallback.
+if (typeof window !== "undefined" && !(window as any).__TAURI_INTERNALS__) {
+  const stubCallbacks = new Map<number, (data: any) => void>()
+  ;(window as any).__TAURI_INTERNALS__ = {
+    transformCallback: (cb: any) => {
+      const id = Math.floor(Math.random() * 0xffffffff)
+      stubCallbacks.set(id, cb)
+      return id
+    },
+    unregisterCallback: (id: number) => stubCallbacks.delete(id),
+    callbacks: stubCallbacks,
+    // Временный invoke — переопределяется в useEffect после монтажа компонента
+    invoke: async (cmd: string) => {
+      logger.warn(`[TauriMock stub] Command before full init: ${cmd}`)
+      return null
+    },
+  }
+}
+
 export function TauriMockProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Only mock in browser environment when Tauri is not available
-    // This includes development server and E2E tests
-    if (typeof window !== "undefined" && !isTauri()) {
+    // Always (re-)initialize mock in browser environment.
+    // We update __TAURI_INTERNALS__ even when isTauri() is true so that
+    // hot-module reloads pick up the latest invoke handler.
+    if (typeof window !== "undefined") {
       // Mock navigator.mediaDevices API for Tauri environment
       if (!navigator.mediaDevices) {
         Object.defineProperty(navigator, "mediaDevices", {
@@ -195,6 +216,8 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
             case "check_hardware_acceleration_support":
               return true
             case "set_hardware_acceleration":
+              return null
+            case "restore_preview_cache":
               return null
             case "get_prerender_cache_info":
               return {
@@ -431,6 +454,40 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
                 cloud_project_dir: "/Users/test/Movies/Timeline Studio/CloudProjects",
                 upload_dir: "/Users/test/Movies/Timeline Studio/Upload",
               }
+            case "plugin:dialog|open": {
+              // Используем нативный File System Access API браузера.
+              // Используем .catch() вместо try/await чтобы избежать false-positive
+              // "unhandledRejection" от Next.js при SecurityError (нет user gesture).
+              const opts = (args as any)?.options || args || {}
+              if (opts.directory) {
+                if (!("showDirectoryPicker" in window)) return null
+                return (window as any)
+                  .showDirectoryPicker()
+                  .then((h: any) => h?.name ?? null)
+                  .catch(() => null)
+              }
+              if (!("showOpenFilePicker" in window)) return null
+              return (window as any)
+                .showOpenFilePicker({ multiple: opts.multiple ?? false })
+                .then(async (handles: FileSystemFileHandle[]) => {
+                  if (!handles || handles.length === 0) return null
+                  const files: File[] = await Promise.all(handles.map((h) => h.getFile()))
+                  ;(window as any).__TAURI_MOCK_FILES__ = (window as any).__TAURI_MOCK_FILES__ || {}
+                  files.forEach((f) => { ;(window as any).__TAURI_MOCK_FILES__[f.name] = f })
+                  const paths = files.map((f) => f.name)
+                  return opts.multiple !== false ? paths : paths[0] ?? null
+                })
+                .catch((e: Error) => {
+                  if (e.name === "AbortError" || e.name === "SecurityError") return null
+                  throw e
+                })
+            }
+            case "plugin:dialog|save":
+              // В браузере сохранение на диск недоступно — имитируем отмену
+              return null
+            case "plugin:path|home_dir":
+            case "plugin:path|resolve_directory":
+              return "/Users/mock"
             case "plugin:dialog|open_file":
               // Для тестов возвращаем пустой массив, если не переопределено
               return { paths: [] }
@@ -455,12 +512,40 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
             case "delete_api_key":
               // Возвращаем успешный результат
               return { success: true }
+            case "execute_command": {
+              // Все ProjectCommand-ы — возвращаем успех; TauriBackendAdapter использует это
+              const command = (args as any)?.command
+              if (command?.type === "CreateProject") {
+                const projectId = crypto.randomUUID()
+                return {
+                  success: true,
+                  data: { project_id: projectId, name: command.params?.name || "Untitled Project" },
+                  error: null,
+                }
+              }
+              return { success: true, data: null, error: null }
+            }
+            case "get_project_state":
+              // Возвращаем null — проект не загружен в browser режиме
+              return null
+            case "mcp_initialize":
+              return false
+            case "plugin:notification|is_permission_granted":
+              return false
+            case "plugin:notification|request_permission":
+              return "denied"
+            case "get_current_version":
+              return "3.46.1"
+            case "is_updater_available":
+              return false
+            case "check_for_update":
+              return null
             case "ai_get_supported_providers":
-              // Возвращаем список AI провайдеров (пустой в browser режиме)
-              return { status: "ok", data: [], error: null }
+              // Возвращаем [] напрямую — сгенерированный биндинг уже оборачивает в { status, data }
+              return []
             case "ai_get_provider_models":
-              // Возвращаем пустой список моделей (в browser режиме без backend)
-              return { status: "ok", data: [], error: null }
+              // Возвращаем [] напрямую — сгенерированный биндинг уже оборачивает в { status, data }
+              return []
             case "ai_send_secure_request":
               // Mock AI request response
               return {

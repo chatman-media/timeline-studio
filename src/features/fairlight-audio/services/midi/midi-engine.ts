@@ -110,7 +110,8 @@ export class MidiEngine extends EventEmitter {
       this.isInitialized = true
       this.emit("initialized")
     } catch (error) {
-      logger.error("Failed to initialize MIDI:", { error })
+      // Expected in browser without MIDI hardware or when permission is denied
+      logger.warn("Failed to initialize MIDI (expected in browser mode):", { error })
       // Don't throw, just log the error and emit initialized
       this.emit("initialized")
     }

@@ -82,7 +82,11 @@ export function LevelMeter({
         cancelAnimationFrame(animationRef.current)
       }
       if (analyserRef.current && source) {
-        source.disconnect(analyserRef.current)
+        try {
+          source.disconnect(analyserRef.current)
+        } catch {
+          // Node may have already been disconnected
+        }
       }
     }
   }, [audioContext, source, channels])

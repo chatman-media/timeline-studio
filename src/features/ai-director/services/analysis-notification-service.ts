@@ -30,6 +30,7 @@ class AnalysisNotificationService {
    * Проверяет разрешение на системные нотификации
    */
   private async init() {
+    if (typeof window === "undefined" || !(window as any).__TAURI_INTERNALS__) return
     try {
       this.permissionGranted = await isPermissionGranted()
 

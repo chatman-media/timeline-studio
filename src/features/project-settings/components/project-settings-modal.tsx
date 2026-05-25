@@ -64,8 +64,27 @@ export function ProjectSettingsModal() {
     // Обновляем значения пользовательской ширины и высоты
     // ТОЛЬКО если пользователь НЕ редактирует поля в данный момент
     if (!isEditing) {
-      setCustomWidth(settings.aspectRatio.value.width)
-      setCustomHeight(settings.aspectRatio.value.height)
+      if (settings.aspectRatio.label === "custom") {
+        // Для custom соотношения value.width/height хранит реальные пиксели
+        setCustomWidth(settings.aspectRatio.value.width)
+        setCustomHeight(settings.aspectRatio.value.height)
+      } else if (settings.resolution && settings.resolution !== "custom") {
+        // Для стандартных соотношений берём размеры из строки разрешения (e.g. "1920x1080")
+        const parts = settings.resolution.split("x")
+        if (parts.length === 2) {
+          const w = parseInt(parts[0], 10)
+          const h = parseInt(parts[1], 10)
+          if (!isNaN(w) && !isNaN(h)) {
+            setCustomWidth(w)
+            setCustomHeight(h)
+          }
+        }
+      } else {
+        // Fallback: берём рекомендованное разрешение для данного соотношения
+        const defaultRes = getDefaultResolutionForAspectRatio(settings.aspectRatio.label)
+        setCustomWidth(defaultRes.width)
+        setCustomHeight(defaultRes.height)
+      }
     }
 
     logger.info("[ProjectSettingsDialog] Доступные разрешения обновлены:", {
