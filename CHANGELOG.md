@@ -1,3 +1,10 @@
+## [3.47.2](https://github.com/chatman-media/timeline-studio/compare/v3.47.1...v3.47.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* **browser:** fix browser preview mode bugs and improve mock coverage ([dd9f372](https://github.com/chatman-media/timeline-studio/commit/dd9f3725480f08b694d73b8a49b0953b56a3062d))
+
 ## [3.47.1](https://github.com/chatman-media/timeline-studio/compare/v3.47.0...v3.47.1) (2026-05-22)
 
 
