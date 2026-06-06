@@ -14,7 +14,9 @@ ts-platform = { path = "../ts-platform" }
 ts-publish = { path = "../ts-publish" }
 ts-analysis = { path = "../ts-analysis" }
 ts-agent = { path = "../ts-agent" }
+ts-media = { path = "../ts-media" }
 ts-schema = { path = "../ts-schema" }
+serde = { version = "1", features = ["derive"] }
 clap = { version = "4", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 serde_json = "1"
