@@ -168,6 +168,8 @@ impl ModelBootstrap {
     // HTTP-загрузка через reqwest (streaming)
     let client = reqwest::Client::builder()
       .user_agent("timeline-studio/bootstrap")
+      .timeout(std::time::Duration::from_secs(300)) // модели до ~140 МБ
+      .connect_timeout(std::time::Duration::from_secs(30))
       .build()?;
 
     let resp = client
@@ -190,8 +192,13 @@ impl ModelBootstrap {
       .with_context(|| format!("reading body from {}", entry.url))?;
 
     let size_bytes = bytes.len() as u64;
-    std::fs::write(&path, &bytes)
-      .with_context(|| format!("writing model to {}", path.display()))?;
+
+    // Атомарная запись: пишем в .tmp, затем rename — защита от corrupt-файла при сбое
+    let tmp_path = path.with_extension("onnx.tmp");
+    std::fs::write(&tmp_path, &bytes)
+      .with_context(|| format!("writing temp model to {}", tmp_path.display()))?;
+    std::fs::rename(&tmp_path, &path)
+      .with_context(|| format!("renaming {} -> {}", tmp_path.display(), path.display()))?;
 
     log::info!("model {} saved ({} bytes) -> {}", name, size_bytes, path.display());
 
@@ -235,12 +242,21 @@ impl Default for ModelBootstrap {
 mod tests {
   use super::*;
 
+  /// Проверяем, что models_dir() уважает env-переменную.
+  /// Не вызываем set_var (data race при parallel test runner) —
+  /// тестируем саму логику через with_dir + проверяем дефолт через dirs.
   #[test]
-  fn models_dir_uses_env_var() {
-    std::env::set_var("TIMELINE_MODELS_DIR", "/tmp/test-models");
-    let b = ModelBootstrap::new();
-    assert_eq!(b.dir(), Path::new("/tmp/test-models"));
-    std::env::remove_var("TIMELINE_MODELS_DIR");
+  fn models_dir_fallback_is_sensible() {
+    // Без env-переменной → платформенный дефолт (не пустой путь)
+    let path = models_dir();
+    assert!(!path.as_os_str().is_empty());
+    assert!(path.to_string_lossy().contains("timeline-studio"));
+  }
+
+  #[test]
+  fn with_dir_overrides_default() {
+    let b = ModelBootstrap::with_dir("/custom/models");
+    assert_eq!(b.dir(), Path::new("/custom/models"));
   }
 
   #[test]

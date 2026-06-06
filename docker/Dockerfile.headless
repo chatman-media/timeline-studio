@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ONNX Runtime (для ts-recognition)
+
 # IMPORTANT: ort = "=2.0.0-rc.10" (load-dynamic) совместим с ORT 1.19–1.21, NOT 1.22.0
 ARG ORT_VERSION=1.21.0
 RUN wget -q "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-linux-x64-${ORT_VERSION}.tgz" \
