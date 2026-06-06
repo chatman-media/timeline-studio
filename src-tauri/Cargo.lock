@@ -6627,6 +6627,7 @@ version = "0.8.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fbf2ae1b8bc8e02df939598064d22402220cd5bbcca1c76f7d6a310974d5615"
 dependencies = [
+ "chrono",
  "dyn-clone",
  "indexmap 1.9.3",
  "schemars_derive",
@@ -8557,6 +8558,7 @@ dependencies = [
  "ts-analysis",
  "ts-media",
  "ts-montage",
+ "ts-platform",
  "ts-recognition",
  "ts-render",
  "ts-schema",
@@ -9092,6 +9094,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-platform"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "specta",
+ "tokio",
+]
+
+[[package]]
 name = "ts-recognition"
 version = "0.1.0"
 dependencies = [
@@ -9123,6 +9135,7 @@ dependencies = [
  "env_logger",
  "log",
  "regex",
+ "schemars 0.8.22",
  "serde",
  "serde_json",
  "tempfile",
@@ -9137,6 +9150,7 @@ name = "ts-schema"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "schemars 0.8.22",
  "serde",
  "serde_json",
  "specta",

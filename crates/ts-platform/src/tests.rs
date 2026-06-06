@@ -2,7 +2,8 @@
 
 #[cfg(test)]
 mod platform_optimization_tests {
-  use super::super::*;
+  use crate::business_logic::{self, *};
+  use crate::types::{self, *};
 
   #[test]
   fn test_platform_optimization_result_creation() {
