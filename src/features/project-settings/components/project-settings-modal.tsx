@@ -72,8 +72,8 @@ export function ProjectSettingsModal() {
         // Для стандартных соотношений берём размеры из строки разрешения (e.g. "1920x1080")
         const parts = settings.resolution.split("x")
         if (parts.length === 2) {
-          const w = parseInt(parts[0], 10)
-          const h = parseInt(parts[1], 10)
+          const w = Number.parseInt(parts[0], 10)
+          const h = Number.parseInt(parts[1], 10)
           if (!isNaN(w) && !isNaN(h)) {
             setCustomWidth(w)
             setCustomHeight(h)
