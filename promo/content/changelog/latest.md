@@ -1,3 +1,15 @@
+# [3.55.0](https://github.com/chatman-media/timeline-studio/compare/v3.54.0...v3.55.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* **lint:** исключить src/types/contracts из biome (авто-генерация, M1 [#120](https://github.com/chatman-media/timeline-studio/issues/120)) ([b18d84a](https://github.com/chatman-media/timeline-studio/commit/b18d84a9e39d05d9fc3b50241354338575fa0410))
+
+
+### Features
+
+* **ts-publish:** реальный Telegram Bot API sendVideo — M5 [#124](https://github.com/chatman-media/timeline-studio/issues/124) ([1647ba9](https://github.com/chatman-media/timeline-studio/commit/1647ba9791c252f962083ad6836edd2195c29e4a))
+
 # [3.54.0](https://github.com/chatman-media/timeline-studio/compare/v3.53.0...v3.54.0) (2026-06-06)
 
 
