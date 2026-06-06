@@ -1,0 +1,45 @@
+name: Crates (workspace)
+
+# Сборка и тесты вынесенных крейтов (crates/*) — эпик декомпозиции #91.
+# Монолит src-tauri тестируется отдельными пайплайнами; этот защищает крейты.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'crates/**'
+      - '.github/workflows/crates.yml'
+  pull_request:
+    paths:
+      - 'crates/**'
+      - '.github/workflows/crates.yml'
+
+jobs:
+  test:
+    name: Build & test crates
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg (нужен ts-render/ts-media: CLI-рендер в рантайме)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+
+      - name: Install ONNX Runtime (нужен ts-recognition: ort load-dynamic)
+        run: |
+          wget -q https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz
+          tar -xzf onnxruntime-linux-x64-1.22.0.tgz
+          sudo cp onnxruntime-linux-x64-1.22.0/lib/*.so* /usr/local/lib/
+          sudo ldconfig
+          echo "ORT_DYLIB_PATH=/usr/local/lib/libonnxruntime.so" >> "$GITHUB_ENV"
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            crates/target
+          key: crates-${{ runner.os }}-${{ hashFiles('crates/Cargo.lock') }}
+
+      - name: cargo test (workspace)
+        working-directory: crates
+        run: cargo test --workspace --no-fail-fast -- --test-threads=2
