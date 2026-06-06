@@ -472,7 +472,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_recognition_service_creation() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf()).await;
@@ -483,7 +482,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_group_objects() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -510,7 +508,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_group_faces() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -535,7 +532,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_detect_scenes_people() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -568,7 +564,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_detect_scenes_traffic() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -610,7 +605,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_detect_scenes_mixed() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -645,7 +639,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_save_and_load_results() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -681,7 +674,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_load_nonexistent_results() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -693,7 +685,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_process_batch() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -713,7 +704,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_get_object_classes() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -727,7 +717,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_set_object_classes() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -741,7 +730,6 @@ mod tests {
   }
 
   #[test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   fn test_recognition_event_serialization() {
     let events = vec![
       RecognitionEvent::ProcessingStarted {
@@ -799,7 +787,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_detect_scenes_empty() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
@@ -812,7 +799,6 @@ mod tests {
   }
 
   #[tokio::test]
-  #[ignore = "needs ONNX runtime (libonnxruntime) + model weights"]
   async fn test_detect_scenes_no_relevant_objects() {
     let temp_dir = TempDir::new().unwrap();
     let service = RecognitionService::new(temp_dir.path().to_path_buf())
