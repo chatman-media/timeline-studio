@@ -2924,6 +2924,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
+name = "ts-agent"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "log",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-test",
+ "ts-analysis",
+ "ts-platform",
+ "ts-publish",
+ "ts-render",
+ "ts-schema",
+]
+
+[[package]]
 name = "ts-analysis"
 version = "0.1.0"
 dependencies = [
@@ -2951,6 +2968,8 @@ dependencies = [
  "schemars",
  "serde_json",
  "tokio",
+ "ts-agent",
+ "ts-analysis",
  "ts-platform",
  "ts-publish",
  "ts-render",

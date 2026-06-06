@@ -1,0 +1,20 @@
+[package]
+name = "ts-agent"
+version = "0.1.0"
+edition = "2021"
+description = "Агентный оркестратор Timeline Studio: analyze→render→optimize→publish — M4 #123"
+
+[dependencies]
+ts-analysis = { path = "../ts-analysis" }
+ts-render = { path = "../ts-render" }
+ts-platform = { path = "../ts-platform" }
+ts-publish = { path = "../ts-publish" }
+ts-schema = { path = "../ts-schema" }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+log = "0.4"
+
+[dev-dependencies]
+tokio-test = "0.4"
