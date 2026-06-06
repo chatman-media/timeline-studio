@@ -3,4 +3,4 @@
 # пока монолит не распилен достаточно, чтобы собираться (см. эпик #91).
 [workspace]
 resolver = "2"
-members = ["ts-schema", "ts-render", "ts-recognition", "ts-subtitles", "ts-media"]
+members = ["ts-schema", "ts-render", "ts-recognition", "ts-subtitles", "ts-media", "ts-montage"]
