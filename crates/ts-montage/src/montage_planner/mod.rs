@@ -9,3 +9,6 @@ pub mod types;
 // Re-export main types and services
 pub use services::*;
 pub use types::*;
+
+#[cfg(test)]
+mod crate_tests;
