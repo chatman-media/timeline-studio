@@ -1,0 +1,33 @@
+# Timeline Studio — исключения для Docker build context
+
+# Frontend / Node
+node_modules/
+.next/
+dist/
+.nuxt/
+
+# Tauri монолит (не нужен для headless-образа)
+src-tauri/target/
+
+# Cargo target в crates (пересобирается в builder)
+crates/target/
+
+# Git
+.git/
+.github/
+
+# IDE / OS
+.idea/
+.vscode/
+*.DS_Store
+
+# Большие медиафайлы
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+
+# Тестовые данные
+crates/**/tests/fixtures/

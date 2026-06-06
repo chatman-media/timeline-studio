@@ -1,0 +1,73 @@
+# Timeline Studio headless runtime — `timeline` CLI + ffmpeg + ONNX Runtime
+#
+# Multi-stage:
+#   builder  — Rust + ffmpeg-dev + ONNX headers → compile `timeline` binary
+#   runtime  — slim Debian + ffmpeg + ONNX shared libs → final image
+#
+# Использование:
+#   docker build -f docker/Dockerfile.headless -t timeline-headless .
+#   docker run --rm -v $PWD:/data timeline-headless \
+#       timeline ingest /data/video.mp4
+#   docker run --rm -v $PWD:/data timeline-headless \
+#       timeline pipeline -i /data/video.mp4 -p tiktok -o /data/out.mp4
+
+# ──────────────────────────────────────────────────────────────────────────────
+# STAGE 1 — builder
+# ──────────────────────────────────────────────────────────────────────────────
+FROM rust:1.82-bookworm AS builder
+
+# Системные зависимости для компиляции
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config \
+    libclang-dev \
+    clang \
+    libavcodec-dev \
+    libavformat-dev \
+    libavfilter-dev \
+    libavdevice-dev \
+    libswscale-dev \
+    libswresample-dev \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# ONNX Runtime (для ts-recognition)
+ARG ORT_VERSION=1.22.0
+RUN wget -q "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-linux-x64-${ORT_VERSION}.tgz" \
+    && tar -xzf "onnxruntime-linux-x64-${ORT_VERSION}.tgz" \
+    && cp "onnxruntime-linux-x64-${ORT_VERSION}/lib/"*.so* /usr/local/lib/ \
+    && cp -r "onnxruntime-linux-x64-${ORT_VERSION}/include/"* /usr/local/include/ \
+    && ldconfig \
+    && rm -rf "onnxruntime-linux-x64-${ORT_VERSION}"*
+
+ENV ORT_DYLIB_PATH=/usr/local/lib/libonnxruntime.so
+ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+WORKDIR /src
+COPY crates/ ./crates/
+
+# Компилируем только ts-cli (и его зависимости) в release
+RUN cd crates && cargo build --release -p ts-cli
+
+# ──────────────────────────────────────────────────────────────────────────────
+# STAGE 2 — runtime
+# ──────────────────────────────────────────────────────────────────────────────
+FROM debian:bookworm-slim AS runtime
+
+# ffmpeg runtime + сертификаты для HTTPS (Telegram API)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# ONNX Runtime shared lib
+COPY --from=builder /usr/local/lib/libonnxruntime.so* /usr/local/lib/
+RUN ldconfig
+
+# timeline binary
+COPY --from=builder /src/crates/target/release/timeline /usr/local/bin/timeline
+
+# рабочая директория для монтирования данных
+WORKDIR /data
+
+ENTRYPOINT ["/usr/local/bin/timeline"]
+CMD ["--help"]
