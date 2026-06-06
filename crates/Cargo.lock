@@ -2951,6 +2951,7 @@ dependencies = [
  "schemars",
  "serde_json",
  "tokio",
+ "ts-analysis",
  "ts-platform",
  "ts-publish",
  "ts-render",

@@ -1,10 +1,11 @@
-//! `timeline` — единый headless-CLI Timeline Studio для агента (M2 #121, M5 #124).
+//! `timeline` — единый headless-CLI Timeline Studio для агента (M2 #121, M3 #122, M5 #124).
 //!
 //! Субкоманды без Tauri / AppHandle / webview — единый интерфейс для агента:
 //! ```sh
 //! timeline render <project.json> <out.mp4>            # ProjectSchema → видео (ts-render)
 //! timeline optimize -i in.mp4 -o out.mp4 -p youtube  # ре-энкод под платформу (ts-platform)
 //! timeline thumbnail -i in.mp4 -o thumb.jpg          # кадр-превью (ts-platform)
+//! timeline analyze <media>                            # ffprobe+ffmpeg → MediaAnalysis JSON
 //! timeline publish telegram -i out.mp4 --token TOKEN --chat @channel  # Bot API sendVideo
 //! timeline emit-schema                                # JSON Schema контракта ProjectSchema
 //! timeline emit-example <video>                       # пример ProjectSchema JSON
@@ -19,6 +20,7 @@ use tokio::sync::{mpsc, RwLock};
 
 use ts_platform::business_logic::{generate_thumbnail_logic, optimize_for_platform_logic};
 use ts_platform::types::{PlatformOptimizationParams, PlatformThumbnailParams};
+use ts_analysis::headless::{AnalyzeParams, HeadlessAnalyzer};
 use ts_publish::telegram::{TelegramPublishParams, TelegramPublisher};
 use ts_render::video_compiler::cache::RenderCache;
 use ts_render::video_compiler::progress::ProgressUpdate;
@@ -82,6 +84,17 @@ enum Cmd {
     #[arg(long, default_value_t = 720)]
     height: u32,
   },
+  /// Анализировать медиафайл: ffprobe+ffmpeg → структурированный JSON
+  Analyze {
+    /// входной медиафайл
+    input: PathBuf,
+    /// число сцен для сэмплирования (по умолчанию 8)
+    #[arg(long, default_value_t = 8)]
+    scenes: usize,
+    /// сохранить JSON в файл (иначе stdout)
+    #[arg(short, long)]
+    output: Option<PathBuf>,
+  },
   /// Напечатать JSON Schema контракта ProjectSchema
   EmitSchema,
   /// Напечатать пример ProjectSchema JSON (обёртка одного видео)
@@ -140,6 +153,11 @@ async fn main() {
       width,
       height,
     } => cmd_thumbnail(input, output, time, width, height).await,
+    Cmd::Analyze {
+      input,
+      scenes,
+      output,
+    } => cmd_analyze(&input, scenes, output.as_deref()).await,
     Cmd::EmitSchema => {
       let schema = schemars::schema_for!(ProjectSchema);
       println!("{}", serde_json::to_string_pretty(&schema).unwrap());
@@ -305,6 +323,41 @@ async fn cmd_render(project_path: &Path, output: &Path) {
   }
   eprintln!("progress channel closed before completion");
   exit(1);
+}
+
+/// Анализ медиафайла через ffprobe + ffmpeg.
+async fn cmd_analyze(input: &Path, scene_count: usize, output: Option<&Path>) {
+  let analyzer = HeadlessAnalyzer::new();
+  match analyzer
+    .analyze(AnalyzeParams {
+      input_path: input.to_string_lossy().to_string(),
+      scene_count,
+    })
+    .await
+  {
+    Ok(result) => {
+      let json = serde_json::to_string_pretty(&result).unwrap();
+      match output {
+        Some(p) => {
+          if let Err(e) = std::fs::write(p, &json) {
+            eprintln!("❌ не могу записать {}: {e}", p.display());
+            exit(1);
+          }
+          println!(
+            "✅ analyze: {} сцен, quality={:.2}, → {}",
+            result.scenes.len(),
+            result.content.quality_overall,
+            p.display()
+          );
+        }
+        None => println!("{json}"),
+      }
+    }
+    Err(e) => {
+      eprintln!("❌ analyze: {e}");
+      exit(1);
+    }
+  }
 }
 
 /// Публикация в Telegram (Bot API sendVideo / getMe).

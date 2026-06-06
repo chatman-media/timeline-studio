@@ -3,6 +3,7 @@
 //! завязанные на recognition/video_compiler/montage/state/SceneDetector) отрезана —
 //! вернётся через трейты/EventBus (#91). recognition/media — wired к крейтам ts-*.
 pub mod analysis;
+pub mod headless;
 
 /// `state::project_state::MediaType` — теперь из фундамента `ts-schema` (был стаб; #94/#98).
 /// Так analysis-крейт и монолит используют ОДИН тип (унификация для дедупа analysis).
