@@ -1,0 +1,18 @@
+[package]
+name = "ts-core-types"
+version = "0.1.0"
+edition = "2021"
+description = "Фундаментальные типы Timeline Studio: ошибки, прогресс, EventBus — без Tauri/ORT/specta. #94"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tokio = { version = "1", features = ["sync", "rt"] }
+log = "0.4"
+uuid = { version = "1", features = ["v4"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
