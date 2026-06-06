@@ -42,3 +42,6 @@ impl Default for CompilerSettings {
     }
   }
 }
+
+#[cfg(test)]
+pub mod tests;
