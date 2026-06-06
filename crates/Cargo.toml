@@ -4,4 +4,5 @@
 [workspace]
 resolver = "2"
 members = [
+  "ts-cli",
   "ts-platform","ts-schema", "ts-render", "ts-recognition", "ts-subtitles", "ts-media", "ts-montage", "ts-analysis"]

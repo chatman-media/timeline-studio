@@ -1,0 +1,19 @@
+[package]
+name = "ts-cli"
+version = "0.1.0"
+edition = "2021"
+description = "timeline — единый headless-CLI Timeline Studio для агента (render/optimize/thumbnail/emit). M2 #121."
+
+[[bin]]
+name = "timeline"
+path = "src/main.rs"
+
+[dependencies]
+ts-render = { path = "../ts-render" }
+ts-platform = { path = "../ts-platform" }
+ts-schema = { path = "../ts-schema" }
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
+schemars = "0.8"
+env_logger = "0.11"
