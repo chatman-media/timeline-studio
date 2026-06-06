@@ -1981,6 +1981,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-media"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64",
+ "chrono",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "ts-recognition"
 version = "0.1.0"
 dependencies = [
