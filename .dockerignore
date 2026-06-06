@@ -28,6 +28,7 @@ crates/target/
 *.mkv
 *.wav
 *.mp3
+*.pt
 
 # Тестовые данные
 crates/**/tests/fixtures/

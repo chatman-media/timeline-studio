@@ -25,3 +25,7 @@ image = "0.25"
 imageproc = "0.26"
 rusqlite = { version = "0.32", features = ["bundled"] }
 dirs = "6"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream"] }
+
+[dev-dependencies]
+tempfile = "3"

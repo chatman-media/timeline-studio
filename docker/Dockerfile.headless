@@ -2,7 +2,7 @@
 #
 # Multi-stage:
 #   builder  — Rust + ffmpeg-dev + ONNX headers → compile `timeline` binary
-#   runtime  — slim Debian + ffmpeg + ONNX shared libs → final image
+#   runtime  — slim Debian + ffmpeg + ONNX shared libs + nano YOLO models
 #
 # Использование:
 #   docker build -f docker/Dockerfile.headless -t timeline-headless .
@@ -10,6 +10,9 @@
 #       timeline ingest /data/video.mp4
 #   docker run --rm -v $PWD:/data timeline-headless \
 #       timeline pipeline -i /data/video.mp4 -p tiktok -o /data/out.mp4
+#
+# Без загрузки моделей (оффлайн-сборка):
+#   docker build --build-arg SKIP_MODELS=true -f docker/Dockerfile.headless -t timeline-headless .
 
 # ──────────────────────────────────────────────────────────────────────────────
 # STAGE 1 — builder
@@ -31,7 +34,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ONNX Runtime (для ts-recognition)
-ARG ORT_VERSION=1.22.0
+
+# IMPORTANT: ort = "=2.0.0-rc.10" (load-dynamic) совместим с ORT 1.19–1.21, NOT 1.22.0
+ARG ORT_VERSION=1.21.0
 RUN wget -q "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-linux-x64-${ORT_VERSION}.tgz" \
     && tar -xzf "onnxruntime-linux-x64-${ORT_VERSION}.tgz" \
     && cp "onnxruntime-linux-x64-${ORT_VERSION}/lib/"*.so* /usr/local/lib/ \
@@ -53,7 +58,7 @@ RUN cd crates && cargo build --release -p ts-cli
 # ──────────────────────────────────────────────────────────────────────────────
 FROM debian:bookworm-slim AS runtime
 
-# ffmpeg runtime + сертификаты для HTTPS (Telegram API)
+# ffmpeg runtime + сертификаты для HTTPS (Telegram API + model download)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     ca-certificates \
@@ -65,6 +70,19 @@ RUN ldconfig
 
 # timeline binary
 COPY --from=builder /src/crates/target/release/timeline /usr/local/bin/timeline
+
+# Директория для ONNX-весов — указываем через env-переменную
+ENV TIMELINE_MODELS_DIR=/models
+RUN mkdir -p /models
+
+# Скачать nano YOLO-модели в образ.
+# ARG SKIP_MODELS=true — пропустить (оффлайн-сборка или CI без интернета).
+ARG SKIP_MODELS=false
+RUN if [ "$SKIP_MODELS" != "true" ]; then \
+      echo "Downloading nano YOLO models…" \
+      && /usr/local/bin/timeline models download 2>&1 \
+      || echo "WARNING: model download failed (no internet?). Run 'timeline models download' at runtime."; \
+    fi
 
 # рабочая директория для монтирования данных
 WORKDIR /data
