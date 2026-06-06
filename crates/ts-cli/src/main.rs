@@ -1,11 +1,14 @@
-//! `timeline` — единый headless-CLI Timeline Studio для агента (M2 #121, M5 #124).
+//! `timeline` — единый headless-CLI Timeline Studio для агента (M2 #121, M3 #122, M4 #123, M5 #124).
 //!
 //! Субкоманды без Tauri / AppHandle / webview — единый интерфейс для агента:
 //! ```sh
 //! timeline render <project.json> <out.mp4>            # ProjectSchema → видео (ts-render)
+//! timeline ingest <file> [--proxy] [--proxy-dir DIR]  # ffprobe + опц. proxy → IngestResult JSON
 //! timeline optimize -i in.mp4 -o out.mp4 -p youtube  # ре-энкод под платформу (ts-platform)
 //! timeline thumbnail -i in.mp4 -o thumb.jpg          # кадр-превью (ts-platform)
-//! timeline publish telegram -i out.mp4 --token TOKEN --chat @channel  # Bot API sendVideo
+//! timeline analyze <media>                            # ffprobe+ffmpeg → MediaAnalysis JSON
+//! timeline pipeline -i in.mp4 -p tiktok -o out.mp4   # analyze→optimize→[publish] за 1 вызов
+//! timeline publish telegram -i out.mp4 --token TOKEN --chat @channel
 //! timeline emit-schema                                # JSON Schema контракта ProjectSchema
 //! timeline emit-example <video>                       # пример ProjectSchema JSON
 //! ```
@@ -17,6 +20,8 @@ use std::sync::Arc;
 use clap::{Parser, Subcommand};
 use tokio::sync::{mpsc, RwLock};
 
+use serde::Serialize;
+use ts_media::media::metadata::get_media_metadata;
 use ts_platform::business_logic::{generate_thumbnail_logic, optimize_for_platform_logic};
 use ts_platform::types::{PlatformOptimizationParams, PlatformThumbnailParams};
 use ts_agent::pipeline::{Pipeline, PipelineParams, PublishTarget};
@@ -47,6 +52,23 @@ enum Cmd {
     project: PathBuf,
     /// выходной mp4
     output: PathBuf,
+  },
+  /// Импортировать/зондировать медиафайл: ffprobe → IngestResult JSON; опционально прокси
+  Ingest {
+    /// медиафайл (локальный путь)
+    input: PathBuf,
+    /// сгенерировать низкорезолюционный прокси (960×540, h264 crf=28)
+    #[arg(long)]
+    proxy: bool,
+    /// директория для прокси (по умолчанию рядом с файлом)
+    #[arg(long)]
+    proxy_dir: Option<PathBuf>,
+    /// ширина прокси
+    #[arg(long, default_value_t = 960)]
+    proxy_width: u32,
+    /// высота прокси
+    #[arg(long, default_value_t = 540)]
+    proxy_height: u32,
   },
   /// Оптимизировать видео под платформу (ffmpeg re-encode под specs)
   Optimize {
@@ -160,6 +182,13 @@ async fn main() {
   env_logger::init();
   match Cli::parse().cmd {
     Cmd::Render { project, output } => cmd_render(&project, &output).await,
+    Cmd::Ingest {
+      input,
+      proxy,
+      proxy_dir,
+      proxy_width,
+      proxy_height,
+    } => cmd_ingest(&input, proxy, proxy_dir.as_deref(), proxy_width, proxy_height),
     Cmd::Optimize {
       input,
       output,
@@ -209,6 +238,160 @@ async fn main() {
       } => cmd_publish_telegram(input.unwrap_or_default(), token, chat, caption, validate_only).await,
     },
   }
+}
+
+// ─── ingest ──────────────────────────────────────────────────────────────────
+
+/// Результат инжеста медиафайла (агент-friendly JSON).
+#[derive(Debug, Serialize)]
+struct IngestResult {
+  path: String,
+  filename: String,
+  size_bytes: u64,
+  media_type: String,
+  duration_secs: Option<f64>,
+  width: Option<u32>,
+  height: Option<u32>,
+  fps: Option<f64>,
+  video_codec: Option<String>,
+  audio_codec: Option<String>,
+  sample_rate_hz: Option<u32>,
+  audio_channels: Option<u8>,
+  bitrate_kbps: Option<f64>,
+  proxy_path: Option<String>,
+}
+
+fn cmd_ingest(
+  input: &Path,
+  make_proxy: bool,
+  proxy_dir: Option<&Path>,
+  proxy_width: u32,
+  proxy_height: u32,
+) {
+  if !input.exists() {
+    eprintln!("❌ ingest: файл не найден: {}", input.display());
+    exit(2);
+  }
+
+  let media = match get_media_metadata(input.to_string_lossy().to_string()) {
+    Ok(m) => m,
+    Err(e) => {
+      eprintln!("❌ ingest ffprobe: {e}");
+      exit(1);
+    }
+  };
+
+  // Разбираем потоки
+  let video_stream = media
+    .probe_data
+    .streams
+    .iter()
+    .find(|s| s.codec_type == "video");
+  let audio_stream = media
+    .probe_data
+    .streams
+    .iter()
+    .find(|s| s.codec_type == "audio");
+
+  let fps = video_stream
+    .and_then(|s| s.r_frame_rate.as_deref())
+    .and_then(|r| {
+      if let Some((n, d)) = r.split_once('/') {
+        let n: f64 = n.parse().ok()?;
+        let d: f64 = d.parse().ok()?;
+        if d != 0.0 { Some(n / d) } else { None }
+      } else {
+        r.parse().ok()
+      }
+    });
+
+  let bitrate_kbps = media
+    .probe_data
+    .format
+    .bit_rate
+    .as_deref()
+    .and_then(|b| b.parse::<f64>().ok())
+    .map(|b| b / 1000.0);
+
+  let media_type = if media.is_video {
+    "video"
+  } else if media.is_audio {
+    "audio"
+  } else {
+    "image"
+  };
+
+  // Опциональный прокси
+  let proxy_path = if make_proxy && media.is_video {
+    let dir = proxy_dir
+      .map(|p| p.to_path_buf())
+      .or_else(|| input.parent().map(|p| p.to_path_buf()))
+      .unwrap_or_else(|| std::path::PathBuf::from("/tmp"));
+
+    let stem = input
+      .file_stem()
+      .and_then(|s| s.to_str())
+      .unwrap_or("proxy");
+    let proxy_name = format!("{stem}_proxy_{proxy_width}x{proxy_height}.mp4");
+    let proxy_out = dir.join(&proxy_name);
+
+    let status = std::process::Command::new("ffmpeg")
+      .args([
+        "-i",
+        &input.to_string_lossy(),
+        "-vf",
+        &format!("scale={proxy_width}:{proxy_height}"),
+        "-c:v",
+        "libx264",
+        "-preset",
+        "fast",
+        "-crf",
+        "28",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "96k",
+        "-y",
+        &proxy_out.to_string_lossy(),
+      ])
+      .stderr(std::process::Stdio::null())
+      .status();
+
+    match status {
+      Ok(s) if s.success() => Some(proxy_out.to_string_lossy().to_string()),
+      _ => {
+        eprintln!("⚠️  прокси не создан (ffmpeg error)");
+        None
+      }
+    }
+  } else {
+    None
+  };
+
+  let result = IngestResult {
+    path: input.to_string_lossy().to_string(),
+    filename: input
+      .file_name()
+      .and_then(|n| n.to_str())
+      .unwrap_or("unknown")
+      .to_string(),
+    size_bytes: media.size,
+    media_type: media_type.to_string(),
+    duration_secs: media.duration,
+    width: video_stream.and_then(|s| s.width),
+    height: video_stream.and_then(|s| s.height),
+    fps,
+    video_codec: video_stream.and_then(|s| s.codec_name.clone()),
+    audio_codec: audio_stream.and_then(|s| s.codec_name.clone()),
+    sample_rate_hz: audio_stream
+      .and_then(|s| s.sample_rate.as_deref())
+      .and_then(|r| r.parse().ok()),
+    audio_channels: audio_stream.and_then(|s| s.channels),
+    bitrate_kbps,
+    proxy_path,
+  };
+
+  println!("{}", serde_json::to_string_pretty(&result).unwrap());
 }
 
 /// Пресеты платформ: (width, height, bitrate-kbps, fps).
