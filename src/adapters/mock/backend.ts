@@ -31,9 +31,10 @@ export class MockBackendService implements IBackendService {
   async executeCommand(command: ProjectCommand): Promise<CommandResult> {
     if (command.type === "OpenProject") {
       const path = command.params.path
-      const mockFiles = typeof window !== "undefined"
-        ? ((window as any).__TAURI_MOCK_FILES__ as Record<string, File> | undefined)
-        : undefined
+      const mockFiles =
+        typeof window !== "undefined"
+          ? ((window as any).__TAURI_MOCK_FILES__ as Record<string, File> | undefined)
+          : undefined
       const fileName = path.split("/").pop() ?? path
       const file = mockFiles?.[path] ?? mockFiles?.[fileName]
       if (file) {

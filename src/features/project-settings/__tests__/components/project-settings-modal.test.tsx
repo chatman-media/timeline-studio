@@ -770,6 +770,8 @@ describe("ProjectSettingsModal", () => {
         textLabel: "Standard",
         value: { width: 1440, height: 1080, name: "4:3" },
       }
+      // Компонент берёт размеры из settings.resolution (строка "WxH"), а не из value.
+      mockSettings.resolution = "1440x1080"
 
       render(<ProjectSettingsModal data-oid="a_ztgvl" />)
 
@@ -782,6 +784,7 @@ describe("ProjectSettingsModal", () => {
         textLabel: "Widescreen",
         value: { width: 1920, height: 1080, name: "16:9" },
       }
+      mockSettings.resolution = "1920x1080"
     })
   })
 

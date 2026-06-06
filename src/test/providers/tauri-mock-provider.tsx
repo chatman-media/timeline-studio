@@ -473,9 +473,11 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
                   if (!handles || handles.length === 0) return null
                   const files: File[] = await Promise.all(handles.map((h) => h.getFile()))
                   ;(window as any).__TAURI_MOCK_FILES__ = (window as any).__TAURI_MOCK_FILES__ || {}
-                  files.forEach((f) => { ;(window as any).__TAURI_MOCK_FILES__[f.name] = f })
+                  files.forEach((f) => {
+                    ;(window as any).__TAURI_MOCK_FILES__[f.name] = f
+                  })
                   const paths = files.map((f) => f.name)
-                  return opts.multiple !== false ? paths : paths[0] ?? null
+                  return opts.multiple !== false ? paths : (paths[0] ?? null)
                 })
                 .catch((e: Error) => {
                   if (e.name === "AbortError" || e.name === "SecurityError") return null
