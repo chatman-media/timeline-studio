@@ -1,10 +1,11 @@
-//! `timeline` — единый headless-CLI Timeline Studio для агента (M2 #121).
+//! `timeline` — единый headless-CLI Timeline Studio для агента (M2 #121, M5 #124).
 //!
 //! Субкоманды без Tauri / AppHandle / webview — единый интерфейс для агента:
 //! ```sh
-//! timeline render <project.json> <out.mp4>     # ProjectSchema → видео (ts-render)
-//! timeline optimize -i in.mp4 -o out.mp4 -p youtube   # ре-энкод под платформу (ts-platform)
+//! timeline render <project.json> <out.mp4>            # ProjectSchema → видео (ts-render)
+//! timeline optimize -i in.mp4 -o out.mp4 -p youtube  # ре-энкод под платформу (ts-platform)
 //! timeline thumbnail -i in.mp4 -o thumb.jpg          # кадр-превью (ts-platform)
+//! timeline publish telegram -i out.mp4 --token TOKEN --chat @channel  # Bot API sendVideo
 //! timeline emit-schema                                # JSON Schema контракта ProjectSchema
 //! timeline emit-example <video>                       # пример ProjectSchema JSON
 //! ```
@@ -18,6 +19,7 @@ use tokio::sync::{mpsc, RwLock};
 
 use ts_platform::business_logic::{generate_thumbnail_logic, optimize_for_platform_logic};
 use ts_platform::types::{PlatformOptimizationParams, PlatformThumbnailParams};
+use ts_publish::telegram::{TelegramPublishParams, TelegramPublisher};
 use ts_render::video_compiler::cache::RenderCache;
 use ts_render::video_compiler::progress::ProgressUpdate;
 use ts_render::video_compiler::renderer::VideoRenderer;
@@ -87,6 +89,33 @@ enum Cmd {
     /// входное видео для примера
     input: PathBuf,
   },
+  /// Опубликовать видео на платформу
+  Publish {
+    #[command(subcommand)]
+    platform: PublishPlatform,
+  },
+}
+
+#[derive(Subcommand)]
+enum PublishPlatform {
+  /// Загрузить видео в Telegram-канал/чат через Bot API (sendVideo)
+  Telegram {
+    /// входное видео (не нужен при --validate-only)
+    #[arg(short, long)]
+    input: Option<String>,
+    /// токен бота (из @BotFather)
+    #[arg(long)]
+    token: String,
+    /// chat_id: числовой ID, @username канала или «me»
+    #[arg(long)]
+    chat: String,
+    /// подпись под видео
+    #[arg(long)]
+    caption: Option<String>,
+    /// только проверить токен (getMe), не отправлять
+    #[arg(long)]
+    validate_only: bool,
+  },
 }
 
 #[tokio::main]
@@ -119,6 +148,15 @@ async fn main() {
       let project = build_single_clip_project(input);
       println!("{}", serde_json::to_string_pretty(&project).unwrap());
     }
+    Cmd::Publish { platform } => match platform {
+      PublishPlatform::Telegram {
+        input,
+        token,
+        chat,
+        caption,
+        validate_only,
+      } => cmd_publish_telegram(input.unwrap_or_default(), token, chat, caption, validate_only).await,
+    },
   }
 }
 
@@ -267,6 +305,48 @@ async fn cmd_render(project_path: &Path, output: &Path) {
   }
   eprintln!("progress channel closed before completion");
   exit(1);
+}
+
+/// Публикация в Telegram (Bot API sendVideo / getMe).
+async fn cmd_publish_telegram(
+  input: String,
+  token: String,
+  chat: String,
+  caption: Option<String>,
+  validate_only: bool,
+) {
+  let publisher = TelegramPublisher::new();
+
+  if validate_only {
+    match publisher.validate_token(&token).await {
+      Ok(name) => println!("✅ токен действителен, бот: {name}"),
+      Err(e) => {
+        eprintln!("❌ токен недействителен: {e}");
+        exit(1);
+      }
+    }
+    return;
+  }
+
+  match publisher
+    .send_video(TelegramPublishParams {
+      bot_token: token,
+      chat_id: chat,
+      video_path: input,
+      caption,
+      supports_streaming: true,
+    })
+    .await
+  {
+    Ok(r) => println!(
+      "✅ telegram: message_id={} ({} bytes, {:.2}s)",
+      r.message_id, r.file_size, r.elapsed_secs
+    ),
+    Err(e) => {
+      eprintln!("❌ telegram: {e}");
+      exit(1);
+    }
+  }
 }
 
 #[cfg(test)]
