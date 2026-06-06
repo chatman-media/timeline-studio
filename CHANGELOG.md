@@ -1,3 +1,15 @@
+# [3.50.0](https://github.com/chatman-media/timeline-studio/compare/v3.49.1...v3.50.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* **ts-render:** починка мультиклип-рендера — 3 бага движка ([#90](https://github.com/chatman-media/timeline-studio/issues/90)) ([ce071e7](https://github.com/chatman-media/timeline-studio/commit/ce071e7c0f1600e2476a931ea1fccf657fee2e00))
+
+
+### Features
+
+* **ts-render:** headless-рендер как agent-интерфейс — ProjectSchema JSON → видео ([#90](https://github.com/chatman-media/timeline-studio/issues/90)) ([890a951](https://github.com/chatman-media/timeline-studio/commit/890a9512275e4c9590d590787acc84aea86b6556))
+
 ## [3.49.1](https://github.com/chatman-media/timeline-studio/compare/v3.49.0...v3.49.1) (2026-06-06)
 
 
