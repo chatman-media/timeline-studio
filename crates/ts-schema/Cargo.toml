@@ -14,3 +14,4 @@ serde_json = "1"
 uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 specta = { version = "2.0.0-rc.21", features = ["derive"] }
+schemars = { version = "0.8", features = ["chrono", "preserve_order"] }

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 
 /// Соотношение сторон видео
-#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, schemars::JsonSchema)]
 pub enum AspectRatio {
   #[default]
   Ratio16x9, // 16:9 (широкоформатное)
@@ -37,7 +37,7 @@ impl AspectRatio {
 }
 
 /// Разрешение видео
-#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, PartialEq, schemars::JsonSchema)]
 pub struct Resolution {
   pub width: u32,
   pub height: u32,
@@ -72,21 +72,21 @@ impl Resolution {
 }
 
 /// Позиция в 2D пространстве
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Position2D {
   pub x: f32,
   pub y: f32,
 }
 
 /// Размер в 2D пространстве
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Size2D {
   pub width: f32,
   pub height: f32,
 }
 
 /// Режим подгонки контента
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum FitMode {
   /// Заполнить весь контейнер (может обрезать)
   Fill,
@@ -99,7 +99,7 @@ pub enum FitMode {
 }
 
 /// Выравнивание по горизонтали
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum AlignX {
   Left,
   Center,
@@ -107,7 +107,7 @@ pub enum AlignX {
 }
 
 /// Выравнивание по вертикали
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum AlignY {
   Top,
   Center,
@@ -356,7 +356,7 @@ mod tests {
 
 /// Тип медиа-файла (вынесен из монолитного state::project_state — общий фундамент,
 /// чтобы analysis-крейт и монолит использовали ОДИН тип; #94/#98).
-#[derive(Debug, Clone, Serialize, Deserialize, specta::Type, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type, PartialEq, Eq, schemars::JsonSchema)]
 pub enum MediaType {
   Video,
   Audio,

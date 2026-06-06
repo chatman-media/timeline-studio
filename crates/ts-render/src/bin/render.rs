@@ -79,6 +79,18 @@ async fn main() {
       }
     }
 
+    // --- JSON Schema контракта ProjectSchema (машинный контракт для агента) ---
+    Some("--emit-schema") => {
+      let schema = schemars::schema_for!(ProjectSchema);
+      match serde_json::to_string_pretty(&schema) {
+        Ok(s) => println!("{s}"),
+        Err(e) => {
+          eprintln!("serialize failed: {e}");
+          std::process::exit(1);
+        }
+      }
+    }
+
     // --- удобный режим: обернуть одно видео в 1 клип ---
     Some(arg) if !arg.starts_with("--") && args.len() >= 3 => {
       let input = PathBuf::from(&args[1]);
@@ -95,6 +107,7 @@ async fn main() {
       eprintln!("  {prog} <input-video> <output.mp4>            обернуть 1 клип и отрендерить");
       eprintln!("  {prog} --project <project.json> <output.mp4>  отрендерить ProjectSchema из JSON");
       eprintln!("  {prog} --emit-example <input-video>           напечатать пример ProjectSchema JSON");
+      eprintln!("  {prog} --emit-schema                          напечатать JSON Schema контракта");
       std::process::exit(2);
     }
   }
