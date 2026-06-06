@@ -222,18 +222,22 @@ fn plan_to_project_schema(plan: &MontagePlan, platform: &str) -> serde_json::Val
     _ => (1920, 1080, 30),
   };
 
-  // Clips → Video track items
+  // Clips → Video track items.
+  // trackStart = сумма длительностей предыдущих клипов (без overlap переходов).
+  let mut track_cursor = 0.0_f64;
   let clips: Vec<Value> = plan
     .clips
     .iter()
     .enumerate()
     .map(|(i, clip)| {
+      let track_start = track_cursor;
+      track_cursor += clip.duration;
       json!({
         "id": format!("clip-{i}"),
         "source": clip.source_file,
         "startTime": clip.start_time,
         "endTime": clip.end_time,
-        "trackStart": clip.order as f64 * (clip.duration + 0.0),
+        "trackStart": track_start,
         "duration": clip.duration,
         "order": clip.order,
       })
@@ -408,5 +412,79 @@ mod tests {
     // ProjectSchema должна содержать tracks и timeline
     assert!(r.project_schema["tracks"].is_array());
     assert_eq!(r.project_schema["timeline"]["fps"], 30);
+  }
+
+  #[tokio::test]
+  async fn plan_from_analyses_multiple_files() {
+    let planner = HeadlessMontagePlanner::new();
+    let mk = |duration: f64| serde_json::json!({
+      "video": { "duration_secs": duration },
+      "scenes": [
+        { "start_secs": 0.0, "end_secs": duration / 2.0, "brightness": 0.6, "contrast": 0.7, "saturation": 0.5 },
+        { "start_secs": duration / 2.0, "end_secs": duration, "brightness": 0.8, "contrast": 0.6, "saturation": 0.8 },
+      ],
+      "content": { "quality_overall": 0.75 }
+    });
+    let result = planner
+      .plan_from_analyses(
+        vec![mk(20.0), mk(30.0)],
+        vec!["/data/a.mp4".to_string(), "/data/b.mp4".to_string()],
+        MontagePlanParams {
+          inputs: vec!["/data/a.mp4".to_string(), "/data/b.mp4".to_string()],
+          platform: "youtube".to_string(),
+          duration_secs: 20.0,
+          style: "documentary".to_string(),
+          scene_count: 4,
+        },
+      )
+      .await;
+    assert!(result.is_ok(), "multi-file plan failed: {:?}", result.err());
+    let r = result.unwrap();
+    assert_eq!(r.files_analyzed, 2);
+  }
+
+  #[test]
+  fn track_start_accumulates_correctly() {
+    use crate::montage_planner::types::{
+      ClipAdjustments, DetectedMoment, MomentCategory, MomentScores, MontageClip, MontageStyle,
+    };
+    let mk_clip = |order: u32, start: f64, end: f64| MontageClip {
+      id: format!("c{order}"),
+      source_file: "file.mp4".to_string(),
+      start_time: start,
+      end_time: end,
+      duration: end - start,
+      moment: DetectedMoment {
+        timestamp: start,
+        duration: end - start,
+        category: MomentCategory::BRoll,
+        scores: MomentScores { visual: 50.0, technical: 50.0, emotional: 50.0, narrative: 50.0, action: 50.0, composition: 50.0 },
+        total_score: 50.0,
+        description: String::new(),
+        tags: vec![],
+      },
+      adjustments: ClipAdjustments { speed_multiplier: None, color_correction: None, stabilization: false, crop: None, fade_in: None, fade_out: None },
+      order,
+    };
+    let plan = MontagePlan {
+      id: "t".to_string(),
+      name: "T".to_string(),
+      style: MontageStyle::Documentary,
+      total_duration: 15.0,
+      clips: vec![mk_clip(0, 0.0, 5.0), mk_clip(1, 10.0, 13.0), mk_clip(2, 2.0, 6.0)],
+      transitions: vec![],
+      quality_score: 0.5,
+      engagement_score: 0.5,
+      created_at: "2026-06-07T00:00:00Z".to_string(),
+    };
+    let schema = plan_to_project_schema(&plan, "youtube");
+    let clips = schema["tracks"][0]["clips"].as_array().unwrap();
+    // trackStart[0] = 0, trackStart[1] = 5, trackStart[2] = 5+3 = 8
+    let ts0 = clips[0]["trackStart"].as_f64().unwrap();
+    let ts1 = clips[1]["trackStart"].as_f64().unwrap();
+    let ts2 = clips[2]["trackStart"].as_f64().unwrap();
+    assert!((ts0 - 0.0).abs() < 0.001, "ts0={ts0}");
+    assert!((ts1 - 5.0).abs() < 0.001, "ts1={ts1}");
+    assert!((ts2 - 8.0).abs() < 0.001, "ts2={ts2}");
   }
 }
