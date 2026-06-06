@@ -1,3 +1,10 @@
+## [3.49.1](https://github.com/chatman-media/timeline-studio/compare/v3.49.0...v3.49.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* **build:** bump ffmpeg-next 8.0→8.1 — монолит компилится против системного ffmpeg 8.1 ([0398fee](https://github.com/chatman-media/timeline-studio/commit/0398feebcaffe8388055a4e81df9ff0d66788419))
+
 # [3.49.0](https://github.com/chatman-media/timeline-studio/compare/v3.48.0...v3.49.0) (2026-06-06)
 
 
