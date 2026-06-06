@@ -165,6 +165,7 @@ impl<'a> FilterBuilder<'a> {
   /// Построить цепочку видео фильтров
   async fn build_video_filter_chain(&self, input_index: &mut usize) -> Result<String> {
     let mut filters = Vec::new();
+    let mut track_labels: Vec<String> = Vec::new();
     let video_tracks = self.get_video_tracks();
 
     // Обрабатываем каждый видео трек
@@ -173,51 +174,60 @@ impl<'a> FilterBuilder<'a> {
         continue;
       }
 
-      let mut track_filters = Vec::new();
+      let mut clip_chains: Vec<String> = Vec::new();
+      let mut clip_labels: Vec<String> = Vec::new();
 
-      // Обрабатываем клипы трека
-      for (clip_idx, clip) in track.clips.iter().enumerate() {
+      // Каждый клип: подготовка (scale/setpts/эффекты) -> метка выхода [v{input_index}]
+      for clip in track.clips.iter() {
         let clip_filter = self
           .build_clip_filter(clip, *input_index, track_idx)
           .await?;
-        track_filters.push(clip_filter);
-
-        // Обрабатываем переходы
-        if clip_idx < track.clips.len() - 1 {
-          // Переходы теперь хранятся в проекте, не в клипе
-          // Заглушка для обратной совместимости
-          let transition: Option<&crate::video_compiler::schema::effects::Transition> = None;
-          if let Some(transition) = transition {
-            let next_clip = &track.clips[clip_idx + 1];
-            let transition_filter = self
-              .build_transition_filter(clip, next_clip, transition, *input_index)
-              .await?;
-            track_filters.push(transition_filter);
-          }
-        }
-
+        clip_chains.push(clip_filter);
+        clip_labels.push(format!("[v{}]", *input_index));
+        // NB: переходы (transitions) в filtergraph пока не реализованы (был мёртвый стаб).
         *input_index += 1;
       }
 
-      // Объединяем клипы трека
-      if !track_filters.is_empty() {
-        let track_filter = format!(
-          "{};concat=n={}:v=1:a=0[track{}]",
-          track_filters.join(";"),
-          track_filters.len(),
-          track_idx
-        );
-        filters.push(track_filter);
+      if clip_chains.is_empty() {
+        continue;
       }
+
+      let track_label = format!("track{track_idx}");
+      let chain = if clip_labels.len() == 1 {
+        // один клип на треке — переименовываем его выход null-фильтром
+        format!(
+          "{};{}null[{}]",
+          clip_chains.join(";"),
+          clip_labels[0],
+          track_label
+        )
+      } else {
+        // несколько клипов — склейка concat с ВХОДНЫМИ метками.
+        // Раньше метки терялись (";concat=" без входов) → ffmpeg "No such filter: ''".
+        format!(
+          "{};{}concat=n={}:v=1:a=0[{}]",
+          clip_chains.join(";"),
+          clip_labels.join(""),
+          clip_labels.len(),
+          track_label
+        )
+      };
+      filters.push(chain);
+      track_labels.push(format!("[{track_label}]"));
     }
 
-    // Накладываем треки друг на друга
-    if filters.len() > 1 {
-      let overlay_filter = self.build_overlay_filter(filters.len());
-      filters.push(overlay_filter);
-    } else if filters.len() == 1 {
-      // Если только один трек, переименовываем выход
-      filters.push("[track0][outv]".to_string());
+    // Объединяем треки в [outv]
+    match track_labels.len() {
+      0 => {}
+      1 => {
+        // один трек — переименовываем его выход в [outv] null-фильтром.
+        // Раньше было "[track0][outv]" (метки без фильтра) → "No such filter: ''".
+        filters.push(format!("{}null[outv]", track_labels[0]));
+      }
+      _ => {
+        let overlay_filter = self.build_overlay_filter(track_labels.len());
+        filters.push(overlay_filter);
+      }
     }
 
     Ok(filters.join(";"))
@@ -408,7 +418,9 @@ impl<'a> FilterBuilder<'a> {
     Ok(filters.join(";"))
   }
 
-  /// Построить фильтр перехода
+  /// Построить фильтр перехода.
+  /// Пока не подключён к filtergraph (переходы между клипами — следующий шаг богатого рендера).
+  #[allow(dead_code)]
   async fn build_transition_filter(
     &self,
     clip1: &Clip,

@@ -303,6 +303,25 @@ impl EncodingStage {
       .take()
       .ok_or_else(|| VideoCompilerError::Io("Не удалось получить stdout".to_string()))?;
 
+    // ВАЖНО: stderr нужно дренировать параллельно, иначе при заполнении пайпа (~64КБ)
+    // ffmpeg блокируется на записи → дедлок (был «вечный hang» мультиклипа). Заодно
+    // сохраняем хвост stderr, чтобы вернуть реальную причину ошибки, а не заглушку.
+    let stderr = child
+      .stderr
+      .take()
+      .ok_or_else(|| VideoCompilerError::Io("Не удалось получить stderr".to_string()))?;
+    let stderr_handle = tokio::spawn(async move {
+      let mut tail: std::collections::VecDeque<String> = std::collections::VecDeque::new();
+      let mut lines = BufReader::new(stderr).lines();
+      while let Ok(Some(line)) = lines.next_line().await {
+        if tail.len() >= 40 {
+          tail.pop_front();
+        }
+        tail.push_back(line);
+      }
+      tail.into_iter().collect::<Vec<_>>().join("\n")
+    });
+
     let mut reader = BufReader::new(stdout).lines();
     let mut last_progress = start_progress;
 
@@ -334,11 +353,14 @@ impl EncodingStage {
       .wait()
       .await
       .map_err(|e| VideoCompilerError::Io(e.to_string()))?;
+    let stderr_tail = stderr_handle.await.unwrap_or_default();
 
     if !status.success() {
-      return Err(VideoCompilerError::InternalError(
-        "FFmpeg завершился с ошибкой".to_string(),
-      ));
+      return Err(VideoCompilerError::FFmpegError {
+        exit_code: status.code(),
+        stderr: stderr_tail,
+        command: "ffmpeg encoding".to_string(),
+      });
     }
 
     Ok(())

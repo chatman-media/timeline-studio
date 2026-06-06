@@ -1061,7 +1061,7 @@ impl EncodingStage {
       .build_render_command(&context.output_path)
       .await?;
 
-    log::debug!("Финальная FFmpeg команда создана с FFmpegBuilder");
+    log::debug!("Финальная FFmpeg команда (encoding): {cmd:?}");
 
     // Запускаем FFmpeg процесс с перенаправлением stderr для чтения прогресса
     let mut child = cmd
@@ -1075,7 +1075,9 @@ impl EncodingStage {
         )
       })?;
 
-    // Читаем stderr для прогресса
+    // Читаем stderr: парсим прогресс И копим хвост для диагностики ошибок
+    // (раньше stderr выбрасывался → ошибка теряла реальную причину).
+    let mut stderr_tail: std::collections::VecDeque<String> = std::collections::VecDeque::new();
     if let Some(stderr) = child.stderr.take() {
       let reader = BufReader::new(stderr);
       let mut lines = reader.lines();
@@ -1086,6 +1088,10 @@ impl EncodingStage {
           self.parse_ffmpeg_progress(&line, context).await;
         }
         log::trace!("FFmpeg: {line}");
+        if stderr_tail.len() >= 40 {
+          stderr_tail.pop_front();
+        }
+        stderr_tail.push_back(line);
 
         // Проверяем отмену
         if context.is_cancelled() {
@@ -1107,9 +1113,14 @@ impl EncodingStage {
     })?;
 
     if !status.success() {
+      let stderr_text = stderr_tail.into_iter().collect::<Vec<_>>().join("\n");
       let error = VideoCompilerError::ffmpeg(
         status.code(),
-        "FFmpeg завершился с ошибкой".to_string(),
+        if stderr_text.is_empty() {
+          "FFmpeg завершился с ошибкой".to_string()
+        } else {
+          stderr_text
+        },
         "ffmpeg encoding".to_string(),
       );
 

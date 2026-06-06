@@ -59,34 +59,27 @@ impl<'a> InputBuilder<'a> {
 
   /// Добавить один входной источник
   fn add_input_source(&self, cmd: &mut Command, source: &InputSource) -> Result<()> {
-    // Время начала
+    // --- Опции ВХОДА: обязаны идти ДО -i ---
+
+    // Время начала чтения источника
     if source.start_time > 0.0 {
       cmd.args(["-ss", &source.start_time.to_string()]);
     }
 
-    // Входной файл
-    cmd.args(["-i", &source.path.to_string_lossy()]);
-
-    // Специфичные настройки для типа трека
-    match source.track_type {
-      TrackType::Video => {
-        // Для видео можем добавить дополнительные параметры декодирования
-        if self.should_use_hardware_decoding() {
-          cmd.args(["-hwaccel", "auto"]);
-        }
-      }
-      TrackType::Audio => {
-        // Для аудио можем настроить параметры декодирования
-      }
-      TrackType::Subtitle => {
-        // Для субтитров используем специальные декодеры
-      }
-    }
-
-    // Используем duration для ограничения длительности чтения
+    // Ограничение длительности чтения ВХОДА.
+    // ВАЖНО: -t обязан стоять ДО -i — иначе это ВЫХОДНАЯ опция и обрезает весь рендер
+    // до длины последнего клипа (был баг мультиклипа: 3×2с давали выход 2с).
     if source.duration > 0.0 {
       cmd.args(["-t", &source.duration.to_string()]);
     }
+
+    // Аппаратное декодирование — тоже опция входа (до -i)
+    if matches!(source.track_type, TrackType::Video) && self.should_use_hardware_decoding() {
+      cmd.args(["-hwaccel", "auto"]);
+    }
+
+    // Входной файл
+    cmd.args(["-i", &source.path.to_string_lossy()]);
 
     Ok(())
   }
