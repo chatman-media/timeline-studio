@@ -8545,6 +8545,7 @@ dependencies = [
  "tracing-opentelemetry",
  "tracing-subscriber",
  "ts-media",
+ "ts-montage",
  "ts-recognition",
  "ts-schema",
  "ts-subtitles",
@@ -9040,6 +9041,21 @@ dependencies = [
  "serde",
  "serde_json",
  "tempfile",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
+name = "ts-montage"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "log",
+ "rand 0.9.2",
+ "serde",
+ "serde_json",
+ "specta",
  "tokio",
  "uuid",
 ]

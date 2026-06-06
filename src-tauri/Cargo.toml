@@ -81,6 +81,7 @@ tauri-plugin-sql = { version = "2.3", features = ["sqlite"] }
 rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] }
 # Video Compiler dependencies
 ts-schema = { path = "../crates/ts-schema" }
+ts-montage = { path = "../crates/ts-montage" }
 ts-subtitles = { path = "../crates/ts-subtitles" }
 ts-recognition = { path = "../crates/ts-recognition" }
 ts-media = { path = "../crates/ts-media" }
