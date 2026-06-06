@@ -1,33 +1,16 @@
-// Модуль для работы с медиафайлами
-// Экспортируем публичные типы и функции
+//! ДЕДУП (#95): медиа-ядро (ffmpeg/files/metadata/preview_data/thumbnail/types/
+//! media_analyzer/performance_limits) — из крейта `ts-media`. Монолит хранит
+//! Tauri-команды, registry, processor и файлы с AppHandle (video_compiler/registry).
+pub use ts_media::media::*;
 
 pub mod commands;
-pub mod ffmpeg;
-pub mod files;
-pub mod metadata;
-pub mod preview_data;
-pub mod preview_manager;
-pub mod processor;
-pub mod registry;
-pub mod thumbnail;
-pub mod types;
-
-// Новые модули после рефакторинга
 pub mod additional_commands;
+pub mod phase5_commands;
+pub mod registry;
+pub mod processor;
 pub mod file_scanner;
-pub mod media_analyzer;
 pub mod metadata_extractor;
 pub mod thumbnail_generator;
+pub mod preview_manager;
 
-// Phase 5: Media & Compiler Commands
-pub mod phase5_commands;
-
-// Performance configuration for tests
-#[cfg(test)]
-pub mod performance_limits;
-
-// Реэкспортируем основные типы для удобства использования
 pub use processor::{MediaProcessor, ThumbnailOptions};
-
-#[cfg(test)]
-mod __tests__;
