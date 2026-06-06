@@ -1,0 +1,23 @@
+[package]
+name = "ts-analysis"
+version = "0.1.0"
+edition = "2021"
+description = "Анализ контента Timeline Studio (engines/models/types: scene/content/moment). Без Tauri (#97). services/commands (хаб-оркестрация) вынесены — вернутся через трейты."
+
+[lib]
+name = "ts_analysis"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+base64 = "0.22"
+futures = "0.3"
+specta = { version = "=2.0.0-rc.21", features = ["chrono", "derive", "serde", "serde_json", "uuid"] }
+ts-recognition = { version = "0.1.0", path = "../ts-recognition" }
+ts-media = { version = "0.1.0", path = "../ts-media" }

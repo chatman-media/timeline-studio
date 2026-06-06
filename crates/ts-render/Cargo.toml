@@ -1,0 +1,30 @@
+[package]
+name = "ts-render"
+version = "0.1.0"
+edition = "2021"
+description = "Headless render core вынесенный из timeline-studio (CLI-ffmpeg, без Tauri/ort/libav). PoC #90."
+
+[lib]
+name = "ts_render"
+path = "src/lib.rs"
+
+[[bin]]
+name = "timeline-render"
+path = "src/bin/render.rs"
+
+[dependencies]
+ts-schema = { path = "../ts-schema" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+tempfile = "3"
+base64 = "0.22"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+log = "0.4"
+regex = "1"
+anyhow = "1"
+zstd = "0.13"
+env_logger = "0.11.10"
+
