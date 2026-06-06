@@ -1,3 +1,22 @@
+# [3.58.0](https://github.com/chatman-media/timeline-studio/compare/v3.57.0...v3.58.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* **ts-agent:** llm_planner code review fixes ([8b5890a](https://github.com/chatman-media/timeline-studio/commit/8b5890a295d68caf236239b7ba481481c80a5ce5))
+* **ts-cli:** add missing target_duration field in LlmPlanParams call ([715e3f9](https://github.com/chatman-media/timeline-studio/commit/715e3f9f2b89c2af549d58e9650c51a0c1a03ccb))
+* **ts-montage:** trackStart — накопленная сумма вместо заглушки; тесты multi-file + accumulate ([650bb13](https://github.com/chatman-media/timeline-studio/commit/650bb139e1a7cbb2ba957cf877f58c6a108420cf))
+* **ts-publish:** youtube uploader code review fixes ([7c2d6f7](https://github.com/chatman-media/timeline-studio/commit/7c2d6f7406f0bb5609799e903b35d832d98387fe))
+* **ts-recognition:** bootstrap — атомарная запись, таймауты, без data race в тестах; ORT 1.21.0 ([f4dbfae](https://github.com/chatman-media/timeline-studio/commit/f4dbfae57935db4397cd2cacb18bcdfa8c314fc4))
+
+
+### Features
+
+* **ts-agent:** LLM-планировщик монтажа BYOK + timeline llm-plan CLI — M4 [#123](https://github.com/chatman-media/timeline-studio/issues/123) ([a06d49a](https://github.com/chatman-media/timeline-studio/commit/a06d49a044372f6d473f08423924e860005a715e))
+* **ts-montage:** headless MontagePlanner + timeline montage-plan CLI — M3 [#122](https://github.com/chatman-media/timeline-studio/issues/122) ([5d720ca](https://github.com/chatman-media/timeline-studio/commit/5d720ca1f4bbb3a23c79335b2054f896d249525c))
+* **ts-publish:** реальный YouTube-аплоадер (Data API v3 resumable upload) — M5 [#124](https://github.com/chatman-media/timeline-studio/issues/124) ([bb8b5c9](https://github.com/chatman-media/timeline-studio/commit/bb8b5c9464ac855cc73f92580fa5eee14015bd29))
+* **ts-recognition:** ONNX model bootstrap — авто-загрузка весов + env-override M3 [#122](https://github.com/chatman-media/timeline-studio/issues/122) ([b15daf2](https://github.com/chatman-media/timeline-studio/commit/b15daf2acf1b91dfde179e335dabe6001885fd42))
+
 # [3.57.0](https://github.com/chatman-media/timeline-studio/compare/v3.56.0...v3.57.0) (2026-06-06)
 
 
