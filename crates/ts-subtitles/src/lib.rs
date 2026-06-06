@@ -1,2 +1,4 @@
-//! ts-subtitles — субтитры Timeline Studio, лист-крейт (#99). Без Tauri.
+//! `ts-subtitles` — платформо-независимая обработка субтитров Timeline Studio:
+//! чтение/запись, валидация и анализ форматов SRT / VTT / ASS-SSA.
+//! Без Tauri — Tauri-команды в монолите делают тонкие обёртки над этими функциями.
 pub mod subtitles;
