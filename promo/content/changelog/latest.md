@@ -1,3 +1,10 @@
+# [3.56.0](https://github.com/chatman-media/timeline-studio/compare/v3.55.0...v3.56.0) (2026-06-06)
+
+
+### Features
+
+* **ts-agent:** оркестратор Pipeline (analyze→optimize→publish) + M3 HeadlessAnalyzer — M4 [#123](https://github.com/chatman-media/timeline-studio/issues/123) + M3 [#122](https://github.com/chatman-media/timeline-studio/issues/122) ([b3c5ecd](https://github.com/chatman-media/timeline-studio/commit/b3c5ecdea1e77a71513233a2d916b780154aca1e))
+
 # [3.55.0](https://github.com/chatman-media/timeline-studio/compare/v3.54.0...v3.55.0) (2026-06-06)
 
 
