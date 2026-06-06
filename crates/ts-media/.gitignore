@@ -1,0 +1,6 @@
+/target
+# тест-артефакты (ts-media пишет превью/кадры в cwd)
+*.png
+*.jpg
+*.jpeg
+*.bmp

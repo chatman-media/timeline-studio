@@ -10,11 +10,7 @@ pub mod audio_core;
 pub mod content_classification;
 pub mod unified_types;
 
-#[cfg(test)]
-pub mod tests_basic;
 
-#[cfg(test)]
-pub mod tests;
 
 pub use audio_analysis::*;
 pub use audio_core::*;

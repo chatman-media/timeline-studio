@@ -960,13 +960,7 @@ mod tests {
     let update = rx.recv().await.unwrap();
     assert!(matches!(update, ProgressUpdate::JobStarted { .. }));
 
-    // Запускаем задачу чтобы изменить статус на Processing
-    {
-      let mut jobs = tracker.active_jobs.write().await;
-      if let Some(job) = jobs.get_mut(&job_id) {
-        job.start().unwrap();
-      }
-    }
+    // create_job уже стартует задачу (Processing); повторный start не нужен
 
     // Обновляем прогресс
     tracker

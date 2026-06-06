@@ -100,7 +100,7 @@ impl<'a> FilterBuilder<'a> {
         || !t.filters.is_empty()
         || t.clips.iter().any(|c| !c.effects.is_empty() || !c.filters.is_empty())
     });
-    if total_clips <= 1 && !any_fx && self.project.subtitles.is_empty() {
+    if total_clips <= 1 && !any_fx && self.project.effects.is_empty() && self.project.subtitles.is_empty() {
       return Ok(String::new());
     }
 
@@ -571,7 +571,7 @@ mod tests {
 
   #[tokio::test]
   async fn test_add_filter_complex_with_video_tracks() {
-    let project = create_project_with_clips();
+    let project = create_complex_project();
     let builder = FilterBuilder::new(&project);
     let mut cmd = Command::new("ffmpeg");
 
