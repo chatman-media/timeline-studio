@@ -23,3 +23,4 @@
 pub mod error;
 pub mod telegram;
 pub mod types;
+pub mod youtube;
