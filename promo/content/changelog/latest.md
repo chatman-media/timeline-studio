@@ -1,3 +1,10 @@
+## [3.52.1](https://github.com/chatman-media/timeline-studio/compare/v3.52.0...v3.52.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* **ci:** пре-existing biome-ошибки + устаревший aspect-ratio тест (зелёный CI) ([e4d5906](https://github.com/chatman-media/timeline-studio/commit/e4d590611eede63aa2dbfdbd22ed380bc5cb5488))
+
 # [3.52.0](https://github.com/chatman-media/timeline-studio/compare/v3.51.0...v3.52.0) (2026-06-06)
 
 
