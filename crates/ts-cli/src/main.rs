@@ -26,6 +26,7 @@ use ts_platform::business_logic::{generate_thumbnail_logic, optimize_for_platfor
 use ts_platform::types::{PlatformOptimizationParams, PlatformThumbnailParams};
 use ts_agent::pipeline::{Pipeline, PipelineParams, PublishTarget};
 use ts_analysis::headless::{AnalyzeParams, HeadlessAnalyzer};
+use ts_montage::headless::{HeadlessMontagePlanner, MontagePlanParams};
 use ts_publish::telegram::{TelegramPublishParams, TelegramPublisher};
 use ts_render::video_compiler::cache::RenderCache;
 use ts_render::video_compiler::progress::ProgressUpdate;
@@ -153,6 +154,30 @@ enum Cmd {
     #[command(subcommand)]
     platform: PublishPlatform,
   },
+  /// Построить план монтажа из медиафайлов → ProjectSchema JSON (ts-montage)
+  MontagePlan {
+    /// Входные медиафайлы (один или несколько)
+    #[arg(required = true)]
+    inputs: Vec<String>,
+    /// Целевая платформа: youtube | tiktok | reels | shorts | instagram | square
+    #[arg(short, long, default_value = "youtube")]
+    platform: String,
+    /// Целевая длительность монтажа (секунды)
+    #[arg(short, long, default_value_t = 30.0)]
+    duration: f64,
+    /// Стиль монтажа: social-media | documentary | cinematic | music-video | corporate | travel | wedding
+    #[arg(long, default_value = "social-media")]
+    style: String,
+    /// Число сцен для анализа каждого файла
+    #[arg(long, default_value_t = 8)]
+    scenes: usize,
+    /// Сохранить ProjectSchema JSON в файл (иначе — stdout)
+    #[arg(short, long)]
+    output: Option<PathBuf>,
+    /// Выводить только ProjectSchema (без обёртки с метаданными)
+    #[arg(long)]
+    schema_only: bool,
+  },
 }
 
 #[derive(Subcommand)]
@@ -228,6 +253,15 @@ async fn main() {
       let project = build_single_clip_project(input);
       println!("{}", serde_json::to_string_pretty(&project).unwrap());
     }
+    Cmd::MontagePlan {
+      inputs,
+      platform,
+      duration,
+      style,
+      scenes,
+      output,
+      schema_only,
+    } => cmd_montage_plan(inputs, platform, duration, style, scenes, output.as_deref(), schema_only).await,
     Cmd::Publish { platform } => match platform {
       PublishPlatform::Telegram {
         input,
@@ -654,6 +688,97 @@ async fn cmd_publish_telegram(
     ),
     Err(e) => {
       eprintln!("❌ telegram: {e}");
+      exit(1);
+    }
+  }
+}
+
+/// Построить план монтажа: analyze(каждый файл) → PlanGenerator → ProjectSchema.
+#[allow(clippy::too_many_arguments)]
+async fn cmd_montage_plan(
+  inputs: Vec<String>,
+  platform: String,
+  duration: f64,
+  style: String,
+  scenes: usize,
+  output: Option<&Path>,
+  schema_only: bool,
+) {
+  // Шаг 1: анализ каждого входного файла
+  let mut analyses: Vec<serde_json::Value> = Vec::new();
+  let mut source_files: Vec<String> = Vec::new();
+
+  eprintln!("Analyzing {} file(s)...", inputs.len());
+  for input in &inputs {
+    let analyzer = HeadlessAnalyzer::new();
+    match analyzer
+      .analyze(AnalyzeParams {
+        input_path: input.clone(),
+        scene_count: scenes,
+      })
+      .await
+    {
+      Ok(result) => {
+        let json = serde_json::to_value(&result).unwrap();
+        eprintln!(
+          "  ok {} -- {} scenes, quality={:.2}",
+          input,
+          result.scenes.len(),
+          result.content.quality_overall
+        );
+        analyses.push(json);
+        source_files.push(input.clone());
+      }
+      Err(e) => {
+        eprintln!("  error {input}: {e}");
+        exit(1);
+      }
+    }
+  }
+
+  // Шаг 2: планирование монтажа
+  eprintln!("Building montage plan (style={style}, duration={duration}s, platform={platform})...");
+  let planner = HeadlessMontagePlanner::new();
+  match planner
+    .plan_from_analyses(
+      analyses,
+      source_files,
+      MontagePlanParams {
+        inputs: inputs.clone(),
+        platform: platform.clone(),
+        duration_secs: duration,
+        style: style.clone(),
+        scene_count: scenes,
+      },
+    )
+    .await
+  {
+    Ok(result) => {
+      let json_out = if schema_only {
+        serde_json::to_string_pretty(&result.project_schema).unwrap()
+      } else {
+        serde_json::to_string_pretty(&result).unwrap()
+      };
+
+      match output {
+        Some(p) => {
+          if let Err(e) = std::fs::write(p, &json_out) {
+            eprintln!("cannot write {}: {e}", p.display());
+            exit(1);
+          }
+          eprintln!(
+            "ok montage-plan: {} clips, quality={:.2}, elapsed={:.2}s -> {}",
+            result.plan.clips.len(),
+            result.plan.quality_score,
+            result.elapsed_secs,
+            p.display()
+          );
+        }
+        None => println!("{json_out}"),
+      }
+    }
+    Err(e) => {
+      eprintln!("montage-plan failed: {e}");
       exit(1);
     }
   }
