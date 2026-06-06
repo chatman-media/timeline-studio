@@ -24,5 +24,6 @@
 //! # });
 //! ```
 
+pub mod llm_planner;
 pub mod pipeline;
 pub mod steps;
