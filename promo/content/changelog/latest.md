@@ -1,3 +1,16 @@
+# [3.48.0](https://github.com/chatman-media/timeline-studio/compare/v3.47.2...v3.48.0) (2026-06-06)
+
+
+### Features
+
+* **ts-analysis:** вынос анализ-хаба в крейт ([#97](https://github.com/chatman-media/timeline-studio/issues/97)) ([f1ea6a6](https://github.com/chatman-media/timeline-studio/commit/f1ea6a67632f5ac97345c0184800b88b0537e9ab)), closes [#91](https://github.com/chatman-media/timeline-studio/issues/91)
+* **ts-media:** вынос медиа-ядра в крейт ([#95](https://github.com/chatman-media/timeline-studio/issues/95)) ([a6b48e2](https://github.com/chatman-media/timeline-studio/commit/a6b48e228e533134e900944f5444269284046c46))
+* **ts-montage:** вынос AI-планировщика монтажа в крейт ([#98](https://github.com/chatman-media/timeline-studio/issues/98)) ([e65f5bc](https://github.com/chatman-media/timeline-studio/commit/e65f5bc9d44b32082f38834f77ecb62be4136123)), closes [#91](https://github.com/chatman-media/timeline-studio/issues/91)
+* **ts-recognition:** вынос ONNX-инференса в крейт, изоляция ort ([#96](https://github.com/chatman-media/timeline-studio/issues/96)) ([61dcdee](https://github.com/chatman-media/timeline-studio/commit/61dcdee8eb3c7ee8fe2ee5028c82285e45436b71)), closes [#91](https://github.com/chatman-media/timeline-studio/issues/91)
+* **ts-render:** headless render-core crate extracted from video_compiler (spike, [#90](https://github.com/chatman-media/timeline-studio/issues/90)) ([c87a604](https://github.com/chatman-media/timeline-studio/commit/c87a6043e3f4ba646500a1c31f71dbc21b0c8f06)), closes [#91](https://github.com/chatman-media/timeline-studio/issues/91) [#92](https://github.com/chatman-media/timeline-studio/issues/92)
+* **ts-schema:** вынос доменной модели в крейт + crates workspace ([#92](https://github.com/chatman-media/timeline-studio/issues/92), [#93](https://github.com/chatman-media/timeline-studio/issues/93)) ([21f1462](https://github.com/chatman-media/timeline-studio/commit/21f14627537661f89604adbc77cb70b921c52695)), closes [#91](https://github.com/chatman-media/timeline-studio/issues/91)
+* **ts-subtitles:** вынос субтитров в лист-крейт ([#99](https://github.com/chatman-media/timeline-studio/issues/99)) ([279612f](https://github.com/chatman-media/timeline-studio/commit/279612f8cafdf5f4c42d9250841af25f8482de84))
+
 ## [3.47.2](https://github.com/chatman-media/timeline-studio/compare/v3.47.1...v3.47.2) (2026-05-25)
 
 
