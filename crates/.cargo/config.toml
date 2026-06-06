@@ -1,0 +1,5 @@
+# ONNX Runtime для тестов ts-recognition (ort load-dynamic ищет libonnxruntime в рантайме).
+# Локально (macOS/brew) — дефолт ниже; CI/другие платформы задают свой ORT_DYLIB_PATH
+# в окружении (force=false → внешнее значение побеждает). Linux CI: /usr/local/lib/libonnxruntime.so
+[env]
+ORT_DYLIB_PATH = { value = "/opt/homebrew/lib/libonnxruntime.dylib", force = false }
