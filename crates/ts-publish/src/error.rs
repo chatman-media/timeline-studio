@@ -13,6 +13,9 @@ pub enum PublishError {
   #[error("Telegram API вернул ошибку {code}: {description}")]
   TelegramApi { code: i32, description: String },
 
+  #[error("YouTube API вернул ошибку {code}: {description}")]
+  YouTubeApi { code: i32, description: String },
+
   #[error("некорректный ответ API: {0}")]
   BadResponse(String),
 

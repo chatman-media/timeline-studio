@@ -28,6 +28,7 @@ use ts_agent::pipeline::{Pipeline, PipelineParams, PublishTarget};
 use ts_analysis::headless::{AnalyzeParams, HeadlessAnalyzer};
 use ts_montage::headless::{HeadlessMontagePlanner, MontagePlanParams};
 use ts_publish::telegram::{TelegramPublishParams, TelegramPublisher};
+use ts_publish::youtube::{YouTubePublishParams, YouTubePublisher};
 use ts_render::video_compiler::cache::RenderCache;
 use ts_render::video_compiler::progress::ProgressUpdate;
 use ts_render::video_compiler::renderer::VideoRenderer;
@@ -182,6 +183,36 @@ enum Cmd {
 
 #[derive(Subcommand)]
 enum PublishPlatform {
+  /// Загрузить видео на YouTube через Data API v3 resumable upload
+  Youtube {
+    /// видеофайл для загрузки
+    #[arg(short, long)]
+    input: String,
+    /// OAuth2 access token (`ya29.a0...`)
+    #[arg(long, env = "YOUTUBE_ACCESS_TOKEN")]
+    token: String,
+    /// Заголовок видео
+    #[arg(long, default_value = "Timeline Studio Export")]
+    title: String,
+    /// Описание видео
+    #[arg(long)]
+    description: Option<String>,
+    /// Теги через запятую
+    #[arg(long)]
+    tags: Option<String>,
+    /// Категория YouTube (числовой ID, дефолт: 22 = People & Blogs)
+    #[arg(long, default_value = "22")]
+    category: String,
+    /// Приватность: public | private | unlisted
+    #[arg(long, default_value = "private")]
+    privacy: String,
+    /// Уведомить подписчиков
+    #[arg(long)]
+    notify: bool,
+    /// Только проверить токен (channels.list?mine=true), не загружать
+    #[arg(long)]
+    validate_only: bool,
+  },
   /// Загрузить видео в Telegram-канал/чат через Bot API (sendVideo)
   Telegram {
     /// входное видео (не нужен при --validate-only)
@@ -263,6 +294,17 @@ async fn main() {
       schema_only,
     } => cmd_montage_plan(inputs, platform, duration, style, scenes, output.as_deref(), schema_only).await,
     Cmd::Publish { platform } => match platform {
+      PublishPlatform::Youtube {
+        input,
+        token,
+        title,
+        description,
+        tags,
+        category,
+        privacy,
+        notify,
+        validate_only,
+      } => cmd_publish_youtube(input, token, title, description, tags, category, privacy, notify, validate_only).await,
       PublishPlatform::Telegram {
         input,
         token,
@@ -646,6 +688,64 @@ async fn cmd_analyze(input: &Path, scene_count: usize, output: Option<&Path>) {
     }
     Err(e) => {
       eprintln!("❌ analyze: {e}");
+      exit(1);
+    }
+  }
+}
+
+/// Публикация на YouTube (Data API v3 resumable upload / channels.list).
+#[allow(clippy::too_many_arguments)]
+async fn cmd_publish_youtube(
+  input: String,
+  token: String,
+  title: String,
+  description: Option<String>,
+  tags: Option<String>,
+  category: String,
+  privacy: String,
+  notify: bool,
+  validate_only: bool,
+) {
+  let publisher = YouTubePublisher::new();
+
+  if validate_only {
+    match publisher.validate_token(&token).await {
+      Ok(channel) => println!("ok token valid, channel: {channel}"),
+      Err(e) => {
+        eprintln!("token invalid: {e}");
+        exit(1);
+      }
+    }
+    return;
+  }
+
+  let tag_list: Vec<String> = tags
+    .as_deref()
+    .unwrap_or("")
+    .split(',')
+    .map(|s| s.trim().to_string())
+    .filter(|s| !s.is_empty())
+    .collect();
+
+  match publisher
+    .upload_video(YouTubePublishParams {
+      access_token: token,
+      video_path: input,
+      title,
+      description,
+      tags: tag_list,
+      category_id: category,
+      privacy_status: privacy,
+      notify_subscribers: notify,
+    })
+    .await
+  {
+    Ok(r) => println!(
+      "ok youtube: video_id={} url={} ({} bytes, {:.2}s)",
+      r.video_id, r.url, r.file_size, r.elapsed_secs
+    ),
+    Err(e) => {
+      eprintln!("youtube: {e}");
       exit(1);
     }
   }
