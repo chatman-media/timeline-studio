@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 /// Эффект, применяемый к клипу или треку
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Effect {
   /// Уникальный идентификатор эффекта
   pub id: String,
@@ -42,7 +42,7 @@ pub struct Effect {
 }
 
 /// Пресет эффекта
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct EffectPreset {
   /// Название пресета (локализованное)
   pub name: HashMap<String, String>,
@@ -78,7 +78,7 @@ impl Effect {
 }
 
 /// Тип эффекта
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum EffectType {
   /// Размытие
   Blur,
@@ -197,7 +197,7 @@ pub enum EffectType {
 }
 
 /// Категория эффекта
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum EffectCategory {
   /// Цветокоррекция
   ColorCorrection,
@@ -218,7 +218,7 @@ pub enum EffectCategory {
 }
 
 /// Сложность эффекта
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum EffectComplexity {
   /// Базовый
   Basic,
@@ -229,7 +229,7 @@ pub enum EffectComplexity {
 }
 
 /// Теги эффектов
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum EffectTag {
   /// Популярный
   Popular,
@@ -252,7 +252,7 @@ pub enum EffectTag {
 }
 
 /// Параметр эффекта
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum EffectParameter {
   /// Число с плавающей точкой
   Float(f32),
@@ -271,7 +271,7 @@ pub enum EffectParameter {
 }
 
 /// Фильтр для визуальных эффектов
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Filter {
   /// Уникальный идентификатор фильтра
   pub id: String,
@@ -309,7 +309,7 @@ impl Filter {
 }
 
 /// Тип фильтра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum FilterType {
   /// Яркость
   Brightness,
@@ -346,7 +346,7 @@ pub enum FilterType {
 }
 
 /// Переход между клипами
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Transition {
   /// Уникальный идентификатор перехода
   pub id: String,
@@ -375,7 +375,7 @@ pub struct Transition {
 }
 
 /// Длительность перехода
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct TransitionDuration {
   /// Основная длительность в секундах
   pub value: f64,
@@ -392,7 +392,7 @@ impl std::fmt::Display for TransitionDuration {
 }
 
 /// Категория перехода
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum TransitionCategory {
   /// Базовые переходы
   Basic,
@@ -419,7 +419,7 @@ pub enum TransitionCategory {
 }
 
 /// Сложность перехода
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum TransitionComplexity {
   /// Простой
   Simple,
@@ -430,7 +430,7 @@ pub enum TransitionComplexity {
 }
 
 /// Теги переходов
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum TransitionTag {
   /// Плавный
   Smooth,
@@ -457,7 +457,7 @@ pub enum TransitionTag {
 }
 
 /// Видео фильтр
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct VideoFilter {
   /// ID фильтра
   pub id: String,
@@ -480,7 +480,7 @@ pub struct VideoFilter {
 }
 
 /// Категория фильтра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum FilterCategory {
   /// Цветокоррекция
   ColorCorrection,
@@ -499,7 +499,7 @@ pub enum FilterCategory {
 }
 
 /// Сложность фильтра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum FilterComplexity {
   /// Простой
   Simple,
@@ -510,7 +510,7 @@ pub enum FilterComplexity {
 }
 
 /// Теги фильтров
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum FilterTag {
   /// Цвет
   Color,

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Субтитр
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Subtitle {
   /// Уникальный идентификатор субтитра
   pub id: String,
@@ -91,7 +91,7 @@ impl Subtitle {
 }
 
 /// Позиция субтитра на экране
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 #[serde(tag = "type")]
 pub enum SubtitlePosition {
   /// Абсолютная позиция
@@ -113,7 +113,7 @@ impl Default for SubtitlePosition {
 }
 
 /// Горизонтальное выравнивание субтитра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum SubtitleAlignX {
   /// По левому краю
   Left,
@@ -124,7 +124,7 @@ pub enum SubtitleAlignX {
 }
 
 /// Вертикальное выравнивание субтитра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum SubtitleAlignY {
   /// По верхнему краю
   Top,
@@ -137,7 +137,7 @@ pub enum SubtitleAlignY {
 }
 
 /// Отступы субтитра
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct SubtitleMargin {
   /// Отступ сверху в пикселях
   pub top: f32,
@@ -161,7 +161,7 @@ impl Default for SubtitleMargin {
 }
 
 /// Стиль субтитра
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct SubtitleStyle {
   /// Название шрифта
   pub font_family: String,
@@ -224,7 +224,7 @@ impl Default for SubtitleStyle {
 }
 
 /// Толщина шрифта субтитра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum SubtitleFontWeight {
   /// Тонкий
   Thin,
@@ -241,7 +241,7 @@ pub enum SubtitleFontWeight {
 }
 
 /// Отступы текста внутри фона субтитра
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct SubtitlePadding {
   /// Отступ сверху
   pub top: f32,
@@ -265,7 +265,7 @@ impl Default for SubtitlePadding {
 }
 
 /// Анимация субтитра
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct SubtitleAnimation {
   /// Уникальный идентификатор анимации
   pub id: String,
@@ -302,7 +302,7 @@ impl SubtitleAnimation {
 }
 
 /// Тип анимации субтитра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum SubtitleAnimationType {
   /// Появление с изменением прозрачности
   FadeIn,
@@ -333,7 +333,7 @@ pub enum SubtitleAnimationType {
 }
 
 /// Функция сглаживания анимации субтитра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum SubtitleEasing {
   /// Линейная
   Linear,
@@ -352,7 +352,7 @@ pub enum SubtitleEasing {
 }
 
 /// Направление анимации субтитра
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum SubtitleDirection {
   /// Сверху
   Top,

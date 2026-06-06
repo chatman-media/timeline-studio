@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use super::common::AspectRatio;
 
 /// Источник клипа
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum ClipSource {
   /// Файл на диске
   File(String),
@@ -19,7 +19,7 @@ pub enum ClipSource {
 }
 
 /// Настройки timeline
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Timeline {
   /// Общая продолжительность в секундах
   pub duration: f64,
@@ -46,7 +46,7 @@ impl Default for Timeline {
 }
 
 /// Дорожка timeline (видео, аудио, субтитры)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Track {
   /// Уникальный идентификатор трека
   pub id: String,
@@ -117,7 +117,7 @@ impl Track {
 }
 
 /// Тип трека
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum TrackType {
   /// Видео трек
   Video,
@@ -128,7 +128,7 @@ pub enum TrackType {
 }
 
 /// Медиаклип на треке
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Clip {
   /// Уникальный идентификатор клипа
   pub id: String,
@@ -234,7 +234,7 @@ impl Clip {
 }
 
 /// Настройки цветокоррекции
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ColorCorrection {
   pub brightness: f32,
   pub contrast: f32,
@@ -264,7 +264,7 @@ impl Default for ColorCorrection {
 }
 
 /// Настройки обрезки (кроп)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct CropSettings {
   pub left: u32,
   pub top: u32,
@@ -273,7 +273,7 @@ pub struct CropSettings {
 }
 
 /// Настройки трансформации
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct TransformSettings {
   pub scale_x: f32,
   pub scale_y: f32,
@@ -299,7 +299,7 @@ impl Default for TransformSettings {
 }
 
 /// Дополнительные свойства клипа
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, schemars::JsonSchema)]
 pub struct ClipProperties {
   /// Заметки о клипе
   pub notes: Option<String>,

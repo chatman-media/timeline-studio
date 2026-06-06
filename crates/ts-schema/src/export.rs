@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use super::common::Resolution;
 
 /// Настройки проекта
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ProjectSettings {
   /// Настройки экспорта
   pub export: ExportSettings,
@@ -25,7 +25,7 @@ pub struct ProjectSettings {
 }
 
 /// Настройки вывода (для обратной совместимости)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct OutputSettings {
   /// Формат вывода
   pub format: OutputFormat,
@@ -66,7 +66,7 @@ impl Default for ProjectSettings {
 }
 
 /// Настройки экспорта
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ExportSettings {
   /// Формат вывода
   pub format: OutputFormat,
@@ -147,7 +147,7 @@ impl Default for ExportSettings {
 }
 
 /// Формат вывода видео
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum OutputFormat {
   Mp4,
   Avi,
@@ -159,7 +159,7 @@ pub enum OutputFormat {
 }
 
 /// Настройки превью
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct PreviewSettings {
   /// Разрешение превью
   pub resolution: (u32, u32),
@@ -183,7 +183,7 @@ impl Default for PreviewSettings {
 }
 
 /// Формат превью
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub enum PreviewFormat {
   Jpeg,
   Png,

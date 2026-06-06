@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use super::common::{AlignX, AlignY, FitMode, Position2D, Size2D};
 
 /// Шаблон многокамерной раскладки
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct Template {
   /// Уникальный идентификатор шаблона
   pub id: String,
@@ -38,7 +38,7 @@ impl Template {
 }
 
 /// Тип шаблона
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum TemplateType {
   /// Вертикальное разделение
   Vertical,
@@ -53,7 +53,7 @@ pub enum TemplateType {
 }
 
 /// Ячейка шаблона
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct TemplateCell {
   /// Индекс ячейки (0-based)
   pub index: usize,
@@ -76,7 +76,7 @@ pub struct TemplateCell {
 }
 
 /// Регион шаблона (для обратной совместимости)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct TemplateRegion {
   pub x: u32,
   pub y: u32,
@@ -86,7 +86,7 @@ pub struct TemplateRegion {
 }
 
 /// Стильный шаблон (интро, аутро, титры)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct StyleTemplate {
   /// Уникальный идентификатор шаблона
   pub id: String,
@@ -128,7 +128,7 @@ impl StyleTemplate {
 }
 
 /// Категория стильного шаблона
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum StyleTemplateCategory {
   /// Интро
   Intro,
@@ -145,7 +145,7 @@ pub enum StyleTemplateCategory {
 }
 
 /// Стиль шаблона
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum StyleTemplateStyle {
   /// Современный
   Modern,
@@ -162,7 +162,7 @@ pub enum StyleTemplateStyle {
 }
 
 /// Элемент стильного шаблона
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct StyleTemplateElement {
   /// Уникальный идентификатор элемента
   pub id: String,
@@ -187,7 +187,7 @@ pub struct StyleTemplateElement {
 }
 
 /// Элемент стиля (для обратной совместимости)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct StyleElement {
   pub id: String,
   pub element_type: StyleElementType,
@@ -199,7 +199,7 @@ pub struct StyleElement {
 }
 
 /// Стиль элемента (для обратной совместимости)
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ElementStyle {
   pub font_family: Option<String>,
   pub font_size: Option<u32>,
@@ -208,7 +208,7 @@ pub struct ElementStyle {
 }
 
 /// Тип элемента стильного шаблона
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum StyleElementType {
   /// Текст
   Text,
@@ -227,7 +227,7 @@ pub enum StyleElementType {
 }
 
 /// Временные параметры элемента
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ElementTiming {
   /// Время появления в секундах
   pub in_time: f64,
@@ -238,7 +238,7 @@ pub struct ElementTiming {
 }
 
 /// Свойства элемента стильного шаблона
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, schemars::JsonSchema)]
 pub struct StyleElementProperties {
   /// Текстовое содержимое (для текстовых элементов)
   pub text: Option<String>,
@@ -283,7 +283,7 @@ pub struct StyleElementProperties {
 }
 
 /// Выравнивание текста
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum TextAlign {
   /// По левому краю
   Left,
@@ -296,7 +296,7 @@ pub enum TextAlign {
 }
 
 /// Толщина шрифта
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum FontWeight {
   /// Тонкий (100)
   Thin,
@@ -319,7 +319,7 @@ pub enum FontWeight {
 }
 
 /// Стиль шрифта
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum FontStyle {
   /// Обычный
   Normal,
@@ -330,7 +330,7 @@ pub enum FontStyle {
 }
 
 /// Режим масштабирования изображения
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum ObjectFit {
   /// Заполнить контейнер с обрезкой
   Cover,
@@ -345,7 +345,7 @@ pub enum ObjectFit {
 }
 
 /// Тип формы
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum ShapeType {
   /// Прямоугольник
   Rectangle,
@@ -366,7 +366,7 @@ pub enum ShapeType {
 }
 
 /// Свойства тени
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ShadowProperties {
   /// Смещение по X
   pub offset_x: f32,
@@ -381,7 +381,7 @@ pub struct ShadowProperties {
 }
 
 /// Анимация элемента
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ElementAnimation {
   /// Уникальный идентификатор анимации
   pub id: String,
@@ -402,7 +402,7 @@ pub struct ElementAnimation {
 }
 
 /// Тип анимации
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum AnimationType {
   /// Появление
   FadeIn,
@@ -435,7 +435,7 @@ pub enum AnimationType {
 }
 
 /// Функция сглаживания анимации
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum AnimationEasing {
   /// Линейная
   Linear,
@@ -470,7 +470,7 @@ pub enum AnimationEasing {
 }
 
 /// Направление анимации
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, schemars::JsonSchema)]
 pub enum AnimationDirection {
   /// Обычное
   Normal,

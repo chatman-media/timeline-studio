@@ -10,7 +10,7 @@ use super::templates::{StyleTemplate, Template};
 use super::timeline::{Timeline, Track};
 
 /// Основная схема проекта Timeline Studio
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ProjectSchema {
   /// Версия схемы проекта для совместимости
   pub version: String,
@@ -142,7 +142,7 @@ impl ProjectSchema {
 }
 
 /// Метаданные проекта
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, schemars::JsonSchema)]
 pub struct ProjectMetadata {
   /// Название проекта
   pub name: String,
