@@ -1,3 +1,11 @@
+# [3.57.0](https://github.com/chatman-media/timeline-studio/compare/v3.56.0...v3.57.0) (2026-06-06)
+
+
+### Features
+
+* **docker:** Dockerfile.headless + CI workflow для timeline-headless — M2 [#121](https://github.com/chatman-media/timeline-studio/issues/121) ([61c969a](https://github.com/chatman-media/timeline-studio/commit/61c969a2e31389f7b1e45f089b8841fcc09f1fe5))
+* **ts-cli:** timeline ingest — headless ffprobe + опц. прокси (M2 [#121](https://github.com/chatman-media/timeline-studio/issues/121)) ([b71a124](https://github.com/chatman-media/timeline-studio/commit/b71a1241d70795fb9658ff6551a45b8f636eae48))
+
 # [3.56.0](https://github.com/chatman-media/timeline-studio/compare/v3.55.0...v3.56.0) (2026-06-06)
 
 
