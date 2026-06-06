@@ -3072,6 +3072,7 @@ dependencies = [
  "ts-montage",
  "ts-platform",
  "ts-publish",
+ "ts-recognition",
  "ts-render",
  "ts-schema",
 ]
@@ -3143,6 +3144,7 @@ dependencies = [
  "log",
  "ndarray 0.17.2",
  "ort",
+ "reqwest",
  "rusqlite",
  "serde",
  "serde_json",

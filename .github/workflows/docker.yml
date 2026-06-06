@@ -12,6 +12,11 @@ on:
       - 'docker/Dockerfile.headless'
       - '.github/workflows/docker.yml'
   workflow_dispatch:
+    inputs:
+      skip_models:
+        description: 'Skip ONNX model download (offline build)'
+        required: false
+        default: 'false'
 
 env:
   REGISTRY: ghcr.io
@@ -60,3 +65,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
+          build-args: |
+            SKIP_MODELS=${{ github.event.inputs.skip_models || 'false' }}

@@ -29,6 +29,7 @@ use ts_analysis::headless::{AnalyzeParams, HeadlessAnalyzer};
 use ts_montage::headless::{HeadlessMontagePlanner, MontagePlanParams};
 use ts_publish::telegram::{TelegramPublishParams, TelegramPublisher};
 use ts_publish::youtube::{YouTubePublishParams, YouTubePublisher};
+use ts_recognition::bootstrap::ModelBootstrap;
 use ts_render::video_compiler::cache::RenderCache;
 use ts_render::video_compiler::progress::ProgressUpdate;
 use ts_render::video_compiler::renderer::VideoRenderer;
@@ -179,6 +180,29 @@ enum Cmd {
     #[arg(long)]
     schema_only: bool,
   },
+  /// Управление ONNX-весами моделей (скачать / проверить)
+  Models {
+    #[command(subcommand)]
+    action: ModelsAction,
+  },
+}
+
+#[derive(Subcommand)]
+enum ModelsAction {
+  /// Показать список моделей и их статус
+  List,
+  /// Скачать модель (или все nano-модели)
+  Download {
+    /// Имя модели: yolo11n | yolo11n-seg | yolo11n-face | yolov8n | … (без флага — скачать все nano)
+    #[arg(long)]
+    model: Option<String>,
+    /// Скачать все зарегистрированные модели (включая large-варианты)
+    #[arg(long)]
+    all: bool,
+    /// Путь к директории с моделями (по умолчанию из TIMELINE_MODELS_DIR или платформенный дефолт)
+    #[arg(long)]
+    dir: Option<std::path::PathBuf>,
+  },
 }
 
 #[derive(Subcommand)]
@@ -312,6 +336,10 @@ async fn main() {
         caption,
         validate_only,
       } => cmd_publish_telegram(input.unwrap_or_default(), token, chat, caption, validate_only).await,
+    },
+    Cmd::Models { action } => match action {
+      ModelsAction::List => cmd_models_list(),
+      ModelsAction::Download { model, all, dir } => cmd_models_download(model, all, dir).await,
     },
   }
 }
@@ -879,6 +907,64 @@ async fn cmd_montage_plan(
     }
     Err(e) => {
       eprintln!("montage-plan failed: {e}");
+      exit(1);
+    }
+  }
+}
+
+/// Список ONNX-моделей с их статусом.
+fn cmd_models_list() {
+  let b = ModelBootstrap::new();
+  let statuses = b.list();
+  println!("ONNX models directory: {}", b.dir().display());
+  println!();
+  for s in &statuses {
+    let status = if s.present {
+      format!("✅ {:.1} MB", s.size_bytes as f64 / 1_048_576.0)
+    } else {
+      "❌ missing".to_string()
+    };
+    println!("  {:<20} {}", s.name, status);
+  }
+  let present = statuses.iter().filter(|s| s.present).count();
+  println!("\n{}/{} models present", present, statuses.len());
+  if present < statuses.len() {
+    println!("Run `timeline models download` to fetch missing nano models");
+  }
+}
+
+/// Скачать ONNX-модели.
+async fn cmd_models_download(
+  model: Option<String>,
+  all: bool,
+  dir: Option<std::path::PathBuf>,
+) {
+  let b = match dir {
+    Some(d) => ModelBootstrap::with_dir(d),
+    None => ModelBootstrap::new(),
+  };
+  println!("Models directory: {}", b.dir().display());
+
+  let results = if all {
+    println!("Downloading all models…");
+    b.download_all().await
+  } else if let Some(name) = model {
+    println!("Downloading {}…", name);
+    b.download(&name).await.map(|s| vec![s])
+  } else {
+    println!("Downloading nano models (yolo11n, yolo11n-seg, yolo11n-face)…");
+    b.download_nano().await
+  };
+
+  match results {
+    Ok(statuses) => {
+      for s in &statuses {
+        println!("✅ {} -> {} ({:.1} MB)", s.name, s.path.display(), s.size_bytes as f64 / 1_048_576.0);
+      }
+      println!("\n{} model(s) ready", statuses.len());
+    }
+    Err(e) => {
+      eprintln!("❌ models download: {e}");
       exit(1);
     }
   }

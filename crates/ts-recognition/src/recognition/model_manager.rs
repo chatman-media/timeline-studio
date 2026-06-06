@@ -7,6 +7,12 @@ use std::mem::ManuallyDrop;
 use std::path::PathBuf;
 
 use super::ort_manager::OrtManager;
+use crate::bootstrap::models_dir;
+
+/// Внутренний хелпер: `models_dir().join(filename)`.
+fn model_path(filename: &str) -> PathBuf {
+  models_dir().join(filename)
+}
 
 /// Поддерживаемые модели YOLO
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -44,99 +50,25 @@ pub enum YoloModel {
 }
 
 impl YoloModel {
-  /// Получить путь к файлу модели
+  /// Получить путь к файлу модели.
+  ///
+  /// Использует `TIMELINE_MODELS_DIR` env-переменную (Docker/CI),
+  /// иначе — `<data_local_dir>/timeline-studio/models/`.
   pub fn get_model_path(&self) -> Result<PathBuf> {
-    match self {
-      YoloModel::YoloV11Detection => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolo11n.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV11Segmentation => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolo11n-seg.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV11Face => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolo11n-face.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Detection => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8n.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Segmentation => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8n-seg.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Face => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8n-face.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Nano => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8n.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Small => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8s.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Medium => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8m.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Large => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8l.onnx");
-        Ok(path)
-      }
-      YoloModel::YoloV8Extra => {
-        let path = dirs::data_local_dir()
-          .ok_or_else(|| anyhow!("Failed to get local data directory"))?
-          .join("timeline-studio")
-          .join("models")
-          .join("yolov8x.onnx");
-        Ok(path)
-      }
-      YoloModel::Custom(path) => Ok(path.clone()),
-    }
+    let path = match self {
+      YoloModel::YoloV11Detection => model_path("yolo11n.onnx"),
+      YoloModel::YoloV11Segmentation => model_path("yolo11n-seg.onnx"),
+      YoloModel::YoloV11Face => model_path("yolo11n-face.onnx"),
+      YoloModel::YoloV8Detection | YoloModel::YoloV8Nano => model_path("yolov8n.onnx"),
+      YoloModel::YoloV8Segmentation => model_path("yolov8n-seg.onnx"),
+      YoloModel::YoloV8Face => model_path("yolov8n-face.onnx"),
+      YoloModel::YoloV8Small => model_path("yolov8s.onnx"),
+      YoloModel::YoloV8Medium => model_path("yolov8m.onnx"),
+      YoloModel::YoloV8Large => model_path("yolov8l.onnx"),
+      YoloModel::YoloV8Extra => model_path("yolov8x.onnx"),
+      YoloModel::Custom(p) => return Ok(p.clone()),
+    };
+    Ok(path)
   }
 
   /// Проверить, является ли модель моделью для лиц

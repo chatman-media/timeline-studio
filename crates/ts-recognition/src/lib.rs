@@ -11,5 +11,6 @@
 //! `ort` подключён с `load-dynamic`: ONNX Runtime грузится в рантайме (для сборки
 //! библиотека не требуется).
 
+pub mod bootstrap;
 pub mod models_config;
 pub mod recognition;
