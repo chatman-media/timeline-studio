@@ -15,15 +15,15 @@ on:
 
 jobs:
   test:
-    name: Build & test crates
+    name: Build and test crates
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install ffmpeg (нужен ts-render/ts-media: CLI-рендер в рантайме)
+      - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
 
-      - name: Install ONNX Runtime (нужен ts-recognition: ort load-dynamic)
+      - name: Install ONNX Runtime
         run: |
           wget -q https://github.com/microsoft/onnxruntime/releases/download/v1.22.0/onnxruntime-linux-x64-1.22.0.tgz
           tar -xzf onnxruntime-linux-x64-1.22.0.tgz
@@ -40,6 +40,6 @@ jobs:
             crates/target
           key: crates-${{ runner.os }}-${{ hashFiles('crates/Cargo.lock') }}
 
-      - name: cargo test (workspace)
+      - name: cargo test workspace
         working-directory: crates
         run: cargo test --workspace --no-fail-fast -- --test-threads=2
