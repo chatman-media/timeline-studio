@@ -18,6 +18,6 @@ uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 base64 = "0.22"
 futures = "0.3"
-specta = { version = "=2.0.0-rc.21", features = ["chrono", "derive", "serde", "serde_json", "uuid"] }
+specta = { version = "2.0.0-rc.21", features = ["chrono", "derive", "serde", "serde_json", "uuid"] }
 ts-recognition = { version = "0.1.0", path = "../ts-recognition" }
 ts-media = { version = "0.1.0", path = "../ts-media" }
