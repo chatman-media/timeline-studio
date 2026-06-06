@@ -1,3 +1,10 @@
+# [3.54.0](https://github.com/chatman-media/timeline-studio/compare/v3.53.0...v3.54.0) (2026-06-06)
+
+
+### Features
+
+* **ts-cli:** единый headless `timeline`-бинарь (render/optimize/thumbnail/emit) — M2 [#121](https://github.com/chatman-media/timeline-studio/issues/121) ([af772bb](https://github.com/chatman-media/timeline-studio/commit/af772bbc8408259f5e3a7fcdbb54fe49d0fdd6bf))
+
 # [3.53.0](https://github.com/chatman-media/timeline-studio/compare/v3.52.1...v3.53.0) (2026-06-06)
 
 
