@@ -1,3 +1,10 @@
+# [3.53.0](https://github.com/chatman-media/timeline-studio/compare/v3.52.1...v3.53.0) (2026-06-06)
+
+
+### Features
+
+* **types:** TS-контракт ProjectSchema из JSON Schema — @timeline/shared-types (M1 [#120](https://github.com/chatman-media/timeline-studio/issues/120)/[#104](https://github.com/chatman-media/timeline-studio/issues/104)) ([52bcff7](https://github.com/chatman-media/timeline-studio/commit/52bcff7807a97fcd32537268da17e41c64857f80))
+
 ## [3.52.1](https://github.com/chatman-media/timeline-studio/compare/v3.52.0...v3.52.1) (2026-06-06)
 
 
