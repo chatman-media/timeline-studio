@@ -12,6 +12,8 @@ path = "src/main.rs"
 ts-render = { path = "../ts-render" }
 ts-platform = { path = "../ts-platform" }
 ts-publish = { path = "../ts-publish" }
+ts-analysis = { path = "../ts-analysis" }
+ts-agent = { path = "../ts-agent" }
 ts-schema = { path = "../ts-schema" }
 clap = { version = "4", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }

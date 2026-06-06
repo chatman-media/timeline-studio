@@ -19,6 +19,8 @@ use tokio::sync::{mpsc, RwLock};
 
 use ts_platform::business_logic::{generate_thumbnail_logic, optimize_for_platform_logic};
 use ts_platform::types::{PlatformOptimizationParams, PlatformThumbnailParams};
+use ts_agent::pipeline::{Pipeline, PipelineParams, PublishTarget};
+use ts_analysis::headless::{AnalyzeParams, HeadlessAnalyzer};
 use ts_publish::telegram::{TelegramPublishParams, TelegramPublisher};
 use ts_render::video_compiler::cache::RenderCache;
 use ts_render::video_compiler::progress::ProgressUpdate;
@@ -89,6 +91,41 @@ enum Cmd {
     /// входное видео для примера
     input: PathBuf,
   },
+  /// Полный пайплайн: analyze → optimize → publish (один вызов для агента)
+  Pipeline {
+    /// входной медиафайл
+    #[arg(short, long)]
+    input: String,
+    /// целевая платформа: youtube | tiktok | reels | shorts | instagram | square
+    #[arg(short, long, default_value = "youtube")]
+    platform: String,
+    /// путь к оптимизированному файлу
+    #[arg(short, long)]
+    output: String,
+    /// токен Telegram-бота (без этого — только optimize, без публикации)
+    #[arg(long)]
+    token: Option<String>,
+    /// chat_id Telegram
+    #[arg(long)]
+    chat: Option<String>,
+    /// подпись к видео
+    #[arg(long)]
+    caption: Option<String>,
+    /// число сцен для анализа
+    #[arg(long, default_value_t = 8)]
+    scenes: usize,
+  },
+  /// Анализировать медиафайл: ffprobe+ffmpeg → структурированный JSON
+  Analyze {
+    /// входной медиафайл
+    input: PathBuf,
+    /// число сцен для сэмплирования (по умолчанию 8)
+    #[arg(long, default_value_t = 8)]
+    scenes: usize,
+    /// сохранить JSON в файл (иначе stdout)
+    #[arg(short, long)]
+    output: Option<PathBuf>,
+  },
   /// Опубликовать видео на платформу
   Publish {
     #[command(subcommand)]
@@ -140,6 +177,20 @@ async fn main() {
       width,
       height,
     } => cmd_thumbnail(input, output, time, width, height).await,
+    Cmd::Pipeline {
+      input,
+      platform,
+      output,
+      token,
+      chat,
+      caption,
+      scenes,
+    } => cmd_pipeline(input, platform, output, token, chat, caption, scenes).await,
+    Cmd::Analyze {
+      input,
+      scenes,
+      output,
+    } => cmd_analyze(&input, scenes, output.as_deref()).await,
     Cmd::EmitSchema => {
       let schema = schemars::schema_for!(ProjectSchema);
       println!("{}", serde_json::to_string_pretty(&schema).unwrap());
@@ -305,6 +356,82 @@ async fn cmd_render(project_path: &Path, output: &Path) {
   }
   eprintln!("progress channel closed before completion");
   exit(1);
+}
+
+/// Полный пайплайн: analyze → optimize → [publish].
+#[allow(clippy::too_many_arguments)]
+async fn cmd_pipeline(
+  input: String,
+  platform: String,
+  output: String,
+  token: Option<String>,
+  chat: Option<String>,
+  caption: Option<String>,
+  scenes: usize,
+) {
+  let publish = match (token, chat) {
+    (Some(t), Some(c)) => Some(PublishTarget::Telegram {
+      bot_token: t,
+      chat_id: c,
+      caption,
+    }),
+    _ => None,
+  };
+
+  match Pipeline::new()
+    .run(PipelineParams {
+      input: input.clone(),
+      platform: platform.clone(),
+      output: output.clone(),
+      publish,
+      scene_count: scenes,
+    })
+    .await
+  {
+    Ok(r) => {
+      let json = serde_json::to_string_pretty(&r).unwrap();
+      println!("{json}");
+    }
+    Err(e) => {
+      eprintln!("❌ pipeline: {e}");
+      exit(1);
+    }
+  }
+}
+
+/// Анализ медиафайла через ffprobe + ffmpeg.
+async fn cmd_analyze(input: &Path, scene_count: usize, output: Option<&Path>) {
+  let analyzer = HeadlessAnalyzer::new();
+  match analyzer
+    .analyze(AnalyzeParams {
+      input_path: input.to_string_lossy().to_string(),
+      scene_count,
+    })
+    .await
+  {
+    Ok(result) => {
+      let json = serde_json::to_string_pretty(&result).unwrap();
+      match output {
+        Some(p) => {
+          if let Err(e) = std::fs::write(p, &json) {
+            eprintln!("❌ не могу записать {}: {e}", p.display());
+            exit(1);
+          }
+          println!(
+            "✅ analyze: {} сцен, quality={:.2}, → {}",
+            result.scenes.len(),
+            result.content.quality_overall,
+            p.display()
+          );
+        }
+        None => println!("{json}"),
+      }
+    }
+    Err(e) => {
+      eprintln!("❌ analyze: {e}");
+      exit(1);
+    }
+  }
 }
 
 /// Публикация в Telegram (Bot API sendVideo / getMe).
