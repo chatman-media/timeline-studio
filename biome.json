@@ -7,7 +7,11 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["src/**/*.ts", "src/**/*.tsx"]
+    "includes": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "!src/types/contracts/**"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -199,7 +203,14 @@
       "quoteStyle": "double",
       "attributePosition": "auto"
     },
-    "globals": ["AudioWorkletProcessor", "registerProcessor", "sampleRate", "currentTime", "currentFrame", "jest"]
+    "globals": [
+      "AudioWorkletProcessor",
+      "registerProcessor",
+      "sampleRate",
+      "currentTime",
+      "currentFrame",
+      "jest"
+    ]
   },
   "json": {
     "formatter": {
@@ -208,7 +219,10 @@
   },
   "overrides": [
     {
-      "includes": ["e2e/**/*.ts", "e2e/**/*.tsx"],
+      "includes": [
+        "e2e/**/*.ts",
+        "e2e/**/*.tsx"
+      ],
       "linter": {
         "rules": {
           "correctness": {
@@ -219,13 +233,19 @@
       }
     },
     {
-      "includes": ["scripts/**/*.js", "scripts/**/*.cjs", "scripts/**/*.mjs"],
+      "includes": [
+        "scripts/**/*.js",
+        "scripts/**/*.cjs",
+        "scripts/**/*.mjs"
+      ],
       "linter": {
         "enabled": false
       }
     },
     {
-      "includes": ["src-tauri/tauri.conf.json"],
+      "includes": [
+        "src-tauri/tauri.conf.json"
+      ],
       "linter": {
         "enabled": false
       }
