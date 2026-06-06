@@ -1,3 +1,10 @@
+# [3.49.0](https://github.com/chatman-media/timeline-studio/compare/v3.48.0...v3.49.0) (2026-06-06)
+
+
+### Features
+
+* **ts-subtitles:** наполнить крейт реальной логикой + дедуп монолита ([#99](https://github.com/chatman-media/timeline-studio/issues/99)) ([64f5af6](https://github.com/chatman-media/timeline-studio/commit/64f5af6ee5b3995c7e15743bdf9511b072a274b8))
+
 # [3.48.0](https://github.com/chatman-media/timeline-studio/compare/v3.47.2...v3.48.0) (2026-06-06)
 
 
