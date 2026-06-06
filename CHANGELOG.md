@@ -1,3 +1,11 @@
+# [3.51.0](https://github.com/chatman-media/timeline-studio/compare/v3.50.0...v3.51.0) (2026-06-06)
+
+
+### Features
+
+* **ts-render:** аудио видео-клипов в выходе — мультиклип больше не немой ([#90](https://github.com/chatman-media/timeline-studio/issues/90)) ([39e9935](https://github.com/chatman-media/timeline-studio/commit/39e9935f994329e517b773cb7c8b939767396cf6))
+* **ts-render:** цветовые эффекты + починка цепочки меток filtergraph ([#117](https://github.com/chatman-media/timeline-studio/issues/117)) ([770cbb1](https://github.com/chatman-media/timeline-studio/commit/770cbb1b7a7f44e0db209633beefaf65dd8b70bd))
+
 # [3.50.0](https://github.com/chatman-media/timeline-studio/compare/v3.49.1...v3.50.0) (2026-06-06)
 
 
