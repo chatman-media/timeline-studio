@@ -2207,6 +2207,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-platform"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "specta",
+ "tokio",
+]
+
+[[package]]
 name = "ts-recognition"
 version = "0.1.0"
 dependencies = [
