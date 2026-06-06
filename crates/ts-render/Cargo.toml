@@ -13,6 +13,7 @@ name = "timeline-render"
 path = "src/bin/render.rs"
 
 [dependencies]
+ts-schema = { path = "../ts-schema" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1", features = ["full"] }
@@ -27,5 +28,3 @@ anyhow = "1"
 zstd = "0.13"
 env_logger = "0.11.10"
 
-# Самостоятельный workspace — не часть монолита src-tauri.
-[workspace]

@@ -1,0 +1,6 @@
+# Workspace для вынесенных крейтов Timeline Studio (#92).
+# src-tauri (монолит) — отдельный workspace; его фолдинг сюда отложен до тех пор,
+# пока монолит не распилен достаточно, чтобы собираться (см. эпик #91).
+[workspace]
+resolver = "2"
+members = ["ts-schema", "ts-render"]

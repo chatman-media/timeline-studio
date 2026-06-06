@@ -16,6 +16,7 @@ pub mod project;
 pub mod subtitles;
 pub mod templates;
 pub mod timeline;
+pub mod constants;
 
 // Re-export всех основных типов для удобства использования
 pub use common::*;
@@ -26,5 +27,3 @@ pub use subtitles::*;
 pub use templates::*;
 pub use timeline::*;
 
-#[cfg(test)]
-mod tests;

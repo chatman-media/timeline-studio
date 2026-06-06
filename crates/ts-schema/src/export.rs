@@ -60,7 +60,7 @@ impl Default for ProjectSettings {
       output: OutputSettings::default(),
       resolution: Resolution::full_hd(),
       frame_rate: 30.0,
-      aspect_ratio: crate::video_compiler::schema::AspectRatio::default(),
+      aspect_ratio: crate::AspectRatio::default(),
     }
   }
 }
@@ -116,7 +116,7 @@ pub struct ExportSettings {
 
 impl Default for ExportSettings {
   fn default() -> Self {
-    use crate::video_compiler::core::constants::export::*;
+    use crate::constants::export::*;
 
     Self {
       format: OutputFormat::Mp4,

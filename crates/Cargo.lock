@@ -766,8 +766,19 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tokio",
+ "ts-schema",
  "uuid",
  "zstd",
+]
+
+[[package]]
+name = "ts-schema"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "uuid",
 ]
 
 [[package]]

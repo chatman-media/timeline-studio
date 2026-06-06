@@ -22,7 +22,7 @@ pub mod pipeline;
 pub mod preview;
 pub mod progress;
 pub mod renderer;
-pub mod schema;
+pub use ts_schema as schema; // #93: схема вынесена в крейт ts-schema
 
 // Новые модули после рефакторинга
 pub mod pipeline_refactored;

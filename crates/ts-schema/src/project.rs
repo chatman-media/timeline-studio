@@ -159,7 +159,7 @@ pub struct ProjectMetadata {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::schema::timeline::{
+  use crate::timeline::{
     Clip, ClipProperties, ClipSource, Track, TrackType,
   };
 
@@ -525,7 +525,7 @@ mod tests {
     // Add effects
     project.effects.push(Effect {
       id: "effect1".to_string(),
-      effect_type: crate::video_compiler::schema::effects::EffectType::Blur,
+      effect_type: crate::effects::EffectType::Blur,
       name: "Test Blur".to_string(),
       category: None,
       complexity: None,
@@ -543,7 +543,7 @@ mod tests {
     });
 
     // Add transitions
-    use crate::video_compiler::schema::effects::TransitionDuration;
+    use crate::effects::TransitionDuration;
     project.transitions.push(Transition {
       id: "trans1".to_string(),
       transition_type: "fade".to_string(),
@@ -566,7 +566,7 @@ mod tests {
     // Add filters
     project.filters.push(Filter {
       id: "filter1".to_string(),
-      filter_type: crate::video_compiler::schema::effects::FilterType::Brightness,
+      filter_type: crate::effects::FilterType::Brightness,
       name: "Brightness Filter".to_string(),
       enabled: true,
       parameters: std::collections::HashMap::new(),
