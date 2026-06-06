@@ -1066,6 +1066,7 @@ async fn cmd_llm_plan(
       analyses,
       source_files,
       platform: platform.clone(),
+      target_duration: None,
       api_key,
       api_url,
       model,
