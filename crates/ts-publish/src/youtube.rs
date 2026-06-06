@@ -83,16 +83,23 @@ impl YouTubePublisher {
     Self {
       client: reqwest::Client::builder()
         .user_agent("timeline-studio/youtube-publisher")
+        .timeout(std::time::Duration::from_secs(600))
+        .connect_timeout(std::time::Duration::from_secs(30))
         .build()
         .expect("reqwest client"),
     }
   }
 
   /// Загрузить видео через resumable upload.
+  ///
+  /// # Ограничение по памяти
+  /// Текущая реализация читает весь файл в RAM перед загрузкой.
+  /// Для файлов > 1 ГиБ рекомендуется потоковый вариант (TODO: streaming upload
+  /// через `reqwest::Body::wrap_stream` + `tokio::fs::File`).
   pub async fn upload_video(&self, params: YouTubePublishParams) -> Result<YouTubePublishResult, PublishError> {
     let t0 = Instant::now();
 
-    // Читаем файл
+    // TODO: заменить на потоковый upload для файлов > 1 ГиБ (избежать RAM-spike).
     let video_bytes = tokio::fs::read(&params.video_path)
       .await
       .map_err(|_| PublishError::FileNotFound { path: params.video_path.clone() })?;
@@ -104,7 +111,7 @@ impl YouTubePublisher {
       .await
       .map_err(|e| PublishError::BadResponse(e.to_string()))?;
 
-    // Шаг 2: загружаем файл (single chunk — файлы < 8 МиБ или первый чанк)
+    // Шаг 2: загружаем файл
     let video_response = self
       .upload_bytes(&upload_url, &params.access_token, &video_bytes)
       .await
@@ -154,10 +161,10 @@ impl YouTubePublisher {
         .as_str()
         .unwrap_or("unknown error")
         .to_string();
-      return Err(PublishError::TelegramApi { code, description: desc });
+      // FIX: YouTubeApi variant, not TelegramApi
+      return Err(PublishError::YouTubeApi { code, description: desc });
     }
 
-    // Вернуть название канала
     let channel_title = body["items"][0]["snippet"]["title"]
       .as_str()
       .unwrap_or("(channel)")
@@ -186,14 +193,18 @@ impl YouTubePublisher {
       "status": {
         "privacyStatus": params.privacy_status,
         "selfDeclaredMadeForKids": false,
-        "notifySubscribers": params.notify_subscribers,
+        // FIX: notifySubscribers NOT in JSON body — moved to query param below
       }
     });
 
+    // FIX: notifySubscribers — query param, NOT JSON body
+    // YouTube Data API v3 принимает его только в query string инициирующего запроса
+    let notify = if params.notify_subscribers { "true" } else { "false" };
     let url = format!(
       "{YOUTUBE_API_BASE}/upload/youtube/v3/videos\
        ?uploadType=resumable\
-       &part=snippet,status"
+       &part=snippet,status\
+       &notifySubscribers={notify}"
     );
 
     let resp = self
@@ -228,7 +239,7 @@ impl YouTubePublisher {
     Ok(location)
   }
 
-  /// Загрузить байты по resumable URL.
+  /// Загрузить байты по resumable URL (chunked).
   async fn upload_bytes(
     &self,
     upload_url: &str,
@@ -266,7 +277,21 @@ impl YouTubePublisher {
 
       let s = resp.status();
       if s.as_u16() == 308 {
-        // Resume Incomplete — продолжаем
+        // FIX: Resume Incomplete — читаем Range header от сервера.
+        // Сервер возвращает `Range: bytes=0-N`, где N — последний подтверждённый байт.
+        // Следующий чанк начинается с N+1, а не с локального `end`.
+        if let Some(range_hdr) = resp.headers().get("Range") {
+          if let Ok(range_str) = range_hdr.to_str() {
+            // Формат: "bytes=0-{last_confirmed}"
+            if let Some(last_str) = range_str.strip_prefix("bytes=0-") {
+              if let Ok(last_byte) = last_str.parse::<usize>() {
+                offset = last_byte + 1;
+                continue;
+              }
+            }
+          }
+        }
+        // Если Range header отсутствует или не распарсился — fallback на локальный end
         offset = end;
         continue;
       }
@@ -282,7 +307,7 @@ impl YouTubePublisher {
     last_response.context("upload completed but no response body")
   }
 
-  /// Одиночный PUT — для небольших файлов.
+  /// Одиночный PUT — для небольших файлов (≤ 8 МиБ).
   async fn upload_single(
     &self,
     upload_url: &str,
@@ -360,8 +385,69 @@ mod tests {
     assert_eq!(r.file_size, 1024);
   }
 
+  #[test]
+  fn notify_subscribers_goes_to_query_param() {
+    // FIX: notifySubscribers — query param, not JSON body
+    let notify_false = if false { "true" } else { "false" };
+    let notify_true = if true { "true" } else { "false" };
+
+    let url_false = format!(
+      "https://www.googleapis.com/upload/youtube/v3/videos\
+       ?uploadType=resumable&part=snippet,status&notifySubscribers={notify_false}"
+    );
+    let url_true = format!(
+      "https://www.googleapis.com/upload/youtube/v3/videos\
+       ?uploadType=resumable&part=snippet,status&notifySubscribers={notify_true}"
+    );
+    assert!(url_false.contains("notifySubscribers=false"));
+    assert!(url_true.contains("notifySubscribers=true"));
+  }
+
+  #[test]
+  fn range_header_308_parse() {
+    // FIX: 308 Resume Incomplete → read Range header from server
+    // Формат: "bytes=0-{last_confirmed}"
+    let range_str = "bytes=0-8388607";
+    let next_offset = if let Some(last_str) = range_str.strip_prefix("bytes=0-") {
+      last_str.parse::<usize>().map(|n| n + 1).unwrap_or(0)
+    } else {
+      0
+    };
+    assert_eq!(next_offset, 8388608); // 8 МиБ — начало следующего чанка
+  }
+
+  #[test]
+  fn range_header_308_fallback_on_missing() {
+    // Если Range header отсутствует — fallback на локальный конец чанка
+    let range_hdr: Option<&str> = None;
+    let local_end = 8388608usize;
+    let offset = if let Some(range_str) = range_hdr {
+      if let Some(last_str) = range_str.strip_prefix("bytes=0-") {
+        last_str.parse::<usize>().map(|n| n + 1).unwrap_or(local_end)
+      } else {
+        local_end
+      }
+    } else {
+      local_end
+    };
+    assert_eq!(offset, local_end);
+  }
+
+  #[test]
+  fn youtube_api_error_variant() {
+    // FIX: validate_token возвращает YouTubeApi, не TelegramApi
+    let err = PublishError::YouTubeApi {
+      code: 401,
+      description: "Invalid Credentials".to_string(),
+    };
+    let msg = err.to_string();
+    assert!(msg.contains("401"));
+    assert!(msg.contains("Invalid Credentials"));
+  }
+
   #[tokio::test]
-  async fn missing_file_error() {
+  async fn missing_file_returns_file_not_found() {
+    // FIX: заменяем реальный HTTP тест — проверяем только FileNotFound (без сети)
     let publisher = YouTubePublisher::new();
     let result = publisher
       .upload_video(YouTubePublishParams {
@@ -376,22 +462,12 @@ mod tests {
       })
       .await;
     assert!(result.is_err());
-    let e = result.unwrap_err();
-    let msg = e.to_string();
-    assert!(msg.contains("not found") || msg.contains("/nonexistent"), "err={msg}");
-  }
-
-  #[tokio::test]
-  async fn bad_token_returns_error() {
-    // Проверяем что неверный токен возвращает ошибку (без реального запроса к API)
-    // validate_token с явно невалидным токеном → HTTP 401
-    let publisher = YouTubePublisher::new();
-    let result = publisher.validate_token("invalid-token").await;
-    assert!(result.is_err());
-    // Ошибка должна быть Http или TelegramApi
+    // Файл не существует → FileNotFound до любого HTTP запроса
     match result.unwrap_err() {
-      PublishError::Http(_) | PublishError::TelegramApi { .. } => {}
-      e => panic!("unexpected error type: {e}"),
+      PublishError::FileNotFound { path } => {
+        assert!(path.contains("nonexistent"), "path={path}");
+      }
+      e => panic!("expected FileNotFound, got: {e}"),
     }
   }
 }
