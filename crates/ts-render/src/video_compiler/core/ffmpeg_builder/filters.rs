@@ -7,14 +7,12 @@ use crate::video_compiler::schema::{Clip, ProjectSchema, Track, TrackType, Trans
 
 use super::effects::EffectBuilder;
 use super::subtitles::SubtitleBuilder;
-use super::templates::TemplateBuilder;
 
 /// Построитель фильтров
 pub struct FilterBuilder<'a> {
   project: &'a ProjectSchema,
   effect_builder: EffectBuilder<'a>,
   subtitle_builder: SubtitleBuilder<'a>,
-  template_builder: TemplateBuilder<'a>,
 }
 
 impl<'a> FilterBuilder<'a> {
@@ -24,7 +22,6 @@ impl<'a> FilterBuilder<'a> {
       project,
       effect_builder: EffectBuilder::new(project),
       subtitle_builder: SubtitleBuilder::new(project),
-      template_builder: TemplateBuilder::new(project),
     }
   }
 
@@ -389,41 +386,38 @@ impl<'a> FilterBuilder<'a> {
     &self,
     clip: &Clip,
     input_index: usize,
-    track_index: usize,
+    _track_index: usize,
   ) -> Result<String> {
-    let mut filters = Vec::new();
-
-    // Базовые настройки клипа
-    let base_filter = format!(
-      "[{}:v]scale={}:{},setpts=PTS-STARTPTS[v{}]",
-      input_index,
+    // Тела фильтров клипа БЕЗ меток: база (scale/setpts) + эффекты/фильтры.
+    let mut bodies = vec![format!(
+      "scale={}:{},setpts=PTS-STARTPTS",
       self.project.settings.resolution.width,
-      self.project.settings.resolution.height,
-      input_index
+      self.project.settings.resolution.height
+    )];
+    bodies.extend(
+      self
+        .effect_builder
+        .build_clip_effects(clip, input_index)
+        .await?,
     );
-    filters.push(base_filter);
+    // NB: шаблоны клипа (template_id) пока не подключены к этой цепочке (отдельный путь).
 
-    // Применяем эффекты
-    let effects_filter = self
-      .effect_builder
-      .build_clip_effects(clip, input_index)
-      .await?;
-    if !effects_filter.is_empty() {
-      filters.push(effects_filter);
+    // Нанизываем тела в валидную цепочку:
+    // [{i}:v]base[v{i}_0];[v{i}_0]fx1[v{i}_1];…;[last]fxN[v{i}]
+    let last = bodies.len() - 1;
+    let mut parts = Vec::with_capacity(bodies.len());
+    let mut cur = format!("{input_index}:v");
+    for (k, body) in bodies.iter().enumerate() {
+      let out = if k == last {
+        format!("v{input_index}")
+      } else {
+        format!("v{input_index}_{k}")
+      };
+      parts.push(format!("[{cur}]{body}[{out}]"));
+      cur = out;
     }
 
-    // Применяем шаблоны
-    if let Some(template_id) = &clip.template_id {
-      let template_filter = self
-        .template_builder
-        .build_template_filter(template_id, input_index, track_index)
-        .await?;
-      if !template_filter.is_empty() {
-        filters.push(template_filter);
-      }
-    }
-
-    Ok(filters.join(";"))
+    Ok(parts.join(";"))
   }
 
   /// Построить фильтр для аудио клипа
