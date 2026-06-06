@@ -1,30 +1,11 @@
-//! Schema - Модульная структура схемы данных проекта Timeline Studio
+//! Schema — доменная модель проекта Timeline Studio.
 //!
-//! Схема разделена на следующие модули:
-//! - `project` - Основная схема проекта и метаданные
-//! - `timeline` - Timeline, треки и клипы
-//! - `effects` - Эффекты, фильтры и переходы
-//! - `templates` - Шаблоны и стилевые шаблоны
-//! - `subtitles` - Субтитры и их настройки
-//! - `export` - Настройки экспорта и форматы вывода
-//! - `common` - Общие типы и утилиты
+//! ДЕДУП (#92/#93): исходники схемы вынесены в крейт `ts-schema` и здесь больше НЕ
+//! дублируются — это тонкий ре-экспорт. Пути сохранены полностью:
+//! - flattened: `crate::video_compiler::schema::ProjectSchema`, `...::Clip`, …
+//! - submodules: `...::schema::{common,effects,export,project,subtitles,templates,timeline}::*`
+//!
+//! Всё резолвится через `ts_schema` (см. `crates/ts-schema`). Монолит и крейты
+//! используют ОДНУ модель, без копий. Часть эпика декомпозиции #91.
 
-pub mod common;
-pub mod effects;
-pub mod export;
-pub mod project;
-pub mod subtitles;
-pub mod templates;
-pub mod timeline;
-
-// Re-export всех основных типов для удобства использования
-pub use common::*;
-pub use effects::*;
-pub use export::*;
-pub use project::*;
-pub use subtitles::*;
-pub use templates::*;
-pub use timeline::*;
-
-#[cfg(test)]
-mod tests;
+pub use ts_schema::*;
