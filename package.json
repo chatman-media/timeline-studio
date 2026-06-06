@@ -86,7 +86,8 @@
     "knip:fix": "knip --fix",
     "knip:watch": "knip --watch",
     "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "storybook:build": "storybook build",
+    "gen:schema-types": "bash scripts/gen-schema-types.sh"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
