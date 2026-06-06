@@ -57,7 +57,7 @@ pub struct BaseContentClassification {
 }
 
 /// Жанры контента
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, Type)]
 #[serde(rename_all = "snake_case")]
 pub enum ContentGenre {
   Documentary,
@@ -68,6 +68,7 @@ pub enum ContentGenre {
   News,
   Educational,
   Corporate,
+  #[default]
   Personal,
   Artistic,
 }

@@ -328,7 +328,7 @@ pub enum MomentType {
 }
 
 /// Детализированные факторы оценки момента
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ScoringFactors {
   // Эмоциональные факторы

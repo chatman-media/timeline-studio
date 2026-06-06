@@ -866,34 +866,6 @@ impl AnalysisEngine {
   }
 }
 
-impl Default for ScoringFactors {
-  fn default() -> Self {
-    Self {
-      emotion_intensity: 0.0,
-      emotion_variety: 0.0,
-      emotional_change: 0.0,
-      visual_quality: 0.0,
-      composition_quality: 0.0,
-      color_vibrancy: 0.0,
-      motion_interest: 0.0,
-      audio_clarity: 0.0,
-      audio_dynamics: 0.0,
-      speech_quality: 0.0,
-      music_sync: 0.0,
-      person_prominence: 0.0,
-      object_interest: 0.0,
-      scene_uniqueness: 0.0,
-      narrative_importance: 0.0,
-      overall_quality: 0.0,
-      stability: 0.0,
-      focus_quality: 0.0,
-      lighting_quality: 0.0,
-      weighted_score: 0.0,
-      confidence: 0.0,
-      ranking_position: None,
-    }
-  }
-}
 
 /// Результаты анализа проекта
 #[derive(Debug)]

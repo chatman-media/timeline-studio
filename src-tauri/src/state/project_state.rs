@@ -289,12 +289,7 @@ pub struct MediaItem {
   pub proxy_path: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq, Eq)]
-pub enum MediaType {
-  Video,
-  Audio,
-  Image,
-}
+pub use ts_schema::MediaType;
 
 /// Media metadata
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]

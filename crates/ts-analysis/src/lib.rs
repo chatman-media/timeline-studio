@@ -4,16 +4,10 @@
 //! вернётся через трейты/EventBus (#91). recognition/media — wired к крейтам ts-*.
 pub mod analysis;
 
-/// Стаб `state::project_state::MediaType` (app-state в крейт не выносится; реальная
-/// интеграция — трейтом в Phase D #91). Достаточно для conversion-impl'ов.
+/// `state::project_state::MediaType` — теперь из фундамента `ts-schema` (был стаб; #94/#98).
+/// Так analysis-крейт и монолит используют ОДИН тип (унификация для дедупа analysis).
 pub mod state {
   pub mod project_state {
-    use serde::{Deserialize, Serialize};
-    #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-    pub enum MediaType {
-      Video,
-      Audio,
-      Image,
-    }
+    pub use ts_schema::MediaType;
   }
 }
