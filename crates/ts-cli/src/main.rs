@@ -24,6 +24,7 @@ use serde::Serialize;
 use ts_media::media::metadata::get_media_metadata;
 use ts_platform::business_logic::{generate_thumbnail_logic, optimize_for_platform_logic};
 use ts_platform::types::{PlatformOptimizationParams, PlatformThumbnailParams};
+use ts_agent::llm_planner::{LlmPlanner, LlmPlanParams};
 use ts_agent::pipeline::{Pipeline, PipelineParams, PublishTarget};
 use ts_analysis::headless::{AnalyzeParams, HeadlessAnalyzer};
 use ts_montage::headless::{HeadlessMontagePlanner, MontagePlanParams};
@@ -179,6 +180,33 @@ enum Cmd {
     /// Выводить только ProjectSchema (без обёртки с метаданными)
     #[arg(long)]
     schema_only: bool,
+  },
+  /// LLM-планировщик монтажа (BYOK): цель → ProjectSchema JSON через OpenAI-compatible API
+  LlmPlan {
+    /// Цель монтажа (на любом языке): "Create a 30s travel TikTok"
+    #[arg(long)]
+    goal: String,
+    /// Входные медиафайлы
+    #[arg(long = "input", short)]
+    inputs: Vec<String>,
+    /// Целевая платформа: youtube | tiktok | reels | shorts | instagram | square
+    #[arg(short, long, default_value = "youtube")]
+    platform: String,
+    /// API ключ (или переменная OPENAI_API_KEY / LLM_API_KEY)
+    #[arg(long, env = "OPENAI_API_KEY")]
+    api_key: String,
+    /// Base URL OpenAI-compatible API (дефолт: https://api.openai.com/v1)
+    #[arg(long, env = "LLM_API_URL")]
+    api_url: Option<String>,
+    /// Модель (дефолт: gpt-4o-mini)
+    #[arg(long, env = "LLM_MODEL")]
+    model: Option<String>,
+    /// Число сцен для анализа каждого файла
+    #[arg(long, default_value_t = 8)]
+    scenes: usize,
+    /// Сохранить ProjectSchema JSON в файл (иначе stdout)
+    #[arg(short, long)]
+    output: Option<PathBuf>,
   },
   /// Управление ONNX-весами моделей (скачать / проверить)
   Models {
@@ -337,6 +365,16 @@ async fn main() {
         validate_only,
       } => cmd_publish_telegram(input.unwrap_or_default(), token, chat, caption, validate_only).await,
     },
+    Cmd::LlmPlan {
+      goal,
+      inputs,
+      platform,
+      api_key,
+      api_url,
+      model,
+      scenes,
+      output,
+    } => cmd_llm_plan(goal, inputs, platform, api_key, api_url, model, scenes, output.as_deref()).await,
     Cmd::Models { action } => match action {
       ModelsAction::List => cmd_models_list(),
       ModelsAction::Download { model, all, dir } => cmd_models_download(model, all, dir).await,
@@ -965,6 +1003,98 @@ async fn cmd_models_download(
     }
     Err(e) => {
       eprintln!("❌ models download: {e}");
+      exit(1);
+    }
+  }
+}
+
+
+/// LLM-планировщик монтажа (BYOK).
+#[allow(clippy::too_many_arguments)]
+async fn cmd_llm_plan(
+  goal: String,
+  inputs: Vec<String>,
+  platform: String,
+  api_key: String,
+  api_url: Option<String>,
+  model: Option<String>,
+  scenes: usize,
+  output: Option<&Path>,
+) {
+  // Шаг 1: анализ каждого файла
+  let mut analyses: Vec<serde_json::Value> = Vec::new();
+  let mut source_files: Vec<String> = Vec::new();
+
+  if !inputs.is_empty() {
+    eprintln!("Analyzing {} file(s)...", inputs.len());
+    for input in &inputs {
+      let analyzer = HeadlessAnalyzer::new();
+      match analyzer
+        .analyze(AnalyzeParams {
+          input_path: input.clone(),
+          scene_count: scenes,
+        })
+        .await
+      {
+        Ok(result) => {
+          let json = serde_json::to_value(&result).unwrap();
+          eprintln!(
+            "  ok {} -- {} scenes, quality={:.2}",
+            input,
+            result.scenes.len(),
+            result.content.quality_overall
+          );
+          analyses.push(json);
+          source_files.push(input.clone());
+        }
+        Err(e) => {
+          eprintln!("  error {input}: {e}");
+          exit(1);
+        }
+      }
+    }
+  }
+
+  // Шаг 2: LLM план
+  let model_name = model.as_deref().unwrap_or("gpt-4o-mini");
+  eprintln!("Calling LLM ({model_name}) for goal: {goal}");
+
+  let planner = LlmPlanner::new();
+  match planner
+    .plan(LlmPlanParams {
+      goal: goal.clone(),
+      analyses,
+      source_files,
+      platform: platform.clone(),
+      api_key,
+      api_url,
+      model,
+      temperature: Some(0.3),
+    })
+    .await
+  {
+    Ok(result) => {
+      let json_out = serde_json::to_string_pretty(&result.project_schema).unwrap();
+      if !result.reasoning.is_empty() {
+        eprintln!("LLM reasoning: {}", result.reasoning);
+      }
+      eprintln!(
+        "ok llm-plan: model={}, tokens={}/{}, elapsed={:.2}s",
+        result.model_used, result.tokens_input, result.tokens_output, result.elapsed_secs
+      );
+      match output {
+        Some(p) => {
+          if let Err(e) = std::fs::write(p, &json_out) {
+            eprintln!("cannot write {}: {e}", p.display());
+            exit(1);
+          }
+          eprintln!("ProjectSchema saved -> {}", p.display());
+        }
+        None => println!("{json_out}"),
+      }
+    }
+    Err(e) => {
+      eprintln!("llm-plan failed: {e}");
       exit(1);
     }
   }
