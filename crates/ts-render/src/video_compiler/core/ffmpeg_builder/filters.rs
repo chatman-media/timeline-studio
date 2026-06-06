@@ -37,7 +37,12 @@ impl<'a> FilterBuilder<'a> {
 
       // Маппинг выходов
       let has_video = self.has_video_tracks();
-      let has_audio = self.has_audio_tracks();
+      // Аудио на выходе: отдельные audio-треки ИЛИ встроенное аудио видео-клипов.
+      let has_audio = self.has_audio_tracks()
+        || self
+          .get_video_tracks()
+          .iter()
+          .any(|t| t.enabled && !t.clips.is_empty());
       let has_subtitles = !self.project.subtitles.is_empty();
 
       if has_video {
@@ -115,11 +120,16 @@ impl<'a> FilterBuilder<'a> {
       }
     }
 
-    // Обрабатываем аудио треки
+    // Аудио: отдельные audio-треки → их путь; иначе встроенное аудио видео-клипов.
     if self.has_audio_tracks() {
       let audio_filter = self.build_audio_filter_chain(&mut input_index).await?;
       if !audio_filter.is_empty() {
         filters.push(audio_filter);
+      }
+    } else {
+      let video_audio = self.build_video_clips_audio_chain();
+      if !video_audio.is_empty() {
+        filters.push(video_audio);
       }
     }
 
@@ -231,6 +241,27 @@ impl<'a> FilterBuilder<'a> {
     }
 
     Ok(filters.join(";"))
+  }
+
+  /// Аудио из встроенных дорожек видео-клипов (когда отдельных audio-треков нет).
+  /// Индексы входов совпадают с видео-клипами (0..N), т.к. этот путь работает только
+  /// при `!has_audio_tracks()`. Допущение: видео-клипы содержат аудиодорожку — клипы без
+  /// звука пока не отсеиваются (потребуют ffprobe); для видео-со-звуком покрывает типичный случай.
+  fn build_video_clips_audio_chain(&self) -> String {
+    let count: usize = self
+      .get_video_tracks()
+      .iter()
+      .filter(|t| t.enabled)
+      .map(|t| t.clips.len())
+      .sum();
+    match count {
+      0 => String::new(),
+      1 => "[0:a]anull[outa]".to_string(),
+      n => {
+        let inputs: String = (0..n).map(|i| format!("[{i}:a]")).collect();
+        format!("{inputs}concat=n={n}:v=0:a=1[outa]")
+      }
+    }
   }
 
   /// Построить цепочку аудио фильтров
