@@ -2111,6 +2111,7 @@ dependencies = [
  "tokio",
  "ts-media",
  "ts-recognition",
+ "ts-schema",
  "uuid",
 ]
 
@@ -2193,6 +2194,7 @@ dependencies = [
  "chrono",
  "serde",
  "serde_json",
+ "specta",
  "uuid",
 ]
 

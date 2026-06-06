@@ -1,12 +1,5 @@
-//! Analysis Engines Module
-//!
-//! Централизованный модуль для всех analysis движков.
-//! Унифицирует разрозненные анализаторы из services/ и montage_planner/.
+//! ДЕДУП (#97/#98): content/moment-движки — из крейта ts-analysis; scene_engine — в монолите.
+pub use ts_analysis::analysis::engines::{content_engine, moment_engine, ContentEngine, MomentEngine};
 
-pub mod content_engine;
-pub mod moment_engine; // 🆕 Unified Moment Detection Engine
-pub mod scene_engine; // 🆕 Unified Content Analysis Engine
-
-pub use content_engine::ContentEngine;
-pub use moment_engine::MomentEngine; // 🆕
-pub use scene_engine::SceneEngine; // 🆕
+pub mod scene_engine;
+pub use scene_engine::SceneEngine;

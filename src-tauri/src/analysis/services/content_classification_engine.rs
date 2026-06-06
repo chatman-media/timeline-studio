@@ -406,8 +406,3 @@ impl ContentClassificationEngine {
   }
 }
 
-impl Default for ContentGenre {
-  fn default() -> Self {
-    Self::Personal // General = Personal
-  }
-}

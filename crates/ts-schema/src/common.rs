@@ -353,3 +353,12 @@ mod tests {
     let _align_y_clone = align_y.clone();
   }
 }
+
+/// Тип медиа-файла (вынесен из монолитного state::project_state — общий фундамент,
+/// чтобы analysis-крейт и монолит использовали ОДИН тип; #94/#98).
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type, PartialEq, Eq)]
+pub enum MediaType {
+  Video,
+  Audio,
+  Image,
+}
