@@ -1,3 +1,10 @@
+# [3.52.0](https://github.com/chatman-media/timeline-studio/compare/v3.51.0...v3.52.0) (2026-06-06)
+
+
+### Features
+
+* **ts-schema:** JSON Schema контракт ProjectSchema + --emit-schema (M1 [#120](https://github.com/chatman-media/timeline-studio/issues/120)) ([e9d7b51](https://github.com/chatman-media/timeline-studio/commit/e9d7b5191cfeb86fe04a803ed065c0f2d0011621)), closes [#119](https://github.com/chatman-media/timeline-studio/issues/119) [#104](https://github.com/chatman-media/timeline-studio/issues/104)
+
 # [3.51.0](https://github.com/chatman-media/timeline-studio/compare/v3.50.0...v3.51.0) (2026-06-06)
 
 
