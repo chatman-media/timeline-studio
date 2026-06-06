@@ -2971,7 +2971,7 @@ dependencies = [
  "tokio",
  "ts-agent",
  "ts-analysis",
- "ts-media",
+ "ts-montage",
  "ts-platform",
  "ts-publish",
  "ts-render",
