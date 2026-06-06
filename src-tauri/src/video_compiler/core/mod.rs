@@ -1,32 +1,13 @@
-//! Core - Основные модули Video Compiler
+//! Core Video Compiler.
 //!
-//! Этот модуль содержит основные компоненты системы компиляции видео:
-//! - Кэширование и управление ресурсами
-//! - Обработка ошибок
-//! - Извлечение кадров
-//! - Поддержка GPU
-//! - Конвейер обработки
-//! - Генерация превью
-//! - Отслеживание прогресса
-//! - Рендеринг видео
+//! ДЕДУП (#90/#91): движок компиляции (renderer/pipeline/stages/ffmpeg_builder/executor/
+//! cache/progress/error/gpu/preview/frame_extraction/constants/performance_manager) вынесен
+//! в крейт `ts-render` и здесь РЕ-ЭКСПОРТИТСЯ. В монолите остаются `ffmpeg` (FFmpeg-анализ,
+//! тендрилы в analysis) и `schema` (уже re-export ts-schema, #106).
+pub use ts_render::video_compiler::core::{
+  cache, constants, error, ffmpeg_builder, ffmpeg_executor, frame_extraction, gpu,
+  performance_manager, pipeline, pipeline_refactored, preview, progress, renderer, stages,
+};
 
-pub mod cache;
-pub mod constants;
-pub mod error;
 pub mod ffmpeg;
-pub mod ffmpeg_builder;
-pub mod ffmpeg_executor;
-pub mod frame_extraction;
-pub mod gpu;
-pub mod performance_manager;
-pub mod pipeline;
-pub mod preview;
-pub mod progress;
-pub mod renderer;
 pub mod schema;
-
-// Новые модули после рефакторинга
-pub mod pipeline_refactored;
-pub mod stages;
-
-// Re-export основных типов

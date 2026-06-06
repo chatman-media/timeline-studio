@@ -35,35 +35,8 @@ use tokio::sync::RwLock;
 use crate::video_compiler::cache::RenderCache;
 use crate::video_compiler::services::ServiceContainer;
 
-/// Настройки компилятора видео
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CompilerSettings {
-  /// Максимальное количество одновременных задач рендеринга
-  pub max_concurrent_jobs: usize,
-  /// Размер кэша в мегабайтах
-  pub cache_size_mb: usize,
-  /// Временная директория для промежуточных файлов
-  pub temp_directory: std::path::PathBuf,
-  /// Путь к FFmpeg (если не в системном PATH)
-  pub ffmpeg_path: Option<std::path::PathBuf>,
-  /// Использование аппаратного ускорения
-  pub hardware_acceleration: bool,
-  /// Качество превью (от 1 до 100)
-  pub preview_quality: u8,
-}
-
-impl Default for CompilerSettings {
-  fn default() -> Self {
-    Self {
-      max_concurrent_jobs: 2,
-      cache_size_mb: 512,
-      temp_directory: std::env::temp_dir().join("timeline-studio"),
-      ffmpeg_path: None,
-      hardware_acceleration: true,
-      preview_quality: 75,
-    }
-  }
-}
+/// Настройки компилятора видео — из крейта `ts-render` (#90 dedup; унификация типа с движком).
+pub use ts_render::video_compiler::CompilerSettings;
 
 /// События Video Compiler для WebSocket
 #[derive(Serialize, Debug, Clone)]
