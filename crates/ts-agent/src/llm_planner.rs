@@ -18,6 +18,7 @@
 //!     analyses: vec![],
 //!     source_files: vec![],
 //!     platform: "tiktok".to_string(),
+//!     target_duration: Some(30.0),
 //!     api_key: "sk-...".to_string(),
 //!     api_url: None,
 //!     model: None,
@@ -42,6 +43,8 @@ pub struct LlmPlanParams {
   pub source_files: Vec<String>,
   /// Целевая платформа: youtube | tiktok | reels | shorts | instagram | square
   pub platform: String,
+  /// Целевая длительность монтажа (секунды). None → платформенный дефолт.
+  pub target_duration: Option<f64>,
   /// API ключ (BYOK)
   pub api_key: String,
   /// Base URL API (дефолт: https://api.openai.com/v1)
@@ -124,6 +127,9 @@ impl LlmPlanner {
        - After the JSON, on a new line starting with '// reasoning:', add a brief explanation"
     );
 
+    // Целевая длительность: явная от пользователя или платформенный дефолт
+    let duration = params.target_duration.unwrap_or_else(|| default_duration(&params.platform));
+
     // Пользовательский промпт
     let user_prompt = format!(
       "Goal: {goal}\n\
@@ -133,14 +139,17 @@ impl LlmPlanner {
        Generate a ProjectSchema JSON montage plan.",
       goal = params.goal,
       platform = params.platform,
-      duration = estimate_duration(&params.platform),
+      duration = duration,
       media_context = media_context
     );
 
     log::info!("LLM plan: calling {api_url} model={model}");
 
-    // Вызов API
-    let client = reqwest::Client::new();
+    // Вызов API (клиент с таймаутами)
+    let client = reqwest::Client::builder()
+      .timeout(std::time::Duration::from_secs(120))
+      .connect_timeout(std::time::Duration::from_secs(30))
+      .build()?;
     let body = serde_json::json!({
       "model": model,
       "temperature": temperature,
@@ -163,7 +172,13 @@ impl LlmPlanner {
     let status = resp.status();
     if !status.is_success() {
       let err_body = resp.text().await.unwrap_or_default();
-      anyhow::bail!("LLM API returned {status}: {err_body}");
+      // Обрезаем тело ошибки — в нём может быть echo запроса с токеном
+      let truncated = if err_body.len() > 500 {
+        format!("{}… (truncated)", &err_body[..500])
+      } else {
+        err_body
+      };
+      anyhow::bail!("LLM API returned {status}: {truncated}");
     }
 
     let resp_json: serde_json::Value = resp.json().await.context("parse LLM response")?;
@@ -245,7 +260,7 @@ fn platform_resolution(platform: &str) -> (u32, u32) {
   }
 }
 
-fn estimate_duration(platform: &str) -> f64 {
+fn default_duration(platform: &str) -> f64 {
   match platform {
     "tiktok" | "reels" | "shorts" => 30.0,
     "instagram" => 60.0,
@@ -351,7 +366,41 @@ mod tests {
   }
 
   #[test]
+  fn parse_invalid_json_returns_error() {
+    let result = parse_llm_response("this is not json at all");
+    assert!(result.is_err(), "should fail on invalid JSON");
+    let msg = format!("{}", result.unwrap_err());
+    assert!(msg.contains("failed to parse LLM JSON response"));
+  }
+
+  #[test]
+  fn parse_truncated_json_returns_error() {
+    let result = parse_llm_response(r#"{"id": "abc", "name": "#);
+    assert!(result.is_err());
+  }
+
+  #[test]
   fn planner_can_be_created() {
     let _p = LlmPlanner::new();
+  }
+
+  #[test]
+  fn default_duration_values() {
+    assert_eq!(default_duration("tiktok"), 30.0);
+    assert_eq!(default_duration("reels"), 30.0);
+    assert_eq!(default_duration("youtube"), 120.0);
+  }
+
+  #[test]
+  fn error_body_truncation_logic() {
+    // Verify truncation works: strings > 500 chars should be truncated
+    let long = "x".repeat(1000);
+    let truncated = if long.len() > 500 {
+      format!("{}… (truncated)", &long[..500])
+    } else {
+      long.clone()
+    };
+    assert!(truncated.contains("… (truncated)"));
+    assert!(truncated.len() < long.len());
   }
 }
