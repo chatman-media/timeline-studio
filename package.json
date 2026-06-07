@@ -3,6 +3,7 @@
   "version": "3.60.1",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Alexander Kireyev <ak.chatman.media@gmail.com>",
+  "workspaces": ["packages/*"],
   "type": "module",
   "scripts": {
     "dev": "next dev",
