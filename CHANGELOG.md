@@ -1,3 +1,10 @@
+## [3.60.1](https://github.com/chatman-media/timeline-studio/compare/v3.60.0...v3.60.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* **crate-type:** remove staticlib + unused pyo3/wasmtime ([#103](https://github.com/chatman-media/timeline-studio/issues/103)) ([9819f6b](https://github.com/chatman-media/timeline-studio/commit/9819f6be77ee6b0b041de9fb60186eb66acdc481))
+
 # [3.60.0](https://github.com/chatman-media/timeline-studio/compare/v3.59.0...v3.60.0) (2026-06-07)
 
 
