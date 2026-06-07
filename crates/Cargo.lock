@@ -3069,12 +3069,26 @@ dependencies = [
  "tokio",
  "ts-agent",
  "ts-analysis",
+ "ts-media",
  "ts-montage",
  "ts-platform",
  "ts-publish",
  "ts-recognition",
  "ts-render",
  "ts-schema",
+]
+
+[[package]]
+name = "ts-core-types"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-test",
+ "uuid",
 ]
 
 [[package]]

@@ -4,6 +4,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "ts-core-types",
   "ts-cli",
   "ts-agent",
   "ts-platform", "ts-publish",
