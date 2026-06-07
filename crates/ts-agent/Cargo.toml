@@ -10,6 +10,8 @@ ts-render = { path = "../ts-render" }
 ts-platform = { path = "../ts-platform" }
 ts-publish = { path = "../ts-publish" }
 ts-schema = { path = "../ts-schema" }
+ts-state = { path = "../ts-state" }
+uuid = { version = "1", features = ["v4"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

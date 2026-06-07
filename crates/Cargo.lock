@@ -3036,6 +3036,8 @@ dependencies = [
  "ts-publish",
  "ts-render",
  "ts-schema",
+ "ts-state",
+ "uuid",
 ]
 
 [[package]]
@@ -3197,6 +3199,23 @@ dependencies = [
  "serde",
  "serde_json",
  "specta",
+ "uuid",
+]
+
+[[package]]
+name = "ts-state"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-test",
+ "ts-core-types",
+ "ts-schema",
  "uuid",
 ]
 

@@ -25,5 +25,6 @@
 //! ```
 
 pub mod llm_planner;
+pub mod mcp;
 pub mod pipeline;
 pub mod steps;
