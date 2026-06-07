@@ -1,3 +1,10 @@
+# [3.59.0](https://github.com/chatman-media/timeline-studio/compare/v3.58.0...v3.59.0) (2026-06-07)
+
+
+### Features
+
+* **ts-core-types:** new foundation crate — RenderStatus/RenderProgress/ProgressUpdate/EventBus ([#94](https://github.com/chatman-media/timeline-studio/issues/94)) ([8728644](https://github.com/chatman-media/timeline-studio/commit/87286446dca97c3381f7f47cb1b94448a068a1a6))
+
 # [3.58.0](https://github.com/chatman-media/timeline-studio/compare/v3.57.0...v3.58.0) (2026-06-06)
 
 
