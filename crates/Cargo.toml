@@ -5,6 +5,7 @@
 resolver = "2"
 members = [
   "ts-core-types",
+  "ts-state",
   "ts-cli",
   "ts-agent",
   "ts-platform", "ts-publish",

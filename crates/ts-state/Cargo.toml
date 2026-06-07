@@ -1,0 +1,28 @@
+[package]
+name = "ts-state"
+version = "0.1.0"
+edition = "2021"
+description = "ProjectState + EventBus рантайм без Tauri. Крейт ts-state (#100)"
+
+[features]
+# Включить derive(specta::Type) для всех pub-типов — нужно только в Tauri-хосте
+specta = ["dep:specta"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4"] }
+thiserror = "1"
+tokio = { version = "1", features = ["sync", "rt", "time", "macros"] }
+log = "0.4"
+ts-schema = { path = "../ts-schema" }
+ts-core-types = { path = "../ts-core-types" }
+
+# optional для Tauri-хоста
+specta = { version = "2.0.0-rc.21", features = ["serde", "chrono", "uuid", "serde_json"], optional = true }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tokio-test = "0.4"
+serde_json = "1"

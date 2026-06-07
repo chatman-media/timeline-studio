@@ -3201,6 +3201,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-state"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-test",
+ "ts-core-types",
+ "ts-schema",
+ "uuid",
+]
+
+[[package]]
 name = "ts-subtitles"
 version = "0.1.0"
 dependencies = [
