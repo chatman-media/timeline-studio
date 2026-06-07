@@ -8,8 +8,10 @@
 //! - `subtitles` - Субтитры и их настройки
 //! - `export` - Настройки экспорта и форматы вывода
 //! - `common` - Общие типы и утилиты
+//! - `contracts` - Agent contract types (AnalysisResult, OptimizeRequest/Result, PublishRequest/Result)
 
 pub mod common;
+pub mod contracts;
 pub mod effects;
 pub mod export;
 pub mod project;
