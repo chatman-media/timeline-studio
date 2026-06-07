@@ -37,25 +37,31 @@
         "./src/features/*"
       ],
       "@timeline-studio/core": [
-        "./src/core/index.ts"
+        "./packages/core/src/index.ts"
       ],
       "@timeline-studio/core/*": [
-        "./src/core/*"
+        "./packages/core/src/*"
+      ],
+      "@timeline-studio/domains": [
+        "./packages/domains/src/index.ts"
       ],
       "@timeline-studio/domains/*": [
-        "./src/domains/*"
+        "./packages/domains/src/*"
       ],
       "@timeline-studio/adapters": [
-        "./src/adapters/index.ts"
+        "./packages/adapters/src/index.ts"
       ],
       "@timeline-studio/adapters/*": [
-        "./src/adapters/*"
+        "./packages/adapters/src/*"
+      ],
+      "@timeline-studio/ui": [
+        "./packages/ui/src/index.ts"
       ],
       "@timeline-studio/ui/features/*": [
-        "./src/features/*"
+        "./packages/ui/src/features/*"
       ],
       "@timeline-studio/ui/components/*": [
-        "./src/components/ui/*"
+        "./packages/ui/src/components/*"
       ],
       "@domains/*": [
         "./src/domains/*"

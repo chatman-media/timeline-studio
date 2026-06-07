@@ -1,0 +1,20 @@
+{
+  "name": "@timeline-studio/desktop",
+  "version": "3.61.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --cwd ../.. dev",
+    "build": "bun run --cwd ../.. build",
+    "start": "bun run --cwd ../.. start",
+    "tauri": "bun run --cwd ../.. tauri",
+    "test": "bun run --cwd ../.. test",
+    "check:type": "tsc --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@timeline-studio/adapters": "3.61.1",
+    "@timeline-studio/core": "3.61.1",
+    "@timeline-studio/domains": "3.61.1",
+    "@timeline-studio/ui": "3.61.1"
+  }
+}

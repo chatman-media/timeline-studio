@@ -51,7 +51,7 @@ jobs:
           path: |
             node_modules
             ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock', 'package-lock.json', 'package.json', 'packages/*/package.json', 'apps/*/package.json') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -237,7 +237,7 @@ jobs:
           path: |
             node_modules
             ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-lint-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-lint-${{ hashFiles('bun.lock', 'package-lock.json', 'package.json', 'packages/*/package.json', 'apps/*/package.json') }}
           restore-keys: |
             ${{ runner.os }}-bun-lint-
 
@@ -269,7 +269,7 @@ jobs:
           path: |
             node_modules
             ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-typecheck-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-typecheck-${{ hashFiles('bun.lock', 'package-lock.json', 'package.json', 'packages/*/package.json', 'apps/*/package.json') }}
           restore-keys: |
             ${{ runner.os }}-bun-typecheck-
 
@@ -286,3 +286,9 @@ jobs:
         # src/types/generated/tauri-bindings.ts is committed to the repo,
         # so no Rust build or Linux system deps are needed here.
         run: bun run check:type
+
+      - name: Run workspace type checks
+        run: bun run check:workspaces
+
+      - name: Run package boundary baseline gate
+        run: bun run check:boundaries:baseline

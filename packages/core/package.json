@@ -1,0 +1,36 @@
+{
+  "name": "@timeline-studio/core",
+  "version": "3.61.1",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./container": {
+      "types": "./src/container.ts",
+      "default": "./src/container.ts"
+    },
+    "./hooks": {
+      "types": "./src/hooks/index.ts",
+      "default": "./src/hooks/index.ts"
+    },
+    "./ports": {
+      "types": "./src/ports/index.ts",
+      "default": "./src/ports/index.ts"
+    },
+    "./types": {
+      "types": "./src/types/index.ts",
+      "default": "./src/types/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check:type": "tsc --project tsconfig.json --noEmit"
+  }
+}

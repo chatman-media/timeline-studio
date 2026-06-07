@@ -3,17 +3,17 @@
 **Status:** Phase F baseline for [#150](https://github.com/chatman-media/timeline-studio/issues/150)
 **Updated:** 2026-06-07
 
-This document defines the TypeScript package boundaries used during the modular architecture migration. The code still lives under `src/*`, but the aliases and checks mirror the target workspace packages so every migration PR can be verified before files are physically moved.
+This document defines the TypeScript package boundaries used during the modular architecture migration. Phase F5 adds workspace package shells under `packages/*` and `apps/*`; runtime code still lives under `src/*` and is reached through bridge wrappers so every migration PR can be verified before large file moves.
 
 ## Target Packages
 
 | Package | Current path | Bridge alias | Responsibility |
 |---------|--------------|--------------|----------------|
-| `@timeline-studio/core` | `src/core` | `@timeline-studio/core`, `@timeline-studio/core/*` | Platform-neutral ports, DI container, shared runtime types |
-| `@timeline-studio/domains` | `src/domains` | `@timeline-studio/domains/*` | Business domains and domain services |
-| `@timeline-studio/adapters` | `src/adapters` | `@timeline-studio/adapters`, `@timeline-studio/adapters/*` | Tauri, Node, HTTP and mock implementations for core ports |
-| `@timeline-studio/ui` | `src/features`, `src/components/ui` | `@timeline-studio/ui/features/*`, `@timeline-studio/ui/components/*` | Reusable feature UI and shared UI components |
-| `apps/*` | `src/app`, `src/cli`, `src/config` | not published | App shells that wire UI, domains and adapters |
+| `@timeline-studio/core` | `packages/core` -> `src/core` | `@timeline-studio/core`, `@timeline-studio/core/*` | Platform-neutral ports, DI container, shared runtime types |
+| `@timeline-studio/domains` | `packages/domains` -> `src/domains` | `@timeline-studio/domains`, `@timeline-studio/domains/*` | Business domains and domain services |
+| `@timeline-studio/adapters` | `packages/adapters` -> `src/adapters` | `@timeline-studio/adapters`, `@timeline-studio/adapters/*` | Tauri, Node, HTTP and mock implementations for core ports |
+| `@timeline-studio/ui` | `packages/ui` -> `src/features`, `src/components/ui` | `@timeline-studio/ui`, `@timeline-studio/ui/features/*`, `@timeline-studio/ui/components/*` | Reusable feature UI and shared UI components |
+| `apps/*` | `apps/desktop`, `apps/cli` -> `src/app`, `src/cli`, `src/config` | not published | App shells that wire UI, domains and adapters |
 
 ## Dependency Rules
 
@@ -46,7 +46,13 @@ The default mode is report-only and exits `0` while the Phase F baseline is bein
 bun run check:boundaries:strict
 ```
 
-Each Phase F PR should reduce or avoid increasing the report. A PR may introduce a temporary violation only when the issue body names the follow-up slice that removes it.
+CI uses the committed baseline gate until strict mode is realistic:
+
+```bash
+bun run check:boundaries:baseline
+```
+
+This gate fails if total violations, severity counts or edge counts increase above `config/package-boundaries-baseline.json`. Each Phase F PR should reduce or avoid increasing the report. A PR may introduce a temporary violation only when the issue body names the follow-up slice that removes it and updates the baseline intentionally.
 
 ## PR Slices
 

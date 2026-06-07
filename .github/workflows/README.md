@@ -179,7 +179,7 @@ ORT_LIB_PATH=/usr/lib/x86_64-linux-gnu
 1. **Node зависимости**: По хэшу package-lock.json
 2. **Rust зависимости**: По хэшу Cargo.lock
 3. **FFmpeg (Windows)**: Отдельный кэш для библиотек
-4. **Bun кэш**: По хэшу bun.lockb
+4. **Bun кэш**: По хэшу `bun.lock`, `package-lock.json` и workspace `package.json`
 
 ## Метрики производительности
 

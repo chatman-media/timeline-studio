@@ -1,0 +1,35 @@
+{
+  "name": "@timeline-studio/ui",
+  "version": "3.61.1",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./components": {
+      "types": "./src/components/index.ts",
+      "default": "./src/components/index.ts"
+    },
+    "./components/*": {
+      "types": "./src/components/*.ts",
+      "default": "./src/components/*.ts"
+    },
+    "./features/version-control": {
+      "types": "./src/features/version-control.ts",
+      "default": "./src/features/version-control.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check:type": "tsc --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@timeline-studio/core": "3.61.1"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@timeline-studio/cli",
+  "version": "3.61.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:type": "tsc --project tsconfig.json --noEmit",
+    "test": "bun run --cwd ../.. vitest run src/cli",
+    "video:analyze": "bun run --cwd ../.. video:analyze",
+    "video:montage": "bun run --cwd ../.. video:montage",
+    "video:status": "bun run --cwd ../.. video:status",
+    "video:clean": "bun run --cwd ../.. video:clean",
+    "ai:chat": "bun run --cwd ../.. ai:chat",
+    "ai:ask": "bun run --cwd ../.. ai:ask",
+    "ai:analyze": "bun run --cwd ../.. ai:analyze",
+    "ai:history": "bun run --cwd ../.. ai:history",
+    "ai:models": "bun run --cwd ../.. ai:models"
+  },
+  "dependencies": {
+    "@timeline-studio/adapters": "3.61.1",
+    "@timeline-studio/core": "3.61.1",
+    "@timeline-studio/domains": "3.61.1"
+  }
+}

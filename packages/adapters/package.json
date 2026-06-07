@@ -1,0 +1,43 @@
+{
+  "name": "@timeline-studio/adapters",
+  "version": "3.61.1",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./http": {
+      "types": "./src/http/index.ts",
+      "default": "./src/http/index.ts"
+    },
+    "./mock": {
+      "types": "./src/mock/index.ts",
+      "default": "./src/mock/index.ts"
+    },
+    "./node": {
+      "types": "./src/node/index.ts",
+      "default": "./src/node/index.ts"
+    },
+    "./react": {
+      "types": "./src/react/index.ts",
+      "default": "./src/react/index.ts"
+    },
+    "./tauri": {
+      "types": "./src/tauri/index.ts",
+      "default": "./src/tauri/index.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check:type": "tsc --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@timeline-studio/core": "3.61.1"
+  }
+}
