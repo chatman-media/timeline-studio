@@ -1,3 +1,11 @@
+# [3.60.0](https://github.com/chatman-media/timeline-studio/compare/v3.59.0...v3.60.0) (2026-06-07)
+
+
+### Features
+
+* **ts-agent/mcp:** headless VideoTools + AnalysisService trait + TimelineOps ([#101](https://github.com/chatman-media/timeline-studio/issues/101)) ([9394c02](https://github.com/chatman-media/timeline-studio/commit/9394c0228161a786b5f16d6de9163e770b4e942e)), closes [#97](https://github.com/chatman-media/timeline-studio/issues/97)
+* **ts-state:** new crate — ProjectState + EventSink trait + headless StateManager ([#100](https://github.com/chatman-media/timeline-studio/issues/100)) ([8ebb539](https://github.com/chatman-media/timeline-studio/commit/8ebb539fd1ab7a6fb749f58706d3fff78b0556c0))
+
 # [3.59.0](https://github.com/chatman-media/timeline-studio/compare/v3.58.0...v3.59.0) (2026-06-07)
 
 
