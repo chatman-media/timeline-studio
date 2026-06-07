@@ -25,7 +25,7 @@ vi.mock("@/core", () => ({
   },
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/core/hooks", () => ({
   useNotifications: () => ({
     showError: mockShowError,
     showSuccess: mockShowSuccess,

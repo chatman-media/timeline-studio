@@ -1,4 +1,4 @@
-import { OutputFormat } from "@/features/video-compiler/types/render"
+import type { OutputFormat } from "@/core/types"
 
 export interface OAuthToken {
   accessToken: string

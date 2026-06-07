@@ -5,6 +5,7 @@
 
 import { useCallback, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useNotifications } from "@/core/hooks"
 // Импортируем новый enhanced инструмент
 import {
   autoGenerateSubtitlesFromVideo,
@@ -14,7 +15,6 @@ import {
   extractSubtitlesFromScreenText,
   generateMultilingualSubtitles,
 } from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
-import { useNotifications } from "@/domains/system-integration"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Базовые типы из транскрипции
