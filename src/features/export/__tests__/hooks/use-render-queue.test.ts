@@ -25,43 +25,28 @@ vi.mock("@/core", () => ({
   },
 }))
 
-// Mock video-editing domain services
-vi.mock("@/domains/video-editing", () => ({
-  getActiveJobs: (args?: any) => mockGetActiveJobs(args),
-  cancelRender: (jobId: string) => mockCancelRender(jobId),
-  renderProject: (schema: any, path: string) => mockRenderProject(schema, path),
-  RenderStatus: {
-    Pending: "Pending",
-    Processing: "Processing",
-    Completed: "Completed",
-    Failed: "Failed",
-    Cancelled: "Cancelled",
-  },
-  OutputFormat: {
-    Mp4: "Mp4",
-    Mov: "Mov",
-    Mkv: "Mkv",
-    Avi: "Avi",
-    WebM: "WebM",
-    Gif: "Gif",
-  },
+// Mock core hook bridge used by the export feature.
+vi.mock("@/core/hooks", () => ({
+  useProjectLoader: () => ({
+    loadProject: vi.fn().mockResolvedValue({
+      id: "test-project",
+      settings: {
+        aspectRatio: { width: 1920, height: 1080 },
+        resolution: "1920x1080",
+        frameRate: "30",
+        colorSpace: "sdr",
+      },
+    }),
+  }),
+  useRenderQueue: () => ({
+    getActiveJobs: () => mockGetActiveJobs(),
+    cancelRender: (jobId: string) => mockCancelRender(jobId),
+    renderProject: (schema: any, path: string) => mockRenderProject(schema, path),
+  }),
 }))
 
 // Get mocked logError
 const mockLogError = vi.mocked(logError)
-
-// Mock loadProject function
-vi.mock("@/domains/project-management/services/project-file-service", () => ({
-  loadProject: vi.fn().mockResolvedValue({
-    id: "test-project",
-    settings: {
-      aspectRatio: { width: 1920, height: 1080 },
-      resolution: "1920x1080",
-      frameRate: "30",
-      colorSpace: "sdr",
-    },
-  }),
-}))
 
 // Mock timeline utils
 vi.mock("@/features/timeline/utils/timeline-to-project", () => ({

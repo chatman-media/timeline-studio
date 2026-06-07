@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useNotifications } from "@/core/hooks"
 import {
   type AdvancedFaceDetection,
   AdvancedFaceDetectionService,
@@ -11,7 +12,6 @@ import {
   PersonDatabaseService,
   type TrackedPerson,
 } from "@/domains/ai-services/services/person-identification"
-import { useNotifications } from "@/domains/system-integration"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 

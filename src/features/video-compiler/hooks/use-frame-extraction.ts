@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
+import { useNotifications } from "@/core/hooks"
 import { useFramePreview } from "@/domains/media-management"
-import { useNotifications } from "@/domains/system-integration"
 import {
   type ExtractionPurpose,
   frameExtractionService,

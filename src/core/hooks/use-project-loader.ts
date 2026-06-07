@@ -1,8 +1,5 @@
 import { useCallback, useMemo } from "react"
-import {
-  loadProject as loadProjectFn,
-  saveProject as saveProjectFn,
-} from "@/domains/project-management/services/project-file-service"
+import { getPlatform } from "../container"
 
 /**
  * Core hook для загрузки и сохранения проектов
@@ -20,11 +17,23 @@ import {
  */
 export function useProjectLoader() {
   const loadProject = useCallback(async (path: string): Promise<any> => {
-    return await loadProjectFn(path)
+    const content = await getPlatform().readTextFile(path)
+    return JSON.parse(content)
   }, [])
 
   const saveProject = useCallback(async (path: string, data: any): Promise<void> => {
-    return await saveProjectFn(path, data)
+    const payload =
+      data && typeof data === "object"
+        ? {
+            ...data,
+            meta: {
+              ...data.meta,
+              lastModified: Date.now(),
+            },
+          }
+        : data
+
+    await getPlatform().writeTextFile(path, JSON.stringify(payload, null, 2))
   }, [])
 
   return useMemo(

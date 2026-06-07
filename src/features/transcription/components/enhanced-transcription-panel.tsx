@@ -33,7 +33,7 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { container } from "@/core"
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { type EnhancedSubtitleOptions, useEnhancedSubtitleAutomation } from "../hooks/use-enhanced-subtitle-automation"
 // Импортируем существующие компоненты и хуки
 import { useTranscription } from "../hooks/use-transcription"

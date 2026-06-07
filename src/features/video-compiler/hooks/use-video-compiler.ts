@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/domains/system-integration"
+import { useNotifications } from "@/core/hooks"
 import { renderProject, trackRenderProgress } from "@/domains/video-editing/services/compiler"
 import { videoCompilerRenderService } from "@/domains/video-editing/services/video-compiler-render-service"
 import { ProjectSchema } from "@/domains/video-editing/types/video-compiler"

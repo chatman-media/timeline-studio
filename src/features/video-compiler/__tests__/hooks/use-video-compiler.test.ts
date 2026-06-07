@@ -12,7 +12,7 @@ const mockShowSuccess = vi.fn()
 const mockShowError = vi.fn()
 const mockShowInfo = vi.fn()
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/core/hooks", () => ({
   useNotifications: () => ({
     showSuccess: mockShowSuccess,
     showError: mockShowError,

@@ -50,7 +50,7 @@ const mockFavorites: Record<string, string[]> = {
   styleTemplate: [],
 }
 
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@/core/hooks", () => ({
   useFavorites: () => ({
     addToFavorites: mockAddToFavorites,
     removeFromFavorites: mockRemoveFromFavorites,
