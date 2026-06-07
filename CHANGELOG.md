@@ -1,3 +1,18 @@
+# [3.61.0](https://github.com/chatman-media/timeline-studio/compare/v3.60.1...v3.61.0) (2026-06-07)
+
+
+### Bug Fixes
+
+* **#117:** реализовать все EffectType + fix label-chain filtergraph ([#145](https://github.com/chatman-media/timeline-studio/issues/145)) ([0293cc5](https://github.com/chatman-media/timeline-studio/commit/0293cc54ccdd44689e6ec35a89da85a841437ad3))
+* **ci:** sync workspace locks and headless doctest ([#152](https://github.com/chatman-media/timeline-studio/issues/152)) ([9b16c4a](https://github.com/chatman-media/timeline-studio/commit/9b16c4a06e1ca3cece1b8c0577e3b370d9bdad93))
+
+
+### Features
+
+* **#102:** slim Tauri host — wire ts-state + ts-agent via TauriEventSink ([#144](https://github.com/chatman-media/timeline-studio/issues/144)) ([6f5afb8](https://github.com/chatman-media/timeline-studio/commit/6f5afb89cd2d3a44d7cafe983c28fe28cc278e61)), closes [#102](https://github.com/chatman-media/timeline-studio/issues/102)
+* **#104:** add @timeline/shared-types npm package ([#143](https://github.com/chatman-media/timeline-studio/issues/143)) ([d947572](https://github.com/chatman-media/timeline-studio/commit/d94757275f6993d2c94c3466f25b461a38dcee49)), closes [#104](https://github.com/chatman-media/timeline-studio/issues/104)
+* **#120:** контракты агента + doc (AnalysisResult, OptimizeRequest/Result, PublishRequest/Result) ([#146](https://github.com/chatman-media/timeline-studio/issues/146)) ([d66600d](https://github.com/chatman-media/timeline-studio/commit/d66600de6f0150c6a16bf15ea20f0b96129e121f)), closes [#120](https://github.com/chatman-media/timeline-studio/issues/120)
+
 ## [3.60.1](https://github.com/chatman-media/timeline-studio/compare/v3.60.0...v3.60.1) (2026-06-07)
 
 
