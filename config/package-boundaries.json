@@ -1,0 +1,71 @@
+{
+  "sourceRoot": "src",
+  "packages": [
+    {
+      "name": "core",
+      "paths": ["src/core/**"],
+      "description": "Platform-neutral ports, container and shared runtime types."
+    },
+    {
+      "name": "domains",
+      "paths": ["src/domains/**"],
+      "description": "Business domains and domain services."
+    },
+    {
+      "name": "adapters",
+      "paths": ["src/adapters/**"],
+      "description": "Platform and infrastructure implementations for core ports."
+    },
+    {
+      "name": "ui",
+      "paths": ["src/features/**", "src/components/ui/**"],
+      "description": "Reusable feature UI and shared UI components."
+    },
+    {
+      "name": "app-shell",
+      "paths": ["src/app/**", "src/cli/**", "src/config/**"],
+      "description": "Application wiring shells that compose UI, domains and adapters."
+    }
+  ],
+  "rules": [
+    {
+      "from": "core",
+      "disallow": ["domains", "adapters", "ui", "app-shell"],
+      "severity": "error",
+      "reason": "Core must stay platform-neutral and cannot depend on upper layers."
+    },
+    {
+      "from": "domains",
+      "disallow": ["adapters", "ui", "app-shell"],
+      "severity": "error",
+      "reason": "Domains must not depend on platform adapters, UI or app shells."
+    },
+    {
+      "from": "adapters",
+      "disallow": ["ui", "app-shell"],
+      "severity": "error",
+      "reason": "Adapters implement ports and cannot depend on UI or app shells."
+    },
+    {
+      "from": "ui",
+      "disallow": ["adapters"],
+      "severity": "error",
+      "reason": "UI packages must not import platform adapters directly."
+    },
+    {
+      "from": "ui",
+      "disallow": ["domains"],
+      "severity": "warn",
+      "reason": "UI-to-domain imports are legacy coupling to burn down through core ports."
+    }
+  ],
+  "ignore": [
+    "**/*.d.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**",
+    "**/__mocks__/**"
+  ]
+}

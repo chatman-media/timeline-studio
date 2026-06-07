@@ -4,7 +4,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "author": "Alexander Kireyev <ak.chatman.media@gmail.com>",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "type": "module",
   "scripts": {
@@ -27,6 +28,8 @@
     "check:rust": "npm run lint:rust && npm run format:rust:check",
     "fix:rust": "npm run format:rust && npm run lint:rust:fix",
     "check:type": "tsc --noEmit",
+    "check:boundaries": "node scripts/check-package-boundaries.mjs",
+    "check:boundaries:strict": "node scripts/check-package-boundaries.mjs --strict",
     "check:all": "npm run lint && npm run lint:css && npm run check:rust && npm run test && npm run test:rust",
     "fix:all": "npm run lint:fix && npm run lint:css:fix && npm run fix:rust",
     "tauri": "tauri",

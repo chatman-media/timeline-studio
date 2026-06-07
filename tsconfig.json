@@ -36,6 +36,27 @@
       "@features/*": [
         "./src/features/*"
       ],
+      "@timeline-studio/core": [
+        "./src/core/index.ts"
+      ],
+      "@timeline-studio/core/*": [
+        "./src/core/*"
+      ],
+      "@timeline-studio/domains/*": [
+        "./src/domains/*"
+      ],
+      "@timeline-studio/adapters": [
+        "./src/adapters/index.ts"
+      ],
+      "@timeline-studio/adapters/*": [
+        "./src/adapters/*"
+      ],
+      "@timeline-studio/ui/features/*": [
+        "./src/features/*"
+      ],
+      "@timeline-studio/ui/components/*": [
+        "./src/components/ui/*"
+      ],
       "@domains/*": [
         "./src/domains/*"
       ],
