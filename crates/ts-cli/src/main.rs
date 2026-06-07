@@ -140,6 +140,9 @@ enum Cmd {
     /// число сцен для анализа
     #[arg(long, default_value_t = 8)]
     scenes: usize,
+    /// проверить контракт pipeline без ffmpeg/upload и внешних токенов
+    #[arg(long)]
+    validate_only: bool,
   },
   /// Анализировать медиафайл: ffprobe+ffmpeg → структурированный JSON
   Analyze {
@@ -322,7 +325,8 @@ async fn main() {
       chat,
       caption,
       scenes,
-    } => cmd_pipeline(input, platform, output, token, chat, caption, scenes).await,
+      validate_only,
+    } => cmd_pipeline(input, platform, output, token, chat, caption, scenes, validate_only).await,
     Cmd::Analyze {
       input,
       scenes,
@@ -693,6 +697,7 @@ async fn cmd_pipeline(
   chat: Option<String>,
   caption: Option<String>,
   scenes: usize,
+  validate_only: bool,
 ) {
   let publish = match (token, chat) {
     (Some(t), Some(c)) => Some(PublishTarget::Telegram {
@@ -703,16 +708,29 @@ async fn cmd_pipeline(
     _ => None,
   };
 
-  match Pipeline::new()
-    .run(PipelineParams {
-      input: input.clone(),
-      platform: platform.clone(),
-      output: output.clone(),
-      publish,
-      scene_count: scenes,
-    })
-    .await
-  {
+  let params = PipelineParams {
+    input: input.clone(),
+    platform: platform.clone(),
+    output: output.clone(),
+    publish,
+    scene_count: scenes,
+  };
+
+  if validate_only {
+    match Pipeline::new().validate(&params) {
+      Ok(r) => {
+        let json = serde_json::to_string_pretty(&r).unwrap();
+        println!("{json}");
+      }
+      Err(e) => {
+        eprintln!("❌ pipeline validate: {e}");
+        exit(1);
+      }
+    }
+    return;
+  }
+
+  match Pipeline::new().run(params).await {
     Ok(r) => {
       let json = serde_json::to_string_pretty(&r).unwrap();
       println!("{json}");

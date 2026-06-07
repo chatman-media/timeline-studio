@@ -840,7 +840,7 @@ impl CompositionStage {
     context: &PipelineContext,
     video_tracks: &[&crate::video_compiler::schema::Track],
   ) -> Result<Vec<String>> {
-    let mut command = vec!["ffmpeg".to_string()];
+    let mut command = vec!["ffmpeg".to_string(), "-y".to_string()];
 
     // Добавляем входные файлы
     let mut input_count = 0;
@@ -941,7 +941,7 @@ impl CompositionStage {
     context: &PipelineContext,
     audio_tracks: &[&crate::video_compiler::schema::Track],
   ) -> Result<Vec<String>> {
-    let mut command = vec!["ffmpeg".to_string()];
+    let mut command = vec!["ffmpeg".to_string(), "-y".to_string()];
 
     // Добавляем входные файлы
     let mut input_count = 0;
@@ -1854,6 +1854,7 @@ mod tests {
 
     // Check command structure
     assert_eq!(command[0], "ffmpeg");
+    assert_eq!(command[1], "-y");
     assert!(command.contains(&"-i".to_string()));
     assert!(command.contains(&video_file.to_string_lossy().to_string()));
   }
