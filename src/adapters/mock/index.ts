@@ -11,6 +11,7 @@ import { MockAIService } from "./ai"
 import { MockBackendService } from "./backend"
 import { MockEventService } from "./event"
 import { MockMediaService } from "./media"
+import { MockNodeBackendService } from "./node-backend"
 import { MockPlatformService } from "./platform"
 import { MockStorageService } from "./storage"
 import { MockVideoService } from "./video"
@@ -19,6 +20,7 @@ export { MockAIService } from "./ai"
 export { MockBackendService } from "./backend"
 export { MockEventService } from "./event"
 export { MockMediaService } from "./media"
+export { MockNodeBackendService } from "./node-backend"
 export { MockPlatformService } from "./platform"
 export { MockStorageService } from "./storage"
 export { MockVideoService } from "./video"
@@ -37,6 +39,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   storage: MockStorageService
   event: MockEventService
   media: MockMediaService
+  nodeBackend: MockNodeBackendService
   video: MockVideoService
   ai: MockAIService
 } {
@@ -48,6 +51,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const storage = new MockStorageService(useLocalStorage)
   const event = new MockEventService()
   const media = new MockMediaService()
+  const nodeBackend = new MockNodeBackendService()
   const video = new MockVideoService()
   const ai = new MockAIService()
 
@@ -57,11 +61,12 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerStorage(storage)
   container.registerEvent(event)
   container.registerMedia(media)
+  container.registerNodeBackend(nodeBackend)
   container.registerVideo(video)
   container.registerAI(ai)
 
   // Return services for test manipulation
-  return { backend, platform, storage, event, media, video, ai }
+  return { backend, platform, storage, event, media, nodeBackend, video, ai }
 }
 
 /**
@@ -74,6 +79,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   storage: MockStorageService
   event: MockEventService
   media: MockMediaService
+  nodeBackend: MockNodeBackendService
   video: MockVideoService
   ai: MockAIService
 } {
@@ -85,6 +91,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     storage: new MockStorageService(useLocalStorage),
     event: new MockEventService(),
     media: new MockMediaService(),
+    nodeBackend: new MockNodeBackendService(),
     video: new MockVideoService(),
     ai: new MockAIService(),
   }

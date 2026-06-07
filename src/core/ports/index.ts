@@ -56,6 +56,13 @@ export type {
   WaveformOptions,
 } from "./media.port"
 export type {
+  INodeBackendService,
+  NodeBackendCacheStats,
+  NodeBackendClearCacheResult,
+  NodeBackendHealth,
+  NodeBackendThumbnailSize,
+} from "./node-backend.port"
+export type {
   FileStats,
   IPlatformService,
   NotificationOptions,
