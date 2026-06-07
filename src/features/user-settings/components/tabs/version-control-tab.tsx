@@ -3,7 +3,7 @@
  * Provides access to project version control functionality
  */
 
-import { VersionControlManager } from "@/features/version-control/components/version-control-manager"
+import { VersionControlManager } from "@timeline-studio/ui/features/version-control"
 
 /**
  * Version Control tab component

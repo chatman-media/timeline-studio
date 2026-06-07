@@ -3,17 +3,16 @@
  * Provides UI for viewing and managing project versions
  */
 
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { Separator } from "@timeline-studio/ui/components/separator"
 import { Clock, GitBranch, History, MessageCircle, Plus, RotateCcw, Settings, User } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { useVersionControl } from "@/features/version-control/hooks"
-
+import { useVersionControl } from "../hooks"
 import type { VersionInfo } from "../types"
 
 // Time formatting function with i18n support

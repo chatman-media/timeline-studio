@@ -78,6 +78,11 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@features": path.resolve(__dirname, "./src/features"),
+      "@timeline-studio/core": path.resolve(__dirname, "./src/core"),
+      "@timeline-studio/domains": path.resolve(__dirname, "./src/domains"),
+      "@timeline-studio/adapters": path.resolve(__dirname, "./src/adapters"),
+      "@timeline-studio/ui/features": path.resolve(__dirname, "./src/features"),
+      "@timeline-studio/ui/components": path.resolve(__dirname, "./src/components/ui"),
       // Mock Tauri dependencies during testing
       "@tauri-apps/plugin-os": path.resolve(__dirname, "./src/test/mocks/tauri/plugins/os.ts"),
       "@tauri-apps/plugin-notification": path.resolve(__dirname, "./src/test/mocks/tauri/plugins/notification.ts"),

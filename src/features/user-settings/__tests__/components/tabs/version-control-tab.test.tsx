@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { VersionControlTab } from "../../../components/tabs/version-control-tab"
 
-vi.mock("@/features/version-control/components/version-control-manager", () => ({
+vi.mock("@timeline-studio/ui/features/version-control", () => ({
   VersionControlManager: () => (
     <div data-testid="version-control-manager" data-oid="7baoz3p">
       Version Control Manager

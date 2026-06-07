@@ -3,8 +3,8 @@
  * Объединяет краткосрочные операции отмены с долгосрочным управлением версиями
  */
 
+import type { VersionInfo } from "@timeline-studio/ui/features/version-control"
 import { isServiceEnabled } from "@/config/service-config"
-import type { VersionInfo } from "@/features/version-control/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { UndoRedoService } from "./undo-redo-service"
 

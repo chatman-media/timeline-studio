@@ -2,8 +2,8 @@
  * Интегрированный hook для Timeline Undo/Redo + Project Version Control
  */
 
+import { useVersionControl } from "@timeline-studio/ui/features/version-control"
 import { useCallback, useEffect, useState } from "react"
-import { useVersionControl } from "@/features/version-control/hooks"
 import {
   type VersionControlIntegrationConfig,
   versionControlIntegration,

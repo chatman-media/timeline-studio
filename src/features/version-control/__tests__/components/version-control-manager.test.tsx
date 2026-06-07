@@ -12,7 +12,7 @@ import { BranchManager, VersionControlManager, VersionControlSettings } from "..
 
 // Mock the useVersionControl hook
 const mockUseVersionControl = vi.fn()
-vi.mock("@/features/version-control/hooks", () => ({
+vi.mock("../../hooks", () => ({
   useVersionControl: () => mockUseVersionControl(),
 }))
 
