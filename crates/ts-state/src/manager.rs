@@ -86,6 +86,26 @@ impl StateManager {
         id
     }
 
+    /// Атомарно изменяет состояние через замыкание.
+    ///
+    /// Замыкание получает `&mut ProjectState` и может вернуть любое значение.
+    /// После выполнения изменения немедленно видны всем читателям.
+    ///
+    /// # Пример
+    /// ```rust,ignore
+    /// let id = manager.mutate(|state| {
+    ///     state.create_project("My Film", ProjectSettings::default())
+    /// }).await;
+    /// ```
+    pub async fn mutate<F, T>(&self, f: F) -> T
+    where
+        F: FnOnce(&mut ProjectState) -> T + Send,
+        T: Send,
+    {
+        let mut state = self.inner.state.write().await;
+        f(&mut state)
+    }
+
     /// Помечает проект как изменённый.
     pub async fn mark_dirty(&self) {
         let mut state = self.inner.state.write().await;

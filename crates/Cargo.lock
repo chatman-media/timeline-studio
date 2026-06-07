@@ -3036,6 +3036,8 @@ dependencies = [
  "ts-publish",
  "ts-render",
  "ts-schema",
+ "ts-state",
+ "uuid",
 ]
 
 [[package]]
