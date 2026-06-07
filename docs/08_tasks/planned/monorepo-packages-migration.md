@@ -73,29 +73,36 @@ adapters -> core
 
 **Цель:** убрать зависимость core от domains и начать снимать `ui -> domains` coupling.
 
-- [ ] Найти `core -> domains` импорты через `bun run check:boundaries`.
-- [ ] Вынести UI-facing контракты в `src/core/ports`.
-- [ ] Добавить bridge API в `src/core/container` или соседний composition module.
-- [ ] Перевести первый набор hooks/features с прямых domain imports на core API.
-- [ ] Оставить desktop поведение неизменным.
+- [x] Найти `core -> domains` импорты через `bun run check:boundaries`.
+- [x] Вынести UI-facing контракты в `src/core/ports`.
+- [x] Добавить bridge API в `src/core/container` или соседний composition module.
+- [x] Перевести первый набор hooks/features с прямых domain imports на core API.
+- [x] Оставить desktop поведение неизменным.
 
 ### F3: Adapter contracts
 
 **Цель:** закрыть прямые импорты adapters из UI.
 
-- [ ] Найти `ui -> adapters` импорты через `bun run check:boundaries`.
-- [ ] Перенести нужные операции за core ports.
-- [ ] Инициализировать Tauri/Node/Mock implementations только в app-shell/adapters.
-- [ ] Подготовить mock adapter path для UI tests.
+- [x] Найти `ui -> adapters` импорты через `bun run check:boundaries`.
+- [x] Перенести нужные операции за core ports.
+- [x] Инициализировать Tauri/Node/Mock implementations только в app-shell/adapters.
+- [x] Подготовить mock adapter path для UI tests.
 
 ### F4: UI pilot package
 
 **Цель:** проверить форму `@timeline-studio/ui` на одном вертикальном feature slice.
 
-- [ ] Выбрать feature с небольшим числом domain imports.
-- [ ] Перевести его public API на `@timeline-studio/ui/features/*`.
-- [ ] Убедиться, что feature не импортирует adapters и новые domain imports не добавляются.
-- [ ] Обновить relevant tests.
+- [x] Выбрать feature с небольшим числом domain imports: pilot slice - `src/features/version-control`.
+- [x] Перевести его public API на `@timeline-studio/ui/features/version-control`.
+- [x] Убедиться, что feature не импортирует adapters и новые domain imports не добавляются.
+- [x] Обновить relevant tests.
+
+Следующие UI slices после pilot:
+
+1. `developer-tools` - самый маленький feature slice без domain/adapter imports.
+2. `drag-drop` - небольшой UI-only slice для проверки non-modal feature shape.
+3. `language` - небольшой slice с одним domain import; хороший кандидат для следующего core bridge.
+4. `color-scheme` и `options` - следующие после burn-down оставшихся settings/domain связей.
 
 ### F5: Workspace split и CI
 
@@ -125,11 +132,11 @@ bun run check:type
 
 Baseline на 2026-06-07:
 
-- Scanned files: 1569
-- Violations: 506
-- `error`: 39
-- `warn`: 467
-- Edges: `core -> domains` 6, `domains -> app-shell` 3, `domains -> ui` 28, `ui -> adapters` 2, `ui -> domains` 467
+- Scanned files: 1573
+- Violations: 490
+- `error`: 31
+- `warn`: 459
+- Edges: `domains -> app-shell` 3, `domains -> ui` 28, `ui -> domains` 459
 
 Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 

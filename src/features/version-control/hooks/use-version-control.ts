@@ -7,9 +7,9 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { getBackend } from "@/core/container"
 import type { CommandResult, ProjectCommand, ProjectEvent } from "@/core/types"
-import type { VersionInfo } from "@/features/version-control/types"
 import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"
+import type { VersionInfo } from "../types"
 
 const logger = createLogger("UseVersionControl")
 

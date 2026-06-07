@@ -45,7 +45,7 @@ version-control/
 
 ## Использование
 ```typescript
-import { useVersionControl } from '@/features/version-control'
+import { useVersionControl } from '@timeline-studio/ui/features/version-control'
 
 function ProjectHeader() {
   const {
