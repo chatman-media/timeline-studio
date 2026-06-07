@@ -1,6 +1,8 @@
 //! Сквозной агентный пайплайн: analyze → optimize → publish.
 
-use anyhow::Result;
+use std::path::Path;
+
+use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 
 use crate::steps;
@@ -49,6 +51,18 @@ pub struct PipelineResult {
   pub elapsed_secs: f64,
 }
 
+/// Результат быстрой проверки агентного pipeline без запуска ffmpeg/upload.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PipelineValidationResult {
+  pub mode: String,
+  pub input: String,
+  pub output: String,
+  pub platform: String,
+  pub scene_count: usize,
+  pub publish: Option<String>,
+  pub steps: Vec<String>,
+}
+
 // ─── pipeline ────────────────────────────────────────────────────────────────
 
 /// Агентный оркестратор: analyze → optimize → publish.
@@ -57,6 +71,74 @@ pub struct Pipeline;
 impl Pipeline {
   pub fn new() -> Self {
     Self
+  }
+
+  /// Проверить контракт pipeline без тяжелых операций и внешних токенов.
+  pub fn validate(&self, params: &PipelineParams) -> Result<PipelineValidationResult> {
+    if params.input.trim().is_empty() {
+      return Err(anyhow!("pipeline validate: input path is empty"));
+    }
+    if !Path::new(&params.input).exists() {
+      return Err(anyhow!(
+        "pipeline validate: input file not found: {}",
+        params.input
+      ));
+    }
+    if params.output.trim().is_empty() {
+      return Err(anyhow!("pipeline validate: output path is empty"));
+    }
+    if let Some(parent) = Path::new(&params.output).parent() {
+      if !parent.as_os_str().is_empty() && !parent.exists() {
+        return Err(anyhow!(
+          "pipeline validate: output directory not found: {}",
+          parent.display()
+        ));
+      }
+    }
+    if !matches!(
+      params.platform.as_str(),
+      "youtube" | "tiktok" | "reels" | "shorts" | "instagram" | "square"
+    ) {
+      return Err(anyhow!(
+        "pipeline validate: unsupported platform '{}'",
+        params.platform
+      ));
+    }
+    if params.scene_count == 0 {
+      return Err(anyhow!(
+        "pipeline validate: scene_count must be greater than zero"
+      ));
+    }
+
+    let mut steps = vec!["analyze".to_string(), "optimize".to_string()];
+    let publish = match &params.publish {
+      Some(PublishTarget::Telegram {
+        bot_token, chat_id, ..
+      }) => {
+        if bot_token.trim().is_empty() {
+          return Err(anyhow!("pipeline validate: telegram token is empty"));
+        }
+        if chat_id.trim().is_empty() {
+          return Err(anyhow!("pipeline validate: telegram chat is empty"));
+        }
+        steps.push("publish:telegram".to_string());
+        Some("telegram".to_string())
+      }
+      None => {
+        steps.push("publish:skipped".to_string());
+        None
+      }
+    };
+
+    Ok(PipelineValidationResult {
+      mode: "validate-only".to_string(),
+      input: params.input.clone(),
+      output: params.output.clone(),
+      platform: params.platform.clone(),
+      scene_count: params.scene_count,
+      publish,
+      steps,
+    })
   }
 
   /// Выполнить полный пайплайн.
@@ -85,7 +167,9 @@ impl Pipeline {
           bot_token,
           chat_id,
           caption,
-        } => steps::step_publish_telegram(&params.output, bot_token, chat_id, caption.clone()).await?,
+        } => {
+          steps::step_publish_telegram(&params.output, bot_token, chat_id, caption.clone()).await?
+        }
       };
       Some(msg.message_id)
     } else {
@@ -140,6 +224,49 @@ mod tests {
     let json = serde_json::to_string(&r).unwrap();
     assert!(json.contains("tiktok"));
     assert!(json.contains("6000"));
+  }
+
+  #[test]
+  fn pipeline_validate_catches_missing_input() {
+    let result = Pipeline::new().validate(&PipelineParams {
+      input: "/definitely/missing/video.mp4".into(),
+      platform: "youtube".into(),
+      output: "/tmp/out.mp4".into(),
+      publish: None,
+      scene_count: 1,
+    });
+
+    let err = result.unwrap_err().to_string();
+    assert!(err.contains("pipeline validate: input file not found"));
+  }
+
+  #[test]
+  fn pipeline_validate_accepts_publish_shape_without_network() {
+    let dir =
+      std::env::temp_dir().join(format!("timeline-pipeline-validate-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let input = dir.join("input.mp4");
+    std::fs::write(&input, b"not a real video").unwrap();
+
+    let result = Pipeline::new()
+      .validate(&PipelineParams {
+        input: input.to_string_lossy().to_string(),
+        platform: "youtube".into(),
+        output: dir.join("out.mp4").to_string_lossy().to_string(),
+        publish: Some(PublishTarget::Telegram {
+          bot_token: "fake-token".into(),
+          chat_id: "@timeline_smoke".into(),
+          caption: Some("smoke".into()),
+        }),
+        scene_count: 1,
+      })
+      .unwrap();
+
+    assert_eq!(result.mode, "validate-only");
+    assert_eq!(result.publish.as_deref(), Some("telegram"));
+    assert!(result.steps.contains(&"publish:telegram".to_string()));
+
+    let _ = std::fs::remove_dir_all(dir);
   }
 
   #[test]

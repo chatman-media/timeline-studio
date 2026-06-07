@@ -298,6 +298,19 @@ let req: AnalysisRequest = serde_json::from_str(&json_str)?;
 let pub_req = PublishRequest::new("/project.json", "/output", RenderQuality::Web);
 ```
 
+## Headless smoke test
+
+Run the end-to-end agent smoke locally from the repository root:
+
+```bash
+cd crates && cargo test -p ts-cli --test headless_pipeline_smoke -- --nocapture
+```
+
+The test exercises the public `timeline` CLI contract without GUI/Tauri:
+`emit-schema`, synthetic media analysis, `pipeline --validate-only` with a
+Telegram publish target shape, `emit-example -> render`, and `pipeline`
+`analyze -> optimize` without external tokens.
+
 ---
 
 ## Versioning policy
