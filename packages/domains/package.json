@@ -1,0 +1,63 @@
+{
+  "name": "@timeline-studio/domains",
+  "version": "3.61.1",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./ai-director": {
+      "types": "./src/ai-director.ts",
+      "default": "./src/ai-director.ts"
+    },
+    "./ai-services": {
+      "types": "./src/ai-services.ts",
+      "default": "./src/ai-services.ts"
+    },
+    "./ai-tools": {
+      "types": "./src/ai-tools.ts",
+      "default": "./src/ai-tools.ts"
+    },
+    "./browser": {
+      "types": "./src/browser.ts",
+      "default": "./src/browser.ts"
+    },
+    "./media-management": {
+      "types": "./src/media-management.ts",
+      "default": "./src/media-management.ts"
+    },
+    "./project-management": {
+      "types": "./src/project-management.ts",
+      "default": "./src/project-management.ts"
+    },
+    "./shared": {
+      "types": "./src/shared.ts",
+      "default": "./src/shared.ts"
+    },
+    "./subtitles": {
+      "types": "./src/subtitles.ts",
+      "default": "./src/subtitles.ts"
+    },
+    "./system-integration": {
+      "types": "./src/system-integration.ts",
+      "default": "./src/system-integration.ts"
+    },
+    "./video-editing": {
+      "types": "./src/video-editing.ts",
+      "default": "./src/video-editing.ts"
+    }
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check:type": "tsc --project tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@timeline-studio/core": "3.61.1"
+  }
+}

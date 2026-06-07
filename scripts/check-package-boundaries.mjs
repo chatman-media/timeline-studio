@@ -20,6 +20,8 @@ const configPath = path.resolve(
   repoRoot,
   args.find((arg) => arg.startsWith("--config="))?.split("=")[1] ?? defaultConfigPath,
 )
+const baselineArg = args.find((arg) => arg.startsWith("--baseline="))
+const baselinePath = baselineArg ? path.resolve(repoRoot, baselineArg.split("=")[1]) : null
 
 const toPosix = (value) => value.split(path.sep).join("/")
 
@@ -123,6 +125,15 @@ function resolveInternalSpecifier(sourceFile, specifier) {
 async function readConfig() {
   const rawConfig = await fs.readFile(configPath, "utf8")
   return JSON.parse(rawConfig)
+}
+
+async function readBaseline() {
+  if (!baselinePath) {
+    return null
+  }
+
+  const rawBaseline = await fs.readFile(baselinePath, "utf8")
+  return JSON.parse(rawBaseline)
 }
 
 async function collectFiles(directory, config, files = []) {
@@ -233,8 +244,50 @@ function printTextReport(config, files, violations) {
   }
 }
 
+function compareBaseline(violations, baseline) {
+  const summary = summarizeViolations(violations)
+  const failures = []
+  const allowedViolations = baseline.violations ?? baseline.totalViolations
+
+  if (typeof allowedViolations === "number" && violations.length > allowedViolations) {
+    failures.push(`violations ${violations.length} > baseline ${allowedViolations}`)
+  }
+
+  for (const [severity, count] of Object.entries(summary.bySeverity)) {
+    const allowed = baseline.bySeverity?.[severity] ?? 0
+    if (count > allowed) {
+      failures.push(`severity ${severity} ${count} > baseline ${allowed}`)
+    }
+  }
+
+  for (const [edge, count] of Object.entries(summary.byEdge)) {
+    const allowed = baseline.byEdge?.[edge] ?? 0
+    if (count > allowed) {
+      failures.push(`edge ${edge} ${count} > baseline ${allowed}`)
+    }
+  }
+
+  return { failures, summary }
+}
+
+function printBaselineReport(comparison) {
+  console.log("")
+  console.log(`Baseline: ${toPosix(path.relative(repoRoot, baselinePath))}`)
+
+  if (comparison.failures.length === 0) {
+    console.log("Baseline gate: passed. No package boundary count increased.")
+    return
+  }
+
+  console.log("Baseline gate: failed.")
+  for (const failure of comparison.failures) {
+    console.log(`- ${failure}`)
+  }
+}
+
 async function main() {
   const config = await readConfig()
+  const baseline = await readBaseline()
   const sourceRoot = path.join(repoRoot, config.sourceRoot)
   const files = await collectFiles(sourceRoot, config)
   const violations = []
@@ -288,13 +341,38 @@ async function main() {
     )
   })
 
+  const baselineComparison = baseline ? compareBaseline(violations, baseline) : null
+
   if (json) {
-    console.log(JSON.stringify({ files: files.length, violations, summary: summarizeViolations(violations) }, null, 2))
+    console.log(
+      JSON.stringify(
+        {
+          files: files.length,
+          violations,
+          summary: summarizeViolations(violations),
+          baseline: baselineComparison
+            ? {
+                path: toPosix(path.relative(repoRoot, baselinePath)),
+                failures: baselineComparison.failures,
+              }
+            : undefined,
+        },
+        null,
+        2,
+      ),
+    )
   } else {
     printTextReport(config, files, violations)
+    if (baselineComparison) {
+      printBaselineReport(baselineComparison)
+    }
   }
 
   if (strict && violations.length > 0) {
+    process.exitCode = 1
+  }
+
+  if (baselineComparison && baselineComparison.failures.length > 0) {
     process.exitCode = 1
   }
 }

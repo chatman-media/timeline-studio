@@ -36,13 +36,13 @@ timeline-studio/
 └── bun.lock
 ```
 
-До физического split пакеты отражены bridge-алиасами в `tsconfig.json`:
+После F5 пакеты имеют физические workspace shells (`packages/*`, `apps/*`), а runtime-код пока остается в текущих `src/*` деревьях и подключается через bridge wrappers:
 
-- `@timeline-studio/core` -> `src/core`
-- `@timeline-studio/domains/*` -> `src/domains/*`
-- `@timeline-studio/adapters` -> `src/adapters`
-- `@timeline-studio/ui/features/*` -> `src/features/*`
-- `@timeline-studio/ui/components/*` -> `src/components/ui/*`
+- `@timeline-studio/core` -> `packages/core/src/*` -> `src/core`
+- `@timeline-studio/domains` / `@timeline-studio/domains/*` -> `packages/domains/src/*` -> `src/domains`
+- `@timeline-studio/adapters` / `@timeline-studio/adapters/*` -> `packages/adapters/src/*` -> `src/adapters`
+- `@timeline-studio/ui/features/*` -> `packages/ui/src/features/*` -> `src/features/*`
+- `@timeline-studio/ui/components/*` -> `packages/ui/src/components/*` -> `src/components/ui/*`
 
 Границы и правила описаны в [package-boundaries.md](../../engineering/package-boundaries.md) и `config/package-boundaries.json`.
 
@@ -108,11 +108,11 @@ adapters -> core
 
 **Цель:** физически создать пакеты/apps после burn-down основных циклов.
 
-- [ ] Создать `package.json` для `packages/core`, `packages/domains`, `packages/adapters`, `packages/ui`.
-- [ ] Создать `apps/desktop` и `apps/cli` без изменения runtime behavior.
-- [ ] Обновить build/test scripts, TypeScript references и lockfiles.
-- [ ] Настроить CI cache для workspace scripts.
-- [ ] Перевести boundary checker в strict mode или добавить CI gate по baseline.
+- [x] Создать `package.json` для `packages/core`, `packages/domains`, `packages/adapters`, `packages/ui`.
+- [x] Создать `apps/desktop` и `apps/cli` без изменения runtime behavior.
+- [x] Обновить build/test scripts, TypeScript paths и lockfiles.
+- [x] Настроить CI cache для workspace scripts.
+- [x] Добавить CI gate по committed baseline; strict mode оставить на следующий burn-down этап.
 
 ## Проверка каждого PR
 
@@ -121,6 +121,8 @@ adapters -> core
 ```bash
 bun install --frozen-lockfile --ignore-scripts
 bun run check:boundaries
+bun run check:boundaries:baseline
+bun run check:workspaces
 bun run check:type
 ```
 
@@ -129,6 +131,8 @@ bun run check:type
 ## Текущий baseline
 
 `bun run check:boundaries` сейчас работает в report-only режиме. Это намеренно: текущий код содержит известные нарушения, которые нужно снимать отдельными PR.
+
+CI использует `bun run check:boundaries:baseline`, который сравнивает отчет с `config/package-boundaries-baseline.json` и падает только при росте total/severity/edge counts. Strict mode останется выключенным до burn-down `domains -> ui`, `domains -> app-shell` и `ui -> domains`.
 
 Baseline на 2026-06-07:
 

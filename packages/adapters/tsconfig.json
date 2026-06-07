@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../../",
+    "tsBuildInfoFile": "../../node_modules/.cache/tsbuildinfo/packages-adapters.tsbuildinfo",
+    "types": [
+      "node",
+      "react",
+      "react-dom"
+    ]
+  },
+  "include": [
+    "src/**/*",
+    "../../src/adapters/**/*",
+    "../../src/core/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/__tests__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "../../src/**/__tests__/**",
+    "../../src/**/*.test.ts",
+    "../../src/**/*.test.tsx",
+    "../../src/**/*.spec.ts",
+    "../../src/**/*.spec.tsx"
+  ]
+}

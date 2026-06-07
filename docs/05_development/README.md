@@ -215,7 +215,7 @@ describe('MyComponent', () => {
 ### "Module not found" ошибки
 ```bash
 # Очистка кэша и переустановка
-rm -rf node_modules bun.lockb
+rm -rf node_modules bun.lock
 bun install
 ```
 

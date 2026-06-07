@@ -268,7 +268,7 @@ bun run dev
 
 ```bash
 # Очистка кэша
-rm -rf node_modules bun.lockb
+rm -rf node_modules bun.lock
 bun install --force
 ```
 
