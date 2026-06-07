@@ -6,9 +6,20 @@
 //! ```no_run
 //! use ts_montage::headless::{HeadlessMontagePlanner, MontagePlanParams};
 //! # async fn run() -> anyhow::Result<()> {
+//! let analyses = vec![serde_json::json!({
+//!   "video": { "duration_secs": 12.0 },
+//!   "scenes": [
+//!     { "start_secs": 0.0, "end_secs": 4.0, "brightness": 0.6, "contrast": 0.7, "saturation": 0.5 },
+//!     { "start_secs": 4.0, "end_secs": 8.0, "brightness": 0.8, "contrast": 0.6, "saturation": 0.8 }
+//!   ]
+//! })];
+//! let sources = vec!["/data/clip1.mp4".to_string()];
 //! let plan = HeadlessMontagePlanner::new()
-//!   .plan(MontagePlanParams {
-//!     inputs: vec!["/data/clip1.mp4".to_string(), "/data/clip2.mp4".to_string()],
+//!   .plan_from_analyses(
+//!     analyses,
+//!     sources.clone(),
+//!     MontagePlanParams {
+//!     inputs: sources,
 //!     platform: "tiktok".to_string(),
 //!     duration_secs: 30.0,
 //!     style: "social-media".to_string(),

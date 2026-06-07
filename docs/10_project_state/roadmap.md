@@ -1,196 +1,108 @@
-# ДОРОЖНАЯ КАРТА TIMELINE STUDIO
+# Roadmap Timeline Studio
 
-## 🎯 Видение проекта
+*Последнее обновление: 7 июня 2026*
 
-Timeline Studio - это современный видеоредактор, сочетающий:
-- **Профессиональную мощь DaVinci Resolve** - полный контроль над монтажом
-- **Обширную творческую библиотеку** - эффекты, фильтры, переходы, шаблоны
-- **AI-скриптинг и автоматизацию** - автоматическая генерация контента
-- **Локальные AI модели** - работа без облачных сервисов через Ollama
+## Видение
 
-**Ключевая инновация**: Пользователю достаточно загрузить ресурсы, а AI автоматически создаст набор видео на разных языках, оптимизированных под разные платформы, и автоматически загрузит их во все социальные сети.
+Timeline Studio развивается в видеоредактор, которым можно пользоваться как через GUI, так и headless: агент получает цель, анализирует исходные медиа, строит `ProjectSchema`, рендерит, оптимизирует и публикует результат.
 
-## 📅 График релизов
+Ключевая архитектурная ставка: единый типизированный контракт между GUI, headless CLI, агентом и внешними интеграциями.
 
-### ✅ Alpha Release v0.60.0 (3 августа 2025) - ВЫПУЩЕН! 🎉
+## Завершено
 
-**Статус**: 100% готов и выпущен!
+### Rust modularization
 
-**Что включено**:
-- ✅ Профессиональный видеоредактор с timeline
-- ✅ 100+ эффектов, фильтров и переходов
-- ✅ Advanced Color Grading система
-- ✅ Fairlight Audio микшер
-- ✅ AI Chat интеграция (Claude/OpenAI/Ollama) с **257 AI инструментом** 🎯
-- ✅ **Ollama интеграция** - локальные AI модели (Llama 3.2, Phi-3, Gemma 2, Qwen 2.5)
-- ✅ AI Content Intelligence Suite (**4 движка**: Content Classification, Scene Analysis, Script Generation, Multi-Platform)
-- ✅ Person Identification - распознавание и управление персонами
-- ✅ Smart Montage Planner - AI-powered автоматический монтаж
-- ✅ Экспорт в основные форматы
-- ✅ OAuth публикация в соцсети
-- ✅ 15 языков локализации
-- ✅ **Унифицированная система ресурсов** - 8 типов с единым API
-- ✅ **Biome** - единый инструмент для линтинга и форматирования
-- ✅ **GitHub Actions** - автоматическая сборка для всех платформ
+Закрыт epic [#91](https://github.com/chatman-media/timeline-studio/issues/91): backend распилен на layered `ts-*` crates.
 
-**Достижения альфа-релиза**:
-- ✅ Интеграция с Ollama для бесплатных локальных AI моделей
-- ✅ Миграция с ESLint на Biome
-- ✅ Создание отдельной ветки `alpha-release-v0.60.0`
-- ✅ Автоматизация сборки через GitHub Actions
+Готово:
 
-### 🚀 Beta Release (Q4 2025) - 20% готов
+- Cargo workspace для `crates/*`.
+- `ts-schema` и `ts-core-types` как foundation layer.
+- `ts-render` и headless render path.
+- Доменные крейты `ts-media`, `ts-recognition`, `ts-analysis`, `ts-montage`, `ts-subtitles`.
+- `ts-state` без Tauri-зависимости.
+- `ts-agent` и headless video tools.
+- Slim Tauri host поверх новых крейтов.
+- Изоляция heavy deps: `tauri`, `ort`, `pyo3`, `wasmtime` не протекают в общий headless path.
 
-**Цель**: Стабильная версия с расширенными возможностями
+### Agentic headless pipeline
 
-**План работ до Beta**:
+Закрыт epic [#119](https://github.com/chatman-media/timeline-studio/issues/119).
 
-#### Приоритет 1 (Критично для Beta)
-- 🔧 **Исправление TypeScript ошибок** - снизить с 1860 до < 100
-- 🔧 **GPU ускорение для Ollama** - интеграция CUDA/Metal
-- 🔧 **Стриминг ответов AI** - реальное время вместо батчей
-- 🔧 **Whisper интеграция** - профессиональная транскрипция
+Готово:
 
-#### Приоритет 2 (Основные функции Beta)
-- **Comprehensive Resources Database** - 5000+ ресурсов уровня Filmora 🎯
-- **Cloud Storage & Sync** - мультиплатформенная синхронизация 🎯
-- **Cloud AI провайдеры** - опциональная поддержка OpenAI/Anthropic
-- Person Identification Advanced - ML модели, real-time трекинг
-- Effects Library Extension - 500+ профессиональных эффектов
-- Performance Optimization - proxy файлы для 4K/8K
-- Plugin System с WASM поддержкой
-- Расширенная документация и туториалы
+- Единый `timeline` CLI.
+- `render`, `ingest`, `analyze`, `montage-plan`, `optimize`, `thumbnail`.
+- `publish telegram` и `publish youtube`.
+- `pipeline` для базового produce-to-publish flow.
+- LLM planner через OpenAI-compatible BYOK endpoint.
 
-### 🌟 Version 1.0 (Q2 2026)
+### Contracts
 
-**Цель**: Полноценный релиз для массового использования
+Закрыт epic [#120](https://github.com/chatman-media/timeline-studio/issues/120).
 
-**Новые функции**:
-- Cloud Rendering - облачная обработка видео
-- Telegram Mini App - мобильное приложение
-- Project Version Control - Git для видеопроектов
-- Marketplace для плагинов и шаблонов
-- Enterprise функции (team collaboration)
-- **Collaborative editing** - совместная работа над проектами
+Готово:
 
-### 🔮 Version 2.0 (Q4 2026)
+- `ProjectSchema` JSON Schema.
+- `AnalysisResult`, `OptimizeRequest/Result`, `PublishRequest/Result`.
+- `@timeline/shared-types`.
+- [Agent Contract Reference](../engineering/AGENT_CONTRACT_REFERENCE.md).
 
-**Цель**: Революция в видеопроизводстве
+## Сейчас
 
-**Инновации**:
-- **DocuDrama-You** - AI создает фильмы из вашей жизни
-- **Living Series** - автоматические сериалы о людях
-- **Cinema Without Screenwriters** - AI находит сюжеты в raw footage
-- Интеграция с VR/AR
-- Real-time collaboration
-- **Mobile Apps** - полноценные iOS/Android приложения
+### P0: стабилизировать CI
 
-## 📊 Метрики успеха
+- [#147](https://github.com/chatman-media/timeline-studio/issues/147) - lock-файлы для `@timeline/shared-types`.
+- [#148](https://github.com/chatman-media/timeline-studio/issues/148) - `ts-montage` doctest/API drift.
 
-### Alpha (Текущая фаза - АКТИВНА)
-- ✅ Выпущена версия 0.60.0-alpha
-- 🎯 1,000+ early adopters (в процессе)
-- 🎯 50+ обработанных видео в день
-- 🎯 80%+ удовлетворенность пользователей
-- ✅ **257 AI инструмент** в использовании
-- ✅ **Локальные AI модели** через Ollama
+Acceptance:
 
-### Beta (Q4 2025)
-- 10,000+ активных пользователей
-- 500+ видео в день
-- Интеграция с 10+ платформами
-- **5000+ ресурсов** в базе данных
-- < 100 TypeScript ошибок
+- `bun install --frozen-lockfile` проходит.
+- `npm ci --omit=optional` проходит.
+- `cd crates && cargo test -p ts-montage --doc` проходит.
+- Crates workspace CI больше не падает на doctest.
 
-### v1.0 (Q2 2026)
-- 100,000+ пользователей
-- 5,000+ видео в день
-- Прибыльность через Pro подписки
-- **Мультиплатформенная синхронизация** активна
+### P1: защитить headless pipeline
 
-## 🛠️ Технический долг
+- [#149](https://github.com/chatman-media/timeline-studio/issues/149) - end-to-end smoke для agent produce-to-publish.
 
-### ✅ Завершено (Alpha)
-- ✅ Оптимизация памяти для больших проектов
-- ✅ Улучшение производительности timeline
-- ✅ Стабилизация экспорта
-- ✅ Интеграция Ollama для локальных AI
-- ✅ Миграция на Biome
-- ✅ CI/CD оптимизация
+Acceptance:
 
-### Приоритет 1 (до Beta)
-- 🔧 **TypeScript ошибки** - исправить 1860 ошибок
-- 🔧 **GPU ускорение** - для Ollama моделей
-- 🔧 **Стриминг AI** - реальное время ответов
-- 🔧 **Whisper** - транскрипция аудио
+- Быстрый smoke можно запускать локально и в CI.
+- Проверяется минимальный contract/render/analyze/pipeline path без GUI.
+- Failure clearly points to the broken pipeline step.
 
-### Приоритет 2 (до Beta)
-- **Comprehensive Resources Database** - создание базы 5000+ ресурсов
-- **Cloud Storage & Sync** - мультиплатформенная синхронизация
-- Рефакторинг системы плагинов
-- Миграция на новые API Tauri
-- Улучшение тестового покрытия до 90%
+### P1: Phase F TypeScript packages
 
-### Приоритет 3 (до v1.0)
-- Оптимизация bundle size
-- Улучшение startup time до 1 секунды
-- Полная документация API
-- **Collaborative editing** - совместная работа
+- [#150](https://github.com/chatman-media/timeline-studio/issues/150) - JS packages/workspaces для `core`, `domains`, `adapters`, `ui`.
 
-## 🤝 Вклад сообщества
+Acceptance:
 
-### Нужна помощь с:
-- **Тестированием альфа-версии** на разных платформах
-- **Обратной связью** по Ollama интеграции
-- Переводами на новые языки
-- Созданием туториалов и документации
-- Разработкой плагинов
-- Дизайном новых шаблонов
+- Есть пошаговый migration plan.
+- UI не импортирует platform-specific adapters напрямую.
+- Каждый slice оставляет desktop app buildable/testable.
 
-### Bounty программа
-- Bug fixes: $50-500
-- Новые функции: $200-2000
-- Плагины: $100-1000
-- Документация: $50-200
-- **Альфа-тестирование**: специальные награды early adopters
+## Далее
 
-## 📈 Бизнес-модель
+### Product hardening
 
-### Free Tier (Альфа-версия)
-- **Полный доступ** во время альфа-тестирования
-- Локальные AI модели через Ollama
-- Неограниченный экспорт
-- Обратная связь приветствуется
+- Реальные fixture-based integration tests для render/analyze/publish validate paths.
+- Улучшение diagnostics для CLI и agent contract validation.
+- Headless Docker image и runtime docs после стабилизации CI.
 
-### Pro ($19/месяц) - с Beta
-- Все функции
-- Cloud AI провайдеры
-- Приоритетная поддержка
-- Cloud rendering (ограничено)
+### Frontend architecture
 
-### Enterprise ($99/месяц) - с v1.0
-- Team collaboration
-- Неограниченный cloud rendering
-- Custom branding
-- API доступ
-- SLA поддержка
+- Перенести существующие Ports & Adapters правила из docs в enforceable import boundaries.
+- Начать package extraction с минимального shared/core слоя, затем adapters, затем UI/features.
 
-## 🎉 Текущий статус
+### Documentation
 
-**АЛЬФА-ВЕРСИЯ ДОСТУПНА ДЛЯ ТЕСТИРОВАНИЯ!**
+- Обновить architecture overview под `crates/*`, `packages/shared-types` и `timeline` CLI.
+- Связать user-facing docs с headless/agent flows только после green smoke coverage.
 
-- Версия: 0.60.0-alpha
-- Ветка: `alpha-release-v0.60.0`
-- Дата релиза: 3 августа 2025
-- Платформы: Windows, macOS, Linux
+## Источники правды
 
-**Как начать:**
-1. Установить Ollama
-2. Скачать модель `ollama pull llama3.2`
-3. Запустить Timeline Studio
-4. Наслаждаться локальным AI!
-
----
-
-*Дорожная карта обновляется на основе feedback сообщества*
-*Присоединяйтесь к альфа-тестированию!*
+- [Current Status](current-status.md)
+- [Agent Contract Reference](../engineering/AGENT_CONTRACT_REFERENCE.md)
+- [Rust crates workspace](../../crates/Cargo.toml)
+- [Shared TypeScript package](../../packages/shared-types/package.json)

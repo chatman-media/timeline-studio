@@ -1,8 +1,9 @@
 # Миграция на монорепо с bun workspaces
 
-**Статус:** Planned
+**Статус:** Planned, tracked in [#150](https://github.com/chatman-media/timeline-studio/issues/150)
 **Приоритет:** High
 **Создано:** 2025-11-29
+**Актуализировано:** 2026-06-07
 **Ответственный:** Architecture Team
 
 ## 📋 Описание
