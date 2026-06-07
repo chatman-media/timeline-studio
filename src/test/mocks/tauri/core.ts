@@ -1,5 +1,6 @@
-import type { InvokeArgs } from "@tauri-apps/api/core"
 import { vi } from "vitest"
+
+type InvokeArgs = Record<string, unknown> | number[] | ArrayBuffer | Uint8Array
 
 export const mockInvoke = vi.fn()
 export const mockConvertFileSrc = vi.fn((src: string) => src)
