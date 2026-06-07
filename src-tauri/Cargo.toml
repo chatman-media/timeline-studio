@@ -84,6 +84,10 @@ tauri-plugin-sql = { version = "2.3", features = ["sqlite"] }
 rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] }
 # Video Compiler dependencies
 ts-schema = { path = "../crates/ts-schema" }
+# Headless crates (#91 decomp) — slim host wires these in (#102)
+ts-core-types = { path = "../crates/ts-core-types" }
+ts-state = { path = "../crates/ts-state", features = ["specta"] }
+ts-agent = { path = "../crates/ts-agent" }
 ts-platform = { path = "../crates/ts-platform" }
 ts-analysis = { path = "../crates/ts-analysis" }
 ts-render = { path = "../crates/ts-render" }

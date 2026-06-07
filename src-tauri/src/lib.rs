@@ -6,6 +6,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::Manager;
 use tokio::sync::RwLock;
 
+// Headless bridge — wires ts-state + ts-agent into the Tauri host (#102)
+pub mod headless_bridge;
+
 // Core infrastructure modules
 pub mod core;
 use core::telemetry::{TelemetryConfig, TelemetryManager};
@@ -294,6 +297,11 @@ pub fn run() {
           }
         });
       }
+
+      // Initialize headless state bridge (ts-state + TauriEventSink) (#102)
+      let headless = headless_bridge::build_headless_state(app.handle().clone());
+      app.manage(headless);
+      log::info!("Headless state (ts-state) initialized");
 
       // Create YOLO Processor State
       let yolo_processor_state = YoloProcessorState::default();
