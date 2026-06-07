@@ -1,3 +1,10 @@
+## [3.61.1](https://github.com/chatman-media/timeline-studio/compare/v3.61.0...v3.61.1) (2026-06-07)
+
+
+### Bug Fixes
+
+* **test:** avoid tauri InvokeArgs import in mock ([#153](https://github.com/chatman-media/timeline-studio/issues/153)) ([32ed5a9](https://github.com/chatman-media/timeline-studio/commit/32ed5a9a33594d9fb8d09711b01f2379990ba4c9))
+
 # [3.61.0](https://github.com/chatman-media/timeline-studio/compare/v3.60.1...v3.61.0) (2026-06-07)
 
 
