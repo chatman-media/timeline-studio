@@ -19,6 +19,9 @@
     },
     "./state": {
       "types": "./src/state.ts"
+    },
+    "./contracts": {
+      "types": "./src/contracts.ts"
     }
   },
   "files": ["src"],
