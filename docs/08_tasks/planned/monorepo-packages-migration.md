@@ -1,309 +1,149 @@
-# Миграция на монорепо с bun workspaces
+# Миграция на JS workspaces и модульную архитектуру
 
-**Статус:** Planned, tracked in [#150](https://github.com/chatman-media/timeline-studio/issues/150)
+**Статус:** Active, tracked in [#150](https://github.com/chatman-media/timeline-studio/issues/150)
 **Приоритет:** High
 **Создано:** 2025-11-29
 **Актуализировано:** 2026-06-07
 **Ответственный:** Architecture Team
 
-## 📋 Описание
+## Контекст
 
-Разделение проекта на независимые пакеты для улучшения модульности, тестируемости и возможности переиспользования кода. Использование bun workspaces для управления монорепо.
+Rust decomposition закрыта в [#91](https://github.com/chatman-media/timeline-studio/issues/91), `@timeline/shared-types` уже вынесен через [#104](https://github.com/chatman-media/timeline-studio/issues/104) и [#120](https://github.com/chatman-media/timeline-studio/issues/120). Следующий этап - перевести TypeScript/frontend часть на управляемые workspace-пакеты без большого одномоментного переноса файлов.
 
-## 🎯 Цели
+Главное ограничение Phase F: desktop app должен оставаться рабочим после каждого PR.
 
-1. **Независимость UI от адаптеров** - возможность тестировать UI с разными адаптерами (Tauri/Node/Mock)
-2. **Переиспользование кода** - использование core и domains в разных приложениях (Desktop, CLI, Web)
-3. **Изоляция изменений** - изменения в одном пакете не влияют на другие
-4. **Улучшение DX** - более понятная структура и зависимости
+## Цели
 
-## 🏗️ Целевая структура
+1. UI не импортирует platform adapters напрямую.
+2. Domains и adapters зависят от core-контрактов, а не друг от друга через app/runtime coupling.
+3. Core остается platform-neutral и пригодным для Desktop, CLI и будущего Web shell.
+4. Переход идет через проверяемые PR slices: каждый срез добавляет контракт, уменьшает coupling или готовит workspace split.
 
-```
+## Целевая структура
+
+```text
 timeline-studio/
 ├── packages/
-│   ├── core/                      # @timeline-studio/core
-│   │   ├── ports/                 # Интерфейсы сервисов
-│   │   ├── types/                 # Общие типы
-│   │   ├── container.ts           # DI контейнер
-│   │   └── package.json
-│   │
-│   ├── domains/                   # @timeline-studio/domains
-│   │   ├── ai-director/
-│   │   ├── media-management/
-│   │   ├── project-management/
-│   │   ├── video-editing/
-│   │   └── package.json           # зависит от: @timeline-studio/core
-│   │
-│   ├── adapters/                  # @timeline-studio/adapters
-│   │   ├── tauri/
-│   │   ├── node/
-│   │   ├── mock/
-│   │   └── package.json           # зависит от: @timeline-studio/core
-│   │
-│   └── ui/                        # @timeline-studio/ui
-│       ├── features/              # Все features
-│       ├── components/            # shadcn/ui компоненты
-│       └── package.json           # зависит от: @timeline-studio/core, @timeline-studio/types
-│
+│   ├── core/       # @timeline-studio/core
+│   ├── domains/    # @timeline-studio/domains
+│   ├── adapters/   # @timeline-studio/adapters
+│   ├── ui/         # @timeline-studio/ui
+│   └── shared-types/
 ├── apps/
-│   ├── desktop/                   # Desktop Tauri app
-│   │   ├── src-tauri/
-│   │   ├── src/
-│   │   │   └── app/               # Next.js App Router
-│   │   └── package.json           # зависит от: ui, domains, adapters
-│   │
-│   └── cli/                       # CLI приложение
-│       └── package.json           # зависит от: core, domains, adapters/node
-│
-├── package.json                   # Root workspace config
+│   ├── desktop/
+│   └── cli/
+├── package.json
 └── bun.lock
 ```
 
-## 📊 Граф зависимостей
+До физического split пакеты отражены bridge-алиасами в `tsconfig.json`:
 
-```
-apps/desktop → ui + domains + adapters/tauri
-apps/cli → domains + adapters/node
+- `@timeline-studio/core` -> `src/core`
+- `@timeline-studio/domains/*` -> `src/domains/*`
+- `@timeline-studio/adapters` -> `src/adapters`
+- `@timeline-studio/ui/features/*` -> `src/features/*`
+- `@timeline-studio/ui/components/*` -> `src/components/ui/*`
 
-ui → core
-domains → core
-adapters → core
-```
+Границы и правила описаны в [package-boundaries.md](../../engineering/package-boundaries.md) и `config/package-boundaries.json`.
 
-**Правило:** UI зависит ТОЛЬКО от core, не знает о domains и adapters напрямую.
+## Граф зависимостей
 
-## 🔧 Текущие проблемы
-
-### 1. Features напрямую импортирует из domains
-
-```typescript
-// ❌ Текущее состояние
-// features/transcription/hooks/use-transcription.ts
-import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
-
-// ✅ Должно быть
-import { getAI } from "@/core/container"
-import type { ITranscriptionService } from "@/core/ports"
+```text
+app-shell -> ui + domains + adapters
+ui -> core
+domains -> core
+adapters -> core
 ```
 
-### 2. Хуки из domains используются в features
+`app-shell` - это композиционный слой (`src/app`, `src/cli`, `src/config`), где допустимо связывать UI, domains и adapters. Все остальные слои должны двигаться к зависимостям через `core`.
 
-```typescript
-// ❌ Текущее
-import { useMediaManagement } from "@/domains/media-management"
+## Phase F PR slices
 
-// ✅ Должно быть
-import { useMediaManagement } from "@timeline-studio/core"
-// или через провайдер в core
+### F1: Package boundaries baseline
+
+**Цель:** зафиксировать правила до переноса файлов.
+
+- [x] Расширить root workspaces до `packages/*` и `apps/*`.
+- [x] Добавить bridge-алиасы `@timeline-studio/*` для текущей структуры `src/*`.
+- [x] Добавить `config/package-boundaries.json`.
+- [x] Добавить `bun run check:boundaries` в report-only режиме.
+- [x] Документировать PR slices и критерии проверки.
+
+### F2: Core bridge и ports
+
+**Цель:** убрать зависимость core от domains и начать снимать `ui -> domains` coupling.
+
+- [ ] Найти `core -> domains` импорты через `bun run check:boundaries`.
+- [ ] Вынести UI-facing контракты в `src/core/ports`.
+- [ ] Добавить bridge API в `src/core/container` или соседний composition module.
+- [ ] Перевести первый набор hooks/features с прямых domain imports на core API.
+- [ ] Оставить desktop поведение неизменным.
+
+### F3: Adapter contracts
+
+**Цель:** закрыть прямые импорты adapters из UI.
+
+- [ ] Найти `ui -> adapters` импорты через `bun run check:boundaries`.
+- [ ] Перенести нужные операции за core ports.
+- [ ] Инициализировать Tauri/Node/Mock implementations только в app-shell/adapters.
+- [ ] Подготовить mock adapter path для UI tests.
+
+### F4: UI pilot package
+
+**Цель:** проверить форму `@timeline-studio/ui` на одном вертикальном feature slice.
+
+- [ ] Выбрать feature с небольшим числом domain imports.
+- [ ] Перевести его public API на `@timeline-studio/ui/features/*`.
+- [ ] Убедиться, что feature не импортирует adapters и новые domain imports не добавляются.
+- [ ] Обновить relevant tests.
+
+### F5: Workspace split и CI
+
+**Цель:** физически создать пакеты/apps после burn-down основных циклов.
+
+- [ ] Создать `package.json` для `packages/core`, `packages/domains`, `packages/adapters`, `packages/ui`.
+- [ ] Создать `apps/desktop` и `apps/cli` без изменения runtime behavior.
+- [ ] Обновить build/test scripts, TypeScript references и lockfiles.
+- [ ] Настроить CI cache для workspace scripts.
+- [ ] Перевести boundary checker в strict mode или добавить CI gate по baseline.
+
+## Проверка каждого PR
+
+Минимальный набор для каждого Phase F slice:
+
+```bash
+bun install --frozen-lockfile --ignore-scripts
+bun run check:boundaries
+bun run check:type
 ```
 
-### 3. Типы разбросаны по domains
+Для PR, который меняет runtime wiring или adapters, дополнительно запускать targeted unit tests и relevant e2e/headless сценарии.
 
-Нужно вынести общие типы в `@timeline-studio/core/types`.
+## Текущий baseline
 
-## 📝 План миграции
+`bun run check:boundaries` сейчас работает в report-only режиме. Это намеренно: текущий код содержит известные нарушения, которые нужно снимать отдельными PR.
 
-### Phase 1: Подготовка (1-2 дня)
+Baseline на 2026-06-07:
 
-- [ ] Создать структуру workspaces
-- [ ] Настроить bun workspaces в `package.json`
-- [ ] Создать `package.json` для каждого пакета
-- [ ] Настроить TypeScript paths для workspaces
+- Scanned files: 1569
+- Violations: 506
+- `error`: 39
+- `warn`: 467
+- Edges: `core -> domains` 6, `domains -> app-shell` 3, `domains -> ui` 28, `ui -> adapters` 2, `ui -> domains` 467
 
-**Конфигурация:**
+Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 
-```json
-// package.json (root)
-{
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ]
-}
-```
+## Риски и митигация
 
-```json
-// packages/core/package.json
-{
-  "name": "@timeline-studio/core",
-  "version": "0.1.0",
-  "exports": {
-    ".": "./src/index.ts",
-    "./ports": "./src/ports/index.ts",
-    "./types": "./src/types/index.ts"
-  }
-}
-```
+| Риск | Влияние | Митигация |
+|------|---------|-----------|
+| Большой перенос файлов ломает desktop app | Высокое | Делать split только после F2-F4, когда alias и ports уже проверены |
+| Циклические зависимости остаются незаметными | Высокое | Запускать `bun run check:boundaries` в каждом PR |
+| UI продолжает импортировать Tauri adapters | Высокое | F3 закрывает `ui -> adapters`; после burn-down включить strict gate |
+| Lockfile drift между npm и bun | Среднее | После workspace/package changes запускать frozen install и держать `package-lock.json` metadata синхронной |
 
-### Phase 2: Рефакторинг типов (2-3 дня)
+## Связанные задачи
 
-- [ ] Вынести все общие типы в `@timeline-studio/core/types`
-- [ ] Обновить импорты типов в domains
-- [ ] Обновить импорты типов в features
-
-**Примеры:**
-
-```typescript
-// packages/core/types/media.ts
-export interface MediaMetadata { ... }
-export interface MediaFile { ... }
-
-// packages/domains/media-management/services/media-api.ts
-import type { MediaMetadata } from "@timeline-studio/core/types"
-```
-
-### Phase 3: Инверсия зависимостей (3-4 дня)
-
-- [ ] Убрать прямые импорты сервисов из domains в features
-- [ ] Все сервисы получать через `getXxx()` из core/container
-- [ ] Создать провайдеры для хуков domains в core
-- [ ] Обновить features для использования через core
-
-**Refactoring pattern:**
-
-```typescript
-// ❌ Было
-import { TranscriptionService } from "@/domains/ai-services"
-const service = new TranscriptionService()
-
-// ✅ Стало
-import { getAI } from "@timeline-studio/core"
-const service = getAI()
-```
-
-### Phase 4: Миграция пакетов (4-5 дней)
-
-- [ ] Переместить `src/core` → `packages/core`
-- [ ] Переместить `src/domains` → `packages/domains`
-- [ ] Переместить `src/adapters` → `packages/adapters`
-- [ ] Переместить `src/features` → `packages/ui`
-- [ ] Создать `apps/desktop` с Next.js shell
-- [ ] Создать `apps/cli`
-
-### Phase 5: Настройка сборки (2-3 дня)
-
-- [ ] Настроить сборку каждого пакета
-- [ ] Обновить Tauri конфигурацию
-- [ ] Обновить скрипты `package.json`
-- [ ] Проверить hot reload в dev режиме
-
-**Build configuration:**
-
-```json
-// packages/ui/package.json
-{
-  "scripts": {
-    "build": "tsc --noEmit && vite build",
-    "dev": "vite"
-  }
-}
-```
-
-### Phase 6: Тестирование (2-3 дня)
-
-- [ ] Обновить пути импортов в тестах
-- [ ] Запустить все unit тесты (11500+)
-- [ ] Запустить Rust тесты
-- [ ] Запустить E2E тесты
-- [ ] Проверить сборку desktop приложения
-- [ ] Проверить CLI
-
-### Phase 7: Документация (1 день)
-
-- [ ] Обновить README пакетов
-- [ ] Обновить architecture-overview.md
-- [ ] Обновить project-structure.md
-- [ ] Добавить migration guide
-- [ ] Обновить contributing guide
-
-## ✅ Критерии успеха
-
-1. ✅ UI пакет зависит ТОЛЬКО от core
-2. ✅ Можно собрать desktop и CLI независимо
-3. ✅ Все тесты проходят
-4. ✅ Dev режим работает с hot reload
-5. ✅ Production сборка работает
-6. ✅ TypeScript компилируется без ошибок
-7. ✅ Можно тестировать UI с mock адаптерами изолированно
-
-## 🚧 Риски и митигация
-
-| Риск | Вероятность | Влияние | Митигация |
-|------|-------------|---------|-----------|
-| Breaking changes в импортах | Высокая | Высокое | Постепенная миграция, автоматизация через codemod |
-| Циклические зависимости | Средняя | Высокое | Строгий контроль через eslint-plugin-import |
-| Проблемы с hot reload | Средняя | Среднее | Тестирование на ранних этапах |
-| Увеличение времени сборки | Низкая | Среднее | Использование turbo для кеширования |
-
-## 🔄 Автоматизация миграции
-
-### Codemod для импортов
-
-```typescript
-// scripts/migrate-imports.ts
-import { Project } from "ts-morph"
-
-const project = new Project()
-project.addSourceFilesAtPaths("src/**/*.ts")
-
-for (const sourceFile of project.getSourceFiles()) {
-  sourceFile.getImportDeclarations().forEach((importDecl) => {
-    const moduleSpecifier = importDecl.getModuleSpecifierValue()
-
-    // Заменить @/domains → @timeline-studio/domains
-    if (moduleSpecifier.startsWith("@/domains")) {
-      importDecl.setModuleSpecifier(
-        moduleSpecifier.replace("@/domains", "@timeline-studio/domains")
-      )
-    }
-  })
-
-  sourceFile.save()
-}
-```
-
-## 📚 Примеры из других проектов
-
-- [Turborepo Kitchen Sink](https://github.com/vercel/turborepo/tree/main/examples/kitchen-sink)
-- [tRPC monorepo](https://github.com/trpc/trpc/tree/main/packages)
-- [Prisma monorepo](https://github.com/prisma/prisma)
-
-## 📅 Временные рамки
-
-**Оценка:** 15-20 рабочих дней (3-4 недели)
-
-**Breakdown:**
-- Phase 1: 2 дня
-- Phase 2: 3 дня
-- Phase 3: 4 дня
-- Phase 4: 5 дней
-- Phase 5: 3 дня
-- Phase 6: 3 дня
-- Phase 7: 1 день
-
-## 🔗 Связанные задачи
-
-- [ ] Настройка Turborepo для кеширования сборки (опционально)
-- [ ] Настройка changesets для версионирования пакетов
-- [ ] CI/CD для монорепо
-- [ ] Storybook для @timeline-studio/ui
-
-## 📖 Дополнительные материалы
-
-- [Bun Workspaces Documentation](https://bun.sh/docs/install/workspaces)
-- [TypeScript Project References](https://www.typescriptlang.org/docs/handbook/project-references.html)
-- [Hexagonal Architecture Pattern](https://alistair.cockburn.us/hexagonal-architecture/)
-
----
-
-**Следующие шаги:**
-1. Review и обсуждение архитектуры с командой
-2. Создание proof-of-concept для одного пакета
-3. Утверждение плана миграции
-4. Начало Phase 1
-
----
-
-*Создано: 2025-11-29*
-*Обновлено: 2025-11-29*
+- [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Epic: Phase F
+- [#91](https://github.com/chatman-media/timeline-studio/issues/91) - Rust decomposition
+- [#104](https://github.com/chatman-media/timeline-studio/issues/104), [#120](https://github.com/chatman-media/timeline-studio/issues/120) - shared types extraction
