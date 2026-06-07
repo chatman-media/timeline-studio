@@ -9,12 +9,21 @@
  */
 
 // Container (DI)
-export { container, getBackend, getPlatform, getStorage, resetContainer } from "./container"
+export {
+  container,
+  getBackend,
+  getNodeBackend,
+  getPlatform,
+  getStorage,
+  resetContainer,
+} from "./container"
 // Ports (Interfaces)
 export type {
   IBackendService,
+  INodeBackendService,
   IPlatformService,
   IStorageService,
+  NodeBackendHealth,
   NotificationOptions,
   OpenDialogOptions,
   SaveDialogOptions,

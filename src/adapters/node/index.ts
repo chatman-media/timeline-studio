@@ -11,6 +11,7 @@ import { type NodeAIOptions, NodeAIService } from "./ai"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
 import { NodeEventService } from "./event"
 import { type NodeMediaOptions, NodeMediaService } from "./media"
+import { NodeBackendBridgeService } from "./node-backend-bridge"
 import { type NodePlatformOptions, NodePlatformService } from "./platform"
 import { type NodeStorageOptions, NodeStorageService } from "./storage"
 import { type NodeVideoOptions, NodeVideoService } from "./video"
@@ -20,6 +21,7 @@ export { type NodeAIOptions, NodeAIService } from "./ai"
 export { type NodeBackendOptions, NodeBackendService } from "./backend"
 export { NodeEventService } from "./event"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
+export { NodeBackendBridgeService } from "./node-backend-bridge"
 export { type NodePlatformOptions, NodePlatformService } from "./platform"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export { type NodeVideoOptions, NodeVideoService } from "./video"
@@ -47,6 +49,7 @@ export interface NodeAppServices {
   storage: NodeStorageService
   event: NodeEventService
   media: NodeMediaService
+  nodeBackend: NodeBackendBridgeService
   video: NodeVideoService
   ai: NodeAIService
 }
@@ -80,6 +83,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const storage = new NodeStorageService(options.storage)
   const event = new NodeEventService()
   const media = new NodeMediaService(options.media)
+  const nodeBackend = new NodeBackendBridgeService()
   const video = new NodeVideoService(options.video)
   const ai = new NodeAIService(options.ai)
 
@@ -89,6 +93,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   container.registerStorage(storage)
   container.registerEvent(event)
   container.registerMedia(media)
+  container.registerNodeBackend(nodeBackend)
   container.registerVideo(video)
   container.registerAI(ai)
 
@@ -103,6 +108,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     storage,
     event,
     media,
+    nodeBackend,
     video,
     ai,
   }
@@ -122,6 +128,7 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     storage: new NodeStorageService(options.storage),
     event: new NodeEventService(),
     media: new NodeMediaService(options.media),
+    nodeBackend: new NodeBackendBridgeService(),
     video: new NodeVideoService(options.video),
     ai: new NodeAIService(options.ai),
   }

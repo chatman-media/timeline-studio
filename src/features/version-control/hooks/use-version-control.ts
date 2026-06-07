@@ -5,11 +5,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { getBackendSync } from "@/adapters/tauri/backend-sync"
+import { getBackend } from "@/core/container"
+import type { CommandResult, ProjectCommand, ProjectEvent } from "@/core/types"
 import type { VersionInfo } from "@/features/version-control/types"
 import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"
-import type { CommandResult, ProjectEvent } from "@/types/generated/tauri-bindings"
 
 const logger = createLogger("UseVersionControl")
 
@@ -50,12 +50,12 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
   })
 
   const { toast } = useToast()
-  const [backendSync] = useState(() => getBackendSync())
+  const [backend] = useState(() => getBackend())
 
   // Update state from project state
   const updateFromProjectState = useCallback(async () => {
     try {
-      const projectState = await backendSync.getProjectState()
+      const projectState = await backend.getProjectState()
       if (projectState?.version_info) {
         const versionInfo = projectState.version_info
         setState((prev) => ({
@@ -75,7 +75,7 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
         error: error instanceof Error ? error.message : String(error),
       }))
     }
-  }, [backendSync])
+  }, [backend])
 
   // Handle version control events
   const handleVersionEvent = useCallback(
@@ -156,10 +156,10 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
     void updateFromProjectState()
 
     // Subscribe to events
-    const unsubscribe = backendSync.onEvent(handleVersionEvent)
+    const unsubscribe = backend.onEvent(handleVersionEvent)
 
     return unsubscribe
-  }, [backendSync, handleVersionEvent, updateFromProjectState])
+  }, [backend, handleVersionEvent, updateFromProjectState])
 
   // Helper function to handle command results
   const handleCommandResult = useCallback(
@@ -184,38 +184,52 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
     [toast],
   )
 
+  const executeVersionCommand = useCallback(
+    (command: ProjectCommand): Promise<CommandResult> => backend.executeCommand(command),
+    [backend],
+  )
+
   // Version control actions
   const createSnapshot = useCallback(
     async (message?: string): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.createSnapshot(message)
+        const result = await executeVersionCommand({
+          type: "CreateSnapshot",
+          params: { message: message ?? null },
+        })
         return handleCommandResult(result, "Snapshot created successfully")
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   const restoreVersion = useCallback(
     async (versionId: string): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.restoreVersion(versionId)
+        const result = await executeVersionCommand({
+          type: "RestoreVersion",
+          params: { version_id: versionId },
+        })
         return handleCommandResult(result, `Version ${versionId} restored successfully`)
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   const getVersionHistory = useCallback(
     async (limit?: number): Promise<VersionInfo[] | null> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.getVersionHistory(limit)
+        const result = await executeVersionCommand({
+          type: "GetVersionHistory",
+          params: { limit: limit ?? null },
+        })
         if (result.success && result.data) {
           // Check if data has versions property and it's an array
           if (result.data && typeof result.data === "object" && "versions" in result.data) {
@@ -233,14 +247,17 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync],
+    [executeVersionCommand],
   )
 
   const compareVersions = useCallback(
     async (versionA: string, versionB: string) => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.compareVersions(versionA, versionB)
+        const result = await executeVersionCommand({
+          type: "CompareVersions",
+          params: { version_a: versionA, version_b: versionB },
+        })
         if (result.success) {
           return result.data
         }
@@ -250,72 +267,87 @@ export function useVersionControl(): VersionControlHookState & VersionControlAct
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync],
+    [executeVersionCommand],
   )
 
   const createBranch = useCallback(
     async (branchName: string, fromVersion?: string): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.createBranch(branchName, fromVersion)
+        const result = await executeVersionCommand({
+          type: "CreateBranch",
+          params: { branch_name: branchName, from_version: fromVersion ?? null },
+        })
         return handleCommandResult(result, `Branch "${branchName}" created successfully`)
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   const mergeBranch = useCallback(
     async (sourceBranch: string, targetBranch: string): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.mergeBranch(sourceBranch, targetBranch)
+        const result = await executeVersionCommand({
+          type: "MergeBranch",
+          params: { source_branch: sourceBranch, target_branch: targetBranch },
+        })
         return handleCommandResult(result, `Branch "${sourceBranch}" merged into "${targetBranch}" successfully`)
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   const switchBranch = useCallback(
     async (branchName: string): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.switchBranch(branchName)
+        const result = await executeVersionCommand({
+          type: "SwitchBranch",
+          params: { branch_name: branchName },
+        })
         return handleCommandResult(result, `Switched to branch "${branchName}" successfully`)
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   const setAutoSaveInterval = useCallback(
     async (seconds: number): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.setAutoSaveInterval(seconds)
+        const result = await executeVersionCommand({
+          type: "SetAutoSaveInterval",
+          params: { seconds },
+        })
         return handleCommandResult(result, `Auto-save interval set to ${seconds} seconds`)
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   const enableAutoSave = useCallback(
     async (enabled: boolean): Promise<boolean> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }))
       try {
-        const result = await backendSync.enableAutoSave(enabled)
+        const result = await executeVersionCommand({
+          type: "EnableAutoSave",
+          params: { enabled },
+        })
         return handleCommandResult(result, `Auto-save ${enabled ? "enabled" : "disabled"}`)
       } finally {
         setState((prev) => ({ ...prev, isLoading: false }))
       }
     },
-    [backendSync, handleCommandResult],
+    [executeVersionCommand, handleCommandResult],
   )
 
   return useMemo(

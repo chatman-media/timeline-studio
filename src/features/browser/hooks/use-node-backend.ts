@@ -5,18 +5,13 @@
  */
 
 import { useCallback, useState } from "react"
-import { nodeBackendClient } from "@/adapters/node/node-backend-client"
+import { getNodeBackend } from "@/core/container"
+import type { NodeBackendHealth } from "@/core/ports"
 import type { ScannedMediaFile } from "@/core/ports/media.port"
 
 interface UseNodeBackendOptions {
   enabled?: boolean
   onError?: (error: Error) => void
-}
-
-interface BackendHealth {
-  available: boolean
-  ffmpegAvailable: boolean
-  timestamp: number
 }
 
 /**
@@ -48,6 +43,7 @@ interface BackendHealth {
 export function useNodeBackend(options: UseNodeBackendOptions = {}) {
   const { enabled = true, onError } = options
 
+  const [nodeBackend] = useState(() => getNodeBackend())
   const [isScanning, setIsScanning] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<Error | null>(null)
@@ -55,25 +51,16 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
   /**
    * Check backend health and FFmpeg availability
    */
-  const checkHealth = useCallback(async (): Promise<BackendHealth> => {
+  const checkHealth = useCallback(async (): Promise<NodeBackendHealth> => {
     try {
-      const [health, ffmpeg] = await Promise.all([
-        nodeBackendClient.health.check.query(),
-        nodeBackendClient.health.ffmpegCheck.query(),
-      ])
-
-      return {
-        available: health.status === "ok",
-        ffmpegAvailable: ffmpeg.available,
-        timestamp: Date.now(),
-      }
+      return await nodeBackend.checkHealth()
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
       setError(error)
       onError?.(error)
       throw error
     }
-  }, [onError])
+  }, [nodeBackend, onError])
 
   /**
    * Scan folder for media files with thumbnail generation
@@ -88,13 +75,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       setError(null)
 
       try {
-        const result = await nodeBackendClient.media.scanWithThumbnails.mutate({
-          folderPath,
-          width: options.width,
-          height: options.height,
-        })
-
-        return result
+        return await nodeBackend.scanFolderWithThumbnails(folderPath, options)
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
         setError(error)
@@ -104,7 +85,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         setIsScanning(false)
       }
     },
-    [enabled, onError],
+    [enabled, nodeBackend, onError],
   )
 
   /**
@@ -120,12 +101,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       setError(null)
 
       try {
-        const result = await nodeBackendClient.media.scanFolder.mutate({
-          folderPath,
-          recursive: options?.recursive,
-        })
-
-        return result
+        return await nodeBackend.scanFolder(folderPath, options)
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
         setError(error)
@@ -135,7 +111,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         setIsScanning(false)
       }
     },
-    [enabled, onError],
+    [enabled, nodeBackend, onError],
   )
 
   /**
@@ -148,11 +124,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       }
 
       try {
-        const result = await nodeBackendClient.media.getMetadata.query({
-          filePath,
-        })
-
-        return result
+        return await nodeBackend.getMetadata(filePath)
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
         setError(error)
@@ -160,7 +132,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         throw error
       }
     },
-    [enabled, onError],
+    [enabled, nodeBackend, onError],
   )
 
   /**
@@ -176,11 +148,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       setError(null)
 
       try {
-        const result = await nodeBackendClient.media.processFiles.mutate({
-          filePaths,
-        })
-
-        return result
+        return await nodeBackend.processFiles(filePaths)
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
         setError(error)
@@ -190,7 +158,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         setIsProcessing(false)
       }
     },
-    [enabled, onError],
+    [enabled, nodeBackend, onError],
   )
 
   /**
@@ -207,15 +175,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       }
 
       try {
-        const result = await nodeBackendClient.thumbnail.generate.mutate({
-          fileId,
-          filePath,
-          width: options?.width,
-          height: options?.height,
-          timestamp: options?.timestamp,
-        })
-
-        return result
+        return await nodeBackend.generateThumbnail(fileId, filePath, options)
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
         setError(error)
@@ -223,7 +183,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         throw error
       }
     },
-    [enabled, onError],
+    [enabled, nodeBackend, onError],
   )
 
   /**
@@ -236,11 +196,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
       }
 
       try {
-        const result = await nodeBackendClient.waveform.generateData.query({
-          filePath,
-        })
-
-        return result
+        return await nodeBackend.generateWaveform(filePath)
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
         setError(error)
@@ -248,7 +204,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
         throw error
       }
     },
-    [enabled, onError],
+    [enabled, nodeBackend, onError],
   )
 
   /**
@@ -256,30 +212,28 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
    */
   const getCacheStats = useCallback(async () => {
     try {
-      const result = await nodeBackendClient.cache.getStats.query()
-      return result
+      return await nodeBackend.getCacheStats()
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
       setError(error)
       onError?.(error)
       throw error
     }
-  }, [onError])
+  }, [nodeBackend, onError])
 
   /**
    * Clear cache
    */
   const clearCache = useCallback(async () => {
     try {
-      const result = await nodeBackendClient.cache.clear.mutate()
-      return result
+      return await nodeBackend.clearCache()
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err))
       setError(error)
       onError?.(error)
       throw error
     }
-  }, [onError])
+  }, [nodeBackend, onError])
 
   return {
     // State
@@ -304,7 +258,7 @@ export function useNodeBackend(options: UseNodeBackendOptions = {}) {
     getCacheStats,
     clearCache,
 
-    // Direct client access (for advanced use)
-    client: nodeBackendClient,
+    // Core port access for advanced use
+    client: nodeBackend,
   }
 }

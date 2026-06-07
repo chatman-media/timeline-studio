@@ -10,6 +10,7 @@ import type {
   IBackendService,
   IEventService,
   IMediaService,
+  INodeBackendService,
   IPlatformService,
   IStorageService,
   IVideoService,
@@ -23,6 +24,7 @@ class ServiceContainer {
   private _storage: IStorageService | null = null
   private _event: IEventService | null = null
   private _media: IMediaService | null = null
+  private _nodeBackend: INodeBackendService | null = null
   private _video: IVideoService | null = null
   private _ai: IAIService | null = null
 
@@ -45,6 +47,7 @@ class ServiceContainer {
       ServiceContainer.instance._storage = null
       ServiceContainer.instance._event = null
       ServiceContainer.instance._media = null
+      ServiceContainer.instance._nodeBackend = null
       ServiceContainer.instance._video = null
       ServiceContainer.instance._ai = null
     }
@@ -145,6 +148,25 @@ class ServiceContainer {
     return this._media !== null
   }
 
+  // === Node Backend Service ===
+
+  registerNodeBackend(nodeBackend: INodeBackendService): void {
+    this._nodeBackend = nodeBackend
+  }
+
+  getNodeBackend(): INodeBackendService {
+    if (!this._nodeBackend) {
+      throw new Error(
+        "[ServiceContainer] Node backend not registered. Call registerNodeBackend() first or use initHttpApp()/initMockApp().",
+      )
+    }
+    return this._nodeBackend
+  }
+
+  hasNodeBackend(): boolean {
+    return this._nodeBackend !== null
+  }
+
   // === Video Service ===
 
   registerVideo(video: IVideoService): void {
@@ -193,6 +215,7 @@ export const getPlatform = (): IPlatformService => container.getPlatform()
 export const getStorage = (): IStorageService => container.getStorage()
 export const getEvent = (): IEventService => container.getEvent()
 export const getMedia = (): IMediaService => container.getMedia()
+export const getNodeBackend = (): INodeBackendService => container.getNodeBackend()
 export const getVideo = (): IVideoService => container.getVideo()
 export const getAI = (): IAIService => container.getAI()
 

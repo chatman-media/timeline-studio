@@ -43,15 +43,18 @@ const getBackendUrl = (): string => {
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const nodeBackendClient: any = createTRPCProxyClient<AppRouter>({
-  links: [
-    httpBatchLink({
-      url: `${getBackendUrl()}/trpc`,
-      headers() {
-        return {}
-      },
-    }),
-  ],
-})
+export const createNodeBackendClient = (backendUrl = getBackendUrl()): any =>
+  createTRPCProxyClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: `${backendUrl}/trpc`,
+        headers() {
+          return {}
+        },
+      }),
+    ],
+  })
+
+export const nodeBackendClient: any = createNodeBackendClient()
 
 export type NodeBackendClient = typeof nodeBackendClient

@@ -19,11 +19,12 @@
 
 import { MockPlatformService, MockStorageService } from "@/adapters/mock"
 import { container } from "@/core/container"
-
+import { NodeBackendBridgeService } from "../node/node-backend-bridge"
 import { type HttpBackendOptions, HttpBackendService } from "./backend"
 import { HttpClient } from "./client"
 import { HttpMediaService } from "./media"
 
+export { NodeBackendBridgeService } from "../node/node-backend-bridge"
 // Re-exports
 export { type HttpBackendOptions, HttpBackendService } from "./backend"
 export { HttpClient, type HttpClientOptions } from "./client"
@@ -41,6 +42,7 @@ export interface HttpAppOptions {
 export interface HttpAppServices {
   backend: HttpBackendService
   media: HttpMediaService
+  nodeBackend: NodeBackendBridgeService
   client: HttpClient
 }
 
@@ -54,9 +56,11 @@ export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpApp
   const client = new HttpClient({ baseUrl: serverUrl })
   const backend = new HttpBackendService({ serverUrl, ...options.backend })
   const media = new HttpMediaService()
+  const nodeBackend = new NodeBackendBridgeService({ serverUrl })
 
   container.registerBackend(backend)
   container.registerMedia(media)
+  container.registerNodeBackend(nodeBackend)
   // src-node doesn't provide storage/platform — use in-memory mocks so the container is complete
   if (!container.hasStorage()) container.registerStorage(new MockStorageService(true))
   if (!container.hasPlatform()) container.registerPlatform(new MockPlatformService())
@@ -70,7 +74,7 @@ export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpApp
     }
   }
 
-  return { backend, media, client }
+  return { backend, media, nodeBackend, client }
 }
 
 /**
@@ -82,6 +86,7 @@ export function createHttpServices(options: HttpAppOptions = {}): HttpAppService
   return {
     backend: new HttpBackendService({ serverUrl, ...options.backend }),
     media: new HttpMediaService(),
+    nodeBackend: new NodeBackendBridgeService({ serverUrl }),
     client: new HttpClient({ baseUrl: serverUrl }),
   }
 }

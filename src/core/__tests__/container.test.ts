@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { container, getBackend, getEvent, getPlatform, getStorage, resetContainer } from "../container"
-import type { IBackendService, IEventService, IPlatformService, IStorageService } from "../ports"
+import { container, getBackend, getEvent, getNodeBackend, getPlatform, getStorage, resetContainer } from "../container"
+import type { IBackendService, IEventService, INodeBackendService, IPlatformService, IStorageService } from "../ports"
 
 // Mock implementations
 const createMockBackend = (): IBackendService => ({
@@ -50,6 +50,18 @@ const createMockStorage = (): IStorageService => ({
 const createMockEvent = (): IEventService => ({
   listen: vi.fn(),
   emit: vi.fn(),
+})
+
+const createMockNodeBackend = (): INodeBackendService => ({
+  checkHealth: vi.fn(),
+  scanFolderWithThumbnails: vi.fn(),
+  scanFolder: vi.fn(),
+  getMetadata: vi.fn(),
+  processFiles: vi.fn(),
+  generateThumbnail: vi.fn(),
+  generateWaveform: vi.fn(),
+  getCacheStats: vi.fn(),
+  clearCache: vi.fn(),
 })
 
 describe("ServiceContainer", () => {
@@ -141,10 +153,32 @@ describe("ServiceContainer", () => {
     })
   })
 
+  describe("Node Backend Service", () => {
+    it("throws error when node backend not registered", () => {
+      expect(() => container.getNodeBackend()).toThrow("[ServiceContainer] Node backend not registered")
+    })
+
+    it("registers and retrieves node backend service", () => {
+      const mockNodeBackend = createMockNodeBackend()
+      container.registerNodeBackend(mockNodeBackend)
+
+      expect(container.hasNodeBackend()).toBe(true)
+      expect(container.getNodeBackend()).toBe(mockNodeBackend)
+    })
+
+    it("getNodeBackend helper works", () => {
+      const mockNodeBackend = createMockNodeBackend()
+      container.registerNodeBackend(mockNodeBackend)
+
+      expect(getNodeBackend()).toBe(mockNodeBackend)
+    })
+  })
+
   describe("Container Reset", () => {
     it("resetContainer does not throw", () => {
       container.registerBackend(createMockBackend())
       container.registerPlatform(createMockPlatform())
+      container.registerNodeBackend(createMockNodeBackend())
 
       // Reset should not throw
       expect(() => resetContainer()).not.toThrow()
@@ -173,6 +207,17 @@ describe("ServiceContainer", () => {
 
       container.registerBackend(backend2)
       expect(container.getBackend()).toBe(backend2)
+    })
+
+    it("allows replacing registered node backend services", () => {
+      const nodeBackend1 = createMockNodeBackend()
+      const nodeBackend2 = createMockNodeBackend()
+
+      container.registerNodeBackend(nodeBackend1)
+      expect(container.getNodeBackend()).toBe(nodeBackend1)
+
+      container.registerNodeBackend(nodeBackend2)
+      expect(container.getNodeBackend()).toBe(nodeBackend2)
     })
   })
 })
