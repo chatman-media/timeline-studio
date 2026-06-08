@@ -9,6 +9,7 @@ import type {
   IAIService,
   IBackendService,
   IEventService,
+  ILanguageService,
   IMediaService,
   INodeBackendService,
   IPlatformService,
@@ -27,6 +28,7 @@ class ServiceContainer {
   private _nodeBackend: INodeBackendService | null = null
   private _video: IVideoService | null = null
   private _ai: IAIService | null = null
+  private _language: ILanguageService | null = null
 
   private constructor() {}
 
@@ -50,6 +52,7 @@ class ServiceContainer {
       ServiceContainer.instance._nodeBackend = null
       ServiceContainer.instance._video = null
       ServiceContainer.instance._ai = null
+      ServiceContainer.instance._language = null
     }
   }
 
@@ -204,6 +207,25 @@ class ServiceContainer {
   hasAI(): boolean {
     return this._ai !== null
   }
+
+  // === Language Service ===
+
+  registerLanguage(language: ILanguageService): void {
+    this._language = language
+  }
+
+  getLanguage(): ILanguageService {
+    if (!this._language) {
+      throw new Error(
+        "[ServiceContainer] Language service not registered. Call registerLanguage() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._language
+  }
+
+  hasLanguage(): boolean {
+    return this._language !== null
+  }
 }
 
 // Singleton instance
@@ -218,6 +240,7 @@ export const getMedia = (): IMediaService => container.getMedia()
 export const getNodeBackend = (): INodeBackendService => container.getNodeBackend()
 export const getVideo = (): IVideoService => container.getVideo()
 export const getAI = (): IAIService => container.getAI()
+export const getLanguage = (): ILanguageService => container.getLanguage()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

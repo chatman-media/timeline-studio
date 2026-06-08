@@ -38,6 +38,7 @@ export type {
 } from "./ai.port"
 export type { IBackendService, Unsubscribe } from "./backend.port"
 export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
+export type { ILanguageService, LanguageResponse } from "./language.port"
 export type {
   IMediaService,
   MediaImportOptions,
