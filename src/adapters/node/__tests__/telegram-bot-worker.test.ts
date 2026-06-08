@@ -9,6 +9,7 @@ import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
+  defaultTelegramBotJobCancelText,
   defaultTelegramBotJobStatusText,
   defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
@@ -17,6 +18,7 @@ import {
   NodeTelegramBotFileOffsetStore,
   NodeTelegramBotInMemoryWorkflowQueue,
   NodeTelegramBotWorker,
+  parseTelegramBotCancelCommandTarget,
   parseTelegramBotCommand,
   parseTelegramBotDraftCommand,
   type TelegramBotUpdate,
@@ -618,6 +620,206 @@ describe("Telegram bot worker", () => {
     })
   })
 
+  it("cancels pending queued workflows by queue id", async () => {
+    let resolveWorkflow!: () => void
+    const runTelegramLikePayload = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    const queueResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "queue-message-1" })),
+    }
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "cancel-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowQueue,
+      workflowJobStore,
+      queueResponder,
+      commandResponder,
+      now: () => "2026-06-08T08:00:00.000Z",
+    })
+
+    await worker.handleUpdate({
+      update_id: 30,
+      message: {
+        message_id: 21,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+    await worker.handleUpdate({
+      update_id: 31,
+      message: {
+        message_id: 22,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+
+    const cancelUpdate = {
+      update_id: 32,
+      message: {
+        message_id: 23,
+        chat: { id: "chat-1" },
+        text: "/cancel telegram-update-31",
+      },
+    }
+    const responseText = defaultTelegramBotJobCancelText({
+      queueId: "telegram-update-31",
+      cancellation: { id: "telegram-update-31", status: "cancelled" },
+      update: cancelUpdate,
+      payload: {
+        chat: { id: "chat-1" },
+        message_id: 23,
+        text: "/cancel telegram-update-31",
+      },
+    })
+    const cancelled = await worker.handleUpdate(cancelUpdate)
+
+    expect(cancelled).toMatchObject({
+      skipped: true,
+      command: "cancel",
+      queueId: "telegram-update-31",
+      cancellation: {
+        id: "telegram-update-31",
+        status: "cancelled",
+      },
+      responseText,
+    })
+    expect(commandResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: responseText,
+      replyToMessageId: "23",
+      metadata: {
+        command: "cancel",
+        source: "telegram-bot-worker",
+      },
+    })
+    await expect(workflowJobStore.readJob("telegram-update-31")).resolves.toMatchObject({
+      id: "telegram-update-31",
+      status: "cancelled",
+      reason: "Telegram bot workflow cancelled by user",
+    })
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+  })
+
+  it("does not cancel queued workflows from another chat", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    await workflowJobStore.writeJob({
+      id: "telegram-update-33",
+      status: "queued",
+      updateId: 33,
+      chatId: "chat-1",
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    const workflowQueue = {
+      enqueue: vi.fn(),
+      cancel: vi.fn(async () => ({ id: "telegram-update-33", status: "cancelled" as const })),
+    }
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "cancel-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowQueue,
+      workflowJobStore,
+      commandResponder,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 34,
+      message: {
+        message_id: 24,
+        chat: { id: "chat-2" },
+        text: "/cancel telegram-update-33",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "cancel",
+      queueId: "telegram-update-33",
+      cancellation: {
+        id: "telegram-update-33",
+        status: "not_found",
+        reason: "Queued workflow job was not found for this chat.",
+      },
+    })
+    expect(workflowQueue.cancel).not.toHaveBeenCalled()
+    await expect(workflowJobStore.readJob("telegram-update-33")).resolves.toMatchObject({
+      id: "telegram-update-33",
+      status: "queued",
+    })
+  })
+
+  it("does not cancel already running workflow jobs", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    await workflowJobStore.writeJob({
+      id: "telegram-update-35",
+      status: "running",
+      updateId: 35,
+      chatId: "chat-1",
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    const workflowQueue = {
+      enqueue: vi.fn(),
+      cancel: vi.fn(async () => ({ id: "telegram-update-35", status: "cancelled" as const })),
+    }
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "cancel-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowQueue,
+      workflowJobStore,
+      commandResponder,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 36,
+      message: {
+        message_id: 25,
+        chat: { id: "chat-1" },
+        text: "/cancel telegram-update-35",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "cancel",
+      queueId: "telegram-update-35",
+      cancellation: {
+        id: "telegram-update-35",
+        status: "not_cancellable",
+        reason: "Workflow job is running.",
+      },
+    })
+    expect(workflowQueue.cancel).not.toHaveBeenCalled()
+    await expect(workflowJobStore.readJob("telegram-update-35")).resolves.toMatchObject({
+      id: "telegram-update-35",
+      status: "running",
+    })
+  })
+
   it("can disable command routing for command-like workflow messages", async () => {
     const { service, runTelegramLikePayload } = createWorkflowService()
     const worker = new NodeTelegramBotWorker({
@@ -686,7 +888,10 @@ describe("Telegram bot worker", () => {
     expect(parseTelegramBotCommand("/start")).toBe("start")
     expect(parseTelegramBotCommand("/help@TimelineStudioBot more")).toBe("help")
     expect(parseTelegramBotCommand("/status")).toBe("status")
+    expect(parseTelegramBotCommand("/cancel telegram-update-1")).toBe("cancel")
+    expect(parseTelegramBotCancelCommandTarget("/cancel@TimelineStudioBot telegram-update-1")).toBe("telegram-update-1")
     expect(parseTelegramBotCommand("/render")).toBeNull()
+    expect(parseTelegramBotCommand("/cancel")).toBeNull()
     expect(parseTelegramBotCommand("template=promo")).toBeNull()
     expect(parseTelegramBotDraftCommand("/render@TimelineStudioBot")).toBe("render")
     expect(parseTelegramBotDraftCommand("/cancel")).toBe("cancel")

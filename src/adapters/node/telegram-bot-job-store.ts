@@ -3,7 +3,7 @@ import path from "node:path"
 
 import type { BotRenderJobArtifact, BotRenderJobStatus } from "@/core/types"
 
-export type NodeTelegramBotWorkflowJobStatus = "queued" | "running" | "done" | "failed" | "rejected"
+export type NodeTelegramBotWorkflowJobStatus = "queued" | "running" | "done" | "failed" | "rejected" | "cancelled"
 
 export interface NodeTelegramBotWorkflowJobRecord {
   id: string
@@ -159,7 +159,14 @@ function isWorkflowJobRecord(value: unknown): value is NodeTelegramBotWorkflowJo
 }
 
 function isWorkflowJobStatus(value: unknown): value is NodeTelegramBotWorkflowJobStatus {
-  return value === "queued" || value === "running" || value === "done" || value === "failed" || value === "rejected"
+  return (
+    value === "queued" ||
+    value === "running" ||
+    value === "done" ||
+    value === "failed" ||
+    value === "rejected" ||
+    value === "cancelled"
+  )
 }
 
 function isNotFoundError(error: unknown): boolean {

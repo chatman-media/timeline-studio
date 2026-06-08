@@ -89,6 +89,7 @@ export interface NodeTelegramBotWorkerOptions {
   draftFormatter?: NodeTelegramBotDraftFormatter
   workflowJobStore?: NodeTelegramBotWorkflowJobStore
   jobStatusFormatter?: NodeTelegramBotJobStatusFormatter
+  jobCancelFormatter?: NodeTelegramBotJobCancelFormatter
   jobStatusLimit?: number
   disableCommandRouting?: boolean
   botToken?: string
@@ -102,7 +103,7 @@ export interface NodeTelegramBotWorkerHandleOptions {
   workflowOptions?: NodeBotWorkflowServiceOptions
 }
 
-export type NodeTelegramBotCommand = "start" | "help" | "status"
+export type NodeTelegramBotCommand = "start" | "help" | "status" | "cancel"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
 
@@ -119,6 +120,14 @@ export type NodeTelegramBotWorkflowQueueSubmission =
       reason: string
     }
 
+export type NodeTelegramBotWorkflowQueueCancellationStatus = "cancelled" | "not_found" | "not_cancellable"
+
+export interface NodeTelegramBotWorkflowQueueCancellation {
+  id: string
+  status: NodeTelegramBotWorkflowQueueCancellationStatus
+  reason?: string
+}
+
 export interface NodeTelegramBotWorkflowQueueJob {
   id: string
   update: TelegramBotUpdate
@@ -126,10 +135,12 @@ export interface NodeTelegramBotWorkflowQueueJob {
   run(): Promise<BotWorkflowRunResult>
   onComplete?(result: BotWorkflowRunResult): void | Promise<void>
   onError?(error: unknown): void | Promise<void>
+  onCancel?(reason: string): void | Promise<void>
 }
 
 export interface NodeTelegramBotWorkflowQueue {
   enqueue(job: NodeTelegramBotWorkflowQueueJob): Promise<NodeTelegramBotWorkflowQueueSubmission>
+  cancel?(id: string): Promise<NodeTelegramBotWorkflowQueueCancellation>
 }
 
 export interface NodeTelegramBotInMemoryWorkflowQueueOptions {
@@ -193,6 +204,16 @@ export interface NodeTelegramBotJobStatusFormatterContext {
 
 export type NodeTelegramBotJobStatusFormatter = (context: NodeTelegramBotJobStatusFormatterContext) => string
 
+export interface NodeTelegramBotJobCancelFormatterContext {
+  queueId: string
+  cancellation: NodeTelegramBotWorkflowQueueCancellation
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+  job?: NodeTelegramBotWorkflowJobRecord
+}
+
+export type NodeTelegramBotJobCancelFormatter = (context: NodeTelegramBotJobCancelFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -206,6 +227,8 @@ export type NodeTelegramBotWorkerUpdateResult =
       payload?: TelegramLikeBotPayload
       responseText?: string
       responseError?: string
+      queueId?: string
+      cancellation?: NodeTelegramBotWorkflowQueueCancellation
     }
   | {
       skipped: false
@@ -298,6 +321,7 @@ export class NodeTelegramBotInMemoryWorkflowQueue implements NodeTelegramBotWork
   private readonly concurrency: number
   private readonly maxPending?: number
   private readonly pending: NodeTelegramBotWorkflowQueueJob[] = []
+  private readonly activeIds = new Set<string>()
   private readonly idleResolvers: Array<() => void> = []
   private activeCount = 0
 
@@ -327,6 +351,33 @@ export class NodeTelegramBotInMemoryWorkflowQueue implements NodeTelegramBotWork
     }
   }
 
+  async cancel(id: string): Promise<NodeTelegramBotWorkflowQueueCancellation> {
+    const pendingIndex = this.pending.findIndex((job) => job.id === id)
+    if (pendingIndex >= 0) {
+      const [job] = this.pending.splice(pendingIndex, 1)
+      await job?.onCancel?.("Telegram bot workflow cancelled")
+      this.resolveIdleIfNeeded()
+      return {
+        id,
+        status: "cancelled",
+      }
+    }
+
+    if (this.activeIds.has(id)) {
+      return {
+        id,
+        status: "not_cancellable",
+        reason: "Telegram bot workflow is already running",
+      }
+    }
+
+    return {
+      id,
+      status: "not_found",
+      reason: "Telegram bot workflow is not queued",
+    }
+  }
+
   async drain(): Promise<void> {
     if (this.activeCount === 0 && this.pending.length === 0) return
     await new Promise<void>((resolve) => this.idleResolvers.push(resolve))
@@ -342,12 +393,14 @@ export class NodeTelegramBotInMemoryWorkflowQueue implements NodeTelegramBotWork
   }
 
   private async runJob(job: NodeTelegramBotWorkflowQueueJob): Promise<void> {
+    this.activeIds.add(job.id)
     try {
       const result = await job.run()
       await job.onComplete?.(result)
     } catch (error) {
       await job.onError?.(error)
     } finally {
+      this.activeIds.delete(job.id)
       this.activeCount -= 1
       this.pump()
       this.resolveIdleIfNeeded()
@@ -450,6 +503,10 @@ export class NodeTelegramBotWorker {
     }
 
     const command = this.options.disableCommandRouting ? null : parseTelegramBotCommand(payload.text)
+    if (command === "cancel") {
+      return this.handleCancelCommand(update, payload)
+    }
+
     if (command === "status") {
       return this.handleStatusCommand(update, payload)
     }
@@ -609,6 +666,85 @@ export class NodeTelegramBotWorker {
     }
     await this.options.onResult?.(result)
     return result
+  }
+
+  private async handleCancelCommand(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const queueId = parseTelegramBotCancelCommandTarget(payload.text)
+    const cancellation = queueId
+      ? await this.cancelWorkflowJob(queueId, payload)
+      : {
+          id: "",
+          status: "not_found" as const,
+          reason: "Send /cancel <queueId> to cancel a queued render job.",
+        }
+    const job = queueId ? await this.options.workflowJobStore?.readJob(queueId) : undefined
+    const responseText = (this.options.jobCancelFormatter ?? defaultTelegramBotJobCancelText)({
+      queueId: queueId ?? "",
+      cancellation,
+      update,
+      payload,
+      ...(job ? { job } : {}),
+    })
+
+    await this.sendCommandResponse("cancel", payload, responseText)
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: true,
+      reason: "Telegram bot command handled",
+      updateId: update.update_id,
+      update,
+      command: "cancel",
+      payload,
+      responseText,
+      ...(queueId ? { queueId } : {}),
+      cancellation,
+    }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async cancelWorkflowJob(
+    queueId: string,
+    payload: TelegramLikeBotPayload,
+  ): Promise<NodeTelegramBotWorkflowQueueCancellation> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    const job = await this.options.workflowJobStore?.readJob(queueId)
+    if (!job || (job.chatId && chatId && job.chatId !== chatId)) {
+      return {
+        id: queueId,
+        status: "not_found",
+        reason: "Queued workflow job was not found for this chat.",
+      }
+    }
+
+    if (job.status !== "queued") {
+      return {
+        id: queueId,
+        status: "not_cancellable",
+        reason: `Workflow job is ${job.status}.`,
+      }
+    }
+
+    if (!this.options.workflowQueue?.cancel) {
+      return {
+        id: queueId,
+        status: "not_cancellable",
+        reason: "Workflow queue does not support cancellation.",
+      }
+    }
+
+    const cancellation = await this.options.workflowQueue.cancel(queueId)
+    if (cancellation.status === "cancelled") {
+      await this.writeWorkflowJobRecord({
+        ...job,
+        status: "cancelled",
+        reason: "Telegram bot workflow cancelled by user",
+        updatedAt: this.now(),
+      })
+    }
+    return cancellation
   }
 
   private async handleDraftUpdate(
@@ -1145,9 +1281,18 @@ export function parseTelegramBotCommand(text: string | undefined): NodeTelegramB
       return "help"
     case "/status":
       return "status"
+    case "/cancel":
+      return parseTelegramBotCancelCommandTarget(text) ? "cancel" : null
     default:
       return null
   }
+}
+
+export function parseTelegramBotCancelCommandTarget(text: string | undefined): string | null {
+  const tokens = text?.trim().split(/\s+/) ?? []
+  const command = tokens[0]?.toLowerCase().split("@")[0]
+  if (command !== "/cancel") return null
+  return tokens[1]?.trim() || null
 }
 
 export function parseTelegramBotDraftCommand(text: string | undefined): NodeTelegramBotDraftCommand | null {
@@ -1174,7 +1319,7 @@ export function defaultTelegramBotCommandText(): string {
     "template=promo destination=telegram",
     'project="./project.json" destination=file output="./out.mp4"',
     "Options: template, project, media/url/input/source, destination, output, resolution.",
-    "Commands: /status, /render, /cancel.",
+    "Commands: /status, /render, /cancel, /cancel <queueId>.",
   ].join("\n")
 }
 
@@ -1186,6 +1331,19 @@ export function defaultTelegramBotJobStatusText(context: NodeTelegramBotJobStatu
   }
 
   return ["Timeline Studio bot", "Recent render jobs:", ...context.jobs.map(formatTelegramBotJobStatusLine)].join("\n")
+}
+
+export function defaultTelegramBotJobCancelText(context: NodeTelegramBotJobCancelFormatterContext): string {
+  if (context.cancellation.status === "cancelled") {
+    return ["Timeline Studio bot", "Queued render job cancelled.", `Queue id: ${context.queueId}`].join("\n")
+  }
+
+  return [
+    "Timeline Studio bot",
+    "Could not cancel this render job.",
+    context.cancellation.reason ?? "The job is not queued or is no longer available.",
+    ...(context.queueId ? [`Queue id: ${context.queueId}`] : []),
+  ].join("\n")
 }
 
 export function defaultTelegramBotDraftText(context: NodeTelegramBotDraftFormatterContext): string {

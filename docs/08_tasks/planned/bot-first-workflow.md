@@ -231,6 +231,18 @@ bot message
 - [x] Прокинуть job store через `bot-worker` CLI/env config.
 - [x] Документировать `/status` runbook и покрыть worker/store/CLI tests.
 
+### B21: Telegram bot queued workflow cancellation ([#211](https://github.com/chatman-media/timeline-studio/issues/211))
+
+**Цель:** пользователь может отменить pending queued workflow из Telegram через `/cancel <queueId>`, не открывая desktop UI.
+
+- [x] Добавить cancellation API для pending jobs в in-memory Telegram workflow queue.
+- [x] Сохранить `/cancel` без аргументов как draft-clearing command.
+- [x] Добавить `/cancel <queueId>` routing для queued workflow jobs.
+- [x] Проверять job ownership/status через workflow job store перед отменой.
+- [x] Записывать `cancelled` status в job store и возвращать concise Telegram response.
+- [x] Оставить running render cancellation вне scope и возвращать not-cancellable response.
+- [x] Документировать command/runbook и покрыть queue/worker/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -254,6 +266,7 @@ bot message
 - [#205](https://github.com/chatman-media/timeline-studio/issues/205) - B18: Telegram bot queued workflow acknowledgements
 - [#207](https://github.com/chatman-media/timeline-studio/issues/207) - B19: Telegram bot workflow queue backpressure
 - [#209](https://github.com/chatman-media/timeline-studio/issues/209) - B20: Telegram bot workflow job status store
+- [#211](https://github.com/chatman-media/timeline-studio/issues/211) - B21: Telegram bot queued workflow cancellation
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
