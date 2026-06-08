@@ -6,9 +6,11 @@ import type { BotWorkflowRunResult } from "@/core/types"
 import type { NodeBotWorkflowService } from "../bot-workflow"
 import {
   createTelegramLikePayloadFromUpdate,
+  defaultTelegramBotCommandText,
   NodeTelegramBotApiClient,
   NodeTelegramBotFileOffsetStore,
   NodeTelegramBotWorker,
+  parseTelegramBotCommand,
   type TelegramBotUpdate,
 } from "../telegram-bot-worker"
 
@@ -122,6 +124,109 @@ describe("Telegram bot worker", () => {
     expect(onResult).toHaveBeenCalledWith(result)
   })
 
+  it("routes help commands to a command responder without running workflow", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "help-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      commandResponder,
+      commandFormatter: ({ command }) => `Handled ${command}`,
+    })
+    const update: TelegramBotUpdate = {
+      update_id: 13,
+      message: {
+        message_id: 9,
+        chat: { id: "chat-1" },
+        text: "/help",
+      },
+    }
+
+    const result = await worker.handleUpdate(update)
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reason: "Telegram bot command handled",
+      command: "help",
+      responseText: "Handled help",
+    })
+    expect(commandResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: "Handled help",
+      replyToMessageId: "9",
+      metadata: {
+        command: "help",
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("routes start commands through Bot API when a bot token is configured", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      async json() {
+        return { ok: true, result: { message_id: 10 } }
+      },
+    }))
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      botToken: "token-1",
+      fetch: fetchMock,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 14,
+      message: {
+        message_id: 10,
+        chat: { id: 42 },
+        text: "/start@TimelineStudioBot",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "start",
+      responseText: defaultTelegramBotCommandText(),
+    })
+    expect(fetchMock).toHaveBeenCalledWith("https://api.telegram.org/bottoken-1/sendMessage", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        chat_id: "42",
+        text: defaultTelegramBotCommandText(),
+        reply_to_message_id: 10,
+      }),
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("can disable command routing for command-like workflow messages", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      disableCommandRouting: true,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 15,
+      message: {
+        message_id: 11,
+        chat: { id: "chat-1" },
+        text: "/help template=promo",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: false,
+      updateId: 15,
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+  })
+
   it("skips updates without supported message payloads", async () => {
     const { service, runTelegramLikePayload } = createWorkflowService()
     const worker = new NodeTelegramBotWorker({ workflow: service })
@@ -161,6 +266,13 @@ describe("Telegram bot worker", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "https://api.telegram.org/bottoken-1/getUpdates?offset=19&limit=10&timeout=25&allowed_updates=%5B%22message%22%5D",
     )
+  })
+
+  it("parses supported Telegram bot commands", () => {
+    expect(parseTelegramBotCommand("/start")).toBe("start")
+    expect(parseTelegramBotCommand("/help@TimelineStudioBot more")).toBe("help")
+    expect(parseTelegramBotCommand("/render")).toBeNull()
+    expect(parseTelegramBotCommand("template=promo")).toBeNull()
   })
 
   it("polls one update batch and returns the next offset", async () => {

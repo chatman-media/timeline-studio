@@ -3,6 +3,7 @@ import path from "node:path"
 
 import type { BotWorkflowRunResult, TelegramLikeBotFile, TelegramLikeBotPayload } from "@/core/types"
 
+import { NodeBotStatusNotifier, type NodeTelegramStatusClient } from "./bot-status"
 import type { NodeBotWorkflowService, NodeBotWorkflowServiceOptions } from "./bot-workflow"
 
 export interface TelegramBotFile {
@@ -64,6 +65,9 @@ export interface NodeTelegramBotClient {
 export interface NodeTelegramBotWorkerOptions {
   workflow: NodeBotWorkflowService
   client?: NodeTelegramBotClient
+  commandResponder?: NodeTelegramStatusClient
+  commandFormatter?: NodeTelegramBotCommandFormatter
+  disableCommandRouting?: boolean
   botToken?: string
   fetch?: TelegramBotFetch
   workflowOptions?: NodeBotWorkflowServiceOptions
@@ -74,12 +78,25 @@ export interface NodeTelegramBotWorkerHandleOptions {
   workflowOptions?: NodeBotWorkflowServiceOptions
 }
 
+export type NodeTelegramBotCommand = "start" | "help"
+
+export interface NodeTelegramBotCommandFormatterContext {
+  command: NodeTelegramBotCommand
+  payload: TelegramLikeBotPayload
+  update: TelegramBotUpdate
+}
+
+export type NodeTelegramBotCommandFormatter = (context: NodeTelegramBotCommandFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
       reason: string
       updateId: number
       update: TelegramBotUpdate
+      command?: NodeTelegramBotCommand
+      payload?: TelegramLikeBotPayload
+      responseText?: string
     }
   | {
       skipped: false
@@ -214,6 +231,27 @@ export class NodeTelegramBotWorker {
       return result
     }
 
+    const command = this.options.disableCommandRouting ? null : parseTelegramBotCommand(payload.text)
+    if (command) {
+      const responseText = (this.options.commandFormatter ?? defaultTelegramBotCommandText)({
+        command,
+        payload,
+        update,
+      })
+      await this.sendCommandResponse(command, payload, responseText)
+      const result: NodeTelegramBotWorkerUpdateResult = {
+        skipped: true,
+        reason: "Telegram bot command handled",
+        updateId: update.update_id,
+        update,
+        command,
+        payload,
+        responseText,
+      }
+      await this.options.onResult?.(result)
+      return result
+    }
+
     const result: NodeTelegramBotWorkerUpdateResult = {
       skipped: false,
       updateId: update.update_id,
@@ -298,6 +336,37 @@ export class NodeTelegramBotWorker {
     }
     return new NodeTelegramBotApiClient(this.options.botToken, { fetch: this.options.fetch })
   }
+
+  private async sendCommandResponse(
+    command: NodeTelegramBotCommand,
+    payload: TelegramLikeBotPayload,
+    text: string,
+  ): Promise<void> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    if (!chatId) return
+
+    const responder = this.resolveCommandResponder()
+    await responder?.sendMessage({
+      chatId,
+      text,
+      ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+      metadata: {
+        command,
+        source: "telegram-bot-worker",
+      },
+    })
+  }
+
+  private resolveCommandResponder(): NodeTelegramStatusClient | undefined {
+    if (this.options.commandResponder) return this.options.commandResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
 }
 
 export function createTelegramLikePayloadFromUpdate(update: TelegramBotUpdate): TelegramLikeBotPayload | null {
@@ -326,6 +395,32 @@ function telegramFile(file: TelegramBotFile): TelegramLikeBotFile {
     ...(file.mime_type ? { mime_type: file.mime_type } : {}),
     ...(file.file_path ? { file_path: file.file_path } : {}),
   }
+}
+
+export function parseTelegramBotCommand(text: string | undefined): NodeTelegramBotCommand | null {
+  const token = text?.trim().split(/\s+/)[0]?.toLowerCase()
+  if (!token?.startsWith("/")) return null
+
+  const command = token.split("@")[0]
+  switch (command) {
+    case "/start":
+      return "start"
+    case "/help":
+      return "help"
+    default:
+      return null
+  }
+}
+
+export function defaultTelegramBotCommandText(): string {
+  return [
+    "Timeline Studio bot",
+    "Send a video, link, or project with render hints.",
+    "Examples:",
+    "template=promo destination=telegram",
+    'project="./project.json" destination=file output="./out.mp4"',
+    "Options: template, project, destination, output, resolution.",
+  ].join("\n")
 }
 
 function mergeWorkflowOptions(

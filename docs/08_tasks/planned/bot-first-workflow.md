@@ -135,6 +135,16 @@ bot message
 - [x] Сохранить поведение `--poll-once` без изменений.
 - [x] Покрыть polling loop, offset persistence, file offset store и CLI contract tests.
 
+### B12: Telegram bot command routing ([#193](https://github.com/chatman-media/timeline-studio/issues/193))
+
+**Цель:** обрабатывать служебные команды бота до render workflow, чтобы `/start` и `/help` не превращались в validation error.
+
+- [x] Добавить detection для `/start` и `/help` в Node Telegram worker.
+- [x] Отправлять command responses через injected responder или Telegram Bot API token.
+- [x] Возвращать machine-readable command-handled worker result без запуска render workflow.
+- [x] Оставить возможность отключить command routing для command-like workflow messages.
+- [x] Покрыть command routing, Bot API command response delivery и command parser tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -149,6 +159,7 @@ bot message
 - [#187](https://github.com/chatman-media/timeline-studio/issues/187) - B9: Bot status notifier
 - [#189](https://github.com/chatman-media/timeline-studio/issues/189) - B10: Telegram bot worker entrypoint
 - [#191](https://github.com/chatman-media/timeline-studio/issues/191) - B11: Telegram bot polling loop state
+- [#193](https://github.com/chatman-media/timeline-studio/issues/193) - B12: Telegram bot command routing
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
