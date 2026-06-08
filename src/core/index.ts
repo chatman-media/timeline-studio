@@ -32,11 +32,19 @@ export type {
   SaveDialogOptions,
   Unsubscribe,
 } from "./ports"
-export type { LanguageResponse } from "./services"
-export { getAppLanguage, setAppLanguage } from "./services"
+export type { LanguageResponse, ParsedBotWorkflowText } from "./services"
+export {
+  createBotRenderJobRequest,
+  createBotWorkflowRequestFromTelegramLikePayload,
+  getAppLanguage,
+  parseBotWorkflowText,
+  setAppLanguage,
+} from "./services"
 
 // Types (re-exported from generated bindings for now)
 export type {
+  BotMediaAttachment,
+  BotMediaAttachmentType,
   BotRenderJob,
   BotRenderJobArtifact,
   BotRenderJobDestination,
@@ -48,6 +56,14 @@ export type {
   BotRenderJobRunOptions,
   BotRenderJobSource,
   BotRenderJobStatus,
+  BotTemplateSelection,
+  BotWorkflowIntakeOptions,
+  BotWorkflowIntakeResult,
+  BotWorkflowOutput,
+  BotWorkflowRequest,
+  BotWorkflowSource,
+  BotWorkflowValidationCode,
+  BotWorkflowValidationError,
   BrowserState,
   BrowserTab,
   Clip,
@@ -61,6 +77,8 @@ export type {
   ProjectSettings,
   ProjectState,
   TabSettings,
+  TelegramLikeBotFile,
+  TelegramLikeBotPayload,
   Timeline,
   Track,
   ViewMode,
