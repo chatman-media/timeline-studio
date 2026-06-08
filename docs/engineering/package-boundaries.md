@@ -64,3 +64,4 @@ This gate fails if total violations, severity counts or edge counts increase abo
 6. **F6 boundary error burn-down:** remove hard `domains -> ui/app-shell` violations and keep the remaining `ui -> domains` coupling as warning-only follow-up work.
 7. **F7 warning burn-down:** reduce `ui -> domains` warnings through small core ports and UI bridge slices.
 8. **F8 options type bridge:** move `features/options` off type-only media-management imports through core-facing media types.
+9. **F9 keyboard shortcuts modal bridge:** move `features/keyboard-shortcuts` off direct system-integration modal imports through the existing modals compatibility layer.
