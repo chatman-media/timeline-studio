@@ -1,3 +1,10 @@
+# [3.78.0](https://github.com/chatman-media/timeline-studio/compare/v3.77.0...v3.78.0) (2026-06-08)
+
+
+### Features
+
+* queue telegram bot workflows ([#204](https://github.com/chatman-media/timeline-studio/issues/204)) ([01fdb81](https://github.com/chatman-media/timeline-studio/commit/01fdb819fb693b08ea87e0a340b4ea3115f5184d))
+
 # [3.77.0](https://github.com/chatman-media/timeline-studio/compare/v3.76.0...v3.77.0) (2026-06-08)
 
 
