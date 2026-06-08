@@ -1,3 +1,10 @@
+# [3.68.0](https://github.com/chatman-media/timeline-studio/compare/v3.67.0...v3.68.0) (2026-06-08)
+
+
+### Features
+
+* assemble bot projects from media ([#184](https://github.com/chatman-media/timeline-studio/issues/184)) ([b310e7a](https://github.com/chatman-media/timeline-studio/commit/b310e7aeb7fe3a87eecbc35a608fdfce46ce00ed))
+
 # [3.67.0](https://github.com/chatman-media/timeline-studio/compare/v3.66.0...v3.67.0) (2026-06-08)
 
 
