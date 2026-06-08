@@ -10,7 +10,7 @@
 import { useTheme } from "next-themes"
 import { useCallback, useMemo } from "react"
 
-import { useUserSettings } from "@/domains/project-management/hooks"
+import { useUserSettings } from "@/features/user-settings"
 import { BUILTIN_COLOR_SCHEMES, BUILTIN_SCHEMES_BY_ID, DEFAULT_COLOR_SCHEME_ID } from "../constants"
 import type { ColorScheme, ThemeMode } from "../types"
 

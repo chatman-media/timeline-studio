@@ -40,9 +40,16 @@ export function createMockUserSettings(overrides?: Partial<UserSettingsContextVa
     isBrowserVisible: true,
     isTimelineVisible: true,
     isOptionsVisible: true,
+    isLoaded: true,
     activeTab: "media",
     layoutMode: "default",
     playerVolume: 100,
+
+    // Внешний вид
+    themeMode: "system",
+    colorScheme: "teal",
+    customColorSchemes: [],
+    quickAccessSchemeIds: ["teal"],
 
     // GPU и производительность
     gpuAccelerationEnabled: false,
@@ -80,6 +87,7 @@ export function createMockUserSettings(overrides?: Partial<UserSettingsContextVa
     handlePlayerVolumeChange: vi.fn(),
     toggleTimelineVisibility: vi.fn(),
     toggleOptionsVisibility: vi.fn(),
+    updateSettings: vi.fn(),
 
     // Методы GPU и производительности
     handleGpuAccelerationChange: vi.fn(),

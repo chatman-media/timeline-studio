@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@/features/modals/services"
 import { useColorScheme } from "../hooks/use-color-scheme"
 import { schemePreviewColor } from "../lib"
 import type { ColorScheme } from "../types"

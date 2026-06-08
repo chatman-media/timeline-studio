@@ -6,6 +6,22 @@ import type { UserSettingsContextType } from "@/domains/project-management/machi
 import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
 import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
 
+export type UserSettingsThemeMode = "light" | "dark" | "system"
+
+export type UserSettingsColorSchemeVars = {
+  teal: string
+  "teal-light": string
+  "teal-dark": string
+}
+
+export interface UserSettingsColorScheme {
+  id: string
+  name: string
+  isBuiltin?: boolean
+  light: UserSettingsColorSchemeVars
+  dark: UserSettingsColorSchemeVars
+}
+
 /**
  * Интерфейс значения контекста пользовательских настроек
  * Определяет данные и методы, доступные через хук useUserSettings
@@ -24,6 +40,13 @@ export interface UserSettingsContextValue {
   isBrowserVisible: boolean // Флаг видимости браузера
   isTimelineVisible: boolean // Флаг видимости временной шкалы
   isOptionsVisible: boolean // Флаг видимости опций
+  isLoaded: boolean // Флаг загрузки настроек
+
+  // Внешний вид
+  themeMode: UserSettingsThemeMode
+  colorScheme: string
+  customColorSchemes: UserSettingsColorScheme[]
+  quickAccessSchemeIds: string[]
 
   // GPU и производительность
   gpuAccelerationEnabled: boolean
@@ -61,6 +84,7 @@ export interface UserSettingsContextValue {
   toggleBrowserVisibility: () => void // Переключение видимости браузера
   toggleTimelineVisibility: () => void // Переключение видимости временной шкалы
   toggleOptionsVisibility: () => void // Переключение видимости опций
+  updateSettings: (updates: Record<string, unknown>) => void // Пакетное обновление настроек
 
   // Методы для GPU и производительности
   handleGpuAccelerationChange: (value: boolean) => void
@@ -283,6 +307,11 @@ export function UserSettingsProvider({
     [orchestrator],
   )
 
+  const updateSettings = useCallback(
+    (updates: Record<string, unknown>) => orchestrator.updateUserSettings(updates as Partial<UserSettingsContextType>),
+    [orchestrator],
+  )
+
   // Мемоизированное значение контекста
   const value: UserSettingsContextValue = useMemo(
     () => ({
@@ -297,6 +326,13 @@ export function UserSettingsProvider({
       isBrowserVisible: settings?.isBrowserVisible ?? true,
       isTimelineVisible: settings?.isTimelineVisible ?? true,
       isOptionsVisible: settings?.isOptionsVisible ?? false,
+      isLoaded: settings?.isLoaded ?? false,
+
+      // Внешний вид
+      themeMode: settings?.themeMode ?? "system",
+      colorScheme: settings?.colorScheme ?? "teal",
+      customColorSchemes: settings?.customColorSchemes ?? [],
+      quickAccessSchemeIds: settings?.quickAccessSchemeIds ?? [],
 
       // GPU и производительность
       gpuAccelerationEnabled: settings?.gpuAccelerationEnabled ?? false,
@@ -334,6 +370,7 @@ export function UserSettingsProvider({
       toggleBrowserVisibility,
       toggleTimelineVisibility,
       toggleOptionsVisibility,
+      updateSettings,
       handleGpuAccelerationChange,
       handlePreferredGpuEncoderChange,
       handleMaxConcurrentJobsChange,
@@ -364,6 +401,7 @@ export function UserSettingsProvider({
       toggleBrowserVisibility,
       toggleTimelineVisibility,
       toggleOptionsVisibility,
+      updateSettings,
       handleGpuAccelerationChange,
       handlePreferredGpuEncoderChange,
       handleMaxConcurrentJobsChange,
