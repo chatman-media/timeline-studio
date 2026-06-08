@@ -1,3 +1,10 @@
+# [3.72.0](https://github.com/chatman-media/timeline-studio/compare/v3.71.0...v3.72.0) (2026-06-08)
+
+
+### Features
+
+* persist telegram bot polling offset ([#192](https://github.com/chatman-media/timeline-studio/issues/192)) ([b609f2d](https://github.com/chatman-media/timeline-studio/commit/b609f2d65f0923c6089dc098938839d6821c04d5))
+
 # [3.71.0](https://github.com/chatman-media/timeline-studio/compare/v3.70.0...v3.71.0) (2026-06-08)
 
 
