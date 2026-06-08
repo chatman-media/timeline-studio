@@ -66,6 +66,15 @@ bot message
 - [x] Добавить destination-specific publishing adapters.
 - [x] Связать publish phase с `BotRenderJobStatus = "publishing"`.
 
+### B5: Rust render adapter ([#179](https://github.com/chatman-media/timeline-studio/issues/179))
+
+**Цель:** подключить bot-first render job к вынесенному Rust `ts-render`, а не к старой Node ffmpeg-concat реализации.
+
+- [x] Добавить Node `IVideoService` adapter поверх `timeline render` / `timeline-render --project`.
+- [x] Добавить opt-in wiring через `initNodeApp({ rustRender })`.
+- [x] Добавить CLI-флаги `render-job --rust-render`.
+- [x] Покрыть completed/failed/cancel scenarios.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -73,6 +82,7 @@ bot message
 - [#173](https://github.com/chatman-media/timeline-studio/issues/173) - B2: Bot intake contract
 - [#175](https://github.com/chatman-media/timeline-studio/issues/175) - B3: Worker event stream
 - [#177](https://github.com/chatman-media/timeline-studio/issues/177) - B4: Publishing destinations
+- [#179](https://github.com/chatman-media/timeline-studio/issues/179) - B5: Rust render adapter for bot jobs
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
