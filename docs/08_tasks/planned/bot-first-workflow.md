@@ -85,6 +85,15 @@ bot message
 - [x] Возвращать validation errors, render result и reconnect state для бота.
 - [x] Покрыть success/validation/event stream/CLI contract tests.
 
+### B7: Bot project assembly ([#183](https://github.com/chatman-media/timeline-studio/issues/183))
+
+**Цель:** бот может собрать renderable `ProjectSchema` из media/template payload без заранее подготовленного desktop project JSON.
+
+- [x] Добавить deterministic core assembler для `BotRenderJobRequest -> ProjectSchema`.
+- [x] Подключить assembly в workflow runner, сохраняя приоритет explicit `project=file|inline`.
+- [x] Научить Node fallback читать clips из `ProjectSchema.tracks`.
+- [x] Покрыть assembly, runner hydration и Node input extraction tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -94,6 +103,7 @@ bot message
 - [#177](https://github.com/chatman-media/timeline-studio/issues/177) - B4: Publishing destinations
 - [#179](https://github.com/chatman-media/timeline-studio/issues/179) - B5: Rust render adapter for bot jobs
 - [#181](https://github.com/chatman-media/timeline-studio/issues/181) - B6: Bot workflow runner
+- [#183](https://github.com/chatman-media/timeline-studio/issues/183) - B7: Bot project assembly
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

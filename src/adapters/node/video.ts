@@ -45,6 +45,29 @@ interface ActiveJob {
   progress: RenderProgress
 }
 
+interface NodeVideoLegacyClip {
+  path?: string
+  source_path?: string
+  source?: unknown
+}
+
+interface NodeVideoProjectLike {
+  clips?: NodeVideoLegacyClip[]
+  tracks?: Array<{
+    clips?: NodeVideoLegacyClip[]
+  }>
+}
+
+export function extractNodeVideoInputFiles(projectSchema: unknown): string[] {
+  const schema = projectSchema as NodeVideoProjectLike
+  const legacyClips = schema.clips ?? []
+  const trackClips = schema.tracks?.flatMap((track) => track.clips ?? []) ?? []
+
+  return [...legacyClips, ...trackClips]
+    .map((clip) => clip.path ?? clip.source_path ?? sourceToInputFile(clip.source))
+    .filter((value): value is string => Boolean(value))
+}
+
 export class NodeVideoService implements IVideoService {
   private cacheDir: string
   private ffmpegPath: string
@@ -224,9 +247,7 @@ export class NodeVideoService implements IVideoService {
 
   async renderProject(projectSchema: unknown, outputPath: string): Promise<string> {
     const jobId = crypto.randomUUID()
-    const schema = projectSchema as { clips?: Array<{ path: string; startTime: number; duration: number }> }
-
-    const inputFiles = schema.clips?.map((c) => c.path) || []
+    const inputFiles = extractNodeVideoInputFiles(projectSchema)
 
     if (inputFiles.length === 0) {
       throw new Error("No clips in project")
@@ -283,8 +304,7 @@ export class NodeVideoService implements IVideoService {
   }
 
   async generatePreview(projectSchema: unknown, timestamp: number, quality?: number): Promise<number[]> {
-    const schema = projectSchema as { clips?: Array<{ path: string }> }
-    const firstClip = schema.clips?.[0]?.path
+    const firstClip = extractNodeVideoInputFiles(projectSchema)[0]
 
     if (!firstClip) {
       return []
@@ -565,4 +585,17 @@ export class NodeVideoService implements IVideoService {
     const timestamps = (subtitles as Array<{ startTime: number }>).map((s) => s.startTime)
     return this.extractTimelineFrames({ videoPath, timestamps })
   }
+}
+
+function sourceToInputFile(source: unknown): string | undefined {
+  if (typeof source === "string") {
+    return source === "Generated" ? undefined : source
+  }
+
+  if (!source || typeof source !== "object") return undefined
+
+  if ("File" in source && typeof source.File === "string") return source.File
+  if ("Stream" in source && typeof source.Stream === "string") return source.Stream
+
+  return undefined
 }

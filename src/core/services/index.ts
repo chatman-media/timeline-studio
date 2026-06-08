@@ -1,3 +1,4 @@
+export * from "./bot-project-assembler"
 export * from "./bot-workflow-intake"
 export * from "./bot-workflow-runner"
 export * from "./language"
