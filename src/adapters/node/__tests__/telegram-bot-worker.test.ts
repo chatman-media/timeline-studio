@@ -4,10 +4,12 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { BotWorkflowDraft, BotWorkflowRunResult } from "@/core/types"
 import type { NodeBotWorkflowService } from "../bot-workflow"
+import { NodeTelegramBotFileWorkflowJobStore, NodeTelegramBotInMemoryWorkflowJobStore } from "../telegram-bot-job-store"
 import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
+  defaultTelegramBotJobStatusText,
   defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
   defaultTelegramBotUpdateErrorText,
@@ -279,10 +281,11 @@ describe("Telegram bot worker", () => {
       runTelegramLikePayload,
     } as unknown as NodeBotWorkflowService
     const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue({ maxPending: 0 })
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
     const queueResponder = {
       sendMessage: vi.fn(async () => ({ messageId: "queue-message-1" })),
     }
-    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, queueResponder })
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, workflowJobStore, queueResponder })
 
     const first = await worker.handleUpdate({
       update_id: 19,
@@ -334,6 +337,11 @@ describe("Telegram bot worker", () => {
       },
     })
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+    await expect(workflowJobStore.readJob("telegram-update-20")).resolves.toMatchObject({
+      id: "telegram-update-20",
+      status: "rejected",
+      reason: "Telegram bot workflow queue is full",
+    })
 
     resolveWorkflow()
     await workflowQueue.drain()
@@ -520,6 +528,96 @@ describe("Telegram bot worker", () => {
     expect(runTelegramLikePayload).not.toHaveBeenCalled()
   })
 
+  it("routes status commands from persisted workflow job state", async () => {
+    let resolveWorkflow!: () => void
+    const runTelegramLikePayload = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    const queueResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "queue-message-1" })),
+    }
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "status-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowQueue,
+      workflowJobStore,
+      queueResponder,
+      commandResponder,
+      now: () => "2026-06-08T08:00:00.000Z",
+    })
+
+    await worker.handleUpdate({
+      update_id: 28,
+      message: {
+        message_id: 19,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+
+    await vi.waitFor(async () => {
+      expect((await workflowJobStore.readJob("telegram-update-28"))?.status).toBe("running")
+    })
+
+    const statusUpdate = {
+      update_id: 29,
+      message: {
+        message_id: 20,
+        chat: { id: "chat-1" },
+        text: "/status",
+      },
+    }
+    const runningRecord = await workflowJobStore.readJob("telegram-update-28")
+    if (!runningRecord) throw new Error("Expected workflow job record")
+    const runningText = defaultTelegramBotJobStatusText({
+      jobs: [runningRecord],
+      update: statusUpdate,
+      payload: {
+        chat: { id: "chat-1" },
+        message_id: 20,
+        text: "/status",
+      },
+    })
+    const status = await worker.handleUpdate(statusUpdate)
+
+    expect(status).toMatchObject({
+      skipped: true,
+      command: "status",
+      responseText: runningText,
+    })
+    expect(commandResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: runningText,
+      replyToMessageId: "20",
+      metadata: {
+        command: "status",
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+
+    await expect(workflowJobStore.readJob("telegram-update-28")).resolves.toMatchObject({
+      id: "telegram-update-28",
+      status: "done",
+      renderJobId: "job-1",
+      renderJobStatus: "done",
+    })
+  })
+
   it("can disable command routing for command-like workflow messages", async () => {
     const { service, runTelegramLikePayload } = createWorkflowService()
     const worker = new NodeTelegramBotWorker({
@@ -587,6 +685,7 @@ describe("Telegram bot worker", () => {
   it("parses supported Telegram bot commands", () => {
     expect(parseTelegramBotCommand("/start")).toBe("start")
     expect(parseTelegramBotCommand("/help@TimelineStudioBot more")).toBe("help")
+    expect(parseTelegramBotCommand("/status")).toBe("status")
     expect(parseTelegramBotCommand("/render")).toBeNull()
     expect(parseTelegramBotCommand("template=promo")).toBeNull()
     expect(parseTelegramBotDraftCommand("/render@TimelineStudioBot")).toBe("render")
@@ -982,6 +1081,50 @@ describe("Telegram bot worker", () => {
 
     await expect(store.readOffset()).resolves.toBe(42)
     await expect(fs.readFile(path.join(tempDir, "state", "offset.json"), "utf-8")).resolves.toContain('"offset":42')
+  })
+
+  it("persists and filters Telegram workflow job status records in a file store", async () => {
+    const storePath = path.join(tempDir, "state", "jobs.json")
+    const store = new NodeTelegramBotFileWorkflowJobStore(storePath, { maxJobs: 2 })
+
+    await store.writeJob({
+      id: "telegram-update-1",
+      status: "done",
+      updateId: 1,
+      chatId: "chat-1",
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    await store.writeJob({
+      id: "telegram-update-2",
+      status: "running",
+      updateId: 2,
+      chatId: "chat-2",
+      createdAt: "2026-06-08T08:00:01.000Z",
+      updatedAt: "2026-06-08T08:00:01.000Z",
+    })
+    await store.writeJob({
+      id: "telegram-update-3",
+      status: "failed",
+      updateId: 3,
+      chatId: "chat-1",
+      error: "Render failed",
+      createdAt: "2026-06-08T08:00:02.000Z",
+      updatedAt: "2026-06-08T08:00:02.000Z",
+    })
+
+    await expect(store.listJobs({ chatId: "chat-1" })).resolves.toEqual([
+      expect.objectContaining({
+        id: "telegram-update-3",
+        status: "failed",
+        error: "Render failed",
+      }),
+    ])
+    const reloaded = new NodeTelegramBotFileWorkflowJobStore(storePath)
+    await expect(reloaded.readJob("telegram-update-3")).resolves.toMatchObject({
+      id: "telegram-update-3",
+      status: "failed",
+    })
   })
 
   it("runs bounded polling batches from stored offset and writes the next offset", async () => {

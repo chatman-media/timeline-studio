@@ -13,6 +13,7 @@ import type {
 
 import { NodeBotStatusNotifier, type NodeTelegramStatusClient } from "./bot-status"
 import type { NodeBotWorkflowService, NodeBotWorkflowServiceOptions } from "./bot-workflow"
+import type { NodeTelegramBotWorkflowJobRecord, NodeTelegramBotWorkflowJobStore } from "./telegram-bot-job-store"
 
 export interface TelegramBotFile {
   file_id?: string
@@ -86,6 +87,9 @@ export interface NodeTelegramBotWorkerOptions {
   draftStore?: BotWorkflowDraftStore
   draftResponder?: NodeTelegramStatusClient
   draftFormatter?: NodeTelegramBotDraftFormatter
+  workflowJobStore?: NodeTelegramBotWorkflowJobStore
+  jobStatusFormatter?: NodeTelegramBotJobStatusFormatter
+  jobStatusLimit?: number
   disableCommandRouting?: boolean
   botToken?: string
   fetch?: TelegramBotFetch
@@ -98,7 +102,7 @@ export interface NodeTelegramBotWorkerHandleOptions {
   workflowOptions?: NodeBotWorkflowServiceOptions
 }
 
-export type NodeTelegramBotCommand = "start" | "help"
+export type NodeTelegramBotCommand = "start" | "help" | "status"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
 
@@ -180,6 +184,14 @@ export interface NodeTelegramBotQueueRejectedFormatterContext {
 }
 
 export type NodeTelegramBotQueueRejectedFormatter = (context: NodeTelegramBotQueueRejectedFormatterContext) => string
+
+export interface NodeTelegramBotJobStatusFormatterContext {
+  jobs: NodeTelegramBotWorkflowJobRecord[]
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+}
+
+export type NodeTelegramBotJobStatusFormatter = (context: NodeTelegramBotJobStatusFormatterContext) => string
 
 export type NodeTelegramBotWorkerUpdateResult =
   | {
@@ -438,6 +450,10 @@ export class NodeTelegramBotWorker {
     }
 
     const command = this.options.disableCommandRouting ? null : parseTelegramBotCommand(payload.text)
+    if (command === "status") {
+      return this.handleStatusCommand(update, payload)
+    }
+
     if (command) {
       const responseText = (this.options.commandFormatter ?? defaultTelegramBotCommandText)({
         command,
@@ -541,6 +557,10 @@ export class NodeTelegramBotWorker {
     return new NodeTelegramBotApiClient(this.options.botToken, { fetch: this.options.fetch })
   }
 
+  private now(): string {
+    return this.options.now?.() ?? new Date().toISOString()
+  }
+
   private async sendCommandResponse(
     command: NodeTelegramBotCommand,
     payload: TelegramLikeBotPayload,
@@ -559,6 +579,36 @@ export class NodeTelegramBotWorker {
         source: "telegram-bot-worker",
       },
     })
+  }
+
+  private async handleStatusCommand(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    const jobs =
+      (await this.options.workflowJobStore?.listJobs({
+        ...(chatId ? { chatId } : {}),
+        limit: this.options.jobStatusLimit ?? 5,
+      })) ?? []
+    const responseText = (this.options.jobStatusFormatter ?? defaultTelegramBotJobStatusText)({
+      jobs,
+      update,
+      payload,
+    })
+
+    await this.sendCommandResponse("status", payload, responseText)
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: true,
+      reason: "Telegram bot command handled",
+      updateId: update.update_id,
+      update,
+      command: "status",
+      payload,
+      responseText,
+    }
+    await this.options.onResult?.(result)
+    return result
   }
 
   private async handleDraftUpdate(
@@ -680,21 +730,36 @@ export class NodeTelegramBotWorker {
     },
   ): Promise<NodeTelegramBotWorkerUpdateResult> {
     const workflowQueue = this.options.workflowQueue
+    const queueId = createTelegramBotWorkflowQueueId(update)
+    const jobRecord = this.createWorkflowJobRecord({
+      queueId,
+      status: workflowQueue ? "queued" : "running",
+      reason: workflowQueue ? "Telegram bot workflow queued" : "Telegram bot workflow running",
+      update,
+      payload,
+      ...(options.draftId ? { draftId: options.draftId } : {}),
+    })
     if (!workflowQueue) {
-      const workflowResult = await options.run()
-      await options.onComplete?.(workflowResult)
-      const result: NodeTelegramBotWorkerUpdateResult = {
-        skipped: false,
-        updateId: update.update_id,
-        update,
-        payload,
-        result: workflowResult,
+      await this.writeWorkflowJobRecord(jobRecord)
+      try {
+        const workflowResult = await options.run()
+        await this.writeWorkflowJobRecord(this.completeWorkflowJobRecord(jobRecord, workflowResult))
+        await options.onComplete?.(workflowResult)
+        const result: NodeTelegramBotWorkerUpdateResult = {
+          skipped: false,
+          updateId: update.update_id,
+          update,
+          payload,
+          result: workflowResult,
+        }
+        await this.options.onResult?.(result)
+        return result
+      } catch (error) {
+        await this.writeWorkflowJobRecord(this.failWorkflowJobRecord(jobRecord, error))
+        throw error
       }
-      await this.options.onResult?.(result)
-      return result
     }
 
-    const queueId = createTelegramBotWorkflowQueueId(update)
     const result: NodeTelegramBotWorkerUpdateResult = {
       skipped: false,
       queued: true,
@@ -706,13 +771,23 @@ export class NodeTelegramBotWorker {
       ...(options.workflow ? { workflow: options.workflow } : {}),
       ...(options.draftId ? { draftId: options.draftId } : {}),
     }
+    await this.writeWorkflowJobRecord(jobRecord)
     const submission = await workflowQueue.enqueue({
       id: queueId,
       update,
       payload,
-      run: options.run,
+      run: async () => {
+        await this.writeWorkflowJobRecord(
+          this.updateWorkflowJobRecord(jobRecord, {
+            status: "running",
+            reason: "Telegram bot workflow running",
+          }),
+        )
+        return options.run()
+      },
       onComplete: async (workflowResult) => {
         result.completion = workflowResult
+        await this.writeWorkflowJobRecord(this.completeWorkflowJobRecord(jobRecord, workflowResult))
         await options.onComplete?.(workflowResult)
         await this.options.onResult?.({
           skipped: false,
@@ -724,11 +799,18 @@ export class NodeTelegramBotWorker {
       },
       onError: async (error) => {
         result.error = formatUnknownError(error)
+        await this.writeWorkflowJobRecord(this.failWorkflowJobRecord(jobRecord, error))
         await this.createUpdateErrorResult(update, error)
       },
     })
 
     if (submission.status === "rejected") {
+      await this.writeWorkflowJobRecord(
+        this.updateWorkflowJobRecord(jobRecord, {
+          status: "rejected",
+          reason: submission.reason,
+        }),
+      )
       return this.createQueueRejectedResult({
         queueId: submission.id,
         reason: submission.reason,
@@ -818,6 +900,89 @@ export class NodeTelegramBotWorker {
         source: "telegram-bot-worker",
       },
     })
+  }
+
+  private createWorkflowJobRecord(context: {
+    queueId: string
+    status: NodeTelegramBotWorkflowJobRecord["status"]
+    reason: string
+    update: TelegramBotUpdate
+    payload: TelegramLikeBotPayload
+    draftId?: string
+  }): NodeTelegramBotWorkflowJobRecord {
+    const timestamp = this.now()
+    return {
+      id: context.queueId,
+      status: context.status,
+      updateId: context.update.update_id,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      reason: context.reason,
+      ...(context.payload.chat?.id !== undefined ? { chatId: String(context.payload.chat.id) } : {}),
+      ...(context.payload.from?.id !== undefined ? { userId: String(context.payload.from.id) } : {}),
+      ...(context.payload.message_id !== undefined ? { messageId: String(context.payload.message_id) } : {}),
+      ...(context.draftId ? { draftId: context.draftId } : {}),
+    }
+  }
+
+  private updateWorkflowJobRecord(
+    record: NodeTelegramBotWorkflowJobRecord,
+    patch: Pick<NodeTelegramBotWorkflowJobRecord, "status" | "reason">,
+  ): NodeTelegramBotWorkflowJobRecord {
+    return {
+      ...record,
+      ...patch,
+      updatedAt: this.now(),
+    }
+  }
+
+  private completeWorkflowJobRecord(
+    record: NodeTelegramBotWorkflowJobRecord,
+    workflowResult: BotWorkflowRunResult,
+  ): NodeTelegramBotWorkflowJobRecord {
+    if (!workflowResult.ok) {
+      return {
+        ...record,
+        status: "failed",
+        reason: "Bot workflow validation failed",
+        error: workflowResult.errors.map((error) => error.userMessage).join("; "),
+        updatedAt: this.now(),
+      }
+    }
+
+    const job = workflowResult.result.job
+    const failed = job.status === "failed" || job.status === "cancelled"
+    return {
+      ...record,
+      status: failed ? "failed" : "done",
+      reason: failed ? "Bot workflow render failed" : "Bot workflow completed",
+      updatedAt: this.now(),
+      renderJobId: job.id,
+      renderJobStatus: job.status,
+      ...(job.error ? { error: job.error } : {}),
+      ...(job.artifact ? { artifact: job.artifact } : {}),
+    }
+  }
+
+  private failWorkflowJobRecord(
+    record: NodeTelegramBotWorkflowJobRecord,
+    error: unknown,
+  ): NodeTelegramBotWorkflowJobRecord {
+    return {
+      ...record,
+      status: "failed",
+      reason: "Bot workflow execution failed",
+      error: formatUnknownError(error),
+      updatedAt: this.now(),
+    }
+  }
+
+  private async writeWorkflowJobRecord(record: NodeTelegramBotWorkflowJobRecord): Promise<void> {
+    try {
+      await this.options.workflowJobStore?.writeJob(record)
+    } catch {
+      // Job status persistence is observational and must not fail workflow handling.
+    }
   }
 
   private async handlePollingUpdate(
@@ -978,6 +1143,8 @@ export function parseTelegramBotCommand(text: string | undefined): NodeTelegramB
       return "start"
     case "/help":
       return "help"
+    case "/status":
+      return "status"
     default:
       return null
   }
@@ -1007,7 +1174,18 @@ export function defaultTelegramBotCommandText(): string {
     "template=promo destination=telegram",
     'project="./project.json" destination=file output="./out.mp4"',
     "Options: template, project, media/url/input/source, destination, output, resolution.",
+    "Commands: /status, /render, /cancel.",
   ].join("\n")
+}
+
+export function defaultTelegramBotJobStatusText(context: NodeTelegramBotJobStatusFormatterContext): string {
+  if (context.jobs.length === 0) {
+    return ["Timeline Studio bot", "No recent render jobs for this chat.", "Send a video or link to start one."].join(
+      "\n",
+    )
+  }
+
+  return ["Timeline Studio bot", "Recent render jobs:", ...context.jobs.map(formatTelegramBotJobStatusLine)].join("\n")
 }
 
 export function defaultTelegramBotDraftText(context: NodeTelegramBotDraftFormatterContext): string {
@@ -1043,6 +1221,26 @@ export function defaultTelegramBotQueueRejectedText(context: NodeTelegramBotQueu
 
 export function defaultTelegramBotUpdateErrorText(): string {
   return ["Timeline Studio bot", "Could not process this request.", "Try again or send /help."].join("\n")
+}
+
+function formatTelegramBotJobStatusLine(record: NodeTelegramBotWorkflowJobRecord): string {
+  const details: string[] = [record.status]
+  if (record.renderJobStatus && record.renderJobStatus !== record.status) {
+    details.push(`render=${record.renderJobStatus}`)
+  }
+  if (record.artifact?.url) {
+    details.push(record.artifact.url)
+  } else if (record.artifact?.path) {
+    details.push(record.artifact.path)
+  } else if (record.error) {
+    details.push(truncateStatusText(record.error))
+  }
+
+  return `${record.id}: ${details.join(", ")}`
+}
+
+function truncateStatusText(value: string): string {
+  return value.length <= 96 ? value : `${value.slice(0, 93)}...`
 }
 
 function mergeWorkflowOptions(

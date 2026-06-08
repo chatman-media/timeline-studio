@@ -36,6 +36,7 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--status-chat-id")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--offset-file")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--draft-dir")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--job-store-file")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--async-workflows")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--workflow-concurrency")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--workflow-queue-limit")).toBe(true)
@@ -186,6 +187,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_STATUS_CHAT_ID: "chat-1",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/bot-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/bot-drafts",
+        TIMELINE_BOT_JOB_STORE_FILE: ".tmp/bot-jobs.json",
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "2",
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
@@ -210,6 +212,7 @@ describe("bot-worker command", () => {
       statusChatId: "chat-1",
       offsetFile: ".tmp/bot-offset.json",
       draftDir: ".tmp/bot-drafts",
+      jobStoreFile: ".tmp/bot-jobs.json",
       asyncWorkflows: true,
       workflowConcurrency: "2",
       workflowQueueLimit: "10",
@@ -235,6 +238,7 @@ describe("bot-worker command", () => {
         telegramBotToken: "token-from-cli",
         offsetFile: ".tmp/cli-offset.json",
         draftDir: ".tmp/cli-drafts",
+        jobStoreFile: ".tmp/cli-jobs.json",
         asyncWorkflows: false,
         workflowConcurrency: "3",
         workflowQueueLimit: "5",
@@ -246,6 +250,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/env-drafts",
+        TIMELINE_BOT_JOB_STORE_FILE: ".tmp/env-jobs.json",
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "1",
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
@@ -259,6 +264,7 @@ describe("bot-worker command", () => {
       telegramBotToken: "token-from-cli",
       offsetFile: ".tmp/cli-offset.json",
       draftDir: ".tmp/cli-drafts",
+      jobStoreFile: ".tmp/cli-jobs.json",
       asyncWorkflows: false,
       workflowConcurrency: "3",
       workflowQueueLimit: "5",

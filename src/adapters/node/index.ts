@@ -61,9 +61,20 @@ export { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render
 export { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export {
+  NodeTelegramBotFileWorkflowJobStore,
+  type NodeTelegramBotFileWorkflowJobStoreOptions,
+  type NodeTelegramBotFileWorkflowJobStoreState,
+  NodeTelegramBotInMemoryWorkflowJobStore,
+  type NodeTelegramBotWorkflowJobQuery,
+  type NodeTelegramBotWorkflowJobRecord,
+  type NodeTelegramBotWorkflowJobStatus,
+  type NodeTelegramBotWorkflowJobStore,
+} from "./telegram-bot-job-store"
+export {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
+  defaultTelegramBotJobStatusText,
   defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
   defaultTelegramBotUpdateErrorText,
@@ -80,6 +91,8 @@ export {
   type NodeTelegramBotFileOffsetStoreState,
   NodeTelegramBotInMemoryWorkflowQueue,
   type NodeTelegramBotInMemoryWorkflowQueueOptions,
+  type NodeTelegramBotJobStatusFormatter,
+  type NodeTelegramBotJobStatusFormatterContext,
   type NodeTelegramBotOffsetStore,
   type NodeTelegramBotQueueFormatter,
   type NodeTelegramBotQueueFormatterContext,
