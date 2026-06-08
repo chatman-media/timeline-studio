@@ -1,3 +1,10 @@
+# [3.64.0](https://github.com/chatman-media/timeline-studio/compare/v3.63.0...v3.64.0) (2026-06-08)
+
+
+### Features
+
+* add bot render job event stream ([#176](https://github.com/chatman-media/timeline-studio/issues/176)) ([613257b](https://github.com/chatman-media/timeline-studio/commit/613257bc370c2da6eb3948d0188ff62672b452ec))
+
 # [3.63.0](https://github.com/chatman-media/timeline-studio/compare/v3.62.0...v3.63.0) (2026-06-08)
 
 
