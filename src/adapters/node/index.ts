@@ -47,10 +47,35 @@ export { type NodeLanguageOptions, NodeLanguageService } from "./language"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
 export { NodeBackendBridgeService } from "./node-backend-bridge"
 export { type NodePlatformOptions, NodePlatformService } from "./platform"
-export { type NodePublishOptions, NodePublishService } from "./publish"
+export {
+  type NodePublishFetch,
+  type NodePublishFetchResponse,
+  type NodePublishOptions,
+  NodePublishService,
+  type NodeTelegramPublishClient,
+  type NodeTelegramPublishPayload,
+  type NodeTelegramPublishResult,
+} from "./publish"
 export { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
 export { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
+export {
+  createTelegramLikePayloadFromUpdate,
+  NodeTelegramBotApiClient,
+  type NodeTelegramBotClient,
+  NodeTelegramBotWorker,
+  type NodeTelegramBotWorkerHandleOptions,
+  type NodeTelegramBotWorkerOptions,
+  type NodeTelegramBotWorkerPollOptions,
+  type NodeTelegramBotWorkerPollResult,
+  type NodeTelegramBotWorkerUpdateResult,
+  type TelegramBotFetch,
+  type TelegramBotFetchResponse,
+  type TelegramBotFile,
+  type TelegramBotGetUpdatesOptions,
+  type TelegramBotMessage,
+  type TelegramBotUpdate,
+} from "./telegram-bot-worker"
 export { type NodeVideoOptions, NodeVideoService } from "./video"
 
 export interface NodeAppOptions {

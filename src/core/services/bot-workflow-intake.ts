@@ -30,7 +30,12 @@ export function createBotRenderJobRequest(
   const templateId = firstNonEmpty(workflow.template?.id, textHints.templateId, options.defaultTemplateId)
   const project = workflow.project ?? workflow.template?.project ?? projectFromText(textHints.projectPath)
   const media = normalizeMedia(workflow.media ?? [], errors)
-  const params = mergeParams(textHints.params, workflow.template?.params, workflow.params)
+  const params = mergeParams(
+    createWorkflowDefaultParams(workflow),
+    textHints.params,
+    workflow.template?.params,
+    workflow.params,
+  )
   const output = normalizeOutput(workflow, textHints.output, options, errors)
 
   if (workflow.template && !workflow.template.id.trim()) {
@@ -278,6 +283,15 @@ function projectFromText(projectPath?: string): BotRenderJobRequest["project"] {
 
 function mergeParams(...records: Array<Record<string, unknown> | undefined>): Record<string, unknown> {
   return Object.assign({}, ...records.filter(Boolean))
+}
+
+function createWorkflowDefaultParams(workflow: BotWorkflowRequest): Record<string, unknown> | undefined {
+  if (!workflow.chatId && !workflow.messageId) return undefined
+
+  return {
+    ...(workflow.chatId ? { telegramChatId: workflow.chatId } : {}),
+    ...(workflow.messageId ? { telegramReplyToMessageId: workflow.messageId } : {}),
+  }
 }
 
 function validationError(
