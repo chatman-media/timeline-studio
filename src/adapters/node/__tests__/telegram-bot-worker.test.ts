@@ -1,9 +1,13 @@
-import { describe, expect, it, vi } from "vitest"
+import fs from "node:fs/promises"
+import os from "node:os"
+import path from "node:path"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { BotWorkflowRunResult } from "@/core/types"
 import type { NodeBotWorkflowService } from "../bot-workflow"
 import {
   createTelegramLikePayloadFromUpdate,
   NodeTelegramBotApiClient,
+  NodeTelegramBotFileOffsetStore,
   NodeTelegramBotWorker,
   type TelegramBotUpdate,
 } from "../telegram-bot-worker"
@@ -33,6 +37,16 @@ function createWorkflowService() {
 }
 
 describe("Telegram bot worker", () => {
+  let tempDir: string
+
+  beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "telegram-bot-worker-"))
+  })
+
+  afterEach(async () => {
+    await fs.rm(tempDir, { recursive: true, force: true })
+  })
+
   it("converts Telegram updates into Telegram-like workflow payloads", () => {
     const payload = createTelegramLikePayloadFromUpdate({
       update_id: 10,
@@ -167,5 +181,58 @@ describe("Telegram bot worker", () => {
     expect(result.updates[0]).toMatchObject({ skipped: false, updateId: 30 })
     expect(result.updates[1]).toMatchObject({ skipped: true, updateId: 32 })
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+  })
+
+  it("persists Telegram polling offsets in a file store", async () => {
+    const store = new NodeTelegramBotFileOffsetStore(path.join(tempDir, "state", "offset.json"))
+
+    await expect(store.readOffset()).resolves.toBeUndefined()
+    await store.writeOffset(42)
+
+    await expect(store.readOffset()).resolves.toBe(42)
+    await expect(fs.readFile(path.join(tempDir, "state", "offset.json"), "utf-8")).resolves.toContain('"offset":42')
+  })
+
+  it("runs bounded polling batches from stored offset and writes the next offset", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const offsetStore = {
+      readOffset: vi.fn(async () => 40),
+      writeOffset: vi.fn(async () => undefined),
+    }
+    const client = {
+      getUpdates: vi.fn(async (options) =>
+        options?.offset === 40
+          ? [{ update_id: 40, message: { message_id: 1, chat: { id: "chat-1" }, text: "template=promo" } }]
+          : [],
+      ),
+    }
+    const sleep = vi.fn(async () => undefined)
+    const onBatch = vi.fn()
+    const worker = new NodeTelegramBotWorker({ workflow: service, client })
+
+    const result = await worker.runPolling({
+      offsetStore,
+      maxBatches: 3,
+      timeoutSeconds: 1,
+      idleDelayMs: 5,
+      sleep,
+      onBatch,
+    })
+
+    expect(offsetStore.readOffset).toHaveBeenCalledOnce()
+    expect(client.getUpdates).toHaveBeenNthCalledWith(1, { offset: 40, timeoutSeconds: 1 })
+    expect(client.getUpdates).toHaveBeenNthCalledWith(2, { offset: 41, timeoutSeconds: 1 })
+    expect(client.getUpdates).toHaveBeenNthCalledWith(3, { offset: 41, timeoutSeconds: 1 })
+    expect(offsetStore.writeOffset).toHaveBeenCalledWith(41)
+    expect(offsetStore.writeOffset).toHaveBeenCalledTimes(1)
+    expect(sleep).toHaveBeenCalledWith(5)
+    expect(sleep).toHaveBeenCalledTimes(1)
+    expect(onBatch).toHaveBeenCalledTimes(3)
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+    expect(result).toMatchObject({
+      nextOffset: 41,
+      stoppedReason: "max_batches",
+      batches: [{ nextOffset: 41 }, { nextOffset: 41 }, { nextOffset: 41 }],
+    })
   })
 })
