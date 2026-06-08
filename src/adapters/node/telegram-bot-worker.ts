@@ -1,3 +1,6 @@
+import fs from "node:fs/promises"
+import path from "node:path"
+
 import type { BotWorkflowRunResult, TelegramLikeBotFile, TelegramLikeBotPayload } from "@/core/types"
 
 import type { NodeBotWorkflowService, NodeBotWorkflowServiceOptions } from "./bot-workflow"
@@ -95,10 +98,63 @@ export interface NodeTelegramBotWorkerPollResult {
   nextOffset?: number
 }
 
+export interface NodeTelegramBotOffsetStore {
+  readOffset(): Promise<number | undefined>
+  writeOffset(offset: number): Promise<void>
+}
+
+export interface NodeTelegramBotFileOffsetStoreState {
+  offset: number
+  updatedAt: string
+}
+
+export interface NodeTelegramBotWorkerRunOptions extends NodeTelegramBotWorkerPollOptions {
+  offsetStore?: NodeTelegramBotOffsetStore
+  maxBatches?: number
+  idleDelayMs?: number
+  signal?: AbortSignal
+  onBatch?: (batch: NodeTelegramBotWorkerPollResult) => void | Promise<void>
+  sleep?: (ms: number) => Promise<void>
+}
+
+export interface NodeTelegramBotWorkerRunResult {
+  batches: NodeTelegramBotWorkerPollResult[]
+  nextOffset?: number
+  stoppedReason: "aborted" | "max_batches"
+}
+
 interface TelegramGetUpdatesResponse {
   ok?: boolean
   description?: string
   result?: unknown
+}
+
+export class NodeTelegramBotFileOffsetStore implements NodeTelegramBotOffsetStore {
+  constructor(private readonly filePath: string) {}
+
+  async readOffset(): Promise<number | undefined> {
+    let content: string
+    try {
+      content = await fs.readFile(this.filePath, "utf-8")
+    } catch (error) {
+      if (isNotFoundError(error)) return undefined
+      throw error
+    }
+
+    const parsed = JSON.parse(content) as Partial<NodeTelegramBotFileOffsetStoreState>
+    return typeof parsed.offset === "number" && Number.isFinite(parsed.offset) ? parsed.offset : undefined
+  }
+
+  async writeOffset(offset: number): Promise<void> {
+    await fs.mkdir(path.dirname(this.filePath), { recursive: true })
+    await fs.writeFile(
+      this.filePath,
+      `${JSON.stringify({
+        offset,
+        updatedAt: new Date().toISOString(),
+      } satisfies NodeTelegramBotFileOffsetStoreState)}\n`,
+    )
+  }
 }
 
 export class NodeTelegramBotApiClient implements NodeTelegramBotClient {
@@ -190,6 +246,51 @@ export class NodeTelegramBotWorker {
     }
   }
 
+  async runPolling(options: NodeTelegramBotWorkerRunOptions = {}): Promise<NodeTelegramBotWorkerRunResult> {
+    const batches: NodeTelegramBotWorkerPollResult[] = []
+    const sleep = options.sleep ?? delay
+    let nextOffset = options.offset ?? (await options.offsetStore?.readOffset())
+
+    while (!options.signal?.aborted) {
+      const batch = await this.pollOnce({
+        offset: nextOffset,
+        limit: options.limit,
+        timeoutSeconds: options.timeoutSeconds,
+        allowedUpdates: options.allowedUpdates,
+        workflowOptions: options.workflowOptions,
+      })
+      batches.push(batch)
+
+      const previousOffset = nextOffset
+      if (batch.nextOffset !== undefined) {
+        nextOffset = batch.nextOffset
+        if (batch.nextOffset !== previousOffset) {
+          await options.offsetStore?.writeOffset(batch.nextOffset)
+        }
+      }
+
+      await options.onBatch?.(batch)
+
+      if (options.maxBatches !== undefined && batches.length >= options.maxBatches) {
+        return {
+          batches,
+          ...(nextOffset !== undefined ? { nextOffset } : {}),
+          stoppedReason: "max_batches",
+        }
+      }
+
+      if (options.idleDelayMs && options.idleDelayMs > 0 && batch.updates.length === 0) {
+        await sleep(options.idleDelayMs)
+      }
+    }
+
+    return {
+      batches,
+      ...(nextOffset !== undefined ? { nextOffset } : {}),
+      stoppedReason: "aborted",
+    }
+  }
+
   private resolveClient(): NodeTelegramBotClient {
     if (this.options.client) return this.options.client
     if (!this.options.botToken) {
@@ -253,4 +354,12 @@ function globalFetch(
     throw new Error("No fetch implementation is available for Telegram bot polling")
   }
   return fetch(url, init) as Promise<TelegramBotFetchResponse>
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isNotFoundError(error: unknown): boolean {
+  return typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT"
 }

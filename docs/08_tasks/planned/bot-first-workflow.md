@@ -124,6 +124,17 @@ bot message
 - [x] Автоматически прокидывать Telegram `chatId` в render params для publish phase.
 - [x] Покрыть update conversion, worker handling, polling, Bot API publishing, CLI contract tests.
 
+### B11: Telegram bot polling loop state ([#191](https://github.com/chatman-media/timeline-studio/issues/191))
+
+**Цель:** запускать Telegram bot worker как долгоживущий polling-процесс и не переобрабатывать старые updates после рестарта.
+
+- [x] Добавить polling loop API поверх `NodeTelegramBotWorker.pollOnce`.
+- [x] Добавить offset store boundary и Node file-backed offset store.
+- [x] Сохранять `nextOffset` после обработанных batches.
+- [x] Добавить CLI `bot-worker --poll` с `--offset-file`, `--max-batches`, `--idle-delay`.
+- [x] Сохранить поведение `--poll-once` без изменений.
+- [x] Покрыть polling loop, offset persistence, file offset store и CLI contract tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -137,6 +148,7 @@ bot message
 - [#185](https://github.com/chatman-media/timeline-studio/issues/185) - B8: Bot media resolver
 - [#187](https://github.com/chatman-media/timeline-studio/issues/187) - B9: Bot status notifier
 - [#189](https://github.com/chatman-media/timeline-studio/issues/189) - B10: Telegram bot worker entrypoint
+- [#191](https://github.com/chatman-media/timeline-studio/issues/191) - B11: Telegram bot polling loop state
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

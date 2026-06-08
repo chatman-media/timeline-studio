@@ -10,15 +10,17 @@ import path from "node:path"
 import { Command } from "commander"
 import type {
   NodeTelegramBotWorkerPollResult,
+  NodeTelegramBotWorkerRunResult,
   NodeTelegramBotWorkerUpdateResult,
   TelegramBotUpdate,
 } from "@/adapters/node"
-import { initNodeApp, NodeTelegramBotWorker } from "@/adapters/node"
+import { initNodeApp, NodeTelegramBotFileOffsetStore, NodeTelegramBotWorker } from "@/adapters/node"
 import type { BotRenderJobDestination } from "@/core/types"
 
 export interface BotWorkerCommandOptions {
   updateFile?: string
   pollOnce?: boolean
+  poll?: boolean
   statusFile?: string
   pretty?: boolean
   telegramBotToken?: string
@@ -27,6 +29,9 @@ export interface BotWorkerCommandOptions {
   pollOffset?: string
   pollLimit?: string
   pollTimeout?: string
+  offsetFile?: string
+  maxBatches?: string
+  idleDelay?: string
   mediaDir?: string
   downloadRemoteMedia?: boolean
   pollInterval?: string
@@ -38,12 +43,16 @@ export interface BotWorkerCommandOptions {
   defaultOutput?: string
 }
 
-export type BotWorkerCommandResult = NodeTelegramBotWorkerUpdateResult | NodeTelegramBotWorkerPollResult
+export type BotWorkerCommandResult =
+  | NodeTelegramBotWorkerUpdateResult
+  | NodeTelegramBotWorkerPollResult
+  | NodeTelegramBotWorkerRunResult
 
 export const botWorkerCommand = new Command("bot-worker")
   .description("Run a Telegram bot worker for bot-first workflows")
   .option("--update-file <path>", "Handle one raw Telegram Update JSON file")
   .option("--poll-once", "Fetch and handle one Telegram getUpdates batch")
+  .option("--poll", "Continuously fetch and handle Telegram getUpdates batches")
   .option("--status-file <path>", "Write worker result JSON to a file")
   .option("--pretty", "Pretty-print JSON output")
   .option("--telegram-bot-token <token>", "Telegram Bot API token for polling, media, status, and publishing")
@@ -52,6 +61,9 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--poll-offset <id>", "Telegram getUpdates offset")
   .option("--poll-limit <count>", "Telegram getUpdates limit", "100")
   .option("--poll-timeout <seconds>", "Telegram getUpdates long-poll timeout in seconds", "25")
+  .option("--offset-file <path>", "Persist Telegram getUpdates offset between polling runs")
+  .option("--max-batches <count>", "Stop continuous polling after this many getUpdates batches")
+  .option("--idle-delay <ms>", "Delay after an empty continuous polling batch", "1000")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
   .option("--download-remote-media", "Download remote URL media before rendering")
   .option("--poll-interval <ms>", "Render polling interval in milliseconds", "1000")
@@ -82,12 +94,12 @@ export const botWorkerCommand = new Command("bot-worker")
   })
 
 export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promise<BotWorkerCommandResult> {
-  if (!options.updateFile && !options.pollOnce) {
-    throw new Error("Provide --update-file or --poll-once")
+  if (!options.updateFile && !options.pollOnce && !options.poll) {
+    throw new Error("Provide --update-file, --poll-once, or --poll")
   }
 
-  if (options.pollOnce && !options.telegramBotToken) {
-    throw new Error("--telegram-bot-token is required with --poll-once")
+  if ((options.pollOnce || options.poll) && !options.telegramBotToken) {
+    throw new Error("--telegram-bot-token is required with --poll-once or --poll")
   }
 
   const services = await initNodeApp({
@@ -122,10 +134,27 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     return worker.handleUpdate(await readTelegramBotUpdate(options.updateFile))
   }
 
+  const offset = parseOptionalPositiveInteger(options.pollOffset)
+  const limit = parsePositiveInteger(options.pollLimit, 100)
+  const timeoutSeconds = parsePositiveInteger(options.pollTimeout, 25)
+
+  if (options.poll) {
+    return worker.runPolling({
+      offset,
+      limit,
+      timeoutSeconds,
+      offsetStore: options.offsetFile
+        ? new NodeTelegramBotFileOffsetStore(path.resolve(options.offsetFile))
+        : undefined,
+      maxBatches: parseOptionalPositiveInteger(options.maxBatches),
+      idleDelayMs: parsePositiveInteger(options.idleDelay, 1000),
+    })
+  }
+
   return worker.pollOnce({
-    offset: parseOptionalPositiveInteger(options.pollOffset),
-    limit: parsePositiveInteger(options.pollLimit, 100),
-    timeoutSeconds: parsePositiveInteger(options.pollTimeout, 25),
+    offset,
+    limit,
+    timeoutSeconds,
   })
 }
 
@@ -194,6 +223,10 @@ function createBotPublishOptions(options: BotWorkerCommandOptions) {
 }
 
 function isFailedWorkerResult(result: BotWorkerCommandResult): boolean {
+  if ("batches" in result) {
+    return result.batches.some((batch) => batch.updates.some(isFailedUpdateResult))
+  }
+
   if ("updates" in result) {
     return result.updates.some(isFailedUpdateResult)
   }
