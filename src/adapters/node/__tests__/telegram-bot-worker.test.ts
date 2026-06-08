@@ -8,6 +8,7 @@ import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
+  defaultTelegramBotQueueText,
   defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
   NodeTelegramBotFileOffsetStore,
@@ -163,14 +164,27 @@ describe("Telegram bot worker", () => {
       runTelegramLikePayload,
     } as unknown as NodeBotWorkflowService
     const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const queueResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "queue-message-1" })),
+    }
     const onResult = vi.fn()
-    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, onResult })
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, queueResponder, onResult })
 
-    const result = await worker.handleUpdate({
+    const update = {
       update_id: 16,
       message: {
         message_id: 12,
         chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    }
+    const result = await worker.handleUpdate(update)
+    const responseText = defaultTelegramBotQueueText({
+      queueId: "telegram-update-16",
+      update,
+      payload: {
+        chat: { id: "chat-1" },
+        message_id: 12,
         text: "template=promo",
       },
     })
@@ -181,6 +195,16 @@ describe("Telegram bot worker", () => {
       queueId: "telegram-update-16",
       reason: "Telegram bot workflow queued",
       updateId: 16,
+      responseText,
+    })
+    expect(queueResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: responseText,
+      replyToMessageId: "12",
+      metadata: {
+        queueId: "telegram-update-16",
+        source: "telegram-bot-worker",
+      },
     })
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
     expect(onResult).toHaveBeenCalledWith(result)
@@ -209,6 +233,36 @@ describe("Telegram bot worker", () => {
       },
       result: completedResult,
     })
+  })
+
+  it("does not let queued acknowledgement failures abort workflow queueing", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const queueResponder = {
+      sendMessage: vi.fn(async () => {
+        throw new Error("Telegram queue ack failed")
+      }),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, queueResponder })
+
+    const result = await worker.handleUpdate({
+      update_id: 18,
+      message: {
+        message_id: 14,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+    await workflowQueue.drain()
+
+    expect(result).toMatchObject({
+      skipped: false,
+      queued: true,
+      queueId: "telegram-update-18",
+      responseError: "Telegram queue ack failed",
+      completion: completedResult,
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
   })
 
   it("turns queued workflow failures into update error results", async () => {
@@ -252,7 +306,7 @@ describe("Telegram bot worker", () => {
         updateId: 17,
       },
     })
-    expect(onResult).toHaveBeenLastCalledWith(
+    expect(onResult).toHaveBeenCalledWith(
       expect.objectContaining({
         skipped: false,
         failed: true,

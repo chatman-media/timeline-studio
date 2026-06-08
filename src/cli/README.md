@@ -140,6 +140,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 В тексте сообщения можно отправлять bare URL и короткие hints, например `https://cdn.example.com/input.mov 1080p telegram`;
 также поддерживаются `media=`, `url=`, `input=` и `source=`.
 Для production polling включайте `--async-workflows`: worker быстро ставит render workflow в очередь и продолжает читать Telegram updates.
+Когда workflow поставлен в очередь, bot-worker сразу отправляет queued acknowledgement в исходный чат; финальный progress/result продолжает идти через status updates.
 
 **Опции:**
 | Опция | Описание |
