@@ -53,7 +53,7 @@ vi.mock("@/core/container", () => ({
   },
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: vi.fn(() => ({
     activeModal: "none",
     modalData: null,

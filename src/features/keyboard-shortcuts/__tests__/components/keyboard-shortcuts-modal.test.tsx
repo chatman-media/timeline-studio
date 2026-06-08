@@ -15,7 +15,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 const mockCloseModal = vi.fn()
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: () => ({
     activeModal: "keyboard-shortcuts",
     modalData: null,

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-08",
-  "source": "Phase F8 options media type bridge",
-  "violations": 417,
+  "source": "Phase F9 keyboard shortcuts modal bridge",
+  "violations": 415,
   "bySeverity": {
-    "warn": 417
+    "warn": 415
   },
   "byEdge": {
-    "ui -> domains": 417
+    "ui -> domains": 415
   }
 }

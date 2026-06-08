@@ -1,7 +1,7 @@
 /**
  * Modal Provider - Deprecated Wrapper
  *
- * УСТАРЕЛО: Используйте useModals() напрямую из @/domains/system-integration
+ * УСТАРЕЛО: Используйте useModals() из @/features/modals/services
  *
  * Этот файл сохранен только для обратной совместимости с Providers композитом.
  * ModalProvider теперь является пустым pass-through компонентом,
@@ -23,7 +23,7 @@ interface ModalProviderProps {
 /**
  * Провайдер для модальных окон (deprecated)
  *
- * @deprecated Используйте useModals() напрямую из @/domains/system-integration
+ * @deprecated Используйте useModals() из @/features/modals/services
  *
  * Этот провайдер больше не содержит логики и служит только для
  * обратной совместимости. SystemIntegrationOrchestrator управляет
@@ -34,9 +34,9 @@ export function ModalProvider({ children }: ModalProviderProps) {
 }
 
 /**
- * @deprecated Используйте useModals() из @/domains/system-integration
+ * @deprecated Используйте useModals() из @/features/modals/services
  *
  * Этот хук оставлен только для обратной совместимости.
- * Все новые компоненты должны использовать useModals() напрямую.
+ * Все новые компоненты должны использовать useModals() из feature-facing compatibility layer.
  */
-export { useModals as useModal } from "@/domains/system-integration"
+export { useModals, useModals as useModal } from "@/domains/system-integration"
