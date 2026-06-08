@@ -30,6 +30,7 @@ export type {
 } from "@/types/generated/tauri-bindings"
 
 // Re-export core-facing compatibility types for features
+export * from "./bot-workflow"
 export * from "./media"
 export * from "./render-job"
 export * from "./video-editing"

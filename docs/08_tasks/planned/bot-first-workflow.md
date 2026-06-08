@@ -42,13 +42,13 @@ bot message
 - [x] Добавить CLI-команду `render-job <job.json>` с JSON output/status file.
 - [x] Покрыть Node service и CLI contract unit tests.
 
-### B2: Bot intake contract
+### B2: Bot intake contract ([#173](https://github.com/chatman-media/timeline-studio/issues/173))
 
 **Цель:** описать вход бота до создания render job.
 
-- [ ] Добавить типы `BotWorkflowRequest`, `BotMediaAttachment`, `BotTemplateSelection`.
-- [ ] Добавить parser/normalizer для входа из Telegram-like payload в `BotRenderJobRequest`.
-- [ ] Добавить validation errors, пригодные для ответа пользователю в чате.
+- [x] Добавить типы `BotWorkflowRequest`, `BotMediaAttachment`, `BotTemplateSelection`.
+- [x] Добавить parser/normalizer для входа из Telegram-like payload в `BotRenderJobRequest`.
+- [x] Добавить validation errors, пригодные для ответа пользователю в чате.
 
 ### B3: Worker event stream
 
@@ -70,6 +70,7 @@ bot message
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
 - [#171](https://github.com/chatman-media/timeline-studio/issues/171) - Epic: Bot-first workflow
+- [#173](https://github.com/chatman-media/timeline-studio/issues/173) - B2: Bot intake contract
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
