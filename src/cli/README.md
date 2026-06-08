@@ -129,6 +129,7 @@ bun run src/cli/index.ts bot-worker --poll-once --pretty
 TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
 TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json \
 TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts \
+TIMELINE_BOT_JOB_STORE_FILE=.tmp/timeline-bot/jobs.json \
 TIMELINE_BOT_ASYNC_WORKFLOWS=true \
 TIMELINE_BOT_WORKFLOW_CONCURRENCY=1 \
 TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20 \
@@ -143,6 +144,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 Для production polling включайте `--async-workflows`: worker быстро ставит render workflow в очередь и продолжает читать Telegram updates.
 Когда workflow поставлен в очередь, bot-worker сразу отправляет queued acknowledgement в исходный чат; финальный progress/result продолжает идти через status updates.
 Если задан `--workflow-queue-limit`, новые render requests сверх pending backlog получают busy response и не запускают workflow.
+Если задан `--job-store-file` или `TIMELINE_BOT_JOB_STORE_FILE`, worker сохраняет историю queued/running/done/failed/rejected jobs; команда `/status` показывает последние jobs текущего Telegram chat.
 
 **Опции:**
 | Опция | Описание |
@@ -152,6 +154,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 | `--poll` | Запустить continuous polling loop |
 | `--offset-file <path>` | Сохранять Telegram offset между рестартами |
 | `--draft-dir <path>` | Сохранять bot conversation drafts между сообщениями и рестартами |
+| `--job-store-file <path>` | Сохранять workflow job status/history для `/status` |
 | `--async-workflows` | Ставить render workflows в очередь во время continuous polling |
 | `--workflow-concurrency <count>` | Максимум параллельных queued workflows |
 | `--workflow-queue-limit <count>` | Максимум ожидающих queued workflows перед busy response |
@@ -173,6 +176,7 @@ export FFMPEG_PATH=/usr/local/bin/ffmpeg
 export TIMELINE_BOT_TELEGRAM_TOKEN=123:token
 export TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json
 export TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts
+export TIMELINE_BOT_JOB_STORE_FILE=.tmp/timeline-bot/jobs.json
 export TIMELINE_BOT_ASYNC_WORKFLOWS=true
 export TIMELINE_BOT_WORKFLOW_CONCURRENCY=1
 export TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20

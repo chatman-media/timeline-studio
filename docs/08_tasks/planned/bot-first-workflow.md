@@ -220,6 +220,17 @@ bot message
 - [x] Не запускать workflow для rejected updates и учитывать rejected result в CLI failure detection.
 - [x] Документировать backpressure setting и покрыть queue capacity/rejection tests.
 
+### B20: Telegram bot workflow job status store ([#209](https://github.com/chatman-media/timeline-studio/issues/209))
+
+**Цель:** bot-first worker сохраняет machine-readable историю queued/running/done/failed/rejected workflow jobs и отвечает на `/status` без desktop UI.
+
+- [x] Добавить Node workflow job store boundary для Telegram worker.
+- [x] Добавить in-memory и file-backed реализации status/history store.
+- [x] Записывать queued/running/completed/failed/rejected lifecycle для async workflow jobs.
+- [x] Добавить `/status` command routing с recent jobs по текущему chat.
+- [x] Прокинуть job store через `bot-worker` CLI/env config.
+- [x] Документировать `/status` runbook и покрыть worker/store/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -242,6 +253,7 @@ bot message
 - [#203](https://github.com/chatman-media/timeline-studio/issues/203) - B17: Telegram bot async workflow queue
 - [#205](https://github.com/chatman-media/timeline-studio/issues/205) - B18: Telegram bot queued workflow acknowledgements
 - [#207](https://github.com/chatman-media/timeline-studio/issues/207) - B19: Telegram bot workflow queue backpressure
+- [#209](https://github.com/chatman-media/timeline-studio/issues/209) - B20: Telegram bot workflow job status store
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

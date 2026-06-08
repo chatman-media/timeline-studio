@@ -18,6 +18,7 @@ import {
   initNodeApp,
   NodeBotWorkflowFileDraftStore,
   NodeTelegramBotFileOffsetStore,
+  NodeTelegramBotFileWorkflowJobStore,
   NodeTelegramBotInMemoryWorkflowQueue,
   NodeTelegramBotWorker,
 } from "@/adapters/node"
@@ -37,6 +38,7 @@ export interface BotWorkerCommandOptions {
   pollTimeout?: string
   offsetFile?: string
   draftDir?: string
+  jobStoreFile?: string
   asyncWorkflows?: boolean
   workflowConcurrency?: string
   workflowQueueLimit?: string
@@ -73,6 +75,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--poll-timeout <seconds>", "Telegram getUpdates long-poll timeout in seconds", "25")
   .option("--offset-file <path>", "Persist Telegram getUpdates offset between polling runs")
   .option("--draft-dir <path>", "Persist Telegram bot conversation drafts in a directory")
+  .option("--job-store-file <path>", "Persist Telegram workflow job status/history")
   .option("--async-workflows", "Queue Telegram workflow runs during continuous polling")
   .option("--workflow-concurrency <count>", "Maximum queued workflow runs in parallel", "1")
   .option("--workflow-queue-limit <count>", "Maximum pending queued workflows before rejecting new requests")
@@ -155,6 +158,9 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     draftStore: resolvedOptions.draftDir
       ? new NodeBotWorkflowFileDraftStore(path.resolve(resolvedOptions.draftDir))
       : undefined,
+    workflowJobStore: resolvedOptions.jobStoreFile
+      ? new NodeTelegramBotFileWorkflowJobStore(path.resolve(resolvedOptions.jobStoreFile))
+      : undefined,
   })
 
   if (resolvedOptions.updateFile) {
@@ -204,6 +210,7 @@ export function resolveBotWorkerCommandOptions(
     pollTimeout: firstConfigured(options.pollTimeout, env.TIMELINE_BOT_POLL_TIMEOUT),
     offsetFile: firstConfigured(options.offsetFile, env.TIMELINE_BOT_OFFSET_FILE),
     draftDir: firstConfigured(options.draftDir, env.TIMELINE_BOT_DRAFT_DIR),
+    jobStoreFile: firstConfigured(options.jobStoreFile, env.TIMELINE_BOT_JOB_STORE_FILE),
     workflowConcurrency: firstConfigured(options.workflowConcurrency, env.TIMELINE_BOT_WORKFLOW_CONCURRENCY),
     workflowQueueLimit: firstConfigured(options.workflowQueueLimit, env.TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT),
     maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),
