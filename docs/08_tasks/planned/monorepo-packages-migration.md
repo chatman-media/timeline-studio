@@ -123,6 +123,13 @@ adapters -> core
 - [x] Убрать provider re-exports из `src/domains/video-editing`.
 - [x] Обновить committed baseline до warning-only отчета.
 
+### F7: UI-to-domains warning burn-down
+
+**Цель:** постепенно снижать warning-only `ui -> domains` baseline маленькими UI slices.
+
+- [x] `language`: добавить core language port/service и перевести `features/language` с `@/domains/system-integration` на core service.
+- [ ] Следующие маленькие кандидаты: `options`, `color-scheme`, `keyboard-shortcuts`, `color-grading`.
+
 ## Проверка каждого PR
 
 Минимальный набор для каждого Phase F slice:
@@ -145,11 +152,11 @@ CI использует `bun run check:boundaries:baseline`, который ср
 
 Baseline на 2026-06-08:
 
-- Scanned files: 1580
-- Violations: 420
+- Scanned files: 1586
+- Violations: 419
 - `error`: 0
-- `warn`: 420
-- Edges: `ui -> domains` 420
+- `warn`: 419
+- Edges: `ui -> domains` 419
 
 Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 

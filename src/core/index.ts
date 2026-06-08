@@ -12,6 +12,7 @@
 export {
   container,
   getBackend,
+  getLanguage,
   getNodeBackend,
   getPlatform,
   getStorage,
@@ -20,6 +21,7 @@ export {
 // Ports (Interfaces)
 export type {
   IBackendService,
+  ILanguageService,
   INodeBackendService,
   IPlatformService,
   IStorageService,
@@ -29,6 +31,8 @@ export type {
   SaveDialogOptions,
   Unsubscribe,
 } from "./ports"
+export type { LanguageResponse } from "./services"
+export { getAppLanguage, setAppLanguage } from "./services"
 
 // Types (re-exported from generated bindings for now)
 export type {

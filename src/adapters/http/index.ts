@@ -17,7 +17,7 @@
  * ```
  */
 
-import { MockPlatformService, MockStorageService } from "@/adapters/mock"
+import { MockLanguageService, MockPlatformService, MockStorageService } from "@/adapters/mock"
 import { container } from "@/core/container"
 import { NodeBackendBridgeService } from "../node/node-backend-bridge"
 import { type HttpBackendOptions, HttpBackendService } from "./backend"
@@ -43,6 +43,7 @@ export interface HttpAppServices {
   backend: HttpBackendService
   media: HttpMediaService
   nodeBackend: NodeBackendBridgeService
+  language: MockLanguageService
   client: HttpClient
 }
 
@@ -57,10 +58,12 @@ export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpApp
   const backend = new HttpBackendService({ serverUrl, ...options.backend })
   const media = new HttpMediaService()
   const nodeBackend = new NodeBackendBridgeService({ serverUrl })
+  const language = new MockLanguageService()
 
   container.registerBackend(backend)
   container.registerMedia(media)
   container.registerNodeBackend(nodeBackend)
+  container.registerLanguage(language)
   // src-node doesn't provide storage/platform — use in-memory mocks so the container is complete
   if (!container.hasStorage()) container.registerStorage(new MockStorageService(true))
   if (!container.hasPlatform()) container.registerPlatform(new MockPlatformService())
@@ -74,7 +77,7 @@ export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpApp
     }
   }
 
-  return { backend, media, nodeBackend, client }
+  return { backend, media, nodeBackend, language, client }
 }
 
 /**
@@ -87,6 +90,7 @@ export function createHttpServices(options: HttpAppOptions = {}): HttpAppService
     backend: new HttpBackendService({ serverUrl, ...options.backend }),
     media: new HttpMediaService(),
     nodeBackend: new NodeBackendBridgeService({ serverUrl }),
+    language: new MockLanguageService(),
     client: new HttpClient({ baseUrl: serverUrl }),
   }
 }

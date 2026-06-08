@@ -22,6 +22,10 @@
       "types": "./src/ports/index.ts",
       "default": "./src/ports/index.ts"
     },
+    "./services": {
+      "types": "./src/services/index.ts",
+      "default": "./src/services/index.ts"
+    },
     "./types": {
       "types": "./src/types/index.ts",
       "default": "./src/types/index.ts"

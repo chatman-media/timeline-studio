@@ -41,6 +41,7 @@ export {
   createMockServices,
   initMockApp,
   MockBackendService,
+  MockLanguageService,
   MockMediaService,
   MockPlatformService,
   MockStorageService,
@@ -53,6 +54,7 @@ export { AppInitProvider, useAppInit, useAppReady } from "./react"
 export {
   initTauriApp,
   TauriBackendService,
+  TauriLanguageService,
   TauriMediaService,
   TauriPlatformService,
   TauriStorageService,

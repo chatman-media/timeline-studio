@@ -10,6 +10,7 @@ import { container } from "@/core/container"
 import { type NodeAIOptions, NodeAIService } from "./ai"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
 import { NodeEventService } from "./event"
+import { type NodeLanguageOptions, NodeLanguageService } from "./language"
 import { type NodeMediaOptions, NodeMediaService } from "./media"
 import { NodeBackendBridgeService } from "./node-backend-bridge"
 import { type NodePlatformOptions, NodePlatformService } from "./platform"
@@ -20,6 +21,7 @@ import { type NodeVideoOptions, NodeVideoService } from "./video"
 export { type NodeAIOptions, NodeAIService } from "./ai"
 export { type NodeBackendOptions, NodeBackendService } from "./backend"
 export { NodeEventService } from "./event"
+export { type NodeLanguageOptions, NodeLanguageService } from "./language"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
 export { NodeBackendBridgeService } from "./node-backend-bridge"
 export { type NodePlatformOptions, NodePlatformService } from "./platform"
@@ -39,6 +41,8 @@ export interface NodeAppOptions {
   ai?: NodeAIOptions
   /** Опции для Backend сервиса */
   backend?: NodeBackendOptions
+  /** Опции для Language сервиса */
+  language?: NodeLanguageOptions
   /** Автоматически подключаться к бэкенду */
   autoConnect?: boolean
 }
@@ -52,6 +56,7 @@ export interface NodeAppServices {
   nodeBackend: NodeBackendBridgeService
   video: NodeVideoService
   ai: NodeAIService
+  language: NodeLanguageService
 }
 
 /**
@@ -86,6 +91,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const nodeBackend = new NodeBackendBridgeService()
   const video = new NodeVideoService(options.video)
   const ai = new NodeAIService(options.ai)
+  const language = new NodeLanguageService(options.language)
 
   // Register in container
   container.registerBackend(backend)
@@ -96,6 +102,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   container.registerNodeBackend(nodeBackend)
   container.registerVideo(video)
   container.registerAI(ai)
+  container.registerLanguage(language)
 
   // Auto-connect if requested
   if (autoConnect) {
@@ -111,6 +118,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     nodeBackend,
     video,
     ai,
+    language,
   }
 }
 
@@ -131,5 +139,6 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     nodeBackend: new NodeBackendBridgeService(),
     video: new NodeVideoService(options.video),
     ai: new NodeAIService(options.ai),
+    language: new NodeLanguageService(options.language),
   }
 }

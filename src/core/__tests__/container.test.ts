@@ -1,6 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { container, getBackend, getEvent, getNodeBackend, getPlatform, getStorage, resetContainer } from "../container"
-import type { IBackendService, IEventService, INodeBackendService, IPlatformService, IStorageService } from "../ports"
+import {
+  container,
+  getBackend,
+  getEvent,
+  getLanguage,
+  getNodeBackend,
+  getPlatform,
+  getStorage,
+  resetContainer,
+} from "../container"
+import type {
+  IBackendService,
+  IEventService,
+  ILanguageService,
+  INodeBackendService,
+  IPlatformService,
+  IStorageService,
+} from "../ports"
 
 // Mock implementations
 const createMockBackend = (): IBackendService => ({
@@ -62,6 +78,11 @@ const createMockNodeBackend = (): INodeBackendService => ({
   generateWaveform: vi.fn(),
   getCacheStats: vi.fn(),
   clearCache: vi.fn(),
+})
+
+const createMockLanguage = (): ILanguageService => ({
+  getAppLanguage: vi.fn(),
+  setAppLanguage: vi.fn(),
 })
 
 describe("ServiceContainer", () => {
@@ -171,6 +192,27 @@ describe("ServiceContainer", () => {
       container.registerNodeBackend(mockNodeBackend)
 
       expect(getNodeBackend()).toBe(mockNodeBackend)
+    })
+  })
+
+  describe("Language Service", () => {
+    it("throws error when language service not registered", () => {
+      expect(() => container.getLanguage()).toThrow("[ServiceContainer] Language service not registered")
+    })
+
+    it("registers and retrieves language service", () => {
+      const mockLanguage = createMockLanguage()
+      container.registerLanguage(mockLanguage)
+
+      expect(container.hasLanguage()).toBe(true)
+      expect(container.getLanguage()).toBe(mockLanguage)
+    })
+
+    it("getLanguage helper works", () => {
+      const mockLanguage = createMockLanguage()
+      container.registerLanguage(mockLanguage)
+
+      expect(getLanguage()).toBe(mockLanguage)
     })
   })
 

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-08",
-  "source": "Phase F6 boundary error burn-down",
-  "violations": 420,
+  "source": "Phase F7 language core bridge",
+  "violations": 419,
   "bySeverity": {
-    "warn": 420
+    "warn": 419
   },
   "byEdge": {
-    "ui -> domains": 420
+    "ui -> domains": 419
   }
 }
