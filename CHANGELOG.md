@@ -1,3 +1,10 @@
+# [3.81.0](https://github.com/chatman-media/timeline-studio/compare/v3.80.0...v3.81.0) (2026-06-08)
+
+
+### Features
+
+* add telegram workflow job status store ([#210](https://github.com/chatman-media/timeline-studio/issues/210)) ([db2a64c](https://github.com/chatman-media/timeline-studio/commit/db2a64c94bf390fdd2d39be49d1d98485ca25b60))
+
 # [3.80.0](https://github.com/chatman-media/timeline-studio/compare/v3.79.0...v3.80.0) (2026-06-08)
 
 
