@@ -12,10 +12,28 @@ import type { BotRenderJobDestination, BotRenderJobMediaInput, BotRenderJobReque
 
 const DESTINATIONS = new Set(["file", "telegram", "youtube", "tiktok", "vimeo"])
 const RESOLUTIONS = new Set(["720p", "1080p", "4k"])
+const DESTINATION_ALIASES: Record<string, BotRenderJobDestination> = {
+  file: "file",
+  telegram: "telegram",
+  tg: "telegram",
+  vimeo: "vimeo",
+  youtube: "youtube",
+  yt: "youtube",
+  tiktok: "tiktok",
+  tt: "tiktok",
+}
+const RESOLUTION_ALIASES: Record<string, BotWorkflowOutput["resolution"]> = {
+  "720": "720p",
+  "720p": "720p",
+  "1080": "1080p",
+  "1080p": "1080p",
+  "4k": "4k",
+}
 
 export interface ParsedBotWorkflowText {
   templateId?: string
   projectPath?: string
+  media: BotMediaAttachment[]
   output: BotWorkflowOutput
   params: Record<string, string>
 }
@@ -29,7 +47,7 @@ export function createBotRenderJobRequest(
   const warnings: BotWorkflowValidationError[] = []
   const templateId = firstNonEmpty(workflow.template?.id, textHints.templateId, options.defaultTemplateId)
   const project = workflow.project ?? workflow.template?.project ?? projectFromText(textHints.projectPath)
-  const media = normalizeMedia(workflow.media ?? [], errors)
+  const media = normalizeMedia([...(workflow.media ?? []), ...textHints.media], errors)
   const params = mergeParams(
     createWorkflowDefaultParams(workflow),
     textHints.params,
@@ -111,21 +129,32 @@ export function createBotWorkflowRequestFromTelegramLikePayload(payload: Telegra
 
 export function parseBotWorkflowText(text = ""): ParsedBotWorkflowText {
   const parsed: ParsedBotWorkflowText = {
+    media: [],
     output: {},
     params: {},
   }
 
   for (const token of tokenizeText(text)) {
-    if (token.startsWith("/")) continue
+    const valueToken = trimCommandValue(token)
+    if (valueToken.startsWith("/")) continue
 
-    const separatorIndex = findKeyValueSeparator(token)
-    if (separatorIndex <= 0) continue
+    const separatorIndex = findKeyValueSeparator(valueToken)
+    if (separatorIndex <= 0) {
+      applyShorthandTextHint(parsed, valueToken)
+      continue
+    }
 
-    const key = normalizeKey(token.slice(0, separatorIndex))
-    const value = trimCommandValue(token.slice(separatorIndex + 1))
+    const key = normalizeKey(valueToken.slice(0, separatorIndex))
+    const value = trimCommandValue(valueToken.slice(separatorIndex + 1))
     if (!value) continue
 
     switch (key) {
+      case "media":
+      case "url":
+      case "input":
+      case "source":
+        parsed.media.push(textUrlToAttachment(value, "text-url"))
+        break
       case "template":
       case "templateid":
         parsed.templateId = value
@@ -342,6 +371,67 @@ function trimCommandValue(value: string): string {
     return trimmed.slice(1, -1).trim()
   }
   return trimmed
+}
+
+function applyShorthandTextHint(parsed: ParsedBotWorkflowText, token: string): void {
+  const textUrl = normalizeTextUrl(token)
+  if (textUrl) {
+    parsed.media.push(textUrlToAttachment(textUrl, "text-url"))
+    return
+  }
+
+  const normalizedToken = normalizeShorthandToken(token)
+  const destination = DESTINATION_ALIASES[normalizedToken]
+  if (destination) {
+    parsed.output.destination = destination
+    return
+  }
+
+  const resolution = RESOLUTION_ALIASES[normalizedToken]
+  if (resolution) {
+    parsed.output.resolution = resolution
+  }
+}
+
+function textUrlToAttachment(value: string, fallbackName: string): BotMediaAttachment {
+  const url = normalizeTextUrl(value) ?? value
+  return {
+    type: isUrl(url) ? "url" : "file",
+    value: url,
+    name: mediaNameFromUrl(url) ?? fallbackName,
+    metadata: {
+      source: "bot-text",
+    },
+  }
+}
+
+function normalizeTextUrl(value: string): string | null {
+  const normalized = value
+    .trim()
+    .replace(/^<+/, "")
+    .replace(/[>,.!?;:)\]]+$/, "")
+  return isUrl(normalized) ? normalized : null
+}
+
+function normalizeShorthandToken(value: string): string {
+  return normalizeKey(
+    value
+      .trim()
+      .replace(/^[<([{}]+/, "")
+      .replace(/[>,.!?;:)\]{}]+$/, ""),
+  )
+}
+
+function mediaNameFromUrl(value: string): string | undefined {
+  if (!isUrl(value)) return undefined
+
+  try {
+    const pathname = new URL(value).pathname
+    const name = pathname.split("/").filter(Boolean).at(-1)
+    return name ? decodeURIComponent(name) : undefined
+  } catch {
+    return undefined
+  }
 }
 
 function isUrl(value: string): boolean {

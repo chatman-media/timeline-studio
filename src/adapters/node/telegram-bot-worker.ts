@@ -689,9 +689,10 @@ export function defaultTelegramBotCommandText(): string {
     "Timeline Studio bot",
     "Send a video, link, or project with render hints.",
     "Examples:",
+    "https://cdn.example.com/input.mov 1080p telegram",
     "template=promo destination=telegram",
     'project="./project.json" destination=file output="./out.mp4"',
-    "Options: template, project, destination, output, resolution.",
+    "Options: template, project, media/url/input/source, destination, output, resolution.",
   ].join("\n")
 }
 
