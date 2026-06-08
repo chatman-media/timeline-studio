@@ -3,6 +3,7 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { IVideoService, RenderJob as VideoRenderJob } from "@/core/ports"
+import { InMemoryBotRenderJobEventStream } from "@/core/services"
 import { NodeRenderJobService } from "../render-job"
 
 function createVideoService(videoJob: VideoRenderJob): IVideoService {
@@ -123,6 +124,53 @@ describe("NodeRenderJobService", () => {
     expect(result.events.at(-1)?.status).toBe("failed")
   })
 
+  it("publishes render progress to event sinks", async () => {
+    const videoJob: VideoRenderJob = {
+      id: "video-job-5",
+      status: "completed",
+      progress: 100,
+    }
+    const video = createVideoService(videoJob)
+    const stream = new InMemoryBotRenderJobEventStream()
+    const onEvent = vi.fn()
+    const service = new NodeRenderJobService(video, {
+      outputDir: tempDir,
+      idFactory: () => "bot-job-5",
+    })
+
+    const result = await service.run(
+      {
+        source: "bot",
+        project: { type: "inline", schema: { clips: [{ path: "/video.mp4" }] } },
+        output: { format: "mp4" },
+      },
+      { pollIntervalMs: 1, timeoutMs: 100, eventSinks: [stream], onEvent },
+    )
+
+    expect(result.events.map((event) => event.sequence)).toEqual([0, 1, 2, 3])
+    expect(stream.getEvents("bot-job-5").map((event) => event.status)).toEqual([
+      "queued",
+      "preparing",
+      "rendering",
+      "done",
+    ])
+    expect(stream.getSnapshot("bot-job-5")).toMatchObject({
+      jobId: "bot-job-5",
+      status: "done",
+      progress: 100,
+      artifact: {
+        type: "file",
+        path: path.join(tempDir, "bot-job-5.mp4"),
+        destination: "file",
+        mimeType: "video/mp4",
+      },
+      canCancel: false,
+      canRetry: false,
+      eventCount: 4,
+    })
+    expect(onEvent).toHaveBeenCalledTimes(4)
+  })
+
   it("can cancel a provider render job", async () => {
     const videoJob: VideoRenderJob = {
       id: "video-job-4",
@@ -130,6 +178,7 @@ describe("NodeRenderJobService", () => {
       progress: 50,
     }
     const video = createVideoService(videoJob)
+    const stream = new InMemoryBotRenderJobEventStream()
     const service = new NodeRenderJobService(video, {
       outputDir: tempDir,
       idFactory: () => "bot-job-4",
@@ -141,7 +190,7 @@ describe("NodeRenderJobService", () => {
         project: { type: "inline", schema: { clips: [{ path: "/video.mp4" }] } },
         output: { format: "mp4" },
       },
-      { pollIntervalMs: 10, timeoutMs: 20 },
+      { pollIntervalMs: 10, timeoutMs: 20, eventSinks: [stream] },
     )
 
     await vi.waitFor(async () => {
@@ -151,5 +200,11 @@ describe("NodeRenderJobService", () => {
     expect(video.cancelRender).toHaveBeenCalledWith("video-job-4")
     const result = await runPromise
     expect(result.job.status).toBe("cancelled")
+    expect(stream.getSnapshot("bot-job-4")).toMatchObject({
+      status: "cancelled",
+      canCancel: false,
+      canRetry: true,
+      lastEvent: { status: "cancelled" },
+    })
   })
 })

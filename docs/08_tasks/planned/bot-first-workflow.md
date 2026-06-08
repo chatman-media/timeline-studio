@@ -50,13 +50,13 @@ bot message
 - [x] Добавить parser/normalizer для входа из Telegram-like payload в `BotRenderJobRequest`.
 - [x] Добавить validation errors, пригодные для ответа пользователю в чате.
 
-### B3: Worker event stream
+### B3: Worker event stream ([#175](https://github.com/chatman-media/timeline-studio/issues/175))
 
 **Цель:** дать боту live-статусы без UI.
 
-- [ ] Добавить event sink abstraction для отправки progress updates.
-- [ ] Поддержать status snapshots для reconnect/retry.
-- [ ] Покрыть cancel/retry сценарии.
+- [x] Добавить event sink abstraction для отправки progress updates.
+- [x] Поддержать status snapshots для reconnect/retry.
+- [x] Покрыть cancel/retry сценарии.
 
 ### B4: Publishing destinations
 
@@ -71,6 +71,7 @@ bot message
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
 - [#171](https://github.com/chatman-media/timeline-studio/issues/171) - Epic: Bot-first workflow
 - [#173](https://github.com/chatman-media/timeline-studio/issues/173) - B2: Bot intake contract
+- [#175](https://github.com/chatman-media/timeline-studio/issues/175) - B3: Worker event stream
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
