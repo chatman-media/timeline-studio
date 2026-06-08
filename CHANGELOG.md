@@ -1,3 +1,10 @@
+# [3.80.0](https://github.com/chatman-media/timeline-studio/compare/v3.79.0...v3.80.0) (2026-06-08)
+
+
+### Features
+
+* add telegram workflow queue backpressure ([#208](https://github.com/chatman-media/timeline-studio/issues/208)) ([9263cce](https://github.com/chatman-media/timeline-studio/commit/9263cce7658dc9e209f8d517a3742aba61cc6306))
+
 # [3.79.0](https://github.com/chatman-media/timeline-studio/compare/v3.78.0...v3.79.0) (2026-06-08)
 
 
