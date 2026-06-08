@@ -185,6 +185,18 @@ bot message
 - [x] Сохранить существующий structured/key-value behavior и приоритеты.
 - [x] Обновить `/help`, CLI runbook и unit tests для нового intake behavior.
 
+### B17: Telegram bot async workflow queue ([#203](https://github.com/chatman-media/timeline-studio/issues/203))
+
+**Цель:** долгий render workflow не блокирует Telegram polling loop и прием следующих сообщений.
+
+- [x] Добавить opt-in in-memory workflow queue с bounded concurrency.
+- [x] Возвращать machine-readable queued update result без ожидания render completion.
+- [x] Публиковать финальный workflow result через worker callbacks/status sinks после завершения queued job.
+- [x] Сохранить synchronous one-shot behavior по умолчанию.
+- [x] Подключить queue к `bot-worker --poll` через CLI/env flags.
+- [x] Сохранить безопасную draft semantics: success очищает draft, validation failure оставляет draft.
+- [x] Документировать polling runbook и покрыть queue/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -204,6 +216,7 @@ bot message
 - [#197](https://github.com/chatman-media/timeline-studio/issues/197) - B14: Telegram bot update error isolation
 - [#199](https://github.com/chatman-media/timeline-studio/issues/199) - B15: Telegram bot conversation draft state
 - [#201](https://github.com/chatman-media/timeline-studio/issues/201) - B16: Bot text media and shorthand hints
+- [#203](https://github.com/chatman-media/timeline-studio/issues/203) - B17: Telegram bot async workflow queue
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

@@ -129,6 +129,8 @@ bun run src/cli/index.ts bot-worker --poll-once --pretty
 TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
 TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json \
 TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts \
+TIMELINE_BOT_ASYNC_WORKFLOWS=true \
+TIMELINE_BOT_WORKFLOW_CONCURRENCY=1 \
 TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
 bun run src/cli/index.ts bot-worker --poll --rust-render
 ```
@@ -137,6 +139,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 обычные сообщения сохраняют media и render hints, `/render` запускает merged workflow, а `/cancel` очищает draft.
 В тексте сообщения можно отправлять bare URL и короткие hints, например `https://cdn.example.com/input.mov 1080p telegram`;
 также поддерживаются `media=`, `url=`, `input=` и `source=`.
+Для production polling включайте `--async-workflows`: worker быстро ставит render workflow в очередь и продолжает читать Telegram updates.
 
 **Опции:**
 | Опция | Описание |
@@ -146,6 +149,8 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 | `--poll` | Запустить continuous polling loop |
 | `--offset-file <path>` | Сохранять Telegram offset между рестартами |
 | `--draft-dir <path>` | Сохранять bot conversation drafts между сообщениями и рестартами |
+| `--async-workflows` | Ставить render workflows в очередь во время continuous polling |
+| `--workflow-concurrency <count>` | Максимум параллельных queued workflows |
 | `--max-batches <count>` | Остановить polling после N batches |
 | `--media-dir <path>` | Папка для скачанных Telegram/remote media |
 | `--telegram-bot-token <token>` | Telegram Bot API token |
@@ -164,6 +169,8 @@ export FFMPEG_PATH=/usr/local/bin/ffmpeg
 export TIMELINE_BOT_TELEGRAM_TOKEN=123:token
 export TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json
 export TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts
+export TIMELINE_BOT_ASYNC_WORKFLOWS=true
+export TIMELINE_BOT_WORKFLOW_CONCURRENCY=1
 export TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media
 export TIMELINE_BOT_DEFAULT_DESTINATION=telegram
 export TIMELINE_BOT_RUST_RENDER=true
