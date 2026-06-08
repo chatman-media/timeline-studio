@@ -67,6 +67,9 @@ export interface NodeTelegramBotWorkerOptions {
   client?: NodeTelegramBotClient
   commandResponder?: NodeTelegramStatusClient
   commandFormatter?: NodeTelegramBotCommandFormatter
+  errorResponder?: NodeTelegramStatusClient
+  errorFormatter?: NodeTelegramBotUpdateErrorFormatter
+  disableErrorResponses?: boolean
   disableCommandRouting?: boolean
   botToken?: string
   fetch?: TelegramBotFetch
@@ -88,6 +91,15 @@ export interface NodeTelegramBotCommandFormatterContext {
 
 export type NodeTelegramBotCommandFormatter = (context: NodeTelegramBotCommandFormatterContext) => string
 
+export interface NodeTelegramBotUpdateErrorFormatterContext {
+  updateId: number
+  update: TelegramBotUpdate
+  payload?: TelegramLikeBotPayload
+  error: string
+}
+
+export type NodeTelegramBotUpdateErrorFormatter = (context: NodeTelegramBotUpdateErrorFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -104,6 +116,17 @@ export type NodeTelegramBotWorkerUpdateResult =
       update: TelegramBotUpdate
       payload: TelegramLikeBotPayload
       result: BotWorkflowRunResult
+    }
+  | {
+      skipped: false
+      failed: true
+      reason: string
+      updateId: number
+      update: TelegramBotUpdate
+      payload?: TelegramLikeBotPayload
+      error: string
+      responseText?: string
+      responseError?: string
     }
 
 export interface NodeTelegramBotWorkerPollOptions extends TelegramBotGetUpdatesOptions {
@@ -274,7 +297,7 @@ export class NodeTelegramBotWorker {
     let nextOffset = options.offset
 
     for (const update of updates) {
-      results.push(await this.handleUpdate(update, { workflowOptions }))
+      results.push(await this.handlePollingUpdate(update, { workflowOptions }))
       nextOffset = Math.max(nextOffset ?? 0, update.update_id + 1)
     }
 
@@ -357,8 +380,90 @@ export class NodeTelegramBotWorker {
     })
   }
 
+  private async handlePollingUpdate(
+    update: TelegramBotUpdate,
+    options: NodeTelegramBotWorkerHandleOptions,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    try {
+      return await this.handleUpdate(update, options)
+    } catch (error) {
+      return this.createUpdateErrorResult(update, error)
+    }
+  }
+
+  private async createUpdateErrorResult(
+    update: TelegramBotUpdate,
+    error: unknown,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const payload = createTelegramLikePayloadFromUpdate(update) ?? undefined
+    const errorMessage = formatUnknownError(error)
+    const responseText = this.options.disableErrorResponses
+      ? undefined
+      : (this.options.errorFormatter ?? defaultTelegramBotUpdateErrorText)({
+          updateId: update.update_id,
+          update,
+          ...(payload ? { payload } : {}),
+          error: errorMessage,
+        })
+    let responseError: string | undefined
+
+    if (responseText && payload) {
+      try {
+        await this.sendUpdateErrorResponse(update.update_id, payload, responseText)
+      } catch (responseErrorValue) {
+        responseError = formatUnknownError(responseErrorValue)
+      }
+    }
+
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: false,
+      failed: true,
+      reason: "Telegram update handling failed",
+      updateId: update.update_id,
+      update,
+      ...(payload ? { payload } : {}),
+      error: errorMessage,
+      ...(responseText ? { responseText } : {}),
+      ...(responseError ? { responseError } : {}),
+    }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async sendUpdateErrorResponse(
+    updateId: number,
+    payload: TelegramLikeBotPayload,
+    text: string,
+  ): Promise<void> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    if (!chatId) return
+
+    const responder = this.resolveErrorResponder()
+    await responder?.sendMessage({
+      chatId,
+      text,
+      ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+      metadata: {
+        error: true,
+        source: "telegram-bot-worker",
+        updateId,
+      },
+    })
+  }
+
   private resolveCommandResponder(): NodeTelegramStatusClient | undefined {
     if (this.options.commandResponder) return this.options.commandResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
+
+  private resolveErrorResponder(): NodeTelegramStatusClient | undefined {
+    if (this.options.errorResponder) return this.options.errorResponder
     if (!this.options.botToken) return undefined
     return new NodeBotStatusNotifier({
       telegram: {
@@ -423,6 +528,10 @@ export function defaultTelegramBotCommandText(): string {
   ].join("\n")
 }
 
+export function defaultTelegramBotUpdateErrorText(): string {
+  return ["Timeline Studio bot", "Could not process this request.", "Try again or send /help."].join("\n")
+}
+
 function mergeWorkflowOptions(
   defaults: NodeBotWorkflowServiceOptions | undefined,
   overrides: NodeBotWorkflowServiceOptions | undefined,
@@ -453,6 +562,10 @@ function globalFetch(
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function formatUnknownError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
 }
 
 function isNotFoundError(error: unknown): boolean {

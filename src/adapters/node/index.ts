@@ -62,6 +62,7 @@ export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
+  defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
   type NodeTelegramBotClient,
   type NodeTelegramBotCommand,
@@ -70,6 +71,8 @@ export {
   NodeTelegramBotFileOffsetStore,
   type NodeTelegramBotFileOffsetStoreState,
   type NodeTelegramBotOffsetStore,
+  type NodeTelegramBotUpdateErrorFormatter,
+  type NodeTelegramBotUpdateErrorFormatterContext,
   NodeTelegramBotWorker,
   type NodeTelegramBotWorkerHandleOptions,
   type NodeTelegramBotWorkerOptions,

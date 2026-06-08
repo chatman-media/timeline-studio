@@ -113,6 +113,7 @@ npx ts-node src/cli/index.ts render project.json output.mp4 --verbose
 ### bot-worker - Telegram bot-first worker
 
 Запуск Telegram worker для bot-first workflow: обработка raw `Update`, один `getUpdates` batch или долгоживущий polling loop.
+В polling-режиме ошибки обработки отдельного update возвращаются как failed-result, отправляют короткий ответ в чат при наличии chat id и не останавливают batch.
 
 ```bash
 # Локальный smoke без Telegram token и без сетевых вызовов

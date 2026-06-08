@@ -155,6 +155,16 @@ bot message
 - [x] Документировать one-shot smoke и continuous polling worker runbook в CLI README.
 - [x] Покрыть env default precedence и CLI contract tests.
 
+### B14: Telegram bot update error isolation ([#197](https://github.com/chatman-media/timeline-studio/issues/197))
+
+**Цель:** один проблемный Telegram update не должен валить polling worker и заставлять бота переобрабатывать тот же input после рестарта.
+
+- [x] Изолировать update-level exceptions внутри `pollOnce`, сохраняя наружу Bot API `getUpdates` failures.
+- [x] Возвращать machine-readable failed update result в worker JSON output.
+- [x] Продолжать обработку batch и продвигать `nextOffset` после failed update.
+- [x] Отвечать в Telegram chat коротким error message, когда в update есть chat/message metadata.
+- [x] Покрыть polling isolation, error reply delivery и CLI failed-result detection tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -171,6 +181,7 @@ bot message
 - [#191](https://github.com/chatman-media/timeline-studio/issues/191) - B11: Telegram bot polling loop state
 - [#193](https://github.com/chatman-media/timeline-studio/issues/193) - B12: Telegram bot command routing
 - [#195](https://github.com/chatman-media/timeline-studio/issues/195) - B13: Bot worker runtime config and smoke runbook
+- [#197](https://github.com/chatman-media/timeline-studio/issues/197) - B14: Telegram bot update error isolation
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

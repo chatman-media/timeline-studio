@@ -7,6 +7,7 @@ import type { NodeBotWorkflowService } from "../bot-workflow"
 import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
+  defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
   NodeTelegramBotFileOffsetStore,
   NodeTelegramBotWorker,
@@ -293,6 +294,100 @@ describe("Telegram bot worker", () => {
     expect(result.updates[0]).toMatchObject({ skipped: false, updateId: 30 })
     expect(result.updates[1]).toMatchObject({ skipped: true, updateId: 32 })
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+  })
+
+  it("isolates per-update polling errors, replies, and continues the batch", async () => {
+    const runTelegramLikePayload = vi.fn(async (payload: { text?: string }) => {
+      if (payload.text === "bad") {
+        throw new Error("Media resolver failed")
+      }
+
+      return failedResult
+    })
+    const service = { runTelegramLikePayload } as unknown as NodeBotWorkflowService
+    const client = {
+      getUpdates: vi.fn(async () => [
+        { update_id: 50, message: { message_id: 1, chat: { id: "chat-1" }, text: "bad" } },
+        { update_id: 52, message: { message_id: 2, chat: { id: "chat-1" }, text: "template=promo" } },
+      ]),
+    }
+    const errorResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "error-message-1" })),
+    }
+    const onResult = vi.fn()
+    const worker = new NodeTelegramBotWorker({ workflow: service, client, errorResponder, onResult })
+
+    const result = await worker.pollOnce({ offset: 50, timeoutSeconds: 1 })
+
+    expect(result.nextOffset).toBe(53)
+    expect(result.updates).toHaveLength(2)
+    expect(result.updates[0]).toMatchObject({
+      skipped: false,
+      failed: true,
+      reason: "Telegram update handling failed",
+      updateId: 50,
+      error: "Media resolver failed",
+      responseText: defaultTelegramBotUpdateErrorText(),
+    })
+    expect(result.updates[1]).toMatchObject({
+      skipped: false,
+      updateId: 52,
+      result: failedResult,
+    })
+    expect(errorResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: defaultTelegramBotUpdateErrorText(),
+      replyToMessageId: "1",
+      metadata: {
+        error: true,
+        source: "telegram-bot-worker",
+        updateId: 50,
+      },
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledTimes(2)
+    expect(onResult).toHaveBeenNthCalledWith(1, result.updates[0])
+    expect(onResult).toHaveBeenNthCalledWith(2, result.updates[1])
+  })
+
+  it("does not let update error response failures abort polling", async () => {
+    const runTelegramLikePayload = vi.fn(async () => {
+      throw new Error("Workflow failed")
+    })
+    const service = { runTelegramLikePayload } as unknown as NodeBotWorkflowService
+    const client = {
+      getUpdates: vi.fn(async () => [
+        { update_id: 60, message: { message_id: 1, chat: { id: "chat-1" }, text: "template=promo" } },
+      ]),
+    }
+    const errorResponder = {
+      sendMessage: vi.fn(async () => {
+        throw new Error("Telegram send failed")
+      }),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, client, errorResponder })
+
+    const result = await worker.pollOnce({ offset: 60 })
+
+    expect(result.nextOffset).toBe(61)
+    expect(result.updates[0]).toMatchObject({
+      skipped: false,
+      failed: true,
+      updateId: 60,
+      error: "Workflow failed",
+      responseError: "Telegram send failed",
+    })
+  })
+
+  it("does not hide Telegram getUpdates failures", async () => {
+    const { service } = createWorkflowService()
+    const client = {
+      getUpdates: vi.fn(async () => {
+        throw new Error("Telegram getUpdates failed")
+      }),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, client })
+
+    await expect(worker.pollOnce({ offset: 70 })).rejects.toThrow("Telegram getUpdates failed")
   })
 
   it("persists Telegram polling offsets in a file store", async () => {

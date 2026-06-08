@@ -8,6 +8,7 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
   botWorkerCommand,
+  isFailedWorkerResult,
   readTelegramBotUpdate,
   resolveBotWorkerCommandOptions,
   serializeBotWorkerResult,
@@ -83,6 +84,24 @@ describe("bot-worker command", () => {
 
     expect(serializeBotWorkerResult(result)).not.toContain("\n")
     expect(serializeBotWorkerResult(result, true)).toContain("\n")
+  })
+
+  it("treats failed polling update results as failed command results", () => {
+    expect(
+      isFailedWorkerResult({
+        updates: [
+          {
+            skipped: false,
+            failed: true,
+            reason: "Telegram update handling failed",
+            updateId: 1,
+            update: { update_id: 1 },
+            error: "Workflow failed",
+          },
+        ],
+        nextOffset: 2,
+      }),
+    ).toBe(true)
   })
 
   it("resolves bot worker defaults from environment variables", () => {
