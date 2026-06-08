@@ -5,6 +5,7 @@ import { createBotWorkflowDraftId, createTelegramLikeBotWorkflow, mergeBotWorkfl
 import type {
   BotWorkflowDraft,
   BotWorkflowDraftStore,
+  BotWorkflowRequest,
   BotWorkflowRunResult,
   TelegramLikeBotFile,
   TelegramLikeBotPayload,
@@ -71,6 +72,7 @@ export interface NodeTelegramBotClient {
 
 export interface NodeTelegramBotWorkerOptions {
   workflow: NodeBotWorkflowService
+  workflowQueue?: NodeTelegramBotWorkflowQueue
   client?: NodeTelegramBotClient
   commandResponder?: NodeTelegramStatusClient
   commandFormatter?: NodeTelegramBotCommandFormatter
@@ -95,6 +97,30 @@ export interface NodeTelegramBotWorkerHandleOptions {
 export type NodeTelegramBotCommand = "start" | "help"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
+
+export type NodeTelegramBotWorkflowQueueStatus = "queued"
+
+export interface NodeTelegramBotWorkflowQueueSubmission {
+  id: string
+  status: NodeTelegramBotWorkflowQueueStatus
+}
+
+export interface NodeTelegramBotWorkflowQueueJob {
+  id: string
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+  run(): Promise<BotWorkflowRunResult>
+  onComplete?(result: BotWorkflowRunResult): void | Promise<void>
+  onError?(error: unknown): void | Promise<void>
+}
+
+export interface NodeTelegramBotWorkflowQueue {
+  enqueue(job: NodeTelegramBotWorkflowQueueJob): Promise<NodeTelegramBotWorkflowQueueSubmission>
+}
+
+export interface NodeTelegramBotInMemoryWorkflowQueueOptions {
+  concurrency?: number
+}
 
 export interface NodeTelegramBotCommandFormatterContext {
   command: NodeTelegramBotCommand
@@ -136,6 +162,19 @@ export type NodeTelegramBotWorkerUpdateResult =
       payload?: TelegramLikeBotPayload
       responseText?: string
       responseError?: string
+    }
+  | {
+      skipped: false
+      queued: true
+      queueId: string
+      reason: string
+      updateId: number
+      update: TelegramBotUpdate
+      payload: TelegramLikeBotPayload
+      workflow?: BotWorkflowRequest
+      draftId?: string
+      completion?: BotWorkflowRunResult
+      error?: string
     }
   | {
       skipped: false
@@ -194,6 +233,62 @@ interface TelegramGetUpdatesResponse {
   ok?: boolean
   description?: string
   result?: unknown
+}
+
+export class NodeTelegramBotInMemoryWorkflowQueue implements NodeTelegramBotWorkflowQueue {
+  private readonly concurrency: number
+  private readonly pending: NodeTelegramBotWorkflowQueueJob[] = []
+  private readonly idleResolvers: Array<() => void> = []
+  private activeCount = 0
+
+  constructor(options: NodeTelegramBotInMemoryWorkflowQueueOptions = {}) {
+    this.concurrency = Math.max(1, Math.trunc(options.concurrency ?? 1))
+  }
+
+  async enqueue(job: NodeTelegramBotWorkflowQueueJob): Promise<NodeTelegramBotWorkflowQueueSubmission> {
+    this.pending.push(job)
+    this.pump()
+    return {
+      id: job.id,
+      status: "queued",
+    }
+  }
+
+  async drain(): Promise<void> {
+    if (this.activeCount === 0 && this.pending.length === 0) return
+    await new Promise<void>((resolve) => this.idleResolvers.push(resolve))
+  }
+
+  private pump(): void {
+    while (this.activeCount < this.concurrency && this.pending.length > 0) {
+      const job = this.pending.shift()
+      if (!job) continue
+      this.activeCount += 1
+      void this.runJob(job)
+    }
+  }
+
+  private async runJob(job: NodeTelegramBotWorkflowQueueJob): Promise<void> {
+    try {
+      const result = await job.run()
+      await job.onComplete?.(result)
+    } catch (error) {
+      await job.onError?.(error)
+    } finally {
+      this.activeCount -= 1
+      this.pump()
+      this.resolveIdleIfNeeded()
+    }
+  }
+
+  private resolveIdleIfNeeded(): void {
+    if (this.activeCount > 0 || this.pending.length > 0) return
+
+    const resolvers = this.idleResolvers.splice(0)
+    for (const resolve of resolvers) {
+      resolve()
+    }
+  }
 }
 
 export class NodeTelegramBotFileOffsetStore implements NodeTelegramBotOffsetStore {
@@ -305,18 +400,13 @@ export class NodeTelegramBotWorker {
     const draftResult = await this.handleDraftUpdate(update, payload, options)
     if (draftResult) return draftResult
 
-    const result: NodeTelegramBotWorkerUpdateResult = {
-      skipped: false,
-      updateId: update.update_id,
-      update,
-      payload,
-      result: await this.options.workflow.runTelegramLikePayload(
-        payload,
-        mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
-      ),
-    }
-    await this.options.onResult?.(result)
-    return result
+    return this.runOrQueueWorkflow(update, payload, {
+      run: () =>
+        this.options.workflow.runTelegramLikePayload(
+          payload,
+          mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
+        ),
+    })
   }
 
   async pollOnce(options: NodeTelegramBotWorkerPollOptions = {}): Promise<NodeTelegramBotWorkerPollResult> {
@@ -436,25 +526,22 @@ export class NodeTelegramBotWorker {
     const draft = mergeBotWorkflowDraft(existingDraft, workflow, { now: this.options.now })
 
     if (draftCommand === "render") {
-      const workflowResult = await this.options.workflow.runWorkflow(
-        draft.workflow,
-        mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
-      )
-      if (workflowResult.ok) {
-        await store.deleteDraft(draftId)
-      } else {
-        await store.writeDraft(draft)
-      }
-
-      const result: NodeTelegramBotWorkerUpdateResult = {
-        skipped: false,
-        updateId: update.update_id,
-        update,
-        payload,
-        result: workflowResult,
-      }
-      await this.options.onResult?.(result)
-      return result
+      return this.runOrQueueWorkflow(update, payload, {
+        draftId,
+        workflow: draft.workflow,
+        run: () =>
+          this.options.workflow.runWorkflow(
+            draft.workflow,
+            mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
+          ),
+        onComplete: async (workflowResult) => {
+          if (workflowResult.ok) {
+            await store.deleteDraft(draftId)
+          } else {
+            await store.writeDraft(draft)
+          }
+        },
+      })
     }
 
     await store.writeDraft(draft)
@@ -519,6 +606,70 @@ export class NodeTelegramBotWorker {
         source: "telegram-bot-worker",
       },
     })
+  }
+
+  private async runOrQueueWorkflow(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    options: {
+      run: () => Promise<BotWorkflowRunResult>
+      workflow?: BotWorkflowRequest
+      draftId?: string
+      onComplete?: (result: BotWorkflowRunResult) => void | Promise<void>
+    },
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const workflowQueue = this.options.workflowQueue
+    if (!workflowQueue) {
+      const workflowResult = await options.run()
+      await options.onComplete?.(workflowResult)
+      const result: NodeTelegramBotWorkerUpdateResult = {
+        skipped: false,
+        updateId: update.update_id,
+        update,
+        payload,
+        result: workflowResult,
+      }
+      await this.options.onResult?.(result)
+      return result
+    }
+
+    const queueId = createTelegramBotWorkflowQueueId(update)
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: false,
+      queued: true,
+      queueId,
+      reason: "Telegram bot workflow queued",
+      updateId: update.update_id,
+      update,
+      payload,
+      ...(options.workflow ? { workflow: options.workflow } : {}),
+      ...(options.draftId ? { draftId: options.draftId } : {}),
+    }
+    const submission = await workflowQueue.enqueue({
+      id: queueId,
+      update,
+      payload,
+      run: options.run,
+      onComplete: async (workflowResult) => {
+        result.completion = workflowResult
+        await options.onComplete?.(workflowResult)
+        await this.options.onResult?.({
+          skipped: false,
+          updateId: update.update_id,
+          update,
+          payload,
+          result: workflowResult,
+        })
+      },
+      onError: async (error) => {
+        result.error = formatUnknownError(error)
+        await this.createUpdateErrorResult(update, error)
+      },
+    })
+
+    result.queueId = submission.id
+    await this.options.onResult?.(result)
+    return result
   }
 
   private async handlePollingUpdate(
@@ -624,6 +775,10 @@ export class NodeTelegramBotWorker {
       fetch: this.options.fetch,
     })
   }
+}
+
+function createTelegramBotWorkflowQueueId(update: TelegramBotUpdate): string {
+  return `telegram-update-${update.update_id}`
 }
 
 export function createTelegramLikePayloadFromUpdate(update: TelegramBotUpdate): TelegramLikeBotPayload | null {

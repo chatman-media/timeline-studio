@@ -18,9 +18,10 @@ import {
   initNodeApp,
   NodeBotWorkflowFileDraftStore,
   NodeTelegramBotFileOffsetStore,
+  NodeTelegramBotInMemoryWorkflowQueue,
   NodeTelegramBotWorker,
 } from "@/adapters/node"
-import type { BotRenderJobDestination } from "@/core/types"
+import type { BotRenderJobDestination, BotWorkflowRunResult } from "@/core/types"
 
 export interface BotWorkerCommandOptions {
   updateFile?: string
@@ -36,6 +37,8 @@ export interface BotWorkerCommandOptions {
   pollTimeout?: string
   offsetFile?: string
   draftDir?: string
+  asyncWorkflows?: boolean
+  workflowConcurrency?: string
   maxBatches?: string
   idleDelay?: string
   mediaDir?: string
@@ -69,6 +72,8 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--poll-timeout <seconds>", "Telegram getUpdates long-poll timeout in seconds", "25")
   .option("--offset-file <path>", "Persist Telegram getUpdates offset between polling runs")
   .option("--draft-dir <path>", "Persist Telegram bot conversation drafts in a directory")
+  .option("--async-workflows", "Queue Telegram workflow runs during continuous polling")
+  .option("--workflow-concurrency <count>", "Maximum queued workflow runs in parallel", "1")
   .option("--max-batches <count>", "Stop continuous polling after this many getUpdates batches")
   .option("--idle-delay <ms>", "Delay after an empty continuous polling batch", "1000")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
@@ -123,8 +128,15 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
         }
       : undefined,
   })
+  const workflowQueue =
+    resolvedOptions.poll && resolvedOptions.asyncWorkflows
+      ? new NodeTelegramBotInMemoryWorkflowQueue({
+          concurrency: parsePositiveInteger(resolvedOptions.workflowConcurrency, 1),
+        })
+      : undefined
   const worker = new NodeTelegramBotWorker({
     workflow: services.botWorkflow,
+    workflowQueue,
     botToken: resolvedOptions.telegramBotToken,
     workflowOptions: {
       intake: {
@@ -151,7 +163,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
   const timeoutSeconds = parsePositiveInteger(resolvedOptions.pollTimeout, 25)
 
   if (resolvedOptions.poll) {
-    return worker.runPolling({
+    const result = await worker.runPolling({
       offset,
       limit,
       timeoutSeconds,
@@ -161,6 +173,8 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
       maxBatches: parseOptionalPositiveInteger(resolvedOptions.maxBatches),
       idleDelayMs: parsePositiveInteger(resolvedOptions.idleDelay, 1000),
     })
+    await workflowQueue?.drain()
+    return result
   }
 
   return worker.pollOnce({
@@ -187,6 +201,7 @@ export function resolveBotWorkerCommandOptions(
     pollTimeout: firstConfigured(options.pollTimeout, env.TIMELINE_BOT_POLL_TIMEOUT),
     offsetFile: firstConfigured(options.offsetFile, env.TIMELINE_BOT_OFFSET_FILE),
     draftDir: firstConfigured(options.draftDir, env.TIMELINE_BOT_DRAFT_DIR),
+    workflowConcurrency: firstConfigured(options.workflowConcurrency, env.TIMELINE_BOT_WORKFLOW_CONCURRENCY),
     maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),
     idleDelay: firstConfigured(options.idleDelay, env.TIMELINE_BOT_IDLE_DELAY),
     mediaDir: firstConfigured(options.mediaDir, env.TIMELINE_BOT_MEDIA_DIR),
@@ -199,6 +214,7 @@ export function resolveBotWorkerCommandOptions(
       normalizeDestination(env.TIMELINE_BOT_DEFAULT_DESTINATION),
     ),
     defaultOutput: firstConfigured(options.defaultOutput, env.TIMELINE_BOT_DEFAULT_OUTPUT),
+    asyncWorkflows: options.asyncWorkflows ?? parseBooleanEnv(env.TIMELINE_BOT_ASYNC_WORKFLOWS),
     downloadRemoteMedia: options.downloadRemoteMedia ?? parseBooleanEnv(env.TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA),
     rustRender: options.rustRender ?? parseBooleanEnv(env.TIMELINE_BOT_RUST_RENDER),
   }
@@ -283,9 +299,17 @@ export function isFailedWorkerResult(result: BotWorkerCommandResult): boolean {
 function isFailedUpdateResult(result: NodeTelegramBotWorkerUpdateResult): boolean {
   if (result.skipped) return false
   if ("failed" in result && result.failed) return true
+  if ("queued" in result && result.queued) {
+    if (result.error) return true
+    return result.completion ? isFailedWorkflowRunResult(result.completion) : false
+  }
   if (!("result" in result)) return true
-  if (!result.result.ok) return true
-  return result.result.result.job.status === "failed" || result.result.result.job.status === "cancelled"
+  return isFailedWorkflowRunResult(result.result)
+}
+
+function isFailedWorkflowRunResult(result: BotWorkflowRunResult): boolean {
+  if (!result.ok) return true
+  return result.result.job.status === "failed" || result.result.job.status === "cancelled"
 }
 
 function serializeBotWorkerFailure(error: unknown, pretty = false): string {

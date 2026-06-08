@@ -36,6 +36,8 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--status-chat-id")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--offset-file")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--draft-dir")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--async-workflows")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--workflow-concurrency")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--max-batches")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--idle-delay")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
@@ -105,6 +107,56 @@ describe("bot-worker command", () => {
     ).toBe(true)
   })
 
+  it("does not treat queued polling update results as failed command results", () => {
+    expect(
+      isFailedWorkerResult({
+        updates: [
+          {
+            skipped: false,
+            queued: true,
+            queueId: "telegram-update-1",
+            reason: "Telegram bot workflow queued",
+            updateId: 1,
+            update: { update_id: 1 },
+            payload: { text: "template=promo" },
+          },
+        ],
+        nextOffset: 2,
+      }),
+    ).toBe(false)
+  })
+
+  it("treats queued polling completion failures as failed command results", () => {
+    expect(
+      isFailedWorkerResult({
+        updates: [
+          {
+            skipped: false,
+            queued: true,
+            queueId: "telegram-update-1",
+            reason: "Telegram bot workflow queued",
+            updateId: 1,
+            update: { update_id: 1 },
+            payload: { text: "template=promo" },
+            completion: {
+              ok: false,
+              workflow: { source: "telegram" },
+              errors: [
+                {
+                  code: "missing_input",
+                  field: "workflow",
+                  message: "Workflow requires input",
+                  userMessage: "Send a video file, link, project, or choose a template.",
+                },
+              ],
+            },
+          },
+        ],
+        nextOffset: 2,
+      }),
+    ).toBe(true)
+  })
+
   it("resolves bot worker defaults from environment variables", () => {
     const resolved = resolveBotWorkerCommandOptions(
       {},
@@ -114,6 +166,8 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_STATUS_CHAT_ID: "chat-1",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/bot-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/bot-drafts",
+        TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
+        TIMELINE_BOT_WORKFLOW_CONCURRENCY: "2",
         TIMELINE_BOT_MEDIA_DIR: ".tmp/media",
         TIMELINE_BOT_POLL_LIMIT: "10",
         TIMELINE_BOT_POLL_TIMEOUT: "20",
@@ -135,6 +189,8 @@ describe("bot-worker command", () => {
       statusChatId: "chat-1",
       offsetFile: ".tmp/bot-offset.json",
       draftDir: ".tmp/bot-drafts",
+      asyncWorkflows: true,
+      workflowConcurrency: "2",
       mediaDir: ".tmp/media",
       pollLimit: "10",
       pollTimeout: "20",
@@ -157,6 +213,8 @@ describe("bot-worker command", () => {
         telegramBotToken: "token-from-cli",
         offsetFile: ".tmp/cli-offset.json",
         draftDir: ".tmp/cli-drafts",
+        asyncWorkflows: false,
+        workflowConcurrency: "3",
         defaultDestination: "file",
         rustRender: false,
         downloadRemoteMedia: false,
@@ -165,6 +223,8 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/env-drafts",
+        TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
+        TIMELINE_BOT_WORKFLOW_CONCURRENCY: "1",
         TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
         TIMELINE_BOT_RUST_RENDER: "true",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
@@ -175,6 +235,8 @@ describe("bot-worker command", () => {
       telegramBotToken: "token-from-cli",
       offsetFile: ".tmp/cli-offset.json",
       draftDir: ".tmp/cli-drafts",
+      asyncWorkflows: false,
+      workflowConcurrency: "3",
       defaultDestination: "file",
       rustRender: false,
       downloadRemoteMedia: false,

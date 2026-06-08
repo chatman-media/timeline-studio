@@ -11,6 +11,7 @@ import {
   defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
   NodeTelegramBotFileOffsetStore,
+  NodeTelegramBotInMemoryWorkflowQueue,
   NodeTelegramBotWorker,
   parseTelegramBotCommand,
   parseTelegramBotDraftCommand,
@@ -147,6 +148,118 @@ describe("Telegram bot worker", () => {
       },
     )
     expect(onResult).toHaveBeenCalledWith(result)
+  })
+
+  it("queues workflow runs without waiting for render completion", async () => {
+    let resolveWorkflow!: () => void
+    const runTelegramLikePayload = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const onResult = vi.fn()
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, onResult })
+
+    const result = await worker.handleUpdate({
+      update_id: 16,
+      message: {
+        message_id: 12,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: false,
+      queued: true,
+      queueId: "telegram-update-16",
+      reason: "Telegram bot workflow queued",
+      updateId: 16,
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+    expect(onResult).toHaveBeenCalledWith(result)
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+
+    expect(result).toMatchObject({
+      completion: completedResult,
+    })
+    expect(onResult).toHaveBeenLastCalledWith({
+      skipped: false,
+      updateId: 16,
+      update: {
+        update_id: 16,
+        message: {
+          message_id: 12,
+          chat: { id: "chat-1" },
+          text: "template=promo",
+        },
+      },
+      payload: {
+        chat: { id: "chat-1" },
+        message_id: 12,
+        text: "template=promo",
+      },
+      result: completedResult,
+    })
+  })
+
+  it("turns queued workflow failures into update error results", async () => {
+    const runTelegramLikePayload = vi.fn(async () => {
+      throw new Error("Queued render failed")
+    })
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const errorResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "error-message-1" })),
+    }
+    const onResult = vi.fn()
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, errorResponder, onResult })
+
+    const result = await worker.handleUpdate({
+      update_id: 17,
+      message: {
+        message_id: 13,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+    await workflowQueue.drain()
+
+    expect(result).toMatchObject({
+      skipped: false,
+      queued: true,
+      queueId: "telegram-update-17",
+      error: "Queued render failed",
+    })
+    expect(errorResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: defaultTelegramBotUpdateErrorText(),
+      replyToMessageId: "13",
+      metadata: {
+        error: true,
+        source: "telegram-bot-worker",
+        updateId: 17,
+      },
+    })
+    expect(onResult).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        skipped: false,
+        failed: true,
+        updateId: 17,
+        error: "Queued render failed",
+      }),
+    )
   })
 
   it("routes help commands to a command responder without running workflow", async () => {
@@ -500,6 +613,71 @@ describe("Telegram bot worker", () => {
           text: "/render destination=instagram",
           media: [{ type: "file", value: "telegram-file-1" }],
         }),
+      }),
+    )
+  })
+
+  it("clears queued Telegram conversation drafts after successful render completion", async () => {
+    let resolveWorkflow!: () => void
+    const runWorkflow = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow,
+      runTelegramLikePayload: vi.fn(),
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const existingDraft = {
+      id: "telegram:chat-1:user-1",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+      workflow: {
+        source: "telegram" as const,
+        chatId: "chat-1",
+        userId: "user-1",
+        media: [{ type: "file" as const, value: "telegram-file-1" }],
+      },
+    }
+    const store = {
+      readDraft: vi.fn(async () => existingDraft),
+      writeDraft: vi.fn(async () => undefined),
+      deleteDraft: vi.fn(async () => undefined),
+    }
+    const onResult = vi.fn()
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, draftStore: store, onResult })
+
+    const result = await worker.handleUpdate({
+      update_id: 25,
+      message: {
+        message_id: 5,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/render template=promo",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: false,
+      queued: true,
+      queueId: "telegram-update-25",
+      draftId: "telegram:chat-1:user-1",
+    })
+    expect(store.deleteDraft).not.toHaveBeenCalled()
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+
+    expect(result).toMatchObject({
+      completion: completedResult,
+    })
+    expect(store.deleteDraft).toHaveBeenCalledWith("telegram:chat-1:user-1")
+    expect(onResult).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        skipped: false,
+        updateId: 25,
+        result: completedResult,
       }),
     )
   })
