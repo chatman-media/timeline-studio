@@ -24,6 +24,7 @@ export type {
   ILanguageService,
   INodeBackendService,
   IPlatformService,
+  IPublishService,
   IRenderJobService,
   IStorageService,
   NodeBackendHealth,
@@ -50,6 +51,10 @@ export {
 export type {
   BotMediaAttachment,
   BotMediaAttachmentType,
+  BotPublishMetadata,
+  BotPublishRequest,
+  BotPublishResult,
+  BotPublishStatus,
   BotRenderJob,
   BotRenderJobArtifact,
   BotRenderJobDestination,

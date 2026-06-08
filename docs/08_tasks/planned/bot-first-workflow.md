@@ -58,13 +58,13 @@ bot message
 - [x] Поддержать status snapshots для reconnect/retry.
 - [x] Покрыть cancel/retry сценарии.
 
-### B4: Publishing destinations
+### B4: Publishing destinations ([#177](https://github.com/chatman-media/timeline-studio/issues/177))
 
 **Цель:** подключать Telegram/YouTube/TikTok как destination после готового render artifact.
 
-- [ ] Добавить `IPublishService` core port.
-- [ ] Добавить destination-specific publishing adapters.
-- [ ] Связать publish phase с `BotRenderJobStatus = "publishing"`.
+- [x] Добавить `IPublishService` core port.
+- [x] Добавить destination-specific publishing adapters.
+- [x] Связать publish phase с `BotRenderJobStatus = "publishing"`.
 
 ## Связанные задачи
 
@@ -72,6 +72,7 @@ bot message
 - [#171](https://github.com/chatman-media/timeline-studio/issues/171) - Epic: Bot-first workflow
 - [#173](https://github.com/chatman-media/timeline-studio/issues/173) - B2: Bot intake contract
 - [#175](https://github.com/chatman-media/timeline-studio/issues/175) - B3: Worker event stream
+- [#177](https://github.com/chatman-media/timeline-studio/issues/177) - B4: Publishing destinations
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

@@ -14,6 +14,7 @@ import { type NodeLanguageOptions, NodeLanguageService } from "./language"
 import { type NodeMediaOptions, NodeMediaService } from "./media"
 import { NodeBackendBridgeService } from "./node-backend-bridge"
 import { type NodePlatformOptions, NodePlatformService } from "./platform"
+import { type NodePublishOptions, NodePublishService } from "./publish"
 import { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
 import { type NodeStorageOptions, NodeStorageService } from "./storage"
 import { type NodeVideoOptions, NodeVideoService } from "./video"
@@ -26,6 +27,7 @@ export { type NodeLanguageOptions, NodeLanguageService } from "./language"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
 export { NodeBackendBridgeService } from "./node-backend-bridge"
 export { type NodePlatformOptions, NodePlatformService } from "./platform"
+export { type NodePublishOptions, NodePublishService } from "./publish"
 export { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export { type NodeVideoOptions, NodeVideoService } from "./video"
@@ -45,6 +47,8 @@ export interface NodeAppOptions {
   backend?: NodeBackendOptions
   /** Опции для Language сервиса */
   language?: NodeLanguageOptions
+  /** Опции для bot-first Publish сервиса */
+  publish?: NodePublishOptions
   /** Опции для bot-first RenderJob сервиса */
   renderJob?: NodeRenderJobServiceOptions
   /** Автоматически подключаться к бэкенду */
@@ -61,6 +65,7 @@ export interface NodeAppServices {
   video: NodeVideoService
   ai: NodeAIService
   language: NodeLanguageService
+  publish: NodePublishService
   renderJob: NodeRenderJobService
 }
 
@@ -97,7 +102,11 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const video = new NodeVideoService(options.video)
   const ai = new NodeAIService(options.ai)
   const language = new NodeLanguageService(options.language)
-  const renderJob = new NodeRenderJobService(video, options.renderJob)
+  const publish = new NodePublishService(options.publish)
+  const renderJob = new NodeRenderJobService(video, {
+    ...options.renderJob,
+    publisher: options.renderJob?.publisher ?? publish,
+  })
 
   // Register in container
   container.registerBackend(backend)
@@ -125,6 +134,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     video,
     ai,
     language,
+    publish,
     renderJob,
   }
 }
@@ -138,6 +148,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
  */
 export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
   const video = new NodeVideoService(options.video)
+  const publish = new NodePublishService(options.publish)
 
   return {
     backend: new NodeBackendService(options.backend),
@@ -149,6 +160,10 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     video,
     ai: new NodeAIService(options.ai),
     language: new NodeLanguageService(options.language),
-    renderJob: new NodeRenderJobService(video, options.renderJob),
+    publish,
+    renderJob: new NodeRenderJobService(video, {
+      ...options.renderJob,
+      publisher: options.renderJob?.publisher ?? publish,
+    }),
   }
 }

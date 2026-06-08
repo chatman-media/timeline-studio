@@ -25,6 +25,7 @@ export function createBotRenderJobSnapshot(job: BotRenderJob): BotRenderJobSnaps
     status: job.status,
     progress: job.progress,
     ...(job.artifact ? { artifact: job.artifact } : {}),
+    ...(job.publications ? { publications: job.publications } : {}),
     ...(job.error ? { error: job.error } : {}),
     createdAt: job.createdAt,
     updatedAt: job.updatedAt,
