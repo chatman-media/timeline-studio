@@ -13,8 +13,8 @@ import type {
   Track,
   TrackType,
 } from "@/domains/video-editing/types"
-import { SubtitleClip } from "@/features/subtitles/types"
-import type { MusicClip, MusicFile, SubtitleStyle } from "@/features/timeline/types"
+import type { MusicClip, MusicFile } from "@/domains/video-editing/types/music"
+import type { SubtitleClip, SubtitleStyle } from "@/domains/video-editing/types/subtitles"
 
 // ============================================================================
 // FACTORY FUNCTIONS

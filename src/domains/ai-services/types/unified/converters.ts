@@ -5,15 +5,17 @@
  */
 
 import type { Fragment as DomainFragment, MontagePlan as DomainPlan } from "@/domains/ai-services/types/montage-planner"
-import type { MontagePlan as LegacyAIDirectorPlan, MontageClip } from "@/features/ai-director/types/montage-plan"
-import type { Fragment as FeatureFragment } from "@/features/montage-planner/types"
+import type { Fragment as FeatureFragment } from "@/domains/ai-services/types/montage-planning"
 import type {
   FragmentAnalysis,
   MomentScore,
+  MontageClip,
   UnifiedFragment,
   UnifiedMontagePlan,
   UnifiedMontageStyle,
 } from "./montage-plan"
+
+type LegacyAIDirectorPlan = UnifiedMontagePlan
 
 // ============================================================================
 // FRAGMENT CONVERTERS

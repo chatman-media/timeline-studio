@@ -12,7 +12,7 @@ import {
   useTimelineProject,
   useTimelineSelection,
   useTimelineTracks,
-} from "@/domains/video-editing"
+} from "@/features/timeline/providers/timeline-providers"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseTimeline")

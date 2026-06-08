@@ -114,6 +114,15 @@ adapters -> core
 - [x] Настроить CI cache для workspace scripts.
 - [x] Добавить CI gate по committed baseline; strict mode оставить на следующий burn-down этап.
 
+### F6: Boundary error burn-down
+
+**Цель:** убрать hard errors из package-boundaries report перед дальнейшим `ui -> domains` burn-down.
+
+- [x] Перенести domain-facing service config из app-shell в shared domain utility.
+- [x] Перенести domain-used montage/resources/color-scheme контракты из feature слоя в domain/shared.
+- [x] Убрать provider re-exports из `src/domains/video-editing`.
+- [x] Обновить committed baseline до warning-only отчета.
+
 ## Проверка каждого PR
 
 Минимальный набор для каждого Phase F slice:
@@ -134,13 +143,13 @@ bun run check:type
 
 CI использует `bun run check:boundaries:baseline`, который сравнивает отчет с `config/package-boundaries-baseline.json` и падает только при росте total/severity/edge counts. Strict mode останется выключенным до burn-down `domains -> ui`, `domains -> app-shell` и `ui -> domains`.
 
-Baseline на 2026-06-07:
+Baseline на 2026-06-08:
 
-- Scanned files: 1573
-- Violations: 490
-- `error`: 31
-- `warn`: 459
-- Edges: `domains -> app-shell` 3, `domains -> ui` 28, `ui -> domains` 459
+- Scanned files: 1580
+- Violations: 420
+- `error`: 0
+- `warn`: 420
+- Edges: `ui -> domains` 420
 
 Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 

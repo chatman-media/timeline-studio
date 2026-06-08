@@ -4,8 +4,8 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MontagePlan, PlannedClip, Sequence } from "@/features/montage-planner/types"
-import { MomentCategory, SequencePurpose, SequenceType } from "@/features/montage-planner/types"
+import type { MontagePlan, PlannedClip, Sequence } from "@/domains/ai-services/types/montage-planning"
+import { MomentCategory, SequencePurpose, SequenceType } from "@/domains/ai-services/types/montage-planning"
 
 import { applyPlanToTimeline } from "../index"
 

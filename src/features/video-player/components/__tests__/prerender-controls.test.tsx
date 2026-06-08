@@ -3,9 +3,9 @@
  */
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { usePlayer } from "@/domains/video-editing"
 // Import mocked modules
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"
 
 import { PrerenderControls } from "../prerender-controls"

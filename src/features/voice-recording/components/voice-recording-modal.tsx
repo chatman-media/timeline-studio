@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/media-management"
 import { useModals } from "@/domains/system-integration"
-import { useResources } from "@/domains/video-editing"
+import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { useAudioDevices } from "../hooks/use-audio-devices"
 import { useAudioPermissions } from "../hooks/use-audio-permissions"

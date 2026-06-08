@@ -16,7 +16,7 @@ vi.mock("@/config/providers", () => ({
   I18nProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-import { useTimelineProject } from "@/domains/video-editing"
+import { useTimelineProject } from "@/features/timeline/providers/timeline-providers"
 
 // Мокаем backend-sync ДО импорта компонентов
 vi.mock("@/adapters/tauri", () => {

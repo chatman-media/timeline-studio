@@ -6,14 +6,14 @@
  */
 
 import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
-import { getVideoEditingOrchestrator } from "@/domains/video-editing"
-import type { TimelineClip } from "@/domains/video-editing/types"
 import {
   MomentCategory,
   type MomentScore,
   type MontagePlan,
   type PlanGeneratorConfig,
-} from "@/features/montage-planner/types"
+} from "@/domains/ai-services/types/montage-planning"
+import { getVideoEditingOrchestrator } from "@/domains/video-editing"
+import type { TimelineClip } from "@/domains/video-editing/types"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedMoment } from "@/types/montage-planner-rust"
 import { MomentCategory as RustMomentCategory } from "@/types/montage-planner-rust"
@@ -258,9 +258,6 @@ async function applyPlanToTimeline(plan: MontagePlan): Promise<{
 
     // 1. Очищаем текущее выделение
     logger.debug("Clearing current selection")
-
-    // Получаем список существующих треков
-    const timelineProviders = await import("@/features/timeline/providers/timeline-providers")
 
     // Создаём треки для каждого sequence (если нужно)
     const sequenceTracks = new Map<string, string>() // sequenceId -> trackId

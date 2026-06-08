@@ -3,10 +3,6 @@
  * Bridges the montage planner with DI Container and shared AI services
  */
 
-import { createLogger } from "@/lib/tauri-logger"
-// REMOVED: import { null as any /* getAIContainer from deleted ai-core */, IUnifiedAIService, MediaAnalysisFactory } from "../../../../domains/ai-core/index" // ai-core module deleted - use backend AI proxy instead
-import { VideoAnalysisParams } from "../../../../domains/ai-services/index"
-import type { MediaFile } from "../../../../domains/video-editing/types/media"
 import type {
   AudioAnalysis,
   Fragment,
@@ -14,7 +10,11 @@ import type {
   MontageQualityAnalysis,
   VideoAnalysis,
   VideoCompositionAnalysis,
-} from "../../../../features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
+import { createLogger } from "@/lib/tauri-logger"
+// REMOVED: import { null as any /* getAIContainer from deleted ai-core */, IUnifiedAIService, MediaAnalysisFactory } from "../../../../domains/ai-core/index" // ai-core module deleted - use backend AI proxy instead
+import { VideoAnalysisParams } from "../../../../domains/ai-services/index"
+import type { MediaFile } from "../../../../domains/video-editing/types/media"
 
 const logger = createLogger("MontagePlannerAiIntegration")
 

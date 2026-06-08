@@ -5,7 +5,7 @@
 import { useCallback } from "react"
 
 import { type MediaFile, MediaType } from "@/domains/media-management"
-import { useResources } from "@/domains/video-editing"
+import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import type { TrackType } from "../../types"
 import { useClips } from "../clips/use-clips"

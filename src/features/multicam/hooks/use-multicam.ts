@@ -4,9 +4,9 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { usePlayer } from "@/domains/video-editing"
 import { useLinkedClips } from "@/features/timeline/hooks"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { multicamManager } from "../services/multicam-manager"
 import type { MulticamAngle } from "../types/multicam"

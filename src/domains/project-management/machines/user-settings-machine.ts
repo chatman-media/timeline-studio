@@ -8,8 +8,8 @@
 import { assign, createMachine } from "xstate"
 import { BrowserContext, BrowserTab, DEFAULT_TAB } from "@/domains/browser"
 import { DEFAULT_CONTENT_SIZES, type PreviewSize, type PreviewSizeKey } from "@/domains/media-management"
-import { DEFAULT_COLOR_SCHEME_ID, DEFAULT_QUICK_ACCESS_IDS } from "@/features/color-scheme/constants"
-import type { ColorScheme, ThemeMode } from "@/features/color-scheme/types"
+import type { ColorScheme, ThemeMode } from "@/domains/shared/types/color-scheme"
+import { DEFAULT_COLOR_SCHEME_ID, DEFAULT_QUICK_ACCESS_IDS } from "@/domains/shared/types/color-scheme"
 
 import { createLogger } from "@/lib/tauri-logger"
 

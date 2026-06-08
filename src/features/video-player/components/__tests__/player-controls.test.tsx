@@ -4,7 +4,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { type MediaFile, MediaType } from "@/domains/media-management"
-import { usePlayer } from "@/domains/video-editing"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { TimelineProjectProvider, TimelineProvider } from "@/features/timeline/providers/timeline-providers"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
 import { PlayerControls } from "../player-controls"

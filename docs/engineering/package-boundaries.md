@@ -1,9 +1,9 @@
 # Package Boundaries
 
 **Status:** Phase F baseline for [#150](https://github.com/chatman-media/timeline-studio/issues/150)
-**Updated:** 2026-06-07
+**Updated:** 2026-06-08
 
-This document defines the TypeScript package boundaries used during the modular architecture migration. Phase F5 adds workspace package shells under `packages/*` and `apps/*`; runtime code still lives under `src/*` and is reached through bridge wrappers so every migration PR can be verified before large file moves.
+This document defines the TypeScript package boundaries used during the modular architecture migration. Phase F6 removes hard `domains -> ui/app-shell` errors from the report; runtime code still lives under `src/*` and is reached through bridge wrappers so every migration PR can be verified before large file moves.
 
 ## Target Packages
 
@@ -61,3 +61,4 @@ This gate fails if total violations, severity counts or edge counts increase abo
 3. **F3 adapter contracts:** keep adapter implementations behind core ports; remove direct `ui -> adapters` imports.
 4. **F4 UI pilot package:** extract one feature vertical into the future `@timeline-studio/ui` shape without moving the whole app.
 5. **F5 workspace split:** create package/app `package.json` files, update build/test scripts, lockfiles and CI cache.
+6. **F6 boundary error burn-down:** remove hard `domains -> ui/app-shell` violations and keep the remaining `ui -> domains` coupling as warning-only follow-up work.

@@ -4,36 +4,6 @@
  * Домен для управления редактированием видео
  */
 
-export { PlayerProvider, usePlayer } from "@/features/timeline/providers/player-provider"
-export { ResourcesProvider, useResources } from "@/features/timeline/providers/resources-provider"
-// Экспорт провайдеров (реэкспорт из features для обратной совместимости)
-export {
-  TimelineClipsProvider,
-  TimelineEffectsProvider,
-  TimelineKeyframesProvider,
-  TimelineMarkersProvider,
-  TimelinePlaybackProvider,
-  TimelineProjectProvider,
-  TimelineProvider,
-  TimelineSelectionProvider,
-  TimelineTracksProvider,
-  useTimelineClips,
-  useTimelineEffects,
-  useTimelineKeyframes,
-  useTimelineMarkers,
-  useTimelinePlayback,
-  useTimelineProject,
-  useTimelineSelection,
-  useTimelineTracks,
-} from "@/features/timeline/providers/timeline-providers"
-export {
-  UndoRedoProvider,
-  useClipUndoRedo,
-  useKeyframeUndoRedo,
-  useTrackUndoRedo,
-  useUndoRedoContext,
-} from "@/features/timeline/providers/undo-redo-provider"
-export { useVideoEditingContext, VideoEditingProvider } from "@/features/timeline/providers/video-editing-provider"
 export type { UseUndoRedoReturn } from "./hooks/use-undo-redo"
 export { UndoRedoHelpers, useUndoRedo } from "./hooks/use-undo-redo"
 // Экспорт типов машин

@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { usePlayer } from "@/domains/video-editing"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 
 export interface UsePlayerSpeedRampingReturn {
   // Состояние

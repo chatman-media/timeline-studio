@@ -3,9 +3,9 @@ import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { MediaType } from "@/domains/media-management"
 import type { StyleTemplateResource } from "@/domains/shared/types/resources"
-import { useResources } from "@/domains/video-editing"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
+import { useResources } from "@/features/timeline/providers/resources-provider"
 import type { StyleTemplate } from "../types"
 
 interface StyleTemplatePreviewProps {

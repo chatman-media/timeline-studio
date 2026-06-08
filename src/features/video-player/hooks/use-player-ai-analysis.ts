@@ -15,7 +15,7 @@ import {
 } from "@/domains/ai-services/tauri/ai-director-commands"
 import type { KeyMoment, SceneInfo } from "@/domains/ai-services/types"
 import type { ObjectDetection } from "@/domains/ai-services/types/interfaces"
-import { usePlayer } from "@/domains/video-editing"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("video-player:use-player-ai-analysis")

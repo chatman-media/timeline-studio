@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { useTimelineMarkers as useDomainTimelineMarkers } from "@/domains/video-editing"
+import { useTimelineMarkers as useDomainTimelineMarkers } from "@/features/timeline/providers/timeline-providers"
 import { createMarker, type ExtendedTimelineMarker, type MarkerType } from "../../types/markers"
 
 export interface AddMarkerData {

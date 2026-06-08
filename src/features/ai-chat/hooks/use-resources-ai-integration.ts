@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { MediaType } from "@/domains/shared/types/media/types"
-import { useResources } from "@/domains/video-editing"
+import { useResources } from "@/features/timeline/providers/resources-provider"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 
 // Временная заглушка для setResourcesStateAccess

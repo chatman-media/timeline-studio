@@ -18,7 +18,7 @@ export type {
   TransitionPlan,
   VideoAnalysis,
   VideoCompositionAnalysis,
-} from "../../../../features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
 export { ContentAnalyzer } from "./content-analyzer"
 export { MomentDetector } from "./moment-detector"
 export { getMontagePlannerAI } from "./montage-planner-ai-integration"

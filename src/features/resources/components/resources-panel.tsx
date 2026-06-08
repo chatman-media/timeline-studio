@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
-
-import { useResources } from "@/domains/video-editing"
 import type { DraggableItem, DraggableType } from "@/features/drag-drop"
 import { useDropZone } from "@/features/drag-drop"
 import type { ResourceType, TimelineResource } from "@/features/resources/types"
+import { useResources } from "@/features/timeline/providers/resources-provider"
 import { ResourceThumbnail } from "./resource-thumbnail"
 
 /**
