@@ -7,6 +7,7 @@
 
 import type {
   BotRenderJobDestination,
+  BotRenderJobMediaInput,
   BotRenderJobOutput,
   BotRenderJobProjectInput,
   BotRenderJobReconnectState,
@@ -100,9 +101,20 @@ export type BotWorkflowRunResult =
 
 export interface BotWorkflowRunOptions {
   intake?: BotWorkflowIntakeOptions
+  mediaResolver?: BotMediaResolver
   projectAssembly?: BotProjectAssemblyOptions | false
   render?: BotRenderJobRunOptions
   includeReconnectState?: boolean
+}
+
+export interface BotMediaResolveContext {
+  workflow: BotWorkflowRequest
+  request: BotRenderJobRequest
+  index: number
+}
+
+export interface BotMediaResolver {
+  resolve(media: BotRenderJobMediaInput, context: BotMediaResolveContext): Promise<BotRenderJobMediaInput>
 }
 
 export type BotProjectAssemblyResolution = BotRenderJobOutput["resolution"] | readonly [number, number]

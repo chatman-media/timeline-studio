@@ -17,6 +17,9 @@ export interface BotWorkflowCommandOptions {
   pretty?: boolean
   pollInterval?: string
   timeout?: string
+  telegramBotToken?: string
+  mediaDir?: string
+  downloadRemoteMedia?: boolean
   rustRender?: boolean
   rustRenderCommand?: string
   rustRenderKind?: "timeline" | "timeline-render"
@@ -31,6 +34,9 @@ export const botWorkflowCommand = new Command("bot-workflow")
   .option("--pretty", "Pretty-print JSON output")
   .option("--poll-interval <ms>", "Render polling interval in milliseconds", "1000")
   .option("--timeout <ms>", "Render timeout in milliseconds", "3600000")
+  .option("--telegram-bot-token <token>", "Resolve Telegram file ids through the Telegram Bot API")
+  .option("--media-dir <path>", "Directory for resolved bot media downloads")
+  .option("--download-remote-media", "Download remote URL media before rendering")
   .option("--rust-render", "Run rendering through the Rust headless ts-render CLI")
   .option("--rust-render-command <path>", "Path/name for timeline or timeline-render command")
   .option("--rust-render-kind <kind>", "Rust render command kind: timeline or timeline-render")
@@ -62,8 +68,10 @@ export async function runBotWorkflowPayloadFile(
   options: BotWorkflowCommandOptions = {},
 ): Promise<BotWorkflowRunResult> {
   const payload = await readTelegramLikeBotPayload(payloadFile)
+  const botMediaResolver = createBotMediaResolverOptions(options)
   const services = await initNodeApp({
     autoConnect: false,
+    botMediaResolver,
     rustRender: options.rustRender
       ? {
           command: options.rustRenderCommand,
@@ -83,6 +91,24 @@ export async function runBotWorkflowPayloadFile(
     },
     includeReconnectState: true,
   })
+}
+
+function createBotMediaResolverOptions(options: BotWorkflowCommandOptions) {
+  if (!options.telegramBotToken && !options.mediaDir && !options.downloadRemoteMedia) {
+    return undefined
+  }
+
+  return {
+    ...(options.mediaDir ? { downloadDir: path.resolve(options.mediaDir) } : {}),
+    downloadRemoteUrls: options.downloadRemoteMedia ?? false,
+    ...(options.telegramBotToken
+      ? {
+          telegram: {
+            botToken: options.telegramBotToken,
+          },
+        }
+      : {}),
+  }
 }
 
 export async function readTelegramLikeBotPayload(payloadFile: string): Promise<TelegramLikeBotPayload> {

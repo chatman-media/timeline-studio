@@ -27,6 +27,7 @@ export class NodeBotWorkflowService {
     return runBotWorkflow(workflow, {
       renderJob: this.renderJob,
       intake: mergeOptions(this.defaults.intake, options.intake),
+      mediaResolver: options.mediaResolver ?? this.defaults.mediaResolver,
       projectAssembly: mergeProjectAssemblyOptions(this.defaults.projectAssembly, options.projectAssembly),
       render: mergeRenderOptions(this.defaults.render, options.render),
       includeReconnectState: options.includeReconnectState ?? this.defaults.includeReconnectState ?? true,
@@ -43,6 +44,7 @@ export class NodeBotWorkflowService {
     return runTelegramLikeBotWorkflow(payload, {
       renderJob: this.renderJob,
       intake: mergeOptions(this.defaults.intake, options.intake),
+      mediaResolver: options.mediaResolver ?? this.defaults.mediaResolver,
       projectAssembly: mergeProjectAssemblyOptions(this.defaults.projectAssembly, options.projectAssembly),
       render: mergeRenderOptions(this.defaults.render, options.render),
       includeReconnectState: options.includeReconnectState ?? this.defaults.includeReconnectState ?? true,

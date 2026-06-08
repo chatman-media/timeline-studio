@@ -94,6 +94,15 @@ bot message
 - [x] Научить Node fallback читать clips из `ProjectSchema.tracks`.
 - [x] Покрыть assembly, runner hydration и Node input extraction tests.
 
+### B8: Bot media resolver ([#185](https://github.com/chatman-media/timeline-studio/issues/185))
+
+**Цель:** перед render/project assembly превращать Telegram-like `file_id`/remote URL media в renderable локальные paths.
+
+- [x] Добавить core media resolver boundary перед project assembly/render.
+- [x] Добавить Node resolver для Telegram `getFile`/file downloads и opt-in URL downloads.
+- [x] Прокинуть resolver через `NodeBotWorkflowService` и CLI `bot-workflow`.
+- [x] Покрыть resolver, runner hydration, Node download и CLI contract tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -104,6 +113,7 @@ bot message
 - [#179](https://github.com/chatman-media/timeline-studio/issues/179) - B5: Rust render adapter for bot jobs
 - [#181](https://github.com/chatman-media/timeline-studio/issues/181) - B6: Bot workflow runner
 - [#183](https://github.com/chatman-media/timeline-studio/issues/183) - B7: Bot project assembly
+- [#185](https://github.com/chatman-media/timeline-studio/issues/185) - B8: Bot media resolver
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
