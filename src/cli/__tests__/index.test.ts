@@ -7,6 +7,7 @@
 
 import { Command } from "commander"
 import { describe, expect, it } from "vitest"
+import { botWorkerCommand } from "../commands/bot-worker"
 import { botWorkflowCommand } from "../commands/bot-workflow"
 import { infoCommand } from "../commands/info"
 import { renderCommand } from "../commands/render"
@@ -62,14 +63,16 @@ describe("Timeline Studio CLI", () => {
       program.addCommand(renderCommand)
       program.addCommand(renderJobCommand)
       program.addCommand(botWorkflowCommand)
+      program.addCommand(botWorkerCommand)
 
       const commands = program.commands
-      expect(commands).toHaveLength(5)
+      expect(commands).toHaveLength(6)
       expect(commands.map((cmd) => cmd.name())).toContain("info")
       expect(commands.map((cmd) => cmd.name())).toContain("transcribe")
       expect(commands.map((cmd) => cmd.name())).toContain("render")
       expect(commands.map((cmd) => cmd.name())).toContain("render-job")
       expect(commands.map((cmd) => cmd.name())).toContain("bot-workflow")
+      expect(commands.map((cmd) => cmd.name())).toContain("bot-worker")
     })
   })
 

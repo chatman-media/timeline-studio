@@ -62,6 +62,8 @@ describe("bot workflow intake", () => {
 
   it("creates a render job request from template, media, params, and output hints", () => {
     const workflow = createBotWorkflowRequestFromTelegramLikePayload({
+      chat: { id: "chat-1" },
+      message_id: "message-1",
       caption: "template=promo destination=telegram audience=founders",
       document: {
         url: "https://cdn.example.com/input.mov",
@@ -87,6 +89,8 @@ describe("bot workflow intake", () => {
           },
         ],
         params: {
+          telegramChatId: "chat-1",
+          telegramReplyToMessageId: "message-1",
           audience: "founders",
         },
         output: {
@@ -100,6 +104,7 @@ describe("bot workflow intake", () => {
   it("prefers structured workflow fields over text hints", () => {
     const result = createBotRenderJobRequest({
       source: "telegram",
+      chatId: "chat-1",
       text: "template=text-template destination=file tone=calm",
       template: {
         id: "structured-template",
@@ -109,6 +114,7 @@ describe("bot workflow intake", () => {
         },
       },
       params: {
+        telegramChatId: "override-chat",
         tone: "urgent",
       },
       output: {
@@ -123,6 +129,7 @@ describe("bot workflow intake", () => {
         source: "bot",
         templateId: "structured-template",
         params: {
+          telegramChatId: "override-chat",
           tone: "urgent",
           ratio: "9:16",
         },

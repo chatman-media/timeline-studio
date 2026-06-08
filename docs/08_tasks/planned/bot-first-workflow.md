@@ -113,6 +113,17 @@ bot message
 - [x] Прокинуть status options через `NodeBotWorkflowService`, `initNodeApp` и CLI opt-in flags.
 - [x] Покрыть validation, render progress, Node Telegram delivery и CLI contract tests.
 
+### B10: Telegram bot worker entrypoint ([#189](https://github.com/chatman-media/timeline-studio/issues/189))
+
+**Цель:** принять настоящий Telegram `Update`/`getUpdates` batch и запустить bot-first workflow без промежуточного hand-written payload JSON.
+
+- [x] Добавить Node worker, который конвертирует Telegram `Update` в `TelegramLikeBotPayload`.
+- [x] Добавить Telegram Bot API `getUpdates` client с injectable `fetch`.
+- [x] Поддержать token-based Telegram `sendVideo` publishing для возврата готового ролика в чат.
+- [x] Добавить CLI `bot-worker` для `--update-file` и `--poll-once`.
+- [x] Автоматически прокидывать Telegram `chatId` в render params для publish phase.
+- [x] Покрыть update conversion, worker handling, polling, Bot API publishing, CLI contract tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -125,6 +136,7 @@ bot message
 - [#183](https://github.com/chatman-media/timeline-studio/issues/183) - B7: Bot project assembly
 - [#185](https://github.com/chatman-media/timeline-studio/issues/185) - B8: Bot media resolver
 - [#187](https://github.com/chatman-media/timeline-studio/issues/187) - B9: Bot status notifier
+- [#189](https://github.com/chatman-media/timeline-studio/issues/189) - B10: Telegram bot worker entrypoint
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

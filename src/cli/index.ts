@@ -19,7 +19,7 @@
  */
 
 import { Command } from "commander"
-
+import { botWorkerCommand } from "./commands/bot-worker"
 import { botWorkflowCommand } from "./commands/bot-workflow"
 import { infoCommand } from "./commands/info"
 import { renderCommand } from "./commands/render"
@@ -36,6 +36,7 @@ program.addCommand(transcribeCommand)
 program.addCommand(renderCommand)
 program.addCommand(renderJobCommand)
 program.addCommand(botWorkflowCommand)
+program.addCommand(botWorkerCommand)
 
 // Запуск
 program.parse(process.argv)

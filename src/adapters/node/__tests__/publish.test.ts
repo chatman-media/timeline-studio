@@ -96,6 +96,59 @@ describe("NodePublishService", () => {
     })
   })
 
+  it("publishes telegram artifacts through Bot API fetch", async () => {
+    const fetchMock = vi.fn(async (_url: string, _init?: { method?: string; body?: BodyInit }) => ({
+      ok: true,
+      status: 200,
+      async json() {
+        return { ok: true, result: { message_id: 99 } }
+      },
+    }))
+    const service = new NodePublishService({
+      telegram: {
+        botToken: "token-1",
+      },
+      fetch: fetchMock,
+    })
+
+    await expect(
+      service.publish({
+        destination: "telegram",
+        artifact: {
+          type: "file",
+          path: artifactPath,
+          destination: "file",
+          mimeType: "video/mp4",
+        },
+        metadata: {
+          chatId: "chat-1",
+          caption: "Done",
+        },
+      }),
+    ).resolves.toMatchObject({
+      destination: "telegram",
+      status: "done",
+      artifact: {
+        type: "file",
+        path: artifactPath,
+        destination: "telegram",
+        mimeType: "video/mp4",
+      },
+      providerId: "99",
+    })
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.telegram.org/bottoken-1/sendVideo",
+      expect.objectContaining({
+        method: "POST",
+      }),
+    )
+    const body = fetchMock.mock.calls[0]?.[1]?.body as FormData
+    expect(body.get("chat_id")).toBe("chat-1")
+    expect(body.get("caption")).toBe("Done")
+    expect(body.get("video")).toBeInstanceOf(Blob)
+  })
+
   it("returns failed results for incomplete telegram configuration", async () => {
     const service = new NodePublishService()
 

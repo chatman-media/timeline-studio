@@ -4,6 +4,7 @@
 
 import { Command } from "commander"
 import { describe, expect, it } from "vitest"
+import { botWorkerCommand } from "../commands/bot-worker"
 import { botWorkflowCommand } from "../commands/bot-workflow"
 import { infoCommand } from "../commands/info"
 import { renderCommand } from "../commands/render"
@@ -35,9 +36,10 @@ describe("Timeline Studio CLI Integration", () => {
       program.addCommand(renderCommand)
       program.addCommand(renderJobCommand)
       program.addCommand(botWorkflowCommand)
+      program.addCommand(botWorkerCommand)
 
       const commands = program.commands
-      expect(commands).toHaveLength(5)
+      expect(commands).toHaveLength(6)
 
       const commandNames = commands.map((cmd) => cmd.name())
       expect(commandNames).toContain("info")
@@ -45,6 +47,7 @@ describe("Timeline Studio CLI Integration", () => {
       expect(commandNames).toContain("render")
       expect(commandNames).toContain("render-job")
       expect(commandNames).toContain("bot-workflow")
+      expect(commandNames).toContain("bot-worker")
     })
   })
 
@@ -122,6 +125,16 @@ describe("Timeline Studio CLI Integration", () => {
       expect(options.some((opt) => opt.long === "--status-file")).toBe(true)
       expect(options.some((opt) => opt.long === "--default-destination")).toBe(true)
     })
+
+    it("should have bot-worker command properly configured", () => {
+      expect(botWorkerCommand.name()).toBe("bot-worker")
+      expect(botWorkerCommand.description()).toBe("Run a Telegram bot worker for bot-first workflows")
+
+      const options = botWorkerCommand.options
+      expect(options.some((opt) => opt.long === "--update-file")).toBe(true)
+      expect(options.some((opt) => opt.long === "--poll-once")).toBe(true)
+      expect(options.some((opt) => opt.long === "--telegram-bot-token")).toBe(true)
+    })
   })
 
   describe("Command options", () => {
@@ -173,6 +186,7 @@ describe("Timeline Studio CLI Integration", () => {
       program.addCommand(renderCommand)
       program.addCommand(renderJobCommand)
       program.addCommand(botWorkflowCommand)
+      program.addCommand(botWorkerCommand)
 
       const helpText = program.helpInformation()
 
@@ -191,6 +205,7 @@ describe("Timeline Studio CLI Integration", () => {
       program.addCommand(renderCommand)
       program.addCommand(renderJobCommand)
       program.addCommand(botWorkflowCommand)
+      program.addCommand(botWorkerCommand)
 
       const helpText = program.helpInformation()
 
@@ -199,6 +214,7 @@ describe("Timeline Studio CLI Integration", () => {
       expect(helpText).toContain("render")
       expect(helpText).toContain("render-job")
       expect(helpText).toContain("bot-workflow")
+      expect(helpText).toContain("bot-worker")
     })
   })
 
@@ -267,8 +283,9 @@ describe("Timeline Studio CLI Integration", () => {
         .addCommand(renderCommand)
         .addCommand(renderJobCommand)
         .addCommand(botWorkflowCommand)
+        .addCommand(botWorkerCommand)
 
-      expect(program.commands).toHaveLength(5)
+      expect(program.commands).toHaveLength(6)
     })
   })
 
@@ -279,6 +296,7 @@ describe("Timeline Studio CLI Integration", () => {
       expect(renderCommand.name()).toBe("render")
       expect(renderJobCommand.name()).toBe("render-job")
       expect(botWorkflowCommand.name()).toBe("bot-workflow")
+      expect(botWorkerCommand.name()).toBe("bot-worker")
     })
 
     it("should maintain command descriptions", () => {
@@ -287,6 +305,7 @@ describe("Timeline Studio CLI Integration", () => {
       expect(renderCommand.description()).toBeTruthy()
       expect(renderJobCommand.description()).toBeTruthy()
       expect(botWorkflowCommand.description()).toBeTruthy()
+      expect(botWorkerCommand.description()).toBeTruthy()
     })
   })
 })
