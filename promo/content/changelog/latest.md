@@ -1,3 +1,10 @@
+# [3.63.0](https://github.com/chatman-media/timeline-studio/compare/v3.62.0...v3.63.0) (2026-06-08)
+
+
+### Features
+
+* add bot-first intake contract ([#174](https://github.com/chatman-media/timeline-studio/issues/174)) ([866f4dd](https://github.com/chatman-media/timeline-studio/commit/866f4dd3ee1303953efe0efa7a13b8fc51e316d6))
+
 # [3.62.0](https://github.com/chatman-media/timeline-studio/compare/v3.61.1...v3.62.0) (2026-06-08)
 
 
