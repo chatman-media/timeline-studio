@@ -11,6 +11,8 @@ export type BotRenderJobStatus = "queued" | "preparing" | "rendering" | "publish
 
 export type BotRenderJobDestination = "file" | "telegram" | "youtube" | "tiktok" | "vimeo"
 
+export type BotPublishStatus = "done" | "failed" | "unsupported"
+
 export interface BotRenderJobMediaInput {
   type: "file" | "url"
   value: string
@@ -54,6 +56,34 @@ export interface BotRenderJobArtifact {
   mimeType?: string
 }
 
+export interface BotPublishMetadata {
+  title?: string
+  description?: string
+  caption?: string
+  chatId?: string
+  tags?: string[]
+  visibility?: "private" | "unlisted" | "public"
+  provider?: Record<string, unknown>
+}
+
+export interface BotPublishRequest {
+  jobId?: string
+  destination: BotRenderJobDestination
+  artifact: BotRenderJobArtifact
+  metadata?: BotPublishMetadata
+  params?: Record<string, unknown>
+}
+
+export interface BotPublishResult {
+  destination: BotRenderJobDestination
+  status: BotPublishStatus
+  artifact?: BotRenderJobArtifact
+  providerId?: string
+  url?: string
+  error?: string
+  metadata?: BotPublishMetadata
+}
+
 export interface BotRenderJobEvent {
   jobId: string
   sequence: number
@@ -69,6 +99,7 @@ export interface BotRenderJobSnapshot {
   status: BotRenderJobStatus
   progress: number
   artifact?: BotRenderJobArtifact
+  publications?: BotPublishResult[]
   error?: string
   createdAt: string
   updatedAt: string
@@ -104,6 +135,7 @@ export interface BotRenderJob {
   progress: number
   request: BotRenderJobRequest
   artifact?: BotRenderJobArtifact
+  publications?: BotPublishResult[]
   error?: string
   createdAt: string
   updatedAt: string

@@ -4,6 +4,7 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { IVideoService, RenderJob as VideoRenderJob } from "@/core/ports"
 import { InMemoryBotRenderJobEventStream } from "@/core/services"
+import { NodePublishService } from "../publish"
 import { NodeRenderJobService } from "../render-job"
 
 function createVideoService(videoJob: VideoRenderJob): IVideoService {
@@ -83,14 +84,14 @@ describe("NodeRenderJobService", () => {
       {
         source: "cli",
         project: { type: "file", path: projectPath },
-        output: { format: "mp4", destination: "telegram" },
+        output: { format: "mp4" },
       },
       { pollIntervalMs: 1, timeoutMs: 100 },
     )
 
     expect(result.job.status).toBe("done")
     expect(result.job.artifact?.path).toBe(path.join(tempDir, "bot-job-2.mp4"))
-    expect(result.job.artifact?.destination).toBe("telegram")
+    expect(result.job.artifact?.destination).toBe("file")
     expect(video.renderProject).toHaveBeenCalledWith(
       { clips: [{ path: "/clip.mov" }] },
       path.join(tempDir, "bot-job-2.mp4"),
@@ -169,6 +170,92 @@ describe("NodeRenderJobService", () => {
       eventCount: 4,
     })
     expect(onEvent).toHaveBeenCalledTimes(4)
+  })
+
+  it("publishes a rendered artifact to telegram destination", async () => {
+    const videoJob: VideoRenderJob = {
+      id: "video-job-6",
+      status: "completed",
+      progress: 100,
+    }
+    const video = createVideoService(videoJob)
+    const stream = new InMemoryBotRenderJobEventStream()
+    const telegramClient = {
+      sendVideo: vi.fn().mockResolvedValue({
+        messageId: "telegram-message-1",
+        url: "https://t.me/channel/1",
+        metadata: { chatId: "chat-1" },
+      }),
+    }
+    const publisher = new NodePublishService({
+      telegram: {
+        client: telegramClient,
+      },
+    })
+    const service = new NodeRenderJobService(video, {
+      outputDir: tempDir,
+      idFactory: () => "bot-job-6",
+      publisher,
+    })
+
+    const result = await service.run(
+      {
+        source: "bot",
+        project: { type: "inline", schema: { clips: [{ path: "/video.mp4" }] } },
+        params: {
+          telegramChatId: "chat-1",
+          caption: "Ready",
+        },
+        output: { format: "mp4", destination: "telegram" },
+      },
+      { pollIntervalMs: 1, timeoutMs: 100, eventSinks: [stream] },
+    )
+
+    expect(result.job.status).toBe("done")
+    expect(result.events.map((event) => event.status)).toEqual([
+      "queued",
+      "preparing",
+      "rendering",
+      "rendering",
+      "publishing",
+      "done",
+    ])
+    expect(result.job.artifact).toEqual({
+      type: "url",
+      url: "https://t.me/channel/1",
+      destination: "telegram",
+      mimeType: "video/mp4",
+    })
+    expect(result.job.publications).toEqual([
+      {
+        destination: "telegram",
+        status: "done",
+        artifact: result.job.artifact,
+        providerId: "telegram-message-1",
+        url: "https://t.me/channel/1",
+        metadata: {
+          caption: "Ready",
+          chatId: "chat-1",
+          provider: { chatId: "chat-1" },
+        },
+      },
+    ])
+    expect(telegramClient.sendVideo).toHaveBeenCalledWith({
+      path: path.join(tempDir, "bot-job-6.mp4"),
+      chatId: "chat-1",
+      caption: "Ready",
+      mimeType: "video/mp4",
+      metadata: {
+        caption: "Ready",
+        chatId: "chat-1",
+      },
+    })
+    expect(stream.getSnapshot("bot-job-6")).toMatchObject({
+      status: "done",
+      artifact: { type: "url", destination: "telegram" },
+      publications: [{ destination: "telegram", status: "done" }],
+      lastEvent: { status: "done" },
+    })
   })
 
   it("can cancel a provider render job", async () => {

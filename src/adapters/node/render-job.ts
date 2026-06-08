@@ -2,10 +2,12 @@ import crypto from "node:crypto"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { IRenderJobService, IVideoService, RenderJob as VideoRenderJob } from "@/core/ports"
+import type { IPublishService, IRenderJobService, IVideoService, RenderJob as VideoRenderJob } from "@/core/ports"
 import { createBotRenderJobSnapshot } from "@/core/services"
 import type {
+  BotPublishMetadata,
   BotRenderJob,
+  BotRenderJobArtifact,
   BotRenderJobEvent,
   BotRenderJobEventSink,
   BotRenderJobRequest,
@@ -18,6 +20,7 @@ export interface NodeRenderJobServiceOptions {
   outputDir?: string
   idFactory?: () => string
   now?: () => string
+  publisher?: IPublishService
 }
 
 const DEFAULT_POLL_INTERVAL_MS = 1000
@@ -64,6 +67,7 @@ export class NodeRenderJobService implements IRenderJobService {
   private outputDir: string
   private idFactory: () => string
   private now: () => string
+  private publisher?: IPublishService
 
   constructor(
     private readonly video: IVideoService,
@@ -72,6 +76,7 @@ export class NodeRenderJobService implements IRenderJobService {
     this.outputDir = options.outputDir ?? process.cwd()
     this.idFactory = options.idFactory ?? (() => crypto.randomUUID())
     this.now = options.now ?? (() => new Date().toISOString())
+    this.publisher = options.publisher
   }
 
   async run(request: BotRenderJobRequest, options: BotRenderJobRunOptions = {}): Promise<BotRenderJobResult> {
@@ -103,14 +108,15 @@ export class NodeRenderJobService implements IRenderJobService {
         return { job, events: [...job.events] }
       }
 
-      await this.waitForVideoJob(job, providerJobId, options)
+      const shouldPublish = this.shouldPublish(request)
+      await this.waitForVideoJob(job, providerJobId, options, shouldPublish)
 
-      if (job.status === "done") {
-        job.artifact = {
-          type: "file",
-          path: outputPath,
-          destination: request.output.destination ?? "file",
-          mimeType: "video/mp4",
+      if (job.status === "done" || (shouldPublish && job.status === "rendering")) {
+        const artifact = this.createFileArtifact(outputPath)
+        if (shouldPublish) {
+          await this.publishArtifact(job, artifact, request)
+        } else {
+          job.artifact = artifact
         }
         await this.publishSnapshot(job)
       }
@@ -188,6 +194,7 @@ export class NodeRenderJobService implements IRenderJobService {
     job: BotRenderJob,
     providerJobId: string,
     options: BotRenderJobRunOptions,
+    shouldPublish: boolean,
   ): Promise<void> {
     const pollIntervalMs = options.pollIntervalMs ?? DEFAULT_POLL_INTERVAL_MS
     const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS
@@ -199,13 +206,17 @@ export class NodeRenderJobService implements IRenderJobService {
       const videoJob = await this.readVideoJob(providerJobId)
 
       if (!videoJob) {
-        await this.emit(job, "done", 100, "Render job completed")
+        await this.emit(job, shouldPublish ? "rendering" : "done", shouldPublish ? 90 : 100, "Render job completed")
         return
       }
 
       const status = normalizeVideoStatus(videoJob.status)
       const progress = typeof videoJob.progress === "number" ? videoJob.progress : job.progress
-      await this.emit(job, status, status === "done" ? 100 : progress, `Render status: ${status}`)
+      if (status === "done" && shouldPublish) {
+        await this.emit(job, "rendering", 90, "Render job completed")
+      } else {
+        await this.emit(job, status, status === "done" ? 100 : progress, `Render status: ${status}`)
+      }
 
       if (status === "done") return
       if (status === "cancelled") return
@@ -226,6 +237,73 @@ export class NodeRenderJobService implements IRenderJobService {
       const activeJobs = await this.video.getActiveJobs()
       return activeJobs.find((job) => job.id === providerJobId) ?? null
     }
+  }
+
+  private shouldPublish(request: BotRenderJobRequest): boolean {
+    return Boolean(request.output.destination && request.output.destination !== "file")
+  }
+
+  private createFileArtifact(outputPath: string): BotRenderJobArtifact {
+    return {
+      type: "file",
+      path: outputPath,
+      destination: "file",
+      mimeType: "video/mp4",
+    }
+  }
+
+  private async publishArtifact(
+    job: BotRenderJob,
+    artifact: BotRenderJobArtifact,
+    request: BotRenderJobRequest,
+  ): Promise<void> {
+    const destination = request.output.destination
+    if (!destination || destination === "file") {
+      job.artifact = artifact
+      return
+    }
+
+    if (!this.publisher) {
+      throw new Error(`Publish service is not configured for ${destination}`)
+    }
+
+    await this.emit(job, "publishing", 95, `Publishing render artifact to ${destination}`)
+    const publication = await this.publisher.publish({
+      jobId: job.id,
+      destination,
+      artifact,
+      metadata: this.resolvePublishMetadata(request),
+      params: request.params,
+    })
+
+    job.publications = [...(job.publications ?? []), publication]
+
+    if (publication.status !== "done" || !publication.artifact) {
+      throw new Error(publication.error ?? `Publishing to ${destination} failed`)
+    }
+
+    job.artifact = publication.artifact
+    await this.emit(job, "done", 100, `Published render artifact to ${destination}`)
+  }
+
+  private resolvePublishMetadata(request: BotRenderJobRequest): BotPublishMetadata {
+    const params = request.params ?? {}
+    const metadata: BotPublishMetadata = {}
+    const title = stringParam(params.title)
+    const description = stringParam(params.description)
+    const caption = stringParam(params.caption)
+    const chatId = stringParam(params.chatId) ?? stringParam(params.telegramChatId)
+    const tags = stringArrayParam(params.tags)
+    const visibility = visibilityParam(params.visibility)
+
+    if (title) metadata.title = title
+    if (description) metadata.description = description
+    if (caption) metadata.caption = caption
+    if (chatId) metadata.chatId = chatId
+    if (tags) metadata.tags = tags
+    if (visibility) metadata.visibility = visibility
+
+    return metadata
   }
 
   private async emit(job: BotRenderJob, status: BotRenderJobStatus, progress: number, message: string): Promise<void> {
@@ -275,4 +353,28 @@ export class NodeRenderJobService implements IRenderJobService {
       await sink.publishSnapshot?.(snapshot)
     }
   }
+}
+
+function stringParam(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : undefined
+}
+
+function stringArrayParam(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) {
+    const tags = value.filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+    return tags.length > 0 ? tags.map((item) => item.trim()) : undefined
+  }
+
+  if (typeof value === "string" && value.trim().length > 0) {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+  }
+
+  return undefined
+}
+
+function visibilityParam(value: unknown): "private" | "unlisted" | "public" | undefined {
+  return value === "private" || value === "unlisted" || value === "public" ? value : undefined
 }
