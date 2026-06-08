@@ -3,9 +3,11 @@ import fs from "node:fs/promises"
 import path from "node:path"
 
 import type { IRenderJobService, IVideoService, RenderJob as VideoRenderJob } from "@/core/ports"
+import { createBotRenderJobSnapshot } from "@/core/services"
 import type {
   BotRenderJob,
   BotRenderJobEvent,
+  BotRenderJobEventSink,
   BotRenderJobRequest,
   BotRenderJobResult,
   BotRenderJobRunOptions,
@@ -52,6 +54,13 @@ function isCancelled(job: BotRenderJob): boolean {
 
 export class NodeRenderJobService implements IRenderJobService {
   private jobs = new Map<string, BotRenderJob>()
+  private jobEventHandlers = new Map<
+    string,
+    {
+      onEvent?: BotRenderJobRunOptions["onEvent"]
+      eventSinks: BotRenderJobEventSink[]
+    }
+  >()
   private outputDir: string
   private idFactory: () => string
   private now: () => string
@@ -67,9 +76,17 @@ export class NodeRenderJobService implements IRenderJobService {
 
   async run(request: BotRenderJobRequest, options: BotRenderJobRunOptions = {}): Promise<BotRenderJobResult> {
     const job = this.createJob(request)
+    this.jobEventHandlers.set(job.id, {
+      onEvent: options.onEvent,
+      eventSinks: options.eventSinks ?? [],
+    })
+    const queuedEvent = job.events.at(-1)
+    if (queuedEvent) {
+      await this.dispatch(job, queuedEvent)
+    }
 
     try {
-      await this.emit(job, "preparing", 5, "Preparing render job", options)
+      await this.emit(job, "preparing", 5, "Preparing render job")
       const projectSchema = await this.resolveProjectSchema(request)
       const outputPath = this.resolveOutputPath(request, job.id)
 
@@ -77,7 +94,7 @@ export class NodeRenderJobService implements IRenderJobService {
         return { job, events: [...job.events] }
       }
 
-      await this.emit(job, "rendering", 10, "Starting video render", options)
+      await this.emit(job, "rendering", 10, "Starting video render")
       const providerJobId = await this.video.renderProject(projectSchema, outputPath)
       job.providerJobId = providerJobId
 
@@ -95,10 +112,11 @@ export class NodeRenderJobService implements IRenderJobService {
           destination: request.output.destination ?? "file",
           mimeType: "video/mp4",
         }
+        await this.publishSnapshot(job)
       }
     } catch (error) {
       job.error = errorMessage(error)
-      await this.emit(job, "failed", job.progress, job.error, options)
+      await this.emit(job, "failed", job.progress, job.error)
     }
 
     return {
@@ -121,13 +139,8 @@ export class NodeRenderJobService implements IRenderJobService {
       job.status = "cancelled"
       job.updatedAt = timestamp
       job.progress = Math.min(job.progress, 99)
-      job.events.push({
-        jobId: job.id,
-        status: "cancelled",
-        progress: job.progress,
-        message: "Render job cancelled",
-        timestamp,
-      })
+      const event = this.createEvent(job, "cancelled", job.progress, "Render job cancelled", timestamp)
+      await this.dispatch(job, event)
     }
     return cancelled
   }
@@ -145,13 +158,7 @@ export class NodeRenderJobService implements IRenderJobService {
     }
 
     this.jobs.set(job.id, job)
-    job.events.push({
-      jobId: job.id,
-      status: "queued",
-      progress: 0,
-      message: "Render job queued",
-      timestamp: now,
-    })
+    this.createEvent(job, "queued", 0, "Render job queued", now)
 
     return job
   }
@@ -192,13 +199,13 @@ export class NodeRenderJobService implements IRenderJobService {
       const videoJob = await this.readVideoJob(providerJobId)
 
       if (!videoJob) {
-        await this.emit(job, "done", 100, "Render job completed", options)
+        await this.emit(job, "done", 100, "Render job completed")
         return
       }
 
       const status = normalizeVideoStatus(videoJob.status)
       const progress = typeof videoJob.progress === "number" ? videoJob.progress : job.progress
-      await this.emit(job, status, status === "done" ? 100 : progress, `Render status: ${status}`, options)
+      await this.emit(job, status, status === "done" ? 100 : progress, `Render status: ${status}`)
 
       if (status === "done") return
       if (status === "cancelled") return
@@ -221,27 +228,51 @@ export class NodeRenderJobService implements IRenderJobService {
     }
   }
 
-  private async emit(
-    job: BotRenderJob,
-    status: BotRenderJobStatus,
-    progress: number,
-    message: string,
-    options: BotRenderJobRunOptions,
-  ): Promise<void> {
+  private async emit(job: BotRenderJob, status: BotRenderJobStatus, progress: number, message: string): Promise<void> {
     const timestamp = this.now()
     job.status = status
     job.progress = Math.max(0, Math.min(100, progress))
     job.updatedAt = timestamp
+    const event = this.createEvent(job, status, job.progress, message, timestamp)
+    await this.dispatch(job, event)
+  }
 
+  private createEvent(
+    job: BotRenderJob,
+    status: BotRenderJobStatus,
+    progress: number,
+    message: string,
+    timestamp: string,
+  ): BotRenderJobEvent {
     const event: BotRenderJobEvent = {
       jobId: job.id,
+      sequence: job.events.length,
       status,
-      progress: job.progress,
+      progress,
       message,
       timestamp,
     }
     job.events.push(event)
+    return event
+  }
 
-    await options.onEvent?.(event, job)
+  private async dispatch(job: BotRenderJob, event: BotRenderJobEvent): Promise<void> {
+    const handlers = this.jobEventHandlers.get(job.id)
+    const snapshot = createBotRenderJobSnapshot(job)
+
+    await handlers?.onEvent?.(event, job)
+
+    for (const sink of handlers?.eventSinks ?? []) {
+      await sink.publish(event, snapshot)
+    }
+  }
+
+  private async publishSnapshot(job: BotRenderJob): Promise<void> {
+    const handlers = this.jobEventHandlers.get(job.id)
+    const snapshot = createBotRenderJobSnapshot(job)
+
+    for (const sink of handlers?.eventSinks ?? []) {
+      await sink.publishSnapshot?.(snapshot)
+    }
   }
 }

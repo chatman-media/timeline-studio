@@ -56,10 +56,45 @@ export interface BotRenderJobArtifact {
 
 export interface BotRenderJobEvent {
   jobId: string
+  sequence: number
   status: BotRenderJobStatus
   progress: number
   message?: string
   timestamp: string
+}
+
+export interface BotRenderJobSnapshot {
+  jobId: string
+  providerJobId?: string
+  status: BotRenderJobStatus
+  progress: number
+  artifact?: BotRenderJobArtifact
+  error?: string
+  createdAt: string
+  updatedAt: string
+  eventCount: number
+  lastEvent?: BotRenderJobEvent
+  canCancel: boolean
+  canRetry: boolean
+}
+
+export interface BotRenderJobReconnectState {
+  snapshot: BotRenderJobSnapshot | null
+  events: BotRenderJobEvent[]
+}
+
+export interface BotRenderJobEventSink {
+  publish(event: BotRenderJobEvent, snapshot: BotRenderJobSnapshot): void | Promise<void>
+  publishSnapshot?(snapshot: BotRenderJobSnapshot): void | Promise<void>
+}
+
+export interface BotRenderJobEventStreamOptions {
+  maxEventsPerJob?: number
+}
+
+export interface BotRenderJobEventQuery {
+  afterSequence?: number
+  limit?: number
 }
 
 export interface BotRenderJob {
@@ -79,6 +114,7 @@ export interface BotRenderJobRunOptions {
   pollIntervalMs?: number
   timeoutMs?: number
   onEvent?: (event: BotRenderJobEvent, job: BotRenderJob) => void | Promise<void>
+  eventSinks?: BotRenderJobEventSink[]
 }
 
 export interface BotRenderJobResult {
