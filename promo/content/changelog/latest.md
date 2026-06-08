@@ -1,3 +1,10 @@
+# [3.75.0](https://github.com/chatman-media/timeline-studio/compare/v3.74.0...v3.75.0) (2026-06-08)
+
+
+### Features
+
+* isolate telegram bot update errors ([#198](https://github.com/chatman-media/timeline-studio/issues/198)) ([136316c](https://github.com/chatman-media/timeline-studio/commit/136316c9f4fd004aaa280f04778ef5906b1b61e2))
+
 # [3.74.0](https://github.com/chatman-media/timeline-studio/compare/v3.73.0...v3.74.0) (2026-06-08)
 
 
