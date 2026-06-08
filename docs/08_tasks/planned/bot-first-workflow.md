@@ -75,6 +75,16 @@ bot message
 - [x] Добавить CLI-флаги `render-job --rust-render`.
 - [x] Покрыть completed/failed/cancel scenarios.
 
+### B6: Bot workflow runner ([#181](https://github.com/chatman-media/timeline-studio/issues/181))
+
+**Цель:** связать Telegram-like payload -> intake -> render job -> event stream -> result в один worker-friendly workflow.
+
+- [x] Добавить core runner поверх `BotWorkflowRequest` и `IRenderJobService`.
+- [x] Добавить Node service wiring для CLI/worker использования без React/Tauri состояния.
+- [x] Добавить CLI-команду `bot-workflow <payload.json>` с JSON output/status file.
+- [x] Возвращать validation errors, render result и reconnect state для бота.
+- [x] Покрыть success/validation/event stream/CLI contract tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -83,6 +93,7 @@ bot message
 - [#175](https://github.com/chatman-media/timeline-studio/issues/175) - B3: Worker event stream
 - [#177](https://github.com/chatman-media/timeline-studio/issues/177) - B4: Publishing destinations
 - [#179](https://github.com/chatman-media/timeline-studio/issues/179) - B5: Rust render adapter for bot jobs
+- [#181](https://github.com/chatman-media/timeline-studio/issues/181) - B6: Bot workflow runner
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

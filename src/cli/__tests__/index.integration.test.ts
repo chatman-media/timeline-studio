@@ -4,8 +4,10 @@
 
 import { Command } from "commander"
 import { describe, expect, it } from "vitest"
+import { botWorkflowCommand } from "../commands/bot-workflow"
 import { infoCommand } from "../commands/info"
 import { renderCommand } from "../commands/render"
+import { renderJobCommand } from "../commands/render-job"
 import { transcribeCommand } from "../commands/transcribe"
 
 describe("Timeline Studio CLI Integration", () => {
@@ -31,14 +33,18 @@ describe("Timeline Studio CLI Integration", () => {
       program.addCommand(infoCommand)
       program.addCommand(transcribeCommand)
       program.addCommand(renderCommand)
+      program.addCommand(renderJobCommand)
+      program.addCommand(botWorkflowCommand)
 
       const commands = program.commands
-      expect(commands).toHaveLength(3)
+      expect(commands).toHaveLength(5)
 
       const commandNames = commands.map((cmd) => cmd.name())
       expect(commandNames).toContain("info")
       expect(commandNames).toContain("transcribe")
       expect(commandNames).toContain("render")
+      expect(commandNames).toContain("render-job")
+      expect(commandNames).toContain("bot-workflow")
     })
   })
 
@@ -90,6 +96,32 @@ describe("Timeline Studio CLI Integration", () => {
       expect(options.some((opt) => opt.long === "--no-audio")).toBe(true)
       expect(options.some((opt) => opt.long === "--verbose")).toBe(true)
     })
+
+    it("should have render-job command properly configured", () => {
+      expect(renderJobCommand.name()).toBe("render-job")
+      expect(renderJobCommand.description()).toBe("Run a bot-first render job from JSON")
+
+      const args = renderJobCommand.registeredArguments
+      expect(args).toHaveLength(1)
+      expect(args[0].name()).toBe("job")
+
+      const options = renderJobCommand.options
+      expect(options.some((opt) => opt.long === "--status-file")).toBe(true)
+      expect(options.some((opt) => opt.long === "--rust-render")).toBe(true)
+    })
+
+    it("should have bot-workflow command properly configured", () => {
+      expect(botWorkflowCommand.name()).toBe("bot-workflow")
+      expect(botWorkflowCommand.description()).toBe("Run a bot-first workflow from Telegram-like JSON")
+
+      const args = botWorkflowCommand.registeredArguments
+      expect(args).toHaveLength(1)
+      expect(args[0].name()).toBe("payload")
+
+      const options = botWorkflowCommand.options
+      expect(options.some((opt) => opt.long === "--status-file")).toBe(true)
+      expect(options.some((opt) => opt.long === "--default-destination")).toBe(true)
+    })
   })
 
   describe("Command options", () => {
@@ -139,6 +171,8 @@ describe("Timeline Studio CLI Integration", () => {
       program.addCommand(infoCommand)
       program.addCommand(transcribeCommand)
       program.addCommand(renderCommand)
+      program.addCommand(renderJobCommand)
+      program.addCommand(botWorkflowCommand)
 
       const helpText = program.helpInformation()
 
@@ -155,12 +189,16 @@ describe("Timeline Studio CLI Integration", () => {
       program.addCommand(infoCommand)
       program.addCommand(transcribeCommand)
       program.addCommand(renderCommand)
+      program.addCommand(renderJobCommand)
+      program.addCommand(botWorkflowCommand)
 
       const helpText = program.helpInformation()
 
       expect(helpText).toContain("info")
       expect(helpText).toContain("transcribe")
       expect(helpText).toContain("render")
+      expect(helpText).toContain("render-job")
+      expect(helpText).toContain("bot-workflow")
     })
   })
 
@@ -227,8 +265,10 @@ describe("Timeline Studio CLI Integration", () => {
         .addCommand(infoCommand)
         .addCommand(transcribeCommand)
         .addCommand(renderCommand)
+        .addCommand(renderJobCommand)
+        .addCommand(botWorkflowCommand)
 
-      expect(program.commands).toHaveLength(3)
+      expect(program.commands).toHaveLength(5)
     })
   })
 
@@ -237,12 +277,16 @@ describe("Timeline Studio CLI Integration", () => {
       expect(infoCommand.name()).toBe("info")
       expect(transcribeCommand.name()).toBe("transcribe")
       expect(renderCommand.name()).toBe("render")
+      expect(renderJobCommand.name()).toBe("render-job")
+      expect(botWorkflowCommand.name()).toBe("bot-workflow")
     })
 
     it("should maintain command descriptions", () => {
       expect(infoCommand.description()).toBeTruthy()
       expect(transcribeCommand.description()).toBeTruthy()
       expect(renderCommand.description()).toBeTruthy()
+      expect(renderJobCommand.description()).toBeTruthy()
+      expect(botWorkflowCommand.description()).toBeTruthy()
     })
   })
 })

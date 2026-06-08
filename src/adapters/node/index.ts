@@ -9,6 +9,7 @@ import { container } from "@/core/container"
 
 import { type NodeAIOptions, NodeAIService } from "./ai"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
+import { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
 import { NodeEventService } from "./event"
 import { type NodeLanguageOptions, NodeLanguageService } from "./language"
 import { type NodeMediaOptions, NodeMediaService } from "./media"
@@ -23,6 +24,7 @@ import { type NodeVideoOptions, NodeVideoService } from "./video"
 // Re-exports
 export { type NodeAIOptions, NodeAIService } from "./ai"
 export { type NodeBackendOptions, NodeBackendService } from "./backend"
+export { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
 export { NodeEventService } from "./event"
 export { type NodeLanguageOptions, NodeLanguageService } from "./language"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
@@ -55,6 +57,8 @@ export interface NodeAppOptions {
   publish?: NodePublishOptions
   /** Опции для bot-first RenderJob сервиса */
   renderJob?: NodeRenderJobServiceOptions
+  /** Опции для bot-first workflow runner */
+  botWorkflow?: NodeBotWorkflowServiceOptions
   /** Автоматически подключаться к бэкенду */
   autoConnect?: boolean
 }
@@ -71,6 +75,7 @@ export interface NodeAppServices {
   language: NodeLanguageService
   publish: NodePublishService
   renderJob: NodeRenderJobService
+  botWorkflow: NodeBotWorkflowService
 }
 
 /**
@@ -111,6 +116,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     ...options.renderJob,
     publisher: options.renderJob?.publisher ?? publish,
   })
+  const botWorkflow = new NodeBotWorkflowService(renderJob, options.botWorkflow)
 
   // Register in container
   container.registerBackend(backend)
@@ -140,6 +146,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     language,
     publish,
     renderJob,
+    botWorkflow,
   }
 }
 
@@ -153,6 +160,11 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
 export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
   const video = createNodeVideoService(options.video, options.rustRender)
   const publish = new NodePublishService(options.publish)
+  const renderJob = new NodeRenderJobService(video, {
+    ...options.renderJob,
+    publisher: options.renderJob?.publisher ?? publish,
+  })
+  const botWorkflow = new NodeBotWorkflowService(renderJob, options.botWorkflow)
 
   return {
     backend: new NodeBackendService(options.backend),
@@ -165,10 +177,8 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     ai: new NodeAIService(options.ai),
     language: new NodeLanguageService(options.language),
     publish,
-    renderJob: new NodeRenderJobService(video, {
-      ...options.renderJob,
-      publisher: options.renderJob?.publisher ?? publish,
-    }),
+    renderJob,
+    botWorkflow,
   }
 }
 
