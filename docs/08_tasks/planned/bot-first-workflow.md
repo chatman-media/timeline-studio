@@ -103,6 +103,16 @@ bot message
 - [x] Прокинуть resolver через `NodeBotWorkflowService` и CLI `bot-workflow`.
 - [x] Покрыть resolver, runner hydration, Node download и CLI contract tests.
 
+### B9: Bot status notifier ([#187](https://github.com/chatman-media/timeline-studio/issues/187))
+
+**Цель:** превращать validation/render events в чатовые progress/status сообщения без UI и без падения render job при сбое доставки статуса.
+
+- [x] Добавить core status formatter/sink для bot workflow validation и render progress.
+- [x] Адаптировать `BotRenderJobEventSink` events в `BotWorkflowStatusMessage`.
+- [x] Добавить Node Telegram status notifier с injectable client/fetch.
+- [x] Прокинуть status options через `NodeBotWorkflowService`, `initNodeApp` и CLI opt-in flags.
+- [x] Покрыть validation, render progress, Node Telegram delivery и CLI contract tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -114,6 +124,7 @@ bot message
 - [#181](https://github.com/chatman-media/timeline-studio/issues/181) - B6: Bot workflow runner
 - [#183](https://github.com/chatman-media/timeline-studio/issues/183) - B7: Bot project assembly
 - [#185](https://github.com/chatman-media/timeline-studio/issues/185) - B8: Bot media resolver
+- [#187](https://github.com/chatman-media/timeline-studio/issues/187) - B9: Bot status notifier
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

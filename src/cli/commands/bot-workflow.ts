@@ -18,6 +18,8 @@ export interface BotWorkflowCommandOptions {
   pollInterval?: string
   timeout?: string
   telegramBotToken?: string
+  sendStatusUpdates?: boolean
+  statusChatId?: string
   mediaDir?: string
   downloadRemoteMedia?: boolean
   rustRender?: boolean
@@ -35,6 +37,8 @@ export const botWorkflowCommand = new Command("bot-workflow")
   .option("--poll-interval <ms>", "Render polling interval in milliseconds", "1000")
   .option("--timeout <ms>", "Render timeout in milliseconds", "3600000")
   .option("--telegram-bot-token <token>", "Resolve Telegram file ids through the Telegram Bot API")
+  .option("--send-status-updates", "Send workflow status updates through the Telegram Bot API")
+  .option("--status-chat-id <id>", "Fallback Telegram chat id for status updates")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
   .option("--download-remote-media", "Download remote URL media before rendering")
   .option("--rust-render", "Run rendering through the Rust headless ts-render CLI")
@@ -69,9 +73,11 @@ export async function runBotWorkflowPayloadFile(
 ): Promise<BotWorkflowRunResult> {
   const payload = await readTelegramLikeBotPayload(payloadFile)
   const botMediaResolver = createBotMediaResolverOptions(options)
+  const botStatus = createBotStatusOptions(options)
   const services = await initNodeApp({
     autoConnect: false,
     botMediaResolver,
+    botStatus,
     rustRender: options.rustRender
       ? {
           command: options.rustRenderCommand,
@@ -108,6 +114,19 @@ function createBotMediaResolverOptions(options: BotWorkflowCommandOptions) {
           },
         }
       : {}),
+  }
+}
+
+function createBotStatusOptions(options: BotWorkflowCommandOptions) {
+  if (!options.sendStatusUpdates || !options.telegramBotToken) {
+    return undefined
+  }
+
+  return {
+    telegram: {
+      botToken: options.telegramBotToken,
+      ...(options.statusChatId ? { defaultChatId: options.statusChatId } : {}),
+    },
   }
 }
 

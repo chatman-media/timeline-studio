@@ -10,6 +10,7 @@ import { container } from "@/core/container"
 import { type NodeAIOptions, NodeAIService } from "./ai"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
 import { NodeBotMediaResolver, type NodeBotMediaResolverOptions } from "./bot-media-resolver"
+import { NodeBotStatusNotifier, type NodeBotStatusNotifierOptions } from "./bot-status"
 import { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
 import { NodeEventService } from "./event"
 import { type NodeLanguageOptions, NodeLanguageService } from "./language"
@@ -31,6 +32,15 @@ export {
   type TelegramFileClient,
   type TelegramFileInfo,
 } from "./bot-media-resolver"
+export {
+  NodeBotStatusNotifier,
+  type NodeBotStatusNotifierOptions,
+  type NodeStatusFetch,
+  type NodeStatusFetchResponse,
+  type NodeTelegramStatusClient,
+  type NodeTelegramStatusPayload,
+  type NodeTelegramStatusResult,
+} from "./bot-status"
 export { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
 export { NodeEventService } from "./event"
 export { type NodeLanguageOptions, NodeLanguageService } from "./language"
@@ -68,6 +78,8 @@ export interface NodeAppOptions {
   botWorkflow?: NodeBotWorkflowServiceOptions
   /** Опции для bot-first media resolver */
   botMediaResolver?: NodeBotMediaResolverOptions | false
+  /** Опции для bot-first status notifier */
+  botStatus?: NodeBotStatusNotifierOptions | false
   /** Автоматически подключаться к бэкенду */
   autoConnect?: boolean
 }
@@ -86,6 +98,7 @@ export interface NodeAppServices {
   renderJob: NodeRenderJobService
   botWorkflow: NodeBotWorkflowService
   botMediaResolver?: NodeBotMediaResolver
+  botStatus?: NodeBotStatusNotifier
 }
 
 /**
@@ -127,9 +140,11 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     publisher: options.renderJob?.publisher ?? publish,
   })
   const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
+  const botStatus = createNodeBotStatusNotifier(options.botStatus)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
+    status: options.botWorkflow?.status ?? (botStatus ? { sink: botStatus } : undefined),
   })
 
   // Register in container
@@ -162,6 +177,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     renderJob,
     botWorkflow,
     ...(botMediaResolver ? { botMediaResolver } : {}),
+    ...(botStatus ? { botStatus } : {}),
   }
 }
 
@@ -180,9 +196,11 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     publisher: options.renderJob?.publisher ?? publish,
   })
   const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
+  const botStatus = createNodeBotStatusNotifier(options.botStatus)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
+    status: options.botWorkflow?.status ?? (botStatus ? { sink: botStatus } : undefined),
   })
 
   return {
@@ -199,12 +217,20 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     renderJob,
     botWorkflow,
     ...(botMediaResolver ? { botMediaResolver } : {}),
+    ...(botStatus ? { botStatus } : {}),
   }
 }
 
 function createNodeBotMediaResolver(options?: NodeBotMediaResolverOptions | false): NodeBotMediaResolver | undefined {
   if (options === undefined || options === false) return undefined
   return new NodeBotMediaResolver(options)
+}
+
+function createNodeBotStatusNotifier(
+  options?: NodeBotStatusNotifierOptions | false,
+): NodeBotStatusNotifier | undefined {
+  if (options === undefined || options === false) return undefined
+  return new NodeBotStatusNotifier(options)
 }
 
 function createNodeVideoService(

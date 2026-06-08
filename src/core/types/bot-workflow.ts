@@ -6,7 +6,9 @@
  */
 
 import type {
+  BotRenderJobArtifact,
   BotRenderJobDestination,
+  BotRenderJobEvent,
   BotRenderJobMediaInput,
   BotRenderJobOutput,
   BotRenderJobProjectInput,
@@ -14,6 +16,8 @@ import type {
   BotRenderJobRequest,
   BotRenderJobResult,
   BotRenderJobRunOptions,
+  BotRenderJobSnapshot,
+  BotRenderJobStatus,
 } from "./render-job"
 
 export type BotWorkflowSource = "telegram" | "api" | "cli" | "desktop"
@@ -103,6 +107,7 @@ export interface BotWorkflowRunOptions {
   intake?: BotWorkflowIntakeOptions
   mediaResolver?: BotMediaResolver
   projectAssembly?: BotProjectAssemblyOptions | false
+  status?: BotWorkflowStatusOptions
   render?: BotRenderJobRunOptions
   includeReconnectState?: boolean
 }
@@ -115,6 +120,45 @@ export interface BotMediaResolveContext {
 
 export interface BotMediaResolver {
   resolve(media: BotRenderJobMediaInput, context: BotMediaResolveContext): Promise<BotRenderJobMediaInput>
+}
+
+export type BotWorkflowStatusKind = BotRenderJobStatus | "validation_error"
+
+export interface BotWorkflowStatusMessage {
+  kind: BotWorkflowStatusKind
+  text: string
+  timestamp: string
+  chatId?: string
+  userId?: string
+  messageId?: string
+  jobId?: string
+  status?: BotRenderJobStatus
+  progress?: number
+  error?: string
+  artifact?: BotRenderJobArtifact
+  event?: BotRenderJobEvent
+  snapshot?: BotRenderJobSnapshot
+  validationErrors?: BotWorkflowValidationError[]
+}
+
+export interface BotWorkflowStatusSink {
+  sendStatus(message: BotWorkflowStatusMessage): void | Promise<void>
+}
+
+export interface BotWorkflowStatusFormatterContext {
+  workflow: BotWorkflowRequest
+  event?: BotRenderJobEvent
+  snapshot?: BotRenderJobSnapshot
+  errors?: BotWorkflowValidationError[]
+}
+
+export type BotWorkflowStatusFormatter = (context: BotWorkflowStatusFormatterContext) => string
+
+export interface BotWorkflowStatusOptions {
+  sink: BotWorkflowStatusSink
+  formatter?: BotWorkflowStatusFormatter
+  throwOnError?: boolean
+  now?: () => string
 }
 
 export type BotProjectAssemblyResolution = BotRenderJobOutput["resolution"] | readonly [number, number]

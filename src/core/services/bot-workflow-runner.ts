@@ -8,6 +8,7 @@ import type {
 } from "../types"
 import { resolveBotRenderJobMedia } from "./bot-media-resolver"
 import { withBotProjectSchema } from "./bot-project-assembler"
+import { createBotWorkflowStatusEventSink, sendBotWorkflowValidationStatus } from "./bot-status-updates"
 import { createBotRenderJobRequest, createBotWorkflowRequestFromTelegramLikePayload } from "./bot-workflow-intake"
 import { InMemoryBotRenderJobEventStream } from "./render-job-events"
 
@@ -26,6 +27,7 @@ export async function runBotWorkflow(
 ): Promise<BotWorkflowRunResult> {
   const intake = createBotRenderJobRequest(workflow, options.intake)
   if (!intake.ok) {
+    await sendBotWorkflowValidationStatus(workflow, intake.errors, options.status)
     return {
       ok: false,
       workflow,
@@ -36,6 +38,9 @@ export async function runBotWorkflow(
   const eventSinks = [...(options.render?.eventSinks ?? [])]
   if (options.eventStream) {
     eventSinks.push(options.eventStream)
+  }
+  if (options.status) {
+    eventSinks.push(createBotWorkflowStatusEventSink(workflow, options.status))
   }
 
   const resolvedRenderJob = await resolveBotRenderJobMedia(intake.renderJob, options.mediaResolver, { workflow })
