@@ -1,3 +1,10 @@
+# [3.71.0](https://github.com/chatman-media/timeline-studio/compare/v3.70.0...v3.71.0) (2026-06-08)
+
+
+### Features
+
+* add telegram bot worker entrypoint ([#190](https://github.com/chatman-media/timeline-studio/issues/190)) ([fe90221](https://github.com/chatman-media/timeline-studio/commit/fe9022141e66301d4eb2f459ea6cd8f0d6b546a6))
+
 # [3.70.0](https://github.com/chatman-media/timeline-studio/compare/v3.69.0...v3.70.0) (2026-06-08)
 
 
