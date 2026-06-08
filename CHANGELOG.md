@@ -1,3 +1,10 @@
+# [3.76.0](https://github.com/chatman-media/timeline-studio/compare/v3.75.0...v3.76.0) (2026-06-08)
+
+
+### Features
+
+* add telegram bot draft state ([#200](https://github.com/chatman-media/timeline-studio/issues/200)) ([8a29dbf](https://github.com/chatman-media/timeline-studio/commit/8a29dbf16cf634f2fee8945c7349ce0dab04a4d1))
+
 # [3.75.0](https://github.com/chatman-media/timeline-studio/compare/v3.74.0...v3.75.0) (2026-06-08)
 
 
