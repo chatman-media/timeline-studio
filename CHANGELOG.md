@@ -1,3 +1,10 @@
+# [3.79.0](https://github.com/chatman-media/timeline-studio/compare/v3.78.0...v3.79.0) (2026-06-08)
+
+
+### Features
+
+* acknowledge queued bot workflows ([#206](https://github.com/chatman-media/timeline-studio/issues/206)) ([353bdd1](https://github.com/chatman-media/timeline-studio/commit/353bdd1875e98040347ee5719a1d78f209590201))
+
 # [3.78.0](https://github.com/chatman-media/timeline-studio/compare/v3.77.0...v3.78.0) (2026-06-08)
 
 
