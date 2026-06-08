@@ -64,6 +64,7 @@ describe("NodeBotWorkflowService", () => {
     const { service: renderJob, run } = createRenderJobService()
     const defaultSink = { publish: vi.fn() }
     const callerSink = { publish: vi.fn() }
+    const statusSink = { sendStatus: vi.fn() }
     const eventStream = new InMemoryBotRenderJobEventStream()
     const mediaResolver = {
       resolve: vi.fn(async (media: BotRenderJobMediaInput) => ({
@@ -78,6 +79,7 @@ describe("NodeBotWorkflowService", () => {
         now: () => "2026-06-08T00:00:00.000Z",
         defaultClipDurationSeconds: 2,
       },
+      status: { sink: statusSink },
       render: { pollIntervalMs: 7, eventSinks: [defaultSink] },
     })
 
@@ -108,9 +110,16 @@ describe("NodeBotWorkflowService", () => {
     })
     expect(mediaResolver.resolve).toHaveBeenCalledOnce()
     expect(options).toMatchObject({ pollIntervalMs: 7, timeoutMs: 9 })
-    expect(options?.eventSinks).toHaveLength(3)
+    expect(options?.eventSinks).toHaveLength(4)
     expect(defaultSink.publish).toHaveBeenCalledOnce()
     expect(callerSink.publish).toHaveBeenCalledOnce()
+    expect(statusSink.sendStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: "done",
+        text: "Video is ready.",
+        jobId: "job-1",
+      }),
+    )
     expect(eventStream.getSnapshot("job-1")).toMatchObject({ status: "done" })
   })
 })

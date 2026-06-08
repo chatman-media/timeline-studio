@@ -74,6 +74,7 @@ describe("bot workflow runner", () => {
   it("normalizes Telegram-like payload, runs render job, and returns reconnect state", async () => {
     const renderJob = new FakeRenderJobService()
     const eventStream = new InMemoryBotRenderJobEventStream()
+    const statusSink = { sendStatus: vi.fn() }
 
     const result = await runTelegramLikeBotWorkflow(
       {
@@ -83,6 +84,7 @@ describe("bot workflow runner", () => {
       {
         renderJob,
         eventStream,
+        status: { sink: statusSink },
         render: { pollIntervalMs: 5, timeoutMs: 10 },
         includeReconnectState: true,
       },
@@ -101,18 +103,33 @@ describe("bot workflow runner", () => {
     expect(result.result.job.status).toBe("done")
     expect(result.reconnectState?.snapshot).toMatchObject({ jobId: "job-1", status: "done" })
     expect(result.reconnectState?.events).toHaveLength(1)
+    expect(statusSink.sendStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: "done",
+        text: "Video is ready: ./out.mp4",
+        chatId: "chat-1",
+        jobId: "job-1",
+      }),
+    )
   })
 
   it("returns validation errors without running render job", async () => {
     const renderJob = new FakeRenderJobService()
     const runSpy = vi.spyOn(renderJob, "run")
+    const statusSink = { sendStatus: vi.fn() }
 
     const result = await runBotWorkflow(
       {
         source: "telegram",
         media: [{ type: "file", value: "" }],
       },
-      { renderJob },
+      {
+        renderJob,
+        status: {
+          sink: statusSink,
+          now: () => "2026-06-08T00:00:00.000Z",
+        },
+      },
     )
 
     expect(result).toEqual({
@@ -137,6 +154,13 @@ describe("bot workflow runner", () => {
       ],
     })
     expect(runSpy).not.toHaveBeenCalled()
+    expect(statusSink.sendStatus).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: "validation_error",
+        text: "One of the attached files is empty or unavailable. Send it again.",
+        timestamp: "2026-06-08T00:00:00.000Z",
+      }),
+    )
   })
 
   it("hydrates media-only workflows with an inline ProjectSchema before rendering", async () => {
