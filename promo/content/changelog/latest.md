@@ -1,3 +1,10 @@
+# [3.66.0](https://github.com/chatman-media/timeline-studio/compare/v3.65.0...v3.66.0) (2026-06-08)
+
+
+### Features
+
+* add rust render adapter for bot jobs ([#180](https://github.com/chatman-media/timeline-studio/issues/180)) ([b6a41ce](https://github.com/chatman-media/timeline-studio/commit/b6a41ce612e8c62292a3232958e04734add9767f))
+
 # [3.65.0](https://github.com/chatman-media/timeline-studio/compare/v3.64.0...v3.65.0) (2026-06-08)
 
 
