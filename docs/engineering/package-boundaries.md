@@ -63,3 +63,4 @@ This gate fails if total violations, severity counts or edge counts increase abo
 5. **F5 workspace split:** create package/app `package.json` files, update build/test scripts, lockfiles and CI cache.
 6. **F6 boundary error burn-down:** remove hard `domains -> ui/app-shell` violations and keep the remaining `ui -> domains` coupling as warning-only follow-up work.
 7. **F7 warning burn-down:** reduce `ui -> domains` warnings through small core ports and UI bridge slices.
+8. **F8 options type bridge:** move `features/options` off type-only media-management imports through core-facing media types.

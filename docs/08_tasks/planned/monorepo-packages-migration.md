@@ -128,7 +128,8 @@ adapters -> core
 **Цель:** постепенно снижать warning-only `ui -> domains` baseline маленькими UI slices.
 
 - [x] `language`: добавить core language port/service и перевести `features/language` с `@/domains/system-integration` на core service.
-- [ ] Следующие маленькие кандидаты: `options`, `color-scheme`, `keyboard-shortcuts`, `color-grading`.
+- [x] `options`: добавить core-facing `MediaFile` type bridge и убрать type-only imports из `@/domains/media-management`.
+- [ ] Следующие маленькие кандидаты: `color-scheme`, `keyboard-shortcuts`, `color-grading`.
 
 ## Проверка каждого PR
 
@@ -152,11 +153,11 @@ CI использует `bun run check:boundaries:baseline`, который ср
 
 Baseline на 2026-06-08:
 
-- Scanned files: 1586
-- Violations: 419
+- Scanned files: 1587
+- Violations: 417
 - `error`: 0
-- `warn`: 419
-- Edges: `ui -> domains` 419
+- `warn`: 417
+- Edges: `ui -> domains` 417
 
 Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 

@@ -29,5 +29,6 @@ export type {
   ViewMode,
 } from "@/types/generated/tauri-bindings"
 
-// Re-export commonly used domain types for features
+// Re-export core-facing compatibility types for features
+export * from "./media"
 export * from "./video-editing"
