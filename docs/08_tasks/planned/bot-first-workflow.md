@@ -197,6 +197,17 @@ bot message
 - [x] Сохранить безопасную draft semantics: success очищает draft, validation failure оставляет draft.
 - [x] Документировать polling runbook и покрыть queue/CLI tests.
 
+### B18: Telegram bot queued workflow acknowledgements ([#205](https://github.com/chatman-media/timeline-studio/issues/205))
+
+**Цель:** после постановки render workflow в очередь пользователь сразу получает chat acknowledgement, даже если очередь занята.
+
+- [x] Отправлять concise Telegram acknowledgement при queued workflow result.
+- [x] Поддержать injected queue responder/formatter и token-backed Bot API delivery.
+- [x] Добавлять queued response metadata в machine-readable worker result.
+- [x] Делать queue acknowledgement best-effort: сбой доставки не ломает queued update.
+- [x] Сохранить synchronous one-shot behavior.
+- [x] Документировать queued acknowledgement behavior и покрыть delivery/failure tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -217,6 +228,7 @@ bot message
 - [#199](https://github.com/chatman-media/timeline-studio/issues/199) - B15: Telegram bot conversation draft state
 - [#201](https://github.com/chatman-media/timeline-studio/issues/201) - B16: Bot text media and shorthand hints
 - [#203](https://github.com/chatman-media/timeline-studio/issues/203) - B17: Telegram bot async workflow queue
+- [#205](https://github.com/chatman-media/timeline-studio/issues/205) - B18: Telegram bot queued workflow acknowledgements
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

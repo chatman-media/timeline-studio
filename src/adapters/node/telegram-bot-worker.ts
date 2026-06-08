@@ -79,6 +79,9 @@ export interface NodeTelegramBotWorkerOptions {
   errorResponder?: NodeTelegramStatusClient
   errorFormatter?: NodeTelegramBotUpdateErrorFormatter
   disableErrorResponses?: boolean
+  queueResponder?: NodeTelegramStatusClient
+  queueFormatter?: NodeTelegramBotQueueFormatter
+  disableQueueResponses?: boolean
   draftStore?: BotWorkflowDraftStore
   draftResponder?: NodeTelegramStatusClient
   draftFormatter?: NodeTelegramBotDraftFormatter
@@ -149,6 +152,16 @@ export interface NodeTelegramBotDraftFormatterContext {
 
 export type NodeTelegramBotDraftFormatter = (context: NodeTelegramBotDraftFormatterContext) => string
 
+export interface NodeTelegramBotQueueFormatterContext {
+  queueId: string
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+  workflow?: BotWorkflowRequest
+  draftId?: string
+}
+
+export type NodeTelegramBotQueueFormatter = (context: NodeTelegramBotQueueFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -173,6 +186,8 @@ export type NodeTelegramBotWorkerUpdateResult =
       payload: TelegramLikeBotPayload
       workflow?: BotWorkflowRequest
       draftId?: string
+      responseText?: string
+      responseError?: string
       completion?: BotWorkflowRunResult
       error?: string
     }
@@ -668,8 +683,41 @@ export class NodeTelegramBotWorker {
     })
 
     result.queueId = submission.id
+    const responseText = this.options.disableQueueResponses
+      ? undefined
+      : (this.options.queueFormatter ?? defaultTelegramBotQueueText)({
+          queueId: submission.id,
+          update,
+          payload,
+          ...(options.workflow ? { workflow: options.workflow } : {}),
+          ...(options.draftId ? { draftId: options.draftId } : {}),
+        })
+    if (responseText) {
+      result.responseText = responseText
+      try {
+        await this.sendQueueResponse(submission.id, payload, responseText)
+      } catch (error) {
+        result.responseError = formatUnknownError(error)
+      }
+    }
     await this.options.onResult?.(result)
     return result
+  }
+
+  private async sendQueueResponse(queueId: string, payload: TelegramLikeBotPayload, text: string): Promise<void> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    if (!chatId) return
+
+    const responder = this.resolveQueueResponder()
+    await responder?.sendMessage({
+      chatId,
+      text,
+      ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+      metadata: {
+        queueId,
+        source: "telegram-bot-worker",
+      },
+    })
   }
 
   private async handlePollingUpdate(
@@ -756,6 +804,17 @@ export class NodeTelegramBotWorker {
 
   private resolveDraftResponder(): NodeTelegramStatusClient | undefined {
     if (this.options.draftResponder) return this.options.draftResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
+
+  private resolveQueueResponder(): NodeTelegramStatusClient | undefined {
+    if (this.options.queueResponder) return this.options.queueResponder
     if (!this.options.botToken) return undefined
     return new NodeBotStatusNotifier({
       telegram: {
@@ -861,6 +920,15 @@ export function defaultTelegramBotDraftText(context: NodeTelegramBotDraftFormatt
     "Saved this input.",
     "Send more media or hints, then send /render.",
     "Send /cancel to clear the draft.",
+  ].join("\n")
+}
+
+export function defaultTelegramBotQueueText(context: NodeTelegramBotQueueFormatterContext): string {
+  return [
+    "Timeline Studio bot",
+    "Render request queued.",
+    `Queue id: ${context.queueId}`,
+    "I will send progress and the result here.",
   ].join("\n")
 }
 
