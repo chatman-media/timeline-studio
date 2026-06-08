@@ -22,6 +22,7 @@ import { Command } from "commander"
 
 import { infoCommand } from "./commands/info"
 import { renderCommand } from "./commands/render"
+import { renderJobCommand } from "./commands/render-job"
 import { transcribeCommand } from "./commands/transcribe"
 
 const program = new Command()
@@ -32,6 +33,7 @@ program.name("timeline-studio").description("Timeline Studio CLI - инстру�
 program.addCommand(infoCommand)
 program.addCommand(transcribeCommand)
 program.addCommand(renderCommand)
+program.addCommand(renderJobCommand)
 
 // Запуск
 program.parse(process.argv)
