@@ -1,3 +1,10 @@
+# [3.62.0](https://github.com/chatman-media/timeline-studio/compare/v3.61.1...v3.62.0) (2026-06-08)
+
+
+### Features
+
+* add bot-first render job foundation ([#172](https://github.com/chatman-media/timeline-studio/issues/172)) ([f7b13bb](https://github.com/chatman-media/timeline-studio/commit/f7b13bb049747ebd8413dfdff5891fcc84680552))
+
 ## [3.61.1](https://github.com/chatman-media/timeline-studio/compare/v3.61.0...v3.61.1) (2026-06-07)
 
 
