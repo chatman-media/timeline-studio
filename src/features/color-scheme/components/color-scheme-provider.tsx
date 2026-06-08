@@ -11,7 +11,7 @@
 import { useTheme } from "next-themes"
 import { type ReactNode, useEffect } from "react"
 
-import { useUserSettings } from "@/domains/project-management/hooks"
+import { useUserSettings } from "@/features/user-settings"
 import { useColorScheme } from "../hooks/use-color-scheme"
 import { applyColorScheme } from "../lib"
 

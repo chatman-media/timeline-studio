@@ -67,6 +67,13 @@ export function useUserSettings(): UserSettingsContextValue {
     isBrowserVisible: d.isBrowserVisible,
     isTimelineVisible: d.isTimelineVisible,
     isOptionsVisible: d.isOptionsVisible,
+    isLoaded: d.isLoaded,
+
+    // Внешний вид
+    themeMode: d.themeMode,
+    colorScheme: d.colorScheme,
+    customColorSchemes: d.customColorSchemes ?? [],
+    quickAccessSchemeIds: d.quickAccessSchemeIds ?? [],
 
     // GPU/Perf
     gpuAccelerationEnabled: d.gpuAccelerationEnabled,
@@ -104,6 +111,7 @@ export function useUserSettings(): UserSettingsContextValue {
     toggleBrowserVisibility: d.toggleBrowserVisibility,
     toggleTimelineVisibility: d.toggleTimelineVisibility,
     toggleOptionsVisibility: d.toggleOptionsVisibility,
+    updateSettings: (updates: Record<string, unknown>) => d.updateSettings(updates as any),
 
     // GPU/Perf
     handleGpuAccelerationChange,

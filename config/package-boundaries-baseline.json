@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-08",
-  "source": "Phase F9 keyboard shortcuts modal bridge",
-  "violations": 415,
+  "source": "Phase F10 color scheme settings bridge",
+  "violations": 412,
   "bySeverity": {
-    "warn": 415
+    "warn": 412
   },
   "byEdge": {
-    "ui -> domains": 415
+    "ui -> domains": 412
   }
 }

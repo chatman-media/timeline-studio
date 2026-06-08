@@ -65,3 +65,4 @@ This gate fails if total violations, severity counts or edge counts increase abo
 7. **F7 warning burn-down:** reduce `ui -> domains` warnings through small core ports and UI bridge slices.
 8. **F8 options type bridge:** move `features/options` off type-only media-management imports through core-facing media types.
 9. **F9 keyboard shortcuts modal bridge:** move `features/keyboard-shortcuts` off direct system-integration modal imports through the existing modals compatibility layer.
+10. **F10 color scheme settings bridge:** move `features/color-scheme` off direct project-management and system-integration imports through feature-facing adapters.

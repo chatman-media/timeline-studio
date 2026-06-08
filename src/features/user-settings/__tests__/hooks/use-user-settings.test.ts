@@ -19,6 +19,13 @@ const mockDomain = {
   isBrowserVisible: true,
   isTimelineVisible: true,
   isOptionsVisible: false,
+  isLoaded: true,
+
+  // Appearance
+  themeMode: "system" as const,
+  colorScheme: "teal",
+  customColorSchemes: [],
+  quickAccessSchemeIds: ["teal"],
 
   // GPU/Perf
   gpuAccelerationEnabled: false,
@@ -77,6 +84,8 @@ describe("useUserSettings (adapter)", () => {
     expect(result.current.layoutMode).toBe("default")
     expect(result.current.isBrowserVisible).toBe(true)
     expect(result.current.playerVolume).toBe(50)
+    expect(result.current.themeMode).toBe("system")
+    expect(result.current.colorScheme).toBe("teal")
   })
 
   it("проксирует toggle*-методы", () => {
@@ -106,6 +115,14 @@ describe("useUserSettings (adapter)", () => {
 
     result.current.handleAiApiKeyChange("k1")
     expect(mockDomain.updateOpenAiApiKey).toHaveBeenCalledWith("k1")
+  })
+
+  it("проксирует пакетное обновление настроек", () => {
+    const { result } = renderHook(() => useUserSettings())
+
+    result.current.updateSettings({ colorScheme: "amber", themeMode: "dark" })
+
+    expect(mockDomain.updateSettings).toHaveBeenCalledWith({ colorScheme: "amber", themeMode: "dark" })
   })
 
   it("валидирует вкладки браузера в handleTabChange", () => {
