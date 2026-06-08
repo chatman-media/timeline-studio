@@ -17,6 +17,9 @@ export interface RenderJobCommandOptions {
   pretty?: boolean
   pollInterval?: string
   timeout?: string
+  rustRender?: boolean
+  rustRenderCommand?: string
+  rustRenderKind?: "timeline" | "timeline-render"
 }
 
 export const renderJobCommand = new Command("render-job")
@@ -26,6 +29,9 @@ export const renderJobCommand = new Command("render-job")
   .option("--pretty", "Pretty-print JSON output")
   .option("--poll-interval <ms>", "Render polling interval in milliseconds", "1000")
   .option("--timeout <ms>", "Render timeout in milliseconds", "3600000")
+  .option("--rust-render", "Run rendering through the Rust headless ts-render CLI")
+  .option("--rust-render-command <path>", "Path/name for timeline or timeline-render command")
+  .option("--rust-render-kind <kind>", "Rust render command kind: timeline or timeline-render")
   .action(async (jobFile: string, options: RenderJobCommandOptions) => {
     try {
       const result = await runRenderJobFile(jobFile, options)
@@ -69,7 +75,15 @@ export async function runRenderJobFile(
   options: RenderJobCommandOptions = {},
 ): Promise<BotRenderJobResult> {
   const request = await readRenderJobRequest(jobFile)
-  const services = await initNodeApp({ autoConnect: false })
+  const services = await initNodeApp({
+    autoConnect: false,
+    rustRender: options.rustRender
+      ? {
+          command: options.rustRenderCommand,
+          commandKind: options.rustRenderKind,
+        }
+      : undefined,
+  })
 
   return services.renderJob.run(request, {
     pollIntervalMs: parsePositiveInteger(options.pollInterval, 1000),

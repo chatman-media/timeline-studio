@@ -25,6 +25,8 @@ describe("render-job command", () => {
     expect(renderJobCommand.registeredArguments[0].name()).toBe("job")
     expect(renderJobCommand.options.some((option) => option.long === "--status-file")).toBe(true)
     expect(renderJobCommand.options.some((option) => option.long === "--pretty")).toBe(true)
+    expect(renderJobCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
+    expect(renderJobCommand.options.some((option) => option.long === "--rust-render-command")).toBe(true)
   })
 
   it("reads render job JSON and defaults source to cli", async () => {

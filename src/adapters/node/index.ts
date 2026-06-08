@@ -16,6 +16,7 @@ import { NodeBackendBridgeService } from "./node-backend-bridge"
 import { type NodePlatformOptions, NodePlatformService } from "./platform"
 import { type NodePublishOptions, NodePublishService } from "./publish"
 import { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
+import { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 import { type NodeStorageOptions, NodeStorageService } from "./storage"
 import { type NodeVideoOptions, NodeVideoService } from "./video"
 
@@ -29,6 +30,7 @@ export { NodeBackendBridgeService } from "./node-backend-bridge"
 export { type NodePlatformOptions, NodePlatformService } from "./platform"
 export { type NodePublishOptions, NodePublishService } from "./publish"
 export { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
+export { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export { type NodeVideoOptions, NodeVideoService } from "./video"
 
@@ -41,6 +43,8 @@ export interface NodeAppOptions {
   media?: NodeMediaOptions
   /** Опции для Video сервиса */
   video?: NodeVideoOptions
+  /** Опции для Rust headless render adapter */
+  rustRender?: boolean | NodeRustRenderVideoOptions
   /** Опции для AI сервиса */
   ai?: NodeAIOptions
   /** Опции для Backend сервиса */
@@ -99,7 +103,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const event = new NodeEventService()
   const media = new NodeMediaService(options.media)
   const nodeBackend = new NodeBackendBridgeService()
-  const video = new NodeVideoService(options.video)
+  const video = createNodeVideoService(options.video, options.rustRender)
   const ai = new NodeAIService(options.ai)
   const language = new NodeLanguageService(options.language)
   const publish = new NodePublishService(options.publish)
@@ -147,7 +151,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
  * @returns Объект со всеми сервисами
  */
 export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
-  const video = new NodeVideoService(options.video)
+  const video = createNodeVideoService(options.video, options.rustRender)
   const publish = new NodePublishService(options.publish)
 
   return {
@@ -166,4 +170,16 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
       publisher: options.renderJob?.publisher ?? publish,
     }),
   }
+}
+
+function createNodeVideoService(
+  videoOptions?: NodeVideoOptions,
+  rustRenderOptions?: boolean | NodeRustRenderVideoOptions,
+): NodeVideoService {
+  if (!rustRenderOptions) {
+    return new NodeVideoService(videoOptions)
+  }
+
+  const options = rustRenderOptions === true ? videoOptions : { ...videoOptions, ...rustRenderOptions }
+  return new NodeRustRenderVideoService(options)
 }
