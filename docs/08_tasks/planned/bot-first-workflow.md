@@ -165,6 +165,16 @@ bot message
 - [x] Отвечать в Telegram chat коротким error message, когда в update есть chat/message metadata.
 - [x] Покрыть polling isolation, error reply delivery и CLI failed-result detection tests.
 
+### B15: Telegram bot conversation draft state ([#199](https://github.com/chatman-media/timeline-studio/issues/199))
+
+**Цель:** пользователь может прислать media и render hints несколькими Telegram сообщениями, а бот запускает render только после `/render`.
+
+- [x] Добавить core draft contract и deterministic merge для chat/user session.
+- [x] Добавить Node file-backed draft store для polling worker и рестартов.
+- [x] Добавить opt-in Telegram worker draft mode: save input, `/render`, `/cancel`.
+- [x] Прокинуть draft storage через CLI/env без изменения one-shot режима.
+- [x] Документировать conversation draft runbook и покрыть core/store/worker/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -182,6 +192,7 @@ bot message
 - [#193](https://github.com/chatman-media/timeline-studio/issues/193) - B12: Telegram bot command routing
 - [#195](https://github.com/chatman-media/timeline-studio/issues/195) - B13: Bot worker runtime config and smoke runbook
 - [#197](https://github.com/chatman-media/timeline-studio/issues/197) - B14: Telegram bot update error isolation
+- [#199](https://github.com/chatman-media/timeline-studio/issues/199) - B15: Telegram bot conversation draft state
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

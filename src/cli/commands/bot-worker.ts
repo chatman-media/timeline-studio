@@ -14,7 +14,12 @@ import type {
   NodeTelegramBotWorkerUpdateResult,
   TelegramBotUpdate,
 } from "@/adapters/node"
-import { initNodeApp, NodeTelegramBotFileOffsetStore, NodeTelegramBotWorker } from "@/adapters/node"
+import {
+  initNodeApp,
+  NodeBotWorkflowFileDraftStore,
+  NodeTelegramBotFileOffsetStore,
+  NodeTelegramBotWorker,
+} from "@/adapters/node"
 import type { BotRenderJobDestination } from "@/core/types"
 
 export interface BotWorkerCommandOptions {
@@ -30,6 +35,7 @@ export interface BotWorkerCommandOptions {
   pollLimit?: string
   pollTimeout?: string
   offsetFile?: string
+  draftDir?: string
   maxBatches?: string
   idleDelay?: string
   mediaDir?: string
@@ -62,6 +68,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--poll-limit <count>", "Telegram getUpdates limit", "100")
   .option("--poll-timeout <seconds>", "Telegram getUpdates long-poll timeout in seconds", "25")
   .option("--offset-file <path>", "Persist Telegram getUpdates offset between polling runs")
+  .option("--draft-dir <path>", "Persist Telegram bot conversation drafts in a directory")
   .option("--max-batches <count>", "Stop continuous polling after this many getUpdates batches")
   .option("--idle-delay <ms>", "Delay after an empty continuous polling batch", "1000")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
@@ -130,6 +137,9 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
       },
       includeReconnectState: true,
     },
+    draftStore: resolvedOptions.draftDir
+      ? new NodeBotWorkflowFileDraftStore(path.resolve(resolvedOptions.draftDir))
+      : undefined,
   })
 
   if (resolvedOptions.updateFile) {
@@ -176,6 +186,7 @@ export function resolveBotWorkerCommandOptions(
     pollLimit: firstConfigured(options.pollLimit, env.TIMELINE_BOT_POLL_LIMIT),
     pollTimeout: firstConfigured(options.pollTimeout, env.TIMELINE_BOT_POLL_TIMEOUT),
     offsetFile: firstConfigured(options.offsetFile, env.TIMELINE_BOT_OFFSET_FILE),
+    draftDir: firstConfigured(options.draftDir, env.TIMELINE_BOT_DRAFT_DIR),
     maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),
     idleDelay: firstConfigured(options.idleDelay, env.TIMELINE_BOT_IDLE_DELAY),
     mediaDir: firstConfigured(options.mediaDir, env.TIMELINE_BOT_MEDIA_DIR),

@@ -35,6 +35,7 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--no-status-updates")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--status-chat-id")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--offset-file")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--draft-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--max-batches")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--idle-delay")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
@@ -112,6 +113,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-timeline-env",
         TIMELINE_BOT_STATUS_CHAT_ID: "chat-1",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/bot-offset.json",
+        TIMELINE_BOT_DRAFT_DIR: ".tmp/bot-drafts",
         TIMELINE_BOT_MEDIA_DIR: ".tmp/media",
         TIMELINE_BOT_POLL_LIMIT: "10",
         TIMELINE_BOT_POLL_TIMEOUT: "20",
@@ -132,6 +134,7 @@ describe("bot-worker command", () => {
       telegramBotToken: "token-from-timeline-env",
       statusChatId: "chat-1",
       offsetFile: ".tmp/bot-offset.json",
+      draftDir: ".tmp/bot-drafts",
       mediaDir: ".tmp/media",
       pollLimit: "10",
       pollTimeout: "20",
@@ -153,6 +156,7 @@ describe("bot-worker command", () => {
       {
         telegramBotToken: "token-from-cli",
         offsetFile: ".tmp/cli-offset.json",
+        draftDir: ".tmp/cli-drafts",
         defaultDestination: "file",
         rustRender: false,
         downloadRemoteMedia: false,
@@ -160,6 +164,7 @@ describe("bot-worker command", () => {
       {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
+        TIMELINE_BOT_DRAFT_DIR: ".tmp/env-drafts",
         TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
         TIMELINE_BOT_RUST_RENDER: "true",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
@@ -169,6 +174,7 @@ describe("bot-worker command", () => {
     expect(resolved).toMatchObject({
       telegramBotToken: "token-from-cli",
       offsetFile: ".tmp/cli-offset.json",
+      draftDir: ".tmp/cli-drafts",
       defaultDestination: "file",
       rustRender: false,
       downloadRemoteMedia: false,

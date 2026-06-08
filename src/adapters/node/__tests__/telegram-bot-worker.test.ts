@@ -2,16 +2,18 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { BotWorkflowRunResult } from "@/core/types"
+import type { BotWorkflowDraft, BotWorkflowRunResult } from "@/core/types"
 import type { NodeBotWorkflowService } from "../bot-workflow"
 import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
+  defaultTelegramBotDraftText,
   defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
   NodeTelegramBotFileOffsetStore,
   NodeTelegramBotWorker,
   parseTelegramBotCommand,
+  parseTelegramBotDraftCommand,
   type TelegramBotUpdate,
 } from "../telegram-bot-worker"
 
@@ -28,13 +30,35 @@ const failedResult: BotWorkflowRunResult = {
   ],
 }
 
-function createWorkflowService() {
-  const runTelegramLikePayload = vi.fn(async () => failedResult)
+const completedResult: BotWorkflowRunResult = {
+  ok: true,
+  workflow: { source: "telegram" },
+  renderJob: { source: "bot", output: { format: "mp4" } },
+  result: {
+    job: {
+      id: "job-1",
+      status: "done",
+      progress: 1,
+      request: { source: "bot", output: { format: "mp4" } },
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+      events: [],
+    },
+    events: [],
+  },
+  warnings: [],
+}
+
+function createWorkflowService(result: BotWorkflowRunResult = failedResult) {
+  const runTelegramLikePayload = vi.fn(async () => result)
+  const runWorkflow = vi.fn(async () => result)
 
   return {
     service: {
+      runWorkflow,
       runTelegramLikePayload,
     } as unknown as NodeBotWorkflowService,
+    runWorkflow,
     runTelegramLikePayload,
   }
 }
@@ -274,6 +298,210 @@ describe("Telegram bot worker", () => {
     expect(parseTelegramBotCommand("/help@TimelineStudioBot more")).toBe("help")
     expect(parseTelegramBotCommand("/render")).toBeNull()
     expect(parseTelegramBotCommand("template=promo")).toBeNull()
+    expect(parseTelegramBotDraftCommand("/render@TimelineStudioBot")).toBe("render")
+    expect(parseTelegramBotDraftCommand("/cancel")).toBe("cancel")
+  })
+
+  it("stores Telegram updates as conversation drafts until render is requested", async () => {
+    const { service, runWorkflow, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const draftStore = new Map<string, BotWorkflowDraft>()
+    const store = {
+      readDraft: vi.fn(async (id: string) => draftStore.get(id)),
+      writeDraft: vi.fn(async (draft: BotWorkflowDraft) => {
+        draftStore.set(draft.id, draft)
+      }),
+      deleteDraft: vi.fn(async (id: string) => {
+        draftStore.delete(id)
+      }),
+    }
+    const draftResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "draft-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      draftStore: store,
+      draftResponder,
+      now: () => "2026-06-08T08:00:00.000Z",
+    })
+
+    const stored = await worker.handleUpdate({
+      update_id: 21,
+      message: {
+        message_id: 1,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        video: {
+          file_id: "telegram-file-1",
+          file_unique_id: "unique-file-1",
+          file_name: "clip.mp4",
+        },
+      },
+    })
+
+    expect(stored).toMatchObject({
+      skipped: true,
+      reason: "Telegram bot draft updated",
+      draftAction: "updated",
+      draftId: "telegram:chat-1:user-1",
+      responseText: defaultTelegramBotDraftText({
+        action: "updated",
+        draftId: "telegram:chat-1:user-1",
+        payload: {},
+        update: { update_id: 21 },
+      }),
+    })
+    expect(draftResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: defaultTelegramBotDraftText({
+        action: "updated",
+        draftId: "telegram:chat-1:user-1",
+        payload: {},
+        update: { update_id: 21 },
+      }),
+      replyToMessageId: "1",
+      metadata: {
+        draftId: "telegram:chat-1:user-1",
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+
+    const rendered = await worker.handleUpdate(
+      {
+        update_id: 22,
+        message: {
+          message_id: 2,
+          chat: { id: "chat-1" },
+          from: { id: "user-1" },
+          text: "/render template=promo destination=telegram",
+        },
+      },
+      {
+        workflowOptions: {
+          render: { timeoutMs: 10 },
+        },
+      },
+    )
+
+    expect(rendered).toMatchObject({
+      skipped: false,
+      updateId: 22,
+      result: completedResult,
+    })
+    expect(runWorkflow).toHaveBeenCalledWith(
+      {
+        source: "telegram",
+        chatId: "chat-1",
+        userId: "user-1",
+        messageId: "2",
+        text: "/render template=promo destination=telegram",
+        media: [
+          {
+            id: "unique-file-1",
+            type: "file",
+            value: "telegram-file-1",
+            name: "clip.mp4",
+            metadata: {
+              telegramFileId: "telegram-file-1",
+              telegramFileUniqueId: "unique-file-1",
+            },
+          },
+        ],
+        raw: {
+          chat: { id: "chat-1" },
+          from: { id: "user-1" },
+          message_id: 2,
+          text: "/render template=promo destination=telegram",
+        },
+      },
+      {
+        render: { timeoutMs: 10 },
+      },
+    )
+    expect(store.deleteDraft).toHaveBeenCalledWith("telegram:chat-1:user-1")
+  })
+
+  it("clears Telegram conversation drafts on cancel", async () => {
+    const { service, runWorkflow } = createWorkflowService()
+    const store = {
+      readDraft: vi.fn(),
+      writeDraft: vi.fn(),
+      deleteDraft: vi.fn(async () => undefined),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, draftStore: store })
+
+    const result = await worker.handleUpdate({
+      update_id: 23,
+      message: {
+        message_id: 3,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/cancel",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reason: "Telegram bot draft cancelled",
+      draftAction: "cancelled",
+      draftId: "telegram:chat-1:user-1",
+      responseText: defaultTelegramBotDraftText({
+        action: "cancelled",
+        draftId: "telegram:chat-1:user-1",
+        payload: {},
+        update: { update_id: 23 },
+      }),
+    })
+    expect(store.deleteDraft).toHaveBeenCalledWith("telegram:chat-1:user-1")
+    expect(store.writeDraft).not.toHaveBeenCalled()
+    expect(runWorkflow).not.toHaveBeenCalled()
+  })
+
+  it("keeps Telegram conversation drafts when render validation fails", async () => {
+    const { service, runWorkflow } = createWorkflowService(failedResult)
+    const existingDraft = {
+      id: "telegram:chat-1:user-1",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+      workflow: {
+        source: "telegram" as const,
+        chatId: "chat-1",
+        userId: "user-1",
+        media: [{ type: "file" as const, value: "telegram-file-1" }],
+      },
+    }
+    const store = {
+      readDraft: vi.fn(async () => existingDraft),
+      writeDraft: vi.fn(async () => undefined),
+      deleteDraft: vi.fn(async () => undefined),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, draftStore: store })
+
+    const result = await worker.handleUpdate({
+      update_id: 24,
+      message: {
+        message_id: 4,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/render destination=instagram",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: false,
+      updateId: 24,
+      result: failedResult,
+    })
+    expect(runWorkflow).toHaveBeenCalledOnce()
+    expect(store.deleteDraft).not.toHaveBeenCalled()
+    expect(store.writeDraft).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "telegram:chat-1:user-1",
+        workflow: expect.objectContaining({
+          text: "/render destination=instagram",
+          media: [{ type: "file", value: "telegram-file-1" }],
+        }),
+      }),
+    )
   })
 
   it("polls one update batch and returns the next offset", async () => {
