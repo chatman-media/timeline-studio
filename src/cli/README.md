@@ -110,6 +110,39 @@ npx ts-node src/cli/index.ts render project.json output.mp4 --verbose
 | `--no-audio` | Отключить аудио |
 | `-v, --verbose` | Подробный вывод |
 
+### bot-worker - Telegram bot-first worker
+
+Запуск Telegram worker для bot-first workflow: обработка raw `Update`, один `getUpdates` batch или долгоживущий polling loop.
+
+```bash
+# Локальный smoke без Telegram token и без сетевых вызовов
+bun run src/cli/index.ts bot-worker \
+  --update-file docs/08_tasks/planned/fixtures/telegram-help-update.json \
+  --pretty
+
+# Один getUpdates batch
+TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
+bun run src/cli/index.ts bot-worker --poll-once --pretty
+
+# Долгоживущий polling worker с сохранением offset
+TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
+TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json \
+TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
+bun run src/cli/index.ts bot-worker --poll --rust-render
+```
+
+**Опции:**
+| Опция | Описание |
+|-------|----------|
+| `--update-file <path>` | Обработать один raw Telegram `Update` JSON |
+| `--poll-once` | Получить и обработать один `getUpdates` batch |
+| `--poll` | Запустить continuous polling loop |
+| `--offset-file <path>` | Сохранять Telegram offset между рестартами |
+| `--max-batches <count>` | Остановить polling после N batches |
+| `--media-dir <path>` | Папка для скачанных Telegram/remote media |
+| `--telegram-bot-token <token>` | Telegram Bot API token |
+| `--rust-render` | Использовать Rust headless render adapter |
+
 ## Переменные окружения
 
 ```bash
@@ -118,7 +151,16 @@ export OPENAI_API_KEY=sk-...
 
 # Путь к FFmpeg (опционально)
 export FFMPEG_PATH=/usr/local/bin/ffmpeg
+
+# Bot worker runtime defaults
+export TIMELINE_BOT_TELEGRAM_TOKEN=123:token
+export TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json
+export TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media
+export TIMELINE_BOT_DEFAULT_DESTINATION=telegram
+export TIMELINE_BOT_RUST_RENDER=true
 ```
+
+`bot-worker` also accepts `TELEGRAM_BOT_TOKEN` as a generic fallback. Explicit CLI flags take priority over `TIMELINE_BOT_*` environment defaults.
 
 ## Примеры использования
 
