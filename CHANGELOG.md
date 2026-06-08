@@ -1,3 +1,10 @@
+# [3.67.0](https://github.com/chatman-media/timeline-studio/compare/v3.66.0...v3.67.0) (2026-06-08)
+
+
+### Features
+
+* add bot workflow runner ([#182](https://github.com/chatman-media/timeline-studio/issues/182)) ([ca7a7ab](https://github.com/chatman-media/timeline-studio/commit/ca7a7ab5d3140cda3dec9071f8310ec850f1a588))
+
 # [3.66.0](https://github.com/chatman-media/timeline-studio/compare/v3.65.0...v3.66.0) (2026-06-08)
 
 
