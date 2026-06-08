@@ -1,3 +1,10 @@
+# [3.65.0](https://github.com/chatman-media/timeline-studio/compare/v3.64.0...v3.65.0) (2026-06-08)
+
+
+### Features
+
+* add bot publishing destinations ([#178](https://github.com/chatman-media/timeline-studio/issues/178)) ([2d6c8f8](https://github.com/chatman-media/timeline-studio/commit/2d6c8f8a4432f7d7aed4e1e592c785e0c3f44603))
+
 # [3.64.0](https://github.com/chatman-media/timeline-studio/compare/v3.63.0...v3.64.0) (2026-06-08)
 
 
