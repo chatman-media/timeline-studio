@@ -62,6 +62,39 @@ describe("NodeBotStatusNotifier", () => {
     })
   })
 
+  it("sends direct Telegram messages through Bot API fetch", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      async json() {
+        return { ok: true, result: { message_id: 9 } }
+      },
+    }))
+    const notifier = new NodeBotStatusNotifier({
+      telegram: {
+        botToken: "token-1",
+      },
+      fetch: fetchMock,
+    })
+
+    await notifier.sendMessage({
+      chatId: "42",
+      text: "Send a video file, link, project, or choose a template.",
+      replyToMessageId: "7",
+      metadata: { command: "help" },
+    })
+
+    expect(fetchMock).toHaveBeenCalledWith("https://api.telegram.org/bottoken-1/sendMessage", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        chat_id: "42",
+        text: "Send a video file, link, project, or choose a template.",
+        reply_to_message_id: 7,
+      }),
+    })
+  })
+
   it("uses default chat id and skips delivery without a client or bot token", async () => {
     const fetchMock = vi.fn()
     const notifier = new NodeBotStatusNotifier({

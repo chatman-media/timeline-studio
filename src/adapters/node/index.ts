@@ -61,8 +61,12 @@ export { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./r
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export {
   createTelegramLikePayloadFromUpdate,
+  defaultTelegramBotCommandText,
   NodeTelegramBotApiClient,
   type NodeTelegramBotClient,
+  type NodeTelegramBotCommand,
+  type NodeTelegramBotCommandFormatter,
+  type NodeTelegramBotCommandFormatterContext,
   NodeTelegramBotFileOffsetStore,
   type NodeTelegramBotFileOffsetStoreState,
   type NodeTelegramBotOffsetStore,
@@ -74,6 +78,7 @@ export {
   type NodeTelegramBotWorkerRunOptions,
   type NodeTelegramBotWorkerRunResult,
   type NodeTelegramBotWorkerUpdateResult,
+  parseTelegramBotCommand,
   type TelegramBotFetch,
   type TelegramBotFetchResponse,
   type TelegramBotFile,

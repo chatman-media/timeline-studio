@@ -4,7 +4,7 @@ export interface NodeTelegramStatusPayload {
   chatId: string
   text: string
   replyToMessageId?: string
-  metadata?: BotWorkflowStatusMessage
+  metadata?: unknown
 }
 
 export interface NodeTelegramStatusResult {
@@ -62,25 +62,33 @@ export class NodeBotStatusNotifier implements BotWorkflowStatusSink {
     const chatId = message.chatId ?? this.defaultChatId
     if (!chatId) return
 
+    await this.sendMessage({
+      chatId,
+      text: message.text,
+      ...(message.messageId ? { replyToMessageId: message.messageId } : {}),
+      metadata: message,
+    })
+  }
+
+  async sendMessage(payload: NodeTelegramStatusPayload): Promise<NodeTelegramStatusResult> {
+    const chatId = payload.chatId ?? this.defaultChatId
+    if (!chatId) return {}
+
     if (this.client) {
-      await this.client.sendMessage({
-        chatId,
-        text: message.text,
-        ...(message.messageId ? { replyToMessageId: message.messageId } : {}),
-        metadata: message,
-      })
-      return
+      return this.client.sendMessage({ ...payload, chatId })
     }
 
-    if (!this.botToken) return
+    if (!this.botToken) return {}
 
     const response = await this.fetch(`https://api.telegram.org/bot${this.botToken}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         chat_id: chatId,
-        text: message.text,
-        ...(message.messageId ? { reply_to_message_id: Number(message.messageId) || message.messageId } : {}),
+        text: payload.text,
+        ...(payload.replyToMessageId
+          ? { reply_to_message_id: Number(payload.replyToMessageId) || payload.replyToMessageId }
+          : {}),
       }),
     })
 
@@ -92,6 +100,8 @@ export class NodeBotStatusNotifier implements BotWorkflowStatusSink {
     if (body && body.ok === false) {
       throw new Error(body.description ?? "Telegram sendMessage failed")
     }
+
+    return body?.result?.message_id === undefined ? {} : { messageId: String(body.result.message_id) }
   }
 }
 
