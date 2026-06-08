@@ -1,3 +1,10 @@
+# [3.69.0](https://github.com/chatman-media/timeline-studio/compare/v3.68.0...v3.69.0) (2026-06-08)
+
+
+### Features
+
+* add bot media resolver ([#186](https://github.com/chatman-media/timeline-studio/issues/186)) ([7ff9cd2](https://github.com/chatman-media/timeline-studio/commit/7ff9cd28971709aebb5b30d46f0043dfa3a55e5d))
+
 # [3.68.0](https://github.com/chatman-media/timeline-studio/compare/v3.67.0...v3.68.0) (2026-06-08)
 
 
