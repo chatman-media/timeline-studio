@@ -1,3 +1,10 @@
+# [3.73.0](https://github.com/chatman-media/timeline-studio/compare/v3.72.0...v3.73.0) (2026-06-08)
+
+
+### Features
+
+* route telegram bot commands ([#194](https://github.com/chatman-media/timeline-studio/issues/194)) ([3e70421](https://github.com/chatman-media/timeline-studio/commit/3e70421e3c9d6245679c678fd3790b866783d2db))
+
 # [3.72.0](https://github.com/chatman-media/timeline-studio/compare/v3.71.0...v3.72.0) (2026-06-08)
 
 
