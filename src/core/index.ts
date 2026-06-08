@@ -35,6 +35,7 @@ export type {
 } from "./ports"
 export type {
   BotRenderJobRetryOptions,
+  BotWorkflowDraftMergeOptions,
   BotWorkflowRunnerOptions,
   LanguageResponse,
   ParsedBotWorkflowText,
@@ -47,6 +48,7 @@ export {
   createBotRenderJobRequest,
   createBotRenderJobRetryRequest,
   createBotRenderJobSnapshot,
+  createBotWorkflowDraftId,
   createBotWorkflowRequestFromTelegramLikePayload,
   createBotWorkflowStatusEventSink,
   createBotWorkflowStatusMessage,
@@ -55,6 +57,8 @@ export {
   defaultBotWorkflowStatusText,
   getAppLanguage,
   InMemoryBotRenderJobEventStream,
+  mergeBotWorkflowDraft,
+  mergeBotWorkflowRequests,
   parseBotWorkflowText,
   resolveBotRenderJobMedia,
   runBotWorkflow,
@@ -93,6 +97,8 @@ export type {
   BotRenderJobSource,
   BotRenderJobStatus,
   BotTemplateSelection,
+  BotWorkflowDraft,
+  BotWorkflowDraftStore,
   BotWorkflowIntakeOptions,
   BotWorkflowIntakeResult,
   BotWorkflowOutput,

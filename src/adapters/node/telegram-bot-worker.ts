@@ -1,7 +1,14 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { BotWorkflowRunResult, TelegramLikeBotFile, TelegramLikeBotPayload } from "@/core/types"
+import { createBotWorkflowDraftId, createTelegramLikeBotWorkflow, mergeBotWorkflowDraft } from "@/core/services"
+import type {
+  BotWorkflowDraft,
+  BotWorkflowDraftStore,
+  BotWorkflowRunResult,
+  TelegramLikeBotFile,
+  TelegramLikeBotPayload,
+} from "@/core/types"
 
 import { NodeBotStatusNotifier, type NodeTelegramStatusClient } from "./bot-status"
 import type { NodeBotWorkflowService, NodeBotWorkflowServiceOptions } from "./bot-workflow"
@@ -70,10 +77,14 @@ export interface NodeTelegramBotWorkerOptions {
   errorResponder?: NodeTelegramStatusClient
   errorFormatter?: NodeTelegramBotUpdateErrorFormatter
   disableErrorResponses?: boolean
+  draftStore?: BotWorkflowDraftStore
+  draftResponder?: NodeTelegramStatusClient
+  draftFormatter?: NodeTelegramBotDraftFormatter
   disableCommandRouting?: boolean
   botToken?: string
   fetch?: TelegramBotFetch
   workflowOptions?: NodeBotWorkflowServiceOptions
+  now?: () => string
   onResult?: (result: NodeTelegramBotWorkerUpdateResult) => void | Promise<void>
 }
 
@@ -82,6 +93,8 @@ export interface NodeTelegramBotWorkerHandleOptions {
 }
 
 export type NodeTelegramBotCommand = "start" | "help"
+export type NodeTelegramBotDraftCommand = "render" | "cancel"
+export type NodeTelegramBotDraftAction = "updated" | "cancelled"
 
 export interface NodeTelegramBotCommandFormatterContext {
   command: NodeTelegramBotCommand
@@ -100,6 +113,16 @@ export interface NodeTelegramBotUpdateErrorFormatterContext {
 
 export type NodeTelegramBotUpdateErrorFormatter = (context: NodeTelegramBotUpdateErrorFormatterContext) => string
 
+export interface NodeTelegramBotDraftFormatterContext {
+  action: NodeTelegramBotDraftAction
+  draftId: string
+  draft?: BotWorkflowDraft
+  payload: TelegramLikeBotPayload
+  update: TelegramBotUpdate
+}
+
+export type NodeTelegramBotDraftFormatter = (context: NodeTelegramBotDraftFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -107,8 +130,12 @@ export type NodeTelegramBotWorkerUpdateResult =
       updateId: number
       update: TelegramBotUpdate
       command?: NodeTelegramBotCommand
+      draftAction?: NodeTelegramBotDraftAction
+      draftId?: string
+      draft?: BotWorkflowDraft
       payload?: TelegramLikeBotPayload
       responseText?: string
+      responseError?: string
     }
   | {
       skipped: false
@@ -275,6 +302,9 @@ export class NodeTelegramBotWorker {
       return result
     }
 
+    const draftResult = await this.handleDraftUpdate(update, payload, options)
+    if (draftResult) return draftResult
+
     const result: NodeTelegramBotWorkerUpdateResult = {
       skipped: false,
       updateId: update.update_id,
@@ -380,6 +410,117 @@ export class NodeTelegramBotWorker {
     })
   }
 
+  private async handleDraftUpdate(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    options: NodeTelegramBotWorkerHandleOptions,
+  ): Promise<NodeTelegramBotWorkerUpdateResult | null> {
+    const store = this.options.draftStore
+    if (!store) return null
+
+    const workflow = createTelegramLikeBotWorkflow(payload)
+    const draftId = createBotWorkflowDraftId(workflow)
+    const draftCommand = parseTelegramBotDraftCommand(payload.text)
+
+    if (draftCommand === "cancel") {
+      await store.deleteDraft(draftId)
+      return this.createDraftSkippedResult({
+        action: "cancelled",
+        draftId,
+        payload,
+        update,
+      })
+    }
+
+    const existingDraft = await store.readDraft(draftId)
+    const draft = mergeBotWorkflowDraft(existingDraft, workflow, { now: this.options.now })
+
+    if (draftCommand === "render") {
+      const workflowResult = await this.options.workflow.runWorkflow(
+        draft.workflow,
+        mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
+      )
+      if (workflowResult.ok) {
+        await store.deleteDraft(draftId)
+      } else {
+        await store.writeDraft(draft)
+      }
+
+      const result: NodeTelegramBotWorkerUpdateResult = {
+        skipped: false,
+        updateId: update.update_id,
+        update,
+        payload,
+        result: workflowResult,
+      }
+      await this.options.onResult?.(result)
+      return result
+    }
+
+    await store.writeDraft(draft)
+    return this.createDraftSkippedResult({
+      action: "updated",
+      draftId,
+      draft,
+      payload,
+      update,
+    })
+  }
+
+  private async createDraftSkippedResult(context: {
+    action: NodeTelegramBotDraftAction
+    draftId: string
+    draft?: BotWorkflowDraft
+    payload: TelegramLikeBotPayload
+    update: TelegramBotUpdate
+  }): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const responseText = (this.options.draftFormatter ?? defaultTelegramBotDraftText)({
+      action: context.action,
+      draftId: context.draftId,
+      ...(context.draft ? { draft: context.draft } : {}),
+      payload: context.payload,
+      update: context.update,
+    })
+    let responseError: string | undefined
+
+    try {
+      await this.sendDraftResponse(context.draftId, context.payload, responseText)
+    } catch (error) {
+      responseError = formatUnknownError(error)
+    }
+
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: true,
+      reason: context.action === "updated" ? "Telegram bot draft updated" : "Telegram bot draft cancelled",
+      updateId: context.update.update_id,
+      update: context.update,
+      draftAction: context.action,
+      draftId: context.draftId,
+      ...(context.draft ? { draft: context.draft } : {}),
+      payload: context.payload,
+      responseText,
+      ...(responseError ? { responseError } : {}),
+    }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async sendDraftResponse(draftId: string, payload: TelegramLikeBotPayload, text: string): Promise<void> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    if (!chatId) return
+
+    const responder = this.resolveDraftResponder()
+    await responder?.sendMessage({
+      chatId,
+      text,
+      ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+      metadata: {
+        draftId,
+        source: "telegram-bot-worker",
+      },
+    })
+  }
+
   private async handlePollingUpdate(
     update: TelegramBotUpdate,
     options: NodeTelegramBotWorkerHandleOptions,
@@ -462,6 +603,17 @@ export class NodeTelegramBotWorker {
     })
   }
 
+  private resolveDraftResponder(): NodeTelegramStatusClient | undefined {
+    if (this.options.draftResponder) return this.options.draftResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
+
   private resolveErrorResponder(): NodeTelegramStatusClient | undefined {
     if (this.options.errorResponder) return this.options.errorResponder
     if (!this.options.botToken) return undefined
@@ -517,6 +669,21 @@ export function parseTelegramBotCommand(text: string | undefined): NodeTelegramB
   }
 }
 
+export function parseTelegramBotDraftCommand(text: string | undefined): NodeTelegramBotDraftCommand | null {
+  const token = text?.trim().split(/\s+/)[0]?.toLowerCase()
+  if (!token?.startsWith("/")) return null
+
+  const command = token.split("@")[0]
+  switch (command) {
+    case "/render":
+      return "render"
+    case "/cancel":
+      return "cancel"
+    default:
+      return null
+  }
+}
+
 export function defaultTelegramBotCommandText(): string {
   return [
     "Timeline Studio bot",
@@ -525,6 +692,19 @@ export function defaultTelegramBotCommandText(): string {
     "template=promo destination=telegram",
     'project="./project.json" destination=file output="./out.mp4"',
     "Options: template, project, destination, output, resolution.",
+  ].join("\n")
+}
+
+export function defaultTelegramBotDraftText(context: NodeTelegramBotDraftFormatterContext): string {
+  if (context.action === "cancelled") {
+    return ["Timeline Studio bot", "Draft cleared.", "Send a new video, link, or project when ready."].join("\n")
+  }
+
+  return [
+    "Timeline Studio bot",
+    "Saved this input.",
+    "Send more media or hints, then send /render.",
+    "Send /cancel to clear the draft.",
   ].join("\n")
 }
 

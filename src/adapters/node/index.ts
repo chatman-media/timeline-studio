@@ -42,6 +42,7 @@ export {
   type NodeTelegramStatusResult,
 } from "./bot-status"
 export { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
+export { NodeBotWorkflowFileDraftStore } from "./bot-workflow-drafts"
 export { NodeEventService } from "./event"
 export { type NodeLanguageOptions, NodeLanguageService } from "./language"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
@@ -62,12 +63,17 @@ export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
+  defaultTelegramBotDraftText,
   defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
   type NodeTelegramBotClient,
   type NodeTelegramBotCommand,
   type NodeTelegramBotCommandFormatter,
   type NodeTelegramBotCommandFormatterContext,
+  type NodeTelegramBotDraftAction,
+  type NodeTelegramBotDraftCommand,
+  type NodeTelegramBotDraftFormatter,
+  type NodeTelegramBotDraftFormatterContext,
   NodeTelegramBotFileOffsetStore,
   type NodeTelegramBotFileOffsetStoreState,
   type NodeTelegramBotOffsetStore,
@@ -82,6 +88,7 @@ export {
   type NodeTelegramBotWorkerRunResult,
   type NodeTelegramBotWorkerUpdateResult,
   parseTelegramBotCommand,
+  parseTelegramBotDraftCommand,
   type TelegramBotFetch,
   type TelegramBotFetchResponse,
   type TelegramBotFile,

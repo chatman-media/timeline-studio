@@ -70,6 +70,18 @@ export interface BotWorkflowRequest {
   raw?: unknown
 }
 
+export interface BotWorkflowDraft {
+  id: string
+  workflow: BotWorkflowRequest
+  updatedAt: string
+}
+
+export interface BotWorkflowDraftStore {
+  readDraft(id: string): Promise<BotWorkflowDraft | undefined>
+  writeDraft(draft: BotWorkflowDraft): Promise<void>
+  deleteDraft(id: string): Promise<void>
+}
+
 export interface BotWorkflowValidationError {
   code: BotWorkflowValidationCode
   field: string

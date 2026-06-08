@@ -128,9 +128,13 @@ bun run src/cli/index.ts bot-worker --poll-once --pretty
 # Долгоживущий polling worker с сохранением offset
 TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
 TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json \
+TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts \
 TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
 bun run src/cli/index.ts bot-worker --poll --rust-render
 ```
+
+Если задан `--draft-dir` или `TIMELINE_BOT_DRAFT_DIR`, worker включает conversation draft mode:
+обычные сообщения сохраняют media и render hints, `/render` запускает merged workflow, а `/cancel` очищает draft.
 
 **Опции:**
 | Опция | Описание |
@@ -139,6 +143,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 | `--poll-once` | Получить и обработать один `getUpdates` batch |
 | `--poll` | Запустить continuous polling loop |
 | `--offset-file <path>` | Сохранять Telegram offset между рестартами |
+| `--draft-dir <path>` | Сохранять bot conversation drafts между сообщениями и рестартами |
 | `--max-batches <count>` | Остановить polling после N batches |
 | `--media-dir <path>` | Папка для скачанных Telegram/remote media |
 | `--telegram-bot-token <token>` | Telegram Bot API token |
@@ -156,6 +161,7 @@ export FFMPEG_PATH=/usr/local/bin/ffmpeg
 # Bot worker runtime defaults
 export TIMELINE_BOT_TELEGRAM_TOKEN=123:token
 export TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json
+export TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts
 export TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media
 export TIMELINE_BOT_DEFAULT_DESTINATION=telegram
 export TIMELINE_BOT_RUST_RENDER=true
