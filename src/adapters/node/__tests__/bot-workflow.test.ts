@@ -3,6 +3,7 @@ import { InMemoryBotRenderJobEventStream } from "@/core/services"
 import type {
   BotRenderJob,
   BotRenderJobEvent,
+  BotRenderJobMediaInput,
   BotRenderJobRequest,
   BotRenderJobResult,
   BotRenderJobRunOptions,
@@ -64,8 +65,15 @@ describe("NodeBotWorkflowService", () => {
     const defaultSink = { publish: vi.fn() }
     const callerSink = { publish: vi.fn() }
     const eventStream = new InMemoryBotRenderJobEventStream()
+    const mediaResolver = {
+      resolve: vi.fn(async (media: BotRenderJobMediaInput) => ({
+        ...media,
+        value: "/tmp/resolved-clip.mp4",
+      })),
+    }
     const botWorkflow = new NodeBotWorkflowService(renderJob, {
       intake: { defaultDestination: "file" },
+      mediaResolver,
       projectAssembly: {
         now: () => "2026-06-08T00:00:00.000Z",
         defaultClipDurationSeconds: 2,
@@ -77,7 +85,7 @@ describe("NodeBotWorkflowService", () => {
       {
         caption: "template=promo",
         video: {
-          file_path: "/tmp/clip.mp4",
+          file_id: "telegram-file-id",
           file_name: "clip.mp4",
         },
       },
@@ -95,8 +103,10 @@ describe("NodeBotWorkflowService", () => {
       type: "inline",
       schema: {
         timeline: { duration: 2 },
+        tracks: [{ clips: [{ source: { File: "/tmp/resolved-clip.mp4" } }] }],
       },
     })
+    expect(mediaResolver.resolve).toHaveBeenCalledOnce()
     expect(options).toMatchObject({ pollIntervalMs: 7, timeoutMs: 9 })
     expect(options?.eventSinks).toHaveLength(3)
     expect(defaultSink.publish).toHaveBeenCalledOnce()

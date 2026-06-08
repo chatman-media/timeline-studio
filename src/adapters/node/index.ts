@@ -9,6 +9,7 @@ import { container } from "@/core/container"
 
 import { type NodeAIOptions, NodeAIService } from "./ai"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
+import { NodeBotMediaResolver, type NodeBotMediaResolverOptions } from "./bot-media-resolver"
 import { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
 import { NodeEventService } from "./event"
 import { type NodeLanguageOptions, NodeLanguageService } from "./language"
@@ -24,6 +25,12 @@ import { type NodeVideoOptions, NodeVideoService } from "./video"
 // Re-exports
 export { type NodeAIOptions, NodeAIService } from "./ai"
 export { type NodeBackendOptions, NodeBackendService } from "./backend"
+export {
+  NodeBotMediaResolver,
+  type NodeBotMediaResolverOptions,
+  type TelegramFileClient,
+  type TelegramFileInfo,
+} from "./bot-media-resolver"
 export { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
 export { NodeEventService } from "./event"
 export { type NodeLanguageOptions, NodeLanguageService } from "./language"
@@ -59,6 +66,8 @@ export interface NodeAppOptions {
   renderJob?: NodeRenderJobServiceOptions
   /** Опции для bot-first workflow runner */
   botWorkflow?: NodeBotWorkflowServiceOptions
+  /** Опции для bot-first media resolver */
+  botMediaResolver?: NodeBotMediaResolverOptions | false
   /** Автоматически подключаться к бэкенду */
   autoConnect?: boolean
 }
@@ -76,6 +85,7 @@ export interface NodeAppServices {
   publish: NodePublishService
   renderJob: NodeRenderJobService
   botWorkflow: NodeBotWorkflowService
+  botMediaResolver?: NodeBotMediaResolver
 }
 
 /**
@@ -116,7 +126,11 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     ...options.renderJob,
     publisher: options.renderJob?.publisher ?? publish,
   })
-  const botWorkflow = new NodeBotWorkflowService(renderJob, options.botWorkflow)
+  const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
+  const botWorkflow = new NodeBotWorkflowService(renderJob, {
+    ...options.botWorkflow,
+    mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
+  })
 
   // Register in container
   container.registerBackend(backend)
@@ -147,6 +161,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     publish,
     renderJob,
     botWorkflow,
+    ...(botMediaResolver ? { botMediaResolver } : {}),
   }
 }
 
@@ -164,7 +179,11 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     ...options.renderJob,
     publisher: options.renderJob?.publisher ?? publish,
   })
-  const botWorkflow = new NodeBotWorkflowService(renderJob, options.botWorkflow)
+  const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
+  const botWorkflow = new NodeBotWorkflowService(renderJob, {
+    ...options.botWorkflow,
+    mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
+  })
 
   return {
     backend: new NodeBackendService(options.backend),
@@ -179,7 +198,13 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     publish,
     renderJob,
     botWorkflow,
+    ...(botMediaResolver ? { botMediaResolver } : {}),
   }
+}
+
+function createNodeBotMediaResolver(options?: NodeBotMediaResolverOptions | false): NodeBotMediaResolver | undefined {
+  if (options === undefined || options === false) return undefined
+  return new NodeBotMediaResolver(options)
 }
 
 function createNodeVideoService(

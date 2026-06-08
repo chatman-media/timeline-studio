@@ -3,6 +3,7 @@ import type { IRenderJobService } from "../../ports"
 import type {
   BotRenderJob,
   BotRenderJobEvent,
+  BotRenderJobMediaInput,
   BotRenderJobRequest,
   BotRenderJobResult,
   BotRenderJobRunOptions,
@@ -140,18 +141,29 @@ describe("bot workflow runner", () => {
 
   it("hydrates media-only workflows with an inline ProjectSchema before rendering", async () => {
     const renderJob = new FakeRenderJobService()
+    const mediaResolver = {
+      resolve: vi.fn(async (media: BotRenderJobMediaInput) => ({
+        ...media,
+        value: "/tmp/resolved-clip.mp4",
+        metadata: {
+          ...media.metadata,
+          resolvedFrom: media.value,
+        },
+      })),
+    }
 
     const result = await runTelegramLikeBotWorkflow(
       {
         caption: 'template=promo output="./out.mp4"',
         video: {
-          file_path: "/tmp/clip.mp4",
+          file_id: "telegram-file-id",
           file_name: "clip.mp4",
           mime_type: "video/mp4",
         },
       },
       {
         renderJob,
+        mediaResolver,
         projectAssembly: {
           now: () => "2026-06-08T00:00:00.000Z",
           defaultClipDurationSeconds: 4,
@@ -176,7 +188,7 @@ describe("bot workflow runner", () => {
             track_type: "Video",
             clips: [
               {
-                source: { File: "/tmp/clip.mp4" },
+                source: { File: "/tmp/resolved-clip.mp4" },
                 template_id: "promo",
                 template_position: 0,
               },
@@ -185,6 +197,7 @@ describe("bot workflow runner", () => {
         ],
       },
     })
+    expect(mediaResolver.resolve).toHaveBeenCalledOnce()
     expect(renderJob.lastRequest?.project).toBe(result.renderJob.project)
   })
 

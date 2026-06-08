@@ -6,6 +6,7 @@ import type {
   BotWorkflowRunResult,
   TelegramLikeBotPayload,
 } from "../types"
+import { resolveBotRenderJobMedia } from "./bot-media-resolver"
 import { withBotProjectSchema } from "./bot-project-assembler"
 import { createBotRenderJobRequest, createBotWorkflowRequestFromTelegramLikePayload } from "./bot-workflow-intake"
 import { InMemoryBotRenderJobEventStream } from "./render-job-events"
@@ -37,10 +38,12 @@ export async function runBotWorkflow(
     eventSinks.push(options.eventStream)
   }
 
+  const resolvedRenderJob = await resolveBotRenderJobMedia(intake.renderJob, options.mediaResolver, { workflow })
+
   const renderJob =
     options.projectAssembly === false
-      ? intake.renderJob
-      : withBotProjectSchema(intake.renderJob, options.projectAssembly)
+      ? resolvedRenderJob
+      : withBotProjectSchema(resolvedRenderJob, options.projectAssembly)
 
   const result = await options.renderJob.run(renderJob, {
     ...options.render,
