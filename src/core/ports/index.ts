@@ -70,6 +70,7 @@ export type {
   OpenDialogOptions,
   SaveDialogOptions,
 } from "./platform.port"
+export type { IRenderJobService } from "./render-job.port"
 export type { IStorageService } from "./storage.port"
 export type {
   CacheConfig,

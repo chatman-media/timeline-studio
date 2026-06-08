@@ -14,6 +14,7 @@ import { type NodeLanguageOptions, NodeLanguageService } from "./language"
 import { type NodeMediaOptions, NodeMediaService } from "./media"
 import { NodeBackendBridgeService } from "./node-backend-bridge"
 import { type NodePlatformOptions, NodePlatformService } from "./platform"
+import { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
 import { type NodeStorageOptions, NodeStorageService } from "./storage"
 import { type NodeVideoOptions, NodeVideoService } from "./video"
 
@@ -25,6 +26,7 @@ export { type NodeLanguageOptions, NodeLanguageService } from "./language"
 export { type NodeMediaOptions, NodeMediaService } from "./media"
 export { NodeBackendBridgeService } from "./node-backend-bridge"
 export { type NodePlatformOptions, NodePlatformService } from "./platform"
+export { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export { type NodeVideoOptions, NodeVideoService } from "./video"
 
@@ -43,6 +45,8 @@ export interface NodeAppOptions {
   backend?: NodeBackendOptions
   /** Опции для Language сервиса */
   language?: NodeLanguageOptions
+  /** Опции для bot-first RenderJob сервиса */
+  renderJob?: NodeRenderJobServiceOptions
   /** Автоматически подключаться к бэкенду */
   autoConnect?: boolean
 }
@@ -57,6 +61,7 @@ export interface NodeAppServices {
   video: NodeVideoService
   ai: NodeAIService
   language: NodeLanguageService
+  renderJob: NodeRenderJobService
 }
 
 /**
@@ -92,6 +97,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const video = new NodeVideoService(options.video)
   const ai = new NodeAIService(options.ai)
   const language = new NodeLanguageService(options.language)
+  const renderJob = new NodeRenderJobService(video, options.renderJob)
 
   // Register in container
   container.registerBackend(backend)
@@ -119,6 +125,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     video,
     ai,
     language,
+    renderJob,
   }
 }
 
@@ -130,6 +137,8 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
  * @returns Объект со всеми сервисами
  */
 export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
+  const video = new NodeVideoService(options.video)
+
   return {
     backend: new NodeBackendService(options.backend),
     platform: new NodePlatformService(options.platform),
@@ -137,8 +146,9 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     event: new NodeEventService(),
     media: new NodeMediaService(options.media),
     nodeBackend: new NodeBackendBridgeService(),
-    video: new NodeVideoService(options.video),
+    video,
     ai: new NodeAIService(options.ai),
     language: new NodeLanguageService(options.language),
+    renderJob: new NodeRenderJobService(video, options.renderJob),
   }
 }

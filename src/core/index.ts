@@ -24,6 +24,7 @@ export type {
   ILanguageService,
   INodeBackendService,
   IPlatformService,
+  IRenderJobService,
   IStorageService,
   NodeBackendHealth,
   NotificationOptions,
@@ -36,6 +37,17 @@ export { getAppLanguage, setAppLanguage } from "./services"
 
 // Types (re-exported from generated bindings for now)
 export type {
+  BotRenderJob,
+  BotRenderJobArtifact,
+  BotRenderJobDestination,
+  BotRenderJobEvent,
+  BotRenderJobMediaInput,
+  BotRenderJobProjectInput,
+  BotRenderJobRequest,
+  BotRenderJobResult,
+  BotRenderJobRunOptions,
+  BotRenderJobSource,
+  BotRenderJobStatus,
   BrowserState,
   BrowserTab,
   Clip,

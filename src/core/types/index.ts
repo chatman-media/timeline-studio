@@ -31,4 +31,5 @@ export type {
 
 // Re-export core-facing compatibility types for features
 export * from "./media"
+export * from "./render-job"
 export * from "./video-editing"

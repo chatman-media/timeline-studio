@@ -57,6 +57,10 @@ adapters -> core
 
 `app-shell` - это композиционный слой (`src/app`, `src/cli`, `src/config`), где допустимо связывать UI, domains и adapters. Все остальные слои должны двигаться к зависимостям через `core`.
 
+## Bot-first priority
+
+С 2026-06-08 следующий верхнеуровневый вектор - [Bot-first workflow](./bot-first-workflow.md). Phase F остается обязательной инженерной базой и quality gate, но новые slices должны в первую очередь приближать headless bot workflow: render job contracts, worker/event stream, intake contract и publishing destinations.
+
 ## Phase F PR slices
 
 ### F1: Package boundaries baseline
