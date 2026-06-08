@@ -1,3 +1,10 @@
+# [3.70.0](https://github.com/chatman-media/timeline-studio/compare/v3.69.0...v3.70.0) (2026-06-08)
+
+
+### Features
+
+* add bot status notifier ([#188](https://github.com/chatman-media/timeline-studio/issues/188)) ([c9c85b4](https://github.com/chatman-media/timeline-studio/commit/c9c85b4865812e3ff6f4228b715c148cac755c59))
+
 # [3.69.0](https://github.com/chatman-media/timeline-studio/compare/v3.68.0...v3.69.0) (2026-06-08)
 
 
