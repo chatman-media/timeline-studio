@@ -1,3 +1,10 @@
+# [3.74.0](https://github.com/chatman-media/timeline-studio/compare/v3.73.0...v3.74.0) (2026-06-08)
+
+
+### Features
+
+* add bot worker runtime defaults ([#196](https://github.com/chatman-media/timeline-studio/issues/196)) ([e484b44](https://github.com/chatman-media/timeline-studio/commit/e484b44ee05c31b5f8a17f85f30a3fbb1fea346d))
+
 # [3.73.0](https://github.com/chatman-media/timeline-studio/compare/v3.72.0...v3.73.0) (2026-06-08)
 
 
