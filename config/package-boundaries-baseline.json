@@ -1,14 +1,11 @@
 {
-  "updated": "2026-06-07",
-  "source": "Phase F baseline after UI pilot and before physical workspace split",
-  "violations": 490,
+  "updated": "2026-06-08",
+  "source": "Phase F6 boundary error burn-down",
+  "violations": 420,
   "bySeverity": {
-    "error": 31,
-    "warn": 459
+    "warn": 420
   },
   "byEdge": {
-    "domains -> app-shell": 3,
-    "domains -> ui": 28,
-    "ui -> domains": 459
+    "ui -> domains": 420
   }
 }

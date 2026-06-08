@@ -3,11 +3,10 @@
  */
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { usePlayer } from "@/domains/video-editing"
 import { useTimelinePlayerSync } from "@/features/timeline/hooks/integration/use-timeline-player-sync"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { useTimelineSelection } from "@/features/timeline/hooks/state/use-timeline-selection"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { timelinePlayerSync } from "../../services/timeline-player-sync"
 import { createMockClip } from "../test-utils"
 

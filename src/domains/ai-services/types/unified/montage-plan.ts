@@ -11,8 +11,8 @@
  */
 
 import type { MediaFile } from "@/domains/media-management/types"
-import type { BaseEffect as VideoEffect } from "@/features/effects/types/unified-effects"
-import type { Transition } from "@/features/transitions/types/transitions"
+import type { Transition } from "@/domains/video-editing/types/transitions"
+import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
 
 // ============================================================================
 // CORE TYPES
@@ -182,6 +182,23 @@ export interface UnifiedFragment {
   tags: string[]
   description?: string
   reason?: string // причина выбора (ai-director)
+  metadata?: {
+    hasAudio?: boolean
+    hasFaces?: boolean
+    hasObjects?: boolean
+    mood?: string
+    sceneType?: string
+  }
+}
+
+export interface MontageClip {
+  fileId: string
+  filePath: string
+  startTime: number
+  endTime: number
+  duration: number
+  reason: string
+  qualityScore?: number
   metadata?: {
     hasAudio?: boolean
     hasFaces?: boolean

@@ -4,6 +4,8 @@
  * Сервис для применения монтажных планов к Timeline
  */
 
+import type { MontagePlan, PlannedClip, TransitionPlan } from "@/domains/ai-services/types/montage-planning"
+import { EmotionalTone } from "@/domains/ai-services/types/montage-planning"
 import type { Section, TimelineClip, TimelineProject, Track, TrackType } from "@/domains/video-editing/types"
 import {
   createTimelineClip,
@@ -15,8 +17,6 @@ import type { AppliedTransition } from "../../../../domains/video-editing/types/
 import type { MediaFile } from "../../../../domains/video-editing/types/media"
 import { MediaFileUtils } from "../../../../domains/video-editing/types/media"
 import type { AppliedEffect } from "../../../../domains/video-editing/types/unified-effects"
-import type { MontagePlan, PlannedClip, TransitionPlan } from "../../../../features/montage-planner/types/index"
-import { EmotionalTone } from "../../../../features/montage-planner/types/index"
 
 const logger = createLogger("TimelineIntegrationService")
 

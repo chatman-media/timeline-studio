@@ -19,6 +19,7 @@ export type {
 export * from "./filters"
 // Core types - экспорт из специализированных файлов
 export * from "./media"
+export * from "./music"
 export * from "./player"
 // Sequence types (canonical source for Sequence, SequenceSettings, etc.)
 export * from "./sequence"

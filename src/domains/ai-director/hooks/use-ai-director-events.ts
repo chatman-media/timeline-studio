@@ -7,8 +7,8 @@
 
 import { listen, type UnlistenFn } from "@tauri-apps/api/event"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { analysisNotificationService } from "@/features/ai-director/services/analysis-notification-service"
 import { createLogger } from "@/lib/tauri-logger"
+import { analysisNotificationService } from "../services/analysis-notification-service"
 import type { AnalysisCompleted, AnalysisError, AnalysisProgress, AnalysisStageCompleted } from "../types"
 
 const logger = createLogger("UseAIDirectorEvents")

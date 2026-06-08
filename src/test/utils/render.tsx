@@ -71,7 +71,7 @@ const getProviders = async () => {
     // Provider not available
   }
   try {
-    const { PlayerProvider } = await import("@/domains/video-editing")
+    const { PlayerProvider } = await import("@/features/timeline/providers/player-provider")
     providers.PlayerProvider = PlayerProvider
   } catch (_e) {
     // Provider not available
@@ -95,7 +95,7 @@ const getProviders = async () => {
     // Provider not available
   }
   try {
-    const { ResourcesProvider } = await import("@/domains/video-editing")
+    const { ResourcesProvider } = await import("@/features/timeline/providers/resources-provider")
     providers.ResourcesProvider = ResourcesProvider
   } catch (_e) {
     // Provider not available

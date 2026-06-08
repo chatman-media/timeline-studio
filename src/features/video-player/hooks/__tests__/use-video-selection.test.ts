@@ -72,7 +72,7 @@ vi.mock("@/domains/video-editing", async () => {
   }
 })
 
-import { PlayerProvider } from "@/domains/video-editing"
+import { PlayerProvider } from "@/features/timeline/providers/player-provider"
 // Импортируем после определения моков
 import { useVideoSelection } from "@/features/video-player/hooks/use-video-selection"
 

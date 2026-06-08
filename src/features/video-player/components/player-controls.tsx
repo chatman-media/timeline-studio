@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils"
 
 const logger = createLogger("video-player:player-controls")
 
-import { usePlayer } from "@/domains/video-editing"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 
 /**
  * Форматирует время в секундах в timecode формат (HH:MM:SS:FF)

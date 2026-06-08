@@ -9,7 +9,7 @@ import { useNotifications } from "../../hooks/use-notifications"
 import { resetSystemIntegrationOrchestrator } from "../../services/system-integration-orchestrator"
 
 // Mock service config
-vi.mock("@/config/service-config", () => ({
+vi.mock("@/domains/shared/utils/service-config", () => ({
   isServiceEnabled: vi.fn(() => true),
 }))
 
@@ -310,7 +310,7 @@ describe("useNotifications", () => {
 
   describe("Service Disabled", () => {
     it("should handle notifications when service is disabled", async () => {
-      const { isServiceEnabled } = await import("@/config/service-config")
+      const { isServiceEnabled } = await import("@/domains/shared/utils/service-config")
       vi.mocked(isServiceEnabled).mockReturnValue(false)
 
       const { result } = renderHook(() => useNotifications())

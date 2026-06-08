@@ -11,14 +11,14 @@ import type {
   TemporalDistribution,
   TimeGap,
   VideoAnalysis,
-} from "../../../../features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
 import {
   CameraMovement,
   EmotionalTone,
   LightingCondition,
   MomentCategory,
   SceneType,
-} from "../../../../features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
 
 export class MomentDetector {
   private static instance: MomentDetector

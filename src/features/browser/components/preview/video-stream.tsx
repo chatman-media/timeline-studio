@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, useState } from "react"
 import type { FfprobeStream, MediaFile } from "@/domains/media-management"
-import { useResources } from "@/domains/video-editing"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
+import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"

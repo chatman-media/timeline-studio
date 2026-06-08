@@ -5,8 +5,8 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { isServiceEnabled } from "@/config/service-config"
 import { getBackend } from "@/core"
+import { isServiceEnabled } from "@/domains/shared/utils/service-config"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import { appMachine } from "../machines/app-machine"

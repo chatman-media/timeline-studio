@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 
 import { ResizableHandle as PanelResizeHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import type { MediaFile } from "@/domains/media-management"
-import { usePlayer } from "@/domains/video-editing"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { getAllTemplateConfig } from "../lib/all-template-configs"
 import type { CellConfiguration } from "../lib/template-config"

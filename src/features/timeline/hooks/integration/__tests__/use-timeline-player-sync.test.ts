@@ -31,7 +31,7 @@ vi.mock("../../../services/timeline-player-sync", () => ({
   },
 }))
 
-import { usePlayer } from "@/domains/video-editing"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { TimelineProviders } from "@/test/test-utils"
 import { createMockClip } from "../../../__mocks__/test-factories"
 import * as timelinePlayerSyncModule from "../../../services/timeline-player-sync"

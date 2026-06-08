@@ -3,15 +3,15 @@
  * Coordinates video and audio analysis to extract meaningful data
  */
 
-import type { MediaFile } from "@/domains/video-editing/types/media"
-import { MediaFileUtils } from "@/domains/video-editing/types/media"
 import type {
   AnalysisOptions,
   AudioAnalysis,
   Fragment,
   MomentScore,
   VideoAnalysis,
-} from "@/features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
+import type { MediaFile } from "@/domains/video-editing/types/media"
+import { MediaFileUtils } from "@/domains/video-editing/types/media"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -23,7 +23,7 @@ import {
   FlowDirection,
   LightingCondition,
   SceneType,
-} from "@/features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
 import { getMontagePlannerAI } from "./montage-planner-ai-integration"
 
 export class ContentAnalyzer {

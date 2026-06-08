@@ -20,7 +20,7 @@ import {
   SequenceType,
   TargetPlatform,
   TransitionPlan,
-} from "../../../../features/montage-planner/types/index"
+} from "@/domains/ai-services/types/montage-planning"
 
 // Fallback UUID generator in case crypto.randomUUID is not available
 

@@ -4,6 +4,8 @@
  * Общие типы, которые используются разными доменами
  */
 
+// Color scheme types
+export * from "./color-scheme"
 // Common types
 export * from "./common"
 // Service contracts

@@ -3,7 +3,7 @@
  */
 
 import { useCallback } from "react"
-import { useTimelineKeyframes as useDomainTimelineKeyframes } from "@/domains/video-editing"
+import { useTimelineKeyframes as useDomainTimelineKeyframes } from "@/features/timeline/providers/timeline-providers"
 import {
   type AnimatableProperty,
   type AnimationResult,

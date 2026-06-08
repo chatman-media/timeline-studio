@@ -1,8 +1,7 @@
 import { memo, useCallback, useMemo } from "react"
-
-import { usePlayer } from "@/domains/video-editing"
 import { UniversalList } from "@/features/browser/components/universal-list"
 import { useTimelineActions } from "@/features/timeline/hooks"
+import { usePlayer } from "@/features/timeline/providers/player-provider"
 
 import { useMediaAdapter } from "../../adapters/use-media-adapter"
 
