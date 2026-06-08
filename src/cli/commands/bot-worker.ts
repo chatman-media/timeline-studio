@@ -257,7 +257,7 @@ function createBotPublishOptions(options: BotWorkerCommandOptions) {
   }
 }
 
-function isFailedWorkerResult(result: BotWorkerCommandResult): boolean {
+export function isFailedWorkerResult(result: BotWorkerCommandResult): boolean {
   if ("batches" in result) {
     return result.batches.some((batch) => batch.updates.some(isFailedUpdateResult))
   }
@@ -271,6 +271,8 @@ function isFailedWorkerResult(result: BotWorkerCommandResult): boolean {
 
 function isFailedUpdateResult(result: NodeTelegramBotWorkerUpdateResult): boolean {
   if (result.skipped) return false
+  if ("failed" in result && result.failed) return true
+  if (!("result" in result)) return true
   if (!result.result.ok) return true
   return result.result.result.job.status === "failed" || result.result.result.job.status === "cancelled"
 }
