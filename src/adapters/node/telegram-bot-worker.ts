@@ -81,6 +81,7 @@ export interface NodeTelegramBotWorkerOptions {
   disableErrorResponses?: boolean
   queueResponder?: NodeTelegramStatusClient
   queueFormatter?: NodeTelegramBotQueueFormatter
+  queueRejectedFormatter?: NodeTelegramBotQueueRejectedFormatter
   disableQueueResponses?: boolean
   draftStore?: BotWorkflowDraftStore
   draftResponder?: NodeTelegramStatusClient
@@ -101,12 +102,18 @@ export type NodeTelegramBotCommand = "start" | "help"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
 
-export type NodeTelegramBotWorkflowQueueStatus = "queued"
+export type NodeTelegramBotWorkflowQueueStatus = "queued" | "rejected"
 
-export interface NodeTelegramBotWorkflowQueueSubmission {
-  id: string
-  status: NodeTelegramBotWorkflowQueueStatus
-}
+export type NodeTelegramBotWorkflowQueueSubmission =
+  | {
+      id: string
+      status: "queued"
+    }
+  | {
+      id: string
+      status: "rejected"
+      reason: string
+    }
 
 export interface NodeTelegramBotWorkflowQueueJob {
   id: string
@@ -123,6 +130,7 @@ export interface NodeTelegramBotWorkflowQueue {
 
 export interface NodeTelegramBotInMemoryWorkflowQueueOptions {
   concurrency?: number
+  maxPending?: number
 }
 
 export interface NodeTelegramBotCommandFormatterContext {
@@ -162,6 +170,17 @@ export interface NodeTelegramBotQueueFormatterContext {
 
 export type NodeTelegramBotQueueFormatter = (context: NodeTelegramBotQueueFormatterContext) => string
 
+export interface NodeTelegramBotQueueRejectedFormatterContext {
+  queueId: string
+  reason: string
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+  workflow?: BotWorkflowRequest
+  draftId?: string
+}
+
+export type NodeTelegramBotQueueRejectedFormatter = (context: NodeTelegramBotQueueRejectedFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -190,6 +209,19 @@ export type NodeTelegramBotWorkerUpdateResult =
       responseError?: string
       completion?: BotWorkflowRunResult
       error?: string
+    }
+  | {
+      skipped: false
+      rejected: true
+      queueId: string
+      reason: string
+      updateId: number
+      update: TelegramBotUpdate
+      payload: TelegramLikeBotPayload
+      workflow?: BotWorkflowRequest
+      draftId?: string
+      responseText?: string
+      responseError?: string
     }
   | {
       skipped: false
@@ -252,15 +284,29 @@ interface TelegramGetUpdatesResponse {
 
 export class NodeTelegramBotInMemoryWorkflowQueue implements NodeTelegramBotWorkflowQueue {
   private readonly concurrency: number
+  private readonly maxPending?: number
   private readonly pending: NodeTelegramBotWorkflowQueueJob[] = []
   private readonly idleResolvers: Array<() => void> = []
   private activeCount = 0
 
   constructor(options: NodeTelegramBotInMemoryWorkflowQueueOptions = {}) {
     this.concurrency = Math.max(1, Math.trunc(options.concurrency ?? 1))
+    this.maxPending = options.maxPending === undefined ? undefined : Math.max(0, Math.trunc(options.maxPending))
   }
 
   async enqueue(job: NodeTelegramBotWorkflowQueueJob): Promise<NodeTelegramBotWorkflowQueueSubmission> {
+    if (
+      this.maxPending !== undefined &&
+      this.activeCount >= this.concurrency &&
+      this.pending.length >= this.maxPending
+    ) {
+      return {
+        id: job.id,
+        status: "rejected",
+        reason: "Telegram bot workflow queue is full",
+      }
+    }
+
     this.pending.push(job)
     this.pump()
     return {
@@ -682,6 +728,17 @@ export class NodeTelegramBotWorker {
       },
     })
 
+    if (submission.status === "rejected") {
+      return this.createQueueRejectedResult({
+        queueId: submission.id,
+        reason: submission.reason,
+        update,
+        payload,
+        ...(options.workflow ? { workflow: options.workflow } : {}),
+        ...(options.draftId ? { draftId: options.draftId } : {}),
+      })
+    }
+
     result.queueId = submission.id
     const responseText = this.options.disableQueueResponses
       ? undefined
@@ -700,6 +757,49 @@ export class NodeTelegramBotWorker {
         result.responseError = formatUnknownError(error)
       }
     }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async createQueueRejectedResult(context: {
+    queueId: string
+    reason: string
+    update: TelegramBotUpdate
+    payload: TelegramLikeBotPayload
+    workflow?: BotWorkflowRequest
+    draftId?: string
+  }): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: false,
+      rejected: true,
+      queueId: context.queueId,
+      reason: context.reason,
+      updateId: context.update.update_id,
+      update: context.update,
+      payload: context.payload,
+      ...(context.workflow ? { workflow: context.workflow } : {}),
+      ...(context.draftId ? { draftId: context.draftId } : {}),
+    }
+    const responseText = this.options.disableQueueResponses
+      ? undefined
+      : (this.options.queueRejectedFormatter ?? defaultTelegramBotQueueRejectedText)({
+          queueId: context.queueId,
+          reason: context.reason,
+          update: context.update,
+          payload: context.payload,
+          ...(context.workflow ? { workflow: context.workflow } : {}),
+          ...(context.draftId ? { draftId: context.draftId } : {}),
+        })
+
+    if (responseText) {
+      result.responseText = responseText
+      try {
+        await this.sendQueueResponse(context.queueId, context.payload, responseText)
+      } catch (error) {
+        result.responseError = formatUnknownError(error)
+      }
+    }
+
     await this.options.onResult?.(result)
     return result
   }
@@ -929,6 +1029,15 @@ export function defaultTelegramBotQueueText(context: NodeTelegramBotQueueFormatt
     "Render request queued.",
     `Queue id: ${context.queueId}`,
     "I will send progress and the result here.",
+  ].join("\n")
+}
+
+export function defaultTelegramBotQueueRejectedText(context: NodeTelegramBotQueueRejectedFormatterContext): string {
+  return [
+    "Timeline Studio bot",
+    "Render queue is full right now.",
+    "Please try again in a few minutes.",
+    `Queue id: ${context.queueId}`,
   ].join("\n")
 }
 
