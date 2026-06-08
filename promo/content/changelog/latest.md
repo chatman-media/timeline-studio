@@ -1,3 +1,10 @@
+# [3.77.0](https://github.com/chatman-media/timeline-studio/compare/v3.76.0...v3.77.0) (2026-06-08)
+
+
+### Features
+
+* parse bot text media hints ([#202](https://github.com/chatman-media/timeline-studio/issues/202)) ([29ce7c6](https://github.com/chatman-media/timeline-studio/commit/29ce7c639a7fe23a6a38ff2517eeab510fccdb03))
+
 # [3.76.0](https://github.com/chatman-media/timeline-studio/compare/v3.75.0...v3.76.0) (2026-06-08)
 
 
