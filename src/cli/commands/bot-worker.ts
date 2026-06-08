@@ -94,60 +94,62 @@ export const botWorkerCommand = new Command("bot-worker")
   })
 
 export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promise<BotWorkerCommandResult> {
-  if (!options.updateFile && !options.pollOnce && !options.poll) {
+  const resolvedOptions = resolveBotWorkerCommandOptions(options)
+
+  if (!resolvedOptions.updateFile && !resolvedOptions.pollOnce && !resolvedOptions.poll) {
     throw new Error("Provide --update-file, --poll-once, or --poll")
   }
 
-  if ((options.pollOnce || options.poll) && !options.telegramBotToken) {
+  if ((resolvedOptions.pollOnce || resolvedOptions.poll) && !resolvedOptions.telegramBotToken) {
     throw new Error("--telegram-bot-token is required with --poll-once or --poll")
   }
 
   const services = await initNodeApp({
     autoConnect: false,
-    botMediaResolver: createBotMediaResolverOptions(options),
-    botStatus: createBotStatusOptions(options),
-    publish: createBotPublishOptions(options),
-    rustRender: options.rustRender
+    botMediaResolver: createBotMediaResolverOptions(resolvedOptions),
+    botStatus: createBotStatusOptions(resolvedOptions),
+    publish: createBotPublishOptions(resolvedOptions),
+    rustRender: resolvedOptions.rustRender
       ? {
-          command: options.rustRenderCommand,
-          commandKind: options.rustRenderKind,
+          command: resolvedOptions.rustRenderCommand,
+          commandKind: resolvedOptions.rustRenderKind,
         }
       : undefined,
   })
   const worker = new NodeTelegramBotWorker({
     workflow: services.botWorkflow,
-    botToken: options.telegramBotToken,
+    botToken: resolvedOptions.telegramBotToken,
     workflowOptions: {
       intake: {
-        defaultDestination: options.defaultDestination,
-        defaultOutputPath: options.defaultOutput,
+        defaultDestination: resolvedOptions.defaultDestination,
+        defaultOutputPath: resolvedOptions.defaultOutput,
       },
       render: {
-        pollIntervalMs: parsePositiveInteger(options.pollInterval, 1000),
-        timeoutMs: parsePositiveInteger(options.timeout, 3600000),
+        pollIntervalMs: parsePositiveInteger(resolvedOptions.pollInterval, 1000),
+        timeoutMs: parsePositiveInteger(resolvedOptions.timeout, 3600000),
       },
       includeReconnectState: true,
     },
   })
 
-  if (options.updateFile) {
-    return worker.handleUpdate(await readTelegramBotUpdate(options.updateFile))
+  if (resolvedOptions.updateFile) {
+    return worker.handleUpdate(await readTelegramBotUpdate(resolvedOptions.updateFile))
   }
 
-  const offset = parseOptionalPositiveInteger(options.pollOffset)
-  const limit = parsePositiveInteger(options.pollLimit, 100)
-  const timeoutSeconds = parsePositiveInteger(options.pollTimeout, 25)
+  const offset = parseOptionalPositiveInteger(resolvedOptions.pollOffset)
+  const limit = parsePositiveInteger(resolvedOptions.pollLimit, 100)
+  const timeoutSeconds = parsePositiveInteger(resolvedOptions.pollTimeout, 25)
 
-  if (options.poll) {
+  if (resolvedOptions.poll) {
     return worker.runPolling({
       offset,
       limit,
       timeoutSeconds,
-      offsetStore: options.offsetFile
-        ? new NodeTelegramBotFileOffsetStore(path.resolve(options.offsetFile))
+      offsetStore: resolvedOptions.offsetFile
+        ? new NodeTelegramBotFileOffsetStore(path.resolve(resolvedOptions.offsetFile))
         : undefined,
-      maxBatches: parseOptionalPositiveInteger(options.maxBatches),
-      idleDelayMs: parsePositiveInteger(options.idleDelay, 1000),
+      maxBatches: parseOptionalPositiveInteger(resolvedOptions.maxBatches),
+      idleDelayMs: parsePositiveInteger(resolvedOptions.idleDelay, 1000),
     })
   }
 
@@ -156,6 +158,39 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     limit,
     timeoutSeconds,
   })
+}
+
+export function resolveBotWorkerCommandOptions(
+  options: BotWorkerCommandOptions,
+  env: Record<string, string | undefined> = process.env,
+): BotWorkerCommandOptions {
+  return {
+    ...options,
+    telegramBotToken: firstConfigured(
+      options.telegramBotToken,
+      env.TIMELINE_BOT_TELEGRAM_TOKEN,
+      env.TELEGRAM_BOT_TOKEN,
+    ),
+    statusChatId: firstConfigured(options.statusChatId, env.TIMELINE_BOT_STATUS_CHAT_ID),
+    pollOffset: firstConfigured(options.pollOffset, env.TIMELINE_BOT_POLL_OFFSET),
+    pollLimit: firstConfigured(options.pollLimit, env.TIMELINE_BOT_POLL_LIMIT),
+    pollTimeout: firstConfigured(options.pollTimeout, env.TIMELINE_BOT_POLL_TIMEOUT),
+    offsetFile: firstConfigured(options.offsetFile, env.TIMELINE_BOT_OFFSET_FILE),
+    maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),
+    idleDelay: firstConfigured(options.idleDelay, env.TIMELINE_BOT_IDLE_DELAY),
+    mediaDir: firstConfigured(options.mediaDir, env.TIMELINE_BOT_MEDIA_DIR),
+    pollInterval: firstConfigured(options.pollInterval, env.TIMELINE_BOT_RENDER_POLL_INTERVAL),
+    timeout: firstConfigured(options.timeout, env.TIMELINE_BOT_RENDER_TIMEOUT),
+    rustRenderCommand: firstConfigured(options.rustRenderCommand, env.TIMELINE_BOT_RUST_RENDER_COMMAND),
+    rustRenderKind: firstConfigured(options.rustRenderKind, normalizeRustRenderKind(env.TIMELINE_BOT_RUST_RENDER_KIND)),
+    defaultDestination: firstConfigured(
+      options.defaultDestination,
+      normalizeDestination(env.TIMELINE_BOT_DEFAULT_DESTINATION),
+    ),
+    defaultOutput: firstConfigured(options.defaultOutput, env.TIMELINE_BOT_DEFAULT_OUTPUT),
+    downloadRemoteMedia: options.downloadRemoteMedia ?? parseBooleanEnv(env.TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA),
+    rustRender: options.rustRender ?? parseBooleanEnv(env.TIMELINE_BOT_RUST_RENDER),
+  }
 }
 
 export async function readTelegramBotUpdate(updateFile: string): Promise<TelegramBotUpdate> {
@@ -261,4 +296,49 @@ function parseOptionalPositiveInteger(value: string | undefined): number | undef
   if (!value) return undefined
   const parsed = Number.parseInt(value, 10)
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined
+}
+
+function firstConfigured<T extends string>(...values: Array<T | undefined>): T | undefined {
+  return values.find((value): value is T => value !== undefined && value.trim().length > 0)
+}
+
+function parseBooleanEnv(value: string | undefined): boolean | undefined {
+  if (!value) return undefined
+  switch (value.trim().toLowerCase()) {
+    case "1":
+    case "true":
+    case "yes":
+    case "on":
+      return true
+    case "0":
+    case "false":
+    case "no":
+    case "off":
+      return false
+    default:
+      return undefined
+  }
+}
+
+function normalizeDestination(value: string | undefined): BotRenderJobDestination | undefined {
+  switch (value?.trim()) {
+    case "file":
+    case "telegram":
+    case "youtube":
+    case "tiktok":
+    case "vimeo":
+      return value.trim() as BotRenderJobDestination
+    default:
+      return undefined
+  }
+}
+
+function normalizeRustRenderKind(value: string | undefined): BotWorkerCommandOptions["rustRenderKind"] {
+  switch (value?.trim()) {
+    case "timeline":
+    case "timeline-render":
+      return value.trim() as BotWorkerCommandOptions["rustRenderKind"]
+    default:
+      return undefined
+  }
 }

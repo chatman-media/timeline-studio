@@ -1,0 +1,13 @@
+{
+  "update_id": 1000001,
+  "message": {
+    "message_id": 1,
+    "chat": {
+      "id": "smoke-chat"
+    },
+    "from": {
+      "id": "smoke-user"
+    },
+    "text": "/help"
+  }
+}

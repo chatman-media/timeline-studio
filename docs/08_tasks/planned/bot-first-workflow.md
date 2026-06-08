@@ -145,6 +145,16 @@ bot message
 - [x] Оставить возможность отключить command routing для command-like workflow messages.
 - [x] Покрыть command routing, Bot API command response delivery и command parser tests.
 
+### B13: Bot worker runtime config and smoke runbook ([#195](https://github.com/chatman-media/timeline-studio/issues/195))
+
+**Цель:** сделать Telegram bot worker проще запускать и проверять локально без длинных команд и ручных fixtures.
+
+- [x] Добавить env-backed defaults для Telegram token, media dir, offset file, destination, Rust render и polling timings.
+- [x] Сохранить приоритет явных CLI flags над env defaults.
+- [x] Добавить committed Telegram `/help` smoke update fixture.
+- [x] Документировать one-shot smoke и continuous polling worker runbook в CLI README.
+- [x] Покрыть env default precedence и CLI contract tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -160,6 +170,7 @@ bot message
 - [#189](https://github.com/chatman-media/timeline-studio/issues/189) - B10: Telegram bot worker entrypoint
 - [#191](https://github.com/chatman-media/timeline-studio/issues/191) - B11: Telegram bot polling loop state
 - [#193](https://github.com/chatman-media/timeline-studio/issues/193) - B12: Telegram bot command routing
+- [#195](https://github.com/chatman-media/timeline-studio/issues/195) - B13: Bot worker runtime config and smoke runbook
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

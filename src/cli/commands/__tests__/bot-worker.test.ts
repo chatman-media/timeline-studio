@@ -6,7 +6,12 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
-import { botWorkerCommand, readTelegramBotUpdate, serializeBotWorkerResult } from "../bot-worker"
+import {
+  botWorkerCommand,
+  readTelegramBotUpdate,
+  resolveBotWorkerCommandOptions,
+  serializeBotWorkerResult,
+} from "../bot-worker"
 
 describe("bot-worker command", () => {
   let tempDir: string
@@ -78,5 +83,76 @@ describe("bot-worker command", () => {
 
     expect(serializeBotWorkerResult(result)).not.toContain("\n")
     expect(serializeBotWorkerResult(result, true)).toContain("\n")
+  })
+
+  it("resolves bot worker defaults from environment variables", () => {
+    const resolved = resolveBotWorkerCommandOptions(
+      {},
+      {
+        TELEGRAM_BOT_TOKEN: "token-from-telegram-env",
+        TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-timeline-env",
+        TIMELINE_BOT_STATUS_CHAT_ID: "chat-1",
+        TIMELINE_BOT_OFFSET_FILE: ".tmp/bot-offset.json",
+        TIMELINE_BOT_MEDIA_DIR: ".tmp/media",
+        TIMELINE_BOT_POLL_LIMIT: "10",
+        TIMELINE_BOT_POLL_TIMEOUT: "20",
+        TIMELINE_BOT_IDLE_DELAY: "30",
+        TIMELINE_BOT_MAX_BATCHES: "2",
+        TIMELINE_BOT_RENDER_POLL_INTERVAL: "40",
+        TIMELINE_BOT_RENDER_TIMEOUT: "50",
+        TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
+        TIMELINE_BOT_DEFAULT_OUTPUT: ".tmp/out.mp4",
+        TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
+        TIMELINE_BOT_RUST_RENDER: "1",
+        TIMELINE_BOT_RUST_RENDER_COMMAND: "timeline-render",
+        TIMELINE_BOT_RUST_RENDER_KIND: "timeline-render",
+      },
+    )
+
+    expect(resolved).toMatchObject({
+      telegramBotToken: "token-from-timeline-env",
+      statusChatId: "chat-1",
+      offsetFile: ".tmp/bot-offset.json",
+      mediaDir: ".tmp/media",
+      pollLimit: "10",
+      pollTimeout: "20",
+      idleDelay: "30",
+      maxBatches: "2",
+      pollInterval: "40",
+      timeout: "50",
+      defaultDestination: "telegram",
+      defaultOutput: ".tmp/out.mp4",
+      downloadRemoteMedia: true,
+      rustRender: true,
+      rustRenderCommand: "timeline-render",
+      rustRenderKind: "timeline-render",
+    })
+  })
+
+  it("keeps explicit bot worker CLI options above environment defaults", () => {
+    const resolved = resolveBotWorkerCommandOptions(
+      {
+        telegramBotToken: "token-from-cli",
+        offsetFile: ".tmp/cli-offset.json",
+        defaultDestination: "file",
+        rustRender: false,
+        downloadRemoteMedia: false,
+      },
+      {
+        TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
+        TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
+        TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
+        TIMELINE_BOT_RUST_RENDER: "true",
+        TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
+      },
+    )
+
+    expect(resolved).toMatchObject({
+      telegramBotToken: "token-from-cli",
+      offsetFile: ".tmp/cli-offset.json",
+      defaultDestination: "file",
+      rustRender: false,
+      downloadRemoteMedia: false,
+    })
   })
 })
