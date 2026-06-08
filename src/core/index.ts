@@ -33,7 +33,13 @@ export type {
   SaveDialogOptions,
   Unsubscribe,
 } from "./ports"
-export type { BotRenderJobRetryOptions, LanguageResponse, ParsedBotWorkflowText } from "./services"
+export type {
+  BotRenderJobRetryOptions,
+  BotWorkflowRunnerOptions,
+  LanguageResponse,
+  ParsedBotWorkflowText,
+  TelegramLikeBotWorkflowRunnerOptions,
+} from "./services"
 export {
   canCancelBotRenderJob,
   canRetryBotRenderJob,
@@ -41,9 +47,12 @@ export {
   createBotRenderJobRetryRequest,
   createBotRenderJobSnapshot,
   createBotWorkflowRequestFromTelegramLikePayload,
+  createTelegramLikeBotWorkflow,
   getAppLanguage,
   InMemoryBotRenderJobEventStream,
   parseBotWorkflowText,
+  runBotWorkflow,
+  runTelegramLikeBotWorkflow,
   setAppLanguage,
 } from "./services"
 
@@ -76,6 +85,8 @@ export type {
   BotWorkflowIntakeResult,
   BotWorkflowOutput,
   BotWorkflowRequest,
+  BotWorkflowRunOptions,
+  BotWorkflowRunResult,
   BotWorkflowSource,
   BotWorkflowValidationCode,
   BotWorkflowValidationError,

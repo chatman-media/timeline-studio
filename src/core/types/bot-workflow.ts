@@ -9,7 +9,10 @@ import type {
   BotRenderJobDestination,
   BotRenderJobOutput,
   BotRenderJobProjectInput,
+  BotRenderJobReconnectState,
   BotRenderJobRequest,
+  BotRenderJobResult,
+  BotRenderJobRunOptions,
 } from "./render-job"
 
 export type BotWorkflowSource = "telegram" | "api" | "cli" | "desktop"
@@ -79,6 +82,27 @@ export type BotWorkflowIntakeResult =
       ok: false
       errors: BotWorkflowValidationError[]
     }
+
+export type BotWorkflowRunResult =
+  | {
+      ok: true
+      workflow: BotWorkflowRequest
+      renderJob: BotRenderJobRequest
+      result: BotRenderJobResult
+      warnings: BotWorkflowValidationError[]
+      reconnectState?: BotRenderJobReconnectState
+    }
+  | {
+      ok: false
+      workflow: BotWorkflowRequest
+      errors: BotWorkflowValidationError[]
+    }
+
+export interface BotWorkflowRunOptions {
+  intake?: BotWorkflowIntakeOptions
+  render?: BotRenderJobRunOptions
+  includeReconnectState?: boolean
+}
 
 export interface BotWorkflowIntakeOptions {
   defaultDestination?: BotRenderJobDestination
