@@ -41,6 +41,7 @@ export type {
   Clip,
   CommandResult,
   EventEnvelope,
+  MediaFile,
   MediaItem,
   Project,
   ProjectCommand,
