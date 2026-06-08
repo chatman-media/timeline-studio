@@ -100,8 +100,21 @@ export type BotWorkflowRunResult =
 
 export interface BotWorkflowRunOptions {
   intake?: BotWorkflowIntakeOptions
+  projectAssembly?: BotProjectAssemblyOptions | false
   render?: BotRenderJobRunOptions
   includeReconnectState?: boolean
+}
+
+export type BotProjectAssemblyResolution = BotRenderJobOutput["resolution"] | readonly [number, number]
+
+export interface BotProjectAssemblyOptions {
+  projectName?: string
+  author?: string
+  defaultClipDurationSeconds?: number
+  fps?: number
+  sampleRate?: number
+  resolution?: BotProjectAssemblyResolution
+  now?: () => string
 }
 
 export interface BotWorkflowIntakeOptions {

@@ -138,6 +138,56 @@ describe("bot workflow runner", () => {
     expect(runSpy).not.toHaveBeenCalled()
   })
 
+  it("hydrates media-only workflows with an inline ProjectSchema before rendering", async () => {
+    const renderJob = new FakeRenderJobService()
+
+    const result = await runTelegramLikeBotWorkflow(
+      {
+        caption: 'template=promo output="./out.mp4"',
+        video: {
+          file_path: "/tmp/clip.mp4",
+          file_name: "clip.mp4",
+          mime_type: "video/mp4",
+        },
+      },
+      {
+        renderJob,
+        projectAssembly: {
+          now: () => "2026-06-08T00:00:00.000Z",
+          defaultClipDurationSeconds: 4,
+        },
+      },
+    )
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+
+    expect(result.renderJob.project).toMatchObject({
+      type: "inline",
+      schema: {
+        metadata: {
+          name: "Bot promo",
+        },
+        timeline: {
+          duration: 4,
+        },
+        tracks: [
+          {
+            track_type: "Video",
+            clips: [
+              {
+                source: { File: "/tmp/clip.mp4" },
+                template_id: "promo",
+                template_position: 0,
+              },
+            ],
+          },
+        ],
+      },
+    })
+    expect(renderJob.lastRequest?.project).toBe(result.renderJob.project)
+  })
+
   it("preserves caller event sinks while adding the workflow event stream", async () => {
     const renderJob = new FakeRenderJobService()
     const eventStream = new InMemoryBotRenderJobEventStream()

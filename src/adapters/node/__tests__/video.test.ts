@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { NodeVideoService } from "../video"
+import { extractNodeVideoInputFiles, NodeVideoService } from "../video"
 
 describe("NodeVideoService", () => {
   const service = new NodeVideoService()
@@ -94,6 +94,23 @@ describe("NodeVideoService", () => {
   describe("Video Compilation", () => {
     it("throws error for renderProject with empty project", async () => {
       await expect(service.renderProject({}, "/output.mp4")).rejects.toThrow()
+    })
+
+    it("extracts input files from legacy clips and ProjectSchema tracks", () => {
+      expect(
+        extractNodeVideoInputFiles({
+          clips: [{ path: "/legacy/a.mp4" }],
+          tracks: [
+            {
+              clips: [
+                { source: { File: "/project/b.mp4" } },
+                { source: { Stream: "https://cdn.example.com/c.mp4" } },
+                { source: "Generated" },
+              ],
+            },
+          ],
+        }),
+      ).toEqual(["/legacy/a.mp4", "/project/b.mp4", "https://cdn.example.com/c.mp4"])
     })
 
     it("returns empty array for generatePreview", async () => {

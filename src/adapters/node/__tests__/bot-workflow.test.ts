@@ -66,12 +66,20 @@ describe("NodeBotWorkflowService", () => {
     const eventStream = new InMemoryBotRenderJobEventStream()
     const botWorkflow = new NodeBotWorkflowService(renderJob, {
       intake: { defaultDestination: "file" },
+      projectAssembly: {
+        now: () => "2026-06-08T00:00:00.000Z",
+        defaultClipDurationSeconds: 2,
+      },
       render: { pollIntervalMs: 7, eventSinks: [defaultSink] },
     })
 
     const result = await botWorkflow.runTelegramLikePayload(
       {
-        caption: 'project="./project.json"',
+        caption: "template=promo",
+        video: {
+          file_path: "/tmp/clip.mp4",
+          file_name: "clip.mp4",
+        },
       },
       {
         eventStream,
@@ -82,7 +90,13 @@ describe("NodeBotWorkflowService", () => {
     expect(result.ok).toBe(true)
     expect(run).toHaveBeenCalledOnce()
 
-    const [, options] = run.mock.calls[0]
+    const [request, options] = run.mock.calls[0]
+    expect(request.project).toMatchObject({
+      type: "inline",
+      schema: {
+        timeline: { duration: 2 },
+      },
+    })
     expect(options).toMatchObject({ pollIntervalMs: 7, timeoutMs: 9 })
     expect(options?.eventSinks).toHaveLength(3)
     expect(defaultSink.publish).toHaveBeenCalledOnce()

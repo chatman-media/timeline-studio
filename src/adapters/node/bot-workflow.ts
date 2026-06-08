@@ -27,6 +27,7 @@ export class NodeBotWorkflowService {
     return runBotWorkflow(workflow, {
       renderJob: this.renderJob,
       intake: mergeOptions(this.defaults.intake, options.intake),
+      projectAssembly: mergeProjectAssemblyOptions(this.defaults.projectAssembly, options.projectAssembly),
       render: mergeRenderOptions(this.defaults.render, options.render),
       includeReconnectState: options.includeReconnectState ?? this.defaults.includeReconnectState ?? true,
       eventStream,
@@ -42,6 +43,7 @@ export class NodeBotWorkflowService {
     return runTelegramLikeBotWorkflow(payload, {
       renderJob: this.renderJob,
       intake: mergeOptions(this.defaults.intake, options.intake),
+      projectAssembly: mergeProjectAssemblyOptions(this.defaults.projectAssembly, options.projectAssembly),
       render: mergeRenderOptions(this.defaults.render, options.render),
       includeReconnectState: options.includeReconnectState ?? this.defaults.includeReconnectState ?? true,
       eventStream,
@@ -70,4 +72,14 @@ function mergeRenderOptions(
     ...merged,
     eventSinks,
   }
+}
+
+function mergeProjectAssemblyOptions(
+  defaults: BotWorkflowRunOptions["projectAssembly"],
+  overrides: BotWorkflowRunOptions["projectAssembly"],
+): BotWorkflowRunOptions["projectAssembly"] {
+  if (overrides === false) return false
+  if (defaults === false && overrides === undefined) return false
+  if (defaults === false) return overrides
+  return mergeOptions(defaults, overrides)
 }

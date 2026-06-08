@@ -43,6 +43,7 @@ export type {
 export {
   canCancelBotRenderJob,
   canRetryBotRenderJob,
+  createBotProjectSchemaFromRenderJob,
   createBotRenderJobRequest,
   createBotRenderJobRetryRequest,
   createBotRenderJobSnapshot,
@@ -54,12 +55,15 @@ export {
   runBotWorkflow,
   runTelegramLikeBotWorkflow,
   setAppLanguage,
+  withBotProjectSchema,
 } from "./services"
 
 // Types (re-exported from generated bindings for now)
 export type {
   BotMediaAttachment,
   BotMediaAttachmentType,
+  BotProjectAssemblyOptions,
+  BotProjectAssemblyResolution,
   BotPublishMetadata,
   BotPublishRequest,
   BotPublishResult,
