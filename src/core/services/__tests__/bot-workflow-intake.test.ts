@@ -14,6 +14,16 @@ describe("bot workflow intake", () => {
     expect(parsed).toEqual({
       templateId: "shorts",
       projectPath: "./project.json",
+      media: [
+        {
+          type: "url",
+          value: "https://cdn.example.com/input.mov",
+          name: "input.mov",
+          metadata: {
+            source: "bot-text",
+          },
+        },
+      ],
       output: {
         destination: "telegram",
         resolution: "1080p",
@@ -21,6 +31,50 @@ describe("bot workflow intake", () => {
       params: {
         tone: "fast",
       },
+    })
+  })
+
+  it("parses text URL media and shorthand output hints", () => {
+    const parsed = parseBotWorkflowText("https://cdn.example.com/input.mov 1080. telegram,")
+
+    expect(parsed).toEqual({
+      media: [
+        {
+          type: "url",
+          value: "https://cdn.example.com/input.mov",
+          name: "input.mov",
+          metadata: {
+            source: "bot-text",
+          },
+        },
+      ],
+      output: {
+        destination: "telegram",
+        resolution: "1080p",
+      },
+      params: {},
+    })
+  })
+
+  it("parses explicit media aliases from bot text", () => {
+    const parsed = parseBotWorkflowText("input=https://cdn.example.com/clip%201.mp4 tg 4k")
+
+    expect(parsed).toEqual({
+      media: [
+        {
+          type: "url",
+          value: "https://cdn.example.com/clip%201.mp4",
+          name: "clip 1.mp4",
+          metadata: {
+            source: "bot-text",
+          },
+        },
+      ],
+      output: {
+        destination: "telegram",
+        resolution: "4k",
+      },
+      params: {},
     })
   })
 
@@ -96,6 +150,42 @@ describe("bot workflow intake", () => {
         output: {
           format: "mp4",
           destination: "telegram",
+        },
+      },
+    })
+  })
+
+  it("creates a render job request from text URL media and shorthand hints", () => {
+    const result = createBotRenderJobRequest({
+      source: "telegram",
+      chatId: "chat-1",
+      messageId: "message-1",
+      text: "https://cdn.example.com/input.mov 1080p telegram",
+    })
+
+    expect(result).toEqual({
+      ok: true,
+      warnings: [],
+      renderJob: {
+        source: "bot",
+        media: [
+          {
+            type: "url",
+            value: "https://cdn.example.com/input.mov",
+            name: "input.mov",
+            metadata: {
+              source: "bot-text",
+            },
+          },
+        ],
+        params: {
+          telegramChatId: "chat-1",
+          telegramReplyToMessageId: "message-1",
+        },
+        output: {
+          format: "mp4",
+          destination: "telegram",
+          resolution: "1080p",
         },
       },
     })

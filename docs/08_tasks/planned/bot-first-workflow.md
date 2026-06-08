@@ -175,6 +175,16 @@ bot message
 - [x] Прокинуть draft storage через CLI/env без изменения one-shot режима.
 - [x] Документировать conversation draft runbook и покрыть core/store/worker/CLI tests.
 
+### B16: Bot text media and shorthand hints ([#201](https://github.com/chatman-media/timeline-studio/issues/201))
+
+**Цель:** бот понимает обычный Telegram текст вроде `https://cdn.example.com/input.mov 1080p telegram`, а не только `key=value` hints.
+
+- [x] Извлекать bare HTTP/HTTPS URLs из bot text как media attachments.
+- [x] Поддержать media aliases `media=`, `url=`, `input=` и `source=`.
+- [x] Поддержать deterministic destination/resolution shorthand tokens без `key=value`.
+- [x] Сохранить существующий structured/key-value behavior и приоритеты.
+- [x] Обновить `/help`, CLI runbook и unit tests для нового intake behavior.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -193,6 +203,7 @@ bot message
 - [#195](https://github.com/chatman-media/timeline-studio/issues/195) - B13: Bot worker runtime config and smoke runbook
 - [#197](https://github.com/chatman-media/timeline-studio/issues/197) - B14: Telegram bot update error isolation
 - [#199](https://github.com/chatman-media/timeline-studio/issues/199) - B15: Telegram bot conversation draft state
+- [#201](https://github.com/chatman-media/timeline-studio/issues/201) - B16: Bot text media and shorthand hints
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

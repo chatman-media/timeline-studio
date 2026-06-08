@@ -135,6 +135,8 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 
 Если задан `--draft-dir` или `TIMELINE_BOT_DRAFT_DIR`, worker включает conversation draft mode:
 обычные сообщения сохраняют media и render hints, `/render` запускает merged workflow, а `/cancel` очищает draft.
+В тексте сообщения можно отправлять bare URL и короткие hints, например `https://cdn.example.com/input.mov 1080p telegram`;
+также поддерживаются `media=`, `url=`, `input=` и `source=`.
 
 **Опции:**
 | Опция | Описание |
