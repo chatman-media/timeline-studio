@@ -39,6 +39,7 @@ export interface BotWorkerCommandOptions {
   draftDir?: string
   asyncWorkflows?: boolean
   workflowConcurrency?: string
+  workflowQueueLimit?: string
   maxBatches?: string
   idleDelay?: string
   mediaDir?: string
@@ -74,6 +75,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--draft-dir <path>", "Persist Telegram bot conversation drafts in a directory")
   .option("--async-workflows", "Queue Telegram workflow runs during continuous polling")
   .option("--workflow-concurrency <count>", "Maximum queued workflow runs in parallel", "1")
+  .option("--workflow-queue-limit <count>", "Maximum pending queued workflows before rejecting new requests")
   .option("--max-batches <count>", "Stop continuous polling after this many getUpdates batches")
   .option("--idle-delay <ms>", "Delay after an empty continuous polling batch", "1000")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
@@ -132,6 +134,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     resolvedOptions.poll && resolvedOptions.asyncWorkflows
       ? new NodeTelegramBotInMemoryWorkflowQueue({
           concurrency: parsePositiveInteger(resolvedOptions.workflowConcurrency, 1),
+          maxPending: parseOptionalNonNegativeInteger(resolvedOptions.workflowQueueLimit),
         })
       : undefined
   const worker = new NodeTelegramBotWorker({
@@ -202,6 +205,7 @@ export function resolveBotWorkerCommandOptions(
     offsetFile: firstConfigured(options.offsetFile, env.TIMELINE_BOT_OFFSET_FILE),
     draftDir: firstConfigured(options.draftDir, env.TIMELINE_BOT_DRAFT_DIR),
     workflowConcurrency: firstConfigured(options.workflowConcurrency, env.TIMELINE_BOT_WORKFLOW_CONCURRENCY),
+    workflowQueueLimit: firstConfigured(options.workflowQueueLimit, env.TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT),
     maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),
     idleDelay: firstConfigured(options.idleDelay, env.TIMELINE_BOT_IDLE_DELAY),
     mediaDir: firstConfigured(options.mediaDir, env.TIMELINE_BOT_MEDIA_DIR),
@@ -299,6 +303,7 @@ export function isFailedWorkerResult(result: BotWorkerCommandResult): boolean {
 function isFailedUpdateResult(result: NodeTelegramBotWorkerUpdateResult): boolean {
   if (result.skipped) return false
   if ("failed" in result && result.failed) return true
+  if ("rejected" in result && result.rejected) return true
   if ("queued" in result && result.queued) {
     if (result.error) return true
     return result.completion ? isFailedWorkflowRunResult(result.completion) : false
@@ -333,6 +338,12 @@ function parseOptionalPositiveInteger(value: string | undefined): number | undef
   if (!value) return undefined
   const parsed = Number.parseInt(value, 10)
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined
+}
+
+function parseOptionalNonNegativeInteger(value: string | undefined): number | undefined {
+  if (!value) return undefined
+  const parsed = Number.parseInt(value, 10)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
 }
 
 function firstConfigured<T extends string>(...values: Array<T | undefined>): T | undefined {

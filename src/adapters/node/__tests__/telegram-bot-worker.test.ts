@@ -8,6 +8,7 @@ import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
+  defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
   defaultTelegramBotUpdateErrorText,
   NodeTelegramBotApiClient,
@@ -263,6 +264,129 @@ describe("Telegram bot worker", () => {
       completion: completedResult,
     })
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+  })
+
+  it("rejects queued workflows when the pending queue is full", async () => {
+    let resolveWorkflow!: () => void
+    const runTelegramLikePayload = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue({ maxPending: 0 })
+    const queueResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "queue-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, queueResponder })
+
+    const first = await worker.handleUpdate({
+      update_id: 19,
+      message: {
+        message_id: 15,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+    const secondUpdate = {
+      update_id: 20,
+      message: {
+        message_id: 16,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    }
+    const second = await worker.handleUpdate(secondUpdate)
+    const responseText = defaultTelegramBotQueueRejectedText({
+      queueId: "telegram-update-20",
+      reason: "Telegram bot workflow queue is full",
+      update: secondUpdate,
+      payload: {
+        chat: { id: "chat-1" },
+        message_id: 16,
+        text: "template=promo",
+      },
+    })
+
+    expect(first).toMatchObject({
+      skipped: false,
+      queued: true,
+      queueId: "telegram-update-19",
+    })
+    expect(second).toMatchObject({
+      skipped: false,
+      rejected: true,
+      queueId: "telegram-update-20",
+      reason: "Telegram bot workflow queue is full",
+      responseText,
+    })
+    expect(queueResponder.sendMessage).toHaveBeenLastCalledWith({
+      chatId: "chat-1",
+      text: responseText,
+      replyToMessageId: "16",
+      metadata: {
+        queueId: "telegram-update-20",
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+  })
+
+  it("does not let queue rejection response failures abort rejection handling", async () => {
+    let resolveWorkflow!: () => void
+    const runTelegramLikePayload = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue({ maxPending: 0 })
+    const queueResponder = {
+      sendMessage: vi
+        .fn()
+        .mockResolvedValueOnce({ messageId: "queue-message-1" })
+        .mockRejectedValueOnce(new Error("Telegram busy response failed")),
+    }
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowQueue, queueResponder })
+
+    await worker.handleUpdate({
+      update_id: 26,
+      message: {
+        message_id: 17,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+    const rejected = await worker.handleUpdate({
+      update_id: 27,
+      message: {
+        message_id: 18,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+
+    expect(rejected).toMatchObject({
+      skipped: false,
+      rejected: true,
+      queueId: "telegram-update-27",
+      responseError: "Telegram busy response failed",
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+
+    resolveWorkflow()
+    await workflowQueue.drain()
   })
 
   it("turns queued workflow failures into update error results", async () => {

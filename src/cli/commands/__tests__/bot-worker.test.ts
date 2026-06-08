@@ -38,6 +38,7 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--draft-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--async-workflows")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--workflow-concurrency")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--workflow-queue-limit")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--max-batches")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--idle-delay")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
@@ -126,6 +127,25 @@ describe("bot-worker command", () => {
     ).toBe(false)
   })
 
+  it("treats rejected polling update results as failed command results", () => {
+    expect(
+      isFailedWorkerResult({
+        updates: [
+          {
+            skipped: false,
+            rejected: true,
+            queueId: "telegram-update-1",
+            reason: "Telegram bot workflow queue is full",
+            updateId: 1,
+            update: { update_id: 1 },
+            payload: { text: "template=promo" },
+          },
+        ],
+        nextOffset: 2,
+      }),
+    ).toBe(true)
+  })
+
   it("treats queued polling completion failures as failed command results", () => {
     expect(
       isFailedWorkerResult({
@@ -168,6 +188,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_DRAFT_DIR: ".tmp/bot-drafts",
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "2",
+        TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
         TIMELINE_BOT_MEDIA_DIR: ".tmp/media",
         TIMELINE_BOT_POLL_LIMIT: "10",
         TIMELINE_BOT_POLL_TIMEOUT: "20",
@@ -191,6 +212,7 @@ describe("bot-worker command", () => {
       draftDir: ".tmp/bot-drafts",
       asyncWorkflows: true,
       workflowConcurrency: "2",
+      workflowQueueLimit: "10",
       mediaDir: ".tmp/media",
       pollLimit: "10",
       pollTimeout: "20",
@@ -215,6 +237,7 @@ describe("bot-worker command", () => {
         draftDir: ".tmp/cli-drafts",
         asyncWorkflows: false,
         workflowConcurrency: "3",
+        workflowQueueLimit: "5",
         defaultDestination: "file",
         rustRender: false,
         downloadRemoteMedia: false,
@@ -225,6 +248,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_DRAFT_DIR: ".tmp/env-drafts",
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "1",
+        TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
         TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
         TIMELINE_BOT_RUST_RENDER: "true",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
@@ -237,6 +261,7 @@ describe("bot-worker command", () => {
       draftDir: ".tmp/cli-drafts",
       asyncWorkflows: false,
       workflowConcurrency: "3",
+      workflowQueueLimit: "5",
       defaultDestination: "file",
       rustRender: false,
       downloadRemoteMedia: false,

@@ -208,6 +208,18 @@ bot message
 - [x] Сохранить synchronous one-shot behavior.
 - [x] Документировать queued acknowledgement behavior и покрыть delivery/failure tests.
 
+### B19: Telegram bot workflow queue backpressure ([#207](https://github.com/chatman-media/timeline-studio/issues/207))
+
+**Цель:** render workflow queue имеет управляемый лимит backlog и отвечает пользователю busy/retry вместо бесконечного роста в памяти.
+
+- [x] Добавить optional pending queue capacity limit в in-memory Telegram workflow queue.
+- [x] Возвращать machine-readable rejected update result при полной очереди.
+- [x] Отправлять concise best-effort Telegram busy/retry response для rejected queued workflows.
+- [x] Сохранить unbounded behavior по умолчанию.
+- [x] Прокинуть queue limit через `bot-worker --poll` CLI/env config.
+- [x] Не запускать workflow для rejected updates и учитывать rejected result в CLI failure detection.
+- [x] Документировать backpressure setting и покрыть queue capacity/rejection tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -229,6 +241,7 @@ bot message
 - [#201](https://github.com/chatman-media/timeline-studio/issues/201) - B16: Bot text media and shorthand hints
 - [#203](https://github.com/chatman-media/timeline-studio/issues/203) - B17: Telegram bot async workflow queue
 - [#205](https://github.com/chatman-media/timeline-studio/issues/205) - B18: Telegram bot queued workflow acknowledgements
+- [#207](https://github.com/chatman-media/timeline-studio/issues/207) - B19: Telegram bot workflow queue backpressure
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
