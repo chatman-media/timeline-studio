@@ -1,3 +1,10 @@
+# [3.82.0](https://github.com/chatman-media/timeline-studio/compare/v3.81.0...v3.82.0) (2026-06-09)
+
+
+### Features
+
+* add telegram queued workflow cancellation ([#212](https://github.com/chatman-media/timeline-studio/issues/212)) ([ab381de](https://github.com/chatman-media/timeline-studio/commit/ab381deb40eb01143c07eda7e53509ffb0c031ff))
+
 # [3.81.0](https://github.com/chatman-media/timeline-studio/compare/v3.80.0...v3.81.0) (2026-06-08)
 
 
