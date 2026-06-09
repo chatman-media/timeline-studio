@@ -56,17 +56,39 @@ const completedResult: BotWorkflowRunResult = {
   warnings: [],
 }
 
+const cancelledResult: BotWorkflowRunResult = {
+  ok: true,
+  workflow: { source: "telegram" },
+  renderJob: { source: "bot", output: { format: "mp4" } },
+  result: {
+    job: {
+      id: "job-cancelled-1",
+      status: "cancelled",
+      progress: 25,
+      request: { source: "bot", output: { format: "mp4" } },
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:01.000Z",
+      events: [],
+    },
+    events: [],
+  },
+  warnings: [],
+}
+
 function createWorkflowService(result: BotWorkflowRunResult = failedResult) {
   const runTelegramLikePayload = vi.fn(async () => result)
   const runWorkflow = vi.fn(async () => result)
+  const cancelRenderJob = vi.fn(async () => true)
 
   return {
     service: {
       runWorkflow,
       runTelegramLikePayload,
+      cancelRenderJob,
     } as unknown as NodeBotWorkflowService,
     runWorkflow,
     runTelegramLikePayload,
+    cancelRenderJob,
   }
 }
 
@@ -769,20 +791,122 @@ describe("Telegram bot worker", () => {
     })
   })
 
-  it("does not cancel already running workflow jobs", async () => {
+  it("cancels running workflow jobs when render job id is tracked", async () => {
+    let resolveWorkflow!: () => void
+    const cancelRenderJob = vi.fn(async () => true)
+    const runTelegramLikePayload = vi.fn(async (_payload, options) => {
+      await options?.render?.eventSinks?.[0]?.publish(
+        {
+          jobId: "render-job-35",
+          sequence: 0,
+          status: "rendering",
+          progress: 25,
+          timestamp: "2026-06-08T08:00:01.000Z",
+        },
+        {
+          jobId: "render-job-35",
+          status: "rendering",
+          progress: 25,
+          createdAt: "2026-06-08T08:00:00.000Z",
+          updatedAt: "2026-06-08T08:00:01.000Z",
+          eventCount: 1,
+          canCancel: true,
+          canRetry: false,
+        },
+      )
+      return new Promise<BotWorkflowRunResult>((resolve) => {
+        resolveWorkflow = () => resolve(cancelledResult)
+      })
+    })
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+      cancelRenderJob,
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "cancel-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowQueue,
+      workflowJobStore,
+      commandResponder,
+      now: () => "2026-06-08T08:00:00.000Z",
+    })
+
+    await worker.handleUpdate({
+      update_id: 35,
+      message: {
+        message_id: 25,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    })
+
+    await vi.waitFor(async () => {
+      await expect(workflowJobStore.readJob("telegram-update-35")).resolves.toMatchObject({
+        id: "telegram-update-35",
+        status: "running",
+        renderJobId: "render-job-35",
+        renderJobStatus: "rendering",
+      })
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 36,
+      message: {
+        message_id: 26,
+        chat: { id: "chat-1" },
+        text: "/cancel telegram-update-35",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "cancel",
+      queueId: "telegram-update-35",
+      cancellation: {
+        id: "telegram-update-35",
+        status: "cancelled",
+      },
+    })
+    expect(cancelRenderJob).toHaveBeenCalledWith("render-job-35")
+    await expect(workflowJobStore.readJob("telegram-update-35")).resolves.toMatchObject({
+      id: "telegram-update-35",
+      status: "cancelled",
+      reason: "Telegram bot running workflow cancelled by user",
+      renderJobId: "render-job-35",
+      renderJobStatus: "cancelled",
+    })
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+
+    await expect(workflowJobStore.readJob("telegram-update-35")).resolves.toMatchObject({
+      id: "telegram-update-35",
+      status: "cancelled",
+      reason: "Bot workflow render cancelled",
+      renderJobId: "job-cancelled-1",
+      renderJobStatus: "cancelled",
+    })
+  })
+
+  it("does not cancel running workflow jobs before render job id is tracked", async () => {
     const { service } = createWorkflowService(completedResult)
     const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
     await workflowJobStore.writeJob({
-      id: "telegram-update-35",
+      id: "telegram-update-37",
       status: "running",
-      updateId: 35,
+      updateId: 37,
       chatId: "chat-1",
       createdAt: "2026-06-08T08:00:00.000Z",
       updatedAt: "2026-06-08T08:00:00.000Z",
     })
     const workflowQueue = {
       enqueue: vi.fn(),
-      cancel: vi.fn(async () => ({ id: "telegram-update-35", status: "cancelled" as const })),
+      cancel: vi.fn(async () => ({ id: "telegram-update-37", status: "cancelled" as const })),
     }
     const commandResponder = {
       sendMessage: vi.fn(async () => ({ messageId: "cancel-message-1" })),
@@ -795,27 +919,27 @@ describe("Telegram bot worker", () => {
     })
 
     const result = await worker.handleUpdate({
-      update_id: 36,
+      update_id: 38,
       message: {
-        message_id: 25,
+        message_id: 27,
         chat: { id: "chat-1" },
-        text: "/cancel telegram-update-35",
+        text: "/cancel telegram-update-37",
       },
     })
 
     expect(result).toMatchObject({
       skipped: true,
       command: "cancel",
-      queueId: "telegram-update-35",
+      queueId: "telegram-update-37",
       cancellation: {
-        id: "telegram-update-35",
+        id: "telegram-update-37",
         status: "not_cancellable",
-        reason: "Workflow job is running.",
+        reason: "Running render job id is not available yet.",
       },
     })
     expect(workflowQueue.cancel).not.toHaveBeenCalled()
-    await expect(workflowJobStore.readJob("telegram-update-35")).resolves.toMatchObject({
-      id: "telegram-update-35",
+    await expect(workflowJobStore.readJob("telegram-update-37")).resolves.toMatchObject({
+      id: "telegram-update-37",
       status: "running",
     })
   })
