@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { BotRenderJobArtifact, BotRenderJobStatus } from "@/core/types"
+import type { BotRenderJobArtifact, BotRenderJobStatus, BotWorkflowRequest, TelegramLikeBotPayload } from "@/core/types"
 
 export type NodeTelegramBotWorkflowJobStatus = "queued" | "running" | "done" | "failed" | "rejected" | "cancelled"
 
@@ -20,6 +20,9 @@ export interface NodeTelegramBotWorkflowJobRecord {
   renderJobId?: string
   renderJobStatus?: BotRenderJobStatus
   artifact?: BotRenderJobArtifact
+  sourcePayload?: TelegramLikeBotPayload
+  sourceWorkflow?: BotWorkflowRequest
+  retryOf?: string
 }
 
 export interface NodeTelegramBotWorkflowJobQuery {
