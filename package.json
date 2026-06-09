@@ -237,5 +237,8 @@
     "lightningcss-linux-x64-gnu": "^1.32.0",
     "lightningcss-win32-x64-msvc": "^1.32.0",
     "onnxruntime-node": "^1.26.0"
+  },
+  "overrides": {
+    "better-sqlite3": "12.10.0"
   }
 }

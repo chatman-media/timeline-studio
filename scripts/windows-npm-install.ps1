@@ -18,6 +18,9 @@ npm config set loglevel error
 
 # Set environment variable for onnxruntime
 $env:ONNXRUNTIME_DOWNLOAD_TIMEOUT = "600000"
+$env:GYP_MSVS_VERSION = "2022"
+$env:npm_config_msvs_version = "2022"
+$env:VisualStudioVersion = "17.0"
 
 # Function to run npm install with timeout
 function Install-NpmDependencies {
@@ -27,7 +30,11 @@ function Install-NpmDependencies {
     
     $job = Start-Job -ScriptBlock {
         Set-Location $using:PWD
-        npm ci --prefer-offline --no-audit --no-fund --no-progress 2>&1
+        $output = npm ci --prefer-offline --no-audit --no-fund --no-progress 2>&1
+        [PSCustomObject]@{
+            ExitCode = $LASTEXITCODE
+            Output = $output
+        }
     }
     
     $completed = Wait-Job $job -Timeout $TimeoutSeconds
@@ -36,12 +43,12 @@ function Install-NpmDependencies {
         $result = Receive-Job $job
         Remove-Job $job
         
-        if ($LASTEXITCODE -eq 0) {
+        if ($result.ExitCode -eq 0) {
             Write-Host "Dependencies installed successfully!" -ForegroundColor Green
             return $true
         } else {
-            Write-Host "npm install failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-            Write-Host $result
+            Write-Host "npm install failed with exit code: $($result.ExitCode)" -ForegroundColor Red
+            Write-Host $result.Output
             return $false
         }
     } else {
@@ -93,12 +100,16 @@ if (-not $success) {
 
 # Try to install onnxruntime-node separately if needed
 Write-Host "`nChecking onnxruntime-node installation..." -ForegroundColor Cyan
-try {
-    node -e "require('onnxruntime-node')"
+node -e "require('onnxruntime-node')"
+if ($LASTEXITCODE -eq 0) {
     Write-Host "onnxruntime-node is already installed" -ForegroundColor Green
-} catch {
+} else {
     Write-Host "Installing onnxruntime-node separately..." -ForegroundColor Yellow
     node ./scripts/install-onnxruntime.js
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Failed to install onnxruntime-node" -ForegroundColor Red
+        exit $LASTEXITCODE
+    }
 }
 
 exit 0

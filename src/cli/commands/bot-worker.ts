@@ -68,6 +68,7 @@ export interface BotWorkerCommandOptions {
   rustRenderKind?: "timeline" | "timeline-render"
   rustPublish?: boolean
   rustPublishCommand?: string
+  youtubeAccessToken?: string
   editSessionDir?: string
   aiEditor?: boolean
   aiEditorApiKey?: string
@@ -121,6 +122,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--rust-render-kind <kind>", "Rust render command kind: timeline or timeline-render")
   .option("--rust-publish", "Run bot publishing through the Rust timeline publish CLI")
   .option("--rust-publish-command <path>", "Path/name for the Rust timeline publish command")
+  .option("--youtube-access-token <token>", "YouTube access token for Rust publishing")
   .option("--edit-session-dir <path>", "Persist Telegram AI review edit sessions in a directory")
   .option("--ai-editor", "Enable the production AI project editor for review feedback")
   .option("--ai-editor-api-key <key>", "API key for the AI project editor")
@@ -172,6 +174,8 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
       "--ai-editor requires --ai-editor-api-key, TIMELINE_BOT_AI_EDITOR_API_KEY, OPENAI_API_KEY, or LLM_API_KEY",
     )
   }
+
+  validateBotWorkerReviewModeOptions(resolvedOptions)
 
   const services = await initNodeApp({
     autoConnect: false,
@@ -299,6 +303,11 @@ export function resolveBotWorkerCommandOptions(
     rustRenderCommand: firstConfigured(options.rustRenderCommand, env.TIMELINE_BOT_RUST_RENDER_COMMAND),
     rustRenderKind: firstConfigured(options.rustRenderKind, normalizeRustRenderKind(env.TIMELINE_BOT_RUST_RENDER_KIND)),
     rustPublishCommand: firstConfigured(options.rustPublishCommand, env.TIMELINE_BOT_RUST_PUBLISH_COMMAND),
+    youtubeAccessToken: firstConfigured(
+      options.youtubeAccessToken,
+      env.TIMELINE_BOT_YOUTUBE_ACCESS_TOKEN,
+      env.YOUTUBE_ACCESS_TOKEN,
+    ),
     editSessionDir: firstConfigured(options.editSessionDir, env.TIMELINE_BOT_EDIT_SESSION_DIR),
     aiEditor: options.aiEditor ?? parseBooleanEnv(env.TIMELINE_BOT_AI_EDITOR),
     aiEditorApiKey: firstConfigured(
@@ -486,6 +495,66 @@ function createBotRustPublishOptions(options: BotWorkerCommandOptions) {
           },
         }
       : {}),
+    ...(options.youtubeAccessToken
+      ? {
+          youtube: {
+            accessToken: options.youtubeAccessToken,
+          },
+        }
+      : {}),
+  }
+}
+
+function validateBotWorkerReviewModeOptions(options: BotWorkerCommandOptions): void {
+  if (!options.editSessionDir) return
+
+  if (!options.aiEditorApiKey) {
+    throw new Error(
+      "--edit-session-dir enables Telegram AI review mode and requires --ai-editor-api-key, TIMELINE_BOT_AI_EDITOR_API_KEY, OPENAI_API_KEY, or LLM_API_KEY",
+    )
+  }
+
+  if (!options.rustRender) {
+    throw new Error(
+      "--edit-session-dir enables Telegram AI review mode and requires --rust-render for preview rendering",
+    )
+  }
+
+  const destination = options.defaultDestination
+  if (!destination || destination === "file") return
+
+  const publishError = validateBotWorkerReviewPublishDestination(destination, options)
+  if (publishError) {
+    throw new Error(publishError)
+  }
+}
+
+function validateBotWorkerReviewPublishDestination(
+  destination: BotRenderJobDestination,
+  options: BotWorkerCommandOptions,
+): string | undefined {
+  switch (destination) {
+    case "telegram":
+      if (!options.rustPublish) {
+        return "--default-destination telegram requires --rust-publish in Telegram AI review mode"
+      }
+      if (!options.telegramBotToken) {
+        return "--default-destination telegram requires --telegram-bot-token, TIMELINE_BOT_TELEGRAM_TOKEN, or TELEGRAM_BOT_TOKEN"
+      }
+      return undefined
+    case "youtube":
+      if (!options.rustPublish) {
+        return "--default-destination youtube requires --rust-publish in Telegram AI review mode"
+      }
+      if (!options.youtubeAccessToken) {
+        return "--default-destination youtube requires --youtube-access-token, TIMELINE_BOT_YOUTUBE_ACCESS_TOKEN, or YOUTUBE_ACCESS_TOKEN"
+      }
+      return undefined
+    case "tiktok":
+    case "vimeo":
+      return `--default-destination ${destination} is not supported by Telegram AI review publishing yet`
+    case "file":
+      return undefined
   }
 }
 

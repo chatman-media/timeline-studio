@@ -1,5 +1,7 @@
 import type { IRenderJobService } from "../ports"
 import type {
+  BotProjectAssemblyOptions,
+  BotRenderJobDestination,
   BotRenderJobRequest,
   BotWorkflowApprovalGateOptions,
   BotWorkflowApprovalGateResult,
@@ -48,11 +50,17 @@ export async function runBotWorkflow(
   }
 
   const resolvedRenderJob = await resolveBotRenderJobMedia(approvalGate.renderJob, options.mediaResolver, { workflow })
+  const firstCutRenderJob = await withBotFirstCutProjectSchema(
+    resolvedRenderJob,
+    workflow,
+    options,
+    approvalGate.result,
+  )
 
   const renderJob =
     options.projectAssembly === false
-      ? resolvedRenderJob
-      : withBotProjectSchema(resolvedRenderJob, options.projectAssembly)
+      ? firstCutRenderJob
+      : withBotProjectSchema(firstCutRenderJob, options.projectAssembly)
 
   const result = await options.renderJob.run(renderJob, {
     ...options.render,
@@ -109,8 +117,80 @@ export function applyBotWorkflowApprovalGate(
   }
 }
 
+async function withBotFirstCutProjectSchema(
+  request: BotRenderJobRequest,
+  workflow: BotWorkflowRequest,
+  options: BotWorkflowRunnerOptions,
+  approvalGate?: BotWorkflowApprovalGateResult,
+): Promise<BotRenderJobRequest> {
+  const sourceMedia = request.media ?? []
+  if (request.project || !options.firstCutGenerator || sourceMedia.length === 0) return request
+
+  const publishDestination = approvalGate?.publishTarget ?? request.output.destination
+  const goal = stringParam(request.params?.goal) ?? stringParam(request.params?.title) ?? workflow.text
+  const targetPlatform =
+    stringParam(request.params?.targetPlatform) ??
+    stringParam(request.params?.platform) ??
+    destinationToPlatform(publishDestination)
+  const targetDurationSeconds =
+    positiveNumber(request.params?.clipDurationSeconds) ??
+    positiveNumber(request.params?.duration) ??
+    projectAssemblyDuration(options.projectAssembly)
+  const style = stringParam(request.params?.style)
+  const firstCut = await options.firstCutGenerator.generateFirstCut({
+    sourceMedia,
+    ...(workflow.messageId ? { sourceMessageId: workflow.messageId } : {}),
+    ...(goal ? { goal } : {}),
+    ...(targetPlatform ? { targetPlatform } : {}),
+    ...(publishDestination ? { publishDestination } : {}),
+    ...(targetDurationSeconds ? { targetDurationSeconds } : {}),
+    ...(style ? { style } : {}),
+    metadata: {
+      workflowSource: workflow.source,
+      ...(request.templateId ? { templateId: request.templateId } : {}),
+      ...(request.projectId ? { projectId: request.projectId } : {}),
+    },
+  })
+
+  return {
+    ...request,
+    project: {
+      type: "inline",
+      schema: firstCut.projectSchema,
+    },
+    params: {
+      ...(request.params ?? {}),
+      firstCut: {
+        provider: firstCut.provider,
+        summary: firstCut.summary,
+        diagnostics: firstCut.diagnostics,
+        ...(firstCut.metadata ? { metadata: firstCut.metadata } : {}),
+      },
+    },
+  }
+}
+
 export function createTelegramLikeBotWorkflow(payload: TelegramLikeBotPayload): BotWorkflowRequest {
   return createBotWorkflowRequestFromTelegramLikePayload(payload)
+}
+
+function destinationToPlatform(destination: BotRenderJobDestination | undefined): string | undefined {
+  if (!destination || destination === "file") return undefined
+  return destination
+}
+
+function projectAssemblyDuration(options: BotProjectAssemblyOptions | false | undefined): number | undefined {
+  if (!options) return undefined
+  return options.defaultClipDurationSeconds
+}
+
+function stringParam(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : undefined
+}
+
+function positiveNumber(value: unknown): number | undefined {
+  const parsed = typeof value === "number" ? value : typeof value === "string" ? Number(value) : Number.NaN
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined
 }
 
 export async function runTelegramLikeBotWorkflow(
