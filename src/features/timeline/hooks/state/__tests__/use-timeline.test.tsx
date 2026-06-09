@@ -116,6 +116,165 @@ vi.mock("@/features/timeline/providers/timeline-providers", () => ({
   TimelinePlaybackProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TimelineTracksProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TimelineClipsProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useTimelineProject: vi.fn(() => ({
+    project: null,
+    isLoading: false,
+    hasUnsavedChanges: false,
+    createProject: async (name: string) => {
+      await mockExecuteCommand({
+        type: "CreateProject",
+        params: { name, template: "default" },
+      })
+      return mockCreateProject(name)
+    },
+    saveProject: async (projectPath?: string) => {
+      await mockExecuteCommand({
+        type: "SaveProject",
+        params: { path: projectPath },
+      })
+      return mockSaveProject(projectPath)
+    },
+    loadProject: mockLoadProject,
+    backend: null,
+  })),
+  useTimelinePlayback: vi.fn(() => ({
+    isPlaying: false,
+    currentTime: 0,
+    playbackRate: 1,
+    duration: 0,
+    play: mockPlay,
+    pause: mockPause,
+    stop: mockStop,
+    seek: mockSeek,
+    setPlaybackRate: mockSetPlaybackRate,
+  })),
+  useTimelineTracks: vi.fn(() => ({
+    tracks: [],
+    activeTrackId: null,
+    addTrack: vi.fn(async (type: any, name?: string, sectionId?: string) => {
+      await mockExecuteCommand({
+        type: "AddTrack",
+        params: {
+          name: name || `${type} Track`,
+          track_type: type.toUpperCase(),
+          index: null,
+        },
+      })
+      mockAddTrack(type, name, sectionId)
+    }),
+    removeTrack: vi.fn(async (trackId: string) => {
+      await mockExecuteCommand({
+        type: "DeleteTrack",
+        params: { track_id: trackId },
+      })
+      mockRemoveTrack(trackId)
+    }),
+    updateTrack: vi.fn(async (trackId: string, updates: any) => {
+      mockUpdateTrack(trackId, updates)
+    }),
+    reorderTracks: mockReorderTracks,
+    setActiveTrack: mockSetActiveTrack,
+  })),
+  useTimelineClips: vi.fn(() => ({
+    clips: [],
+    addClip: vi.fn(async (trackId: string, mediaFile: any, time: number) => {
+      await mockExecuteCommand({
+        type: "AddClip",
+        params: { track_id: trackId, media_id: mediaFile.id, time },
+      })
+      mockAddClip(trackId, mediaFile, time)
+    }),
+    removeClip: vi.fn(async (clipId: string) => {
+      await mockExecuteCommand({
+        type: "DeleteClip",
+        params: { clip_id: clipId },
+      })
+      mockRemoveClip(clipId)
+    }),
+    moveClip: vi.fn(async (clipId: string, trackId: string, time: number) => {
+      await mockExecuteCommand({
+        type: "MoveClip",
+        params: { clip_id: clipId, track_id: trackId, time },
+      })
+      mockMoveClip(clipId, trackId, time)
+    }),
+    trimClip: vi.fn(async (clipId: string, startTime: number, endTime: number) => {
+      await mockExecuteCommand({
+        type: "TrimClip",
+        params: { clip_id: clipId, start: startTime, end: endTime },
+      })
+      mockTrimClip(clipId, startTime, endTime)
+    }),
+    splitClip: mockSplitClip,
+    updateClip: vi.fn(async (clipId: string, updates: any) => {
+      await mockExecuteCommand({
+        type: "UpdateClip",
+        params: { clip_id: clipId, updates },
+      })
+      mockUpdateClip(clipId, updates)
+    }),
+    batchUpdateClips: mockBatchUpdateClips,
+  })),
+  useTimelineSelection: vi.fn(() => {
+    const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
+    React.useEffect(() => {
+      forceUpdateCallback = forceUpdate
+      return () => {
+        forceUpdateCallback = null
+      }
+    }, [])
+
+    return {
+      selectedClipIds: mockSelectedClipIds,
+      selectedTrackIds: mockSelectedTrackIds,
+      clipboardClips: mockClipboardClips,
+      selectClips: vi.fn((clipIds: string[]) => {
+        mockSelectedClipIds = clipIds
+        forceUpdateCallback?.()
+      }),
+      selectTracks: vi.fn((trackIds: string[]) => {
+        mockSelectedTrackIds = trackIds
+        forceUpdateCallback?.()
+      }),
+      clearSelection: vi.fn(() => {
+        mockSelectedClipIds = []
+        mockSelectedTrackIds = []
+        forceUpdateCallback?.()
+      }),
+      copyClips: vi.fn(() => {
+        mockClipboardClips = [...mockSelectedClipIds]
+        forceUpdateCallback?.()
+      }),
+      cutClips: vi.fn(async () => {
+        mockClipboardClips = [...mockSelectedClipIds]
+        mockSelectedClipIds = []
+        forceUpdateCallback?.()
+      }),
+      pasteClips: vi.fn(async () => {
+        forceUpdateCallback?.()
+      }),
+      deleteSelected: vi.fn(async () => {
+        mockSelectedClipIds = []
+        mockSelectedTrackIds = []
+        forceUpdateCallback?.()
+      }),
+    }
+  }),
+  useTimelineEffects: vi.fn(() => ({
+    applyEffect: mockApplyEffect,
+    removeEffect: mockRemoveEffect,
+    applyFilter: mockApplyFilter,
+    removeFilter: mockRemoveFilter,
+    applyTransition: mockApplyTransition,
+    removeTransition: mockRemoveTransition,
+  })),
+  useTimelineMarkers: vi.fn(() => ({
+    markers: [],
+    addMarker: vi.fn(),
+    removeMarker: vi.fn(),
+    updateMarker: vi.fn(),
+    getMarkerAt: vi.fn(() => null),
+  })),
 }))
 
 // Create mock functions that can be tracked
@@ -377,7 +536,6 @@ vi.mock("@xstate/react", () => ({
 // Используем vi.mocked чтобы получить доступ к мокам
 import * as backendSyncModule from "@/adapters/tauri"
 import type { MediaFile, MediaType } from "@/domains/media-management"
-import { TimelineProviders } from "@/test/test-utils"
 import { useTimeline } from "../use-timeline"
 
 const backendSyncMocks = (backendSyncModule as any).__mocks
@@ -392,9 +550,7 @@ const {
 } = backendSyncMocks
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <TimelineProviders data-oid="041.mok">
-    <SelectionStateProvider data-oid="yxqz_80">{children}</SelectionStateProvider>
-  </TimelineProviders>
+  <SelectionStateProvider data-oid="yxqz_80">{children}</SelectionStateProvider>
 )
 
 describe("useTimeline", () => {
