@@ -1,3 +1,10 @@
+# [3.91.0](https://github.com/chatman-media/timeline-studio/compare/v3.90.0...v3.91.0) (2026-06-09)
+
+
+### Features
+
+* wire Telegram AI review runtime ([#251](https://github.com/chatman-media/timeline-studio/issues/251)) ([2c556c0](https://github.com/chatman-media/timeline-studio/commit/2c556c0d79b5a20a79ce29d632c65927595589fe)), closes [#250](https://github.com/chatman-media/timeline-studio/issues/250)
+
 # [3.90.0](https://github.com/chatman-media/timeline-studio/compare/v3.89.1...v3.90.0) (2026-06-09)
 
 
