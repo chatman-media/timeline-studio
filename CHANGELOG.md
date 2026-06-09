@@ -1,3 +1,10 @@
+# [3.86.0](https://github.com/chatman-media/timeline-studio/compare/v3.85.0...v3.86.0) (2026-06-09)
+
+
+### Features
+
+* throttle bot workflow status updates ([#220](https://github.com/chatman-media/timeline-studio/issues/220)) ([a3bdee4](https://github.com/chatman-media/timeline-studio/commit/a3bdee47b882a061bd10d909fa903f73992abecc))
+
 # [3.85.0](https://github.com/chatman-media/timeline-studio/compare/v3.84.0...v3.85.0) (2026-06-09)
 
 
