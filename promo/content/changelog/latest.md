@@ -1,3 +1,10 @@
+# [3.88.0](https://github.com/chatman-media/timeline-studio/compare/v3.87.0...v3.88.0) (2026-06-09)
+
+
+### Features
+
+* add telegram bot access allowlist ([#224](https://github.com/chatman-media/timeline-studio/issues/224)) ([2b15a4b](https://github.com/chatman-media/timeline-studio/commit/2b15a4bf4bdb94b3f134b216c496584a1f50eb0d))
+
 # [3.87.0](https://github.com/chatman-media/timeline-studio/compare/v3.86.0...v3.87.0) (2026-06-09)
 
 
