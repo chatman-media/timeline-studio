@@ -1,3 +1,10 @@
+# [3.85.0](https://github.com/chatman-media/timeline-studio/compare/v3.84.0...v3.85.0) (2026-06-09)
+
+
+### Features
+
+* recover stale telegram workflow jobs ([#218](https://github.com/chatman-media/timeline-studio/issues/218)) ([1b9f747](https://github.com/chatman-media/timeline-studio/commit/1b9f747947b6b1cf2097e645f056148df81ecc19))
+
 # [3.84.0](https://github.com/chatman-media/timeline-studio/compare/v3.83.0...v3.84.0) (2026-06-09)
 
 
