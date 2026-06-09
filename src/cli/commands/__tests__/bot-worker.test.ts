@@ -52,6 +52,7 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--edit-session-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor-model")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--review-preview-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--default-destination")).toBe(true)
   })
 
@@ -264,6 +265,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_AI_EDITOR_MODEL: "editor-model",
         TIMELINE_BOT_AI_EDITOR_TEMPERATURE: "0.1",
         TIMELINE_BOT_AI_EDITOR_MAX_TOKENS: "2048",
+        TIMELINE_BOT_REVIEW_PREVIEW_DIR: ".tmp/review-previews",
       },
     )
 
@@ -304,6 +306,7 @@ describe("bot-worker command", () => {
       aiEditorModel: "editor-model",
       aiEditorTemperature: "0.1",
       aiEditorMaxTokens: "2048",
+      reviewPreviewDir: ".tmp/review-previews",
     })
   })
 
@@ -330,6 +333,7 @@ describe("bot-worker command", () => {
         aiEditor: true,
         aiEditorApiKey: "cli-editor-key",
         aiEditorModel: "cli-editor-model",
+        reviewPreviewDir: ".tmp/cli-review-previews",
       },
       {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
@@ -352,6 +356,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_AI_EDITOR: "false",
         TIMELINE_BOT_AI_EDITOR_API_KEY: "env-editor-key",
         TIMELINE_BOT_AI_EDITOR_MODEL: "env-editor-model",
+        TIMELINE_BOT_REVIEW_PREVIEW_DIR: ".tmp/env-review-previews",
       },
     )
 
@@ -376,6 +381,7 @@ describe("bot-worker command", () => {
       aiEditor: true,
       aiEditorApiKey: "cli-editor-key",
       aiEditorModel: "cli-editor-model",
+      reviewPreviewDir: ".tmp/cli-review-previews",
     })
   })
 })

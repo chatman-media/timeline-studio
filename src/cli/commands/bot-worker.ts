@@ -23,6 +23,7 @@ import {
   NodeTelegramBotFileWorkflowJobStore,
   NodeTelegramBotInMemoryWorkflowQueue,
   NodeTelegramBotWorker,
+  NodeTelegramRenderJobReviewPreviewRenderer,
   recoverStaleTelegramWorkflowJobs,
 } from "@/adapters/node"
 import type {
@@ -75,6 +76,7 @@ export interface BotWorkerCommandOptions {
   aiEditorModel?: string
   aiEditorTemperature?: string
   aiEditorMaxTokens?: string
+  reviewPreviewDir?: string
   defaultDestination?: BotRenderJobDestination
   defaultOutput?: string
 }
@@ -127,6 +129,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--ai-editor-model <model>", "Model for the AI project editor")
   .option("--ai-editor-temperature <number>", "Temperature for the AI project editor")
   .option("--ai-editor-max-tokens <count>", "Max completion tokens for the AI project editor")
+  .option("--review-preview-dir <path>", "Directory for rendered Telegram AI review preview artifacts")
   .option("--default-destination <destination>", "Fallback destination when update has no destination hint")
   .option("--default-output <path>", "Fallback output path when update has no output hint")
   .action(async (options: BotWorkerCommandOptions) => {
@@ -211,6 +214,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     editSessionStore: services.botEditSessions,
     aiProjectEditor: services.aiProjectEditor,
     feedbackTranscriber: services.botFeedbackTranscriber,
+    previewRenderer: createBotReviewPreviewRenderer(services.renderJob, resolvedOptions),
     publishService: services.publish,
     previewResponder: services.botStatus,
     reviewResponder: services.botStatus,
@@ -308,6 +312,7 @@ export function resolveBotWorkerCommandOptions(
     aiEditorModel: firstConfigured(options.aiEditorModel, env.TIMELINE_BOT_AI_EDITOR_MODEL),
     aiEditorTemperature: firstConfigured(options.aiEditorTemperature, env.TIMELINE_BOT_AI_EDITOR_TEMPERATURE),
     aiEditorMaxTokens: firstConfigured(options.aiEditorMaxTokens, env.TIMELINE_BOT_AI_EDITOR_MAX_TOKENS),
+    reviewPreviewDir: firstConfigured(options.reviewPreviewDir, env.TIMELINE_BOT_REVIEW_PREVIEW_DIR),
     defaultDestination: firstConfigured(
       options.defaultDestination,
       normalizeDestination(env.TIMELINE_BOT_DEFAULT_DESTINATION),
@@ -395,6 +400,19 @@ function createBotAIProjectEditorOptions(options: BotWorkerCommandOptions): Node
       ? { maxTokens: parseOptionalPositiveInteger(options.aiEditorMaxTokens) }
       : {}),
   }
+}
+
+function createBotReviewPreviewRenderer(
+  renderJob: Awaited<ReturnType<typeof initNodeApp>>["renderJob"],
+  options: BotWorkerCommandOptions,
+) {
+  if (!options.editSessionDir) return undefined
+
+  return new NodeTelegramRenderJobReviewPreviewRenderer(renderJob, {
+    outputDir: path.resolve(options.reviewPreviewDir ?? path.join(options.editSessionDir, "previews")),
+    pollIntervalMs: parsePositiveInteger(options.pollInterval, 1000),
+    timeoutMs: parsePositiveInteger(options.timeout, 3600000),
+  })
 }
 
 function createBotStatusOptions(options: BotWorkerCommandOptions) {

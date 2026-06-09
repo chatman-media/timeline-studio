@@ -170,6 +170,10 @@ export {
   type TelegramBotMessage,
   type TelegramBotUpdate,
 } from "./telegram-bot-worker"
+export {
+  NodeTelegramRenderJobReviewPreviewRenderer,
+  type NodeTelegramRenderJobReviewPreviewRendererOptions,
+} from "./telegram-review-preview-renderer"
 export { type NodeVideoOptions, NodeVideoService } from "./video"
 
 export interface NodeAppOptions {
