@@ -289,6 +289,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
+    firstCutGenerator: options.botWorkflow?.firstCutGenerator ?? botFirstCutGenerator,
     status: options.botWorkflow?.status ?? (botStatus ? { sink: botStatus } : undefined),
   })
 
@@ -355,6 +356,7 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
+    firstCutGenerator: options.botWorkflow?.firstCutGenerator ?? botFirstCutGenerator,
     status: options.botWorkflow?.status ?? (botStatus ? { sink: botStatus } : undefined),
   })
   const botFeedbackTranscriber = createNodeBotFeedbackTranscriber(options.botFeedbackTranscriber, ai, botMediaResolver)

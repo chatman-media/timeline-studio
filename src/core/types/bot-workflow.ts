@@ -5,6 +5,7 @@
  * message text, attachments, template hints, and output preferences.
  */
 
+import type { IBotFirstCutGenerator } from "../ports/bot-first-cut-generator.port"
 import type {
   BotPublishResult,
   BotRenderJobArtifact,
@@ -203,6 +204,7 @@ export interface BotWorkflowRunOptions {
   intake?: BotWorkflowIntakeOptions
   approvalGate?: BotWorkflowApprovalGateOptions | false
   mediaResolver?: BotMediaResolver
+  firstCutGenerator?: IBotFirstCutGenerator
   projectAssembly?: BotProjectAssemblyOptions | false
   status?: BotWorkflowStatusOptions
   render?: BotRenderJobRunOptions

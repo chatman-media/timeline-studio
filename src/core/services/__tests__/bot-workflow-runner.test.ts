@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import type { IRenderJobService } from "../../ports"
+import type { IBotFirstCutGenerator, IRenderJobService } from "../../ports"
 import type {
   BotRenderJob,
   BotRenderJobEvent,
@@ -8,6 +8,7 @@ import type {
   BotRenderJobResult,
   BotRenderJobRunOptions,
 } from "../../types"
+import { createBotProjectSchemaFromRenderJob } from "../bot-project-assembler"
 import { runBotWorkflow, runTelegramLikeBotWorkflow } from "../bot-workflow-runner"
 import { InMemoryBotRenderJobEventStream } from "../render-job-events"
 
@@ -223,6 +224,108 @@ describe("bot workflow runner", () => {
     })
     expect(mediaResolver.resolve).toHaveBeenCalledOnce()
     expect(renderJob.lastRequest?.project).toBe(result.renderJob.project)
+  })
+
+  it("uses the configured first-cut generator before deterministic project assembly", async () => {
+    const renderJob = new FakeRenderJobService()
+    const projectSchema = createBotProjectSchemaFromRenderJob({
+      source: "bot",
+      media: [{ type: "file", value: "/tmp/first-cut.mp4", name: "first-cut.mp4" }],
+      output: { format: "mp4", destination: "file" },
+    })
+    if (!projectSchema) throw new Error("Expected project schema")
+    const firstCutGenerator: IBotFirstCutGenerator = {
+      generateFirstCut: vi.fn(async () => ({
+        projectSchema,
+        provider: "montage-plan" as const,
+        summary: "Planned first cut",
+        diagnostics: ["used montage"],
+        metadata: { planner: "test" },
+      })),
+    }
+    const mediaResolver = {
+      resolve: vi.fn(async (media: BotRenderJobMediaInput) => ({
+        ...media,
+        value: "/tmp/resolved-clip.mp4",
+      })),
+    }
+
+    const result = await runBotWorkflow(
+      {
+        source: "telegram",
+        messageId: "message-1",
+        text: "goal=make-short style=fast",
+        media: [{ type: "file", value: "telegram-file-id", name: "clip.mp4" }],
+        output: { destination: "youtube" },
+      },
+      {
+        renderJob,
+        mediaResolver,
+        firstCutGenerator,
+        approvalGate: {
+          enabled: true,
+          previewDestination: "telegram",
+        },
+        projectAssembly: {
+          defaultClipDurationSeconds: 9,
+        },
+      },
+    )
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+
+    expect(firstCutGenerator.generateFirstCut).toHaveBeenCalledWith({
+      sourceMessageId: "message-1",
+      sourceMedia: [{ type: "file", value: "/tmp/resolved-clip.mp4", name: "clip.mp4" }],
+      goal: "make-short",
+      targetPlatform: "youtube",
+      publishDestination: "youtube",
+      targetDurationSeconds: 9,
+      style: "fast",
+      metadata: {
+        workflowSource: "telegram",
+      },
+    })
+    expect(result.renderJob.project).toEqual({ type: "inline", schema: projectSchema })
+    expect(renderJob.lastRequest?.project).toEqual(result.renderJob.project)
+    expect(renderJob.lastRequest?.params).toMatchObject({
+      approvalRequired: true,
+      previewDestination: "telegram",
+      publishTarget: "youtube",
+      firstCut: {
+        provider: "montage-plan",
+        summary: "Planned first cut",
+        diagnostics: ["used montage"],
+        metadata: { planner: "test" },
+      },
+    })
+  })
+
+  it("does not call the first-cut generator for explicit project workflows", async () => {
+    const renderJob = new FakeRenderJobService()
+    const firstCutGenerator: IBotFirstCutGenerator = {
+      generateFirstCut: vi.fn(async () => {
+        throw new Error("first-cut should not run")
+      }),
+    }
+
+    const result = await runBotWorkflow(
+      {
+        source: "telegram",
+        project: { type: "inline", schema: { version: "1.0.0" } },
+        media: [{ type: "file", value: "/tmp/input.mp4", name: "clip.mp4" }],
+        output: { destination: "file" },
+      },
+      {
+        renderJob,
+        firstCutGenerator,
+      },
+    )
+
+    expect(result.ok).toBe(true)
+    expect(firstCutGenerator.generateFirstCut).not.toHaveBeenCalled()
+    expect(renderJob.lastRequest?.project).toEqual({ type: "inline", schema: { version: "1.0.0" } })
   })
 
   it("gates bot workflow publishing by rendering previews to file output", async () => {
