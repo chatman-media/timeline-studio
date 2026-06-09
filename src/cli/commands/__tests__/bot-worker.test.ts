@@ -138,6 +138,27 @@ describe("bot-worker command", () => {
     ).toBe(false)
   })
 
+  it("does not treat duplicate workflow update results as failed command results", () => {
+    expect(
+      isFailedWorkerResult({
+        skipped: true,
+        reason: "Telegram bot workflow already handled",
+        updateId: 1,
+        update: { update_id: 1 },
+        payload: { text: "template=promo" },
+        queueId: "telegram-update-1",
+        duplicateOf: "telegram-update-1",
+        workflowJob: {
+          id: "telegram-update-1",
+          status: "running",
+          updateId: 1,
+          createdAt: "2026-06-08T08:00:00.000Z",
+          updatedAt: "2026-06-08T08:00:00.000Z",
+        },
+      }),
+    ).toBe(false)
+  })
+
   it("treats rejected polling update results as failed command results", () => {
     expect(
       isFailedWorkerResult({

@@ -298,6 +298,51 @@ describe("Telegram bot worker", () => {
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
   })
 
+  it("does not start duplicate workflow updates when a job record already exists", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    await workflowJobStore.writeJob({
+      id: "telegram-update-23",
+      status: "running",
+      updateId: 23,
+      chatId: "chat-1",
+      messageId: "19",
+      sourcePayload: { text: "template=promo" },
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    const onResult = vi.fn()
+    const worker = new NodeTelegramBotWorker({ workflow: service, workflowJobStore, onResult })
+
+    const update = {
+      update_id: 23,
+      message: {
+        message_id: 19,
+        chat: { id: "chat-1" },
+        text: "template=promo",
+      },
+    }
+    const result = await worker.handleUpdate(update)
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reason: "Telegram bot workflow already handled",
+      updateId: 23,
+      queueId: "telegram-update-23",
+      duplicateOf: "telegram-update-23",
+      workflowJob: {
+        id: "telegram-update-23",
+        status: "running",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+    expect(onResult).toHaveBeenCalledWith(result)
+    await expect(workflowJobStore.readJob("telegram-update-23")).resolves.toMatchObject({
+      id: "telegram-update-23",
+      status: "running",
+    })
+  })
+
   it("rejects queued workflows when the pending queue is full", async () => {
     let resolveWorkflow!: () => void
     const runTelegramLikePayload = vi.fn(

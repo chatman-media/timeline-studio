@@ -287,6 +287,16 @@ bot message
 - [x] Прокинуть policy через `bot-worker` и `bot-workflow` CLI flags/env.
 - [x] Документировать production runbook и покрыть core/CLI tests.
 
+### B26: Telegram bot idempotent workflow updates ([#221](https://github.com/chatman-media/timeline-studio/issues/221))
+
+**Цель:** повторная доставка того же Telegram update не запускает второй render workflow.
+
+- [x] Проверять existing workflow job record перед стартом/queue non-command workflow.
+- [x] Возвращать machine-readable already-handled result с existing queue id/status.
+- [x] Не вызывать `runTelegramLikePayload`/`runWorkflow` для duplicate updates.
+- [x] Сохранить поведение команд и explicit `/retry <queueId>`.
+- [x] Документировать replay/idempotency behavior и покрыть worker/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -315,6 +325,7 @@ bot message
 - [#215](https://github.com/chatman-media/timeline-studio/issues/215) - B23: Telegram bot workflow retry command
 - [#217](https://github.com/chatman-media/timeline-studio/issues/217) - B24: Telegram bot stale workflow recovery
 - [#219](https://github.com/chatman-media/timeline-studio/issues/219) - B25: Bot workflow status update throttling
+- [#221](https://github.com/chatman-media/timeline-studio/issues/221) - B26: Telegram bot idempotent workflow updates
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

@@ -243,6 +243,8 @@ export type NodeTelegramBotWorkerUpdateResult =
       queueId?: string
       cancellation?: NodeTelegramBotWorkflowQueueCancellation
       retryOf?: string
+      duplicateOf?: string
+      workflowJob?: NodeTelegramBotWorkflowJobRecord
     }
   | {
       skipped: false
@@ -994,6 +996,17 @@ export class NodeTelegramBotWorker {
   ): Promise<NodeTelegramBotWorkerUpdateResult> {
     const workflowQueue = this.options.workflowQueue
     const queueId = createTelegramBotWorkflowQueueId(update)
+    const existingJob = await this.readWorkflowJobRecord(queueId)
+    if (existingJob) {
+      return this.createDuplicateWorkflowJobResult({
+        queueId,
+        update,
+        payload,
+        job: existingJob,
+        ...(options.retryOf ? { retryOf: options.retryOf } : {}),
+      })
+    }
+
     const jobRecord = this.createWorkflowJobRecord({
       queueId,
       status: workflowQueue ? "queued" : "running",
@@ -1111,6 +1124,28 @@ export class NodeTelegramBotWorker {
       } catch (error) {
         result.responseError = formatUnknownError(error)
       }
+    }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async createDuplicateWorkflowJobResult(context: {
+    queueId: string
+    update: TelegramBotUpdate
+    payload: TelegramLikeBotPayload
+    job: NodeTelegramBotWorkflowJobRecord
+    retryOf?: string
+  }): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: true,
+      reason: "Telegram bot workflow already handled",
+      updateId: context.update.update_id,
+      update: context.update,
+      payload: context.payload,
+      queueId: context.queueId,
+      duplicateOf: context.queueId,
+      workflowJob: context.job,
+      ...(context.retryOf ? { retryOf: context.retryOf } : {}),
     }
     await this.options.onResult?.(result)
     return result
@@ -1303,6 +1338,15 @@ export class NodeTelegramBotWorker {
       await this.options.workflowJobStore?.writeJob(record)
     } catch {
       // Job status persistence is observational and must not fail workflow handling.
+    }
+  }
+
+  private async readWorkflowJobRecord(id: string): Promise<NodeTelegramBotWorkflowJobRecord | undefined> {
+    try {
+      return await this.options.workflowJobStore?.readJob(id)
+    } catch {
+      // Job status persistence is observational and must not fail workflow handling.
+      return undefined
     }
   }
 
