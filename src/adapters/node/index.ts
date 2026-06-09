@@ -9,6 +9,7 @@ import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator } from "@
 import { container } from "@/core/container"
 
 import { type NodeAIOptions, NodeAIService } from "./ai"
+import { NodeAIProjectEditor, type NodeAIProjectEditorOptions } from "./ai-project-editor"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
 import { NodeBotEditSessionFileStore, type NodeBotEditSessionFileStoreOptions } from "./bot-edit-sessions"
 import { NodeBotFeedbackTranscriber, type NodeBotFeedbackTranscriberOptions } from "./bot-feedback-transcriber"
@@ -30,6 +31,11 @@ import { type NodeVideoOptions, NodeVideoService } from "./video"
 
 // Re-exports
 export { type NodeAIOptions, NodeAIService } from "./ai"
+export {
+  NodeAIProjectEditor,
+  type NodeAIProjectEditorFetch,
+  type NodeAIProjectEditorOptions,
+} from "./ai-project-editor"
 export { type NodeBackendOptions, NodeBackendService } from "./backend"
 export {
   NodeBotEditSessionFileStore,
@@ -201,6 +207,8 @@ export interface NodeAppOptions {
   botMediaResolver?: NodeBotMediaResolverOptions | false
   /** Опции для bot-first voice/video-note feedback transcription */
   botFeedbackTranscriber?: Omit<NodeBotFeedbackTranscriberOptions, "ai" | "mediaResolver"> | false
+  /** Опции для production AI project editor */
+  aiProjectEditor?: NodeAIProjectEditorOptions | false
   /** Опции для bot-first status notifier */
   botStatus?: NodeBotStatusNotifierOptions | false
   /** Автоматически подключаться к бэкенду */
@@ -225,6 +233,7 @@ export interface NodeAppServices {
   botEditSessions?: NodeBotEditSessionFileStore
   botMediaResolver?: NodeBotMediaResolver
   botFeedbackTranscriber?: NodeBotFeedbackTranscriber
+  aiProjectEditor?: NodeAIProjectEditor
   botStatus?: NodeBotStatusNotifier
 }
 
@@ -269,6 +278,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
   const botEditSessions = createNodeBotEditSessionStore(options.botEditSessions)
   const botFeedbackTranscriber = createNodeBotFeedbackTranscriber(options.botFeedbackTranscriber, ai, botMediaResolver)
+  const aiProjectEditor = createNodeAIProjectEditor(options.aiProjectEditor)
   const botStatus = createNodeBotStatusNotifier(options.botStatus)
   const botFirstCutPlanner = createNodeRustFirstCutPlanner(options.botFirstCutPlanner)
   const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner)
@@ -312,6 +322,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     ...(botEditSessions ? { botEditSessions } : {}),
     ...(botMediaResolver ? { botMediaResolver } : {}),
     ...(botFeedbackTranscriber ? { botFeedbackTranscriber } : {}),
+    ...(aiProjectEditor ? { aiProjectEditor } : {}),
     ...(botStatus ? { botStatus } : {}),
   }
 }
@@ -336,6 +347,7 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
   const botStatus = createNodeBotStatusNotifier(options.botStatus)
   const botFirstCutPlanner = createNodeRustFirstCutPlanner(options.botFirstCutPlanner)
   const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner)
+  const aiProjectEditor = createNodeAIProjectEditor(options.aiProjectEditor)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
@@ -361,8 +373,14 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     ...(botEditSessions ? { botEditSessions } : {}),
     ...(botMediaResolver ? { botMediaResolver } : {}),
     ...(botFeedbackTranscriber ? { botFeedbackTranscriber } : {}),
+    ...(aiProjectEditor ? { aiProjectEditor } : {}),
     ...(botStatus ? { botStatus } : {}),
   }
+}
+
+function createNodeAIProjectEditor(options?: NodeAIProjectEditorOptions | false): NodeAIProjectEditor | undefined {
+  if (options === undefined || options === false) return undefined
+  return new NodeAIProjectEditor(options)
 }
 
 function createNodeRustFirstCutPlanner(
