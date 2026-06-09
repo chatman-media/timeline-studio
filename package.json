@@ -43,6 +43,7 @@
     "version:from-package": "VERSION_STRATEGY=package node scripts/ci/version-sync.mjs",
     "test": "NODE_OPTIONS='--max-old-space-size=8192' vitest run",
     "test:app": "NODE_OPTIONS='--max-old-space-size=8192' vitest run src/features",
+    "test:bot-ai": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --config vitest.bot-ai.config.ts",
     "test:watch": "NODE_OPTIONS='--max-old-space-size=8192' vitest",
     "test:coverage": "NODE_OPTIONS='--max-old-space-size=8192' vitest run --coverage",
     "test:coverage:codecov": "vitest run --coverage",
