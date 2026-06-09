@@ -255,6 +255,18 @@ bot message
 - [x] Возвращать clear not-cancellable response, если running job еще не имеет render job id.
 - [x] Документировать behavior и покрыть running cancellation tests.
 
+### B23: Telegram bot workflow retry command ([#215](https://github.com/chatman-media/timeline-studio/issues/215))
+
+**Цель:** пользователь может повторить failed/cancelled job из Telegram через `/retry <queueId>` без повторного ввода media/template hints.
+
+- [x] Сохранять retry source context (`sourcePayload` или `sourceWorkflow`) в Telegram workflow job store.
+- [x] Добавить `/retry <queueId>` command routing.
+- [x] Проверять chat ownership и retryable statuses через job store.
+- [x] Разрешать retry только для failed/cancelled jobs.
+- [x] Запускать retry через тот же sync/async workflow path с новым queue id.
+- [x] Сохранять `retryOf` в new job record/result.
+- [x] Документировать command/runbook и покрыть retry/not-retryable tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -280,6 +292,7 @@ bot message
 - [#209](https://github.com/chatman-media/timeline-studio/issues/209) - B20: Telegram bot workflow job status store
 - [#211](https://github.com/chatman-media/timeline-studio/issues/211) - B21: Telegram bot queued workflow cancellation
 - [#213](https://github.com/chatman-media/timeline-studio/issues/213) - B22: Telegram bot running render cancellation
+- [#215](https://github.com/chatman-media/timeline-studio/issues/215) - B23: Telegram bot workflow retry command
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

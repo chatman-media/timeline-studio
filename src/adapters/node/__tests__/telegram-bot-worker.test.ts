@@ -10,6 +10,7 @@ import {
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
   defaultTelegramBotJobCancelText,
+  defaultTelegramBotJobRetryText,
   defaultTelegramBotJobStatusText,
   defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
@@ -21,6 +22,7 @@ import {
   parseTelegramBotCancelCommandTarget,
   parseTelegramBotCommand,
   parseTelegramBotDraftCommand,
+  parseTelegramBotRetryCommandTarget,
   type TelegramBotUpdate,
 } from "../telegram-bot-worker"
 
@@ -944,6 +946,213 @@ describe("Telegram bot worker", () => {
     })
   })
 
+  it("retries failed workflow jobs from stored Telegram-like payloads", async () => {
+    let resolveWorkflow!: () => void
+    const sourcePayload = {
+      chat: { id: "chat-1" },
+      from: { id: "user-1" },
+      message_id: 20,
+      text: "template=promo",
+    }
+    const runTelegramLikePayload = vi.fn(
+      async () =>
+        new Promise<BotWorkflowRunResult>((resolve) => {
+          resolveWorkflow = () => resolve(completedResult)
+        }),
+    )
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+      cancelRenderJob: vi.fn(),
+    } as unknown as NodeBotWorkflowService
+    const workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue()
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    await workflowJobStore.writeJob({
+      id: "telegram-update-39",
+      status: "failed",
+      updateId: 39,
+      chatId: "chat-1",
+      userId: "user-1",
+      error: "Render failed",
+      sourcePayload,
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    const queueResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "queue-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowQueue,
+      workflowJobStore,
+      queueResponder,
+      now: () => "2026-06-08T08:00:01.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 40,
+      message: {
+        message_id: 28,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/retry telegram-update-39",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: false,
+      queued: true,
+      queueId: "telegram-update-40",
+      retryOf: "telegram-update-39",
+      responseText: defaultTelegramBotQueueText({
+        queueId: "telegram-update-40",
+        update: {
+          update_id: 40,
+          message: {
+            message_id: 28,
+            chat: { id: "chat-1" },
+            from: { id: "user-1" },
+            text: "/retry telegram-update-39",
+          },
+        },
+        payload: {
+          chat: { id: "chat-1" },
+          from: { id: "user-1" },
+          message_id: 28,
+          text: "/retry telegram-update-39",
+        },
+      }),
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledWith(sourcePayload, expect.any(Object))
+    await expect(workflowJobStore.readJob("telegram-update-40")).resolves.toMatchObject({
+      id: "telegram-update-40",
+      status: "running",
+      retryOf: "telegram-update-39",
+      sourcePayload,
+    })
+
+    resolveWorkflow()
+    await workflowQueue.drain()
+
+    await expect(workflowJobStore.readJob("telegram-update-40")).resolves.toMatchObject({
+      id: "telegram-update-40",
+      status: "done",
+      retryOf: "telegram-update-39",
+      renderJobId: "job-1",
+    })
+  })
+
+  it("does not retry non-terminal workflow jobs", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    await workflowJobStore.writeJob({
+      id: "telegram-update-41",
+      status: "running",
+      updateId: 41,
+      chatId: "chat-1",
+      sourcePayload: { text: "template=promo" },
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "retry-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowJobStore,
+      commandResponder,
+    })
+    const update = {
+      update_id: 42,
+      message: {
+        message_id: 29,
+        chat: { id: "chat-1" },
+        text: "/retry telegram-update-41",
+      },
+    }
+    const payload = {
+      chat: { id: "chat-1" },
+      message_id: 29,
+      text: "/retry telegram-update-41",
+    }
+    const responseText = defaultTelegramBotJobRetryText({
+      queueId: "telegram-update-41",
+      update,
+      payload,
+      job: await workflowJobStore.readJob("telegram-update-41"),
+      reason: "Workflow job is running and cannot be retried.",
+    })
+
+    const result = await worker.handleUpdate(update)
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "retry",
+      queueId: "telegram-update-41",
+      retryOf: "telegram-update-41",
+      responseText,
+    })
+    expect(commandResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: responseText,
+      replyToMessageId: "29",
+      metadata: {
+        command: "retry",
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("does not expose workflow jobs across Telegram chats when retrying", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const workflowJobStore = new NodeTelegramBotInMemoryWorkflowJobStore()
+    await workflowJobStore.writeJob({
+      id: "telegram-update-43",
+      status: "failed",
+      updateId: 43,
+      chatId: "chat-2",
+      sourcePayload: { text: "template=promo" },
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    const jobRetryFormatter = vi.fn((_context: Parameters<typeof defaultTelegramBotJobRetryText>[0]) => "retry denied")
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "retry-message-2" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      workflowJobStore,
+      commandResponder,
+      jobRetryFormatter,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 44,
+      message: {
+        message_id: 30,
+        chat: { id: "chat-1" },
+        text: "/retry telegram-update-43",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "retry",
+      queueId: "telegram-update-43",
+      retryOf: "telegram-update-43",
+      responseText: "retry denied",
+    })
+    expect(jobRetryFormatter).toHaveBeenCalledOnce()
+    const formatterContext = jobRetryFormatter.mock.calls[0]?.[0]
+    expect(formatterContext).toMatchObject({
+      queueId: "telegram-update-43",
+      reason: "Workflow job was not found for this chat.",
+    })
+    expect(formatterContext).not.toHaveProperty("job")
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
   it("can disable command routing for command-like workflow messages", async () => {
     const { service, runTelegramLikePayload } = createWorkflowService()
     const worker = new NodeTelegramBotWorker({
@@ -1014,8 +1223,11 @@ describe("Telegram bot worker", () => {
     expect(parseTelegramBotCommand("/status")).toBe("status")
     expect(parseTelegramBotCommand("/cancel telegram-update-1")).toBe("cancel")
     expect(parseTelegramBotCancelCommandTarget("/cancel@TimelineStudioBot telegram-update-1")).toBe("telegram-update-1")
+    expect(parseTelegramBotCommand("/retry telegram-update-1")).toBe("retry")
+    expect(parseTelegramBotRetryCommandTarget("/retry@TimelineStudioBot telegram-update-1")).toBe("telegram-update-1")
     expect(parseTelegramBotCommand("/render")).toBeNull()
     expect(parseTelegramBotCommand("/cancel")).toBeNull()
+    expect(parseTelegramBotCommand("/retry")).toBeNull()
     expect(parseTelegramBotCommand("template=promo")).toBeNull()
     expect(parseTelegramBotDraftCommand("/render@TimelineStudioBot")).toBe("render")
     expect(parseTelegramBotDraftCommand("/cancel")).toBe("cancel")
@@ -1438,6 +1650,8 @@ describe("Telegram bot worker", () => {
       updateId: 3,
       chatId: "chat-1",
       error: "Render failed",
+      retryOf: "telegram-update-1",
+      sourcePayload: { text: "template=promo destination=telegram" },
       createdAt: "2026-06-08T08:00:02.000Z",
       updatedAt: "2026-06-08T08:00:02.000Z",
     })
@@ -1447,12 +1661,16 @@ describe("Telegram bot worker", () => {
         id: "telegram-update-3",
         status: "failed",
         error: "Render failed",
+        retryOf: "telegram-update-1",
+        sourcePayload: { text: "template=promo destination=telegram" },
       }),
     ])
     const reloaded = new NodeTelegramBotFileWorkflowJobStore(storePath)
     await expect(reloaded.readJob("telegram-update-3")).resolves.toMatchObject({
       id: "telegram-update-3",
       status: "failed",
+      retryOf: "telegram-update-1",
+      sourcePayload: { text: "template=promo destination=telegram" },
     })
   })
 

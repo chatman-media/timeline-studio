@@ -92,6 +92,7 @@ export interface NodeTelegramBotWorkerOptions {
   workflowJobStore?: NodeTelegramBotWorkflowJobStore
   jobStatusFormatter?: NodeTelegramBotJobStatusFormatter
   jobCancelFormatter?: NodeTelegramBotJobCancelFormatter
+  jobRetryFormatter?: NodeTelegramBotJobRetryFormatter
   jobStatusLimit?: number
   disableCommandRouting?: boolean
   botToken?: string
@@ -105,7 +106,7 @@ export interface NodeTelegramBotWorkerHandleOptions {
   workflowOptions?: NodeBotWorkflowServiceOptions
 }
 
-export type NodeTelegramBotCommand = "start" | "help" | "status" | "cancel"
+export type NodeTelegramBotCommand = "start" | "help" | "status" | "cancel" | "retry"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
 
@@ -216,6 +217,16 @@ export interface NodeTelegramBotJobCancelFormatterContext {
 
 export type NodeTelegramBotJobCancelFormatter = (context: NodeTelegramBotJobCancelFormatterContext) => string
 
+export interface NodeTelegramBotJobRetryFormatterContext {
+  queueId: string
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+  job?: NodeTelegramBotWorkflowJobRecord
+  reason?: string
+}
+
+export type NodeTelegramBotJobRetryFormatter = (context: NodeTelegramBotJobRetryFormatterContext) => string
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -231,6 +242,7 @@ export type NodeTelegramBotWorkerUpdateResult =
       responseError?: string
       queueId?: string
       cancellation?: NodeTelegramBotWorkflowQueueCancellation
+      retryOf?: string
     }
   | {
       skipped: false
@@ -246,6 +258,7 @@ export type NodeTelegramBotWorkerUpdateResult =
       responseError?: string
       completion?: BotWorkflowRunResult
       error?: string
+      retryOf?: string
     }
   | {
       skipped: false
@@ -259,6 +272,7 @@ export type NodeTelegramBotWorkerUpdateResult =
       draftId?: string
       responseText?: string
       responseError?: string
+      retryOf?: string
     }
   | {
       skipped: false
@@ -266,6 +280,7 @@ export type NodeTelegramBotWorkerUpdateResult =
       update: TelegramBotUpdate
       payload: TelegramLikeBotPayload
       result: BotWorkflowRunResult
+      retryOf?: string
     }
   | {
       skipped: false
@@ -505,6 +520,10 @@ export class NodeTelegramBotWorker {
     }
 
     const command = this.options.disableCommandRouting ? null : parseTelegramBotCommand(payload.text)
+    if (command === "retry") {
+      return this.handleRetryCommand(update, payload, options)
+    }
+
     if (command === "cancel") {
       return this.handleCancelCommand(update, payload)
     }
@@ -668,6 +687,78 @@ export class NodeTelegramBotWorker {
     }
     await this.options.onResult?.(result)
     return result
+  }
+
+  private async handleRetryCommand(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    options: NodeTelegramBotWorkerHandleOptions,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const queueId = parseTelegramBotRetryCommandTarget(payload.text)
+    const retry = queueId ? await this.resolveRetryWorkflowJob(queueId, payload) : { reason: "Send /retry <queueId>." }
+
+    if (!queueId || "reason" in retry) {
+      const job = "job" in retry ? retry.job : undefined
+      const responseText = (this.options.jobRetryFormatter ?? defaultTelegramBotJobRetryText)({
+        queueId: queueId ?? "",
+        update,
+        payload,
+        ...(job ? { job } : {}),
+        reason: "reason" in retry ? retry.reason : "Send /retry <queueId>.",
+      })
+      await this.sendCommandResponse("retry", payload, responseText)
+      const result: NodeTelegramBotWorkerUpdateResult = {
+        skipped: true,
+        reason: "Telegram bot command handled",
+        updateId: update.update_id,
+        update,
+        command: "retry",
+        payload,
+        responseText,
+        ...(queueId ? { queueId, retryOf: queueId } : {}),
+      }
+      await this.options.onResult?.(result)
+      return result
+    }
+
+    const workflowDefaults = mergeWorkflowOptions(this.workflowOptions, options.workflowOptions)
+    return this.runOrQueueWorkflow(update, payload, {
+      retryOf: queueId,
+      sourcePayload: retry.job.sourcePayload,
+      sourceWorkflow: retry.job.sourceWorkflow,
+      ...(retry.job.sourceWorkflow ? { workflow: retry.job.sourceWorkflow } : {}),
+      run: (workflowOptions) =>
+        retry.job.sourceWorkflow
+          ? this.options.workflow.runWorkflow(
+              retry.job.sourceWorkflow,
+              mergeWorkflowOptions(workflowDefaults, workflowOptions),
+            )
+          : this.options.workflow.runTelegramLikePayload(
+              retry.job.sourcePayload as TelegramLikeBotPayload,
+              mergeWorkflowOptions(workflowDefaults, workflowOptions),
+            ),
+    })
+  }
+
+  private async resolveRetryWorkflowJob(
+    queueId: string,
+    payload: TelegramLikeBotPayload,
+  ): Promise<{ job: NodeTelegramBotWorkflowJobRecord } | { reason: string }> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    const job = await this.options.workflowJobStore?.readJob(queueId)
+    if (!job || !job.chatId || !chatId || job.chatId !== chatId) {
+      return { reason: "Workflow job was not found for this chat." }
+    }
+
+    if (job.status !== "failed" && job.status !== "cancelled") {
+      return { job, reason: `Workflow job is ${job.status} and cannot be retried.` }
+    }
+
+    if (!job.sourceWorkflow && !job.sourcePayload) {
+      return { job, reason: "Workflow job does not include retry source data." }
+    }
+
+    return { job }
   }
 
   private async handleCancelCommand(
@@ -895,6 +986,9 @@ export class NodeTelegramBotWorker {
       run: (workflowOptions?: NodeBotWorkflowServiceOptions) => Promise<BotWorkflowRunResult>
       workflow?: BotWorkflowRequest
       draftId?: string
+      sourcePayload?: TelegramLikeBotPayload
+      sourceWorkflow?: BotWorkflowRequest
+      retryOf?: string
       onComplete?: (result: BotWorkflowRunResult) => void | Promise<void>
     },
   ): Promise<NodeTelegramBotWorkerUpdateResult> {
@@ -907,6 +1001,11 @@ export class NodeTelegramBotWorker {
       update,
       payload,
       ...(options.draftId ? { draftId: options.draftId } : {}),
+      sourcePayload: options.sourcePayload ?? payload,
+      ...((options.sourceWorkflow ?? options.workflow)
+        ? { sourceWorkflow: options.sourceWorkflow ?? options.workflow }
+        : {}),
+      ...(options.retryOf ? { retryOf: options.retryOf } : {}),
     })
     const trackingOptions = this.createWorkflowJobTrackingOptions(jobRecord)
     if (!workflowQueue) {
@@ -921,6 +1020,7 @@ export class NodeTelegramBotWorker {
           update,
           payload,
           result: workflowResult,
+          ...(options.retryOf ? { retryOf: options.retryOf } : {}),
         }
         await this.options.onResult?.(result)
         return result
@@ -940,6 +1040,7 @@ export class NodeTelegramBotWorker {
       payload,
       ...(options.workflow ? { workflow: options.workflow } : {}),
       ...(options.draftId ? { draftId: options.draftId } : {}),
+      ...(options.retryOf ? { retryOf: options.retryOf } : {}),
     }
     await this.writeWorkflowJobRecord(jobRecord)
     const submission = await workflowQueue.enqueue({
@@ -965,6 +1066,7 @@ export class NodeTelegramBotWorker {
           update,
           payload,
           result: workflowResult,
+          ...(options.retryOf ? { retryOf: options.retryOf } : {}),
         })
       },
       onError: async (error) => {
@@ -988,6 +1090,7 @@ export class NodeTelegramBotWorker {
         payload,
         ...(options.workflow ? { workflow: options.workflow } : {}),
         ...(options.draftId ? { draftId: options.draftId } : {}),
+        ...(options.retryOf ? { retryOf: options.retryOf } : {}),
       })
     }
 
@@ -1079,6 +1182,9 @@ export class NodeTelegramBotWorker {
     update: TelegramBotUpdate
     payload: TelegramLikeBotPayload
     draftId?: string
+    sourcePayload?: TelegramLikeBotPayload
+    sourceWorkflow?: BotWorkflowRequest
+    retryOf?: string
   }): NodeTelegramBotWorkflowJobRecord {
     const timestamp = this.now()
     return {
@@ -1092,6 +1198,9 @@ export class NodeTelegramBotWorker {
       ...(context.payload.from?.id !== undefined ? { userId: String(context.payload.from.id) } : {}),
       ...(context.payload.message_id !== undefined ? { messageId: String(context.payload.message_id) } : {}),
       ...(context.draftId ? { draftId: context.draftId } : {}),
+      ...(context.sourcePayload ? { sourcePayload: context.sourcePayload } : {}),
+      ...(context.sourceWorkflow ? { sourceWorkflow: context.sourceWorkflow } : {}),
+      ...(context.retryOf ? { retryOf: context.retryOf } : {}),
     }
   }
 
@@ -1359,6 +1468,8 @@ export function parseTelegramBotCommand(text: string | undefined): NodeTelegramB
       return "status"
     case "/cancel":
       return parseTelegramBotCancelCommandTarget(text) ? "cancel" : null
+    case "/retry":
+      return parseTelegramBotRetryCommandTarget(text) ? "retry" : null
     default:
       return null
   }
@@ -1368,6 +1479,13 @@ export function parseTelegramBotCancelCommandTarget(text: string | undefined): s
   const tokens = text?.trim().split(/\s+/) ?? []
   const command = tokens[0]?.toLowerCase().split("@")[0]
   if (command !== "/cancel") return null
+  return tokens[1]?.trim() || null
+}
+
+export function parseTelegramBotRetryCommandTarget(text: string | undefined): string | null {
+  const tokens = text?.trim().split(/\s+/) ?? []
+  const command = tokens[0]?.toLowerCase().split("@")[0]
+  if (command !== "/retry") return null
   return tokens[1]?.trim() || null
 }
 
@@ -1395,7 +1513,7 @@ export function defaultTelegramBotCommandText(): string {
     "template=promo destination=telegram",
     'project="./project.json" destination=file output="./out.mp4"',
     "Options: template, project, media/url/input/source, destination, output, resolution.",
-    "Commands: /status, /render, /cancel, /cancel <queueId>.",
+    "Commands: /status, /render, /cancel, /cancel <queueId>, /retry <queueId>.",
   ].join("\n")
 }
 
@@ -1418,6 +1536,15 @@ export function defaultTelegramBotJobCancelText(context: NodeTelegramBotJobCance
     "Timeline Studio bot",
     "Could not cancel this render job.",
     context.cancellation.reason ?? "The job is not queued or is no longer available.",
+    ...(context.queueId ? [`Queue id: ${context.queueId}`] : []),
+  ].join("\n")
+}
+
+export function defaultTelegramBotJobRetryText(context: NodeTelegramBotJobRetryFormatterContext): string {
+  return [
+    "Timeline Studio bot",
+    "Could not retry this render job.",
+    context.reason ?? "The job is not failed/cancelled or is no longer available.",
     ...(context.queueId ? [`Queue id: ${context.queueId}`] : []),
   ].join("\n")
 }
