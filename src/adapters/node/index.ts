@@ -75,6 +75,7 @@ export {
 } from "./telegram-bot-job-store"
 export {
   createTelegramLikePayloadFromUpdate,
+  defaultTelegramBotAccessDeniedText,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
   defaultTelegramBotJobCancelText,
@@ -83,6 +84,10 @@ export {
   defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
   defaultTelegramBotUpdateErrorText,
+  isTelegramBotAccessAllowed,
+  type NodeTelegramBotAccessDeniedFormatter,
+  type NodeTelegramBotAccessDeniedFormatterContext,
+  type NodeTelegramBotAccessPolicy,
   NodeTelegramBotApiClient,
   type NodeTelegramBotClient,
   type NodeTelegramBotCommand,

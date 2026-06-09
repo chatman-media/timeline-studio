@@ -77,6 +77,10 @@ export interface NodeTelegramBotWorkerOptions {
   workflow: NodeBotWorkflowService
   workflowQueue?: NodeTelegramBotWorkflowQueue
   client?: NodeTelegramBotClient
+  accessPolicy?: NodeTelegramBotAccessPolicy
+  accessDeniedResponder?: NodeTelegramStatusClient
+  accessDeniedFormatter?: NodeTelegramBotAccessDeniedFormatter
+  disableAccessDeniedResponses?: boolean
   commandResponder?: NodeTelegramStatusClient
   commandFormatter?: NodeTelegramBotCommandFormatter
   errorResponder?: NodeTelegramStatusClient
@@ -109,6 +113,11 @@ export interface NodeTelegramBotWorkerHandleOptions {
 export type NodeTelegramBotCommand = "start" | "help" | "status" | "cancel" | "retry"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
+
+export interface NodeTelegramBotAccessPolicy {
+  allowedChatIds?: readonly string[]
+  allowedUserIds?: readonly string[]
+}
 
 export type NodeTelegramBotWorkflowQueueStatus = "queued" | "rejected"
 
@@ -158,6 +167,14 @@ export interface NodeTelegramBotCommandFormatterContext {
 }
 
 export type NodeTelegramBotCommandFormatter = (context: NodeTelegramBotCommandFormatterContext) => string
+
+export interface NodeTelegramBotAccessDeniedFormatterContext {
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+  policy: NodeTelegramBotAccessPolicy
+}
+
+export type NodeTelegramBotAccessDeniedFormatter = (context: NodeTelegramBotAccessDeniedFormatterContext) => string
 
 export interface NodeTelegramBotUpdateErrorFormatterContext {
   updateId: number
@@ -245,6 +262,7 @@ export type NodeTelegramBotWorkerUpdateResult =
       retryOf?: string
       duplicateOf?: string
       workflowJob?: NodeTelegramBotWorkflowJobRecord
+      accessDenied?: boolean
     }
   | {
       skipped: false
@@ -521,6 +539,10 @@ export class NodeTelegramBotWorker {
       return result
     }
 
+    if (!isTelegramBotAccessAllowed(payload, this.options.accessPolicy)) {
+      return this.createAccessDeniedResult(update, payload, this.options.accessPolicy)
+    }
+
     const command = this.options.disableCommandRouting ? null : parseTelegramBotCommand(payload.text)
     if (command === "retry") {
       return this.handleRetryCommand(update, payload, options)
@@ -656,6 +678,58 @@ export class NodeTelegramBotWorker {
       ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
       metadata: {
         command,
+        source: "telegram-bot-worker",
+      },
+    })
+  }
+
+  private async createAccessDeniedResult(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    policy: NodeTelegramBotAccessPolicy | undefined,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const responseText = this.options.disableAccessDeniedResponses
+      ? undefined
+      : (this.options.accessDeniedFormatter ?? defaultTelegramBotAccessDeniedText)({
+          update,
+          payload,
+          policy: policy ?? {},
+        })
+    let responseError: string | undefined
+
+    if (responseText) {
+      try {
+        await this.sendAccessDeniedResponse(payload, responseText)
+      } catch (error) {
+        responseError = formatUnknownError(error)
+      }
+    }
+
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: true,
+      reason: "Telegram bot access denied",
+      updateId: update.update_id,
+      update,
+      payload,
+      accessDenied: true,
+      ...(responseText ? { responseText } : {}),
+      ...(responseError ? { responseError } : {}),
+    }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async sendAccessDeniedResponse(payload: TelegramLikeBotPayload, text: string): Promise<void> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    if (!chatId) return
+
+    const responder = this.resolveAccessDeniedResponder()
+    await responder?.sendMessage({
+      chatId,
+      text,
+      ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+      metadata: {
+        accessDenied: true,
         source: "telegram-bot-worker",
       },
     })
@@ -1432,6 +1506,17 @@ export class NodeTelegramBotWorker {
     })
   }
 
+  private resolveAccessDeniedResponder(): NodeTelegramStatusClient | undefined {
+    if (this.options.accessDeniedResponder) return this.options.accessDeniedResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
+
   private resolveDraftResponder(): NodeTelegramStatusClient | undefined {
     if (this.options.draftResponder) return this.options.draftResponder
     if (!this.options.botToken) return undefined
@@ -1486,6 +1571,22 @@ export function createTelegramLikePayloadFromUpdate(update: TelegramBotUpdate): 
     ...(message.animation ? { animation: telegramFile(message.animation) } : {}),
     ...(message.photo ? { photo: message.photo.map(telegramFile) } : {}),
   }
+}
+
+export function isTelegramBotAccessAllowed(
+  payload: TelegramLikeBotPayload,
+  policy: NodeTelegramBotAccessPolicy | undefined,
+): boolean {
+  if (!policy) return true
+
+  const allowedChatIds = new Set((policy.allowedChatIds ?? []).map(String))
+  const allowedUserIds = new Set((policy.allowedUserIds ?? []).map(String))
+  if (allowedChatIds.size === 0 && allowedUserIds.size === 0) return true
+
+  const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+  const userId = payload.from?.id === undefined ? undefined : String(payload.from.id)
+
+  return Boolean((chatId && allowedChatIds.has(chatId)) || (userId && allowedUserIds.has(userId)))
 }
 
 function telegramFile(file: TelegramBotFile): TelegramLikeBotFile {
@@ -1559,6 +1660,10 @@ export function defaultTelegramBotCommandText(): string {
     "Options: template, project, media/url/input/source, destination, output, resolution.",
     "Commands: /status, /render, /cancel, /cancel <queueId>, /retry <queueId>.",
   ].join("\n")
+}
+
+export function defaultTelegramBotAccessDeniedText(): string {
+  return ["Timeline Studio bot", "This bot is not enabled for this Telegram chat or user."].join("\n")
 }
 
 export function defaultTelegramBotJobStatusText(context: NodeTelegramBotJobStatusFormatterContext): string {

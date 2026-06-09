@@ -17,6 +17,7 @@ import type {
 import {
   initNodeApp,
   NodeBotWorkflowFileDraftStore,
+  type NodeTelegramBotAccessPolicy,
   NodeTelegramBotFileOffsetStore,
   NodeTelegramBotFileWorkflowJobStore,
   NodeTelegramBotInMemoryWorkflowQueue,
@@ -38,6 +39,8 @@ export interface BotWorkerCommandOptions {
   statusFile?: string
   pretty?: boolean
   telegramBotToken?: string
+  allowedChatIds?: string
+  allowedUserIds?: string
   statusUpdates?: boolean
   statusChatId?: string
   statusMinInterval?: string
@@ -78,6 +81,8 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--status-file <path>", "Write worker result JSON to a file")
   .option("--pretty", "Pretty-print JSON output")
   .option("--telegram-bot-token <token>", "Telegram Bot API token for polling, media, status, and publishing")
+  .option("--allowed-chat-ids <ids>", "Comma/space separated Telegram chat ids allowed to use the bot")
+  .option("--allowed-user-ids <ids>", "Comma/space separated Telegram user ids allowed to use the bot")
   .option("--no-status-updates", "Disable Telegram workflow status messages")
   .option("--status-chat-id <id>", "Fallback Telegram chat id for status updates and publishing")
   .option("--status-min-interval <ms>", "Minimum interval between repeated rendering status messages")
@@ -169,6 +174,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
   const worker = new NodeTelegramBotWorker({
     workflow: services.botWorkflow,
     workflowQueue,
+    accessPolicy: createTelegramBotAccessPolicy(resolvedOptions),
     botToken: resolvedOptions.telegramBotToken,
     workflowOptions: {
       intake: {
@@ -229,6 +235,8 @@ export function resolveBotWorkerCommandOptions(
       env.TIMELINE_BOT_TELEGRAM_TOKEN,
       env.TELEGRAM_BOT_TOKEN,
     ),
+    allowedChatIds: firstConfigured(options.allowedChatIds, env.TIMELINE_BOT_ALLOWED_CHAT_IDS),
+    allowedUserIds: firstConfigured(options.allowedUserIds, env.TIMELINE_BOT_ALLOWED_USER_IDS),
     statusChatId: firstConfigured(options.statusChatId, env.TIMELINE_BOT_STATUS_CHAT_ID),
     statusMinInterval: firstConfigured(options.statusMinInterval, env.TIMELINE_BOT_STATUS_MIN_INTERVAL),
     statusMinProgressDelta: firstConfigured(options.statusMinProgressDelta, env.TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA),
@@ -307,6 +315,17 @@ function createBotStatusOptions(options: BotWorkerCommandOptions) {
       botToken: options.telegramBotToken,
       ...(options.statusChatId ? { defaultChatId: options.statusChatId } : {}),
     },
+  }
+}
+
+function createTelegramBotAccessPolicy(options: BotWorkerCommandOptions): NodeTelegramBotAccessPolicy | undefined {
+  const allowedChatIds = parseIdList(options.allowedChatIds)
+  const allowedUserIds = parseIdList(options.allowedUserIds)
+
+  if (allowedChatIds.length === 0 && allowedUserIds.length === 0) return undefined
+  return {
+    ...(allowedChatIds.length > 0 ? { allowedChatIds } : {}),
+    ...(allowedUserIds.length > 0 ? { allowedUserIds } : {}),
   }
 }
 
@@ -408,6 +427,14 @@ function parseOptionalNonNegativeNumber(value: string | undefined): number | und
   if (!value) return undefined
   const parsed = Number.parseFloat(value)
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
+}
+
+function parseIdList(value: string | undefined): string[] {
+  if (!value) return []
+  return value
+    .split(/[,\s]+/)
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
 }
 
 function firstConfigured<T extends string>(...values: Array<T | undefined>): T | undefined {
