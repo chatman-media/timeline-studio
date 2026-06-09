@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest"
-import { createBotProjectSchemaFromRenderJob, runAIProjectEdit } from "@/core"
+import { createBotProjectSchemaFromRenderJob, runAIProjectEdit, validateAIProjectEditResult } from "@/core"
 import { createNodeServices, NodeAIProjectEditor, type NodeAIProjectEditorFetch } from "../index"
+import {
+  AI_PROJECT_EDITOR_INVALID_RESPONSE_FIXTURE,
+  AI_PROJECT_EDITOR_VALID_FIXTURES,
+} from "./fixtures/ai-project-editor-fixtures"
 
 describe("NodeAIProjectEditor", () => {
   it("calls an OpenAI-compatible chat endpoint and returns a valid edit result", async () => {
@@ -223,6 +227,98 @@ describe("NodeAIProjectEditor", () => {
       result: {
         nextProject: project,
         diagnostics: [expect.objectContaining({ level: "error", code: "provider_invalid_json" })],
+      },
+    })
+  })
+
+  it.each(AI_PROJECT_EDITOR_VALID_FIXTURES)("accepts valid fixture provider output for $id", async (fixture) => {
+    const project = createProject()
+    const fixtureResult = fixture.createResult(project)
+    const fetch = createFetch({
+      choices: [
+        {
+          message: {
+            content: JSON.stringify(fixtureResult),
+          },
+          finish_reason: "stop",
+        },
+      ],
+      usage: { prompt_tokens: 100, completion_tokens: 200 },
+    })
+    const editor = new NodeAIProjectEditor({
+      apiKey: "test-key",
+      provider: "fixture-provider",
+      model: "fixture-model",
+      fetch,
+    })
+
+    const result = await runAIProjectEdit(editor, {
+      currentProject: project,
+      sourceMedia: [{ type: "file", value: "/tmp/input.mp4", name: "input.mp4" }],
+      userInstruction: fixture.instruction,
+      ...(fixture.targetPlatform ? { targetPlatform: fixture.targetPlatform } : {}),
+    })
+
+    expect(result).toMatchObject({
+      ok: true,
+      attempts: 1,
+      result: {
+        summary: fixtureResult.summary,
+        changedAreas: fixtureResult.changedAreas,
+        commands: fixtureResult.commands.map((command) => expect.objectContaining({ type: command.type })),
+        diagnostics: fixtureResult.diagnostics.map((diagnostic) =>
+          expect.objectContaining({ level: diagnostic.level, code: diagnostic.code }),
+        ),
+        metadata: expect.objectContaining({
+          provider: "fixture-provider",
+          model: "fixture-model",
+          promptId: "ai-project-editor/v1",
+          fixtureId: fixture.id,
+        }),
+      },
+    })
+    if (!result.ok) throw new Error("Expected fixture provider output to validate")
+    expect(
+      validateAIProjectEditResult(
+        { currentProject: project, sourceMedia: [], userInstruction: fixture.instruction },
+        result.result,
+      ),
+    ).toEqual([])
+  })
+
+  it("keeps the current project for invalid fixture provider output", async () => {
+    const project = createProject()
+    const fetch = createFetch({
+      choices: [
+        {
+          message: {
+            content: JSON.stringify(AI_PROJECT_EDITOR_INVALID_RESPONSE_FIXTURE.response),
+          },
+        },
+      ],
+    })
+    const editor = new NodeAIProjectEditor({ apiKey: "test-key", fetch })
+
+    const result = await runAIProjectEdit(editor, {
+      currentProject: project,
+      sourceMedia: [{ type: "file", value: "/tmp/input.mp4" }],
+      userInstruction: AI_PROJECT_EDITOR_INVALID_RESPONSE_FIXTURE.instruction,
+    })
+
+    expect(result).toMatchObject({
+      ok: true,
+      result: {
+        nextProject: project,
+        diagnostics: [
+          expect.objectContaining({
+            level: "error",
+            code: "provider_invalid_output",
+            message: expect.stringContaining("version must be a non-empty string"),
+          }),
+        ],
+        metadata: expect.objectContaining({
+          noop: true,
+        }),
       },
     })
   })
