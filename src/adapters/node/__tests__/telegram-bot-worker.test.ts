@@ -1241,13 +1241,48 @@ describe("Telegram bot worker", () => {
   })
 
   it("enables approval-gated preview rendering when edit sessions are configured", async () => {
-    const runTelegramLikePayload = vi.fn(async () => completedResult)
+    const project = createProjectSchema()
+    const approvalResult: BotWorkflowRunResult = {
+      ...completedResult,
+      workflow: {
+        source: "telegram",
+        chatId: "chat-1",
+        userId: "user-1",
+        text: "template=promo destination=youtube",
+        media: [{ type: "file", value: "/tmp/input.mp4", name: "input.mp4" }],
+        output: { destination: "youtube" },
+      },
+      renderJob: {
+        source: "bot",
+        media: [{ type: "file", value: "/tmp/input.mp4", name: "input.mp4" }],
+        project: { type: "inline", schema: project },
+        output: { format: "mp4", destination: "file" },
+      },
+      result: {
+        job: {
+          ...completedResult.result.job,
+          artifact: {
+            type: "file",
+            path: "/tmp/preview.mp4",
+            destination: "file",
+            mimeType: "video/mp4",
+          },
+        },
+        events: [],
+      },
+      approvalGate: {
+        enabled: true,
+        previewDestination: "telegram",
+        publishTarget: "youtube",
+      },
+    }
+    const runTelegramLikePayload = vi.fn(async () => approvalResult)
     const service = {
       runWorkflow: vi.fn(),
       runTelegramLikePayload,
       cancelRenderJob: vi.fn(),
     } as unknown as NodeBotWorkflowService
-    const { store: editSessionStore } = createEditSessionStore()
+    const { store: editSessionStore, records } = createEditSessionStore()
     const worker = new NodeTelegramBotWorker({
       workflow: service,
       editSessionStore,
@@ -1274,6 +1309,25 @@ describe("Telegram bot worker", () => {
         },
       }),
     )
+    expect(records.get("edit:telegram:chat-1:user-1")).toMatchObject({
+      status: "preview_ready",
+      currentProjectSchema: project,
+      currentArtifact: {
+        type: "file",
+        path: "/tmp/preview.mp4",
+        destination: "file",
+      },
+      previewDestination: "telegram",
+      publishTarget: "youtube",
+      revisionCounter: 1,
+      revisions: [
+        expect.objectContaining({
+          index: 0,
+          summary: "Initial preview",
+          projectSchema: project,
+        }),
+      ],
+    })
   })
 
   it("publishes an approved edit session once", async () => {
