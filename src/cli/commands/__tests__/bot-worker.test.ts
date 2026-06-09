@@ -49,6 +49,8 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--max-batches")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--idle-delay")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--rust-publish")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--youtube-access-token")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--edit-session-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor-model")).toBe(true)
@@ -102,6 +104,56 @@ describe("bot-worker command", () => {
         aiEditor: true,
       }),
     ).rejects.toThrow("--ai-editor requires")
+  })
+
+  it("requires AI and Rust preview config when edit sessions enable Telegram AI review mode", async () => {
+    await expect(
+      runBotWorker({
+        updateFile: path.join(tempDir, "update.json"),
+        editSessionDir: path.join(tempDir, "edit-sessions"),
+      }),
+    ).rejects.toThrow("--edit-session-dir enables Telegram AI review mode and requires --ai-editor-api-key")
+
+    await expect(
+      runBotWorker({
+        updateFile: path.join(tempDir, "update.json"),
+        editSessionDir: path.join(tempDir, "edit-sessions"),
+        aiEditorApiKey: "editor-key",
+      }),
+    ).rejects.toThrow("--edit-session-dir enables Telegram AI review mode and requires --rust-render")
+  })
+
+  it("requires Rust publish credentials for review-mode non-file default destinations", async () => {
+    const baseOptions = {
+      updateFile: path.join(tempDir, "update.json"),
+      editSessionDir: path.join(tempDir, "edit-sessions"),
+      aiEditorApiKey: "editor-key",
+      rustRender: true,
+    }
+
+    await expect(
+      runBotWorker({
+        ...baseOptions,
+        defaultDestination: "telegram",
+        telegramBotToken: "telegram-token",
+      }),
+    ).rejects.toThrow("--default-destination telegram requires --rust-publish")
+
+    await expect(
+      runBotWorker({
+        ...baseOptions,
+        defaultDestination: "telegram",
+        rustPublish: true,
+      }),
+    ).rejects.toThrow("--default-destination telegram requires --telegram-bot-token")
+
+    await expect(
+      runBotWorker({
+        ...baseOptions,
+        defaultDestination: "youtube",
+        rustPublish: true,
+      }),
+    ).rejects.toThrow("--default-destination youtube requires --youtube-access-token")
   })
 
   it("serializes compact and pretty worker results", () => {
@@ -257,6 +309,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_RUST_RENDER_KIND: "timeline-render",
         TIMELINE_BOT_RUST_PUBLISH: "1",
         TIMELINE_BOT_RUST_PUBLISH_COMMAND: "timeline",
+        TIMELINE_BOT_YOUTUBE_ACCESS_TOKEN: "youtube-token",
         TIMELINE_BOT_EDIT_SESSION_DIR: ".tmp/edit-sessions",
         TIMELINE_BOT_AI_EDITOR: "true",
         TIMELINE_BOT_AI_EDITOR_API_KEY: "editor-key",
@@ -298,6 +351,7 @@ describe("bot-worker command", () => {
       rustRenderKind: "timeline-render",
       rustPublish: true,
       rustPublishCommand: "timeline",
+      youtubeAccessToken: "youtube-token",
       editSessionDir: ".tmp/edit-sessions",
       aiEditor: true,
       aiEditorApiKey: "editor-key",
@@ -328,6 +382,7 @@ describe("bot-worker command", () => {
         defaultDestination: "file",
         rustRender: false,
         rustPublish: false,
+        youtubeAccessToken: "cli-youtube-token",
         downloadRemoteMedia: false,
         editSessionDir: ".tmp/cli-edit-sessions",
         aiEditor: true,
@@ -351,6 +406,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
         TIMELINE_BOT_RUST_RENDER: "true",
         TIMELINE_BOT_RUST_PUBLISH: "true",
+        TIMELINE_BOT_YOUTUBE_ACCESS_TOKEN: "env-youtube-token",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
         TIMELINE_BOT_EDIT_SESSION_DIR: ".tmp/env-edit-sessions",
         TIMELINE_BOT_AI_EDITOR: "false",
@@ -376,6 +432,7 @@ describe("bot-worker command", () => {
       defaultDestination: "file",
       rustRender: false,
       rustPublish: false,
+      youtubeAccessToken: "cli-youtube-token",
       downloadRemoteMedia: false,
       editSessionDir: ".tmp/cli-edit-sessions",
       aiEditor: true,

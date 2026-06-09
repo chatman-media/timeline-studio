@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
+import { createBotProjectSchemaFromRenderJob } from "@/core"
+import type { IBotFirstCutGenerator } from "@/core/ports"
 import { InMemoryBotRenderJobEventStream } from "@/core/services"
 import type {
   BotRenderJob,
@@ -121,5 +123,67 @@ describe("NodeBotWorkflowService", () => {
       }),
     )
     expect(eventStream.getSnapshot("job-1")).toMatchObject({ status: "done" })
+  })
+
+  it("passes the configured first-cut generator into Telegram-like workflow runs", async () => {
+    const { service: renderJob, run } = createRenderJobService()
+    const projectSchema = createBotProjectSchemaFromRenderJob({
+      source: "bot",
+      media: [{ type: "file", value: "/tmp/first-cut.mp4", name: "first-cut.mp4" }],
+      output: { format: "mp4", destination: "file" },
+    })
+    if (!projectSchema) throw new Error("Expected test ProjectSchema")
+
+    const firstCutGenerator: IBotFirstCutGenerator = {
+      generateFirstCut: vi.fn(async () => ({
+        projectSchema,
+        provider: "deterministic-fallback" as const,
+        summary: "First-cut from adapter default",
+        diagnostics: ["info: adapter first-cut"],
+      })),
+    }
+    const botWorkflow = new NodeBotWorkflowService(renderJob, {
+      firstCutGenerator,
+      projectAssembly: {
+        defaultClipDurationSeconds: 2,
+      },
+    })
+
+    const result = await botWorkflow.runTelegramLikePayload({
+      text: "url=https://example.test/input.mp4 destination=telegram",
+      message_id: "message-1",
+    })
+
+    expect(result.ok).toBe(true)
+    expect(firstCutGenerator.generateFirstCut).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sourceMedia: [
+          expect.objectContaining({
+            type: "url",
+            value: "https://example.test/input.mp4",
+          }),
+        ],
+        sourceMessageId: "message-1",
+        goal: "url=https://example.test/input.mp4 destination=telegram",
+        targetPlatform: "telegram",
+        publishDestination: "telegram",
+        targetDurationSeconds: 2,
+      }),
+    )
+    expect(run).toHaveBeenCalledWith(
+      expect.objectContaining({
+        project: {
+          type: "inline",
+          schema: projectSchema,
+        },
+        params: expect.objectContaining({
+          firstCut: expect.objectContaining({
+            provider: "deterministic-fallback",
+            summary: "First-cut from adapter default",
+          }),
+        }),
+      }),
+      expect.any(Object),
+    )
   })
 })
