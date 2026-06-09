@@ -92,6 +92,7 @@
     "node:dev": "cd src-node && bun run dev",
     "node:start": "cd src-node && bun run start",
     "node:build": "cd src-node && bun run build",
+    "smoke:ai-review:rust": "bun run scripts/smoke-ai-review-rust.ts",
     "knip": "knip",
     "knip:fix": "knip --fix",
     "knip:watch": "knip --watch",

@@ -178,9 +178,9 @@ new NodeTelegramBotWorker({
 
 **GitHub:** [#244](https://github.com/chatman-media/timeline-studio/issues/244)
 
-- [ ] Add minimal fixture path through `timeline render` or `timeline-render`.
-- [ ] Add `timeline publish telegram --validate-only --json` smoke.
-- [ ] Keep smoke small enough for CI and local debugging.
+- [x] Add minimal fixture path through `timeline render` or `timeline-render`.
+- [x] Add `timeline publish telegram --validate-only --json` smoke.
+- [x] Keep smoke small enough for CI and local debugging.
 
 ### B45: Split and stabilize CI for headless bot/AI workflow
 
