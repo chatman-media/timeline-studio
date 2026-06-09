@@ -49,6 +49,9 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--max-batches")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--idle-delay")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--edit-session-dir")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor-model")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--default-destination")).toBe(true)
   })
 
@@ -89,6 +92,15 @@ describe("bot-worker command", () => {
     await expect(
       runBotWorker({ updateFile: path.join(tempDir, "update.json"), recoverStaleJobs: true }),
     ).rejects.toThrow("--recover-stale-jobs requires --job-store-file")
+  })
+
+  it("requires an AI editor key when production AI editing is explicitly enabled", async () => {
+    await expect(
+      runBotWorker({
+        updateFile: path.join(tempDir, "update.json"),
+        aiEditor: true,
+      }),
+    ).rejects.toThrow("--ai-editor requires")
   })
 
   it("serializes compact and pretty worker results", () => {
@@ -244,6 +256,14 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_RUST_RENDER_KIND: "timeline-render",
         TIMELINE_BOT_RUST_PUBLISH: "1",
         TIMELINE_BOT_RUST_PUBLISH_COMMAND: "timeline",
+        TIMELINE_BOT_EDIT_SESSION_DIR: ".tmp/edit-sessions",
+        TIMELINE_BOT_AI_EDITOR: "true",
+        TIMELINE_BOT_AI_EDITOR_API_KEY: "editor-key",
+        TIMELINE_BOT_AI_EDITOR_API_URL: "https://llm.example/v1",
+        TIMELINE_BOT_AI_EDITOR_PROVIDER: "openai-compatible",
+        TIMELINE_BOT_AI_EDITOR_MODEL: "editor-model",
+        TIMELINE_BOT_AI_EDITOR_TEMPERATURE: "0.1",
+        TIMELINE_BOT_AI_EDITOR_MAX_TOKENS: "2048",
       },
     )
 
@@ -276,6 +296,14 @@ describe("bot-worker command", () => {
       rustRenderKind: "timeline-render",
       rustPublish: true,
       rustPublishCommand: "timeline",
+      editSessionDir: ".tmp/edit-sessions",
+      aiEditor: true,
+      aiEditorApiKey: "editor-key",
+      aiEditorApiUrl: "https://llm.example/v1",
+      aiEditorProvider: "openai-compatible",
+      aiEditorModel: "editor-model",
+      aiEditorTemperature: "0.1",
+      aiEditorMaxTokens: "2048",
     })
   })
 
@@ -298,6 +326,10 @@ describe("bot-worker command", () => {
         rustRender: false,
         rustPublish: false,
         downloadRemoteMedia: false,
+        editSessionDir: ".tmp/cli-edit-sessions",
+        aiEditor: true,
+        aiEditorApiKey: "cli-editor-key",
+        aiEditorModel: "cli-editor-model",
       },
       {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
@@ -316,6 +348,10 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_RUST_RENDER: "true",
         TIMELINE_BOT_RUST_PUBLISH: "true",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
+        TIMELINE_BOT_EDIT_SESSION_DIR: ".tmp/env-edit-sessions",
+        TIMELINE_BOT_AI_EDITOR: "false",
+        TIMELINE_BOT_AI_EDITOR_API_KEY: "env-editor-key",
+        TIMELINE_BOT_AI_EDITOR_MODEL: "env-editor-model",
       },
     )
 
@@ -336,6 +372,10 @@ describe("bot-worker command", () => {
       rustRender: false,
       rustPublish: false,
       downloadRemoteMedia: false,
+      editSessionDir: ".tmp/cli-edit-sessions",
+      aiEditor: true,
+      aiEditorApiKey: "cli-editor-key",
+      aiEditorModel: "cli-editor-model",
     })
   })
 })

@@ -6,6 +6,7 @@ import {
   createBotEditRevisionId,
   createBotWorkflowDraftId,
   createTelegramLikeBotWorkflow,
+  mergeBotEditSessionWorkflow,
   mergeBotWorkflowDraft,
   runAIProjectEdit,
   validateBotDestinationCapability,
@@ -17,6 +18,7 @@ import type {
   BotPublishResult,
   BotRenderJobArtifact,
   BotRenderJobEventSink,
+  BotRenderJobProjectInput,
   BotRenderJobSnapshot,
   BotWorkflowDraft,
   BotWorkflowDraftStore,
@@ -679,6 +681,7 @@ export class NodeTelegramBotWorker {
             mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
           ),
         ),
+      onComplete: (workflowResult) => this.upsertReviewEditSessionFromWorkflowResult(workflowResult),
     })
   }
 
@@ -940,6 +943,7 @@ export class NodeTelegramBotWorker {
               retry.job.sourcePayload as TelegramLikeBotPayload,
               this.withReviewApprovalGate(mergeWorkflowOptions(workflowDefaults, workflowOptions)),
             ),
+      onComplete: (workflowResult) => this.upsertReviewEditSessionFromWorkflowResult(workflowResult),
     })
   }
 
@@ -1833,6 +1837,7 @@ export class NodeTelegramBotWorker {
           } else {
             await store.writeDraft(draft)
           }
+          await this.upsertReviewEditSessionFromWorkflowResult(workflowResult)
         },
       })
     }
@@ -1883,6 +1888,53 @@ export class NodeTelegramBotWorker {
     }
     await this.options.onResult?.(result)
     return result
+  }
+
+  private async upsertReviewEditSessionFromWorkflowResult(workflowResult: BotWorkflowRunResult): Promise<void> {
+    const store = this.options.editSessionStore
+    if (!store || !workflowResult.ok || !workflowResult.approvalGate?.enabled) return
+    if (workflowResult.result.job.status !== "done") return
+
+    const projectSchema = readInlineProjectSchema(workflowResult.renderJob.project)
+    const artifact = workflowResult.result.job.artifact
+    if (!projectSchema || !artifact) return
+
+    const timestamp = this.now()
+    const existing = await store.readCurrentSession({
+      source: workflowResult.workflow.source,
+      ...(workflowResult.workflow.chatId ? { chatId: workflowResult.workflow.chatId } : {}),
+      ...(workflowResult.workflow.userId ? { userId: workflowResult.workflow.userId } : {}),
+      activeOnly: true,
+    })
+    const session = mergeBotEditSessionWorkflow(existing, workflowResult.workflow, {
+      now: () => timestamp,
+      status: "preview_ready",
+      currentProjectSchema: projectSchema,
+      currentArtifact: artifact,
+      previewDestination: workflowResult.approvalGate.previewDestination,
+      ...(workflowResult.approvalGate.publishTarget
+        ? { publishTarget: workflowResult.approvalGate.publishTarget }
+        : {}),
+      revision: {
+        projectSchema,
+        artifact,
+        summary: "Initial preview",
+        changedAreas: ["renderJob.project"],
+        diagnostics: ["info: initial_preview: Initial approval-gated preview rendered."],
+        metadata: {
+          source: "telegram-bot-worker",
+          renderJobId: workflowResult.result.job.id,
+          approvalGate: workflowResult.approvalGate,
+        },
+      },
+      metadata: {
+        source: "telegram-bot-worker",
+        renderJobId: workflowResult.result.job.id,
+        approvalGate: workflowResult.approvalGate,
+      },
+    })
+
+    await store.writeSession(session)
   }
 
   private async sendDraftResponse(draftId: string, payload: TelegramLikeBotPayload, text: string): Promise<void> {
@@ -2802,6 +2854,10 @@ function mergeRevisionMetadata(
     ...(base ?? {}),
     ...patch,
   }
+}
+
+function readInlineProjectSchema(project: BotRenderJobProjectInput | undefined): unknown | undefined {
+  return project?.type === "inline" ? project.schema : undefined
 }
 
 function formatAIProjectEditDiagnostic(diagnostic: AIProjectEditorResult["diagnostics"][number]): string {
