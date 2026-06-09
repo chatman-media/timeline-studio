@@ -1,3 +1,10 @@
+## [3.89.1](https://github.com/chatman-media/timeline-studio/compare/v3.89.0...v3.89.1) (2026-06-09)
+
+
+### Bug Fixes
+
+* canonicalize ai planner project schema ([#248](https://github.com/chatman-media/timeline-studio/issues/248)) ([1841397](https://github.com/chatman-media/timeline-studio/commit/1841397b6056d9462573e8d99be2411b1251a8b3))
+
 # [3.89.0](https://github.com/chatman-media/timeline-studio/compare/v3.88.0...v3.89.0) (2026-06-09)
 
 
