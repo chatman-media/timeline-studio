@@ -58,7 +58,19 @@ export class NodeTelegramRenderJobReviewPreviewRenderer implements NodeTelegramB
       throw new Error("Preview render completed without an artifact")
     }
 
-    return result.job.artifact
+    return {
+      ...result.job.artifact,
+      metadata: {
+        ...(isRecord(result.job.artifact.metadata) ? result.job.artifact.metadata : {}),
+        renderJobId: result.job.id,
+        ...(result.job.providerJobId ? { providerJobId: result.job.providerJobId } : {}),
+        renderJobStatus: result.job.status,
+        reviewSessionId: context.session.id,
+        reviewRevisionId: context.revision.id,
+        ...(result.job.artifact.path ? { artifactPath: result.job.artifact.path } : {}),
+        ...(result.job.artifact.url ? { artifactUrl: result.job.artifact.url } : {}),
+      },
+    }
   }
 }
 
@@ -71,4 +83,8 @@ function createRenderRunOptions(options: NodeTelegramRenderJobReviewPreviewRende
 
 function sanitizeFileSegment(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "preview"
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
 }

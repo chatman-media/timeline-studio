@@ -54,6 +54,7 @@ export interface BotRenderJobArtifact {
   url?: string
   destination: BotRenderJobDestination
   mimeType?: string
+  metadata?: Record<string, unknown>
 }
 
 export interface BotPublishMetadata {

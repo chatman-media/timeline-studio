@@ -961,6 +961,68 @@ describe("Telegram bot worker", () => {
     })
   })
 
+  it("records structured observability when AI edit validation fails", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store, records } = createEditSessionStore([session])
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      aiProjectEditor: new MockAIProjectEditor({
+        edit: () => ({
+          nextProject: { invalid: true } as never,
+          summary: "",
+          changedAreas: [],
+          commands: [],
+          diagnostics: [],
+          metadata: {
+            apiKey: "editor-secret",
+          },
+        }),
+      }),
+      now: () => "2026-06-08T08:00:11.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 63,
+      message: {
+        message_id: 49,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "make it shorter",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "failed",
+      editSession: {
+        status: "failed",
+        failure: expect.stringContaining("version must be a non-empty string"),
+        metadata: {
+          observability: {
+            lastError: {
+              stage: "ai_edit_validation",
+              sessionId: session.id,
+              updateId: 63,
+              sourceMessageId: "49",
+              errors: expect.arrayContaining([
+                expect.objectContaining({
+                  code: "invalid_project",
+                  field: "nextProject",
+                  message: "version must be a non-empty string",
+                }),
+              ]),
+            },
+          },
+        },
+      },
+    })
+    expect(records.get(session.id)?.revisions).toHaveLength(1)
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+    expect(JSON.stringify(records.get(session.id))).not.toContain("editor-secret")
+  })
+
   it("transcribes voice feedback before applying a preview-ready edit", async () => {
     const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
     const session = createReviewSession()
@@ -1027,6 +1089,11 @@ describe("Telegram bot worker", () => {
         path: "/tmp/revision-1.mp4",
         destination: "file" as const,
         mimeType: "video/mp4",
+        metadata: {
+          renderJobId: "preview-job-1",
+          providerJobId: "rust-preview-job-1",
+          renderJobStatus: "done",
+        },
       })),
     }
     const previewResponder = {
@@ -1065,6 +1132,19 @@ describe("Telegram bot worker", () => {
             messageId: "preview-message-1",
             artifactPath: "/tmp/revision-1.mp4",
           },
+          observability: {
+            renderPreview: {
+              renderJobId: "preview-job-1",
+              providerJobId: "rust-preview-job-1",
+              renderJobStatus: "done",
+              artifactPath: "/tmp/revision-1.mp4",
+            },
+            previewDelivery: {
+              status: "sent",
+              messageId: "preview-message-1",
+              artifactPath: "/tmp/revision-1.mp4",
+            },
+          },
         },
       },
     })
@@ -1099,6 +1179,19 @@ describe("Telegram bot worker", () => {
           status: "sent",
           messageId: "preview-message-1",
           artifactPath: "/tmp/revision-1.mp4",
+        },
+        observability: {
+          renderPreview: {
+            renderJobId: "preview-job-1",
+            providerJobId: "rust-preview-job-1",
+            renderJobStatus: "done",
+            artifactPath: "/tmp/revision-1.mp4",
+          },
+          previewDelivery: {
+            status: "sent",
+            messageId: "preview-message-1",
+            artifactPath: "/tmp/revision-1.mp4",
+          },
         },
       },
     })
@@ -1176,6 +1269,52 @@ describe("Telegram bot worker", () => {
   it("shows active edit session status and versions", async () => {
     const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
     const session = createReviewSession()
+    session.publishResult = {
+      destination: "telegram",
+      status: "failed",
+      error: "missing auth",
+      metadata: {
+        provider: {
+          apiKey: "publish-secret",
+        },
+      },
+    }
+    session.revisions = [
+      {
+        ...session.revisions[0],
+        artifact: {
+          type: "file",
+          path: "/tmp/revision-0.mp4",
+          destination: "file",
+          metadata: {
+            apiKey: "artifact-secret",
+          },
+        },
+        metadata: {
+          attempts: 2,
+          editor: {
+            provider: "openai-compatible",
+            model: "gpt-4o-mini",
+            promptId: "ai-project-editor/v1",
+            apiKey: "editor-secret",
+          },
+          observability: {
+            attempts: 2,
+            aiEditor: {
+              provider: "openai-compatible",
+              model: "gpt-4o-mini",
+              promptId: "ai-project-editor/v1",
+              apiKey: "[redacted]",
+            },
+            renderPreview: {
+              renderJobId: "preview-job-0",
+              providerJobId: "rust-preview-job-0",
+              artifactPath: "/tmp/revision-0.mp4",
+            },
+          },
+        },
+      },
+    ]
     const { store } = createEditSessionStore([session])
     const commandResponder = {
       sendMessage: vi.fn(async () => ({ messageId: "status-message-2" })),
@@ -1237,6 +1376,19 @@ describe("Telegram bot worker", () => {
         command: "versions",
       },
     })
+    const sendMessageCalls = commandResponder.sendMessage.mock.calls as unknown as Array<[{ text: string }]>
+    const statusText = String(sendMessageCalls[0]?.[0].text)
+    const versionsText = String(sendMessageCalls[1]?.[0].text)
+    expect(statusText).toContain("Publish: failed to telegram")
+    expect(statusText).toContain("editor=openai-compatible/gpt-4o-mini")
+    expect(statusText).toContain("prompt=ai-project-editor/v1")
+    expect(statusText).toContain("attempts=2")
+    expect(statusText).toContain("render=preview-job-0")
+    expect(versionsText).toContain("editor=openai-compatible/gpt-4o-mini")
+    expect(versionsText).toContain("render=preview-job-0")
+    expect(`${statusText}\n${versionsText}`).not.toContain("editor-secret")
+    expect(`${statusText}\n${versionsText}`).not.toContain("artifact-secret")
+    expect(`${statusText}\n${versionsText}`).not.toContain("publish-secret")
     expect(runTelegramLikePayload).not.toHaveBeenCalled()
   })
 

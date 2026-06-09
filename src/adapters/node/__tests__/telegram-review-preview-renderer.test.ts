@@ -28,6 +28,7 @@ describe("NodeTelegramRenderJobReviewPreviewRenderer", () => {
     const run = vi.fn(async (_request: BotRenderJobRequest, _options?: BotRenderJobRunOptions) => ({
       job: {
         id: "preview-job-1",
+        providerJobId: "rust-preview-job-1",
         status: "done" as const,
         progress: 100,
         request: _request,
@@ -53,7 +54,17 @@ describe("NodeTelegramRenderJobReviewPreviewRenderer", () => {
         update: { update_id: 10 },
         payload: { message_id: 20, chat: { id: "chat-1" } },
       }),
-    ).resolves.toEqual(artifact)
+    ).resolves.toEqual({
+      ...artifact,
+      metadata: {
+        renderJobId: "preview-job-1",
+        providerJobId: "rust-preview-job-1",
+        renderJobStatus: "done",
+        reviewSessionId: "edit:telegram:chat-1:user-1",
+        reviewRevisionId: "revision-1",
+        artifactPath: path.join(tempDir, "session-1-r1.mp4"),
+      },
+    })
 
     expect(run).toHaveBeenCalledWith(
       expect.objectContaining({

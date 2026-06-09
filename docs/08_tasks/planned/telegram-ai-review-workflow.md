@@ -127,6 +127,35 @@ Runtime должен использовать B28 deployment foundation для t
 - final publish: `NodeRustPublishService` (`timeline publish telegram|youtube --json`) as production path, `NodePublishService` only as simple fallback/test adapter.
 - capabilities: real configured destinations are `file`, `telegram`, `youtube`; `tiktok` and `vimeo` stay visible as unsupported until Rust publish support exists.
 
+### Runtime observability
+
+AI review runtime stores machine-readable diagnostics in edit session metadata and revision metadata. The operator entry points are the session store JSON plus `/status` and `/versions` in the review chat.
+
+Revision metadata includes:
+
+- `metadata.editor`: redacted AI editor metadata, including `provider`, `model`, `promptId`, finish reason, token usage and repair attempt when available;
+- `metadata.observability.aiEditor`: the same redacted editor identity for status/version output;
+- `metadata.observability.attempts`: validation/repair attempt count for the accepted revision;
+- `metadata.observability.diagnostics`: structured AI diagnostics with `level`, `code`, `message` and `path`;
+- `metadata.observability.renderPreview`: `renderJobId`, optional `providerJobId`, render status, artifact path/URL and MIME type;
+- `metadata.observability.previewDelivery`: Telegram preview delivery status, sent message id or fallback/error detail.
+
+Session metadata includes:
+
+- `metadata.observability.lastError`: failed stage (`ai_edit_validation` or `ai_edit_exception`), update id, source message id and validation errors;
+- `metadata.observability.lastPublish`: destination, publish status, provider id, URL/error and artifact path/URL.
+
+`/status` shows session status, latest revisions, publish result and failure reason. `/versions` lists revision ids with editor provider/model, prompt id, attempt count, render job id and artifact reference. Sensitive fields such as API keys, tokens, authorization headers, secrets and credentials are redacted before metadata is stored or rendered into responses.
+
+Operational checks:
+
+```bash
+bun run test:bot-ai
+bun run smoke:ai-review:rust
+```
+
+For production polling, keep model/provider and secret config at process/env/service-manager boundaries. Do not put raw provider credentials into edit session store metadata or issue/test output. Generic log retention, deployment topology and cleanup policies remain owned by B28/#225.
+
 ### Failure recovery checks
 
 - Worker restart: smoke reloads the active session from `NodeBotEditSessionFileStore`.
@@ -135,6 +164,13 @@ Runtime должен использовать B28 deployment foundation для t
 - Transcription failure: worker returns a failed edit session/result when voice feedback cannot be transcribed.
 - Preview delivery failure: B37 tests verify failed Telegram `sendVideo` preserves artifact path and sends fallback text.
 - Publish failure: approval path records failed publish result on the edit session and leaves the approved revision id intact.
+
+Retry guidance:
+
+- Failed AI validation/exception: inspect `metadata.observability.lastError`, keep the last valid revision, then send a corrected text/voice instruction after restoring the session to `preview_ready` if the operator decides to continue the review.
+- Failed preview render: use `metadata.observability.renderPreview.renderJobId` and the Rust render command/status output to diagnose. The last accepted revision remains in history; rerun render from its `projectSchema` rather than applying a new edit.
+- Failed Telegram preview delivery: use `metadata.observability.previewDelivery.artifactPath` and resend manually or let the fallback message provide the local artifact path.
+- Failed publish after approval: keep `approvedRevisionId` unchanged, inspect `publishResult` and `metadata.observability.lastPublish`, fix destination credentials/capability, then retry publish for the approved revision artifact.
 
 ## PR slices
 
