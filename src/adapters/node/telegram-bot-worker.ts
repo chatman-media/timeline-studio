@@ -3,6 +3,8 @@ import path from "node:path"
 
 import { createBotWorkflowDraftId, createTelegramLikeBotWorkflow, mergeBotWorkflowDraft } from "@/core/services"
 import type {
+  BotRenderJobEventSink,
+  BotRenderJobSnapshot,
   BotWorkflowDraft,
   BotWorkflowDraftStore,
   BotWorkflowRequest,
@@ -535,10 +537,10 @@ export class NodeTelegramBotWorker {
     if (draftResult) return draftResult
 
     return this.runOrQueueWorkflow(update, payload, {
-      run: () =>
+      run: (workflowOptions) =>
         this.options.workflow.runTelegramLikePayload(
           payload,
-          mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
+          mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
         ),
     })
   }
@@ -719,6 +721,37 @@ export class NodeTelegramBotWorker {
       }
     }
 
+    if (job.status === "running") {
+      if (!job.renderJobId) {
+        return {
+          id: queueId,
+          status: "not_cancellable",
+          reason: "Running render job id is not available yet.",
+        }
+      }
+
+      const cancelled = await this.options.workflow.cancelRenderJob(job.renderJobId)
+      if (!cancelled) {
+        return {
+          id: queueId,
+          status: "not_cancellable",
+          reason: "Running render job could not be cancelled.",
+        }
+      }
+
+      await this.writeWorkflowJobRecord({
+        ...job,
+        status: "cancelled",
+        reason: "Telegram bot running workflow cancelled by user",
+        renderJobStatus: "cancelled",
+        updatedAt: this.now(),
+      })
+      return {
+        id: queueId,
+        status: "cancelled",
+      }
+    }
+
     if (job.status !== "queued") {
       return {
         id: queueId,
@@ -776,10 +809,10 @@ export class NodeTelegramBotWorker {
       return this.runOrQueueWorkflow(update, payload, {
         draftId,
         workflow: draft.workflow,
-        run: () =>
+        run: (workflowOptions) =>
           this.options.workflow.runWorkflow(
             draft.workflow,
-            mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
+            mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
           ),
         onComplete: async (workflowResult) => {
           if (workflowResult.ok) {
@@ -859,7 +892,7 @@ export class NodeTelegramBotWorker {
     update: TelegramBotUpdate,
     payload: TelegramLikeBotPayload,
     options: {
-      run: () => Promise<BotWorkflowRunResult>
+      run: (workflowOptions?: NodeBotWorkflowServiceOptions) => Promise<BotWorkflowRunResult>
       workflow?: BotWorkflowRequest
       draftId?: string
       onComplete?: (result: BotWorkflowRunResult) => void | Promise<void>
@@ -875,10 +908,11 @@ export class NodeTelegramBotWorker {
       payload,
       ...(options.draftId ? { draftId: options.draftId } : {}),
     })
+    const trackingOptions = this.createWorkflowJobTrackingOptions(jobRecord)
     if (!workflowQueue) {
       await this.writeWorkflowJobRecord(jobRecord)
       try {
-        const workflowResult = await options.run()
+        const workflowResult = await options.run(trackingOptions)
         await this.writeWorkflowJobRecord(this.completeWorkflowJobRecord(jobRecord, workflowResult))
         await options.onComplete?.(workflowResult)
         const result: NodeTelegramBotWorkerUpdateResult = {
@@ -919,7 +953,7 @@ export class NodeTelegramBotWorker {
             reason: "Telegram bot workflow running",
           }),
         )
-        return options.run()
+        return options.run(trackingOptions)
       },
       onComplete: async (workflowResult) => {
         result.completion = workflowResult
@@ -1061,6 +1095,27 @@ export class NodeTelegramBotWorker {
     }
   }
 
+  private createWorkflowJobTrackingOptions(
+    record: NodeTelegramBotWorkflowJobRecord,
+  ): NodeBotWorkflowServiceOptions | undefined {
+    if (!this.options.workflowJobStore) return undefined
+
+    const eventSink: BotRenderJobEventSink = {
+      publish: async (_event, snapshot) => {
+        await this.writeWorkflowJobRecord(this.updateWorkflowJobRecordFromSnapshot(record, snapshot))
+      },
+      publishSnapshot: async (snapshot) => {
+        await this.writeWorkflowJobRecord(this.updateWorkflowJobRecordFromSnapshot(record, snapshot))
+      },
+    }
+
+    return {
+      render: {
+        eventSinks: [eventSink],
+      },
+    }
+  }
+
   private updateWorkflowJobRecord(
     record: NodeTelegramBotWorkflowJobRecord,
     patch: Pick<NodeTelegramBotWorkflowJobRecord, "status" | "reason">,
@@ -1069,6 +1124,22 @@ export class NodeTelegramBotWorker {
       ...record,
       ...patch,
       updatedAt: this.now(),
+    }
+  }
+
+  private updateWorkflowJobRecordFromSnapshot(
+    record: NodeTelegramBotWorkflowJobRecord,
+    snapshot: BotRenderJobSnapshot,
+  ): NodeTelegramBotWorkflowJobRecord {
+    return {
+      ...record,
+      status: mapRenderJobStatusToWorkflowJobStatus(snapshot.status),
+      reason: `Render status: ${snapshot.status}`,
+      updatedAt: snapshot.updatedAt,
+      renderJobId: snapshot.jobId,
+      renderJobStatus: snapshot.status,
+      ...(snapshot.artifact ? { artifact: snapshot.artifact } : {}),
+      ...(snapshot.error ? { error: snapshot.error } : {}),
     }
   }
 
@@ -1087,11 +1158,16 @@ export class NodeTelegramBotWorker {
     }
 
     const job = workflowResult.result.job
-    const failed = job.status === "failed" || job.status === "cancelled"
+    const failed = job.status === "failed"
     return {
       ...record,
-      status: failed ? "failed" : "done",
-      reason: failed ? "Bot workflow render failed" : "Bot workflow completed",
+      status: job.status === "cancelled" ? "cancelled" : failed ? "failed" : "done",
+      reason:
+        job.status === "cancelled"
+          ? "Bot workflow render cancelled"
+          : failed
+            ? "Bot workflow render failed"
+            : "Bot workflow completed",
       updatedAt: this.now(),
       renderJobId: job.id,
       renderJobStatus: job.status,
@@ -1335,7 +1411,7 @@ export function defaultTelegramBotJobStatusText(context: NodeTelegramBotJobStatu
 
 export function defaultTelegramBotJobCancelText(context: NodeTelegramBotJobCancelFormatterContext): string {
   if (context.cancellation.status === "cancelled") {
-    return ["Timeline Studio bot", "Queued render job cancelled.", `Queue id: ${context.queueId}`].join("\n")
+    return ["Timeline Studio bot", "Render job cancelled.", `Queue id: ${context.queueId}`].join("\n")
   }
 
   return [
@@ -1399,6 +1475,24 @@ function formatTelegramBotJobStatusLine(record: NodeTelegramBotWorkflowJobRecord
 
 function truncateStatusText(value: string): string {
   return value.length <= 96 ? value : `${value.slice(0, 93)}...`
+}
+
+function mapRenderJobStatusToWorkflowJobStatus(
+  status: BotRenderJobSnapshot["status"],
+): NodeTelegramBotWorkflowJobRecord["status"] {
+  switch (status) {
+    case "done":
+      return "done"
+    case "failed":
+      return "failed"
+    case "cancelled":
+      return "cancelled"
+    case "queued":
+    case "preparing":
+    case "rendering":
+    case "publishing":
+      return "running"
+  }
 }
 
 function mergeWorkflowOptions(

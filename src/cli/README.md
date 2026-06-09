@@ -145,7 +145,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 Когда workflow поставлен в очередь, bot-worker сразу отправляет queued acknowledgement в исходный чат; финальный progress/result продолжает идти через status updates.
 Если задан `--workflow-queue-limit`, новые render requests сверх pending backlog получают busy response и не запускают workflow.
 Если задан `--job-store-file` или `TIMELINE_BOT_JOB_STORE_FILE`, worker сохраняет историю queued/running/done/failed/rejected/cancelled jobs; команда `/status` показывает последние jobs текущего Telegram chat.
-Команда `/cancel <queueId>` отменяет pending queued job из текущего chat; уже running/done/failed jobs не отменяются этим срезом.
+Команда `/cancel <queueId>` отменяет pending queued job или running render job из текущего chat; done/failed/rejected jobs не отменяются.
 
 **Опции:**
 | Опция | Описание |

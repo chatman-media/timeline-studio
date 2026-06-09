@@ -243,6 +243,18 @@ bot message
 - [x] Оставить running render cancellation вне scope и возвращать not-cancellable response.
 - [x] Документировать command/runbook и покрыть queue/worker/CLI tests.
 
+### B22: Telegram bot running render cancellation ([#213](https://github.com/chatman-media/timeline-studio/issues/213))
+
+**Цель:** пользователь может отменить уже running render job из Telegram через тот же `/cancel <queueId>`, когда worker знает render job id.
+
+- [x] Добавить tracking event sink, который пишет render job id/status в Telegram workflow job store во время выполнения.
+- [x] Экспортировать `NodeBotWorkflowService.cancelRenderJob()` поверх render job port.
+- [x] Расширить `/cancel <queueId>`: pending jobs отменяются через queue, running jobs через render job service.
+- [x] Сохранить chat ownership/status checks перед отменой.
+- [x] Записывать `cancelled` status для running cancellation и не перезаписывать cancelled финальный result как failed.
+- [x] Возвращать clear not-cancellable response, если running job еще не имеет render job id.
+- [x] Документировать behavior и покрыть running cancellation tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -267,6 +279,7 @@ bot message
 - [#207](https://github.com/chatman-media/timeline-studio/issues/207) - B19: Telegram bot workflow queue backpressure
 - [#209](https://github.com/chatman-media/timeline-studio/issues/209) - B20: Telegram bot workflow job status store
 - [#211](https://github.com/chatman-media/timeline-studio/issues/211) - B21: Telegram bot queued workflow cancellation
+- [#213](https://github.com/chatman-media/timeline-studio/issues/213) - B22: Telegram bot running render cancellation
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

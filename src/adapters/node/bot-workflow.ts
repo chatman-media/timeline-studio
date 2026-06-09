@@ -53,6 +53,10 @@ export class NodeBotWorkflowService {
       eventStream,
     })
   }
+
+  async cancelRenderJob(jobId: string): Promise<boolean> {
+    return this.renderJob.cancelJob(jobId)
+  }
 }
 
 function mergeOptions<T extends object>(defaults: T | undefined, overrides: T | undefined): T | undefined {
