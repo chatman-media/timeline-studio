@@ -98,6 +98,19 @@ if (-not $success) {
     }
 }
 
+Write-Host "`nVerifying local Biome CLI..." -ForegroundColor Cyan
+$biomePath = Join-Path $PWD "node_modules\.bin\biome.cmd"
+if (-not (Test-Path $biomePath)) {
+    Write-Host "Local Biome CLI not found at $biomePath" -ForegroundColor Red
+    exit 1
+}
+
+& $biomePath --version
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Local Biome CLI failed to execute" -ForegroundColor Red
+    exit $LASTEXITCODE
+}
+
 # Try to install onnxruntime-node separately if needed
 Write-Host "`nChecking onnxruntime-node installation..." -ForegroundColor Cyan
 node -e "require('onnxruntime-node')"

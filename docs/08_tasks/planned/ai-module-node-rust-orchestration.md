@@ -186,9 +186,9 @@ new NodeTelegramBotWorker({
 
 **GitHub:** [#245](https://github.com/chatman-media/timeline-studio/issues/245)
 
-- [ ] Add dedicated bot/AI test command or CI job.
-- [ ] Keep full frontend suite failures from blocking visibility into headless bot regressions.
-- [ ] Track current unrelated failures: timeline hook mock drift, Vitest worker memory, Windows Biome install.
+- [x] Add dedicated bot/AI test command or CI job.
+- [x] Keep full frontend suite failures from blocking visibility into headless bot regressions.
+- [x] Track current unrelated failures: timeline hook mock drift, Vitest worker memory, Windows Biome install.
 
 ### B46: AI review runtime observability and runbook
 

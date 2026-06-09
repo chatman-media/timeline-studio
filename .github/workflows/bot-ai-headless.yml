@@ -1,0 +1,80 @@
+name: Bot AI Headless
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - ".github/workflows/bot-ai-headless.yml"
+      - "docs/08_tasks/planned/fixtures/**"
+      - "package.json"
+      - "package-lock.json"
+      - "bun.lock"
+      - "vitest.config.ts"
+      - "vitest.bot-ai.config.ts"
+      - "scripts/smoke-ai-review-rust.ts"
+      - "src/core/**"
+      - "src/adapters/node/**"
+      - "src/adapters/mock/**"
+      - "src/cli/**"
+      - "src/types/contracts/project-schema.ts"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bot-ai-headless:
+    name: Bot/AI Headless Tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-bot-ai-${{ hashFiles('bun.lock', 'package-lock.json', 'package.json', 'packages/*/package.json', 'apps/*/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-bot-ai-
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        env:
+          ONNXRUNTIME_DOWNLOAD_TIMEOUT: "600000"
+        run: bun install --frozen-lockfile || bun install
+
+      - name: Create test results directory
+        run: mkdir -p test-results
+
+      - name: Run bot/AI headless tests
+        run: bun run test:bot-ai
+        env:
+          CI: true
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: Run Rust AI review smoke diagnostics
+        run: bun run smoke:ai-review:rust
+        env:
+          CI: true
+          AI_REVIEW_RUST_SMOKE_KEEP_TEMP: "0"
+
+      - name: Upload bot/AI test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-ai-test-results
+          path: test-results/
+          retention-days: 30

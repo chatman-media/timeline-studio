@@ -34,6 +34,15 @@ Timeline Studio использует набор оптимизированных
 - Проверка CSS и PostCSS файлов
 - Быстрая валидация
 
+#### `bot-ai-headless.yml` - Bot/AI headless smoke
+**Назначение**: Быстрая проверка Telegram bot-first, AI review, Rust adapter glue и CLI headless контрактов
+**Триггеры**: Push в main, Pull Requests с изменениями в `src/core`, `src/adapters/node`, `src/cli`, bot fixtures или smoke scripts
+**Платформы**: Ubuntu
+**Ключевые особенности**:
+- Запускает `bun run test:bot-ai` с отдельным Vitest config и JUnit отчетом `test-results/bot-ai-junit.xml`
+- Запускает `bun run smoke:ai-review:rust` как skip-safe диагностику Rust render/publish adapter wiring
+- Дает отдельный PR check, чтобы full frontend suite failures не скрывали bot/AI regressions
+
 #### `check-all.yml` - Полная проверка
 **Назначение**: Комплексная проверка всего проекта
 **Триггеры**: Push в main/develop, Pull Requests
