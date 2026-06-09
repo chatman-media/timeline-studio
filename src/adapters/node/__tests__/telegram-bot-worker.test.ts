@@ -2,7 +2,11 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import type { BotEditSession, BotEditSessionQuery, BotEditSessionStore } from "@/core"
+import { createBotProjectSchemaFromRenderJob } from "@/core"
+import type { IBotFeedbackTranscriber, IPublishService } from "@/core/ports"
 import type { BotWorkflowDraft, BotWorkflowRunResult } from "@/core/types"
+import { MockAIProjectEditor } from "../../mock/ai-project-editor"
 import type { NodeBotWorkflowService } from "../bot-workflow"
 import {
   NodeTelegramBotFileWorkflowJobStore,
@@ -29,6 +33,8 @@ import {
   parseTelegramBotCommand,
   parseTelegramBotDraftCommand,
   parseTelegramBotRetryCommandTarget,
+  parseTelegramBotReviewCommand,
+  parseTelegramBotReviseInstruction,
   type TelegramBotUpdate,
 } from "../telegram-bot-worker"
 
@@ -100,6 +106,85 @@ function createWorkflowService(result: BotWorkflowRunResult = failedResult) {
   }
 }
 
+function createEditSessionStore(sessions: BotEditSession[] = []) {
+  const records = new Map(sessions.map((session) => [session.id, session]))
+  const store: BotEditSessionStore = {
+    readSession: vi.fn(async (id: string) => records.get(id)),
+    writeSession: vi.fn(async (session: BotEditSession) => {
+      records.set(session.id, session)
+    }),
+    deleteSession: vi.fn(async (id: string) => {
+      records.delete(id)
+    }),
+    listSessions: vi.fn(async (query: BotEditSessionQuery = {}) =>
+      Array.from(records.values())
+        .filter((session) => matchesTestEditSessionQuery(session, query))
+        .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
+        .slice(0, query.limit ?? Number.POSITIVE_INFINITY),
+    ),
+    readCurrentSession: vi.fn(async (query: BotEditSessionQuery) => {
+      const [session] = await store.listSessions({ ...query, activeOnly: query.activeOnly ?? true, limit: 1 })
+      return session
+    }),
+  }
+  return { store, records }
+}
+
+function matchesTestEditSessionQuery(session: BotEditSession, query: BotEditSessionQuery): boolean {
+  if (query.source && session.source !== query.source) return false
+  if (query.chatId && session.chatId !== query.chatId) return false
+  if (query.userId && session.userId !== query.userId) return false
+  if (query.activeOnly && ["cancelled", "done", "failed"].includes(session.status)) return false
+  if (query.status) {
+    const statuses = Array.isArray(query.status) ? query.status : [query.status]
+    if (!statuses.includes(session.status)) return false
+  }
+  return true
+}
+
+function createReviewSession(overrides: Partial<BotEditSession> = {}): BotEditSession {
+  const project = createProjectSchema()
+  const timestamp = "2026-06-08T08:00:00.000Z"
+  const session: BotEditSession = {
+    id: "edit:telegram:chat-1:user-1",
+    source: "telegram",
+    status: "preview_ready",
+    chatId: "chat-1",
+    userId: "user-1",
+    goal: "make a promo",
+    media: [{ type: "file", value: "/tmp/input.mp4", name: "input.mp4" }],
+    currentProjectSchema: project,
+    revisionCounter: 1,
+    revisions: [
+      {
+        id: "edit:telegram:chat-1:user-1:revision:0",
+        index: 0,
+        projectSchema: project,
+        instruction: "make a promo",
+        summary: "Initial preview",
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      },
+    ],
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  }
+  return {
+    ...session,
+    ...overrides,
+  }
+}
+
+function createProjectSchema() {
+  const project = createBotProjectSchemaFromRenderJob({
+    source: "bot",
+    media: [{ type: "file", value: "/tmp/input.mp4", name: "input.mp4" }],
+    output: { format: "mp4", destination: "telegram" },
+  })
+  if (!project) throw new Error("Expected ProjectSchema")
+  return project
+}
+
 describe("Telegram bot worker", () => {
   let tempDir: string
 
@@ -138,6 +223,55 @@ describe("Telegram bot worker", () => {
         file_unique_id: "unique-file-id",
         file_name: "clip.mp4",
         mime_type: "video/mp4",
+      },
+    })
+  })
+
+  it("converts Telegram voice and video-note updates into workflow payloads", () => {
+    const payload = createTelegramLikePayloadFromUpdate({
+      update_id: 12,
+      message: {
+        message_id: 8,
+        chat: { id: 42 },
+        from: { id: "user-1" },
+        voice: {
+          file_id: "voice-file-id",
+          file_unique_id: "unique-voice-1",
+          mime_type: "audio/ogg",
+          file_size: 4096,
+          duration: 12,
+        },
+        video_note: {
+          file_id: "video-note-file-id",
+          file_unique_id: "unique-video-note-1",
+          mime_type: "video/mp4",
+          file_size: 8192,
+          duration: 7,
+          width: 384,
+          height: 384,
+        },
+      },
+    })
+
+    expect(payload).toEqual({
+      chat: { id: 42 },
+      from: { id: "user-1" },
+      message_id: 8,
+      voice: {
+        file_id: "voice-file-id",
+        file_unique_id: "unique-voice-1",
+        mime_type: "audio/ogg",
+        file_size: 4096,
+        duration: 12,
+      },
+      video_note: {
+        file_id: "video-note-file-id",
+        file_unique_id: "unique-video-note-1",
+        mime_type: "video/mp4",
+        file_size: 8192,
+        duration: 7,
+        width: 384,
+        height: 384,
       },
     })
   })
@@ -767,6 +901,751 @@ describe("Telegram bot worker", () => {
     })
   })
 
+  it("routes preview-ready text feedback through the AI project editor", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store, records } = createEditSessionStore([session])
+    const reviewResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "review-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      aiProjectEditor: new MockAIProjectEditor({ now: () => "2026-06-08T08:00:02.000Z" }),
+      reviewResponder,
+      now: () => "2026-06-08T08:00:02.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 47,
+      message: {
+        message_id: 33,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "make it shorter and add captions",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "feedback_applied",
+      editSessionId: session.id,
+      feedbackText: "make it shorter and add captions",
+      editRevision: {
+        id: "edit:telegram:chat-1:user-1:revision:1",
+        index: 1,
+        instruction: "make it shorter and add captions",
+        sourceMessageId: "33",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+    expect(records.get(session.id)).toMatchObject({
+      status: "preview_ready",
+      revisionCounter: 2,
+      revisions: [
+        expect.objectContaining({ index: 0 }),
+        expect.objectContaining({
+          index: 1,
+          summary: "Applied instruction: make it shorter and add captions",
+        }),
+      ],
+    })
+    expect(reviewResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: expect.stringContaining("Applied revision"),
+      replyToMessageId: "33",
+      metadata: {
+        review: true,
+        source: "telegram-bot-worker",
+      },
+    })
+  })
+
+  it("transcribes voice feedback before applying a preview-ready edit", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store, records } = createEditSessionStore([session])
+    const feedbackTranscriber: IBotFeedbackTranscriber = {
+      transcribeFeedback: vi.fn(async (request) => ({
+        text: "add upbeat music",
+        language: "en",
+        provider: "openai" as const,
+        kind: request.kind,
+        media: request.media,
+        segments: [],
+        processingTime: 12,
+      })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      aiProjectEditor: new MockAIProjectEditor(),
+      feedbackTranscriber,
+      now: () => "2026-06-08T08:00:03.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 48,
+      message: {
+        message_id: 34,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        voice: {
+          file_id: "voice-file-1",
+          file_unique_id: "voice-unique-1",
+          mime_type: "audio/ogg",
+          duration: 8,
+        },
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "feedback_applied",
+      feedbackText: "add upbeat music",
+    })
+    expect(feedbackTranscriber.transcribeFeedback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: "voice",
+        metadata: { sessionId: session.id },
+      }),
+    )
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+    expect(records.get(session.id)?.revisions.at(-1)).toMatchObject({
+      instruction: "add upbeat music",
+      sourceMessageId: "34",
+    })
+  })
+
+  it("stores and sends preview artifacts for applied edit revisions", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store, records } = createEditSessionStore([session])
+    const previewRenderer = {
+      renderPreview: vi.fn(async () => ({
+        type: "file" as const,
+        path: "/tmp/revision-1.mp4",
+        destination: "file" as const,
+        mimeType: "video/mp4",
+      })),
+    }
+    const previewResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "fallback-message-1" })),
+      sendVideo: vi.fn(async () => ({ messageId: "preview-message-1" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      aiProjectEditor: new MockAIProjectEditor(),
+      previewRenderer,
+      previewResponder,
+      now: () => "2026-06-08T08:00:09.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 61,
+      message: {
+        message_id: 47,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "add title card",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "feedback_applied",
+      editRevision: {
+        artifact: {
+          path: "/tmp/revision-1.mp4",
+        },
+        metadata: {
+          previewDelivery: {
+            status: "sent",
+            messageId: "preview-message-1",
+            artifactPath: "/tmp/revision-1.mp4",
+          },
+        },
+      },
+    })
+    expect(previewRenderer.renderPreview).toHaveBeenCalledWith(
+      expect.objectContaining({
+        session: expect.objectContaining({ id: session.id, status: "editing" }),
+        revision: expect.objectContaining({ index: 1 }),
+      }),
+    )
+    expect(previewResponder.sendVideo).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      path: "/tmp/revision-1.mp4",
+      caption: expect.stringContaining("Preview edit:telegram:chat-1:user-1:revision:1"),
+      mimeType: "video/mp4",
+      metadata: {
+        sessionId: session.id,
+        revisionId: "edit:telegram:chat-1:user-1:revision:1",
+      },
+    })
+    const storedSession = records.get(session.id)
+    expect(storedSession?.currentArtifact).toMatchObject({
+      path: "/tmp/revision-1.mp4",
+    })
+    expect(storedSession?.revisions[0]).toMatchObject({ index: 0 })
+    expect(storedSession?.revisions.at(-1)).toMatchObject({
+      index: 1,
+      artifact: {
+        path: "/tmp/revision-1.mp4",
+      },
+      metadata: {
+        previewDelivery: {
+          status: "sent",
+          messageId: "preview-message-1",
+          artifactPath: "/tmp/revision-1.mp4",
+        },
+      },
+    })
+  })
+
+  it("preserves preview artifacts when Telegram delivery falls back to a message", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store, records } = createEditSessionStore([session])
+    const previewResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "fallback-message-2" })),
+      sendVideo: vi.fn(async () => {
+        throw new Error("Telegram file too large")
+      }),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      aiProjectEditor: new MockAIProjectEditor(),
+      previewRenderer: {
+        renderPreview: vi.fn(async () => ({
+          type: "file" as const,
+          path: "/tmp/revision-1-large.mp4",
+          destination: "file" as const,
+          mimeType: "video/mp4",
+        })),
+      },
+      previewResponder,
+      now: () => "2026-06-08T08:00:10.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 62,
+      message: {
+        message_id: 48,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "make it cinematic",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "feedback_applied",
+      editRevision: {
+        artifact: {
+          path: "/tmp/revision-1-large.mp4",
+        },
+        metadata: {
+          previewDelivery: {
+            status: "failed",
+            error: "Telegram file too large",
+            artifactPath: "/tmp/revision-1-large.mp4",
+          },
+        },
+      },
+    })
+    expect(previewResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: expect.stringContaining("/tmp/revision-1-large.mp4"),
+      replyToMessageId: "48",
+      metadata: {
+        preview: true,
+        sessionRevisionId: "edit:telegram:chat-1:user-1:revision:1",
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(records.get(session.id)?.revisions.at(-1)).toMatchObject({
+      artifact: {
+        path: "/tmp/revision-1-large.mp4",
+      },
+    })
+  })
+
+  it("shows active edit session status and versions", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store } = createEditSessionStore([session])
+    const commandResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "status-message-2" })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      commandResponder,
+    })
+
+    const status = await worker.handleUpdate({
+      update_id: 49,
+      message: {
+        message_id: 35,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/status",
+      },
+    })
+    const versions = await worker.handleUpdate({
+      update_id: 50,
+      message: {
+        message_id: 36,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/versions",
+      },
+    })
+
+    expect(status).toMatchObject({
+      skipped: true,
+      command: "status",
+      reviewAction: "status",
+      editSessionId: session.id,
+    })
+    expect(versions).toMatchObject({
+      skipped: true,
+      command: "versions",
+      reviewAction: "versions",
+      editSessionId: session.id,
+    })
+    expect(commandResponder.sendMessage).toHaveBeenNthCalledWith(1, {
+      chatId: "chat-1",
+      text: expect.stringContaining(`AI review session ${session.id}: preview_ready`),
+      replyToMessageId: "35",
+      metadata: {
+        review: true,
+        source: "telegram-bot-worker",
+        command: "status",
+      },
+    })
+    expect(commandResponder.sendMessage).toHaveBeenNthCalledWith(2, {
+      chatId: "chat-1",
+      text: expect.stringContaining("AI review revisions"),
+      replyToMessageId: "36",
+      metadata: {
+        review: true,
+        source: "telegram-bot-worker",
+        command: "versions",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("enables approval-gated preview rendering when edit sessions are configured", async () => {
+    const runTelegramLikePayload = vi.fn(async () => completedResult)
+    const service = {
+      runWorkflow: vi.fn(),
+      runTelegramLikePayload,
+      cancelRenderJob: vi.fn(),
+    } as unknown as NodeBotWorkflowService
+    const { store: editSessionStore } = createEditSessionStore()
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore,
+    })
+
+    await worker.handleUpdate({
+      update_id: 56,
+      message: {
+        message_id: 42,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "template=promo destination=youtube",
+      },
+    })
+
+    expect(runTelegramLikePayload).toHaveBeenCalledWith(
+      expect.objectContaining({
+        text: "template=promo destination=youtube",
+      }),
+      expect.objectContaining({
+        approvalGate: {
+          enabled: true,
+          previewDestination: "telegram",
+        },
+      }),
+    )
+  })
+
+  it("publishes an approved edit session once", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession({
+      currentArtifact: {
+        type: "file",
+        path: "/tmp/revision-0.mp4",
+        destination: "file",
+        mimeType: "video/mp4",
+      },
+      publishTarget: "telegram",
+    })
+    const { store, records } = createEditSessionStore([session])
+    const publishService: IPublishService = {
+      canPublish: vi.fn(() => true),
+      publish: vi.fn(async (request) => ({
+        destination: request.destination,
+        status: "done" as const,
+        artifact: {
+          ...request.artifact,
+          destination: request.destination,
+        },
+        providerId: "telegram-message-1",
+        url: "https://t.me/c/1/2",
+        metadata: request.metadata,
+      })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      publishService,
+      now: () => "2026-06-08T08:00:06.000Z",
+    })
+
+    const approved = await worker.handleUpdate({
+      update_id: 57,
+      message: {
+        message_id: 43,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/approve",
+      },
+    })
+    const duplicate = await worker.handleUpdate({
+      update_id: 58,
+      message: {
+        message_id: 44,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/approve",
+      },
+    })
+
+    expect(approved).toMatchObject({
+      skipped: true,
+      command: "approve",
+      reviewAction: "published",
+      publishResult: {
+        destination: "telegram",
+        status: "done",
+        providerId: "telegram-message-1",
+      },
+      editSession: {
+        status: "done",
+        approvedRevisionId: "edit:telegram:chat-1:user-1:revision:0",
+        approvedMessageId: "43",
+        publishedAt: "2026-06-08T08:00:06.000Z",
+      },
+    })
+    expect(duplicate).toMatchObject({
+      skipped: true,
+      command: "approve",
+      reviewAction: "not_found",
+    })
+    expect(publishService.publish).toHaveBeenCalledOnce()
+    expect(publishService.publish).toHaveBeenCalledWith({
+      destination: "telegram",
+      artifact: {
+        type: "file",
+        path: "/tmp/revision-0.mp4",
+        destination: "file",
+        mimeType: "video/mp4",
+      },
+      metadata: {
+        chatId: "chat-1",
+        caption: "make a promo",
+        title: "make a promo",
+      },
+      params: {
+        sessionId: session.id,
+        revisionId: "edit:telegram:chat-1:user-1:revision:0",
+        approvedMessageId: "43",
+      },
+    })
+    expect(records.get(session.id)).toMatchObject({
+      status: "done",
+      publishResult: {
+        destination: "telegram",
+        status: "done",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("keeps approved sessions without a publish target downloadable", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const session = createReviewSession({
+      currentArtifact: {
+        type: "file",
+        path: "/tmp/revision-0.mp4",
+        destination: "file",
+        mimeType: "video/mp4",
+      },
+    })
+    const { store, records } = createEditSessionStore([session])
+    const publishService: IPublishService = {
+      canPublish: vi.fn(() => true),
+      publish: vi.fn(),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      publishService,
+      now: () => "2026-06-08T08:00:07.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 59,
+      message: {
+        message_id: 45,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/approve",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "approve",
+      reviewAction: "approved",
+      editSession: {
+        status: "approved",
+        approvedMessageId: "45",
+      },
+    })
+    expect(publishService.publish).not.toHaveBeenCalled()
+    expect(records.get(session.id)).toMatchObject({
+      status: "approved",
+      approvedRevisionId: "edit:telegram:chat-1:user-1:revision:0",
+    })
+  })
+
+  it("reports missing publish auth on approval before calling publish", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const session = createReviewSession({
+      currentArtifact: {
+        type: "file",
+        path: "/tmp/revision-0.mp4",
+        destination: "file",
+        mimeType: "video/mp4",
+      },
+      publishTarget: "telegram",
+    })
+    const { store } = createEditSessionStore([session])
+    const publishService: IPublishService = {
+      canPublish: vi.fn(() => false),
+      publish: vi.fn(),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      publishService,
+      now: () => "2026-06-08T08:00:08.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 60,
+      message: {
+        message_id: 46,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/approve",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      command: "approve",
+      reviewAction: "invalid_state",
+      responseText: expect.stringContaining("Publishing to telegram is not configured"),
+    })
+    expect(publishService.publish).not.toHaveBeenCalled()
+  })
+
+  it("approves and cancels active edit sessions without a queue id", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const approveSession = createReviewSession()
+    const cancelSession = createReviewSession({ updatedAt: "2026-06-08T08:00:01.000Z" })
+    const { store, records } = createEditSessionStore([approveSession])
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      now: () => "2026-06-08T08:00:04.000Z",
+    })
+
+    const approved = await worker.handleUpdate({
+      update_id: 51,
+      message: {
+        message_id: 37,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/approve",
+      },
+    })
+    records.set(cancelSession.id, cancelSession)
+    const cancelled = await worker.handleUpdate({
+      update_id: 52,
+      message: {
+        message_id: 38,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/cancel",
+      },
+    })
+
+    expect(approved).toMatchObject({
+      skipped: true,
+      command: "approve",
+      reviewAction: "approved",
+      editSession: {
+        status: "approved",
+        approvedRevisionId: "edit:telegram:chat-1:user-1:revision:0",
+      },
+    })
+    expect(records.get(approveSession.id)).toMatchObject({
+      status: "cancelled",
+      cancelledAt: "2026-06-08T08:00:04.000Z",
+    })
+    expect(cancelled).toMatchObject({
+      skipped: true,
+      command: "cancel",
+      reviewAction: "cancelled",
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("discards the latest edit revision and restores the previous one", async () => {
+    const { service } = createWorkflowService(completedResult)
+    const project = createProjectSchema()
+    const session = createReviewSession({
+      revisionCounter: 2,
+      revisions: [
+        {
+          id: "edit:telegram:chat-1:user-1:revision:0",
+          index: 0,
+          projectSchema: project,
+          summary: "Initial preview",
+          createdAt: "2026-06-08T08:00:00.000Z",
+          updatedAt: "2026-06-08T08:00:00.000Z",
+        },
+        {
+          id: "edit:telegram:chat-1:user-1:revision:1",
+          index: 1,
+          projectSchema: project,
+          summary: "Second preview",
+          createdAt: "2026-06-08T08:00:01.000Z",
+          updatedAt: "2026-06-08T08:00:01.000Z",
+        },
+      ],
+    })
+    const { store, records } = createEditSessionStore([session])
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      now: () => "2026-06-08T08:00:05.000Z",
+    })
+
+    const discarded = await worker.handleUpdate({
+      update_id: 53,
+      message: {
+        message_id: 39,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/discard",
+      },
+    })
+
+    expect(discarded).toMatchObject({
+      skipped: true,
+      command: "discard",
+      reviewAction: "discarded",
+      editRevision: {
+        id: "edit:telegram:chat-1:user-1:revision:0",
+        index: 0,
+      },
+    })
+    expect(records.get(session.id)).toMatchObject({
+      status: "preview_ready",
+      revisionCounter: 2,
+      revisions: [expect.objectContaining({ index: 0 })],
+      updatedAt: "2026-06-08T08:00:05.000Z",
+    })
+  })
+
+  it("lets collecting edit sessions continue through draft intake", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession({ status: "collecting", revisions: [], revisionCounter: 0 })
+    const { store: editSessionStore } = createEditSessionStore([session])
+    const draftStore = new Map<string, BotWorkflowDraft>()
+    const draftStoreAdapter = {
+      readDraft: vi.fn(async (id: string) => draftStore.get(id)),
+      writeDraft: vi.fn(async (draft: BotWorkflowDraft) => {
+        draftStore.set(draft.id, draft)
+      }),
+      deleteDraft: vi.fn(async (id: string) => {
+        draftStore.delete(id)
+      }),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore,
+      draftStore: draftStoreAdapter,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 54,
+      message: {
+        message_id: 40,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "make this energetic",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reason: "Telegram bot draft updated",
+      draftAction: "updated",
+      draftId: "telegram:chat-1:user-1",
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("blocks plain feedback while an edit session is busy", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession({ status: "editing" })
+    const { store } = createEditSessionStore([session])
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 55,
+      message: {
+        message_id: 41,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "make it faster",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "invalid_state",
+      editSessionId: session.id,
+      responseText: expect.stringContaining("feedback is accepted only after a preview is ready"),
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
   it("cancels pending queued workflows by queue id", async () => {
     let resolveWorkflow!: () => void
     const runTelegramLikePayload = vi.fn(
@@ -1344,10 +2223,18 @@ describe("Telegram bot worker", () => {
     expect(parseTelegramBotCommand("/start")).toBe("start")
     expect(parseTelegramBotCommand("/help@TimelineStudioBot more")).toBe("help")
     expect(parseTelegramBotCommand("/status")).toBe("status")
+    expect(parseTelegramBotCommand("/approve")).toBe("approve")
+    expect(parseTelegramBotCommand("/revise make it shorter")).toBe("revise")
+    expect(parseTelegramBotCommand("/versions")).toBe("versions")
+    expect(parseTelegramBotCommand("/discard")).toBe("discard")
     expect(parseTelegramBotCommand("/cancel telegram-update-1")).toBe("cancel")
     expect(parseTelegramBotCancelCommandTarget("/cancel@TimelineStudioBot telegram-update-1")).toBe("telegram-update-1")
     expect(parseTelegramBotCommand("/retry telegram-update-1")).toBe("retry")
     expect(parseTelegramBotRetryCommandTarget("/retry@TimelineStudioBot telegram-update-1")).toBe("telegram-update-1")
+    expect(parseTelegramBotReviewCommand("/approve@TimelineStudioBot")).toBe("approve")
+    expect(parseTelegramBotReviewCommand("/cancel")).toBe("cancel")
+    expect(parseTelegramBotReviewCommand("/cancel telegram-update-1")).toBeNull()
+    expect(parseTelegramBotReviseInstruction("/revise@TimelineStudioBot make it punchier")).toBe("make it punchier")
     expect(parseTelegramBotCommand("/render")).toBeNull()
     expect(parseTelegramBotCommand("/cancel")).toBeNull()
     expect(parseTelegramBotCommand("/retry")).toBeNull()

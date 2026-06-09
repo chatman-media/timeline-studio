@@ -242,6 +242,8 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_RUST_RENDER: "1",
         TIMELINE_BOT_RUST_RENDER_COMMAND: "timeline-render",
         TIMELINE_BOT_RUST_RENDER_KIND: "timeline-render",
+        TIMELINE_BOT_RUST_PUBLISH: "1",
+        TIMELINE_BOT_RUST_PUBLISH_COMMAND: "timeline",
       },
     )
 
@@ -272,6 +274,8 @@ describe("bot-worker command", () => {
       rustRender: true,
       rustRenderCommand: "timeline-render",
       rustRenderKind: "timeline-render",
+      rustPublish: true,
+      rustPublishCommand: "timeline",
     })
   })
 
@@ -292,6 +296,7 @@ describe("bot-worker command", () => {
         workflowQueueLimit: "5",
         defaultDestination: "file",
         rustRender: false,
+        rustPublish: false,
         downloadRemoteMedia: false,
       },
       {
@@ -309,6 +314,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
         TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
         TIMELINE_BOT_RUST_RENDER: "true",
+        TIMELINE_BOT_RUST_PUBLISH: "true",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
       },
     )
@@ -328,6 +334,7 @@ describe("bot-worker command", () => {
       workflowQueueLimit: "5",
       defaultDestination: "file",
       rustRender: false,
+      rustPublish: false,
       downloadRemoteMedia: false,
     })
   })

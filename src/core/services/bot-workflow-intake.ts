@@ -9,6 +9,7 @@ import type {
   TelegramLikeBotPayload,
 } from "../types"
 import type { BotRenderJobDestination, BotRenderJobMediaInput, BotRenderJobRequest } from "../types/render-job"
+import { validateBotDestinationCapability } from "./bot-destination-capabilities"
 
 const DESTINATIONS = new Set(["file", "telegram", "youtube", "tiktok", "vimeo"])
 const RESOLUTIONS = new Set(["720p", "1080p", "4k"])
@@ -96,14 +97,16 @@ export function createBotRenderJobRequest(
 
 export function createBotWorkflowRequestFromTelegramLikePayload(payload: TelegramLikeBotPayload): BotWorkflowRequest {
   const media: BotMediaAttachment[] = [...(payload.attachments ?? [])]
-  const appendFile = (file: TelegramLikeBotFile | undefined, fallbackName: string) => {
-    const attachment = telegramFileToAttachment(file, fallbackName)
+  const appendFile = (file: TelegramLikeBotFile | undefined, fallbackName: string, telegramMediaKind?: string) => {
+    const attachment = telegramFileToAttachment(file, fallbackName, telegramMediaKind)
     if (attachment) media.push(attachment)
   }
 
   appendFile(payload.document, "document")
   appendFile(payload.video, "video")
   appendFile(payload.audio, "audio")
+  appendFile(payload.voice, "voice", "voice")
+  appendFile(payload.video_note, "video_note", "video_note")
   appendFile(payload.animation, "animation")
 
   if (Array.isArray(payload.photo)) {
@@ -264,6 +267,11 @@ function normalizeOutput(
     )
   }
 
+  const capabilityError = validateBotDestinationCapability(output.destination, options.destinationCapabilities)
+  if (capabilityError) {
+    errors.push(capabilityError)
+  }
+
   if (output.resolution && !RESOLUTIONS.has(output.resolution)) {
     errors.push(
       validationError(
@@ -286,14 +294,20 @@ function normalizeOutput(
 function telegramFileToAttachment(
   file: TelegramLikeBotFile | undefined,
   fallbackName: string,
+  telegramMediaKind?: string,
 ): BotMediaAttachment | null {
   if (!file) return null
 
   const value = firstNonEmpty(file.url, file.file_path, file.file_id) ?? ""
   const metadata: Record<string, unknown> = {}
 
+  if (telegramMediaKind) metadata.telegramMediaKind = telegramMediaKind
   if (file.file_id) metadata.telegramFileId = file.file_id
   if (file.file_unique_id) metadata.telegramFileUniqueId = file.file_unique_id
+  if (file.file_size !== undefined) metadata.telegramFileSize = file.file_size
+  if (file.duration !== undefined) metadata.telegramDuration = file.duration
+  if (file.width !== undefined) metadata.telegramWidth = file.width
+  if (file.height !== undefined) metadata.telegramHeight = file.height
 
   return {
     id: file.file_unique_id ?? file.file_id,

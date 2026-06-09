@@ -64,6 +64,8 @@ export interface BotWorkerCommandOptions {
   rustRender?: boolean
   rustRenderCommand?: string
   rustRenderKind?: "timeline" | "timeline-render"
+  rustPublish?: boolean
+  rustPublishCommand?: string
   defaultDestination?: BotRenderJobDestination
   defaultOutput?: string
 }
@@ -106,6 +108,8 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--rust-render", "Run rendering through the Rust headless ts-render CLI")
   .option("--rust-render-command <path>", "Path/name for timeline or timeline-render command")
   .option("--rust-render-kind <kind>", "Rust render command kind: timeline or timeline-render")
+  .option("--rust-publish", "Run bot publishing through the Rust timeline publish CLI")
+  .option("--rust-publish-command <path>", "Path/name for the Rust timeline publish command")
   .option("--default-destination <destination>", "Fallback destination when update has no destination hint")
   .option("--default-output <path>", "Fallback output path when update has no output hint")
   .action(async (options: BotWorkerCommandOptions) => {
@@ -148,6 +152,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     botMediaResolver: createBotMediaResolverOptions(resolvedOptions),
     botStatus: createBotStatusOptions(resolvedOptions),
     publish: createBotPublishOptions(resolvedOptions),
+    rustPublish: resolvedOptions.rustPublish ? createBotRustPublishOptions(resolvedOptions) : undefined,
     rustRender: resolvedOptions.rustRender
       ? {
           command: resolvedOptions.rustRenderCommand,
@@ -176,6 +181,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     workflowQueue,
     accessPolicy: createTelegramBotAccessPolicy(resolvedOptions),
     botToken: resolvedOptions.telegramBotToken,
+    publishService: services.publish,
     workflowOptions: {
       intake: {
         defaultDestination: resolvedOptions.defaultDestination,
@@ -256,6 +262,7 @@ export function resolveBotWorkerCommandOptions(
     timeout: firstConfigured(options.timeout, env.TIMELINE_BOT_RENDER_TIMEOUT),
     rustRenderCommand: firstConfigured(options.rustRenderCommand, env.TIMELINE_BOT_RUST_RENDER_COMMAND),
     rustRenderKind: firstConfigured(options.rustRenderKind, normalizeRustRenderKind(env.TIMELINE_BOT_RUST_RENDER_KIND)),
+    rustPublishCommand: firstConfigured(options.rustPublishCommand, env.TIMELINE_BOT_RUST_PUBLISH_COMMAND),
     defaultDestination: firstConfigured(
       options.defaultDestination,
       normalizeDestination(env.TIMELINE_BOT_DEFAULT_DESTINATION),
@@ -264,6 +271,7 @@ export function resolveBotWorkerCommandOptions(
     asyncWorkflows: options.asyncWorkflows ?? parseBooleanEnv(env.TIMELINE_BOT_ASYNC_WORKFLOWS),
     downloadRemoteMedia: options.downloadRemoteMedia ?? parseBooleanEnv(env.TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA),
     rustRender: options.rustRender ?? parseBooleanEnv(env.TIMELINE_BOT_RUST_RENDER),
+    rustPublish: options.rustPublish ?? parseBooleanEnv(env.TIMELINE_BOT_RUST_PUBLISH),
   }
 }
 
@@ -362,6 +370,20 @@ function createBotPublishOptions(options: BotWorkerCommandOptions) {
       botToken: options.telegramBotToken,
       ...(options.statusChatId ? { defaultChatId: options.statusChatId } : {}),
     },
+  }
+}
+
+function createBotRustPublishOptions(options: BotWorkerCommandOptions) {
+  return {
+    ...(options.rustPublishCommand ? { command: options.rustPublishCommand } : {}),
+    ...(options.telegramBotToken || options.statusChatId
+      ? {
+          telegram: {
+            ...(options.telegramBotToken ? { botToken: options.telegramBotToken } : {}),
+            ...(options.statusChatId ? { defaultChatId: options.statusChatId } : {}),
+          },
+        }
+      : {}),
   }
 }
 

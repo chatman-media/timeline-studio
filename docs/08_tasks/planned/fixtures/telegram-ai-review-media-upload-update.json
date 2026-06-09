@@ -1,0 +1,21 @@
+{
+  "update_id": 2000001,
+  "message": {
+    "message_id": 10,
+    "chat": {
+      "id": "smoke-chat"
+    },
+    "from": {
+      "id": "smoke-user"
+    },
+    "caption": "Make a 15s product promo destination=telegram",
+    "video": {
+      "file_id": "telegram-smoke-video-file",
+      "file_unique_id": "telegram-smoke-video-unique",
+      "file_name": "launch.mp4",
+      "mime_type": "video/mp4",
+      "duration": 28,
+      "file_size": 7340032
+    }
+  }
+}

@@ -1,3 +1,6 @@
+import fs from "node:fs/promises"
+import os from "node:os"
+import path from "node:path"
 import { describe, expect, it, vi } from "vitest"
 import type { BotWorkflowStatusMessage } from "@/core/types"
 import { NodeBotStatusNotifier } from "../bot-status"
@@ -92,6 +95,43 @@ describe("NodeBotStatusNotifier", () => {
         text: "Send a video file, link, project, or choose a template.",
         reply_to_message_id: 7,
       }),
+    })
+  })
+
+  it("sends Telegram preview videos through Bot API fetch", async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "bot-status-video-"))
+    const videoPath = path.join(tempDir, "preview.mp4")
+    await fs.writeFile(videoPath, "video")
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      async json() {
+        return { ok: true, result: { message_id: 10 } }
+      },
+    }))
+    const notifier = new NodeBotStatusNotifier({
+      telegram: {
+        botToken: "token-1",
+      },
+      fetch: fetchMock,
+    })
+
+    try {
+      await expect(
+        notifier.sendVideo({
+          chatId: "42",
+          path: videoPath,
+          caption: "Preview",
+          mimeType: "video/mp4",
+        }),
+      ).resolves.toEqual({ messageId: "10" })
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true })
+    }
+
+    expect(fetchMock).toHaveBeenCalledWith("https://api.telegram.org/bottoken-1/sendVideo", {
+      method: "POST",
+      body: expect.any(FormData),
     })
   })
 

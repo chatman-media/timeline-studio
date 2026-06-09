@@ -1,6 +1,6 @@
 # Roadmap Timeline Studio
 
-*Последнее обновление: 7 июня 2026*
+*Последнее обновление: 9 июня 2026*
 
 ## Видение
 
@@ -71,6 +71,23 @@ Acceptance:
 - Быстрый smoke можно запускать локально и в CI.
 - Проверяется минимальный contract/render/analyze/pipeline path без GUI.
 - Failure clearly points to the broken pipeline step.
+
+### P1: Telegram AI review workflow
+
+- [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish.
+- [#225](https://github.com/chatman-media/timeline-studio/issues/225) остается владельцем production topology, deployment foundation, generic media retention and cleanup jobs.
+
+Готово в текущем implementation slice:
+
+- Edit session store, revision history and file-backed restart recovery.
+- Telegram voice/video-note feedback intake and transcription boundary.
+- AI project editor contract with validation/repair and deterministic mock.
+- First-cut generator boundary over Rust planner with deterministic fallback.
+- Review commands: `/approve`, `/revise`, `/versions`, `/discard`, `/cancel`.
+- Approval-gated publishing and Rust publish adapter for bot path.
+- Destination capability validation before render/publish.
+- Per-revision preview artifact metadata, Telegram `sendVideo` delivery and fallback links.
+- Mocked smoke for upload -> first preview -> text revision -> voice revision -> approval -> publish.
 
 ### P1: Phase F TypeScript packages
 

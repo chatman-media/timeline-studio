@@ -1,5 +1,8 @@
 import type { IRenderJobService } from "../ports"
 import type {
+  BotRenderJobRequest,
+  BotWorkflowApprovalGateOptions,
+  BotWorkflowApprovalGateResult,
   BotWorkflowIntakeOptions,
   BotWorkflowRequest,
   BotWorkflowRunOptions,
@@ -35,6 +38,7 @@ export async function runBotWorkflow(
     }
   }
 
+  const approvalGate = applyBotWorkflowApprovalGate(intake.renderJob, options.approvalGate)
   const eventSinks = [...(options.render?.eventSinks ?? [])]
   if (options.eventStream) {
     eventSinks.push(options.eventStream)
@@ -43,7 +47,7 @@ export async function runBotWorkflow(
     eventSinks.push(createBotWorkflowStatusEventSink(workflow, options.status))
   }
 
-  const resolvedRenderJob = await resolveBotRenderJobMedia(intake.renderJob, options.mediaResolver, { workflow })
+  const resolvedRenderJob = await resolveBotRenderJobMedia(approvalGate.renderJob, options.mediaResolver, { workflow })
 
   const renderJob =
     options.projectAssembly === false
@@ -61,9 +65,47 @@ export async function runBotWorkflow(
     renderJob,
     result,
     warnings: intake.warnings,
+    ...(approvalGate.result ? { approvalGate: approvalGate.result } : {}),
     ...(options.includeReconnectState && options.eventStream
       ? { reconnectState: options.eventStream.getReconnectState(result.job.id) }
       : {}),
+  }
+}
+
+export function applyBotWorkflowApprovalGate(
+  renderJob: BotRenderJobRequest,
+  options: BotWorkflowApprovalGateOptions | false | undefined,
+): {
+  renderJob: BotRenderJobRequest
+  result?: BotWorkflowApprovalGateResult
+} {
+  if (!options || options.enabled === false) {
+    return { renderJob }
+  }
+
+  const previewDestination = options.previewDestination ?? "file"
+  const publishTarget =
+    renderJob.output.destination && renderJob.output.destination !== "file" ? renderJob.output.destination : undefined
+
+  return {
+    renderJob: {
+      ...renderJob,
+      output: {
+        ...renderJob.output,
+        destination: "file",
+      },
+      params: {
+        ...(renderJob.params ?? {}),
+        approvalRequired: true,
+        previewDestination,
+        ...(publishTarget ? { publishTarget } : {}),
+      },
+    },
+    result: {
+      enabled: true,
+      previewDestination,
+      ...(publishTarget ? { publishTarget } : {}),
+    },
   }
 }
 

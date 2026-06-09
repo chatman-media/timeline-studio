@@ -6,6 +6,7 @@
  */
 
 import type {
+  BotPublishResult,
   BotRenderJobArtifact,
   BotRenderJobDestination,
   BotRenderJobEvent,
@@ -23,6 +24,18 @@ import type {
 export type BotWorkflowSource = "telegram" | "api" | "cli" | "desktop"
 
 export type BotMediaAttachmentType = "file" | "url"
+
+export type BotDestinationCapabilityStatus = "available" | "missing_auth" | "unsupported"
+
+export interface BotDestinationCapability {
+  destination: BotRenderJobDestination
+  status: BotDestinationCapabilityStatus
+  supported: boolean
+  configured: boolean
+  userMessage: string
+}
+
+export type BotDestinationCapabilityRegistry = Record<BotRenderJobDestination, BotDestinationCapability>
 
 export type BotWorkflowValidationCode =
   | "missing_input"
@@ -82,6 +95,76 @@ export interface BotWorkflowDraftStore {
   deleteDraft(id: string): Promise<void>
 }
 
+export type BotEditSessionStatus =
+  | "collecting"
+  | "generating"
+  | "preview_ready"
+  | "editing"
+  | "approved"
+  | "publishing"
+  | "done"
+  | "cancelled"
+  | "failed"
+
+export interface BotEditRevision {
+  id: string
+  index: number
+  projectSchema?: unknown
+  artifact?: BotRenderJobArtifact
+  instruction?: string
+  summary?: string
+  changedAreas?: string[]
+  diagnostics?: string[]
+  sourceMessageId?: string
+  createdAt: string
+  updatedAt: string
+  metadata?: Record<string, unknown>
+}
+
+export interface BotEditSession {
+  id: string
+  source: BotWorkflowSource
+  status: BotEditSessionStatus
+  chatId?: string
+  userId?: string
+  goal?: string
+  media: BotRenderJobMediaInput[]
+  currentProjectSchema?: unknown
+  currentArtifact?: BotRenderJobArtifact
+  previewDestination?: BotRenderJobDestination
+  publishTarget?: BotRenderJobDestination
+  revisionCounter: number
+  revisions: BotEditRevision[]
+  approvedRevisionId?: string
+  approvedAt?: string
+  approvedMessageId?: string
+  cancelledAt?: string
+  failedAt?: string
+  failure?: string
+  publishedAt?: string
+  publishResult?: BotPublishResult
+  createdAt: string
+  updatedAt: string
+  metadata?: Record<string, unknown>
+}
+
+export interface BotEditSessionQuery {
+  source?: BotWorkflowSource
+  chatId?: string
+  userId?: string
+  status?: BotEditSessionStatus | BotEditSessionStatus[]
+  activeOnly?: boolean
+  limit?: number
+}
+
+export interface BotEditSessionStore {
+  readSession(id: string): Promise<BotEditSession | undefined>
+  writeSession(session: BotEditSession): Promise<void>
+  deleteSession(id: string): Promise<void>
+  listSessions(query?: BotEditSessionQuery): Promise<BotEditSession[]>
+  readCurrentSession(query: BotEditSessionQuery): Promise<BotEditSession | undefined>
+}
+
 export interface BotWorkflowValidationError {
   code: BotWorkflowValidationCode
   field: string
@@ -107,6 +190,7 @@ export type BotWorkflowRunResult =
       renderJob: BotRenderJobRequest
       result: BotRenderJobResult
       warnings: BotWorkflowValidationError[]
+      approvalGate?: BotWorkflowApprovalGateResult
       reconnectState?: BotRenderJobReconnectState
     }
   | {
@@ -117,11 +201,23 @@ export type BotWorkflowRunResult =
 
 export interface BotWorkflowRunOptions {
   intake?: BotWorkflowIntakeOptions
+  approvalGate?: BotWorkflowApprovalGateOptions | false
   mediaResolver?: BotMediaResolver
   projectAssembly?: BotProjectAssemblyOptions | false
   status?: BotWorkflowStatusOptions
   render?: BotRenderJobRunOptions
   includeReconnectState?: boolean
+}
+
+export interface BotWorkflowApprovalGateOptions {
+  enabled?: boolean
+  previewDestination?: BotRenderJobDestination
+}
+
+export interface BotWorkflowApprovalGateResult {
+  enabled: boolean
+  previewDestination: BotRenderJobDestination
+  publishTarget?: BotRenderJobDestination
 }
 
 export interface BotMediaResolveContext {
@@ -196,6 +292,7 @@ export interface BotWorkflowIntakeOptions {
   defaultOutputPath?: string
   defaultResolution?: BotRenderJobOutput["resolution"]
   defaultTemplateId?: string
+  destinationCapabilities?: BotDestinationCapabilityRegistry
 }
 
 export interface TelegramLikeBotFile {
@@ -203,9 +300,13 @@ export interface TelegramLikeBotFile {
   file_unique_id?: string
   file_name?: string
   mime_type?: string
+  file_size?: number
   file_path?: string
   url?: string
   caption?: string
+  duration?: number
+  width?: number
+  height?: number
 }
 
 export interface TelegramLikeBotPayload {
@@ -221,6 +322,8 @@ export interface TelegramLikeBotPayload {
   document?: TelegramLikeBotFile
   video?: TelegramLikeBotFile
   audio?: TelegramLikeBotFile
+  voice?: TelegramLikeBotFile
+  video_note?: TelegramLikeBotFile
   animation?: TelegramLikeBotFile
   photo?: TelegramLikeBotFile | TelegramLikeBotFile[]
   media?: TelegramLikeBotFile[]
