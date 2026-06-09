@@ -1,3 +1,10 @@
+# [3.84.0](https://github.com/chatman-media/timeline-studio/compare/v3.83.0...v3.84.0) (2026-06-09)
+
+
+### Features
+
+* add telegram workflow retry command ([#216](https://github.com/chatman-media/timeline-studio/issues/216)) ([2df5bfa](https://github.com/chatman-media/timeline-studio/commit/2df5bfa326a8d9d083a3d8ebce89e51b52a80e21))
+
 # [3.83.0](https://github.com/chatman-media/timeline-studio/compare/v3.82.0...v3.83.0) (2026-06-09)
 
 
