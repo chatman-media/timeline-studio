@@ -141,6 +141,22 @@ TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
 bun run src/cli/index.ts bot-worker --poll --rust-render
 ```
 
+Для проверки Rust-backed AI review preview/publish path без запуска Telegram worker:
+
+```bash
+# Собрать headless Rust CLI, если локального timeline еще нет
+cargo build --manifest-path crates/Cargo.toml -p ts-cli --bin timeline
+
+# Локальный smoke: render через Rust, publish validate skipped без сетевого opt-in
+bun run smoke:ai-review:rust
+
+# Опционально проверить publish validate-only через provider API
+AI_REVIEW_RUST_SMOKE_ALLOW_NETWORK=1 \
+AI_REVIEW_RUST_SMOKE_TELEGRAM_TOKEN=123:token \
+AI_REVIEW_RUST_SMOKE_TELEGRAM_CHAT_ID=@channel \
+bun run smoke:ai-review:rust
+```
+
 Для production задавайте `--allowed-chat-ids` и/или `--allowed-user-ids`, чтобы render workflows могли запускать только разрешенные Telegram chats/users.
 Если задан `--draft-dir` или `TIMELINE_BOT_DRAFT_DIR`, worker включает conversation draft mode:
 обычные сообщения сохраняют media и render hints, `/render` запускает merged workflow, а `/cancel` очищает draft.
@@ -203,6 +219,13 @@ export TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20
 export TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media
 export TIMELINE_BOT_DEFAULT_DESTINATION=telegram
 export TIMELINE_BOT_RUST_RENDER=true
+
+# Rust AI review smoke
+export AI_REVIEW_RUST_SMOKE_TIMELINE=crates/target/debug/timeline
+export AI_REVIEW_RUST_SMOKE_ALLOW_NETWORK=0
+export AI_REVIEW_RUST_SMOKE_TELEGRAM_TOKEN=123:token
+export AI_REVIEW_RUST_SMOKE_TELEGRAM_CHAT_ID=@channel
+export AI_REVIEW_RUST_SMOKE_YOUTUBE_TOKEN=ya29...
 ```
 
 `bot-worker` also accepts `TELEGRAM_BOT_TOKEN` as a generic fallback. Explicit CLI flags take priority over `TIMELINE_BOT_*` environment defaults.
