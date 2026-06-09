@@ -4,7 +4,7 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { BotEditSession, BotEditSessionQuery, BotEditSessionStore } from "@/core"
 import { createBotProjectSchemaFromRenderJob } from "@/core"
-import type { IBotFeedbackTranscriber, IPublishService } from "@/core/ports"
+import type { IAIProjectEditor, IBotFeedbackTranscriber, IPublishService } from "@/core/ports"
 import type { BotWorkflowDraft, BotWorkflowRunResult } from "@/core/types"
 import { MockAIProjectEditor } from "../../mock/ai-project-editor"
 import type { NodeBotWorkflowService } from "../bot-workflow"
@@ -1021,6 +1021,117 @@ describe("Telegram bot worker", () => {
     expect(records.get(session.id)?.revisions).toHaveLength(1)
     expect(runTelegramLikePayload).not.toHaveBeenCalled()
     expect(JSON.stringify(records.get(session.id))).not.toContain("editor-secret")
+  })
+
+  it("repairs invalid AI edit output before accepting a review revision", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const session = createReviewSession()
+    const { store, records } = createEditSessionStore([session])
+    const repairedProject = createProjectSchema()
+    repairedProject.metadata.modified_at = "2026-06-08T08:00:12.000Z"
+    const aiProjectEditor: IAIProjectEditor = {
+      editProject: vi.fn(async () => ({
+        nextProject: session.currentProjectSchema as never,
+        summary: "",
+        changedAreas: [],
+        commands: [],
+        diagnostics: [],
+        metadata: {
+          provider: "test-provider",
+          model: "broken-model",
+          promptId: "ai-project-editor/v1",
+        },
+      })),
+      repairProjectEdit: vi.fn(async (context) => ({
+        nextProject: repairedProject,
+        summary: "Repaired title card edit.",
+        changedAreas: ["project.metadata"],
+        commands: [
+          {
+            type: "custom" as const,
+            params: { instruction: context.request.userInstruction },
+            rationale: "Repair produced a valid ProjectSchema after validation failed.",
+          },
+        ],
+        diagnostics: [
+          {
+            level: "warning" as const,
+            code: "repair_applied",
+            message: "AI edit output was repaired after validation failed.",
+          },
+        ],
+        metadata: {
+          provider: "test-provider",
+          model: "repair-model",
+          promptId: "ai-project-editor/v1",
+          repairAttempt: context.attempt,
+        },
+      })),
+    }
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      aiProjectEditor,
+      aiProjectEditMaxRepairAttempts: 1,
+      now: () => "2026-06-08T08:00:12.000Z",
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 64,
+      message: {
+        message_id: 50,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "add a title card",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reviewAction: "feedback_applied",
+      editRevision: {
+        index: 1,
+        summary: "Repaired title card edit.",
+        diagnostics: ["warning: repair_applied: AI edit output was repaired after validation failed."],
+        metadata: {
+          attempts: 2,
+          editor: {
+            provider: "test-provider",
+            model: "repair-model",
+            promptId: "ai-project-editor/v1",
+            repairAttempt: 1,
+          },
+          observability: {
+            attempts: 2,
+            aiEditor: {
+              provider: "test-provider",
+              model: "repair-model",
+              promptId: "ai-project-editor/v1",
+              repairAttempt: 1,
+            },
+          },
+        },
+      },
+    })
+    expect(aiProjectEditor.repairProjectEdit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attempt: 1,
+        errors: expect.arrayContaining([
+          expect.objectContaining({ code: "missing_summary" }),
+          expect.objectContaining({ code: "missing_commands" }),
+        ]),
+      }),
+    )
+    expect(records.get(session.id)).toMatchObject({
+      status: "preview_ready",
+      revisionCounter: 2,
+      currentProjectSchema: repairedProject,
+      revisions: [
+        expect.objectContaining({ index: 0 }),
+        expect.objectContaining({ index: 1, projectSchema: repairedProject }),
+      ],
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
   })
 
   it("transcribes voice feedback before applying a preview-ready edit", async () => {

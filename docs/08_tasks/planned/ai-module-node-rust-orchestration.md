@@ -176,6 +176,7 @@ Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](
 - [ ] Align Rust `montage-plan` output with TS `ProjectSchema` or add a typed wrapper converter.
 - [ ] Align Rust `llm-plan` prompt/output with TS `ProjectSchema`.
 - [ ] Add explicit diagnostics when first-cut falls back to deterministic assembly.
+- [x] Enable bounded AI editor repair attempts in the Telegram review runtime with CLI/env configuration.
 - [ ] Add fixtures for planner valid/invalid output.
 
 ### B43: Wire Telegram bot-worker runtime to real AI review services
