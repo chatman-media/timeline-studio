@@ -1,3 +1,10 @@
+# [3.87.0](https://github.com/chatman-media/timeline-studio/compare/v3.86.0...v3.87.0) (2026-06-09)
+
+
+### Features
+
+* make telegram workflow updates idempotent ([#222](https://github.com/chatman-media/timeline-studio/issues/222)) ([9e3821c](https://github.com/chatman-media/timeline-studio/commit/9e3821c713bbd8a87369c0682b03d9400edb26c0))
+
 # [3.86.0](https://github.com/chatman-media/timeline-studio/compare/v3.85.0...v3.86.0) (2026-06-09)
 
 
