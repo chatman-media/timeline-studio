@@ -1,3 +1,10 @@
+# [3.89.0](https://github.com/chatman-media/timeline-studio/compare/v3.88.0...v3.89.0) (2026-06-09)
+
+
+### Features
+
+* add telegram ai review workflow ([#237](https://github.com/chatman-media/timeline-studio/issues/237)) ([1b8391c](https://github.com/chatman-media/timeline-studio/commit/1b8391cca5c21f060abde766fe7058b6db576789))
+
 # [3.88.0](https://github.com/chatman-media/timeline-studio/compare/v3.87.0...v3.88.0) (2026-06-09)
 
 
