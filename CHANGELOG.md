@@ -1,3 +1,10 @@
+# [3.83.0](https://github.com/chatman-media/timeline-studio/compare/v3.82.0...v3.83.0) (2026-06-09)
+
+
+### Features
+
+* add telegram running render cancellation ([#214](https://github.com/chatman-media/timeline-studio/issues/214)) ([a3faaf7](https://github.com/chatman-media/timeline-studio/commit/a3faaf762b2b35bb174c049401f2f259b0f2083e))
+
 # [3.82.0](https://github.com/chatman-media/timeline-studio/compare/v3.81.0...v3.82.0) (2026-06-09)
 
 
