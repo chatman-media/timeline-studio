@@ -33,6 +33,8 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--poll-once")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--poll")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--telegram-bot-token")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--allowed-chat-ids")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--allowed-user-ids")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--no-status-updates")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--status-chat-id")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--status-min-interval")).toBe(true)
@@ -215,6 +217,8 @@ describe("bot-worker command", () => {
       {
         TELEGRAM_BOT_TOKEN: "token-from-telegram-env",
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-timeline-env",
+        TIMELINE_BOT_ALLOWED_CHAT_IDS: "chat-1,chat-2",
+        TIMELINE_BOT_ALLOWED_USER_IDS: "user-1 user-2",
         TIMELINE_BOT_STATUS_CHAT_ID: "chat-1",
         TIMELINE_BOT_STATUS_MIN_INTERVAL: "30000",
         TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA: "10",
@@ -243,6 +247,8 @@ describe("bot-worker command", () => {
 
     expect(resolved).toMatchObject({
       telegramBotToken: "token-from-timeline-env",
+      allowedChatIds: "chat-1,chat-2",
+      allowedUserIds: "user-1 user-2",
       statusChatId: "chat-1",
       statusMinInterval: "30000",
       statusMinProgressDelta: "10",
@@ -273,6 +279,8 @@ describe("bot-worker command", () => {
     const resolved = resolveBotWorkerCommandOptions(
       {
         telegramBotToken: "token-from-cli",
+        allowedChatIds: "cli-chat",
+        allowedUserIds: "cli-user",
         statusMinInterval: "15000",
         statusMinProgressDelta: "5",
         offsetFile: ".tmp/cli-offset.json",
@@ -288,6 +296,8 @@ describe("bot-worker command", () => {
       },
       {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
+        TIMELINE_BOT_ALLOWED_CHAT_IDS: "env-chat",
+        TIMELINE_BOT_ALLOWED_USER_IDS: "env-user",
         TIMELINE_BOT_STATUS_MIN_INTERVAL: "30000",
         TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA: "10",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
@@ -305,6 +315,8 @@ describe("bot-worker command", () => {
 
     expect(resolved).toMatchObject({
       telegramBotToken: "token-from-cli",
+      allowedChatIds: "cli-chat",
+      allowedUserIds: "cli-user",
       statusMinInterval: "15000",
       statusMinProgressDelta: "5",
       offsetFile: ".tmp/cli-offset.json",

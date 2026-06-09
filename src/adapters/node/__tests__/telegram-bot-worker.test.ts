@@ -11,6 +11,7 @@ import {
 } from "../telegram-bot-job-store"
 import {
   createTelegramLikePayloadFromUpdate,
+  defaultTelegramBotAccessDeniedText,
   defaultTelegramBotCommandText,
   defaultTelegramBotDraftText,
   defaultTelegramBotJobCancelText,
@@ -19,6 +20,7 @@ import {
   defaultTelegramBotQueueRejectedText,
   defaultTelegramBotQueueText,
   defaultTelegramBotUpdateErrorText,
+  isTelegramBotAccessAllowed,
   NodeTelegramBotApiClient,
   NodeTelegramBotFileOffsetStore,
   NodeTelegramBotInMemoryWorkflowQueue,
@@ -560,6 +562,78 @@ describe("Telegram bot worker", () => {
       },
     })
     expect(runTelegramLikePayload).not.toHaveBeenCalled()
+  })
+
+  it("denies updates outside the configured Telegram access policy", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const accessDeniedResponder = {
+      sendMessage: vi.fn(async () => ({ messageId: "access-denied-message-1" })),
+    }
+    const onResult = vi.fn()
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      accessPolicy: {
+        allowedChatIds: ["chat-2"],
+        allowedUserIds: ["user-2"],
+      },
+      accessDeniedResponder,
+      onResult,
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 45,
+      message: {
+        message_id: 31,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/help",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: true,
+      reason: "Telegram bot access denied",
+      updateId: 45,
+      accessDenied: true,
+      responseText: defaultTelegramBotAccessDeniedText(),
+    })
+    expect(accessDeniedResponder.sendMessage).toHaveBeenCalledWith({
+      chatId: "chat-1",
+      text: defaultTelegramBotAccessDeniedText(),
+      replyToMessageId: "31",
+      metadata: {
+        accessDenied: true,
+        source: "telegram-bot-worker",
+      },
+    })
+    expect(runTelegramLikePayload).not.toHaveBeenCalled()
+    expect(onResult).toHaveBeenCalledWith(result)
+  })
+
+  it("allows updates from configured Telegram users", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService(completedResult)
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      accessPolicy: {
+        allowedUserIds: ["user-1"],
+      },
+    })
+
+    const result = await worker.handleUpdate({
+      update_id: 46,
+      message: {
+        message_id: 32,
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "template=promo",
+      },
+    })
+
+    expect(result).toMatchObject({
+      skipped: false,
+      updateId: 46,
+    })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
   })
 
   it("routes start commands through Bot API when a bot token is configured", async () => {
@@ -1280,6 +1354,19 @@ describe("Telegram bot worker", () => {
     expect(parseTelegramBotCommand("template=promo")).toBeNull()
     expect(parseTelegramBotDraftCommand("/render@TimelineStudioBot")).toBe("render")
     expect(parseTelegramBotDraftCommand("/cancel")).toBe("cancel")
+  })
+
+  it("matches Telegram access policies by chat or user id", () => {
+    expect(isTelegramBotAccessAllowed({ chat: { id: "chat-1" } }, undefined)).toBe(true)
+    expect(isTelegramBotAccessAllowed({ chat: { id: "chat-1" } }, { allowedChatIds: ["chat-1"] })).toBe(true)
+    expect(isTelegramBotAccessAllowed({ from: { id: "user-1" } }, { allowedUserIds: ["user-1"] })).toBe(true)
+    expect(
+      isTelegramBotAccessAllowed(
+        { chat: { id: "chat-2" }, from: { id: "user-1" } },
+        { allowedChatIds: ["chat-1"], allowedUserIds: ["user-1"] },
+      ),
+    ).toBe(true)
+    expect(isTelegramBotAccessAllowed({ chat: { id: "chat-2" } }, { allowedChatIds: ["chat-1"] })).toBe(false)
   })
 
   it("stores Telegram updates as conversation drafts until render is requested", async () => {

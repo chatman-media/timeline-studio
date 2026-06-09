@@ -297,6 +297,16 @@ bot message
 - [x] Сохранить поведение команд и explicit `/retry <queueId>`.
 - [x] Документировать replay/idempotency behavior и покрыть worker/CLI tests.
 
+### B27: Telegram bot access control allowlist ([#223](https://github.com/chatman-media/timeline-studio/issues/223))
+
+**Цель:** production bot ограничивает запуск workflows разрешенными Telegram chats/users.
+
+- [x] Добавить worker-level access policy для chat/user ids.
+- [x] Отклонять unauthorized updates до command/draft/workflow handling.
+- [x] Возвращать machine-readable access-denied result и best-effort Telegram response.
+- [x] Сохранить default open behavior без configured policy.
+- [x] Прокинуть allowlists через `bot-worker` CLI/env и документировать runbook.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -326,6 +336,7 @@ bot message
 - [#217](https://github.com/chatman-media/timeline-studio/issues/217) - B24: Telegram bot stale workflow recovery
 - [#219](https://github.com/chatman-media/timeline-studio/issues/219) - B25: Bot workflow status update throttling
 - [#221](https://github.com/chatman-media/timeline-studio/issues/221) - B26: Telegram bot idempotent workflow updates
+- [#223](https://github.com/chatman-media/timeline-studio/issues/223) - B27: Telegram bot access control allowlist
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

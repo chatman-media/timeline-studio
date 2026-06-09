@@ -127,6 +127,7 @@ bun run src/cli/index.ts bot-worker --poll-once --pretty
 
 # Долгоживущий polling worker с сохранением offset
 TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
+TIMELINE_BOT_ALLOWED_CHAT_IDS=123456789,-1001234567890 \
 TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json \
 TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts \
 TIMELINE_BOT_JOB_STORE_FILE=.tmp/timeline-bot/jobs.json \
@@ -140,6 +141,7 @@ TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
 bun run src/cli/index.ts bot-worker --poll --rust-render
 ```
 
+Для production задавайте `--allowed-chat-ids` и/или `--allowed-user-ids`, чтобы render workflows могли запускать только разрешенные Telegram chats/users.
 Если задан `--draft-dir` или `TIMELINE_BOT_DRAFT_DIR`, worker включает conversation draft mode:
 обычные сообщения сохраняют media и render hints, `/render` запускает merged workflow, а `/cancel` очищает draft.
 В тексте сообщения можно отправлять bare URL и короткие hints, например `https://cdn.example.com/input.mov 1080p telegram`;
@@ -161,6 +163,8 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 | `--poll-once` | Получить и обработать один `getUpdates` batch |
 | `--poll` | Запустить continuous polling loop |
 | `--offset-file <path>` | Сохранять Telegram offset между рестартами |
+| `--allowed-chat-ids <ids>` | Comma/space separated Telegram chat ids, которым разрешен bot |
+| `--allowed-user-ids <ids>` | Comma/space separated Telegram user ids, которым разрешен bot |
 | `--draft-dir <path>` | Сохранять bot conversation drafts между сообщениями и рестартами |
 | `--job-store-file <path>` | Сохранять workflow job status/history для `/status` |
 | `--recover-stale-jobs` | Помечать сохраненные queued/running jobs как failed перед стартом worker |
@@ -185,6 +189,8 @@ export FFMPEG_PATH=/usr/local/bin/ffmpeg
 
 # Bot worker runtime defaults
 export TIMELINE_BOT_TELEGRAM_TOKEN=123:token
+export TIMELINE_BOT_ALLOWED_CHAT_IDS=123456789,-1001234567890
+export TIMELINE_BOT_ALLOWED_USER_IDS=111111111,222222222
 export TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json
 export TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts
 export TIMELINE_BOT_JOB_STORE_FILE=.tmp/timeline-bot/jobs.json
