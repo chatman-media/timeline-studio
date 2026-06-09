@@ -69,6 +69,9 @@ export {
   type NodeTelegramBotWorkflowJobRecord,
   type NodeTelegramBotWorkflowJobStatus,
   type NodeTelegramBotWorkflowJobStore,
+  type RecoverStaleTelegramWorkflowJobsOptions,
+  type RecoverStaleTelegramWorkflowJobsResult,
+  recoverStaleTelegramWorkflowJobs,
 } from "./telegram-bot-job-store"
 export {
   createTelegramLikePayloadFromUpdate,
