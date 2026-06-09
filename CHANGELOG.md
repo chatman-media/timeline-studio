@@ -1,3 +1,10 @@
+# [3.90.0](https://github.com/chatman-media/timeline-studio/compare/v3.89.1...v3.90.0) (2026-06-09)
+
+
+### Features
+
+* add production AI project editor adapter ([#249](https://github.com/chatman-media/timeline-studio/issues/249)) ([49c45e5](https://github.com/chatman-media/timeline-studio/commit/49c45e51e59f3f8d2c4a805a4d8f8b4f4e3112e7))
+
 ## [3.89.1](https://github.com/chatman-media/timeline-studio/compare/v3.89.0...v3.89.1) (2026-06-09)
 
 
