@@ -29,6 +29,8 @@ describe("bot-workflow command", () => {
     expect(botWorkflowCommand.options.some((option) => option.long === "--telegram-bot-token")).toBe(true)
     expect(botWorkflowCommand.options.some((option) => option.long === "--send-status-updates")).toBe(true)
     expect(botWorkflowCommand.options.some((option) => option.long === "--status-chat-id")).toBe(true)
+    expect(botWorkflowCommand.options.some((option) => option.long === "--status-min-interval")).toBe(true)
+    expect(botWorkflowCommand.options.some((option) => option.long === "--status-min-progress-delta")).toBe(true)
     expect(botWorkflowCommand.options.some((option) => option.long === "--media-dir")).toBe(true)
     expect(botWorkflowCommand.options.some((option) => option.long === "--download-remote-media")).toBe(true)
     expect(botWorkflowCommand.options.some((option) => option.long === "--rust-render")).toBe(true)

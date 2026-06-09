@@ -10,7 +10,14 @@ import path from "node:path"
 import { Command } from "commander"
 
 import { initNodeApp } from "@/adapters/node"
-import type { BotRenderJobDestination, BotWorkflowRunResult, TelegramLikeBotPayload } from "@/core/types"
+import type {
+  BotRenderJobDestination,
+  BotWorkflowRunResult,
+  BotWorkflowStatusOptions,
+  BotWorkflowStatusPolicy,
+  BotWorkflowStatusSink,
+  TelegramLikeBotPayload,
+} from "@/core/types"
 
 export interface BotWorkflowCommandOptions {
   statusFile?: string
@@ -20,6 +27,8 @@ export interface BotWorkflowCommandOptions {
   telegramBotToken?: string
   sendStatusUpdates?: boolean
   statusChatId?: string
+  statusMinInterval?: string
+  statusMinProgressDelta?: string
   mediaDir?: string
   downloadRemoteMedia?: boolean
   rustRender?: boolean
@@ -39,6 +48,8 @@ export const botWorkflowCommand = new Command("bot-workflow")
   .option("--telegram-bot-token <token>", "Resolve Telegram file ids through the Telegram Bot API")
   .option("--send-status-updates", "Send workflow status updates through the Telegram Bot API")
   .option("--status-chat-id <id>", "Fallback Telegram chat id for status updates")
+  .option("--status-min-interval <ms>", "Minimum interval between repeated rendering status messages")
+  .option("--status-min-progress-delta <percent>", "Minimum progress delta between rendering status messages")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
   .option("--download-remote-media", "Download remote URL media before rendering")
   .option("--rust-render", "Run rendering through the Rust headless ts-render CLI")
@@ -86,6 +97,7 @@ export async function runBotWorkflowPayloadFile(
       : undefined,
   })
 
+  const workflowStatus = createBotWorkflowStatusOptions(services.botStatus, options)
   return services.botWorkflow.runTelegramLikePayload(payload, {
     intake: {
       defaultDestination: options.defaultDestination,
@@ -95,6 +107,7 @@ export async function runBotWorkflowPayloadFile(
       pollIntervalMs: parsePositiveInteger(options.pollInterval, 1000),
       timeoutMs: parsePositiveInteger(options.timeout, 3600000),
     },
+    ...(workflowStatus ? { status: workflowStatus } : {}),
     includeReconnectState: true,
   })
 }
@@ -127,6 +140,33 @@ function createBotStatusOptions(options: BotWorkflowCommandOptions) {
       botToken: options.telegramBotToken,
       ...(options.statusChatId ? { defaultChatId: options.statusChatId } : {}),
     },
+  }
+}
+
+function createBotWorkflowStatusOptions(
+  sink: BotWorkflowStatusSink | undefined,
+  options: BotWorkflowCommandOptions,
+): BotWorkflowStatusOptions | undefined {
+  if (!sink) return undefined
+  const policy = createBotWorkflowStatusPolicy(options)
+  return {
+    sink,
+    ...(policy ? { policy } : {}),
+  }
+}
+
+function createBotWorkflowStatusPolicy(options: BotWorkflowCommandOptions): BotWorkflowStatusPolicy | undefined {
+  const minIntervalMs = parseOptionalNonNegativeNumber(
+    firstConfigured(options.statusMinInterval, process.env.TIMELINE_BOT_STATUS_MIN_INTERVAL),
+  )
+  const minProgressDelta = parseOptionalNonNegativeNumber(
+    firstConfigured(options.statusMinProgressDelta, process.env.TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA),
+  )
+
+  if (minIntervalMs === undefined && minProgressDelta === undefined) return undefined
+  return {
+    ...(minIntervalMs !== undefined ? { minIntervalMs } : {}),
+    ...(minProgressDelta !== undefined ? { minProgressDelta } : {}),
   }
 }
 
@@ -168,4 +208,14 @@ function parsePositiveInteger(value: string | undefined, fallback: number): numb
   if (!value) return fallback
   const parsed = Number.parseInt(value, 10)
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
+function parseOptionalNonNegativeNumber(value: string | undefined): number | undefined {
+  if (!value) return undefined
+  const parsed = Number.parseFloat(value)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
+}
+
+function firstConfigured<T extends string>(...values: Array<T | undefined>): T | undefined {
+  return values.find((value): value is T => value !== undefined && value.trim().length > 0)
 }
