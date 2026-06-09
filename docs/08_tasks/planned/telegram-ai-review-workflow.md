@@ -123,6 +123,7 @@ Runtime должен использовать B28 deployment foundation для t
 - first cut: `DefaultBotFirstCutGenerator` with `NodeRustFirstCutPlanner` when `timeline montage-plan` / `timeline llm-plan` is configured;
 - feedback transcription: `NodeBotFeedbackTranscriber` backed by OpenAI Whisper or local transcription;
 - AI project edit: `IAIProjectEditor` implementation, mock in smoke, Node/OpenAI-compatible production adapter behind the same port short-term, and Rust `timeline llm-plan` extension as the Rust-first planner/editor strategy;
+- AI edit repair: `--ai-editor-repair-attempts` / `TIMELINE_BOT_AI_EDITOR_REPAIR_ATTEMPTS`, default `1`, bounds invalid editor output repair before a revision is accepted; set `0` to disable repair.
 - preview delivery: `NodeBotStatusNotifier.sendVideo` for Telegram review previews, fallback message keeps local artifact path;
 - final publish: `NodeRustPublishService` (`timeline publish telegram|youtube --json`) as production path, `NodePublishService` only as simple fallback/test adapter.
 - capabilities: real configured destinations are `file`, `telegram`, `youtube`; `tiktok` and `vimeo` stay visible as unsupported until Rust publish support exists.

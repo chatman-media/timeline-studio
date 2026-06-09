@@ -120,6 +120,7 @@ export interface NodeTelegramBotWorkerOptions {
   workflowJobStore?: NodeTelegramBotWorkflowJobStore
   editSessionStore?: BotEditSessionStore
   aiProjectEditor?: IAIProjectEditor
+  aiProjectEditMaxRepairAttempts?: number
   feedbackTranscriber?: IBotFeedbackTranscriber
   publishService?: IPublishService
   previewRenderer?: NodeTelegramBotReviewPreviewRenderer
@@ -1492,26 +1493,32 @@ export class NodeTelegramBotWorker {
     await this.options.editSessionStore?.writeSession(editingSession)
 
     try {
-      const edit = await runAIProjectEdit(this.options.aiProjectEditor, {
-        currentProject: session.currentProjectSchema as ProjectSchema,
-        sourceMedia: session.media,
-        userInstruction: instruction,
-        ...((session.publishTarget ?? session.previewDestination)
-          ? { targetPlatform: session.publishTarget ?? session.previewDestination }
-          : {}),
-        revisionHistory: session.revisions.map((revision) => ({
-          id: revision.id,
-          index: revision.index,
-          ...(revision.instruction ? { instruction: revision.instruction } : {}),
-          ...(revision.summary ? { summary: revision.summary } : {}),
-          createdAt: revision.createdAt,
-        })),
-        metadata: {
-          sessionId: session.id,
-          updateId: update.update_id,
-          sourceMessageId: payload.message_id,
+      const edit = await runAIProjectEdit(
+        this.options.aiProjectEditor,
+        {
+          currentProject: session.currentProjectSchema as ProjectSchema,
+          sourceMedia: session.media,
+          userInstruction: instruction,
+          ...((session.publishTarget ?? session.previewDestination)
+            ? { targetPlatform: session.publishTarget ?? session.previewDestination }
+            : {}),
+          revisionHistory: session.revisions.map((revision) => ({
+            id: revision.id,
+            index: revision.index,
+            ...(revision.instruction ? { instruction: revision.instruction } : {}),
+            ...(revision.summary ? { summary: revision.summary } : {}),
+            createdAt: revision.createdAt,
+          })),
+          metadata: {
+            sessionId: session.id,
+            updateId: update.update_id,
+            sourceMessageId: payload.message_id,
+          },
         },
-      })
+        {
+          maxRepairAttempts: normalizeAIProjectEditMaxRepairAttempts(this.options.aiProjectEditMaxRepairAttempts),
+        },
+      )
 
       if (!edit.ok) {
         const failedSession = this.failEditSession(
@@ -3103,6 +3110,10 @@ function hasTelegramLikePayloadContent(payload: TelegramLikeBotPayload): boolean
 function normalizedTelegramText(text: string | undefined): string | undefined {
   const normalized = text?.trim()
   return normalized ? normalized : undefined
+}
+
+function normalizeAIProjectEditMaxRepairAttempts(value: number | undefined): number {
+  return Math.max(0, Math.trunc(value ?? 1))
 }
 
 function formatTelegramBotJobStatusLine(record: NodeTelegramBotWorkflowJobRecord): string {

@@ -77,6 +77,7 @@ export interface BotWorkerCommandOptions {
   aiEditorModel?: string
   aiEditorTemperature?: string
   aiEditorMaxTokens?: string
+  aiEditorRepairAttempts?: string
   reviewPreviewDir?: string
   defaultDestination?: BotRenderJobDestination
   defaultOutput?: string
@@ -131,6 +132,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--ai-editor-model <model>", "Model for the AI project editor")
   .option("--ai-editor-temperature <number>", "Temperature for the AI project editor")
   .option("--ai-editor-max-tokens <count>", "Max completion tokens for the AI project editor")
+  .option("--ai-editor-repair-attempts <count>", "Max AI project editor repair attempts for invalid output", "1")
   .option("--review-preview-dir <path>", "Directory for rendered Telegram AI review preview artifacts")
   .option("--default-destination <destination>", "Fallback destination when update has no destination hint")
   .option("--default-output <path>", "Fallback output path when update has no output hint")
@@ -217,6 +219,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     botToken: resolvedOptions.telegramBotToken,
     editSessionStore: services.botEditSessions,
     aiProjectEditor: services.aiProjectEditor,
+    aiProjectEditMaxRepairAttempts: parseOptionalNonNegativeInteger(resolvedOptions.aiEditorRepairAttempts) ?? 1,
     feedbackTranscriber: services.botFeedbackTranscriber,
     previewRenderer: createBotReviewPreviewRenderer(services.renderJob, resolvedOptions),
     publishService: services.publish,
@@ -321,6 +324,7 @@ export function resolveBotWorkerCommandOptions(
     aiEditorModel: firstConfigured(options.aiEditorModel, env.TIMELINE_BOT_AI_EDITOR_MODEL),
     aiEditorTemperature: firstConfigured(options.aiEditorTemperature, env.TIMELINE_BOT_AI_EDITOR_TEMPERATURE),
     aiEditorMaxTokens: firstConfigured(options.aiEditorMaxTokens, env.TIMELINE_BOT_AI_EDITOR_MAX_TOKENS),
+    aiEditorRepairAttempts: firstConfigured(options.aiEditorRepairAttempts, env.TIMELINE_BOT_AI_EDITOR_REPAIR_ATTEMPTS),
     reviewPreviewDir: firstConfigured(options.reviewPreviewDir, env.TIMELINE_BOT_REVIEW_PREVIEW_DIR),
     defaultDestination: firstConfigured(
       options.defaultDestination,
