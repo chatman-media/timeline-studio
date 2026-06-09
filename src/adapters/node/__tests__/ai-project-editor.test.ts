@@ -29,7 +29,14 @@ describe("NodeAIProjectEditor", () => {
                 },
               ],
               diagnostics: [{ level: "info", message: "Edit applied.", code: "edit_applied" }],
-              metadata: { changedClipCount: 1 },
+              metadata: {
+                changedClipCount: 1,
+                apiKey: "provider-secret",
+                nested: {
+                  accessToken: "nested-secret",
+                  safe: "kept",
+                },
+              },
             }),
           },
           finish_reason: "stop",
@@ -78,10 +85,17 @@ describe("NodeAIProjectEditor", () => {
           model: "editor-model",
           promptId: "ai-project-editor/v1",
           changedClipCount: 1,
+          apiKey: "[redacted]",
+          nested: {
+            accessToken: "[redacted]",
+            safe: "kept",
+          },
           usage: { prompt_tokens: 10, completion_tokens: 20 },
         }),
       },
     })
+    expect(JSON.stringify(result)).not.toContain("provider-secret")
+    expect(JSON.stringify(result)).not.toContain("nested-secret")
     expect(fetch).toHaveBeenCalledWith(
       "https://llm.example/v1/chat/completions",
       expect.objectContaining({

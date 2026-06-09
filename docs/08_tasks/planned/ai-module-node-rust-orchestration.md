@@ -127,6 +127,19 @@ new NodeTelegramBotWorker({
 - Bot worker restarts: file-backed edit session and job store must recover active state.
 - CI instability hides real regressions: bot/AI tests need a small dedicated smoke path separate from the large frontend suite.
 
+## AI Review Observability Contract
+
+Operators should not need raw logs only to diagnose a review loop failure. The bot path persists redacted structured metadata at the same boundary where state recovery happens:
+
+- revision metadata records AI `provider`, `model`, `promptId`, validation/repair attempts, command types, structured diagnostics and changed areas;
+- revision observability records preview `renderJobId`, optional Rust/provider job id, artifact path/URL and Telegram preview delivery status;
+- session observability records the latest failed AI edit stage and validation errors;
+- session observability records final publish destination/status/provider id/URL/error without storing credentials.
+
+The review chat exposes the same high-signal fields through `/status` and `/versions`: revision id, provider/model, prompt id, attempts, render job id, artifact reference, publish status and failure reason. API keys, tokens, authorization headers, secrets, passwords and credentials are redacted before they are stored or rendered.
+
+Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](./telegram-ai-review-workflow.md). Generic deployment topology, log retention and cleanup policies stay linked to B28/#225.
+
 ## PR Slices
 
 ### B39: Audit current AI module and broken headless flows
@@ -194,9 +207,9 @@ new NodeTelegramBotWorker({
 
 **GitHub:** [#246](https://github.com/chatman-media/timeline-studio/issues/246)
 
-- [ ] Document production env variables and safe defaults.
-- [ ] Add structured logs for session id, revision id, planner/editor provider and Rust command status.
-- [ ] Add runbook for retrying failed preview/publish without losing approved revision.
+- [x] Document production config boundaries and safe defaults in the workflow-specific runbook.
+- [x] Add structured session/revision diagnostics for prompt id, provider/model, validation errors, repair attempts, render job id, artifact path and publish result.
+- [x] Add runbook guidance for retrying failed AI edit, preview delivery/render and publish without losing the approved revision.
 
 ## Acceptance Criteria
 

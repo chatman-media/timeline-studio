@@ -9,6 +9,7 @@ import {
   validateAIProjectEditResult,
 } from "@/core"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
+import { redactSensitiveMetadata } from "./sensitive-metadata"
 
 export type NodeAIProjectEditorFetch = typeof fetch
 
@@ -303,13 +304,13 @@ export class NodeAIProjectEditor implements IAIProjectEditor {
               },
             ],
       diagnostics: normalizeDiagnostics(value.diagnostics),
-      metadata: {
+      metadata: redactSensitiveMetadata({
+        ...(isRecord(value.metadata) ? value.metadata : {}),
+        ...metadata,
         provider: this.provider,
         model: this.model,
         promptId: this.promptId,
-        ...metadata,
-        ...(isRecord(value.metadata) ? value.metadata : {}),
-      },
+      }),
     }
   }
 

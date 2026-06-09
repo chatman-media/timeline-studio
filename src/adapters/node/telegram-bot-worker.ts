@@ -4,6 +4,7 @@ import type { AIProjectEditorResult, IAIProjectEditor, IBotFeedbackTranscriber, 
 import {
   createBotDestinationCapabilityRegistry,
   createBotEditRevisionId,
+  createBotEditSessionId,
   createBotWorkflowDraftId,
   createTelegramLikeBotWorkflow,
   mergeBotEditSessionWorkflow,
@@ -31,6 +32,7 @@ import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 import { NodeBotStatusNotifier, type NodeTelegramStatusClient, type NodeTelegramVideoClient } from "./bot-status"
 import type { NodeBotWorkflowService, NodeBotWorkflowServiceOptions } from "./bot-workflow"
+import { redactSensitiveMetadata } from "./sensitive-metadata"
 import type { NodeTelegramBotWorkflowJobRecord, NodeTelegramBotWorkflowJobStore } from "./telegram-bot-job-store"
 
 export interface TelegramBotFile {
@@ -1318,27 +1320,40 @@ export class NodeTelegramBotWorker {
         error: formatUnknownError(error),
       }
     }
+    const sanitizedPublishResult = redactSensitiveMetadata(publishResult)
 
     const publishedTimestamp = this.now()
     const publishedSession: BotEditSession = {
       ...publishingSession,
-      status: publishResult.status === "done" ? "done" : "failed",
-      publishResult,
-      ...(publishResult.status === "done" ? { publishedAt: publishedTimestamp } : { failedAt: publishedTimestamp }),
-      ...(publishResult.status !== "done" ? { failure: publishResult.error ?? "Publishing failed" } : {}),
+      status: sanitizedPublishResult.status === "done" ? "done" : "failed",
+      publishResult: sanitizedPublishResult,
+      ...(sanitizedPublishResult.status === "done"
+        ? { publishedAt: publishedTimestamp }
+        : { failedAt: publishedTimestamp }),
+      ...(sanitizedPublishResult.status !== "done"
+        ? { failure: sanitizedPublishResult.error ?? "Publishing failed" }
+        : {}),
+      metadata: mergeMetadataObservability(publishingSession.metadata, {
+        lastPublish: createPublishObservability({
+          session,
+          revision,
+          result: sanitizedPublishResult,
+          timestamp: publishedTimestamp,
+        }),
+      }),
       updatedAt: publishedTimestamp,
     }
     await this.options.editSessionStore?.writeSession(publishedSession)
 
     return this.createReviewSkippedResult({
-      action: publishResult.status === "done" ? "published" : "failed",
+      action: sanitizedPublishResult.status === "done" ? "published" : "failed",
       command,
       session: publishedSession,
       revision,
       payload,
       update,
-      publishResult,
-      message: publishResult.error,
+      publishResult: sanitizedPublishResult,
+      message: sanitizedPublishResult.error,
     })
   }
 
@@ -1499,7 +1514,23 @@ export class NodeTelegramBotWorker {
       })
 
       if (!edit.ok) {
-        const failedSession = this.failEditSession(editingSession, edit.errors.map((error) => error.message).join("; "))
+        const failedSession = this.failEditSession(
+          editingSession,
+          edit.errors.map((error) => error.message).join("; "),
+          {
+            lastError: {
+              stage: "ai_edit_validation",
+              sessionId: session.id,
+              updateId: update.update_id,
+              ...(payload.message_id !== undefined ? { sourceMessageId: String(payload.message_id) } : {}),
+              errors: edit.errors.map((error) => ({
+                code: error.code,
+                field: error.field,
+                message: error.message,
+              })),
+            },
+          },
+        )
         await this.options.editSessionStore?.writeSession(failedSession)
         return this.createReviewSkippedResult({
           action: "failed",
@@ -1528,12 +1559,19 @@ export class NodeTelegramBotWorker {
           update,
           payload,
         })
+        const previewRenderedAt = this.now()
         revision = {
           ...revision,
           artifact,
-          metadata: mergeRevisionMetadata(revision.metadata, {
-            previewRenderedAt: this.now(),
-          }),
+          metadata: mergeMetadataObservability(
+            revision.metadata,
+            {
+              renderPreview: createRenderPreviewObservability(artifact, previewRenderedAt),
+            },
+            {
+              previewRenderedAt,
+            },
+          ),
         }
       }
 
@@ -1564,7 +1602,15 @@ export class NodeTelegramBotWorker {
         feedbackText: instruction,
       })
     } catch (error) {
-      const failedSession = this.failEditSession(editingSession, formatUnknownError(error))
+      const failedSession = this.failEditSession(editingSession, formatUnknownError(error), {
+        lastError: {
+          stage: "ai_edit_exception",
+          sessionId: session.id,
+          updateId: update.update_id,
+          ...(payload.message_id !== undefined ? { sourceMessageId: String(payload.message_id) } : {}),
+          error: formatUnknownError(error),
+        },
+      })
       await this.options.editSessionStore?.writeSession(failedSession)
       return this.createReviewSkippedResult({
         action: "failed",
@@ -1577,13 +1623,18 @@ export class NodeTelegramBotWorker {
     }
   }
 
-  private failEditSession(session: BotEditSession, failure: string): BotEditSession {
+  private failEditSession(
+    session: BotEditSession,
+    failure: string,
+    observabilityPatch?: Record<string, unknown>,
+  ): BotEditSession {
     const timestamp = this.now()
     return {
       ...session,
       status: "failed",
       failedAt: timestamp,
       failure,
+      ...(observabilityPatch ? { metadata: mergeMetadataObservability(session.metadata, observabilityPatch) } : {}),
       updatedAt: timestamp,
     }
   }
@@ -1732,40 +1783,37 @@ export class NodeTelegramBotWorker {
             revisionId: revision.id,
           },
         })
+        const previewDelivery = {
+          status: "sent",
+          messageId: sent.messageId,
+          artifactPath: artifact.path,
+        }
         return {
           ...revision,
-          metadata: mergeRevisionMetadata(revision.metadata, {
-            previewDelivery: {
-              status: "sent",
-              messageId: sent.messageId,
-              artifactPath: artifact.path,
-            },
-          }),
+          metadata: mergeMetadataObservability(revision.metadata, { previewDelivery }, { previewDelivery }),
         }
       } catch (error) {
         await this.sendReviewPreviewFallback(responder, chatId, payload, revision, formatUnknownError(error))
+        const previewDelivery = {
+          status: "failed",
+          error: formatUnknownError(error),
+          artifactPath: artifact.path,
+        }
         return {
           ...revision,
-          metadata: mergeRevisionMetadata(revision.metadata, {
-            previewDelivery: {
-              status: "failed",
-              error: formatUnknownError(error),
-              artifactPath: artifact.path,
-            },
-          }),
+          metadata: mergeMetadataObservability(revision.metadata, { previewDelivery }, { previewDelivery }),
         }
       }
     }
 
     await this.sendReviewPreviewFallback(responder, chatId, payload, revision)
+    const previewDelivery = {
+      status: "fallback_message",
+      artifact: artifact.url ?? artifact.path,
+    }
     return {
       ...revision,
-      metadata: mergeRevisionMetadata(revision.metadata, {
-        previewDelivery: {
-          status: "fallback_message",
-          artifact: artifact.url ?? artifact.path,
-        },
-      }),
+      metadata: mergeMetadataObservability(revision.metadata, { previewDelivery }, { previewDelivery }),
     }
   }
 
@@ -1906,6 +1954,9 @@ export class NodeTelegramBotWorker {
       ...(workflowResult.workflow.userId ? { userId: workflowResult.workflow.userId } : {}),
       activeOnly: true,
     })
+    const sessionId = existing?.id ?? createBotEditSessionId(workflowResult.workflow)
+    const revisionIndex = existing?.revisionCounter ?? 0
+    const revisionId = createBotEditRevisionId(sessionId, revisionIndex)
     const session = mergeBotEditSessionWorkflow(existing, workflowResult.workflow, {
       now: () => timestamp,
       status: "preview_ready",
@@ -1925,12 +1976,22 @@ export class NodeTelegramBotWorker {
           source: "telegram-bot-worker",
           renderJobId: workflowResult.result.job.id,
           approvalGate: workflowResult.approvalGate,
+          observability: {
+            sessionId,
+            revisionId,
+            revisionIndex,
+            renderPreview: createRenderPreviewObservability(artifact, timestamp, workflowResult.result.job.id),
+          },
         },
       },
       metadata: {
         source: "telegram-bot-worker",
         renderJobId: workflowResult.result.job.id,
         approvalGate: workflowResult.approvalGate,
+        observability: {
+          sessionId,
+          renderPreview: createRenderPreviewObservability(artifact, timestamp, workflowResult.result.job.id),
+        },
       },
     })
 
@@ -2765,6 +2826,8 @@ function formatBotEditSessionStatusMessage(session: BotEditSession | undefined):
     "Timeline Studio bot",
     formatBotEditSessionStatus(session),
     ...(session.goal ? [`Goal: ${truncateStatusText(session.goal)}`] : []),
+    ...(session.publishResult ? [formatBotEditSessionPublishLine(session.publishResult)] : []),
+    ...(session.failure ? [`Failure: ${truncateStatusText(session.failure)}`] : []),
     ...(session.revisions.length > 0 ? ["Recent revisions:", ...formatRecentBotEditRevisionLines(session)] : []),
   ].join("\n")
 }
@@ -2797,8 +2860,17 @@ function formatRecentBotEditRevisionLines(session: BotEditSession, limit = 5): s
 function formatBotEditRevisionLine(revision: BotEditRevision): string {
   const details = [`#${revision.index}`, revision.id]
   if (revision.summary) details.push(truncateStatusText(revision.summary))
+  const observability = readRevisionObservability(revision)
+  const editor = readRevisionEditorMetadata(revision)
+  const editorLine = formatRevisionEditorLine(editor)
+  if (editorLine) details.push(editorLine)
+  const attempts = readNumericMetadataValue(observability?.attempts ?? revision.metadata?.attempts)
+  if (attempts !== undefined) details.push(`attempts=${attempts}`)
+  const renderJobId = readStringMetadataValue(observability?.renderPreview, "renderJobId")
+  if (renderJobId) details.push(`render=${renderJobId}`)
   if (revision.artifact?.url) details.push(revision.artifact.url)
   else if (revision.artifact?.path) details.push(revision.artifact.path)
+  if (revision.diagnostics?.[0]) details.push(`diag=${truncateStatusText(revision.diagnostics[0])}`)
   return details.join(": ")
 }
 
@@ -2811,8 +2883,10 @@ function createAppliedEditRevision(context: {
   timestamp: string
 }): BotEditRevision {
   const index = context.session.revisionCounter
+  const id = createBotEditRevisionId(context.session.id, index)
+  const editorMetadata = context.result.metadata ? redactSensitiveMetadata(context.result.metadata) : undefined
   return {
-    id: createBotEditRevisionId(context.session.id, index),
+    id,
     index,
     projectSchema: context.result.nextProject,
     instruction: context.instruction,
@@ -2823,9 +2897,17 @@ function createAppliedEditRevision(context: {
     createdAt: context.timestamp,
     updatedAt: context.timestamp,
     metadata: {
-      commands: context.result.commands,
+      commands: redactSensitiveMetadata(context.result.commands),
       attempts: context.attempts,
-      ...(context.result.metadata ? { editor: context.result.metadata } : {}),
+      ...(editorMetadata ? { editor: editorMetadata } : {}),
+      observability: createAIEditObservability({
+        session: context.session,
+        revisionId: id,
+        revisionIndex: index,
+        result: context.result,
+        attempts: context.attempts,
+        sourceMessageId: context.sourceMessageId,
+      }),
     },
   }
 }
@@ -2854,6 +2936,136 @@ function mergeRevisionMetadata(
     ...(base ?? {}),
     ...patch,
   }
+}
+
+function mergeMetadataObservability(
+  base: Record<string, unknown> | undefined,
+  observabilityPatch: Record<string, unknown>,
+  patch: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return mergeRevisionMetadata(base, {
+    ...patch,
+    observability: {
+      ...asRecord(base?.observability),
+      ...redactSensitiveMetadata(observabilityPatch),
+    },
+  })
+}
+
+function createAIEditObservability(context: {
+  session: BotEditSession
+  revisionId: string
+  revisionIndex: number
+  result: AIProjectEditorResult
+  attempts: number
+  sourceMessageId?: string | number
+}): Record<string, unknown> {
+  return redactSensitiveMetadata({
+    sessionId: context.session.id,
+    revisionId: context.revisionId,
+    revisionIndex: context.revisionIndex,
+    stage: "ai_edit",
+    ...(context.sourceMessageId !== undefined ? { sourceMessageId: String(context.sourceMessageId) } : {}),
+    ...(context.result.metadata ? { aiEditor: context.result.metadata } : {}),
+    attempts: context.attempts,
+    commandTypes: context.result.commands.map((command) => command.type),
+    changedAreas: context.result.changedAreas,
+    diagnostics: context.result.diagnostics.map((diagnostic) => ({
+      level: diagnostic.level,
+      message: diagnostic.message,
+      ...(diagnostic.code ? { code: diagnostic.code } : {}),
+      ...(diagnostic.path ? { path: diagnostic.path } : {}),
+    })),
+  })
+}
+
+function createRenderPreviewObservability(
+  artifact: BotRenderJobArtifact,
+  renderedAt: string,
+  renderJobId?: string,
+): Record<string, unknown> {
+  const artifactMetadata = asRecord(artifact.metadata)
+  return redactSensitiveMetadata({
+    ...(readStringMetadataValue(artifactMetadata, "renderJobId") || renderJobId
+      ? { renderJobId: readStringMetadataValue(artifactMetadata, "renderJobId") ?? renderJobId }
+      : {}),
+    ...(readStringMetadataValue(artifactMetadata, "providerJobId")
+      ? { providerJobId: readStringMetadataValue(artifactMetadata, "providerJobId") }
+      : {}),
+    ...(readStringMetadataValue(artifactMetadata, "renderJobStatus")
+      ? { renderJobStatus: readStringMetadataValue(artifactMetadata, "renderJobStatus") }
+      : {}),
+    renderedAt,
+    destination: artifact.destination,
+    ...(artifact.path ? { artifactPath: artifact.path } : {}),
+    ...(artifact.url ? { artifactUrl: artifact.url } : {}),
+    ...(artifact.mimeType ? { mimeType: artifact.mimeType } : {}),
+  })
+}
+
+function createPublishObservability(context: {
+  session: BotEditSession
+  revision: BotEditRevision
+  result: BotPublishResult
+  timestamp: string
+}): Record<string, unknown> {
+  return redactSensitiveMetadata({
+    sessionId: context.session.id,
+    revisionId: context.revision.id,
+    destination: context.result.destination,
+    status: context.result.status,
+    publishedAt: context.timestamp,
+    ...(context.result.providerId ? { providerId: context.result.providerId } : {}),
+    ...(context.result.url ? { url: context.result.url } : {}),
+    ...(context.result.error ? { error: context.result.error } : {}),
+    ...(context.result.artifact?.path ? { artifactPath: context.result.artifact.path } : {}),
+    ...(context.result.artifact?.url ? { artifactUrl: context.result.artifact.url } : {}),
+  })
+}
+
+function readRevisionObservability(revision: BotEditRevision): Record<string, unknown> | undefined {
+  return asRecord(revision.metadata?.observability)
+}
+
+function readRevisionEditorMetadata(revision: BotEditRevision): Record<string, unknown> | undefined {
+  const observabilityEditor = asRecord(readRevisionObservability(revision)?.aiEditor)
+  if (observabilityEditor) return observabilityEditor
+  return asRecord(revision.metadata?.editor)
+}
+
+function formatRevisionEditorLine(editor: Record<string, unknown> | undefined): string | undefined {
+  if (!editor) return undefined
+  const provider = readStringMetadataValue(editor, "provider")
+  const model = readStringMetadataValue(editor, "model")
+  const promptId = readStringMetadataValue(editor, "promptId")
+  const details: string[] = []
+  if (provider || model) details.push(`editor=${[provider, model].filter(Boolean).join("/")}`)
+  if (promptId) details.push(`prompt=${promptId}`)
+  return details.length > 0 ? details.join(" ") : undefined
+}
+
+function formatBotEditSessionPublishLine(result: BotPublishResult): string {
+  const details = [`Publish: ${result.status} to ${result.destination}`]
+  if (result.providerId) details.push(`provider=${result.providerId}`)
+  if (result.url) details.push(result.url)
+  if (result.error) details.push(`error=${truncateStatusText(result.error)}`)
+  return details.join(", ")
+}
+
+function readStringMetadataValue(value: unknown, key: string): string | undefined {
+  const record = asRecord(value)
+  const field = record?.[key]
+  return typeof field === "string" && field.length > 0 ? field : undefined
+}
+
+function readNumericMetadataValue(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : undefined
 }
 
 function readInlineProjectSchema(project: BotRenderJobProjectInput | undefined): unknown | undefined {
