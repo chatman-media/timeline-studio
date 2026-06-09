@@ -74,7 +74,7 @@ Acceptance:
 
 ### P1: Telegram AI review workflow
 
-- [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish.
+- [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish. Implementation slice merged; production runtime stabilization now continues in [#238](https://github.com/chatman-media/timeline-studio/issues/238).
 - [#225](https://github.com/chatman-media/timeline-studio/issues/225) остается владельцем production topology, deployment foundation, generic media retention and cleanup jobs.
 
 Готово в текущем implementation slice:
@@ -88,6 +88,26 @@ Acceptance:
 - Destination capability validation before render/publish.
 - Per-revision preview artifact metadata, Telegram `sendVideo` delivery and fallback links.
 - Mocked smoke for upload -> first preview -> text revision -> voice revision -> approval -> publish.
+
+### P1: AI module stabilization and Node/Rust orchestration
+
+- [#238](https://github.com/chatman-media/timeline-studio/issues/238) - стабилизировать production AI path для Telegram review workflow и закрепить границу ответственности Node/Rust.
+- [#239](https://github.com/chatman-media/timeline-studio/issues/239) - аудит текущих AI модулей, headless flows and broken wiring.
+- [#240](https://github.com/chatman-media/timeline-studio/issues/240) - Node/Rust ownership boundary.
+
+Текущие выводы:
+
+- `NodeTelegramBotWorker` содержит review-loop extension points, но `bot-worker` CLI пока не прокидывает production `editSessionStore`, `feedbackTranscriber`, `aiProjectEditor`, `firstCutGenerator` and `previewRenderer`.
+- `IAIProjectEditor` пока реализован только mock adapter; production OpenAI-compatible adapter и/или Rust `llm-edit` command еще нужны.
+- Rust `montage-plan`/`llm-plan` output сейчас drift-ит от TS `ProjectSchema` validation и может приводить к deterministic fallback.
+- Render and publish should stay Rust-first through `timeline render` / `timeline publish`; Node owns orchestration, sessions, provider glue and Telegram runtime.
+
+Acceptance:
+
+- Bot review loop runs from CLI with production wiring, not only mocked unit smoke.
+- First-cut and edit outputs validate as canonical `ProjectSchema` or fail/fallback with explicit diagnostics.
+- Text and voice feedback share one AI editor path.
+- Dedicated headless bot/AI smoke catches regressions separately from the large frontend suite.
 
 ### P1: Phase F TypeScript packages
 
