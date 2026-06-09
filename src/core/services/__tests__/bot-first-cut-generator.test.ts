@@ -62,6 +62,27 @@ describe("DefaultBotFirstCutGenerator", () => {
     expect(result.provider).toBe("deterministic-fallback")
     expect(result.projectSchema.timeline.duration).toBe(12)
     expect(result.projectSchema.tracks[0]?.clips).toHaveLength(1)
+    expect(result.diagnostics).toEqual([
+      expect.stringContaining("Planner llm-plan output failed ProjectSchema validation"),
+    ])
+  })
+
+  it("includes planner error diagnostics when falling back", async () => {
+    const planner: IBotFirstCutPlanner = {
+      generatePlan: vi.fn(async () => {
+        throw new Error("planner unavailable")
+      }),
+    }
+    const generator = new DefaultBotFirstCutGenerator({
+      planner,
+    })
+
+    const result = await generator.generateFirstCut({
+      sourceMedia: [{ type: "file", value: "/tmp/input.mp4", name: "input.mp4" }],
+    })
+
+    expect(result.provider).toBe("deterministic-fallback")
+    expect(result.diagnostics).toEqual(["Planner failed; using deterministic fallback: planner unavailable"])
   })
 
   it("can fail instead of falling back when configured", async () => {

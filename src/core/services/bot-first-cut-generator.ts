@@ -23,6 +23,7 @@ export class DefaultBotFirstCutGenerator implements IBotFirstCutGenerator {
 
   async generateFirstCut(request: BotFirstCutGeneratorRequest): Promise<BotFirstCutGeneratorResult> {
     const timestamp = this.options.now?.() ?? new Date().toISOString()
+    const fallbackDiagnostics: string[] = []
 
     if (this.options.planner) {
       try {
@@ -32,13 +33,18 @@ export class DefaultBotFirstCutGenerator implements IBotFirstCutGenerator {
           return createFirstCutResult(request, planned, timestamp)
         }
 
+        const diagnostic = `Planner ${planned.provider} output failed ProjectSchema validation: ${validationErrors
+          .map((error) => error.message)
+          .join("; ")}`
         if (this.options.fallbackToDeterministic === false) {
-          throw new Error(validationErrors.map((error) => error.message).join("; "))
+          throw new Error(diagnostic)
         }
+        fallbackDiagnostics.push(diagnostic)
       } catch (error) {
         if (this.options.fallbackToDeterministic === false) {
           throw error
         }
+        fallbackDiagnostics.push(`Planner failed; using deterministic fallback: ${formatUnknownError(error)}`)
       }
     }
 
@@ -49,6 +55,7 @@ export class DefaultBotFirstCutGenerator implements IBotFirstCutGenerator {
         projectSchema: fallbackProject,
         provider: "deterministic-fallback",
         summary: "Generated deterministic first cut from source media.",
+        diagnostics: fallbackDiagnostics,
       },
       timestamp,
     )
@@ -136,4 +143,8 @@ function resolvePublishDestination(
   destination: BotRenderJobDestination | undefined,
 ): BotRenderJobDestination | undefined {
   return destination
+}
+
+function formatUnknownError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
 }
