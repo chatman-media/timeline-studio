@@ -1,3 +1,10 @@
+# [3.92.0](https://github.com/chatman-media/timeline-studio/compare/v3.91.0...v3.92.0) (2026-06-09)
+
+
+### Features
+
+* run first-cut generator in bot workflow ([#252](https://github.com/chatman-media/timeline-studio/issues/252)) ([8da1f69](https://github.com/chatman-media/timeline-studio/commit/8da1f69b04410c4e5bc1c07d8170ec58b8bf3eb8))
+
 # [3.91.0](https://github.com/chatman-media/timeline-studio/compare/v3.90.0...v3.91.0) (2026-06-09)
 
 
