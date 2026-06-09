@@ -3121,6 +3121,7 @@ dependencies = [
  "serde_json",
  "specta",
  "tokio",
+ "ts-schema",
  "uuid",
 ]
 
