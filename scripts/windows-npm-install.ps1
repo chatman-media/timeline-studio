@@ -18,6 +18,9 @@ npm config set loglevel error
 
 # Set environment variable for onnxruntime
 $env:ONNXRUNTIME_DOWNLOAD_TIMEOUT = "600000"
+$env:GYP_MSVS_VERSION = "2022"
+$env:npm_config_msvs_version = "2022"
+$env:VisualStudioVersion = "17.0"
 
 # Function to run npm install with timeout
 function Install-NpmDependencies {
