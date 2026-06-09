@@ -27,6 +27,7 @@ export class NodeBotWorkflowService {
     return runBotWorkflow(workflow, {
       renderJob: this.renderJob,
       intake: mergeOptions(this.defaults.intake, options.intake),
+      approvalGate: mergeApprovalGateOptions(this.defaults.approvalGate, options.approvalGate),
       mediaResolver: options.mediaResolver ?? this.defaults.mediaResolver,
       projectAssembly: mergeProjectAssemblyOptions(this.defaults.projectAssembly, options.projectAssembly),
       status: options.status ?? this.defaults.status,
@@ -45,6 +46,7 @@ export class NodeBotWorkflowService {
     return runTelegramLikeBotWorkflow(payload, {
       renderJob: this.renderJob,
       intake: mergeOptions(this.defaults.intake, options.intake),
+      approvalGate: mergeApprovalGateOptions(this.defaults.approvalGate, options.approvalGate),
       mediaResolver: options.mediaResolver ?? this.defaults.mediaResolver,
       projectAssembly: mergeProjectAssemblyOptions(this.defaults.projectAssembly, options.projectAssembly),
       status: options.status ?? this.defaults.status,
@@ -86,6 +88,16 @@ function mergeProjectAssemblyOptions(
   defaults: BotWorkflowRunOptions["projectAssembly"],
   overrides: BotWorkflowRunOptions["projectAssembly"],
 ): BotWorkflowRunOptions["projectAssembly"] {
+  if (overrides === false) return false
+  if (defaults === false && overrides === undefined) return false
+  if (defaults === false) return overrides
+  return mergeOptions(defaults, overrides)
+}
+
+function mergeApprovalGateOptions(
+  defaults: BotWorkflowRunOptions["approvalGate"],
+  overrides: BotWorkflowRunOptions["approvalGate"],
+): BotWorkflowRunOptions["approvalGate"] {
   if (overrides === false) return false
   if (defaults === false && overrides === undefined) return false
   if (defaults === false) return overrides

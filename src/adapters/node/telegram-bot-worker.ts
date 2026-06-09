@@ -1,8 +1,21 @@
 import fs from "node:fs/promises"
 import path from "node:path"
-
-import { createBotWorkflowDraftId, createTelegramLikeBotWorkflow, mergeBotWorkflowDraft } from "@/core/services"
+import type { AIProjectEditorResult, IAIProjectEditor, IBotFeedbackTranscriber, IPublishService } from "@/core/ports"
+import {
+  createBotDestinationCapabilityRegistry,
+  createBotEditRevisionId,
+  createBotWorkflowDraftId,
+  createTelegramLikeBotWorkflow,
+  mergeBotWorkflowDraft,
+  runAIProjectEdit,
+  validateBotDestinationCapability,
+} from "@/core/services"
 import type {
+  BotEditRevision,
+  BotEditSession,
+  BotEditSessionStore,
+  BotPublishResult,
+  BotRenderJobArtifact,
   BotRenderJobEventSink,
   BotRenderJobSnapshot,
   BotWorkflowDraft,
@@ -12,8 +25,9 @@ import type {
   TelegramLikeBotFile,
   TelegramLikeBotPayload,
 } from "@/core/types"
+import type { ProjectSchema } from "@/types/contracts/project-schema"
 
-import { NodeBotStatusNotifier, type NodeTelegramStatusClient } from "./bot-status"
+import { NodeBotStatusNotifier, type NodeTelegramStatusClient, type NodeTelegramVideoClient } from "./bot-status"
 import type { NodeBotWorkflowService, NodeBotWorkflowServiceOptions } from "./bot-workflow"
 import type { NodeTelegramBotWorkflowJobRecord, NodeTelegramBotWorkflowJobStore } from "./telegram-bot-job-store"
 
@@ -22,7 +36,11 @@ export interface TelegramBotFile {
   file_unique_id?: string
   file_name?: string
   mime_type?: string
+  file_size?: number
   file_path?: string
+  duration?: number
+  width?: number
+  height?: number
 }
 
 export interface TelegramBotMessage {
@@ -38,6 +56,8 @@ export interface TelegramBotMessage {
   document?: TelegramBotFile
   video?: TelegramBotFile
   audio?: TelegramBotFile
+  voice?: TelegramBotFile
+  video_note?: TelegramBotFile
   animation?: TelegramBotFile
   photo?: TelegramBotFile[]
 }
@@ -66,7 +86,7 @@ export interface TelegramBotFetchResponse {
 
 export type TelegramBotFetch = (
   url: string,
-  init?: { method?: string; headers?: Record<string, string>; body?: string },
+  init?: { method?: string; headers?: Record<string, string>; body?: BodyInit },
 ) => Promise<TelegramBotFetchResponse>
 
 export interface NodeTelegramBotClient {
@@ -94,6 +114,14 @@ export interface NodeTelegramBotWorkerOptions {
   draftResponder?: NodeTelegramStatusClient
   draftFormatter?: NodeTelegramBotDraftFormatter
   workflowJobStore?: NodeTelegramBotWorkflowJobStore
+  editSessionStore?: BotEditSessionStore
+  aiProjectEditor?: IAIProjectEditor
+  feedbackTranscriber?: IBotFeedbackTranscriber
+  publishService?: IPublishService
+  previewRenderer?: NodeTelegramBotReviewPreviewRenderer
+  previewResponder?: NodeTelegramBotReviewPreviewResponder
+  reviewResponder?: NodeTelegramStatusClient
+  reviewFormatter?: NodeTelegramBotReviewFormatter
   jobStatusFormatter?: NodeTelegramBotJobStatusFormatter
   jobCancelFormatter?: NodeTelegramBotJobCancelFormatter
   jobRetryFormatter?: NodeTelegramBotJobRetryFormatter
@@ -110,9 +138,30 @@ export interface NodeTelegramBotWorkerHandleOptions {
   workflowOptions?: NodeBotWorkflowServiceOptions
 }
 
-export type NodeTelegramBotCommand = "start" | "help" | "status" | "cancel" | "retry"
+export type NodeTelegramBotCommand =
+  | "start"
+  | "help"
+  | "status"
+  | "cancel"
+  | "retry"
+  | "approve"
+  | "revise"
+  | "versions"
+  | "discard"
 export type NodeTelegramBotDraftCommand = "render" | "cancel"
 export type NodeTelegramBotDraftAction = "updated" | "cancelled"
+export type NodeTelegramBotReviewAction =
+  | "approved"
+  | "awaiting_feedback"
+  | "cancelled"
+  | "discarded"
+  | "failed"
+  | "feedback_applied"
+  | "invalid_state"
+  | "not_found"
+  | "published"
+  | "status"
+  | "versions"
 
 export interface NodeTelegramBotAccessPolicy {
   allowedChatIds?: readonly string[]
@@ -244,6 +293,34 @@ export interface NodeTelegramBotJobRetryFormatterContext {
 
 export type NodeTelegramBotJobRetryFormatter = (context: NodeTelegramBotJobRetryFormatterContext) => string
 
+export interface NodeTelegramBotReviewFormatterContext {
+  action: NodeTelegramBotReviewAction
+  command?: NodeTelegramBotCommand
+  session?: BotEditSession
+  revision?: BotEditRevision
+  instruction?: string
+  publishResult?: BotPublishResult
+  message?: string
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+}
+
+export type NodeTelegramBotReviewFormatter = (context: NodeTelegramBotReviewFormatterContext) => string
+
+export interface NodeTelegramBotReviewPreviewRendererContext {
+  session: BotEditSession
+  revision: BotEditRevision
+  projectSchema: unknown
+  update: TelegramBotUpdate
+  payload: TelegramLikeBotPayload
+}
+
+export interface NodeTelegramBotReviewPreviewRenderer {
+  renderPreview(context: NodeTelegramBotReviewPreviewRendererContext): Promise<BotRenderJobArtifact>
+}
+
+export type NodeTelegramBotReviewPreviewResponder = NodeTelegramStatusClient & Partial<NodeTelegramVideoClient>
+
 export type NodeTelegramBotWorkerUpdateResult =
   | {
       skipped: true
@@ -263,6 +340,12 @@ export type NodeTelegramBotWorkerUpdateResult =
       duplicateOf?: string
       workflowJob?: NodeTelegramBotWorkflowJobRecord
       accessDenied?: boolean
+      reviewAction?: NodeTelegramBotReviewAction
+      editSessionId?: string
+      editSession?: BotEditSession
+      editRevision?: BotEditRevision
+      feedbackText?: string
+      publishResult?: BotPublishResult
     }
   | {
       skipped: false
@@ -543,6 +626,12 @@ export class NodeTelegramBotWorker {
       return this.createAccessDeniedResult(update, payload, this.options.accessPolicy)
     }
 
+    const reviewCommand = this.options.disableCommandRouting ? null : parseTelegramBotReviewCommand(payload.text)
+    if (reviewCommand) {
+      const reviewResult = await this.handleReviewCommand(update, payload, reviewCommand)
+      if (reviewResult) return reviewResult
+    }
+
     const command = this.options.disableCommandRouting ? null : parseTelegramBotCommand(payload.text)
     if (command === "retry") {
       return this.handleRetryCommand(update, payload, options)
@@ -576,6 +665,9 @@ export class NodeTelegramBotWorker {
       return result
     }
 
+    const reviewFeedbackResult = await this.handleReviewFeedbackUpdate(update, payload)
+    if (reviewFeedbackResult) return reviewFeedbackResult
+
     const draftResult = await this.handleDraftUpdate(update, payload, options)
     if (draftResult) return draftResult
 
@@ -583,7 +675,9 @@ export class NodeTelegramBotWorker {
       run: (workflowOptions) =>
         this.options.workflow.runTelegramLikePayload(
           payload,
-          mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
+          this.withReviewApprovalGate(
+            mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
+          ),
         ),
     })
   }
@@ -663,6 +757,28 @@ export class NodeTelegramBotWorker {
     return this.options.now?.() ?? new Date().toISOString()
   }
 
+  private withReviewApprovalGate(
+    options: NodeBotWorkflowServiceOptions | undefined,
+  ): NodeBotWorkflowServiceOptions | undefined {
+    if (!this.options.editSessionStore) return options
+    const gatedOptions = mergeWorkflowOptions(options, {
+      approvalGate: {
+        enabled: true,
+        previewDestination: "telegram",
+      },
+    })
+
+    if (!this.options.publishService) return gatedOptions
+
+    return mergeWorkflowOptions(gatedOptions, {
+      intake: {
+        destinationCapabilities: createBotDestinationCapabilityRegistry({
+          publisher: this.options.publishService,
+        }),
+      },
+    })
+  }
+
   private async sendCommandResponse(
     command: NodeTelegramBotCommand,
     payload: TelegramLikeBotPayload,
@@ -739,6 +855,17 @@ export class NodeTelegramBotWorker {
     update: TelegramBotUpdate,
     payload: TelegramLikeBotPayload,
   ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const activeSession = await this.readCurrentEditSession(payload)
+    if (activeSession) {
+      return this.createReviewSkippedResult({
+        action: "status",
+        command: "status",
+        session: activeSession,
+        payload,
+        update,
+      })
+    }
+
     const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
     const jobs =
       (await this.options.workflowJobStore?.listJobs({
@@ -807,11 +934,11 @@ export class NodeTelegramBotWorker {
         retry.job.sourceWorkflow
           ? this.options.workflow.runWorkflow(
               retry.job.sourceWorkflow,
-              mergeWorkflowOptions(workflowDefaults, workflowOptions),
+              this.withReviewApprovalGate(mergeWorkflowOptions(workflowDefaults, workflowOptions)),
             )
           : this.options.workflow.runTelegramLikePayload(
               retry.job.sourcePayload as TelegramLikeBotPayload,
-              mergeWorkflowOptions(workflowDefaults, workflowOptions),
+              this.withReviewApprovalGate(mergeWorkflowOptions(workflowDefaults, workflowOptions)),
             ),
     })
   }
@@ -947,6 +1074,720 @@ export class NodeTelegramBotWorker {
     return cancellation
   }
 
+  private async handleReviewCommand(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    command: NodeTelegramBotCommand,
+  ): Promise<NodeTelegramBotWorkerUpdateResult | null> {
+    if (!this.options.editSessionStore) return null
+
+    const session = await this.readCurrentEditSession(payload)
+    if (!session) {
+      if (command === "cancel") return null
+      return this.createReviewSkippedResult({
+        action: "not_found",
+        command,
+        payload,
+        update,
+        message: "No active AI review session was found for this chat.",
+      })
+    }
+
+    switch (command) {
+      case "approve":
+        return this.approveEditSession(update, payload, session, command)
+      case "revise": {
+        const instruction = parseTelegramBotReviseInstruction(payload.text)
+        if (instruction) {
+          return this.applyReviewFeedback(update, payload, session, instruction)
+        }
+        return this.createReviewSkippedResult({
+          action: session.status === "preview_ready" ? "awaiting_feedback" : "invalid_state",
+          command,
+          session,
+          payload,
+          update,
+          message:
+            session.status === "preview_ready"
+              ? "Send the correction after /revise, or send it as a plain text or voice message."
+              : `Edit session is ${session.status}; revisions are accepted only after a preview is ready.`,
+        })
+      }
+      case "versions":
+        return this.createReviewSkippedResult({
+          action: "versions",
+          command,
+          session,
+          payload,
+          update,
+        })
+      case "discard":
+        return this.discardLatestEditRevision(update, payload, session, command)
+      case "cancel":
+        return this.cancelEditSession(update, payload, session, command)
+      default:
+        return null
+    }
+  }
+
+  private async handleReviewFeedbackUpdate(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+  ): Promise<NodeTelegramBotWorkerUpdateResult | null> {
+    if (!this.options.editSessionStore) return null
+
+    const session = await this.readCurrentEditSession(payload)
+    if (!session) return null
+
+    if (session.status === "collecting") {
+      return null
+    }
+
+    if (!hasTelegramLikePayloadContent(payload)) {
+      return null
+    }
+
+    if (session.status !== "preview_ready") {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        session,
+        payload,
+        update,
+        message: `Edit session is ${session.status}; feedback is accepted only after a preview is ready.`,
+      })
+    }
+
+    try {
+      const instruction = await this.resolveReviewFeedbackText(payload, session)
+      if (!instruction) {
+        return this.createReviewSkippedResult({
+          action: "invalid_state",
+          session,
+          payload,
+          update,
+          message: "Send a text or voice correction for the current preview.",
+        })
+      }
+      return this.applyReviewFeedback(update, payload, session, instruction)
+    } catch (error) {
+      return this.createReviewSkippedResult({
+        action: "failed",
+        session,
+        payload,
+        update,
+        message: formatUnknownError(error),
+      })
+    }
+  }
+
+  private async approveEditSession(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    session: BotEditSession,
+    command: NodeTelegramBotCommand,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    if (session.status === "approved" && session.approvedRevisionId) {
+      return this.createReviewSkippedResult({
+        action: "approved",
+        command,
+        session,
+        revision: session.revisions.find((revision) => revision.id === session.approvedRevisionId),
+        payload,
+        update,
+        message: "This edit session is already approved.",
+      })
+    }
+
+    if (session.status !== "preview_ready") {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        command,
+        session,
+        payload,
+        update,
+        message: `Edit session is ${session.status}; approval is available only after a preview is ready.`,
+      })
+    }
+
+    const revision = latestBotEditRevision(session)
+    if (!revision) {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        command,
+        session,
+        payload,
+        update,
+        message: "This edit session has no revision to approve.",
+      })
+    }
+
+    const timestamp = this.now()
+    const approvedSession: BotEditSession = {
+      ...session,
+      status: "approved",
+      approvedRevisionId: revision.id,
+      approvedAt: timestamp,
+      ...(payload.message_id !== undefined ? { approvedMessageId: String(payload.message_id) } : {}),
+      updatedAt: timestamp,
+    }
+    await this.options.editSessionStore?.writeSession(approvedSession)
+
+    const publishTarget = approvedSession.publishTarget
+    if (this.options.publishService && publishTarget && approvedSession.currentArtifact) {
+      return this.publishApprovedEditSession(update, payload, approvedSession, revision, command)
+    }
+
+    return this.createReviewSkippedResult({
+      action: "approved",
+      command,
+      session: approvedSession,
+      revision,
+      payload,
+      update,
+    })
+  }
+
+  private async publishApprovedEditSession(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    session: BotEditSession,
+    revision: BotEditRevision,
+    command: NodeTelegramBotCommand,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const publishTarget = session.publishTarget
+    if (!publishTarget || !session.currentArtifact) {
+      return this.createReviewSkippedResult({
+        action: "approved",
+        command,
+        session,
+        revision,
+        payload,
+        update,
+      })
+    }
+
+    const capabilityError = validateBotDestinationCapability(
+      publishTarget,
+      createBotDestinationCapabilityRegistry({
+        publisher: this.options.publishService,
+      }),
+    )
+    if (capabilityError) {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        command,
+        session,
+        revision,
+        payload,
+        update,
+        message: capabilityError.userMessage,
+      })
+    }
+
+    const publishingTimestamp = this.now()
+    const publishingSession: BotEditSession = {
+      ...session,
+      status: "publishing",
+      updatedAt: publishingTimestamp,
+    }
+    await this.options.editSessionStore?.writeSession(publishingSession)
+
+    let publishResult: BotPublishResult
+    try {
+      publishResult = await this.options.publishService!.publish({
+        destination: publishTarget,
+        artifact: session.currentArtifact,
+        metadata: {
+          ...(session.chatId ? { chatId: session.chatId } : {}),
+          ...(session.goal ? { caption: session.goal, title: session.goal } : {}),
+        },
+        params: {
+          sessionId: session.id,
+          revisionId: revision.id,
+          approvedMessageId: session.approvedMessageId,
+        },
+      })
+    } catch (error) {
+      publishResult = {
+        destination: publishTarget,
+        status: "failed",
+        error: formatUnknownError(error),
+      }
+    }
+
+    const publishedTimestamp = this.now()
+    const publishedSession: BotEditSession = {
+      ...publishingSession,
+      status: publishResult.status === "done" ? "done" : "failed",
+      publishResult,
+      ...(publishResult.status === "done" ? { publishedAt: publishedTimestamp } : { failedAt: publishedTimestamp }),
+      ...(publishResult.status !== "done" ? { failure: publishResult.error ?? "Publishing failed" } : {}),
+      updatedAt: publishedTimestamp,
+    }
+    await this.options.editSessionStore?.writeSession(publishedSession)
+
+    return this.createReviewSkippedResult({
+      action: publishResult.status === "done" ? "published" : "failed",
+      command,
+      session: publishedSession,
+      revision,
+      payload,
+      update,
+      publishResult,
+      message: publishResult.error,
+    })
+  }
+
+  private async discardLatestEditRevision(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    session: BotEditSession,
+    command: NodeTelegramBotCommand,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    if (session.status !== "preview_ready") {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        command,
+        session,
+        payload,
+        update,
+        message: `Edit session is ${session.status}; discard is available only after a preview is ready.`,
+      })
+    }
+
+    if (session.revisions.length <= 1) {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        command,
+        session,
+        payload,
+        update,
+        message: "There is no previous revision to restore.",
+      })
+    }
+
+    const revisions = session.revisions.slice(0, -1)
+    const revision = latestBotEditRevision({ ...session, revisions })
+    if (!revision) {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        command,
+        session,
+        payload,
+        update,
+        message: "There is no previous revision to restore.",
+      })
+    }
+
+    const timestamp = this.now()
+    const { currentArtifact: _currentArtifact, ...sessionWithoutArtifact } = session
+    const discardedSession: BotEditSession = {
+      ...sessionWithoutArtifact,
+      status: "preview_ready",
+      revisions,
+      ...(revision.projectSchema !== undefined ? { currentProjectSchema: revision.projectSchema } : {}),
+      ...(revision.artifact ? { currentArtifact: revision.artifact } : {}),
+      updatedAt: timestamp,
+    }
+    await this.options.editSessionStore?.writeSession(discardedSession)
+
+    return this.createReviewSkippedResult({
+      action: "discarded",
+      command,
+      session: discardedSession,
+      revision,
+      payload,
+      update,
+    })
+  }
+
+  private async cancelEditSession(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    session: BotEditSession,
+    command: NodeTelegramBotCommand,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const timestamp = this.now()
+    const cancelledSession: BotEditSession = {
+      ...session,
+      status: "cancelled",
+      cancelledAt: timestamp,
+      updatedAt: timestamp,
+    }
+    await this.options.editSessionStore?.writeSession(cancelledSession)
+
+    return this.createReviewSkippedResult({
+      action: "cancelled",
+      command,
+      session: cancelledSession,
+      payload,
+      update,
+    })
+  }
+
+  private async applyReviewFeedback(
+    update: TelegramBotUpdate,
+    payload: TelegramLikeBotPayload,
+    session: BotEditSession,
+    instruction: string,
+  ): Promise<NodeTelegramBotWorkerUpdateResult> {
+    if (session.status !== "preview_ready") {
+      return this.createReviewSkippedResult({
+        action: "invalid_state",
+        session,
+        payload,
+        update,
+        instruction,
+        message: `Edit session is ${session.status}; revisions are accepted only after a preview is ready.`,
+      })
+    }
+
+    if (!this.options.aiProjectEditor) {
+      return this.createReviewSkippedResult({
+        action: "failed",
+        session,
+        payload,
+        update,
+        instruction,
+        message: "AI project editor is not configured for this bot worker.",
+      })
+    }
+
+    if (!session.currentProjectSchema) {
+      return this.createReviewSkippedResult({
+        action: "failed",
+        session,
+        payload,
+        update,
+        instruction,
+        message: "Current ProjectSchema is missing from this edit session.",
+      })
+    }
+
+    const timestamp = this.now()
+    const editingSession: BotEditSession = {
+      ...session,
+      status: "editing",
+      updatedAt: timestamp,
+    }
+    await this.options.editSessionStore?.writeSession(editingSession)
+
+    try {
+      const edit = await runAIProjectEdit(this.options.aiProjectEditor, {
+        currentProject: session.currentProjectSchema as ProjectSchema,
+        sourceMedia: session.media,
+        userInstruction: instruction,
+        ...((session.publishTarget ?? session.previewDestination)
+          ? { targetPlatform: session.publishTarget ?? session.previewDestination }
+          : {}),
+        revisionHistory: session.revisions.map((revision) => ({
+          id: revision.id,
+          index: revision.index,
+          ...(revision.instruction ? { instruction: revision.instruction } : {}),
+          ...(revision.summary ? { summary: revision.summary } : {}),
+          createdAt: revision.createdAt,
+        })),
+        metadata: {
+          sessionId: session.id,
+          updateId: update.update_id,
+          sourceMessageId: payload.message_id,
+        },
+      })
+
+      if (!edit.ok) {
+        const failedSession = this.failEditSession(editingSession, edit.errors.map((error) => error.message).join("; "))
+        await this.options.editSessionStore?.writeSession(failedSession)
+        return this.createReviewSkippedResult({
+          action: "failed",
+          session: failedSession,
+          payload,
+          update,
+          instruction,
+          message: failedSession.failure,
+        })
+      }
+
+      let revision = createAppliedEditRevision({
+        session,
+        instruction,
+        result: edit.result,
+        attempts: edit.attempts,
+        sourceMessageId: payload.message_id,
+        timestamp,
+      })
+
+      if (this.options.previewRenderer) {
+        const artifact = await this.options.previewRenderer.renderPreview({
+          session: editingSession,
+          revision,
+          projectSchema: edit.result.nextProject,
+          update,
+          payload,
+        })
+        revision = {
+          ...revision,
+          artifact,
+          metadata: mergeRevisionMetadata(revision.metadata, {
+            previewRenderedAt: this.now(),
+          }),
+        }
+      }
+
+      const previewReadySession: BotEditSession = {
+        ...editingSession,
+        status: "preview_ready",
+        currentProjectSchema: edit.result.nextProject,
+        ...(revision.artifact ? { currentArtifact: revision.artifact } : {}),
+        revisionCounter: Math.max(editingSession.revisionCounter, revision.index + 1),
+        revisions: [...editingSession.revisions, revision],
+        updatedAt: timestamp,
+      }
+
+      if (revision.artifact) {
+        revision = await this.deliverReviewPreview(previewReadySession, revision, payload)
+        previewReadySession.revisions = [...editingSession.revisions, revision]
+      }
+
+      await this.options.editSessionStore?.writeSession(previewReadySession)
+
+      return this.createReviewSkippedResult({
+        action: "feedback_applied",
+        session: previewReadySession,
+        revision,
+        payload,
+        update,
+        instruction,
+        feedbackText: instruction,
+      })
+    } catch (error) {
+      const failedSession = this.failEditSession(editingSession, formatUnknownError(error))
+      await this.options.editSessionStore?.writeSession(failedSession)
+      return this.createReviewSkippedResult({
+        action: "failed",
+        session: failedSession,
+        payload,
+        update,
+        instruction,
+        message: failedSession.failure,
+      })
+    }
+  }
+
+  private failEditSession(session: BotEditSession, failure: string): BotEditSession {
+    const timestamp = this.now()
+    return {
+      ...session,
+      status: "failed",
+      failedAt: timestamp,
+      failure,
+      updatedAt: timestamp,
+    }
+  }
+
+  private async resolveReviewFeedbackText(
+    payload: TelegramLikeBotPayload,
+    session: BotEditSession,
+  ): Promise<string | undefined> {
+    const text = normalizedTelegramText(payload.text ?? payload.caption)
+    if (text && !text.startsWith("/")) {
+      return text
+    }
+
+    const workflow = createTelegramLikeBotWorkflow(payload)
+    const media = workflow.media?.find((item) => getFeedbackMediaKind(item) !== undefined)
+    if (!media) return undefined
+
+    if (!this.options.feedbackTranscriber) {
+      throw new Error("Feedback transcriber is not configured for voice/video-note review messages")
+    }
+
+    const kind = getFeedbackMediaKind(media)
+    if (!kind) return undefined
+
+    const transcription = await this.options.feedbackTranscriber.transcribeFeedback({
+      workflow,
+      media,
+      kind,
+      payload,
+      metadata: {
+        sessionId: session.id,
+      },
+    })
+
+    return transcription.text.trim()
+  }
+
+  private async readCurrentEditSession(payload: TelegramLikeBotPayload): Promise<BotEditSession | undefined> {
+    const store = this.options.editSessionStore
+    if (!store) return undefined
+
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    const userId = payload.from?.id === undefined ? undefined : String(payload.from.id)
+    if (!chatId && !userId) return undefined
+
+    return store.readCurrentSession({
+      source: "telegram",
+      ...(chatId ? { chatId } : {}),
+      ...(userId ? { userId } : {}),
+      activeOnly: true,
+    })
+  }
+
+  private async createReviewSkippedResult(context: {
+    action: NodeTelegramBotReviewAction
+    command?: NodeTelegramBotCommand
+    session?: BotEditSession
+    revision?: BotEditRevision
+    instruction?: string
+    feedbackText?: string
+    publishResult?: BotPublishResult
+    message?: string
+    payload: TelegramLikeBotPayload
+    update: TelegramBotUpdate
+  }): Promise<NodeTelegramBotWorkerUpdateResult> {
+    const responseText = (this.options.reviewFormatter ?? defaultTelegramBotReviewText)({
+      action: context.action,
+      ...(context.command ? { command: context.command } : {}),
+      ...(context.session ? { session: context.session } : {}),
+      ...(context.revision ? { revision: context.revision } : {}),
+      ...(context.instruction ? { instruction: context.instruction } : {}),
+      ...(context.publishResult ? { publishResult: context.publishResult } : {}),
+      ...(context.message ? { message: context.message } : {}),
+      payload: context.payload,
+      update: context.update,
+    })
+    let responseError: string | undefined
+
+    try {
+      await this.sendReviewResponse(context.payload, responseText, context.command)
+    } catch (error) {
+      responseError = formatUnknownError(error)
+    }
+
+    const result: NodeTelegramBotWorkerUpdateResult = {
+      skipped: true,
+      reason: "Telegram bot edit session handled",
+      updateId: context.update.update_id,
+      update: context.update,
+      payload: context.payload,
+      reviewAction: context.action,
+      responseText,
+      ...(context.command ? { command: context.command } : {}),
+      ...(context.session ? { editSessionId: context.session.id, editSession: context.session } : {}),
+      ...(context.revision ? { editRevision: context.revision } : {}),
+      ...(context.feedbackText ? { feedbackText: context.feedbackText } : {}),
+      ...(context.publishResult ? { publishResult: context.publishResult } : {}),
+      ...(responseError ? { responseError } : {}),
+    }
+    await this.options.onResult?.(result)
+    return result
+  }
+
+  private async sendReviewResponse(
+    payload: TelegramLikeBotPayload,
+    text: string,
+    command?: NodeTelegramBotCommand,
+  ): Promise<void> {
+    const chatId = payload.chat?.id === undefined ? undefined : String(payload.chat.id)
+    if (!chatId) return
+
+    const responder = this.resolveReviewResponder()
+    await responder?.sendMessage({
+      chatId,
+      text,
+      ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+      metadata: {
+        review: true,
+        source: "telegram-bot-worker",
+        ...(command ? { command } : {}),
+      },
+    })
+  }
+
+  private async deliverReviewPreview(
+    session: BotEditSession,
+    revision: BotEditRevision,
+    payload: TelegramLikeBotPayload,
+  ): Promise<BotEditRevision> {
+    const artifact = revision.artifact
+    const chatId = session.chatId ?? (payload.chat?.id === undefined ? undefined : String(payload.chat.id))
+    if (!artifact || !chatId) return revision
+
+    const responder = this.resolvePreviewResponder()
+    const caption = formatReviewPreviewCaption(revision)
+
+    if (artifact.path && responder?.sendVideo) {
+      try {
+        const sent = await responder.sendVideo({
+          chatId,
+          path: artifact.path,
+          caption,
+          mimeType: artifact.mimeType,
+          metadata: {
+            sessionId: session.id,
+            revisionId: revision.id,
+          },
+        })
+        return {
+          ...revision,
+          metadata: mergeRevisionMetadata(revision.metadata, {
+            previewDelivery: {
+              status: "sent",
+              messageId: sent.messageId,
+              artifactPath: artifact.path,
+            },
+          }),
+        }
+      } catch (error) {
+        await this.sendReviewPreviewFallback(responder, chatId, payload, revision, formatUnknownError(error))
+        return {
+          ...revision,
+          metadata: mergeRevisionMetadata(revision.metadata, {
+            previewDelivery: {
+              status: "failed",
+              error: formatUnknownError(error),
+              artifactPath: artifact.path,
+            },
+          }),
+        }
+      }
+    }
+
+    await this.sendReviewPreviewFallback(responder, chatId, payload, revision)
+    return {
+      ...revision,
+      metadata: mergeRevisionMetadata(revision.metadata, {
+        previewDelivery: {
+          status: "fallback_message",
+          artifact: artifact.url ?? artifact.path,
+        },
+      }),
+    }
+  }
+
+  private async sendReviewPreviewFallback(
+    responder: NodeTelegramBotReviewPreviewResponder | undefined,
+    chatId: string,
+    payload: TelegramLikeBotPayload,
+    revision: BotEditRevision,
+    error?: string,
+  ): Promise<void> {
+    try {
+      await responder?.sendMessage({
+        chatId,
+        text: formatReviewPreviewFallbackText(revision, error),
+        ...(payload.message_id !== undefined ? { replyToMessageId: String(payload.message_id) } : {}),
+        metadata: {
+          preview: true,
+          sessionRevisionId: revision.id,
+          source: "telegram-bot-worker",
+        },
+      })
+    } catch {
+      // Preview fallback delivery is best-effort; revision artifact remains in session history.
+    }
+  }
+
   private async handleDraftUpdate(
     update: TelegramBotUpdate,
     payload: TelegramLikeBotPayload,
@@ -979,7 +1820,12 @@ export class NodeTelegramBotWorker {
         run: (workflowOptions) =>
           this.options.workflow.runWorkflow(
             draft.workflow,
-            mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
+            this.withReviewApprovalGate(
+              mergeWorkflowOptions(
+                mergeWorkflowOptions(this.workflowOptions, options.workflowOptions),
+                workflowOptions,
+              ),
+            ),
           ),
         onComplete: async (workflowResult) => {
           if (workflowResult.ok) {
@@ -1549,6 +2395,30 @@ export class NodeTelegramBotWorker {
       fetch: this.options.fetch,
     })
   }
+
+  private resolveReviewResponder(): NodeTelegramStatusClient | undefined {
+    if (this.options.reviewResponder) return this.options.reviewResponder
+    if (this.options.commandResponder) return this.options.commandResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
+
+  private resolvePreviewResponder(): NodeTelegramBotReviewPreviewResponder | undefined {
+    if (this.options.previewResponder) return this.options.previewResponder
+    if (this.options.reviewResponder) return this.options.reviewResponder
+    if (!this.options.botToken) return undefined
+    return new NodeBotStatusNotifier({
+      telegram: {
+        botToken: this.options.botToken,
+      },
+      fetch: this.options.fetch,
+    })
+  }
 }
 
 function createTelegramBotWorkflowQueueId(update: TelegramBotUpdate): string {
@@ -1568,6 +2438,8 @@ export function createTelegramLikePayloadFromUpdate(update: TelegramBotUpdate): 
     ...(message.document ? { document: telegramFile(message.document) } : {}),
     ...(message.video ? { video: telegramFile(message.video) } : {}),
     ...(message.audio ? { audio: telegramFile(message.audio) } : {}),
+    ...(message.voice ? { voice: telegramFile(message.voice) } : {}),
+    ...(message.video_note ? { video_note: telegramFile(message.video_note) } : {}),
     ...(message.animation ? { animation: telegramFile(message.animation) } : {}),
     ...(message.photo ? { photo: message.photo.map(telegramFile) } : {}),
   }
@@ -1595,7 +2467,11 @@ function telegramFile(file: TelegramBotFile): TelegramLikeBotFile {
     ...(file.file_unique_id ? { file_unique_id: file.file_unique_id } : {}),
     ...(file.file_name ? { file_name: file.file_name } : {}),
     ...(file.mime_type ? { mime_type: file.mime_type } : {}),
+    ...(file.file_size !== undefined ? { file_size: file.file_size } : {}),
     ...(file.file_path ? { file_path: file.file_path } : {}),
+    ...(file.duration !== undefined ? { duration: file.duration } : {}),
+    ...(file.width !== undefined ? { width: file.width } : {}),
+    ...(file.height !== undefined ? { height: file.height } : {}),
   }
 }
 
@@ -1605,12 +2481,20 @@ export function parseTelegramBotCommand(text: string | undefined): NodeTelegramB
 
   const command = token.split("@")[0]
   switch (command) {
+    case "/approve":
+      return "approve"
+    case "/discard":
+      return "discard"
     case "/start":
       return "start"
     case "/help":
       return "help"
     case "/status":
       return "status"
+    case "/revise":
+      return "revise"
+    case "/versions":
+      return "versions"
     case "/cancel":
       return parseTelegramBotCancelCommandTarget(text) ? "cancel" : null
     case "/retry":
@@ -1618,6 +2502,37 @@ export function parseTelegramBotCommand(text: string | undefined): NodeTelegramB
     default:
       return null
   }
+}
+
+export function parseTelegramBotReviewCommand(text: string | undefined): NodeTelegramBotCommand | null {
+  const tokens = text?.trim().split(/\s+/) ?? []
+  const command = tokens[0]?.toLowerCase().split("@")[0]
+  switch (command) {
+    case "/approve":
+      return "approve"
+    case "/discard":
+      return "discard"
+    case "/revise":
+      return "revise"
+    case "/versions":
+      return "versions"
+    case "/cancel":
+      return tokens[1] ? null : "cancel"
+    default:
+      return null
+  }
+}
+
+export function parseTelegramBotReviseInstruction(text: string | undefined): string | undefined {
+  const raw = text?.trim()
+  if (!raw) return undefined
+
+  const [token = "", ...rest] = raw.split(/\s+/)
+  const command = token.toLowerCase().split("@")[0]
+  if (command !== "/revise") return undefined
+
+  const instruction = rest.join(" ").trim()
+  return instruction.length > 0 ? instruction : undefined
 }
 
 export function parseTelegramBotCancelCommandTarget(text: string | undefined): string | null {
@@ -1658,7 +2573,7 @@ export function defaultTelegramBotCommandText(): string {
     "template=promo destination=telegram",
     'project="./project.json" destination=file output="./out.mp4"',
     "Options: template, project, media/url/input/source, destination, output, resolution.",
-    "Commands: /status, /render, /cancel, /cancel <queueId>, /retry <queueId>.",
+    "Commands: /status, /render, /approve, /revise, /versions, /discard, /cancel, /cancel <queueId>, /retry <queueId>.",
   ].join("\n")
 }
 
@@ -1733,6 +2648,195 @@ export function defaultTelegramBotUpdateErrorText(): string {
   return ["Timeline Studio bot", "Could not process this request.", "Try again or send /help."].join("\n")
 }
 
+export function defaultTelegramBotReviewText(context: NodeTelegramBotReviewFormatterContext): string {
+  switch (context.action) {
+    case "approved":
+      return [
+        "Timeline Studio bot",
+        `Approved revision: ${context.revision?.id ?? context.session?.approvedRevisionId ?? "current"}`,
+        "Final publishing is gated and will run from the approved session state.",
+      ].join("\n")
+    case "awaiting_feedback":
+      return [
+        "Timeline Studio bot",
+        "Send the correction as text or voice.",
+        "You can also send /revise followed by the requested change.",
+      ].join("\n")
+    case "cancelled":
+      return ["Timeline Studio bot", "AI review session cancelled.", "Send new media when ready."].join("\n")
+    case "discarded":
+      return [
+        "Timeline Studio bot",
+        `Discarded latest revision. Current revision: ${context.revision?.id ?? "previous"}`,
+      ].join("\n")
+    case "failed":
+      return ["Timeline Studio bot", "Could not apply this review action.", context.message ?? "Unknown error."].join(
+        "\n",
+      )
+    case "feedback_applied":
+      return [
+        "Timeline Studio bot",
+        `Applied revision: ${context.revision?.id ?? "new"}`,
+        ...(context.revision?.summary ? [context.revision.summary] : []),
+        "Review the next preview, then send another correction or /approve.",
+      ].join("\n")
+    case "invalid_state":
+      return [
+        "Timeline Studio bot",
+        "This review action is not available right now.",
+        context.message ?? formatBotEditSessionStatus(context.session),
+      ].join("\n")
+    case "not_found":
+      return ["Timeline Studio bot", context.message ?? "No active AI review session was found for this chat."].join(
+        "\n",
+      )
+    case "published":
+      return [
+        "Timeline Studio bot",
+        `Approved revision: ${context.revision?.id ?? context.session?.approvedRevisionId ?? "current"}`,
+        `Published to ${context.publishResult?.destination ?? context.session?.publishTarget ?? "destination"}.`,
+        ...(context.publishResult?.url ? [context.publishResult.url] : []),
+      ].join("\n")
+    case "status":
+      return formatBotEditSessionStatusMessage(context.session)
+    case "versions":
+      return formatBotEditSessionVersionsMessage(context.session)
+  }
+}
+
+function formatBotEditSessionStatusMessage(session: BotEditSession | undefined): string {
+  if (!session) {
+    return ["Timeline Studio bot", "No active AI review session for this chat."].join("\n")
+  }
+
+  return [
+    "Timeline Studio bot",
+    formatBotEditSessionStatus(session),
+    ...(session.goal ? [`Goal: ${truncateStatusText(session.goal)}`] : []),
+    ...(session.revisions.length > 0 ? ["Recent revisions:", ...formatRecentBotEditRevisionLines(session)] : []),
+  ].join("\n")
+}
+
+function formatBotEditSessionVersionsMessage(session: BotEditSession | undefined): string {
+  if (!session) {
+    return ["Timeline Studio bot", "No active AI review session for this chat."].join("\n")
+  }
+
+  if (session.revisions.length === 0) {
+    return [
+      "Timeline Studio bot",
+      "This AI review session has no revisions yet.",
+      formatBotEditSessionStatus(session),
+    ].join("\n")
+  }
+
+  return ["Timeline Studio bot", "AI review revisions:", ...session.revisions.map(formatBotEditRevisionLine)].join("\n")
+}
+
+function formatBotEditSessionStatus(session: BotEditSession | undefined): string {
+  if (!session) return "No active AI review session."
+  return `AI review session ${session.id}: ${session.status}, revisions=${session.revisions.length}`
+}
+
+function formatRecentBotEditRevisionLines(session: BotEditSession, limit = 5): string[] {
+  return session.revisions.slice(-limit).map(formatBotEditRevisionLine)
+}
+
+function formatBotEditRevisionLine(revision: BotEditRevision): string {
+  const details = [`#${revision.index}`, revision.id]
+  if (revision.summary) details.push(truncateStatusText(revision.summary))
+  if (revision.artifact?.url) details.push(revision.artifact.url)
+  else if (revision.artifact?.path) details.push(revision.artifact.path)
+  return details.join(": ")
+}
+
+function createAppliedEditRevision(context: {
+  session: BotEditSession
+  instruction: string
+  result: AIProjectEditorResult
+  attempts: number
+  sourceMessageId?: string | number
+  timestamp: string
+}): BotEditRevision {
+  const index = context.session.revisionCounter
+  return {
+    id: createBotEditRevisionId(context.session.id, index),
+    index,
+    projectSchema: context.result.nextProject,
+    instruction: context.instruction,
+    summary: context.result.summary,
+    changedAreas: context.result.changedAreas,
+    diagnostics: context.result.diagnostics.map(formatAIProjectEditDiagnostic),
+    ...(context.sourceMessageId !== undefined ? { sourceMessageId: String(context.sourceMessageId) } : {}),
+    createdAt: context.timestamp,
+    updatedAt: context.timestamp,
+    metadata: {
+      commands: context.result.commands,
+      attempts: context.attempts,
+      ...(context.result.metadata ? { editor: context.result.metadata } : {}),
+    },
+  }
+}
+
+function formatReviewPreviewCaption(revision: BotEditRevision): string {
+  return [
+    `Preview ${revision.id}`,
+    ...(revision.summary ? [truncateStatusText(revision.summary)] : []),
+    "Send another correction or /approve.",
+  ].join("\n")
+}
+
+function formatReviewPreviewFallbackText(revision: BotEditRevision, error?: string): string {
+  return [
+    "Timeline Studio bot",
+    `Preview artifact for ${revision.id}: ${revision.artifact?.url ?? revision.artifact?.path ?? "not available"}`,
+    ...(error ? [`Telegram video delivery failed: ${error}`] : []),
+  ].join("\n")
+}
+
+function mergeRevisionMetadata(
+  base: Record<string, unknown> | undefined,
+  patch: Record<string, unknown>,
+): Record<string, unknown> {
+  return {
+    ...(base ?? {}),
+    ...patch,
+  }
+}
+
+function formatAIProjectEditDiagnostic(diagnostic: AIProjectEditorResult["diagnostics"][number]): string {
+  return [diagnostic.level, diagnostic.code, diagnostic.message].filter(Boolean).join(": ")
+}
+
+function latestBotEditRevision(session: Pick<BotEditSession, "revisions">): BotEditRevision | undefined {
+  return session.revisions.at(-1)
+}
+
+function getFeedbackMediaKind(media: { metadata?: Record<string, unknown> }): "voice" | "video_note" | undefined {
+  const kind = media.metadata?.telegramMediaKind
+  return kind === "voice" || kind === "video_note" ? kind : undefined
+}
+
+function hasTelegramLikePayloadContent(payload: TelegramLikeBotPayload): boolean {
+  return Boolean(
+    normalizedTelegramText(payload.text ?? payload.caption) ||
+      payload.document ||
+      payload.video ||
+      payload.audio ||
+      payload.voice ||
+      payload.video_note ||
+      payload.animation ||
+      payload.photo ||
+      payload.media?.length ||
+      payload.attachments?.length,
+  )
+}
+
+function normalizedTelegramText(text: string | undefined): string | undefined {
+  const normalized = text?.trim()
+  return normalized ? normalized : undefined
+}
+
 function formatTelegramBotJobStatusLine(record: NodeTelegramBotWorkflowJobRecord): string {
   const details: string[] = [record.status]
   if (record.renderJobStatus && record.renderJobStatus !== record.status) {
@@ -1791,7 +2895,7 @@ function mergeObject<T extends object>(defaults: T | undefined, overrides: T | u
 
 function globalFetch(
   url: string,
-  init?: { method?: string; headers?: Record<string, string>; body?: string },
+  init?: { method?: string; headers?: Record<string, string>; body?: BodyInit },
 ): Promise<TelegramBotFetchResponse> {
   if (typeof fetch !== "function") {
     throw new Error("No fetch implementation is available for Telegram bot polling")

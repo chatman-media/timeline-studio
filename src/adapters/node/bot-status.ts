@@ -1,3 +1,6 @@
+import fs from "node:fs/promises"
+import path from "node:path"
+
 import type { BotWorkflowStatusMessage, BotWorkflowStatusSink } from "@/core/types"
 
 export interface NodeTelegramStatusPayload {
@@ -16,6 +19,18 @@ export interface NodeTelegramStatusClient {
   sendMessage(payload: NodeTelegramStatusPayload): Promise<NodeTelegramStatusResult>
 }
 
+export interface NodeTelegramVideoPayload {
+  chatId: string
+  path: string
+  caption?: string
+  mimeType?: string
+  metadata?: unknown
+}
+
+export interface NodeTelegramVideoClient {
+  sendVideo(payload: NodeTelegramVideoPayload): Promise<NodeTelegramStatusResult>
+}
+
 export interface NodeStatusFetchResponse {
   ok: boolean
   status: number
@@ -25,7 +40,7 @@ export interface NodeStatusFetchResponse {
 
 export type NodeStatusFetch = (
   url: string,
-  init?: { method?: string; headers?: Record<string, string>; body?: string },
+  init?: { method?: string; headers?: Record<string, string>; body?: BodyInit },
 ) => Promise<NodeStatusFetchResponse>
 
 export interface NodeBotStatusNotifierOptions {
@@ -38,6 +53,14 @@ export interface NodeBotStatusNotifierOptions {
 }
 
 interface TelegramSendMessageResponse {
+  ok?: boolean
+  description?: string
+  result?: {
+    message_id?: number
+  }
+}
+
+interface TelegramSendVideoResponse {
   ok?: boolean
   description?: string
   result?: {
@@ -103,11 +126,41 @@ export class NodeBotStatusNotifier implements BotWorkflowStatusSink {
 
     return body?.result?.message_id === undefined ? {} : { messageId: String(body.result.message_id) }
   }
+
+  async sendVideo(payload: NodeTelegramVideoPayload): Promise<NodeTelegramStatusResult> {
+    const chatId = payload.chatId ?? this.defaultChatId
+    if (!chatId) return {}
+
+    if (!this.botToken) return {}
+
+    const file = await fs.readFile(payload.path)
+    const form = new FormData()
+    form.set("chat_id", chatId)
+    if (payload.caption) form.set("caption", payload.caption)
+    form.set("supports_streaming", "true")
+    form.set("video", new Blob([file], { type: payload.mimeType ?? "video/mp4" }), path.basename(payload.path))
+
+    const response = await this.fetch(`https://api.telegram.org/bot${this.botToken}/sendVideo`, {
+      method: "POST",
+      body: form,
+    })
+
+    if (!response.ok) {
+      throw new Error(`Telegram sendVideo failed: ${response.status} ${response.statusText ?? ""}`.trim())
+    }
+
+    const body = (await response.json?.()) as TelegramSendVideoResponse | undefined
+    if (body && body.ok === false) {
+      throw new Error(body.description ?? "Telegram sendVideo failed")
+    }
+
+    return body?.result?.message_id === undefined ? {} : { messageId: String(body.result.message_id) }
+  }
 }
 
 function globalFetch(
   url: string,
-  init?: { method?: string; headers?: Record<string, string>; body?: string },
+  init?: { method?: string; headers?: Record<string, string>; body?: BodyInit },
 ): Promise<NodeStatusFetchResponse> {
   if (typeof fetch !== "function") {
     throw new Error("No fetch implementation is available for bot status updates")

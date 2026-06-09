@@ -5,10 +5,13 @@
  * Использует нативные Node.js модули и CLI инструменты (ffmpeg, whisper).
  */
 
+import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator } from "@/core"
 import { container } from "@/core/container"
 
 import { type NodeAIOptions, NodeAIService } from "./ai"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
+import { NodeBotEditSessionFileStore, type NodeBotEditSessionFileStoreOptions } from "./bot-edit-sessions"
+import { NodeBotFeedbackTranscriber, type NodeBotFeedbackTranscriberOptions } from "./bot-feedback-transcriber"
 import { NodeBotMediaResolver, type NodeBotMediaResolverOptions } from "./bot-media-resolver"
 import { NodeBotStatusNotifier, type NodeBotStatusNotifierOptions } from "./bot-status"
 import { NodeBotWorkflowService, type NodeBotWorkflowServiceOptions } from "./bot-workflow"
@@ -19,6 +22,8 @@ import { NodeBackendBridgeService } from "./node-backend-bridge"
 import { type NodePlatformOptions, NodePlatformService } from "./platform"
 import { type NodePublishOptions, NodePublishService } from "./publish"
 import { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
+import { NodeRustFirstCutPlanner, type NodeRustFirstCutPlannerOptions } from "./rust-first-cut-planner"
+import { NodeRustPublishService, type NodeRustPublishServiceOptions } from "./rust-publish"
 import { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 import { type NodeStorageOptions, NodeStorageService } from "./storage"
 import { type NodeVideoOptions, NodeVideoService } from "./video"
@@ -26,6 +31,15 @@ import { type NodeVideoOptions, NodeVideoService } from "./video"
 // Re-exports
 export { type NodeAIOptions, NodeAIService } from "./ai"
 export { type NodeBackendOptions, NodeBackendService } from "./backend"
+export {
+  NodeBotEditSessionFileStore,
+  type NodeBotEditSessionFileStoreOptions,
+} from "./bot-edit-sessions"
+export {
+  NodeBotFeedbackTranscriber,
+  type NodeBotFeedbackTranscriberAI,
+  type NodeBotFeedbackTranscriberOptions,
+} from "./bot-feedback-transcriber"
 export {
   NodeBotMediaResolver,
   type NodeBotMediaResolverOptions,
@@ -58,6 +72,17 @@ export {
   type NodeTelegramPublishResult,
 } from "./publish"
 export { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
+export {
+  NodeRustFirstCutPlanner,
+  type NodeRustFirstCutPlannerCommandResult,
+  type NodeRustFirstCutPlannerKind,
+  type NodeRustFirstCutPlannerOptions,
+} from "./rust-first-cut-planner"
+export {
+  type NodeRustPublishCommandResult,
+  NodeRustPublishService,
+  type NodeRustPublishServiceOptions,
+} from "./rust-publish"
 export { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 export { type NodeStorageOptions, NodeStorageService } from "./storage"
 export {
@@ -160,12 +185,22 @@ export interface NodeAppOptions {
   language?: NodeLanguageOptions
   /** Опции для bot-first Publish сервиса */
   publish?: NodePublishOptions
+  /** Опции для Rust-backed bot-first Publish сервиса */
+  rustPublish?: boolean | NodeRustPublishServiceOptions
   /** Опции для bot-first RenderJob сервиса */
   renderJob?: NodeRenderJobServiceOptions
   /** Опции для bot-first workflow runner */
   botWorkflow?: NodeBotWorkflowServiceOptions
+  /** Опции для bot-first first-cut Rust planner */
+  botFirstCutPlanner?: NodeRustFirstCutPlannerOptions | false
+  /** Опции для bot-first first-cut generator */
+  botFirstCutGenerator?: Omit<BotFirstCutGeneratorOptions, "planner"> | false
+  /** Опции для Telegram AI edit session store */
+  botEditSessions?: NodeBotEditSessionFileStoreOptions | false
   /** Опции для bot-first media resolver */
   botMediaResolver?: NodeBotMediaResolverOptions | false
+  /** Опции для bot-first voice/video-note feedback transcription */
+  botFeedbackTranscriber?: Omit<NodeBotFeedbackTranscriberOptions, "ai" | "mediaResolver"> | false
   /** Опции для bot-first status notifier */
   botStatus?: NodeBotStatusNotifierOptions | false
   /** Автоматически подключаться к бэкенду */
@@ -182,10 +217,14 @@ export interface NodeAppServices {
   video: NodeVideoService
   ai: NodeAIService
   language: NodeLanguageService
-  publish: NodePublishService
+  publish: NodePublishService | NodeRustPublishService
   renderJob: NodeRenderJobService
   botWorkflow: NodeBotWorkflowService
+  botFirstCutGenerator?: DefaultBotFirstCutGenerator
+  botFirstCutPlanner?: NodeRustFirstCutPlanner
+  botEditSessions?: NodeBotEditSessionFileStore
   botMediaResolver?: NodeBotMediaResolver
+  botFeedbackTranscriber?: NodeBotFeedbackTranscriber
   botStatus?: NodeBotStatusNotifier
 }
 
@@ -222,13 +261,17 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const video = createNodeVideoService(options.video, options.rustRender)
   const ai = new NodeAIService(options.ai)
   const language = new NodeLanguageService(options.language)
-  const publish = new NodePublishService(options.publish)
+  const publish = createNodePublishService(options.publish, options.rustPublish)
   const renderJob = new NodeRenderJobService(video, {
     ...options.renderJob,
     publisher: options.renderJob?.publisher ?? publish,
   })
   const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
+  const botEditSessions = createNodeBotEditSessionStore(options.botEditSessions)
+  const botFeedbackTranscriber = createNodeBotFeedbackTranscriber(options.botFeedbackTranscriber, ai, botMediaResolver)
   const botStatus = createNodeBotStatusNotifier(options.botStatus)
+  const botFirstCutPlanner = createNodeRustFirstCutPlanner(options.botFirstCutPlanner)
+  const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
@@ -264,7 +307,11 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     publish,
     renderJob,
     botWorkflow,
+    ...(botFirstCutGenerator ? { botFirstCutGenerator } : {}),
+    ...(botFirstCutPlanner ? { botFirstCutPlanner } : {}),
+    ...(botEditSessions ? { botEditSessions } : {}),
     ...(botMediaResolver ? { botMediaResolver } : {}),
+    ...(botFeedbackTranscriber ? { botFeedbackTranscriber } : {}),
     ...(botStatus ? { botStatus } : {}),
   }
 }
@@ -278,18 +325,23 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
  */
 export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
   const video = createNodeVideoService(options.video, options.rustRender)
-  const publish = new NodePublishService(options.publish)
+  const ai = new NodeAIService(options.ai)
+  const publish = createNodePublishService(options.publish, options.rustPublish)
   const renderJob = new NodeRenderJobService(video, {
     ...options.renderJob,
     publisher: options.renderJob?.publisher ?? publish,
   })
   const botMediaResolver = createNodeBotMediaResolver(options.botMediaResolver)
+  const botEditSessions = createNodeBotEditSessionStore(options.botEditSessions)
   const botStatus = createNodeBotStatusNotifier(options.botStatus)
+  const botFirstCutPlanner = createNodeRustFirstCutPlanner(options.botFirstCutPlanner)
+  const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
     status: options.botWorkflow?.status ?? (botStatus ? { sink: botStatus } : undefined),
   })
+  const botFeedbackTranscriber = createNodeBotFeedbackTranscriber(options.botFeedbackTranscriber, ai, botMediaResolver)
 
   return {
     backend: new NodeBackendService(options.backend),
@@ -299,14 +351,64 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     media: new NodeMediaService(options.media),
     nodeBackend: new NodeBackendBridgeService(),
     video,
-    ai: new NodeAIService(options.ai),
+    ai,
     language: new NodeLanguageService(options.language),
     publish,
     renderJob,
     botWorkflow,
+    ...(botFirstCutGenerator ? { botFirstCutGenerator } : {}),
+    ...(botFirstCutPlanner ? { botFirstCutPlanner } : {}),
+    ...(botEditSessions ? { botEditSessions } : {}),
     ...(botMediaResolver ? { botMediaResolver } : {}),
+    ...(botFeedbackTranscriber ? { botFeedbackTranscriber } : {}),
     ...(botStatus ? { botStatus } : {}),
   }
+}
+
+function createNodeRustFirstCutPlanner(
+  options?: NodeRustFirstCutPlannerOptions | false,
+): NodeRustFirstCutPlanner | undefined {
+  if (options === undefined || options === false) return undefined
+  return new NodeRustFirstCutPlanner(options)
+}
+
+function createNodePublishService(
+  publishOptions?: NodePublishOptions,
+  rustPublishOptions?: boolean | NodeRustPublishServiceOptions,
+): NodePublishService | NodeRustPublishService {
+  if (!rustPublishOptions) return new NodePublishService(publishOptions)
+  return new NodeRustPublishService(rustPublishOptions === true ? {} : rustPublishOptions)
+}
+
+function createNodeBotFirstCutGenerator(
+  options: Omit<BotFirstCutGeneratorOptions, "planner"> | false | undefined,
+  planner: NodeRustFirstCutPlanner | undefined,
+): DefaultBotFirstCutGenerator | undefined {
+  if (options === false) return undefined
+  return new DefaultBotFirstCutGenerator({
+    ...(options ?? {}),
+    ...(planner ? { planner } : {}),
+  })
+}
+
+function createNodeBotEditSessionStore(
+  options?: NodeBotEditSessionFileStoreOptions | false,
+): NodeBotEditSessionFileStore | undefined {
+  if (options === undefined || options === false) return undefined
+  return new NodeBotEditSessionFileStore(options)
+}
+
+function createNodeBotFeedbackTranscriber(
+  options: Omit<NodeBotFeedbackTranscriberOptions, "ai" | "mediaResolver"> | false | undefined,
+  ai: NodeAIService,
+  mediaResolver: NodeBotMediaResolver | undefined,
+): NodeBotFeedbackTranscriber | undefined {
+  if (options === false) return undefined
+  return new NodeBotFeedbackTranscriber({
+    ...(options ?? {}),
+    ai,
+    ...(mediaResolver ? { mediaResolver } : {}),
+  })
 }
 
 function createNodeBotMediaResolver(options?: NodeBotMediaResolverOptions | false): NodeBotMediaResolver | undefined {

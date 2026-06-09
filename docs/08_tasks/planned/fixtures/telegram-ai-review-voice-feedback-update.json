@@ -1,0 +1,19 @@
+{
+  "update_id": 2000003,
+  "message": {
+    "message_id": 12,
+    "chat": {
+      "id": "smoke-chat"
+    },
+    "from": {
+      "id": "smoke-user"
+    },
+    "voice": {
+      "file_id": "telegram-smoke-voice-file",
+      "file_unique_id": "telegram-smoke-voice-unique",
+      "mime_type": "audio/ogg",
+      "duration": 6,
+      "file_size": 122880
+    }
+  }
+}

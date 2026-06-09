@@ -2,7 +2,7 @@
 
 Tasks planned for future development.
 
-## Tasks (28)
+## Tasks (29)
 
 ### 🔴 CRITICAL
 - [Register Missing Tauri Commands](register-missing-tauri-commands.md) 🔴 **КРИТИЧЕСКИЙ** - 109 незарегистрированных команд
@@ -12,6 +12,7 @@ Tasks planned for future development.
 - [AI Director v2 Concept](ai-director-v2-concept.md)
 - [Easy Mode AI Editor](easy-mode-ai-editor.md)
 - [Montage Planner Integration](montage-planner-integration-concept.md)
+- [Telegram AI Review Editing Workflow](telegram-ai-review-workflow.md) 🔴 **HIGH**
 
 ### Video & Effects
 - [Advanced Multicam Templates](advanced-multicam-templates.md)
@@ -52,4 +53,4 @@ Tasks planned for future development.
 
 ---
 
-*Last updated: 2025-11-29 (Browser Architecture Refactoring task added)*
+*Last updated: 2026-06-09 (Telegram AI Review Editing Workflow task added)*

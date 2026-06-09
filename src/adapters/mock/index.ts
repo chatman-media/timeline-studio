@@ -6,8 +6,8 @@
  */
 
 import { container } from "@/core/container"
-
 import { MockAIService } from "./ai"
+import { MockAIProjectEditor } from "./ai-project-editor"
 import { MockBackendService } from "./backend"
 import { MockEventService } from "./event"
 import { MockLanguageService } from "./language"
@@ -18,6 +18,7 @@ import { MockStorageService } from "./storage"
 import { MockVideoService } from "./video"
 
 export { MockAIService } from "./ai"
+export { MockAIProjectEditor, type MockAIProjectEditorOptions } from "./ai-project-editor"
 export { MockBackendService } from "./backend"
 export { MockEventService } from "./event"
 export { MockLanguageService } from "./language"
@@ -44,6 +45,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   nodeBackend: MockNodeBackendService
   video: MockVideoService
   ai: MockAIService
+  aiProjectEditor: MockAIProjectEditor
   language: MockLanguageService
 } {
   const { useLocalStorage = false } = options
@@ -57,6 +59,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const nodeBackend = new MockNodeBackendService()
   const video = new MockVideoService()
   const ai = new MockAIService()
+  const aiProjectEditor = new MockAIProjectEditor()
   const language = new MockLanguageService()
 
   // Register in container
@@ -71,7 +74,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerLanguage(language)
 
   // Return services for test manipulation
-  return { backend, platform, storage, event, media, nodeBackend, video, ai, language }
+  return { backend, platform, storage, event, media, nodeBackend, video, ai, aiProjectEditor, language }
 }
 
 /**
@@ -87,6 +90,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   nodeBackend: MockNodeBackendService
   video: MockVideoService
   ai: MockAIService
+  aiProjectEditor: MockAIProjectEditor
   language: MockLanguageService
 } {
   const { useLocalStorage = false } = options
@@ -100,6 +104,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     nodeBackend: new MockNodeBackendService(),
     video: new MockVideoService(),
     ai: new MockAIService(),
+    aiProjectEditor: new MockAIProjectEditor(),
     language: new MockLanguageService(),
   }
 }

@@ -1,3 +1,7 @@
+export * from "./ai-project-editor"
+export * from "./bot-destination-capabilities"
+export * from "./bot-edit-sessions"
+export * from "./bot-first-cut-generator"
 export * from "./bot-media-resolver"
 export * from "./bot-project-assembler"
 export * from "./bot-status-updates"

@@ -114,6 +114,69 @@ describe("bot workflow intake", () => {
     })
   })
 
+  it("normalizes Telegram voice and video-note payloads with feedback metadata", () => {
+    const workflow = createBotWorkflowRequestFromTelegramLikePayload({
+      chat: { id: 42 },
+      from: { id: "user-1" },
+      message_id: 8,
+      voice: {
+        file_id: "voice-file-id",
+        file_unique_id: "unique-voice-1",
+        mime_type: "audio/ogg",
+        file_size: 4096,
+        duration: 12,
+      },
+      video_note: {
+        file_id: "video-note-file-id",
+        file_unique_id: "unique-video-note-1",
+        mime_type: "video/mp4",
+        file_size: 8192,
+        duration: 7,
+        width: 384,
+        height: 384,
+      },
+    })
+
+    expect(workflow).toMatchObject({
+      source: "telegram",
+      chatId: "42",
+      userId: "user-1",
+      messageId: "8",
+      media: [
+        {
+          id: "unique-voice-1",
+          type: "file",
+          value: "voice-file-id",
+          name: "voice",
+          mimeType: "audio/ogg",
+          metadata: {
+            telegramMediaKind: "voice",
+            telegramFileId: "voice-file-id",
+            telegramFileUniqueId: "unique-voice-1",
+            telegramFileSize: 4096,
+            telegramDuration: 12,
+          },
+        },
+        {
+          id: "unique-video-note-1",
+          type: "file",
+          value: "video-note-file-id",
+          name: "video_note",
+          mimeType: "video/mp4",
+          metadata: {
+            telegramMediaKind: "video_note",
+            telegramFileId: "video-note-file-id",
+            telegramFileUniqueId: "unique-video-note-1",
+            telegramFileSize: 8192,
+            telegramDuration: 7,
+            telegramWidth: 384,
+            telegramHeight: 384,
+          },
+        },
+      ],
+    })
+  })
+
   it("creates a render job request from template, media, params, and output hints", () => {
     const workflow = createBotWorkflowRequestFromTelegramLikePayload({
       chat: { id: "chat-1" },

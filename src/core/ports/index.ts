@@ -36,7 +36,34 @@ export type {
   VideoRecognitionResult,
   YOLODetectionResult,
 } from "./ai.port"
+export type {
+  AIProjectEditCommand,
+  AIProjectEditCommandType,
+  AIProjectEditDiagnostic,
+  AIProjectEditDiagnosticLevel,
+  AIProjectEditorRequest,
+  AIProjectEditorResult,
+  AIProjectEditRepairContext,
+  AIProjectEditRevisionSummary,
+  AIProjectEditValidationError,
+  IAIProjectEditor,
+} from "./ai-project-editor.port"
 export type { IBackendService, Unsubscribe } from "./backend.port"
+export type {
+  BotFeedbackMediaKind,
+  BotFeedbackTranscriptionProvider,
+  BotFeedbackTranscriptionRequest,
+  BotFeedbackTranscriptionResult,
+  IBotFeedbackTranscriber,
+} from "./bot-feedback-transcriber.port"
+export type {
+  BotFirstCutGeneratorRequest,
+  BotFirstCutGeneratorResult,
+  BotFirstCutPlannerResult,
+  BotFirstCutProvider,
+  IBotFirstCutGenerator,
+  IBotFirstCutPlanner,
+} from "./bot-first-cut-generator.port"
 export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
 export type { ILanguageService, LanguageResponse } from "./language.port"
 export type {

@@ -225,6 +225,42 @@ describe("bot workflow runner", () => {
     expect(renderJob.lastRequest?.project).toBe(result.renderJob.project)
   })
 
+  it("gates bot workflow publishing by rendering previews to file output", async () => {
+    const renderJob = new FakeRenderJobService()
+
+    const result = await runBotWorkflow(
+      {
+        source: "telegram",
+        project: { type: "inline", schema: { clips: [] } },
+        output: { format: "mp4", destination: "youtube" },
+      },
+      {
+        renderJob,
+        approvalGate: {
+          enabled: true,
+          previewDestination: "telegram",
+        },
+      },
+    )
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+
+    expect(renderJob.lastRequest).toMatchObject({
+      output: { format: "mp4", destination: "file" },
+      params: {
+        approvalRequired: true,
+        previewDestination: "telegram",
+        publishTarget: "youtube",
+      },
+    })
+    expect(result.approvalGate).toEqual({
+      enabled: true,
+      previewDestination: "telegram",
+      publishTarget: "youtube",
+    })
+  })
+
   it("preserves caller event sinks while adding the workflow event stream", async () => {
     const renderJob = new FakeRenderJobService()
     const eventStream = new InMemoryBotRenderJobEventStream()
