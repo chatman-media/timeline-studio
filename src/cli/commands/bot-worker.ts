@@ -9,6 +9,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import { Command } from "commander"
 import type {
+  NodeAIProjectEditorOptions,
   NodeTelegramBotWorkerPollResult,
   NodeTelegramBotWorkerRunResult,
   NodeTelegramBotWorkerUpdateResult,
@@ -66,6 +67,14 @@ export interface BotWorkerCommandOptions {
   rustRenderKind?: "timeline" | "timeline-render"
   rustPublish?: boolean
   rustPublishCommand?: string
+  editSessionDir?: string
+  aiEditor?: boolean
+  aiEditorApiKey?: string
+  aiEditorApiUrl?: string
+  aiEditorProvider?: string
+  aiEditorModel?: string
+  aiEditorTemperature?: string
+  aiEditorMaxTokens?: string
   defaultDestination?: BotRenderJobDestination
   defaultOutput?: string
 }
@@ -110,6 +119,14 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--rust-render-kind <kind>", "Rust render command kind: timeline or timeline-render")
   .option("--rust-publish", "Run bot publishing through the Rust timeline publish CLI")
   .option("--rust-publish-command <path>", "Path/name for the Rust timeline publish command")
+  .option("--edit-session-dir <path>", "Persist Telegram AI review edit sessions in a directory")
+  .option("--ai-editor", "Enable the production AI project editor for review feedback")
+  .option("--ai-editor-api-key <key>", "API key for the AI project editor")
+  .option("--ai-editor-api-url <url>", "OpenAI-compatible base URL for the AI project editor")
+  .option("--ai-editor-provider <provider>", "Provider label for AI project editor metadata")
+  .option("--ai-editor-model <model>", "Model for the AI project editor")
+  .option("--ai-editor-temperature <number>", "Temperature for the AI project editor")
+  .option("--ai-editor-max-tokens <count>", "Max completion tokens for the AI project editor")
   .option("--default-destination <destination>", "Fallback destination when update has no destination hint")
   .option("--default-output <path>", "Fallback output path when update has no output hint")
   .action(async (options: BotWorkerCommandOptions) => {
@@ -147,8 +164,18 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     throw new Error("--recover-stale-jobs requires --job-store-file")
   }
 
+  if (resolvedOptions.aiEditor && !resolvedOptions.aiEditorApiKey) {
+    throw new Error(
+      "--ai-editor requires --ai-editor-api-key, TIMELINE_BOT_AI_EDITOR_API_KEY, OPENAI_API_KEY, or LLM_API_KEY",
+    )
+  }
+
   const services = await initNodeApp({
     autoConnect: false,
+    ai: createBotAIOptions(resolvedOptions),
+    aiProjectEditor: createBotAIProjectEditorOptions(resolvedOptions),
+    botEditSessions: createBotEditSessionStoreOptions(resolvedOptions),
+    botFeedbackTranscriber: resolvedOptions.editSessionDir ? {} : false,
     botMediaResolver: createBotMediaResolverOptions(resolvedOptions),
     botStatus: createBotStatusOptions(resolvedOptions),
     publish: createBotPublishOptions(resolvedOptions),
@@ -181,7 +208,12 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     workflowQueue,
     accessPolicy: createTelegramBotAccessPolicy(resolvedOptions),
     botToken: resolvedOptions.telegramBotToken,
+    editSessionStore: services.botEditSessions,
+    aiProjectEditor: services.aiProjectEditor,
+    feedbackTranscriber: services.botFeedbackTranscriber,
     publishService: services.publish,
+    previewResponder: services.botStatus,
+    reviewResponder: services.botStatus,
     workflowOptions: {
       intake: {
         defaultDestination: resolvedOptions.defaultDestination,
@@ -263,6 +295,19 @@ export function resolveBotWorkerCommandOptions(
     rustRenderCommand: firstConfigured(options.rustRenderCommand, env.TIMELINE_BOT_RUST_RENDER_COMMAND),
     rustRenderKind: firstConfigured(options.rustRenderKind, normalizeRustRenderKind(env.TIMELINE_BOT_RUST_RENDER_KIND)),
     rustPublishCommand: firstConfigured(options.rustPublishCommand, env.TIMELINE_BOT_RUST_PUBLISH_COMMAND),
+    editSessionDir: firstConfigured(options.editSessionDir, env.TIMELINE_BOT_EDIT_SESSION_DIR),
+    aiEditor: options.aiEditor ?? parseBooleanEnv(env.TIMELINE_BOT_AI_EDITOR),
+    aiEditorApiKey: firstConfigured(
+      options.aiEditorApiKey,
+      env.TIMELINE_BOT_AI_EDITOR_API_KEY,
+      env.OPENAI_API_KEY,
+      env.LLM_API_KEY,
+    ),
+    aiEditorApiUrl: firstConfigured(options.aiEditorApiUrl, env.TIMELINE_BOT_AI_EDITOR_API_URL),
+    aiEditorProvider: firstConfigured(options.aiEditorProvider, env.TIMELINE_BOT_AI_EDITOR_PROVIDER),
+    aiEditorModel: firstConfigured(options.aiEditorModel, env.TIMELINE_BOT_AI_EDITOR_MODEL),
+    aiEditorTemperature: firstConfigured(options.aiEditorTemperature, env.TIMELINE_BOT_AI_EDITOR_TEMPERATURE),
+    aiEditorMaxTokens: firstConfigured(options.aiEditorMaxTokens, env.TIMELINE_BOT_AI_EDITOR_MAX_TOKENS),
     defaultDestination: firstConfigured(
       options.defaultDestination,
       normalizeDestination(env.TIMELINE_BOT_DEFAULT_DESTINATION),
@@ -309,6 +354,45 @@ function createBotMediaResolverOptions(options: BotWorkerCommandOptions) {
             botToken: options.telegramBotToken,
           },
         }
+      : {}),
+  }
+}
+
+function createBotAIOptions(options: BotWorkerCommandOptions) {
+  if (!options.aiEditorApiKey) return undefined
+  return {
+    openaiApiKey: options.aiEditorApiKey,
+  }
+}
+
+function createBotEditSessionStoreOptions(options: BotWorkerCommandOptions) {
+  if (!options.editSessionDir) return false
+  return {
+    directory: path.resolve(options.editSessionDir),
+  }
+}
+
+function createBotAIProjectEditorOptions(options: BotWorkerCommandOptions): NodeAIProjectEditorOptions | false {
+  const hasConfig = Boolean(
+    options.aiEditorApiKey ||
+      options.aiEditorApiUrl ||
+      options.aiEditorProvider ||
+      options.aiEditorModel ||
+      options.aiEditorTemperature ||
+      options.aiEditorMaxTokens,
+  )
+  if (!options.aiEditor && !hasConfig) return false
+
+  return {
+    ...(options.aiEditorApiKey ? { apiKey: options.aiEditorApiKey } : {}),
+    ...(options.aiEditorApiUrl ? { apiUrl: options.aiEditorApiUrl } : {}),
+    ...(options.aiEditorProvider ? { provider: options.aiEditorProvider } : {}),
+    ...(options.aiEditorModel ? { model: options.aiEditorModel } : {}),
+    ...(parseOptionalNonNegativeNumber(options.aiEditorTemperature) !== undefined
+      ? { temperature: parseOptionalNonNegativeNumber(options.aiEditorTemperature) }
+      : {}),
+    ...(parseOptionalPositiveInteger(options.aiEditorMaxTokens) !== undefined
+      ? { maxTokens: parseOptionalPositiveInteger(options.aiEditorMaxTokens) }
       : {}),
   }
 }
