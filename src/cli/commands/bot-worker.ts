@@ -21,6 +21,7 @@ import {
   NodeTelegramBotFileWorkflowJobStore,
   NodeTelegramBotInMemoryWorkflowQueue,
   NodeTelegramBotWorker,
+  recoverStaleTelegramWorkflowJobs,
 } from "@/adapters/node"
 import type { BotRenderJobDestination, BotWorkflowRunResult } from "@/core/types"
 
@@ -39,6 +40,7 @@ export interface BotWorkerCommandOptions {
   offsetFile?: string
   draftDir?: string
   jobStoreFile?: string
+  recoverStaleJobs?: boolean
   asyncWorkflows?: boolean
   workflowConcurrency?: string
   workflowQueueLimit?: string
@@ -76,6 +78,7 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--offset-file <path>", "Persist Telegram getUpdates offset between polling runs")
   .option("--draft-dir <path>", "Persist Telegram bot conversation drafts in a directory")
   .option("--job-store-file <path>", "Persist Telegram workflow job status/history")
+  .option("--recover-stale-jobs", "Mark persisted queued/running workflow jobs as failed before worker handling")
   .option("--async-workflows", "Queue Telegram workflow runs during continuous polling")
   .option("--workflow-concurrency <count>", "Maximum queued workflow runs in parallel", "1")
   .option("--workflow-queue-limit <count>", "Maximum pending queued workflows before rejecting new requests")
@@ -121,6 +124,10 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     throw new Error("--telegram-bot-token is required with --poll-once or --poll")
   }
 
+  if (resolvedOptions.recoverStaleJobs && !resolvedOptions.jobStoreFile) {
+    throw new Error("--recover-stale-jobs requires --job-store-file")
+  }
+
   const services = await initNodeApp({
     autoConnect: false,
     botMediaResolver: createBotMediaResolverOptions(resolvedOptions),
@@ -133,6 +140,14 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
         }
       : undefined,
   })
+  const workflowJobStore = resolvedOptions.jobStoreFile
+    ? new NodeTelegramBotFileWorkflowJobStore(path.resolve(resolvedOptions.jobStoreFile))
+    : undefined
+
+  if (resolvedOptions.recoverStaleJobs && workflowJobStore) {
+    await recoverStaleTelegramWorkflowJobs(workflowJobStore)
+  }
+
   const workflowQueue =
     resolvedOptions.poll && resolvedOptions.asyncWorkflows
       ? new NodeTelegramBotInMemoryWorkflowQueue({
@@ -158,9 +173,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     draftStore: resolvedOptions.draftDir
       ? new NodeBotWorkflowFileDraftStore(path.resolve(resolvedOptions.draftDir))
       : undefined,
-    workflowJobStore: resolvedOptions.jobStoreFile
-      ? new NodeTelegramBotFileWorkflowJobStore(path.resolve(resolvedOptions.jobStoreFile))
-      : undefined,
+    workflowJobStore,
   })
 
   if (resolvedOptions.updateFile) {
@@ -211,6 +224,7 @@ export function resolveBotWorkerCommandOptions(
     offsetFile: firstConfigured(options.offsetFile, env.TIMELINE_BOT_OFFSET_FILE),
     draftDir: firstConfigured(options.draftDir, env.TIMELINE_BOT_DRAFT_DIR),
     jobStoreFile: firstConfigured(options.jobStoreFile, env.TIMELINE_BOT_JOB_STORE_FILE),
+    recoverStaleJobs: options.recoverStaleJobs ?? parseBooleanEnv(env.TIMELINE_BOT_RECOVER_STALE_JOBS),
     workflowConcurrency: firstConfigured(options.workflowConcurrency, env.TIMELINE_BOT_WORKFLOW_CONCURRENCY),
     workflowQueueLimit: firstConfigured(options.workflowQueueLimit, env.TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT),
     maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),

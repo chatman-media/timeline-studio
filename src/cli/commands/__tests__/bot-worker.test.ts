@@ -11,6 +11,7 @@ import {
   isFailedWorkerResult,
   readTelegramBotUpdate,
   resolveBotWorkerCommandOptions,
+  runBotWorker,
   serializeBotWorkerResult,
 } from "../bot-worker"
 
@@ -37,6 +38,7 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--offset-file")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--draft-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--job-store-file")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--recover-stale-jobs")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--async-workflows")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--workflow-concurrency")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--workflow-queue-limit")).toBe(true)
@@ -77,6 +79,12 @@ describe("bot-worker command", () => {
     await expect(readTelegramBotUpdate(updatePath)).rejects.toThrow(
       "Telegram update JSON must include numeric update_id",
     )
+  })
+
+  it("requires a job store file when stale job recovery is enabled", async () => {
+    await expect(
+      runBotWorker({ updateFile: path.join(tempDir, "update.json"), recoverStaleJobs: true }),
+    ).rejects.toThrow("--recover-stale-jobs requires --job-store-file")
   })
 
   it("serializes compact and pretty worker results", () => {
@@ -188,6 +196,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_OFFSET_FILE: ".tmp/bot-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/bot-drafts",
         TIMELINE_BOT_JOB_STORE_FILE: ".tmp/bot-jobs.json",
+        TIMELINE_BOT_RECOVER_STALE_JOBS: "true",
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "2",
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
@@ -213,6 +222,7 @@ describe("bot-worker command", () => {
       offsetFile: ".tmp/bot-offset.json",
       draftDir: ".tmp/bot-drafts",
       jobStoreFile: ".tmp/bot-jobs.json",
+      recoverStaleJobs: true,
       asyncWorkflows: true,
       workflowConcurrency: "2",
       workflowQueueLimit: "10",
@@ -239,6 +249,7 @@ describe("bot-worker command", () => {
         offsetFile: ".tmp/cli-offset.json",
         draftDir: ".tmp/cli-drafts",
         jobStoreFile: ".tmp/cli-jobs.json",
+        recoverStaleJobs: false,
         asyncWorkflows: false,
         workflowConcurrency: "3",
         workflowQueueLimit: "5",
@@ -251,6 +262,7 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/env-drafts",
         TIMELINE_BOT_JOB_STORE_FILE: ".tmp/env-jobs.json",
+        TIMELINE_BOT_RECOVER_STALE_JOBS: "true",
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "1",
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
@@ -265,6 +277,7 @@ describe("bot-worker command", () => {
       offsetFile: ".tmp/cli-offset.json",
       draftDir: ".tmp/cli-drafts",
       jobStoreFile: ".tmp/cli-jobs.json",
+      recoverStaleJobs: false,
       asyncWorkflows: false,
       workflowConcurrency: "3",
       workflowQueueLimit: "5",

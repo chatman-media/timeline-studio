@@ -36,6 +36,16 @@ export interface NodeTelegramBotWorkflowJobStore {
   listJobs(query?: NodeTelegramBotWorkflowJobQuery): Promise<NodeTelegramBotWorkflowJobRecord[]>
 }
 
+export interface RecoverStaleTelegramWorkflowJobsOptions {
+  now?: () => string
+  reason?: string
+  error?: string
+}
+
+export interface RecoverStaleTelegramWorkflowJobsResult {
+  recoveredJobs: NodeTelegramBotWorkflowJobRecord[]
+}
+
 export interface NodeTelegramBotFileWorkflowJobStoreOptions {
   maxJobs?: number
 }
@@ -132,6 +142,33 @@ export class NodeTelegramBotFileWorkflowJobStore implements NodeTelegramBotWorkf
   }
 }
 
+export async function recoverStaleTelegramWorkflowJobs(
+  store: NodeTelegramBotWorkflowJobStore,
+  options: RecoverStaleTelegramWorkflowJobsOptions = {},
+): Promise<RecoverStaleTelegramWorkflowJobsResult> {
+  const timestamp = options.now?.() ?? new Date().toISOString()
+  const reason = options.reason ?? "Telegram bot workflow recovered after worker restart"
+  const error = options.error ?? "Workflow was interrupted before completion. Send /retry <queueId> to run it again."
+  const jobs = await store.listJobs()
+  const recoveredJobs: NodeTelegramBotWorkflowJobRecord[] = []
+
+  for (const job of jobs) {
+    if (!isRecoverableStaleWorkflowJobStatus(job.status)) continue
+
+    const recoveredJob: NodeTelegramBotWorkflowJobRecord = {
+      ...job,
+      status: "failed",
+      reason,
+      error,
+      updatedAt: timestamp,
+    }
+    await store.writeJob(recoveredJob)
+    recoveredJobs.push(recoveredJob)
+  }
+
+  return { recoveredJobs }
+}
+
 function filterAndLimitJobs(
   jobs: NodeTelegramBotWorkflowJobRecord[],
   query: NodeTelegramBotWorkflowJobQuery,
@@ -170,6 +207,10 @@ function isWorkflowJobStatus(value: unknown): value is NodeTelegramBotWorkflowJo
     value === "rejected" ||
     value === "cancelled"
   )
+}
+
+function isRecoverableStaleWorkflowJobStatus(status: NodeTelegramBotWorkflowJobStatus): boolean {
+  return status === "queued" || status === "running"
 }
 
 function isNotFoundError(error: unknown): boolean {

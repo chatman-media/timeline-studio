@@ -4,7 +4,11 @@ import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { BotWorkflowDraft, BotWorkflowRunResult } from "@/core/types"
 import type { NodeBotWorkflowService } from "../bot-workflow"
-import { NodeTelegramBotFileWorkflowJobStore, NodeTelegramBotInMemoryWorkflowJobStore } from "../telegram-bot-job-store"
+import {
+  NodeTelegramBotFileWorkflowJobStore,
+  NodeTelegramBotInMemoryWorkflowJobStore,
+  recoverStaleTelegramWorkflowJobs,
+} from "../telegram-bot-job-store"
 import {
   createTelegramLikePayloadFromUpdate,
   defaultTelegramBotCommandText,
@@ -1671,6 +1675,63 @@ describe("Telegram bot worker", () => {
       status: "failed",
       retryOf: "telegram-update-1",
       sourcePayload: { text: "template=promo destination=telegram" },
+    })
+  })
+
+  it("recovers stale Telegram workflow jobs from a file store", async () => {
+    const storePath = path.join(tempDir, "state", "stale-jobs.json")
+    const store = new NodeTelegramBotFileWorkflowJobStore(storePath)
+
+    await store.writeJob({
+      id: "telegram-update-4",
+      status: "queued",
+      updateId: 4,
+      chatId: "chat-1",
+      sourcePayload: { text: "template=promo" },
+      createdAt: "2026-06-08T08:00:00.000Z",
+      updatedAt: "2026-06-08T08:00:00.000Z",
+    })
+    await store.writeJob({
+      id: "telegram-update-5",
+      status: "running",
+      updateId: 5,
+      chatId: "chat-1",
+      renderJobId: "job-5",
+      sourceWorkflow: { source: "telegram", template: { id: "promo" } },
+      createdAt: "2026-06-08T08:00:01.000Z",
+      updatedAt: "2026-06-08T08:00:01.000Z",
+    })
+    await store.writeJob({
+      id: "telegram-update-6",
+      status: "done",
+      updateId: 6,
+      chatId: "chat-1",
+      createdAt: "2026-06-08T08:00:02.000Z",
+      updatedAt: "2026-06-08T08:00:02.000Z",
+    })
+
+    const result = await recoverStaleTelegramWorkflowJobs(store, {
+      now: () => "2026-06-08T09:00:00.000Z",
+    })
+
+    expect(result.recoveredJobs.map((job) => job.id).sort()).toEqual(["telegram-update-4", "telegram-update-5"])
+    await expect(store.readJob("telegram-update-4")).resolves.toMatchObject({
+      id: "telegram-update-4",
+      status: "failed",
+      reason: "Telegram bot workflow recovered after worker restart",
+      error: "Workflow was interrupted before completion. Send /retry <queueId> to run it again.",
+      updatedAt: "2026-06-08T09:00:00.000Z",
+      sourcePayload: { text: "template=promo" },
+    })
+    await expect(store.readJob("telegram-update-5")).resolves.toMatchObject({
+      id: "telegram-update-5",
+      status: "failed",
+      renderJobId: "job-5",
+      sourceWorkflow: { source: "telegram", template: { id: "promo" } },
+    })
+    await expect(store.readJob("telegram-update-6")).resolves.toMatchObject({
+      id: "telegram-update-6",
+      status: "done",
     })
   })
 

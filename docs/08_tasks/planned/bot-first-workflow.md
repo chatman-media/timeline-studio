@@ -267,6 +267,16 @@ bot message
 - [x] Сохранять `retryOf` в new job record/result.
 - [x] Документировать command/runbook и покрыть retry/not-retryable tests.
 
+### B24: Telegram bot stale workflow recovery ([#217](https://github.com/chatman-media/timeline-studio/issues/217))
+
+**Цель:** после рестарта polling worker старые queued/running jobs из persisted store не остаются вечными in-progress и становятся retryable.
+
+- [x] Добавить recovery helper для workflow job store.
+- [x] Помечать stale queued/running records как failed с понятной restart/interruption причиной.
+- [x] Сохранять source payload/workflow context для `/retry`.
+- [x] Подключить opt-in recovery к `bot-worker` через CLI/env.
+- [x] Документировать production runbook и покрыть store/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -293,6 +303,7 @@ bot message
 - [#211](https://github.com/chatman-media/timeline-studio/issues/211) - B21: Telegram bot queued workflow cancellation
 - [#213](https://github.com/chatman-media/timeline-studio/issues/213) - B22: Telegram bot running render cancellation
 - [#215](https://github.com/chatman-media/timeline-studio/issues/215) - B23: Telegram bot workflow retry command
+- [#217](https://github.com/chatman-media/timeline-studio/issues/217) - B24: Telegram bot stale workflow recovery
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)
