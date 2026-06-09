@@ -6,26 +6,31 @@ import type {
   BotWorkflowStatusFormatterContext,
   BotWorkflowStatusMessage,
   BotWorkflowStatusOptions,
+  BotWorkflowStatusPolicy,
   BotWorkflowValidationError,
 } from "../types"
 
 export class BotWorkflowStatusEventSink implements BotRenderJobEventSink {
+  private lastSentMessage?: BotWorkflowStatusMessage
+
   constructor(
     private readonly workflow: BotWorkflowRequest,
     private readonly options: BotWorkflowStatusOptions,
   ) {}
 
   async publish(event: BotRenderJobEvent, snapshot: BotRenderJobSnapshot): Promise<void> {
-    await safeSendStatus(
-      this.options,
-      createBotWorkflowStatusMessage({
-        workflow: this.workflow,
-        event,
-        snapshot,
-        formatter: this.options.formatter,
-        now: this.options.now,
-      }),
-    )
+    const message = createBotWorkflowStatusMessage({
+      workflow: this.workflow,
+      event,
+      snapshot,
+      formatter: this.options.formatter,
+      now: this.options.now,
+    })
+
+    if (!shouldSendBotWorkflowStatusMessage(message, this.lastSentMessage, this.options.policy)) return
+
+    await safeSendStatus(this.options, message)
+    this.lastSentMessage = message
   }
 }
 
@@ -136,4 +141,42 @@ function doneText(snapshot?: BotRenderJobSnapshot): string {
   }
 
   return "Video is ready."
+}
+
+function shouldSendBotWorkflowStatusMessage(
+  message: BotWorkflowStatusMessage,
+  lastSentMessage: BotWorkflowStatusMessage | undefined,
+  policy: BotWorkflowStatusPolicy | undefined,
+): boolean {
+  if (!policy) return true
+  if (!lastSentMessage) return true
+  if (message.status !== lastSentMessage.status) return true
+  if (isTerminalStatus(message.status)) return false
+  if (message.status !== "rendering") return false
+
+  const hasProgressPolicy = typeof policy.minProgressDelta === "number" && Number.isFinite(policy.minProgressDelta)
+  const hasIntervalPolicy = typeof policy.minIntervalMs === "number" && Number.isFinite(policy.minIntervalMs)
+  if (!hasProgressPolicy && !hasIntervalPolicy) return true
+
+  const progressDelta =
+    typeof message.progress === "number" && typeof lastSentMessage.progress === "number"
+      ? Math.abs(message.progress - lastSentMessage.progress)
+      : 0
+  const progressReached = hasProgressPolicy && progressDelta >= Math.max(0, policy.minProgressDelta ?? 0)
+  const intervalReached =
+    hasIntervalPolicy &&
+    timestampDeltaMs(message.timestamp, lastSentMessage.timestamp) >= Math.max(0, policy.minIntervalMs ?? 0)
+
+  return progressReached || intervalReached
+}
+
+function isTerminalStatus(status: BotWorkflowStatusMessage["status"]): boolean {
+  return status === "done" || status === "failed" || status === "cancelled"
+}
+
+function timestampDeltaMs(current: string, previous: string): number {
+  const currentMs = Date.parse(current)
+  const previousMs = Date.parse(previous)
+  if (!Number.isFinite(currentMs) || !Number.isFinite(previousMs)) return 0
+  return currentMs - previousMs
 }

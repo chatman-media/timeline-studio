@@ -35,6 +35,8 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--telegram-bot-token")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--no-status-updates")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--status-chat-id")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--status-min-interval")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--status-min-progress-delta")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--offset-file")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--draft-dir")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--job-store-file")).toBe(true)
@@ -193,6 +195,8 @@ describe("bot-worker command", () => {
         TELEGRAM_BOT_TOKEN: "token-from-telegram-env",
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-timeline-env",
         TIMELINE_BOT_STATUS_CHAT_ID: "chat-1",
+        TIMELINE_BOT_STATUS_MIN_INTERVAL: "30000",
+        TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA: "10",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/bot-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/bot-drafts",
         TIMELINE_BOT_JOB_STORE_FILE: ".tmp/bot-jobs.json",
@@ -219,6 +223,8 @@ describe("bot-worker command", () => {
     expect(resolved).toMatchObject({
       telegramBotToken: "token-from-timeline-env",
       statusChatId: "chat-1",
+      statusMinInterval: "30000",
+      statusMinProgressDelta: "10",
       offsetFile: ".tmp/bot-offset.json",
       draftDir: ".tmp/bot-drafts",
       jobStoreFile: ".tmp/bot-jobs.json",
@@ -246,6 +252,8 @@ describe("bot-worker command", () => {
     const resolved = resolveBotWorkerCommandOptions(
       {
         telegramBotToken: "token-from-cli",
+        statusMinInterval: "15000",
+        statusMinProgressDelta: "5",
         offsetFile: ".tmp/cli-offset.json",
         draftDir: ".tmp/cli-drafts",
         jobStoreFile: ".tmp/cli-jobs.json",
@@ -259,6 +267,8 @@ describe("bot-worker command", () => {
       },
       {
         TIMELINE_BOT_TELEGRAM_TOKEN: "token-from-env",
+        TIMELINE_BOT_STATUS_MIN_INTERVAL: "30000",
+        TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA: "10",
         TIMELINE_BOT_OFFSET_FILE: ".tmp/env-offset.json",
         TIMELINE_BOT_DRAFT_DIR: ".tmp/env-drafts",
         TIMELINE_BOT_JOB_STORE_FILE: ".tmp/env-jobs.json",
@@ -274,6 +284,8 @@ describe("bot-worker command", () => {
 
     expect(resolved).toMatchObject({
       telegramBotToken: "token-from-cli",
+      statusMinInterval: "15000",
+      statusMinProgressDelta: "5",
       offsetFile: ".tmp/cli-offset.json",
       draftDir: ".tmp/cli-drafts",
       jobStoreFile: ".tmp/cli-jobs.json",

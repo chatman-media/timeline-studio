@@ -166,9 +166,15 @@ export interface BotWorkflowStatusFormatterContext {
 
 export type BotWorkflowStatusFormatter = (context: BotWorkflowStatusFormatterContext) => string
 
+export interface BotWorkflowStatusPolicy {
+  minIntervalMs?: number
+  minProgressDelta?: number
+}
+
 export interface BotWorkflowStatusOptions {
   sink: BotWorkflowStatusSink
   formatter?: BotWorkflowStatusFormatter
+  policy?: BotWorkflowStatusPolicy
   throwOnError?: boolean
   now?: () => string
 }

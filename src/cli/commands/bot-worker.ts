@@ -23,7 +23,13 @@ import {
   NodeTelegramBotWorker,
   recoverStaleTelegramWorkflowJobs,
 } from "@/adapters/node"
-import type { BotRenderJobDestination, BotWorkflowRunResult } from "@/core/types"
+import type {
+  BotRenderJobDestination,
+  BotWorkflowRunResult,
+  BotWorkflowStatusOptions,
+  BotWorkflowStatusPolicy,
+  BotWorkflowStatusSink,
+} from "@/core/types"
 
 export interface BotWorkerCommandOptions {
   updateFile?: string
@@ -34,6 +40,8 @@ export interface BotWorkerCommandOptions {
   telegramBotToken?: string
   statusUpdates?: boolean
   statusChatId?: string
+  statusMinInterval?: string
+  statusMinProgressDelta?: string
   pollOffset?: string
   pollLimit?: string
   pollTimeout?: string
@@ -72,6 +80,8 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--telegram-bot-token <token>", "Telegram Bot API token for polling, media, status, and publishing")
   .option("--no-status-updates", "Disable Telegram workflow status messages")
   .option("--status-chat-id <id>", "Fallback Telegram chat id for status updates and publishing")
+  .option("--status-min-interval <ms>", "Minimum interval between repeated rendering status messages")
+  .option("--status-min-progress-delta <percent>", "Minimum progress delta between rendering status messages")
   .option("--poll-offset <id>", "Telegram getUpdates offset")
   .option("--poll-limit <count>", "Telegram getUpdates limit", "100")
   .option("--poll-timeout <seconds>", "Telegram getUpdates long-poll timeout in seconds", "25")
@@ -148,6 +158,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     await recoverStaleTelegramWorkflowJobs(workflowJobStore)
   }
 
+  const workflowStatus = createBotWorkflowStatusOptions(services.botStatus, resolvedOptions)
   const workflowQueue =
     resolvedOptions.poll && resolvedOptions.asyncWorkflows
       ? new NodeTelegramBotInMemoryWorkflowQueue({
@@ -168,6 +179,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
         pollIntervalMs: parsePositiveInteger(resolvedOptions.pollInterval, 1000),
         timeoutMs: parsePositiveInteger(resolvedOptions.timeout, 3600000),
       },
+      ...(workflowStatus ? { status: workflowStatus } : {}),
       includeReconnectState: true,
     },
     draftStore: resolvedOptions.draftDir
@@ -218,6 +230,8 @@ export function resolveBotWorkerCommandOptions(
       env.TELEGRAM_BOT_TOKEN,
     ),
     statusChatId: firstConfigured(options.statusChatId, env.TIMELINE_BOT_STATUS_CHAT_ID),
+    statusMinInterval: firstConfigured(options.statusMinInterval, env.TIMELINE_BOT_STATUS_MIN_INTERVAL),
+    statusMinProgressDelta: firstConfigured(options.statusMinProgressDelta, env.TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA),
     pollOffset: firstConfigured(options.pollOffset, env.TIMELINE_BOT_POLL_OFFSET),
     pollLimit: firstConfigured(options.pollLimit, env.TIMELINE_BOT_POLL_LIMIT),
     pollTimeout: firstConfigured(options.pollTimeout, env.TIMELINE_BOT_POLL_TIMEOUT),
@@ -296,6 +310,29 @@ function createBotStatusOptions(options: BotWorkerCommandOptions) {
   }
 }
 
+function createBotWorkflowStatusOptions(
+  sink: BotWorkflowStatusSink | undefined,
+  options: BotWorkerCommandOptions,
+): BotWorkflowStatusOptions | undefined {
+  if (!sink) return undefined
+  const policy = createBotWorkflowStatusPolicy(options)
+  return {
+    sink,
+    ...(policy ? { policy } : {}),
+  }
+}
+
+function createBotWorkflowStatusPolicy(options: BotWorkerCommandOptions): BotWorkflowStatusPolicy | undefined {
+  const minIntervalMs = parseOptionalNonNegativeNumber(options.statusMinInterval)
+  const minProgressDelta = parseOptionalNonNegativeNumber(options.statusMinProgressDelta)
+
+  if (minIntervalMs === undefined && minProgressDelta === undefined) return undefined
+  return {
+    ...(minIntervalMs !== undefined ? { minIntervalMs } : {}),
+    ...(minProgressDelta !== undefined ? { minProgressDelta } : {}),
+  }
+}
+
 function createBotPublishOptions(options: BotWorkerCommandOptions) {
   if (!options.telegramBotToken) {
     return undefined
@@ -364,6 +401,12 @@ function parseOptionalPositiveInteger(value: string | undefined): number | undef
 function parseOptionalNonNegativeInteger(value: string | undefined): number | undefined {
   if (!value) return undefined
   const parsed = Number.parseInt(value, 10)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
+}
+
+function parseOptionalNonNegativeNumber(value: string | undefined): number | undefined {
+  if (!value) return undefined
+  const parsed = Number.parseFloat(value)
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined
 }
 

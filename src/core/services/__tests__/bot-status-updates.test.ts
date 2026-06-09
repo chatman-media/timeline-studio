@@ -95,6 +95,27 @@ describe("bot status updates", () => {
     expect(sink.sendStatus).toHaveBeenCalledOnce()
   })
 
+  it("throttles repeated rendering progress while sending status transitions", async () => {
+    const sink = { sendStatus: vi.fn() }
+    const statusSink = createBotWorkflowStatusEventSink(workflow, {
+      sink,
+      policy: {
+        minProgressDelta: 10,
+        minIntervalMs: 60_000,
+      },
+    })
+
+    await statusSink.publish(createRenderEvent("rendering", 10, 1), createRenderSnapshot("rendering", 10, 1))
+    await statusSink.publish(createRenderEvent("rendering", 15, 2), createRenderSnapshot("rendering", 15, 2))
+    await statusSink.publish(createRenderEvent("rendering", 20, 3), createRenderSnapshot("rendering", 20, 3))
+    await statusSink.publish(createRenderEvent("publishing", 20, 4), createRenderSnapshot("publishing", 20, 4))
+
+    expect(sink.sendStatus).toHaveBeenCalledTimes(3)
+    expect(sink.sendStatus).toHaveBeenNthCalledWith(1, expect.objectContaining({ text: "Rendering video: 10%." }))
+    expect(sink.sendStatus).toHaveBeenNthCalledWith(2, expect.objectContaining({ text: "Rendering video: 20%." }))
+    expect(sink.sendStatus).toHaveBeenNthCalledWith(3, expect.objectContaining({ text: "Publishing video." }))
+  })
+
   it("can propagate status delivery failures when explicitly requested", async () => {
     const sink = {
       sendStatus: vi.fn(async () => {
@@ -106,3 +127,32 @@ describe("bot status updates", () => {
     await expect(statusSink.publish(event, snapshot)).rejects.toThrow("telegram unavailable")
   })
 })
+
+function createRenderEvent(status: BotRenderJobEvent["status"], progress: number, sequence: number): BotRenderJobEvent {
+  return {
+    jobId: "job-1",
+    sequence,
+    status,
+    progress,
+    timestamp: `2026-06-08T00:00:0${sequence}.000Z`,
+  }
+}
+
+function createRenderSnapshot(
+  status: BotRenderJobSnapshot["status"],
+  progress: number,
+  sequence: number,
+): BotRenderJobSnapshot {
+  const lastEvent = createRenderEvent(status, progress, sequence)
+  return {
+    jobId: "job-1",
+    status,
+    progress,
+    createdAt: "2026-06-08T00:00:00.000Z",
+    updatedAt: lastEvent.timestamp,
+    eventCount: sequence + 1,
+    lastEvent,
+    canCancel: status !== "done" && status !== "failed" && status !== "cancelled",
+    canRetry: status === "failed" || status === "cancelled",
+  }
+}

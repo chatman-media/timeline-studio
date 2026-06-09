@@ -111,6 +111,7 @@ export type {
   BotWorkflowStatusKind,
   BotWorkflowStatusMessage,
   BotWorkflowStatusOptions,
+  BotWorkflowStatusPolicy,
   BotWorkflowStatusSink,
   BotWorkflowValidationCode,
   BotWorkflowValidationError,

@@ -277,6 +277,16 @@ bot message
 - [x] Подключить opt-in recovery к `bot-worker` через CLI/env.
 - [x] Документировать production runbook и покрыть store/CLI tests.
 
+### B25: Bot workflow status update throttling ([#219](https://github.com/chatman-media/timeline-studio/issues/219))
+
+**Цель:** production bot не отправляет каждый render progress event в Telegram и снижает риск chat spam/429.
+
+- [x] Добавить configurable status update policy в core workflow status options.
+- [x] Отправлять первый status, terminal states и lifecycle transitions без задержки.
+- [x] Throttle repeated `rendering` progress по minimum interval/progress delta.
+- [x] Прокинуть policy через `bot-worker` и `bot-workflow` CLI flags/env.
+- [x] Документировать production runbook и покрыть core/CLI tests.
+
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Phase F / package boundaries
@@ -304,6 +314,7 @@ bot message
 - [#213](https://github.com/chatman-media/timeline-studio/issues/213) - B22: Telegram bot running render cancellation
 - [#215](https://github.com/chatman-media/timeline-studio/issues/215) - B23: Telegram bot workflow retry command
 - [#217](https://github.com/chatman-media/timeline-studio/issues/217) - B24: Telegram bot stale workflow recovery
+- [#219](https://github.com/chatman-media/timeline-studio/issues/219) - B25: Bot workflow status update throttling
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

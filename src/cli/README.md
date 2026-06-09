@@ -131,6 +131,8 @@ TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json \
 TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts \
 TIMELINE_BOT_JOB_STORE_FILE=.tmp/timeline-bot/jobs.json \
 TIMELINE_BOT_RECOVER_STALE_JOBS=true \
+TIMELINE_BOT_STATUS_MIN_INTERVAL=30000 \
+TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA=10 \
 TIMELINE_BOT_ASYNC_WORKFLOWS=true \
 TIMELINE_BOT_WORKFLOW_CONCURRENCY=1 \
 TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20 \
@@ -144,6 +146,7 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 также поддерживаются `media=`, `url=`, `input=` и `source=`.
 Для production polling включайте `--async-workflows`: worker быстро ставит render workflow в очередь и продолжает читать Telegram updates.
 Когда workflow поставлен в очередь, bot-worker сразу отправляет queued acknowledgement в исходный чат; финальный progress/result продолжает идти через status updates.
+Для длинных renders задавайте `--status-min-interval` и/или `--status-min-progress-delta`, чтобы не отправлять каждый progress event в Telegram.
 Если задан `--workflow-queue-limit`, новые render requests сверх pending backlog получают busy response и не запускают workflow.
 Если задан `--job-store-file` или `TIMELINE_BOT_JOB_STORE_FILE`, worker сохраняет историю queued/running/done/failed/rejected/cancelled jobs; команда `/status` показывает последние jobs текущего Telegram chat.
 Если задан `--recover-stale-jobs` или `TIMELINE_BOT_RECOVER_STALE_JOBS=true`, worker перед стартом помечает сохраненные queued/running jobs как failed, чтобы после рестарта они не висели в `/status` и были доступны для `/retry`.
@@ -160,6 +163,8 @@ bun run src/cli/index.ts bot-worker --poll --rust-render
 | `--draft-dir <path>` | Сохранять bot conversation drafts между сообщениями и рестартами |
 | `--job-store-file <path>` | Сохранять workflow job status/history для `/status` |
 | `--recover-stale-jobs` | Помечать сохраненные queued/running jobs как failed перед стартом worker |
+| `--status-min-interval <ms>` | Минимальный интервал между repeated rendering status messages |
+| `--status-min-progress-delta <percent>` | Минимальный progress delta между rendering status messages |
 | `--async-workflows` | Ставить render workflows в очередь во время continuous polling |
 | `--workflow-concurrency <count>` | Максимум параллельных queued workflows |
 | `--workflow-queue-limit <count>` | Максимум ожидающих queued workflows перед busy response |
@@ -183,6 +188,8 @@ export TIMELINE_BOT_OFFSET_FILE=.tmp/timeline-bot/offset.json
 export TIMELINE_BOT_DRAFT_DIR=.tmp/timeline-bot/drafts
 export TIMELINE_BOT_JOB_STORE_FILE=.tmp/timeline-bot/jobs.json
 export TIMELINE_BOT_RECOVER_STALE_JOBS=true
+export TIMELINE_BOT_STATUS_MIN_INTERVAL=30000
+export TIMELINE_BOT_STATUS_MIN_PROGRESS_DELTA=10
 export TIMELINE_BOT_ASYNC_WORKFLOWS=true
 export TIMELINE_BOT_WORKFLOW_CONCURRENCY=1
 export TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20
