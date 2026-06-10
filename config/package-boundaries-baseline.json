@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 style-template core types",
-  "violations": 405,
+  "source": "Phase F7 style-template preview boundary",
+  "violations": 403,
   "bySeverity": {
-    "warn": 405
+    "warn": 403
   },
   "byEdge": {
-    "ui -> domains": 405
+    "ui -> domains": 403
   }
 }

@@ -18,8 +18,8 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
   }),
 }))
 
-vi.mock("@/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
+vi.mock("@/features/timeline/providers/resources-provider", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/timeline/providers/resources-provider")>()
   return {
     ...actual,
     useResources: () => ({
