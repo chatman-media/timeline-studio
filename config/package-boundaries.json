@@ -59,6 +59,49 @@
       "reason": "UI-to-domain imports are legacy coupling to burn down through core ports."
     }
   ],
+  "externalContracts": {
+    "documents": [
+      "docs/engineering/external-headless-contracts.md",
+      "docs/engineering/package-boundaries.md",
+      "docs/engineering/AGENT_CONTRACT_REFERENCE.md",
+      "docs/06_deployment/telegram-bot-worker-production.md",
+      "apps/cli/COMMANDS.md"
+    ],
+    "forbiddenCodeBlockPatterns": [
+      {
+        "pattern": "from [\"']@/",
+        "reason": "External/headless examples must not import root aliases."
+      },
+      {
+        "pattern": "import\\([\"']@/",
+        "reason": "External/headless examples must not import root aliases."
+      },
+      {
+        "pattern": "from [\"']@domains/",
+        "reason": "External/headless examples must use package exports instead of legacy domain aliases."
+      },
+      {
+        "pattern": "from [\"']@features/",
+        "reason": "External/headless examples must not import desktop feature internals."
+      },
+      {
+        "pattern": "from [\"']@ui/",
+        "reason": "External/headless examples must use @timeline-studio/ui exports instead of legacy UI aliases."
+      },
+      {
+        "pattern": "src-tauri/",
+        "reason": "External/headless examples must not depend on src-tauri internals."
+      },
+      {
+        "pattern": "from [\"']packages/.*/src/",
+        "reason": "External/headless examples must use package exports instead of package-private source paths."
+      },
+      {
+        "pattern": "import\\([\"']packages/.*/src/",
+        "reason": "External/headless examples must use package exports instead of package-private source paths."
+      }
+    ]
+  },
   "ignore": [
     "**/*.d.ts",
     "**/*.test.ts",

@@ -1,7 +1,7 @@
 # External And Headless Integration Contracts
 
 **Status:** Phase G contract hardening for [#282](https://github.com/chatman-media/timeline-studio/issues/282)
-**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Package Boundaries](package-boundaries.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
+**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
 
 This document defines the supported integration surface for external consumers after the workspace extraction. It is intentionally narrow: consumers should build against `ProjectSchema`, the Rust `timeline` CLI, and the headless Node CLI commands. They should not import private package files, root aliases, or `src-tauri` internals.
 
@@ -26,6 +26,8 @@ External consumers must not depend on:
 - Desktop-only React providers, app-shell state, or Tauri `AppHandle` state.
 
 If a needed capability is not reachable through the supported surfaces above, add a core port, package export, or CLI contract first.
+
+Root compatibility paths that still exist for desktop/build compatibility are inventoried in [Root Compatibility Shims](root-compatibility-shims.md). They are not supported external entrypoints.
 
 ## ProjectSchema Contract
 

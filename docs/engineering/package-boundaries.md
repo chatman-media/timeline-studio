@@ -61,6 +61,8 @@ External/headless consumers should use the supported entrypoints documented in [
 
 External consumers should not import root aliases such as `@/core`, `@/domains`, `@/adapters`, `@/features`, package-private `packages/*/src/**` files, desktop React providers, or `src-tauri` internals. If a consumer needs a capability that is not exposed through a supported entrypoint, expose it through a core port, package export, or CLI contract first.
 
+Root compatibility paths and their removal criteria are tracked in [Root Compatibility Shims](root-compatibility-shims.md).
+
 ## App Entrypoint Ownership
 
 `apps/cli/src` owns the CLI entrypoint and commands directly.
