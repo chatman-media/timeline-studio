@@ -16,6 +16,7 @@ import type {
   IPlatformService,
   IStorageService,
   ITranscriptionService,
+  IUpdateService,
   IVideoService,
 } from "./ports"
 
@@ -33,6 +34,7 @@ class ServiceContainer {
   private _language: ILanguageService | null = null
   private _transcription: ITranscriptionService | null = null
   private _enhancedSubtitleAutomation: IEnhancedSubtitleAutomationService | null = null
+  private _update: IUpdateService | null = null
 
   private constructor() {}
 
@@ -59,6 +61,7 @@ class ServiceContainer {
       ServiceContainer.instance._language = null
       ServiceContainer.instance._transcription = null
       ServiceContainer.instance._enhancedSubtitleAutomation = null
+      ServiceContainer.instance._update = null
     }
   }
 
@@ -270,6 +273,23 @@ class ServiceContainer {
   hasEnhancedSubtitleAutomation(): boolean {
     return this._enhancedSubtitleAutomation !== null
   }
+
+  // === Update Service ===
+
+  registerUpdate(update: IUpdateService): void {
+    this._update = update
+  }
+
+  getUpdate(): IUpdateService {
+    if (!this._update) {
+      throw new Error("[ServiceContainer] Update service not registered. Call registerUpdate() first or use initTauriApp()/initMockApp().")
+    }
+    return this._update
+  }
+
+  hasUpdate(): boolean {
+    return this._update !== null
+  }
 }
 
 // Singleton instance
@@ -288,6 +308,7 @@ export const getLanguage = (): ILanguageService => container.getLanguage()
 export const getTranscription = (): ITranscriptionService => container.getTranscription()
 export const getEnhancedSubtitleAutomation = (): IEnhancedSubtitleAutomationService =>
   container.getEnhancedSubtitleAutomation()
+export const getUpdate = (): IUpdateService => container.getUpdate()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

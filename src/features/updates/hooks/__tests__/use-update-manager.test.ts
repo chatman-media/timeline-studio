@@ -6,7 +6,9 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { container, resetContainer } from "@/core/container"
+import type { IUpdateService } from "@/core/ports"
 import type { UpdateMachineContext } from "../../types"
 import { useUpdateAvailability, useUpdateManager } from "../use-update-manager"
 
@@ -15,15 +17,19 @@ vi.mock("@xstate/react", () => ({
   useMachine: vi.fn(),
 }))
 
-// Мокаем domain service
-vi.mock("@/domains/system-integration", () => ({
-  updateService: {
-    subscribe: vi.fn(() => vi.fn()),
-    enableAutoCheck: vi.fn(),
-    disableAutoCheck: vi.fn(),
-  },
-  updateMachine: {},
-}))
+const mockUpdateService: IUpdateService = {
+  checkForUpdates: vi.fn(),
+  downloadAndInstall: vi.fn(),
+  getCurrentVersion: vi.fn(),
+  isUpdaterAvailable: vi.fn(),
+  subscribe: vi.fn(() => vi.fn()),
+  enableAutoCheck: vi.fn(),
+  disableAutoCheck: vi.fn(),
+  getCurrentStatus: vi.fn(),
+  reset: vi.fn(),
+  getAutoCheckSettings: vi.fn(),
+  dispose: vi.fn(),
+}
 
 describe("useUpdateManager", () => {
   const mockSend = vi.fn()
@@ -42,9 +48,15 @@ describe("useUpdateManager", () => {
   }
 
   beforeEach(async () => {
+    resetContainer()
     vi.clearAllMocks()
+    container.registerUpdate(mockUpdateService)
     const { useMachine } = await import("@xstate/react")
     vi.mocked(useMachine).mockReturnValue([mockState, mockSend] as any)
+  })
+
+  afterEach(() => {
+    resetContainer()
   })
 
   it("возвращает правильную структуру", () => {
@@ -181,18 +193,15 @@ describe("useUpdateManager", () => {
   })
 
   it("подписывается на события updateService", async () => {
-    const { updateService } = await import("@/domains/system-integration")
     renderHook(() => useUpdateManager())
 
-    expect(vi.mocked(updateService).subscribe).toHaveBeenCalled()
+    expect(mockUpdateService.subscribe).toHaveBeenCalled()
   })
 
-  it("включает/выключает автопроверку в сервисе", async () => {
-    const { updateService } = await import("@/domains/system-integration")
-
+  it("включает/выключает автопроверку в сервисе", () => {
     // Автопроверка выключена
     renderHook(() => useUpdateManager())
-    expect(updateService.disableAutoCheck).toHaveBeenCalled()
+    expect(mockUpdateService.disableAutoCheck).toHaveBeenCalled()
 
     // Включаем автопроверку
     mockState.context.autoCheckEnabled = true
@@ -200,7 +209,7 @@ describe("useUpdateManager", () => {
     const { rerender } = renderHook(() => useUpdateManager())
     rerender()
 
-    expect(updateService.enableAutoCheck).toHaveBeenCalledWith(120)
+    expect(mockUpdateService.enableAutoCheck).toHaveBeenCalledWith(120)
   })
 
   it("возвращает данные контекста", () => {
@@ -244,6 +253,16 @@ describe("useUpdateManager", () => {
 })
 
 describe("useUpdateAvailability", () => {
+  beforeEach(() => {
+    resetContainer()
+    vi.clearAllMocks()
+    container.registerUpdate(mockUpdateService)
+  })
+
+  afterEach(() => {
+    resetContainer()
+  })
+
   it("возвращает упрощенную структуру", async () => {
     // Создаем мок состояния с доступным обновлением
     const mockState = {

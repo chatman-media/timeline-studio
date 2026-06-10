@@ -17,6 +17,7 @@ import { MockNodeBackendService } from "./node-backend"
 import { MockPlatformService } from "./platform"
 import { MockStorageService } from "./storage"
 import { MockTranscriptionAdapter } from "./transcription"
+import { MockUpdateService } from "./update-service"
 import { MockVideoService } from "./video"
 
 export { MockAIService } from "./ai"
@@ -30,6 +31,7 @@ export { MockNodeBackendService } from "./node-backend"
 export { MockPlatformService } from "./platform"
 export { MockStorageService } from "./storage"
 export { MockTranscriptionAdapter } from "./transcription"
+export { MockUpdateService } from "./update-service"
 export { MockVideoService } from "./video"
 
 /**
@@ -53,6 +55,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   language: MockLanguageService
   transcription: MockTranscriptionAdapter
   enhancedSubtitleAutomation: MockEnhancedSubtitleAutomationAdapter
+  update: MockUpdateService
 } {
   const { useLocalStorage = false } = options
 
@@ -69,6 +72,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const language = new MockLanguageService()
   const transcription = new MockTranscriptionAdapter()
   const enhancedSubtitleAutomation = new MockEnhancedSubtitleAutomationAdapter()
+  const update = new MockUpdateService()
 
   // Register in container
   container.registerBackend(backend)
@@ -82,6 +86,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerLanguage(language)
   container.registerTranscription(transcription)
   container.registerEnhancedSubtitleAutomation(enhancedSubtitleAutomation)
+  container.registerUpdate(update)
 
   // Return services for test manipulation
   return {
@@ -97,6 +102,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
     language,
     transcription,
     enhancedSubtitleAutomation,
+    update,
   }
 }
 
@@ -117,6 +123,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   language: MockLanguageService
   transcription: MockTranscriptionAdapter
   enhancedSubtitleAutomation: MockEnhancedSubtitleAutomationAdapter
+  update: MockUpdateService
 } {
   const { useLocalStorage = false } = options
 
@@ -133,5 +140,6 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     language: new MockLanguageService(),
     transcription: new MockTranscriptionAdapter(),
     enhancedSubtitleAutomation: new MockEnhancedSubtitleAutomationAdapter(),
+    update: new MockUpdateService(),
   }
 }

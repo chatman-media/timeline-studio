@@ -18,6 +18,7 @@ export {
   getPlatform,
   getStorage,
   getTranscription,
+  getUpdate,
   resetContainer,
 } from "./container"
 // Ports (Interfaces)
@@ -52,6 +53,7 @@ export type {
   IRenderJobService,
   IStorageService,
   ITranscriptionService,
+  IUpdateService,
   NodeBackendHealth,
   NotificationOptions,
   OpenDialogOptions,

@@ -4,9 +4,9 @@
  */
 
 import { useMachine } from "@xstate/react"
-import { useEffect } from "react"
-// Используем машину и сервис из домена
-import { updateMachine, updateService } from "@/domains/system-integration"
+import { useEffect, useMemo } from "react"
+import { container } from "@/core/container"
+import { createUpdateMachine } from "@/core/services/update-machine"
 import type { AutoCheckSettings, UpdateAvailability, UpdateEventPayload, UpdateMachineContext } from "../types"
 
 export interface UseUpdateManagerReturn {
@@ -47,6 +47,8 @@ export interface UseUpdateManagerReturn {
  * Hook для управления обновлениями приложения
  */
 export function useUpdateManager(): UseUpdateManagerReturn {
+  const updateService = container.getUpdate()
+  const updateMachine = useMemo(() => createUpdateMachine({ updateService }), [updateService])
   const [state, send] = useMachine(updateMachine)
 
   const { context } = state

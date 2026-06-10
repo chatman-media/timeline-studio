@@ -102,6 +102,7 @@ export type { IPublishService } from "./publish.port"
 export type { IRenderJobService } from "./render-job.port"
 export type { IStorageService } from "./storage.port"
 export type { ITranscriptionService } from "./transcription.port"
+export type { IUpdateService } from "./update-service.port"
 export type {
   CacheConfig,
   CacheMemoryUsage,
