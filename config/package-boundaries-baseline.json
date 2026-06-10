@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 media core services",
-  "violations": 225,
+  "source": "Phase F7 browser app directory service",
+  "violations": 224,
   "bySeverity": {
-    "warn": 225
+    "warn": 224
   },
   "byEdge": {
-    "ui -> domains": 225
+    "ui -> domains": 224
   }
 }

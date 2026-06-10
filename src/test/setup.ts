@@ -483,6 +483,47 @@ vi.mock("@/domains/project-management/services/app-directories-service", async (
   }
 })
 
+vi.mock("@/core/services/app-directories-service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/core/services/app-directories-service")>()
+  const mockBaseDir = "/Users/test/Movies/Timeline Studio"
+  const mockResourcesDir = `${mockBaseDir}/Resources`
+  return {
+    ...actual,
+    appDirectoriesService: {
+      getAppDirectories: vi.fn().mockResolvedValue({
+        base_dir: mockBaseDir,
+        media_dir: `${mockResourcesDir}/Media`,
+        projects_dir: `${mockBaseDir}/Projects`,
+        snapshot_dir: `${mockBaseDir}/Snapshot`,
+        cinematic_dir: `${mockBaseDir}/Cinematic`,
+        output_dir: `${mockBaseDir}/Output`,
+        render_dir: `${mockBaseDir}/Render`,
+        recognition_dir: `${mockBaseDir}/Recognition`,
+        backup_dir: `${mockBaseDir}/Backup`,
+        media_proxy_dir: `${mockBaseDir}/MediaProxy`,
+        caches_dir: `${mockBaseDir}/Caches`,
+        recorded_dir: `${mockBaseDir}/Recorded`,
+        audio_dir: `${mockBaseDir}/Audio`,
+        cloud_project_dir: `${mockBaseDir}/Cloud Project`,
+        upload_dir: `${mockBaseDir}/Upload`,
+      }),
+      getMediaSubdirectory: vi.fn((type: string) => {
+        const subdirs: Record<string, string> = {
+          videos: "Videos",
+          effects: "Effects",
+          transitions: "Transitions",
+          images: "Images",
+          music: "Music",
+          style_templates: "StyleTemplates",
+          subtitles: "Subtitles",
+          filters: "Filters",
+        }
+        return `${mockResourcesDir}/Media/${subdirs[type] || type}`
+      }),
+    },
+  }
+})
+
 // Mock AI Content Intelligence services globally
 vi.mock("@/features/ai-chat/services/unified-ai-service", () => ({
   UnifiedAIService: {
