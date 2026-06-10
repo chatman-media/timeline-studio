@@ -64,6 +64,9 @@ export interface BotWorkerCommandOptions {
   idleDelay?: string
   mediaDir?: string
   downloadRemoteMedia?: boolean
+  mediaMaxBytes?: string
+  remoteMediaAllowHosts?: string
+  remoteMediaBlockHosts?: string
   pollInterval?: string
   timeout?: string
   rustRender?: boolean
@@ -130,6 +133,9 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--idle-delay <ms>", "Delay after an empty continuous polling batch", "1000")
   .option("--media-dir <path>", "Directory for resolved bot media downloads")
   .option("--download-remote-media", "Download remote URL media before rendering")
+  .option("--media-max-bytes <bytes>", "Reject Telegram/remote media downloads larger than this byte limit")
+  .option("--remote-media-allow-hosts <hosts>", "Comma/space separated remote media host allowlist")
+  .option("--remote-media-block-hosts <hosts>", "Comma/space separated remote media host blocklist")
   .option("--poll-interval <ms>", "Render polling interval in milliseconds", "1000")
   .option("--timeout <ms>", "Render timeout in milliseconds", "3600000")
   .option("--rust-render", "Run rendering through the Rust headless ts-render CLI")
@@ -334,6 +340,9 @@ export function resolveBotWorkerCommandOptions(
     maxBatches: firstConfigured(options.maxBatches, env.TIMELINE_BOT_MAX_BATCHES),
     idleDelay: firstConfigured(options.idleDelay, env.TIMELINE_BOT_IDLE_DELAY),
     mediaDir: firstConfigured(options.mediaDir, env.TIMELINE_BOT_MEDIA_DIR),
+    mediaMaxBytes: firstConfigured(options.mediaMaxBytes, env.TIMELINE_BOT_MEDIA_MAX_BYTES),
+    remoteMediaAllowHosts: firstConfigured(options.remoteMediaAllowHosts, env.TIMELINE_BOT_REMOTE_MEDIA_ALLOW_HOSTS),
+    remoteMediaBlockHosts: firstConfigured(options.remoteMediaBlockHosts, env.TIMELINE_BOT_REMOTE_MEDIA_BLOCK_HOSTS),
     pollInterval: firstConfigured(options.pollInterval, env.TIMELINE_BOT_RENDER_POLL_INTERVAL),
     timeout: firstConfigured(options.timeout, env.TIMELINE_BOT_RENDER_TIMEOUT),
     rustRenderCommand: firstConfigured(options.rustRenderCommand, env.TIMELINE_BOT_RUST_RENDER_COMMAND),
@@ -422,9 +431,16 @@ function createBotMediaResolverOptions(options: BotWorkerCommandOptions) {
     return undefined
   }
 
+  const maxDownloadBytes = parseOptionalPositiveInteger(options.mediaMaxBytes)
+  const remoteUrlAllowedHosts = parseList(options.remoteMediaAllowHosts)
+  const remoteUrlBlockedHosts = parseList(options.remoteMediaBlockHosts)
+
   return {
     ...(options.mediaDir ? { downloadDir: path.resolve(options.mediaDir) } : {}),
     downloadRemoteUrls: options.downloadRemoteMedia ?? false,
+    ...(maxDownloadBytes !== undefined ? { maxDownloadBytes } : {}),
+    ...(remoteUrlAllowedHosts.length > 0 ? { remoteUrlAllowedHosts } : {}),
+    ...(remoteUrlBlockedHosts.length > 0 ? { remoteUrlBlockedHosts } : {}),
     ...(options.telegramBotToken
       ? {
           telegram: {
@@ -726,6 +742,10 @@ function parseOptionalNonNegativeNumber(value: string | undefined): number | und
 }
 
 function parseIdList(value: string | undefined): string[] {
+  return parseList(value)
+}
+
+function parseList(value: string | undefined): string[] {
   if (!value) return []
   return value
     .split(/[,\s]+/)

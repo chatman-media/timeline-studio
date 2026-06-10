@@ -48,6 +48,9 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--workflow-queue-limit")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--max-batches")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--idle-delay")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--media-max-bytes")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--remote-media-allow-hosts")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--remote-media-block-hosts")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-render")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-publish")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--youtube-access-token")).toBe(true)
@@ -300,6 +303,9 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "2",
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
         TIMELINE_BOT_MEDIA_DIR: ".tmp/media",
+        TIMELINE_BOT_MEDIA_MAX_BYTES: "104857600",
+        TIMELINE_BOT_REMOTE_MEDIA_ALLOW_HOSTS: "cdn.example.com,assets.example.com",
+        TIMELINE_BOT_REMOTE_MEDIA_BLOCK_HOSTS: "blocked.example.com",
         TIMELINE_BOT_POLL_LIMIT: "10",
         TIMELINE_BOT_POLL_TIMEOUT: "20",
         TIMELINE_BOT_IDLE_DELAY: "30",
@@ -354,6 +360,9 @@ describe("bot-worker command", () => {
       workflowConcurrency: "2",
       workflowQueueLimit: "10",
       mediaDir: ".tmp/media",
+      mediaMaxBytes: "104857600",
+      remoteMediaAllowHosts: "cdn.example.com,assets.example.com",
+      remoteMediaBlockHosts: "blocked.example.com",
       pollLimit: "10",
       pollTimeout: "20",
       idleDelay: "30",
@@ -408,6 +417,9 @@ describe("bot-worker command", () => {
         asyncWorkflows: false,
         workflowConcurrency: "3",
         workflowQueueLimit: "5",
+        mediaMaxBytes: "52428800",
+        remoteMediaAllowHosts: "cli-cdn.example.com",
+        remoteMediaBlockHosts: "cli-blocked.example.com",
         defaultDestination: "file",
         rustRender: false,
         rustPublish: false,
@@ -444,6 +456,9 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_ASYNC_WORKFLOWS: "true",
         TIMELINE_BOT_WORKFLOW_CONCURRENCY: "1",
         TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT: "10",
+        TIMELINE_BOT_MEDIA_MAX_BYTES: "104857600",
+        TIMELINE_BOT_REMOTE_MEDIA_ALLOW_HOSTS: "env-cdn.example.com",
+        TIMELINE_BOT_REMOTE_MEDIA_BLOCK_HOSTS: "env-blocked.example.com",
         TIMELINE_BOT_DEFAULT_DESTINATION: "telegram",
         TIMELINE_BOT_RUST_RENDER: "true",
         TIMELINE_BOT_RUST_PUBLISH: "true",
@@ -482,6 +497,9 @@ describe("bot-worker command", () => {
       asyncWorkflows: false,
       workflowConcurrency: "3",
       workflowQueueLimit: "5",
+      mediaMaxBytes: "52428800",
+      remoteMediaAllowHosts: "cli-cdn.example.com",
+      remoteMediaBlockHosts: "cli-blocked.example.com",
       defaultDestination: "file",
       rustRender: false,
       rustPublish: false,

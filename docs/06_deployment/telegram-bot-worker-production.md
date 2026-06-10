@@ -147,13 +147,15 @@ find /var/lib/timeline-studio/bot/first-cut -type f -mtime +1 -delete
 
 Current safe production policy:
 
-- Keep `TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA=false` unless the bot runs in a restricted egress network.
+- Keep `TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA=false` unless remote URL intake is explicitly needed.
+- Set `TIMELINE_BOT_MEDIA_MAX_BYTES` to reject oversized Telegram and remote media before render/transcription.
+- Use `TIMELINE_BOT_REMOTE_MEDIA_ALLOW_HOSTS` and `TIMELINE_BOT_REMOTE_MEDIA_BLOCK_HOSTS` when remote URL downloads are enabled.
 - Use Telegram/user allowlists for every production bot.
 - Prefer direct Telegram uploads over arbitrary remote URLs.
-- Enforce network-level allowlists for remote media hosts until runtime URL policy exists.
+- Keep network-level egress controls as defense in depth for remote media hosts.
 - Use sandbox bot testing for the largest expected upload before enabling a channel.
 
-Runtime enforcement of max media size and URL host allowlists is tracked in [#261](https://github.com/chatman-media/timeline-studio/issues/261).
+Host lists are comma/space separated. Exact hosts match directly; wildcard patterns such as `*.example.com` match subdomains.
 
 ## Logs And Secrets
 
@@ -168,5 +170,5 @@ Runtime enforcement of max media size and URL host allowlists is tracked in [#26
 - Deployment path: systemd service with durable filesystem state.
 - Restart model: retry-only interrupted jobs; edit sessions survive restart.
 - Cleanup policy: retention windows documented, automated cleanup tracked in #262.
-- Guardrails policy: documented safe defaults, runtime enforcement tracked in #261.
+- Guardrails policy: runtime max-size and URL host enforcement is available through bot-worker config.
 - Sandbox smoke: token, allowlist, status and expected chat outputs documented.

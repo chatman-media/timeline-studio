@@ -192,6 +192,9 @@ bun run smoke:ai-review:rust
 | `--workflow-queue-limit <count>` | Максимум ожидающих queued workflows перед busy response |
 | `--max-batches <count>` | Остановить polling после N batches |
 | `--media-dir <path>` | Папка для скачанных Telegram/remote media |
+| `--media-max-bytes <bytes>` | Отклонять Telegram/remote media больше лимита |
+| `--remote-media-allow-hosts <hosts>` | Comma/space separated allowlist для remote media hosts |
+| `--remote-media-block-hosts <hosts>` | Comma/space separated blocklist для remote media hosts |
 | `--telegram-bot-token <token>` | Telegram Bot API token |
 | `--rust-render` | Использовать Rust headless render adapter |
 
@@ -218,6 +221,9 @@ export TIMELINE_BOT_ASYNC_WORKFLOWS=true
 export TIMELINE_BOT_WORKFLOW_CONCURRENCY=1
 export TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20
 export TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media
+export TIMELINE_BOT_MEDIA_MAX_BYTES=104857600
+export TIMELINE_BOT_REMOTE_MEDIA_ALLOW_HOSTS=cdn.example.com,assets.example.com
+export TIMELINE_BOT_REMOTE_MEDIA_BLOCK_HOSTS=blocked.example.com
 export TIMELINE_BOT_DEFAULT_DESTINATION=telegram
 export TIMELINE_BOT_RUST_RENDER=true
 
