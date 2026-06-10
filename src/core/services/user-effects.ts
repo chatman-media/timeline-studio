@@ -5,6 +5,7 @@
 
 import { invoke } from "@tauri-apps/api/core"
 import type { BaseEffect } from "@/core/types"
+import type { ProjectSchema } from "@/core/types/video-editing"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("CoreUserEffectsService")
@@ -69,6 +70,70 @@ export async function loadEffectsCollection(filePath: string): Promise<UserEffec
     return collection
   } catch (error) {
     void logger.error("Error loading effects collection", { error })
+    throw error
+  }
+}
+
+export async function addEffectToClip(
+  projectSchema: ProjectSchema,
+  clipId: string,
+  effectId: string,
+): Promise<ProjectSchema> {
+  try {
+    const updatedSchema = await invoke<ProjectSchema>("add_effect_to_clip", { clipId, effectId, projectSchema })
+
+    void logger.info("Effect added to clip", { clipId, effectId })
+    return updatedSchema
+  } catch (error) {
+    void logger.error("Failed to add effect to clip", { error })
+    throw error
+  }
+}
+
+export async function addFilterToClip(
+  projectSchema: ProjectSchema,
+  clipId: string,
+  filterId: string,
+): Promise<ProjectSchema> {
+  try {
+    const updatedSchema = await invoke<ProjectSchema>("add_filter_to_clip", { clipId, filterId, projectSchema })
+
+    void logger.info("Filter added to clip", { clipId, filterId })
+    return updatedSchema
+  } catch (error) {
+    void logger.error("Failed to add filter to clip", { error })
+    throw error
+  }
+}
+
+export async function removeEffectFromClip(
+  projectSchema: ProjectSchema,
+  clipId: string,
+  effectId: string,
+): Promise<ProjectSchema> {
+  try {
+    const updatedSchema = await invoke<ProjectSchema>("remove_effect_from_clip", { clipId, effectId, projectSchema })
+
+    void logger.info("Effect removed from clip", { clipId, effectId })
+    return updatedSchema
+  } catch (error) {
+    void logger.error("Failed to remove effect from clip", { error })
+    throw error
+  }
+}
+
+export async function removeFilterFromClip(
+  projectSchema: ProjectSchema,
+  clipId: string,
+  filterId: string,
+): Promise<ProjectSchema> {
+  try {
+    const updatedSchema = await invoke<ProjectSchema>("remove_filter_from_clip", { clipId, filterId, projectSchema })
+
+    void logger.info("Filter removed from clip", { clipId, filterId })
+    return updatedSchema
+  } catch (error) {
+    void logger.error("Failed to remove filter from clip", { error })
     throw error
   }
 }

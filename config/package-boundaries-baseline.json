@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 local timeline project schema",
-  "violations": 56,
+  "source": "Phase F7 core timeline effects commands",
+  "violations": 55,
   "bySeverity": {
-    "warn": 56
+    "warn": 55
   },
   "byEdge": {
-    "ui -> domains": 56
+    "ui -> domains": 55
   }
 }
