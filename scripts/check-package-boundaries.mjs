@@ -22,6 +22,7 @@ const configPath = path.resolve(
 )
 const baselineArg = args.find((arg) => arg.startsWith("--baseline="))
 const baselinePath = baselineArg ? path.resolve(repoRoot, baselineArg.split("=")[1]) : null
+const externalContracts = args.includes("--external-contracts")
 
 const toPosix = (value) => value.split(path.sep).join("/")
 
@@ -260,6 +261,80 @@ function printTextReport(config, files, violations) {
   }
 }
 
+function extractMarkdownCodeBlocks(source) {
+  const codeBlocks = []
+  const fencePattern = /```[^\n]*\n([\s\S]*?)```/g
+
+  for (const match of source.matchAll(fencePattern)) {
+    const startLine = source.slice(0, match.index).split("\n").length
+    codeBlocks.push({
+      text: match[1],
+      startLine: startLine + 1,
+    })
+  }
+
+  return codeBlocks
+}
+
+async function checkExternalContracts(config) {
+  const externalConfig = config.externalContracts ?? {}
+  const documents = externalConfig.documents ?? []
+  const forbiddenPatterns = (externalConfig.forbiddenCodeBlockPatterns ?? []).map((patternInfo) => ({
+    ...patternInfo,
+    regex: new RegExp(patternInfo.pattern),
+  }))
+  const violations = []
+
+  for (const documentPath of documents) {
+    const absolutePath = path.join(repoRoot, documentPath)
+    const source = await fs.readFile(absolutePath, "utf8")
+
+    for (const block of extractMarkdownCodeBlocks(source)) {
+      const lines = block.text.split("\n")
+
+      for (const [index, line] of lines.entries()) {
+        for (const patternInfo of forbiddenPatterns) {
+          if (!patternInfo.regex.test(line)) {
+            continue
+          }
+
+          violations.push({
+            file: documentPath,
+            line: block.startLine + index,
+            pattern: patternInfo.pattern,
+            text: line.trim(),
+            reason: patternInfo.reason,
+          })
+        }
+      }
+    }
+  }
+
+  return violations
+}
+
+function printExternalContractReport(config, violations) {
+  const documents = config.externalContracts?.documents ?? []
+
+  console.log("External contract guardrail report")
+  console.log(`Config: ${toPosix(path.relative(repoRoot, configPath))}`)
+  console.log(`Documents: ${documents.length}`)
+  console.log(`Violations: ${violations.length}`)
+
+  if (violations.length === 0) {
+    console.log("Result: no forbidden external/headless examples found.")
+    return
+  }
+
+  console.log("")
+  console.log(`Details (first ${Math.min(maxDetails, violations.length)}):`)
+  for (const violation of violations.slice(0, maxDetails)) {
+    console.log(`[error] ${violation.file}:${violation.line} via /${violation.pattern}/`)
+    console.log(`  ${violation.text}`)
+    console.log(`  ${violation.reason}`)
+  }
+}
+
 function compareBaseline(violations, baseline) {
   const summary = summarizeViolations(violations)
   const failures = []
@@ -303,6 +378,31 @@ function printBaselineReport(comparison) {
 
 async function main() {
   const config = await readConfig()
+
+  if (externalContracts) {
+    const violations = await checkExternalContracts(config)
+
+    if (json) {
+      console.log(
+        JSON.stringify(
+          {
+            documents: config.externalContracts?.documents?.length ?? 0,
+            violations,
+          },
+          null,
+          2,
+        ),
+      )
+    } else {
+      printExternalContractReport(config, violations)
+    }
+
+    if (violations.length > 0) {
+      process.exitCode = 1
+    }
+    return
+  }
+
   const baseline = await readBaseline()
   const sourceRoots = config.sourceRoots ?? [config.sourceRoot]
   const files = [

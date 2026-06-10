@@ -97,6 +97,7 @@ Smoke использует committed Telegram update fixtures:
 - `docs/08_tasks/planned/fixtures/telegram-ai-review-media-upload-update.json`
 - `docs/08_tasks/planned/fixtures/telegram-ai-review-text-feedback-update.json`
 - `docs/08_tasks/planned/fixtures/telegram-ai-review-voice-feedback-update.json`
+- `docs/08_tasks/planned/fixtures/telegram-ai-review-video-note-feedback-update.json`
 - `docs/08_tasks/planned/fixtures/telegram-ai-review-approve-update.json`
 
 Покрываемый путь:
@@ -154,6 +155,8 @@ Operational checks:
 bun run test:bot-ai
 bun run smoke:ai-review:rust
 ```
+
+The repeatable sandbox operator checklist lives in [Telegram AI Review Sandbox Smoke](../../06_deployment/telegram-ai-review-sandbox-smoke.md). The production state, restart, cleanup and publish boundary lives in [Bot-First Production Contract](../../engineering/bot-first-production-contract.md).
 
 For production polling, keep model/provider and secret config at process/env/service-manager boundaries. Do not put raw provider credentials into edit session store metadata or issue/test output. Generic log retention, deployment topology and cleanup policies remain owned by B28/#225.
 

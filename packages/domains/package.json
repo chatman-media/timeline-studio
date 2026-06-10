@@ -87,6 +87,10 @@
       "types": "./src/system-integration/*",
       "default": "./src/system-integration/*"
     },
+    "./test/setup": {
+      "types": "./src/test/setup.ts",
+      "default": "./src/test/setup.ts"
+    },
     "./video-editing": {
       "types": "./src/video-editing/index.ts",
       "default": "./src/video-editing/index.ts"

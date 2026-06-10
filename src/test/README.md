@@ -16,6 +16,13 @@ src/test/
 └── README.md           # Эта документация
 ```
 
+Workspace-local helpers:
+
+```
+packages/core/src/test/setup.ts     # Core DI services, useApp mock, shared project state
+packages/domains/src/test/setup.ts  # Domain registry bindings for media/video/montage services
+```
+
 ## Основные компоненты
 
 ### `setup.ts` - Глобальная конфигурация
@@ -27,6 +34,11 @@ src/test/
 - Настройка cleanup между тестами
 - Мокирование провайдеров (UserSettings, Modals, AppState)
 - Конфигурация console методов для тестовой среды
+- Композиция workspace-local setup helpers:
+  - `@timeline-studio/core/test/setup`
+  - `@timeline-studio/domains/test/setup`
+
+Core/container services and domain-specific service registries live in their package helpers. Keep new package-specific DI or registry setup out of `src/test/setup.ts` unless it is required by all suites.
 
 **Автоматически мокируемые модули:**
 - `@/features/user-settings/providers/user-settings-provider`
@@ -124,7 +136,7 @@ test('async data loading', async () => {
 {
   test: {
     environment: 'jsdom',
-    setupFiles: ['./src/test-setup.ts'],
+    setupFiles: ['./src/test/setup.ts'],
     globals: true,
     coverage: {
       provider: 'v8',

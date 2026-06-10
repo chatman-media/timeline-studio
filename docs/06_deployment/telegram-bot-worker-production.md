@@ -1,9 +1,9 @@
 # Telegram Bot Worker Production Runbook
 
 **Status:** Production foundation documented for [#225](https://github.com/chatman-media/timeline-studio/issues/225)
-**Related:** [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [AI Module Stabilization](../08_tasks/planned/ai-module-node-rust-orchestration.md)
+**Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Telegram AI Review Sandbox Smoke](telegram-ai-review-sandbox-smoke.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [AI Module Stabilization](../08_tasks/planned/ai-module-node-rust-orchestration.md), [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
 
-This runbook defines the supported operating model for the Telegram bot-first and AI review worker. It covers topology, persistence, deployment, restart behavior, media retention, startup smoke and sandbox validation.
+This runbook defines the supported operating model for the Telegram bot-first and AI review worker. It covers topology, persistence, deployment, restart behavior, media retention and startup smoke. The product/runtime contract is in [Bot-First Production Contract](../engineering/bot-first-production-contract.md); the repeatable sandbox checklist is in [Telegram AI Review Sandbox Smoke](telegram-ai-review-sandbox-smoke.md).
 
 ## Supported Topology
 
@@ -105,9 +105,10 @@ Use a non-production bot and private channel/chat first.
 5. Send a small video with a simple caption, for example `Make a 15s product promo destination=file`.
 6. Confirm the bot sends queued/running status and a preview artifact.
 7. Send one text revision and one voice revision.
-8. Run `/versions` and confirm revision ids, provider/model and artifact references are present.
-9. Run `/approve`; for `destination=file` the approved artifact stays downloadable, for `telegram` final publish goes through Rust `timeline publish`.
-10. Restart the worker during an active session and confirm `/status` still shows the latest session/revision.
+8. Send one video-note revision.
+9. Run `/versions` and confirm revision ids, provider/model and artifact references are present.
+10. Run `/approve`; for `destination=file` the approved artifact stays downloadable, for `telegram` final publish goes through Rust `timeline publish`.
+11. Restart the worker during an active session and confirm `/status` still shows the latest session/revision.
 
 ## Restart And Queue Decision
 

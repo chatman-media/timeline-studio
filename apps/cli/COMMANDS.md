@@ -110,11 +110,83 @@ npx ts-node apps/cli/src/index.ts render project.json output.mp4 --verbose
 | `--no-audio` | Отключить аудио |
 | `-v, --verbose` | Подробный вывод |
 
+### render-job - Headless bot render job
+
+`render-job` is the supported one-shot Node entrypoint for external job runners that already have a render job JSON payload. It returns machine-readable `BotRenderJobResult` JSON and can delegate rendering to the Rust headless CLI with `--rust-render`.
+
+```bash
+bun run apps/cli/src/index.ts render-job ./render-job.json --pretty --rust-render
+```
+
+Minimal request shape:
+
+```json
+{
+  "source": "cli",
+  "project": {
+    "type": "file",
+    "path": "./project.json"
+  },
+  "output": {
+    "format": "mp4",
+    "path": "./out.mp4",
+    "destination": "file",
+    "resolution": "1080p"
+  }
+}
+```
+
+**Опции:**
+| Опция | Описание |
+|-------|----------|
+| `--status-file <path>` | Write final job result JSON to a file |
+| `--pretty` | Pretty-print JSON output |
+| `--poll-interval <ms>` | Render polling interval in milliseconds |
+| `--timeout <ms>` | Render timeout in milliseconds |
+| `--rust-render` | Run rendering through the Rust headless CLI |
+| `--rust-render-command <path>` | Path/name for `timeline` or `timeline-render` |
+| `--rust-render-kind <kind>` | Rust render command kind: `timeline` or `timeline-render` |
+
+### bot-workflow - Headless Telegram-like workflow
+
+`bot-workflow` is the supported one-shot entrypoint for Telegram-like payloads. It normalizes intake, resolves media when configured, creates the render job, and returns machine-readable workflow JSON without running the long-lived Telegram worker.
+
+```bash
+bun run apps/cli/src/index.ts bot-workflow ./payload.json \
+  --default-destination file \
+  --default-output ./.tmp/out.mp4 \
+  --pretty \
+  --rust-render
+```
+
+Fixture payloads live in `docs/08_tasks/planned/fixtures/`.
+
+**Опции:**
+| Опция | Описание |
+|-------|----------|
+| `--status-file <path>` | Write final workflow result JSON to a file |
+| `--pretty` | Pretty-print JSON output |
+| `--poll-interval <ms>` | Render polling interval in milliseconds |
+| `--timeout <ms>` | Render timeout in milliseconds |
+| `--telegram-bot-token <token>` | Resolve Telegram file ids through the Telegram Bot API |
+| `--send-status-updates` | Send workflow status updates through the Telegram Bot API |
+| `--status-chat-id <id>` | Fallback Telegram chat id for status updates |
+| `--status-min-interval <ms>` | Minimum interval between repeated rendering status messages |
+| `--status-min-progress-delta <percent>` | Minimum progress delta between rendering status messages |
+| `--media-dir <path>` | Directory for resolved bot media downloads |
+| `--download-remote-media` | Download remote URL media before rendering |
+| `--rust-render` | Run rendering through the Rust headless CLI |
+| `--rust-render-command <path>` | Path/name for `timeline` or `timeline-render` |
+| `--rust-render-kind <kind>` | Rust render command kind: `timeline` or `timeline-render` |
+| `--default-destination <destination>` | Fallback destination when payload has no destination hint |
+| `--default-output <path>` | Fallback output path when payload has no output hint |
+
 ### bot-worker - Telegram bot-first worker
 
 Запуск Telegram worker для bot-first workflow: обработка raw `Update`, один `getUpdates` batch или долгоживущий polling loop.
 В polling-режиме ошибки обработки отдельного update возвращаются как failed-result, отправляют короткий ответ в чат при наличии chat id и не останавливают batch.
-Production topology, systemd setup, retention policy and sandbox smoke are documented in [Telegram Bot Worker Production Runbook](../../docs/06_deployment/telegram-bot-worker-production.md). Use [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) as the production env template.
+Production topology, systemd setup and retention policy are documented in [Telegram Bot Worker Production Runbook](../../docs/06_deployment/telegram-bot-worker-production.md). The supported production state/publish/recovery contract is documented in [Bot-First Production Contract](../../docs/engineering/bot-first-production-contract.md), and the repeatable sandbox checklist is documented in [Telegram AI Review Sandbox Smoke](../../docs/06_deployment/telegram-ai-review-sandbox-smoke.md). Use [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) as the production env template.
+Supported external/headless entrypoints and unsupported internal imports are documented in [External And Headless Integration Contracts](../../docs/engineering/external-headless-contracts.md).
 
 ```bash
 # Локальный smoke без Telegram token и без сетевых вызовов

@@ -10,6 +10,10 @@
 ### 🔐 Настройка OAuth
 - [**oauth-setup.md**](oauth-setup.md) - Настройка OAuth авторизации для социальных сетей
 
+### 🤖 Bot-first deployment
+- [**telegram-bot-worker-production.md**](telegram-bot-worker-production.md) - Production topology, systemd setup, restart behavior and retention for Telegram bot-worker
+- [**telegram-ai-review-sandbox-smoke.md**](telegram-ai-review-sandbox-smoke.md) - Mocked and real sandbox smoke checklist for Telegram AI review without desktop UI
+
 ### 💻 Платформы
 - [**platforms/windows.md**](platforms/windows.md) - Специфика сборки для Windows
 
