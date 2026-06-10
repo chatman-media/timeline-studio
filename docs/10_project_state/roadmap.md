@@ -75,7 +75,7 @@ Acceptance:
 ### P1: Telegram AI review workflow
 
 - [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish. Implementation slice merged; production runtime stabilization completed in [#238](https://github.com/chatman-media/timeline-studio/issues/238).
-- [#225](https://github.com/chatman-media/timeline-studio/issues/225) документирует production topology, deployment foundation, generic media retention and cleanup policy. Runtime enforcement follow-ups: [#261](https://github.com/chatman-media/timeline-studio/issues/261), [#262](https://github.com/chatman-media/timeline-studio/issues/262).
+- [#225](https://github.com/chatman-media/timeline-studio/issues/225) документирует production topology, deployment foundation, generic media retention and cleanup policy. Runtime cleanup follow-up: [#262](https://github.com/chatman-media/timeline-studio/issues/262).
 
 Готово в текущем implementation slice:
 
