@@ -1,8 +1,7 @@
 /**
- * Re-export player machine from new domain location
- * Для обратной совместимости
+ * Legacy player machine type exports.
+ *
+ * Runtime player state is provided by the timeline PlayerProvider.
  */
 
-export type { PlayerMachine } from "@/domains/video-editing"
-export type { PlayerContext, PlayerEvent } from "@/domains/video-editing/machines/player-machine"
-export { playerMachine } from "@/domains/video-editing/machines/player-machine"
+export type { PlayerContext, PlayerEvent, PlayerMachine } from "@/core/types/player-machine"

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core player commands",
-  "violations": 91,
+  "source": "Phase F7 core player machine types",
+  "violations": 86,
   "bySeverity": {
-    "warn": 91
+    "warn": 86
   },
   "byEdge": {
-    "ui -> domains": 91
+    "ui -> domains": 86
   }
 }

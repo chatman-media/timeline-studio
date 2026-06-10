@@ -1,10 +1,7 @@
-// Export from player-machine with renamed type to avoid conflict
-
 export type {
-  PlayerContext as PlayerMachineContextType,
+  PlayerMachineContext as PlayerMachineContextType,
   PlayerEvent,
-} from "@/domains/video-editing/machines/player-machine"
-export { playerMachine } from "@/domains/video-editing/machines/player-machine"
+} from "@/core/types/player-machine"
 export type { PlayerContextType } from "@/features/timeline/providers/player-provider"
 // Export from player-provider
 export {
