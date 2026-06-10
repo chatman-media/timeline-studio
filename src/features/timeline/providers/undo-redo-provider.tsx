@@ -8,7 +8,7 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
 import { container } from "@/core/container"
-import { UndoRedoHelpers, useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
+import { UndoRedoHelpers, useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
 import {
   createInitialUndoState,
   handleHistoryLoaded,

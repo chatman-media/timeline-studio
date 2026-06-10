@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 core content intelligence scenes",
-  "violations": 54,
+  "source": "Phase F7 local undo redo hook adapter",
+  "violations": 51,
   "bySeverity": {
-    "warn": 54
+    "warn": 51
   },
   "byEdge": {
-    "ui -> domains": 54
+    "ui -> domains": 51
   }
 }
