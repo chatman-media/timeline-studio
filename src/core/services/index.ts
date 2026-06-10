@@ -1,5 +1,6 @@
 export * from "./ai-director-service"
 export * from "./ai-project-editor"
+export * from "./ai-tools-registry"
 export * from "./api-keys"
 export * from "./analysis-notification-service"
 export * from "./analysis-storage-service"

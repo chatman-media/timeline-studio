@@ -12,7 +12,9 @@
 
 import { type ReactNode } from "react"
 import { AppInitProvider } from "@/adapters/react"
+import { setAITools } from "@/core/services/ai-tools-registry"
 import { ChatProvider, MCPProvider } from "@/domains/ai-services"
+import { allAITools } from "@/domains/ai-tools"
 import { BrowserProvider } from "@/domains/browser"
 import { MediaManagementProvider } from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
@@ -38,6 +40,11 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
 
 function SystemIntegrationBootstrapProvider({ children }: { children: ReactNode }) {
   getSystemIntegrationOrchestrator()
+  return <>{children}</>
+}
+
+function AIToolsBootstrapProvider({ children }: { children: ReactNode }) {
+  setAITools(allAITools)
   return <>{children}</>
 }
 
@@ -84,6 +91,7 @@ const AppProviderComposite = composeProviders(
   ThemeProvider, // Тема (light/dark/system через next-themes)
   ColorSchemeProvider, // Применение цветовых схем + синхронизация режима темы со стором
   SystemIntegrationBootstrapProvider, // Регистрирует backend-aware modal service в core container
+  AIToolsBootstrapProvider, // Регистрирует domain AI tools через core registry
 
   // [3] ДОМЕННЫЕ С ORCHESTRATORS
   AppProvider, // ProjectManagementOrchestrator - управление проектами/настройками

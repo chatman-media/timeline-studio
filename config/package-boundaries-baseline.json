@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 keep montage tauri commands in feature",
-  "violations": 10,
+  "source": "Phase F7 register ai tools through core",
+  "violations": 9,
   "bySeverity": {
-    "warn": 10
+    "warn": 9
   },
   "byEdge": {
-    "ui -> domains": 10
+    "ui -> domains": 9
   }
 }
