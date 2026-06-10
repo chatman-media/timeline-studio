@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 central media browser adapters",
-  "violations": 31,
+  "source": "Phase F7 central ai chat service adapters",
+  "violations": 26,
   "bySeverity": {
-    "warn": 31
+    "warn": 26
   },
   "byEdge": {
-    "ui -> domains": 31
+    "ui -> domains": 26
   }
 }

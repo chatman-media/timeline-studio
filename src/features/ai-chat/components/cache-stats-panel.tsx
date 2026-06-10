@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { backendAI } from "@/domains/ai-services/services/backend-ai-service"
+import { backendAI } from "@/features/ai-chat/services/backend-ai"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 
