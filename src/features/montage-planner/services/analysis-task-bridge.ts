@@ -11,7 +11,7 @@
  * - Отмена задач анализа
  */
 
-import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
+import { analysisStorageService } from "@/core/services/analysis-storage-service"
 import type { AnalysisWorkflow } from "@/domains/ai-services/services/unified-orchestrator"
 import { unifiedOrchestrator } from "@/domains/ai-services/services/unified-orchestrator"
 import type {

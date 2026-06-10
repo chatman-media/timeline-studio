@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 core timeline analysis helpers",
-  "violations": 64,
+  "source": "Phase F7 core montage analysis storage",
+  "violations": 62,
   "bySeverity": {
-    "warn": 64
+    "warn": 62
   },
   "byEdge": {
-    "ui -> domains": 64
+    "ui -> domains": 62
   }
 }
