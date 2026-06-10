@@ -1,8 +1,9 @@
 # AI Module Stabilization and Node/Rust Orchestration
 
-**Статус:** Active
+**Статус:** Completed
 **Приоритет:** High
 **Создано:** 2026-06-09
+**Завершено:** 2026-06-10
 **GitHub epic:** [#238](https://github.com/chatman-media/timeline-studio/issues/238)
 **Связано:** [Telegram AI Review Editing Workflow](./telegram-ai-review-workflow.md), [Bot-first workflow](./bot-first-workflow.md), [Montage Planner Refactoring](./montage-planner-refactoring.md)
 
@@ -32,11 +33,11 @@ Telegram AI review workflow уже добавил продуктовый кон�
 - `initNodeApp` умеет создать `botEditSessions`, `botFeedbackTranscriber`, `botFirstCutPlanner`, `botFirstCutGenerator`, `botStatus`, Rust render and Rust publish services.
 - `bot-worker` CLI прокидывает edit session store, transcriber provider/model/language, Rust first-cut planner/generator fallback, AI editor, Rust preview render and Rust publish config через CLI/env.
 
-### Production gaps
+### Follow-ups Outside This Epic
 
 - Rust planner/editor parity still needs continued care when the Rust side changes its `ProjectSchema` emission.
 - Rust `llm-plan` is currently a first-cut planner only. It is not an edit command that accepts `currentProject + instruction + revisionHistory -> nextProject`.
-- Legacy AI docs and modules claim a broader ready state than the actual headless bot path supports.
+- Generic production topology, deployment assets, retention, cleanup jobs and sandbox operator checklist remain owned by B28/#225.
 
 ## Node/Rust Ownership Decision
 
@@ -68,7 +69,7 @@ Node is the production owner for chat/bot orchestration:
 
 ### AI project editing strategy
 
-Short term:
+Completed short term:
 
 - implement a Node OpenAI-compatible `IAIProjectEditor` adapter;
 - force structured JSON output matching `AIProjectEditorResult`;
@@ -160,10 +161,10 @@ Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](
 
 **GitHub:** [#241](https://github.com/chatman-media/timeline-studio/issues/241)
 
-- [ ] Add OpenAI-compatible `IAIProjectEditor` adapter.
-- [ ] Make model/base URL/API key configurable through CLI/env.
-- [ ] Return `AIProjectEditorResult` only; no free-form text as persisted state.
-- [ ] Add focused tests for valid edit, provider error and missing key.
+- [x] Add OpenAI-compatible `IAIProjectEditor` adapter.
+- [x] Make model/base URL/API key configurable through CLI/env.
+- [x] Return `AIProjectEditorResult` only; no free-form text as persisted state.
+- [x] Add focused tests for valid edit, provider error and missing key.
 
 ### B42: Harden AI output schema validation, repair and fallbacks
 
@@ -211,9 +212,15 @@ Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](
 
 ## Acceptance Criteria
 
-- Telegram bot can run the full AI review loop from CLI without test-only mocks.
-- First-cut planner output either validates as `ProjectSchema` or fails/falls back with clear diagnostics.
-- Text and voice revisions use the same `IAIProjectEditor` path.
-- Preview render and final publish go through Rust-backed adapters in production mode.
-- TypeScript publish/render remains a thin adapter/fallback, not the main production path.
-- CI has a dedicated smoke that catches bot/AI workflow regressions quickly.
+- [x] Telegram bot can run the full AI review loop from CLI without test-only mocks.
+- [x] First-cut planner output either validates as `ProjectSchema` or fails/falls back with clear diagnostics.
+- [x] Text and voice revisions use the same `IAIProjectEditor` path.
+- [x] Preview render and final publish go through Rust-backed adapters in production mode.
+- [x] TypeScript publish/render remains a thin adapter/fallback, not the main production path.
+- [x] CI has a dedicated smoke that catches bot/AI workflow regressions quickly.
+
+## Closeout
+
+B39-B46 are complete and the Telegram AI review runtime now has a production Node/Rust boundary: Node owns Telegram orchestration, sessions, provider glue and validation; Rust owns first-cut planning, preview rendering and final publishing through CLI adapters.
+
+Remaining production-readiness work intentionally stays in [B28/#225](https://github.com/chatman-media/timeline-studio/issues/225): deployment topology, operator runbooks, retention/cleanup policy and sandbox checklist.

@@ -1,6 +1,6 @@
 # Telegram AI Review Editing Workflow
 
-**Статус:** Implementation slice merged; production runtime stabilization continues in [AI Module Stabilization and Node/Rust Orchestration](./ai-module-node-rust-orchestration.md)
+**Статус:** Implementation slice merged; production runtime stabilization completed in [AI Module Stabilization and Node/Rust Orchestration](./ai-module-node-rust-orchestration.md)
 **Приоритет:** High
 **Создано:** 2026-06-09
 **Ответственный:** Architecture Team
@@ -23,7 +23,7 @@ upload media
   -> publish only after explicit approval
 ```
 
-> Важно: этот документ описывает реализованный product/workflow contract и mocked smoke. Production wiring для AI editor, Rust planner schema alignment, preview renderer and bot-worker CLI flags теперь отслеживается в [#238](https://github.com/chatman-media/timeline-studio/issues/238).
+> Важно: этот документ описывает реализованный product/workflow contract. Production wiring для AI editor, Rust planner schema alignment, preview renderer and bot-worker CLI flags закрыты в [#238](https://github.com/chatman-media/timeline-studio/issues/238); deployment, retention and cleanup остаются в [#225](https://github.com/chatman-media/timeline-studio/issues/225).
 
 ## Связь с B28 / production readiness
 
