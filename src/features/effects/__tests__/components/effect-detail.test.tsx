@@ -11,7 +11,7 @@ import type { BaseEffect } from "../../types"
 // Mock для модального окна
 const mockOpenModal = vi.fn()
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/core/hooks", () => ({
   useModals: () => ({
     activeModal: "none",
     modalData: null,

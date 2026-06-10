@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 browser resource type bridges",
-  "violations": 266,
+  "source": "Phase F7 effects core type hooks",
+  "violations": 260,
   "bySeverity": {
-    "warn": 266
+    "warn": 260
   },
   "byEdge": {
-    "ui -> domains": 266
+    "ui -> domains": 260
   }
 }

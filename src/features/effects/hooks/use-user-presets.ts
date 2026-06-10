@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { UserPreset } from "@/domains/video-editing/services/effects/user-presets-service"
+import type { UserPreset } from "@/core/types"
 import {
   deleteUserPreset,
   getAllUserPresets,

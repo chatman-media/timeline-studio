@@ -34,6 +34,7 @@ export * from "./app-context"
 export * from "./ai-director"
 export * from "./bot-workflow"
 export * from "./enhanced-subtitle"
+export * from "./effects"
 export * from "./filters"
 export * from "./media"
 export type {
