@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNotifications } from "@/core/hooks"
 import type { CompilerSubtitle } from "@/core/types/video-editing"
-import { useFramePreview } from "@/domains/media-management"
+import { useFramePreview } from "@/features/media/hooks/media-management"
 import {
   type ExtractionPurpose,
   frameExtractionService,

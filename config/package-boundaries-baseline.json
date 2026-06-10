@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 central montage domain adapters",
-  "violations": 19,
+  "source": "Phase F7 route frame preview through media adapter",
+  "violations": 18,
   "bySeverity": {
-    "warn": 19
+    "warn": 18
   },
   "byEdge": {
-    "ui -> domains": 19
+    "ui -> domains": 18
   }
 }
