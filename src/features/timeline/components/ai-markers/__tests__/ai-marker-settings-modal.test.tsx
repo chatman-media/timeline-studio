@@ -13,7 +13,7 @@ const mockModalData = {
   onSave: vi.fn(),
 }
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/core/hooks", () => ({
   useModals: () => ({
     activeModal: "ai-marker-settings",
     isModalOpen: true,

@@ -6,7 +6,7 @@ import { Copy, Music, Scissors, Sparkles, Trash2, Volume2 } from "lucide-react"
 import React from "react"
 
 import { Button } from "@/components/ui/button"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@/core/hooks"
 import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"

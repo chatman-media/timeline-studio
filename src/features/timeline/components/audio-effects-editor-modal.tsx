@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@/core/hooks"
 
 import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
 

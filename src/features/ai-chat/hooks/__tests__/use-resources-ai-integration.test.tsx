@@ -31,7 +31,7 @@ const mockResources = {
   updateResource: vi.fn(),
 }
 
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@/features/timeline/providers/resources-provider", () => ({
   useResources: () => mockResources,
 }))
 
@@ -39,6 +39,12 @@ vi.mock("@/domains/video-editing", () => ({
 vi.mock("@/lib/tauri-logger", () => ({
   logInfo: vi.fn(),
   logError: vi.fn(),
+  createLogger: vi.fn(() => ({
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  })),
 }))
 
 describe("useResourcesAIIntegration", () => {

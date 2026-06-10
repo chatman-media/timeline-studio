@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 timeline core media types",
-  "violations": 190,
+  "source": "Phase F7 core modal hooks",
+  "violations": 183,
   "bySeverity": {
-    "warn": 190
+    "warn": 183
   },
   "byEdge": {
-    "ui -> domains": 190
+    "ui -> domains": 183
   }
 }

@@ -41,7 +41,7 @@ const mockPlayer = {
   speedRampingEnabled: false,
 }
 
-vi.mock("../../video-player", () => ({
+vi.mock("@/features/video-player", () => ({
   usePlayer: () => mockPlayer,
 }))
 
