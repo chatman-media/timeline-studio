@@ -13,10 +13,10 @@
       "@/*": ["../src/*"],
       "@domains/*": ["../packages/domains/src/*"],
       "@core/*": ["../packages/core/src/*"],
-      "@adapters/*": ["../src/adapters/*"],
+      "@adapters/*": ["../packages/adapters/src/*"],
       "@node/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "../src/adapters/node/**/*", "../packages/core/src/ports/**/*", "../src/types/generated/**/*"],
+  "include": ["src/**/*", "../packages/adapters/src/node/**/*", "../packages/core/src/ports/**/*", "../src/types/generated/**/*"],
   "exclude": ["node_modules", "dist", "__tests__"]
 }

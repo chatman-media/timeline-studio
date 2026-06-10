@@ -5,7 +5,7 @@
  * Используется в браузерном режиме вместо Tauri IPC.
  */
 
-import { nodeBackendClient } from "@/adapters/node/node-backend-client"
+import { nodeBackendClient } from "@timeline-studio/adapters/node/node-backend-client"
 import type {
   IMediaService,
   MediaImportOptions,

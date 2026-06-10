@@ -11,7 +11,7 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { AppInitProvider } from "@/adapters/react"
+import { AppInitProvider } from "@timeline-studio/adapters/react"
 import { BrowserProvider as CoreBrowserProvider } from "@timeline-studio/core/services/browser-context"
 import { setAITools } from "@timeline-studio/core/services/ai-tools-registry"
 import { setMediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"

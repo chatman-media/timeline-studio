@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { MockPlatformService } from "@/adapters/mock/platform"
+import { MockPlatformService } from "@timeline-studio/adapters/mock/platform"
 import { container, resetContainer } from "@timeline-studio/core"
 import { AudioFileManager } from "../audio-file-manager"
 

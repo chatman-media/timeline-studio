@@ -14,21 +14,41 @@
       "types": "./src/http/index.ts",
       "default": "./src/http/index.ts"
     },
+    "./http/*": {
+      "types": "./src/http/*.ts",
+      "default": "./src/http/*.ts"
+    },
     "./mock": {
       "types": "./src/mock/index.ts",
       "default": "./src/mock/index.ts"
+    },
+    "./mock/*": {
+      "types": "./src/mock/*.ts",
+      "default": "./src/mock/*.ts"
     },
     "./node": {
       "types": "./src/node/index.ts",
       "default": "./src/node/index.ts"
     },
+    "./node/*": {
+      "types": "./src/node/*.ts",
+      "default": "./src/node/*.ts"
+    },
     "./react": {
       "types": "./src/react/index.ts",
       "default": "./src/react/index.ts"
     },
+    "./react/*": {
+      "types": "./src/react/*.ts",
+      "default": "./src/react/*.ts"
+    },
     "./tauri": {
       "types": "./src/tauri/index.ts",
       "default": "./src/tauri/index.ts"
+    },
+    "./tauri/*": {
+      "types": "./src/tauri/*.ts",
+      "default": "./src/tauri/*.ts"
     }
   },
   "files": [
@@ -38,6 +58,7 @@
     "check:type": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@timeline-studio/core": "3.61.1"
+    "@timeline-studio/core": "3.61.1",
+    "@timeline-studio/domains": "3.61.1"
   }
 }

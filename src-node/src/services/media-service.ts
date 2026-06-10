@@ -1,5 +1,5 @@
-import { NodeMediaService } from "../../../src/adapters/node/media"
-import type { IMediaService } from "../../../src/core/ports/media.port"
+import { NodeMediaService } from "@timeline-studio/adapters/node/media"
+import type { IMediaService } from "@timeline-studio/core/ports/media.port"
 import type { CacheService } from "./cache-service"
 import type { QueueService } from "./queue-service"
 import { createLogger } from "../utils/logger"

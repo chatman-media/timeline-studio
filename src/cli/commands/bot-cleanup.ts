@@ -12,7 +12,7 @@ import {
   cleanupNodeBotRuntime,
   type NodeBotRuntimeCleanupOptions,
   type NodeBotRuntimeCleanupResult,
-} from "@/adapters/node"
+} from "@timeline-studio/adapters/node"
 
 const DAY_MS = 24 * 60 * 60 * 1000
 

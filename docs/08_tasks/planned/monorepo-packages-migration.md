@@ -170,10 +170,10 @@ adapters -> core
 
 **Цель:** adapter implementations живут в `packages/adapters/src`.
 
-- [ ] Перенести mock/node/tauri/http/react adapters по runtime families.
-- [ ] Оставить adapters зависимыми от core contracts и shared runtime utilities.
-- [ ] Сохранить `src/adapters` compatibility entrypoints для root/app imports на время миграции.
-- [ ] Проверить bot/headless Node adapter paths и desktop app init.
+- [x] Перенести mock/node/tauri/http/react adapters по runtime families.
+- [x] Зафиксировать текущие Tauri adapter -> domains dependencies в package metadata; отдельный contract burn-down нужен перед core-only adapters strict gate.
+- [x] Сохранить `src/adapters` compatibility entrypoints для root/app imports на время миграции: не потребовалось, imports переведены на `@timeline-studio/adapters`.
+- [x] Проверить bot/headless Node adapter paths и desktop app init.
 
 ### F12: Physically extract reusable UI into `packages/ui`
 
@@ -224,7 +224,7 @@ CI использует `bun run check:boundaries:baseline`, который ср
 
 Baseline на 2026-06-11:
 
-- Scanned files: 1766
+- Scanned files: 1760
 - Violations: 0
 - `error`: 0
 - `warn`: 0

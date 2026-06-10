@@ -16,7 +16,7 @@ import type {
   NodeTelegramBotWorkerRunResult,
   NodeTelegramBotWorkerUpdateResult,
   TelegramBotUpdate,
-} from "@/adapters/node"
+} from "@timeline-studio/adapters/node"
 import {
   initNodeApp,
   NodeBotWorkflowFileDraftStore,
@@ -27,7 +27,7 @@ import {
   NodeTelegramBotWorker,
   NodeTelegramRenderJobReviewPreviewRenderer,
   recoverStaleTelegramWorkflowJobs,
-} from "@/adapters/node"
+} from "@timeline-studio/adapters/node"
 import type { BotFeedbackTranscriptionProvider } from "@timeline-studio/core/ports"
 import type {
   BotRenderJobDestination,

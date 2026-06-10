@@ -28,16 +28,16 @@ vi.mock("@timeline-studio/core/container", () => ({
   },
 }))
 
-vi.mock("@/adapters/tauri", () => ({
+vi.mock("@timeline-studio/adapters/tauri", () => ({
   initTauriApp: vi.fn(),
 }))
 
-vi.mock("@/adapters/mock", () => ({
+vi.mock("@timeline-studio/adapters/mock", () => ({
   initMockApp: vi.fn(),
 }))
 
-import { initMockApp } from "@/adapters/mock"
-import { initTauriApp } from "@/adapters/tauri"
+import { initMockApp } from "@timeline-studio/adapters/mock"
+import { initTauriApp } from "@timeline-studio/adapters/tauri"
 import { container } from "@timeline-studio/core/container"
 import { isDesktop } from "@/lib/environment"
 

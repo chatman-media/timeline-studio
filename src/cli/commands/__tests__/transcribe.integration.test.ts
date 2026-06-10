@@ -35,7 +35,7 @@ const mockAI: Partial<IAIService> = {
   whisperTranscribeOpenAI: vi.fn(),
 }
 
-vi.mock("@/adapters/node", () => ({
+vi.mock("@timeline-studio/adapters/node", () => ({
   initNodeApp: vi.fn().mockImplementation(async (_config?: { ai?: { openaiApiKey?: string } }) => ({
     platform: mockPlatform,
     ai: mockAI,
@@ -149,7 +149,7 @@ describe("transcribe command integration", () => {
     })
 
     it("should handle API key configuration", async () => {
-      const { initNodeApp } = await import("@/adapters/node")
+      const { initNodeApp } = await import("@timeline-studio/adapters/node")
 
       await initNodeApp({ ai: { openaiApiKey: "test-key" } })
 

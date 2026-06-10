@@ -36,7 +36,7 @@ const mockMedia: Partial<IMediaService> = {
   generateThumbnail: vi.fn(),
 }
 
-vi.mock("@/adapters/node", () => ({
+vi.mock("@timeline-studio/adapters/node", () => ({
   initNodeApp: vi.fn().mockResolvedValue({
     platform: mockPlatform,
     media: mockMedia,

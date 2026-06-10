@@ -64,18 +64,18 @@ export function AppInitProvider({ children, fallback = null }: AppInitProviderPr
 
       if (desktop) {
         // Initialize Tauri adapters
-        const { initTauriApp } = await import("@/adapters/tauri")
+        const { initTauriApp } = await import("@timeline-studio/adapters/tauri")
         await initTauriApp({ autoConnect: true })
       } else if (
         process.env.NEXT_PUBLIC_NODE_BACKEND_URL &&
         (await isNodeBackendAvailable(process.env.NEXT_PUBLIC_NODE_BACKEND_URL))
       ) {
         // Initialize HTTP adapters connecting to src-node (run `bun dev` in src-node/)
-        const { initHttpApp } = await import("@/adapters/http")
+        const { initHttpApp } = await import("@timeline-studio/adapters/http")
         await initHttpApp({ serverUrl: process.env.NEXT_PUBLIC_NODE_BACKEND_URL })
       } else {
         // Initialize Mock adapters for browser (no backend available)
-        const { initMockApp } = await import("@/adapters/mock")
+        const { initMockApp } = await import("@timeline-studio/adapters/mock")
         initMockApp({ useLocalStorage: true })
       }
 

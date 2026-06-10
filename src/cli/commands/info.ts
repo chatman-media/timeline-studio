@@ -6,7 +6,7 @@ import crypto from "node:crypto"
 import path from "node:path"
 import { Command } from "commander"
 
-import { initNodeApp } from "@/adapters/node"
+import { initNodeApp } from "@timeline-studio/adapters/node"
 import type { MediaMetadata } from "@timeline-studio/core/ports"
 
 export const infoCommand = new Command("info")

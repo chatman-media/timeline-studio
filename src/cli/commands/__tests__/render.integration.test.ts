@@ -36,7 +36,7 @@ const mockVideo: Partial<IVideoService> = {
   cancelRender: vi.fn(),
 }
 
-vi.mock("@/adapters/node", () => ({
+vi.mock("@timeline-studio/adapters/node", () => ({
   initNodeApp: vi.fn().mockResolvedValue({
     platform: mockPlatform,
     video: mockVideo,

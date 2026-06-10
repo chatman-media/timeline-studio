@@ -6,7 +6,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import { Command } from "commander"
 
-import { initNodeApp } from "@/adapters/node"
+import { initNodeApp } from "@timeline-studio/adapters/node"
 
 export const renderCommand = new Command("render")
   .description("Рендеринг проекта Timeline Studio в видео")

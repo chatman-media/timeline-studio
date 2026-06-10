@@ -19,7 +19,7 @@ vi.mock("@/config/providers", () => ({
 import { useTimelineProject } from "@/features/timeline/providers/timeline-providers"
 
 // Мокаем backend-sync ДО импорта компонентов
-vi.mock("@/adapters/tauri", () => {
+vi.mock("@timeline-studio/adapters/tauri", () => {
   // Создаем моки внутри фабрики
   const createMockFn = () => vi.fn()
 
@@ -534,7 +534,7 @@ vi.mock("@xstate/react", () => ({
 
 // Импортируем моки из мокированного модуля
 // Используем vi.mocked чтобы получить доступ к мокам
-import * as backendSyncModule from "@/adapters/tauri"
+import * as backendSyncModule from "@timeline-studio/adapters/tauri"
 import type { MediaFile, MediaType } from "@timeline-studio/domains/media-management"
 import { useTimeline } from "../use-timeline"
 
