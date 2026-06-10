@@ -52,6 +52,10 @@ describe("bot-worker command", () => {
     expect(botWorkerCommand.options.some((option) => option.long === "--rust-publish")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--youtube-access-token")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--edit-session-dir")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--feedback-transcriber-provider")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--first-cut-planner")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--first-cut-planner-kind")).toBe(true)
+    expect(botWorkerCommand.options.some((option) => option.long === "--first-cut-strict")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor-model")).toBe(true)
     expect(botWorkerCommand.options.some((option) => option.long === "--ai-editor-repair-attempts")).toBe(true)
@@ -312,6 +316,17 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_RUST_PUBLISH_COMMAND: "timeline",
         TIMELINE_BOT_YOUTUBE_ACCESS_TOKEN: "youtube-token",
         TIMELINE_BOT_EDIT_SESSION_DIR: ".tmp/edit-sessions",
+        TIMELINE_BOT_FEEDBACK_TRANSCRIBER_PROVIDER: "faster-whisper",
+        TIMELINE_BOT_FEEDBACK_TRANSCRIBER_MODEL: "large-v3",
+        TIMELINE_BOT_FEEDBACK_TRANSCRIBER_LANGUAGE: "en",
+        TIMELINE_BOT_FIRST_CUT_PLANNER: "true",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_COMMAND: "timeline-first-cut",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_KIND: "llm-plan",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_API_KEY: "planner-key",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_API_URL: "https://planner.example/v1",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_MODEL: "planner-model",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_TEMP_DIR: ".tmp/first-cut",
+        TIMELINE_BOT_FIRST_CUT_STRICT: "true",
         TIMELINE_BOT_AI_EDITOR: "true",
         TIMELINE_BOT_AI_EDITOR_API_KEY: "editor-key",
         TIMELINE_BOT_AI_EDITOR_API_URL: "https://llm.example/v1",
@@ -355,6 +370,17 @@ describe("bot-worker command", () => {
       rustPublishCommand: "timeline",
       youtubeAccessToken: "youtube-token",
       editSessionDir: ".tmp/edit-sessions",
+      feedbackTranscriberProvider: "faster-whisper",
+      feedbackTranscriberModel: "large-v3",
+      feedbackTranscriberLanguage: "en",
+      firstCutPlanner: true,
+      firstCutPlannerCommand: "timeline-first-cut",
+      firstCutPlannerKind: "llm-plan",
+      firstCutPlannerApiKey: "planner-key",
+      firstCutPlannerApiUrl: "https://planner.example/v1",
+      firstCutPlannerModel: "planner-model",
+      firstCutPlannerTempDir: ".tmp/first-cut",
+      firstCutStrict: true,
       aiEditor: true,
       aiEditorApiKey: "editor-key",
       aiEditorApiUrl: "https://llm.example/v1",
@@ -388,6 +414,17 @@ describe("bot-worker command", () => {
         youtubeAccessToken: "cli-youtube-token",
         downloadRemoteMedia: false,
         editSessionDir: ".tmp/cli-edit-sessions",
+        feedbackTranscriberProvider: "local",
+        feedbackTranscriberModel: "cli-transcriber-model",
+        feedbackTranscriberLanguage: "ru",
+        firstCutPlanner: true,
+        firstCutPlannerCommand: "cli-timeline",
+        firstCutPlannerKind: "montage-plan",
+        firstCutPlannerApiKey: "cli-planner-key",
+        firstCutPlannerApiUrl: "https://cli-planner.example/v1",
+        firstCutPlannerModel: "cli-planner-model",
+        firstCutPlannerTempDir: ".tmp/cli-first-cut",
+        firstCutStrict: false,
         aiEditor: true,
         aiEditorApiKey: "cli-editor-key",
         aiEditorModel: "cli-editor-model",
@@ -413,6 +450,17 @@ describe("bot-worker command", () => {
         TIMELINE_BOT_YOUTUBE_ACCESS_TOKEN: "env-youtube-token",
         TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA: "true",
         TIMELINE_BOT_EDIT_SESSION_DIR: ".tmp/env-edit-sessions",
+        TIMELINE_BOT_FEEDBACK_TRANSCRIBER_PROVIDER: "openai",
+        TIMELINE_BOT_FEEDBACK_TRANSCRIBER_MODEL: "env-transcriber-model",
+        TIMELINE_BOT_FEEDBACK_TRANSCRIBER_LANGUAGE: "en",
+        TIMELINE_BOT_FIRST_CUT_PLANNER: "false",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_COMMAND: "env-timeline",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_KIND: "llm-plan",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_API_KEY: "env-planner-key",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_API_URL: "https://env-planner.example/v1",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_MODEL: "env-planner-model",
+        TIMELINE_BOT_FIRST_CUT_PLANNER_TEMP_DIR: ".tmp/env-first-cut",
+        TIMELINE_BOT_FIRST_CUT_STRICT: "true",
         TIMELINE_BOT_AI_EDITOR: "false",
         TIMELINE_BOT_AI_EDITOR_API_KEY: "env-editor-key",
         TIMELINE_BOT_AI_EDITOR_MODEL: "env-editor-model",
@@ -440,11 +488,36 @@ describe("bot-worker command", () => {
       youtubeAccessToken: "cli-youtube-token",
       downloadRemoteMedia: false,
       editSessionDir: ".tmp/cli-edit-sessions",
+      feedbackTranscriberProvider: "local",
+      feedbackTranscriberModel: "cli-transcriber-model",
+      feedbackTranscriberLanguage: "ru",
+      firstCutPlanner: true,
+      firstCutPlannerCommand: "cli-timeline",
+      firstCutPlannerKind: "montage-plan",
+      firstCutPlannerApiKey: "cli-planner-key",
+      firstCutPlannerApiUrl: "https://cli-planner.example/v1",
+      firstCutPlannerModel: "cli-planner-model",
+      firstCutPlannerTempDir: ".tmp/cli-first-cut",
+      firstCutStrict: false,
       aiEditor: true,
       aiEditorApiKey: "cli-editor-key",
       aiEditorModel: "cli-editor-model",
       aiEditorRepairAttempts: "0",
       reviewPreviewDir: ".tmp/cli-review-previews",
     })
+  })
+
+  it("does not treat generic LLM keys as first-cut planner config by themselves", () => {
+    const resolved = resolveBotWorkerCommandOptions(
+      {},
+      {
+        OPENAI_API_KEY: "shared-openai-key",
+        LLM_API_KEY: "shared-llm-key",
+      },
+    )
+
+    expect(resolved.aiEditorApiKey).toBe("shared-openai-key")
+    expect(resolved.firstCutPlanner).toBeUndefined()
+    expect(resolved.firstCutPlannerApiKey).toBeUndefined()
   })
 })

@@ -10,6 +10,8 @@ import path from "node:path"
 import { Command } from "commander"
 import type {
   NodeAIProjectEditorOptions,
+  NodeRustFirstCutPlannerKind,
+  NodeRustFirstCutPlannerOptions,
   NodeTelegramBotWorkerPollResult,
   NodeTelegramBotWorkerRunResult,
   NodeTelegramBotWorkerUpdateResult,
@@ -26,6 +28,7 @@ import {
   NodeTelegramRenderJobReviewPreviewRenderer,
   recoverStaleTelegramWorkflowJobs,
 } from "@/adapters/node"
+import type { BotFeedbackTranscriptionProvider } from "@/core/ports"
 import type {
   BotRenderJobDestination,
   BotWorkflowRunResult,
@@ -70,6 +73,17 @@ export interface BotWorkerCommandOptions {
   rustPublishCommand?: string
   youtubeAccessToken?: string
   editSessionDir?: string
+  feedbackTranscriberProvider?: BotFeedbackTranscriptionProvider
+  feedbackTranscriberModel?: string
+  feedbackTranscriberLanguage?: string
+  firstCutPlanner?: boolean
+  firstCutPlannerCommand?: string
+  firstCutPlannerKind?: NodeRustFirstCutPlannerKind
+  firstCutPlannerApiKey?: string
+  firstCutPlannerApiUrl?: string
+  firstCutPlannerModel?: string
+  firstCutPlannerTempDir?: string
+  firstCutStrict?: boolean
   aiEditor?: boolean
   aiEditorApiKey?: string
   aiEditorApiUrl?: string
@@ -125,6 +139,23 @@ export const botWorkerCommand = new Command("bot-worker")
   .option("--rust-publish-command <path>", "Path/name for the Rust timeline publish command")
   .option("--youtube-access-token <token>", "YouTube access token for Rust publishing")
   .option("--edit-session-dir <path>", "Persist Telegram AI review edit sessions in a directory")
+  .option(
+    "--feedback-transcriber-provider <provider>",
+    "Review voice transcription provider: openai, local, or faster-whisper",
+  )
+  .option("--feedback-transcriber-model <model>", "Review voice transcription model")
+  .option("--feedback-transcriber-language <language>", "Review voice transcription language hint")
+  .option("--first-cut-planner", "Enable Rust timeline montage-plan/llm-plan first-cut planning")
+  .option("--first-cut-planner-command <path>", "Path/name for the Rust timeline first-cut planner command")
+  .option("--first-cut-planner-kind <kind>", "Rust first-cut planner kind: auto, montage-plan, or llm-plan")
+  .option("--first-cut-planner-api-key <key>", "API key for Rust timeline llm-plan first-cut planning")
+  .option("--first-cut-planner-api-url <url>", "OpenAI-compatible base URL for Rust timeline llm-plan")
+  .option("--first-cut-planner-model <model>", "Model for Rust timeline llm-plan first-cut planning")
+  .option("--first-cut-planner-temp-dir <path>", "Temp directory for Rust first-cut planner ProjectSchema output")
+  .option(
+    "--first-cut-strict",
+    "Fail instead of deterministic first-cut fallback when Rust planner fails or returns invalid output",
+  )
   .option("--ai-editor", "Enable the production AI project editor for review feedback")
   .option("--ai-editor-api-key <key>", "API key for the AI project editor")
   .option("--ai-editor-api-url <url>", "OpenAI-compatible base URL for the AI project editor")
@@ -184,7 +215,9 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     ai: createBotAIOptions(resolvedOptions),
     aiProjectEditor: createBotAIProjectEditorOptions(resolvedOptions),
     botEditSessions: createBotEditSessionStoreOptions(resolvedOptions),
-    botFeedbackTranscriber: resolvedOptions.editSessionDir ? {} : false,
+    botFeedbackTranscriber: createBotFeedbackTranscriberOptions(resolvedOptions),
+    botFirstCutPlanner: createBotFirstCutPlannerOptions(resolvedOptions),
+    botFirstCutGenerator: createBotFirstCutGeneratorOptions(resolvedOptions),
     botMediaResolver: createBotMediaResolverOptions(resolvedOptions),
     botStatus: createBotStatusOptions(resolvedOptions),
     publish: createBotPublishOptions(resolvedOptions),
@@ -312,6 +345,32 @@ export function resolveBotWorkerCommandOptions(
       env.YOUTUBE_ACCESS_TOKEN,
     ),
     editSessionDir: firstConfigured(options.editSessionDir, env.TIMELINE_BOT_EDIT_SESSION_DIR),
+    feedbackTranscriberProvider: firstConfigured(
+      options.feedbackTranscriberProvider,
+      normalizeFeedbackTranscriberProvider(env.TIMELINE_BOT_FEEDBACK_TRANSCRIBER_PROVIDER),
+    ),
+    feedbackTranscriberModel: firstConfigured(
+      options.feedbackTranscriberModel,
+      env.TIMELINE_BOT_FEEDBACK_TRANSCRIBER_MODEL,
+    ),
+    feedbackTranscriberLanguage: firstConfigured(
+      options.feedbackTranscriberLanguage,
+      env.TIMELINE_BOT_FEEDBACK_TRANSCRIBER_LANGUAGE,
+    ),
+    firstCutPlanner: options.firstCutPlanner ?? parseBooleanEnv(env.TIMELINE_BOT_FIRST_CUT_PLANNER),
+    firstCutPlannerCommand: firstConfigured(options.firstCutPlannerCommand, env.TIMELINE_BOT_FIRST_CUT_PLANNER_COMMAND),
+    firstCutPlannerKind: firstConfigured(
+      options.firstCutPlannerKind,
+      normalizeFirstCutPlannerKind(env.TIMELINE_BOT_FIRST_CUT_PLANNER_KIND),
+    ),
+    firstCutPlannerApiKey: firstConfigured(options.firstCutPlannerApiKey, env.TIMELINE_BOT_FIRST_CUT_PLANNER_API_KEY),
+    firstCutPlannerApiUrl: firstConfigured(options.firstCutPlannerApiUrl, env.TIMELINE_BOT_FIRST_CUT_PLANNER_API_URL),
+    firstCutPlannerModel: firstConfigured(options.firstCutPlannerModel, env.TIMELINE_BOT_FIRST_CUT_PLANNER_MODEL),
+    firstCutPlannerTempDir: firstConfigured(
+      options.firstCutPlannerTempDir,
+      env.TIMELINE_BOT_FIRST_CUT_PLANNER_TEMP_DIR,
+    ),
+    firstCutStrict: options.firstCutStrict ?? parseBooleanEnv(env.TIMELINE_BOT_FIRST_CUT_STRICT),
     aiEditor: options.aiEditor ?? parseBooleanEnv(env.TIMELINE_BOT_AI_EDITOR),
     aiEditorApiKey: firstConfigured(
       options.aiEditorApiKey,
@@ -387,6 +446,46 @@ function createBotEditSessionStoreOptions(options: BotWorkerCommandOptions) {
   if (!options.editSessionDir) return false
   return {
     directory: path.resolve(options.editSessionDir),
+  }
+}
+
+function createBotFeedbackTranscriberOptions(options: BotWorkerCommandOptions) {
+  if (!options.editSessionDir) return false
+  return {
+    ...(options.feedbackTranscriberProvider ? { provider: options.feedbackTranscriberProvider } : {}),
+    ...(options.feedbackTranscriberModel ? { model: options.feedbackTranscriberModel } : {}),
+    ...(options.feedbackTranscriberLanguage ? { language: options.feedbackTranscriberLanguage } : {}),
+  }
+}
+
+function createBotFirstCutPlannerOptions(options: BotWorkerCommandOptions): NodeRustFirstCutPlannerOptions | false {
+  if (options.firstCutPlanner === false) return false
+
+  const hasConfig = Boolean(
+    options.firstCutPlanner ||
+      options.firstCutPlannerCommand ||
+      options.firstCutPlannerKind ||
+      options.firstCutPlannerApiKey ||
+      options.firstCutPlannerApiUrl ||
+      options.firstCutPlannerModel ||
+      options.firstCutPlannerTempDir,
+  )
+  if (!hasConfig) return false
+
+  return {
+    ...(options.firstCutPlannerCommand ? { command: options.firstCutPlannerCommand } : {}),
+    ...(options.firstCutPlannerKind ? { plannerKind: options.firstCutPlannerKind } : {}),
+    ...(options.firstCutPlannerApiKey ? { apiKey: options.firstCutPlannerApiKey } : {}),
+    ...(options.firstCutPlannerApiUrl ? { apiUrl: options.firstCutPlannerApiUrl } : {}),
+    ...(options.firstCutPlannerModel ? { model: options.firstCutPlannerModel } : {}),
+    ...(options.firstCutPlannerTempDir ? { tempDir: path.resolve(options.firstCutPlannerTempDir) } : {}),
+  }
+}
+
+function createBotFirstCutGeneratorOptions(options: BotWorkerCommandOptions) {
+  if (!options.firstCutStrict) return undefined
+  return {
+    fallbackToDeterministic: false,
   }
 }
 
@@ -674,6 +773,28 @@ function normalizeRustRenderKind(value: string | undefined): BotWorkerCommandOpt
     case "timeline":
     case "timeline-render":
       return value.trim() as BotWorkerCommandOptions["rustRenderKind"]
+    default:
+      return undefined
+  }
+}
+
+function normalizeFeedbackTranscriberProvider(value: string | undefined): BotFeedbackTranscriptionProvider | undefined {
+  switch (value?.trim()) {
+    case "openai":
+    case "local":
+    case "faster-whisper":
+      return value.trim() as BotFeedbackTranscriptionProvider
+    default:
+      return undefined
+  }
+}
+
+function normalizeFirstCutPlannerKind(value: string | undefined): NodeRustFirstCutPlannerKind | undefined {
+  switch (value?.trim()) {
+    case "auto":
+    case "montage-plan":
+    case "llm-plan":
+      return value.trim() as NodeRustFirstCutPlannerKind
     default:
       return undefined
   }
