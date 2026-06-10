@@ -4,7 +4,7 @@
  */
 
 import { assign, setup } from "xstate"
-import type { TimelineStudioProject } from "@/domains/project-management/types"
+import type { TimelineStudioProject } from "@/core/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Scenario, ScenarioResult, ScenarioStep } from "../types/scenario"

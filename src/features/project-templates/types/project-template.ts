@@ -2,7 +2,7 @@
  * Типы для шаблонов проектов
  */
 
-import type { ProjectSettings } from "@/domains/shared/types/project"
+import type { ProjectSettings } from "@/core/types/project"
 
 /**
  * Базовый интерфейс шаблона проекта

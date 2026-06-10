@@ -4,7 +4,7 @@
 
 import { useMachine } from "@xstate/react"
 import { useCallback, useMemo, useState } from "react"
-import type { TimelineStudioProject } from "@/domains/project-management/types"
+import type { TimelineStudioProject } from "@/core/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { allScenarios, getScenariosByCategory, getScenariosByDifficulty } from "../lib/scenarios"

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 updates core port",
-  "violations": 392,
+  "source": "Phase F7 project templates and scenarios project types",
+  "violations": 382,
   "bySeverity": {
-    "warn": 392
+    "warn": 382
   },
   "byEdge": {
-    "ui -> domains": 392
+    "ui -> domains": 382
   }
 }

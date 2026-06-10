@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { TimelineStudioProject } from "@/domains/project-management/types"
+import type { TimelineStudioProject } from "@/core/types/project"
 
 import { useScenarioWizard, type WizardData } from "../hooks/use-scenario-wizard"
 import type { Scenario } from "../types/scenario"
