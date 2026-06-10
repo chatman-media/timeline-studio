@@ -40,7 +40,7 @@ export function ModalContainer() {
       case "about":
         return <AboutModal />
       case "camera-capture":
-        return <CameraCaptureModal data-oid="f2i6s-a" />
+        return <CameraCaptureModal isOpen={isModalOpen} onClose={closeModal} data-oid="f2i6s-a" />
       case "voice-recording":
         return <VoiceRecordModal data-oid="f7i.sio" />
       case "export":

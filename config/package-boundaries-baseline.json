@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 export modal close callback",
-  "violations": 367,
+  "source": "Phase F7 camera capture core imports",
+  "violations": 362,
   "bySeverity": {
-    "warn": 367
+    "warn": 362
   },
   "byEdge": {
-    "ui -> domains": 367
+    "ui -> domains": 362
   }
 }

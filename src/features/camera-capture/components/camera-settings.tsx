@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { ResolutionOption } from "@/domains/shared/types/project"
+import type { ResolutionOption } from "@/core/types/project"
 
 import type { CaptureDevice } from "../types"
 
