@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
+import { appDirectoriesService } from "@/core/services"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import {

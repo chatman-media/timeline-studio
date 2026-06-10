@@ -7,26 +7,9 @@
 
 import { useSelector } from "@xstate/react"
 import React, { type ReactNode, useCallback, useMemo } from "react"
+import { AppContextInternal, type AppContext } from "@/core/types/app-context"
 import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
-import type { ProjectCommand, ProjectState } from "@/types/generated/tauri-bindings"
-
-export interface AppContext {
-  // Backend connection state
-  isConnected: boolean
-  isConnecting: boolean
-  connectionError: string | null
-
-  // Project state (from backend)
-  projectState: ProjectState | null
-
-  // Actions
-  connect: () => void
-  disconnect: () => void
-  retryConnection: () => void
-  executeCommand: (command: ProjectCommand) => Promise<any>
-}
-
-const AppContextInternal = React.createContext<AppContext | null>(null)
+import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
 interface AppProviderProps {
   children: ReactNode
@@ -127,13 +110,5 @@ export function AppProvider({ children }: AppProviderProps) {
   )
 }
 
-// Hook for using app context
-export function useApp(): AppContext {
-  const context = React.useContext(AppContextInternal)
-
-  if (!context) {
-    throw new Error("useApp must be used within AppProvider")
-  }
-
-  return context
-}
+export { useApp } from "@/core/hooks/use-app"
+export type { AppContext } from "@/core/types/app-context"

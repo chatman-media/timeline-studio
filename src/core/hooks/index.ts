@@ -5,6 +5,8 @@
  * Features should use these hooks instead of importing directly from domains.
  */
 
+export { useApp } from "./use-app"
+export { useCurrentProject } from "./use-current-project"
 export { useFavorites } from "./use-favorites"
 export { useModals } from "./use-modals"
 export { useNotifications } from "./use-notifications"

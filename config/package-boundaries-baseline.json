@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 modal project settings core ports",
-  "violations": 337,
+  "source": "Phase F7 media studio core hooks",
+  "violations": 331,
   "bySeverity": {
-    "warn": 337
+    "warn": 331
   },
   "byEdge": {
-    "ui -> domains": 337
+    "ui -> domains": 331
   }
 }

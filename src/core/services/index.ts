@@ -1,4 +1,5 @@
 export * from "./ai-project-editor"
+export * from "./app-directories-service"
 export * from "./bot-destination-capabilities"
 export * from "./bot-edit-sessions"
 export * from "./bot-first-cut-generator"
