@@ -3,7 +3,7 @@
  * Использует Tauri команду correlate_audio_files для cross-correlation анализа
  */
 
-import { correlateAudioFiles } from "@/domains/ai-services/tauri/audio-commands"
+import { container } from "@/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AudioCorrelationResult } from "./audio-sync"
 
@@ -34,7 +34,7 @@ export async function syncByAudio(
 
   try {
     // Вызываем Tauri команду для cross-correlation
-    const result = await correlateAudioFiles(basePath, targetPath, options?.maxOffsetSeconds ?? 30)
+    const result = await container.getAI().correlateAudioFiles(basePath, targetPath, options?.maxOffsetSeconds ?? 30)
 
     // Проверяем отмену после получения результата
     if (options?.signal?.aborted) {

@@ -5,9 +5,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { syncByAudio } from "../audio-sync-adapter"
 
-// Мокаем Tauri команды
-vi.mock("@/domains/ai-services/tauri/audio-commands", () => ({
-  correlateAudioFiles: vi.fn(),
+const mockCorrelateAudioFiles = vi.hoisted(() => vi.fn())
+
+vi.mock("@/core/container", () => ({
+  container: {
+    getAI: () => ({
+      correlateAudioFiles: mockCorrelateAudioFiles,
+    }),
+  },
 }))
 
 // Мокаем логгер
@@ -19,10 +24,6 @@ vi.mock("@/lib/tauri-logger", () => ({
     debug: vi.fn(),
   }),
 }))
-
-import { correlateAudioFiles } from "@/domains/ai-services/tauri/audio-commands"
-
-const mockCorrelateAudioFiles = vi.mocked(correlateAudioFiles)
 
 describe("audio-sync-adapter", () => {
   beforeEach(() => {

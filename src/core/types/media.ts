@@ -48,6 +48,23 @@ export interface MediaFile {
     sample_rate?: number
     [key: string]: unknown
   }
+  probeData?: {
+    streams: Array<{
+      codec_type?: string
+      sample_rate?: number
+      channels?: number
+      duration?: string | number
+      index?: number
+      timecode?: string
+      r_frame_rate?: string
+      [key: string]: unknown
+    }>
+    format: {
+      duration?: string | number
+      tags?: Record<string, unknown>
+      [key: string]: unknown
+    }
+  }
   isVideo?: boolean
   isImage?: boolean
   isAudio?: boolean

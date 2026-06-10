@@ -65,7 +65,7 @@ vi.mock("@/features/timeline/hooks/clips/use-linked-clips", () => ({
   }),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
+vi.mock("@/core/hooks", () => ({
   useMediaFiles: () => ({
     mediaFiles: [
       {

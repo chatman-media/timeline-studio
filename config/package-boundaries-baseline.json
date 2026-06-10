@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 media studio core hooks",
-  "violations": 331,
+  "source": "Phase F7 multicam core media hooks",
+  "violations": 324,
   "bySeverity": {
-    "warn": 331
+    "warn": 324
   },
   "byEdge": {
-    "ui -> domains": 331
+    "ui -> domains": 324
   }
 }
