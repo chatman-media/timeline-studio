@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { AIToolResult, IAITool } from "@/domains/ai-tools/types"
+import type { AIToolResult, IAITool } from "@/core/types/ai-tools"
 import {
   convertToolsToUnifiedFormat,
   convertToUnifiedAITool,
