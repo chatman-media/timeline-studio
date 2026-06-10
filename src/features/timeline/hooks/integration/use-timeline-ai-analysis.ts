@@ -9,8 +9,7 @@ import {
   analyzeScenesByPath,
   type SceneAnalysisResult,
 } from "@/domains/ai-services/tauri/content-intelligence-commands"
-import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domains/ai-services/types"
-import { KeyMomentType } from "@/domains/ai-services/types"
+import { KeyMomentType, type ContentInsights, type KeyMoment, type UnifiedContentAnalysis } from "@/core/types/ai-analysis"
 import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
