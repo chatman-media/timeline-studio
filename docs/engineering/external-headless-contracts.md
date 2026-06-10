@@ -1,7 +1,7 @@
 # External And Headless Integration Contracts
 
 **Status:** Phase G contract hardening for [#282](https://github.com/chatman-media/timeline-studio/issues/282)
-**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
+**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Bot-First Production Contract](bot-first-production-contract.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
 
 This document defines the supported integration surface for external consumers after the workspace extraction. It is intentionally narrow: consumers should build against `ProjectSchema`, the Rust `timeline` CLI, and the headless Node CLI commands. They should not import private package files, root aliases, or `src-tauri` internals.
 
@@ -113,6 +113,7 @@ Fixture examples live in `docs/08_tasks/planned/fixtures/`:
 - `telegram-ai-review-media-upload-update.json`
 - `telegram-ai-review-text-feedback-update.json`
 - `telegram-ai-review-voice-feedback-update.json`
+- `telegram-ai-review-video-note-feedback-update.json`
 - `telegram-ai-review-approve-update.json`
 
 Run it:
@@ -138,7 +139,7 @@ Use `--telegram-bot-token`, `--media-dir`, and `--download-remote-media` only wh
 - Rust-backed preview render and final publish where configured;
 - `/status`, `/retry`, `/cancel`, `/versions`, and approval/revision command handling.
 
-Production setup and sandbox smoke live in [Telegram Bot Worker Production Runbook](../06_deployment/telegram-bot-worker-production.md). CLI flags live in [Timeline Studio CLI](../../apps/cli/COMMANDS.md).
+The full production state, publish and recovery contract lives in [Bot-First Production Contract](bot-first-production-contract.md). Production setup lives in [Telegram Bot Worker Production Runbook](../06_deployment/telegram-bot-worker-production.md), sandbox validation lives in [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), and CLI flags live in [Timeline Studio CLI](../../apps/cli/COMMANDS.md).
 
 ## postim / Headless Consumer Guidance
 

@@ -1,0 +1,21 @@
+{
+  "update_id": 2000004,
+  "message": {
+    "message_id": 13,
+    "chat": {
+      "id": "smoke-chat"
+    },
+    "from": {
+      "id": "smoke-user"
+    },
+    "video_note": {
+      "file_id": "telegram-smoke-video-note-file",
+      "file_unique_id": "telegram-smoke-video-note-unique",
+      "mime_type": "video/mp4",
+      "duration": 5,
+      "file_size": 262144,
+      "width": 384,
+      "height": 384
+    }
+  }
+}

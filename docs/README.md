@@ -43,6 +43,7 @@
 ### [04_api_reference/](04_api_reference/)
 Документация всех API:
 - **[External And Headless Integration Contracts](engineering/external-headless-contracts.md)** - Supported `ProjectSchema`, Rust `timeline`, `render-job`, `bot-workflow`, `bot-worker`, and postim/headless integration surface
+- **[Bot-First Production Contract](engineering/bot-first-production-contract.md)** - Supported Telegram bot-first production workflow, state, retry, cleanup and Rust publish boundary
 - **[Media API](04_api_reference/media-api.md)** - API для работы с медиафайлами
 - **[AI Chat API](04_api_reference/ai-chat-api.md)** - API для AI чат функциональности
 - **[Export API](04_api_reference/export-api.md)** - API для экспорта проектов
@@ -86,6 +87,7 @@
 - **[Руководство по сборке](06_deployment/build-guide.md)** - Инструкции по сборке приложения
 - **[Настройка OAuth](06_deployment/oauth-setup.md)** - Настройка OAuth интеграций
 - **[Telegram Bot Worker Production Runbook](06_deployment/telegram-bot-worker-production.md)** - Production topology, systemd setup, retention and sandbox smoke for bot-first worker
+- **[Telegram AI Review Sandbox Smoke](06_deployment/telegram-ai-review-sandbox-smoke.md)** - Mocked and real sandbox smoke path for Telegram AI review without desktop UI
 - **[Платформы](06_deployment/platforms/)** - Специфика развертывания по платформам
 
 ### [07_milestones/](07_milestones/)

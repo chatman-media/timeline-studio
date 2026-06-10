@@ -185,7 +185,7 @@ Fixture payloads live in `docs/08_tasks/planned/fixtures/`.
 
 Запуск Telegram worker для bot-first workflow: обработка raw `Update`, один `getUpdates` batch или долгоживущий polling loop.
 В polling-режиме ошибки обработки отдельного update возвращаются как failed-result, отправляют короткий ответ в чат при наличии chat id и не останавливают batch.
-Production topology, systemd setup, retention policy and sandbox smoke are documented in [Telegram Bot Worker Production Runbook](../../docs/06_deployment/telegram-bot-worker-production.md). Use [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) as the production env template.
+Production topology, systemd setup and retention policy are documented in [Telegram Bot Worker Production Runbook](../../docs/06_deployment/telegram-bot-worker-production.md). The supported production state/publish/recovery contract is documented in [Bot-First Production Contract](../../docs/engineering/bot-first-production-contract.md), and the repeatable sandbox checklist is documented in [Telegram AI Review Sandbox Smoke](../../docs/06_deployment/telegram-ai-review-sandbox-smoke.md). Use [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) as the production env template.
 Supported external/headless entrypoints and unsupported internal imports are documented in [External And Headless Integration Contracts](../../docs/engineering/external-headless-contracts.md).
 
 ```bash

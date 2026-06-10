@@ -15,6 +15,7 @@ import type { IBotFeedbackTranscriber, IPublishService } from "@timeline-studio/
 import approveUpdateFixture from "../../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-approve-update.json"
 import mediaUploadUpdateFixture from "../../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-media-upload-update.json"
 import textFeedbackUpdateFixture from "../../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-text-feedback-update.json"
+import videoNoteFeedbackUpdateFixture from "../../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-video-note-feedback-update.json"
 import voiceFeedbackUpdateFixture from "../../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-voice-feedback-update.json"
 import { MockAIProjectEditor } from "../../mock/ai-project-editor"
 import { NodeBotEditSessionFileStore } from "../bot-edit-sessions"
@@ -71,7 +72,7 @@ describe("Telegram AI review workflow smoke", () => {
     })
   })
 
-  it("runs mocked text and voice revisions, survives restart, and publishes after approval", async () => {
+  it("runs mocked text, voice, and video-note revisions, survives restart, and publishes after approval", async () => {
     const { session } = await createFirstPreviewSession(tempDir)
     const previewRenderer = createPreviewRenderer()
     const previewResponder = createPreviewResponder()
@@ -109,6 +110,7 @@ describe("Telegram AI review workflow smoke", () => {
     })
 
     const voiceResult = await secondWorker.handleUpdate(asTelegramUpdate(voiceFeedbackUpdateFixture))
+    const videoNoteResult = await secondWorker.handleUpdate(asTelegramUpdate(videoNoteFeedbackUpdateFixture))
     const approveResult = await secondWorker.handleUpdate(asTelegramUpdate(approveUpdateFixture))
     const finalSession = await restartedStore.readSession(session.id)
 
@@ -120,6 +122,17 @@ describe("Telegram AI review workflow smoke", () => {
         index: 2,
         artifact: {
           path: "/tmp/telegram-ai-review-smoke-revision-2.mp4",
+        },
+      },
+    })
+    expect(videoNoteResult).toMatchObject({
+      skipped: true,
+      reviewAction: "feedback_applied",
+      editRevision: {
+        id: "edit:telegram:smoke-chat:smoke-user:revision:3",
+        index: 3,
+        artifact: {
+          path: "/tmp/telegram-ai-review-smoke-revision-3.mp4",
         },
       },
     })
@@ -140,13 +153,22 @@ describe("Telegram AI review workflow smoke", () => {
         },
       }),
     )
-    expect(previewRenderer.renderPreview).toHaveBeenCalledTimes(2)
-    expect(previewResponder.sendVideo).toHaveBeenCalledTimes(2)
+    expect(feedbackTranscriber.transcribeFeedback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: "video_note",
+        metadata: {
+          sessionId: session.id,
+        },
+      }),
+    )
+    expect(feedbackTranscriber.transcribeFeedback).toHaveBeenCalledTimes(2)
+    expect(previewRenderer.renderPreview).toHaveBeenCalledTimes(3)
+    expect(previewResponder.sendVideo).toHaveBeenCalledTimes(3)
     expect(previewResponder.sendVideo).toHaveBeenLastCalledWith(
       expect.objectContaining({
         chatId: "smoke-chat",
-        path: "/tmp/telegram-ai-review-smoke-revision-2.mp4",
-        caption: expect.stringContaining("edit:telegram:smoke-chat:smoke-user:revision:2"),
+        path: "/tmp/telegram-ai-review-smoke-revision-3.mp4",
+        caption: expect.stringContaining("edit:telegram:smoke-chat:smoke-user:revision:3"),
       }),
     )
     expect(publishService.publish).toHaveBeenCalledWith(
@@ -154,28 +176,28 @@ describe("Telegram AI review workflow smoke", () => {
         destination: "telegram",
         artifact: {
           type: "file",
-          path: "/tmp/telegram-ai-review-smoke-revision-2.mp4",
+          path: "/tmp/telegram-ai-review-smoke-revision-3.mp4",
           destination: "file",
           mimeType: "video/mp4",
         },
         params: {
           sessionId: session.id,
-          revisionId: "edit:telegram:smoke-chat:smoke-user:revision:2",
-          approvedMessageId: "13",
+          revisionId: "edit:telegram:smoke-chat:smoke-user:revision:3",
+          approvedMessageId: "14",
         },
       }),
     )
     expect(finalSession).toMatchObject({
       id: session.id,
       status: "done",
-      approvedRevisionId: "edit:telegram:smoke-chat:smoke-user:revision:2",
+      approvedRevisionId: "edit:telegram:smoke-chat:smoke-user:revision:3",
       publishResult: {
         destination: "telegram",
         status: "done",
         providerId: "telegram-message-99",
       },
     })
-    expect(finalSession?.revisions).toHaveLength(3)
+    expect(finalSession?.revisions).toHaveLength(4)
   })
 })
 
