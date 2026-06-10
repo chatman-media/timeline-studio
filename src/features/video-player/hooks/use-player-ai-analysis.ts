@@ -9,10 +9,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import {
-  aiDirectorAnalyzeQuick,
-  type ComprehensiveAnalysisResult,
-} from "@/domains/ai-services/tauri/ai-director-commands"
+import { aiDirectorAnalyzeQuick } from "@/core/services/ai-director-service"
+import type { ComprehensiveAnalysisResult } from "@/core/types/ai-director"
 import type { KeyMoment, ObjectDetection, SceneInfo } from "@/core/types/ai-analysis"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
