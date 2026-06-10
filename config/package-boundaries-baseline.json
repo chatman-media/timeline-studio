@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 move browser AI state bridge to core",
-  "violations": 14,
+  "source": "Phase F7 move backend AI facade to core",
+  "violations": 13,
   "bySeverity": {
-    "warn": 14
+    "warn": 13
   },
   "byEdge": {
-    "ui -> domains": 14
+    "ui -> domains": 13
   }
 }

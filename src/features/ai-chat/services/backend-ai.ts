@@ -1,1 +1,1 @@
-export { backendAI } from "@/domains/ai-services/services/backend-ai-service"
+export { backendAI } from "@/core/services/backend-ai"
