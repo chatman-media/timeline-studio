@@ -18,7 +18,7 @@ const mockModalData = {
   onComplete: vi.fn(),
 }
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: () => ({
     activeModal: "midi-learn",
     isModalOpen: true,

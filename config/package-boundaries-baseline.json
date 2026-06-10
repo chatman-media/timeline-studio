@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 color-grading modal bridge",
-  "violations": 410,
+  "source": "Phase F7 fairlight modal bridge",
+  "violations": 406,
   "bySeverity": {
-    "warn": 410
+    "warn": 406
   },
   "byEdge": {
-    "ui -> domains": 410
+    "ui -> domains": 406
   }
 }

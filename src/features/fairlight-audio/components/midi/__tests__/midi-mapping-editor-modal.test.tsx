@@ -98,7 +98,7 @@ const mockModalData = {
   onSave: vi.fn(),
 }
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: () => ({
     activeModal: "midi-mapping-editor",
     isModalOpen: true,

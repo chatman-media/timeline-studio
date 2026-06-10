@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@/features/modals/services"
 
 export function MidiConfigurationModal() {
   const { openModal } = useModals()
