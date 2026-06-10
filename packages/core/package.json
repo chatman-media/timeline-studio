@@ -46,6 +46,10 @@
       "types": "./src/services/*.ts",
       "default": "./src/services/*.ts"
     },
+    "./test/setup": {
+      "types": "./src/test/setup.ts",
+      "default": "./src/test/setup.ts"
+    },
     "./types": {
       "types": "./src/types/index.ts",
       "default": "./src/types/index.ts"
