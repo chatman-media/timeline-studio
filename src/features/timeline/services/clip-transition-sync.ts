@@ -3,11 +3,11 @@
  * Синхронизация переходов при операциях с клипами
  */
 
-import type { TimelineTransition as DomainTimelineTransition } from "@/domains/video-editing/types"
+import type { TimelineTransition as CoreTimelineTransition } from "@/core/types"
 import type { TimelineProject } from "@/features/timeline/types"
 
-// Используем базовый domain тип для совместимости с resources
-type TimelineTransition = DomainTimelineTransition
+// Используем базовый core тип для совместимости с resources
+type TimelineTransition = CoreTimelineTransition
 
 import { updateTimelineTransitionProperties } from "./resource-manager"
 import {

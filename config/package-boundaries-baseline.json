@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core transition types",
-  "violations": 166,
+  "source": "Phase F7 core transition service types",
+  "violations": 160,
   "bySeverity": {
-    "warn": 166
+    "warn": 160
   },
   "byEdge": {
-    "ui -> domains": 166
+    "ui -> domains": 160
   }
 }
