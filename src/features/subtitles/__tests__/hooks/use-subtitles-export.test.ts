@@ -8,11 +8,13 @@ import { useTracks } from "@/features/timeline/hooks/state/use-tracks"
 
 import { useSubtitlesExport } from "../../hooks/use-subtitles-export"
 
-// Mock subtitle commands
+// Mock core subtitle service
 const mockSaveSubtitleFile = vi.fn()
 
-vi.mock("@/domains/subtitles/tauri/subtitle-commands", () => ({
-  saveSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
+vi.mock("@/core/services/subtitles", () => ({
+  subtitleService: {
+    exportSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
+  },
 }))
 
 // Mock @/core container

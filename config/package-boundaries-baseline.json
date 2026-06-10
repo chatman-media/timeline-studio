@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core player machine types",
-  "violations": 86,
+  "source": "Phase F7 core subtitle services",
+  "violations": 82,
   "bySeverity": {
-    "warn": 86
+    "warn": 82
   },
   "byEdge": {
-    "ui -> domains": 86
+    "ui -> domains": 82
   }
 }

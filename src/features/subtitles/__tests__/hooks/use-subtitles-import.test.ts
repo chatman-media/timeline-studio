@@ -6,11 +6,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useSubtitlesImport } from "../../hooks/use-subtitles-import"
 
-// Mock subtitle commands
+// Mock core subtitle service
 const mockReadSubtitleFile = vi.fn()
 const mockShowOpenDialog = vi.fn()
 
-vi.mock("@/domains/subtitles/tauri/subtitle-commands", () => ({
+vi.mock("@/core/services/subtitles", () => ({
   readSubtitleFile: (...args: any[]) => mockReadSubtitleFile(...args),
 }))
 
