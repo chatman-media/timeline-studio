@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 keep frame extraction service in feature",
-  "violations": 16,
+  "source": "Phase F7 retire legacy timeline AI domain service",
+  "violations": 15,
   "bySeverity": {
-    "warn": 16
+    "warn": 15
   },
   "byEdge": {
-    "ui -> domains": 16
+    "ui -> domains": 15
   }
 }

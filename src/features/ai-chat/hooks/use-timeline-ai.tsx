@@ -1,21 +1,33 @@
 /**
- * Hook для интеграции AI с Timeline Studio
+ * Legacy hook for Timeline AI operations.
  *
- * Предоставляет методы для создания timeline проектов,
- * анализа ресурсов и выполнения AI команд
+ * The old TimelineAIService depends on domain-level AI tools and is no longer
+ * wired into the feature runtime. Keep this hook as a compatibility surface,
+ * but route callers to the active timeline integration instead of importing
+ * the legacy domain service.
  */
 
-import { useCallback } from "react"
-import { TimelineAIService } from "@/domains/ai-services/services/timeline-ai-service"
-import { useResources } from "@/features/timeline/providers/resources-provider"
-
+import { useCallback, useMemo } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "UseTimelineAi" })
+const legacyUnsupportedMessage =
+  "Legacy TimelineAIService is disabled. Use useTimelineAIIntegration with AI chat tools instead."
 
 // Заглушка для sendTimelineEvent, пока не реализован useChat
 const mockSendTimelineEvent = (event: any) => {
   logger.info("Timeline event:", event)
+}
+
+function createUnsupportedResult(operation: TimelineAIOperation): TimelineAIOperationResult {
+  return {
+    operation,
+    success: false,
+    message: legacyUnsupportedMessage,
+    errors: [legacyUnsupportedMessage],
+    warnings: ["useTimelineAI is kept for compatibility only"],
+    executionTime: 0,
+  }
 }
 
 /**
@@ -41,65 +53,18 @@ export interface TimelineAIOperationResult {
  */
 export function useTimelineAI() {
   const sendTimelineEvent = mockSendTimelineEvent
-  const resourcesProvider = useResources()
-
-  // Создаем экземпляр TimelineAI сервиса
-  // Пока используем заглушки для state machines
-  const timelineAI = new TimelineAIService(
-    resourcesProvider,
-    {}, // browserState - заглушка
-    {}, // playerState - заглушка
-    {},
-  ) // timelineState - заглушка
   /**
    * Создает timeline проект из текстового промпта
    */
   const createTimelineFromPrompt = useCallback(
     async (prompt: string): Promise<TimelineAIOperationResult> => {
-      try {
-        // Отправляем событие в chat-machine
-        sendTimelineEvent({ type: "CREATE_TIMELINE_FROM_PROMPT", prompt })
-
-        // Выполняем операцию через Timeline AI сервис
-        const result = await timelineAI.createTimelineFromPrompt(prompt)
-
-        // Уведомляем chat-machine о результате
-        if (result.success) {
-          sendTimelineEvent({ type: "TIMELINE_OPERATION_SUCCESS", result })
-        } else {
-          sendTimelineEvent({
-            type: "TIMELINE_OPERATION_ERROR",
-            error: result.message,
-          })
-        }
-
-        return {
-          operation: "create-timeline",
-          success: result.success,
-          message: result.message,
-          data: result.data,
-          errors: result.errors,
-          warnings: result.warnings,
-          executionTime: result.executionTime,
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
-
-        sendTimelineEvent({
-          type: "TIMELINE_OPERATION_ERROR",
-          error: errorMessage,
-        })
-
-        return {
-          operation: "create-timeline",
-          success: false,
-          message: errorMessage,
-          errors: [errorMessage],
-          executionTime: 0,
-        }
-      }
+      sendTimelineEvent({ type: "CREATE_TIMELINE_FROM_PROMPT", prompt })
+      logger.warn(legacyUnsupportedMessage, { operation: "create-timeline" })
+      const result = createUnsupportedResult("create-timeline")
+      sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: result.message })
+      return result
     },
-    [sendTimelineEvent, timelineAI],
+    [sendTimelineEvent],
   )
 
   /**
@@ -107,47 +72,13 @@ export function useTimelineAI() {
    */
   const analyzeResources = useCallback(
     async (query: string): Promise<TimelineAIOperationResult> => {
-      try {
-        sendTimelineEvent({ type: "ANALYZE_RESOURCES", query })
-
-        const result = await timelineAI.analyzeAndSuggestResources(query)
-
-        if (result.success) {
-          sendTimelineEvent({ type: "TIMELINE_OPERATION_SUCCESS", result })
-        } else {
-          sendTimelineEvent({
-            type: "TIMELINE_OPERATION_ERROR",
-            error: result.message,
-          })
-        }
-
-        return {
-          operation: "analyze-resources",
-          success: result.success,
-          message: result.message,
-          data: result.data,
-          errors: result.errors,
-          warnings: result.warnings,
-          executionTime: result.executionTime,
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
-
-        sendTimelineEvent({
-          type: "TIMELINE_OPERATION_ERROR",
-          error: errorMessage,
-        })
-
-        return {
-          operation: "analyze-resources",
-          success: false,
-          message: errorMessage,
-          errors: [errorMessage],
-          executionTime: 0,
-        }
-      }
+      sendTimelineEvent({ type: "ANALYZE_RESOURCES", query })
+      logger.warn(legacyUnsupportedMessage, { operation: "analyze-resources" })
+      const result = createUnsupportedResult("analyze-resources")
+      sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: result.message })
+      return result
     },
-    [sendTimelineEvent, timelineAI],
+    [sendTimelineEvent],
   )
 
   /**
@@ -155,47 +86,13 @@ export function useTimelineAI() {
    */
   const executeCommand = useCallback(
     async (command: string, params?: any): Promise<TimelineAIOperationResult> => {
-      try {
-        sendTimelineEvent({ type: "EXECUTE_AI_COMMAND", command, params })
-
-        const result = await timelineAI.executeCommand(command, params)
-
-        if (result.success) {
-          sendTimelineEvent({ type: "TIMELINE_OPERATION_SUCCESS", result })
-        } else {
-          sendTimelineEvent({
-            type: "TIMELINE_OPERATION_ERROR",
-            error: result.message,
-          })
-        }
-
-        return {
-          operation: "execute-command",
-          success: result.success,
-          message: result.message,
-          data: result.data,
-          errors: result.errors,
-          warnings: result.warnings,
-          executionTime: result.executionTime,
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка"
-
-        sendTimelineEvent({
-          type: "TIMELINE_OPERATION_ERROR",
-          error: errorMessage,
-        })
-
-        return {
-          operation: "execute-command",
-          success: false,
-          message: errorMessage,
-          errors: [errorMessage],
-          executionTime: 0,
-        }
-      }
+      sendTimelineEvent({ type: "EXECUTE_AI_COMMAND", command, params })
+      logger.warn(legacyUnsupportedMessage, { operation: "execute-command" })
+      const result = createUnsupportedResult("execute-command")
+      sendTimelineEvent({ type: "TIMELINE_OPERATION_ERROR", error: result.message })
+      return result
     },
-    [sendTimelineEvent, timelineAI],
+    [sendTimelineEvent],
   )
 
   /**
@@ -203,8 +100,9 @@ export function useTimelineAI() {
    * @returns Promise<boolean> - успешность загрузки ключа
    */
   const initializeApiKey = useCallback(async () => {
-    return await timelineAI.initializeApiKey()
-  }, [timelineAI])
+    logger.warn(legacyUnsupportedMessage, { operation: "initialize-api-key" })
+    return false
+  }, [])
 
   /**
    * Устанавливает API ключ для провайдера
@@ -213,9 +111,24 @@ export function useTimelineAI() {
    */
   const setApiKey = useCallback(
     (provider: string, apiKey: string) => {
-      timelineAI.setApiKey(provider, apiKey)
+      logger.warn(legacyUnsupportedMessage, {
+        hasApiKey: apiKey.length > 0,
+        operation: "set-api-key",
+        provider,
+      })
     },
-    [timelineAI],
+    [],
+  )
+
+  const timelineAI = useMemo(
+    () => ({
+      analyzeAndSuggestResources: analyzeResources,
+      createTimelineFromPrompt,
+      executeCommand,
+      initializeApiKey,
+      setApiKey,
+    }),
+    [analyzeResources, createTimelineFromPrompt, executeCommand, initializeApiKey, setApiKey],
   )
 
   /**
