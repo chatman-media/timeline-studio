@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 core timeline effects commands",
-  "violations": 55,
+  "source": "Phase F7 core content intelligence scenes",
+  "violations": 54,
   "bySeverity": {
-    "warn": 55
+    "warn": 54
   },
   "byEdge": {
-    "ui -> domains": 55
+    "ui -> domains": 54
   }
 }

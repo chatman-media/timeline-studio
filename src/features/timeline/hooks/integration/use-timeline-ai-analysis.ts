@@ -5,10 +5,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import {
-  analyzeScenesByPath,
-  type SceneAnalysisResult,
-} from "@/domains/ai-services/tauri/content-intelligence-commands"
+import { analyzeScenesByPath, type SceneAnalysisResult } from "@/core/services/content-intelligence"
 import { KeyMomentType, type ContentInsights, type KeyMoment, type UnifiedContentAnalysis } from "@/core/types/ai-analysis"
 import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
