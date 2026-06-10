@@ -2,6 +2,7 @@
  * CLI Commands
  */
 
+export { botCleanupCommand } from "./bot-cleanup"
 export { botWorkerCommand } from "./bot-worker"
 export { botWorkflowCommand } from "./bot-workflow"
 export { infoCommand } from "./info"

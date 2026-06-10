@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Timeline Studio Telegram bot runtime cleanup daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=15m
+
+[Install]
+WantedBy=timers.target

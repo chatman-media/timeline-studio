@@ -53,6 +53,17 @@ export {
   type TelegramFileInfo,
 } from "./bot-media-resolver"
 export {
+  cleanupNodeBotRuntime,
+  type NodeBotRuntimeCleanupAction,
+  type NodeBotRuntimeCleanupCategory,
+  type NodeBotRuntimeCleanupDirectoryPolicy,
+  type NodeBotRuntimeCleanupItem,
+  type NodeBotRuntimeCleanupJobStorePolicy,
+  type NodeBotRuntimeCleanupOptions,
+  type NodeBotRuntimeCleanupResult,
+  type NodeBotRuntimeCleanupSummary,
+} from "./bot-runtime-cleanup"
+export {
   NodeBotStatusNotifier,
   type NodeBotStatusNotifierOptions,
   type NodeStatusFetch,

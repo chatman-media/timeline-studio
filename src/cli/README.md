@@ -198,6 +198,36 @@ bun run smoke:ai-review:rust
 | `--telegram-bot-token <token>` | Telegram Bot API token |
 | `--rust-render` | Использовать Rust headless render adapter |
 
+### bot-cleanup
+
+`bot-cleanup` очищает runtime-файлы Telegram bot-worker. По умолчанию команда работает в dry-run режиме и только печатает JSON со списком кандидатов; для удаления нужен явный `--delete`.
+
+```bash
+# Safe preview
+bun run src/cli/index.ts bot-cleanup --pretty
+
+# Destructive cleanup after reviewing the dry-run output
+bun run src/cli/index.ts bot-cleanup --delete --pretty
+```
+
+**Опции:**
+| Опция | Описание |
+|-------|----------|
+| `--dry-run` | Показать кандидатов без удаления |
+| `--delete` | Удалить eligible artifacts/records |
+| `--media-dir <path>` | Папка скачанных Telegram/remote media |
+| `--media-retention <duration>` | Retention для media, например `7d` или `168h` |
+| `--review-preview-dir <path>` | Папка preview artifacts |
+| `--review-preview-retention <duration>` | Retention для preview artifacts |
+| `--first-cut-planner-temp-dir <path>` | Папка temp files Rust first-cut planner |
+| `--first-cut-retention <duration>` | Retention для first-cut temp files |
+| `--draft-dir <path>` | Папка conversation drafts |
+| `--draft-retention <duration>` | Retention для inactive drafts |
+| `--job-store-file <path>` | JSON job store для `/status` и `/retry` |
+| `--job-retention <duration>` | Retention для terminal job records |
+| `--edit-session-dir <path>` | Папка AI review edit sessions |
+| `--edit-session-retention <duration>` | Retention для terminal edit sessions |
+
 ## Переменные окружения
 
 ```bash
@@ -224,6 +254,13 @@ export TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media
 export TIMELINE_BOT_MEDIA_MAX_BYTES=104857600
 export TIMELINE_BOT_REMOTE_MEDIA_ALLOW_HOSTS=cdn.example.com,assets.example.com
 export TIMELINE_BOT_REMOTE_MEDIA_BLOCK_HOSTS=blocked.example.com
+export TIMELINE_BOT_CLEANUP_DELETE=false
+export TIMELINE_BOT_CLEANUP_MEDIA_RETENTION=7d
+export TIMELINE_BOT_CLEANUP_REVIEW_PREVIEW_RETENTION=7d
+export TIMELINE_BOT_CLEANUP_FIRST_CUT_RETENTION=1d
+export TIMELINE_BOT_CLEANUP_DRAFT_RETENTION=14d
+export TIMELINE_BOT_CLEANUP_JOB_RETENTION=30d
+export TIMELINE_BOT_CLEANUP_EDIT_SESSION_RETENTION=30d
 export TIMELINE_BOT_DEFAULT_DESTINATION=telegram
 export TIMELINE_BOT_RUST_RENDER=true
 

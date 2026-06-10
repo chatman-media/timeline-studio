@@ -33,7 +33,7 @@ Use durable storage for all bot state. A recommended system layout:
 /var/lib/timeline-studio/bot/first-cut/       Rust planner temp ProjectSchema files
 ```
 
-The env template lives at [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example). A systemd service example lives at [config/systemd/timeline-bot-worker.service](../../config/systemd/timeline-bot-worker.service).
+The env template lives at [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example). Systemd examples live at [config/systemd/timeline-bot-worker.service](../../config/systemd/timeline-bot-worker.service), [config/systemd/timeline-bot-cleanup.service](../../config/systemd/timeline-bot-cleanup.service), and [config/systemd/timeline-bot-cleanup.timer](../../config/systemd/timeline-bot-cleanup.timer).
 
 ## Deployment
 
@@ -58,6 +58,8 @@ Install and start the service:
 
 ```bash
 sudo install -m 0644 config/systemd/timeline-bot-worker.service /etc/systemd/system/timeline-bot-worker.service
+sudo install -m 0644 config/systemd/timeline-bot-cleanup.service /etc/systemd/system/timeline-bot-cleanup.service
+sudo install -m 0644 config/systemd/timeline-bot-cleanup.timer /etc/systemd/system/timeline-bot-cleanup.timer
 sudo systemctl daemon-reload
 sudo systemctl enable --now timeline-bot-worker
 sudo journalctl -u timeline-bot-worker -f
@@ -131,17 +133,25 @@ Recommended retention defaults:
 | Drafts | `TIMELINE_BOT_DRAFT_DIR` | 14 days if no update |
 | Terminal edit sessions | `TIMELINE_BOT_EDIT_SESSION_DIR` | 30 days after `done`, `cancelled` or `failed` |
 | Offset | `TIMELINE_BOT_OFFSET_FILE` | Keep indefinitely |
-| Job store | `TIMELINE_BOT_JOB_STORE_FILE` | Keep latest 100 records by default |
+| Terminal job records | `TIMELINE_BOT_JOB_STORE_FILE` | 30 days after `done`, `failed`, `rejected` or `cancelled` |
 
-Safe cleanup before [#262](https://github.com/chatman-media/timeline-studio/issues/262) should only remove media/previews/temp files by age. Do not delete edit session JSON blindly because active sessions are also file-backed.
-
-Example cron/systemd-timer command for file artifacts:
+Run cleanup in dry-run mode first. The command reads the same runtime path env vars as `bot-worker` and uses explicit retention windows from `TIMELINE_BOT_CLEANUP_*_RETENTION`.
 
 ```bash
-find /var/lib/timeline-studio/bot/media -type f -mtime +7 -delete
-find /var/lib/timeline-studio/bot/previews -type f -mtime +7 -delete
-find /var/lib/timeline-studio/bot/first-cut -type f -mtime +1 -delete
+set -a
+. /etc/timeline-studio/bot-worker.env
+set +a
+bun run src/cli/index.ts bot-cleanup --pretty
 ```
+
+After reviewing the dry-run output, run destructive cleanup explicitly:
+
+```bash
+bun run src/cli/index.ts bot-cleanup --delete --pretty
+sudo systemctl enable --now timeline-bot-cleanup.timer
+```
+
+`bot-cleanup` deletes media, preview and first-cut files by filesystem mtime; deletes drafts by draft `updatedAt`; prunes terminal job records by job `updatedAt`; and deletes only terminal edit sessions. Active edit sessions and queued/running jobs are always preserved.
 
 ## Media Size And URL Guardrails
 
@@ -169,6 +179,6 @@ Host lists are comma/space separated. Exact hosts match directly; wildcard patte
 - Production topology: single long-polling worker.
 - Deployment path: systemd service with durable filesystem state.
 - Restart model: retry-only interrupted jobs; edit sessions survive restart.
-- Cleanup policy: retention windows documented, automated cleanup tracked in #262.
+- Cleanup policy: runtime cleanup command, dry-run, deletion rules and systemd timer are documented.
 - Guardrails policy: runtime max-size and URL host enforcement is available through bot-worker config.
 - Sandbox smoke: token, allowlist, status and expected chat outputs documented.

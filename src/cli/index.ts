@@ -19,6 +19,7 @@
  */
 
 import { Command } from "commander"
+import { botCleanupCommand } from "./commands/bot-cleanup"
 import { botWorkerCommand } from "./commands/bot-worker"
 import { botWorkflowCommand } from "./commands/bot-workflow"
 import { infoCommand } from "./commands/info"
@@ -35,6 +36,7 @@ program.addCommand(infoCommand)
 program.addCommand(transcribeCommand)
 program.addCommand(renderCommand)
 program.addCommand(renderJobCommand)
+program.addCommand(botCleanupCommand)
 program.addCommand(botWorkflowCommand)
 program.addCommand(botWorkerCommand)
 
