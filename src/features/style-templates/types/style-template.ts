@@ -1,7 +1,5 @@
 /**
  * Типы для стилистических шаблонов
- *
- * Re-export from canonical source in video-editing domain
  */
 
 export type {
@@ -14,4 +12,4 @@ export type {
   StyleTemplateSortField,
   StyleTemplateSortOrder,
   TemplateElement,
-} from "@/domains/video-editing/types/templates"
+} from "@/core/types"
