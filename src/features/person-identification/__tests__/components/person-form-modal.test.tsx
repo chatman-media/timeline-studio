@@ -16,7 +16,7 @@ const mockCloseModal = vi.fn()
 const mockModalData = vi.fn()
 const mockOnSave = vi.fn()
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/core/hooks", () => ({
   useModals: () => ({
     activeModal: "person-form",
     isModalOpen: true,

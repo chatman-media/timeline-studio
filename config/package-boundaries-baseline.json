@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 recognition core AI/media services",
-  "violations": 317,
+  "source": "Phase F7 person identification core types and modals",
+  "violations": 314,
   "bySeverity": {
-    "warn": 317
+    "warn": 314
   },
   "byEdge": {
-    "ui -> domains": 317
+    "ui -> domains": 314
   }
 }

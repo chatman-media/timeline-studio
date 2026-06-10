@@ -35,8 +35,21 @@ export * from "./bot-workflow"
 export * from "./enhanced-subtitle"
 export * from "./filters"
 export * from "./media"
-export * from "./media-preview"
+export type {
+  BasicVideoMetadata,
+  BoundingBox as MediaPreviewBoundingBox,
+  DetectedFace as MediaPreviewDetectedFace,
+  DetectedObject,
+  DetectedScene,
+  MediaPreviewData,
+  RecognitionFrame,
+  RecognitionResults,
+  ThumbnailData,
+  TimelineFrame,
+  TimelinePreview,
+} from "./media-preview"
 export * from "./modals"
+export * from "./person-identification"
 export * from "./project-settings-context"
 export * from "./render-job"
 export * from "./resources"
