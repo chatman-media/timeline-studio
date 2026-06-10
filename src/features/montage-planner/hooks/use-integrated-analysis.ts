@@ -73,7 +73,7 @@ export function useIntegratedAnalysis(): UseIntegratedAnalysisReturn {
 
         // First add all media files to the montage planner
         for (const mediaFile of mediaFiles) {
-          send({ type: "ADD_VIDEO", videoId: mediaFile.id, file: convertToAIServicesMediaFile(mediaFile) })
+          send({ type: "ADD_VIDEO", videoId: mediaFile.id, file: convertToAIServicesMediaFile(mediaFile) as any })
         }
 
         // Start the analysis process

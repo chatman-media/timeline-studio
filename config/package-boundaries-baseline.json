@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core ai tool types",
-  "violations": 114,
+  "source": "Phase F7 montage planner media DTO types",
+  "violations": 111,
   "bySeverity": {
-    "warn": 114
+    "warn": 111
   },
   "byEdge": {
-    "ui -> domains": 114
+    "ui -> domains": 111
   }
 }
