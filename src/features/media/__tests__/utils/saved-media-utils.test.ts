@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@/core/types"
 
 import {
   calculateRelativePath,
@@ -38,7 +37,7 @@ const mockGetPlatform = vi.hoisted(() => vi.fn())
 const mockSearchFilesByName = vi.hoisted(() => vi.fn())
 const mockGetAbsolutePath = vi.hoisted(() => vi.fn())
 
-vi.mock("@/domains/media-management/services/file-system-service", () => ({
+vi.mock("@/core/services", () => ({
   fileSystemService: {
     fileExists: mockFileExists,
     getFileStats: mockGetFileStats,

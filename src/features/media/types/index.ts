@@ -7,22 +7,12 @@
 
 // Re-export all domain types for convenience
 export type {
-  // Core media types
+  AudioMetadata,
+  BrowserVideoMetadata,
   FfprobeData,
   FfprobeFormat,
   FfprobeStream,
   FileGroup,
-  MediaFile,
-  MediaTrack,
-  MediaTimeRange as TimeRange,
-  SavedMediaFile,
-  SavedMusicFile,
-  VideoSegment,
-} from "@/core/types"
-
-export type {
-  AudioMetadata,
-  BrowserVideoMetadata,
   FileOperationsContext,
   FileOperationsEvent,
   ImageMetadata,
@@ -41,7 +31,13 @@ export type {
   SceneDetectionResult,
   ThumbnailData,
   TimelineFrame,
-} from "@/domains/media-management"
+  MediaFile,
+  MediaTrack,
+  MediaTimeRange as TimeRange,
+  SavedMediaFile,
+  SavedMusicFile,
+  VideoSegment,
+} from "@/core/types"
 
 export { MediaType } from "@/core/types"
 

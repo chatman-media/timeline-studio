@@ -307,3 +307,295 @@ export interface MusicMetadata {
   title?: string
   albumDuration?: number
 }
+
+export interface BrowserVideoMetadata {
+  duration?: number
+  width?: number
+  height?: number
+  fps?: number
+  codec?: string
+  bitrate?: number
+  size?: number
+  creation_time?: string
+}
+
+export interface AudioMetadata {
+  duration?: number
+  codec?: string
+  bitrate?: number
+  sample_rate?: number
+  channels?: number
+  size?: number
+  creation_time?: string
+}
+
+export interface ImageMetadata {
+  width?: number
+  height?: number
+  format?: string
+  size?: number
+  creation_time?: string
+}
+
+export type MediaMetadata =
+  | ({
+      type: "Video"
+    } & BrowserVideoMetadata)
+  | ({
+      type: "Audio"
+    } & AudioMetadata)
+  | ({
+      type: "Image"
+    } & ImageMetadata)
+  | { type: "Unknown" }
+
+export type MediaInfo = Omit<MediaFile, "type" | "id"> & {
+  id?: string
+  type: string
+  metadata?: {
+    type: string
+    codec?: string
+    width?: number
+    height?: number
+    fps?: number
+    duration?: number
+    bitrate?: number
+    channels?: number
+    sample_rate?: number
+  }
+  thumbnailPath?: string
+}
+
+export interface MediaFileOperation {
+  id: string
+  type: "import" | "export" | "convert" | "extract" | "analyze"
+  status: "pending" | "processing" | "completed" | "failed"
+  progress: number
+  error?: string
+  result?: any
+}
+
+export interface MediaImportOptions {
+  copyToProject?: boolean
+  createProxies?: boolean
+  analyzeContent?: boolean
+  generateThumbnails?: boolean
+  preserveMetadata?: boolean
+}
+
+export interface MediaImportContext {
+  files: string[]
+  options: MediaImportOptions
+  operations: MediaFileOperation[]
+  currentOperation: string | null
+  totalProgress: number
+  errors: string[]
+  importedFiles: string[]
+}
+
+export type MediaImportEvent =
+  | { type: "ADD_FILES"; files: string[] }
+  | { type: "REMOVE_FILE"; file: string }
+  | { type: "UPDATE_OPTIONS"; options: Partial<MediaImportOptions> }
+  | { type: "START_IMPORT" }
+  | { type: "CANCEL_IMPORT" }
+  | { type: "IMPORT_PROGRESS"; operationId: string; progress: number }
+  | { type: "IMPORT_COMPLETE"; operationId: string; result: any }
+  | { type: "IMPORT_FAILED"; operationId: string; error: string }
+  | { type: "RESET" }
+
+export interface FileOperationsContext {
+  operations: Map<string, MediaFileOperation>
+  activeOperations: string[]
+  completedOperations: string[]
+  failedOperations: string[]
+}
+
+export type FileOperationsEvent =
+  | { type: "START_OPERATION"; operation: MediaFileOperation }
+  | { type: "UPDATE_PROGRESS"; operationId: string; progress: number }
+  | { type: "COMPLETE_OPERATION"; operationId: string; result: any }
+  | { type: "FAIL_OPERATION"; operationId: string; error: string }
+  | { type: "CANCEL_OPERATION"; operationId: string }
+  | { type: "CLEAR_COMPLETED" }
+  | { type: "RETRY_FAILED"; operationId: string }
+
+export interface MediaAnalysisResult {
+  metadata: MediaMetadata
+  thumbnailPath?: string
+  waveformData?: Float32Array
+  scenes?: SceneDetectionResult[]
+  quality?: QualityMetrics
+}
+
+export interface SceneDetectionResult {
+  startTime: number
+  endTime: number
+  confidence: number
+  thumbnailPath?: string
+}
+
+export interface QualityMetrics {
+  resolution: string
+  bitrate: number
+  fps: number
+  codec: string
+  qualityScore: number
+}
+
+export interface MediaMetadataService {
+  extractMetadata(filePath: string): Promise<MediaMetadata>
+  generateThumbnail(filePath: string, time?: number): Promise<string>
+  analyzeMedia(filePath: string): Promise<MediaAnalysisResult>
+  getMediaDuration(filePath: string): Promise<number>
+}
+
+export interface MediaManagementService {
+  importFiles(files: string[], options: MediaImportOptions): Promise<any[]>
+  selectMediaFiles(): Promise<string[] | null>
+  selectAudioFiles(): Promise<string[] | null>
+  selectMediaDirectory(): Promise<string | null>
+  getMediaInfo(path: string): Promise<any>
+  extractMetadata(path: string): Promise<MediaMetadata>
+}
+
+export type MediaItemType = "video" | "audio" | "image" | "sequence" | "compound"
+export type MediaItemStatus = "online" | "offline" | "missing" | "proxy"
+
+export interface MediaPoolItem {
+  id: string
+  type: MediaItemType
+  name: string
+  description?: string
+  source: {
+    path: string
+    relativePath?: string
+    hash?: string
+  }
+  status: MediaItemStatus
+  binId: string
+  metadata: {
+    duration?: number
+    frameRate?: number
+    resolution?: {
+      width: number
+      height: number
+    }
+    codec?: string
+    bitRate?: number
+    fileSize: number
+    createdDate: Date
+    modifiedDate: Date
+    importedDate: Date
+  }
+  usage: {
+    sequences: string[]
+    count: number
+    lastUsed?: Date
+  }
+  proxy?: {
+    path: string
+    resolution: string
+    codec: string
+    generated: Date
+  }
+  thumbnail?: {
+    path: string
+    timestamp: number
+  }
+  waveform?: {
+    path: string
+    peaks: Float32Array
+  }
+  tags: string[]
+  colorLabel?: "red" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink"
+  rating?: 1 | 2 | 3 | 4 | 5
+  notes?: string
+}
+
+export interface MediaBin {
+  id: string
+  name: string
+  parentId: string | null
+  color?: string
+  icon?: string
+  sortOrder: number
+  createdDate: Date
+  isExpanded?: boolean
+}
+
+export interface SmartCollection {
+  id: string
+  name: string
+  criteria: {
+    type?: MediaItemType[]
+    tags?: string[]
+    rating?: { min: number; max: number }
+    dateRange?: { start: Date; end: Date }
+    unused?: boolean
+    offline?: boolean
+    hasProxy?: boolean
+    custom?: string
+  }
+  color?: string
+  icon?: string
+}
+
+export interface MediaPool {
+  items: Map<string, MediaPoolItem>
+  bins: Map<string, MediaBin>
+  smartCollections: SmartCollection[]
+  viewSettings: {
+    sortBy: "name" | "date" | "type" | "duration" | "usage" | "rating"
+    sortOrder: "asc" | "desc"
+    viewMode: "list" | "thumbnails" | "filmstrip"
+    thumbnailSize: "small" | "medium" | "large"
+    showOfflineMedia: boolean
+    showProxyBadge: boolean
+  }
+  stats: {
+    totalItems: number
+    totalSize: number
+    onlineItems: number
+    offlineItems: number
+    proxyItems: number
+    unusedItems: number
+  }
+}
+
+export interface ProxySettings {
+  resolution: "1/4" | "1/2" | "custom"
+  customResolution?: { width: number; height: number }
+  codec: "h264" | "prores" | "dnxhd"
+  quality: "low" | "medium" | "high"
+  location: "project" | "cache" | "custom"
+  customPath?: string
+}
+
+export interface MediaPoolOperations {
+  importMedia(files: File[], binId?: string): Promise<MediaPoolItem[]>
+  createBin(name: string, parentId?: string): MediaBin
+  moveItems(itemIds: string[], targetBinId: string): void
+  deleteItems(itemIds: string[]): void
+  generateProxy(itemId: string, settings: ProxySettings): Promise<void>
+  relinkOfflineMedia(itemIds: string[]): Promise<MediaPoolItem[]>
+  removeUnusedItems(): MediaPoolItem[]
+  exportMediaList(format: "csv" | "xml" | "json"): string
+}
+
+export interface MediaImportResult {
+  imported: MediaPoolItem[]
+  failed: { file: File; reason: string }[]
+  duplicates: MediaPoolItem[]
+}
+
+export interface MediaPoolEvents {
+  onItemAdded: (item: MediaPoolItem) => void
+  onItemRemoved: (itemId: string) => void
+  onItemUpdated: (item: MediaPoolItem) => void
+  onBinCreated: (bin: MediaBin) => void
+  onBinDeleted: (binId: string) => void
+  onProxyGenerated: (itemId: string) => void
+  onMediaOffline: (itemId: string) => void
+  onMediaOnline: (itemId: string) => void
+}

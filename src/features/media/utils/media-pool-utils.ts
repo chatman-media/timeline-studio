@@ -12,7 +12,7 @@ import type {
   MediaPoolItem,
   SavedMediaFile,
   SavedMusicFile,
-} from "@/domains/media-management"
+} from "@/core/types"
 
 /**
  * Конвертация MediaFile в MediaPoolItem
