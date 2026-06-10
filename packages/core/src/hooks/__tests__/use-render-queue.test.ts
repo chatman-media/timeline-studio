@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useRenderQueue } from "../use-render-queue"
 
 // Mock video-editing domain functions
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   renderProject: vi.fn(),
   cancelRender: vi.fn(),
   getActiveJobs: vi.fn(),
@@ -16,7 +16,7 @@ const {
   renderProject: mockRenderProject,
   cancelRender: mockCancelRender,
   getActiveJobs: mockGetActiveJobs,
-} = await import("@/domains/video-editing")
+} = await import("@timeline-studio/domains/video-editing")
 
 describe("useRenderQueue", () => {
   beforeEach(() => {

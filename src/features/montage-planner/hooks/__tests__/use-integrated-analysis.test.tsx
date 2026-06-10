@@ -14,7 +14,7 @@ import { usePlanGenerator } from "../use-plan-generator"
 
 // Mock dependencies
 const mockGetMediaDuration = vi.fn()
-vi.mock("@/domains/media-management/services/media-metadata-service", () => ({
+vi.mock("@timeline-studio/domains/media-management/services/media-metadata-service", () => ({
   getMediaMetadataService: () => ({
     getMediaDuration: mockGetMediaDuration,
   }),

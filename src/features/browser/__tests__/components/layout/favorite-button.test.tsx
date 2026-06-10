@@ -4,7 +4,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
 
 import { FavoriteButton } from "../../../components/layout/favorite-button"
 

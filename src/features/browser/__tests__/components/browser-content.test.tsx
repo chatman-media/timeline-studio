@@ -78,7 +78,7 @@ vi.mock("@/features/timeline/hooks", () => ({
 }))
 
 // Моки для useCurrentProject
-vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: null,
     openProject: vi.fn(),
@@ -106,7 +106,7 @@ vi.mock("@/features/browser/hooks/use-music-import", () => ({
 }))
 
 // Моки для useMusicFiles
-vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-music-files", () => ({
   useMusicFiles: () => ({
     musicFiles: [],
     addMusicFile: vi.fn(),
@@ -115,8 +115,8 @@ vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
 }))
 
 // Мок для useMediaManagement - синхронный мок с константами
-vi.mock("@/domains/media-management", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/media-management")>()
+vi.mock("@timeline-studio/domains/media-management", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/media-management")>()
   return {
     ...actual,
     useMediaManagement: () => ({

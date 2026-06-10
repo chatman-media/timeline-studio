@@ -17,8 +17,8 @@
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { ProjectSchema } from "@/domains/video-editing/types/video-compiler"
-import { AspectRatio, OutputFormat } from "@/domains/video-editing/types/video-compiler"
+import type { ProjectSchema } from "@timeline-studio/domains/video-editing/types/video-compiler"
+import { AspectRatio, OutputFormat } from "@timeline-studio/domains/video-editing/types/video-compiler"
 import type { RenderProgress } from "@/features/video-compiler/types/render"
 import { RenderStatus } from "@/features/video-compiler/types/render"
 import { QUALITY_PRESETS } from "../../constants/export-constants"
@@ -40,7 +40,7 @@ vi.mock("sonner", () => ({
 }))
 
 // Mock video compiler service
-vi.mock("@/domains/video-editing/services/compiler/video-compiler-service", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/compiler/video-compiler-service", () => ({
   renderProject: vi.fn(),
   trackRenderProgress: vi.fn(),
   cancelRender: vi.fn(),
@@ -227,7 +227,7 @@ describe("Export Pipeline Integration Tests", () => {
 
     const { invoke } = await import("@tauri-apps/api/core")
     const { renderProject, trackRenderProgress, cancelRender } = await import(
-      "@/domains/video-editing/services/compiler/video-compiler-service"
+      "@timeline-studio/domains/video-editing/services/compiler/video-compiler-service"
     )
     mockSocialNetworksService = await import("../../services/social-networks-service")
 

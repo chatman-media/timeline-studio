@@ -64,7 +64,7 @@ vi.mock("@/adapters/tauri", () => {
 })
 
 // Мокаем AppProvider для избежания проблем с машиной состояний
-vi.mock("@/domains/project-management/providers/app-provider", () => ({
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useApp: vi.fn(() => ({
     projectState: { project: null },
@@ -76,7 +76,7 @@ vi.mock("@/domains/project-management/providers/app-provider", () => ({
 }))
 
 // Также мокаем старый путь для совместимости
-vi.mock("@/domains/project-management/providers/app-provider", () => ({
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useApp: vi.fn(() => ({
     projectState: { project: null },
@@ -88,7 +88,7 @@ vi.mock("@/domains/project-management/providers/app-provider", () => ({
 }))
 
 // Мокаем video-editing-orchestrator
-vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: vi.fn(() => ({
     getActors: vi.fn(() => ({
       timeline: {
@@ -332,7 +332,7 @@ const mockUpdateClip = vi.fn()
 const mockBatchUpdateClips = vi.fn()
 
 // Мокаем timeline hooks для useTimeline
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   // Add providers to avoid test-utils import errors
   PlayerProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   ResourcesProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
@@ -535,7 +535,7 @@ vi.mock("@xstate/react", () => ({
 // Импортируем моки из мокированного модуля
 // Используем vi.mocked чтобы получить доступ к мокам
 import * as backendSyncModule from "@/adapters/tauri"
-import type { MediaFile, MediaType } from "@/domains/media-management"
+import type { MediaFile, MediaType } from "@timeline-studio/domains/media-management"
 import { useTimeline } from "../use-timeline"
 
 const backendSyncMocks = (backendSyncModule as any).__mocks

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { YoloDataService } from "@/domains/ai-services/services/recognition"
+import { YoloDataService } from "@timeline-studio/domains/ai-services/services/recognition"
 import { createMockYoloData } from "../../__mocks__"
 
 describe("YoloDataService", () => {

@@ -1,7 +1,7 @@
 import type React from "react"
 
 import "@/global/styles/variables.css"
-import "@/domains/shared/styles/globals.css"
+import "@timeline-studio/domains/shared/styles/globals.css"
 
 import type { Metadata } from "next"
 import { AppErrorBoundary } from "@/components/error-boundary"

@@ -16,7 +16,7 @@ vi.mock("@timeline-studio/core", () => ({
 }))
 
 // Мокаем mediaProcessorService
-vi.mock("@/domains/media-management/services/media-processor-service", () => ({
+vi.mock("@timeline-studio/domains/media-management/services/media-processor-service", () => ({
   mediaProcessorService: {
     scanFolder: vi.fn(),
     scanFolderWithThumbnails: vi.fn(),

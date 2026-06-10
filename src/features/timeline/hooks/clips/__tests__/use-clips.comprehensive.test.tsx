@@ -5,8 +5,8 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/video-editing/types/media"
-import { MediaType } from "@/domains/video-editing/types/media"
+import type { MediaFile } from "@timeline-studio/domains/video-editing/types/media"
+import { MediaType } from "@timeline-studio/domains/video-editing/types/media"
 import { TimelineProviders } from "@/test/test-utils"
 import type { TimelineClip, TimelineProject, TrackType } from "../../../types"
 import { useTimeline } from "../../state/use-timeline"

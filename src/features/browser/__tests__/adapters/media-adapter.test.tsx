@@ -24,7 +24,7 @@ vi.mock("@/lib/duration-formatter", () => ({
 }))
 
 // Мокаем все зависимости напрямую
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),

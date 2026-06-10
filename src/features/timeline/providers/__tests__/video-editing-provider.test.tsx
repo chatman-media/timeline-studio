@@ -49,7 +49,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 // Mock orchestrator service
-vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: () => mockOrchestrator,
 }))
 

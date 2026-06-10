@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ModalMachineContext } from "@/domains/system-integration/machines/modal-machine"
+import type { ModalMachineContext } from "@timeline-studio/domains/system-integration/machines/modal-machine"
 import { handleModalBackendEvent, type ModalBackendEvent } from "../backend-event-handlers"
 
 // Mock logger

@@ -4,7 +4,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 import { BrowserProvider } from "@/features/browser/services"
 import { resetMockBrowserState } from "@/test/mocks/backend-sync"
 import { useFileSelection } from "../use-file-selection"

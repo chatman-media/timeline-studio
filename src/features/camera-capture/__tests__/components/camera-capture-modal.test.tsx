@@ -138,7 +138,7 @@ vi.mock("../../components/recording-controls", () => ({
 }))
 
 // Мокируем хук useModals и useNotifications
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useModals: () => ({
     activeModal: "camera-capture",
     modalData: null,

@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
+import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@timeline-studio/domains/media-management"
 import {
   addItemToPool,
   convertMediaFileToPoolItem,

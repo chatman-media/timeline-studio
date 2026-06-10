@@ -17,7 +17,7 @@ import { setAITools } from "@timeline-studio/core/services/ai-tools-registry"
 import { setMediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"
 import { setMontagePlannerBindings } from "@timeline-studio/core/services/montage-planner-registry"
 import { setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
-import { ChatProvider, MCPProvider, montagePlannerMachine, unifiedOrchestrator } from "@/domains/ai-services"
+import { ChatProvider, MCPProvider, montagePlannerMachine, unifiedOrchestrator } from "@timeline-studio/domains/ai-services"
 import {
   applyPlanToTimeline,
   ContentAnalyzer,
@@ -25,14 +25,14 @@ import {
   MomentDetector,
   PlanGenerator,
   RhythmCalculator,
-} from "@/domains/ai-services/services/montage-planning"
-import { allAITools } from "@/domains/ai-tools"
-import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@/domains/browser"
-import * as mediaManagementBindings from "@/domains/media-management"
-import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
-import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
-import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
-import { getVideoEditingOrchestrator, UndoRedoHelpers, useUndoRedo } from "@/domains/video-editing"
+} from "@timeline-studio/domains/ai-services/services/montage-planning"
+import { allAITools } from "@timeline-studio/domains/ai-tools"
+import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@timeline-studio/domains/browser"
+import * as mediaManagementBindings from "@timeline-studio/domains/media-management"
+import { AppProvider, ProjectSettingsProvider } from "@timeline-studio/domains/project-management/providers"
+import { DOMAIN_EVENTS, eventBus } from "@timeline-studio/domains/shared/events"
+import { getSystemIntegrationOrchestrator } from "@timeline-studio/domains/system-integration"
+import { getVideoEditingOrchestrator, UndoRedoHelpers, useUndoRedo } from "@timeline-studio/domains/video-editing"
 import { ColorSchemeProvider } from "@/features/color-scheme"
 import { PlayerProvider } from "@/features/timeline/providers/player-provider"
 import { ResourcesProvider } from "@/features/timeline/providers/resources-provider"

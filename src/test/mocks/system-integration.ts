@@ -1,7 +1,7 @@
 import { vi } from "vitest"
 
 // Mock UpdateService для предотвращения ошибок инициализации
-vi.mock("@/domains/system-integration/services/updates/update-service", () => ({
+vi.mock("@timeline-studio/domains/system-integration/services/updates/update-service", () => ({
   UpdateService: class MockUpdateService {
     static instance: any = null
     static logger = {

@@ -11,7 +11,7 @@ import {
   createTimelineTrack,
   type TrackType,
 } from "../src/features/timeline/types";
-import type { Timeline as TimelineProject } from "../src/domains/video-editing/types";
+import type { Timeline as TimelineProject } from "@timeline-studio/domains/video-editing/types";
 
 import {
   calculateProjectDuration,

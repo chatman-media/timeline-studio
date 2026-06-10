@@ -46,7 +46,7 @@ vi.mock("@/features/timeline/components/drag-drop-provider", () => ({
 }))
 
 // Мокаем AI Director hooks
-vi.mock("@/domains/ai-director/hooks/use-ai-director-events", () => ({
+vi.mock("@timeline-studio/domains/ai-director/hooks/use-ai-director-events", () => ({
   useAIDirectorEvents: () => ({
     lastProgress: null,
   }),
@@ -64,7 +64,7 @@ vi.mock("@/features/media-studio/hooks", () => ({
 }))
 
 // Мокаем useCurrentProject
-vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: { name: "Test Project" },
     openProject: vi.fn(),
@@ -82,7 +82,7 @@ vi.mock("@/hooks/use-app-menu", () => ({
 }))
 
 // Мокаем useApp для ProjectLoadingOverlay
-vi.mock("@/domains/project-management/providers/app-provider", () => ({
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", () => ({
   useApp: () => ({
     isConnecting: false,
     connectionError: null,
@@ -90,8 +90,8 @@ vi.mock("@/domains/project-management/providers/app-provider", () => ({
 }))
 
 // Мокаем useModals
-vi.mock("@/domains/system-integration", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/system-integration")>()
+vi.mock("@timeline-studio/domains/system-integration", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/system-integration")>()
   return {
     ...actual,
     useModals: () => ({

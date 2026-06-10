@@ -1,7 +1,7 @@
 /**
  * Media Feature Types
  *
- * Domain-level types moved to @/domains/media-management
+ * Domain-level types moved to @timeline-studio/domains/media-management
  * This file re-exports them for backward compatibility and local UI types
  */
 

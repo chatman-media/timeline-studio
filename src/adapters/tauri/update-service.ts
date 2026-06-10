@@ -1,6 +1,6 @@
 import type { IUpdateService } from "@timeline-studio/core/ports"
 import type { AutoCheckSettings, UpdateCheckResult, UpdateEventPayload, UpdateStatus } from "@timeline-studio/core/types/updates"
-import { UpdateService } from "@/domains/system-integration/services/updates"
+import { UpdateService } from "@timeline-studio/domains/system-integration/services/updates"
 
 export class TauriUpdateService implements IUpdateService {
   private readonly service = UpdateService.getInstance()

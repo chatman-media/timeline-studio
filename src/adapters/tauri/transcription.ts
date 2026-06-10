@@ -8,7 +8,7 @@ import type {
   TranscriptionResult,
   WhisperIntegrationOptions,
 } from "@timeline-studio/core/types/transcription"
-import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
+import { TranscriptionService } from "@timeline-studio/domains/ai-services/services/transcription-service"
 
 export class TauriTranscriptionService implements ITranscriptionService {
   private readonly service = TranscriptionService.getInstance()

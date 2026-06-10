@@ -7,7 +7,7 @@ import {
   getMediaMetadata,
   selectMediaDirectory,
   selectMediaFile,
-} from "@/domains/media-management/services/media-api"
+} from "@timeline-studio/domains/media-management/services/media-api"
 
 // Mock media service
 const mockMediaService = {

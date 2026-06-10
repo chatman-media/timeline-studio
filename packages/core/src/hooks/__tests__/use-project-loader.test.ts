@@ -6,13 +6,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useProjectLoader } from "../use-project-loader"
 
 // Mock project-management service
-vi.mock("@/domains/project-management/services/project-file-service", () => ({
+vi.mock("@timeline-studio/domains/project-management/services/project-file-service", () => ({
   loadProject: vi.fn(),
   saveProject: vi.fn(),
 }))
 
 const { loadProject: mockLoadProject, saveProject: mockSaveProject } = await import(
-  "@/domains/project-management/services/project-file-service"
+  "@timeline-studio/domains/project-management/services/project-file-service"
 )
 
 describe("useProjectLoader", () => {

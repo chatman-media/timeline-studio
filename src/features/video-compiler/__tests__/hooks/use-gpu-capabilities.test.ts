@@ -31,7 +31,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Мокаем useNotifications
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),

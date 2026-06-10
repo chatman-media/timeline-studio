@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest"
 
-import { OutputFormat } from "@/domains/video-editing/types"
+import { OutputFormat } from "@timeline-studio/domains/video-editing/types"
 
 import { AUDIO_BITRATE } from "../../constants/export-constants"
 import type { ExportSettings } from "../../types/export-types"

@@ -13,7 +13,7 @@ const mockPlayerState = {
   videoSource: "browser" as "browser" | "timeline",
 }
 
-vi.mock("@/domains/project-management/services/backend-sync", () => ({
+vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () => ({
   getBackendSync: () => ({
     onStateChange: vi.fn(() => () => {}),
     sendCommand: vi.fn(),
@@ -31,7 +31,7 @@ vi.mock("@/features/user-settings", () => ({
 }))
 
 // Мокаем useMediaFiles
-vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-media-files", () => ({
   useMediaFiles: vi.fn(() => ({
     mediaFiles: [],
     selectedFiles: [],

@@ -93,7 +93,7 @@ vi.mock("../../hooks", () => ({
   })),
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useModals: vi.fn(() => ({
     activeModal: "camera-capture",
     modalData: null,

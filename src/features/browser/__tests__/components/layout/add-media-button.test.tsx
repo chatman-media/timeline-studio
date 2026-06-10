@@ -3,14 +3,14 @@
  */
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/video-editing/types/media"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/video-editing/types/media"
 
 import { AddMediaButton } from "../../../components/layout/add-media-button"
 
 // Мокаем BackendSync
 const mockExecuteCommand = vi.fn()
-vi.mock("@/domains/project-management/services/backend-sync", () => ({
+vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () => ({
   getBackendSync: vi.fn(() => ({
     executeCommand: mockExecuteCommand,
   })),
@@ -51,8 +51,8 @@ const mockUseResourcesReturn = {
   templateResources: [],
 }
 
-vi.mock("@/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
+vi.mock("@timeline-studio/domains/video-editing", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/video-editing")>()
   return {
     ...actual,
     useResources: vi.fn(() => mockUseResourcesReturn),

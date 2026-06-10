@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest"
 
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
 
 // Mock модулей

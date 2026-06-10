@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 import {
   AlignX,
   AlignY,
@@ -27,7 +27,7 @@ import {
   SubtitleEasing,
   SubtitleFontWeight,
   TextAlign,
-} from "@/domains/video-editing/types"
+} from "@timeline-studio/domains/video-editing/types"
 
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { timelineToProjectSchema } from "../../utils/timeline-to-project"

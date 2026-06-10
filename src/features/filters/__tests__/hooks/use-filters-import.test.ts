@@ -9,7 +9,7 @@ import { MediaProviders } from "@/test/test-utils"
 import { useFiltersImport } from "../../hooks/use-filters-import"
 
 // Mock AppProvider to avoid backend connection issues
-vi.mock("@/domains/project-management/providers/app-provider", async () => {
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", async () => {
   const React = await import("react")
 
   const mockContext = {

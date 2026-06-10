@@ -139,7 +139,7 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
   PrerenderControls: () => null,
 }))
 
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="player-provider" data-oid="ypm1m5x">
       {children}

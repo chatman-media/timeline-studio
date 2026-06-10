@@ -22,7 +22,7 @@ import type {
   ThumbnailOptions,
   WaveformOptions,
 } from "@timeline-studio/core/ports"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TauriMediaService")

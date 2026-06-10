@@ -10,9 +10,7 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "../../src/domains/**/*",
-    "../../src/core/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "dist",

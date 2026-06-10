@@ -1,6 +1,6 @@
 /**
  * Color Grading types for Timeline
- * TODO: Consider migrating to @/domains/video-editing/types
+ * TODO: Consider migrating to @timeline-studio/domains/video-editing/types
  */
 
 /**

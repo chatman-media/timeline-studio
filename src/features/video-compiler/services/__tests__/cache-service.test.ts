@@ -6,10 +6,10 @@ import {
   configureCacheSettings,
   getCacheSize,
   getCacheStats,
-} from "@/domains/video-editing/services/compiler/cache-service"
+} from "@timeline-studio/domains/video-editing/services/compiler/cache-service"
 
 // Mock Tauri compiler commands
-vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
+vi.mock("@timeline-studio/domains/video-editing/tauri/compiler-commands", () => ({
   getCacheStats: vi.fn(),
   clearPreviewCache: vi.fn(),
   clearAllCache: vi.fn(),
@@ -31,7 +31,7 @@ vi.mock("@/lib/tauri-logger", () => ({
   })),
 }))
 
-const mockCompilerCommands = vi.mocked(await import("@/domains/video-editing/tauri/compiler-commands"))
+const mockCompilerCommands = vi.mocked(await import("@timeline-studio/domains/video-editing/tauri/compiler-commands"))
 
 describe("Cache Service", () => {
   beforeEach(() => {

@@ -58,7 +58,7 @@ vi.mock("@/features/timeline/hooks/state/use-tracks", () => ({
   })),
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),

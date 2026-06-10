@@ -8,7 +8,7 @@ import {
   selectAudioFile,
   selectMediaDirectory,
   selectMediaFile,
-} from "@/domains/media-management"
+} from "@timeline-studio/domains/media-management"
 
 // Mock media service
 const mockMediaService = vi.hoisted(() => ({

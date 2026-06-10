@@ -7,8 +7,8 @@ import { describe, expect, it, vi } from "vitest"
 // Import lucide-react mock before any component imports
 import "@/test/mocks/libraries/lucide-react"
 
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/video-editing/types/media"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/video-editing/types/media"
 
 import { AudioPreview } from "../../../components/preview/audio-preview"
 

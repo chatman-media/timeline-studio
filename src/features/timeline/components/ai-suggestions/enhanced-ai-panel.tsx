@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState } from "react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 // REMOVED: executeContentIntelligenceTool - legacy code deleted, will be replaced by AI Director v2
-// import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
+// import { executeContentIntelligenceTool } from "@timeline-studio/domains/ai-tools/tools/analysis/content-intelligence"
 import { MediaInfo } from "@timeline-studio/core/types"
 import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 // MIGRATION NOTE: UnifiedDashboard removed - use AI Director integration instead

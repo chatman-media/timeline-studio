@@ -14,7 +14,7 @@ const mockGetHealthStatus = vi.fn()
 const mockGetSummaryReport = vi.fn()
 const mockReset = vi.fn()
 
-vi.mock("@/domains/video-editing/services/performance-monitor", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/performance-monitor", () => ({
   globalPerformanceMonitor: {
     getMetrics: (...args: any[]) => mockGetMetrics(...args),
     getSyncRecords: (...args: any[]) => mockGetSyncRecords(...args),

@@ -104,7 +104,7 @@ vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   }),
 }))
 
-vi.mock("@/domains/browser", async (importOriginal) => {
+vi.mock("@timeline-studio/domains/browser", async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,

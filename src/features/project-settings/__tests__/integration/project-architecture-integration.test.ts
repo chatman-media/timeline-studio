@@ -4,15 +4,15 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaPoolItem } from "@/domains/media-management"
+import type { MediaPoolItem } from "@timeline-studio/domains/media-management"
 import {
   addItemToPool,
   createMediaBin,
   getItemsInBin,
   searchMediaPool,
   updateItemUsage,
-} from "@/domains/media-management"
-import { TimelineStudioProjectService } from "@/domains/project-management/services/timeline-studio-project-service"
+} from "@timeline-studio/domains/media-management"
+import { TimelineStudioProjectService } from "@timeline-studio/domains/project-management/services/timeline-studio-project-service"
 import type { TimelineClip } from "@/features/timeline/types"
 import type { Sequence } from "@/features/timeline/types/sequence"
 

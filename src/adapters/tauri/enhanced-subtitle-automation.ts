@@ -10,7 +10,7 @@ import {
   enhancedSubtitleAutomation,
   extractSubtitlesFromScreenText,
   generateMultilingualSubtitles,
-} from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
+} from "@timeline-studio/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
 
 export class TauriEnhancedSubtitleAutomationService implements IEnhancedSubtitleAutomationService {
   async processEnhancedSubtitles(

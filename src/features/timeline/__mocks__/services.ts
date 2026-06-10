@@ -5,7 +5,7 @@ import {
   createTimelineProject,
   createTimelineSection,
   createTimelineTrack,
-} from "@/domains/video-editing/utils/timeline-factories"
+} from "@timeline-studio/domains/video-editing/utils/timeline-factories"
 import type { TimelineClip, TimelineTrack, TrackType } from "../types"
 
 type EventListener = (...args: any[]) => void

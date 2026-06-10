@@ -161,10 +161,10 @@ adapters -> core
 
 **Цель:** `packages/domains/src` владеет domain-модулями за стабильными package exports.
 
-- [ ] Перенести domain modules из `src/domains` в `packages/domains/src` небольшими subdomain slices.
-- [ ] Сохранить app-shell как место композиции domains/adapters/UI.
-- [ ] Оставить `src/domains` compatibility shims только на время миграции imports.
-- [ ] Не допустить domain dependencies на UI или platform adapters.
+- [x] Перенести domain modules из `src/domains` в `packages/domains/src` небольшими subdomain slices.
+- [x] Сохранить app-shell как место композиции domains/adapters/UI.
+- [x] Оставить `src/domains` compatibility shims только на время миграции imports: не потребовалось, imports переведены на `@timeline-studio/domains`.
+- [x] Не допустить domain dependencies на UI или platform adapters.
 
 ### F11: Physically extract adapters into `packages/adapters`
 
@@ -224,7 +224,7 @@ CI использует `bun run check:boundaries:baseline`, который ср
 
 Baseline на 2026-06-11:
 
-- Scanned files: 1777
+- Scanned files: 1766
 - Violations: 0
 - `error`: 0
 - `warn`: 0

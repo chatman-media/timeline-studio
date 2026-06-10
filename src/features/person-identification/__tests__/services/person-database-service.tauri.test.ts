@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { type DatabaseStats, PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
+import { type DatabaseStats, PersonDatabaseService } from "@timeline-studio/domains/ai-services/services/person-identification"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../../types/person"
 
 const mockInvoke = vi.hoisted(() => vi.fn())

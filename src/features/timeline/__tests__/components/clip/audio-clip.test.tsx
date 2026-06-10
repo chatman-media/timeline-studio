@@ -7,7 +7,7 @@
 
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaType } from "@/domains/media-management"
+import type { MediaType } from "@timeline-studio/domains/media-management"
 import { AudioClip } from "@/features/timeline/components/clip/audio-clip"
 
 import type { TimelineClip, TimelineTrack, TrackType } from "../../../types"

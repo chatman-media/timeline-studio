@@ -8,8 +8,8 @@ import { fireEvent, renderWithBrowser as render, screen } from "@/test/test-util
 import { SubtitleGroup } from "../../components/subtitle-group"
 
 // Мокаем useResources
-vi.mock("@/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
+vi.mock("@timeline-studio/domains/video-editing", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/video-editing")>()
   return {
     ...actual,
     useResources: () => ({

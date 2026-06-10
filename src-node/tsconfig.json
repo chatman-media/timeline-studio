@@ -11,12 +11,12 @@
     "skipLibCheck": true,
     "paths": {
       "@/*": ["../src/*"],
-      "@domains/*": ["../src/domains/*"],
-      "@core/*": ["../src/core/*"],
+      "@domains/*": ["../packages/domains/src/*"],
+      "@core/*": ["../packages/core/src/*"],
       "@adapters/*": ["../src/adapters/*"],
       "@node/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "../src/adapters/node/**/*", "../src/core/ports/**/*", "../src/types/generated/**/*"],
+  "include": ["src/**/*", "../src/adapters/node/**/*", "../packages/core/src/ports/**/*", "../src/types/generated/**/*"],
   "exclude": ["node_modules", "dist", "__tests__"]
 }

@@ -350,7 +350,7 @@ vi.mock("@/features/video-player/hooks/use-debounced-seek", () => ({
 }))
 
 // Мокаем video-editing-orchestrator
-vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: () => ({
     getActors: () => ({
       timeline: {

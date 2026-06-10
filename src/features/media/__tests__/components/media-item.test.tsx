@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useFavorites } from "@timeline-studio/core/hooks"
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 import { fireEvent, renderWithProviders, screen } from "@/test/test-utils"
 
 import { MediaItem } from "../../components/media-item"

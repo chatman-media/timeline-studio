@@ -8,7 +8,7 @@ import {
   saveUserEffect,
   type UserEffect,
   type UserEffectsCollection,
-} from "@/domains/video-editing/services/effects"
+} from "@timeline-studio/domains/video-editing/services/effects"
 import type { BaseEffect } from "../../types/unified-effects"
 import { prepareEffectForExport } from "../../utils/user-effects"
 

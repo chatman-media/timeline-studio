@@ -21,10 +21,10 @@ vi.mock("@/features/top-bar/components/theme/theme-context", () => ({
 }))
 
 // ModalProvider is no longer needed with new modal architecture
-// Modal state is now managed via useModals hook from @/domains/system-integration
+// Modal state is now managed via useModals hook from @timeline-studio/domains/system-integration
 
 // Мокаем AppProvider и связанные хуки
-vi.mock("@/domains/project-management/providers/app-provider", () => ({
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: any) => children,
   useApp: vi.fn(() => ({
     projectState: { project: null },
@@ -35,13 +35,13 @@ vi.mock("@/domains/project-management/providers/app-provider", () => ({
   })),
 }))
 
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-music-files", () => ({
   useMusicFiles: vi.fn(() => ({
     musicFiles: [],
     addMusicFile: vi.fn(),
@@ -91,7 +91,7 @@ vi.mock("@/features/resources", () => ({
 }))
 
 // Мокаем ResourcesProvider альтернативный путь
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   ResourcesProvider: ({ children }: any) => children,
 }))
 
@@ -101,12 +101,12 @@ vi.mock("@/features/timeline/providers/timeline-providers", () => ({
 }))
 
 // Мокаем PlayerProvider
-vi.mock("@/domains/video-editing/player-provider", () => ({
+vi.mock("@timeline-studio/domains/video-editing/player-provider", () => ({
   PlayerProvider: ({ children }: any) => children,
 }))
 
 // Мокаем ChatProvider
-vi.mock("@/domains/ai-services/providers/chat-provider", () => ({
+vi.mock("@timeline-studio/domains/ai-services/providers/chat-provider", () => ({
   ChatProvider: ({ children }: any) => children,
 }))
 

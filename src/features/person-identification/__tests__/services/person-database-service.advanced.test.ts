@@ -6,7 +6,7 @@
 import "fake-indexeddb/auto"
 import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
+import { PersonDatabaseService } from "@timeline-studio/domains/ai-services/services/person-identification"
 import type { FaceEmbedding, PersonAppearance, PersonProfile } from "@/features/person-identification/types/person"
 
 const mockInvoke = vi.hoisted(() => vi.fn())

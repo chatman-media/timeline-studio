@@ -32,7 +32,7 @@ vi.mock("../../hooks/use-project-settings", () => ({
   })),
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useModals: vi.fn(() => ({
     activeModal: "project-settings",
     modalData: null,

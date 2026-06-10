@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
+import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@timeline-studio/domains/media-management"
 import {
   generateRestorationReport,
   promptUserToFindFile,
   restoreFile,
   restoreProjectMedia,
-} from "@/domains/media-management"
+} from "@timeline-studio/domains/media-management"
 
 // Мокаем модули Tauri
 vi.mock("@tauri-apps/api/path", () => ({
@@ -18,7 +18,7 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
 }))
 
 // Мокаем утилиты
-vi.mock("@/domains/media-management/utils/saved-media-utils", () => ({
+vi.mock("@timeline-studio/domains/media-management/utils/saved-media-utils", () => ({
   fileExists: vi.fn(),
   validateFileIntegrity: vi.fn(),
   generateAlternativePaths: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock("@/domains/media-management/utils/saved-media-utils", () => ({
 
 // Импортируем замоканные функции
 const { fileExists, validateFileIntegrity, generateAlternativePaths, convertFromSavedMediaFile, getExtensionsForFile } =
-  await import("@/domains/media-management/utils/saved-media-utils")
+  await import("@timeline-studio/domains/media-management/utils/saved-media-utils")
 const mockFileExists = fileExists as any
 const mockValidateFileIntegrity = validateFileIntegrity as any
 const mockGenerateAlternativePaths = generateAlternativePaths as any

@@ -78,7 +78,7 @@ vi.mock("@/features/project-settings/hooks", () => ({
   }),
 }))
 
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="player-provider" data-oid="byk8bu2">
       {children}

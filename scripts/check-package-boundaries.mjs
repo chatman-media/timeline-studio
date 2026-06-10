@@ -72,7 +72,7 @@ function resolveInternalSpecifier(sourceFile, specifier) {
   }
 
   if (cleanSpecifier.startsWith("@domains/")) {
-    return `src/domains/${cleanSpecifier.slice("@domains/".length)}`
+    return `packages/domains/src/${cleanSpecifier.slice("@domains/".length)}`
   }
 
   if (cleanSpecifier.startsWith("@features/")) {
