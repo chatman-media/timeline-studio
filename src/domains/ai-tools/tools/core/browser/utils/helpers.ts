@@ -2,70 +2,62 @@
  * Вспомогательные функции для работы с браузером
  */
 
-import type { BrowserFileInfo, BrowserStateAccess, FileGroup } from "../types"
-
-// Глобальная переменная для доступа к состоянию браузера
-let browserStateAccess: BrowserStateAccess | null = null
+import {
+  getBrowserStateAccess as getCoreBrowserStateAccess,
+  hasBrowserStateAccess,
+  requireBrowserStateAccess,
+  setBrowserStateAccess as setCoreBrowserStateAccess,
+  type BrowserStateAccess,
+} from "@/core/services/browser-state-access"
+import type { BrowserFileInfo, FileGroup } from "../types"
 
 /**
  * Устанавливает доступ к состоянию браузера
  */
 export function setBrowserStateAccess(access: BrowserStateAccess | null) {
-  browserStateAccess = access
+  setCoreBrowserStateAccess(access)
 }
 
 /**
  * Получает текущий доступ к браузеру
  */
 export function getBrowserStateAccess(): BrowserStateAccess | null {
-  return browserStateAccess
+  return getCoreBrowserStateAccess()
 }
 
 /**
  * Проверяет, настроен ли доступ к браузеру
  */
 export function hasBrowserAccess(): boolean {
-  return browserStateAccess !== null
+  return hasBrowserStateAccess()
 }
 
 /**
  * Получает текущую вкладку браузера
  */
 export function getCurrentTab() {
-  if (!browserStateAccess) {
-    throw new Error("Browser state access не настроен")
-  }
-  return browserStateAccess.getCurrentTab()
+  return requireBrowserStateAccess().getCurrentTab()
 }
 
 /**
  * Получает файлы из браузера
  */
 export function getBrowserFiles(tab?: any) {
-  if (!browserStateAccess) {
-    throw new Error("Browser state access не настроен")
-  }
-  return browserStateAccess.getFiles(tab)
+  return requireBrowserStateAccess().getFiles(tab)
 }
 
 /**
  * Получает выбранные файлы
  */
 export function getSelectedFiles() {
-  if (!browserStateAccess) {
-    throw new Error("Browser state access не настроен")
-  }
-  return browserStateAccess.getSelectedFiles()
+  return requireBrowserStateAccess().getSelectedFiles()
 }
 
 /**
  * Получает статистику браузера
  */
 export function getBrowserStats() {
-  if (!browserStateAccess) {
-    throw new Error("Browser state access не настроен")
-  }
-  return browserStateAccess.getBrowserStats()
+  return requireBrowserStateAccess().getBrowserStats()
 }
 
 /**

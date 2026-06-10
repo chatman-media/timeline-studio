@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 retire legacy timeline AI domain service",
-  "violations": 15,
+  "source": "Phase F7 move browser AI state bridge to core",
+  "violations": 14,
   "bySeverity": {
-    "warn": 15
+    "warn": 14
   },
   "byEdge": {
-    "ui -> domains": 15
+    "ui -> domains": 14
   }
 }

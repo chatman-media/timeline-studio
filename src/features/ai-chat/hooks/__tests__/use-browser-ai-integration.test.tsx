@@ -79,7 +79,7 @@ vi.mock("@/core/hooks/use-app", () => ({
 }))
 
 // Mock setBrowserStateAccess
-vi.mock("@/domains/ai-tools/tools/core/browser/utils/helpers", () => ({
+vi.mock("@/core/services/browser-state-access", () => ({
   setBrowserStateAccess: vi.fn(),
 }))
 
